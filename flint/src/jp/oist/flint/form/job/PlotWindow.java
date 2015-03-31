@@ -313,10 +313,10 @@ public class PlotWindow extends javax.swing.JFrame
 
     @Override
     public void displaySummary(Summary summary) {
-        lbl_trackInfo.setText(summary.getName() + "    "
+        lbl_trackInfo.setText(summary.getName() + " "
                 + " max:" + Utility.getEfficientRound(new BigDecimal(summary.getMax()), 3)
                 + " min:" + Utility.getEfficientRound(new BigDecimal(summary.getMin()), 3)
-                + " [ " + mTaskDao.obtainJob(mJobId).getProgress() + " % ]");
+                + " [" + mTaskDao.obtainJob(mJobId).getProgress() + " %]");
     }
 
     @Override
@@ -494,7 +494,6 @@ public class PlotWindow extends javax.swing.JFrame
         checkBoxY1log = new javax.swing.JCheckBox();
         checkBoxY2log = new javax.swing.JCheckBox();
         lbl_Y2 = new javax.swing.JLabel();
-        lbl_trackInfo = new javax.swing.JLabel();
         pnl_Target = new javax.swing.JPanel();
         pnl_OutputFile = new javax.swing.JPanel();
         lbl_Format = new javax.swing.JLabel();
@@ -541,6 +540,8 @@ public class PlotWindow extends javax.swing.JFrame
         pnl_LegendMarginBottom = new javax.swing.JPanel();
         pnl_Foot = new javax.swing.JPanel();
         btn_Plot = new javax.swing.JButton();
+        panelStatusBar = new javax.swing.JPanel();
+        lbl_trackInfo = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setMinimumSize(new java.awt.Dimension(700, 530));
@@ -562,22 +563,18 @@ public class PlotWindow extends javax.swing.JFrame
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(lbl_Variables, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(jPanel1Layout.createSequentialGroup()
-                    .addGap(0, 0, 0)
-                    .addComponent(js_VariableList)
-                    .addGap(0, 0, 0)))
+                .addComponent(js_VariableList, javax.swing.GroupLayout.DEFAULT_SIZE, 63, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
                 .addComponent(lbl_Variables)
-                .addContainerGap(391, Short.MAX_VALUE))
+                .addGap(0, 373, Short.MAX_VALUE))
             .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(jPanel1Layout.createSequentialGroup()
-                    .addGap(29, 29, 29)
-                    .addComponent(js_VariableList)
-                    .addGap(0, 0, 0)))
+                    .addGap(22, 22, 22)
+                    .addComponent(js_VariableList, javax.swing.GroupLayout.DEFAULT_SIZE, 356, Short.MAX_VALUE)
+                    .addContainerGap()))
         );
 
         jSplitPane1.setLeftComponent(jPanel1);
@@ -627,71 +624,57 @@ public class PlotWindow extends javax.swing.JFrame
         lbl_Y2.setFont(new java.awt.Font("Osaka", 0, 13)); // NOI18N
         lbl_Y2.setText("Y2");
 
-        lbl_trackInfo.setOpaque(true);
-
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGap(132, 132, 132)
-                .addComponent(lbl_Abscissa)
+                .addContainerGap()
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(js_VariableYList, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addComponent(lbl_Y1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(checkBoxY1log)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(checkBoxXlog)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 158, Short.MAX_VALUE)
-                .addComponent(checkBoxLegend)
-                .addGap(126, 126, 126))
-            .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(jPanel2Layout.createSequentialGroup()
-                    .addContainerGap()
-                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(js_VariableYList, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGroup(jPanel2Layout.createSequentialGroup()
-                            .addComponent(lbl_Y1)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(checkBoxY1log)))
-                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                        .addComponent(pnl_PlotArea, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(js_VariableXList)
-                        .addComponent(lbl_trackInfo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(js_VariableY2List, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGroup(jPanel2Layout.createSequentialGroup()
-                            .addComponent(lbl_Y2)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(checkBoxY2log)))
-                    .addContainerGap()))
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addComponent(lbl_Abscissa)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(checkBoxXlog)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(checkBoxLegend))
+                    .addComponent(pnl_PlotArea, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(js_VariableXList, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 351, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(js_VariableY2List, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addComponent(lbl_Y2)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(checkBoxY2log)))
+                .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                .addContainerGap(344, Short.MAX_VALUE)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lbl_Y1)
+                    .addComponent(checkBoxY1log)
+                    .addComponent(lbl_Y2)
+                    .addComponent(checkBoxY2log))
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(pnl_PlotArea, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(js_VariableY2List, javax.swing.GroupLayout.DEFAULT_SIZE, 279, Short.MAX_VALUE)
+                    .addComponent(js_VariableYList))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(lbl_Abscissa)
                     .addComponent(checkBoxXlog)
                     .addComponent(checkBoxLegend))
-                .addGap(54, 54, 54))
-            .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(jPanel2Layout.createSequentialGroup()
-                    .addContainerGap()
-                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(lbl_Y1)
-                            .addComponent(checkBoxY1log)
-                            .addComponent(lbl_Y2)
-                            .addComponent(checkBoxY2log))
-                        .addGroup(jPanel2Layout.createSequentialGroup()
-                            .addComponent(lbl_trackInfo, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGap(6, 6, 6)))
-                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(pnl_PlotArea, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(js_VariableY2List)
-                        .addComponent(js_VariableYList))
-                    .addGap(34, 34, 34)
-                    .addComponent(js_VariableXList, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addContainerGap()))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(js_VariableXList, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(10, 10, 10))
         );
 
         jSplitPane1.setRightComponent(jPanel2);
@@ -709,7 +692,7 @@ public class PlotWindow extends javax.swing.JFrame
             pnl_TrackLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnl_TrackLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jSplitPane1)
+                .addComponent(jSplitPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 390, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -793,14 +776,14 @@ public class PlotWindow extends javax.swing.JFrame
             pnl_TargetLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnl_TargetLayout.createSequentialGroup()
                 .addGap(38, 38, 38)
-                .addComponent(pnl_OutputFile, javax.swing.GroupLayout.DEFAULT_SIZE, 601, Short.MAX_VALUE)
+                .addComponent(pnl_OutputFile, javax.swing.GroupLayout.DEFAULT_SIZE, 605, Short.MAX_VALUE)
                 .addGap(49, 49, 49))
             .addGroup(pnl_TargetLayout.createSequentialGroup()
                 .addGap(30, 30, 30)
                 .addGroup(pnl_TargetLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(radio_OutputFile)
                     .addComponent(radio_OutputWindow))
-                .addContainerGap(591, Short.MAX_VALUE))
+                .addContainerGap(596, Short.MAX_VALUE))
         );
         pnl_TargetLayout.setVerticalGroup(
             pnl_TargetLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -811,7 +794,7 @@ public class PlotWindow extends javax.swing.JFrame
                 .addComponent(radio_OutputFile)
                 .addGap(18, 18, 18)
                 .addComponent(pnl_OutputFile, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(162, Short.MAX_VALUE))
         );
 
         pnl_Content.addTab("Target", pnl_Target);
@@ -854,7 +837,7 @@ public class PlotWindow extends javax.swing.JFrame
                 .addComponent(spn_Range_X_Start, javax.swing.GroupLayout.PREFERRED_SIZE, 193, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(37, 37, 37)
                 .addComponent(spn_Range_X_End, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(104, Short.MAX_VALUE))
+                .addContainerGap(78, Short.MAX_VALUE))
         );
         pnl_RangeRow1Layout.setVerticalGroup(
             pnl_RangeRow1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -903,7 +886,7 @@ public class PlotWindow extends javax.swing.JFrame
                 .addComponent(spn_Range_Y_Start, javax.swing.GroupLayout.PREFERRED_SIZE, 193, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(37, 37, 37)
                 .addComponent(spn_Range_Y_End, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(104, Short.MAX_VALUE))
+                .addContainerGap(78, Short.MAX_VALUE))
         );
         pnl_RangeRow2Layout.setVerticalGroup(
             pnl_RangeRow2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -952,7 +935,7 @@ public class PlotWindow extends javax.swing.JFrame
                 .addComponent(spn_Range_Y2_Start, javax.swing.GroupLayout.PREFERRED_SIZE, 193, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(37, 37, 37)
                 .addComponent(spn_Range_Y2_End, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(104, Short.MAX_VALUE))
+                .addContainerGap(78, Short.MAX_VALUE))
         );
         pnl_RangeRow3Layout.setVerticalGroup(
             pnl_RangeRow3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -974,7 +957,7 @@ public class PlotWindow extends javax.swing.JFrame
         pnl_RangeMarginBottom.setLayout(pnl_RangeMarginBottomLayout);
         pnl_RangeMarginBottomLayout.setHorizontalGroup(
             pnl_RangeMarginBottomLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 695, Short.MAX_VALUE)
+            .addGap(0, 692, Short.MAX_VALUE)
         );
         pnl_RangeMarginBottomLayout.setVerticalGroup(
             pnl_RangeMarginBottomLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1039,7 +1022,7 @@ public class PlotWindow extends javax.swing.JFrame
                 .addGap(37, 37, 37)
                 .addComponent(btn_Legend_X_Specified)
                 .addGap(37, 37, 37)
-                .addComponent(txt_Legend_X, javax.swing.GroupLayout.DEFAULT_SIZE, 422, Short.MAX_VALUE)
+                .addComponent(txt_Legend_X, javax.swing.GroupLayout.DEFAULT_SIZE, 396, Short.MAX_VALUE)
                 .addContainerGap())
         );
         pnl_LegendRow1Layout.setVerticalGroup(
@@ -1086,7 +1069,7 @@ public class PlotWindow extends javax.swing.JFrame
                 .addGap(37, 37, 37)
                 .addComponent(btn_Legend_Y_Specified)
                 .addGap(37, 37, 37)
-                .addComponent(txt_Legend_Y, javax.swing.GroupLayout.DEFAULT_SIZE, 422, Short.MAX_VALUE)
+                .addComponent(txt_Legend_Y, javax.swing.GroupLayout.DEFAULT_SIZE, 396, Short.MAX_VALUE)
                 .addContainerGap())
         );
         pnl_LegendRow2Layout.setVerticalGroup(
@@ -1134,7 +1117,7 @@ public class PlotWindow extends javax.swing.JFrame
                 .addGap(37, 37, 37)
                 .addComponent(btn_Legend_Y2_Specified)
                 .addGap(37, 37, 37)
-                .addComponent(txt_Legend_Y2, javax.swing.GroupLayout.DEFAULT_SIZE, 422, Short.MAX_VALUE)
+                .addComponent(txt_Legend_Y2, javax.swing.GroupLayout.DEFAULT_SIZE, 396, Short.MAX_VALUE)
                 .addContainerGap())
         );
         pnl_LegendRow3Layout.setVerticalGroup(
@@ -1155,7 +1138,7 @@ public class PlotWindow extends javax.swing.JFrame
         pnl_LegendMarginBottom.setLayout(pnl_LegendMarginBottomLayout);
         pnl_LegendMarginBottomLayout.setHorizontalGroup(
             pnl_LegendMarginBottomLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 695, Short.MAX_VALUE)
+            .addGap(0, 692, Short.MAX_VALUE)
         );
         pnl_LegendMarginBottomLayout.setVerticalGroup(
             pnl_LegendMarginBottomLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1186,6 +1169,27 @@ public class PlotWindow extends javax.swing.JFrame
         pnl_Wrapper.add(pnl_Foot, java.awt.BorderLayout.SOUTH);
 
         getContentPane().add(pnl_Wrapper, java.awt.BorderLayout.CENTER);
+
+        panelStatusBar.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+
+        lbl_trackInfo.setOpaque(true);
+
+        javax.swing.GroupLayout panelStatusBarLayout = new javax.swing.GroupLayout(panelStatusBar);
+        panelStatusBar.setLayout(panelStatusBarLayout);
+        panelStatusBarLayout.setHorizontalGroup(
+            panelStatusBarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 700, Short.MAX_VALUE)
+            .addGroup(panelStatusBarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addComponent(lbl_trackInfo, javax.swing.GroupLayout.DEFAULT_SIZE, 700, Short.MAX_VALUE))
+        );
+        panelStatusBarLayout.setVerticalGroup(
+            panelStatusBarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 20, Short.MAX_VALUE)
+            .addGroup(panelStatusBarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addComponent(lbl_trackInfo, javax.swing.GroupLayout.DEFAULT_SIZE, 20, Short.MAX_VALUE))
+        );
+
+        getContentPane().add(panelStatusBar, java.awt.BorderLayout.SOUTH);
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -1395,6 +1399,7 @@ public class PlotWindow extends javax.swing.JFrame
     private javax.swing.JLabel lbl_Y1;
     private javax.swing.JLabel lbl_Y2;
     private javax.swing.JLabel lbl_trackInfo;
+    private javax.swing.JPanel panelStatusBar;
     private javax.swing.JTabbedPane pnl_Content;
     private javax.swing.JPanel pnl_Foot;
     private javax.swing.JPanel pnl_Legend;
