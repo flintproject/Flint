@@ -1,0 +1,10 @@
+language: cpp
+compiler:
+  - gcc
+  - clang
+
+install:
+  - sudo apt-get update -qq
+  - sudo apt-get install -qq libtool bison flex
+
+script: cd posix && make check
