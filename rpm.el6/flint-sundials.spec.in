@@ -1,0 +1,108 @@
+Summary: SUNDIALS for Flint
+Name: flint-sundials
+Version: sundials_VERSION
+Release: sundials_RELEASE%{?dist}
+License: BSD-3-clause
+Group: Applications/Productivity
+URL: http://www.physiodesigner.org/
+Source0: %{name}-%{version}.tar.gz
+BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
+BuildRequires: gcc-c++
+BuildRequires: make
+
+%description
+This is part of Flint.
+
+%prep
+%setup -q
+
+%build
+%_openmpi_load
+./configure --prefix=%{buildroot}/opt/flint --enable-shared
+make
+
+%install
+rm -rf %{buildroot}
+make install
+sed -i -e "s,%{buildroot},," %{buildroot}/opt/flint/bin/sundials-config
+sed -i -e "s,%{buildroot},," %{buildroot}/opt/flint/lib/libsundials_cvode.la
+sed -i -e "s,%{buildroot},," %{buildroot}/opt/flint/lib/libsundials_cvodes.la
+sed -i -e "s,%{buildroot},," %{buildroot}/opt/flint/lib/libsundials_fcvode.la
+sed -i -e "s,%{buildroot},," %{buildroot}/opt/flint/lib/libsundials_fida.la
+sed -i -e "s,%{buildroot},," %{buildroot}/opt/flint/lib/libsundials_fkinsol.la
+sed -i -e "s,%{buildroot},," %{buildroot}/opt/flint/lib/libsundials_fnvecparallel.la
+sed -i -e "s,%{buildroot},," %{buildroot}/opt/flint/lib/libsundials_fnvecserial.la
+sed -i -e "s,%{buildroot},," %{buildroot}/opt/flint/lib/libsundials_ida.la
+sed -i -e "s,%{buildroot},," %{buildroot}/opt/flint/lib/libsundials_kinsol.la
+sed -i -e "s,%{buildroot},," %{buildroot}/opt/flint/lib/libsundials_nvecparallel.la
+sed -i -e "s,%{buildroot},," %{buildroot}/opt/flint/lib/libsundials_nvecserial.la
+
+%clean
+rm -rf %{buildroot}
+
+%post
+/sbin/ldconfig
+
+%postun
+/sbin/ldconfig
+
+%files
+%defattr(-,root,root,-)
+%doc
+/opt/flint/bin/sundials-config
+/opt/flint/include/cvode/cvode.h
+/opt/flint/include/cvode/cvode_band.h
+/opt/flint/include/cvode/cvode_bandpre.h
+/opt/flint/include/cvode/cvode_bbdpre.h
+/opt/flint/include/cvode/cvode_dense.h
+/opt/flint/include/cvode/cvode_diag.h
+/opt/flint/include/cvode/cvode_impl.h
+/opt/flint/include/cvode/cvode_spbcgs.h
+/opt/flint/include/cvode/cvode_spgmr.h
+/opt/flint/include/cvode/cvode_spils.h
+/opt/flint/include/cvode/cvode_sptfqmr.h
+/opt/flint/include/cvodes/cvodes.h
+/opt/flint/include/cvodes/cvodes_band.h
+/opt/flint/include/cvodes/cvodes_bandpre.h
+/opt/flint/include/cvodes/cvodes_bbdpre.h
+/opt/flint/include/cvodes/cvodes_dense.h
+/opt/flint/include/cvodes/cvodes_diag.h
+/opt/flint/include/cvodes/cvodes_impl.h
+/opt/flint/include/cvodes/cvodes_spbcgs.h
+/opt/flint/include/cvodes/cvodes_spgmr.h
+/opt/flint/include/cvodes/cvodes_spils.h
+/opt/flint/include/cvodes/cvodes_sptfqmr.h
+/opt/flint/include/ida/ida.h
+/opt/flint/include/ida/ida_band.h
+/opt/flint/include/ida/ida_bbdpre.h
+/opt/flint/include/ida/ida_dense.h
+/opt/flint/include/ida/ida_impl.h
+/opt/flint/include/ida/ida_spbcgs.h
+/opt/flint/include/ida/ida_spgmr.h
+/opt/flint/include/ida/ida_spils.h
+/opt/flint/include/ida/ida_sptfqmr.h
+/opt/flint/include/kinsol/kinsol.h
+/opt/flint/include/kinsol/kinsol_band.h
+/opt/flint/include/kinsol/kinsol_bbdpre.h
+/opt/flint/include/kinsol/kinsol_dense.h
+/opt/flint/include/kinsol/kinsol_impl.h
+/opt/flint/include/kinsol/kinsol_spbcgs.h
+/opt/flint/include/kinsol/kinsol_spgmr.h
+/opt/flint/include/kinsol/kinsol_spils.h
+/opt/flint/include/kinsol/kinsol_sptfqmr.h
+/opt/flint/include/nvector/nvector_parallel.h
+/opt/flint/include/nvector/nvector_serial.h
+/opt/flint/include/sundials/sundials_band.h
+/opt/flint/include/sundials/sundials_config.h
+/opt/flint/include/sundials/sundials_dense.h
+/opt/flint/include/sundials/sundials_iterative.h
+/opt/flint/include/sundials/sundials_math.h
+/opt/flint/include/sundials/sundials_nvector.h
+/opt/flint/include/sundials/sundials_smalldense.h
+/opt/flint/include/sundials/sundials_spbcgs.h
+/opt/flint/include/sundials/sundials_spgmr.h
+/opt/flint/include/sundials/sundials_sptfqmr.h
+/opt/flint/include/sundials/sundials_types.h
+/opt/flint/lib/libsundials_*
+
+%changelog

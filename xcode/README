@@ -1,0 +1,10 @@
+This directory contains packaging script for OS X version of Flint.
+The script requires Xcode as well as autoconf, automake, libtool,
+and pkg-config.
+
+As a prerequisite, the dependent libraries have to be installed in a
+directory before packaging.
+Put config.mk in this directory in order to specify PKG_CONFIG Make
+variable See config.mk.example for example.
+Then running `make` will produce flint-*.dmg for all supported version
+of OS X in case of success.

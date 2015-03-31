@@ -1,0 +1,20 @@
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; isdwc -- count columns and rows in ISDF
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+= Synopsis
+
+isdwc [-c] [-o output] [path]
+isdwc --help
+
+
+= Description
+
+--columns, -c
+    print the column counts only.
+
+--output, -o
+    write to file at `output` instead of stdout.
+
+--help, -h
+    show help.

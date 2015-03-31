@@ -1,0 +1,69 @@
+This explains how to build and install core components of Flint.
+See flint/INSTALL for its GUI part.
+
+
+= Prerequisite
+
+You need autotools for building Flint.
+pkg-config is helpful but not required.
+
+In order to build Flint, the following libraries are required:
+- Boost 1.57.0
+  http://www.boost.org/
+- Protocol buffers 2.6.1
+  http://code.google.com/p/protobuf/
+- Git master version of The SBML ODE Solver Library (SOSlib)
+  http://mescalin.tbi.univie.ac.at/~raim/odeSolver/
+  https://github.com/raim/SBML_odeSolver
+- SUNDIALS 2.3.0
+  https://computation.llnl.gov/casc/sundials/main.html
+- libxml 2.7.8 or higher
+  http://xmlsoft.org/
+- libSBML 3.4.1 or later
+  http://sbml.org/Software/libSBML
+- Git master version of clibsedml
+  http://clibsedml.sourceforge.net/
+- libzip 0.11.2 or later
+  http://www.nih.at/libzip/
+
+
+= How to build and install Flint
+
+In short, type in your shell at the top of this source directory:
+$ autoreconf -i -f
+$ ./configure
+$ make all
+# make install
+That's all if succeeded.
+
+We recommend an out-of-tree way, e.g.:
+$ autoreconf -i -f
+$ mkdir build
+$ cd build
+$ ../configure
+$ make all
+# make install
+
+Please specify --prefix if you want.
+Give --with-boost option as follows if you have Boost installed at non-canonical
+location, say, /opt:
+$ ./configure --with-boost=/opt [...]
+And --with-xml-prefix option accepts the prefix where libxml2 is installed, like:
+$ ./configure --with-xml-prefix=/opt [...]
+By default pkg-config searches Protocol Buffers. Providing environment variable
+PKG_CONFIG_PATH allows you to suggest a non-canonical location of .pc scripts:
+$ PKG_CONFIG_PATH=/opt/lib/pkgconfig ./configure [...]
+If you do not want to depend on pkg-config, environment variables PROTOBUF_CLFAGS
+and PROTOBUF_LIBS help you with specifying arbitrary flags:
+$ PROTOBUF_CFLAGS="-I/opt/include" PROTOBUF_LIBS='-L/opt/lib -lprotobuf' ./configure [...]
+Note that, aside from the above, you may also have to tell the path of protoc
+executable by --with-protoc option:
+$ ./configure --with-protoc=/opt/bin/protoc [...]
+
+
+== How to run tests
+
+`make check` runs all of tests.
+Boost Test Library is used for some of unit tests. For such a test case,
+say test/base/test_rational, just run:
+$ ./test/base/test_rational

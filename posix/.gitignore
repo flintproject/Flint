@@ -1,0 +1,5 @@
+config.mk
+opt/
+src/
+tmp/
+var/

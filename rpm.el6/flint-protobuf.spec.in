@@ -1,0 +1,62 @@
+Summary: Protocol Buffers for Flint
+Name: flint-protobuf
+Version: protobuf_VERSION
+Release: protobuf_RELEASE%{?dist}
+License: BSD-3-clause
+Group: Applications/Productivity
+URL: http://www.physiodesigner.org/
+Source0: %{name}-%{version}.tar.gz
+BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
+BuildRequires: gcc-c++
+BuildRequires: make
+
+%description
+This is part of Flint.
+
+%prep
+%setup -q
+
+%build
+./configure --prefix=/opt/flint --enable-shared
+make
+
+%install
+rm -rf %{buildroot}
+make install DESTDIR=%{buildroot}
+mkdir -p %{buildroot}/etc/ld.so.conf.d
+echo '/opt/flint/lib' > %{buildroot}/etc/ld.so.conf.d/%{name}.conf
+
+%clean
+rm -rf %{buildroot}
+
+%post
+/sbin/ldconfig
+
+%postun
+/sbin/ldconfig
+
+%files
+%defattr(-,root,root,-)
+%doc
+/etc/ld.so.conf.d/%{name}.conf
+/opt/flint/bin/protoc
+/opt/flint/include/google/protobuf
+/opt/flint/lib/libprotobuf-lite.a
+/opt/flint/lib/libprotobuf-lite.la
+/opt/flint/lib/libprotobuf-lite.so
+/opt/flint/lib/libprotobuf-lite.so.9
+/opt/flint/lib/libprotobuf-lite.so.9.0.1
+/opt/flint/lib/libprotobuf.a
+/opt/flint/lib/libprotobuf.la
+/opt/flint/lib/libprotobuf.so
+/opt/flint/lib/libprotobuf.so.9
+/opt/flint/lib/libprotobuf.so.9.0.1
+/opt/flint/lib/libprotoc.a
+/opt/flint/lib/libprotoc.la
+/opt/flint/lib/libprotoc.so
+/opt/flint/lib/libprotoc.so.9
+/opt/flint/lib/libprotoc.so.9.0.1
+/opt/flint/lib/pkgconfig/protobuf-lite.pc
+/opt/flint/lib/pkgconfig/protobuf.pc
+
+%changelog

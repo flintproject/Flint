@@ -1,0 +1,411 @@
+<?xml version='1.0'?>
+<Wix xmlns='http://schemas.microsoft.com/wix/2006/wi'>
+  <Product Id='f6d0d912-1a72-11e1-8967-9344df455682' Name='Flint' Language='1033'
+           Version='1.2' Manufacturer='Flint project' UpgradeCode='0223581c-1a73-11e1-b0fd-1f82e9961ce5'>
+    <Package Description='Flint is a simulator for physiome.'
+             Comments='Flint is a simulator for physiome.'
+             Manufacturer='Flint project'
+             InstallScope='perMachine' InstallerVersion='200' Compressed='yes' />
+
+    <Media Id='1' Cabinet='product.cab' EmbedCab='yes' />
+
+    <Directory Id='TARGETDIR' Name='SourceDir'>
+
+      <Component Id='Environment' Guid='f8b61b0c-ea1d-11e3-9d71-0b54cc44b48d'>
+        <Environment Id='PATH' Name='PATH' Value='[FLINTDIR]' Permanent='no' Part='last' Action='set' System='yes' />
+      </Component>
+
+      <Directory Id='ProgramFilesFolder' Name='PFiles'>
+        <Directory Id='FLINTDIR' Name='Flint'>
+
+          <Component Id='flint_exe' Guid='b3759fa0-220f-11e1-95b8-8fcafecb7541'>
+            <File Id='flint.exe' Name='flint.exe' DiskId='1' Source='flint.exe' />
+            <Shortcut Id='flint_desktop_shortcut' Name='Flint'
+                      Directory='DesktopFolder'
+                      Description='Flint is a simulator for physiome.'
+                      Icon='flint.ico'
+                      WorkingDirectory='FLINTDIR'
+                      Advertise='yes' />
+          </Component>
+          <Component Id='flint_jar' Guid='0c7ff5e0-1a73-11e1-bb1b-636ae32200f8'>
+            <File Id='flint.jar' Name='flint.jar' DiskId='1' Source='flint.jar' />
+          </Component>
+          <Component Id='icon_png' Guid='68a29444-70cc-11e2-94d9-a325e0ec4c17'>
+            <File Id='icon.png' Name='icon.png' DiskId='1' Source='icon.png' />
+          </Component>
+
+          <Directory Id='ClasspathDir' Name='lib'>
+            <Component Id='GarudaBackend' Guid='d79a58a0-6a82-11e2-bc79-4364f72defdd'>
+              <File Id='GarudaBackend.jar' Name='GarudaBackend.jar' DiskId='1' Source='lib/GarudaBackend.jar' />
+            </Component>
+            <Component Id='commons_cli' Guid='2ca271c8-7593-11e2-8411-271d74e77d40'>
+              <File Id='commons_cli.jar' Name='commons-cli-1.2.jar' DiskId='1' Source='lib/commons-cli-1.2.jar' />
+            </Component>
+            <Component Id='commons_logging' Guid='97ddc5e4-3552-11e3-b56b-efd74f2f8d34'>
+              <File Id='commons_logging.jar' Name='commons-logging-1.1.3.jar' DiskId='1' Source='lib/commons-logging-1.1.3.jar' />
+            </Component>
+            <Component Id='commons_vfs2' Guid='97dde22c-3552-11e3-9c08-eba2ad8ccf70'>
+              <File Id='commons_vfs2.jar' Name='commons-vfs2-2.0.jar' DiskId='1' Source='lib/commons-vfs2-2.0.jar' />
+            </Component>
+            <Component Id='dom4j' Guid='d6f40772-848e-11e2-be41-672554022a02'>
+              <File Id='dom4j.jar' Name='dom4j-1.6.1.jar' DiskId='1' Source='lib/dom4j-1.6.1.jar' />
+            </Component>
+            <Component Id='garuda_csr' Guid='26457a40-da1c-11e1-b0a4-b798fddaaf6b'>
+              <File Id='garuda_csr.jar' Name='garuda-csr.jar' DiskId='1' Source='lib/garuda-csr.jar' />
+            </Component>
+            <Component Id='jcommon' Guid='3032ea7a-cc92-11e1-9ce1-77b4b70ee673'>
+              <File Id='jcommon.jar' Name='jcommon-1.0.22.jar' DiskId='1' Source='lib/jcommon-1.0.22.jar' />
+            </Component>
+            <Component Id='jfreechart' Guid='393169b2-cc92-11e1-8207-5b9a33bb7817'>
+              <File Id='jfreechart.jar' Name='jfreechart-1.0.18.jar' DiskId='1' Source='lib/jfreechart-1.0.18.jar' />
+            </Component>
+            <Component Id='jsonic' Guid='26d71536-da1c-11e1-99f0-5798c6b9e64f'>
+              <File Id='jsonic.jar' Name='jsonic-1.2.10.jar' DiskId='1' Source='lib/jsonic-1.2.10.jar' />
+            </Component>
+            <Component Id='log4j' Guid='278080d0-da1c-11e1-99c1-4783ff8d51ca'>
+              <File Id='log4j.jar' Name='log4j-1.2.16.jar' DiskId='1' Source='lib/log4j-1.2.16.jar' />
+            </Component>
+            <Component Id='protobuf_java' Guid='e62bbfaa-1fae-11e1-a3c7-c705326b6d6c'>
+              <File Id='protobuf_java.jar' Name='protobuf-java-2.6.1.jar' DiskId='1' Source='lib/protobuf-java-2.6.1.jar' />
+            </Component>
+            <Component Id='sqlite_jdbc' Guid='7a65beae-bef5-11e3-8a59-a7cc068a8766'>
+              <File Id='sqlite_jdbc.jar' Name='sqlite-jdbc-3.8.6.jar' DiskId='1' Source='lib/sqlite-jdbc-3.8.6.jar' />
+            </Component>
+          </Directory>
+
+          <Component Id='csv2isd' Guid='f4b4b0b8-823f-11e3-8e59-bf8a1e617bcf'>
+            <File Id='csv2isd.exe' Name='csv2isd.exe' DiskId='1' Source='csv2isd.exe' />
+          </Component>
+          <Component Id='flint_assign' Guid='2fb2f7ca-f5bd-11e2-af36-13c35391bb14'>
+            <File Id='flint_assign.exe' Name='flint-assign.exe' DiskId='1' Source='flint-assign.exe' />
+          </Component>
+          <Component Id='flint_bcc' Guid='2fb35030-f5bd-11e2-b463-33d9bf4db509'>
+            <File Id='flint_bcc.exe' Name='flint-bcc.exe' DiskId='1' Source='flint-bcc.exe' />
+          </Component>
+          <Component Id='flint_combine' Guid='2fb46434-f5bd-11e2-9a95-8fda242004c2'>
+            <File Id='flint_combine.exe' Name='flint-combine.exe' DiskId='1' Source='flint-combine.exe' />
+          </Component>
+          <Component Id='flint_combineall' Guid='2fb4e36e-f5bd-11e2-bf28-f7f644f0a6c9'>
+            <File Id='flint_combineall.exe' Name='flint-combineall.exe' DiskId='1' Source='flint-combineall.exe' />
+          </Component>
+          <Component Id='flint_concat' Guid='ca98bde6-eae1-11e3-8b7f-078b033eeb4c'>
+            <File Id='flint_concat.exe' Name='flint-concat.exe' DiskId='1' Source='flint-concat.exe' />
+          </Component>
+          <Component Id='flint_cut' Guid='2fb53e40-f5bd-11e2-a3db-7b8454983cf6'>
+            <File Id='flint_cut.exe' Name='flint-cut.exe' DiskId='1' Source='flint-cut.exe' />
+          </Component>
+          <Component Id='flint_enum' Guid='b23f030a-5d69-11e3-823f-f3a829d6a3a6'>
+            <File Id='flint_enum.exe' Name='flint-enum.exe' DiskId='1' Source='flint-enum.exe' />
+          </Component>
+          <Component Id='flint_euler' Guid='2fb5eb1a-f5bd-11e2-8982-ffa48b375eaa'>
+            <File Id='flint_euler.exe' Name='flint-euler.exe' DiskId='1' Source='flint-euler.exe' />
+          </Component>
+          <Component Id='flint_event' Guid='7506700e-e586-11e3-9356-3327d2730e65'>
+            <File Id='flint_event.exe' Name='flint-event.exe' DiskId='1' Source='flint-event.exe' />
+          </Component>
+          <Component Id='flint_evolve' Guid='2fb63ff2-f5bd-11e2-815a-db7246e0cea3'>
+            <File Id='flint_evolve.exe' Name='flint-evolve.exe' DiskId='1' Source='flint-evolve.exe' />
+          </Component>
+          <Component Id='flint_exec' Guid='86688738-5d69-11e3-9595-f317fcf3e8c5'>
+            <File Id='flint_exec.exe' Name='flint-exec.exe' DiskId='1' Source='flint-exec.exe' />
+          </Component>
+          <Component Id='flint_extra' Guid='2fb6b2fc-f5bd-11e2-a6cc-777135db6461'>
+            <File Id='flint_extra.exe' Name='flint-extra.exe' DiskId='1' Source='flint-extra.exe' />
+          </Component>
+          <Component Id='flint_file' Guid='2fb73f60-f5bd-11e2-b24a-0b7e6d1637a0'>
+            <File Id='flint_file.exe' Name='flint-file.exe' DiskId='1' Source='flint-file.exe' />
+          </Component>
+          <Component Id='flint_filter' Guid='2fb7b396-f5bd-11e2-9c74-9bab714e21e6'>
+            <File Id='flint_filter.exe' Name='flint-filter.exe' DiskId='1' Source='flint-filter.exe' />
+          </Component>
+          <Component Id='flint_flow' Guid='2fb8225e-f5bd-11e2-abba-3ba530544c5b'>
+            <File Id='flint_flow.exe' Name='flint-flow.exe' DiskId='1' Source='flint-flow.exe' />
+          </Component>
+          <Component Id='flint_form' Guid='c8caaee4-5d69-11e3-80f9-bb96620edf97'>
+            <File Id='flint_form.exe' Name='flint-form.exe' DiskId='1' Source='flint-form.exe' />
+          </Component>
+          <Component Id='flint_generate' Guid='e1db23aa-5d69-11e3-af2a-1fa42ba3525f'>
+            <File Id='flint_generate.exe' Name='flint-generate.exe' DiskId='1' Source='flint-generate.exe' />
+          </Component>
+          <Component Id='flint_impl' Guid='2fb89374-f5bd-11e2-b93c-eb109f47cf8b'>
+            <File Id='flint_impl.exe' Name='flint-impl.exe' DiskId='1' Source='flint-impl.exe' />
+          </Component>
+          <Component Id='flint_importdump' Guid='2fb9841e-f5bd-11e2-9347-efd515ed8a19'>
+            <File Id='flint_importdump.exe' Name='flint-importdump.exe' DiskId='1' Source='flint-importdump.exe' />
+          </Component>
+          <Component Id='flint_importdumpall' Guid='2fb9fe12-f5bd-11e2-8ee3-d3d914b65dec'>
+            <File Id='flint_importdumpall.exe' Name='flint-importdumpall.exe' DiskId='1' Source='flint-importdumpall.exe' />
+          </Component>
+          <Component Id='flint_init' Guid='43520c4a-4c1f-11e3-b3ce-571d2a2fd0c1'>
+            <File Id='flint_init.exe' Name='flint-init.exe' DiskId='1' Source='flint-init.exe' />
+          </Component>
+          <Component Id='flint_isdh' Guid='2fbb4376-f5bd-11e2-b99a-a3d231cb4856'>
+            <File Id='flint_isdh.exe' Name='flint-isdh.exe' DiskId='1' Source='flint-isdh.exe' />
+          </Component>
+          <Component Id='flint_iv' Guid='2fbc059a-f5bd-11e2-912f-e766ae4dfdaa'>
+            <File Id='flint_iv.exe' Name='flint-iv.exe' DiskId='1' Source='flint-iv.exe' />
+          </Component>
+          <Component Id='flint_lands' Guid='2fbcbd28-f5bd-11e2-a909-339b6e0fe698'>
+            <File Id='flint_lands.exe' Name='flint-lands.exe' DiskId='1' Source='flint-lands.exe' />
+          </Component>
+          <Component Id='flint_layout' Guid='2fbd1138-f5bd-11e2-87e7-47f7d510ba53'>
+            <File Id='flint_layout.exe' Name='flint-layout.exe' DiskId='1' Source='flint-layout.exe' />
+          </Component>
+          <Component Id='flint_loadconfig' Guid='f651ba1c-d03f-11e3-a1b4-2fa2a7e5c6d8'>
+            <File Id='flint_loadconfig.exe' Name='flint-loadconfig.exe' DiskId='1' Source='flint-loadconfig.exe' />
+          </Component>
+          <Component Id='flint_make' Guid='6c558eee-cad9-11e3-a40b-c775ed5cf8a1'>
+            <File Id='flint_make.exe' Name='flint-make.exe' DiskId='1' Source='flint-make.exe' />
+          </Component>
+          <Component Id='flint_nc' Guid='2fbdb8c2-f5bd-11e2-9509-172a4edf7e02'>
+            <File Id='flint_nc.exe' Name='flint-nc.exe' DiskId='1' Source='flint-nc.exe' />
+          </Component>
+          <Component Id='flint_open' Guid='33c60296-e7f0-11e3-9c8e-efa5bd532490'>
+            <File Id='flint_open.exe' Name='flint-open.exe' DiskId='1' Source='flint-open.exe' />
+          </Component>
+          <Component Id='flint_param' Guid='2fbeb81c-f5bd-11e2-8d3f-fb50d5412883'>
+            <File Id='flint_param.exe' Name='flint-param.exe' DiskId='1' Source='flint-param.exe' />
+          </Component>
+          <Component Id='flint_phml' Guid='c81ebea0-0709-11e4-9d3d-3fe6daa6634d'>
+            <File Id='flint_phml.exe' Name='flint-phml.exe' DiskId='1' Source='flint-phml.exe' />
+          </Component>
+          <Component Id='flint_phsp' Guid='1aef5082-5d72-11e3-9ed4-a3f3d2482294'>
+            <File Id='flint_phsp.exe' Name='flint-phsp.exe' DiskId='1' Source='flint-phsp.exe' />
+          </Component>
+          <Component Id='flint_phz' Guid='7b0fc2dc-6490-11e4-9e25-a7cb15212d3e'>
+            <File Id='flint_phz.exe' Name='flint-phz.exe' DiskId='1' Source='flint-phz.exe' />
+          </Component>
+          <Component Id='flint_rk4' Guid='2fc07d46-f5bd-11e2-9e94-e3789b4471f2'>
+            <File Id='flint_rk4.exe' Name='flint-rk4.exe' DiskId='1' Source='flint-rk4.exe' />
+          </Component>
+          <Component Id='flint_run' Guid='c7541b2a-9d03-11e3-9698-b745a2cde4a7'>
+            <File Id='flint_run.exe' Name='flint-run.exe' DiskId='1' Source='flint-run.exe' />
+          </Component>
+          <Component Id='flint_sbml' Guid='2fc0d282-f5bd-11e2-af20-d3eadee10937'>
+            <File Id='flint_sbml.exe' Name='flint-sbml.exe' DiskId='1' Source='flint-sbml.exe' />
+          </Component>
+          <Component Id='flint_sbmlall' Guid='2fc126ec-f5bd-11e2-a58f-6b715eb69b08'>
+            <File Id='flint_sbmlall.exe' Name='flint-sbmlall.exe' DiskId='1' Source='flint-sbmlall.exe' />
+          </Component>
+          <Component Id='flint_sbmlenc' Guid='2fc17c00-f5bd-11e2-af96-1fd8b3b8eda1'>
+            <File Id='flint_sbmlenc.exe' Name='flint-sbmlenc.exe' DiskId='1' Source='flint-sbmlenc.exe' />
+          </Component>
+          <Component Id='flint_sedml' Guid='d2f7bae6-93c0-11e3-86f0-6ba6a092f3ee'>
+            <File Id='flint_sedml.exe' Name='flint-sedml.exe' DiskId='1' Source='flint-sedml.exe' />
+          </Component>
+          <Component Id='flint_singleton' Guid='750bd430-0c88-11e4-962e-bbc078f528f6'>
+            <File Id='flint_singleton.exe' Name='flint-singleton.exe' DiskId='1' Source='flint-singleton.exe' />
+          </Component>
+          <Component Id='flint_sort' Guid='2fc1d0b0-f5bd-11e2-97b4-d7e2784b5593'>
+            <File Id='flint_sort.exe' Name='flint-sort.exe' DiskId='1' Source='flint-sort.exe' />
+          </Component>
+          <Component Id='flint_spec' Guid='2fc27c90-f5bd-11e2-aaf0-33918569217c'>
+            <File Id='flint_spec.exe' Name='flint-spec.exe' DiskId='1' Source='flint-spec.exe' />
+          </Component>
+          <Component Id='flint_store' Guid='0034e3fe-5d6a-11e3-8d2d-67654be0c476'>
+            <File Id='flint_store.exe' Name='flint-store.exe' DiskId='1' Source='flint-store.exe' />
+          </Component>
+          <Component Id='flint_tac' Guid='2fc327d0-f5bd-11e2-8117-4bf7ef15dc4a'>
+            <File Id='flint_tac.exe' Name='flint-tac.exe' DiskId='1' Source='flint-tac.exe' />
+          </Component>
+          <Component Id='flint_taskconfig' Guid='f651a338-d03f-11e3-b3b2-53e8319cbe7c'>
+            <File Id='flint_taskconfig.exe' Name='flint-taskconfig.exe' DiskId='1' Source='flint-taskconfig.exe' />
+          </Component>
+          <Component Id='flint_taskpref' Guid='d3bf7234-93c0-11e3-9cfa-af4e9397840f'>
+            <File Id='flint_taskpref.exe' Name='flint-taskpref.exe' DiskId='1' Source='flint-taskpref.exe' />
+          </Component>
+          <Component Id='flint_taskspec' Guid='d4d21474-93c0-11e3-8e10-ab3e41c3850d'>
+            <File Id='flint_taskspec.exe' Name='flint-taskspec.exe' DiskId='1' Source='flint-taskspec.exe' />
+          </Component>
+          <Component Id='flint_timer' Guid='2fc4e80e-f5bd-11e2-b198-a7b849f5759e'>
+            <File Id='flint_timer.exe' Name='flint-timer.exe' DiskId='1' Source='flint-timer.exe' />
+          </Component>
+          <Component Id='flint_track' Guid='2fc5cda0-f5bd-11e2-837a-076fee1bcf8e'>
+            <File Id='flint_track.exe' Name='flint-track.exe' DiskId='1' Source='flint-track.exe' />
+          </Component>
+          <Component Id='flint_tsc' Guid='664b8e1c-8403-11e3-bbc7-0bc1e424c0b7'>
+            <File Id='flint_tsc.exe' Name='flint-tsc.exe' DiskId='1' Source='flint-tsc.exe' />
+          </Component>
+          <Component Id='flint_unit' Guid='2fc686f0-f5bd-11e2-9c23-83875620380b'>
+            <File Id='flint_unit.exe' Name='flint-unit.exe' DiskId='1' Source='flint-unit.exe' />
+          </Component>
+          <Component Id='flint_unitoftime' Guid='2fc6d54c-f5bd-11e2-b7a1-8ba422bb2b6b'>
+            <File Id='flint_unitoftime.exe' Name='flint-unitoftime.exe' DiskId='1' Source='flint-unitoftime.exe' />
+          </Component>
+          <Component Id='flint_var' Guid='2fc722a4-f5bd-11e2-9b9d-d32571409f9d'>
+            <File Id='flint_var.exe' Name='flint-var.exe' DiskId='1' Source='flint-var.exe' />
+          </Component>
+          <Component Id='isd2csv' Guid='b87afd3a-a54d-11e1-bac1-b759ca208b40'>
+            <File Id='isd2csv.exe' Name='isd2csv.exe' DiskId='1' Source='isd2csv.exe' />
+          </Component>
+          <Component Id='isddiff' Guid='deae862e-6013-11e4-8154-07aaccd8efa4'>
+            <File Id='isddiff.exe' Name='isddiff.exe' DiskId='1' Source='isddiff.exe' />
+          </Component>
+          <Component Id='isdplot' Guid='0e95f618-aef2-11e1-9c41-8b88a5bed1b9'>
+            <File Id='isdplot.exe' Name='isdplot.exe' DiskId='1' Source='isdplot.exe' />
+          </Component>
+          <Component Id='isdsort' Guid='35c7b978-5b17-11e4-b3fe-072b6829c30e'>
+            <File Id='isdsort.exe' Name='isdsort.exe' DiskId='1' Source='isdsort.exe' />
+          </Component>
+          <Component Id='isdstrip' Guid='71b6563e-adf3-11e1-a6e8-2f343d01eb33'>
+            <File Id='isdstrip.exe' Name='isdstrip.exe' DiskId='1' Source='isdstrip.exe' />
+          </Component>
+          <Component Id='isdwc' Guid='10d5565a-ae0a-11e1-8274-9334251cf9ca'>
+            <File Id='isdwc.exe' Name='isdwc.exe' DiskId='1' Source='isdwc.exe' />
+          </Component>
+
+          <Component Id='boost.filesystem' Guid='d02c19b4-1a7e-11e1-846e-4f0b3849c594'>
+            <File Id='libboost_filesystem' Name='libboost_filesystem-mt.dll' DiskId='1' Source='libboost_filesystem-mt.dll' />
+          </Component>
+          <Component Id='boost.program_options' Guid='d02c4c7c-1a7e-11e1-bd00-4fe26f314427'>
+            <File Id='libboost_program_options' Name='libboost_program_options-mt.dll' DiskId='1' Source='libboost_program_options-mt.dll' />
+          </Component>
+          <Component Id='boost.system' Guid='d02c802a-1a7e-11e1-8142-7b383aa4b0d4'>
+            <File Id='libboost_system' Name='libboost_system-mt.dll' DiskId='1' Source='libboost_system-mt.dll' />
+          </Component>
+          <Component Id='iconv2' Guid='8fc7ac4a-cad9-11e3-a98d-ef05774eb08a'>
+            <File Id='libiconv2' Name='libiconv2.dll' DiskId='1' Source='libiconv2.dll' />
+          </Component>
+          <Component Id='intl3' Guid='904c7a60-cad9-11e3-a69a-f3957c80bc82'>
+            <File Id='libintl3' Name='libintl3.dll' DiskId='1' Source='libintl3.dll' />
+          </Component>
+          <Component Id='clibsedml' Guid='72d89bf4-8921-11e1-8be9-8ffa90143fcb'>
+            <File Id='libsedml' Name='libsedml-0.dll' DiskId='1' Source='libsedml-0.dll' />
+          </Component>
+          <Component Id='xml2' Guid='d02ce240-1a7e-11e1-8c5d-b793ab03d5f9'>
+            <File Id='libxml2' Name='libxml2-2.dll' DiskId='1' Source='libxml2-2.dll' />
+          </Component>
+          <Component Id='zip' Guid='80567758-6491-11e4-9265-8740267a2adb'>
+            <File Id='libzip' Name='libzip-2.dll' DiskId='1' Source='libzip-2.dll' />
+          </Component>
+          <Component Id='zlib' Guid='82944adc-649f-11e4-a994-f79c5de7eacb'>
+            <File Id='zlib1' Name='zlib1.dll' DiskId='1' Source='zlib1.dll' />
+          </Component>
+
+          <Component Id='third_party_licenses' Guid='6699ad54-8e3f-11e3-ae53-e3655a982178'>
+            <File Id='third_party_licenses.txt' Name='third-party-licenses.txt' DiskId='1' Source='third-party-licenses.txt' />
+          </Component>
+        </Directory>
+      </Directory>
+
+      <Directory Id='ProgramMenuFolder'>
+        <Directory Id='ApplicationProgramsFolder' Name='Flint'>
+          <Component Id='flint_startmenu' Guid='d02d13fa-1a7e-11e1-8d61-5f7cc3fac917'>
+            <Shortcut Id='flint_startmenu_shortcut' Name='Flint'
+                      Description='Flint is a simulator for physiome.'
+                      Icon='flint.ico'
+                      Target='[FLINTDIR]flint.exe'
+                      WorkingDirectory='FLINTDIR' />
+            <Shortcut Id='UninstallProduct' Name='uninstall'
+                      Description='Uninstall Flint.'
+                      Target='[SystemFolder]msiexec.exe'
+                      Arguments='/x [ProductCode]' />
+            <RemoveFolder Id='ApplicationProgramsFolder' On='uninstall' />
+            <RegistryValue Root='HKCU' Key='Software\oist.jp\Flint' Name='installed' Type='integer' Value='1' KeyPath='yes' />
+          </Component>
+        </Directory>
+      </Directory>
+
+      <Directory Id='DesktopFolder' Name='Desktop' />
+    </Directory>
+
+    <Feature Id='GuiFeature' Title='GUI Feature' Level='1'>
+      <ComponentRef Id='flint_exe' />
+      <ComponentRef Id='flint_jar' />
+      <ComponentRef Id='icon_png' />
+      <ComponentRef Id='GarudaBackend' />
+      <ComponentRef Id='commons_cli' />
+      <ComponentRef Id='commons_logging' />
+      <ComponentRef Id='commons_vfs2' />
+      <ComponentRef Id='dom4j' />
+      <ComponentRef Id='garuda_csr' />
+      <ComponentRef Id='jcommon' />
+      <ComponentRef Id='jfreechart' />
+      <ComponentRef Id='jsonic' />
+      <ComponentRef Id='log4j' />
+      <ComponentRef Id='protobuf_java' />
+      <ComponentRef Id='sqlite_jdbc' />
+      <ComponentRef Id='flint_startmenu' />
+    </Feature>
+    <Feature Id='BaseFeature' Title='Base Feature' Level='1'>
+      <ComponentRef Id='Environment' />
+      <ComponentRef Id='csv2isd' />
+      <ComponentRef Id='flint_assign' />
+      <ComponentRef Id='flint_bcc' />
+      <ComponentRef Id='flint_combine' />
+      <ComponentRef Id='flint_combineall' />
+      <ComponentRef Id='flint_concat' />
+      <ComponentRef Id='flint_cut' />
+      <ComponentRef Id='flint_enum' />
+      <ComponentRef Id='flint_euler' />
+      <ComponentRef Id='flint_event' />
+      <ComponentRef Id='flint_evolve' />
+      <ComponentRef Id='flint_exec' />
+      <ComponentRef Id='flint_extra' />
+      <ComponentRef Id='flint_file' />
+      <ComponentRef Id='flint_filter' />
+      <ComponentRef Id='flint_flow' />
+      <ComponentRef Id='flint_form' />
+      <ComponentRef Id='flint_generate' />
+      <ComponentRef Id='flint_impl' />
+      <ComponentRef Id='flint_importdump' />
+      <ComponentRef Id='flint_importdumpall' />
+      <ComponentRef Id='flint_init' />
+      <ComponentRef Id='flint_isdh' />
+      <ComponentRef Id='flint_iv' />
+      <ComponentRef Id='flint_lands' />
+      <ComponentRef Id='flint_layout' />
+      <ComponentRef Id='flint_loadconfig' />
+      <ComponentRef Id='flint_make' />
+      <ComponentRef Id='flint_nc' />
+      <ComponentRef Id='flint_open' />
+      <ComponentRef Id='flint_param' />
+      <ComponentRef Id='flint_phml' />
+      <ComponentRef Id='flint_phsp' />
+      <ComponentRef Id='flint_phz' />
+      <ComponentRef Id='flint_rk4' />
+      <ComponentRef Id='flint_run' />
+      <ComponentRef Id='flint_sbml' />
+      <ComponentRef Id='flint_sbmlall' />
+      <ComponentRef Id='flint_sbmlenc' />
+      <ComponentRef Id='flint_sedml' />
+      <ComponentRef Id='flint_singleton' />
+      <ComponentRef Id='flint_sort' />
+      <ComponentRef Id='flint_spec' />
+      <ComponentRef Id='flint_store' />
+      <ComponentRef Id='flint_tac' />
+      <ComponentRef Id='flint_taskconfig' />
+      <ComponentRef Id='flint_taskpref' />
+      <ComponentRef Id='flint_taskspec' />
+      <ComponentRef Id='flint_timer' />
+      <ComponentRef Id='flint_track' />
+      <ComponentRef Id='flint_tsc' />
+      <ComponentRef Id='flint_unit' />
+      <ComponentRef Id='flint_unitoftime' />
+      <ComponentRef Id='flint_var' />
+      <ComponentRef Id='isd2csv' />
+      <ComponentRef Id='isddiff' />
+      <ComponentRef Id='isdplot' />
+      <ComponentRef Id='isdsort' />
+      <ComponentRef Id='isdstrip' />
+      <ComponentRef Id='isdwc' />
+      <ComponentRef Id='boost.filesystem' />
+      <ComponentRef Id='boost.program_options' />
+      <ComponentRef Id='boost.system' />
+      <ComponentRef Id='iconv2' />
+      <ComponentRef Id='intl3' />
+      <ComponentRef Id='clibsedml' />
+      <ComponentRef Id='xml2' />
+      <ComponentRef Id='zip' />
+      <ComponentRef Id='zlib' />
+      <ComponentRef Id='third_party_licenses' />
+    </Feature>
+
+    <Icon Id="flint.ico" SourceFile="flint.ico"/>
+
+    <Property Id="ARPPRODUCTICON" Value="flint.ico" />
+    <Property Id="WIXUI_INSTALLDIR" Value="FLINTDIR" />
+    <UIRef Id="WixUI_InstallDir" />
+    <WixVariable Id="WixUILicenseRtf" Value="license.rtf" />
+  </Product>
+</Wix>

@@ -1,0 +1,10 @@
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; flint-sedml -- extract simulation configuration in SEDML
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+This program extracts simulation configuration in SEDML.
+
+= Synopsis
+
+flint-sedml db
+flint-sedml --help

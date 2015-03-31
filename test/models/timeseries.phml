@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<is:insilico-model xmlns:m="http://www.w3.org/1998/Math/MathML" xmlns:is="http://www.physiome.jp/ns/insilicoml" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemalocation="http://www.physiome.jp/ns/insilicoml-1.0 insilicoml.xsd" version="1.0">
+  <is:header>
+    <is:model-name>timeseries</is:model-name>
+    <is:meta-information>
+      <is:article-set />
+      <is:isml-creator-set />
+    </is:meta-information>
+    <is:date>
+      <is:created>2014-01-20T13:35:00+09:00</is:created>
+      <is:last-modified>2014-01-20T13:35:00+09:00</is:last-modified>
+    </is:date>
+    <is:numerical-configuration>
+      <is:time-discretization unit-id="3">
+        <is:step>0.01</is:step>
+        <is:step-min/>
+        <is:step-max/>
+      </is:time-discretization>
+      <is:simulation-time-span unit-id="3">5</is:simulation-time-span>
+    </is:numerical-configuration>
+    <is:description>Integration with timeseries data</is:description>
+  </is:header>
+  <is:unit-set>
+    <is:unit unit-id="0">
+      <is:name>dimensionless</is:name>
+    </is:unit>
+    <is:unit unit-id="1">
+      <is:name>meter</is:name>
+    </is:unit>
+    <is:unit unit-id="2">
+      <is:name>kilogram</is:name>
+    </is:unit>
+    <is:unit unit-id="3">
+      <is:name>second</is:name>
+    </is:unit>
+    <is:unit unit-id="4">
+      <is:name>ampere</is:name>
+    </is:unit>
+    <is:unit unit-id="5">
+      <is:name>kelvin</is:name>
+    </is:unit>
+    <is:unit unit-id="6">
+      <is:name>mole</is:name>
+    </is:unit>
+    <is:unit unit-id="7">
+      <is:name>candela</is:name>
+    </is:unit>
+  </is:unit-set>
+  <is:module-set>
+    <is:module module-id="66d517ba-818b-11e3-899b-2ffb02188a45" type="functional-unit">
+      <is:property>
+        <is:name>m</is:name>
+        <is:capsulation state="false" />
+        <is:template state="false" />
+        <is:instance state="false" />
+        <is:keyword-set />
+        <is:track />
+        <is:frame-coordinate />
+        <is:description>m</is:description>
+      </is:property>
+      <is:port-set />
+      <is:physical-quantity-set>
+        <is:physical-quantity type="timeseries" physical-quantity-id="1">
+          <is:name>a</is:name>
+          <is:implementation>
+            <is:definition type="assign" sub-type="timeseries" format="reference">
+              <is:reference timeseries-id="1" element-id="x"/>
+            </is:definition>
+          </is:implementation>
+          <is:dimension type="scalar" />
+          <is:value-type-set>
+            <is:value-type unit-id="0" precision="double" />
+          </is:value-type-set>
+          <is:description>x to a</is:description>
+        </is:physical-quantity>
+        <is:physical-quantity type="timeseries" physical-quantity-id="2">
+          <is:name>b</is:name>
+          <is:implementation>
+            <is:definition type="assign" sub-type="timeseries" format="reference">
+              <is:reference timeseries-id="2" element-id="y"/>
+            </is:definition>
+          </is:implementation>
+          <is:dimension type="scalar" />
+          <is:value-type-set>
+            <is:value-type unit-id="0" precision="double" />
+          </is:value-type-set>
+          <is:description>y to b</is:description>
+        </is:physical-quantity>
+        <is:physical-quantity type="variable-parameter" physical-quantity-id="3">
+          <is:name>c</is:name>
+          <is:implementation>
+            <is:definition type="ae" format="mathml">
+              <m:math>
+                <m:apply>
+                  <m:eq />
+                  <m:ci>c</m:ci>
+                  <m:apply>
+                    <m:times />
+                    <m:ci>a</m:ci>
+                    <m:ci>b</m:ci>
+                  </m:apply>
+                </m:apply>
+              </m:math>
+            </is:definition>
+          </is:implementation>
+          <is:dimension type="scalar" />
+          <is:value-type-set>
+            <is:value-type unit-id="0" precision="double" />
+          </is:value-type-set>
+          <is:description>calculated from a and b</is:description>
+        </is:physical-quantity>
+      </is:physical-quantity-set>
+      <is:timeseries-set>
+        <is:timeseries timeseries-id="1" format="isd" iref="timeseries1.isd" />
+        <is:timeseries timeseries-id="2" format="isd" iref="timeseries2.isd" />
+      </is:timeseries-set>
+    </is:module>
+  </is:module-set>
+</is:insilico-model>

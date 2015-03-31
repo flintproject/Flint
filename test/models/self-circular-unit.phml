@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<is:insilico-model xmlns:m="http://www.w3.org/1998/Math/MathML" xmlns:is="http://www.physiome.jp/ns/insilicoml" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemalocation="http://www.physiome.jp/ns/insilicoml-1.0 insilicoml.xsd" version="1.0">
+  <is:header>
+    <is:model-name>self-circular-unit</is:model-name>
+    <is:date>
+      <is:created>2013-11-15T16:43:00+09:00</is:created>
+      <is:last-modified>2013-11-15T16:43:00+09:00</is:last-modified>
+    </is:date>
+    <is:description>Invalid self-circular reference of unit-id</is:description>
+  </is:header>
+  <is:unit-set>
+    <is:unit unit-id="0">
+      <is:name>dimensionless</is:name>
+    </is:unit>
+    <is:unit unit-id="1">
+      <is:name>meter</is:name>
+    </is:unit>
+    <is:unit unit-id="2">
+      <is:name>kilogram</is:name>
+    </is:unit>
+    <is:unit unit-id="3">
+      <is:name>second</is:name>
+    </is:unit>
+    <is:unit unit-id="4">
+      <is:name>ampere</is:name>
+    </is:unit>
+    <is:unit unit-id="5">
+      <is:name>kelvin</is:name>
+    </is:unit>
+    <is:unit unit-id="6">
+      <is:name>mole</is:name>
+    </is:unit>
+    <is:unit unit-id="7">
+      <is:name>candela</is:name>
+    </is:unit>
+    <is:unit unit-id="8">
+      <is:name>bogus</is:name>
+      <is:element unit-id="8" />
+    </is:unit>
+  </is:unit-set>
+</is:insilico-model>

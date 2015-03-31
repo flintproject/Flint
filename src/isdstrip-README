@@ -1,0 +1,20 @@
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; isdstrip -- flush constant columns in ISDF
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+= Synopsis
+
+isdstrip [-c] [-o output] input
+isdstrip --help
+
+
+= Description
+
+--columns, -c
+    put the resulting number of columns to stdout.
+
+--output, -o
+    write to file at `output` instead of overwriting `input'.
+
+--help, -h
+    show help.

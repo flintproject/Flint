@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<xsd:schema 
+  targetNamespace="http://www.physiodesigner.org/2013/ns/phsp/1.0"
+  xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+  xmlns:m="http://www.w3.org/1998/Math/MathML"
+  xmlns:phsp="http://www.physiodesigner.org/2013/ns/phsp/1.0">
+
+  <xsd:element name="phsp">
+    <xsd:complexType>
+      <xsd:sequence minOccurs="1" maxOccurs="unbounded">
+        <xsd:element ref="phsp:model"></xsd:element>
+      </xsd:sequence>
+      <xsd:attribute name="version" type="xsd:float" fixed="1.0"/>
+    </xsd:complexType>
+  </xsd:element>
+
+  <xsd:simpleType name="range-type">
+    <xsd:restriction base="xsd:string">
+      <xsd:pattern value="((I|i)(N|n)(T|t)(E|e)(R|r)(V|v)(A|a)(L|l))|((E|e)(N|n)(U|u)(M|m))"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="format-type">
+    <xsd:restriction base="xsd:string">
+      <xsd:pattern value="(phml|sbml)"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="uuid-format">
+    <xsd:restriction base="xsd:string">
+      <xsd:length  value="36" fixed="true" />
+      <xsd:pattern value="[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[8-9a-bA-B][0-9a-fA-F]{3}-[0-9a-fA-F]{12}" />
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="double-blank">
+    <xsd:restriction base="xsd:string">
+      <xsd:pattern value="([+-]?[0-9]*[\.]?[0-9]*)|(\s)"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:element name="model">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element ref="phsp:parameter-set" minOccurs="1" maxOccurs="unbounded"/>
+        <xsd:element ref="phsp:target-set"    minOccurs="1" maxOccurs="unbounded"/>
+        <xsd:element ref="phsp:description"   minOccurs="0" maxOccurs="1" />
+      </xsd:sequence>
+      <xsd:attribute name="iref" type="xsd:string"/>
+      <xsd:attribute name="format" type="phsp:format-type" use="required" />
+    </xsd:complexType>
+  </xsd:element>
+    <xsd:element name="description">
+    <xsd:complexType>
+      <xsd:simpleContent>
+        <xsd:extension base="xsd:string" />
+      </xsd:simpleContent>
+    </xsd:complexType>
+  </xsd:element>
+
+  <xsd:element name="parameter-set">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element ref="phsp:parameter" minOccurs="1" maxOccurs="unbounded"/>
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+
+  <xsd:element name="parameter">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element ref="phsp:range" minOccurs="0" maxOccurs="1"/>
+      </xsd:sequence>
+      <xsd:attribute name="name" use="required" />
+    </xsd:complexType>
+  </xsd:element>
+
+  <xsd:attributeGroup name="range-interval-attrs">
+    <xsd:attribute name="upper" type="phsp:double-blank"  use="optional" />
+    <xsd:attribute name="lower" type="phsp:double-blank"  use="optional" />
+    <xsd:attribute name="step"  type="phsp:double-blank"  use="optional" />
+  </xsd:attributeGroup>
+
+  <xsd:element name="range">
+    <xsd:complexType>
+      <xsd:simpleContent>
+        <xsd:extension base="xsd:string">
+          <xsd:attribute name="type"  type="phsp:range-type" use="optional" />
+         <xsd:attributeGroup ref="phsp:range-interval-attrs" />
+        </xsd:extension>
+      </xsd:simpleContent>
+    </xsd:complexType>
+   </xsd:element>
+
+  <xsd:element name="target-set">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element ref="phsp:target" minOccurs="0" maxOccurs="unbounded"/>
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+
+  <xsd:attributeGroup name="phml-target-attrs">
+      <xsd:attribute name="module-id" type="phsp:uuid-format"    use="optional" />
+      <xsd:attribute name="physical-quantity-id" type="xsd:long" use="optional" />
+  </xsd:attributeGroup>
+
+  <xsd:attributeGroup name="sbml-target-attrs">
+      <xsd:attribute name="species-id" type="xsd:string" use="optional" />
+  </xsd:attributeGroup>
+
+  <xsd:element name="target">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element ref="phsp:value" minOccurs="0" maxOccurs="1"/>
+      </xsd:sequence>
+      <xsd:attributeGroup ref="phsp:phml-target-attrs"/>
+      <xsd:attributeGroup ref="phsp:sbml-target-attrs"/>
+    </xsd:complexType>
+  </xsd:element>
+<!--
+  <xsd:element name="value">
+    <xsd:complexType>
+      <xsd:simpleContent>
+        <xsd:extension base="xsd:string" />
+      </xsd:simpleContent>
+    </xsd:complexType>
+  </xsd:element>
+-->
+
+  <xsd:element name="value">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:any namespace="http://www.w3.org/1998/Math/MathML"
+                 minOccurs="1" 
+                 maxOccurs="unbounded"
+                 processContents="skip" />
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+</xsd:schema>

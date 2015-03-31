@@ -1,0 +1,15 @@
+.PHONY: all clean check
+
+all: TEST-0.isd TEST-1.isd
+
+check: TEST-0.isd TEST-1.isd
+	isddiff -T $^
+
+clean:
+	-rm -rf TEST-0.isd TEST-1.isd
+
+TEST-0.isd: DATADIR/TEST.csv
+	csv2isd $< $@
+
+TEST-1.isd: DATADIR/TEST.csv
+	csv2isd $< $@

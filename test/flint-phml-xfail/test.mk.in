@@ -1,0 +1,13 @@
+.PHONY: all clean check
+
+all: OUTPUT
+
+clean:
+	-rm -f OUTPUT STDERR
+
+check: EXPECTED STDERR
+	diff -u $^
+
+OUTPUT: INPUT
+	test-input1 $@ $<
+	! flint-phml $@ 2> STDERR

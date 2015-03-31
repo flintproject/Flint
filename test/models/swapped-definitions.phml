@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<is:insilico-model  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:svg="http://www.w3.org/2000/svg" xmlns:is="http://www.physiome.jp/ns/insilicoml" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:m="http://www.w3.org/1998/Math/MathML" version="1.0" xsi:schemalocation="http://www.physiome.jp/ns/insilicoml-1.0 insilicoml.xsd">
+<is:header>
+<is:model-name>swapped-definitions</is:model-name>
+</is:header>
+
+<is:unit-set>
+<is:unit unit-id="0">
+<is:name>dimensionless</is:name>
+</is:unit>
+<is:unit unit-id="1">
+<is:name>metre</is:name>
+</is:unit>
+<is:unit unit-id="2">
+<is:name>kilogram</is:name>
+</is:unit>
+<is:unit unit-id="3">
+<is:name>second</is:name>
+</is:unit>
+<is:unit unit-id="4">
+<is:name>ampere</is:name>
+</is:unit>
+<is:unit unit-id="5">
+<is:name>kelvin</is:name>
+</is:unit>
+<is:unit unit-id="6">
+<is:name>mole</is:name>
+</is:unit>
+<is:unit unit-id="7">
+<is:name>candela</is:name>
+</is:unit>
+<is:unit unit-id="8">
+<is:name>radian</is:name>
+</is:unit>
+<is:unit unit-id="9">
+<is:name>meter</is:name>
+<is:element unit-id="1"/>
+</is:unit>
+<is:unit unit-id="10">
+<is:name>gram</is:name>
+<is:element unit-id="2" prefix="milli"/>
+</is:unit>
+<is:unit unit-id="11">
+<is:name>degree</is:name>
+</is:unit>
+<is:unit unit-id="12">
+<is:name>millisecond</is:name>
+<is:element unit-id="3" exponent="1" prefix="milli"/>
+</is:unit>
+<is:unit unit-id="13">
+<is:name>volt</is:name>
+<is:element unit-id="1" exponent="2"/>
+<is:element unit-id="2" exponent="1"/>
+<is:element unit-id="3" exponent="-3"/>
+<is:element unit-id="4" exponent="-1"/>
+</is:unit>
+<is:unit unit-id="14">
+<is:name>siemens</is:name>
+<is:element unit-id="1" exponent="-2"/>
+<is:element unit-id="2" exponent="-1"/>
+<is:element unit-id="3" exponent="3"/>
+<is:element unit-id="4" exponent="2"/>
+</is:unit>
+<is:unit unit-id="15">
+<is:name>farad</is:name>
+<is:element unit-id="1" exponent="-2"/>
+<is:element unit-id="2" exponent="-1"/>
+<is:element unit-id="3" exponent="4"/>
+<is:element unit-id="4" exponent="2"/>
+</is:unit>
+</is:unit-set>
+
+<is:module-set>
+<is:module module-id="22ddc4e8-c6ff-11e4-a78c-576e48c58a72" type="functional-unit">
+<is:property>
+<is:name>M</is:name>
+<is:capsulation state="false"/>
+<is:template state="false"/>
+<is:keyword-set/>
+</is:property>
+<is:port-set/>
+<is:physical-quantity-set>
+<is:physical-quantity physical-quantity-id="1" type="state">
+<is:name>x</is:name>
+<is:dimension type="scalar"/>
+<is:value-type-set>
+<is:value-type precision="double" unit-id="0"/>
+</is:value-type-set>
+<is:initial-value>
+<is:definition type="ae" format="mathml">
+<m:math><m:apply><m:eq/><m:ci>x</m:ci><m:cn>1</m:cn></m:apply></m:math>
+</is:definition>
+</is:initial-value>
+<is:implementation>
+<is:definition type="ae" sub-type="" format="mathml">
+<m:math><m:apply><m:eq/><m:ci>y</m:ci><m:apply><m:times/><m:cn>0.2</m:cn><m:ci>x</m:ci></m:apply></m:apply></m:math>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="2" type="variable-parameter">
+<is:name>y</is:name>
+<is:dimension type="scalar"/>
+<is:value-type-set>
+<is:value-type precision="double" unit-id="0"/>
+</is:value-type-set>
+<is:implementation>
+<is:definition type="ode" sub-type="" format="mathml">
+<m:math><m:apply><m:eq/><m:apply><m:diff/><m:bvar><m:ci>time</m:ci></m:bvar><m:ci>x</m:ci></m:apply><m:apply><m:minus/><m:ci>x</m:ci></m:apply></m:apply></m:math>
+</is:definition>
+</is:implementation>
+<is:problem-condition-set/>
+<is:description/>
+</is:physical-quantity>
+</is:physical-quantity-set>
+</is:module>
+</is:module-set>
+
+</is:insilico-model>

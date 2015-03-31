@@ -1,0 +1,248 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<is:insilico-model  xmlns:m="http://www.w3.org/1998/Math/MathML" xmlns:is="http://www.physiome.jp/ns/insilicoml" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:pd="http://www.physiodesigner.org/2012/ns/physiodesigner/1.0" version="1.0" xsi:schemalocation="http://www.physiome.jp/ns/insilicoml-1.0 insilicoml.xsd">
+<is:header>
+<is:model-name>init-with-instances</is:model-name>
+<is:meta-information>
+</is:meta-information>
+<is:date>
+<is:created>2015-03-18T08:35:22+09:00</is:created>
+<is:last-modified>2015-03-18T08:35:22+09:00</is:last-modified>
+</is:date>
+<is:numerical-configuration>
+<is:time-discretization unit-id="12" evolution="true">
+<is:step>0.01</is:step>
+</is:time-discretization>
+<is:simulation-time-span unit-id="12">1</is:simulation-time-span>
+<is:algorithm>
+<is:integration name="euler"/>
+</is:algorithm>
+</is:numerical-configuration>
+</is:header>
+<is:unit-set>
+<is:unit unit-id="0">
+<is:name>dimensionless</is:name>
+</is:unit>
+<is:unit unit-id="1">
+<is:name>metre</is:name>
+</is:unit>
+<is:unit unit-id="2">
+<is:name>kilogram</is:name>
+</is:unit>
+<is:unit unit-id="3">
+<is:name>second</is:name>
+</is:unit>
+<is:unit unit-id="4">
+<is:name>ampere</is:name>
+</is:unit>
+<is:unit unit-id="5">
+<is:name>kelvin</is:name>
+</is:unit>
+<is:unit unit-id="6">
+<is:name>mole</is:name>
+</is:unit>
+<is:unit unit-id="7">
+<is:name>candela</is:name>
+</is:unit>
+<is:unit unit-id="8">
+<is:name>radian</is:name>
+</is:unit>
+<is:unit unit-id="9">
+<is:name>meter</is:name>
+<is:element unit-id="1"/>
+</is:unit>
+<is:unit unit-id="10">
+<is:name>gram</is:name>
+<is:element unit-id="2" prefix="milli"/>
+</is:unit>
+<is:unit unit-id="11">
+<is:name>degree</is:name>
+</is:unit>
+<is:unit unit-id="12">
+<is:name>millisecond</is:name>
+<is:element unit-id="3" exponent="1" prefix="milli"/>
+</is:unit>
+<is:unit unit-id="13">
+<is:name>volt</is:name>
+<is:element unit-id="1" exponent="2"/>
+<is:element unit-id="2" exponent="1"/>
+<is:element unit-id="3" exponent="-3"/>
+<is:element unit-id="4" exponent="-1"/>
+</is:unit>
+<is:unit unit-id="14">
+<is:name>siemens</is:name>
+<is:element unit-id="1" exponent="-2"/>
+<is:element unit-id="2" exponent="-1"/>
+<is:element unit-id="3" exponent="3"/>
+<is:element unit-id="4" exponent="2"/>
+</is:unit>
+<is:unit unit-id="15">
+<is:name>farad</is:name>
+<is:element unit-id="1" exponent="-2"/>
+<is:element unit-id="2" exponent="-1"/>
+<is:element unit-id="3" exponent="4"/>
+<is:element unit-id="4" exponent="2"/>
+</is:unit>
+</is:unit-set>
+
+<is:module-set>
+
+<is:module module-id="649f186d-e785-48b6-aae9-24e1bda7224f" type="functional-unit">
+<is:property>
+<is:name>X</is:name>
+<is:capsulation state="true">
+<is:capsulated-by module-id="8efe9b62-abf0-4ea8-bb45-4850a872e5f0"/>
+</is:capsulation>
+<is:template state="true"/>
+<is:track>
+<is:involved db-id="this" date="2015-03-18T08:35:47+09:00"/>
+</is:track>
+</is:property>
+
+<is:physical-quantity-set>
+<is:physical-quantity physical-quantity-id="1" type="state">
+<is:name>x</is:name>
+<is:dimension type="scalar"/>
+<is:value-type-set>
+<is:value-type precision="double" unit-id="0"/>
+</is:value-type-set>
+<is:initial-value>
+<is:definition type="ae" format="mathml">
+<m:math><m:apply><m:eq/><m:ci>x</m:ci><m:ci>s</m:ci></m:apply></m:math>
+</is:definition>
+</is:initial-value>
+<is:implementation>
+<is:definition type="ode" sub-type="" format="mathml">
+<m:math><m:apply><m:eq/><m:apply><m:diff/><m:bvar><m:ci>time</m:ci></m:bvar><m:ci>x</m:ci></m:apply><m:apply><m:minus/><m:ci>s</m:ci></m:apply></m:apply></m:math>
+</is:definition>
+</is:implementation>
+<is:domain-set>
+<is:domain domain-id="1">
+<is:definition format="mathml">
+</is:definition>
+</is:domain>
+</is:domain-set>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="2" type="static-parameter">
+<is:name>s</is:name>
+<is:dimension type="scalar"/>
+<is:value-type-set>
+<is:value-type precision="double" unit-id="0"/>
+</is:value-type-set>
+<is:implementation>
+<is:definition type="ae" sub-type="" format="mathml">
+<m:math><m:apply><m:eq/><m:ci>s</m:ci><m:cn>0</m:cn></m:apply></m:math>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+</is:physical-quantity-set>
+</is:module>
+
+<is:module module-id="8efe9b62-abf0-4ea8-bb45-4850a872e5f0" type="capsule">
+<is:property>
+<is:name>C</is:name>
+<is:capsulation state="false"/>
+<is:template state="true"/>
+<is:track>
+<is:involved db-id="this" date="2015-03-18T08:35:53+09:00"/>
+</is:track>
+<is:keyword-set>
+</is:keyword-set>
+</is:property>
+</is:module>
+</is:module-set>
+
+<is:template-set>
+<is:template template-id="d7825836-0ae3-4383-84e7-e4763c7812fe" ref-module-id="8efe9b62-abf0-4ea8-bb45-4850a872e5f0"/>
+</is:template-set>
+
+<is:edge-set>
+<is:edge edge-id="077ad4f0-eb94-49c3-929f-e061cdd02eeb" type="capsular">
+<is:tail module-id="649f186d-e785-48b6-aae9-24e1bda7224f" port-id="0"/>
+<is:head module-id="8efe9b62-abf0-4ea8-bb45-4850a872e5f0" port-id="0"/>
+<is:operation>encapsulation</is:operation>
+</is:edge>
+</is:edge-set>
+
+<is:instance-set>
+<is:instance module-id="df019dcd-21eb-4091-9f87-5600d1ea35cc" label="1">
+<is:instance-of template-id="d7825836-0ae3-4383-84e7-e4763c7812fe"/>
+<is:target-module-set>
+<is:target-module module-id="649f186d-e785-48b6-aae9-24e1bda7224f" alias-module-id="ad7d656c-cd4a-11e4-bc69-6bb91074d4bf">
+<is:target-physical-quantity-set>
+<is:target-physical-quantity physical-quantity-id="2">
+<is:implementation>
+<is:definition type="ae" sub-type="" format="mathml">
+<m:math><m:apply><m:eq/><m:ci>s</m:ci><m:cn>10</m:cn></m:apply></m:math>
+</is:definition>
+</is:implementation>
+</is:target-physical-quantity>
+</is:target-physical-quantity-set>
+</is:target-module>
+</is:target-module-set>
+</is:instance>
+<is:instance module-id="30f7991f-f905-4ce7-a9c7-2e348f254ba1" label="2">
+<is:instance-of template-id="d7825836-0ae3-4383-84e7-e4763c7812fe"/>
+<is:target-module-set>
+<is:target-module module-id="649f186d-e785-48b6-aae9-24e1bda7224f" alias-module-id="da3b5d70-cd4a-11e4-981e-8f6bcee675ba">
+<is:target-physical-quantity-set>
+<is:target-physical-quantity physical-quantity-id="2">
+<is:implementation>
+<is:definition type="ae" sub-type="" format="mathml">
+<m:math><m:apply><m:eq/><m:ci>s</m:ci><m:cn>20</m:cn></m:apply></m:math>
+</is:definition>
+</is:implementation>
+</is:target-physical-quantity>
+</is:target-physical-quantity-set>
+</is:target-module>
+</is:target-module-set>
+</is:instance>
+<is:instance module-id="db734ed2-af40-4aca-862b-16a4e391bca2" label="3">
+<is:instance-of template-id="d7825836-0ae3-4383-84e7-e4763c7812fe"/>
+<is:target-module-set>
+<is:target-module module-id="649f186d-e785-48b6-aae9-24e1bda7224f" alias-module-id="eb351ab2-cd4a-11e4-8c65-fb7982fe30de">
+<is:target-physical-quantity-set>
+<is:target-physical-quantity physical-quantity-id="2">
+<is:implementation>
+<is:definition type="ae" sub-type="" format="mathml">
+<m:math><m:apply><m:eq/><m:ci>s</m:ci><m:cn>30</m:cn></m:apply></m:math>
+</is:definition>
+</is:implementation>
+</is:target-physical-quantity>
+</is:target-physical-quantity-set>
+</is:target-module>
+</is:target-module-set>
+</is:instance>
+<is:instance module-id="7c5b7e4f-12bd-42e3-b2b4-bd5774a9036a" label="4">
+<is:instance-of template-id="d7825836-0ae3-4383-84e7-e4763c7812fe"/>
+<is:target-module-set>
+<is:target-module module-id="649f186d-e785-48b6-aae9-24e1bda7224f" alias-module-id="f99594ba-cd4a-11e4-8906-339844c78a36">
+<is:target-physical-quantity-set>
+<is:target-physical-quantity physical-quantity-id="2">
+<is:implementation>
+<is:definition type="ae" sub-type="" format="mathml">
+<m:math><m:apply><m:eq/><m:ci>s</m:ci><m:cn>40</m:cn></m:apply></m:math>
+</is:definition>
+</is:implementation>
+</is:target-physical-quantity>
+</is:target-physical-quantity-set>
+</is:target-module>
+</is:target-module-set>
+</is:instance>
+<is:instance module-id="2f6ee1f0-ecd2-454d-889d-4ea406f6cae1" label="5">
+<is:instance-of template-id="d7825836-0ae3-4383-84e7-e4763c7812fe"/>
+<is:target-module-set>
+<is:target-module module-id="649f186d-e785-48b6-aae9-24e1bda7224f" alias-module-id="03636b52-cd4b-11e4-a786-732a441fb888">
+<is:target-physical-quantity-set>
+<is:target-physical-quantity physical-quantity-id="2">
+<is:implementation>
+<is:definition type="ae" sub-type="" format="mathml">
+<m:math><m:apply><m:eq/><m:ci>s</m:ci><m:cn>50</m:cn></m:apply></m:math>
+</is:definition>
+</is:implementation>
+</is:target-physical-quantity>
+</is:target-physical-quantity-set>
+</is:target-module>
+</is:target-module-set>
+</is:instance>
+</is:instance-set>
+</is:insilico-model>

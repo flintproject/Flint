@@ -1,0 +1,26 @@
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; isdplot -- plot data in ISDF
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+= Synopsis
+
+isdplot [--gnuplot gnuplot] [--isd2csv isd2csv] [--isdstrip isdstrip] [-o output] path
+isdplot --help
+
+
+= Description
+
+--gnuplot
+    command for gnuplot.
+
+--isd2csv
+    command for isd2csv.
+
+--isdstrip
+    command for isdstrip.
+
+--output, -o
+    write to file at `output` instead of stdout.
+
+--help, -h
+    show help.

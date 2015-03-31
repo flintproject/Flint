@@ -1,0 +1,10 @@
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; flint-sbmlall -- extract ODE and other type of definitions in all SBML files
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+This program extracts ODE and other type of definitions in all SBML files.
+
+= Synopsis
+
+flint-sbmlall path
+flint-sbmlall --help

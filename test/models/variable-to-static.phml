@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<is:insilico-model xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:svg="http://www.w3.org/2000/svg" xmlns:is="http://www.physiome.jp/ns/insilicoml" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:m="http://www.w3.org/1998/Math/MathML" version="1.0" xsi:schemalocation="http://www.physiome.jp/ns/insilicoml-1.0 insilicoml.xsd">
+<is:header>
+<is:model-name>variable-to-static</is:model-name>
+<is:date>
+<is:created>2014-11-27T14:26:00+09:00</is:created>
+<is:last-modified>2014-11-27T14:26:00+09:00</is:last-modified>
+</is:date>
+<is:description>There is a edge from a variable-parameter to a static-parameter.</is:description>
+</is:header>
+<is:unit-set>
+<is:unit unit-id="0">
+<is:name>dimensionless</is:name>
+</is:unit>
+<is:unit unit-id="1">
+<is:name>metre</is:name>
+</is:unit>
+<is:unit unit-id="2">
+<is:name>kilogram</is:name>
+</is:unit>
+<is:unit unit-id="3">
+<is:name>second</is:name>
+</is:unit>
+<is:unit unit-id="4">
+<is:name>ampere</is:name>
+</is:unit>
+<is:unit unit-id="5">
+<is:name>kelvin</is:name>
+</is:unit>
+<is:unit unit-id="6">
+<is:name>mole</is:name>
+</is:unit>
+<is:unit unit-id="7">
+<is:name>candela</is:name>
+</is:unit>
+<is:unit unit-id="8">
+<is:name>radian</is:name>
+</is:unit>
+</is:unit-set>
+<is:module-set>
+  <is:module module-id="57a14bc8-75f6-11e4-aa25-37030d28703a" type="functional-unit">
+    <is:property>
+      <is:name>X</is:name>
+      <is:capsulation state="false"/>
+      <is:template state="false"/>
+    </is:property>
+    <is:port-set>
+      <is:port port-id="1" direction="out" ref-physical-quantity-id="1">
+        <is:name>x</is:name>
+      </is:port>
+    </is:port-set>
+    <is:physical-quantity-set>
+      <is:physical-quantity physical-quantity-id="1" type="variable-parameter">
+        <is:name>x</is:name>
+        <is:dimension type="scalar"/>
+        <is:value-type-set>
+          <is:value-type precision="double" unit-id="0"/>
+        </is:value-type-set>
+        <is:implementation>
+          <is:definition type="ae" format="mathml">
+            <m:math><m:apply><m:eq/><m:ci>x</m:ci><m:ci>time</m:ci></m:apply></m:math>
+          </is:definition>
+        </is:implementation>
+      </is:physical-quantity>
+    </is:physical-quantity-set>
+  </is:module>
+  <is:module module-id="85ded370-75f6-11e4-ac26-ff6c3d89c805" type="functional-unit">
+    <is:property>
+      <is:name>Y</is:name>
+      <is:capsulation state="false"/>
+      <is:template state="false"/>
+    </is:property>
+    <is:port-set>
+      <is:port port-id="1" direction="in" ref-physical-quantity-id="1">
+        <is:name>y</is:name>
+      </is:port>
+    </is:port-set>
+    <is:physical-quantity-set>
+      <is:physical-quantity physical-quantity-id="1" type="static-parameter">
+        <is:name>y</is:name>
+        <is:dimension type="scalar"/>
+        <is:value-type-set>
+          <is:value-type precision="double" unit-id="0"/>
+        </is:value-type-set>
+        <is:implementation>
+          <is:definition type="assign" sub-type="port" format="reference">
+            <is:reference port-id="1"/>
+          </is:definition>
+        </is:implementation>
+      </is:physical-quantity>
+    </is:physical-quantity-set>
+  </is:module>
+</is:module-set>
+<is:edge-set>
+  <is:edge edge-id="c97be744-75f6-11e4-86f4-eb6f21142c62" type="functional" multiple="false">
+    <is:tail module-id="57a14bc8-75f6-11e4-aa25-37030d28703a" port-id="1"/>
+    <is:head module-id="85ded370-75f6-11e4-ac26-ff6c3d89c805" port-id="1"/>
+  </is:edge>
+</is:edge-set>
+</is:insilico-model>

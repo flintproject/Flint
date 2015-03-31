@@ -1,0 +1,9 @@
+= Procedure for creating new release of Flint
+* bump up version string in:
+  configure.ac
+  doc/flint-user-guide.tex
+  flint/src/jp/oist/flint/form/AboutDialog.java
+  mingw-w64/flint.wxs
+  rpm.el6/Makefile
+  xcode/build.xml
+  windows/flint.wxs

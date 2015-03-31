@@ -1,0 +1,213 @@
+package bc;
+
+message Header {
+
+  required int32 nol = 1; /* number of layers */
+  required int32 nos = 2; /* number of sections */
+
+}
+
+message SectionHeader {
+
+  required bytes id = 1;  /* 16 byte-length UUID */
+  required int32 nob = 2; /* number of blocks */
+
+}
+
+message BlockHeader {
+
+  required string name = 1;
+  required int32 nod = 2; /* number of data */
+  required int32 noc = 3; /* number of code */
+
+}
+
+message Br {
+
+  required int32 a = 1;
+  optional int32 l = 2;
+  optional int32 p = 3;
+
+}
+
+message Jmp {
+
+  optional int32 l = 1;
+  optional int32 p = 2;
+
+}
+
+message Call1 {
+
+  enum Op {
+    kAbs = 1;
+    kArccos = 2;
+    kArccosh = 3;
+    kArccot = 4;
+    kArccoth = 5;
+    kArccsc = 6;
+    kArccsch = 7;
+    kArcsec = 8;
+    kArcsech = 9;
+    kArcsin = 10;
+    kArcsinh = 11;
+    kArctan = 12;
+    kArctanh = 13;
+    kCeiling = 14;
+    kCos = 15;
+    kCosh = 16;
+    kCot = 17;
+    kCoth = 18;
+    kCsc = 19;
+    kCsch = 20;
+    kExp = 21;
+    kFloor = 22;
+    kLn = 23;
+    kLog10 = 32;
+    kMinus1 = 24;
+    kRoot1 = 25;
+    kSec = 26;
+    kSech = 27;
+    kSin = 28;
+    kSinh = 29;
+    kTan = 30;
+    kTanh = 31;
+  }
+
+  required int32 a  = 1;
+  required Op op    = 2;
+  required int32 a1 = 3;
+
+}
+
+message Call2 {
+
+  enum Op {
+    kDivide = 2;
+    kEq = 3;
+    kGeq = 4;
+    kGt = 5;
+    kLeq = 6;
+    kLog = 16;
+    kLt = 7;
+    kMax = 8;
+    kMin = 9;
+    kMinus2 = 10;
+    kNeq = 11;
+    kPlus = 12;
+    kPower = 13;
+    kRemainder = 17;
+    kRoot2 = 14;
+    kTimes = 15;
+  }
+
+  required int32 a  = 1;
+  required Op op    = 2;
+  required int32 a1 = 3;
+  required int32 a2 = 4;
+
+}
+
+message Lb {
+
+  required int32 a  = 1;
+  optional string v = 2;
+  optional int32 so = 3; /* sector offset */
+  required int32 d  = 4;
+
+}
+
+message Ld {
+
+  required int32 a  = 1;
+  required int32 i0 = 2;
+  required int32 i1 = 3;
+  required int32 d  = 4;
+
+}
+
+message Gen1 {
+
+  enum Type {
+    kExponentialVariate = 1;
+    kPoissonVariate = 2;
+  }
+
+  required int32 a   = 1;
+  required Type type = 2;
+  required int32 a1  = 3;
+
+}
+
+message Gen2 {
+
+  enum Type {
+    kGammaVariate = 1;
+    kGaussVariate = 2;
+    kUniformVariate = 3;
+  }
+
+  required int32 a   = 1;
+  required Type type = 2;
+  required int32 a1  = 3;
+  required int32 a2  = 4;
+
+}
+
+message Load {
+
+  required int32 a  = 1;
+  optional string v = 2;
+  optional int32 so = 3; /* sector offset */
+  optional int32 lo = 4; /* layer offset */
+
+}
+
+message Loadi {
+
+  required int32 a  = 1;
+  required double v = 2;
+
+}
+
+message Store {
+
+  optional string v = 1;
+  optional int32 so = 2; /* sector offset */
+  optional int32 lo = 3; /* layer offset */
+  required int32 a  = 4;
+
+}
+
+message Code {
+
+  enum Type {
+    kBr = 1;
+    kJmp = 2;
+    kCall1 = 3;
+    kCall2 = 4;
+    kLb = 10;
+    kLd = 12;
+    kGen1 = 5;
+    kGen2 = 6;
+    kLoad = 7;
+    kLoadi = 8;
+    kRet   = 11;
+    kStore = 9;
+  }
+
+  required Type type = 1;
+
+  optional Br br = 2;
+  optional Jmp jmp = 3;
+  optional Call1 call1 = 4;
+  optional Call2 call2 = 5;
+  optional Lb lb = 11;
+  optional Ld ld = 12;
+  optional Gen1 gen1 = 6;
+  optional Gen2 gen2 = 7;
+  optional Load load = 8;
+  optional Loadi loadi = 9;
+  optional Store store = 10;
+
+}

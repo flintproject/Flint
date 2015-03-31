@@ -1,0 +1,17 @@
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; isdmerge -- merge ISDF files into a single file
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+= Synopsis
+
+isdmerge [-o output] path0 [path1 ...]
+isdmerge --help
+
+
+= Description
+
+--output, -o
+    output filename (default: merged.isd).
+
+--help, -h
+    show help.

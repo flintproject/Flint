@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <apply>
+    <eq/>
+    <apply>
+      <abs/>
+      <ci> x </ci>
+    </apply>
+    <piecewise>
+      <piece>
+        <apply><minus/><ci> x </ci></apply>
+        <apply><lt/><ci> x </ci> <cn> 0 </cn></apply>
+      </piece>
+      <piece>
+        <cn> 0 </cn>
+        <apply><eq/><ci> x </ci> <cn> 0 </cn></apply>
+      </piece>
+      <piece>
+        <ci> x </ci>
+        <apply><gt/><ci> x </ci> <cn> 0 </cn></apply>
+      </piece>
+    </piecewise>
+  </apply>
+</math>

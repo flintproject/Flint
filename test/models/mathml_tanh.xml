@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+ <apply>
+  <eq/>
+  <apply>
+   <tanh/>
+   <ci>x</ci>
+  </apply>
+  <apply>
+   <divide/>
+   <apply><sinh/><ci>x</ci></apply>
+   <apply><cosh/><ci>x</ci></apply>
+  </apply>
+ </apply>
+</math>

@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<is:insilico-model xmlns:m="http://www.w3.org/1998/Math/MathML" xmlns:is="http://www.physiome.jp/ns/insilicoml" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemalocation="http://www.physiome.jp/ns/insilicoml-1.0 insilicoml.xsd" version="1.0">
+  <is:header>
+    <is:model-name>sine_curves</is:model-name>
+    <is:meta-information>
+      <is:article-set />
+      <is:isml-creator-set />
+    </is:meta-information>
+    <is:date>
+      <is:created>2009-09-08T09:40:15+09:00</is:created>
+      <is:last-modified>2009-09-08T09:40:15+09:00</is:last-modified>
+    </is:date>
+    <is:description>An example using DDE</is:description>
+    <is:generator>sisml</is:generator>
+  </is:header>
+  <is:unit-set>
+    <is:unit unit-id="0">
+      <is:name>dimensionless</is:name>
+    </is:unit>
+    <is:unit unit-id="1">
+      <is:name>meter</is:name>
+    </is:unit>
+    <is:unit unit-id="2">
+      <is:name>kilogram</is:name>
+    </is:unit>
+    <is:unit unit-id="3">
+      <is:name>second</is:name>
+    </is:unit>
+    <is:unit unit-id="4">
+      <is:name>ampere</is:name>
+    </is:unit>
+    <is:unit unit-id="5">
+      <is:name>kelvin</is:name>
+    </is:unit>
+    <is:unit unit-id="6">
+      <is:name>mole</is:name>
+    </is:unit>
+    <is:unit unit-id="7">
+      <is:name>candela</is:name>
+    </is:unit>
+  </is:unit-set>
+  <is:edge-set />
+  <is:module-set>
+    <is:module module-id="0f536c21-18a9-491c-9615-268a9caa8272" type="functional-unit">
+      <is:property>
+        <is:name>a</is:name>
+        <is:capsulation state="false" />
+        <is:template state="false" />
+        <is:instance state="false" />
+        <is:keyword-set />
+        <is:track />
+        <is:frame-coordinate />
+        <is:description>a</is:description>
+      </is:property>
+      <is:port-set />
+      <is:physical-quantity-set>
+        <is:physical-quantity type="morphology" physical-quantity-id="1"><is:name>shape</is:name></is:physical-quantity>
+        <is:physical-quantity type="variable-parameter" physical-quantity-id="2">
+          <is:name>a</is:name>
+          <is:implementation>
+            <is:definition format="mathml" type="ae">
+              <m:math>
+                <m:apply>
+                  <m:eq />
+                  <m:ci>a</m:ci>
+                  <m:apply>
+                    <m:sin />
+                    <m:ci>time</m:ci>
+                  </m:apply>
+                </m:apply>
+              </m:math>
+            </is:definition>
+          </is:implementation>
+<is:max-delay>1</is:max-delay>
+          <is:dimension type="scalar" />
+          <is:value-type-set>
+            <is:value-type unit-id="0" precision="double" />
+          </is:value-type-set>
+          <is:initial-value></is:initial-value>
+          <is:problem-condition-set />
+          <is:description>The leading curve</is:description>
+        </is:physical-quantity>
+        <is:physical-quantity type="variable-parameter" physical-quantity-id="3">
+          <is:name>b</is:name>
+          <is:implementation>
+            <is:definition format="mathml" type="ae">
+              <m:math>
+                <m:apply>
+                  <m:eq />
+                  <m:ci>b</m:ci>
+                  <m:apply>
+                    <m:csymbol>Delay</m:csymbol>
+                    <m:ci>a</m:ci>
+                    <m:cn>1</m:cn>
+                  </m:apply>
+                </m:apply>
+              </m:math>
+            </is:definition>
+          </is:implementation>
+          <is:dimension type="scalar" />
+          <is:value-type-set>
+            <is:value-type unit-id="0" precision="double" />
+          </is:value-type-set>
+          <is:initial-value></is:initial-value>
+          <is:problem-condition-set />
+          <is:description>The tracing curve</is:description>
+        </is:physical-quantity>
+      </is:physical-quantity-set>
+      <is:event-set />
+      <is:morphology />
+    </is:module>
+  </is:module-set>
+  <is:controller-set />
+</is:insilico-model>

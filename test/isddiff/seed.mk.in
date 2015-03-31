@@ -1,0 +1,15 @@
+.PHONY: all clean check
+
+all: seed0.isd seed1.isd
+
+check: seed0.isd seed1.isd
+	isddiff -T $^
+
+clean:
+	-rm -f seed0.isd seed1.isd
+
+seed0.isd:
+	isdrand $@ 100
+
+seed1.isd:
+	isdrand $@ 100

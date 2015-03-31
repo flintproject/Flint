@@ -1,0 +1,10 @@
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; flint-combineall -- combine equations from all SBML files with ones from PHML
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+This program combines equations from all SBML files with ones from PHML.
+
+= Synopsis
+
+flint-combineall input db name value function ode
+flint-combineall --help

@@ -1,0 +1,268 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<is:insilico-model  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:svg="http://www.w3.org/2000/svg" xmlns:is="http://www.physiome.jp/ns/insilicoml" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:m="http://www.w3.org/1998/Math/MathML" xmlns:pd="http://www.physiodesigner.org/2012/ns/physiodesigner/1.0" version="1.0" xsi:schemalocation="http://www.physiome.jp/ns/insilicoml-1.0 insilicoml.xsd">
+    <is:header>
+        <is:model-name>template-test</is:model-name>
+        <is:meta-information>
+            <is:article-set/>
+            <is:creator-set/>
+        </is:meta-information>
+        <is:date>
+            <is:created>2014-07-07T02:10:18+09:00</is:created>
+            <is:last-modified>2014-07-07T02:10:18+09:00</is:last-modified>
+        </is:date>
+        <is:numerical-configuration>
+            <is:time-discretization unit-id="12" evolution="true">
+                <is:step>0.01</is:step>
+                <is:step-min/>
+                <is:step-max/>
+            </is:time-discretization>
+            <is:simulation-time-span unit-id="12">100</is:simulation-time-span>
+            <is:algorithm>
+                <is:integration name="euler"/>
+            </is:algorithm>
+        </is:numerical-configuration>
+        <is:description/>
+    </is:header>
+    <is:unit-set>
+        <is:unit unit-id="0">
+            <is:name>dimensionless</is:name>
+        </is:unit>
+        <is:unit unit-id="1">
+            <is:name>metre</is:name>
+        </is:unit>
+        <is:unit unit-id="2">
+            <is:name>kilogram</is:name>
+        </is:unit>
+        <is:unit unit-id="3">
+            <is:name>second</is:name>
+        </is:unit>
+        <is:unit unit-id="4">
+            <is:name>ampere</is:name>
+        </is:unit>
+        <is:unit unit-id="5">
+            <is:name>kelvin</is:name>
+        </is:unit>
+        <is:unit unit-id="6">
+            <is:name>mole</is:name>
+        </is:unit>
+        <is:unit unit-id="7">
+            <is:name>candela</is:name>
+        </is:unit>
+        <is:unit unit-id="8">
+            <is:name>radian</is:name>
+        </is:unit>
+        <is:unit unit-id="9">
+            <is:name>meter</is:name>
+            <is:element unit-id="1"/>
+        </is:unit>
+        <is:unit unit-id="10">
+            <is:name>gram</is:name>
+            <is:element unit-id="2" prefix="milli"/>
+        </is:unit>
+        <is:unit unit-id="11">
+            <is:name>degree</is:name>
+        </is:unit>
+        <is:unit unit-id="12">
+            <is:name>millisecond</is:name>
+            <is:element unit-id="3" exponent="1" prefix="milli"/>
+        </is:unit>
+        <is:unit unit-id="13">
+            <is:name>volt</is:name>
+            <is:element unit-id="1" exponent="2"/>
+            <is:element unit-id="2" exponent="1"/>
+            <is:element unit-id="3" exponent="-3"/>
+            <is:element unit-id="4" exponent="-1"/>
+        </is:unit>
+        <is:unit unit-id="14">
+            <is:name>siemens</is:name>
+            <is:element unit-id="1" exponent="-2"/>
+            <is:element unit-id="2" exponent="-1"/>
+            <is:element unit-id="3" exponent="3"/>
+            <is:element unit-id="4" exponent="2"/>
+        </is:unit>
+        <is:unit unit-id="15">
+            <is:name>farad</is:name>
+            <is:element unit-id="1" exponent="-2"/>
+            <is:element unit-id="2" exponent="-1"/>
+            <is:element unit-id="3" exponent="4"/>
+            <is:element unit-id="4" exponent="2"/>
+        </is:unit>
+    </is:unit-set>
+
+    <is:module-set>
+
+        <is:module module-id="0856f361-1228-4a9c-a601-a0b35eb84528" type="functional-unit">
+            <is:property>
+                <is:name>test</is:name>
+                <is:capsulation state="true">
+                    <is:capsulated-by module-id="36ea9dd1-fab7-43b1-aa54-6a656cedf0d3"/>
+                </is:capsulation>
+                <is:template state="true"/>
+                <is:keyword-set/>
+                <is:track>
+                    <is:involved db-id="this" date="2014-07-07T02:11:18+09:00"/>
+                </is:track>
+                <is:frame-coordinate/>
+                <is:description/>
+            </is:property>
+
+            <is:port-set>
+                <is:port port-id="1" direction="in" multiple="false">
+                    <is:name>in</is:name>
+                    <is:description/>
+                </is:port>
+            </is:port-set>
+
+            <is:physical-quantity-set>
+                <is:physical-quantity physical-quantity-id="1" type="variable-parameter">
+                    <is:name>tmp</is:name>
+                    <is:dimension type="scalar"/>
+                    <is:value-type-set>
+                        <is:value-type precision="double" unit-id="0"/>
+                    </is:value-type-set>
+                    <is:initial-value/>
+                    <is:implementation>
+                        <is:definition type="assign" sub-type="port" format="reference">
+                            <is:reference port-id="1"/>
+                        </is:definition>
+                        <is:extra-implementation order="" type="multiple-input-assignment">
+                            <is:definition type="reduction" sub-type="sum" format=""/>
+                        </is:extra-implementation>
+                    </is:implementation>
+                    <is:problem-condition-set/>
+                    <is:description/>
+                </is:physical-quantity>
+            </is:physical-quantity-set>
+            <is:morphology/>
+            <is:event-set/>
+            <is:annotation>
+                <pd:extension>
+                    <pd:layout type="nest" target="module">
+                        <svg:rect x="" y="" width="0" height="0" fill="url(#nlgb)"/>
+                    </pd:layout>
+                    <pd:layout type="tree" target="module">
+                        <svg:rect x="" y="" width="0" height="0" fill="url(#lgb)"/>
+                    </pd:layout>
+                    <pd:port-order order="[[1, in, 1]]"/>
+                </pd:extension>
+            </is:annotation>
+        </is:module>
+
+        <is:module module-id="507d51c9-e203-4f4e-bc0e-a1cc30e5b017" type="functional-unit">
+            <is:property>
+                <is:name>sin</is:name>
+                <is:capsulation state="false"/>
+                <is:template state="false"/>
+                <is:keyword-set/>
+                <is:track>
+                    <is:involved db-id="this" date="2014-07-07T02:11:50+09:00"/>
+                </is:track>
+                <is:frame-coordinate/>
+                <is:description/>
+            </is:property>
+
+            <is:port-set>
+                <is:port port-id="1" direction="out" ref-physical-quantity-id="1">
+                    <is:name>val</is:name>
+                    <is:description/>
+                </is:port>
+            </is:port-set>
+
+            <is:physical-quantity-set>
+                <is:physical-quantity physical-quantity-id="1" type="variable-parameter">
+                    <is:name>val</is:name>
+                    <is:dimension type="scalar"/>
+                    <is:value-type-set>
+                        <is:value-type precision="double" unit-id="0"/>
+                    </is:value-type-set>
+                    <is:initial-value/>
+                    <is:implementation>
+                        <is:definition type="ae" sub-type="" format="mathml">
+                            <m:math><m:apply><m:eq/><m:ci>val</m:ci><m:apply><m:sin/><m:ci>time</m:ci></m:apply></m:apply></m:math>
+                        </is:definition>
+                    </is:implementation>
+                    <is:problem-condition-set/>
+                    <is:description/>
+                </is:physical-quantity>
+            </is:physical-quantity-set>
+            <is:morphology/>
+            <is:event-set/>
+            <is:annotation>
+                <pd:extension>
+                    <pd:layout type="nest" target="module">
+                        <svg:rect x="-642.148600376674" y="345.57715175083695" width="0" height="0" fill="url(#nlgb)"/>
+                    </pd:layout>
+                    <pd:layout type="tree" target="module">
+                        <svg:rect x="0.0" y="0.0" width="0" height="0" fill="url(#lgb)"/>
+                    </pd:layout>
+                    <pd:port-order order="[[1, out, 1]]"/>
+                </pd:extension>
+            </is:annotation>
+        </is:module>
+
+        <is:module module-id="36ea9dd1-fab7-43b1-aa54-6a656cedf0d3" type="capsule">
+            <is:property>
+                <is:name>capsule_of_test</is:name>
+                <is:capsulation state="false"/>
+                <is:template state="true"/>
+                <is:keyword-set/>
+                <is:track>
+                    <is:involved db-id="this" date="2014-07-07T02:12:22+09:00"/>
+                </is:track>
+                <is:frame-coordinate/>
+                <is:description/>
+            </is:property>
+
+            <is:port-set>
+                <is:port port-id="1" direction="in" multiple="false">
+                    <is:name>val</is:name>
+                    <is:description/>
+                </is:port>
+            </is:port-set>
+            <is:physical-quantity-set/>
+            <is:morphology/>
+        </is:module>
+    </is:module-set>
+
+    <is:template-set>
+        <is:template template-id="b3d8aa71-c1dc-416d-b3f5-f54419397e82" ref-module-id="36ea9dd1-fab7-43b1-aa54-6a656cedf0d3"/>
+    </is:template-set>
+
+    <is:instance-set>
+        <is:instance module-id="25b75eb5-d6ff-475a-bbad-49be925eddbe" label="">
+            <is:instance-of template-id="b3d8aa71-c1dc-416d-b3f5-f54419397e82"/>
+            <is:target-module-set/>
+            <is:annotation>
+                <pd:extension>
+                    <pd:layout type="nest" target="module">
+                        <svg:rect x="-371.96000000000004" y="461.042857142857" width="0" height="0" fill="url(#nlgy)"/>
+                    </pd:layout>
+                </pd:extension>
+            </is:annotation>
+        </is:instance>
+    </is:instance-set>
+    <is:controller-set/>
+
+    <is:edge-set>
+        <is:edge edge-id="453935aa-9157-491e-888e-6394dfed97ed" type="capsular">
+            <is:tail module-id="0856f361-1228-4a9c-a601-a0b35eb84528" port-id="0"/>
+            <is:head module-id="36ea9dd1-fab7-43b1-aa54-6a656cedf0d3" port-id="0"/>
+            <is:operation>encapsulation</is:operation>
+            <is:description/>
+        </is:edge>
+        <is:edge edge-id="f8e86c37-8a24-4e2e-8e7e-c1ca9217d22c" type="forwarding" multiple="false">
+            <is:tail module-id="36ea9dd1-fab7-43b1-aa54-6a656cedf0d3" port-id="1"/>
+            <is:head module-id="0856f361-1228-4a9c-a601-a0b35eb84528" port-id="1"/>
+            <is:operation>input forwarding</is:operation>
+            <is:description/>
+        </is:edge>
+        <is:edge edge-id="1accbdbc-76a8-4734-b539-08a8a6b97248" type="functional">
+            <is:tail module-id="507d51c9-e203-4f4e-bc0e-a1cc30e5b017" port-id="1"/>
+            <is:head module-id="25b75eb5-d6ff-475a-bbad-49be925eddbe" port-id="1"/>
+            <is:operation/>
+            <is:description/>
+        </is:edge>
+    </is:edge-set>
+    <is:timeseries-set/>
+</is:insilico-model>
+

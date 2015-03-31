@@ -1,0 +1,7 @@
+00000000-0000-0000-0000-000000000000 (case-set (case (condition (eq %x %y)) (eq %a (plus 1 pi))))
+00000000-0000-0000-0000-000000000000 (case-set (case (condition (leq %x %y)) (eq %b 0)) (case (eq %b 1)))
+00000000-0000-0000-0000-000000000000 (case-set (case (condition (eq %x %y)) (eq %c 0)) (case (condition (lt %x %y)) (eq %c 1)))
+00000000-0000-0000-0000-000000000000 (case-set (case (condition (eq %x %y)) (eq %d 0)) (case (condition (gt %x %y)) (eq %d 1)) (case (eq %d 2)))
+00000000-0000-0000-0000-000000000000 (case-set (case (condition (and (geq %time %a) (lt %time (plus %a 5)))) (eq %x (plus %y 1))) (case (eq %x 0)))
+00000000-0000-0000-0000-000000000000 (case-set (case (condition (eq %time 0.1)) (eq %y %b)) (case (condition (neq %time 0.2)) (eq %y %c)))
+00000000-0000-0000-0000-000000000000 (case-set (case (condition (lt %x 1)) (eq %z 0)) (case (condition (lt %x 2)) (case-set (case (condition (lt %y 1)) (eq %z 1)) (case (condition (lt %y 2)) (eq %z 2)) (case (eq %z 3)))) (case (case-set (case (condition (lt %y 3)) (eq %z 4)) (case (eq %z 5)))))

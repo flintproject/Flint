@@ -1,0 +1,13 @@
+.PHONY: all clean check
+
+all: OUTPUT
+
+check: OUTPUT
+	test ! -s STDERR
+
+clean:
+	-rm -f OUTPUT STDERR
+
+OUTPUT: INPUT
+	test-input1 $@ $<
+	flint-cellmlpp $@ 2> STDERR

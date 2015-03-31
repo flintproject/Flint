@@ -1,0 +1,18 @@
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; flint-exec -- execute bunch of simulation jobs
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+This program executes bunch of simulation jobs.
+
+= Synopsis
+
+flint-exec
+flint-exec -h
+
+
+= Description
+
+It takes a couple of input parameters from stdin, which consist of:
+* a SED-ML filename encoded in UTF-8, null-terminated
+and immediately followed by
+* a PHSP filename encoded in UTF-8, null-terminated

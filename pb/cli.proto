@@ -1,0 +1,14 @@
+package cli;
+
+option java_package = "jp.physiome";
+option java_outer_classname = "Cli";
+
+message RunOption {
+
+  required string model_filename = 1;
+  required string output_filename = 2;
+  optional string error_filename = 3;
+  optional int32 granularity = 4;
+  optional string spec_filename = 5;
+
+}

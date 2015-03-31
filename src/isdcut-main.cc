@@ -1,0 +1,209 @@
+/* -*- Mode: C++; tab-width: 4; indent-tabs-mode: t; c-basic-offset: 4 -*- vim:set ts=4 sw=4 sts=4 noet: */
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
+#include <cstdlib>
+#include <iostream>
+#include <fstream>
+#include <string>
+#include <set>
+#include <boost/noncopyable.hpp>
+#include <boost/program_options.hpp>
+#include <boost/scoped_array.hpp>
+#include <boost/scoped_ptr.hpp>
+
+#include "bc/binary.h"
+
+#include "isdf/isdf.h"
+#include "isdf/reader.h"
+
+namespace po = boost::program_options;
+
+using std::cerr;
+using std::endl;
+using std::string;
+
+namespace {
+
+typedef std::set<int> FieldSet;
+
+class Handler : boost::noncopyable {
+public:
+	Handler(const FieldSet &fields, std::ostream *os) : fields_(fields), os_(os) {}
+
+	int GetStep(size_t /*buf_size*/, const char *buf) {
+		for (FieldSet::const_iterator it=fields_.begin();it!=fields_.end();++it) {
+			int d = *it;
+			os_->write(buf+sizeof(double)*d, sizeof(double));
+			if (!os_->good()) {
+				cerr << "could not write step: " << d << endl;
+				return -1;
+			}
+		}
+		return 1;
+	}
+
+private:
+	const FieldSet &fields_;
+	std::ostream *os_;
+};
+
+class Dam : boost::noncopyable {
+public:
+	Dam() : fields_(), reader_() {}
+
+	void AddField(int d) {
+		fields_.insert(d);
+	}
+
+	bool Pass(std::istream *is, std::ostream *os) {
+		if (!reader_.ReadHeader(is)) return false;
+		if (!reader_.SkipComment(is)) return false; // discard the original comment
+		if (!reader_.ReadDescriptions(is)) return false;
+		if (!reader_.ReadUnits(is)) return false;
+
+		isdf::ISDFHeader header = reader_.header();
+
+		boost::uint32_t num_objs = 0;
+		boost::uint32_t num_bytes_descs = 0;
+		boost::uint32_t num_bytes_units = 0;
+		boost::scoped_array<char> descriptions(new char[reader_.num_bytes_descs()]);
+		boost::scoped_array<char> units(new char[reader_.num_bytes_units()]);
+
+		char *d = descriptions.get();
+		char *u = units.get();
+		const char *p = reader_.descriptions();
+		const char *pu = reader_.units();
+		boost::uint32_t n = 0;
+		boost::uint32_t len;
+		for (FieldSet::const_iterator it=fields_.begin();it!=fields_.end();++it) {
+			boost::uint32_t i = static_cast<boost::uint32_t>(*it);
+			if (i >= header.num_objs) break;
+
+			size_t s;
+			do {
+				memcpy(&len, p, sizeof(len));
+				s = sizeof(len)+len;
+				if (n == i) {
+					memcpy(d, p, s);
+					d += s;
+					num_bytes_descs += s;
+				}
+				p += s;
+
+				memcpy(&len, pu, sizeof(len));
+				s = sizeof(len)+len;
+				if (n == i) {
+					memcpy(u, pu, s);
+					u += s;
+					num_bytes_units += s;
+				}
+				pu += s;
+			} while (n++ < i);
+
+			num_objs++;
+		}
+
+		header.num_objs = num_objs;
+		header.num_bytes_comment = 0; // discard the original comment
+		header.num_bytes_descs = num_bytes_descs;
+		header.num_bytes_units = num_bytes_units;
+		boost::scoped_array<char> h(new char[sizeof(header)]);
+		memcpy(h.get(), &header, sizeof(header));
+		os->write(h.get(), sizeof(header));
+		os->write(descriptions.get(), num_bytes_descs);
+		os->write(units.get(), num_bytes_units);
+		boost::scoped_ptr<Handler> handler(new Handler(fields_, os));
+		return reader_.ReadSteps(*handler, is);
+	}
+
+private:
+	FieldSet fields_;
+	isdf::Reader reader_;
+};
+
+} // namespace
+
+int main(int argc, char *argv[])
+{
+	RequestBinaryStdio();
+
+	po::options_description opts("options");
+	po::positional_options_description popts;
+	po::variables_map vm;
+	string fields;
+	string input_file, output_file;
+	int print_help = 0;
+
+	opts.add_options()
+		("fields,f", po::value<string>(&fields), "Select only these fields")
+		("help,h", "Show this message")
+		("output,o", po::value<string>(&output_file), "Output file name")
+		("input", po::value<string>(&input_file), "Input file name");
+	popts.add("input", 1);
+
+	try {
+		po::store(po::command_line_parser(argc, argv).options(opts).positional(popts).run(), vm);
+		po::notify(vm);
+		if (vm.count("help")) print_help = 1;
+	} catch (const po::error &) {
+		print_help = 2;
+	}
+	if (print_help != 0) {
+		cerr << "usage: isdcut [OPTIONS] [PATH]" << endl;
+		cerr << opts << endl;
+		return (print_help == 1) ? EXIT_SUCCESS : EXIT_FAILURE;
+	}
+
+	boost::scoped_ptr<Dam> dam(new Dam);
+	if (vm.count("fields") > 0) {
+		size_t s = fields.size();
+		boost::scoped_array<char> fa(new char[s+1]());
+		memcpy(fa.get(), fields.c_str(), s);
+		std::replace(fa.get(), fa.get()+s, ',', '\0');
+		char *p = fa.get();
+		do {
+			int d = strtol(p, &p, 10);
+			if (d < 0) {
+				cerr << "invalid index: " << d << endl;
+				return EXIT_FAILURE;
+			}
+			dam->AddField(d);
+		} while (p++ < fa.get()+s);
+	} else {
+		cerr << "please specify the --fields option" << endl;
+		return EXIT_FAILURE;
+	}
+	if (vm.count("input")) {
+		std::ifstream ifs(input_file.c_str(), std::ios::in|std::ios::binary);
+		if (!ifs.is_open()) {
+			cerr << "could not open file: " << input_file << endl;
+			return EXIT_FAILURE;
+		}
+		if (vm.count("output")) {
+			std::ofstream ofs(output_file.c_str(), std::ios::out|std::ios::binary);
+			if (!ofs.is_open()) {
+				cerr << "could not open output file: " << output_file << endl;
+				return EXIT_FAILURE;
+			}
+			if (!dam->Pass(&ifs, &ofs)) return EXIT_FAILURE;
+			ofs.close();
+		} else {
+			if (!dam->Pass(&ifs, &std::cout)) return EXIT_FAILURE;
+		}
+		ifs.close();
+	} else if (vm.count("output")) {
+		std::ofstream ofs(output_file.c_str(), std::ios::out|std::ios::binary);
+		if (!ofs.is_open()) {
+			cerr << "could not open output file: " << output_file << endl;
+			return EXIT_FAILURE;
+		}
+		if (!dam->Pass(&std::cin, &ofs)) return EXIT_FAILURE;
+		ofs.close();
+	} else {
+		if (!dam->Pass(&std::cin, &std::cout)) return EXIT_FAILURE;
+	}
+
+	return EXIT_SUCCESS;
+}

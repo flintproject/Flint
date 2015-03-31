@@ -1,0 +1,16 @@
+.PHONY: all clean check
+
+all: OUTPUT_STDOUT
+
+check: OUTPUT_STDOUT
+	$(MAKE) -n -f $<
+
+clean:
+	-rm -rf */ OUTPUT_DB OUTPUT_STDOUT
+
+OUTPUT_DB: INPUT_SEDML INPUT_PHSP
+	test-input2 $@ $^
+	flint-sedml $@
+
+OUTPUT_STDOUT: OUTPUT_DB
+	flint-phsp $< > $@

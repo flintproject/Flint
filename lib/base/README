@@ -1,0 +1,3 @@
+This directory contains basic utilities independent of external code
+except the standard libraries or Boost's header libraries.
+Besides them, headers in this directory include only themselves, if any.

@@ -1,0 +1,25 @@
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; isdls -- list columns in ISDF
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+= Synopsis
+
+isdls [-c] [path]
+isdls --data-offset [path]
+isdls -r n [path]
+isdls --help
+
+
+= Description
+
+--columns, -c
+    print all of column descriptions. (default)
+
+--data-offset
+    print the offset (in bytes) where the data section starts.
+
+--row, -r N
+    print the all row of column index N.
+
+--help, -h
+    show help.

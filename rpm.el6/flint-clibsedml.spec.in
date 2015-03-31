@@ -1,0 +1,53 @@
+Summary: clibsedml for Flint
+Name: flint-clibsedml
+Version: clibsedml_VERSION
+Release: clibsedml_RELEASE%{?dist}
+License: BSD-3-clause
+Group: Applications/Productivity
+URL: http://www.physiodesigner.org/
+Source0: %{name}-%{version}.tar.gz
+BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
+BuildRequires: gcc
+BuildRequires: make
+BuildRequires: libxml2-devel >= 2.7
+Requires: libxml2 >= 2.7
+
+%description
+This is part of Flint.
+
+%prep
+%setup -q
+
+%build
+autoreconf -i -f
+./configure --prefix=/opt/flint
+make
+
+%install
+rm -rf %{buildroot}
+make install DESTDIR=%{buildroot}
+mkdir -p %{buildroot}/etc/ld.so.conf.d
+echo '/opt/flint/lib' > %{buildroot}/etc/ld.so.conf.d/%{name}.conf
+
+%clean
+rm -rf %{buildroot}
+
+%post
+/sbin/ldconfig
+
+%postun
+/sbin/ldconfig
+
+%files
+%defattr(-,root,root,-)
+%doc
+/etc/ld.so.conf.d/%{name}.conf
+/opt/flint/include/sedml
+/opt/flint/lib/libsedml.a
+/opt/flint/lib/libsedml.la
+/opt/flint/lib/libsedml.so
+/opt/flint/lib/libsedml.so.0
+/opt/flint/lib/libsedml.so.0.0.0
+/opt/flint/lib/pkgconfig/clibsedml.pc
+
+%changelog

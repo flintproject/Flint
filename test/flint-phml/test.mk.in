@@ -1,0 +1,70 @@
+SUBCHECKS = \
+	check-modules \
+	check-pqs \
+	check-bridges \
+	check-iports \
+	check-oports \
+	check-edges \
+	check-tpqs \
+	check-ts \
+	check-tsref \
+	check-trees \
+	check-scopes \
+	check-journals \
+	check-spans \
+	check-reaches
+
+.PHONY: all clean check $(SUBCHECKS)
+
+all: OUTPUT
+
+clean:
+	-rm -f OUTPUT
+
+check: $(SUBCHECKS)
+
+check-modules: OUTPUT
+	test ! -f MODULES || (sqlite3 -separator ' ' $< 'SELECT module_id, name FROM modules' | diff -u MODULES -)
+
+check-pqs: OUTPUT
+	test ! -f PQS || (sqlite3 -separator ' ' $< 'SELECT m.module_id, p.type, p.pq_id, p.name FROM pqs AS p LEFT JOIN modules AS m ON p.module_rowid = m.rowid' | diff -u PQS -)
+
+check-bridges: OUTPUT
+	test ! -f BRIDGES || (sqlite3 -separator ' ' $< 'SELECT m.module_id, p.pq_id, b.direction, b.sub_type, b.connector FROM bridges AS b LEFT JOIN pqs AS p ON b.pq_rowid = p.rowid LEFT JOIN modules AS m ON p.module_rowid = m.rowid' | diff -u BRIDGES -)
+
+check-iports: OUTPUT
+	test ! -f IPORTS || (sqlite3 -separator ' ' $< "SELECT m.module_id||':'||r.port_id, p.pq_id FROM refports AS r LEFT JOIN pqs AS p ON r.pq_rowid = p.rowid LEFT JOIN modules AS m ON p.module_rowid = m.rowid" | diff -u IPORTS -)
+
+check-oports: OUTPUT
+	test ! -f OPORTS || (sqlite3 -separator ' ' $< "SELECT m.module_id||':'||p.port_id, p.ref_pq_id FROM ports AS p LEFT JOIN modules AS m ON p.module_rowid = m.rowid WHERE p.direction = 'out'" | diff -u OPORTS -)
+
+check-edges: OUTPUT
+	test ! -f EDGES || (sqlite3 -separator ' ' $< "SELECT tail_module_id||':'||tail_port_id, head_module_id||':'||head_port_id FROM edges" | diff -u EDGES -)
+
+check-tpqs: OUTPUT
+	test ! -f TPQS || (sqlite3 -separator ' ' $< "SELECT instances.module_id, tms.module_id, tpqs.pq_id, ltrim(tpqs.math) FROM tpqs LEFT JOIN tms ON tpqs.tm_rowid = tms.rowid LEFT JOIN instances ON tms.instance_rowid = instances.rowid" | diff -u TPQS -)
+
+check-ts: OUTPUT
+	test ! -f TS || (sqlite3 -separator ' ' $< 'SELECT m.module_id, t.timeseries_id, t.format FROM timeseries AS t LEFT JOIN modules AS m ON t.module_rowid = m.rowid' | diff -u TS -)
+
+check-tsref: OUTPUT
+	test ! -f TSREF || (sqlite3 -separator ' ' $< 'SELECT m.module_id, p.pq_id, r.timeseries_id, r.element_id FROM refts AS r LEFT JOIN pqs AS p ON r.pq_rowid = p.rowid LEFT JOIN modules AS m ON p.module_rowid = m.rowid' | diff -u TSREF -)
+
+check-trees: OUTPUT
+	test ! -f TREES || (sqlite3 -separator ' ' $< 'SELECT * FROM trees' | diff -u TREES -)
+
+check-scopes: OUTPUT
+	test ! -f SCOPES || (sqlite3 -separator ' ' $< 'SELECT * FROM scopes' | diff -u SCOPES -)
+
+check-journals: OUTPUT
+	test ! -f JOURNALS || (sqlite3 $< "SELECT replace(hex(zeroblob(indent)),'00',' ')||uuid FROM journals" | diff -u JOURNALS -)
+
+check-spans: OUTPUT
+	test ! -f SPANS || (sqlite3 -separator ' ' $< 'SELECT * FROM spans' | diff -u SPANS -)
+
+check-reaches: OUTPUT
+	test ! -f REACHES || (sqlite3 -separator ' ' $< 'SELECT lower(hex(output_uuid)), output_id, lower(hex(input_uuid)), input_id FROM reaches' | diff -u REACHES -)
+
+OUTPUT: INPUT
+	test-input1 $@ $<
+	flint-phml $@

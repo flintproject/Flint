@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<is:insilico-model  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:svg="http://www.w3.org/2000/svg" xmlns:is="http://www.physiome.jp/ns/insilicoml" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:m="http://www.w3.org/1998/Math/MathML" xmlns:pd="http://www.physiodesigner.org/2012/ns/physiodesigner/1.0" version="1.0" xsi:schemalocation="http://www.physiome.jp/ns/insilicoml-1.0 insilicoml.xsd">
+<is:header>
+<is:model-name>Lemming</is:model-name>
+<is:meta-information>
+<is:article-set/>
+<is:creator-set/>
+</is:meta-information>
+<is:date>
+<is:created>2014-10-24T01:48:18+09:00</is:created>
+<is:last-modified>2014-10-24T01:48:18+09:00</is:last-modified>
+</is:date>
+<is:numerical-configuration>
+<is:simulation-time-span unit-id="14">40</is:simulation-time-span>
+<is:algorithm>
+<is:random-generator type="built-in" name="c-rand"/>
+<is:integration name="euler"/>
+</is:algorithm>
+<is:time-discretization unit-id="14" evolution="true">
+<is:step>0.01</is:step>
+</is:time-discretization>
+</is:numerical-configuration>
+<is:description>From "Solving Delay Differential Equations with dde23" by L. F. Shampine and S. Thompson.</is:description>
+</is:header>
+<is:unit-set>
+<is:unit unit-id="0">
+<is:name>dimensionless</is:name>
+</is:unit>
+<is:unit unit-id="1">
+<is:name>metre</is:name>
+</is:unit>
+<is:unit unit-id="2">
+<is:name>kilogram</is:name>
+</is:unit>
+<is:unit unit-id="3">
+<is:name>second</is:name>
+</is:unit>
+<is:unit unit-id="4">
+<is:name>ampere</is:name>
+</is:unit>
+<is:unit unit-id="5">
+<is:name>kelvin</is:name>
+</is:unit>
+<is:unit unit-id="6">
+<is:name>mole</is:name>
+</is:unit>
+<is:unit unit-id="7">
+<is:name>candela</is:name>
+</is:unit>
+<is:unit unit-id="8">
+<is:name>radian</is:name>
+</is:unit>
+<is:unit unit-id="9">
+<is:name>minute</is:name>
+<is:element unit-id="3" multiplier="60"/>
+</is:unit>
+<is:unit unit-id="10">
+<is:name>hour</is:name>
+<is:element unit-id="9" multiplier="60"/>
+</is:unit>
+<is:unit unit-id="11">
+<is:name>day</is:name>
+<is:element unit-id="10" multiplier="24"/>
+</is:unit>
+<is:unit unit-id="12">
+<is:name>week</is:name>
+<is:element unit-id="11" multiplier="7"/>
+</is:unit>
+<is:unit unit-id="13">
+<is:name>month</is:name>
+<is:element unit-id="11" multiplier="30"/>
+</is:unit>
+<is:unit unit-id="14">
+<is:name>year</is:name>
+<is:element unit-id="11" multiplier="365"/>
+</is:unit>
+</is:unit-set>
+
+<is:module-set>
+
+<is:module module-id="6e0768d7-660a-4574-8bc1-9ea8a28693d2" type="functional-unit">
+<is:property>
+<is:name>Lemming</is:name>
+<is:capsulation state="false"/>
+<is:template state="false"/>
+<is:keyword-set/>
+<is:track>
+<is:involved db-id="this" date="2014-10-24T01:48:41+09:00"/>
+</is:track>
+<is:frame-coordinate/>
+<is:description/>
+</is:property>
+<is:port-set/>
+
+<is:physical-quantity-set>
+<is:physical-quantity physical-quantity-id="1" type="state">
+<is:name>x</is:name>
+<is:dimension type="scalar"/>
+<is:value-type-set>
+<is:value-type precision="double" unit-id="0"/>
+</is:value-type-set>
+<is:initial-value>
+<is:definition type="ae" format="mathml">
+<m:math><m:apply><m:eq/><m:ci>x</m:ci><m:cn>19.001</m:cn></m:apply></m:math>
+</is:definition>
+</is:initial-value>
+<is:implementation>
+<is:definition type="ode" sub-type="" format="mathml">
+<m:math><m:apply><m:eq/><m:apply><m:diff/><m:bvar><m:ci>time</m:ci></m:bvar><m:ci>x</m:ci></m:apply><m:apply><m:times/><m:ci>r</m:ci><m:ci>x</m:ci><m:apply><m:minus/><m:cn>1</m:cn><m:apply><m:divide/><m:ci>lag</m:ci><m:ci>m</m:ci></m:apply></m:apply></m:apply></m:apply></m:math>
+</is:definition>
+</is:implementation>
+<is:problem-condition-set/>
+<is:description/>
+<is:max-delay>1</is:max-delay>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="2" type="state">
+<is:name>lag</is:name>
+<is:dimension type="scalar"/>
+<is:value-type-set>
+<is:value-type precision="double" unit-id="0"/>
+</is:value-type-set>
+<is:initial-value>
+<is:definition type="ae" format="mathml">
+<m:math><m:apply><m:eq/><m:ci>lag</m:ci><m:cn>19</m:cn></m:apply></m:math>
+</is:definition>
+</is:initial-value>
+<is:implementation>
+<is:definition type="ode" sub-type="" format="mathml">
+<m:math><m:apply><m:eq/><m:apply><m:diff/><m:bvar><m:ci>time</m:ci></m:bvar><m:ci>lag</m:ci></m:apply><m:cn>0</m:cn></m:apply></m:math>
+</is:definition>
+<is:extra-implementation order="before" type="instantaneous">
+<is:definition type="conditional" sub-type="" format="">
+<is:case-set case-set-id="1">
+<is:case substructure-id="1">
+<is:condition format="mathml">
+<m:math><m:apply><m:gt/><m:ci>time</m:ci><m:cn>0.74</m:cn></m:apply></m:math>
+</is:condition>
+<is:definition type="ae" sub-type="" format="mathml">
+<m:math><m:apply><m:eq/><m:ci>lag</m:ci><m:apply><m:csymbol>Delay</m:csymbol><m:ci>x</m:ci><m:cn>0.74</m:cn></m:apply></m:apply></m:math>
+</is:definition>
+</is:case>
+</is:case-set>
+</is:definition>
+</is:extra-implementation>
+</is:implementation>
+<is:problem-condition-set/>
+<is:description/>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="3" type="static-parameter">
+<is:name>r</is:name>
+<is:dimension type="scalar"/>
+<is:value-type-set>
+<is:value-type precision="double" unit-id="0"/>
+</is:value-type-set>
+<is:initial-value/>
+<is:implementation>
+<is:definition type="ae" sub-type="" format="mathml">
+<m:math><m:apply><m:eq/><m:ci>r</m:ci><m:cn>3.5</m:cn></m:apply></m:math>
+</is:definition>
+</is:implementation>
+<is:problem-condition-set/>
+<is:description/>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="4" type="static-parameter">
+<is:name>m</is:name>
+<is:dimension type="scalar"/>
+<is:value-type-set>
+<is:value-type precision="double" unit-id="0"/>
+</is:value-type-set>
+<is:initial-value/>
+<is:implementation>
+<is:definition type="ae" sub-type="" format="mathml">
+<m:math><m:apply><m:eq/><m:ci>m</m:ci><m:cn>19</m:cn></m:apply></m:math>
+</is:definition>
+</is:implementation>
+<is:problem-condition-set/>
+<is:description/>
+</is:physical-quantity>
+</is:physical-quantity-set>
+<is:morphology/>
+<is:event-set/>
+</is:module>
+</is:module-set>
+<is:template-set/>
+<is:instance-set/>
+<is:controller-set/>
+<is:edge-set/>
+<is:timeseries-set/>
+</is:insilico-model>
+

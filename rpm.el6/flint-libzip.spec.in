@@ -1,0 +1,123 @@
+Summary: libzip for Flint
+Name: flint-libzip
+Version: libzip_VERSION
+Release: libzip_RELEASE%{?dist}
+License: BSD-3-clause
+Group: Applications/Productivity
+URL: http://www.physiodesigner.org/
+Source0: %{name}-%{version}.tar.gz
+BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
+BuildRequires: gcc
+BuildRequires: make
+BuildRequires: zlib-devel >= 1.2.3
+Requires: zlib >= 1.2.3
+
+%description
+This is part of Flint.
+
+%prep
+%setup -q
+
+%build
+./configure --prefix=/opt/flint
+make
+
+%install
+rm -rf %{buildroot}
+make install DESTDIR=%{buildroot}
+mkdir -p %{buildroot}/etc/ld.so.conf.d
+echo '/opt/flint/lib' > %{buildroot}/etc/ld.so.conf.d/%{name}.conf
+
+%clean
+rm -rf %{buildroot}
+
+%post
+/sbin/ldconfig
+
+%postun
+/sbin/ldconfig
+
+%files
+%defattr(-,root,root,-)
+%doc
+/etc/ld.so.conf.d/%{name}.conf
+/opt/flint/bin/zipcmp
+/opt/flint/bin/zipmerge
+/opt/flint/bin/ziptorrent
+/opt/flint/include/zip.h
+/opt/flint/lib/libzip.a
+/opt/flint/lib/libzip.la
+/opt/flint/lib/libzip.so
+/opt/flint/lib/libzip.so.2
+/opt/flint/lib/libzip.so.2.1.0
+/opt/flint/lib/libzip/include/zipconf.h
+/opt/flint/share/man/man1/zipcmp.1
+/opt/flint/share/man/man1/zipmerge.1
+/opt/flint/share/man/man1/ziptorrent.1
+/opt/flint/share/man/man3/libzip.3
+/opt/flint/share/man/man3/zip_add.3
+/opt/flint/share/man/man3/zip_add_dir.3
+/opt/flint/share/man/man3/zip_close.3
+/opt/flint/share/man/man3/zip_delete.3
+/opt/flint/share/man/man3/zip_dir_add.3
+/opt/flint/share/man/man3/zip_discard.3
+/opt/flint/share/man/man3/zip_error_clear.3
+/opt/flint/share/man/man3/zip_error_get.3
+/opt/flint/share/man/man3/zip_error_get_sys_type.3
+/opt/flint/share/man/man3/zip_error_to_str.3
+/opt/flint/share/man/man3/zip_errors.3
+/opt/flint/share/man/man3/zip_fclose.3
+/opt/flint/share/man/man3/zip_fdopen.3
+/opt/flint/share/man/man3/zip_file_add.3
+/opt/flint/share/man/man3/zip_file_error_clear.3
+/opt/flint/share/man/man3/zip_file_error_get.3
+/opt/flint/share/man/man3/zip_file_extra_field_delete.3
+/opt/flint/share/man/man3/zip_file_extra_field_delete_by_id.3
+/opt/flint/share/man/man3/zip_file_extra_field_get.3
+/opt/flint/share/man/man3/zip_file_extra_field_get_by_id.3
+/opt/flint/share/man/man3/zip_file_extra_field_set.3
+/opt/flint/share/man/man3/zip_file_extra_fields_count.3
+/opt/flint/share/man/man3/zip_file_extra_fields_count_by_id.3
+/opt/flint/share/man/man3/zip_file_get_comment.3
+/opt/flint/share/man/man3/zip_file_get_external_attributes.3
+/opt/flint/share/man/man3/zip_file_rename.3
+/opt/flint/share/man/man3/zip_file_replace.3
+/opt/flint/share/man/man3/zip_file_set_comment.3
+/opt/flint/share/man/man3/zip_file_set_external_attributes.3
+/opt/flint/share/man/man3/zip_file_strerror.3
+/opt/flint/share/man/man3/zip_fopen.3
+/opt/flint/share/man/man3/zip_fopen_encrypted.3
+/opt/flint/share/man/man3/zip_fopen_index.3
+/opt/flint/share/man/man3/zip_fopen_index_encrypted.3
+/opt/flint/share/man/man3/zip_fread.3
+/opt/flint/share/man/man3/zip_get_archive_comment.3
+/opt/flint/share/man/man3/zip_get_archive_flag.3
+/opt/flint/share/man/man3/zip_get_file_comment.3
+/opt/flint/share/man/man3/zip_get_name.3
+/opt/flint/share/man/man3/zip_get_num_entries.3
+/opt/flint/share/man/man3/zip_get_num_files.3
+/opt/flint/share/man/man3/zip_name_locate.3
+/opt/flint/share/man/man3/zip_open.3
+/opt/flint/share/man/man3/zip_rename.3
+/opt/flint/share/man/man3/zip_replace.3
+/opt/flint/share/man/man3/zip_set_archive_comment.3
+/opt/flint/share/man/man3/zip_set_archive_flag.3
+/opt/flint/share/man/man3/zip_set_default_password.3
+/opt/flint/share/man/man3/zip_set_file_comment.3
+/opt/flint/share/man/man3/zip_set_file_compression.3
+/opt/flint/share/man/man3/zip_source_buffer.3
+/opt/flint/share/man/man3/zip_source_file.3
+/opt/flint/share/man/man3/zip_source_filep.3
+/opt/flint/share/man/man3/zip_source_free.3
+/opt/flint/share/man/man3/zip_source_function.3
+/opt/flint/share/man/man3/zip_source_zip.3
+/opt/flint/share/man/man3/zip_stat.3
+/opt/flint/share/man/man3/zip_stat_index.3
+/opt/flint/share/man/man3/zip_stat_init.3
+/opt/flint/share/man/man3/zip_strerror.3
+/opt/flint/share/man/man3/zip_unchange.3
+/opt/flint/share/man/man3/zip_unchange_all.3
+/opt/flint/share/man/man3/zip_unchange_archive.3
+/opt/flint/lib/pkgconfig/libzip.pc
+
+%changelog

@@ -1,0 +1,26 @@
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; isdhead -- extract first rows in the ISDF file
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+This program extracts first rows in the ISDF file.
+
+= Synopsis
+
+isdhead [-n count] [-t time] [-o output] [path]
+isdhead --help
+
+
+= Description
+
+--rows, -n
+    specify the number of rows to be extracted.
+
+--eot, -t
+    extract rows until the value of the first column, which usually is for time,
+    reaches its argument value.
+
+--output, -o
+    write to file at `output` instead of stdout.
+
+--help, -h
+    show help.

@@ -1,0 +1,14 @@
+.PHONY: all clean check
+
+all: output0.isd output1.isd
+
+check: output.cmp
+
+clean:
+	-rm -f output.cmp output0.isd output1.isd
+
+output0.isd output1.isd:
+	EXECUTABLE $@ 42
+
+output.cmp: output0.isd output1.isd
+	cmp $^ SKIP SKIP > $@

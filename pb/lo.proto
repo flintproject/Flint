@@ -1,0 +1,62 @@
+package lo;
+
+option java_package = "jp.physiome";
+option java_outer_classname = "Lo";
+
+/* data */
+
+message Track {
+
+  required bytes id = 1;  /* 16 byte-length UUID */
+  required int32 nos = 2; /* number of sector */
+  required int32 nod = 3; /* number of data (per sector) */
+  optional string name = 4;
+
+}
+
+message Sector {
+
+  required bytes id = 1; /* 16 byte-length UUID */
+  optional string label = 2;
+
+}
+
+enum Type {
+  S = 1; /* constant */
+  T = 2; /* timeseries */
+  V = 3; /* generic variable */
+  X = 4; /* dependent variable of an ODE */
+}
+
+message Data {
+
+  required int32 id = 1;
+  required string name = 2;
+  required int32 size = 3;
+  required Type type = 4;
+  required string unit = 5; /* empty string means that no unit is specified */
+  optional double capacity = 6; /* for delay differential equations */
+
+}
+
+/* filter */
+
+message Header {
+
+  required int32 size = 1;
+
+}
+
+message Column {
+
+  required int32 position = 1;
+  required int32 size = 2;
+  required bytes uuid = 3; /* 16 byte-length UUID */
+  required int32 id = 4; /* physical-quantity-id for PHML. */
+  required string name = 5;
+  required Type type = 9;
+  required string unit = 6; /* empty string means no unit is specified */
+  optional string label = 7;
+  optional string track_name = 8;
+
+}

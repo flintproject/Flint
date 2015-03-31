@@ -1,0 +1,17 @@
+o sbml:x 1 (minus (divide (plus %sbml:reaction_0000002 %sbml:reaction_0000004) %sbml:ER))
+o sbml:y 1 (divide (plus (minus (plus %sbml:reaction_0000001 %sbml:reaction_0000002) %sbml:reaction_0000003) %sbml:reaction_0000004) %sbml:cytoplasm)
+a sbml:fy (divide (power %sbml:y %sbml:n) (plus (power %sbml:a %sbml:n) (power %sbml:y %sbml:n)))
+a sbml:reaction_0000001 (times %sbml:gamma %sbml:cytoplasm)
+a sbml:reaction_0000002 (minus (times (times %sbml:k %sbml:x) %sbml:cytoplasm) (times (times %sbml:k1 %sbml:y) %sbml:ER))
+a sbml:reaction_0000003 (times (times %sbml:beta %sbml:y) %sbml:extracellular)
+a sbml:reaction_0000004 (times (times (times %sbml:alpha %sbml:fy) %sbml:x) %sbml:cytoplasm)
+c sbml:cytoplasm 1
+c sbml:ER 1
+c sbml:extracellular 1
+c sbml:k 0.01
+c sbml:alpha 5
+c sbml:n 4
+c sbml:a 3
+c sbml:k1 2
+c sbml:beta 1
+c sbml:gamma 1

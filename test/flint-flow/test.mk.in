@@ -1,0 +1,19 @@
+.PHONY: all clean check
+
+all: OUTPUT
+
+check: EXPECTED OUTPUT
+	diff -u $^
+
+clean:
+	-rm -f OUTPUT OUTPUT.db OUTPUT.layout
+
+OUTPUT.db: INPUT
+	test-input1 $@ $<
+	flint-phml $@
+
+OUTPUT.layout: OUTPUT.db
+	flint-layout $< /dev/null $@
+
+OUTPUT: OUTPUT.db OUTPUT.layout
+	flint-flow $^ > $@

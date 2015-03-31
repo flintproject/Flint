@@ -1,0 +1,30 @@
+6e7ae957-711d-4c15-9e1f-cac302ae4c87 Beeler_Reuter_1977_model
+00c5b842-d8e1-4a59-a0ad-8eab3e8551e7 Beeler_Reuter_1977_I_K_1
+fac0e522-c279-4643-9499-357e0beeb91e I_K_1
+6c6cc120-1261-4c02-b6ce-3e925d3352f2 Beeler_Reuter_1977_I_Na
+1510322e-1184-4ed8-95d0-665c90bf9d22 I_Na
+5c0f344a-47d0-4248-9f15-fbbc2fa1945b m_gate
+4ee5582a-3ae5-4583-b933-9569bc1b3a36 h_gate
+8e153d4f-c6b3-4f18-bc12-71dacad651fb j_gate
+a8903779-9752-4583-a89a-5d9eeb0a8a87 Beeler_Reuter_1977_I_s
+dc014114-7c34-4961-ba73-989d76b7ac01 I_s
+70e132f0-3a5d-4178-af07-7e2a703311ce E_s
+c1d4fe4a-f9c8-4b39-ac9f-b3d46435e955 Ca_i
+84446d2a-d87e-4f91-bcd0-a2a263bbd448 d_gate
+0592c931-e466-42aa-a518-3d8235d26ee7 f_gate
+711a772a-b599-40e5-a39b-a5fb13666810 Beeler_Reuter_1977_I_x_1
+0a50cc3a-e58f-4597-be88-905ad880cde9 I_x_1
+948c9d94-ea38-49f0-9140-a857a9bf0fca I_x_1_bar
+565a067a-64b6-484c-b9fa-22bd35ce918d x_1_gate
+9351c1f6-31df-4f3c-bea9-0f45e8cf970e S1_pulse_generator
+02bdaee3-6ae3-4752-a669-113782053c16 capsule_of_S1_pulse_generator
+7ca2ec2e-b9bc-4dda-b20f-a20fadff2ccf S2_pulse_generator
+db88cfc3-64d3-470c-8862-d518ee2b0456 capsule_of_S2_pulse_generator
+6492721a-6801-4d7a-8bb6-4aebc2cb06b8 gap junction
+c95c3164-b707-4346-9114-bae1b4221a70 Isum_3currents
+ed8c7207-ef92-48a6-b984-642f0cd5b8be ground
+2d5893ba-1e94-4c9b-bc2e-0c21bcf85058 capsule_of_BR
+fa950a96-1db2-4148-b93e-2b8897d5e751 capsule_of_gap_junction
+042b1349-8b6d-4712-bdcf-bc620497d4c1 capsule_of_Isum_3
+21dcb695-d0b5-421a-a880-d589589d418f capsule_of_ground
+78d897c7-319f-4512-9f9d-43a5aa44fdce set of templates and instances

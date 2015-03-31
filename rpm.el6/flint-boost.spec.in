@@ -1,0 +1,44 @@
+Summary: Boost library for Flint
+Name: flint-boost
+Version: boost_VERSION
+Release: boost_RELEASE%{?dist}
+License: Boost-1.0
+Group: Applications/Productivity
+URL: http://www.physiodesigner.org/
+Source0: %{name}-%{version}.tar.gz
+BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
+BuildRequires: gcc-c++
+BuildRequires: make
+
+%description
+This is part of Flint.
+
+%prep
+%setup -q
+
+%build
+./bootstrap.sh
+
+%install
+rm -rf %{buildroot}
+./b2 --prefix=%{buildroot}/opt/flint --without-mpi --without-python --layout=tagged architecture=combined link=shared variant=release threading=single,multi install || true
+mkdir -p %{buildroot}/etc/ld.so.conf.d
+echo '/opt/flint/lib' > %{buildroot}/etc/ld.so.conf.d/%{name}.conf
+
+%clean
+rm -rf %{buildroot}
+
+%post
+/sbin/ldconfig
+
+%postun
+/sbin/ldconfig
+
+%files
+%defattr(-,root,root,-)
+%doc
+/etc/ld.so.conf.d/%{name}.conf
+/opt/flint/include/boost
+/opt/flint/lib/libboost_*
+
+%changelog

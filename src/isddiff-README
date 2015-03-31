@@ -1,0 +1,37 @@
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; isddiff -- compare two ISDF files
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+= Synopsis
+
+isddiff [-a delta] [-r delta] [-B] [-C] [-D] [-T] [-U] input0 input1
+isddiff --help
+
+
+= Description
+
+--absolute-delta, -a
+    tolerate given absolute `delta'.
+
+--relative-delta, -r
+    tolerate given relative `delta'.
+
+--ignore-body, -B
+    ignore body.
+
+--ignore-comment, -C
+    ignore comment.
+
+--ignore-descriptions, -D
+    ignore descriptions.
+
+--ignore-timestamp, -T
+    ignore timestamp.
+
+--ignore-units, -U
+    ignore units.
+
+--help, -h
+    show help.
+
+Exit status is 0 if inputs are the same, 1 if different, 2 if failed.

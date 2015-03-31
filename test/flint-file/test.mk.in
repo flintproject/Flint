@@ -1,0 +1,15 @@
+.PHONY: all clean check
+
+all: OUTPUT
+
+clean:
+	-rm -f OUTPUT OUTPUT.db
+
+check: EXPECTED OUTPUT
+	diff -u $^
+
+OUTPUT.db: INPUT
+	test-input1 $@ $<
+
+OUTPUT: OUTPUT.db
+	flint-file $< > $@

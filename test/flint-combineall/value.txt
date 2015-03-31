@@ -1,0 +1,4 @@
+4d96c8de-d10a-48e2-a0e0-be9d74e58e78 (eq %sbml:s2 0)
+4d96c8de-d10a-48e2-a0e0-be9d74e58e78 (eq %sbml:default 1)
+4d96c8de-d10a-48e2-a0e0-be9d74e58e78 (eq %sbml:c1 1)
+4d96c8de-d10a-48e2-a0e0-be9d74e58e78 (eq %sbml:k1 10)

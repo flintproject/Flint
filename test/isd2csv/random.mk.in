@@ -1,0 +1,15 @@
+.PHONY: all clean check
+
+all: random.isd
+
+check: random.csv
+	csv2isd $< /dev/null
+
+clean:
+	-rm -f random.csv random.isd
+
+random.isd:
+	isdrand $@
+
+random.csv: random.isd
+	isd2csv $< > $@

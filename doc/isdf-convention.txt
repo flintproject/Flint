@@ -1,0 +1,40 @@
+This document explains the convention for better interoperability between
+software applications exchanging files in the ISDF format.
+
+
+= On title of variables
+
+Each title of variables in an ISDF file should be unique among them.
+
+== Augmented BNF for variable's title
+
+The following ABNF in the flavor of [RFC5234] defines the syntax for a
+variable's title formally:
+
+  title = labeled / unlabeled
+
+  labeled = unlabeled "@" label
+
+  label = 1*VCHAR
+
+  unlabeled = prefixed / name
+
+  prefixed = UUID ":" name
+
+  name = ALPHA *("_" / ALPHA / DIGIT)
+
+where
+
+  UUID is as defined in [RFC4122].
+
+
+= On Timeseries data
+
+If an ISDF file contains the variable representing the time, then name it
+"time" and make it the first variable in the data.
+
+
+= References
+
+[RFC4122] http://tools.ietf.org/html/rfc4122
+[RFC5234] http://tools.ietf.org/html/rfc5234

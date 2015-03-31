@@ -1,0 +1,18 @@
+== Prerequisite
+
+In order to build Flint's Java code base, you need Apache Ant or NetBeans.
+
+
+== How to build flint.jar
+
+We use Apache Ant in order to build it on command line.
+For creating flint.jar:
+$ cd flint
+$ ant jar
+
+
+== How to launch flint.jar
+
+You need JRE 1.7 or later in order to run Flint.
+For launching it from command line:
+$ java -jar flint.jar [argument ...]

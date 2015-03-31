@@ -1,0 +1,14 @@
+.PHONY: all clean check
+
+all: OUTPUT
+
+clean:
+	-rm -f OUTPUT OUTPUT.db OUTPUT.pb
+
+check: EXPECTED OUTPUT
+	diff -u $^
+
+OUTPUT: INPUT
+	test-input1 OUTPUT.db $<
+	flint-phml OUTPUT.db
+	flint-nc OUTPUT.db $@ > OUTPUT.pb

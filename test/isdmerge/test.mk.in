@@ -1,0 +1,18 @@
+.PHONY: all clean check
+
+CSV=TEST.csv TEST-0.csv TEST-1.csv
+
+all: TEST-merged.isd TEST.isd
+
+check: TEST-merged.isd TEST.isd
+	isddiff -T $^
+
+clean:
+	-rm -rf TEST-0.isd TEST-1.isd TEST-merged.isd TEST.isd
+
+TEST-merged.isd: TEST-0.isd TEST-1.isd
+	isdmerge -o $@ $^
+
+$(CSV:.csv=.isd):
+	csv2isd DATADIR/$(@:.isd=.csv) $@
+

@@ -1,0 +1,52 @@
+Summary: LibSBML for Flint
+Name: flint-libsbml
+Version: libsbml_VERSION
+Release: libsbml_RELEASE%{?dist}
+License: LGPL-2.1
+Group: Applications/Productivity
+URL: http://www.physiodesigner.org/
+Source0: %{name}-%{version}.tar.gz
+BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
+BuildRequires: gcc-c++
+BuildRequires: make
+BuildRequires: libxml2-devel >= 2.7
+Requires: libxml2 >= 2.7
+
+%description
+This is part of Flint.
+
+%prep
+%setup -q
+
+%build
+./configure --prefix=/opt/flint --with-libxml --with-xerces=no
+make
+
+%install
+rm -rf %{buildroot}
+make install DESTDIR=%{buildroot}
+mkdir -p %{buildroot}/etc/ld.so.conf.d
+echo '/opt/flint/lib' > %{buildroot}/etc/ld.so.conf.d/%{name}.conf
+
+%clean
+rm -rf %{buildroot}
+
+%post
+/sbin/ldconfig
+
+%postun
+/sbin/ldconfig
+
+%files
+%defattr(-,root,root,-)
+%doc
+/etc/ld.so.conf.d/%{name}.conf
+/opt/flint/include/sbml
+/opt/flint/lib/libsbml.a
+/opt/flint/lib/libsbml.la
+/opt/flint/lib/libsbml.so
+/opt/flint/lib/libsbml.so.5
+/opt/flint/lib/libsbml.so.5.11.0
+/opt/flint/lib/pkgconfig/libsbml.pc
+
+%changelog

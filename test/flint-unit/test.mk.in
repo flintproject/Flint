@@ -1,0 +1,15 @@
+.PHONY: all clean check
+
+all: OUTPUT.db
+
+clean:
+	-rm -f OUTPUT OUTPUT.db
+
+check: OUTPUT
+
+OUTPUT: OUTPUT.db
+	flint-unit $< > $@
+
+OUTPUT.db: INPUT
+	test-input1 $@ $<
+	flint-phml $@

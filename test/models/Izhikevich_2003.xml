@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sedML xmlns='http://sed-ml.org/' xmlns:math='http://www.w3.org/1998/Math/MathML' xmlns:flint='http://flintk3.org/namespace/flint' version='1' level='1'>
+  <listOfSimulations>
+    <uniformTimeCourse id='sim0' name='Simulation 0' initialTime='0' outputStartTime='0' outputEndTime='300' numberOfPoints='30000' flint:granularity='1'>
+      <algorithm kisaoID='KISAO:0000030'/>
+    </uniformTimeCourse>
+  </listOfSimulations>
+  <listOfModels>
+    <model id='model0' name='Model 0' language='urn:sedml:language:phml' source='Izhikevich_2003_model.isml'/>
+  </listOfModels>
+  <listOfTasks>
+    <task id='task0' name='Task 0' modelReference='model0' simulationReference='sim0'/>
+  </listOfTasks>
+  <listOfDataGenerators>
+    <dataGenerator id='dg0' name='e92c7a90-6bf0-4c35-817d-fd9505050830:v'>
+      <listOfVariables>
+        <variable id='v0' taskReference='task0' target='e92c7a90-6bf0-4c35-817d-fd9505050830:v'/>
+      </listOfVariables>
+      <math:math>
+        <math:ci>v0</math:ci>
+      </math:math>
+    </dataGenerator>
+    <dataGenerator id='dg1' name='e92c7a90-6bf0-4c35-817d-fd9505050830:u'>
+      <listOfVariables>
+        <variable id='v1' taskReference='task0' target='e92c7a90-6bf0-4c35-817d-fd9505050830:u'/>
+      </listOfVariables>
+      <math:math>
+        <math:ci>v1</math:ci>
+      </math:math>
+    </dataGenerator>
+    <dataGenerator id='dg2' name='e92c7a90-6bf0-4c35-817d-fd9505050830:Iext'>
+      <listOfVariables>
+        <variable id='v2' taskReference='task0' target='e92c7a90-6bf0-4c35-817d-fd9505050830:Iext'/>
+      </listOfVariables>
+      <math:math>
+        <math:ci>v2</math:ci>
+      </math:math>
+    </dataGenerator>
+    <dataGenerator id='dg3' name='055edf9e-8eb2-4812-abb2-e3e6f5be12e1:u'>
+      <listOfVariables>
+        <variable id='v3' taskReference='task0' target='055edf9e-8eb2-4812-abb2-e3e6f5be12e1:u'/>
+      </listOfVariables>
+      <math:math>
+        <math:ci>v3</math:ci>
+      </math:math>
+    </dataGenerator>
+    <dataGenerator id='dg4' name='055edf9e-8eb2-4812-abb2-e3e6f5be12e1:v'>
+      <listOfVariables>
+        <variable id='v4' taskReference='task0' target='055edf9e-8eb2-4812-abb2-e3e6f5be12e1:v'/>
+      </listOfVariables>
+      <math:math>
+        <math:ci>v4</math:ci>
+      </math:math>
+    </dataGenerator>
+    <dataGenerator id='dg5' name='917c40a3-2881-4b6e-8d5c-3fff0145a898:stimulus_current'>
+      <listOfVariables>
+        <variable id='v5' taskReference='task0' target='917c40a3-2881-4b6e-8d5c-3fff0145a898:stimulus_current'/>
+      </listOfVariables>
+      <math:math>
+        <math:ci>v5</math:ci>
+      </math:math>
+    </dataGenerator>
+  </listOfDataGenerators>
+</sedML>

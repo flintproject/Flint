@@ -1,0 +1,325 @@
+/* -*- Mode: C++; tab-width: 4; indent-tabs-mode: t; c-basic-offset: 4 -*- vim:set ts=4 sw=4 sts=4 noet: */
+#include "reach.h"
+
+#include <cstdio>
+#include <cstdlib>
+#include <iostream>
+#include <map>
+#include <set>
+#include <string>
+
+#include <boost/noncopyable.hpp>
+#include <boost/ptr_container/ptr_map.hpp>
+#include <boost/ptr_container/ptr_set.hpp>
+#include <boost/scoped_array.hpp>
+#include <boost/scoped_ptr.hpp>
+#include <boost/uuid/uuid.hpp>
+#include <boost/uuid/uuid_io.hpp>
+
+#include "db/input-port-loader.h"
+#include "db/output-port-loader.h"
+#include "db/reach-driver.h"
+#include "db/scope-loader.h"
+#include "db/span-loader.h"
+
+using std::cerr;
+using std::endl;
+using std::make_pair;
+using std::map;
+using std::multimap;
+using std::set;
+using std::string;
+using std::pair;
+
+namespace {
+
+class Scope : boost::noncopyable {
+public:
+	Scope(boost::uuids::uuid uuid, boost::uuids::uuid module_id)
+		: uuid_(uuid),
+		  module_id_(module_id),
+		  label_()
+	{
+	}
+
+	Scope(boost::uuids::uuid uuid, boost::uuids::uuid module_id, string label)
+		: uuid_(uuid),
+		  module_id_(module_id),
+		  label_(label)
+	{
+	}
+
+	const boost::uuids::uuid &uuid() const {return uuid_;}
+	const boost::uuids::uuid &module_id() const {return module_id_;}
+	const string &label() const {return label_;}
+
+	// comparison wrt module_id_ & uuid_ (but not label_)
+	bool operator<(const Scope &other) const {
+		if (module_id_ < other.module_id_) return true;
+		if (module_id_ == other.module_id_ &&
+			uuid_ < other.uuid_) return true;
+		return false;
+	}
+
+private:
+	boost::uuids::uuid uuid_;
+	boost::uuids::uuid module_id_;
+	string label_;
+};
+
+class Port : boost::noncopyable {
+public:
+	Port(boost::uuids::uuid module_id, int port_id, int physical_quantity_id, char pq_type)
+		: module_id_(module_id),
+		  port_id_(port_id),
+		  physical_quantity_id_(physical_quantity_id),
+		  pq_type_(pq_type)
+	{
+	}
+
+	const boost::uuids::uuid &module_id() const {return module_id_;}
+	int port_id() const {return port_id_;}
+	int physical_quantity_id() const {return physical_quantity_id_;}
+	char pq_type() const {return pq_type_;}
+
+private:
+	boost::uuids::uuid module_id_;
+	int port_id_;
+	int physical_quantity_id_;
+	char pq_type_;
+};
+
+class Node {
+public:
+	Node(boost::uuids::uuid uuid, int port_id) : uuid_(uuid), port_id_(port_id) {}
+
+	const boost::uuids::uuid &uuid() const {return uuid_;}
+	int port_id() const {return port_id_;}
+
+	bool operator<(const Node &other) const {
+		if (uuid_ < other.uuid_) return true;
+		if (uuid_ == other.uuid_ &&
+			port_id_ < other.port_id_) return true;
+		return false;
+	}
+
+private:
+	boost::uuids::uuid uuid_;
+	int port_id_;
+};
+
+class InputPortHandler : boost::noncopyable {
+public:
+	explicit InputPortHandler(boost::ptr_multimap<boost::uuids::uuid, Port> *ports)
+		: ports_(ports)
+	{
+	}
+
+	bool Handle(boost::uuids::uuid uuid, int port_id, int pq_id, char pq_type) {
+		ports_->insert(uuid, new Port(uuid, port_id, pq_id, pq_type));
+		return true;
+	}
+
+private:
+	boost::ptr_multimap<boost::uuids::uuid, Port> *ports_;
+};
+
+bool LoadInputPorts(sqlite3 *db, boost::ptr_multimap<boost::uuids::uuid, Port> *ports)
+{
+	boost::scoped_ptr<db::InputPortLoader> loader(new db::InputPortLoader(db));
+	boost::scoped_ptr<InputPortHandler> handler(new InputPortHandler(ports));
+	return loader->Load(handler.get());
+}
+
+class OutputPortHandler : boost::noncopyable {
+public:
+	explicit OutputPortHandler(boost::ptr_map<Node, Port> *ports)
+		: ports_(ports)
+	{
+	}
+
+	bool Handle(boost::uuids::uuid uuid, int port_id, int pq_id, char pq_type) {
+		Node node(uuid, port_id);
+		ports_->insert(node, new Port(uuid, port_id, pq_id, pq_type));
+		return true;
+	}
+
+private:
+	boost::ptr_map<Node, Port> *ports_;
+};
+
+bool LoadOutputPorts(sqlite3 *db, boost::ptr_map<Node, Port> *ports)
+{
+	boost::scoped_ptr<db::OutputPortLoader> loader(new db::OutputPortLoader(db));
+	boost::scoped_ptr<OutputPortHandler> handler(new OutputPortHandler(ports));
+	return loader->Load(handler.get());
+}
+
+typedef boost::ptr_set<Scope> ScopeSet;
+typedef multimap<boost::uuids::uuid, ScopeSet::iterator> Mmap;
+typedef map<boost::uuids::uuid, ScopeSet::iterator> Umap;
+
+class ScopeHandler : boost::noncopyable {
+public:
+	ScopeHandler(ScopeSet *scopes, Mmap *mmap, Umap *umap)
+		: scopes_(scopes),
+		  mmap_(mmap),
+		  umap_(umap)
+	{}
+
+	bool Handle(boost::uuids::uuid uuid, boost::uuids::uuid space_id, const char *label) {
+		pair<ScopeSet::iterator, bool> p;
+		if (label) {
+			p = scopes_->insert(new Scope(uuid, space_id, string(label)));
+		} else {
+			p = scopes_->insert(new Scope(uuid, space_id));
+		}
+		if (!p.second) {
+			cerr << "duplicate entry of scope: " << uuid << endl;
+			return false;
+		}
+		mmap_->insert(make_pair(space_id, p.first));
+		umap_->insert(make_pair(uuid, p.first));
+		return true;
+	}
+
+private:
+	ScopeSet *scopes_;
+	Mmap *mmap_;
+	Umap *umap_;
+};
+
+bool LoadScopes(sqlite3 *db, ScopeSet *scopes, Mmap *mmap, Umap *umap)
+{
+	boost::scoped_ptr<db::ScopeLoader> loader(new db::ScopeLoader(db));
+	boost::scoped_ptr<ScopeHandler> handler(new ScopeHandler(scopes, mmap, umap));
+	return loader->Load(handler.get());
+}
+
+class SpanHandler : boost::noncopyable {
+public:
+	explicit SpanHandler(multimap<Node, Node> *spans) : spans_(spans) {}
+
+	bool Handle(boost::uuids::uuid tail_uuid, int tail_port_id,
+				boost::uuids::uuid head_uuid, int head_port_id) {
+		// reverse direction: from head to tail
+		spans_->insert(make_pair(Node(head_uuid, head_port_id),
+								 Node(tail_uuid, tail_port_id)));
+		return true;
+	}
+
+private:
+	multimap<Node, Node> *spans_;
+};
+
+bool LoadEdges(sqlite3 *db, multimap<Node, Node> *edges)
+{
+	boost::scoped_ptr<db::SpanLoader> loader(new db::SpanLoader(db));
+	boost::scoped_ptr<SpanHandler> handler(new SpanHandler(edges));
+	return loader->Load(handler.get());
+}
+
+void Lookup(const Node &p, multimap<Node, Node> &edges, set<Node> *q)
+{
+	pair<multimap<Node, Node>::iterator, multimap<Node, Node>::iterator> r;
+	r = edges.equal_range(p);
+	if (r.first == r.second) {
+		q->insert(p);
+		return;
+	}
+	set<Node> s;
+	for (multimap<Node, Node>::iterator it=r.first;it!=r.second;++it) {
+		const Node &tail = it->second;
+		s.insert(tail);
+	}
+	for (set<Node>::const_iterator it=s.begin();it!=s.end();++it) {
+		Lookup(*it, edges, q);
+	}
+}
+
+void PrintIncompatiblePorts(const Port *from, const Port *to)
+{
+	cerr << "  from" << endl
+		 << "    port-id: " << from->port_id() << endl
+		 << "    module-id: " << from->module_id() << endl
+		 << "  to" << endl
+		 << "    port-id: " << to->port_id() << endl
+		 << "    module-id: " << to->module_id() << endl;
+}
+
+} // namespace
+
+bool Reach(sqlite3 *db)
+{
+	boost::ptr_multimap<boost::uuids::uuid, Port> inports;
+	if (!LoadInputPorts(db, &inports)) return false;
+
+	boost::ptr_map<Node, Port> outports;
+	if (!LoadOutputPorts(db, &outports)) return false;
+
+	ScopeSet scopes;
+	Mmap mmap;
+	Umap umap;
+	if (!LoadScopes(db, &scopes, &mmap, &umap)) return false;
+
+	multimap<Node, Node> edges;
+	if (!LoadEdges(db, &edges)) return false;
+
+	boost::scoped_ptr<db::ReachDriver> driver(new db::ReachDriver(db));
+	// trace from each input-port
+	for (boost::ptr_multimap<boost::uuids::uuid, Port>::const_iterator it=inports.begin();it!=inports.end();++it) {
+		const boost::uuids::uuid &module_id = it->first;
+		const Port *inport = it->second;
+
+		pair<Mmap::iterator, Mmap::iterator> r;
+		r = mmap.equal_range(module_id);
+		for (Mmap::iterator rit=r.first;rit!=r.second;++rit) {
+			const boost::uuids::uuid &uuid = rit->second->uuid();
+			Node p(uuid, inport->port_id());
+			set<Node> t;
+			Lookup(p, edges, &t);
+			for (set<Node>::const_iterator tit=t.begin();tit!=t.end();++tit) {
+				const Node &o = *tit;
+				if (o.port_id() <= 0) {
+					cerr << "invalid port-id of edge: " << o.port_id() << endl;
+					return false;
+				}
+				// find corresponding output-port
+				Umap::const_iterator uit = umap.find(o.uuid());
+				if (uit == umap.end()) {
+					cerr << "missing node with uuid: " << o.uuid() << endl;
+					return false;
+				}
+				const boost::uuids::uuid &om = uit->second->module_id();
+				Node ok(om, o.port_id());
+				boost::ptr_map<Node, Port>::const_iterator oit = outports.find(ok);
+				if (oit == outports.end()) {
+					cerr << "lost without corresponding edge or output-port" << endl;
+					cerr << "  port-id: " << o.port_id() << endl;
+					cerr << "  module-id: " << uit->second->module_id() << endl;
+					cerr << "  uuid: " << uit->second->uuid() << endl;
+					if (!uit->second->label().empty()) cerr << "  label: " <<  uit->second->label() << endl;
+					return false;
+				}
+				// check if PQ types of both sides are compatible
+				if (inport->pq_type() == 's') {
+					switch (oit->second->pq_type()) {
+					case 'x':
+						cerr << "found invalid edge from a state to a static-parameter" << endl;
+						PrintIncompatiblePorts(inport, oit->second);
+						return false;
+					case 'v':
+						cerr << "found invalid edge from a variable-parameter to a static-parameter" << endl;
+						PrintIncompatiblePorts(inport, oit->second);
+						return false;
+					}
+				}
+				if (!driver->Save(tit->uuid(), oit->second->physical_quantity_id(),
+								  uuid, inport->physical_quantity_id())) {
+					return false;
+				}
+			}
+		}
+	}
+	return true;
+}

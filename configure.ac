@@ -1,0 +1,169 @@
+#                                               -*- Autoconf -*-
+# Process this file with autoconf to produce a configure script.
+
+AC_PREREQ([2.61])
+AC_INIT([Flint], [1.2], [flint@oist.jp])
+AM_INIT_AUTOMAKE([-Wall -Wno-extra-portability -Werror foreign subdir-objects])
+AC_CONFIG_HEADERS([config.h])
+AC_CONFIG_MACRO_DIR([config])
+AC_LANG([C++])
+
+# Checks for programs.
+
+# check if our compiler is gcc/g++-compatible, and then use the WARNINGCFLAGS trick
+# to append warning flags as follows:
+# http://www.gnu.org/software/automake/manual/automake.html#Flag-Variables-Ordering
+AC_PROG_CC
+: ${WARNINGCFLAGS=""}
+AS_IF([test "$GCC" = yes],
+      [WARNINGCFLAGS="-Wall -Wextra -Wcast-align -Wpointer-arith -Wmissing-prototypes -Wstrict-prototypes -Wnested-externs -Wwrite-strings"])
+AC_SUBST([WARNINGCFLAGS])
+AC_PROG_CXX
+: ${WARNINGCXXFLAGS=""}
+AS_IF([test "$GXX" = yes],
+      [WARNINGCXXFLAGS="-Wall -Wextra -Wcast-align -Wpointer-arith -Wmissing-declarations"])
+AC_SUBST([WARNINGCXXFLAGS])
+
+LT_INIT
+AC_PROG_INSTALL
+AC_PROG_LEX
+AC_PROG_YACC
+
+AC_ARG_WITH([protoc],
+        [AS_HELP_STRING([--with-protoc],
+                [Specify path of protoc])])
+AS_IF([test "x$with_protoc" = "x"],[AC_SUBST([PROTOC_EXECUTABLE],[protoc])],
+      [test -f "$with_protoc"],[AC_SUBST([PROTOC_EXECUTABLE],[$with_protoc])],
+      [AC_MSG_ERROR([could not find protoc, please specify its right location by --with-protoc])])
+
+# Checks for libraries.
+AC_ARG_ENABLE(thread,
+      [AS_HELP_STRING([--enable-thread],
+        [Enable thread support. Available values: posix, windows.
+         Default: no])],
+      [],
+      [enable_thread=no])
+AS_IF([test "x$enable_thread" = "xposix"],[AX_PTHREAD])
+AS_IF([test "x$enable_thread" = "xposix"],[AC_DEFINE([USING_PTHREAD],[1],['Using POSIX Threads (pthreads)'])],
+      [test "x$enable_thread" = "xwindows"],[AC_DEFINE([USING_WINTHREAD],[1],['Using Windows Threads'])],
+      [test "x$enable_thread" != "xno"],[AC_MSG_ERROR([unknown type of thread: $enable_thread])])
+
+BOOST_REQUIRE([1.57.0])
+BOOST_FILESYSTEM
+BOOST_HASH
+BOOST_MATH
+BOOST_POINTER_CONTAINER
+BOOST_PROGRAM_OPTIONS
+BOOST_SMART_PTR
+BOOST_UNORDERED
+BOOST_UUID
+BOOST_XPRESSIVE
+BOOST_TEST
+
+# Boost.Interprocess uses pthread system calls in POSIX systems;
+# see <http://www.boost.org/doc/libs/1_55_0/doc/html/interprocess.html>.
+AC_SEARCH_LIBS([shm_open],[rt])
+
+AC_ARG_ENABLE(tcp,
+        [AS_HELP_STRING([--enable-tcp],
+                [Enable TCP support. Default: yes])],
+        [],
+        [enable_tcp=yes])
+AS_IF([test "x$enable_tcp" != xno],[BOOST_ASIO])
+AS_IF([test "x$enable_tcp" != xno],[AC_DEFINE([ENABLE_TCP],[1],[Define to 1 if TCP support is enabled])])
+AM_CONDITIONAL([ENABLE_TCP],[test "x$enable_tcp" != xno])
+
+PKG_CHECK_MODULES([CLIBSEDML],[clibsedml])
+PKG_CHECK_MODULES([LIBSBML],[libsbml])
+PKG_CHECK_MODULES([LIBZIP],[libzip >= 0.11.2])
+PKG_CHECK_MODULES([SOSLIB],[libODES])
+PKG_CHECK_MODULES([PROTOBUF],[protobuf])
+
+AC_ARG_WITH([sundials],
+        [AS_HELP_STRING([--with-sundials],
+                [Specify prefix of SUNDIALS])])
+SUNDIALS_CFLAGS=
+SUNDIALS_LIBS="-lsundials_cvode -lsundials_cvodes -lsundials_ida -lsundials_kinsol -lsundials_nvecserial"
+if test -d "$with_sundials"; then
+    SUNDIALS_CFLAGS="-I$with_sundials/include"
+    SUNDIALS_LIBS="-L$with_sundials/lib $SUNDIALS_LIBS"
+elif test ! -z "$with_sundials"; then
+    AC_MSG_ERROR([$with_sundials is not a directory, please specify valid location of SUNDIALS])
+fi
+AC_SUBST([SUNDIALS_CFLAGS])
+AC_SUBST([SUNDIALS_LIBS])
+
+AM_PATH_XML2([2.7.3])
+
+# Checks for header files.
+AC_CHECK_HEADERS([arpa/inet.h float.h stdint.h string.h sys/resource.h sys/time.h unistd.h])
+
+# Checks for typedefs, structures, and compiler characteristics.
+AC_HEADER_STDC
+AC_HEADER_STDBOOL
+AC_C_INLINE
+AC_TYPE_INT64_T
+AC_TYPE_PID_T
+AC_TYPE_SIZE_T
+AC_TYPE_SSIZE_T
+AC_TYPE_UINT32_T
+
+# Checks for library functions.
+AC_FUNC_ERROR_AT_LINE
+AC_FUNC_FORK
+# The following 2 macros prevent cross-compilation with MinGW
+#AC_FUNC_MALLOC
+#AC_FUNC_REALLOC
+AC_CHECK_FUNCS([floor gethostname gettimeofday memset mkstemp pow putenv socket sqrt strerror strstr])
+
+AC_CONFIG_FILES([Makefile
+                 lib/Makefile
+                 src/Makefile
+                 test/Makefile
+                 test/base/Makefile
+                 test/sys/Makefile
+                 test/common/Makefile
+                 test/common/runtime/Makefile
+                 test/csv2isd/Makefile
+                 test/flint-assign/Makefile
+                 test/flint-bcc/Makefile
+                 test/flint-cellmlpp/Makefile
+                 test/flint-cellmltr/Makefile
+                 test/flint-combineall/Makefile
+                 test/flint-euler/Makefile
+                 test/flint-event/Makefile
+                 test/flint-evolve/Makefile
+                 test/flint-extra/Makefile
+                 test/flint-file/Makefile
+                 test/flint-flow/Makefile
+                 test/flint-impl/Makefile
+                 test/flint-init/Makefile
+                 test/flint-iv/Makefile
+                 test/flint-layout/Makefile
+                 test/flint-nc/Makefile
+                 test/flint-phml/Makefile
+                 test/flint-phml-xfail/Makefile
+                 test/flint-phsp/Makefile
+                 test/flint-phz/Makefile
+                 test/flint-rk4/Makefile
+                 test/flint-sbml/Makefile
+                 test/flint-sbmlenc/Makefile
+                 test/flint-sort/Makefile
+                 test/flint-tac/Makefile
+                 test/flint-taskpref/Makefile
+                 test/flint-taskspec/Makefile
+                 test/flint-tsc/Makefile
+                 test/flint-unit/Makefile
+                 test/isd2csv/Makefile
+                 test/isdbswap/Makefile
+                 test/isdcut/Makefile
+                 test/isddiff/Makefile
+                 test/isdhead/Makefile
+                 test/isdls/Makefile
+                 test/isdmerge/Makefile
+                 test/isdrand/Makefile
+                 test/isdsort/Makefile
+                 test/isdstrip/Makefile
+                 test/isdwc/Makefile])
+
+AC_OUTPUT

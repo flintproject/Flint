@@ -1,0 +1,41 @@
+.PHONY: all clean check check0 check2 check9
+
+all: TEST.isd
+
+check0: DATADIR/0/TEST.csv 0.out/TEST.csv
+	diff -u $^
+
+check2: DATADIR/2/TEST.csv 2.out/TEST.csv
+	diff -u $^
+
+check9: DATADIR/9/TEST.csv 9.out/TEST.csv
+	diff -u $^
+
+check: check0 check2 check9
+
+clean:
+	-rm -rf 0.out 2.out 9.out TEST.isd
+
+TEST.isd: DATADIR/TEST.csv
+	csv2isd $< $@
+
+0.out 2.out 9.out:
+	mkdir $@
+
+0.out/TEST.isd: TEST.isd | 0.out
+	isdsort $< $@
+
+0.out/TEST.csv: 0.out/TEST.isd
+	isd2csv -o $@ $<
+
+2.out/TEST.isd: TEST.isd | 2.out
+	isdsort $< $@ 2
+
+2.out/TEST.csv: 2.out/TEST.isd
+	isd2csv -o $@ $<
+
+9.out/TEST.isd: TEST.isd | 9.out
+	isdsort $< $@ 9
+
+9.out/TEST.csv: 9.out/TEST.isd
+	isd2csv -o $@ $<

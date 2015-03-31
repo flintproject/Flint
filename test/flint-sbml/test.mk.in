@@ -1,0 +1,15 @@
+.PHONY: all clean check
+
+all: OUTPUT
+
+check: OUTPUT.diff
+
+clean:
+	-rm -f OUTPUT OUTPUT.db OUTPUT.diff
+
+OUTPUT: INPUT
+	test-input1 OUTPUT.db $<
+	flint-sbml OUTPUT.db > $@
+
+OUTPUT.diff: EXPECTED OUTPUT
+	diff -u $^ > $@

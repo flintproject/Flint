@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<is:insilico-model xmlns:m="http://www.w3.org/1998/Math/MathML" xmlns:is="http://www.physiome.jp/ns/insilicoml" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemalocation="http://www.physiome.jp/ns/insilicoml-1.0 insilicoml.xsd" version="1.0">
+  <is:header>
+    <is:model-name>time_units</is:model-name>
+    <is:meta-information>
+      <is:article-set />
+      <is:isml-creator-set />
+    </is:meta-information>
+    <is:date>
+      <is:created>2011-10-20T15:49:00+09:00</is:created>
+      <is:last-modified>2011-10-20T15:49:00+09:00</is:last-modified>
+    </is:date>
+    <is:numerical-configuration>
+      <is:algorithm>
+        <is:integration name="euler"/>
+       </is:algorithm>
+       <is:time-discretization unit-id="9">
+         <is:step>1</is:step>
+         <is:step-min/>
+         <is:step-max/>
+       </is:time-discretization>
+       <is:simulation-time-span unit-id="10">100</is:simulation-time-span>
+    </is:numerical-configuration>
+    <is:description>An example using user-defined time units</is:description>
+    <is:generator>sisml</is:generator>
+  </is:header>
+  <is:unit-set>
+    <is:unit unit-id="0">
+      <is:name>dimensionless</is:name>
+    </is:unit>
+    <is:unit unit-id="1">
+      <is:name>meter</is:name>
+    </is:unit>
+    <is:unit unit-id="2">
+      <is:name>kilogram</is:name>
+    </is:unit>
+    <is:unit unit-id="3">
+      <is:name>second</is:name>
+    </is:unit>
+    <is:unit unit-id="4">
+      <is:name>ampere</is:name>
+    </is:unit>
+    <is:unit unit-id="5">
+      <is:name>kelvin</is:name>
+    </is:unit>
+    <is:unit unit-id="6">
+      <is:name>mole</is:name>
+    </is:unit>
+    <is:unit unit-id="7">
+      <is:name>candela</is:name>
+    </is:unit>
+    <is:unit unit-id="8">
+      <is:name>radian</is:name>
+    </is:unit>
+    <is:unit unit-id="9">
+      <is:name>minute</is:name>
+      <is:element unit-id="3" multiplier="60"/>
+    </is:unit>
+    <is:unit unit-id="10">
+      <is:name>hour</is:name>
+      <is:element unit-id="9" multiplier="60"/>
+    </is:unit>
+    <is:unit unit-id="11">
+      <is:name>day</is:name>
+      <is:element unit-id="10" multiplier="24"/>
+    </is:unit>
+    <is:unit unit-id="12">
+      <is:name>week</is:name>
+      <is:element unit-id="11" multiplier="7"/>
+    </is:unit>
+    <is:unit unit-id="13">
+      <is:name>month</is:name>
+      <is:element unit-id="11" multiplier="30"/>
+    </is:unit>
+    <is:unit unit-id="14">
+      <is:name>year</is:name>
+      <is:element unit-id="11" multiplier="365"/>
+    </is:unit>
+    <is:unit unit-id="15">
+      <is:name>decade</is:name>
+      <is:element unit-id="14" multiplier="10"/>
+    </is:unit>
+    <is:unit unit-id="16">
+      <is:name>century</is:name>
+      <is:element unit-id="14" multiplier="100"/>
+    </is:unit>
+    <is:unit unit-id="17">
+      <is:name>millennium</is:name>
+      <is:element unit-id="14" multiplier="1000"/>
+    </is:unit>
+  </is:unit-set>
+  <is:edge-set />
+  <is:module-set>
+    <is:module module-id="816ec3b0-fae6-11e0-ad03-977d5c28819f" type="functional-unit">
+      <is:property>
+        <is:name>x</is:name>
+        <is:capsulation state="false" />
+        <is:template state="false" />
+        <is:instance state="false" />
+        <is:keyword-set />
+        <is:track />
+        <is:frame-coordinate />
+        <is:description>x</is:description>
+      </is:property>
+      <is:port-set />
+      <is:physical-quantity-set>
+        <is:physical-quantity type="morphology" physical-quantity-id="1"><is:name>shape</is:name></is:physical-quantity>
+        <is:physical-quantity type="variable-parameter" physical-quantity-id="2">
+          <is:name>x</is:name>
+          <is:implementation>
+            <is:definition format="mathml" type="ae">
+              <m:math>
+                <m:apply>
+                  <m:eq />
+                  <m:ci>x</m:ci>
+                  <m:apply>
+                    <m:ln />
+                    <m:apply>
+                      <m:plus />
+                      <m:eulergamma />
+                      <m:ci>time</m:ci>
+                    </m:apply>
+                  </m:apply>
+                </m:apply>
+              </m:math>
+            </is:definition>
+          </is:implementation>
+          <is:dimension type="scalar" />
+          <is:value-type-set>
+            <is:value-type unit-id="9" precision="double" />
+          </is:value-type-set>
+          <is:initial-value></is:initial-value>
+          <is:problem-condition-set />
+          <is:description>The logarithm curve</is:description>
+        </is:physical-quantity>
+      </is:physical-quantity-set>
+      <is:event-set />
+      <is:morphology />
+    </is:module>
+  </is:module-set>
+  <is:controller-set />
+</is:insilico-model>

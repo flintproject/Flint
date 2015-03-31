@@ -1,0 +1,58 @@
+This document defines the specification of ISDF version 1.
+
+= Specification
+
+[As a notation, the field name of the format are surrounded with '*'.]
+
+An ISDF file contains a *header* immediately followed by a *body*.
+
+The *header* starts with a fixed-length *prologue* part immediately followed by
+*comment* part of arbitrary length, then a variable-length *descriptions*,
+and ends with optional variable-length *units*.
+
+The *prologue* part consists of *magic*, *version*, *endian*, *padding*,
+*timestamp*, *num_variables*, *num_bytes_comment*, *num_bytes_descs*, and
+*num_bytes_units* in the respective order.
+The *magic* is 4 byte-long consecutive block, which always filled with "ISDF".
+The *version* is 1 byte (char) filled with the ISDF version, currently 1.
+The *endian* is 1 byte (char) designating the byte order for data words in
+this file. It is filled with 1 if the endianness is little-endian, or with 0
+otherwise i.e. big-endian.
+The *padding* is 2 byte-long consecutive block, which filled with 0 (NUL).
+The *timestamp* is a 20 byte-long string representing a timestamp in the date
+and time format defined in [RFC3339] with "Z" as its time-offset. For example,
+"1990-12-31T23:59:60Z" is a valid string for *timestamp*.
+The *num_variables* is of type uint32_t, which value is the number of variables.
+The *num_bytes_comment* is of type uint32_t, which value is the byte-length
+of the following *comment* in the *header*.
+The *num_bytes_descs* is of type uint32_t, which value is the byte-length of
+the following *descriptions* in the *header*.
+The *num_bytes_units* is of type uint32_t, which value is 0 if *units* is
+omitted, or the byte-length of the following *units* in the *header* otherwise.
+
+The *comment* is an array of bytes.
+
+The *descriptions* consist of multiple *description*s; each of them corresponds
+to a single variable, so there are as many *description*s as the number of
+variables. The first 4 bytes (uint32_t) of *description* specifies the byte-length
+of the *title* of the corresponding variable, and then the string of the *title*
+follows.
+
+The *units* consist of multiple *unit*s; each of them corresponds to a single
+variable, so there are as many *unit*s as the number of variables. If the first
+4 bytes (uint32_t) of a *unit* has value 0, then its corresponding variable's
+unit is omitted. Otherwise the value specifies the byte-length of the unit name
+of the corresponding variable, and then the string of the unit name, e.g.
+"millisecond", follows.
+
+The *body* consists of zero or more *step*s; each of them corresponds to values
+of all of variables at a time step.
+Every *step* has the same, fixed length of (the number of variables) * 8 (double)
+bytes.
+Each double value in the step corresponds to the value of a respective variable
+in the order specified in the *descriptions*.
+
+
+= References
+
+[RFC3339] http://tools.ietf.org/html/rfc3339

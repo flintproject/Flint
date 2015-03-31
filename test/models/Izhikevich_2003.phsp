@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phsp version="1.0" xmlns="http://www.physiodesigner.org/2013/ns/phsp/1.0" xmlns:m="http://www.w3.org/1998/Math/MathML">
+  <model iref="Izhikevich_2003_model.isml" format="phml">
+    <parameter-set>
+      <parameter name="a">
+        <range type="enum">0.02,0.1</range>
+      </parameter>
+      <parameter name="b">
+        <range type="interval" lower="0.2" upper="0.25" step="0.05" />
+      </parameter>
+      <parameter name="c">
+        <range type="enum">-65,-55,50</range>
+      </parameter>
+      <parameter name="d">
+        <range type="enum">0.05,2,4,8</range>
+      </parameter>
+    </parameter-set>
+    <target-set>
+      <target module-id="055edf9e-8eb2-4812-abb2-e3e6f5be12e1" physical-quantity-id="3"> <!-- a -->
+        <value><m:math><m:ci>a</m:ci></m:math></value>
+      </target>
+      <target module-id="055edf9e-8eb2-4812-abb2-e3e6f5be12e1" physical-quantity-id="4"> <!-- b -->
+        <value><m:math><m:ci>b</m:ci></m:math></value>
+      </target>
+      <target module-id="e92c7a90-6bf0-4c35-817d-fd9505050830" physical-quantity-id="3"> <!-- c -->
+        <value><m:math><m:ci>c</m:ci></m:math></value>
+      </target>
+      <target module-id="055edf9e-8eb2-4812-abb2-e3e6f5be12e1" physical-quantity-id="5"> <!-- d -->
+        <value><m:math><m:ci>d</m:ci></m:math></value>
+      </target>
+    </target-set>
+    <description></description>
+  </model>
+  <model iref="Izhikevich_2003_neuron_model.isml" format="phml">
+    <parameter-set>
+      <parameter name="a">
+        <range type="enum">0.02,0.1</range>
+      </parameter>
+      <parameter name="b">
+        <range type="interval" lower="0.2" upper="0.25" step="0.05" />
+      </parameter>
+      <parameter name="c">
+        <range type="enum">-65,-55,50</range>
+      </parameter>
+      <parameter name="d">
+        <range type="enum">0.05,2,4,8</range>
+      </parameter>
+    </parameter-set>
+    <target-set>
+      <target module-id="055edf9e-8eb2-4812-abb2-e3e6f5be12e1" physical-quantity-id="3"> <!-- a -->
+        <value><m:math><m:ci>a</m:ci></m:math></value>
+      </target>
+      <target module-id="055edf9e-8eb2-4812-abb2-e3e6f5be12e1" physical-quantity-id="4"> <!-- b -->
+        <value><m:math><m:ci>b</m:ci></m:math></value>
+      </target>
+      <target module-id="e92c7a90-6bf0-4c35-817d-fd9505050830" physical-quantity-id="3"> <!-- c -->
+        <value><m:math><m:ci>c</m:ci></m:math></value>
+      </target>
+      <target module-id="055edf9e-8eb2-4812-abb2-e3e6f5be12e1" physical-quantity-id="5"> <!-- d -->
+        <value><m:math><m:ci>d</m:ci></m:math></value>
+      </target>
+    </target-set>
+    <description></description>
+  </model>
+</phsp>

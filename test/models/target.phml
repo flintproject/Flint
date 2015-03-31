@@ -1,0 +1,223 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<is:insilico-model  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:svg="http://www.w3.org/2000/svg" xmlns:is="http://www.physiome.jp/ns/insilicoml" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:m="http://www.w3.org/1998/Math/MathML" version="1.0" xsi:schemalocation="http://www.physiome.jp/ns/insilicoml-1.0 insilicoml.xsd">
+<is:header>
+<is:model-name>target</is:model-name>
+<is:meta-information>
+<is:article-set/>
+<is:creator-set/>
+</is:meta-information>
+<is:date>
+<is:created>2014-09-25T03:18:04+09:00</is:created>
+<is:last-modified>2014-09-25T03:18:04+09:00</is:last-modified>
+</is:date>
+<is:numerical-configuration>
+<is:time-discretization unit-id="12" evolution="true">
+<is:step>0.01</is:step>
+<is:step-min/>
+<is:step-max/>
+</is:time-discretization>
+<is:simulation-time-span unit-id="12">10</is:simulation-time-span>
+<is:algorithm>
+<is:integration name="euler"/>
+</is:algorithm>
+</is:numerical-configuration>
+<is:description/>
+</is:header>
+<is:unit-set>
+<is:unit unit-id="0">
+<is:name>dimensionless</is:name>
+</is:unit>
+<is:unit unit-id="1">
+<is:name>metre</is:name>
+</is:unit>
+<is:unit unit-id="2">
+<is:name>kilogram</is:name>
+</is:unit>
+<is:unit unit-id="3">
+<is:name>second</is:name>
+</is:unit>
+<is:unit unit-id="4">
+<is:name>ampere</is:name>
+</is:unit>
+<is:unit unit-id="5">
+<is:name>kelvin</is:name>
+</is:unit>
+<is:unit unit-id="6">
+<is:name>mole</is:name>
+</is:unit>
+<is:unit unit-id="7">
+<is:name>candela</is:name>
+</is:unit>
+<is:unit unit-id="8">
+<is:name>radian</is:name>
+</is:unit>
+<is:unit unit-id="9">
+<is:name>meter</is:name>
+<is:element unit-id="1"/>
+</is:unit>
+<is:unit unit-id="10">
+<is:name>gram</is:name>
+<is:element unit-id="2" prefix="milli"/>
+</is:unit>
+<is:unit unit-id="11">
+<is:name>degree</is:name>
+</is:unit>
+<is:unit unit-id="12">
+<is:name>millisecond</is:name>
+<is:element unit-id="3" exponent="1" prefix="milli"/>
+</is:unit>
+<is:unit unit-id="13">
+<is:name>volt</is:name>
+<is:element unit-id="1" exponent="2"/>
+<is:element unit-id="2" exponent="1"/>
+<is:element unit-id="3" exponent="-3"/>
+<is:element unit-id="4" exponent="-1"/>
+</is:unit>
+<is:unit unit-id="14">
+<is:name>siemens</is:name>
+<is:element unit-id="1" exponent="-2"/>
+<is:element unit-id="2" exponent="-1"/>
+<is:element unit-id="3" exponent="3"/>
+<is:element unit-id="4" exponent="2"/>
+</is:unit>
+<is:unit unit-id="15">
+<is:name>farad</is:name>
+<is:element unit-id="1" exponent="-2"/>
+<is:element unit-id="2" exponent="-1"/>
+<is:element unit-id="3" exponent="4"/>
+<is:element unit-id="4" exponent="2"/>
+</is:unit>
+</is:unit-set>
+
+<is:module-set>
+
+<is:module module-id="c19a4282-52b2-4a93-ad56-56e9b801dfe7" type="functional-unit">
+<is:property>
+<is:name>B</is:name>
+<is:capsulation state="true">
+<is:capsulated-by module-id="21835270-877a-4211-be23-9fbcc7aaa9a0"/>
+</is:capsulation>
+<is:template state="true"/>
+<is:keyword-set/>
+<is:track>
+<is:involved db-id="this" date="2014-09-25T03:30:47+09:00"/>
+</is:track>
+<is:frame-coordinate/>
+<is:description/>
+</is:property>
+<is:port-set/>
+
+<is:physical-quantity-set>
+<is:physical-quantity physical-quantity-id="1" type="state">
+<is:name>b</is:name>
+<is:dimension type="scalar"/>
+<is:value-type-set>
+<is:value-type precision="double" unit-id="0"/>
+</is:value-type-set>
+<is:initial-value>
+<is:definition type="ae" format="mathml">
+<m:math><m:apply><m:eq/><m:ci>b</m:ci><m:cn>1</m:cn></m:apply></m:math>
+</is:definition>
+</is:initial-value>
+<is:implementation>
+<is:definition type="ode" sub-type="" format="mathml">
+<m:math><m:apply><m:eq/><m:apply><m:diff/><m:bvar><m:ci>time</m:ci></m:bvar><m:ci>b</m:ci></m:apply><m:apply><m:times/><m:apply><m:minus/><m:ci>alpha</m:ci></m:apply><m:ci>b</m:ci></m:apply></m:apply></m:math>
+</is:definition>
+</is:implementation>
+<is:problem-condition-set/>
+<is:description/>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="2" type="static-parameter">
+<is:name>alpha</is:name>
+<is:dimension type="scalar"/>
+<is:value-type-set>
+<is:value-type precision="double" unit-id="0"/>
+</is:value-type-set>
+<is:initial-value/>
+<is:implementation>
+<is:definition type="ae" sub-type="" format="mathml">
+<m:math><m:apply><m:eq/><m:ci>alpha</m:ci><m:cn>1</m:cn></m:apply></m:math>
+</is:definition>
+</is:implementation>
+<is:problem-condition-set/>
+<is:description/>
+</is:physical-quantity>
+</is:physical-quantity-set>
+<is:morphology/>
+<is:event-set/>
+</is:module>
+
+<is:module module-id="21835270-877a-4211-be23-9fbcc7aaa9a0" type="capsule">
+<is:property>
+<is:name>A</is:name>
+<is:capsulation state="false"/>
+<is:template state="true"/>
+<is:track>
+<is:involved db-id="this" date="2014-09-25T03:31:12+09:00"/>
+</is:track>
+<is:frame-coordinate/>
+<is:description/>
+<is:keyword-set>
+<is:word/>
+</is:keyword-set>
+</is:property>
+<is:port-set/>
+<is:physical-quantity-set/>
+<is:morphology/>
+</is:module>
+</is:module-set>
+
+<is:template-set>
+<is:template template-id="a0d02ed5-ee82-4ef1-9a3c-5693d3472c00" ref-module-id="21835270-877a-4211-be23-9fbcc7aaa9a0"/>
+</is:template-set>
+<is:controller-set/>
+
+<is:edge-set>
+<is:edge edge-id="1d354c2b-4455-4cbb-a316-92e2e9e54155" type="capsular">
+<is:tail module-id="c19a4282-52b2-4a93-ad56-56e9b801dfe7" port-id="0"/>
+<is:head module-id="21835270-877a-4211-be23-9fbcc7aaa9a0" port-id="0"/>
+<is:operation>encapsulation</is:operation>
+<is:description/>
+</is:edge>
+</is:edge-set>
+<is:timeseries-set/>
+
+<is:instance-set>
+<is:instance module-id="39d5bc1f-380a-4751-8663-4142149c6bbe" label="1">
+<is:instance-of template-id="a0d02ed5-ee82-4ef1-9a3c-5693d3472c00"/>
+<is:target-module-set/>
+</is:instance>
+<is:instance module-id="8e425c12-147b-4832-8faf-70c66ae8bfa2" label="2">
+<is:instance-of template-id="a0d02ed5-ee82-4ef1-9a3c-5693d3472c00"/>
+<is:target-module-set>
+<is:target-module module-id="c19a4282-52b2-4a93-ad56-56e9b801dfe7">
+<is:target-physical-quantity-set>
+<is:target-physical-quantity physical-quantity-id="1">
+<is:initial-value>
+<is:definition type="ae" format="mathml">
+<m:math><m:apply><m:eq/><m:ci>b</m:ci><m:cn>2</m:cn></m:apply></m:math>
+</is:definition>
+</is:initial-value>
+</is:target-physical-quantity>
+</is:target-physical-quantity-set>
+</is:target-module>
+</is:target-module-set>
+</is:instance>
+<is:instance module-id="df1c7a9e-3395-4b2b-9553-537cd669ce98" label="3">
+<is:instance-of template-id="a0d02ed5-ee82-4ef1-9a3c-5693d3472c00"/>
+<is:target-module-set>
+<is:target-module module-id="c19a4282-52b2-4a93-ad56-56e9b801dfe7">
+<is:target-physical-quantity-set>
+<is:target-physical-quantity physical-quantity-id="2">
+<is:implementation>
+<is:definition type="ae" format="mathml">
+<m:math><m:apply><m:eq/><m:ci>alpha</m:ci><m:cn>0.5</m:cn></m:apply></m:math>
+</is:definition>
+</is:implementation>
+</is:target-physical-quantity>
+</is:target-physical-quantity-set>
+</is:target-module>
+</is:target-module-set>
+</is:instance>
+</is:instance-set>
+</is:insilico-model>

@@ -1,0 +1,7 @@
+found invalid edge from a variable-parameter to a static-parameter
+  from
+    port-id: 1
+    module-id: 85ded370-75f6-11e4-ac26-ff6c3d89c805
+  to
+    port-id: 1
+    module-id: 57a14bc8-75f6-11e4-aa25-37030d28703a

@@ -1,0 +1,524 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<is:insilico-model xmlns:is="http://www.physiome.jp/ns/insilicoml" xmlns:m="http://www.w3.org/1998/Math/MathML" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" version="1.0" xsi:schemalocation="http://www.physiome.jp/ns/insilicoml-1.0 insilicoml.xsd">
+  <is:header>
+    <is:model-name>no_name</is:model-name>
+    <is:meta-information>
+      <is:article-set/>
+      <is:isml-creator-set>
+		<is:creator>
+          <is:person-name>
+            <is:first-name>Daisuke</is:first-name>
+            <is:middle-name/>
+            <is:last-name>Yamasaki</is:last-name>
+          </is:person-name>
+          <is:affiliation-set>
+            <is:affiliation>
+              <is:organization>MEI Center, Osaka University</is:organization>
+              <is:contact>
+                <is:address>Suita, Osaka, Japan</is:address>
+              </is:contact>
+            </is:affiliation>
+          </is:affiliation-set>
+          <is:target-model-set/>
+        </is:creator>
+	  </is:isml-creator-set>
+    </is:meta-information>
+    <is:date>
+      <is:created>2009-12-09T01:00:41+09:00</is:created>
+      <is:last-modified>2009-12-09T01:00:41+09:00</is:last-modified>
+    </is:date>
+    <is:numerical-configuration>
+      <is:time-discretization unit-id="12">
+        <is:step>0.001</is:step>
+        <is:step-min>0.0001</is:step-min>
+        <is:step-max>0.01</is:step-max>
+      </is:time-discretization>
+      <is:simulation-time-span unit-id="12">1.5</is:simulation-time-span>
+    </is:numerical-configuration>
+    <is:description/>
+  </is:header>
+  <is:unit-set>
+    <is:unit unit-id="0">
+      <is:name>dimensionless</is:name>
+    </is:unit>
+    <is:unit unit-id="1">
+      <is:name>metre</is:name>
+    </is:unit>
+    <is:unit unit-id="2">
+      <is:name>kilogram</is:name>
+    </is:unit>
+    <is:unit unit-id="3">
+      <is:name>second</is:name>
+    </is:unit>
+    <is:unit unit-id="4">
+      <is:name>ampere</is:name>
+    </is:unit>
+    <is:unit unit-id="5">
+      <is:name>kelvin</is:name>
+    </is:unit>
+    <is:unit unit-id="6">
+      <is:name>mole</is:name>
+    </is:unit>
+    <is:unit unit-id="7">
+      <is:name>candela</is:name>
+    </is:unit>
+    <is:unit unit-id="8">
+      <is:name>radian</is:name>
+    </is:unit>
+    <is:unit unit-id="9">
+      <is:name>meter</is:name>
+      <is:element unit-id="1"/>
+    </is:unit>
+    <is:unit unit-id="10">
+      <is:name>gram</is:name>
+      <is:element unit-id="2" prefix="milli"/>
+    </is:unit>
+    <is:unit unit-id="11">
+      <is:name>degree</is:name>
+    </is:unit>
+    <is:unit unit-id="12">
+      <is:name>millisecond</is:name>
+      <is:element unit-id="3" prefix="milli"/>
+    </is:unit>
+  </is:unit-set>
+  <is:module-set>
+    <is:module module-id="ed3e840f-8915-439d-87f5-d0419b103149" type="container">
+      <is:property>
+        <is:name>Buffer</is:name>
+        <is:capsulation state="false"/>
+        <is:template state="false"/>
+        <is:keyword-set/>
+        <is:track>
+          <is:involved db-id="this" date="2009-12-09T01:04:37+09:00"/>
+        </is:track>
+        <is:frame-coordinate/>
+        <is:description/>
+      </is:property>
+      <is:port-set/>
+      <is:physical-quantity-set>
+        <is:physical-quantity type="morphology" physical-quantity-id="1">
+          <is:name>shape</is:name>
+          <is:implementation>
+            <is:definition type="assign" sub-type="morphology"/>
+          </is:implementation>
+        </is:physical-quantity>
+      </is:physical-quantity-set>
+      <is:morphology/>
+    </is:module>
+
+    <is:module module-id="774fa0b9-de4e-44a9-8f85-349f85d4ee1c" type="container">
+      <is:property>
+        <is:name>Hepatocyte</is:name>
+        <is:capsulation state="false"/>
+        <is:template state="false"/>
+        <is:keyword-set/>
+        <is:track>
+          <is:involved db-id="this" date="2009-12-09T01:04:46+09:00"/>
+        </is:track>
+        <is:frame-coordinate/>
+        <is:description/>
+      </is:property>
+      <is:port-set/>
+      <is:physical-quantity-set>
+        <is:physical-quantity type="morphology" physical-quantity-id="1">
+          <is:name>shape</is:name>
+          <is:implementation>
+            <is:definition type="assign" sub-type="morphology"/>
+          </is:implementation>
+        </is:physical-quantity>
+      </is:physical-quantity-set>
+      <is:morphology/>
+    </is:module>
+
+    <is:module module-id="50228b3c-0ccb-4b61-872c-b0b5fff54ed5" type="functional-unit">
+      <is:property>
+        <is:name>CDFDA_Buf</is:name>
+        <is:capsulation state="false"/>
+        <is:template state="false"/>
+        <is:keyword-set/>
+        <is:track>
+          <is:involved db-id="this" date="2009-12-09T01:04:58+09:00"/>
+        </is:track>
+        <is:frame-coordinate/>
+        <is:description/>
+      </is:property>
+      <is:port-set>
+        <is:port port-id="1" direction="out" ref-physical-quantity-id="2">
+          <is:name>CDFDA_Buf</is:name>
+          <is:description/>
+        </is:port>
+      </is:port-set>
+      <is:physical-quantity-set>
+        <is:physical-quantity type="morphology" physical-quantity-id="1">
+          <is:name>shape</is:name>
+          <is:implementation>
+            <is:definition type="assign" sub-type="morphology"/>
+          </is:implementation>
+        </is:physical-quantity>
+        <is:physical-quantity physical-quantity-id="2" type="state">
+          <is:name>CDFDA_Buf</is:name>
+          <is:dimension type="scalar"/>
+          <is:value-type-set>
+            <is:value-type precision="double" unit-id="0"/>
+          </is:value-type-set>
+          <is:initial-value>
+            <is:definition type="ae" format="mathml">
+              <m:math>
+                <m:apply>
+                  <m:eq/>
+                  <m:ci>CDFDA_Buf</m:ci>
+                  <m:cn>10</m:cn>
+                </m:apply>
+              </m:math>
+            </is:definition>
+          </is:initial-value>
+          <is:implementation>
+            <is:definition type="ode" format="mathml">
+              <m:math>
+                <m:apply>
+                  <m:eq/>
+                  <m:apply>
+                    <m:diff/>
+                    <m:bvar>
+                      <m:ci>time</m:ci>
+                    </m:bvar>
+                    <m:ci>CDFDA_Buf</m:ci>
+                  </m:apply>
+                  <m:apply>
+                    <m:minus/>
+                    <m:apply>
+                      <m:times/>
+                      <m:ci>k2</m:ci>
+                      <m:ci>CDFDA_Buf</m:ci>
+                    </m:apply>
+                  </m:apply>
+                </m:apply>
+              </m:math>
+            </is:definition>
+          </is:implementation>
+          <is:problem-condition-set/>
+          <is:description/>
+        </is:physical-quantity>
+        <is:physical-quantity physical-quantity-id="3" type="static-parameter">
+          <is:name>k2</is:name>
+          <is:dimension type="scalar"/>
+          <is:value-type-set>
+            <is:value-type precision="double" unit-id="0"/>
+          </is:value-type-set>
+          <is:initial-value/>
+          <is:implementation>
+            <is:definition type="ae" format="mathml">
+              <m:math>
+                <m:apply>
+                  <m:eq/>
+                  <m:ci>k2</m:ci>
+                  <m:cn>5</m:cn>
+                </m:apply>
+              </m:math>
+            </is:definition>
+          </is:implementation>
+          <is:problem-condition-set/>
+          <is:description/>
+        </is:physical-quantity>
+      </is:physical-quantity-set>
+      <is:morphology/>
+    </is:module>
+
+    <is:module module-id="4d96c8de-d10a-48e2-a0e0-be9d74e58e78" type="functional-unit">
+      <is:property>
+        <is:name>CDF_Hep_IS</is:name>
+        <is:capsulation state="false"/>
+        <is:template state="false"/>
+        <is:keyword-set/>
+        <is:track>
+          <is:involved db-id="this" date="2009-12-09T01:05:11+09:00"/>
+        </is:track>
+        <is:frame-coordinate/>
+        <is:description/>
+      </is:property>
+      <is:port-set>
+        <is:port port-id="1" direction="in">
+          <is:name>CDFDA_Buf</is:name>
+          <is:description/>
+        </is:port>
+      </is:port-set>
+      <is:physical-quantity-set>
+        <is:physical-quantity type="morphology" physical-quantity-id="1">
+          <is:name>shape</is:name>
+          <is:implementation>
+            <is:definition type="assign" sub-type="morphology"/>
+          </is:implementation>
+        </is:physical-quantity>
+        <is:physical-quantity physical-quantity-id="2" type="variable-parameter">
+          <is:name>CDFDA_Buf</is:name>
+          <is:dimension type="scalar"/>
+          <is:value-type-set>
+            <is:value-type precision="double" unit-id="0"/>
+          </is:value-type-set>
+          <is:initial-value/>
+          <is:implementation>
+            <is:definition type="assign" sub-type="port" format="reference">
+              <is:reference port-id="1"/>
+            </is:definition>
+          </is:implementation>
+          <is:problem-condition-set/>
+          <is:description/>
+        </is:physical-quantity>
+        <is:physical-quantity physical-quantity-id="3" type="static-parameter">
+          <is:name>k2</is:name>
+          <is:dimension type="scalar"/>
+          <is:value-type-set>
+            <is:value-type precision="double" unit-id="0"/>
+          </is:value-type-set>
+          <is:initial-value/>
+          <is:implementation>
+            <is:definition type="ae" format="mathml">
+              <m:math>
+                <m:apply>
+                  <m:eq/>
+                  <m:ci>k2</m:ci>
+                  <m:cn>5</m:cn>
+                </m:apply>
+              </m:math>
+            </is:definition>
+          </is:implementation>
+          <is:problem-condition-set/>
+          <is:description/>
+        </is:physical-quantity>
+        <is:physical-quantity physical-quantity-id="4" type="static-parameter">
+          <is:name>k1</is:name>
+          <is:dimension type="scalar"/>
+          <is:value-type-set>
+            <is:value-type precision="double" unit-id="0"/>
+          </is:value-type-set>
+          <is:initial-value/>
+          <is:implementation>
+            <is:definition type="assign" sub-type="bridge"/> 
+			<is:bridge type="sbml" sub-type="parameter" direction="get">
+			  <is:connector type="reaction">re1</is:connector>
+			  <is:connector type="parameter">k1</is:connector>
+            </is:bridge>
+          </is:implementation>
+          <is:problem-condition-set/>
+          <is:description/>
+        </is:physical-quantity>
+        <is:physical-quantity physical-quantity-id="5" type="state">
+          <is:name>CDFDA_Hep_IS</is:name>
+          <is:dimension type="scalar"/>
+          <is:value-type-set>
+            <is:value-type precision="double" unit-id="0"/>
+          </is:value-type-set>
+          <is:initial-value>
+            <is:definition type="ae" format="mathml">
+              <m:math>
+                <m:apply>
+                  <m:eq/>
+                  <m:ci>CDFDA_Hep_IS</m:ci>
+                  <m:cn>0</m:cn>
+                </m:apply>
+              </m:math>
+            </is:definition>
+          </is:initial-value>
+          <is:implementation>
+            <is:definition type="ode" format="mathml">
+              <m:math>
+                <m:apply>
+                  <m:eq/>
+                  <m:apply>
+                    <m:diff/>
+                    <m:bvar>
+                      <m:ci>time</m:ci>
+                    </m:bvar>
+                    <m:ci>CDFDA_Hep_IS</m:ci>
+                  </m:apply>
+                  <m:apply>
+                    <m:minus/>
+                    <m:apply>
+                      <m:times/>
+                      <m:ci>k2</m:ci>
+                      <m:ci>CDFDA_Buf</m:ci>
+                    </m:apply>
+                    <m:apply>
+                      <m:times/>
+                      <m:ci>k1</m:ci>
+                      <m:ci>CDFDA_Hep_IS</m:ci>
+                    </m:apply>
+                  </m:apply>
+                </m:apply>
+              </m:math>
+            </is:definition>
+            <is:bridge type="sbml" sub-type="species" direction="set">
+              <is:connector type="species">s1</is:connector>
+            </is:bridge>
+          </is:implementation>
+          <is:problem-condition-set/>
+          <is:description/>
+        </is:physical-quantity>
+      </is:physical-quantity-set>
+      <is:import type="internal" format="sbml">
+<sbml xmlns="http://www.sbml.org/sbml/level2" xmlns:celldesigner="http://www.sbml.org/2001/ns/celldesigner" level="2" version="1">
+<model id="model_19022944_simple_091204_1541">
+<annotation>
+<celldesigner:modelVersion>4.0</celldesigner:modelVersion>
+<celldesigner:modelDisplay sizeX="600" sizeY="400"/>
+<celldesigner:listOfCompartmentAliases>
+<celldesigner:compartmentAlias id="ca1" compartment="c1">
+<celldesigner:class>SQUARE</celldesigner:class>
+<celldesigner:bounds x="260.0" y="80.0" w="260.0" h="200.0"/>
+<celldesigner:namePoint x="353.5" y="243.5"/>
+<celldesigner:doubleLine thickness="12.0" outerWidth="2.0" innerWidth="1.0"/>
+<celldesigner:paint color="ffcccc00" scheme="Color"/>
+</celldesigner:compartmentAlias>
+</celldesigner:listOfCompartmentAliases>
+<celldesigner:listOfComplexSpeciesAliases/>
+<celldesigner:listOfSpeciesAliases>
+<celldesigner:speciesAlias id="sa1" species="s1" compartmentAlias="ca1">
+<celldesigner:activity>inactive</celldesigner:activity>
+<celldesigner:bounds x="295.0" y="137.5" w="70.0" h="25.0"/>
+<celldesigner:view state="usual"/>
+<celldesigner:usualView>
+<celldesigner:innerPosition x="35.0" y="57.5"/>
+<celldesigner:boxSize width="70.0" height="25.0"/>
+<celldesigner:singleLine width="1.0"/>
+<celldesigner:paint color="ffccff66" scheme="Color"/>
+</celldesigner:usualView>
+<celldesigner:briefView>
+<celldesigner:innerPosition x="0.0" y="0.0"/>
+<celldesigner:boxSize width="80.0" height="60.0"/>
+<celldesigner:singleLine width="0.0"/>
+<celldesigner:paint color="3fff0000" scheme="Color"/>
+</celldesigner:briefView>
+</celldesigner:speciesAlias>
+<celldesigner:speciesAlias id="sa2" species="s2" compartmentAlias="ca1">
+<celldesigner:activity>inactive</celldesigner:activity>
+<celldesigner:bounds x="425.0" y="137.5" w="70.0" h="25.0"/>
+<celldesigner:view state="usual"/>
+<celldesigner:usualView>
+<celldesigner:innerPosition x="165.0" y="57.5"/>
+<celldesigner:boxSize width="70.0" height="25.0"/>
+<celldesigner:singleLine width="1.0"/>
+<celldesigner:paint color="ffccff66" scheme="Color"/>
+</celldesigner:usualView>
+<celldesigner:briefView>
+<celldesigner:innerPosition x="0.0" y="0.0"/>
+<celldesigner:boxSize width="80.0" height="60.0"/>
+<celldesigner:singleLine width="0.0"/>
+<celldesigner:paint color="3fff0000" scheme="Color"/>
+</celldesigner:briefView>
+</celldesigner:speciesAlias>
+</celldesigner:listOfSpeciesAliases>
+<celldesigner:listOfGroups/>
+<celldesigner:listOfProteins/>
+<celldesigner:listOfGenes/>
+<celldesigner:listOfRNAs/>
+<celldesigner:listOfAntisenseRNAs/>
+<celldesigner:listOfLayers/>
+<celldesigner:listOfBlockDiagrams/>
+</annotation>
+<listOfCompartments>
+<compartment id="default" size="1"/>
+<compartment id="c1" name="Hepatocyte" size="1" outside="default">
+<annotation>
+<celldesigner:name>Hepatocyte</celldesigner:name>
+</annotation>
+</compartment>
+</listOfCompartments>
+<listOfSpecies>
+<species id="s1" name="CDFDA" compartment="c1" initialAmount="10" charge="0">
+<annotation>
+<celldesigner:positionToCompartment>inside</celldesigner:positionToCompartment>
+<celldesigner:speciesIdentity>
+<celldesigner:class>SIMPLE_MOLECULE</celldesigner:class>
+<celldesigner:name>CDFDA</celldesigner:name>
+</celldesigner:speciesIdentity>
+</annotation>
+</species>
+<species id="s2" name="CDF" compartment="c1" initialAmount="0">
+<annotation>
+<celldesigner:positionToCompartment>inside</celldesigner:positionToCompartment>
+<celldesigner:speciesIdentity>
+<celldesigner:class>SIMPLE_MOLECULE</celldesigner:class>
+<celldesigner:name>CDF</celldesigner:name>
+</celldesigner:speciesIdentity>
+</annotation>
+</species>
+</listOfSpecies>
+<listOfParameters>
+<parameter id="k1" name="k1" value="10"/>
+</listOfParameters>
+<listOfReactions>
+<reaction id="re1" reversible="false" fast="false">
+<annotation>
+<celldesigner:reactionType>STATE_TRANSITION</celldesigner:reactionType>
+<celldesigner:baseReactants>
+<celldesigner:baseReactant species="s1" alias="sa1">
+<celldesigner:linkAnchor position="E"/>
+</celldesigner:baseReactant>
+</celldesigner:baseReactants>
+<celldesigner:baseProducts>
+<celldesigner:baseProduct species="s2" alias="sa2">
+<celldesigner:linkAnchor position="W"/>
+</celldesigner:baseProduct>
+</celldesigner:baseProducts>
+<celldesigner:connectScheme connectPolicy="direct" rectangleIndex="0">
+<celldesigner:listOfLineDirection>
+<celldesigner:lineDirection index="0" value="unknown"/>
+</celldesigner:listOfLineDirection>
+</celldesigner:connectScheme>
+<celldesigner:line width="1.0" color="ff000000"/>
+</annotation>
+<listOfReactants>
+<speciesReference species="s1">
+<annotation>
+<celldesigner:alias>sa1</celldesigner:alias>
+</annotation>
+</speciesReference>
+</listOfReactants>
+<listOfProducts>
+<speciesReference species="s2">
+<annotation>
+<celldesigner:alias>sa2</celldesigner:alias>
+</annotation>
+</speciesReference>
+</listOfProducts>
+<kineticLaw>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+<apply>
+<times/>
+<ci> k1 </ci>
+<ci> s1 </ci>
+</apply>
+</math>
+</kineticLaw>
+</reaction>
+</listOfReactions>
+</model>
+</sbml>
+      </is:import>
+      <is:morphology/>
+    </is:module>
+  </is:module-set>
+  <is:template-set/>
+  <is:instance-set/>
+  <is:controller-set/>
+  <is:edge-set>
+    <is:edge edge-id="a0e8e3b0-2ec1-44cc-9bb4-8afbbf806d9d" type="structural">
+      <is:tail module-id="50228b3c-0ccb-4b61-872c-b0b5fff54ed5" port-id="0"/>
+      <is:head module-id="ed3e840f-8915-439d-87f5-d0419b103149" port-id="0"/>
+      <is:operation>constituent</is:operation>
+      <is:description/>
+    </is:edge>
+    <is:edge edge-id="69ae299d-3fc7-4834-9b23-2d177e410a89" type="structural">
+      <is:tail module-id="4d96c8de-d10a-48e2-a0e0-be9d74e58e78" port-id="0"/>
+      <is:head module-id="774fa0b9-de4e-44a9-8f85-349f85d4ee1c" port-id="0"/>
+      <is:operation>constituent</is:operation>
+      <is:description/>
+    </is:edge>
+    <is:edge edge-id="d58778c1-3874-4608-a378-9911606323a3" type="functional">
+      <is:tail module-id="50228b3c-0ccb-4b61-872c-b0b5fff54ed5" port-id="1"/>
+      <is:head module-id="4d96c8de-d10a-48e2-a0e0-be9d74e58e78" port-id="1"/>
+      <is:operation/>
+      <is:description/>
+    </is:edge>
+  </is:edge-set>
+</is:insilico-model>

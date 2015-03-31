@@ -1,0 +1,5 @@
+00000000-0000-0000-0000-000000000000 (eq %sbml:fy (divide (power %sbml:y %sbml:n) (plus (power %sbml:a %sbml:n) (power %sbml:y %sbml:n))))
+00000000-0000-0000-0000-000000000000 (eq %sbml:reaction_0000001 (times %sbml:gamma %sbml:cytoplasm))
+00000000-0000-0000-0000-000000000000 (eq %sbml:reaction_0000002 (minus (times (times %sbml:k %sbml:x) %sbml:cytoplasm) (times (times %sbml:k1 %sbml:y) %sbml:ER)))
+00000000-0000-0000-0000-000000000000 (eq %sbml:reaction_0000003 (times (times %sbml:beta %sbml:y) %sbml:extracellular))
+00000000-0000-0000-0000-000000000000 (eq %sbml:reaction_0000004 (times (times (times %sbml:alpha %sbml:fy) %sbml:x) %sbml:cytoplasm))

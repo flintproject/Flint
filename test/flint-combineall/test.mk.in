@@ -1,0 +1,31 @@
+.PHONY: all clean check check-name check-value check-function check-ode
+
+all: OUTPUT.sbmlall
+	flint-combineall $< OUTPUT.db OUTPUT.name OUTPUT.value OUTPUT.function OUTPUT.ode
+
+clean:
+	-rm -f UUID.db UUID.xml OUTPUT.name OUTPUT.value OUTPUT.function OUTPUT.ode OUTPUT.db OUTPUT.importdumpall OUTPUT.sbmlall
+
+check: check-name check-value check-function check-ode
+
+check-name: NAME OUTPUT.name
+	diff -u $^
+
+check-value: VALUE OUTPUT.value
+	diff -u $^
+
+check-function: FUNCTION OUTPUT.function
+	diff -u $^
+
+check-ode: ODE OUTPUT.ode
+	diff -u $^
+
+OUTPUT.sbmlall: OUTPUT.importdumpall
+	flint-sbmlall $< > $@
+
+OUTPUT.importdumpall: OUTPUT.db
+	flint-importdumpall $< > $@
+
+OUTPUT.db: MODEL
+	test-input1 $@ $<
+	flint-phml $@

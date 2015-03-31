@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<installer-gui-script minSpecVersion="2">
+  <title>Flint</title>
+  <license file="license.rtf"></license>
+  <options customize="never" require-scripts="false" hostArchitectures="x86_64"/>
+  <installation-check script="checkJRE()"></installation-check>
+  <script>
+<![CDATA[
+function checkJRE() {
+var r = system.files.fileExistsAtPath('/Library/Internet Plug-Ins/JavaAppletPlugin.plugin/Contents/Home');
+if (r) return true;
+my.result.type = 'Fatal';
+my.result.title = "Oracle's Java is needed";
+my.result.message = "Oracle's Java For Mac OS X is needed; please install Java 7 or later in advance from http://www.java.com/.";
+return false;
+}
+]]>
+  </script>
+  <volume-check>
+    <allowed-os-versions>
+      <os-version min="10.7"/>
+    </allowed-os-versions>
+    <required-bundles all="true">
+      <bundle id="com.oracle.jre" path="/Library/Internet Plug-Ins/JavaAppletPlugin.plugin" search="false"/>
+    </required-bundles>
+  </volume-check>
+  <choices-outline>
+    <line choice="default">
+      <line choice="jp.oist.flint"/>
+    </line>
+  </choices-outline>
+  <choice id="default"/>
+  <choice id="jp.oist.flint" visible="false">
+    <pkg-ref id="jp.oist.flint"/>
+  </choice>
+  <pkg-ref id="jp.oist.flint" version="0" onConclusion="none">flint-component.pkg</pkg-ref>
+</installer-gui-script>

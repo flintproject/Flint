@@ -1,0 +1,82 @@
+Summary: SOSlib for Flint
+Name: flint-soslib
+Version: soslib_VERSION
+Release: soslib_RELEASE%{?dist}
+License: LGPL-2.1
+Group: Applications/Productivity
+URL: http://www.physiodesigner.org/
+Source0: %{name}-%{version}.tar.gz
+BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
+BuildRequires: gcc
+BuildRequires: make
+BuildRequires: autoconf
+BuildRequires: flint-libsbml
+BuildRequires: flint-sundials
+BuildRequires: libxml2-devel >= 2.7
+Requires: flint-libsbml
+Requires: flint-sundials
+Requires: libxml2 >= 2.7
+
+%description
+This is part of Flint.
+
+%prep
+%setup -q
+
+%build
+autoreconf -i
+./configure --prefix=/opt/flint --with-libsbml=/opt/flint --with-libxml2 --with-sundials=/opt/flint --without-grace --without-graphviz
+make
+
+%install
+rm -rf %{buildroot}
+make install DESTDIR=%{buildroot}
+mkdir -p %{buildroot}/etc/ld.so.conf.d
+echo '/opt/flint/lib' > %{buildroot}/etc/ld.so.conf.d/%{name}.conf
+
+%clean
+rm -rf %{buildroot}
+
+%post
+/sbin/ldconfig
+
+%postun
+/sbin/ldconfig
+
+%files
+%defattr(-,root,root,-)
+%doc
+/etc/ld.so.conf.d/%{name}.conf
+/opt/flint/bin/odeSolver
+/opt/flint/include/sbmlsolver/ASTIndexNameNode.h
+/opt/flint/include/sbmlsolver/arithmeticCompiler.h
+/opt/flint/include/sbmlsolver/charBuffer.h
+/opt/flint/include/sbmlsolver/compiler.h
+/opt/flint/include/sbmlsolver/cvodeData.h
+/opt/flint/include/sbmlsolver/cvodeSolver.h
+/opt/flint/include/sbmlsolver/daeSolver.h
+/opt/flint/include/sbmlsolver/drawGraph.h
+/opt/flint/include/sbmlsolver/exportdefs.h
+/opt/flint/include/sbmlsolver/integratorInstance.h
+/opt/flint/include/sbmlsolver/integratorSettings.h
+/opt/flint/include/sbmlsolver/interpol.h
+/opt/flint/include/sbmlsolver/modelSimplify.h
+/opt/flint/include/sbmlsolver/nullSolver.h
+/opt/flint/include/sbmlsolver/odeConstruct.h
+/opt/flint/include/sbmlsolver/odeModel.h
+/opt/flint/include/sbmlsolver/odeSolver.h
+/opt/flint/include/sbmlsolver/processAST.h
+/opt/flint/include/sbmlsolver/sbml.h
+/opt/flint/include/sbmlsolver/sbmlResults.h
+/opt/flint/include/sbmlsolver/sensSolver.h
+/opt/flint/include/sbmlsolver/solverError.h
+/opt/flint/include/sbmlsolver/util.h
+/opt/flint/include/sbmlsolver/variableIndex.h
+/opt/flint/lib/libODES.a
+/opt/flint/lib/libODES.la
+/opt/flint/lib/libODES.so
+/opt/flint/lib/libODES.so.0
+/opt/flint/lib/libODES.so.0.0.0
+/opt/flint/lib/pkgconfig/libODES.pc
+
+%changelog

@@ -1,0 +1,596 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<is:insilico-model xmlns:is="http://www.physiome.jp/ns/insilicoml" xmlns:m="http://www.w3.org/1998/Math/MathML" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" version="1.0" xsi:schemalocation="http://www.physiome.jp/ns/insilicoml-1.0 insilicoml.xsd">
+    <is:header>
+        <is:model-name>Spiking neuron model by Izhikevich</is:model-name>
+        <is:meta-information>
+            <is:article-set>
+                <is:article article-id="1" type="model-proposal">
+                    <is:journal>
+                        <is:journal-title>IEEE TRANSACTIONS ON NEURAL NETWORKS</is:journal-title>
+                        <is:publisher-name>Institute of Electrical and Electronics Engineers</is:publisher-name>
+                        <is:volume>14</is:volume>
+                        <is:issue>6</is:issue>
+                        <is:publication-date>
+                            <is:year>2003</is:year>
+                            <is:month>11</is:month>
+                        </is:publication-date>
+                    </is:journal>
+                    <is:pubmed-id>18244602</is:pubmed-id>
+                    <is:article-title>Simple Model of Spiking Neurons</is:article-title>
+                    <is:vernacular-article-title lang="any"/>
+                    <is:pages>
+                        <is:first-page>1569</is:first-page>
+                        <is:last-page>1572</is:last-page>
+                    </is:pages>
+                    <is:target-model-set>
+                        <is:target-model db-id="this"/>
+                    </is:target-model-set>
+                    <is:author-set>
+                        <is:author>
+                            <is:first-name>Eugene</is:first-name>
+                            <is:middle-name>M</is:middle-name>
+                            <is:last-name>Izhikevich</is:last-name>
+                        </is:author>
+                    </is:author-set>
+                    <is:description/>
+                </is:article>
+            </is:article-set>
+            <is:isml-creator-set>
+                <is:creator>
+                    <is:person-name>
+                        <is:first-name>Yosuke</is:first-name>
+                        <is:middle-name/>
+                        <is:last-name>Yumikura</is:last-name>
+                    </is:person-name>
+                    <is:affiliation-set>
+                        <is:affiliation>
+                            <is:organization>Department of Mechanical Science and Bioengineering Graduate School of Engineering Science. Osaka University</is:organization>
+                            <is:contact>
+                                <is:address>Toyonaka, Osaka, Japan</is:address>
+                            </is:contact>
+                        </is:affiliation>
+                    </is:affiliation-set>
+                    <is:target-model-set/>
+                </is:creator>
+            </is:isml-creator-set>
+        </is:meta-information>
+        <is:date>
+            <is:created>2009-11-25T06:01:49+09:00</is:created>
+            <is:last-modified>2009-11-25T06:01:49+09:00</is:last-modified>
+        </is:date>
+        <is:numerical-configuration>
+            <is:time-discretization unit-id="11">
+                <is:step>0.001</is:step>
+                <is:step-min/>
+                <is:step-max/>
+            </is:time-discretization>
+        </is:numerical-configuration>
+        <is:description/>
+    </is:header>
+    <is:unit-set>
+        <is:unit unit-id="0">
+            <is:name>dimensionless</is:name>
+        </is:unit>
+        <is:unit unit-id="1">
+            <is:name>metre</is:name>
+        </is:unit>
+        <is:unit unit-id="2">
+            <is:name>kilogram</is:name>
+        </is:unit>
+        <is:unit unit-id="3">
+            <is:name>second</is:name>
+        </is:unit>
+        <is:unit unit-id="4">
+            <is:name>ampere</is:name>
+        </is:unit>
+        <is:unit unit-id="5">
+            <is:name>kelvin</is:name>
+        </is:unit>
+        <is:unit unit-id="6">
+            <is:name>mole</is:name>
+        </is:unit>
+        <is:unit unit-id="7">
+            <is:name>candela</is:name>
+        </is:unit>
+        <is:unit unit-id="8">
+            <is:name>radian</is:name>
+        </is:unit>
+        <is:unit unit-id="9">
+            <is:name>meter</is:name>
+            <is:element unit-id="1"/>
+        </is:unit>
+        <is:unit unit-id="10">
+            <is:name>gram</is:name>
+            <is:element unit-id="2" prefix="milli"/>
+        </is:unit>
+        <is:unit unit-id="11">
+            <is:name>milli_second</is:name>
+            <is:element unit-id="3" exponent="1" prefix="milli"/>
+        </is:unit>
+    </is:unit-set>
+
+    <is:module-set>
+
+        <is:module module-id="e92c7a90-6bf0-4c35-817d-fd9505050830" type="functional-unit">
+            <is:property>
+                <is:name>membrane potential</is:name>
+                <is:capsulation state="true">
+                    <is:capsulated-by module-id="b342ed56-3a21-4c07-9299-f10ce7806cc7"/>
+                </is:capsulation>
+                <is:template state="false"/>
+                <is:keyword-set/>
+                <is:track>
+                    <is:involved db-id="this" date="2009-11-25T06:01:50+09:00"/>
+                </is:track>
+                <is:frame-coordinate/>
+                <is:description/>
+            </is:property>
+
+            <is:port-set>
+                <is:port port-id="1" direction="in">
+                    <is:name>Iext</is:name>
+                    <is:description>Stimulation from external source</is:description>
+                </is:port>
+                <is:port port-id="2" direction="out" ref-physical-quantity-id="2">
+                    <is:name>v</is:name>
+                    <is:description>Output membrane potential level of this neuron</is:description>
+                </is:port>
+                <is:port port-id="3" direction="in">
+                    <is:name>u</is:name>
+                    <is:description>Membrane recovery variable</is:description>
+                </is:port>
+            </is:port-set>
+
+            <is:physical-quantity-set>
+                <is:physical-quantity type="morphology" physical-quantity-id="1">
+                    <is:name>shape</is:name>
+                    <is:implementation>
+                        <is:definition type="assign" sub-type="morphology"/>
+                    </is:implementation>
+                </is:physical-quantity>
+                <is:physical-quantity physical-quantity-id="2" type="state">
+                    <is:name>v</is:name>
+                    <is:dimension type="scalar"/>
+                    <is:value-type-set>
+                        <is:value-type precision="double" unit-id="0"/>
+                    </is:value-type-set>
+                    <is:initial-value>
+                        <is:definition type="ae" format="mathml">
+                            <m:math><m:apply><m:eq/><m:ci>v</m:ci><m:cn>-70</m:cn></m:apply></m:math>
+                        </is:definition>
+                    </is:initial-value>
+                    <is:implementation>
+                        <is:definition type="ode" sub-type="" format="mathml">
+                            <m:math><m:apply><m:eq/><m:apply><m:diff/><m:bvar><m:ci>time</m:ci></m:bvar><m:ci>v</m:ci></m:apply><m:apply><m:plus/><m:apply><m:minus/><m:apply><m:plus/><m:apply><m:times/><m:cn>0.04</m:cn><m:ci>v</m:ci><m:ci>v</m:ci></m:apply><m:apply><m:times/><m:cn>5</m:cn><m:ci>v</m:ci></m:apply><m:cn>140</m:cn></m:apply><m:ci>u</m:ci></m:apply><m:ci>Iext</m:ci></m:apply></m:apply></m:math>
+                        </is:definition>
+                        <is:extra-implementation order="after" type="instantaneous">
+                            <is:definition type="conditional" format="">
+                                <is:case-set case-set-id="1">
+                                    <is:case substructure-id="1">
+                                        <is:condition format="mathml">
+                                            <m:math><m:apply><m:geq/><m:ci>v</m:ci><m:cn>30</m:cn></m:apply></m:math>
+                                        </is:condition>
+                                        <is:definition type="ae" format="mathml">
+                                            <m:math><m:apply><m:eq/><m:ci>v</m:ci><m:ci>c</m:ci></m:apply></m:math>
+                                        </is:definition>
+                                    </is:case>
+                                </is:case-set>
+                            </is:definition>
+                        </is:extra-implementation>
+                    </is:implementation>
+                    <is:problem-condition-set/>
+                    <is:description/>
+                </is:physical-quantity>
+                <is:physical-quantity physical-quantity-id="3" type="static-parameter">
+                    <is:name>c</is:name>
+                    <is:dimension type="scalar"/>
+                    <is:value-type-set>
+                        <is:value-type precision="double" unit-id="0"/>
+                    </is:value-type-set>
+                    <is:initial-value/>
+                    <is:implementation>
+                        <is:definition type="ae" sub-type="" format="mathml">
+                            <m:math><m:apply><m:eq/><m:ci>c</m:ci><m:cn>-65</m:cn></m:apply></m:math>
+                        </is:definition>
+                    </is:implementation>
+                    <is:problem-condition-set/>
+                    <is:description/>
+                </is:physical-quantity>
+                <is:physical-quantity physical-quantity-id="4" type="variable-parameter">
+                    <is:name>u</is:name>
+                    <is:dimension type="scalar"/>
+                    <is:value-type-set>
+                        <is:value-type precision="double" unit-id="0"/>
+                    </is:value-type-set>
+                    <is:initial-value/>
+                    <is:implementation>
+                        <is:definition type="assign" sub-type="port" format="reference">
+                            <is:reference port-id="3"/>
+                        </is:definition>
+                    </is:implementation>
+                    <is:problem-condition-set/>
+                    <is:description/>
+                </is:physical-quantity>
+                <is:physical-quantity physical-quantity-id="5" type="variable-parameter">
+                    <is:name>Iext</is:name>
+                    <is:dimension type="scalar"/>
+                    <is:value-type-set>
+                        <is:value-type precision="double" unit-id="0"/>
+                    </is:value-type-set>
+                    <is:initial-value/>
+                    <is:implementation>
+                        <is:definition type="assign" sub-type="port" format="reference">
+                            <is:reference port-id="1"/>
+                        </is:definition>
+                    </is:implementation>
+                    <is:problem-condition-set/>
+                    <is:description/>
+                </is:physical-quantity>
+            </is:physical-quantity-set>
+            <is:morphology/>
+        </is:module>
+
+        <is:module module-id="055edf9e-8eb2-4812-abb2-e3e6f5be12e1" type="functional-unit">
+            <is:property>
+                <is:name>Membrane recovery variable</is:name>
+                <is:capsulation state="true">
+                    <is:capsulated-by module-id="b342ed56-3a21-4c07-9299-f10ce7806cc7"/>
+                </is:capsulation>
+                <is:template state="false"/>
+                <is:keyword-set/>
+                <is:track>
+                    <is:involved db-id="this" date="2009-11-25T06:01:52+09:00"/>
+                </is:track>
+                <is:frame-coordinate/>
+                <is:description/>
+            </is:property>
+
+            <is:port-set>
+                <is:port port-id="1" direction="in">
+                    <is:name>v</is:name>
+                    <is:description>Excitation level of this neuron</is:description>
+                </is:port>
+                <is:port port-id="2" direction="out" ref-physical-quantity-id="2">
+                    <is:name>u</is:name>
+                    <is:description>Output refractoriness of this neuron</is:description>
+                </is:port>
+            </is:port-set>
+
+            <is:physical-quantity-set>
+                <is:physical-quantity type="morphology" physical-quantity-id="1">
+                    <is:name>shape</is:name>
+                    <is:implementation>
+                        <is:definition type="assign" sub-type="morphology"/>
+                    </is:implementation>
+                </is:physical-quantity>
+                <is:physical-quantity physical-quantity-id="2" type="state">
+                    <is:name>u</is:name>
+                    <is:dimension type="scalar"/>
+                    <is:value-type-set>
+                        <is:value-type precision="double" unit-id="0"/>
+                    </is:value-type-set>
+                    <is:initial-value>
+                        <is:definition type="ae" format="mathml">
+                            <m:math><m:apply><m:eq/><m:ci>u</m:ci><m:cn>-70</m:cn></m:apply></m:math>
+                        </is:definition>
+                    </is:initial-value>
+                    <is:implementation>
+                        <is:definition type="ode" sub-type="" format="mathml">
+                            <m:math><m:apply><m:eq/><m:apply><m:diff/><m:bvar><m:ci>time</m:ci></m:bvar><m:ci>u</m:ci></m:apply><m:apply><m:times/><m:ci>a</m:ci><m:apply><m:minus/><m:apply><m:times/><m:ci>b</m:ci><m:ci>v</m:ci></m:apply><m:ci>u</m:ci></m:apply></m:apply></m:apply></m:math>
+                        </is:definition>
+                        <is:extra-implementation order="after" type="instantaneous">
+                            <is:definition type="conditional" format="">
+                                <is:case-set case-set-id="1">
+                                    <is:case substructure-id="1">
+                                        <is:condition format="mathml">
+                                            <m:math><m:apply><m:geq/><m:ci>v</m:ci><m:cn>30</m:cn></m:apply></m:math>
+                                        </is:condition>
+                                        <is:definition type="ae" format="mathml">
+                                            <m:math><m:apply><m:eq/><m:ci>u</m:ci><m:apply><m:plus/><m:ci>u</m:ci><m:ci>d</m:ci></m:apply></m:apply></m:math>
+                                        </is:definition>
+                                    </is:case>
+                                </is:case-set>
+                            </is:definition>
+                        </is:extra-implementation>
+                    </is:implementation>
+                    <is:problem-condition-set/>
+                    <is:description/>
+                </is:physical-quantity>
+                <is:physical-quantity physical-quantity-id="3" type="static-parameter">
+                    <is:name>a</is:name>
+                    <is:dimension type="scalar"/>
+                    <is:value-type-set>
+                        <is:value-type precision="double" unit-id="0"/>
+                    </is:value-type-set>
+                    <is:initial-value/>
+                    <is:implementation>
+                        <is:definition type="ae" sub-type="" format="mathml">
+                            <m:math><m:apply><m:eq/><m:ci>a</m:ci><m:cn>0.02</m:cn></m:apply></m:math>
+                        </is:definition>
+                    </is:implementation>
+                    <is:problem-condition-set/>
+                    <is:description/>
+                </is:physical-quantity>
+                <is:physical-quantity physical-quantity-id="4" type="static-parameter">
+                    <is:name>b</is:name>
+                    <is:dimension type="scalar"/>
+                    <is:value-type-set>
+                        <is:value-type precision="double" unit-id="0"/>
+                    </is:value-type-set>
+                    <is:initial-value/>
+                    <is:implementation>
+                        <is:definition type="ae" sub-type="" format="mathml">
+                            <m:math><m:apply><m:eq/><m:ci>b</m:ci><m:cn>0.2</m:cn></m:apply></m:math>
+                        </is:definition>
+                    </is:implementation>
+                    <is:problem-condition-set/>
+                    <is:description/>
+                </is:physical-quantity>
+                <is:physical-quantity physical-quantity-id="5" type="static-parameter">
+                    <is:name>d</is:name>
+                    <is:dimension type="scalar"/>
+                    <is:value-type-set>
+                        <is:value-type precision="double" unit-id="0"/>
+                    </is:value-type-set>
+                    <is:initial-value/>
+                    <is:implementation>
+                        <is:definition type="ae" sub-type="" format="mathml">
+                            <m:math><m:apply><m:eq/><m:ci>d</m:ci><m:cn>8</m:cn></m:apply></m:math>
+                        </is:definition>
+                    </is:implementation>
+                    <is:problem-condition-set/>
+                    <is:description/>
+                </is:physical-quantity>
+                <is:physical-quantity physical-quantity-id="6" type="variable-parameter">
+                    <is:name>v</is:name>
+                    <is:dimension type="scalar"/>
+                    <is:value-type-set>
+                        <is:value-type precision="double" unit-id="0"/>
+                    </is:value-type-set>
+                    <is:initial-value/>
+                    <is:implementation>
+                        <is:definition type="assign" sub-type="port" format="reference">
+                            <is:reference port-id="1"/>
+                        </is:definition>
+                    </is:implementation>
+                    <is:problem-condition-set/>
+                    <is:description/>
+                </is:physical-quantity>
+            </is:physical-quantity-set>
+            <is:morphology/>
+        </is:module>
+
+        <is:module module-id="917c40a3-2881-4b6e-8d5c-3fff0145a898" type="functional-unit">
+            <is:property>
+                <is:name>current_pulse_generator_membrane</is:name>
+                <is:capsulation state="true">
+                    <is:capsulated-by module-id="2cf24f1b-4e22-41a8-8010-d132e86fd6e5"/>
+                </is:capsulation>
+                <is:template state="false"/>
+                <is:keyword-set/>
+                <is:track>
+                    <is:involved db-id="this" date="2009-11-25T06:01:54+09:00"/>
+                </is:track>
+                <is:frame-coordinate/>
+                <is:description/>
+            </is:property>
+
+            <is:port-set>
+                <is:port port-id="1" direction="out" ref-physical-quantity-id="6">
+                    <is:name>current</is:name>
+                    <is:description>The current value changes from an initial value (parameter: initial_ampere)  to another value (parameter: pulse_height) at a given onset time (parameter: pulse_onset_time) and after the pulse_width return to the initial value.</is:description>
+                </is:port>
+            </is:port-set>
+
+            <is:physical-quantity-set>
+                <is:physical-quantity type="morphology" physical-quantity-id="1">
+                    <is:name>shape</is:name>
+                    <is:implementation>
+                        <is:definition type="assign" sub-type="morphology"/>
+                    </is:implementation>
+                </is:physical-quantity>
+                <is:physical-quantity physical-quantity-id="2" type="static-parameter">
+                    <is:name>pulse_onset_time</is:name>
+                    <is:dimension type="scalar"/>
+                    <is:value-type-set>
+                        <is:value-type precision="double" unit-id="11"/>
+                    </is:value-type-set>
+                    <is:initial-value/>
+                    <is:implementation>
+                        <is:definition type="ae" sub-type="" format="mathml">
+                            <m:math><m:apply><m:eq/><m:ci>pulse_onset_time</m:ci><m:cn>50</m:cn></m:apply></m:math>
+                        </is:definition>
+                    </is:implementation>
+                    <is:problem-condition-set/>
+                    <is:description>The time instance when the pulse takes place.</is:description>
+                </is:physical-quantity>
+                <is:physical-quantity physical-quantity-id="3" type="static-parameter">
+                    <is:name>pulse_width</is:name>
+                    <is:dimension type="scalar"/>
+                    <is:value-type-set>
+                        <is:value-type precision="double" unit-id="11"/>
+                    </is:value-type-set>
+                    <is:initial-value/>
+                    <is:implementation>
+                        <is:definition type="ae" sub-type="" format="mathml">
+                            <m:math><m:apply><m:eq/><m:ci>pulse_width</m:ci><m:cn>200</m:cn></m:apply></m:math>
+                        </is:definition>
+                    </is:implementation>
+                    <is:problem-condition-set/>
+                    <is:description>The pulse width in milli-second.</is:description>
+                </is:physical-quantity>
+                <is:physical-quantity physical-quantity-id="4" type="static-parameter">
+                    <is:name>pulse_height</is:name>
+                    <is:dimension type="scalar"/>
+                    <is:value-type-set>
+                        <is:value-type precision="double" unit-id="0"/>
+                    </is:value-type-set>
+                    <is:initial-value/>
+                    <is:implementation>
+                        <is:definition type="ae" sub-type="" format="mathml">
+                            <m:math><m:apply><m:eq/><m:ci>pulse_height</m:ci><m:cn>10</m:cn></m:apply></m:math>
+                        </is:definition>
+                    </is:implementation>
+                    <is:problem-condition-set/>
+                    <is:description>The pulse height.</is:description>
+                </is:physical-quantity>
+                <is:physical-quantity physical-quantity-id="5" type="static-parameter">
+                    <is:name>initial_current</is:name>
+                    <is:dimension type="scalar"/>
+                    <is:value-type-set>
+                        <is:value-type precision="double" unit-id="0"/>
+                    </is:value-type-set>
+                    <is:initial-value/>
+                    <is:implementation>
+                        <is:definition type="ae" sub-type="" format="mathml">
+                            <m:math><m:apply><m:eq/><m:ci>initial_current</m:ci><m:cn>0</m:cn></m:apply></m:math>
+                        </is:definition>
+                    </is:implementation>
+                    <is:problem-condition-set/>
+                    <is:description>The initial value of the stimulus current.</is:description>
+                </is:physical-quantity>
+                <is:physical-quantity physical-quantity-id="6" type="variable-parameter">
+                    <is:name>stimulus_current</is:name>
+                    <is:dimension type="scalar"/>
+                    <is:value-type-set>
+                        <is:value-type precision="double" unit-id="0"/>
+                    </is:value-type-set>
+                    <is:initial-value/>
+                    <is:implementation>
+                        <is:definition type="conditional" sub-type="" format="">
+                            <is:case-set case-set-id="1">
+                                <is:case substructure-id="1">
+                                    <is:condition format="mathml">
+                                        <m:math><m:apply><m:and/><m:apply><m:leq/><m:ci>pulse_onset_time</m:ci><m:ci>time</m:ci></m:apply><m:apply><m:leq/><m:ci>time</m:ci><m:apply><m:plus/><m:ci>pulse_onset_time</m:ci><m:ci>pulse_width</m:ci></m:apply></m:apply></m:apply></m:math>
+                                    </is:condition>
+                                    <is:definition type="ae" sub-type="" format="mathml">
+                                        <m:math><m:apply><m:eq/><m:ci>stimulus_current</m:ci><m:apply><m:plus/><m:ci>initial_current</m:ci><m:ci>pulse_height</m:ci></m:apply></m:apply></m:math>
+                                    </is:definition>
+                                </is:case>
+                                <is:case substructure-id="2">
+                                    <is:definition type="ae" sub-type="" format="mathml">
+                                        <m:math><m:apply><m:eq/><m:ci>stimulus_current</m:ci><m:ci>initial_current</m:ci></m:apply></m:math>
+                                    </is:definition>
+                                </is:case>
+                            </is:case-set>
+                        </is:definition>
+                    </is:implementation>
+                    <is:problem-condition-set/>
+                    <is:description>The current value changes from an initial value (parameter: initial_ampere)  to another value (parameter: pulse_height) at a given onset time (parameter: pulse_onset_time) and after the pulse_width return to the initial value.</is:description>
+                </is:physical-quantity>
+            </is:physical-quantity-set>
+            <is:morphology/>
+        </is:module>
+
+        <is:module module-id="b342ed56-3a21-4c07-9299-f10ce7806cc7" type="capsule">
+            <is:property>
+                <is:name>capsule_of_Membrane recovery variable</is:name>
+                <is:capsulation state="false"/>
+                <is:template state="false"/>
+                <is:instance state="false"/>
+                <is:time-discretization unit-id="11">
+                    <is:step>0.001</is:step>
+                    <is:step-min/>
+                    <is:step-max/>
+                </is:time-discretization>
+                <is:keyword-set/>
+                <is:track>
+                    <is:involved db-id="this" date="2009-11-25T06:01:56+09:00"/>
+                </is:track>
+                <is:frame-coordinate/>
+                <is:description/>
+            </is:property>
+
+            <is:port-set>
+                <is:port port-id="1" direction="in">
+                    <is:name>port_1</is:name>
+                    <is:description/>
+                </is:port>
+            </is:port-set>
+            <is:physical-quantity-set/>
+            <is:morphology/>
+        </is:module>
+
+        <is:module module-id="2cf24f1b-4e22-41a8-8010-d132e86fd6e5" type="capsule">
+            <is:property>
+                <is:name>capsule_of_current_pulse_generator_membrane</is:name>
+                <is:capsulation state="false"/>
+                <is:template state="false"/>
+                <is:instance state="false"/>
+                <is:time-discretization unit-id="11">
+                    <is:step>0.001</is:step>
+                    <is:step-min/>
+                    <is:step-max/>
+                </is:time-discretization>
+                <is:keyword-set/>
+                <is:track>
+                    <is:involved db-id="this" date="2009-11-25T06:01:56+09:00"/>
+                </is:track>
+                <is:frame-coordinate/>
+                <is:description/>
+            </is:property>
+
+            <is:port-set>
+                <is:port port-id="1" direction="out">
+                    <is:name>port_1</is:name>
+                    <is:description/>
+                </is:port>
+            </is:port-set>
+            <is:physical-quantity-set/>
+            <is:morphology/>
+        </is:module>
+    </is:module-set>
+    <is:controller-set/>
+
+    <is:edge-set>
+        <is:edge edge-id="4a0df3bc-8396-45fa-a037-45647087ff92" type="functional">
+            <is:tail module-id="e92c7a90-6bf0-4c35-817d-fd9505050830" port-id="2"/>
+            <is:head module-id="055edf9e-8eb2-4812-abb2-e3e6f5be12e1" port-id="1"/>
+            <is:operation/>
+            <is:description/>
+        </is:edge>
+        <is:edge edge-id="380f25d2-ad13-4355-b1ce-a3284c08134e" type="functional">
+            <is:tail module-id="055edf9e-8eb2-4812-abb2-e3e6f5be12e1" port-id="2"/>
+            <is:head module-id="e92c7a90-6bf0-4c35-817d-fd9505050830" port-id="3"/>
+            <is:operation/>
+            <is:description/>
+        </is:edge>
+        <is:edge type="functional" edge-id="7b29ad8f-2c35-456e-80d0-49824d876dd3">
+            <is:tail module-id="2cf24f1b-4e22-41a8-8010-d132e86fd6e5" port-id="1"/>
+            <is:head module-id="b342ed56-3a21-4c07-9299-f10ce7806cc7" port-id="1"/>
+            <is:operation/>
+            <is:description/>
+        </is:edge>
+        <is:edge edge-id="2c42efc0-a03d-4ecf-b5f6-ed3ce701c16a" type="capsular">
+            <is:tail module-id="e92c7a90-6bf0-4c35-817d-fd9505050830" port-id="0"/>
+            <is:head module-id="b342ed56-3a21-4c07-9299-f10ce7806cc7" port-id="0"/>
+            <is:operation/>
+            <is:description/>
+        </is:edge>
+        <is:edge edge-id="ad9b8baf-de14-4511-828d-4a30d4bfed36" type="capsular">
+            <is:tail module-id="055edf9e-8eb2-4812-abb2-e3e6f5be12e1" port-id="0"/>
+            <is:head module-id="b342ed56-3a21-4c07-9299-f10ce7806cc7" port-id="0"/>
+            <is:operation/>
+            <is:description/>
+        </is:edge>
+        <is:edge edge-id="bf81a8dc-27e4-4840-b0fd-8ac1eb5fe17c" type="forwarding">
+            <is:tail module-id="b342ed56-3a21-4c07-9299-f10ce7806cc7" port-id="1"/>
+            <is:head module-id="e92c7a90-6bf0-4c35-817d-fd9505050830" port-id="1"/>
+            <is:operation/>
+            <is:description>in-ports forwarding</is:description>
+        </is:edge>
+        <is:edge edge-id="a615de44-3502-4b8f-a073-ab040bd49413" type="capsular">
+            <is:tail module-id="917c40a3-2881-4b6e-8d5c-3fff0145a898" port-id="0"/>
+            <is:head module-id="2cf24f1b-4e22-41a8-8010-d132e86fd6e5" port-id="0"/>
+            <is:operation/>
+            <is:description/>
+        </is:edge>
+        <is:edge edge-id="d5bfb2d6-3307-47ef-a2e6-7c29eb00acb1" type="forwarding">
+            <is:tail module-id="917c40a3-2881-4b6e-8d5c-3fff0145a898" port-id="1"/>
+            <is:head module-id="2cf24f1b-4e22-41a8-8010-d132e86fd6e5" port-id="1"/>
+            <is:operation/>
+            <is:description>out-ports forwarding</is:description>
+        </is:edge>
+    </is:edge-set>
+</is:insilico-model>
+

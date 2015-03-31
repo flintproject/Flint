@@ -1,0 +1,1539 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<is:insilico-model  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:svg="http://www.w3.org/2000/svg" xmlns:is="http://www.physiome.jp/ns/insilicoml" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:pd="http://www.physiome.jp/ns/physiodesigner" xmlns:m="http://www.w3.org/1998/Math/MathML" version="1.0" xsi:schemalocation="http://www.physiome.jp/ns/insilicoml-1.0 insilicoml.xsd">
+    <is:header>
+        <is:model-name>no_name</is:model-name>
+        <is:meta-information>
+            <is:article-set/>
+            <is:isml-creator-set/>
+        </is:meta-information>
+        <is:date>
+            <is:created>2012-03-12T05:54:35+09:00</is:created>
+            <is:last-modified>2012-03-27T20:20:41-15:00</is:last-modified>
+        </is:date>
+        <is:numerical-configuration>
+            <is:simulation-time-span unit-id="12">300</is:simulation-time-span>
+            <is:algorithm>
+                <is:random-generator type="built-in" name="c-rand"/>
+                <is:integration name="euler"/>
+            </is:algorithm>
+            <is:time-discretization unit-id="12" evolution="true">
+                <is:step>0.01</is:step>
+            </is:time-discretization>
+        </is:numerical-configuration>
+        <is:description/>
+    </is:header>
+    <is:unit-set>
+        <is:unit unit-id="0">
+            <is:name>dimensionless</is:name>
+        </is:unit>
+        <is:unit unit-id="1">
+            <is:name>metre</is:name>
+        </is:unit>
+        <is:unit unit-id="2">
+            <is:name>kilogram</is:name>
+        </is:unit>
+        <is:unit unit-id="3">
+            <is:name>second</is:name>
+        </is:unit>
+        <is:unit unit-id="4">
+            <is:name>ampere</is:name>
+        </is:unit>
+        <is:unit unit-id="5">
+            <is:name>kelvin</is:name>
+        </is:unit>
+        <is:unit unit-id="6">
+            <is:name>mole</is:name>
+        </is:unit>
+        <is:unit unit-id="7">
+            <is:name>candela</is:name>
+        </is:unit>
+        <is:unit unit-id="8">
+            <is:name>radian</is:name>
+        </is:unit>
+        <is:unit unit-id="9">
+            <is:name>meter</is:name>
+            <is:element unit-id="1"/>
+        </is:unit>
+        <is:unit unit-id="10">
+            <is:name>gram</is:name>
+            <is:element unit-id="2" prefix="milli"/>
+        </is:unit>
+        <is:unit unit-id="11">
+            <is:name>degree</is:name>
+        </is:unit>
+        <is:unit unit-id="12">
+            <is:name>millisecond</is:name>
+            <is:element unit-id="3" exponent="1" prefix="milli"/>
+        </is:unit>
+        <is:unit unit-id="13">
+            <is:name>volt</is:name>
+            <is:element unit-id="1" exponent="2"/>
+            <is:element unit-id="2" exponent="1"/>
+            <is:element unit-id="3" exponent="-3"/>
+            <is:element unit-id="4" exponent="-1"/>
+        </is:unit>
+        <is:unit unit-id="14">
+            <is:name>siemens</is:name>
+            <is:element unit-id="1" exponent="-2"/>
+            <is:element unit-id="2" exponent="-1"/>
+            <is:element unit-id="3" exponent="3"/>
+            <is:element unit-id="4" exponent="2"/>
+        </is:unit>
+        <is:unit unit-id="15">
+            <is:name>farad</is:name>
+            <is:element unit-id="1" exponent="-2"/>
+            <is:element unit-id="2" exponent="-1"/>
+            <is:element unit-id="3" exponent="4"/>
+            <is:element unit-id="4" exponent="2"/>
+        </is:unit>
+    </is:unit-set>
+
+    <is:module-set>
+
+        <is:module module-id="25154461-21d0-411d-b0c7-43be5ed20ce9" type="functional-unit">
+            <is:property>
+                <is:name>membrane</is:name>
+                <is:capsulation state="true">
+                    <is:capsulated-by module-id="fdd6bb80-d252-4df7-a1f9-d601c3ab5938"/>
+                </is:capsulation>
+                <is:template state="true"/>
+                <is:keyword-set/>
+                <is:track>
+                    <is:involved db-id="this" date="2012-03-12T09:27:19+09:00"/>
+                </is:track>
+                <is:frame-coordinate/>
+                <is:description/>
+            </is:property>
+
+            <is:port-set>
+                <is:port port-id="1" direction="in" multiple="false">
+                    <is:name>Iext</is:name>
+                    <is:description/>
+                </is:port>
+                <is:port port-id="2" direction="out" ref-physical-quantity-id="1">
+                    <is:name>V</is:name>
+                    <is:description/>
+                </is:port>
+            </is:port-set>
+
+            <is:physical-quantity-set>
+                <is:physical-quantity physical-quantity-id="1" type="state">
+                    <is:name>V</is:name>
+                    <is:dimension type="scalar"/>
+                    <is:value-type-set>
+                        <is:value-type precision="double" unit-id="0"/>
+                    </is:value-type-set>
+                    <is:initial-value>
+                        <is:definition type="ae" format="mathml">
+                            <m:math><m:apply><m:eq/><m:ci>V</m:ci><m:cn>10</m:cn></m:apply></m:math>
+                        </is:definition>
+                    </is:initial-value>
+                    <is:implementation>
+                        <is:definition type="ode" sub-type="" format="mathml">
+                            <m:math><m:apply><m:eq/><m:apply><m:diff/><m:bvar><m:ci>time</m:ci></m:bvar><m:ci>V</m:ci></m:apply><m:apply><m:divide/><m:apply><m:plus/><m:apply><m:minus/><m:ci>V</m:ci></m:apply><m:apply><m:times/><m:ci>R</m:ci><m:ci>A</m:ci><m:ci>I</m:ci></m:apply></m:apply><m:ci>taum</m:ci></m:apply></m:apply></m:math>
+                        </is:definition>
+                    </is:implementation>
+                    <is:problem-condition-set/>
+                    <is:description/>
+                </is:physical-quantity>
+                <is:physical-quantity physical-quantity-id="2" type="static-parameter">
+                    <is:name>taum</is:name>
+                    <is:dimension type="scalar"/>
+                    <is:value-type-set>
+                        <is:value-type precision="double" unit-id="0"/>
+                    </is:value-type-set>
+                    <is:initial-value/>
+                    <is:implementation>
+                        <is:definition type="ae" sub-type="" format="mathml">
+                            <m:math><m:apply><m:eq/><m:ci>taum</m:ci><m:cn>5</m:cn></m:apply></m:math>
+                        </is:definition>
+                    </is:implementation>
+                    <is:problem-condition-set/>
+                    <is:description/>
+                </is:physical-quantity>
+                <is:physical-quantity physical-quantity-id="3" type="static-parameter">
+                    <is:name>R</is:name>
+                    <is:dimension type="scalar"/>
+                    <is:value-type-set>
+                        <is:value-type precision="double" unit-id="0"/>
+                    </is:value-type-set>
+                    <is:initial-value/>
+                    <is:implementation>
+                        <is:definition type="ae" sub-type="" format="mathml">
+                            <m:math><m:apply><m:eq/><m:ci>R</m:ci><m:cn>50</m:cn></m:apply></m:math>
+                        </is:definition>
+                    </is:implementation>
+                    <is:problem-condition-set/>
+                    <is:description/>
+                </is:physical-quantity>
+                <is:physical-quantity physical-quantity-id="4" type="static-parameter">
+                    <is:name>A</is:name>
+                    <is:dimension type="scalar"/>
+                    <is:value-type-set>
+                        <is:value-type precision="double" unit-id="0"/>
+                    </is:value-type-set>
+                    <is:initial-value/>
+                    <is:implementation>
+                        <is:definition type="ae" sub-type="" format="mathml">
+                            <m:math><m:apply><m:eq/><m:ci>A</m:ci><m:cn>0.106</m:cn></m:apply></m:math>
+                        </is:definition>
+                    </is:implementation>
+                    <is:problem-condition-set/>
+                    <is:description/>
+                </is:physical-quantity>
+                <is:physical-quantity physical-quantity-id="5" type="variable-parameter">
+                    <is:name>I</is:name>
+                    <is:dimension type="scalar"/>
+                    <is:value-type-set>
+                        <is:value-type precision="double" unit-id="0"/>
+                    </is:value-type-set>
+                    <is:initial-value/>
+                    <is:implementation>
+                        <is:definition type="assign" sub-type="port" format="reference">
+                            <is:reference port-id="1"/>
+                        </is:definition>
+                    </is:implementation>
+                    <is:problem-condition-set/>
+                    <is:description/>
+                </is:physical-quantity>
+            </is:physical-quantity-set>
+            <is:morphology>
+                <is:geometry-set/>
+                <is:segment-set/>
+                <is:spatial-discretization/>
+            </is:morphology>
+            <is:event-set/>
+            <is:annotation>
+                <pd:extension>
+                    <pd:layout type="tree" target="module">
+                        <svg:rect x="-95.58331" y="248.95651" width="" height=""/>
+                    </pd:layout>
+                </pd:extension>
+            </is:annotation>
+        </is:module>
+
+        <is:module module-id="d05e278f-5554-474f-998d-c216297bdd46" type="functional-unit">
+            <is:property>
+                <is:name>threshold</is:name>
+                <is:capsulation state="true">
+                    <is:capsulated-by module-id="fdd6bb80-d252-4df7-a1f9-d601c3ab5938"/>
+                </is:capsulation>
+                <is:template state="true"/>
+                <is:keyword-set/>
+                <is:track>
+                    <is:involved db-id="this" date="2012-03-12T09:40:27+09:00"/>
+                </is:track>
+                <is:frame-coordinate/>
+                <is:description/>
+            </is:property>
+
+            <is:port-set>
+                <is:port port-id="1" direction="in">
+                    <is:name>V</is:name>
+                    <is:description/>
+                </is:port>
+                <is:port port-id="2" direction="out" ref-physical-quantity-id="10">
+                    <is:name>spike</is:name>
+                    <is:description/>
+                </is:port>
+            </is:port-set>
+
+            <is:physical-quantity-set>
+                <is:physical-quantity physical-quantity-id="1" type="variable-parameter">
+                    <is:name>theta</is:name>
+                    <is:dimension type="scalar"/>
+                    <is:value-type-set>
+                        <is:value-type precision="double" unit-id="0"/>
+                    </is:value-type-set>
+                    <is:initial-value/>
+                    <is:implementation>
+                        <is:definition type="ae" sub-type="" format="mathml">
+                            <m:math><m:apply><m:eq/><m:ci>theta</m:ci><m:apply><m:plus/><m:ci>omega</m:ci><m:ci>H1</m:ci><m:ci>H2</m:ci></m:apply></m:apply></m:math>
+                        </is:definition>
+                    </is:implementation>
+                    <is:problem-condition-set/>
+                    <is:description/>
+                    <is:max-delay>0.01</is:max-delay>
+                </is:physical-quantity>
+                <is:physical-quantity physical-quantity-id="2" type="state">
+                    <is:name>H1</is:name>
+                    <is:dimension type="scalar"/>
+                    <is:value-type-set>
+                        <is:value-type precision="double" unit-id="0"/>
+                    </is:value-type-set>
+                    <is:initial-value>
+                        <is:definition type="ae" format="mathml">
+                            <m:math><m:apply><m:eq/><m:ci>H1</m:ci><m:cn>10</m:cn></m:apply></m:math>
+                        </is:definition>
+                    </is:initial-value>
+                    <is:implementation>
+                        <is:definition type="ode" sub-type="" format="mathml">
+                            <m:math><m:apply><m:eq/><m:apply><m:diff/><m:bvar><m:ci>time</m:ci></m:bvar><m:ci>H1</m:ci></m:apply><m:apply><m:divide/><m:apply><m:minus/><m:ci>H1</m:ci></m:apply><m:ci>tau1</m:ci></m:apply></m:apply></m:math>
+                        </is:definition>
+                        <is:extra-implementation order="after" type="instantaneous">
+                            <is:definition type="conditional" sub-type="" format="">
+                                <is:case-set case-set-id="1">
+                                    <is:case substructure-id="1">
+                                        <is:condition format="mathml">
+                                            <m:math><m:apply><m:geq/><m:ci>V</m:ci><m:ci>theta</m:ci></m:apply></m:math>
+                                        </is:condition>
+                                        <is:definition type="ae" sub-type="" format="mathml">
+                                            <m:math><m:apply><m:eq/><m:ci>H1</m:ci><m:apply><m:plus/><m:ci>H1</m:ci><m:ci>alpha1</m:ci></m:apply></m:apply></m:math>
+                                        </is:definition>
+                                    </is:case>
+                                </is:case-set>
+                            </is:definition>
+                        </is:extra-implementation>
+                    </is:implementation>
+                    <is:problem-condition-set/>
+                    <is:description/>
+                </is:physical-quantity>
+                <is:physical-quantity physical-quantity-id="3" type="state">
+                    <is:name>H2</is:name>
+                    <is:dimension type="scalar"/>
+                    <is:value-type-set>
+                        <is:value-type precision="double" unit-id="0"/>
+                    </is:value-type-set>
+                    <is:initial-value>
+                        <is:definition type="ae" format="mathml">
+                            <m:math><m:apply><m:eq/><m:ci>H2</m:ci><m:cn>20</m:cn></m:apply></m:math>
+                        </is:definition>
+                    </is:initial-value>
+                    <is:implementation>
+                        <is:definition type="ode" sub-type="" format="mathml">
+                            <m:math><m:apply><m:eq/><m:apply><m:diff/><m:bvar><m:ci>time</m:ci></m:bvar><m:ci>H2</m:ci></m:apply><m:apply><m:divide/><m:apply><m:minus/><m:ci>H2</m:ci></m:apply><m:ci>tau2</m:ci></m:apply></m:apply></m:math>
+                        </is:definition>
+                        <is:extra-implementation order="after" type="instantaneous">
+                            <is:definition type="conditional" sub-type="" format="">
+                                <is:case-set case-set-id="1">
+                                    <is:case substructure-id="1">
+                                        <is:condition format="mathml">
+                                            <m:math><m:apply><m:geq/><m:ci>V</m:ci><m:ci>theta</m:ci></m:apply></m:math>
+                                        </is:condition>
+                                        <is:definition type="ae" sub-type="" format="mathml">
+                                            <m:math><m:apply><m:eq/><m:ci>H2</m:ci><m:apply><m:plus/><m:ci>H2</m:ci><m:ci>alpha2</m:ci></m:apply></m:apply></m:math>
+                                        </is:definition>
+                                    </is:case>
+                                </is:case-set>
+                            </is:definition>
+                        </is:extra-implementation>
+                    </is:implementation>
+                    <is:problem-condition-set/>
+                    <is:description/>
+                </is:physical-quantity>
+                <is:physical-quantity physical-quantity-id="4" type="static-parameter">
+                    <is:name>tau1</is:name>
+                    <is:dimension type="scalar"/>
+                    <is:value-type-set>
+                        <is:value-type precision="double" unit-id="0"/>
+                    </is:value-type-set>
+                    <is:initial-value/>
+                    <is:implementation>
+                        <is:definition type="ae" sub-type="" format="mathml">
+                            <m:math><m:apply><m:eq/><m:ci>tau1</m:ci><m:cn>10</m:cn></m:apply></m:math>
+                        </is:definition>
+                    </is:implementation>
+                    <is:problem-condition-set/>
+                    <is:description/>
+                </is:physical-quantity>
+                <is:physical-quantity physical-quantity-id="5" type="static-parameter">
+                    <is:name>tau2</is:name>
+                    <is:dimension type="scalar"/>
+                    <is:value-type-set>
+                        <is:value-type precision="double" unit-id="0"/>
+                    </is:value-type-set>
+                    <is:initial-value/>
+                    <is:implementation>
+                        <is:definition type="ae" sub-type="" format="mathml">
+                            <m:math><m:apply><m:eq/><m:ci>tau2</m:ci><m:cn>200</m:cn></m:apply></m:math>
+                        </is:definition>
+                    </is:implementation>
+                    <is:problem-condition-set/>
+                    <is:description/>
+                </is:physical-quantity>
+                <is:physical-quantity physical-quantity-id="6" type="static-parameter">
+                    <is:name>alpha1</is:name>
+                    <is:dimension type="scalar"/>
+                    <is:value-type-set>
+                        <is:value-type precision="double" unit-id="0"/>
+                    </is:value-type-set>
+                    <is:initial-value/>
+                    <is:implementation>
+                        <is:definition type="ae" sub-type="" format="mathml">
+                            <m:math><m:apply><m:eq/><m:ci>alpha1</m:ci><m:cn>37</m:cn></m:apply></m:math>
+                        </is:definition>
+                    </is:implementation>
+                    <is:problem-condition-set/>
+                    <is:description/>
+                </is:physical-quantity>
+                <is:physical-quantity physical-quantity-id="7" type="static-parameter">
+                    <is:name>alpha2</is:name>
+                    <is:dimension type="scalar"/>
+                    <is:value-type-set>
+                        <is:value-type precision="double" unit-id="0"/>
+                    </is:value-type-set>
+                    <is:initial-value/>
+                    <is:implementation>
+                        <is:definition type="ae" sub-type="" format="mathml">
+                            <m:math><m:apply><m:eq/><m:ci>alpha2</m:ci><m:cn>2</m:cn></m:apply></m:math>
+                        </is:definition>
+                    </is:implementation>
+                    <is:problem-condition-set/>
+                    <is:description/>
+                </is:physical-quantity>
+                <is:physical-quantity physical-quantity-id="8" type="variable-parameter">
+                    <is:name>V</is:name>
+                    <is:dimension type="scalar"/>
+                    <is:value-type-set>
+                        <is:value-type precision="double" unit-id="0"/>
+                    </is:value-type-set>
+                    <is:initial-value/>
+                    <is:implementation>
+                        <is:definition type="assign" sub-type="port" format="reference">
+                            <is:reference port-id="1"/>
+                        </is:definition>
+                    </is:implementation>
+                    <is:problem-condition-set/>
+                    <is:description/>
+                </is:physical-quantity>
+                <is:physical-quantity physical-quantity-id="9" type="static-parameter">
+                    <is:name>omega</is:name>
+                    <is:dimension type="scalar"/>
+                    <is:value-type-set>
+                        <is:value-type precision="double" unit-id="0"/>
+                    </is:value-type-set>
+                    <is:initial-value/>
+                    <is:implementation>
+                        <is:definition type="ae" sub-type="" format="mathml">
+                            <m:math><m:apply><m:eq/><m:ci>omega</m:ci><m:cn>19</m:cn></m:apply></m:math>
+                        </is:definition>
+                    </is:implementation>
+                    <is:problem-condition-set/>
+                    <is:description/>
+                </is:physical-quantity>
+                <is:physical-quantity physical-quantity-id="10" type="variable-parameter">
+                    <is:name>mat_spike</is:name>
+                    <is:dimension type="scalar"/>
+                    <is:value-type-set>
+                        <is:value-type precision="double" unit-id="0"/>
+                    </is:value-type-set>
+                    <is:initial-value/>
+                    <is:implementation>
+                        <is:definition type="conditional" sub-type="" format="">
+                            <is:case-set case-set-id="1">
+                                <is:case substructure-id="1">
+                                    <is:condition format="mathml">
+                                        <m:math><m:apply><m:lt/><m:apply><m:csymbol>Delay</m:csymbol><m:ci>theta</m:ci><m:cn>0.01</m:cn></m:apply><m:ci>theta</m:ci></m:apply></m:math>
+                                    </is:condition>
+                                    <is:definition type="ae" sub-type="" format="mathml">
+                                        <m:math><m:apply><m:eq/><m:ci>mat_spike</m:ci><m:cn>1</m:cn></m:apply></m:math>
+                                    </is:definition>
+                                </is:case>
+                                <is:case substructure-id="2">
+                                    <is:definition type="ae" sub-type="" format="mathml">
+                                        <m:math><m:apply><m:eq/><m:ci>mat_spike</m:ci><m:cn>0</m:cn></m:apply></m:math>
+                                    </is:definition>
+                                </is:case>
+                            </is:case-set>
+                        </is:definition>
+                    </is:implementation>
+                    <is:problem-condition-set/>
+                    <is:description/>
+                </is:physical-quantity>
+                <is:physical-quantity physical-quantity-id="11" type="static-parameter">
+                    <is:name>spike_threshold</is:name>
+                    <is:dimension type="scalar"/>
+                    <is:value-type-set>
+                        <is:value-type precision="double" unit-id="0"/>
+                    </is:value-type-set>
+                    <is:initial-value/>
+                    <is:implementation>
+                        <is:definition type="ae" sub-type="" format="mathml">
+                            <m:math><m:apply><m:eq/><m:ci>spike_threshold</m:ci><m:cn>60</m:cn></m:apply></m:math>
+                        </is:definition>
+                    </is:implementation>
+                    <is:problem-condition-set/>
+                    <is:description/>
+                </is:physical-quantity>
+            </is:physical-quantity-set>
+            <is:morphology/>
+            <is:event-set/>
+            <is:annotation>
+                <pd:extension>
+                    <pd:layout type="tree" target="module">
+                        <svg:rect x="110.41373" y="249.93756" width="" height=""/>
+                    </pd:layout>
+                </pd:extension>
+            </is:annotation>
+        </is:module>
+
+        <is:module module-id="01f3d47c-7dfd-462a-8612-d9a5a064e2d5" type="functional-unit">
+            <is:property>
+                <is:name>sin</is:name>
+                <is:capsulation state="false"/>
+                <is:template state="false"/>
+                <is:keyword-set/>
+                <is:track>
+                    <is:involved db-id="this" date="2012-03-20T08:03:43+09:00"/>
+                </is:track>
+                <is:frame-coordinate/>
+                <is:description/>
+            </is:property>
+
+            <is:port-set>
+                <is:port port-id="1" direction="out" ref-physical-quantity-id="1">
+                    <is:name>out</is:name>
+                    <is:description/>
+                </is:port>
+            </is:port-set>
+
+            <is:physical-quantity-set>
+                <is:physical-quantity physical-quantity-id="1" type="variable-parameter">
+                    <is:name>s</is:name>
+                    <is:dimension type="scalar"/>
+                    <is:value-type-set>
+                        <is:value-type precision="double" unit-id="0"/>
+                    </is:value-type-set>
+                    <is:initial-value/>
+                    <is:max-delay>0.01</is:max-delay>
+                    <is:implementation>
+                        <is:definition type="ae" sub-type="" format="mathml">
+                            <m:math><m:apply><m:eq/><m:ci>s</m:ci><m:apply><m:times/><m:apply><m:sin/><m:apply><m:times/><m:ci>time</m:ci><m:ci>f</m:ci><m:apply><m:plus/><m:cn>1</m:cn><m:apply><m:times/><m:apply><m:sin/><m:apply><m:times/><m:ci>time</m:ci><m:ci>f</m:ci><m:cn>0.1</m:cn></m:apply></m:apply><m:ci>C</m:ci></m:apply></m:apply><m:ci>B</m:ci></m:apply></m:apply><m:ci>A</m:ci></m:apply></m:apply></m:math>
+                        </is:definition>
+                    </is:implementation>
+                    <is:problem-condition-set/>
+                    <is:description/>
+                </is:physical-quantity>
+                <is:physical-quantity physical-quantity-id="2" type="static-parameter">
+                    <is:name>f</is:name>
+                    <is:dimension type="scalar"/>
+                    <is:value-type-set>
+                        <is:value-type precision="double" unit-id="0"/>
+                    </is:value-type-set>
+                    <is:initial-value/>
+                    <is:implementation>
+                        <is:definition type="ae" sub-type="" format="mathml">
+                            <m:math><m:apply><m:eq/><m:ci>f</m:ci><m:cn>1</m:cn></m:apply></m:math>
+                        </is:definition>
+                    </is:implementation>
+                    <is:problem-condition-set/>
+                    <is:description/>
+                </is:physical-quantity>
+                <is:physical-quantity physical-quantity-id="3" type="static-parameter">
+                    <is:name>A</is:name>
+                    <is:dimension type="scalar"/>
+                    <is:value-type-set>
+                        <is:value-type precision="double" unit-id="0"/>
+                    </is:value-type-set>
+                    <is:initial-value/>
+                    <is:implementation>
+                        <is:definition type="ae" sub-type="" format="mathml">
+                            <m:math><m:apply><m:eq/><m:ci>A</m:ci><m:cn>10</m:cn></m:apply></m:math>
+                        </is:definition>
+                    </is:implementation>
+                    <is:problem-condition-set/>
+                    <is:description/>
+                </is:physical-quantity>
+                <is:physical-quantity physical-quantity-id="4" type="static-parameter">
+                    <is:name>B</is:name>
+                    <is:dimension type="scalar"/>
+                    <is:value-type-set>
+                        <is:value-type precision="double" unit-id="0"/>
+                    </is:value-type-set>
+                    <is:initial-value/>
+                    <is:implementation>
+                        <is:definition type="ae" sub-type="" format="mathml">
+                            <m:math><m:apply><m:eq/><m:ci>B</m:ci><m:cn>2</m:cn></m:apply></m:math>
+                        </is:definition>
+                    </is:implementation>
+                    <is:problem-condition-set/>
+                    <is:description/>
+                </is:physical-quantity>
+                <is:physical-quantity physical-quantity-id="5" type="static-parameter">
+                    <is:name>C</is:name>
+                    <is:dimension type="scalar"/>
+                    <is:value-type-set>
+                        <is:value-type precision="double" unit-id="0"/>
+                    </is:value-type-set>
+                    <is:initial-value/>
+                    <is:implementation>
+                        <is:definition type="ae" sub-type="" format="mathml">
+                            <m:math><m:apply><m:eq/><m:ci>C</m:ci><m:cn>1</m:cn></m:apply></m:math>
+                        </is:definition>
+                    </is:implementation>
+                    <is:problem-condition-set/>
+                    <is:description/>
+                </is:physical-quantity>
+            </is:physical-quantity-set>
+            <is:morphology/>
+            <is:event-set/>
+            <is:annotation>
+                <pd:extension>
+                    <pd:layout type="nest" target="module">
+                        <svg:rect x="70.0" y="280.0" width="" height=""/>
+                    </pd:layout>
+                    <pd:layout type="tree" target="module">
+                        <svg:rect x="-321.1281" y="-447.4263" width="" height=""/>
+                    </pd:layout>
+                </pd:extension>
+            </is:annotation>
+        </is:module>
+
+        <is:module module-id="abfd19ee-ac17-4f0e-ab76-2dcb77e86fa0" type="functional-unit">
+            <is:property>
+                <is:name>Synapse_current</is:name>
+                <is:capsulation state="true">
+                    <is:capsulated-by module-id="a0cc23bd-9fdf-480d-8f49-883b1102433e"/>
+                </is:capsulation>
+                <is:template state="true"/>
+                <is:keyword-set/>
+                <is:track>
+                    <is:involved db-id="this" date="2011-04-20T10:41:19+09:00"/>
+                    <is:involved db-id="this" date="2012-03-19T04:27:53+09:00"/>
+                    <is:involved db-id="this" date="2012-03-22T06:20:44+09:00"/>
+                </is:track>
+                <is:frame-coordinate/>
+                <is:description/>
+            </is:property>
+
+            <is:port-set>
+                <is:port port-id="1" direction="out" ref-physical-quantity-id="1">
+                    <is:name>I_syn</is:name>
+                    <is:description/>
+                </is:port>
+                <is:port port-id="2" direction="in" multiple="false">
+                    <is:name>spike</is:name>
+                    <is:description>1: spike, 0: no spike</is:description>
+                </is:port>
+            </is:port-set>
+
+            <is:physical-quantity-set>
+                <is:physical-quantity physical-quantity-id="1" type="variable-parameter">
+                    <is:name>I_syn</is:name>
+                    <is:dimension type="scalar"/>
+                    <is:value-type-set>
+                        <is:value-type precision="double" unit-id="0"/>
+                    </is:value-type-set>
+                    <is:initial-value/>
+                    <is:implementation>
+                        <is:definition type="ae" sub-type="" format="mathml">
+                            <m:math><m:apply><m:eq/><m:ci>I_syn</m:ci><m:apply><m:times/><m:ci>g_syn</m:ci><m:ci>amp</m:ci></m:apply></m:apply></m:math>
+                        </is:definition>
+                    </is:implementation>
+                    <is:problem-condition-set/>
+                    <is:description/>
+                </is:physical-quantity>
+                <is:physical-quantity physical-quantity-id="2" type="state">
+                    <is:name>g_syn</is:name>
+                    <is:dimension type="scalar"/>
+                    <is:value-type-set>
+                        <is:value-type precision="double" unit-id="0"/>
+                    </is:value-type-set>
+                    <is:initial-value>
+                        <is:definition type="ae" format="mathml">
+                            <m:math><m:apply><m:eq/><m:ci>g_syn</m:ci><m:cn>0.0</m:cn></m:apply></m:math>
+                        </is:definition>
+                    </is:initial-value>
+                    <is:implementation>
+                        <is:definition type="ode" sub-type="" format="mathml">
+                            <m:math><m:apply><m:eq/><m:apply><m:diff/><m:bvar><m:ci>time</m:ci></m:bvar><m:ci>g_syn</m:ci></m:apply><m:ci>dg_syn</m:ci></m:apply></m:math>
+                        </is:definition>
+                    </is:implementation>
+                    <is:problem-condition-set/>
+                    <is:description/>
+                </is:physical-quantity>
+                <is:physical-quantity physical-quantity-id="3" type="static-parameter">
+                    <is:name>E_syn</is:name>
+                    <is:dimension type="scalar"/>
+                    <is:value-type-set>
+                        <is:value-type precision="double" unit-id="0"/>
+                    </is:value-type-set>
+                    <is:initial-value/>
+                    <is:implementation>
+                        <is:definition type="ae" sub-type="" format="mathml">
+                            <m:math><m:apply><m:eq/><m:ci>E_syn</m:ci><m:cn>0</m:cn></m:apply></m:math>
+                        </is:definition>
+                    </is:implementation>
+                    <is:problem-condition-set/>
+                    <is:description/>
+                </is:physical-quantity>
+                <is:physical-quantity physical-quantity-id="4" type="state">
+                    <is:name>dg_syn</is:name>
+                    <is:dimension type="scalar"/>
+                    <is:value-type-set>
+                        <is:value-type precision="double" unit-id="0"/>
+                    </is:value-type-set>
+                    <is:initial-value>
+                        <is:definition type="ae" format="mathml">
+                            <m:math><m:apply><m:eq/><m:ci>dg_syn</m:ci><m:cn>0</m:cn></m:apply></m:math>
+                        </is:definition>
+                    </is:initial-value>
+                    <is:implementation>
+                        <is:definition type="ode" sub-type="" format="mathml">
+                            <m:math><m:apply><m:eq/><m:apply><m:diff/><m:bvar><m:ci>time</m:ci></m:bvar><m:ci>dg_syn</m:ci></m:apply><m:apply><m:times/><m:apply><m:divide/><m:cn>-1</m:cn><m:apply><m:times/><m:ci>tau</m:ci><m:ci>tau</m:ci></m:apply></m:apply><m:apply><m:plus/><m:apply><m:times/><m:cn>2</m:cn><m:ci>tau</m:ci><m:ci>dg_syn</m:ci></m:apply><m:ci>g_syn</m:ci></m:apply></m:apply></m:apply></m:math>
+                        </is:definition>
+                        <is:extra-implementation order="after" type="instantaneous">
+                            <is:definition type="conditional" sub-type="" format="">
+                                <is:case-set case-set-id="1">
+                                    <is:case substructure-id="1">
+                                        <is:condition format="mathml">
+                                            <m:math><m:apply><m:geq/><m:ci>spike</m:ci><m:cn>1</m:cn></m:apply></m:math>
+                                        </is:condition>
+                                        <is:definition type="ae" sub-type="" format="mathml">
+                                            <m:math><m:apply><m:eq/><m:ci>dg_syn</m:ci><m:apply><m:plus/><m:ci>dg_syn</m:ci><m:apply><m:divide/><m:ci>g_synbar</m:ci><m:ci>tau</m:ci></m:apply></m:apply></m:apply></m:math>
+                                        </is:definition>
+                                    </is:case>
+                                </is:case-set>
+                            </is:definition>
+                        </is:extra-implementation>
+                    </is:implementation>
+                    <is:problem-condition-set/>
+                    <is:description/>
+                </is:physical-quantity>
+                <is:physical-quantity physical-quantity-id="5" type="static-parameter">
+                    <is:name>tau</is:name>
+                    <is:dimension type="scalar"/>
+                    <is:value-type-set>
+                        <is:value-type precision="double" unit-id="0"/>
+                    </is:value-type-set>
+                    <is:initial-value/>
+                    <is:implementation>
+                        <is:definition type="ae" sub-type="" format="mathml">
+                            <m:math><m:apply><m:eq/><m:ci>tau</m:ci><m:cn>2</m:cn></m:apply></m:math>
+                        </is:definition>
+                    </is:implementation>
+                    <is:problem-condition-set/>
+                    <is:description/>
+                </is:physical-quantity>
+                <is:physical-quantity physical-quantity-id="6" type="static-parameter">
+                    <is:name>g_synbar</is:name>
+                    <is:dimension type="scalar"/>
+                    <is:value-type-set>
+                        <is:value-type precision="double" unit-id="0"/>
+                    </is:value-type-set>
+                    <is:initial-value/>
+                    <is:implementation>
+                        <is:definition type="ae" sub-type="" format="mathml">
+                            <m:math><m:apply><m:eq/><m:ci>g_synbar</m:ci><m:cn>1.78</m:cn></m:apply></m:math>
+                        </is:definition>
+                    </is:implementation>
+                    <is:problem-condition-set/>
+                    <is:description/>
+                </is:physical-quantity>
+                <is:physical-quantity physical-quantity-id="7" type="static-parameter">
+                    <is:name>th</is:name>
+                    <is:dimension type="scalar"/>
+                    <is:value-type-set>
+                        <is:value-type precision="double" unit-id="0"/>
+                    </is:value-type-set>
+                    <is:initial-value/>
+                    <is:implementation>
+                        <is:definition type="ae" sub-type="" format="mathml">
+                            <m:math><m:apply><m:eq/><m:ci>th</m:ci><m:cn>5</m:cn></m:apply></m:math>
+                        </is:definition>
+                    </is:implementation>
+                    <is:problem-condition-set/>
+                    <is:description/>
+                </is:physical-quantity>
+                <is:physical-quantity physical-quantity-id="8" type="variable-parameter">
+                    <is:name>spike</is:name>
+                    <is:dimension type="scalar"/>
+                    <is:value-type-set>
+                        <is:value-type precision="double" unit-id="0"/>
+                    </is:value-type-set>
+                    <is:initial-value/>
+                    <is:implementation>
+                        <is:definition type="assign" sub-type="port" format="reference">
+                            <is:reference port-id="2"/>
+                        </is:definition>
+                    </is:implementation>
+                    <is:problem-condition-set/>
+                    <is:description/>
+                </is:physical-quantity>
+                <is:physical-quantity physical-quantity-id="9" type="static-parameter">
+                    <is:name>amp</is:name>
+                    <is:dimension type="scalar"/>
+                    <is:value-type-set>
+                        <is:value-type precision="double" unit-id="0"/>
+                    </is:value-type-set>
+                    <is:initial-value/>
+                    <is:implementation>
+                        <is:definition type="ae" sub-type="" format="mathml">
+                            <m:math><m:apply><m:eq/><m:ci>amp</m:ci><m:cn>0.9</m:cn></m:apply></m:math>
+                        </is:definition>
+                    </is:implementation>
+                    <is:problem-condition-set/>
+                    <is:description/>
+                </is:physical-quantity>
+            </is:physical-quantity-set>
+            <is:morphology/>
+            <is:event-set/>
+            <is:annotation>
+                <pd:extension>
+                    <pd:layout type="tree" target="module">
+                        <svg:rect x="-87.377625" y="221.29948" width="" height=""/>
+                    </pd:layout>
+                </pd:extension>
+            </is:annotation>
+        </is:module>
+
+        <is:module module-id="fdd6bb80-d252-4df7-a1f9-d601c3ab5938" type="capsule">
+            <is:property>
+                <is:name>MAT_model</is:name>
+                <is:capsulation state="true">
+                    <is:capsulated-by module-id="a0cc23bd-9fdf-480d-8f49-883b1102433e"/>
+                </is:capsulation>
+                <is:template state="true"/>
+                <is:keyword-set/>
+                <is:track>
+                    <is:involved db-id="this" date="2012-03-22T09:23:57+09:00"/>
+                </is:track>
+                <is:frame-coordinate/>
+                <is:description/>
+            </is:property>
+
+            <is:port-set>
+                <is:port port-id="1" direction="in">
+                    <is:name>Iext</is:name>
+                    <is:description/>
+                </is:port>
+                <is:port port-id="2" direction="out">
+                    <is:name>spike</is:name>
+                    <is:description/>
+                </is:port>
+            </is:port-set>
+            <is:physical-quantity-set/>
+            <is:morphology/>
+            <is:annotation>
+                <pd:extension>
+                    <pd:layout type="tree" target="module">
+                        <svg:rect x="96.34561" y="210.3998" width="" height=""/>
+                    </pd:layout>
+                </pd:extension>
+            </is:annotation>
+        </is:module>
+
+        <is:module module-id="f0c78d7f-0399-4bf1-bb7a-bc2a0a2d105f" type="functional-unit">
+            <is:property>
+                <is:name>spike_generator</is:name>
+                <is:capsulation state="false"/>
+                <is:template state="false"/>
+                <is:keyword-set/>
+                <is:track>
+                    <is:involved db-id="this" date="2012-03-23T00:48:04+09:00"/>
+                </is:track>
+                <is:frame-coordinate/>
+                <is:description/>
+            </is:property>
+
+            <is:port-set>
+                <is:port port-id="1" direction="in">
+                    <is:name>input</is:name>
+                    <is:description/>
+                </is:port>
+                <is:port port-id="2" direction="out" ref-physical-quantity-id="2">
+                    <is:name>spike</is:name>
+                    <is:description/>
+                </is:port>
+            </is:port-set>
+
+            <is:physical-quantity-set>
+                <is:physical-quantity physical-quantity-id="1" type="variable-parameter">
+                    <is:name>input</is:name>
+                    <is:dimension type="scalar"/>
+                    <is:value-type-set>
+                        <is:value-type precision="double" unit-id="0"/>
+                    </is:value-type-set>
+                    <is:initial-value/>
+                    <is:implementation>
+                        <is:definition type="assign" sub-type="port" format="reference">
+                            <is:reference port-id="1"/>
+                        </is:definition>
+                    </is:implementation>
+                    <is:problem-condition-set/>
+                    <is:description/>
+                </is:physical-quantity>
+                <is:physical-quantity physical-quantity-id="2" type="variable-parameter">
+                    <is:name>spike</is:name>
+                    <is:dimension type="scalar"/>
+                    <is:value-type-set>
+                        <is:value-type precision="double" unit-id="0"/>
+                    </is:value-type-set>
+                    <is:initial-value/>
+                    <is:implementation>
+                        <is:definition type="conditional" sub-type="" format="">
+                            <is:case-set case-set-id="1">
+                                <is:case substructure-id="1">
+                                    <is:condition format="mathml">
+                                        <m:math><m:apply><m:and/><m:apply><m:gt/><m:ci>input</m:ci><m:ci>threshold</m:ci></m:apply><m:apply><m:leq/><m:apply><m:csymbol>Delay</m:csymbol><m:ci>substate</m:ci><m:cn>0.01</m:cn></m:apply><m:ci>threshold</m:ci></m:apply></m:apply></m:math>
+                                    </is:condition>
+                                    <is:definition type="ae" sub-type="" format="mathml">
+                                        <m:math><m:apply><m:eq/><m:ci>spike</m:ci><m:cn>1</m:cn></m:apply></m:math>
+                                    </is:definition>
+                                </is:case>
+                                <is:case substructure-id="2">
+                                    <is:definition type="ae" sub-type="" format="mathml">
+                                        <m:math><m:apply><m:eq/><m:ci>spike</m:ci><m:cn>0</m:cn></m:apply></m:math>
+                                    </is:definition>
+                                </is:case>
+                            </is:case-set>
+                        </is:definition>
+                    </is:implementation>
+                    <is:problem-condition-set/>
+                    <is:description/>
+                    <is:max-delay>0.01</is:max-delay>
+                </is:physical-quantity>
+                <is:physical-quantity physical-quantity-id="3" type="static-parameter">
+                    <is:name>threshold</is:name>
+                    <is:dimension type="scalar"/>
+                    <is:value-type-set>
+                        <is:value-type precision="double" unit-id="0"/>
+                    </is:value-type-set>
+                    <is:initial-value/>
+                    <is:implementation>
+                        <is:definition type="ae" sub-type="" format="mathml">
+                            <m:math><m:apply><m:eq/><m:ci>threshold</m:ci><m:cn>5</m:cn></m:apply></m:math>
+                        </is:definition>
+                    </is:implementation>
+                    <is:problem-condition-set/>
+                    <is:description/>
+                </is:physical-quantity>
+                <is:physical-quantity physical-quantity-id="4" type="variable-parameter">
+                    <is:name>substate</is:name>
+                    <is:dimension type="scalar"/>
+                    <is:value-type-set>
+                        <is:value-type precision="double" unit-id="0"/>
+                    </is:value-type-set>
+                    <is:initial-value/>
+                    <is:implementation>
+                        <is:definition type="ae" sub-type="" format="mathml">
+                            <m:math><m:apply><m:eq/><m:ci>substate</m:ci><m:ci>input</m:ci></m:apply></m:math>
+                        </is:definition>
+                    </is:implementation>
+                    <is:problem-condition-set/>
+                    <is:description/>
+                    <is:max-delay>0.01</is:max-delay>
+                </is:physical-quantity>
+            </is:physical-quantity-set>
+            <is:morphology/>
+            <is:event-set/>
+            <is:annotation>
+                <pd:extension>
+                    <pd:layout type="nest" target="module">
+                        <svg:rect x="70.0" y="70.0" width="" height=""/>
+                    </pd:layout>
+                    <pd:layout type="tree" target="module">
+                        <svg:rect x="-161.85025" y="-610.9706" width="" height=""/>
+                    </pd:layout>
+                </pd:extension>
+            </is:annotation>
+        </is:module>
+
+        <is:module module-id="4b642e15-cf1c-467d-8755-9559ee25148a" type="functional-unit">
+            <is:property>
+                <is:name>poisson_spike_train</is:name>
+                <is:capsulation state="true">
+                    <is:capsulated-by module-id="01efee55-6b42-4521-aa76-7837641a0367"/>
+                </is:capsulation>
+                <is:template state="true"/>
+                <is:keyword-set/>
+                <is:track>
+                    <is:involved db-id="this" date="2012-03-23T06:41:33+09:00"/>
+                </is:track>
+                <is:frame-coordinate/>
+                <is:description/>
+            </is:property>
+
+            <is:port-set>
+                <is:port port-id="1" direction="out" ref-physical-quantity-id="4">
+                    <is:name>spike</is:name>
+                    <is:description/>
+                </is:port>
+            </is:port-set>
+
+            <is:physical-quantity-set>
+                <is:physical-quantity physical-quantity-id="1" type="variable-parameter">
+                    <is:name>poisson</is:name>
+                    <is:dimension type="scalar"/>
+                    <is:value-type-set>
+                        <is:value-type precision="double" unit-id="0"/>
+                    </is:value-type-set>
+                    <is:initial-value/>
+                    <is:implementation>
+                        <is:definition type="ae" sub-type="" format="mathml">
+                            <m:math><m:apply><m:eq/><m:ci>poisson</m:ci><m:apply><m:csymbol>poisson_variate</m:csymbol><m:cn>1</m:cn></m:apply></m:apply></m:math>
+                        </is:definition>
+                    </is:implementation>
+                    <is:problem-condition-set/>
+                    <is:description/>
+                </is:physical-quantity>
+                <is:physical-quantity physical-quantity-id="2" type="state">
+                    <is:name>next_timing</is:name>
+                    <is:dimension type="scalar"/>
+                    <is:value-type-set>
+                        <is:value-type precision="double" unit-id="0"/>
+                    </is:value-type-set>
+                    <is:initial-value>
+                        <is:definition type="ae" format="mathml">
+                            <m:math><m:apply><m:eq/><m:ci>next_timing</m:ci><m:ci>poisson</m:ci></m:apply></m:math>
+                        </is:definition>
+                    </is:initial-value>
+                    <is:implementation>
+                        <is:extra-implementation order="after" type="instantaneous">
+                            <is:definition type="conditional" sub-type="" format="">
+                                <is:case-set case-set-id="1">
+                                    <is:case substructure-id="1">
+                                        <is:condition format="mathml">
+                                            <m:math><m:apply><m:eq/><m:ci>poisson_spike</m:ci><m:cn>1</m:cn></m:apply></m:math>
+                                        </is:condition>
+                                        <is:definition type="ae" sub-type="" format="mathml">
+                                            <m:math><m:apply><m:eq/><m:ci>next_timing</m:ci><m:apply><m:plus/><m:ci>last</m:ci><m:ci>poisson</m:ci></m:apply></m:apply></m:math>
+                                        </is:definition>
+                                    </is:case>
+                                </is:case-set>
+                            </is:definition>
+                        </is:extra-implementation>
+                        <is:definition type="ode" sub-type="" format="mathml">
+                            <m:math><m:apply><m:eq/><m:apply><m:diff/><m:bvar><m:ci>time</m:ci></m:bvar><m:ci>next_timing</m:ci></m:apply><m:cn>0</m:cn></m:apply></m:math>
+                        </is:definition>
+                    </is:implementation>
+                    <is:problem-condition-set/>
+                    <is:description/>
+                </is:physical-quantity>
+                <is:physical-quantity physical-quantity-id="3" type="state">
+                    <is:name>last</is:name>
+                    <is:dimension type="scalar"/>
+                    <is:value-type-set>
+                        <is:value-type precision="double" unit-id="0"/>
+                    </is:value-type-set>
+                    <is:initial-value>
+                        <is:definition type="ae" format="mathml">
+                            <m:math><m:apply><m:eq/><m:ci>last</m:ci><m:cn>0</m:cn></m:apply></m:math>
+                        </is:definition>
+                    </is:initial-value>
+                    <is:implementation>
+                        <is:extra-implementation order="after" type="instantaneous">
+                            <is:definition type="conditional" sub-type="" format="">
+                                <is:case-set case-set-id="1">
+                                    <is:case substructure-id="1">
+                                        <is:condition format="mathml">
+                                            <m:math><m:apply><m:eq/><m:ci>poisson_spike</m:ci><m:cn>1</m:cn></m:apply></m:math>
+                                        </is:condition>
+                                        <is:definition type="ae" sub-type="" format="mathml">
+                                            <m:math><m:apply><m:eq/><m:ci>last</m:ci><m:ci>next_timing</m:ci></m:apply></m:math>
+                                        </is:definition>
+                                    </is:case>
+                                </is:case-set>
+                            </is:definition>
+                        </is:extra-implementation>
+                        <is:definition type="ode" sub-type="" format="mathml">
+                            <m:math><m:apply><m:eq/><m:apply><m:diff/><m:bvar><m:ci>time</m:ci></m:bvar><m:ci>last</m:ci></m:apply><m:cn>0</m:cn></m:apply></m:math>
+                        </is:definition>
+                    </is:implementation>
+                    <is:problem-condition-set/>
+                    <is:description/>
+                </is:physical-quantity>
+                <is:physical-quantity physical-quantity-id="4" type="variable-parameter">
+                    <is:name>poisson_spike</is:name>
+                    <is:dimension type="scalar"/>
+                    <is:value-type-set>
+                        <is:value-type precision="double" unit-id="0"/>
+                    </is:value-type-set>
+                    <is:initial-value/>
+                    <is:implementation>
+                        <is:definition type="conditional" sub-type="" format="">
+                            <is:case-set case-set-id="1">
+                                <is:case substructure-id="1">
+                                    <is:condition format="mathml">
+                                        <m:math><m:apply><m:gt/><m:ci>time</m:ci><m:ci>next_timing</m:ci></m:apply></m:math>
+                                    </is:condition>
+                                    <is:definition type="ae" sub-type="" format="mathml">
+                                        <m:math><m:apply><m:eq/><m:ci>poisson_spike</m:ci><m:cn>1</m:cn></m:apply></m:math>
+                                    </is:definition>
+                                </is:case>
+                                <is:case substructure-id="2">
+                                    <is:definition type="ae" sub-type="" format="mathml">
+                                        <m:math><m:apply><m:eq/><m:ci>poisson_spike</m:ci><m:cn>0</m:cn></m:apply></m:math>
+                                    </is:definition>
+                                </is:case>
+                            </is:case-set>
+                        </is:definition>
+                    </is:implementation>
+                    <is:problem-condition-set/>
+                    <is:description/>
+                </is:physical-quantity>
+            </is:physical-quantity-set>
+            <is:morphology/>
+            <is:event-set/>
+            <is:annotation>
+                <pd:extension>
+                    <pd:layout type="tree" target="module">
+                        <svg:rect x="-1.2268372" y="174.70926" width="" height=""/>
+                    </pd:layout>
+                </pd:extension>
+            </is:annotation>
+        </is:module>
+
+        <is:module module-id="5db0dbc6-2b46-4337-bf80-224b900f0f02" type="container">
+            <is:property>
+                <is:name>model_and_synapse</is:name>
+                <is:capsulation state="true">
+                    <is:capsulated-by module-id="a0cc23bd-9fdf-480d-8f49-883b1102433e"/>
+                </is:capsulation>
+                <is:template state="true"/>
+                <is:keyword-set/>
+                <is:track>
+                    <is:involved db-id="this" date="2012-03-23T11:06:34+09:00"/>
+                </is:track>
+                <is:frame-coordinate/>
+                <is:description/>
+            </is:property>
+            <is:port-set/>
+            <is:physical-quantity-set/>
+            <is:morphology/>
+            <is:annotation>
+                <pd:extension>
+                    <pd:layout type="tree" target="module">
+                        <svg:rect x="94.70514" y="216.5256" width="" height=""/>
+                    </pd:layout>
+                </pd:extension>
+            </is:annotation>
+        </is:module>
+
+        <is:module module-id="a0cc23bd-9fdf-480d-8f49-883b1102433e" type="capsule">
+            <is:property>
+                <is:name>C_model_and_synapse</is:name>
+                <is:capsulation state="false"/>
+                <is:template state="true"/>
+                <is:keyword-set/>
+                <is:track>
+                    <is:involved db-id="this" date="2012-03-23T11:06:42+09:00"/>
+                </is:track>
+                <is:frame-coordinate/>
+                <is:description/>
+            </is:property>
+
+            <is:port-set>
+                <is:port port-id="1" direction="in" multiple="false">
+                    <is:name>from_neuron</is:name>
+                    <is:description/>
+                </is:port>
+                <is:port port-id="2" direction="out">
+                    <is:name>spike</is:name>
+                    <is:description/>
+                </is:port>
+                <is:port port-id="3" direction="in" multiple="false">
+                    <is:name>from_background</is:name>
+                    <is:description/>
+                </is:port>
+            </is:port-set>
+            <is:physical-quantity-set/>
+            <is:morphology/>
+            <is:annotation>
+                <pd:extension>
+                    <pd:layout type="nest" target="module">
+                        <svg:rect x="280.0" y="280.0" width="" height=""/>
+                    </pd:layout>
+                    <pd:layout type="tree" target="module">
+                        <svg:rect x="-238.79712" y="348.72986" width="" height=""/>
+                    </pd:layout>
+                </pd:extension>
+            </is:annotation>
+        </is:module>
+
+        <is:module module-id="01efee55-6b42-4521-aa76-7837641a0367" type="capsule">
+            <is:property>
+                <is:name>poissonian_background</is:name>
+                <is:capsulation state="false"/>
+                <is:template state="true"/>
+                <is:keyword-set/>
+                <is:track>
+                    <is:involved db-id="this" date="2012-03-23T11:09:22+09:00"/>
+                </is:track>
+                <is:frame-coordinate/>
+                <is:description/>
+            </is:property>
+
+            <is:port-set>
+                <is:port port-id="1" direction="out">
+                    <is:name>spike</is:name>
+                    <is:description/>
+                </is:port>
+            </is:port-set>
+            <is:physical-quantity-set/>
+            <is:morphology/>
+            <is:annotation>
+                <pd:extension>
+                    <pd:layout type="nest" target="module">
+                        <svg:rect x="280.0" y="70.0" width="" height=""/>
+                    </pd:layout>
+                    <pd:layout type="tree" target="module">
+                        <svg:rect x="-90.67548" y="237.1022" width="" height=""/>
+                    </pd:layout>
+                </pd:extension>
+            </is:annotation>
+        </is:module>
+
+        <is:module module-id="90e971a2-5506-4ce8-867e-90e09edf70ea" type="functional-unit">
+            <is:property>
+                <is:name>input_receiver</is:name>
+                <is:capsulation state="true">
+                    <is:capsulated-by module-id="a0cc23bd-9fdf-480d-8f49-883b1102433e"/>
+                </is:capsulation>
+                <is:template state="true"/>
+                <is:keyword-set/>
+                <is:track>
+                    <is:involved db-id="this" date="2012-03-24T20:57:02-15:00"/>
+                </is:track>
+                <is:frame-coordinate/>
+                <is:description>corresponding to dendrites\n</is:description>
+            </is:property>
+
+            <is:port-set>
+                <is:port port-id="1" direction="in" multiple="true">
+                    <is:name>from_neuron</is:name>
+                    <is:description/>
+                </is:port>
+                <is:port port-id="2" direction="in" multiple="false">
+                    <is:name>from_background</is:name>
+                    <is:description/>
+                </is:port>
+                <is:port port-id="3" direction="out" ref-physical-quantity-id="3">
+                    <is:name>spikes</is:name>
+                    <is:description/>
+                </is:port>
+            </is:port-set>
+
+            <is:physical-quantity-set>
+                <is:physical-quantity physical-quantity-id="1" type="variable-parameter">
+                    <is:name>neural_input</is:name>
+                    <is:dimension type="scalar"/>
+                    <is:value-type-set>
+                        <is:value-type precision="double" unit-id="0"/>
+                    </is:value-type-set>
+                    <is:initial-value/>
+                    <is:implementation>
+                        <is:definition type="assign" sub-type="port" format="reference">
+                            <is:reference port-id="1"/>
+                        </is:definition>
+                        <is:extra-implementation type="multiple-input-assignment">
+                            <is:definition type="reduction" sub-type="sum"/>
+                        </is:extra-implementation>
+                    </is:implementation>
+                    <is:problem-condition-set/>
+                    <is:description/>
+                </is:physical-quantity>
+                <is:physical-quantity physical-quantity-id="2" type="variable-parameter">
+                    <is:name>background_input</is:name>
+                    <is:dimension type="scalar"/>
+                    <is:value-type-set>
+                        <is:value-type precision="double" unit-id="0"/>
+                    </is:value-type-set>
+                    <is:initial-value/>
+                    <is:implementation>
+                        <is:definition type="assign" sub-type="port" format="reference">
+                            <is:reference port-id="2"/>
+                        </is:definition>
+                    </is:implementation>
+                    <is:problem-condition-set/>
+                    <is:description/>
+                </is:physical-quantity>
+                <is:physical-quantity physical-quantity-id="3" type="variable-parameter">
+                    <is:name>total_spikes</is:name>
+                    <is:dimension type="scalar"/>
+                    <is:value-type-set>
+                        <is:value-type precision="double" unit-id="0"/>
+                    </is:value-type-set>
+                    <is:initial-value/>
+                    <is:implementation>
+                        <is:definition type="ae" sub-type="" format="mathml">
+                            <m:math><m:apply><m:eq/><m:ci>total_spikes</m:ci><m:apply><m:plus/><m:ci>neural_input</m:ci><m:ci>background_input</m:ci></m:apply></m:apply></m:math>
+                        </is:definition>
+                    </is:implementation>
+                    <is:problem-condition-set/>
+                    <is:description/>
+                </is:physical-quantity>
+            </is:physical-quantity-set>
+            <is:morphology/>
+            <is:event-set/>
+            <is:annotation>
+                <pd:extension>
+                    <pd:layout type="tree" target="module">
+                        <svg:rect x="-101.43754" y="204.89978" width="" height=""/>
+                    </pd:layout>
+                </pd:extension>
+            </is:annotation>
+        </is:module>
+
+        <is:module module-id="3789d282-3b0d-4d3a-8c8c-a5939ec6c974" type="container">
+            <is:property>
+                <is:name>network</is:name>
+                <is:capsulation state="false"/>
+                <is:template state="false"/>
+                <is:keyword-set/>
+                <is:track>
+                    <is:involved db-id="this" date="2012-03-25T07:09:22+09:00"/>
+                </is:track>
+                <is:frame-coordinate/>
+                <is:description/>
+            </is:property>
+            <is:port-set/>
+            <is:physical-quantity-set/>
+            <is:morphology/>
+            <is:annotation>
+                <pd:extension>
+                    <pd:layout type="tree" target="module">
+                        <svg:rect x="137.41351" y="-642.03235" width="" height=""/>
+                    </pd:layout>
+                </pd:extension>
+            </is:annotation>
+        </is:module>
+
+        <is:module module-id="86c10b46-ba27-49f6-8269-0dcbdba5961c" type="container">
+            <is:property>
+                <is:name>background</is:name>
+                <is:capsulation state="false"/>
+                <is:template state="false"/>
+                <is:keyword-set/>
+                <is:track>
+                    <is:involved db-id="this" date="2012-03-25T07:28:56+09:00"/>
+                </is:track>
+                <is:frame-coordinate/>
+                <is:description/>
+            </is:property>
+            <is:port-set/>
+            <is:physical-quantity-set/>
+            <is:morphology/>
+            <is:annotation>
+                <pd:extension>
+                    <pd:layout type="tree" target="module">
+                        <svg:rect x="-87.764366" y="369.4248" width="" height=""/>
+                    </pd:layout>
+                </pd:extension>
+            </is:annotation>
+        </is:module>
+    </is:module-set>
+
+    <is:template-set>
+        <is:template template-id="9ad59540-d787-4a65-a911-ab755006ba84" ref-module-id="a0cc23bd-9fdf-480d-8f49-883b1102433e"/>
+        <is:template template-id="712b12d2-99b4-4fa7-b337-f26b49a9c18f" ref-module-id="01efee55-6b42-4521-aa76-7837641a0367"/>
+    </is:template-set>
+
+    <is:instance-set>
+        <is:instance module-id="2b5e4a88-3864-47fa-bb11-cdaeda0a9d58">
+            <is:instance-of template-id="9ad59540-d787-4a65-a911-ab755006ba84"/>
+            <is:target-module-set/>
+        </is:instance>
+        <is:instance module-id="e63b27f3-fc47-4e14-8f70-2591964491d7">
+            <is:instance-of template-id="9ad59540-d787-4a65-a911-ab755006ba84"/>
+            <is:target-module-set/>
+        </is:instance>
+        <is:instance module-id="cd50c0eb-5a9f-4650-ae6d-a42616de6f6b">
+            <is:instance-of template-id="712b12d2-99b4-4fa7-b337-f26b49a9c18f"/>
+            <is:target-module-set/>
+        </is:instance>
+        <is:instance module-id="d4b913c8-a8e8-4c1e-9cad-b574b1baf47c">
+            <is:instance-of template-id="712b12d2-99b4-4fa7-b337-f26b49a9c18f"/>
+            <is:target-module-set/>
+        </is:instance>
+        <is:instance module-id="d1357b22-8fbf-46e8-9986-171ffc33b18b">
+            <is:instance-of template-id="712b12d2-99b4-4fa7-b337-f26b49a9c18f"/>
+            <is:target-module-set/>
+        </is:instance>
+        <is:instance module-id="98ba8c04-601c-420b-8216-b64f45640468">
+            <is:instance-of template-id="9ad59540-d787-4a65-a911-ab755006ba84"/>
+            <is:target-module-set/>
+        </is:instance>
+    </is:instance-set>
+    <is:controller-set/>
+
+    <is:edge-set>
+        <is:edge edge-id="08315112-a56b-409c-a0b1-aa201c4ee296" type="functional" multiple="false">
+            <is:tail module-id="25154461-21d0-411d-b0c7-43be5ed20ce9" port-id="2"/>
+            <is:head module-id="d05e278f-5554-474f-998d-c216297bdd46" port-id="1"/>
+            <is:operation/>
+            <is:description/>
+        </is:edge>
+        <is:edge edge-id="be2150e6-2db2-44a3-9bd7-b5fa738dc9df" type="capsular" multiple="false">
+            <is:tail module-id="d05e278f-5554-474f-998d-c216297bdd46" port-id="0"/>
+            <is:head module-id="fdd6bb80-d252-4df7-a1f9-d601c3ab5938" port-id="0"/>
+            <is:operation/>
+            <is:description/>
+        </is:edge>
+        <is:edge edge-id="97b1bbac-1335-4894-b764-c80716fe2d9a" type="capsular" multiple="false">
+            <is:tail module-id="25154461-21d0-411d-b0c7-43be5ed20ce9" port-id="0"/>
+            <is:head module-id="fdd6bb80-d252-4df7-a1f9-d601c3ab5938" port-id="0"/>
+            <is:operation/>
+            <is:description/>
+        </is:edge>
+        <is:edge edge-id="1587e8ea-60d4-405b-8d53-9f78d055b7b9" type="functional" multiple="false">
+            <is:tail module-id="abfd19ee-ac17-4f0e-ab76-2dcb77e86fa0" port-id="1"/>
+            <is:head module-id="fdd6bb80-d252-4df7-a1f9-d601c3ab5938" port-id="1"/>
+            <is:operation/>
+            <is:description/>
+        </is:edge>
+        <is:edge edge-id="d77cdfec-9b96-42f8-aba8-49033263eeb9" type="forwarding" multiple="false">
+            <is:tail module-id="fdd6bb80-d252-4df7-a1f9-d601c3ab5938" port-id="1"/>
+            <is:head module-id="25154461-21d0-411d-b0c7-43be5ed20ce9" port-id="1"/>
+            <is:operation>input forwarding</is:operation>
+            <is:description/>
+        </is:edge>
+        <is:edge edge-id="7f93ccbc-0f53-448a-8fef-16b31b9361b9" type="functional" multiple="false">
+            <is:tail module-id="01f3d47c-7dfd-462a-8612-d9a5a064e2d5" port-id="1"/>
+            <is:head module-id="f0c78d7f-0399-4bf1-bb7a-bc2a0a2d105f" port-id="1"/>
+            <is:operation/>
+            <is:description/>
+        </is:edge>
+        <is:edge edge-id="1ab034bf-47e2-40af-aef0-2bec53b4b417" type="forwarding" multiple="false">
+            <is:tail module-id="d05e278f-5554-474f-998d-c216297bdd46" port-id="2"/>
+            <is:head module-id="fdd6bb80-d252-4df7-a1f9-d601c3ab5938" port-id="2"/>
+            <is:operation>output forwarding</is:operation>
+            <is:description/>
+        </is:edge>
+        <is:edge edge-id="63b9abf7-7ccf-41d6-9de4-2a7f9e9c62fd" type="structural" multiple="false">
+            <is:tail module-id="fdd6bb80-d252-4df7-a1f9-d601c3ab5938" port-id="0"/>
+            <is:head module-id="5db0dbc6-2b46-4337-bf80-224b900f0f02" port-id="0"/>
+            <is:operation>constituent</is:operation>
+            <is:description/>
+        </is:edge>
+        <is:edge edge-id="5e1fa035-437a-4dac-8f73-623600440d3f" type="structural" multiple="false">
+            <is:tail module-id="abfd19ee-ac17-4f0e-ab76-2dcb77e86fa0" port-id="0"/>
+            <is:head module-id="5db0dbc6-2b46-4337-bf80-224b900f0f02" port-id="0"/>
+            <is:operation>constituent</is:operation>
+            <is:description/>
+        </is:edge>
+        <is:edge edge-id="9b184efd-6081-4f14-b161-2716dfa19dd1" type="capsular" multiple="false">
+            <is:tail module-id="5db0dbc6-2b46-4337-bf80-224b900f0f02" port-id="0"/>
+            <is:head module-id="a0cc23bd-9fdf-480d-8f49-883b1102433e" port-id="0"/>
+            <is:operation/>
+            <is:description/>
+        </is:edge>
+        <is:edge edge-id="ddfa0b17-47f3-4f76-b1e1-af46910a5263" type="forwarding" multiple="false">
+            <is:tail module-id="fdd6bb80-d252-4df7-a1f9-d601c3ab5938" port-id="2"/>
+            <is:head module-id="a0cc23bd-9fdf-480d-8f49-883b1102433e" port-id="2"/>
+            <is:operation>output forwarding</is:operation>
+            <is:description/>
+        </is:edge>
+        <is:edge edge-id="3bdb0a6d-8423-4295-918b-abbac8525da8" type="capsular" multiple="false">
+            <is:tail module-id="4b642e15-cf1c-467d-8755-9559ee25148a" port-id="0"/>
+            <is:head module-id="01efee55-6b42-4521-aa76-7837641a0367" port-id="0"/>
+            <is:operation/>
+            <is:description/>
+        </is:edge>
+        <is:edge edge-id="fcdd4060-9499-4936-b2f9-ce5ba77989db" type="forwarding" multiple="false">
+            <is:tail module-id="4b642e15-cf1c-467d-8755-9559ee25148a" port-id="1"/>
+            <is:head module-id="01efee55-6b42-4521-aa76-7837641a0367" port-id="1"/>
+            <is:operation>output forwarding</is:operation>
+            <is:description/>
+        </is:edge>
+        <is:edge edge-id="1f0f7960-2f74-44bc-b673-1da00a0d91c5" type="capsular" multiple="false">
+            <is:tail module-id="90e971a2-5506-4ce8-867e-90e09edf70ea" port-id="0"/>
+            <is:head module-id="a0cc23bd-9fdf-480d-8f49-883b1102433e" port-id="0"/>
+            <is:operation/>
+            <is:description/>
+        </is:edge>
+        <is:edge edge-id="ee3a30b0-2b52-4176-a763-d99dd7d7309f" type="forwarding" multiple="false">
+            <is:tail module-id="a0cc23bd-9fdf-480d-8f49-883b1102433e" port-id="1"/>
+            <is:head module-id="90e971a2-5506-4ce8-867e-90e09edf70ea" port-id="1"/>
+            <is:operation>input forwarding</is:operation>
+            <is:description/>
+        </is:edge>
+        <is:edge edge-id="3f7ea9c4-b60f-484e-bf22-6eacba3fbf79" type="forwarding" multiple="false">
+            <is:tail module-id="a0cc23bd-9fdf-480d-8f49-883b1102433e" port-id="3"/>
+            <is:head module-id="90e971a2-5506-4ce8-867e-90e09edf70ea" port-id="2"/>
+            <is:operation>input forwarding</is:operation>
+            <is:description/>
+        </is:edge>
+        <is:edge edge-id="a859fd42-7ddc-4e12-8640-f647417bfe4d" type="functional" multiple="false">
+            <is:tail module-id="90e971a2-5506-4ce8-867e-90e09edf70ea" port-id="3"/>
+            <is:head module-id="abfd19ee-ac17-4f0e-ab76-2dcb77e86fa0" port-id="2"/>
+            <is:operation/>
+            <is:description/>
+        </is:edge>
+        <is:edge edge-id="8fc41364-a9d4-4251-b7e6-7716ab6b6d10" type="functional" multiple="false">
+            <is:tail module-id="f0c78d7f-0399-4bf1-bb7a-bc2a0a2d105f" port-id="2"/>
+            <is:head module-id="a0cc23bd-9fdf-480d-8f49-883b1102433e" port-id="1"/>
+            <is:operation/>
+            <is:description/>
+        </is:edge>
+        <is:edge edge-id="dbef27e7-df17-47d2-b4cb-f76efc9aaa57" type="structural" multiple="false">
+            <is:tail module-id="a0cc23bd-9fdf-480d-8f49-883b1102433e" port-id="0"/>
+            <is:head module-id="3789d282-3b0d-4d3a-8c8c-a5939ec6c974" port-id="0"/>
+            <is:operation>constituent</is:operation>
+            <is:description/>
+        </is:edge>
+        <is:edge edge-id="0851cb6f-b2d6-4dfb-adf0-47fe2867ae76" type="structural" multiple="false">
+            <is:tail module-id="2b5e4a88-3864-47fa-bb11-cdaeda0a9d58" port-id="0"/>
+            <is:head module-id="3789d282-3b0d-4d3a-8c8c-a5939ec6c974" port-id="0"/>
+            <is:operation>constituent</is:operation>
+            <is:description/>
+        </is:edge>
+        <is:edge edge-id="ad3325b0-7c45-4090-87a8-89d037bf04b5" type="structural" multiple="false">
+            <is:tail module-id="e63b27f3-fc47-4e14-8f70-2591964491d7" port-id="0"/>
+            <is:head module-id="3789d282-3b0d-4d3a-8c8c-a5939ec6c974" port-id="0"/>
+            <is:operation>constituent</is:operation>
+            <is:description/>
+        </is:edge>
+        <is:edge edge-id="a948aa40-57ef-4a51-b1de-8c0a127c6a2a" type="structural" multiple="false">
+            <is:tail module-id="86c10b46-ba27-49f6-8269-0dcbdba5961c" port-id="0"/>
+            <is:head module-id="3789d282-3b0d-4d3a-8c8c-a5939ec6c974" port-id="0"/>
+            <is:operation>constituent</is:operation>
+            <is:description/>
+        </is:edge>
+        <is:edge edge-id="eccfef4e-a202-4378-91f7-411f4b480fd8" type="structural" multiple="false">
+            <is:tail module-id="01efee55-6b42-4521-aa76-7837641a0367" port-id="0"/>
+            <is:head module-id="86c10b46-ba27-49f6-8269-0dcbdba5961c" port-id="0"/>
+            <is:operation>constituent</is:operation>
+            <is:description/>
+        </is:edge>
+        <is:edge edge-id="59c363a8-dd17-47f1-8dd2-9ccc49339ffd" type="structural" multiple="false">
+            <is:tail module-id="cd50c0eb-5a9f-4650-ae6d-a42616de6f6b" port-id="0"/>
+            <is:head module-id="86c10b46-ba27-49f6-8269-0dcbdba5961c" port-id="0"/>
+            <is:operation>constituent</is:operation>
+            <is:description/>
+        </is:edge>
+        <is:edge edge-id="ff0ee384-cd7f-4bd2-9499-26d7782f14f8" type="structural" multiple="false">
+            <is:tail module-id="d4b913c8-a8e8-4c1e-9cad-b574b1baf47c" port-id="0"/>
+            <is:head module-id="86c10b46-ba27-49f6-8269-0dcbdba5961c" port-id="0"/>
+            <is:operation>constituent</is:operation>
+            <is:description/>
+        </is:edge>
+        <is:edge edge-id="ba74c0c2-197c-4fa8-ad3d-03a64e45d2fd" type="structural" multiple="false">
+            <is:tail module-id="d1357b22-8fbf-46e8-9986-171ffc33b18b" port-id="0"/>
+            <is:head module-id="86c10b46-ba27-49f6-8269-0dcbdba5961c" port-id="0"/>
+            <is:operation>constituent</is:operation>
+            <is:description/>
+        </is:edge>
+        <is:edge edge-id="59fc9739-d1e7-4ed1-8aa5-ec069847ee04" type="functional" multiple="false">
+            <is:tail module-id="d1357b22-8fbf-46e8-9986-171ffc33b18b" port-id="1"/>
+            <is:head module-id="e63b27f3-fc47-4e14-8f70-2591964491d7" port-id="3"/>
+            <is:operation/>
+            <is:description/>
+        </is:edge>
+        <is:edge edge-id="7f5166b0-5074-4f61-a7cf-2108ed7eda35" type="functional" multiple="false">
+            <is:tail module-id="cd50c0eb-5a9f-4650-ae6d-a42616de6f6b" port-id="1"/>
+            <is:head module-id="2b5e4a88-3864-47fa-bb11-cdaeda0a9d58" port-id="3"/>
+            <is:operation/>
+            <is:description/>
+        </is:edge>
+        <is:edge edge-id="8c870fe3-38ee-4873-b6ab-5bfb3dd38bb4" type="structural" multiple="false">
+            <is:tail module-id="98ba8c04-601c-420b-8216-b64f45640468" port-id="0"/>
+            <is:head module-id="3789d282-3b0d-4d3a-8c8c-a5939ec6c974" port-id="0"/>
+            <is:operation>constituent</is:operation>
+            <is:description/>
+        </is:edge>
+        <is:edge edge-id="96a973a0-9e00-426e-9ab9-30a92d1ef951" type="functional" multiple="false">
+            <is:tail module-id="d4b913c8-a8e8-4c1e-9cad-b574b1baf47c" port-id="1"/>
+            <is:head module-id="98ba8c04-601c-420b-8216-b64f45640468" port-id="3"/>
+            <is:operation/>
+            <is:description/>
+        </is:edge>
+        <is:edge edge-id="6681125c-ec26-495e-9ba3-e35b34a9cd0c" type="functional" multiple="false">
+            <is:tail module-id="2b5e4a88-3864-47fa-bb11-cdaeda0a9d58" port-id="2"/>
+            <is:head module-id="98ba8c04-601c-420b-8216-b64f45640468" port-id="1"/>
+            <is:operation/>
+            <is:description/>
+        </is:edge>
+    </is:edge-set>
+</is:insilico-model>
+

@@ -1,0 +1,20 @@
+1
+  load $2 %a
+  load $3 %b
+  $1 = (leq $2 $3)
+  br $1 L3
+  jmp L2
+ L3:
+  load $4 %b
+  load $5 %c
+  $1 = (leq $4 $5)
+  br $1 L1
+ L2:
+  load $0 %z
+  jmp L0
+ L1:
+  load $0 %y
+  jmp L0
+ L0:
+  store %x $0
+00000000-0000-0000-0000-000000000000 %x 6

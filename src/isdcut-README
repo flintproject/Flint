@@ -1,0 +1,22 @@
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; isdcut -- remove sections from each row of the ISDF file.
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+This program removes sections from each row of the ISDF file.
+
+= Synopsis
+
+isdcut [-f list] [-o output] [path]
+isdcut --help
+
+
+= Description
+
+--fields, -f
+    select only these fields.
+
+--output, -o
+    write to file at `output` instead of stdout.
+
+--help, -h
+    show help.

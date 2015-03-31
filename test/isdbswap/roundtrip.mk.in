@@ -1,0 +1,20 @@
+.PHONY: all clean check
+
+all: input.isd output0.isd output1.isd
+
+check: roundtrip.cmp
+
+clean:
+	-rm -f roundtrip.cmp output1.isd output0.isd input.isd
+
+input.isd:
+	ISDRAND_EXECUTABLE $@
+
+output0.isd: input.isd
+	EXECUTABLE $< $@
+
+output1.isd: output0.isd
+	EXECUTABLE $< $@
+
+roundtrip.cmp: input.isd output1.isd
+	cmp $^ > $@

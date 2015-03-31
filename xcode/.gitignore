@@ -1,0 +1,12 @@
+*.dmg
+*.pkg
+build/
+config.mk
+flint/
+opt/
+resources/
+root/
+src/
+tmp/
+usr/
+var/

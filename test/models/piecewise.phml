@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<is:insilico-model xmlns:m="http://www.w3.org/1998/Math/MathML" xmlns:is="http://www.physiome.jp/ns/insilicoml" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemalocation="http://www.physiome.jp/ns/insilicoml-1.0 insilicoml.xsd" version="1.0">
+  <is:header>
+    <is:model-name>piecewise</is:model-name>
+    <is:meta-information>
+      <is:article-set />
+      <is:isml-creator-set />
+    </is:meta-information>
+    <is:date>
+      <is:created>2013-02-14T017:51:15+09:00</is:created>
+      <is:last-modified>2013-02-14T17:51:15+09:00</is:last-modified>
+    </is:date>
+    <is:numerical-configuration>
+      <is:time-discretization unit-id="3">
+        <is:step>0.01</is:step>
+        <is:step-min/>
+        <is:step-max/>
+      </is:time-discretization>
+      <is:simulation-time-span unit-id="3">2</is:simulation-time-span>
+    </is:numerical-configuration>
+    <is:description>An example using gauss_variate()</is:description>
+  </is:header>
+  <is:unit-set>
+    <is:unit unit-id="0">
+      <is:name>dimensionless</is:name>
+    </is:unit>
+    <is:unit unit-id="1">
+      <is:name>meter</is:name>
+    </is:unit>
+    <is:unit unit-id="2">
+      <is:name>kilogram</is:name>
+    </is:unit>
+    <is:unit unit-id="3">
+      <is:name>second</is:name>
+    </is:unit>
+    <is:unit unit-id="4">
+      <is:name>ampere</is:name>
+    </is:unit>
+    <is:unit unit-id="5">
+      <is:name>kelvin</is:name>
+    </is:unit>
+    <is:unit unit-id="6">
+      <is:name>mole</is:name>
+    </is:unit>
+    <is:unit unit-id="7">
+      <is:name>candela</is:name>
+    </is:unit>
+  </is:unit-set>
+  <is:edge-set />
+  <is:module-set>
+    <is:module module-id="4e9e8ca0-7681-11e2-9bd9-4777ad3e8075" type="functional-unit">
+      <is:property>
+        <is:name>a</is:name>
+        <is:capsulation state="false" />
+        <is:template state="false" />
+        <is:instance state="false" />
+        <is:keyword-set />
+        <is:track />
+        <is:frame-coordinate />
+        <is:description>a</is:description>
+      </is:property>
+      <is:port-set />
+      <is:physical-quantity-set>
+        <is:physical-quantity type="variable-parameter" physical-quantity-id="1">
+          <is:name>x</is:name>
+          <is:implementation>
+            <is:definition format="mathml" type="ae">
+              <m:math>
+                <m:apply>
+                  <m:eq />
+                  <m:ci>x</m:ci>
+                  <m:piecewise>
+                    <m:piece>
+                      <m:ci>time</m:ci>
+                      <m:apply><m:leq/><m:ci>time</m:ci><m:cn>0.1</m:cn></m:apply>
+                    </m:piece>
+                    <m:piece>
+                      <m:cn>0.1</m:cn>
+                      <m:apply><m:leq/><m:ci>time</m:ci><m:cn>0.2</m:cn></m:apply>
+                    </m:piece>
+                    <m:piece>
+                      <m:piecewise>
+                        <m:piece>
+                          <m:apply><m:times/><m:ci>time</m:ci><m:cn>-2</m:cn></m:apply>
+                          <m:apply><m:leq/><m:ci>time</m:ci><m:cn>0.3</m:cn></m:apply>
+                        </m:piece>
+                        <m:otherwise>
+                          <m:ci>time</m:ci>
+                        </m:otherwise>
+                      </m:piecewise>
+                      <m:apply><m:leq/><m:ci>time</m:ci><m:cn>0.5</m:cn></m:apply>
+                    </m:piece>
+                    <m:otherwise>
+                      <m:piecewise>
+                        <m:piece>
+                          <m:exponentiale/>
+                          <m:apply><m:leq/><m:ci>time</m:ci><m:cn>1</m:cn></m:apply>
+                        </m:piece>
+                        <m:otherwise>
+                          <m:ci>time</m:ci>
+                        </m:otherwise>
+                      </m:piecewise>
+                    </m:otherwise>
+                  </m:piecewise>
+                </m:apply>
+              </m:math>
+            </is:definition>
+          </is:implementation>
+          <is:dimension type="scalar" />
+          <is:value-type-set>
+            <is:value-type unit-id="0" precision="double" />
+          </is:value-type-set>
+          <is:description>An example for MathML's piecewise</is:description>
+        </is:physical-quantity>
+      </is:physical-quantity-set>
+      <is:event-set />
+      <is:morphology />
+    </is:module>
+  </is:module-set>
+  <is:controller-set />
+</is:insilico-model>

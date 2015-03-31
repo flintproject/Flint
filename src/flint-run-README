@@ -1,0 +1,15 @@
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; flint-run -- run a simulation with a given model
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+This program runs a simulation with a given model.
+
+= Synopsis
+
+flint-run
+flint-run -h
+
+
+= Description
+
+Note that flint-cli can produces input for flint-run.

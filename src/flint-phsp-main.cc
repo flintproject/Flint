@@ -1,0 +1,861 @@
+/* -*- Mode: C++; tab-width: 4; indent-tabs-mode: t; c-basic-offset: 4 -*- vim:set ts=4 sw=4 sts=4 noet: */
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
+#include <iostream>
+#include <sstream>
+#include <string>
+#include <map>
+
+#define BOOST_FILESYSTEM_NO_DEPRECATED
+#include <boost/filesystem.hpp>
+#include <boost/noncopyable.hpp>
+#include <boost/scoped_array.hpp>
+#include <boost/scoped_ptr.hpp>
+
+#include <libxml/xmlreader.h>
+
+#include "mathml/math_dumper.h"
+#include "workspace/task.h"
+#include "sqlite3.h"
+#include "database.h"
+#include "utf8path.h"
+
+#include "base/rational.h"
+
+using std::cerr;
+using std::endl;
+using std::printf;
+using std::string;
+using std::sprintf;
+
+namespace {
+
+class Model : boost::noncopyable {
+public:
+	Model() : format_(NULL), iref_(NULL) {}
+
+	~Model() {
+		if (format_) xmlFree(format_);
+		if (iref_) xmlFree(iref_);
+	}
+
+	const xmlChar *format() const {return format_;}
+	const xmlChar *iref() const {return iref_;}
+
+	void set_format(xmlChar *format) {format_ = format;}
+	void set_iref(xmlChar *iref) {iref_ = iref;}
+
+private:
+	xmlChar *format_;
+	xmlChar *iref_;
+};
+
+class Parameter : boost::noncopyable {
+public:
+	explicit Parameter(xmlChar *name) : name_(name) {}
+
+	~Parameter() {
+		if (name_) xmlFree(name_);
+	}
+
+	const xmlChar *name() const {return name_;}
+
+private:
+	xmlChar *name_;
+};
+
+class Range : boost::noncopyable {
+public:
+	enum Type {
+		kUnspecified,
+		kInterval,
+		kEnum
+	};
+
+	Range() : type_(kUnspecified) {}
+
+	Type type() const {return type_;}
+	const boost::rational<long> &lower() const {return lower_;}
+	const boost::rational<long> &upper() const {return upper_;}
+	const boost::rational<long> &step() const {return step_;}
+
+	void set_type(Type type) {type_ = type;}
+	void set_lower(const boost::rational<long> &lower) {lower_ = lower;}
+	void set_upper(const boost::rational<long> &upper) {upper_ = upper;}
+	void set_step(const boost::rational<long> &step) {step_ = step;}
+
+	bool IsValid() {
+		if (type_ == kUnspecified) {
+			cerr << "type is unspecified" << endl;
+			return false;
+		}
+		if (type_ == kInterval) {
+			if (upper_ < lower_) {
+				cerr << "the upper value ("
+					 << upper_
+					 << ") is smaller than the lower one ("
+					 << lower_
+					 << ")"
+					 << endl;
+				return false;
+			}
+			if (step_ <= 0) {
+				cerr << "the step value is non-positive: " << step_ << endl;
+				return false;
+			}
+		}
+		return true;
+	}
+
+private:
+	Type type_;
+	boost::rational<long> lower_;
+	boost::rational<long> upper_;
+	boost::rational<long> step_;
+};
+
+class Target : boost::noncopyable {
+public:
+	Target()
+		: uuid_(NULL),
+		  physical_quantity_id_(),
+		  species_id_(NULL),
+		  parameter_id_(NULL),
+		  reaction_id_(NULL)
+	{}
+
+	~Target() {
+		if (uuid_) xmlFree(uuid_);
+		if (species_id_) xmlFree(species_id_);
+		if (parameter_id_) xmlFree(parameter_id_);
+		if (reaction_id_) xmlFree(reaction_id_);
+	}
+
+	const xmlChar *uuid() const {return uuid_;}
+	int physical_quantity_id() const {return physical_quantity_id_;}
+	const xmlChar *species_id() const {return species_id_;}
+	const xmlChar *parameter_id() const {return parameter_id_;}
+	const xmlChar *reaction_id() const {return reaction_id_;}
+
+	void set_uuid(xmlChar *uuid) {uuid_ = uuid;}
+	void set_physical_quantity_id(int id) {physical_quantity_id_ = id;}
+	void set_species_id(xmlChar *id) {species_id_ = id;}
+	void set_parameter_id(xmlChar *id) {parameter_id_ = id;}
+	void set_reaction_id(xmlChar *id) {reaction_id_ = id;}
+
+private:
+	xmlChar *uuid_;
+	int physical_quantity_id_;
+	xmlChar *species_id_;
+	xmlChar *parameter_id_;
+	xmlChar *reaction_id_;
+};
+
+class Reader {
+public:
+	Reader(xmlTextReaderPtr &text_reader, sqlite3 *db)
+  	: text_reader_(text_reader),
+	  db_(db),
+	  tasks_()
+	{
+	}
+
+	~Reader() {
+		xmlFreeTextReader(text_reader_);
+		xmlCleanupParser();
+	}
+
+	int Read(const boost::filesystem::path &cp) {
+		int i = xmlTextReaderRead(text_reader_);
+		while (i > 0) {
+			int type = xmlTextReaderNodeType(text_reader_);
+			if (type == XML_READER_TYPE_ELEMENT) {
+				const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
+				if (xmlStrEqual(local_name, BAD_CAST "phsp")) {
+					// skip the top element
+				} else if (xmlStrEqual(local_name, BAD_CAST "model")) {
+					i = ReadModel(cp);
+					if (i <= 0) return i;
+					continue;
+				} else {
+					cerr << "unknown child of <phsp>: " << local_name << endl;
+					return -2;
+				}
+			} else if (type == XML_READER_TYPE_END_ELEMENT) {
+				const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
+				if (xmlStrEqual(local_name, BAD_CAST "phsp")) {
+					for (TaskMap::const_iterator it=tasks_.begin();it!=tasks_.end();++it) {
+						boost::scoped_ptr<workspace::Task> task(new workspace::Task(it->second.c_str(), it->first));
+						if (!task->Setup()) {
+							return -2;
+						}
+					}
+					PrintRules();
+					return 1;
+				}
+			}
+			i = xmlTextReaderRead(text_reader_);
+		}
+		return i;
+	}
+
+private:
+	typedef std::map<int, string> TaskMap;
+
+	void PrintRules() {
+		for (TaskMap::const_iterator it=tasks_.begin();it!=tasks_.end();++it) {
+			int task_id = it->first;
+			printf("%d/file.txt: %d/model | %d\n", task_id, task_id, task_id);
+			printf("\tflint-file $< > $@\n");
+			printf("\n");
+			printf("%d/conf.txt: | %d\n", task_id, task_id);
+			printf("\tflint-taskpref %d x.db > $@\n", task_id);
+			printf("\n");
+			printf("%d/spec.txt: | %d\n", task_id, task_id);
+			printf("\tflint-taskspec %d x.db > $@\n", task_id);
+			printf("\n");
+			printf("%d/Makefile: %d/file.txt %d/conf.txt\n", task_id, task_id, task_id);
+			printf("\tflint-enum %d/db > $@\n", task_id);
+			printf("\tflint-loadconfig exec < %d/file.txt >> $@\n", task_id);
+			printf("\tflint-taskconfig exec %d/conf.txt >> $@\n", task_id);
+			printf("\n");
+		}
+		for (TaskMap::const_iterator it=tasks_.begin();it!=tasks_.end();++it) {
+			printf("%d ", it->first);
+		}
+		printf(":\n");
+		printf("\tmkdir $@\n");
+		printf("\n");
+		printf("all:");
+		for (TaskMap::const_iterator it=tasks_.begin();it!=tasks_.end();++it) {
+			printf(" %d/spec.txt %d/Makefile", it->first, it->first);
+		}
+		printf("\n");
+		printf("\n");
+		printf(".PHONY: all\n");
+		printf(".DEFAULT_GOAL = all\n");
+	}
+
+	int ReadModel(const boost::filesystem::path &cp) {
+		boost::scoped_ptr<Model> model(new Model);
+		int i;
+		while ( (i = xmlTextReaderMoveToNextAttribute(text_reader_)) > 0) {
+			if (xmlTextReaderIsNamespaceDecl(text_reader_)) continue;
+
+			const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
+			if (xmlStrEqual(local_name, BAD_CAST "format")) {
+				model->set_format(xmlTextReaderValue(text_reader_));
+				if ( !xmlStrEqual(model->format(), BAD_CAST "phml") &&
+					 !xmlStrEqual(model->format(), BAD_CAST "sbml") ) {
+					cerr << "unknown format of <model>: " << (const char *)model->format() << endl;
+					return -2;
+				}
+			} else if (xmlStrEqual(local_name, BAD_CAST "iref")) {
+				model->set_iref(xmlTextReaderValue(text_reader_));
+			}
+		}
+		if (!model->format()) {
+			cerr << "missing format of <model>" << endl;
+			return -2;
+		}
+		if (!model->iref()) {
+			cerr << "missing iref of <model>" << endl;
+			return -2;
+		}
+
+		// search corresponding tasks to the model
+		sqlite3_stmt *stmt;
+		int e;
+		e = sqlite3_prepare_v2(db_,
+							   "SELECT tasks.rowid FROM tasks"
+							   " LEFT JOIN models ON tasks.model_id = models.rowid"
+							   " WHERE models.model_path = ?"
+							   " ORDER BY tasks.rowid DESC",
+							   -1, &stmt, NULL);
+		if (e != SQLITE_OK) {
+			cerr << "failed to prepare statement: "
+				 << e << " (" << __FILE__ << ":" << __LINE__ << ")"
+				 << endl;
+			return -2;
+		}
+		e = sqlite3_bind_text(stmt, 1, (const char *)model->iref(), -1, SQLITE_STATIC);
+		if (e != SQLITE_OK) {
+			cerr << "failed to bind parameter: " << e << endl;
+			return -2;
+		}
+		e = sqlite3_step(stmt);
+		if (e == SQLITE_DONE) {
+			// skip this <model>
+			i = xmlTextReaderRead(text_reader_);
+			while (i > 0) {
+				int type = xmlTextReaderNodeType(text_reader_);
+				if (type == XML_READER_TYPE_END_ELEMENT) {
+					const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
+					if (xmlStrEqual(local_name, BAD_CAST "model")) {
+						return xmlTextReaderRead(text_reader_);
+					}
+				}
+				i = xmlTextReaderRead(text_reader_);
+			}
+			return i;
+		}
+		if (e != SQLITE_ROW) {
+			cerr << "failed to find a corresponding model: "
+				 << (const char *)model->iref()
+				 << endl;
+			return -2;
+		}
+		int rowid = static_cast<int>(sqlite3_column_int64(stmt, 0));
+		sqlite3_finalize(stmt);
+
+		// create a task directory
+		char dir_path[1024];
+		sprintf(dir_path, "%d", rowid);
+		boost::filesystem::path dp(dir_path);
+		if (!boost::filesystem::is_directory(dp) && !boost::filesystem::create_directory(dp)) {
+			cerr << "failed to create a directory: "
+				 << dir_path
+				 << endl;
+			return -2;
+		}
+
+		boost::filesystem::path mp = GetPathFromUtf8((const char *)model->iref());
+		boost::filesystem::path amp = boost::filesystem::absolute(mp, cp);
+		boost::scoped_array<char> utf8amp(GetUtf8FromPath(amp));
+
+		// update the model entry
+		e = sqlite3_prepare_v2(db_, "UPDATE models SET db_path = ? WHERE rowid = ?",
+							   -1, &stmt, NULL);
+		if (e != SQLITE_OK) {
+			cerr << "failed to prepare statement: "
+				 << e << " (" << __FILE__ << ":" << __LINE__ << ")"
+				 << endl;
+			return -2;
+		}
+		char path[1024];
+		sprintf(path, "%d/db", rowid);
+		e = sqlite3_bind_text(stmt, 1, (const char *)path, -1, SQLITE_STATIC);
+		if (e != SQLITE_OK) {
+			cerr << "failed to bind parameter: " << e << endl;
+			return -2;
+		}
+		e = sqlite3_bind_int64(stmt, 2, rowid);
+		if (e != SQLITE_OK) {
+			cerr << "failed to bind parameter: " << e << endl;
+			return -2;
+		}
+		e = sqlite3_step(stmt);
+		if (e != SQLITE_DONE) {
+			cerr << "failed to step statement: " << e << endl;
+			return -2;
+		}
+		sqlite3_finalize(stmt);
+
+		// attach a specific database for the model
+		char query[1024];
+		sprintf(query, "ATTACH DATABASE '%s' AS 'db%d'", path, rowid);
+		char *em;
+		e = sqlite3_exec(db_, query, NULL, NULL, &em);
+		if (e != SQLITE_OK) {
+			cerr << "failed to attach database: " << em << endl;
+			return -2;
+		}
+
+		// begin a transaction per attached session
+		e = sqlite3_exec(db_, "BEGIN", NULL, NULL, &em);
+		if (e != SQLITE_OK) {
+			cerr << "failed to start transaction: " << em << endl;
+			return -2;
+		}
+
+		// save model's format
+		sprintf(query, "CREATE TABLE db%d.model (format TEXT)", rowid);
+		e = sqlite3_exec(db_, query, NULL, NULL, &em);
+		if (e != SQLITE_OK) {
+			cerr << "failed to create table model: " << em << endl;
+			return -2;
+		}
+		sprintf(query, "INSERT INTO db%d.model VALUES (?)", rowid);
+		e = sqlite3_prepare_v2(db_, query, -1, &stmt, NULL);
+		if (e != SQLITE_OK) {
+			cerr << "failed to prepare statement: "
+				 << e << " (" << __FILE__ << ":" << __LINE__ << ")"
+				 << endl;
+			return -2;
+		}
+		e = sqlite3_bind_text(stmt, 1, (const char *)model->format(), -1, SQLITE_STATIC);
+		if (e != SQLITE_OK) {
+			cerr << "failed to bind parameter: " << e << endl;
+			return -2;
+		}
+		e = sqlite3_step(stmt);
+		if (e != SQLITE_DONE) {
+			cerr << "failed to step statement: " << e << endl;
+			return -2;
+		}
+		sqlite3_finalize(stmt);
+
+		// prepare schemas
+		sprintf(query, "CREATE TABLE IF NOT EXISTS db%d.phsp_parameters (name TEXT, range TEXT)", rowid);
+		e = sqlite3_exec(db_, query, NULL, NULL, &em);
+		if (e != SQLITE_OK) {
+			cerr << "failed to create table phsp_parameters: " << em << endl;
+			return -2;
+		}
+		sprintf(query, "CREATE TABLE IF NOT EXISTS db%d.phsp_targets (uuid TEXT, id TEXT, math TEXT)", rowid);
+		e = sqlite3_exec(db_, query, NULL, NULL, &em);
+		if (e != SQLITE_OK) {
+			cerr << "failed to create table phsp_targets: " << em << endl;
+			return -2;
+		}
+
+		tasks_.insert(std::make_pair(rowid, string(utf8amp.get())));
+
+		i = xmlTextReaderRead(text_reader_);
+		while (i > 0) {
+			int type = xmlTextReaderNodeType(text_reader_);
+			if (type == XML_READER_TYPE_ELEMENT) {
+				const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
+				if (xmlStrEqual(local_name, BAD_CAST "parameter-set")) {
+					i = ReadParameterSet(rowid);
+					if (i <= 0) return i;
+					continue;
+				} else if (xmlStrEqual(local_name, BAD_CAST "target-set")) {
+					i = ReadTargetSet(rowid);
+					if (i <= 0) return i;
+					continue;
+				}
+			} else if (type == XML_READER_TYPE_END_ELEMENT) {
+				const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
+				if (xmlStrEqual(local_name, BAD_CAST "model")) {
+					// commit the transaction per attached session
+					e = sqlite3_exec(db_, "COMMIT", NULL, NULL, &em);
+					if (e != SQLITE_OK) {
+						cerr << "failed to commit transaction: " << em << endl;
+						return -2;
+					}
+					return xmlTextReaderRead(text_reader_);
+				}
+			}
+			i = xmlTextReaderRead(text_reader_);
+		}
+		return i;
+	}
+
+	int ReadParameterSet(int rowid) {
+		int i = xmlTextReaderRead(text_reader_);
+		while (i > 0) {
+			int type = xmlTextReaderNodeType(text_reader_);
+			if (type == XML_READER_TYPE_ELEMENT) {
+				const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
+				if (xmlStrEqual(local_name, BAD_CAST "parameter")) {
+					i = ReadParameter(rowid);
+					if (i <= 0) return i;
+					continue;
+				} else {
+					cerr << "unknown child of <parameter-set>: " << local_name << endl;
+					return -2;
+				}
+			} else if (type == XML_READER_TYPE_END_ELEMENT) {
+				const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
+				if (xmlStrEqual(local_name, BAD_CAST "parameter-set")) {
+					return 1;
+				}
+			}
+			i = xmlTextReaderRead(text_reader_);
+		}
+		return i;
+	}
+
+	int ReadParameter(int rowid) {
+		boost::scoped_ptr<Parameter> parameter;
+		int i;
+		while ( (i = xmlTextReaderMoveToNextAttribute(text_reader_)) > 0) {
+			if (xmlTextReaderIsNamespaceDecl(text_reader_)) continue;
+
+			const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
+			if (xmlStrEqual(local_name, BAD_CAST "name")) {
+				parameter.reset(new Parameter(xmlTextReaderValue(text_reader_)));
+			} else {
+				// ignore
+			}
+		}
+		if (!parameter) {
+			cerr << "missing name of <parameter>" << endl;
+			return -2;
+		}
+		i = xmlTextReaderRead(text_reader_);
+		while (i > 0) {
+			int type = xmlTextReaderNodeType(text_reader_);
+			if (type == XML_READER_TYPE_ELEMENT) {
+				const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
+				if (xmlStrEqual(local_name, BAD_CAST "range")) {
+					i = ReadRange(rowid, parameter.get());
+					if (i <= 0) return i;
+					continue;
+				}
+			} else if (type == XML_READER_TYPE_END_ELEMENT) {
+				const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
+				if (xmlStrEqual(local_name, BAD_CAST "parameter")) {
+					return xmlTextReaderRead(text_reader_);
+				}
+			}
+			i = xmlTextReaderRead(text_reader_);
+		}
+		return i;
+	}
+
+	int ReadRange(int rowid, Parameter *parameter) {
+		boost::scoped_ptr<Range> range(new Range);
+		int i;
+		while ( (i = xmlTextReaderMoveToNextAttribute(text_reader_)) > 0) {
+			if (xmlTextReaderIsNamespaceDecl(text_reader_)) continue;
+
+			const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
+			if (xmlStrEqual(local_name, BAD_CAST "type")) {
+				const xmlChar *type = xmlTextReaderConstValue(text_reader_);
+				if (xmlStrEqual(type, BAD_CAST "interval")) {
+					range->set_type(Range::kInterval);
+				} else if (xmlStrEqual(type, BAD_CAST "enum")) {
+					range->set_type(Range::kEnum);
+				} else {
+					cerr << "unkown type of <range>: " << type << endl;
+					return -2;
+				}
+			} else if (xmlStrEqual(local_name, BAD_CAST "lower")) {
+				boost::rational<long> lower;
+				bool b = base::Rational<long>::FromString((const char *)xmlTextReaderConstValue(text_reader_), lower);
+				if (!b) {
+					cerr << "failed to parse lower" << endl;
+					return -2;
+				}
+				range->set_lower(lower);
+			} else if (xmlStrEqual(local_name, BAD_CAST "upper")) {
+				boost::rational<long> upper;
+				bool b = base::Rational<long>::FromString((const char *)xmlTextReaderConstValue(text_reader_), upper);
+				if (!b) {
+					cerr << "failed to parse upper" << endl;
+					return -2;
+				}
+				range->set_upper(upper);
+			} else if (xmlStrEqual(local_name, BAD_CAST "step")) {
+				boost::rational<long> step;
+				bool b = base::Rational<long>::FromString((const char *)xmlTextReaderConstValue(text_reader_), step);
+				if (!b) {
+					cerr << "failed to parse step" << endl;
+					return -2;
+				}
+				range->set_step(step);
+			} else {
+				cerr << "unknown attribute of <range>: " << local_name << endl;
+				return -2;
+			}
+		}
+		if (range->type() == Range::kUnspecified) {
+			cerr << "missing type of <range>" << endl;
+			return -2;
+		}
+
+		if (!range->IsValid()) return -2;
+
+		sqlite3_stmt *stmt;
+		char query[1024];
+		sprintf(query, "INSERT INTO db%d.phsp_parameters VALUES (?, ?)", rowid);
+		int e = sqlite3_prepare_v2(db_, query, -1, &stmt, NULL);
+		if (e != SQLITE_OK) {
+			cerr << "failed to prepare statement: "
+				 << e << " (" << __FILE__ << ":" << __LINE__ << ")"
+				 << endl;
+			return -2;
+		}
+		e = sqlite3_bind_text(stmt, 1, (const char *)parameter->name(), -1, SQLITE_STATIC);
+		if (e != SQLITE_OK) {
+			cerr << "failed to bind parameter: " << e << endl;
+			return -2;
+		}
+
+		if (range->type() == Range::kInterval) {
+			std::ostringstream oss;
+			boost::rational<long> d = range->lower();
+			oss << boost::rational_cast<double>(d);
+			for (;;) {
+				d += range->step();
+				if (d > range->upper()) break;
+				oss << ',' << boost::rational_cast<double>(d);
+			}
+			string s(oss.str());
+			e = sqlite3_bind_text(stmt, 2, s.c_str(), -1, SQLITE_STATIC);
+			if (e != SQLITE_OK) {
+				cerr << "failed to bind parameter: " << e << endl;
+				return -2;
+			}
+		} else { // enum
+			i = xmlTextReaderMoveToElement(text_reader_);
+			if (i < 0) return i;
+			e = sqlite3_bind_text(stmt, 2, (const char *)xmlTextReaderReadString(text_reader_), -1, xmlFree);
+			if (e != SQLITE_OK) {
+				cerr << "failed to bind parameter: " << e << endl;
+				return -2;
+			}
+		}
+		e = sqlite3_step(stmt);
+		if (e != SQLITE_DONE) {
+			cerr << "failed to step statement: " << e << endl;
+			return -2;
+		}
+		sqlite3_finalize(stmt);
+
+		return xmlTextReaderRead(text_reader_);
+	}
+
+	int ReadTargetSet(int rowid) {
+		int i = xmlTextReaderRead(text_reader_);
+		while (i > 0) {
+			int type = xmlTextReaderNodeType(text_reader_);
+			if (type == XML_READER_TYPE_ELEMENT) {
+				const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
+				if (xmlStrEqual(local_name, BAD_CAST "target")) {
+					i = ReadTarget(rowid);
+					if (i <= 0) return i;
+					continue;
+				} else {
+					cerr << "unknown child of <target-set>: " << local_name << endl;
+					return -2;
+				}
+			} else if (type == XML_READER_TYPE_END_ELEMENT) {
+				const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
+				if (xmlStrEqual(local_name, BAD_CAST "target-set")) {
+					return 1;
+				}
+			}
+			i = xmlTextReaderRead(text_reader_);
+		}
+		return i;
+	}
+
+	int ReadTarget(int rowid) {
+		std::ostringstream oss;
+		boost::scoped_ptr<Target> target(new Target);
+
+		int i;
+		while ( (i = xmlTextReaderMoveToNextAttribute(text_reader_)) > 0) {
+			if (xmlTextReaderIsNamespaceDecl(text_reader_)) continue;
+
+			const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
+			if (xmlStrEqual(local_name, BAD_CAST "module-id")) {
+				target->set_uuid(xmlTextReaderValue(text_reader_));
+			} else if (xmlStrEqual(local_name, BAD_CAST "physical-quantity-id")) {
+				int id = atoi((const char *)xmlTextReaderConstValue(text_reader_));
+				if (id <= 0) {
+					cerr << "invalid physical-quantity-id: " << id << endl;
+					return -2;
+				}
+				target->set_physical_quantity_id(id);
+			} else if (xmlStrEqual(local_name, BAD_CAST "species-id")) {
+				target->set_species_id(xmlTextReaderValue(text_reader_));
+			} else if (xmlStrEqual(local_name, BAD_CAST "parameter-id")) {
+				target->set_parameter_id(xmlTextReaderValue(text_reader_));
+			} else if (xmlStrEqual(local_name, BAD_CAST "reaction-id")) {
+				target->set_reaction_id(xmlTextReaderValue(text_reader_));
+			} else {
+				cerr << "unknown attribute of <target>: " << local_name << endl;
+				return -2;
+			}
+		}
+		if (target->uuid()) {
+			if (target->physical_quantity_id() == 0) {
+				cerr << "missing physical-quantity-id of <target>" << endl;
+				return -2;
+			}
+		} else {
+			if ( !target->species_id() &&
+				 !target->parameter_id() &&
+				 !target->reaction_id() ) {
+				cerr << "missing species-id/parameter-id/reaction-id of <target>" << endl;
+				return -2;
+			}
+		}
+
+		i = xmlTextReaderRead(text_reader_);
+		while (i > 0) {
+			int type = xmlTextReaderNodeType(text_reader_);
+			if (type == XML_READER_TYPE_ELEMENT) {
+				const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
+				if (xmlStrEqual(local_name, BAD_CAST "value")) {
+					i = ReadValue(&oss);
+					if (i <= 0) return i;
+					continue;
+				} else {
+					cerr << "unknown child element of <target>: " << local_name << endl;
+					return -2;
+				}
+			} else if (type == XML_READER_TYPE_END_ELEMENT) {
+				const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
+				if (xmlStrEqual(local_name, BAD_CAST "target")) {
+					string s(oss.str());
+					if (s.empty()) {
+						cerr << "missing value of <target>" << endl;
+						return -2;
+					} else {
+						char query[1024];
+						sprintf(query, "INSERT INTO db%d.phsp_targets values (?, ?, ?)", rowid);
+						sqlite3_stmt *stmt;
+						int e = sqlite3_prepare_v2(db_, query, -1, &stmt, NULL);
+						if (e != SQLITE_OK) {
+							cerr << "failed to prepare statement: "
+								 << e << " (" << __FILE__ << ":" << __LINE__ << ")"
+								 << endl;
+							return -2;
+						}
+						if (target->uuid()) { // PHML
+							e = sqlite3_bind_text(stmt, 1, (const char *)target->uuid(), -1, SQLITE_STATIC);
+							if (e != SQLITE_OK) {
+								cerr << "failed to bind parameter: " << e << endl;
+								return -2;
+							}
+							e = sqlite3_bind_int(stmt, 2, target->physical_quantity_id());
+							if (e != SQLITE_OK) {
+								cerr << "failed to bind parameter: " << e << endl;
+								return -2;
+							}
+						} else { // SBML
+							e = sqlite3_bind_text(stmt, 1, "00000000-0000-0000-0000-000000000000", -1, SQLITE_STATIC);
+							if (e != SQLITE_OK) {
+								cerr << "failed to bind parameter: " << e << endl;
+								return -2;
+							}
+							const char *id = NULL;
+							if (target->species_id()) id = (const char *)target->species_id();
+							if (target->parameter_id()) id = (const char *)target->parameter_id();
+							if (target->reaction_id()) id = (const char *)target->reaction_id();
+							assert(id);
+							size_t len = strlen(id);
+							char *buf = (char *)malloc(len + 6);
+							if (!buf) {
+								cerr << "failed to malloc" << endl;
+								return -2;
+							}
+							sprintf(buf, "sbml:%s", id);
+							e = sqlite3_bind_text(stmt, 2, buf, -1, free);
+							if (e != SQLITE_OK) {
+								cerr << "failed to bind parameter: " << e << endl;
+								return -2;
+							}
+						}
+						e = sqlite3_bind_text(stmt, 3, s.c_str(), -1, SQLITE_STATIC);
+						if (e != SQLITE_OK) {
+							cerr << "failed to bind parameter: " << e << endl;
+							return -2;
+						}
+						e = sqlite3_step(stmt);
+						if (e != SQLITE_DONE) {
+							cerr << "failed to step statement: " << e << endl;
+							return -2;
+						}
+						sqlite3_finalize(stmt);
+					}
+					return xmlTextReaderRead(text_reader_);
+				}
+			}
+			i = xmlTextReaderRead(text_reader_);
+		}
+		return i;
+	}
+
+	class Handler {
+	public:
+		Handler() : count_() {}
+
+		int Handle(int i) {
+			if (count_++) {
+				cerr << "two or more elements in <math>" << endl;
+				return -2;
+			}
+			return i;
+		}
+
+	private:
+		int count_;
+	};
+
+	int ReadValue(std::ostringstream *oss) {
+		int i = xmlTextReaderRead(text_reader_);
+		while (i > 0) {
+			int type = xmlTextReaderNodeType(text_reader_);
+			if (type == XML_READER_TYPE_ELEMENT) {
+				const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
+				if (xmlStrEqual(local_name, BAD_CAST "math")) {
+					boost::scoped_ptr<Handler> handler(new Handler);
+					boost::scoped_ptr<mathml::MathDumper> math_dumper(new mathml::MathDumper(text_reader_, oss));
+					i = math_dumper->Read(handler.get());
+					if (i <= 0) return i;
+					continue;
+				} else {
+					cerr << "unknown child element of <value>: " << local_name << endl;
+					return -2;
+				}
+			} else if (type == XML_READER_TYPE_END_ELEMENT) {
+				const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
+				if (xmlStrEqual(local_name, BAD_CAST "value")) {
+					return xmlTextReaderRead(text_reader_);
+				}
+			}
+			i = xmlTextReaderRead(text_reader_);
+		}
+		return i;
+	}
+
+	xmlTextReaderPtr &text_reader_;
+	sqlite3 *db_;
+	TaskMap tasks_;
+};
+
+} // namespace
+
+int main(int argc, char *argv[])
+{
+	using std::strcmp;
+
+	if (argc != 2) {
+		cerr << "usage: " << argv[0] << " DB" << endl;
+		return EXIT_FAILURE;
+	}
+	if (strcmp(argv[1], "--help") == 0 || strcmp(argv[1], "-h") == 0) {
+		cerr << "usage: " << argv[0] << " DB" << endl;
+		return EXIT_SUCCESS;
+	}
+
+	char phsp_file[1024];
+	if (!LoadExec(argv[1], NULL, phsp_file)) return EXIT_FAILURE;
+	boost::filesystem::path pp = GetPathFromUtf8(phsp_file);
+	string pp_s = pp.string();
+
+	LIBXML_TEST_VERSION
+	xmlInitParser();
+
+	xmlTextReaderPtr text_reader = xmlReaderForFile(pp_s.c_str(), NULL, 0);
+	if (!text_reader) {
+		cerr << "could not read " << phsp_file << endl;
+		xmlCleanupParser();
+		return EXIT_FAILURE;
+	}
+
+	sqlite3 *db;
+	if (sqlite3_open(argv[1], &db) != SQLITE_OK) {
+		cerr << "could not open database: " << argv[1] << endl;
+		return EXIT_FAILURE;
+	}
+
+	boost::scoped_ptr<Reader> reader(new Reader(text_reader, db));
+	boost::filesystem::path cp = pp.parent_path();
+	if (reader->Read(cp) < 0) return EXIT_FAILURE;
+
+	sqlite3_close(db);
+
+	return EXIT_SUCCESS;
+}

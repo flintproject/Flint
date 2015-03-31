@@ -1,0 +1,34 @@
+package phml;
+
+option java_package = "jp.physiome";
+option java_outer_classname = "Phml";
+
+message NumericalConfiguration {
+
+  optional TimeDiscretization td = 1;
+  optional RandomGenerator rg = 2;
+  optional string integration = 3;
+  optional SimulationTimeSpan sts = 4;
+
+}
+
+message TimeDiscretization {
+
+  required int32 unit_id = 1;
+  required string step = 2;
+
+}
+
+message RandomGenerator {
+
+  required string name = 1;
+  optional string seed = 2;
+
+}
+
+message SimulationTimeSpan {
+
+  required int32 unit_id = 1;
+  required string value = 2;
+
+}

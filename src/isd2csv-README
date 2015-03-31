@@ -1,0 +1,17 @@
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; isd2csv -- Convert ISD to CSV format
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+= Synopsis
+
+isd2csv [-o output] [path]
+isd2csv --help
+
+
+= Description
+
+--output, -o
+    write to file at `output` instead of stdout.
+
+--help, -h
+    show help.

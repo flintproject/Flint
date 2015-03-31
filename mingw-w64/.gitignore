@@ -1,0 +1,9 @@
+build/
+config.mk
+flint/
+flint.zip
+opt/
+src/
+tmp/
+usr/
+var/

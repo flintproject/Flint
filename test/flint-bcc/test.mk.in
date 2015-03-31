@@ -1,0 +1,11 @@
+.PHONY: all clean check
+
+all: OUTPUT
+
+check: all
+
+clean:
+	-rm -f OUTPUT
+
+OUTPUT: INPUT
+	EXECUTABLE < $< > $@

@@ -1,0 +1,11 @@
+--- Info.plist.orig	2014-10-02 14:09:13.000000000 +0900
++++ Info.plist	2014-10-02 14:09:22.000000000 +0900
+@@ -26,6 +26,8 @@
+ <string>1</string>
+ <key>NSHumanReadableCopyright</key>
+ <string></string>
++<key>NSHighResolutionCapable</key>
++<true/>
+ <key>JVMMainClassName</key>
+ <string>jp.oist.flint.command.Main</string>
+ <key>JVMOptions</key>

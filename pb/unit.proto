@@ -1,0 +1,19 @@
+package unit;
+
+message Unit {
+
+  required int32 id = 1;
+  required string name = 2;
+  repeated Element element = 3;
+
+}
+
+message Element {
+
+  required int32 unit_id = 1;
+  optional int32 factor = 2;
+  optional double exponent = 3;
+  optional double multiplier = 4;
+  optional double offset = 5;
+
+}

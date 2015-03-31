@@ -1,0 +1,2 @@
+00000000-0000-0000-0000-000000000000 (eq (diff (bvar %time) %sbml:x) (minus (divide (plus %sbml:reaction_0000002 %sbml:reaction_0000004) %sbml:ER)))
+00000000-0000-0000-0000-000000000000 (eq (diff (bvar %time) %sbml:y) (divide (plus (minus (plus %sbml:reaction_0000001 %sbml:reaction_0000002) %sbml:reaction_0000003) %sbml:reaction_0000004) %sbml:cytoplasm))

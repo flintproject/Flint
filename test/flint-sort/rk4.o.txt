@@ -1,0 +1,29 @@
+8
+4017c8b0-41ef-11e3-aec2-6f7051ba7a7a %X#1 (times @dt (minus %Y))
+4017c8b0-41ef-11e3-aec2-6f7051ba7a7a %Y#1 (times @dt (times %X 2))
+4017c8b0-41ef-11e3-aec2-6f7051ba7a7a %X#2 (plus %X (divide %X#1 2))
+4017c8b0-41ef-11e3-aec2-6f7051ba7a7a %Y#2 (plus %Y (divide %Y#1 2))
+4017c8b0-41ef-11e3-aec2-6f7051ba7a7a %Y#3 (times @dt (times %X#2 2))
+4017c8b0-41ef-11e3-aec2-6f7051ba7a7a %Y#4 (plus %Y (divide %Y#3 2))
+4017c8b0-41ef-11e3-aec2-6f7051ba7a7a %x#2 %Y#2
+4017c8b0-41ef-11e3-aec2-6f7051ba7a7a %x#4 %Y#4
+4017c8b0-41ef-11e3-aec2-6f7051ba7a7a %y#2 (divide %x#2 2)
+4017c8b0-41ef-11e3-aec2-6f7051ba7a7a %y#4 (divide %x#4 2)
+4017c8b0-41ef-11e3-aec2-6f7051ba7a7a %z#2 ($lookback %y#2 (minus (plus %time (divide @dt 2)) @dt))
+4017c8b0-41ef-11e3-aec2-6f7051ba7a7a %z#4 ($lookback %y#4 (minus (plus %time (divide @dt 2)) @dt))
+4017c8b0-41ef-11e3-aec2-6f7051ba7a7a %X#3 (times @dt (minus %Y#2))
+4017c8b0-41ef-11e3-aec2-6f7051ba7a7a %X#4 (plus %X (divide %X#3 2))
+4017c8b0-41ef-11e3-aec2-6f7051ba7a7a %X#5 (times @dt (minus %Y#4))
+4017c8b0-41ef-11e3-aec2-6f7051ba7a7a %X#6 (plus %X %X#5)
+4017c8b0-41ef-11e3-aec2-6f7051ba7a7a %Y#5 (times @dt (times %X#4 2))
+4017c8b0-41ef-11e3-aec2-6f7051ba7a7a %Y#6 (plus %Y %Y#5)
+4017c8b0-41ef-11e3-aec2-6f7051ba7a7a %Y#7 (times @dt (times %X#6 2))
+4017c8b0-41ef-11e3-aec2-6f7051ba7a7a %Y#0 (plus %Y (divide (plus %Y#1 (plus (times 2 %Y#3) (plus (times 2 %Y#5) %Y#7))) 6))
+4017c8b0-41ef-11e3-aec2-6f7051ba7a7a %x#6 %Y#6
+4017c8b0-41ef-11e3-aec2-6f7051ba7a7a %x#0 %Y#0
+4017c8b0-41ef-11e3-aec2-6f7051ba7a7a %y#6 (divide %x#6 2)
+4017c8b0-41ef-11e3-aec2-6f7051ba7a7a %y#0 (divide %x#0 2)
+4017c8b0-41ef-11e3-aec2-6f7051ba7a7a %z#6 ($lookback %y#6 (minus (plus %time @dt) @dt))
+4017c8b0-41ef-11e3-aec2-6f7051ba7a7a %z#0 ($lookback %y#0 (minus (plus %time @dt) @dt))
+4017c8b0-41ef-11e3-aec2-6f7051ba7a7a %X#7 (times @dt (minus %Y#6))
+4017c8b0-41ef-11e3-aec2-6f7051ba7a7a %X#0 (plus %X (divide (plus %X#1 (plus (times 2 %X#3) (plus (times 2 %X#5) %X#7))) 6))

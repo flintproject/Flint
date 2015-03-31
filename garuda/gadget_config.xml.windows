@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<Gadget>
+    <UUID>01a209fc-6a80-11e2-8738-1f7eda18fd79</UUID>
+    <Name>Flint</Name>
+    <LaunchCommand>C:\Program Files (x86)\Flint\flint.exe</LaunchCommand>
+    <IconPaths>
+        <Icon32Path>icons\icon.png</Icon32Path>
+    </IconPaths>
+    <Snapshots>
+        <SnapshotPath>snapshot\screenshot0.png</SnapshotPath>
+        <SnapshotPath>snapshot\screenshot1.png</SnapshotPath>
+    </Snapshots>
+    <Categories>
+        <Category>Simulation</Category>
+    </Categories>
+    <Provider>Flint project</Provider>
+    <Description>A simulator for physiological models</Description>
+    <LoadableKeys>
+        <InputFileFormat>
+            <FileExtension>isml</FileExtension>
+            <FileFormat>phml</FileFormat>
+        </InputFileFormat>
+        <InputFileFormat>
+            <FileExtension>phml</FileExtension>
+            <FileFormat>phml</FileFormat>
+        </InputFileFormat>
+        <InputFileFormat>
+            <FileExtension>sbml</FileExtension>
+            <FileFormat>sbml</FileFormat>
+        </InputFileFormat>
+        <InputFileFormat>
+            <FileExtension>xml</FileExtension>
+            <FileFormat>phml</FileFormat>
+        </InputFileFormat>
+        <InputFileFormat>
+            <FileExtension>xml</FileExtension>
+            <FileFormat>sbml</FileFormat>
+        </InputFileFormat>
+
+        <OutputFileFormat>
+            <FileExtension>csv</FileExtension>
+            <FileFormat>csv</FileFormat>
+        </OutputFileFormat>
+        <OutputFileFormat>
+            <FileExtension>isd</FileExtension>
+            <FileFormat>isd</FileFormat>
+        </OutputFileFormat>
+    </LoadableKeys>
+    <LaunchEnv>
+        <Id>f22aa6a2-beff-4487-b838-03b8275a4361</Id>
+    </LaunchEnv>
+</Gadget>
