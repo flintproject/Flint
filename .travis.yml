@@ -3,8 +3,11 @@ compiler:
   - gcc
   - clang
 
-install:
+before_install:
   - sudo apt-get update -qq
+
+install:
   - sudo apt-get install -qq libtool bison flex
+  - cd posix && make
 
 script: cd posix && make check
