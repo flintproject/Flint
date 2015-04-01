@@ -10,4 +10,4 @@ install:
   - sudo apt-get install -qq libtool bison flex
   - cd posix && make
 
-script: cd posix && make check
+script: make check # in posix
