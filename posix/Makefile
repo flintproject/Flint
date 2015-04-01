@@ -70,7 +70,7 @@ tmp/sundials-$(SUNDIALS_VERSION): src/sundials-$(SUNDIALS_VERSION).tar.gz | tmp
 	touch $@
 
 tmp/$(BOOST_UNDERSCORE).installed: tmp/$(BOOST_UNDERSCORE)
-	-(cd var/$(BOOST_UNDERSCORE) && ./bootstrap.sh --prefix=$(PREFIX)/$(BOOST_UNDERSCORE) && ./b2 --without-mpi --without-python install)
+	-(cd var/$(BOOST_UNDERSCORE) && ./bootstrap.sh --prefix=$(PREFIX)/$(BOOST_UNDERSCORE) && ./b2 -d0 --without-mpi --without-python install)
 	touch $@
 
 tmp/clibsedml-$(CLIBSEDML_COMMIT).installed: tmp/clibsedml-$(CLIBSEDML_COMMIT) tmp/libxml2-$(LIBXML2_VERSION).installed
