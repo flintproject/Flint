@@ -77,7 +77,7 @@ $(call flint_fullname,$(1)).src.rpm: flint-$(1).spec $(call flint_tarball,$(1))
 endef
 
 define flint_install
-$(call flint_installed,$(1)): $(RPMBUILD_DIR)/RPMS/$(ARCH)/$(call flint_packagename,$(1))
+$(call flint_installed,$(1)): $(RPMBUILD_DIR)/RPMS/$(ARCH)/$(call flint_packagename,$(1)) | tmp
 	sudo rpm -Uvh --force $$<
 	touch $$@
 endef
@@ -88,19 +88,19 @@ $(1): $(RPMBUILD_DIR)/RPMS/$(ARCH)/$(notdir $(1))
 endef
 
 define flint_expand_tar_gz
-var/$(1): src/$(2).tar.gz
+var/$(1): src/$(2).tar.gz | var
 	-tar -C var -zxf $$<
 	touch $$@
 endef
 
 define flint_expand_tar_bz2
-var/$(1): src/$(2).tar.bz2
+var/$(1): src/$(2).tar.bz2 | var
 	tar -C var -jxf $$<
 	touch $$@
 endef
 
 define flint_unzip
-var/$(1): src/$(2).zip
+var/$(1): src/$(2).zip | var
 	(cd var && unzip ../$$<)
 	touch $$@
 endef
@@ -146,7 +146,10 @@ $(foreach d,$(DEPS),$(eval $(call flint_install,$(d))))
 
 $(foreach p,$(RPM_FILES) $(DIST_FILES),$(eval $(call flint_install_rpm,$(p))))
 
-var/flint-$(VERSION).tar.gz:
+var tmp:
+	install -d $@
+
+var/flint-$(VERSION).tar.gz: | var
 	(cd .. && git archive --format=tar --prefix=flint-$(VERSION)/ HEAD | gzip > $(CURDIR)/$@)
 
 flint.spec: flint.spec.in

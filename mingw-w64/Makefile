@@ -52,48 +52,54 @@ clean: mostlyclean
 distclean: clean
 	-rm -f src/*.zip src/*.tar.bz2 src/*.tar.gz
 
-tmp/$(BOOST_UNDERSCORE): src/$(BOOST_UNDERSCORE).tar.bz2
+build var:
+	install -d $@
+
+tmp: | var
+	install -d $@
+
+tmp/$(BOOST_UNDERSCORE): src/$(BOOST_UNDERSCORE).tar.bz2 | tmp
 	-rm -rf var/$(BOOST_UNDERSCORE)
 	tar -C var -jxf $<
 	touch $@
 
-tmp/clibsedml-$(CLIBSEDML_COMMIT): src/clibsedml-$(CLIBSEDML_COMMIT).tar.gz
+tmp/clibsedml-$(CLIBSEDML_COMMIT): src/clibsedml-$(CLIBSEDML_COMMIT).tar.gz | tmp
 	-rm -rf var/clibsedml-$(CLIBSEDML_COMMIT)
 	tar -C var -zxf $<
 	touch $@
 
-tmp/libsbml-$(LIBSBML_VERSION): src/libSBML-$(LIBSBML_VERSION)-core-src.zip libsbml-$(LIBSBML_VERSION).patch
+tmp/libsbml-$(LIBSBML_VERSION): src/libSBML-$(LIBSBML_VERSION)-core-src.zip libsbml-$(LIBSBML_VERSION).patch | tmp
 	-rm -rf var/libsbml-$(LIBSBML_VERSION)
 	(cd var && unzip ../$<)
 	patch -d var/libsbml-$(LIBSBML_VERSION) -p0 < libsbml-$(LIBSBML_VERSION).patch
 	touch $@
 
-tmp/libxml2-$(LIBXML2_VERSION): src/libxml2-sources-$(LIBXML2_VERSION).tar.gz
+tmp/libxml2-$(LIBXML2_VERSION): src/libxml2-sources-$(LIBXML2_VERSION).tar.gz | tmp
 	-rm -rf var/libxml2-$(LIBXML2_VERSION)
 	tar -C var -zxf $<
 	touch $@
 
-tmp/libzip-$(LIBZIP_VERSION): src/libzip-$(LIBZIP_VERSION).tar.gz
+tmp/libzip-$(LIBZIP_VERSION): src/libzip-$(LIBZIP_VERSION).tar.gz | tmp
 	-rm -rf var/libzip-$(LIBZIP_VERSION)
 	tar -C var -zxf $<
 	touch $@
 
-tmp/zlib-$(ZLIB_VERSION): src/zlib-$(ZLIB_VERSION).tar.gz
+tmp/zlib-$(ZLIB_VERSION): src/zlib-$(ZLIB_VERSION).tar.gz | tmp
 	-rm -rf var/zlib-$(ZLIB_VERSION)
 	tar -C var -zxf $<
 	touch $@
 
-tmp/protobuf-$(PROTOBUF_VERSION): src/protobuf-$(PROTOBUF_VERSION).tar.gz
+tmp/protobuf-$(PROTOBUF_VERSION): src/protobuf-$(PROTOBUF_VERSION).tar.gz | tmp
 	-rm -rf var/protobuf-$(PROTOBUF_VERSION)
 	tar -C var -zxf $<
 	touch $@
 
-tmp/SBML_odeSolver-$(SOSLIB_COMMIT): src/SBML_odeSolver-$(SOSLIB_COMMIT).tar.gz
+tmp/SBML_odeSolver-$(SOSLIB_COMMIT): src/SBML_odeSolver-$(SOSLIB_COMMIT).tar.gz | tmp
 	-rm -rf var/SBML_odeSolver-$(SOSLIB_COMMIT)
 	tar -C var -zxf $<
 	touch $@
 
-tmp/sundials-$(SUNDIALS_VERSION): src/sundials-$(SUNDIALS_VERSION).tar.gz sundials-$(SUNDIALS_VERSION).patch
+tmp/sundials-$(SUNDIALS_VERSION): src/sundials-$(SUNDIALS_VERSION).tar.gz sundials-$(SUNDIALS_VERSION).patch | tmp
 	-rm -rf var/sundials-$(SUNDIALS_VERSION)
 	tar -C var -zxf $<
 	patch -d var/sundials-$(SUNDIALS_VERSION) < sundials-$(SUNDIALS_VERSION).patch
@@ -114,7 +120,7 @@ tmp/clibsedml-$(CLIBSEDML_COMMIT).installed: tmp/clibsedml-$(CLIBSEDML_COMMIT) t
 	(cd var/clibsedml-$(CLIBSEDML_COMMIT) && autoreconf -i -f && env CFLAGS='-std=c99 -Wall -W -Werror' LDFLAGS='-static-libgcc -static-libstdc++' ./configure --host=$(HOST) --prefix=$(PREFIX) --with-xml-prefix=$(PREFIX) --disable-xmltest && $(MAKE) all install)
 	touch $@
 
-usr/bin/protoc: src/protobuf-$(PROTOBUF_VERSION).tar.gz
+usr/bin/protoc: src/protobuf-$(PROTOBUF_VERSION).tar.gz | build
 	-rm -rf build/protobuf-$(PROTOBUF_VERSION)
 	tar -C build -zxf $<
 	(cd build/protobuf-$(PROTOBUF_VERSION) && ./configure --prefix=$(abspath usr) && $(MAKE) all install)

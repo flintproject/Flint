@@ -141,47 +141,53 @@ clean: mostlyclean
 distclean: clean
 	-rm -f $(foreach lib,make-3.82.tar.gz $(EXTERNAL_LIBRARIES),src/$(lib))
 
-tmp/$(BOOST_UNDERSCORE): src/$(BOOST_UNDERSCORE).tar.bz2
+var:
+	install -d $@
+
+tmp: | var
+	install -d $@
+
+tmp/$(BOOST_UNDERSCORE): src/$(BOOST_UNDERSCORE).tar.bz2 | tmp
 	-rm -rf var/$(BOOST_UNDERSCORE)
 	tar -C var -jxf $<
 	touch $@
 
-tmp/clibsedml-$(CLIBSEDML_COMMIT): src/clibsedml-$(CLIBSEDML_COMMIT).tar.gz
+tmp/clibsedml-$(CLIBSEDML_COMMIT): src/clibsedml-$(CLIBSEDML_COMMIT).tar.gz | tmp
 	-rm -rf var/clibsedml-$(CLIBSEDML_COMMIT)
 	tar -C var -zxf $<
 	touch $@
 
-tmp/libsbml-$(LIBSBML_VERSION): src/libSBML-$(LIBSBML_VERSION)-core-src.zip
+tmp/libsbml-$(LIBSBML_VERSION): src/libSBML-$(LIBSBML_VERSION)-core-src.zip | tmp
 	-rm -rf var/libsbml-$(LIBSBML_VERSION)
 	(cd var && unzip ../$<)
 	touch $@
 
-tmp/libxml2-$(LIBXML2_VERSION): src/libxml2-sources-$(LIBXML2_VERSION).tar.gz
+tmp/libxml2-$(LIBXML2_VERSION): src/libxml2-sources-$(LIBXML2_VERSION).tar.gz | tmp
 	-rm -rf var/libxml2-$(LIBXML2_VERSION)
 	tar -C var -zxf $<
 	touch $@
 
-tmp/libzip-$(LIBZIP_VERSION): src/libzip-$(LIBZIP_VERSION).tar.gz
+tmp/libzip-$(LIBZIP_VERSION): src/libzip-$(LIBZIP_VERSION).tar.gz | tmp
 	-rm -rf var/libzip-$(LIBZIP_VERSION)
 	tar -C var -zxf $<
 	touch $@
 
-tmp/make-3.82: src/make-3.82.tar.gz
+tmp/make-3.82: src/make-3.82.tar.gz | tmp
 	-rm -rf var/make-3.82
 	tar -C var -zxf $<
 	touch $@
 
-tmp/protobuf-$(PROTOBUF_VERSION): src/protobuf-$(PROTOBUF_VERSION).tar.gz
+tmp/protobuf-$(PROTOBUF_VERSION): src/protobuf-$(PROTOBUF_VERSION).tar.gz | tmp
 	-rm -rf var/protobuf-$(PROTOBUF_VERSION)
 	tar -C var -zxf $<
 	touch $@
 
-tmp/SBML_odeSolver-$(SOSLIB_COMMIT): src/SBML_odeSolver-$(SOSLIB_COMMIT).tar.gz
+tmp/SBML_odeSolver-$(SOSLIB_COMMIT): src/SBML_odeSolver-$(SOSLIB_COMMIT).tar.gz | tmp
 	-rm -rf var/SBML_odeSolver-$(SOSLIB_COMMIT)
 	tar -C var -zxf $<
 	touch $@
 
-tmp/sundials-$(SUNDIALS_VERSION): src/sundials-$(SUNDIALS_VERSION).tar.gz
+tmp/sundials-$(SUNDIALS_VERSION): src/sundials-$(SUNDIALS_VERSION).tar.gz | tmp
 	-rm -rf var/sundials-$(SUNDIALS_VERSION)
 	tar -C var -zxf $<
 	touch $@

@@ -37,10 +37,13 @@ EXTERNAL_LIBRARY_DIRS = \
 
 OS := $(shell uname -s)
 
+src:
+	install -d $@
+
 ifeq ($(OS),Darwin)
 
 define external_library_source
-src/$(1):
+src/$(1): | src
 	curl $(DEPOSIT_URL)/$(1) -o $$@
 	md5 $$@ | grep $(2)
 endef
@@ -48,7 +51,7 @@ endef
 else ifeq ($(OS),FreeBSD)
 
 define external_library_source
-src/$(1):
+src/$(1): | src
 	curl $(DEPOSIT_URL)/$(1) -o $$@
 	md5 $$@ | grep $(2)
 endef
@@ -56,7 +59,7 @@ endef
 else
 
 define external_library_source
-src/$(1):
+src/$(1): | src
 	wget -O $$@ $(DEPOSIT_URL)/$(1)
 	test "$(2)" = `md5sum $$@ | cut -d' ' -f1`
 endef
