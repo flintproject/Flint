@@ -3,4 +3,3 @@ required dependent libraries.
 While by default "opt/" is used for the install destination directory, you can
 assign another directory with Make variable PREFIX in config.mk.
 It will try to download all of external libraries from Internet at first.
-Note that installing ParMETIS requires cmake.
