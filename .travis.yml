@@ -8,6 +8,6 @@ before_install:
 
 install:
   - sudo apt-get install -qq libtool bison flex
-  - cd posix && make
+  - cd posix && make -s
 
 script: make check # in posix
