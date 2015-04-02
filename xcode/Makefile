@@ -114,9 +114,8 @@ define flint_macos_program
 $(call flint_macos_program_name,$(1)): opt/bin/$(1) tmp/bundled
 	install -p $$< $$@
 	for name in $(BOOST_DYLIBS); do install_name_tool -change libboost_$$$$name-mt.dylib @executable_path/../Frameworks/libboost_$$$$name-mt.dylib $$@; done
-	for name in $(DYLIBS) libissim.0; do install_name_tool -change $(PREFIX)/lib/$$$$name.dylib @executable_path/../Frameworks/$$$$name.dylib $$@; done
+	for name in $(DYLIBS); do install_name_tool -change $(PREFIX)/lib/$$$$name.dylib @executable_path/../Frameworks/$$$$name.dylib $$@; done
 	for name in $(SUNDIALS_DYLIBS); do install_name_tool -change $(PREFIX)/lib/libsundials_$$$$name @executable_path/../Frameworks/libsundials_$$$$name $$@; done
-	install_name_tool -change $(CURDIR)/opt/lib/libissim.0.dylib @executable_path/../Frameworks/libissim.0.dylib $$@
 endef
 
 define flint_ext_program
@@ -230,7 +229,7 @@ usr/bin/flint-make: tmp/make-3.82
 
 # for Flint
 
-../flint/dist/flint.jar: $(foreach p,$(PROGRAMS),opt/bin/$(p)) opt/lib/libissim.0.dylib
+../flint/dist/flint.jar: $(foreach p,$(PROGRAMS),opt/bin/$(p))
 	ant -f ../flint/build.xml jar
 
 ../configure: ../configure.ac
@@ -240,7 +239,7 @@ build/Makefile: ../configure
 	install -d $(dir $@)
 	(cd $(dir $@) && env CFLAGS='-arch x86_64 -mmacosx-version-min=10.7' CXXFLAGS='-arch x86_64 -mmacosx-version-min=10.7' LDFLAGS='-arch x86_64 -mmacosx-version-min=10.7 -headerpad_max_install_names' PKG_CONFIG=$(PKG_CONFIG) PKG_CONFIG_PATH=$(PKG_CONFIG_PATH) ../../configure --prefix=$(CURDIR)/opt --with-boost=$(PREFIX) --with-protoc=$(PREFIX)/bin/protoc --with-xml-prefix=$(PREFIX) --with-protoc=$(PREFIX)/bin/protoc --with-sundials=$(PREFIX))
 
-$(foreach p,$(PROGRAMS),opt/bin/$(p)) opt/lib/libissim.0.dylib: build/Makefile
+$(foreach p,$(PROGRAMS),opt/bin/$(p)): build/Makefile
 	$(MAKE) -C build all install-exec
 
 $(foreach d,$(BOOST_DYLIBS),$(eval $(call flint_frameworks_boost_dylib,$(d))))
@@ -264,13 +263,6 @@ tmp/bundled: Info.plist.patch build.xml ../flint/dist/flint.jar ../flint.icns | 
 $(APP)/Contents/Info.plist $(APP)/Contents/Java/flint.jar $(foreach j,$(JARS),$(call flint_java_jar_name,$(j))) $(APP)/Contents/MacOS/JavaAppLauncher $(APP)/Contents/PkgInfo $(APP)/Contents/Resources/flint.icns: tmp/bundled
 
 $(foreach p,$(PROGRAMS),$(eval $(call flint_macos_program,$(p))))
-
-$(call flint_frameworks_dylib_name,libissim.0): opt/lib/libissim.0.dylib tmp/bundled
-	install -p -m 0644 $< $@
-	install_name_tool -id @executable_path/../Frameworks/libissim.0.dylib $@
-	for name in $(BOOST_DYLIBS); do install_name_tool -change libboost_$$name-mt.dylib @executable_path/../Frameworks/libboost_$$name-mt.dylib $@; done
-	for name in $(DYLIBS); do install_name_tool -change $(PREFIX)/lib/$$name.dylib @executable_path/../Frameworks/$$name.dylib $@; done
-	for name in $(SUNDIALS_DYLIBS); do install_name_tool -change $(PREFIX)/lib/libsundials_$$name @executable_path/../Frameworks/libsundials_$$name $@; done
 
 $(eval $(call flint_ext_program,flint-make))
 
@@ -308,7 +300,7 @@ $(APP)/Contents/Resources/icon.png: ../flint/src/jp/oist/flint/image/icon.png
 	install -d $(dir $@)
 	install -p -m 0644 $< $@
 
-flint-component.pkg: component.plist $(foreach d,$(BOOST_DYLIBS),$(call flint_frameworks_boost_dylib_name,$(d))) $(foreach d,$(DYLIBS),$(call flint_frameworks_dylib_name,$(d))) $(foreach d,$(SUNDIALS_DYLIBS),$(call flint_frameworks_sundials_dylib_name,$(d))) $(call flint_frameworks_dylib_name,libissim.0) $(foreach p,$(PROGRAMS) $(EXT_PROGRAMS),$(call flint_macos_program_name,$(p))) $(foreach j,$(JARS),$(call flint_java_jar_name,$(j))) $(APP)/Contents/Resources/third-party-licenses.txt $(APP)/Contents/Resources/flint.icns $(APP)/Contents/Resources/icon.png $(APP)/Contents/Java/flint.jar $(APP)/Contents/MacOS/JavaAppLauncher $(APP)/Contents/Info.plist $(APP)/Contents/PkgInfo
+flint-component.pkg: component.plist $(foreach d,$(BOOST_DYLIBS),$(call flint_frameworks_boost_dylib_name,$(d))) $(foreach d,$(DYLIBS),$(call flint_frameworks_dylib_name,$(d))) $(foreach d,$(SUNDIALS_DYLIBS),$(call flint_frameworks_sundials_dylib_name,$(d))) $(foreach p,$(PROGRAMS) $(EXT_PROGRAMS),$(call flint_macos_program_name,$(p))) $(foreach j,$(JARS),$(call flint_java_jar_name,$(j))) $(APP)/Contents/Resources/third-party-licenses.txt $(APP)/Contents/Resources/flint.icns $(APP)/Contents/Resources/icon.png $(APP)/Contents/Java/flint.jar $(APP)/Contents/MacOS/JavaAppLauncher $(APP)/Contents/Info.plist $(APP)/Contents/PkgInfo
 	pkgbuild --quiet --identifier jp.oist.flint --component-plist $< --root root $@
 
 flint resources:

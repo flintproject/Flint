@@ -1,7 +1,6 @@
 ACLOCAL_AMFLAGS = -I config
 
 SUBDIRS = \
-	lib \
 	src \
 	test
 

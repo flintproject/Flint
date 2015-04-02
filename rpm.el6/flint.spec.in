@@ -89,11 +89,6 @@ rm -rf %{buildroot}
 /opt/flint/bin/isdsort
 /opt/flint/bin/isdstrip
 /opt/flint/bin/isdwc
-/opt/flint/lib/libissim.a
-/opt/flint/lib/libissim.la
-/opt/flint/lib/libissim.so
-/opt/flint/lib/libissim.so.0
-/opt/flint/lib/libissim.so.0.0.0
 
 %files gui
 %defattr(-,root,root,-)

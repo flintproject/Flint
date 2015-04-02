@@ -114,7 +114,7 @@ libflint_a_CPPFLAGS = $(AM_CFLAGS) -std=c99 -pedantic-errors
 libflint_a_SOURCES = database.c system.c
 
 libflintxx_a_CPPFLAGS = $(BOOST_CPPFLAGS)
-libflintxx_a_SOURCES = modelpath.cc utf8path.cc
+libflintxx_a_SOURCES = modelpath.cc sys/temporary_path.cc utf8path.cc
 
 libsqlite3_a_CPPFLAGS = -DSQLITE_THREADSAFE=0 -DSQLITE_OMIT_LOAD_EXTENSION
 libsqlite3_a_SOURCES = sqlite3.c
@@ -420,8 +420,8 @@ isdmerge_LDADD = $(BOOST_PROGRAM_OPTIONS_LIBS)
 isdmerge_SOURCES = isdmerge-main.cpp
 
 isdplot_CPPFLAGS = -I$(top_srcdir)/lib $(BOOST_CPPFLAGS)
-isdplot_LDFLAGS = $(BOOST_PROGRAM_OPTIONS_LDFLAGS)
-isdplot_LDADD = ../lib/libissim.la libflint.a $(BOOST_PROGRAM_OPTIONS_LIBS)
+isdplot_LDFLAGS = $(BOOST_FILESYSTEM_LDFLAGS) $(BOOST_SYSTEM_LDFLAGS) $(BOOST_PROGRAM_OPTIONS_LDFLAGS)
+isdplot_LDADD = libflintxx.a libflint.a $(BOOST_FILESYSTEM_LIBS) $(BOOST_SYSTEM_LIBS) $(BOOST_PROGRAM_OPTIONS_LIBS)
 isdplot_SOURCES = isdplot-main.cc
 
 isdrand_CFLAGS = $(AM_CFLAGS) -std=c99 -pedantic-errors
@@ -431,8 +431,8 @@ isdsort_CPPFLAGS = -I$(top_srcdir)/lib $(BOOST_CPPFLAGS)
 isdsort_SOURCES = isdsort-main.cc
 
 isdstrip_CPPFLAGS = -I$(top_srcdir)/lib $(BOOST_CPPFLAGS)
-isdstrip_LDFLAGS = $(BOOST_PROGRAM_OPTIONS_LDFLAGS)
-isdstrip_LDADD = ../lib/libissim.la $(BOOST_PROGRAM_OPTIONS_LIBS)
+isdstrip_LDFLAGS = $(BOOST_FILESYSTEM_LDFLAGS) $(BOOST_SYSTEM_LDFLAGS) $(BOOST_PROGRAM_OPTIONS_LDFLAGS)
+isdstrip_LDADD = libflintxx.a $(BOOST_FILESYSTEM_LIBS) $(BOOST_SYSTEM_LIBS) $(BOOST_PROGRAM_OPTIONS_LIBS)
 isdstrip_SOURCES = isdstrip-main.cc
 
 isdwc_CPPFLAGS = -I$(top_srcdir)/lib $(BOOST_CPPFLAGS)
