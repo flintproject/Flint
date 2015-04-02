@@ -2,9 +2,8 @@ Summary: A simulator for biological and physiological models
 Name: flint
 Version: VERSION
 Release: RELEASE%{?dist}
-License: (TBA)
-Group: Applications/Productivity
-URL: http://www.physiodesigner.org/
+License: MIT
+URL: http://www.physiodesigner.org/simulation/flint/
 Source0: %{name}-%{version}.tar.gz
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
 #BuildRequires: autoconf >= 2.60

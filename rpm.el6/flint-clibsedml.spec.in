@@ -3,8 +3,7 @@ Name: flint-clibsedml
 Version: clibsedml_VERSION
 Release: clibsedml_RELEASE%{?dist}
 License: BSD-3-clause
-Group: Applications/Productivity
-URL: http://www.physiodesigner.org/
+URL: http://sourceforge.net/projects/clibsedml/
 Source0: %{name}-%{version}.tar.gz
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
 BuildRequires: gcc
@@ -13,7 +12,7 @@ BuildRequires: libxml2-devel >= 2.7
 Requires: libxml2 >= 2.7
 
 %description
-This is part of Flint.
+This is a clibsedml package for Flint.
 
 %prep
 %setup -q

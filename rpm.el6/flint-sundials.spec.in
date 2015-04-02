@@ -3,15 +3,14 @@ Name: flint-sundials
 Version: sundials_VERSION
 Release: sundials_RELEASE%{?dist}
 License: BSD-3-clause
-Group: Applications/Productivity
-URL: http://www.physiodesigner.org/
+URL: https://computation.llnl.gov/casc/sundials/main.html
 Source0: %{name}-%{version}.tar.gz
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
 BuildRequires: gcc-c++
 BuildRequires: make
 
 %description
-This is part of Flint.
+This is a SUNDIALS package for Flint.
 
 %prep
 %setup -q

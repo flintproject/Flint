@@ -3,15 +3,14 @@ Name: flint-protobuf
 Version: protobuf_VERSION
 Release: protobuf_RELEASE%{?dist}
 License: BSD-3-clause
-Group: Applications/Productivity
-URL: http://www.physiodesigner.org/
+URL: https://github.com/google/protobuf
 Source0: %{name}-%{version}.tar.gz
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
 BuildRequires: gcc-c++
 BuildRequires: make
 
 %description
-This is part of Flint.
+This is a protobuf package for Flint.
 
 %prep
 %setup -q

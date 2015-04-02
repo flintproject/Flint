@@ -3,8 +3,7 @@ Name: flint-soslib
 Version: soslib_VERSION
 Release: soslib_RELEASE%{?dist}
 License: LGPL-2.1
-Group: Applications/Productivity
-URL: http://www.physiodesigner.org/
+URL: http://www.tbi.univie.ac.at/~raim/odeSolver/
 Source0: %{name}-%{version}.tar.gz
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
 BuildRequires: gcc
@@ -18,7 +17,7 @@ Requires: flint-sundials
 Requires: libxml2 >= 2.7
 
 %description
-This is part of Flint.
+This is a SOSlib package for Flint.
 
 %prep
 %setup -q
