@@ -1,4 +1,4 @@
-Summary: A simulator for physiological models
+Summary: A simulator for biological and physiological models
 Name: flint
 Version: VERSION
 Release: RELEASE%{?dist}
@@ -25,7 +25,7 @@ Requires: libxml2 >= 2.7
 Requires: make
 
 %description
-This is a simulator for physiological models.
+This is a simulator for biological and physiological models.
 
 %package gui
 Summary: The GUI part of Flint

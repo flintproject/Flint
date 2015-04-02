@@ -14,7 +14,7 @@
         <Category>Simulation</Category>
     </Categories>
     <Provider>Flint project</Provider>
-    <Description>A simulator for physiological models</Description>
+    <Description>A simulator for biological and physiological models</Description>
     <LoadableKeys>
         <InputFileFormat>
             <FileExtension>isml</FileExtension>
