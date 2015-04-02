@@ -3,7 +3,7 @@
 Makefile.in
 /aclocal.m4
 /autom4te.cache/
-/compile
+/build-aux/
 /config.guess
 /config.h.in
 /config.sub
@@ -13,9 +13,3 @@ Makefile.in
 /config/ltversion.m4
 /config/lt~obsolete.m4
 /configure
-/depcomp
-/install-sh
-/ltmain.sh
-/missing
-/test-driver
-/ylwrap
