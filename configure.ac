@@ -119,7 +119,6 @@ AC_FUNC_FORK
 AC_CHECK_FUNCS([floor gethostname gettimeofday memset mkstemp pow putenv socket sqrt strerror strstr])
 
 AC_CONFIG_FILES([Makefile
-                 lib/Makefile
                  src/Makefile
                  test/Makefile
                  test/base/Makefile
