@@ -6,7 +6,8 @@ TESTS = \
 	self-circular-unit.phml.sh \
 	state-to-static.phml.sh \
 	swapped-definitions.phml.sh \
-	variable-to-static.phml.sh
+	variable-to-static.phml.sh \
+	x-capsulated-by.phml.sh
 
 .mk.sh:
 	echo '#!/bin/sh' > $@

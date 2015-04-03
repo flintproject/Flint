@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<is:insilico-model  xmlns:m="http://www.w3.org/1998/Math/MathML" xmlns:is="http://www.physiome.jp/ns/insilicoml" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:pd="http://www.physiodesigner.org/2012/ns/physiodesigner/1.0" version="1.0" xsi:schemalocation="http://www.physiome.jp/ns/insilicoml-1.0 insilicoml.xsd">
+<is:header>
+<is:model-name>no_name</is:model-name>
+<is:meta-information>
+<is:article-set/>
+<is:creator-set/>
+</is:meta-information>
+<is:date>
+<is:created>2015-04-03T05:02:33+09:00</is:created>
+<is:last-modified>2015-04-03T05:02:33+09:00</is:last-modified>
+</is:date>
+<is:numerical-configuration>
+<is:time-discretization unit-id="12" evolution="true">
+<is:step>0.01</is:step>
+<is:step-min/>
+<is:step-max/>
+</is:time-discretization>
+<is:simulation-time-span unit-id="12">100</is:simulation-time-span>
+<is:algorithm>
+<is:integration name="euler"/>
+</is:algorithm>
+</is:numerical-configuration>
+<is:description/>
+</is:header>
+<is:unit-set>
+<is:unit unit-id="0">
+<is:name>dimensionless</is:name>
+</is:unit>
+<is:unit unit-id="1">
+<is:name>metre</is:name>
+</is:unit>
+<is:unit unit-id="2">
+<is:name>kilogram</is:name>
+</is:unit>
+<is:unit unit-id="3">
+<is:name>second</is:name>
+</is:unit>
+<is:unit unit-id="4">
+<is:name>ampere</is:name>
+</is:unit>
+<is:unit unit-id="5">
+<is:name>kelvin</is:name>
+</is:unit>
+<is:unit unit-id="6">
+<is:name>mole</is:name>
+</is:unit>
+<is:unit unit-id="7">
+<is:name>candela</is:name>
+</is:unit>
+<is:unit unit-id="8">
+<is:name>radian</is:name>
+</is:unit>
+<is:unit unit-id="9">
+<is:name>meter</is:name>
+<is:element unit-id="1"/>
+</is:unit>
+<is:unit unit-id="10">
+<is:name>gram</is:name>
+<is:element unit-id="2" prefix="milli"/>
+</is:unit>
+<is:unit unit-id="11">
+<is:name>degree</is:name>
+</is:unit>
+<is:unit unit-id="12">
+<is:name>millisecond</is:name>
+<is:element unit-id="3" exponent="1" prefix="milli"/>
+</is:unit>
+<is:unit unit-id="13">
+<is:name>volt</is:name>
+<is:element unit-id="1" exponent="2"/>
+<is:element unit-id="2" exponent="1"/>
+<is:element unit-id="3" exponent="-3"/>
+<is:element unit-id="4" exponent="-1"/>
+</is:unit>
+<is:unit unit-id="14">
+<is:name>siemens</is:name>
+<is:element unit-id="1" exponent="-2"/>
+<is:element unit-id="2" exponent="-1"/>
+<is:element unit-id="3" exponent="3"/>
+<is:element unit-id="4" exponent="2"/>
+</is:unit>
+<is:unit unit-id="15">
+<is:name>farad</is:name>
+<is:element unit-id="1" exponent="-2"/>
+<is:element unit-id="2" exponent="-1"/>
+<is:element unit-id="3" exponent="4"/>
+<is:element unit-id="4" exponent="2"/>
+</is:unit>
+</is:unit-set>
+
+<is:module-set>
+
+<is:module module-id="daa7dafe-7641-4280-9559-2e080e93578b" type="functional-unit">
+<is:property>
+<is:name>x</is:name>
+<is:capsulation state="true">
+<is:capsulated-by module-id="9114256a-d9bf-11e4-8933-5b24fd24d827"/>
+</is:capsulation>
+<is:template state="false"/>
+<is:keyword-set/>
+<is:track>
+<is:involved db-id="this" date="2015-04-03T05:02:53+09:00"/>
+</is:track>
+<is:frame-coordinate/>
+<is:description/>
+</is:property>
+<is:port-set/>
+
+<is:physical-quantity-set>
+<is:physical-quantity physical-quantity-id="1" type="state">
+<is:name>x</is:name>
+<is:dimension type="scalar"/>
+<is:value-type-set>
+<is:value-type precision="double" unit-id="0"/>
+</is:value-type-set>
+<is:initial-value>
+<is:definition type="ae" format="mathml">
+<m:math><m:apply><m:eq/><m:ci>x</m:ci><m:cn>0</m:cn></m:apply></m:math>
+</is:definition>
+</is:initial-value>
+<is:implementation>
+<is:definition type="ode" sub-type="" format="mathml">
+<m:math><m:apply><m:eq/><m:apply><m:diff/><m:bvar><m:ci>time</m:ci></m:bvar><m:ci>x</m:ci></m:apply><m:ci>time</m:ci></m:apply></m:math>
+</is:definition>
+</is:implementation>
+<is:problem-condition-set/>
+<is:description/>
+</is:physical-quantity>
+</is:physical-quantity-set>
+<is:morphology/>
+<is:timeseries-set/>
+<is:event-set/>
+</is:module>
+
+<is:module module-id="cca306ed-7286-4119-b5f2-c835d07fbf59" type="capsule">
+<is:property>
+<is:name>capsule_of_x</is:name>
+<is:capsulation state="false"/>
+<is:template state="false"/>
+<is:keyword-set/>
+<is:track>
+<is:involved db-id="this" date="2015-04-03T05:03:12+09:00"/>
+</is:track>
+<is:frame-coordinate/>
+<is:description/>
+</is:property>
+<is:port-set/>
+<is:physical-quantity-set/>
+<is:morphology/>
+</is:module>
+</is:module-set>
+<is:template-set/>
+<is:instance-set/>
+<is:controller-set/>
+
+<is:edge-set>
+<is:edge edge-id="d2f52262-fe87-4d92-bc63-fb8ecc2a798f" type="capsular">
+<is:tail module-id="daa7dafe-7641-4280-9559-2e080e93578b" port-id="0"/>
+<is:head module-id="cca306ed-7286-4119-b5f2-c835d07fbf59" port-id="0"/>
+<is:operation>encapsulation</is:operation>
+<is:description/>
+</is:edge>
+</is:edge-set>
+</is:insilico-model>

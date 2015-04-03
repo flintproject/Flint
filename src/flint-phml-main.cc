@@ -1590,6 +1590,53 @@ private:
 	sqlite3_stmt *timeseries_stmt_;
 };
 
+class CapsulatedByValidator {
+public:
+	explicit CapsulatedByValidator(sqlite3 *db)
+		: db_(db),
+		  query_stmt_(NULL)
+	{
+		int e = sqlite3_prepare_v2(db_, kQuery, -1, &query_stmt_, NULL);
+		if (e != SQLITE_OK) {
+			cerr << "failed to prepare statement: " << kQuery << ": " << e << endl;
+			exit(EXIT_FAILURE);
+		}
+	}
+
+	~CapsulatedByValidator() {
+		sqlite3_finalize(query_stmt_);
+	}
+
+	bool Validate() {
+		bool r = true;
+		int e;
+		for (e = sqlite3_step(query_stmt_); e == SQLITE_ROW; e = sqlite3_step(query_stmt_)) {
+			r = false;
+			const unsigned char *module_id = sqlite3_column_text(query_stmt_, 0);
+			const unsigned char *capsulated_by = sqlite3_column_text(query_stmt_, 1);
+			cerr << "module of module-id " << module_id
+				 << " is capsulated by unknown capsule module: " << capsulated_by
+				 << endl;
+		}
+		if (e != SQLITE_DONE) {
+			cerr << "failed to step statement: " << kQuery << ": " << e << endl;
+			return false;
+		}
+		sqlite3_reset(query_stmt_);
+		return r;
+	}
+
+private:
+	static const char kQuery[];
+
+	sqlite3 *db_;
+	sqlite3_stmt *query_stmt_;
+};
+
+const char CapsulatedByValidator::kQuery[] = "SELECT m0.module_id, m0.capsulated_by FROM modules AS m0 WHERE"
+											 " m0.capsulated_by IS NOT NULL AND"
+											 " NOT EXISTS (SELECT * FROM modules AS m1 WHERE m1.module_id = m0.capsulated_by)";
+
 class TreeWriter : boost::noncopyable {
 public:
 	explicit TreeWriter(sqlite3 *db)
@@ -3672,6 +3719,11 @@ int main(int argc, char *argv[])
 	{
 		boost::scoped_ptr<Reader> reader(new Reader(path, text_reader, db));
 		if (reader->Read() < 0) return EXIT_FAILURE;
+	}
+
+	{
+		boost::scoped_ptr<CapsulatedByValidator> validator(new CapsulatedByValidator(db));
+		if (!validator->Validate()) return EXIT_FAILURE;
 	}
 
 	{
