@@ -42,4 +42,5 @@ SUBDIRS = \
 	isdstrip \
 	isdwc \
 	base \
+	mathml \
 	sys
