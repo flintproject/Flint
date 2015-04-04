@@ -11,7 +11,7 @@ In order to build Flint, the following libraries are required:
 - Boost 1.57.0
   http://www.boost.org/
 - Protocol buffers 2.6.1
-  http://code.google.com/p/protobuf/
+  https://developers.google.com/protocol-buffers/
 - Git master version of The SBML ODE Solver Library (SOSlib)
   http://mescalin.tbi.univie.ac.at/~raim/odeSolver/
   https://github.com/raim/SBML_odeSolver
