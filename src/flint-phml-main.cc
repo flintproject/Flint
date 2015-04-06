@@ -3492,6 +3492,67 @@ void Usage()
 	cerr << "usage: flint-phml DB" << endl;
 }
 
+struct Schema {
+	const char *name;
+	const char *columns;
+};
+
+const Schema kModelTables[] = {
+	{"edges", "(tail_module_id TEXT, tail_port_id INTEGER, head_module_id TEXT, head_port_id INTEGER)"},
+	{"instances", "(module_id TEXT, template_id TEXT, label TEXT)"},
+	{"ncs", "(rg_name TEXT, rg_seed TEXT, integration TEXT, sts_unit_id INTEGER, sts_value TEXT)"},
+	{"tds", "(unit_id INTEGER, step TEXT, module_id TEXT)"},
+	{"modules", "(module_id TEXT, type TEXT, name TEXT, capsulated_by TEXT, template_state TEXT)"},
+	{"pqs", "(module_rowid INTEGER, type TEXT, pq_id INTEGER, unit_id INTEGER, name TEXT, max_delay TEXT)"},
+	{"ivs", "(pq_rowid INTEGER, math TEXT)"},
+	{"impls", "(pq_rowid INTEGER, math TEXT)"},
+	{"refports", "(pq_rowid INTEGER, port_id INTEGER)"},
+	{"refts", "(pq_rowid INTEGER, timeseries_id INTEGER, element_id TEXT)"},
+	{"extras", "(pq_rowid INTEGER, order_type TEXT, math TEXT)"},
+	{"templates", "(template_id TEXT, ref_module_id TEXT)"},
+	{"tms", "(instance_rowid INTEGER, module_id TEXT)"},
+	{"tpqs", "(tm_rowid INTEGER, pq_id INTEGER, math TEXT)"},
+	{"units", "(unit_id INTEGER, name TEXT)"},
+	{"elements", "(unit_rowid INTEGER, unit_id INTEGER, exponent REAL, factor INTEGER, multiplier REAL, offset REAL)"},
+	{"bridges", "(pq_rowid INTEGER, direction TEXT, sub_type TEXT, connector TEXT)"},
+	{"imports", "(module_rowid INTEGER, type TEXT, ref TEXT)"},
+	{"ports", "(module_rowid INTEGER, port_id INTEGER, direction TEXT, ref_pq_id INTEGER, multiple TEXT)"},
+	{"timeseries", "(module_rowid INTEGER, timeseries_id INTEGER, format TEXT, ref TEXT)"}
+};
+
+const Schema kSubsequentTables[] = {
+	{"trees", "(module_id TEXT, level INTEGER)"},
+	{"scopes", "(uuid TEXT, space_id TEXT, label TEXT)"},
+	{"journals", "(indent INTEGER, uuid TEXT)"},
+	{"spans", "(tail_uuid TEXT, tail_port_id INTEGER, head_uuid TEXT, head_port_id INTEGER)"},
+	{"reaches", "(output_uuid BLOB, output_id INTEGER, input_uuid BLOB, input_id INTEGER)"},
+	{"sprinkles", "(track_id BLOB, sector_id BLOB, pq_id INTEGER, val REAL)"}
+};
+
+void CreateTablesOrDie(sqlite3 *db, const Schema *tables, size_t n)
+{
+	char buf[1024]; // long enough
+	char *em;
+	int e;
+
+	for (size_t i=0;i<n;i++) {
+		const Schema &table = tables[i];
+		sprintf(buf, "CREATE TABLE IF NOT EXISTS %s %s",
+				table.name, table.columns);
+
+		e = sqlite3_exec(db, buf, NULL, NULL, &em);
+		if (e != SQLITE_OK) {
+			cerr << "failed to create table " << table.name
+				 << ": " << e
+				 << ": " << em << endl;
+			exit(EXIT_FAILURE);
+		}
+	}
+}
+
+#define CREATE_TABLES_OR_DIE(db, tables) \
+	CreateTablesOrDie(db, tables, sizeof(tables)/sizeof(tables[0]))
+
 } // namespace
 
 int main(int argc, char *argv[])
@@ -3521,164 +3582,10 @@ int main(int argc, char *argv[])
 		fprintf(stderr, "failed to start transaction: %s\n", em);
 		return EXIT_FAILURE;
 	}
-	e = sqlite3_exec(db, "CREATE TABLE IF NOT EXISTS edges (tail_module_id TEXT, tail_port_id INTEGER, head_module_id TEXT, head_port_id INTEGER)",
-					 NULL, NULL, &em);
-	if (e != SQLITE_OK) {
-		fprintf(stderr, "failed to create table edges: %d\n", e);
-		return EXIT_FAILURE;
-	}
-	e = sqlite3_exec(db, "CREATE TABLE IF NOT EXISTS instances (module_id TEXT, template_id TEXT, label TEXT)",
-					 NULL, NULL, &em);
-	if (e != SQLITE_OK) {
-		fprintf(stderr, "failed to create table instances: %d\n", e);
-		return EXIT_FAILURE;
-	}
-	e = sqlite3_exec(db, "CREATE TABLE IF NOT EXISTS ncs (rg_name TEXT, rg_seed TEXT, integration TEXT, sts_unit_id INTEGER, sts_value TEXT)",
-					 NULL, NULL, &em);
-	if (e != SQLITE_OK) {
-		fprintf(stderr, "failed to create table ncs: %d\n", e);
-		return EXIT_FAILURE;
-	}
-	e = sqlite3_exec(db, "CREATE TABLE IF NOT EXISTS tds (unit_id INTEGER, step TEXT, module_id TEXT)",
-					 NULL, NULL, &em);
-	if (e != SQLITE_OK) {
-		fprintf(stderr, "failed to create table tds: %d\n", e);
-		return EXIT_FAILURE;
-	}
-	e = sqlite3_exec(db, "CREATE TABLE IF NOT EXISTS modules (module_id TEXT, type TEXT, name TEXT, capsulated_by TEXT, template_state TEXT)",
-					 NULL, NULL, &em);
-	if (e != SQLITE_OK) {
-		fprintf(stderr, "failed to create table modules: %d\n", e);
-		return EXIT_FAILURE;
-	}
-	e = sqlite3_exec(db, "CREATE TABLE IF NOT EXISTS pqs (module_rowid INTEGER, type TEXT, pq_id INTEGER, unit_id INTEGER, name TEXT, max_delay TEXT)",
-					 NULL, NULL, &em);
-	if (e != SQLITE_OK) {
-		fprintf(stderr, "failed to create table pqs: %d\n", e);
-		return EXIT_FAILURE;
-	}
-	e = sqlite3_exec(db, "CREATE TABLE IF NOT EXISTS ivs (pq_rowid INTEGER, math TEXT)",
-					 NULL, NULL, &em);
-	if (e != SQLITE_OK) {
-		fprintf(stderr, "failed to create table ivs: %d\n", e);
-		return EXIT_FAILURE;
-	}
-	e = sqlite3_exec(db, "CREATE TABLE IF NOT EXISTS impls (pq_rowid INTEGER, math TEXT)",
-					 NULL, NULL, &em);
-	if (e != SQLITE_OK) {
-		fprintf(stderr, "failed to create table impls: %d\n", e);
-		return EXIT_FAILURE;
-	}
-	e = sqlite3_exec(db, "CREATE TABLE IF NOT EXISTS refports (pq_rowid INTEGER, port_id INTEGER)",
-					 NULL, NULL, &em);
-	if (e != SQLITE_OK) {
-		fprintf(stderr, "failed to create table refports: %d\n", e);
-		return EXIT_FAILURE;
-	}
-	e = sqlite3_exec(db, "CREATE TABLE IF NOT EXISTS refts (pq_rowid INTEGER, timeseries_id INTEGER, element_id TEXT)",
-					 NULL, NULL, &em);
-	if (e != SQLITE_OK) {
-		fprintf(stderr, "failed to create table refts: %d\n", e);
-		return EXIT_FAILURE;
-	}
-	e = sqlite3_exec(db, "CREATE TABLE IF NOT EXISTS extras (pq_rowid INTEGER, order_type TEXT, math TEXT)",
-					 NULL, NULL, &em);
-	if (e != SQLITE_OK) {
-		fprintf(stderr, "failed to create table extras: %d\n", e);
-		return EXIT_FAILURE;
-	}
-	e = sqlite3_exec(db, "CREATE TABLE IF NOT EXISTS templates (template_id TEXT, ref_module_id TEXT)",
-					 NULL, NULL, &em);
-	if (e != SQLITE_OK) {
-		fprintf(stderr, "failed to create table templates: %d\n", e);
-		return EXIT_FAILURE;
-	}
-	e = sqlite3_exec(db, "CREATE TABLE IF NOT EXISTS tms (instance_rowid INTEGER, module_id TEXT)",
-					 NULL, NULL, &em);
-	if (e != SQLITE_OK) {
-		fprintf(stderr, "failed to create table tms: %d\n", e);
-		return EXIT_FAILURE;
-	}
-	e = sqlite3_exec(db, "CREATE TABLE IF NOT EXISTS tpqs (tm_rowid INTEGER, pq_id INTEGER, math TEXT)",
-					 NULL, NULL, &em);
-	if (e != SQLITE_OK) {
-		fprintf(stderr, "failed to create table tpqs: %d\n", e);
-		return EXIT_FAILURE;
-	}
-	e = sqlite3_exec(db, "CREATE TABLE IF NOT EXISTS units (unit_id INTEGER, name TEXT)",
-					 NULL, NULL, &em);
-	if (e != SQLITE_OK) {
-		fprintf(stderr, "failed to create table units: %d\n", e);
-		return EXIT_FAILURE;
-	}
-	e = sqlite3_exec(db, "CREATE TABLE IF NOT EXISTS elements (unit_rowid INTEGER, unit_id INTEGER, exponent REAL, factor INTEGER, multiplier REAL, offset REAL)",
-					 NULL, NULL, &em);
-	if (e != SQLITE_OK) {
-		fprintf(stderr, "failed to create table elements: %d\n", e);
-		return EXIT_FAILURE;
-	}
-	e = sqlite3_exec(db, "CREATE TABLE IF NOT EXISTS bridges (pq_rowid INTEGER, direction TEXT, sub_type TEXT, connector TEXT)",
-					 NULL, NULL, &em);
-	if (e != SQLITE_OK) {
-		fprintf(stderr, "failed to create table bridges: %d\n", e);
-		return EXIT_FAILURE;
-	}
-	e = sqlite3_exec(db, "CREATE TABLE IF NOT EXISTS imports (module_rowid INTEGER, type TEXT, ref TEXT)",
-					 NULL, NULL, &em);
-	if (e != SQLITE_OK) {
-		fprintf(stderr, "failed to create table imports: %d\n", e);
-		return EXIT_FAILURE;
-	}
-	e = sqlite3_exec(db, "CREATE TABLE IF NOT EXISTS ports (module_rowid INTEGER, port_id INTEGER, direction TEXT, ref_pq_id INTEGER, multiple TEXT)",
-					 NULL, NULL, &em);
-	if (e != SQLITE_OK) {
-		fprintf(stderr, "failed to create table ports: %d\n", e);
-		return EXIT_FAILURE;
-	}
-	e = sqlite3_exec(db, "CREATE TABLE IF NOT EXISTS timeseries (module_rowid INTEGER, timeseries_id INTEGER, format TEXT, ref TEXT)",
-					 NULL, NULL, &em);
-	if (e != SQLITE_OK) {
-		fprintf(stderr, "failed to create table timeseries: %d\n", e);
-		return EXIT_FAILURE;
-	}
+	CREATE_TABLES_OR_DIE(db, kModelTables);
 
 	// subsequent tables
-	e = sqlite3_exec(db, "CREATE TABLE IF NOT EXISTS trees (module_id TEXT, level INTEGER)",
-					 NULL, NULL, &em);
-	if (e != SQLITE_OK) {
-		fprintf(stderr, "failed to create table trees: %d\n", e);
-		return EXIT_FAILURE;
-	}
-	e = sqlite3_exec(db, "CREATE TABLE IF NOT EXISTS scopes (uuid TEXT, space_id TEXT, label TEXT)",
-					 NULL, NULL, &em);
-	if (e != SQLITE_OK) {
-		fprintf(stderr, "failed to create table scopes: %d\n", e);
-		return EXIT_FAILURE;
-	}
-	e = sqlite3_exec(db, "CREATE TABLE IF NOT EXISTS journals (indent INTEGER, uuid TEXT)",
-					 NULL, NULL, &em);
-	if (e != SQLITE_OK) {
-		fprintf(stderr, "failed to create table journals: %d\n", e);
-		return EXIT_FAILURE;
-	}
-	e = sqlite3_exec(db, "CREATE TABLE IF NOT EXISTS spans (tail_uuid TEXT, tail_port_id INTEGER, head_uuid TEXT, head_port_id INTEGER)",
-					 NULL, NULL, &em);
-	if (e != SQLITE_OK) {
-		fprintf(stderr, "failed to create table spans: %d\n", e);
-		return EXIT_FAILURE;
-	}
-	e = sqlite3_exec(db, "CREATE TABLE IF NOT EXISTS reaches (output_uuid BLOB, output_id INTEGER, input_uuid BLOB, input_id INTEGER)",
-					 NULL, NULL, &em);
-	if (e != SQLITE_OK) {
-		fprintf(stderr, "failed to create table reaches: %d\n", e);
-		return EXIT_FAILURE;
-	}
-	e = sqlite3_exec(db, "CREATE TABLE IF NOT EXISTS sprinkles (track_id BLOB, sector_id BLOB, pq_id INTEGER, val REAL)",
-					 NULL, NULL, &em);
-	if (e != SQLITE_OK) {
-		fprintf(stderr, "failed to create table sprinkles: %d\n", e);
-		return EXIT_FAILURE;
-	}
+	CREATE_TABLES_OR_DIE(db, kSubsequentTables);
 
 	// views
 	e = sqlite3_exec(db, "CREATE VIEW IF NOT EXISTS joins AS SELECT m.module_id AS module_id, i.module_id AS uuid, i.label AS label FROM instances AS i LEFT JOIN templates As t ON i.template_id = t.template_id LEFT JOIN modules AS m ON m.module_id = t.ref_module_id",
