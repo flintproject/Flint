@@ -2,6 +2,7 @@
 #ifndef BASE_RATIONAL_H_
 #define BASE_RATIONAL_H_
 
+#include <cstdio>
 #include <iostream>
 #include <sstream>
 #include <string>
@@ -17,13 +18,29 @@ public:
 		T d = 0, n = 1;
 		bool d_found = false;
 		std::streampos t = in.tellg();
+
+		T sign = 0;
+		char c = in.peek();
+		if (c == EOF) return false;
+		if (c == '+') {
+			in.ignore();
+			sign = 1;
+			c = in.peek();
+			if (c == '+' || c == '-') return false;
+		} else if (c == '-') {
+			in.ignore();
+			sign = -1;
+			c = in.peek();
+			if (c == '+' || c == '-') return false;
+		}
+
 		in >> d;
 		if (in.fail()) { // no integer part
 			in.clear();
 		} else {
 			d_found = true;
 		}
-		char c = in.peek();
+		c = in.peek();
 		if (c == '.') {
 			in.ignore();
 			while (in.good()) {
@@ -61,7 +78,7 @@ public:
 				} while (++e < 0);
 			}
 		}
-		r = boost::rational<T>(d, n);
+		r = boost::rational<T>((sign) ? sign * d : d, n);
 		if (s) *s = static_cast<int>(in.tellg() - t);
 		return true;
 	}

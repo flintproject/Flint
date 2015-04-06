@@ -11,6 +11,10 @@ BOOST_AUTO_TEST_CASE(FromString)
 	BOOST_CHECK(!base::Rational<int>::FromString(".", r));
 	BOOST_CHECK(!base::Rational<int>::FromString("e", r));
 	BOOST_CHECK(!base::Rational<int>::FromString("foo", r));
+	BOOST_CHECK(!base::Rational<int>::FromString("++1", r));
+	BOOST_CHECK(!base::Rational<int>::FromString("+-1", r));
+	BOOST_CHECK(!base::Rational<int>::FromString("-+1", r));
+	BOOST_CHECK(!base::Rational<int>::FromString("--1", r));
 
 	BOOST_CHECK(base::Rational<int>::FromString("1", r));
 	BOOST_CHECK_EQUAL(r, boost::rational<int>(1));
@@ -30,4 +34,16 @@ BOOST_AUTO_TEST_CASE(FromString)
 	BOOST_CHECK_EQUAL(r, boost::rational<int>(31, 1000));
 	BOOST_CHECK(base::Rational<int>::FromString("0.002e7", r));
 	BOOST_CHECK_EQUAL(r, boost::rational<int>(20000));
+	BOOST_CHECK(base::Rational<int>::FromString("-3", r));
+	BOOST_CHECK_EQUAL(r, boost::rational<int>(-3));
+	BOOST_CHECK(base::Rational<int>::FromString("-0.2", r));
+	BOOST_CHECK_EQUAL(r, boost::rational<int>(-1, 5));
+	BOOST_CHECK(base::Rational<int>::FromString("-.1", r));
+	BOOST_CHECK_EQUAL(r, boost::rational<int>(-1, 10));
+	BOOST_CHECK(base::Rational<int>::FromString("+3", r));
+	BOOST_CHECK_EQUAL(r, boost::rational<int>(3));
+	BOOST_CHECK(base::Rational<int>::FromString("+0.2", r));
+	BOOST_CHECK_EQUAL(r, boost::rational<int>(1, 5));
+	BOOST_CHECK(base::Rational<int>::FromString("+.1", r));
+	BOOST_CHECK_EQUAL(r, boost::rational<int>(1, 10));
 }
