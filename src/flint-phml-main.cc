@@ -1091,7 +1091,7 @@ public:
 		}
 		e = sqlite3_bind_int(pq_stmt_, 3, pq->pq_id());
 		if (e != SQLITE_OK) {
-			cerr << "failed to bind name: " << e << endl;
+			cerr << "failed to bind pq_id: " << e << endl;
 			return false;
 		}
 		e = sqlite3_bind_text(pq_stmt_, 4, (const char *)pq->unit_id(), -1, SQLITE_STATIC);
@@ -1101,7 +1101,7 @@ public:
 		}
 		e = sqlite3_bind_text(pq_stmt_, 5, (const char *)pq->name(), -1, SQLITE_STATIC);
 		if (e != SQLITE_OK) {
-			cerr << "failed to bind pq_id: " << e << endl;
+			cerr << "failed to bind name: " << e << endl;
 			return false;
 		}
 		e = sqlite3_bind_text(pq_stmt_, 6, (const char *)pq->max_delay(), -1, SQLITE_STATIC);
