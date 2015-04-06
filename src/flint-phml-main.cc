@@ -403,7 +403,7 @@ public:
 	void set_rowid(sqlite3_int64 rowid) {rowid_ = rowid;}
 
 	bool IsValid() const {
-		return type_ != kUnknown && pq_id_ > 0 && name_;
+		return type_ != kUnknown && pq_id_ > 0;
 	}
 
 	const char *GetType() const {
@@ -416,6 +416,10 @@ public:
 			assert(false);
 			return NULL;
 		}
+	}
+
+	bool IsSaved() const {
+		return rowid_ != 0;
 	}
 
 private:
@@ -729,7 +733,7 @@ public:
 			exit(EXIT_FAILURE);
 		}
 
-		e = sqlite3_prepare_v2(db, "INSERT INTO pqs VALUES (?, ?, ?, ?, ?, ?)",
+		e = sqlite3_prepare_v2(db, "INSERT INTO pqs VALUES (?, ?, ?, NULL, NULL, NULL)",
 							   -1, &pq_stmt_, NULL);
 		if (e != SQLITE_OK) {
 			cerr << "failed to prepare statement: " << e << endl;
@@ -833,6 +837,13 @@ public:
 			cerr << "failed to prepare statement: " << e << endl;
 			exit(EXIT_FAILURE);
 		}
+
+		e = sqlite3_prepare_v2(db, "UPDATE pqs SET unit_id = ?, name = ?, max_delay = ? WHERE rowid = ?",
+							   -1, &update_stmt_[kPq], NULL);
+		if (e != SQLITE_OK) {
+			cerr << "failed to prepare statement: " << e << endl;
+			exit(EXIT_FAILURE);
+		}
 	}
 
 	~DatabaseDriver() {
@@ -856,6 +867,7 @@ public:
 		sqlite3_finalize(template_stmt_);
 		sqlite3_finalize(port_stmt_);
 		sqlite3_finalize(timeseries_stmt_);
+		sqlite3_finalize(update_stmt_[kPq]);
 	}
 
 	bool SaveNumericalConfiguration(const NumericalConfiguration *nc) {
@@ -1094,21 +1106,6 @@ public:
 			cerr << "failed to bind pq_id: " << e << endl;
 			return false;
 		}
-		e = sqlite3_bind_text(pq_stmt_, 4, (const char *)pq->unit_id(), -1, SQLITE_STATIC);
-		if (e != SQLITE_OK) {
-			cerr << "failed to bind unit_id: " << e << endl;
-			return false;
-		}
-		e = sqlite3_bind_text(pq_stmt_, 5, (const char *)pq->name(), -1, SQLITE_STATIC);
-		if (e != SQLITE_OK) {
-			cerr << "failed to bind name: " << e << endl;
-			return false;
-		}
-		e = sqlite3_bind_text(pq_stmt_, 6, (const char *)pq->max_delay(), -1, SQLITE_STATIC);
-		if (e != SQLITE_OK) {
-			cerr << "failed to bind max_delay: " << e << endl;
-			return false;
-		}
 		e = sqlite3_step(pq_stmt_);
 		if (e != SQLITE_DONE) {
 			cerr << "failed to step statement: " << e << endl;
@@ -1119,6 +1116,38 @@ public:
 		sqlite3_int64 rowid = sqlite3_last_insert_rowid(db_);
 		pq->set_rowid(rowid);
 
+		return true;
+	}
+
+	bool UpdatePq(const PQ *pq) {
+		assert(pq->IsSaved());
+		int e;
+		e = sqlite3_bind_text(update_stmt_[kPq], 1, (const char *)pq->unit_id(), -1, SQLITE_STATIC);
+		if (e != SQLITE_OK) {
+			cerr << "failed to bind unit_id: " << e << endl;
+			return false;
+		}
+		e = sqlite3_bind_text(update_stmt_[kPq], 2, (const char *)pq->name(), -1, SQLITE_STATIC);
+		if (e != SQLITE_OK) {
+			cerr << "failed to bind name: " << e << endl;
+			return false;
+		}
+		e = sqlite3_bind_text(update_stmt_[kPq], 3, (const char *)pq->max_delay(), -1, SQLITE_STATIC);
+		if (e != SQLITE_OK) {
+			cerr << "failed to bind max_delay: " << e << endl;
+			return false;
+		}
+		e = sqlite3_bind_int64(update_stmt_[kPq], 4, pq->rowid());
+		if (e != SQLITE_OK) {
+			cerr << "failed to bind rowid: " << e << endl;
+			return false;
+		}
+		e = sqlite3_step(update_stmt_[kPq]);
+		if (e != SQLITE_DONE) {
+			cerr << "failed to step statement: " << e << endl;
+			return false;
+		}
+		sqlite3_reset(update_stmt_[kPq]);
 		return true;
 	}
 
@@ -1567,6 +1596,11 @@ public:
 	}
 
 private:
+	enum UpdateStatementIndex {
+		kPq,
+		kNumOfUpdateStatements
+	};
+
 	sqlite3 *db_;
 	sqlite3_stmt *nc_stmt_;
 	sqlite3_stmt *td_stmt_;
@@ -1588,6 +1622,7 @@ private:
 	sqlite3_stmt *template_stmt_;
 	sqlite3_stmt *port_stmt_;
 	sqlite3_stmt *timeseries_stmt_;
+	sqlite3_stmt *update_stmt_[kNumOfUpdateStatements];
 };
 
 class CapsulatedByValidator {
@@ -2500,6 +2535,7 @@ private:
 			cerr << "missing type of <physical-quantity>: " << module_->module_id() << ":" << pq_->pq_id() << endl;
 			return -2;
 		}
+		if (!dd_->SavePq(module_.get(), pq_.get())) return -2;
 		i = xmlTextReaderRead(text_reader_);
 		while (i > 0) {
 			int type = xmlTextReaderNodeType(text_reader_);
@@ -2533,7 +2569,7 @@ private:
 						cerr << "missing <name> of <physical-quantity>: " << module_->module_id() << ":" << pq_->pq_id() << endl;
 						return -2;
 					}
-					if (!dd_->SavePq(module_.get(), pq_.get())) return -2;
+					if (!dd_->UpdatePq(pq_.get())) return -2;
 					if (iv_dumper_) {
 						if (iv_->IsProper() && !dd_->SaveInitialValue(pq_.get(), iv_.get())) return -2;
 						iv_dumper_.reset();
