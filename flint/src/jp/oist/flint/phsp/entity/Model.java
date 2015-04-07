@@ -138,8 +138,4 @@ public class Model {
     public void setTargetSet (TargetSet targetSet) {
         mTargetSet = targetSet;
     }
-
-    private String escape(String s) {
-        return s.replaceAll(">","&gt;").replaceAll("<", "&lt;").replaceAll("&", "&amp;").replaceAll("\"", "&quot;");
-    }
 }
