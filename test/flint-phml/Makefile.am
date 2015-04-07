@@ -9,8 +9,10 @@ TESTS = \
 	bogus-td.phml.sh \
 	delta_time.phml.sh \
 	empty.phml.sh \
-	gamma.isml.sh \
 	exponential.isml.sh \
+	gamma.isml.sh \
+	graph-condition.phml.sh \
+	graph-probability.phml.sh \
 	hepatocyte_external.isml.sh \
 	hepatocyte_internal.isml.sh \
 	init-with-pq.isml.sh \

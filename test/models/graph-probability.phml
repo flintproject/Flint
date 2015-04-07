@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<is:insilico-model  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:svg="http://www.w3.org/2000/svg" xmlns:is="http://www.physiome.jp/ns/insilicoml" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:m="http://www.w3.org/1998/Math/MathML" version="1.0" xsi:schemalocation="http://www.physiome.jp/ns/insilicoml-1.0 insilicoml.xsd">
+  <is:unit-set>
+    <is:unit unit-id="0">
+      <is:name>dimensionless</is:name>
+    </is:unit>
+    <is:unit unit-id="1">
+      <is:name>metre</is:name>
+    </is:unit>
+    <is:unit unit-id="2">
+      <is:name>kilogram</is:name>
+    </is:unit>
+    <is:unit unit-id="3">
+      <is:name>second</is:name>
+    </is:unit>
+    <is:unit unit-id="4">
+      <is:name>ampere</is:name>
+    </is:unit>
+    <is:unit unit-id="5">
+      <is:name>kelvin</is:name>
+    </is:unit>
+    <is:unit unit-id="6">
+      <is:name>mole</is:name>
+    </is:unit>
+    <is:unit unit-id="7">
+      <is:name>candela</is:name>
+    </is:unit>
+    <is:unit unit-id="8">
+      <is:name>radian</is:name>
+    </is:unit>
+    <is:unit unit-id="9">
+      <is:name>meter</is:name>
+      <is:element unit-id="1"/>
+    </is:unit>
+    <is:unit unit-id="10">
+      <is:name>gram</is:name>
+      <is:element unit-id="2" prefix="milli"/>
+    </is:unit>
+    <is:unit unit-id="11">
+      <is:name>degree</is:name>
+    </is:unit>
+    <is:unit unit-id="12">
+      <is:name>millisecond</is:name>
+      <is:element unit-id="3" exponent="1" prefix="milli"/>
+    </is:unit>
+    <is:unit unit-id="13">
+      <is:name>volt</is:name>
+      <is:element unit-id="1" exponent="2"/>
+      <is:element unit-id="2" exponent="1"/>
+      <is:element unit-id="3" exponent="-3"/>
+      <is:element unit-id="4" exponent="-1"/>
+    </is:unit>
+    <is:unit unit-id="14">
+      <is:name>siemens</is:name>
+      <is:element unit-id="1" exponent="-2"/>
+      <is:element unit-id="2" exponent="-1"/>
+      <is:element unit-id="3" exponent="3"/>
+      <is:element unit-id="4" exponent="2"/>
+    </is:unit>
+    <is:unit unit-id="15">
+      <is:name>farad</is:name>
+      <is:element unit-id="1" exponent="-2"/>
+      <is:element unit-id="2" exponent="-1"/>
+      <is:element unit-id="3" exponent="4"/>
+      <is:element unit-id="4" exponent="2"/>
+    </is:unit>
+  </is:unit-set>
+
+  <is:module-set>
+    <is:module module-id="0df0882e-cbb7-11e4-8be8-b31a3f8cd0c1" type="functional-unit">
+      <is:property>
+        <is:name>M</is:name>
+        <is:capsulation state="false"/>
+        <is:template state="false"/>
+      </is:property>
+      <is:physical-quantity-set>
+        <is:physical-quantity physical-quantity-id="1" type="state">
+          <is:name>x</is:name>
+          <is:initial-value>
+            <is:definition type="ae" format="mathml">
+              <m:math><m:apply><m:csymbol>is</m:csymbol><m:ci>x</m:ci><m:ci>a</m:ci></m:apply></m:math>
+            </is:definition>
+          </is:initial-value>
+          <is:implementation>
+            <is:definition type="graph">
+              <is:graph>
+                <is:node-set>
+                  <is:node node-id="1">
+                    <is:name>a</is:name>
+                    <is:description>initial node</is:description>
+                  </is:node>
+                  <is:node node-id="2">
+                    <is:name>b</is:name>
+                    <is:description></is:description>
+                  </is:node>
+                  <is:node node-id="3">
+                    <is:name>c</is:name>
+                    <is:description/>
+                  </is:node>
+                  <is:node node-id="4">
+                    <is:name>d</is:name>
+                  </is:node>
+                </is:node-set>
+                <is:arc-set>
+                  <is:arc arc-id="1">
+                    <is:tail node-id="1"/>
+                    <is:head node-id="2"/>
+                    <is:transition type="probability">
+                      <m:math><m:cn>0.5</m:cn></m:math>
+                    </is:transition>
+                  </is:arc>
+                  <is:arc arc-id="2">
+                    <is:tail node-id="2"/>
+                    <is:head node-id="3"/>
+                    <is:transition type="probability">
+                      <m:math><m:cn>0.50</m:cn></m:math>
+                    </is:transition>
+                  </is:arc>
+                  <is:arc arc-id="3">
+                    <is:tail node-id="3"/>
+                    <is:head node-id="2"/>
+                    <is:transition type="probability">
+                      <m:math><m:cn>0.49</m:cn></m:math>
+                    </is:transition>
+                  </is:arc>
+                  <is:arc arc-id="4">
+                    <is:tail node-id="3"/>
+                    <is:head node-id="4"/>
+                    <is:transition type="probability">
+                      <m:math><m:cn>0.01</m:cn></m:math>
+                    </is:transition>
+                  </is:arc>
+                </is:arc-set>
+              </is:graph>
+            </is:definition>
+          </is:implementation>
+        </is:physical-quantity>
+      </is:physical-quantity-set>
+    </is:module>
+  </is:module-set>
+</is:insilico-model>

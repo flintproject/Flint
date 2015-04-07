@@ -23,6 +23,7 @@
 #include "branch.h"
 #include "modelpath.h"
 #include "phml/definition_dumper.h"
+#include "phml/graph_reader.h"
 #include "reach.h"
 #include "span.h"
 #include "sprinkle.h"
@@ -754,6 +755,20 @@ public:
 			exit(EXIT_FAILURE);
 		}
 
+		e = sqlite3_prepare_v2(db, "INSERT INTO nodes VALUES (?, ?, ?)",
+							   -1, &node_stmt_, NULL);
+		if (e != SQLITE_OK) {
+			cerr << "failed to prepare statement: " << e << endl;
+			exit(EXIT_FAILURE);
+		}
+
+		e = sqlite3_prepare_v2(db, "INSERT INTO arcs VALUES (?, ?, ?, ?, ?)",
+							   -1, &arc_stmt_, NULL);
+		if (e != SQLITE_OK) {
+			cerr << "failed to prepare statement: " << e << endl;
+			exit(EXIT_FAILURE);
+		}
+
 		e = sqlite3_prepare_v2(db, "INSERT INTO refports VALUES (?, ?)",
 							   -1, &refport_stmt_, NULL);
 		if (e != SQLITE_OK) {
@@ -855,6 +870,8 @@ public:
 		sqlite3_finalize(pq_stmt_);
 		sqlite3_finalize(iv_stmt_);
 		sqlite3_finalize(impl_stmt_);
+		sqlite3_finalize(node_stmt_);
+		sqlite3_finalize(arc_stmt_);
 		sqlite3_finalize(refport_stmt_);
 		sqlite3_finalize(refts_stmt_);
 		sqlite3_finalize(extra_stmt_);
@@ -1192,6 +1209,72 @@ public:
 			return false;
 		}
 		sqlite3_reset(impl_stmt_);
+		return true;
+	}
+
+	template<typename TNode>
+	bool SaveNode(const PQ *pq, const TNode *node) {
+		int e;
+		e = sqlite3_bind_int64(node_stmt_, 1, pq->rowid());
+		if (e != SQLITE_OK) {
+			cerr << "failed to bind pq_rowid: " << e << endl;
+			return false;
+		}
+		e = sqlite3_bind_int(node_stmt_, 2, node->node_id());
+		if (e != SQLITE_OK) {
+			cerr << "failed to bind node_id: " << e << endl;
+			return false;
+		}
+		e = sqlite3_bind_text(node_stmt_, 3, (const char *)node->name(), -1, SQLITE_STATIC);
+		if (e != SQLITE_OK) {
+			cerr << "failed to bind name: " << e << endl;
+			return false;
+		}
+		e = sqlite3_step(node_stmt_);
+		if (e != SQLITE_DONE) {
+			cerr << "failed to step statement: " << e << endl;
+			return false;
+		}
+		sqlite3_reset(node_stmt_);
+		return true;
+	}
+
+	template<typename TArc>
+	bool SaveArc(const PQ *pq, const TArc *arc) {
+		int e;
+		e = sqlite3_bind_int64(arc_stmt_, 1, pq->rowid());
+		if (e != SQLITE_OK) {
+			cerr << "failed to bind pq_rowid: " << e << endl;
+			return false;
+		}
+		e = sqlite3_bind_int(arc_stmt_, 2, arc->tail_node_id());
+		if (e != SQLITE_OK) {
+			cerr << "failed to bind tail_node_id: " << e << endl;
+			return false;
+		}
+		e = sqlite3_bind_int(arc_stmt_, 3, arc->head_node_id());
+		if (e != SQLITE_OK) {
+			cerr << "failed to bind head_node_id: " << e << endl;
+			return false;
+		}
+		assert(arc->type() != TArc::kUnspecified);
+		e = sqlite3_bind_text(arc_stmt_, 4, (arc->type() == TArc::kCondition) ? "condition" : "probability", -1, SQLITE_STATIC);
+		if (e != SQLITE_OK) {
+			cerr << "failed to bind type: " << e << endl;
+			return false;
+		}
+		string math = arc->GetMath();
+		e = sqlite3_bind_text(arc_stmt_, 5, math.c_str(), -1, SQLITE_STATIC);
+		if (e != SQLITE_OK) {
+			cerr << "failed to bind math: " << e << endl;
+			return false;
+		}
+		e = sqlite3_step(arc_stmt_);
+		if (e != SQLITE_DONE) {
+			cerr << "failed to step statement: " << e << endl;
+			return false;
+		}
+		sqlite3_reset(arc_stmt_);
 		return true;
 	}
 
@@ -1610,6 +1693,8 @@ private:
 	sqlite3_stmt *pq_stmt_;
 	sqlite3_stmt *iv_stmt_;
 	sqlite3_stmt *impl_stmt_;
+	sqlite3_stmt *node_stmt_;
+	sqlite3_stmt *arc_stmt_;
 	sqlite3_stmt *refport_stmt_;
 	sqlite3_stmt *refts_stmt_;
 	sqlite3_stmt *extra_stmt_;
@@ -2805,6 +2890,9 @@ private:
 				}
 				return i;
 			}
+		} else if (xmlStrEqual(definition->type(), BAD_CAST "graph")) {
+			phml::GraphReader<PQ, DatabaseDriver> graph_reader(pq_.get(), text_reader_, dd_.get());
+			return graph_reader.Read();
 		}
 		// expect definition in MathML
 		impl_dumper_.reset(new phml::DefinitionDumper<Implementation>(text_reader_,
@@ -3542,6 +3630,8 @@ const Schema kModelTables[] = {
 	{"pqs", "(module_rowid INTEGER, type TEXT, pq_id INTEGER, unit_id INTEGER, name TEXT, max_delay TEXT)"},
 	{"ivs", "(pq_rowid INTEGER, math TEXT)"},
 	{"impls", "(pq_rowid INTEGER, math TEXT)"},
+	{"nodes", "(pq_rowid INTEGER, node_id INTEGER, name TEXT)"},
+	{"arcs", "(pq_rowid INTEGER, type TEXT, tail_node_id INTEGER, head_node_id INTEGER, TEXT math)"},
 	{"refports", "(pq_rowid INTEGER, port_id INTEGER)"},
 	{"refts", "(pq_rowid INTEGER, timeseries_id INTEGER, element_id TEXT)"},
 	{"extras", "(pq_rowid INTEGER, order_type TEXT, math TEXT)"},

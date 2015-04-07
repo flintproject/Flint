@@ -2,6 +2,7 @@
 #ifndef FLINT_PHML_DEFINITION_DUMPER_H_
 #define FLINT_PHML_DEFINITION_DUMPER_H_
 
+#include <cassert>
 #include <cstdio>
 #include <iostream>
 #include <libxml/xmlreader.h>
@@ -48,6 +49,8 @@ public:
 				if (xmlStrEqual(value, BAD_CAST "assign")) {
 					// skip one of type assign
 					return xmlTextReaderNext(text_reader_);
+				} else if (xmlStrEqual(value, BAD_CAST "graph")) {
+					assert(false);
 				} else if (xmlStrEqual(value, BAD_CAST "loop")) {
 					// skip one of type loop
 					return xmlTextReaderNext(text_reader_);
