@@ -454,11 +454,6 @@ public class SubFrame extends JInternalFrame
         reloader.execute();
     }
 
-    //TODO
-    public boolean outputWindowIsSelected() {
-        return false;
-    }
-
     public boolean tryLock() {
         return mLock.tryLock();
     }
