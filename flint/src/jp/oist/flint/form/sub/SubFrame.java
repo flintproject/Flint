@@ -442,10 +442,6 @@ public class SubFrame extends JInternalFrame
         return mOriginalPath;
     }
 
-    public Container getContainer() {
-        return this;
-    }
-
     public void notifyK3Enabled() {
         if (mK3Loader.isEnabled()) {
         } else {

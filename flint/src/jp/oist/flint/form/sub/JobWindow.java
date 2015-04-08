@@ -561,12 +561,12 @@ public class JobWindow extends javax.swing.JFrame
                 sb.append(String.format("%s=%s ", titles[i], values[i]));
 
              PlotWindow plotWindow = new PlotWindow(mParent, sb.toString(), taskDao, jobId);
-             plotWindow.setLocationRelativeTo(mParent.getContainer());
+             plotWindow.setLocationRelativeTo(mParent);
              plotWindow.setVisible(true);
              plotWindow.processSimulationTrack(st);
              plotWindow.renderPlot();
         } catch (IOException ex) {
-            if (mParent.getContainer() instanceof IFrame) {
+            if (mParent instanceof IFrame) {
                 IFrame frame = (IFrame)mParent;
                 frame.showErrorDialog("It has not finished yet.", "ERROR");
             }
@@ -583,7 +583,7 @@ public class JobWindow extends javax.swing.JFrame
             JFileChooser fileChooser = new JFileChooser();
             fileChooser.setCurrentDirectory(defaultDir);
             fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-            int result = fileChooser.showDialog(mParent.getContainer(), "Save All");
+            int result = fileChooser.showDialog(mParent, "Save All");
 
             if (result != JFileChooser.APPROVE_OPTION)
                 return;
@@ -591,7 +591,7 @@ public class JobWindow extends javax.swing.JFrame
             File selectedDir = fileChooser.getSelectedFile();
 
             if (!selectedDir.exists()) {
-                result = JOptionPane.showConfirmDialog(mParent.getContainer(), 
+                result = JOptionPane.showConfirmDialog(mParent,
                         String.format("%s does not exist; do you want to create the new directory and proceed?",
                                 selectedDir.getName()),
                         "", JOptionPane.YES_NO_OPTION);
@@ -688,7 +688,7 @@ public class JobWindow extends javax.swing.JFrame
             String baseName = Utility.getFileName(mParent.getModelFile().getName());
             File defaultFile = new File(mParent.getModelFile().getParent(), 
                                         baseName + "_" + jobId + ".csv");
-            FileChooser fileChooser = new FileChooser(mParent.getContainer(), 
+            FileChooser fileChooser = new FileChooser(mParent,
                     "Export file", FileChooser.Mode.SAVE, defaultFile);
 
             if (fileChooser.showDialog()) { 
