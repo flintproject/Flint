@@ -2,7 +2,7 @@
 package jp.oist.flint.phsp;
 
 import jp.oist.flint.backend.ModelLoader;
-import jp.oist.flint.form.IMainFrame;
+import jp.oist.flint.form.MainFrame;
 import jp.oist.flint.form.ModelLoaderLogger;
 import jp.oist.flint.form.sub.SubFrame;
 import jp.oist.flint.phsp.entity.Model;
@@ -62,7 +62,7 @@ public class PhspReaderListener implements PropertyChangeListener {
                     && SwingWorker.StateValue.DONE == stateValue) {
 
                 Ipc.ModelProbeResponse response;
-                IMainFrame mainJFrame = mLogger.getFrame();
+                MainFrame mainJFrame = mLogger.getFrame();
                 try {
                     response = mFileLoader.get();
                 } catch (ExecutionException | InterruptedException ee) {

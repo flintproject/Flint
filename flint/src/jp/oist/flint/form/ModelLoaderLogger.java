@@ -12,13 +12,13 @@ public class ModelLoaderLogger implements IFrame {
 
     private final ArrayList<String> mLines = new ArrayList<>();
 
-    private final IMainFrame mFrame;
+    private final MainFrame mFrame;
 
-    public ModelLoaderLogger(IMainFrame frame) {
+    public ModelLoaderLogger(MainFrame frame) {
         mFrame = frame;
     }
 
-    public IMainFrame getFrame() {
+    public MainFrame getFrame() {
         return mFrame;
     }
 

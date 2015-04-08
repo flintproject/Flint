@@ -78,7 +78,7 @@ import org.xml.sax.SAXException;
  * This is the class of the main window.
  */
 public class MainFrame extends javax.swing.JFrame 
-    implements ICallee, IMainFrame, IPhspConfiguration,
+    implements ICallee, IPhspConfiguration,
                IFlintMenuBarDelegator, ISimulationConfigurationList, IFrame {
 
     static {
@@ -740,10 +740,6 @@ public class MainFrame extends javax.swing.JFrame
         Logger.getRootLogger().error("[" + d + "] " +  s  + System.getProperty("line.separator"));
     }
 
-    /*
-     * Implements IMainFrame 
-     */
-    @Override 
     public void notifyK3Enabled() {
         List<SubFrame> subFrames = getSubFrames();
         for (SubFrame subFrame : subFrames) {
@@ -751,7 +747,6 @@ public class MainFrame extends javax.swing.JFrame
         }
     }
 
-    @Override
     public void notifySubJFrameAdded(SubFrame subFrame) {
         final File file = subFrame.getModelFile();
         subFrame.setDefaultCloseOperation(JInternalFrame.DO_NOTHING_ON_CLOSE);
@@ -790,7 +785,6 @@ public class MainFrame extends javax.swing.JFrame
         }
     }
 
-    @Override
     public boolean openModel (final File file) {
 
         if (file == null || !file.exists()) {
@@ -879,7 +873,6 @@ public class MainFrame extends javax.swing.JFrame
         });
     }
 
-    @Override
     public void setPlotterSettingTabEnabled(String defaultPlotter) {
         SubFrame subFrame = this.getSelectedSubFrame();
         if (subFrame != null) {

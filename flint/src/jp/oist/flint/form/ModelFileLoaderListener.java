@@ -30,7 +30,7 @@ class ModelFileLoaderListener implements PropertyChangeListener {
         if ("state".equals(propertyName)
             && nv == SwingWorker.StateValue.DONE) {
             Ipc.ModelProbeResponse response;
-            IMainFrame mainJFrame = mLogger.getFrame();
+            MainFrame mainJFrame = mLogger.getFrame();
             try {
                 response = mLoader.get();
             } catch (ExecutionException | InterruptedException e) {

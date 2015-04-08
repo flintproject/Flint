@@ -46,7 +46,7 @@ public class PreferenceDialog extends javax.swing.JDialog {
     /**
      * Creates new form Preference
      */
-    public PreferenceDialog(IMainFrame parent, boolean modal) {
+    public PreferenceDialog(MainFrame parent, boolean modal) {
         super((java.awt.Frame)parent, modal);
         initComponents();
 
@@ -385,7 +385,7 @@ public class PreferenceDialog extends javax.swing.JDialog {
             radioButtonDisabled.setSelected(false);
 
             try {
-                GarudaClient.start((IMainFrame)getParent());
+                GarudaClient.start((MainFrame)getParent());
             } catch (GarudaConnectionNotInitializedException gcnie) {
                 // recur the previous state
                 radioButtonEnabled.setSelected(false);
@@ -428,7 +428,7 @@ public class PreferenceDialog extends javax.swing.JDialog {
             String key = mPlotterLoader.getKeyOf(plotter);
             mPlotterLoader.saveAsDefault(key);
 
-            IMainFrame m = (IMainFrame)getOwner();
+            MainFrame m = (MainFrame)getOwner();
             m.setPlotterSettingTabEnabled(key);
         } catch (BackingStoreException bse) {
             // ignored

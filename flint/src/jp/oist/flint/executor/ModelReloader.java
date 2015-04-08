@@ -1,7 +1,6 @@
 /* -*- Mode: Java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- vim:set ts=4 sw=4 sts=4 et: */
 package jp.oist.flint.executor;
 
-import jp.oist.flint.form.IMainFrame;
 import jp.oist.flint.form.MainFrame;
 import java.io.File;
 import java.util.concurrent.Callable;
@@ -14,11 +13,11 @@ import jp.oist.flint.form.sub.SubFrame;
 
 public class ModelReloader extends SwingWorker<Boolean, Void> {
 
-    private final IMainFrame mParentFrame;
+    private final MainFrame mParentFrame;
     private final SubFrame mTargetFrame;
     private final File mModelFile;
 
-    public ModelReloader(IMainFrame parentFrame, SubFrame targetFrame) {
+    public ModelReloader(MainFrame parentFrame, SubFrame targetFrame) {
         mParentFrame = parentFrame;
         mTargetFrame = targetFrame;
         mModelFile = targetFrame.getModelFile();
@@ -56,7 +55,7 @@ public class ModelReloader extends SwingWorker<Boolean, Void> {
             return;
         }
         if (r.booleanValue()) {
-            ((MainFrame)mParentFrame).closeModel(mTargetFrame);
+            mParentFrame.closeModel(mTargetFrame);
             mParentFrame.openModel(mModelFile);
         }
     }

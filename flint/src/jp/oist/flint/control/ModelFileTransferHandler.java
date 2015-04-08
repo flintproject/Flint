@@ -1,7 +1,7 @@
 /* -*- Mode: Java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- vim:set ts=4 sw=4 sts=4 et: */
 package jp.oist.flint.control;
 
-import jp.oist.flint.form.IMainFrame;
+import jp.oist.flint.form.MainFrame;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.io.File;
@@ -11,9 +11,9 @@ import javax.swing.JComponent;
 import javax.swing.TransferHandler;
 
 public class ModelFileTransferHandler extends TransferHandler {
-    private IMainFrame mMainJFrame;
+    private MainFrame mMainJFrame;
 
-    public ModelFileTransferHandler(IMainFrame mainJFrame) {
+    public ModelFileTransferHandler(MainFrame mainJFrame) {
         this.mMainJFrame = mainJFrame;
     }
 

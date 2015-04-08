@@ -1,7 +1,7 @@
 /* -*- Mode: Java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- vim:set ts=4 sw=4 sts=4 et: */
 package jp.oist.flint.garuda;
 
-import jp.oist.flint.form.IMainFrame;
+import jp.oist.flint.form.MainFrame;
 import jp.sbi.garuda.client.backend.GarudaClientBackend;
 import jp.sbi.garuda.client.backend.listeners.GarudaBackendPropertyChangeEvent;
 import jp.sbi.garuda.platform.commons.Gadget;
@@ -13,13 +13,13 @@ import java.io.File;
 
 public class GarudaListener implements PropertyChangeListener {
 
-    private final IMainFrame mFrame;
+    private final MainFrame mFrame;
     private final GarudaClientBackend mGarudaClientBackend;
 
     private ICompatibleGadgetClient mCompatibleGadgetClient;
     private String mCompatibleType;
 
-    public GarudaListener(IMainFrame frame, GarudaClientBackend backend) {
+    public GarudaListener(MainFrame frame, GarudaClientBackend backend) {
         mFrame = frame;
         mGarudaClientBackend = backend;
         mCompatibleGadgetClient = null;

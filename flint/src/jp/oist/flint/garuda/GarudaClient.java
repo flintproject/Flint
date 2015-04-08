@@ -1,7 +1,7 @@
 /* -*- Mode: Java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- vim:set ts=4 sw=4 sts=4 et: */
 package jp.oist.flint.garuda;
 
-import jp.oist.flint.form.IMainFrame;
+import jp.oist.flint.form.MainFrame;
 import jp.sbi.garuda.client.backend.BackendAlreadyInitializedException;
 import jp.sbi.garuda.client.backend.GarudaClientBackend;
 import jp.sbi.garuda.platform.commons.Gadget;
@@ -24,7 +24,7 @@ public class GarudaClient {
         return mGarudaClientBackend instanceof GarudaClientBackend && mGarudaClientBackend.isInitialized();
     }
 
-    public static void start(IMainFrame frame)
+    public static void start(MainFrame frame)
         throws GarudaConnectionNotInitializedException, NetworkException {
         String osName = System.getProperty("os.name");
         if (osName == null) {

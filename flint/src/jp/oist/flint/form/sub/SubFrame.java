@@ -40,7 +40,6 @@ import jp.oist.flint.executor.PhspSimulator;
 import jp.oist.flint.filesystem.IModelFileClient;
 import jp.oist.flint.form.IFrame;
 import jp.oist.flint.form.job.IProgressManager;
-import jp.oist.flint.form.IMainFrame;
 import jp.oist.flint.form.MainFrame;
 import jp.oist.flint.form.log.LogWindow;
 import jp.oist.flint.form.ProgressPane;
@@ -60,7 +59,7 @@ public class SubFrame extends JInternalFrame
 
     private final static String LABEL_SEPARATOR = "@";
 
-    private final IMainFrame mMainFrame;
+    private final MainFrame mMainFrame;
     private final File mOriginalFile;
     private final String mOriginalPath;
     private Ipc.ModelProbeResponse mModelProbeResponse;
@@ -94,7 +93,7 @@ public class SubFrame extends JInternalFrame
 
     private SelectionHandler mSelectionHandler;
 
-    public SubFrame(IMainFrame mainFrame, Model model, ModelLoader loader)
+    public SubFrame(MainFrame mainFrame, Model model, ModelLoader loader)
             throws IOException, ExecutionException, InterruptedException {
         this(mainFrame, model.getModelFile(), loader);
 
@@ -103,7 +102,7 @@ public class SubFrame extends JInternalFrame
 
     static int mAutoIncrement = 0;
 
-    public SubFrame(IMainFrame mainFrame, File file, ModelLoader loader)
+    public SubFrame(MainFrame mainFrame, File file, ModelLoader loader)
             throws IOException, ExecutionException, InterruptedException {
         super(file.getAbsolutePath(), true, true, true, true);
 
@@ -556,7 +555,6 @@ public class SubFrame extends JInternalFrame
                 mSkip = false;
             } else {
                 ProgressPane.ListCell cell = (ProgressPane.ListCell)src;
-                MainFrame mainFrame = (MainFrame)SwingUtilities.windowForComponent(mSubFrame);
                 mSkip = true;
                 try {
                     if (mSubFrame.isIcon())
