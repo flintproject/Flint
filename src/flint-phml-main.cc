@@ -23,6 +23,7 @@
 #include "branch.h"
 #include "modelpath.h"
 #include "phml/definition_dumper.h"
+#include "phml/graph-iv-rewriter.h"
 #include "phml/graph_reader.h"
 #include "reach.h"
 #include "span.h"
@@ -2891,6 +2892,7 @@ private:
 				return i;
 			}
 		} else if (xmlStrEqual(definition->type(), BAD_CAST "graph")) {
+			pq_->set_unit_id(xmlCharStrdup("0")); // unit: dimensionless
 			phml::GraphReader<PQ, DatabaseDriver> graph_reader(pq_.get(), text_reader_, dd_.get());
 			return graph_reader.Read();
 		}
@@ -3757,6 +3759,11 @@ int main(int argc, char *argv[])
 	{
 		boost::scoped_ptr<CapsulatedByValidator> validator(new CapsulatedByValidator(db));
 		if (!validator->Validate()) return EXIT_FAILURE;
+	}
+
+	{
+		boost::scoped_ptr<phml::GraphIvRewriter> rewriter(new phml::GraphIvRewriter(db));
+		if (!rewriter->Rewrite()) return EXIT_FAILURE;
 	}
 
 	{
