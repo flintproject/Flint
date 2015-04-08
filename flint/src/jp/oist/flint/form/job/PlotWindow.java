@@ -1314,7 +1314,7 @@ public class PlotWindow extends javax.swing.JFrame
 
     private void btn_OutputFilePathActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_OutputFilePathActionPerformed
         String homePath = System.getProperty("user.home");
-        String fileName = Utility.getFileName(mParent.getModelPath());
+        String fileName = Utility.getFileName(mParent.getModelCanonicalPath());
 
         String extension = "";
         GnuPlotter.TerminalType terminalType = GnuPlotter.TerminalType.valueOf(getTerminalType());

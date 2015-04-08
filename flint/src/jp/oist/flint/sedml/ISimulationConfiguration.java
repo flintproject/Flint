@@ -6,7 +6,8 @@ import java.util.ArrayList;
 
 public interface ISimulationConfiguration {
 
-    String getModelPath();
+    /* should return a path obtained by File#getCanonicalPath() */
+    String getModelCanonicalPath();
 
     Ipc.IntegrationMethod getIntegrationMethod();
 

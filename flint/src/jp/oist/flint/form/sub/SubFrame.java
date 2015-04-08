@@ -437,7 +437,7 @@ public class SubFrame extends JInternalFrame
     }
 
     @Override
-    public String getModelPath() {
+    public String getModelCanonicalPath() {
         return mOriginalPath;
     }
 

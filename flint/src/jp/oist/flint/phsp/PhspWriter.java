@@ -58,7 +58,7 @@ public class PhspWriter {
             for (Model model : models) {
                 String format = model.getModelFormat().name().toLowerCase();
                 File modelFile = model.getModelFile();
-                String path = escape(modelFile.getPath());
+                String path = escape(modelFile.getCanonicalPath());
 
                 writeLine(String.format("<model format='%s' iref='%s'>", format, path), sw, writer);
                 sw += SHIFT_WIDTH;

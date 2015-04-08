@@ -116,7 +116,7 @@ public class PhspProgressMonitor implements FileListener, Runnable {
 
         ISimulationConfiguration config = mSimulationConfiguration.getConfiguration(taskId-1);
         Map<String, Number> combination = job.getCombination();
-        String modelPath = config.getModelPath();
+        String modelPath = config.getModelCanonicalPath();
 
         final PhspProgressMonitor.Event evt = new PhspProgressMonitor.Event(
         PhspProgressMonitor.this, "progress", null, progress);

@@ -65,7 +65,7 @@ public class SedmlWriter {
             ISimulationConfiguration config = configs.getConfiguration(i);
             writer.append(String.format("    <model id='model%s' name='Model %s' language='urn:sedml:language:phml' source='", i, i));
             if (mFull) {
-                writer.append(escape(config.getModelPath()));
+                writer.append(escape(config.getModelCanonicalPath()));
             } else {
                 writer.append("%%MODEL_PATH%%");
             }
@@ -135,7 +135,7 @@ public class SedmlWriter {
         writer.append("  <listOfModels>\n");
         writer.append("    <model id='model0' name='Model 0' language='urn:sedml:language:phml' source='");
         if (mFull) {
-            writer.append(escape(config.getModelPath()));
+            writer.append(escape(config.getModelCanonicalPath()));
         } else {
             writer.append("%%MODEL_PATH%%");
         }

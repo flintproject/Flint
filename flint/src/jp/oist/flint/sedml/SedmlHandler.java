@@ -28,7 +28,7 @@ public class SedmlHandler extends DefaultHandler implements ISimulationConfigura
     // implements ISimulationConfiguration
 
     @Override
-    public String getModelPath() {
+    public String getModelCanonicalPath() {
         return ""; // FIXME
     }
 

@@ -193,17 +193,17 @@ public class SedmlHandler2 extends SedmlHandler
         return mConfigurationList.get(getIndexBy(new Equalator<String>(modelPath) {
             @Override
             public boolean equal(SimulationConfiguration other) {
-                return getTarget().equals(other.getModelPath());
+                return getTarget().equals(other.getModelCanonicalPath());
             }
         }));
     }
 
     @Override
-    public String getModelPath() {
+    public String getModelCanonicalPath() {
         int lastIndex = mConfigurationList.size() -1;
         if (lastIndex < 0)
             return null;
-        return mConfigurationList.get(lastIndex).getModelPath();
+        return mConfigurationList.get(lastIndex).getModelCanonicalPath();
     }
 
     @Override
@@ -245,7 +245,7 @@ public class SedmlHandler2 extends SedmlHandler
         public SimulationConfiguration () { }
 
         @Override
-        public String getModelPath() {
+        public String getModelCanonicalPath() {
             return mModelPath;
         }
 

@@ -19,7 +19,7 @@ public class SedmlWriterTest {
     class SimulationConfiguration implements ISimulationConfiguration {
 
         @Override
-        public String getModelPath() {
+        public String getModelCanonicalPath() {
             return "/tmp/foo.phml";
         }
 
