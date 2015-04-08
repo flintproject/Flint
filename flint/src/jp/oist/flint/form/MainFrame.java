@@ -752,9 +752,7 @@ public class MainFrame extends javax.swing.JFrame
     }
 
     @Override
-    public void notifySubJFrameAdded(IModelContainer frame) {
-        SubFrame subFrame = (SubFrame)frame;
-
+    public void notifySubJFrameAdded(SubFrame subFrame) {
         final File file = subFrame.getModelFile();
         subFrame.setDefaultCloseOperation(JInternalFrame.DO_NOTHING_ON_CLOSE);
         subFrame.addInternalFrameListener(new InternalFrameAdapter () {

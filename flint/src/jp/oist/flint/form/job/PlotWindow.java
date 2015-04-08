@@ -21,9 +21,9 @@ import jp.oist.flint.control.FileChooser;
 import jp.oist.flint.control.VariableList;
 import jp.oist.flint.dao.TaskDao;
 import jp.oist.flint.executor.ISimulationTrackProcessor;
-import jp.oist.flint.form.IModelContainer;
 import jp.oist.flint.form.sub.IChartController;
 import jp.oist.flint.form.sub.IChartSetting;
+import jp.oist.flint.form.sub.SubFrame;
 import jp.oist.flint.plot.gnuplot.GnuPlotter;
 import jp.oist.flint.plotter.IPlotter;
 import jp.oist.flint.plotter.PlotterLoadException;
@@ -58,9 +58,9 @@ public class PlotWindow extends javax.swing.JFrame
     private final File mIsdFile;
     private final File mCsvFile;
 
-    private final IModelContainer mParent;
+    private final SubFrame mParent;
 
-    public PlotWindow (IModelContainer container, String title, TaskDao taskDao, int jobId) 
+    public PlotWindow(SubFrame container, String title, TaskDao taskDao, int jobId)
             throws IOException {
         super(title);
 

@@ -79,7 +79,7 @@ public class ProgressPane extends PeripheralPane
         model.addElement(row);
     }
 
-    public ProgressPane.ListCell createListCell (IModelContainer container) {
+    public ProgressPane.ListCell createListCell(SubFrame container) {
         String title = container.getModelFile().getName();
         ProgressPane.ListCell retval =  new ListCell(mProgressList, title);
         retval.setToolTipText(container.getModelFile().getPath());
@@ -143,7 +143,7 @@ public class ProgressPane extends PeripheralPane
 
         for (int i=0; i<size; i++) {
             ProgressPane.ListCell cell = (ProgressPane.ListCell)model.getElementAt(i);
-            IModelContainer container = (IModelContainer)cell.getValue("container");
+            SubFrame container = (SubFrame)cell.getValue("container");
             if (container.getModelFile().equals(modelFile))
                 return cell;
         }

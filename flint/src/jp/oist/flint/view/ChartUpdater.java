@@ -3,20 +3,20 @@ package jp.oist.flint.view;
 
 import jp.oist.flint.form.sub.IChartController;
 import jp.oist.flint.form.sub.IChartSetting;
+import jp.oist.flint.form.sub.SubFrame;
 import jp.oist.flint.util.ListItemModel;
 import java.util.concurrent.ExecutionException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.SwingWorker;
-import jp.oist.flint.form.IModelContainer;
 
 public class ChartUpdater extends SwingWorker<ChartConfig, Void> {
 
     private final IChartController mController;
 
-    private final IModelContainer mModelContainer;
+    private final SubFrame mModelContainer;
 
-    public ChartUpdater(IModelContainer container, IChartController controller) {
+    public ChartUpdater(SubFrame container, IChartController controller) {
         mController = controller;
         mModelContainer = container;
     }

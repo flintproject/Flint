@@ -2,7 +2,6 @@
 package jp.oist.flint.executor;
 
 import jp.oist.flint.form.IMainFrame;
-import jp.oist.flint.form.IModelContainer;
 import jp.oist.flint.form.MainFrame;
 import java.io.File;
 import java.util.concurrent.Callable;
@@ -16,10 +15,10 @@ import jp.oist.flint.form.sub.SubFrame;
 public class ModelReloader extends SwingWorker<Boolean, Void> {
 
     private final IMainFrame mParentFrame;
-    private final IModelContainer mTargetFrame;
+    private final SubFrame mTargetFrame;
     private final File mModelFile;
 
-    public ModelReloader(IMainFrame parentFrame, IModelContainer targetFrame) {
+    public ModelReloader(IMainFrame parentFrame, SubFrame targetFrame) {
         mParentFrame = parentFrame;
         mTargetFrame = targetFrame;
         mModelFile = targetFrame.getModelFile();
@@ -57,7 +56,7 @@ public class ModelReloader extends SwingWorker<Boolean, Void> {
             return;
         }
         if (r.booleanValue()) {
-            ((MainFrame)mParentFrame).closeModel((SubFrame)mTargetFrame);
+            ((MainFrame)mParentFrame).closeModel(mTargetFrame);
             mParentFrame.openModel(mModelFile);
         }
     }

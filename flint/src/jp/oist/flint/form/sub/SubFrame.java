@@ -41,7 +41,6 @@ import jp.oist.flint.filesystem.IModelFileClient;
 import jp.oist.flint.form.IFrame;
 import jp.oist.flint.form.job.IProgressManager;
 import jp.oist.flint.form.IMainFrame;
-import jp.oist.flint.form.IModelContainer;
 import jp.oist.flint.form.MainFrame;
 import jp.oist.flint.form.log.LogWindow;
 import jp.oist.flint.form.ProgressPane;
@@ -53,7 +52,7 @@ import jp.oist.flint.sedml.ISimulationConfiguration;
 import jp.physiome.Ipc;
 
 public class SubFrame extends JInternalFrame
-    implements ActionListener, IModelContainer, IModelFileClient,
+    implements ActionListener, IModelFileClient,
         ISimulationConfiguration, IFrame,
         PhspSimulator.Listener {
 
@@ -434,7 +433,6 @@ public class SubFrame extends JInternalFrame
         return model;
     }
 
-    @Override
     public File getModelFile() {
         return mOriginalFile;
     }
@@ -444,12 +442,10 @@ public class SubFrame extends JInternalFrame
         return mOriginalPath;
     }
 
-    @Override
     public Container getContainer() {
         return this;
     }
 
-    @Override
     public void notifyK3Enabled() {
         if (mK3Loader.isEnabled()) {
         } else {
@@ -463,22 +459,18 @@ public class SubFrame extends JInternalFrame
     }
 
     //TODO
-    @Override
     public boolean outputWindowIsSelected() {
         return false;
     }
 
-    @Override
     public boolean tryLock() {
         return mLock.tryLock();
     }
 
-    @Override
     public void unlock() {
         mLock.unlock();
     }
 
-    @Override
     public String getRelativeModelPath() {
         return mRelativePath;
     }
