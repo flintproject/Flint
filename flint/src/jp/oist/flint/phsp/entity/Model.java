@@ -107,10 +107,6 @@ public class Model {
         return mModelFile;
     }
 
-    public String getModelPath () {
-        return mModelFile.getPath();
-    }
-
     public String getOriginalModelPath () {
         return mOriginalModelPath;
     }
