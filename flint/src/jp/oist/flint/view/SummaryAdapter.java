@@ -6,22 +6,17 @@ import jp.oist.flint.form.sub.IChartController;
 import jp.oist.flint.form.sub.IChartSetting;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import jp.oist.flint.form.IModelContainer;
 import jp.oist.flint.util.ListItemModel;
 
 public class SummaryAdapter extends MouseAdapter {
 
     private final IChartController mController;
 
-    private final IModelContainer mModelContainer;
-
     private final VariableList mVariableList;
 
-    public SummaryAdapter(IChartController controller, 
-                            IModelContainer container, 
-                            VariableList variableList) {
+    public SummaryAdapter(IChartController controller,
+                          VariableList variableList) {
         mController = controller;
-        mModelContainer = container;
         mVariableList = variableList;
     }
 

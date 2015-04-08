@@ -366,22 +366,22 @@ public class PlotWindow extends javax.swing.JFrame
         ListItemTransferHandler h = new ListItemTransferHandler();
 
         mVariables = Utility.makeVariableList("mVariables", variableTrack, h);
-        mVariables.addMouseListener(new SummaryAdapter(this, mParent, mVariables));
+        mVariables.addMouseListener(new SummaryAdapter(this, mVariables));
         mVariables.getModel().addListDataListener(new ChartListener(this));
         js_VariableList.getViewport().setView(mVariables);
 
         mYVariables = Utility.makeVariableList("mYVariables", yTrack, h);
-        mYVariables.addMouseListener(new SummaryAdapter(this, mParent, mYVariables));
+        mYVariables.addMouseListener(new SummaryAdapter(this, mYVariables));
         mYVariables.getModel().addListDataListener(new ChartListener(this));
         js_VariableYList.getViewport().setView(mYVariables);
 
         mY2Variables = Utility.makeVariableList("mY2Variables", y2Track, h);
-        mY2Variables.addMouseListener(new SummaryAdapter(this, mParent, mY2Variables));
+        mY2Variables.addMouseListener(new SummaryAdapter(this, mY2Variables));
         mY2Variables.getModel().addListDataListener(new ChartListener(this));
         js_VariableY2List.getViewport().setView(mY2Variables);
 
         mXVariables = Utility.makeVariableList("mXVariables", xTrack, h, false);
-        mXVariables.addMouseListener(new SummaryAdapter(this, mParent, mXVariables));
+        mXVariables.addMouseListener(new SummaryAdapter(this, mXVariables));
         mXVariables.getModel().addListDataListener(new ChartListener(this));
         js_VariableXList.getViewport().setView(mXVariables);
 
