@@ -66,7 +66,7 @@ TESTS = $(CALL_TESTS) $(REGRESSION_TESTS)
 
 $(TESTS):
 	echo '#!/bin/sh' > $@
-	echo '$(MAKE) -f $(@:.sh=.mk) clean all check' >> $@
+	echo '$(MAKE) -f $(@:.sh=.mk) -s clean all check' >> $@
 	chmod +x $@
 
 $(CALL1_TESTS:.sh=.i.txt): $(DATADIR)/test-call1.in

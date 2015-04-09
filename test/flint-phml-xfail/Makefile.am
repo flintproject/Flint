@@ -12,7 +12,7 @@ TESTS = \
 .mk.sh:
 	echo '#!/bin/sh' > $@
 	echo 'export PATH="@abs_top_builddir@/src:$$PATH"' >> $@
-	echo '$(MAKE) -f $< clean all check' >> $@
+	echo '$(MAKE) -f $< -s clean all check' >> $@
 	chmod +x $@
 
 $(TESTS:.sh=.mk): $(DATADIR)/test.mk.in

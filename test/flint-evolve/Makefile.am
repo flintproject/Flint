@@ -49,7 +49,7 @@ TESTS = \
 $(TESTS):
 	echo '#!/bin/sh' > $@
 	echo 'export PATH="@abs_top_builddir@/src:$$PATH"' >> $@
-	echo '$(MAKE) -f ../common/runtime/$(@:.sh=.mk) EXECUTABLE=$(EXECUTABLE) clean all check' >> $@
+	echo '$(MAKE) -f ../common/runtime/$(@:.sh=.mk) -s EXECUTABLE=$(EXECUTABLE) clean all check' >> $@
 	chmod +x $@
 
 MOSTLYCLEANFILES = $(TESTS) test-* bc-*

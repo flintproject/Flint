@@ -6,7 +6,7 @@ TESTS = random.sh
 
 .mk.sh:
 	echo '#!/bin/sh' > $@
-	echo '$(MAKE) -f $< clean all check' >> $@
+	echo '$(MAKE) -f $< -s clean all check' >> $@
 	chmod +x $@
 
 random.mk: @top_srcdir@/test/isdhead/random.mk.in

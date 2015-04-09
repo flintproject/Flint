@@ -4,7 +4,7 @@ TESTS = seed.sh
 
 .mk.sh:
 	echo '#!/bin/sh' > $@
-	echo '$(MAKE) -f $< clean all check' >> $@
+	echo '$(MAKE) -f $< -s clean all check' >> $@
 	chmod +x $@
 
 seed.mk: @top_srcdir@/test/isdrand/seed.mk.in

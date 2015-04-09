@@ -6,7 +6,7 @@ TESTS = roundtrip.sh
 
 .mk.sh:
 	echo '#!/bin/sh' > $@
-	echo '$(MAKE) -f $< clean all check' >> $@
+	echo '$(MAKE) -f $< -s clean all check' >> $@
 	chmod +x $@
 
 roundtrip.mk: @top_srcdir@/test/isdbswap/roundtrip.mk.in
