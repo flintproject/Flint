@@ -1,0 +1,1 @@
+0df0882e-cbb7-11e4-8be8-b31a3f8cd0c1 y (eq (diff (bvar %time) %y) (piecewise (piece -1 (eq %x 1)) (piece -2 (eq %x 2)) (piece -3 (eq %x 3)) (otherwise 0)))

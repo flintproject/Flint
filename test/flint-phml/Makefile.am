@@ -44,6 +44,7 @@ $(TESTS:.sh=.mk): $(DATADIR)/test.mk.in
 		-DOUTPUT=$(@:.mk=.output) \
 		-DMODULES=$(DATADIR)/$(@:.mk=.modules) \
 		-DPQS=$(DATADIR)/$(@:.mk=.pqs) \
+		-DIMPLS=$(DATADIR)/$(@:.mk=.impls) \
 		-DIVS=$(DATADIR)/$(@:.mk=.ivs) \
 		-DBRIDGES=$(DATADIR)/$(@:.mk=.bridges) \
 		-DIPORTS=$(DATADIR)/$(@:.mk=.iports) \

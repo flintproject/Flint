@@ -24,6 +24,7 @@
 #include "modelpath.h"
 #include "phml/definition_dumper.h"
 #include "phml/graph-iv-rewriter.h"
+#include "phml/graph-math-rewriter.h"
 #include "phml/graph_reader.h"
 #include "reach.h"
 #include "span.h"
@@ -3764,6 +3765,12 @@ int main(int argc, char *argv[])
 	{
 		boost::scoped_ptr<phml::GraphIvRewriter> rewriter(new phml::GraphIvRewriter(db));
 		if (!rewriter->Rewrite()) return EXIT_FAILURE;
+	}
+	{
+		static const char kImplSelectQuery[] = "SELECT rowid, pq_rowid, math FROM impls";
+		static const char kImplUpdateQuery[] = "UPDATE impls SET math = ? WHERE rowid = ?";
+		phml::GraphMathRewriter rewriter(db, kImplSelectQuery, kImplUpdateQuery);
+		if (!rewriter.Rewrite()) return EXIT_FAILURE;
 	}
 
 	{

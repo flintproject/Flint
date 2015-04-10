@@ -1,6 +1,7 @@
 SUBCHECKS = \
 	check-modules \
 	check-pqs \
+	check-impls \
 	check-ivs \
 	check-bridges \
 	check-iports \
@@ -29,6 +30,9 @@ check-modules: OUTPUT
 
 check-pqs: OUTPUT
 	test ! -f PQS || (sqlite3 -separator ' ' $< 'SELECT m.module_id, p.type, p.pq_id, p.name FROM pqs AS p LEFT JOIN modules AS m ON p.module_rowid = m.rowid' | diff -u PQS -)
+
+check-impls: OUTPUT
+	test ! -f IMPLS || (sqlite3 -separator ' ' $< 'SELECT m.module_id, p.name||i.math FROM impls AS i LEFT JOIN pqs AS p ON i.pq_rowid = p.rowid LEFT JOIN modules AS m ON p.module_rowid = m.rowid' | diff -u IMPLS -)
 
 check-ivs: OUTPUT
 	test ! -f IVS || (sqlite3 -separator ' ' $< 'SELECT m.module_id, p.name||i.math FROM ivs AS i LEFT JOIN pqs AS p ON i.pq_rowid = p.rowid LEFT JOIN modules AS m ON p.module_rowid = m.rowid' | diff -u IVS -)

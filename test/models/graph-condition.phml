@@ -147,6 +147,51 @@
             </is:definition>
           </is:implementation>
         </is:physical-quantity>
+        <is:physical-quantity physical-quantity-id="3" type="state">
+          <is:name>z</is:name>
+          <is:dimension type="scalar" />
+          <is:value-type-set>
+            <is:value-type unit-id="0" precision="double" />
+          </is:value-type-set>
+          <is:initial-value>
+            <is:definition type="ae" format="mathml">
+              <m:math><m:apply><m:eq/><m:ci>z</m:ci><m:cn>0</m:cn></m:apply></m:math>
+            </is:definition>
+          </is:initial-value>
+          <is:implementation>
+            <is:definition type="ode" format="mathml">
+              <m:math xmlns:m="http://www.w3.org/1998/Math/MathML">
+                <m:apply>
+                  <m:eq />
+                  <m:apply>
+                    <m:diff />
+                    <m:bvar>
+                      <m:ci>time</m:ci>
+                    </m:bvar>
+                    <m:ci>z</m:ci>
+                  </m:apply>
+                  <m:piecewise>
+                    <m:piece>
+                      <m:cn>-1</m:cn>
+                      <m:apply><m:csymbol>is</m:csymbol><m:ci>y</m:ci><m:ci>a</m:ci></m:apply>
+                    </m:piece>
+                    <m:piece>
+                      <m:cn>-2</m:cn>
+                      <m:apply><m:csymbol>is</m:csymbol><m:ci>y</m:ci><m:ci>b</m:ci></m:apply>
+                    </m:piece>
+                    <m:piece>
+                      <m:cn>-3</m:cn>
+                      <m:apply><m:csymbol>is</m:csymbol><m:ci>y</m:ci><m:ci>c</m:ci></m:apply>
+                    </m:piece>
+                    <m:otherwise>
+                      <m:cn>0</m:cn>
+                    </m:otherwise>
+                  </m:piecewise>>
+                </m:apply>
+              </m:math>
+            </is:definition>
+          </is:implementation>
+        </is:physical-quantity>
       </is:physical-quantity-set>
     </is:module>
   </is:module-set>
