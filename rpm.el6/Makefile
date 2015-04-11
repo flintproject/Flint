@@ -7,7 +7,14 @@ ARCH := $(shell uname -m)
 VERSION = 1.3.0
 RELEASE = 1
 
-DEPS := boost clibsedml libsbml libzip protobuf soslib sundials
+DEPS := \
+    boost \
+    clibsedml \
+    libsbml \
+    libzip \
+    protobuf \
+    soslib \
+    sundials
 
 boost_VERSION = $(BOOST_VERSION)
 clibsedml_VERSION = 0.1.0

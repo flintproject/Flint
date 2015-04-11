@@ -6,10 +6,36 @@ PREFIX = $(abspath usr)
 
 PKG_CONFIG_PATH = $(PREFIX)/lib/pkgconfig
 
-JARS := GarudaBackend commons-cli-1.2 commons-logging-1.1.3 commons-vfs2-2.0 dom4j-1.6.1 garuda-csr jcommon-1.0.22 jfreechart-1.0.18 jsonic-1.2.10 log4j-1.2.16 protobuf-java-$(PROTOBUF_VERSION) sqlite-jdbc-3.8.6
-BOOST_DYLIBS := filesystem program_options system
-DYLIBS := libODES.0 libsbml.$(LIBSBML_VERSION) libsedml.0 libxml2.2 libprotobuf.9 libzip.2
-SUNDIALS_DYLIBS := cvode.0 cvodes.1 ida.1 kinsol.0 nvecserial.0
+JARS := \
+    GarudaBackend \
+    commons-cli-1.2 \
+    commons-logging-1.1.3 \
+    commons-vfs2-2.0 \
+    dom4j-1.6.1 \
+    garuda-csr \
+    jcommon-1.0.22 \
+    jfreechart-1.0.18 \
+    jsonic-1.2.10 \
+    log4j-1.2.16 \
+    protobuf-java-$(PROTOBUF_VERSION) \
+    sqlite-jdbc-3.8.6
+BOOST_DYLIBS := \
+    filesystem \
+    program_options \
+    system
+DYLIBS := \
+    libODES.0 \
+    libsbml.$(LIBSBML_VERSION) \
+    libsedml.0 \
+    libxml2.2 \
+    libprotobuf.9 \
+    libzip.2
+SUNDIALS_DYLIBS := \
+    cvode.0 \
+    cvodes.1 \
+    ida.1 \
+    kinsol.0 \
+    nvecserial.0
 PROGRAMS := \
     csv2isd \
     flint-assign \

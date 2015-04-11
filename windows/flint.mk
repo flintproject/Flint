@@ -1,5 +1,10 @@
 # -*- Mode: makefile-gmake; tab-width: 4; indent-tabs-mode: t -*-
-MSI_DEPENDENCY = mingwm10.dll flint.jar $(foreach j,$(JARS),$(j).jar) $(foreach d,$(BIN_DLLS) $(BOOST_DLLS) $(EXT_DLLS),lib/$(d).dll) $(foreach e,$(EXES) $(EXT_EXES),$(e).exe)
+MSI_DEPENDENCY = \
+    mingwm10.dll \
+    flint.jar \
+    $(foreach j,$(JARS),$(j).jar) \
+    $(foreach d,$(BIN_DLLS) $(BOOST_DLLS) $(EXT_DLLS),lib/$(d).dll) \
+    $(foreach e,$(EXES) $(EXT_EXES),$(e).exe)
 
 .PHONY: all clean install uninstall timestamp
 
