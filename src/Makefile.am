@@ -282,6 +282,7 @@ flint_phml_LDFLAGS = $(BOOST_FILESYSTEM_LDFLAGS) $(BOOST_SYSTEM_LDFLAGS)
 flint_phml_LDADD = libflintxx.a libflint.a libsqlite3.a $(BOOST_FILESYSTEM_LIBS) $(BOOST_SYSTEM_LIBS) $(XML_LIBS)
 flint_phml_SOURCES = \
     branch.cc \
+    phml/graph-iv-rewriter.cc \
     phml/graph-math-rewriter.cc \
     reach.cc \
     span.cc \
