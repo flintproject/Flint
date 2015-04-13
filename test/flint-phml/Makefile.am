@@ -12,6 +12,7 @@ TESTS = \
 	exponential.isml.sh \
 	gamma.isml.sh \
 	graph-condition.phml.sh \
+	graph-instance.phml.sh \
 	graph-probability.phml.sh \
 	hepatocyte_external.isml.sh \
 	hepatocyte_internal.isml.sh \
@@ -45,6 +46,7 @@ $(TESTS:.sh=.mk): $(DATADIR)/test.mk.in
 		-DMODULES=$(DATADIR)/$(@:.mk=.modules) \
 		-DPQS=$(DATADIR)/$(@:.mk=.pqs) \
 		-DIMPLS=$(DATADIR)/$(@:.mk=.impls) \
+		-DEXTRAS=$(DATADIR)/$(@:.mk=.extras) \
 		-DIVS=$(DATADIR)/$(@:.mk=.ivs) \
 		-DBRIDGES=$(DATADIR)/$(@:.mk=.bridges) \
 		-DIPORTS=$(DATADIR)/$(@:.mk=.iports) \

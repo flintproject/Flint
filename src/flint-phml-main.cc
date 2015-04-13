@@ -3785,6 +3785,23 @@ int main(int argc, char *argv[])
 		phml::GraphMathRewriter rewriter(db, kImplSelectQuery, kImplUpdateQuery);
 		if (!rewriter.Rewrite()) return EXIT_FAILURE;
 	}
+	{
+		static const char kExtraSelectQuery[] = "SELECT rowid, pq_rowid, math FROM extras";
+		static const char kExtraUpdateQuery[] = "UPDATE extras SET math = ? WHERE rowid = ?";
+		phml::GraphMathRewriter rewriter(db, kExtraSelectQuery, kExtraUpdateQuery);
+		if (!rewriter.Rewrite()) return EXIT_FAILURE;
+	}
+	{
+		static const char kTpqSelectQuery[] = \
+			"SELECT tpqs.rowid, pqs.rowid, tpqs.math FROM tpqs"
+			" LEFT JOIN tms ON tpqs.tm_rowid = tms.rowid"
+			" LEFT JOIN modules ON tms.module_id = modules.module_id"
+			" LEFT JOIN pqs ON modules.rowid = pqs.module_rowid"
+			" WHERE tpqs.pq_id = pqs.pq_id";
+		static const char kTpqUpdateQuery[] = "UPDATE tpqs SET math = ? WHERE rowid = ?";
+		phml::GraphMathRewriter rewriter(db, kTpqSelectQuery, kTpqUpdateQuery);
+		if (!rewriter.Rewrite()) return EXIT_FAILURE;
+	}
 
 	{
 		boost::scoped_ptr<TreeWriter> tw(new TreeWriter(db));

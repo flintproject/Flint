@@ -1,0 +1,233 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<is:insilico-model  xmlns:m="http://www.w3.org/1998/Math/MathML" xmlns:is="http://www.physiome.jp/ns/insilicoml" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:pd="http://www.physiodesigner.org/2012/ns/physiodesigner/1.0" version="1.0" xsi:schemalocation="http://www.physiome.jp/ns/insilicoml-1.0 insilicoml.xsd">
+<is:unit-set>
+<is:unit unit-id="0">
+<is:name>dimensionless</is:name>
+</is:unit>
+<is:unit unit-id="1">
+<is:name>metre</is:name>
+</is:unit>
+<is:unit unit-id="2">
+<is:name>kilogram</is:name>
+</is:unit>
+<is:unit unit-id="3">
+<is:name>second</is:name>
+</is:unit>
+<is:unit unit-id="4">
+<is:name>ampere</is:name>
+</is:unit>
+<is:unit unit-id="5">
+<is:name>kelvin</is:name>
+</is:unit>
+<is:unit unit-id="6">
+<is:name>mole</is:name>
+</is:unit>
+<is:unit unit-id="7">
+<is:name>candela</is:name>
+</is:unit>
+<is:unit unit-id="8">
+<is:name>radian</is:name>
+</is:unit>
+<is:unit unit-id="9">
+<is:name>meter</is:name>
+<is:element unit-id="1"/>
+</is:unit>
+<is:unit unit-id="10">
+<is:name>gram</is:name>
+<is:element unit-id="2" prefix="milli"/>
+</is:unit>
+<is:unit unit-id="11">
+<is:name>degree</is:name>
+</is:unit>
+<is:unit unit-id="12">
+<is:name>millisecond</is:name>
+<is:element unit-id="3" exponent="1" prefix="milli"/>
+</is:unit>
+<is:unit unit-id="13">
+<is:name>volt</is:name>
+<is:element unit-id="1" exponent="2"/>
+<is:element unit-id="2" exponent="1"/>
+<is:element unit-id="3" exponent="-3"/>
+<is:element unit-id="4" exponent="-1"/>
+</is:unit>
+<is:unit unit-id="14">
+<is:name>siemens</is:name>
+<is:element unit-id="1" exponent="-2"/>
+<is:element unit-id="2" exponent="-1"/>
+<is:element unit-id="3" exponent="3"/>
+<is:element unit-id="4" exponent="2"/>
+</is:unit>
+<is:unit unit-id="15">
+<is:name>farad</is:name>
+<is:element unit-id="1" exponent="-2"/>
+<is:element unit-id="2" exponent="-1"/>
+<is:element unit-id="3" exponent="4"/>
+<is:element unit-id="4" exponent="2"/>
+</is:unit>
+</is:unit-set>
+
+<is:module-set>
+
+<is:module module-id="4314d24f-375c-4309-8211-f869ab0a27ad" type="functional-unit">
+<is:property>
+<is:name>X</is:name>
+<is:capsulation state="true">
+<is:capsulated-by module-id="30210f46-5df8-4bb7-854a-b76158ddb660"/>
+</is:capsulation>
+<is:template state="true"/>
+</is:property>
+<is:port-set/>
+
+<is:physical-quantity-set>
+<is:physical-quantity physical-quantity-id="1" type="state">
+<is:name>x</is:name>
+<is:dimension type="scalar"/>
+<is:value-type-set>
+<is:value-type precision="double" unit-id="0"/>
+</is:value-type-set>
+<is:initial-value>
+<is:definition type="ae" format="mathml">
+  <m:math><m:apply><m:csymbol>is</m:csymbol><m:ci>x</m:ci><m:ci>a</m:ci></m:apply></m:math>
+</is:definition>
+</is:initial-value>
+<is:implementation>
+  <is:definition type="graph">
+    <is:graph>
+      <is:node-set>
+        <is:node node-id="1">
+          <is:name>a</is:name>
+          <is:description>initial node</is:description>
+        </is:node>
+        <is:node node-id="2">
+          <is:name>b</is:name>
+          <is:description></is:description>
+        </is:node>
+        <is:node node-id="3">
+          <is:name>c</is:name>
+          <is:description/>
+        </is:node>
+        <is:node node-id="4">
+          <is:name>d</is:name>
+        </is:node>
+      </is:node-set>
+      <is:arc-set>
+        <is:arc arc-id="1">
+          <is:tail node-id="1"/>
+          <is:head node-id="2"/>
+          <is:transition type="probability">
+            <m:math><m:cn>0.1</m:cn></m:math>
+          </is:transition>
+        </is:arc>
+        <is:arc arc-id="2">
+          <is:tail node-id="2"/>
+          <is:head node-id="3"/>
+          <is:transition type="probability">
+            <m:math><m:cn>0.01</m:cn></m:math>
+          </is:transition>
+        </is:arc>
+        <is:arc arc-id="3">
+          <is:tail node-id="3"/>
+          <is:head node-id="4"/>
+          <is:transition type="probability">
+            <m:math><m:cn>0.001</m:cn></m:math>
+          </is:transition>
+        </is:arc>
+      </is:arc-set>
+    </is:graph>
+  </is:definition>
+  <is:extra-implementation order="after" type="instantaneous">
+    <is:definition type="conditional">
+      <is:case-set case-set-id="1">
+        <is:case substructure-id="1">
+          <is:condition format="mathml">
+            <m:math><m:apply><m:csymbol>is</m:csymbol><m:ci>x</m:ci><m:ci>d</m:ci></m:apply></m:math>
+          </is:condition>
+          <is:definition type="ae" format="mathml">
+            <m:math><m:apply><m:csymbol>is</m:csymbol><m:ci>x</m:ci><m:ci>a</m:ci></m:apply></m:math>
+          </is:definition>
+        </is:case>
+      </is:case-set>
+    </is:definition>
+  </is:extra-implementation>
+</is:implementation>
+<is:problem-condition-set/>
+<is:description/>
+</is:physical-quantity>
+</is:physical-quantity-set>
+<is:event-set/>
+</is:module>
+
+<is:module module-id="30210f46-5df8-4bb7-854a-b76158ddb660" type="capsule">
+<is:property>
+<is:name>C</is:name>
+<is:capsulation state="false"/>
+<is:template state="true"/>
+</is:property>
+<is:port-set/>
+</is:module>
+</is:module-set>
+
+<is:template-set>
+<is:template template-id="120737eb-7cb2-4451-bf53-0d0ef0c24c5a" ref-module-id="30210f46-5df8-4bb7-854a-b76158ddb660"/>
+</is:template-set>
+
+<is:edge-set>
+<is:edge edge-id="cd670cb7-f981-41fe-b881-f2bf5e014f58" type="capsular">
+<is:tail module-id="4314d24f-375c-4309-8211-f869ab0a27ad" port-id="0"/>
+<is:head module-id="30210f46-5df8-4bb7-854a-b76158ddb660" port-id="0"/>
+<is:operation>encapsulation</is:operation>
+<is:description/>
+</is:edge>
+</is:edge-set>
+
+<is:instance-set>
+<is:instance module-id="0877760c-0d50-493c-ba28-619796751da3" label="1">
+<is:instance-of template-id="120737eb-7cb2-4451-bf53-0d0ef0c24c5a"/>
+<is:target-module-set>
+<is:target-module module-id="4314d24f-375c-4309-8211-f869ab0a27ad">
+<is:target-physical-quantity-set>
+<is:target-physical-quantity physical-quantity-id="1">
+<is:implementation>
+<is:definition type="ae" format="mathml">
+  <m:math><m:apply><m:csymbol>is</m:csymbol><m:ci>x</m:ci><m:ci>b</m:ci></m:apply></m:math>
+</is:definition>
+</is:implementation>
+</is:target-physical-quantity>
+</is:target-physical-quantity-set>
+</is:target-module>
+</is:target-module-set>
+</is:instance>
+<is:instance module-id="a507d1fe-d5c5-40cb-8561-bcfd04200acf" label="2">
+<is:instance-of template-id="120737eb-7cb2-4451-bf53-0d0ef0c24c5a"/>
+<is:target-module-set>
+<is:target-module module-id="4314d24f-375c-4309-8211-f869ab0a27ad">
+<is:target-physical-quantity-set>
+<is:target-physical-quantity physical-quantity-id="1">
+<is:implementation>
+<is:definition type="ae" format="mathml">
+  <m:math><m:apply><m:csymbol>is</m:csymbol><m:ci>x</m:ci><m:ci>c</m:ci></m:apply></m:math>
+</is:definition>
+</is:implementation>
+</is:target-physical-quantity>
+</is:target-physical-quantity-set>
+</is:target-module>
+</is:target-module-set>
+</is:instance>
+<is:instance module-id="8000040b-8cbf-4b19-a2fd-81e3129b32d7" label="3">
+<is:instance-of template-id="120737eb-7cb2-4451-bf53-0d0ef0c24c5a"/>
+<is:target-module-set>
+<is:target-module module-id="4314d24f-375c-4309-8211-f869ab0a27ad">
+<is:target-physical-quantity-set>
+<is:target-physical-quantity physical-quantity-id="1">
+<is:implementation>
+<is:definition type="ae" format="mathml">
+  <m:math><m:apply><m:csymbol>is</m:csymbol><m:ci>x</m:ci><m:ci>d</m:ci></m:apply></m:math>
+</is:definition>
+</is:implementation>
+</is:target-physical-quantity>
+</is:target-physical-quantity-set>
+</is:target-module>
+</is:target-module-set>
+</is:instance>
+</is:instance-set>
+</is:insilico-model>
