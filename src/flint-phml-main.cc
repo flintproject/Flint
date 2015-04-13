@@ -3682,6 +3682,42 @@ void CreateTablesOrDie(sqlite3 *db, const Schema *tables, size_t n)
 #define CREATE_TABLES_OR_DIE(db, tables) \
 	CreateTablesOrDie(db, tables, sizeof(tables)/sizeof(tables[0]))
 
+struct View {
+	const char *name;
+	const char *rest_of_query;
+};
+
+const View kViews[] = {
+	{"joins", "m.module_id AS module_id, i.module_id AS uuid, i.label AS label FROM instances AS i LEFT JOIN templates As t ON i.template_id = t.template_id LEFT JOIN modules AS m ON m.module_id = t.ref_module_id"},
+	{"spaces", "module_id, name FROM modules WHERE type = 'functional-unit'"},
+	{"names", "m.module_id, p.type, p.pq_id, p.name, u.name, p.max_delay FROM pqs AS p LEFT JOIN modules AS m ON p.module_rowid = m.rowid LEFT JOIN units AS u ON p.unit_id = u.unit_id"},
+	{"time_unit", "u.name FROM tds AS t JOIN units AS u ON t.unit_id = u.unit_id WHERE t.module_id IS NULL"}
+};
+
+void CreateViewsOrDie(sqlite3 *db, const View *views, size_t n)
+{
+	char buf[1024]; // long enough
+	char *em;
+	int e;
+
+	for (size_t i=0;i<n;i++) {
+		const View &view = views[i];
+		sprintf(buf, "CREATE VIEW IF NOT EXISTS %s AS SELECT %s",
+				view.name, view.rest_of_query);
+
+		e = sqlite3_exec(db, buf, NULL, NULL, &em);
+		if (e != SQLITE_OK) {
+			cerr << "failed to create view " << view.name
+				 << ": " << e
+				 << ": " << em << endl;
+			exit(EXIT_FAILURE);
+		}
+	}
+}
+
+#define CREATE_VIEWS_OR_DIE(db, views) \
+	CreateViewsOrDie(db, views, sizeof(views)/sizeof(views[0]))
+
 } // namespace
 
 int main(int argc, char *argv[])
@@ -3717,30 +3753,7 @@ int main(int argc, char *argv[])
 	CREATE_TABLES_OR_DIE(db, kSubsequentTables);
 
 	// views
-	e = sqlite3_exec(db, "CREATE VIEW IF NOT EXISTS joins AS SELECT m.module_id AS module_id, i.module_id AS uuid, i.label AS label FROM instances AS i LEFT JOIN templates As t ON i.template_id = t.template_id LEFT JOIN modules AS m ON m.module_id = t.ref_module_id",
-					 NULL, NULL, &em);
-	if (e != SQLITE_OK) {
-		fprintf(stderr, "failed to create view joins: %d\n", e);
-		return EXIT_FAILURE;
-	}
-	e = sqlite3_exec(db, "CREATE VIEW IF NOT EXISTS spaces AS SELECT module_id, name FROM modules WHERE type = 'functional-unit'",
-					 NULL, NULL, &em);
-	if (e != SQLITE_OK) {
-		fprintf(stderr, "failed to create view spaces: %d\n", e);
-		return EXIT_FAILURE;
-	}
-	e = sqlite3_exec(db, "CREATE VIEW IF NOT EXISTS names AS SELECT m.module_id, p.type, p.pq_id, p.name, u.name, p.max_delay FROM pqs AS p LEFT JOIN modules AS m ON p.module_rowid = m.rowid LEFT JOIN units AS u ON p.unit_id = u.unit_id",
-					 NULL, NULL, &em);
-	if (e != SQLITE_OK) {
-		fprintf(stderr, "failed to create view names: %d\n", e);
-		return EXIT_FAILURE;
-	}
-	e = sqlite3_exec(db, "CREATE VIEW IF NOT EXISTS time_unit AS SELECT u.name FROM tds AS t JOIN units AS u ON t.unit_id = u.unit_id WHERE t.module_id IS NULL",
-					 NULL, NULL, &em);
-	if (e != SQLITE_OK) {
-		fprintf(stderr, "failed to create view time_unit: %d\n", e);
-		return EXIT_FAILURE;
-	}
+	CREATE_VIEWS_OR_DIE(db, kViews);
 
 	LIBXML_TEST_VERSION
 	xmlInitParser();
