@@ -147,7 +147,7 @@ int main(int argc, char *argv[])
 		return (print_help == 1) ? EXIT_SUCCESS : EXIT_FAILURE;
 	}
 
-	boost::scoped_array<char> model_file(GetModelFilename(input_file.c_str()));
+	boost::scoped_array<char> model_file(GetGivenFilename(input_file.c_str()));
 
 	CheckPhz(model_file.get());
 

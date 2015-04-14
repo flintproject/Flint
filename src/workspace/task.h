@@ -10,10 +10,10 @@ namespace workspace {
 class Task {
 public:
 	/*
-	 * `model_file' should be a UTF-8 filename.
+	 * `given_file' should be a UTF-8 filename.
 	 */
-	explicit Task(const char *model_file, int task_id = 0)
-		: model_file_(model_file),
+	explicit Task(const char *given_file, int task_id = 0)
+		: given_file_(given_file),
 		  task_id_(task_id) {
 	}
 
@@ -24,11 +24,11 @@ public:
 		} else {
 			std::sprintf(db_file, "model");
 		}
-		return SaveModelFile(db_file, model_file_) > 0;
+		return SaveGivenFile(db_file, given_file_) > 0;
 	}
 
 private:
-	const char *model_file_;
+	const char *given_file_;
 	int task_id_;
 };
 

@@ -33,7 +33,7 @@ namespace {
 
 void Usage()
 {
-	cerr << "flint-phz INPUT OUTPUT TARGETDIR" << endl;
+	cerr << "flint-phz DB TARGETDIR" << endl;
 }
 
 } // namespace
@@ -47,12 +47,12 @@ int main(int argc, char *argv[])
 		}
 		return EXIT_FAILURE;
 	}
-	if (argc != 4) {
+	if (argc != 3) {
 		Usage();
 		return EXIT_FAILURE;
 	}
 
-	boost::scoped_array<char> filename(GetModelFilename(argv[1]));
+	boost::scoped_array<char> filename(GetGivenFilename(argv[1]));
 	int ze;
 	struct zip *zp = zip_open(filename.get(), 0, &ze);
 	if (!zp) {
@@ -77,7 +77,7 @@ int main(int argc, char *argv[])
 		return EXIT_FAILURE;
 	}
 
-	boost::filesystem::path tp(argv[3]);
+	boost::filesystem::path tp(argv[2]);
 
 	for (zip_int64_t i=0;i<ne;i++) {
 		const char *name = zip_get_name(zp, i, 0);
@@ -157,7 +157,7 @@ int main(int argc, char *argv[])
 			 << endl;
 		return EXIT_FAILURE;
 	}
-	if (!SaveModelFile(argv[2], mf.get())) return EXIT_FAILURE;
+	if (!SaveModelFile(argv[1], mf.get())) return EXIT_FAILURE;
 
 	return EXIT_SUCCESS;
 }

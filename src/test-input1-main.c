@@ -8,6 +8,6 @@
 int main(int argc, char *argv[])
 {
 	if (argc != 3) return EXIT_FAILURE;
-	if (!SaveModelFile(argv[1], argv[2])) return EXIT_FAILURE;
+	if (!SaveGivenFile(argv[1], argv[2])) return EXIT_FAILURE;
 	return EXIT_SUCCESS;
 }

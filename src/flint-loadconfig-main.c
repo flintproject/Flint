@@ -274,7 +274,8 @@ int main(int argc, char *argv[])
 		}
 	} else if (strncmp(type, "phz", 3) == 0) {
 		printf("modeldb: model\n");
-		printf("\tflint-phz $< $@ phz\n");
+		printf("\tflint-concat $< $@\n");
+		printf("\tflint-phz $@ phz\n");
 		printf("\tflint-phml $@\n");
 		printf("\n");
 		PrintRecipeForPhml();

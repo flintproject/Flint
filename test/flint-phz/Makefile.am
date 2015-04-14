@@ -2,7 +2,8 @@ DATADIR = @top_srcdir@/test/flint-phz
 MODELDIR = @top_srcdir@/test/models
 
 TESTS = \
-	damping_oscillation.sh
+	damping_oscillation.sh \
+	timeseries.sh
 
 .mk.sh:
 	echo '#!/bin/sh' > $@

@@ -11,10 +11,14 @@
 #include "database.h"
 #include "utf8path.h"
 
-char *GetModelFilename(const char *input)
+namespace {
+
+typedef int (*FindFunction)(const char *, char *);
+
+char *GetInputFilename(const char *input, FindFunction f)
 {
 	boost::scoped_array<char> utf8(new char[1024]); // FIXME
-	if (!FindModelFile(input, utf8.get())) {
+	if (!f(input, utf8.get())) {
 		std::exit(EXIT_FAILURE);
 	}
 	boost::filesystem::path path = GetPathFromUtf8(utf8.get());
@@ -24,4 +28,16 @@ char *GetModelFilename(const char *input)
 	memcpy(filename, path_s.c_str(), s);
 	filename[s] = '\0';
 	return filename;
+}
+
+} // namespace
+
+char *GetGivenFilename(const char *input)
+{
+	return GetInputFilename(input, FindGivenFile);
+}
+
+char *GetModelFilename(const char *input)
+{
+	return GetInputFilename(input, FindModelFile);
 }

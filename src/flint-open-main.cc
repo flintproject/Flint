@@ -42,14 +42,14 @@ int main(int argc, char *argv[])
 
 	RequestBinaryStdio();
 
-	char model_file[1024]; // FIXME
-	size_t s = fread(model_file, 1, 1023, stdin);
+	char given_file[1024]; // FIXME
+	size_t s = fread(given_file, 1, 1023, stdin);
 	if (s == 0) {
 		cerr << "failed to read model file name" << endl;
 		return EXIT_FAILURE;
 	}
-	model_file[s] = '\0';
-	if (!SaveModelFile("model", model_file)) {
+	given_file[s] = '\0';
+	if (!SaveGivenFile("model", given_file)) {
 		return EXIT_FAILURE;
 	}
 

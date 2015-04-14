@@ -672,12 +672,18 @@ const char *TargetPq::kName = "target-physical-quantity";
 
 class Timeseries : boost::noncopyable {
 public:
-	Timeseries() : timeseries_id_(NULL), format_(NULL), iref_(NULL) {}
+	Timeseries()
+		: timeseries_id_(NULL),
+		  format_(NULL),
+		  iref_(NULL),
+		  zref_(NULL)
+	{}
 
 	~Timeseries() {
 		if (timeseries_id_) xmlFree(timeseries_id_);
 		if (format_) xmlFree(format_);
 		if (iref_) xmlFree(iref_);
+		if (zref_) xmlFree(zref_);
 	}
 
 	const xmlChar *timeseries_id() const {return timeseries_id_;}
@@ -686,12 +692,46 @@ public:
 	void set_format(xmlChar *format) {format_ = format;}
 	const xmlChar *iref() const {return iref_;}
 	void set_iref(xmlChar *iref) {iref_ = iref;}
+	const xmlChar *zref() const {return zref_;}
+	void set_zref(xmlChar *zref) {zref_ = zref;}
 
 private:
 	xmlChar *timeseries_id_;
 	xmlChar *format_;
 	xmlChar *iref_;
+	xmlChar *zref_;
 };
+
+template<typename TElement>
+bool GetAbsolutePathFromReference(const TElement *element,
+								  const boost::filesystem::path &given_path,
+								  const boost::filesystem::path &model_path,
+								  boost::filesystem::path *output_path)
+{
+	if (element->iref()) {
+		boost::filesystem::path iref_path = GetPathFromUtf8((const char *)element->iref());
+		if (iref_path.is_absolute()) {
+			*output_path = iref_path;
+			return true;
+		}
+		boost::filesystem::path gpp(given_path.parent_path());
+		*output_path = boost::filesystem::absolute(iref_path, gpp);
+		return true;
+	}
+	if (element->zref()) {
+		boost::filesystem::path zref_path = GetPathFromUtf8((const char *)element->zref());
+		if (zref_path.is_absolute()) {
+			cerr << "found an absolute zref: "
+				 << element->zref()
+				 << endl;
+			return false;
+		}
+		boost::filesystem::path mpp(model_path.parent_path());
+		*output_path = boost::filesystem::absolute(zref_path, mpp);
+		return true;
+	}
+	return false;
+}
 
 class DatabaseDriver : boost::noncopyable {
 public:
@@ -1415,7 +1455,8 @@ public:
 	}
 
 	bool SaveImport(const Module *module, const Import *import,
-					const boost::filesystem::path &path) {
+					const boost::filesystem::path &given_path,
+					const boost::filesystem::path &model_path) {
 		if (!module->IsSaved()) {
 			cerr << "module is not saved yet: "
 				 << module->module_id()
@@ -1437,30 +1478,13 @@ public:
 
 		boost::scoped_array<char> utf8;
 		if (xmlStrEqual(import->type(), BAD_CAST "external")) {
-			const char *ref;
-			if (import->iref()) {
-				if (path.empty()) {
-					ref = (const char *)import->iref();
-				} else {
-					boost::filesystem::path iref_path = GetPathFromUtf8((const char *)import->iref());
-					if (iref_path.is_absolute()) {
-						ref = (const char *)import->iref();
-					} else { // relative
-						boost::filesystem::path pp(path.parent_path());
-						boost::filesystem::path ap = boost::filesystem::absolute(iref_path, pp);
-						utf8.reset(GetUtf8FromPath(ap));
-						ref = utf8.get();
-					}
-				}
-			} else if (import->xref()) { // TODO
-				ref = (const char *)import->xref();
-			} else if (import->zref()) { // TODO
-				ref = (const char *)import->xref();
-			} else {
+			boost::filesystem::path path;
+			if (!GetAbsolutePathFromReference(import, given_path, model_path, &path)) {
 				cerr << "external <import> without reference" << endl;
 				return false;
 			}
-			e = sqlite3_bind_text(import_stmt_, 3, ref, -1, SQLITE_STATIC);
+			utf8.reset(GetUtf8FromPath(path));
+			e = sqlite3_bind_text(import_stmt_, 3, utf8.get(), -1, SQLITE_STATIC);
 		} else {
 			e = sqlite3_bind_null(import_stmt_, 3);
 		}
@@ -1632,7 +1656,8 @@ public:
 	}
 
 	bool SaveTimeseries(const Module *module, const Timeseries *ts,
-						const boost::filesystem::path &path) {
+						const boost::filesystem::path &given_path,
+						const boost::filesystem::path &model_path) {
 		if (!module->IsSaved()) {
 			cerr << "module is not saved yet: "
 				 << module->module_id()
@@ -1657,16 +1682,13 @@ public:
 			return false;
 		}
 
-		boost::scoped_array<char> utf8;
-		boost::filesystem::path iref_path((const char *)ts->iref());
-		if (iref_path.is_absolute()) {
-			e = sqlite3_bind_text(timeseries_stmt_, 4, (const char *)ts->iref(), -1, SQLITE_STATIC);
-		} else { // relative
-			boost::filesystem::path pp(path.parent_path());
-			boost::filesystem::path ap = boost::filesystem::absolute(iref_path, pp);
-			utf8.reset(GetUtf8FromPath(ap));
-			e = sqlite3_bind_text(timeseries_stmt_, 4, (const char *)utf8.get(), -1, SQLITE_STATIC);
+		boost::filesystem::path path;
+		if (!GetAbsolutePathFromReference(ts, given_path, model_path, &path)) {
+			cerr << "timeseries without reference" << endl;
+			return false;
 		}
+		boost::scoped_array<char> utf8(GetUtf8FromPath(path));
+		e = sqlite3_bind_text(timeseries_stmt_, 4, utf8.get(), -1, SQLITE_STATIC);
 		if (e != SQLITE_OK) {
 			cerr << "failed to bind ref: " << e << endl;
 			return false;
@@ -1857,10 +1879,12 @@ private:
 
 class Reader : boost::noncopyable {
 public:
-	Reader(const boost::filesystem::path &path,
+	Reader(const boost::filesystem::path &given_path,
+		   const boost::filesystem::path &model_path,
 		   xmlTextReaderPtr &text_reader,
 		   sqlite3 *db)
-		: path_(path),
+		: given_path_(given_path),
+		  model_path_(model_path),
 		  text_reader_(text_reader),
 		  dd_(new DatabaseDriver(db)),
 		  module_(),
@@ -3172,7 +3196,7 @@ private:
 			cerr << "missing format of <import>" << endl;
 			return -2;
 		}
-		if (!dd_->SaveImport(module_.get(), import.get(), path_)) return -2;
+		if (!dd_->SaveImport(module_.get(), import.get(), given_path_, model_path_)) return -2;
 		return xmlTextReaderNext(text_reader_);
 	}
 
@@ -3198,6 +3222,8 @@ private:
 				}
 			} else if (xmlStrEqual(local_name, BAD_CAST "iref")) {
 				ts->set_iref(xmlTextReaderValue(text_reader_));
+			} else if (xmlStrEqual(local_name, BAD_CAST "zref")) {
+				ts->set_zref(xmlTextReaderValue(text_reader_));
 			} else {
 				cerr << "unknown attribute of <timeseries>: " << local_name << endl;
 				return -2;
@@ -3211,11 +3237,11 @@ private:
 			cerr << "missing format of <timeseries>" << endl;
 			return -2;
 		}
-		if (!ts->iref()) {
-			cerr << "missing iref of <timeseries>" << endl;
+		if (!ts->iref() && !ts->zref()) {
+			cerr << "missing iref/zref of <timeseries>" << endl;
 			return -2;
 		}
-		if (!dd_->SaveTimeseries(module_.get(), ts.get(), path_)) return -2;
+		if (!dd_->SaveTimeseries(module_.get(), ts.get(), given_path_, model_path_)) return -2;
 		return xmlTextReaderNext(text_reader_);
 	}
 
@@ -3593,7 +3619,8 @@ private:
 		return i;
 	}
 
-	const boost::filesystem::path &path_;
+	const boost::filesystem::path &given_path_;
+	const boost::filesystem::path &model_path_;
 	xmlTextReaderPtr &text_reader_;
 	boost::scoped_ptr<DatabaseDriver> dd_;
 
@@ -3731,8 +3758,10 @@ int main(int argc, char *argv[])
 		return EXIT_SUCCESS;
 	}
 
-	boost::scoped_array<char> filename(GetModelFilename(argv[1]));
-	boost::filesystem::path path(filename.get());
+	boost::scoped_array<char> given_filename(GetGivenFilename(argv[1]));
+	boost::filesystem::path given_path(given_filename.get());
+	boost::scoped_array<char> model_filename(GetModelFilename(argv[1]));
+	boost::filesystem::path model_path(model_filename.get());
 
 	// prepare database; create tables
 	sqlite3 *db;
@@ -3758,7 +3787,7 @@ int main(int argc, char *argv[])
 	LIBXML_TEST_VERSION
 	xmlInitParser();
 
-	xmlTextReaderPtr text_reader = xmlReaderForFile(filename.get(), NULL, 0);
+	xmlTextReaderPtr text_reader = xmlReaderForFile(model_filename.get(), NULL, 0);
 	if (!text_reader) {
 		cerr << "could not read the input" << endl;
 		xmlCleanupParser();
@@ -3766,7 +3795,7 @@ int main(int argc, char *argv[])
 	}
 
 	{
-		boost::scoped_ptr<Reader> reader(new Reader(path, text_reader, db));
+		boost::scoped_ptr<Reader> reader(new Reader(given_path, model_path, text_reader, db));
 		if (reader->Read() < 0) return EXIT_FAILURE;
 	}
 
@@ -3808,7 +3837,7 @@ int main(int argc, char *argv[])
 		if (!tw->Write()) return EXIT_FAILURE;
 	}
 
-	if (!Branch(path, db)) return EXIT_FAILURE;
+	if (!Branch(model_path, db)) return EXIT_FAILURE;
 	if (!Span(db)) return EXIT_FAILURE;
 	if (!Reach(db)) return EXIT_FAILURE;
 	if (!Sprinkle(db)) return EXIT_FAILURE;

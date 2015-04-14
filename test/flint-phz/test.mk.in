@@ -11,4 +11,5 @@ INPUT_DB: INPUT_PHZ
 	test-input1 $@ $<
 
 OUTPUT_DB: INPUT_DB
-	flint-phz $< $@ TARGETDIR
+	flint-concat $< $@
+	flint-phz $@ TARGETDIR

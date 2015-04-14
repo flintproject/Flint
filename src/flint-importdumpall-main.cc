@@ -31,7 +31,7 @@ bool SaveAndPrint(const char *uuid, const char *xml_file)
 {
 	boost::scoped_array<char> db_file(new char[64]);
 	sprintf(db_file.get(), "%s.db", uuid);
-	if (!SaveModelFile(db_file.get(), xml_file)) return false;
+	if (!SaveGivenFile(db_file.get(), xml_file)) return false;
 	printf("%s\n", uuid);
 	return true;
 }

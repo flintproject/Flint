@@ -6,5 +6,5 @@ This program extracts contents from a PHZ file.
 
 = Synopsis
 
-flint-phz db
+flint-phz db targetdir
 flint-phz --help

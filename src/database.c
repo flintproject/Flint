@@ -8,7 +8,9 @@
 
 #include "sqlite3.h"
 
-int FindModelFile(const char *db_file, char *model_file)
+static int FindInputFile(const char *db_file,
+						 const char column_name[],
+						 char *input_file)
 {
 	static const int kMaxBytes = 1023;
 
@@ -20,7 +22,9 @@ int FindModelFile(const char *db_file, char *model_file)
 	}
 	int e;
 	sqlite3_stmt *stmt;
-	e = sqlite3_prepare_v2(db, "SELECT model_file FROM input", -1, &stmt, NULL);
+	char query[32]; /* long enough */
+	sprintf(query, "SELECT %s FROM input", column_name);
+	e = sqlite3_prepare_v2(db, query, -1, &stmt, NULL);
 	if (e != SQLITE_OK) {
 		fprintf(stderr, "failed to prepare statement: %d\n", e);
 		goto bail0;
@@ -36,17 +40,73 @@ int FindModelFile(const char *db_file, char *model_file)
 	}
 	const void *f = sqlite3_column_blob(stmt, 0);
 	if (!f) {
-		fprintf(stderr, "model file is NULL");
+		fprintf(stderr, "%s is NULL", column_name);
 		goto bail1;
 	}
 	int n = sqlite3_column_bytes(stmt, 0);
 	if (n > kMaxBytes) {
-		fprintf(stderr, "model file name is too long: %d\n", n);
+		fprintf(stderr, "%s is too long: %d\n", column_name, n);
 		goto bail1;
 	}
-	memcpy(model_file, f, n);
-	model_file[n] = '\0';
+	memcpy(input_file, f, n);
+	input_file[n] = '\0';
 	r = n;
+
+ bail1:
+	sqlite3_finalize(stmt);
+ bail0:
+	sqlite3_close(db);
+	return r;
+}
+
+int FindGivenFile(const char *db_file, char *given_file)
+{
+	return FindInputFile(db_file, "given_file", given_file);
+}
+
+int FindModelFile(const char *db_file, char *model_file)
+{
+	return FindInputFile(db_file, "model_file", model_file);
+}
+
+int SaveGivenFile(const char *db_file, const char *given_file)
+{
+	int r = 0;
+	sqlite3 *db;
+	if (sqlite3_open(db_file, &db) != SQLITE_OK) {
+		fprintf(stderr, "failed to open database: %s\n", db_file);
+		return 0;
+	}
+	int e;
+	char *em;
+	e = sqlite3_exec(db, "CREATE TABLE input (given_file BLOB, model_file BLOB)", NULL, NULL, &em);
+	if (e != SQLITE_OK) {
+		fprintf(stderr, "failed to create table named model\n");
+		goto bail0;
+	}
+	sqlite3_stmt *stmt;
+	e = sqlite3_prepare_v2(db, "INSERT INTO input VALUES (?, ?)", -1, &stmt, NULL);
+	if (e != SQLITE_OK) {
+		fprintf(stderr, "failed to prepare statement: %d\n", e);
+		goto bail0;
+	}
+	int len = (int)strlen(given_file);
+	e = sqlite3_bind_blob(stmt, 1, given_file, len, SQLITE_STATIC);
+	if (e != SQLITE_OK) {
+		fprintf(stderr, "failed to bind parameter: %d\n", e);
+		goto bail1;
+	}
+	e = sqlite3_bind_blob(stmt, 2, given_file, len, SQLITE_STATIC);
+	if (e != SQLITE_OK) {
+		fprintf(stderr, "failed to bind parameter: %d\n", e);
+		goto bail1;
+	}
+	e = sqlite3_step(stmt);
+	if (e != SQLITE_DONE) {
+		fprintf(stderr, "failed to step statement: %d\n", e);
+		goto bail1;
+	}
+	r = 1;
 
  bail1:
 	sqlite3_finalize(stmt);
@@ -64,14 +124,8 @@ int SaveModelFile(const char *db_file, const char *model_file)
 		return 0;
 	}
 	int e;
-	char *em;
-	e = sqlite3_exec(db, "CREATE TABLE input (model_file BLOB)", NULL, NULL, &em);
-	if (e != SQLITE_OK) {
-		fprintf(stderr, "failed to create table named model\n");
-		goto bail0;
-	}
 	sqlite3_stmt *stmt;
-	e = sqlite3_prepare_v2(db, "INSERT INTO input VALUES (?)", -1, &stmt, NULL);
+	e = sqlite3_prepare_v2(db, "UPDATE input SET model_file = ?", -1, &stmt, NULL);
 	if (e != SQLITE_OK) {
 		fprintf(stderr, "failed to prepare statement: %d\n", e);
 		goto bail0;

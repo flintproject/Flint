@@ -6,6 +6,7 @@
  * Read the input file, and return an internal C string, which the client
  * code is responsible for freeing by delete [] after use.
  */
+char *GetGivenFilename(const char *input);
 char *GetModelFilename(const char *input);
 
 #endif
