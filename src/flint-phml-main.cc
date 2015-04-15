@@ -3213,7 +3213,8 @@ private:
 				// we can ignore the name
 			} else if (xmlStrEqual(local_name, BAD_CAST "format")) {
 				xmlChar *value = xmlTextReaderValue(text_reader_);
-				if (xmlStrEqual(value, BAD_CAST "isd")) {
+				if ( xmlStrEqual(value, BAD_CAST "csv") ||
+					 xmlStrEqual(value, BAD_CAST "isd") ) {
 					ts->set_format(value);
 				} else {
 					cerr << "unknown format of <timeseries>: " << value << endl;

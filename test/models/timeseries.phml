@@ -112,7 +112,7 @@
       </is:physical-quantity-set>
       <is:timeseries-set>
         <is:timeseries timeseries-id="1" format="isd" iref="timeseries1.isd" />
-        <is:timeseries timeseries-id="2" format="isd" iref="timeseries2.isd" />
+        <is:timeseries timeseries-id="2" format="csv" iref="timeseries2.csv" />
       </is:timeseries-set>
     </is:module>
   </is:module-set>

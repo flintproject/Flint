@@ -13,12 +13,15 @@
 #include <set>
 #include <string>
 
+#define BOOST_FILESYSTEM_NO_DEPRECATED
+#include <boost/filesystem.hpp>
 #include <boost/noncopyable.hpp>
 #include <boost/ptr_container/ptr_map.hpp>
 #include <boost/scoped_ptr.hpp>
 #include <boost/uuid/uuid.hpp>
 #include <boost/uuid/uuid_io.hpp>
 
+#include "csv/export.h"
 #include "db/driver.h"
 #include "db/name_loader.h"
 #include "db/timeseries-loader.h"
@@ -65,6 +68,25 @@ public:
 	{}
 
 	bool Handle(boost::uuids::uuid uuid, int ts_id, const char *format, const char *ref) {
+		if (strcmp(format, "csv") == 0) {
+			boost::system::error_code ec;
+			boost::filesystem::path temp_path("tsc.%%%%-%%%%-%%%%-%%%%.isd");
+			boost::filesystem::path isd_path = boost::filesystem::unique_path(temp_path, ec);
+			if (ec) {
+				cerr << ec << endl;
+				return false;
+			}
+			if (boost::filesystem::exists(isd_path, ec)) {
+				cerr << "failed to create temporary path: " << isd_path << endl;
+				return false;
+			}
+			boost::filesystem::path a_path = boost::filesystem::absolute(isd_path);
+			std::string a_str = a_path.string();
+			if (!ExportIsdFromCsv(ref, a_str.c_str())) return false;
+			PathSet::iterator it = ps_->insert(a_str).first;
+			(*tm_)[uuid].insert(make_pair(ts_id, it));
+			return true;
+		}
 		if (strcmp(format, "isd") != 0) {
 			cerr << "unknown format: " << format << endl;
 			return false;

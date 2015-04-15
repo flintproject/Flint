@@ -114,12 +114,16 @@ libflint_a_CPPFLAGS = $(AM_CFLAGS) -std=c99 -pedantic-errors
 libflint_a_SOURCES = database.c system.c
 
 libflintxx_a_CPPFLAGS = $(BOOST_CPPFLAGS)
-libflintxx_a_SOURCES = modelpath.cc sys/temporary_path.cc utf8path.cc
+libflintxx_a_SOURCES = \
+    csv/export.cc \
+    modelpath.cc \
+    sys/temporary_path.cc \
+    utf8path.cc
 
 libsqlite3_a_CPPFLAGS = -DSQLITE_THREADSAFE=0 -DSQLITE_OMIT_LOAD_EXTENSION
 libsqlite3_a_SOURCES = sqlite3.c
 
-csv2isd_CPPFLAGS = $(BOOST_CPPFLAGS)
+csv2isd_LDADD = libflintxx.a
 csv2isd_SOURCES = csv2isd-main.cc
 
 BUILT_SOURCES += flint-assign-parser.hh
@@ -374,7 +378,7 @@ flint_track_SOURCES = lo.pb.cc ipc.pb.cc flint-track-main.cc
 
 flint_tsc_CPPFLAGS = $(BOOST_CPPFLAGS)
 flint_tsc_LDFLAGS = $(BOOST_FILESYSTEM_LDFLAGS) $(BOOST_SYSTEM_LDFLAGS)
-flint_tsc_LDADD = libsqlite3.a $(BOOST_FILESYSTEM_LIBS) $(BOOST_SYSTEM_LIBS)
+flint_tsc_LDADD = libflintxx.a libsqlite3.a $(BOOST_FILESYSTEM_LIBS) $(BOOST_SYSTEM_LIBS)
 flint_tsc_SOURCES = flint-tsc-main.cc
 
 flint_unit_CPPFLAGS = $(PROTOBUF_CFLAGS) $(BOOST_CPPFLAGS)
