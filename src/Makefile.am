@@ -119,7 +119,7 @@ libflintxx_a_SOURCES = modelpath.cc sys/temporary_path.cc utf8path.cc
 libsqlite3_a_CPPFLAGS = -DSQLITE_THREADSAFE=0 -DSQLITE_OMIT_LOAD_EXTENSION
 libsqlite3_a_SOURCES = sqlite3.c
 
-csv2isd_CPPFLAGS = -I$(top_srcdir)/lib $(BOOST_CPPFLAGS)
+csv2isd_CPPFLAGS = $(BOOST_CPPFLAGS)
 csv2isd_SOURCES = csv2isd-main.cc
 
 BUILT_SOURCES += flint-assign-parser.hh
@@ -179,7 +179,7 @@ BUILT_SOURCES += flint-event-parser.hh
 flint_event_CPPFLAGS = $(BOOST_CPPFLAGS)
 flint_event_SOURCES = flint-event-parser.yy flint-event-lexer.ll
 
-flint_evolve_CPPFLAGS = -I$(top_srcdir)/lib $(PROTOBUF_CFLAGS) $(BOOST_CPPFLAGS)
+flint_evolve_CPPFLAGS = $(PROTOBUF_CFLAGS) $(BOOST_CPPFLAGS)
 flint_evolve_LDFLAGS = $(BOOST_PROGRAM_OPTIONS_LDFLAGS)
 flint_evolve_LDADD = $(PROTOBUF_LIBS) $(BOOST_PROGRAM_OPTIONS_LIBS)
 flint_evolve_SOURCES = bc.pb.cc lo.pb.cc flint-evolve-main.cc
@@ -231,12 +231,12 @@ flint_importdumpall_LDFLAGS = $(BOOST_FILESYSTEM_LDFLAGS) $(BOOST_SYSTEM_LDFLAGS
 flint_importdumpall_LDADD = libflintxx.a libflint.a libsqlite3.a $(BOOST_FILESYSTEM_LIBS) $(BOOST_SYSTEM_LIBS)
 flint_importdumpall_SOURCES = flint-importdumpall-main.cc
 
-flint_init_CPPFLAGS = -I$(top_srcdir)/lib $(PROTOBUF_CFLAGS) $(BOOST_CPPFLAGS)
+flint_init_CPPFLAGS = $(PROTOBUF_CFLAGS) $(BOOST_CPPFLAGS)
 flint_init_LDFLAGS = $(BOOST_PROGRAM_OPTIONS_LDFLAGS)
 flint_init_LDADD = libsqlite3.a $(PROTOBUF_LIBS) $(BOOST_PROGRAM_OPTIONS_LIBS)
 flint_init_SOURCES = bc.pb.cc lo.pb.cc flint-init-main.cc
 
-flint_isdh_CPPFLAGS = -I$(top_srcdir)/lib $(PROTOBUF_CFLAGS) $(BOOST_CPPFLAGS)
+flint_isdh_CPPFLAGS = $(PROTOBUF_CFLAGS) $(BOOST_CPPFLAGS)
 flint_isdh_LDFLAGS = $(BOOST_PROGRAM_OPTIONS_LDFLAGS)
 flint_isdh_LDADD = $(PROTOBUF_LIBS) $(BOOST_PROGRAM_OPTIONS_LIBS)
 flint_isdh_SOURCES = lo.pb.cc flint-isdh-main.cc
@@ -290,7 +290,7 @@ flint_phml_SOURCES = \
     uuidgen.cc \
     flint-phml-main.cc
 
-flint_phsp_CPPFLAGS = -I$(top_srcdir)/lib $(BOOST_CPPFLAGS) $(XML_CPPFLAGS)
+flint_phsp_CPPFLAGS = $(BOOST_CPPFLAGS) $(XML_CPPFLAGS)
 flint_phsp_LDFLAGS = $(BOOST_FILESYSTEM_LDFLAGS) $(BOOST_SYSTEM_LDFLAGS)
 flint_phsp_LDADD = libflintxx.a libflint.a libsqlite3.a $(BOOST_FILESYSTEM_LIBS) $(BOOST_SYSTEM_LIBS) $(XML_LIBS)
 flint_phsp_SOURCES = flint-phsp-main.cc
@@ -367,12 +367,12 @@ flint_timer_LDFLAGS = $(BOOST_PROGRAM_OPTIONS_LDFLAGS)
 flint_timer_LDADD = $(BOOST_PROGRAM_OPTIONS_LIBS)
 flint_timer_SOURCES = flint-timer-main.cc
 
-flint_track_CPPFLAGS = -I$(top_srcdir)/lib $(PROTOBUF_CFLAGS) $(BOOST_CPPFLAGS)
+flint_track_CPPFLAGS = $(PROTOBUF_CFLAGS) $(BOOST_CPPFLAGS)
 flint_track_LDFLAGS = $(BOOST_PROGRAM_OPTIONS_LDFLAGS) $(BOOST_SYSTEM_LDFLAGS)
 flint_track_LDADD = $(PROTOBUF_LIBS) $(BOOST_PROGRAM_OPTIONS_LIBS) $(BOOST_SYSTEM_LIBS)
 flint_track_SOURCES = lo.pb.cc ipc.pb.cc flint-track-main.cc
 
-flint_tsc_CPPFLAGS = -I$(top_srcdir)/lib $(BOOST_CPPFLAGS)
+flint_tsc_CPPFLAGS = $(BOOST_CPPFLAGS)
 flint_tsc_LDFLAGS = $(BOOST_FILESYSTEM_LDFLAGS) $(BOOST_SYSTEM_LDFLAGS)
 flint_tsc_LDADD = libsqlite3.a $(BOOST_FILESYSTEM_LIBS) $(BOOST_SYSTEM_LIBS)
 flint_tsc_SOURCES = flint-tsc-main.cc
@@ -391,7 +391,7 @@ flint_var_LDFLAGS = $(BOOST_PROGRAM_OPTIONS_LDFLAGS) $(BOOST_SYSTEM_LDFLAGS)
 flint_var_LDADD = $(PROTOBUF_LIBS) $(BOOST_PROGRAM_OPTIONS_LIBS) $(BOOST_SYSTEM_LIBS)
 flint_var_SOURCES = lo.pb.cc flint-var-main.cc
 
-isd2csv_CPPFLAGS = -I$(top_srcdir)/lib $(BOOST_CPPFLAGS)
+isd2csv_CPPFLAGS = $(BOOST_CPPFLAGS)
 isd2csv_LDFLAGS = $(BOOST_PROGRAM_OPTIONS_LDFLAGS)
 isd2csv_LDADD = $(BOOST_PROGRAM_OPTIONS_LIBS)
 if ENABLE_TCP
@@ -402,32 +402,32 @@ isd2csv_SOURCES = isd2csv-main.cc
 
 isdbswap_SOURCES = isdbswap-main.c
 
-isdcut_CPPFLAGS = -I$(top_srcdir)/lib $(BOOST_CPPFLAGS)
+isdcut_CPPFLAGS = $(BOOST_CPPFLAGS)
 isdcut_LDFLAGS = $(BOOST_PROGRAM_OPTIONS_LDFLAGS)
 isdcut_LDADD = $(BOOST_PROGRAM_OPTIONS_LIBS)
 isdcut_SOURCES = isdcut-main.cc
 
-isddiff_CPPFLAGS = -I$(top_srcdir)/lib $(BOOST_CPPFLAGS)
+isddiff_CPPFLAGS = $(BOOST_CPPFLAGS)
 isddiff_LDFLAGS = $(BOOST_PROGRAM_OPTIONS_LDFLAGS)
 isddiff_LDADD = $(BOOST_PROGRAM_OPTIONS_LIBS)
 isddiff_SOURCES = isddiff-main.cc
 
-isdhead_CPPFLAGS = -I$(top_srcdir)/lib $(BOOST_CPPFLAGS)
+isdhead_CPPFLAGS = $(BOOST_CPPFLAGS)
 isdhead_LDFLAGS = $(BOOST_PROGRAM_OPTIONS_LDFLAGS)
 isdhead_LDADD = $(BOOST_PROGRAM_OPTIONS_LIBS)
 isdhead_SOURCES = isdhead-main.cc
 
-isdls_CPPFLAGS = -I$(top_srcdir)/lib $(BOOST_CPPFLAGS)
+isdls_CPPFLAGS = $(BOOST_CPPFLAGS)
 isdls_LDFLAGS = $(BOOST_PROGRAM_OPTIONS_LDFLAGS)
 isdls_LDADD = $(BOOST_PROGRAM_OPTIONS_LIBS)
 isdls_SOURCES = isdls-main.cc
 
-isdmerge_CPPFLAGS = -I$(top_srcdir)/lib $(BOOST_CPPFLAGS)
+isdmerge_CPPFLAGS = $(BOOST_CPPFLAGS)
 isdmerge_LDFLAGS = $(BOOST_PROGRAM_OPTIONS_LDFLAGS)
 isdmerge_LDADD = $(BOOST_PROGRAM_OPTIONS_LIBS)
 isdmerge_SOURCES = isdmerge-main.cpp
 
-isdplot_CPPFLAGS = -I$(top_srcdir)/lib $(BOOST_CPPFLAGS)
+isdplot_CPPFLAGS = $(BOOST_CPPFLAGS)
 isdplot_LDFLAGS = $(BOOST_FILESYSTEM_LDFLAGS) $(BOOST_SYSTEM_LDFLAGS) $(BOOST_PROGRAM_OPTIONS_LDFLAGS)
 isdplot_LDADD = libflintxx.a libflint.a $(BOOST_FILESYSTEM_LIBS) $(BOOST_SYSTEM_LIBS) $(BOOST_PROGRAM_OPTIONS_LIBS)
 isdplot_SOURCES = isdplot-main.cc
@@ -435,15 +435,15 @@ isdplot_SOURCES = isdplot-main.cc
 isdrand_CFLAGS = $(AM_CFLAGS) -std=c99 -pedantic-errors
 isdrand_SOURCES = isdrand-main.c
 
-isdsort_CPPFLAGS = -I$(top_srcdir)/lib $(BOOST_CPPFLAGS)
+isdsort_CPPFLAGS = $(BOOST_CPPFLAGS)
 isdsort_SOURCES = isdsort-main.cc
 
-isdstrip_CPPFLAGS = -I$(top_srcdir)/lib $(BOOST_CPPFLAGS)
+isdstrip_CPPFLAGS = $(BOOST_CPPFLAGS)
 isdstrip_LDFLAGS = $(BOOST_FILESYSTEM_LDFLAGS) $(BOOST_SYSTEM_LDFLAGS) $(BOOST_PROGRAM_OPTIONS_LDFLAGS)
 isdstrip_LDADD = libflintxx.a $(BOOST_FILESYSTEM_LIBS) $(BOOST_SYSTEM_LIBS) $(BOOST_PROGRAM_OPTIONS_LIBS)
 isdstrip_SOURCES = isdstrip-main.cc
 
-isdwc_CPPFLAGS = -I$(top_srcdir)/lib $(BOOST_CPPFLAGS)
+isdwc_CPPFLAGS = $(BOOST_CPPFLAGS)
 isdwc_LDFLAGS = $(BOOST_PROGRAM_OPTIONS_LDFLAGS)
 isdwc_LDADD = $(BOOST_PROGRAM_OPTIONS_LIBS)
 isdwc_SOURCES = isdwc-main.cc
