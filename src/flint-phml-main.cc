@@ -3662,7 +3662,7 @@ const Schema kModelTables[] = {
 	{"ivs", "(pq_rowid INTEGER, math TEXT)"},
 	{"impls", "(pq_rowid INTEGER, math TEXT)"},
 	{"nodes", "(pq_rowid INTEGER, node_id INTEGER, name TEXT)"},
-	{"arcs", "(pq_rowid INTEGER, type TEXT, tail_node_id INTEGER, head_node_id INTEGER, TEXT math)"},
+	{"arcs", "(pq_rowid INTEGER, tail_node_id INTEGER, head_node_id INTEGER, type TEXT, math TEXT)"},
 	{"refports", "(pq_rowid INTEGER, port_id INTEGER)"},
 	{"refts", "(pq_rowid INTEGER, timeseries_id INTEGER, element_id TEXT)"},
 	{"extras", "(pq_rowid INTEGER, order_type TEXT, math TEXT)"},
