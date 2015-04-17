@@ -1,2 +1,3 @@
 531f5aea-c961-11e4-a5fe-a74d28f4c4e3 x (eq %x (sin %time))
 531f5aea-c961-11e4-a5fe-a74d28f4c4e3 z (eq (diff (bvar %time) %z) (piecewise (piece -1 (eq %y 1)) (piece -2 (eq %y 2)) (piece -3 (eq %y 3)) (otherwise 0)))
+531f5aea-c961-11e4-a5fe-a74d28f4c4e3 y (eq (diff (bvar %time) %y) 0)

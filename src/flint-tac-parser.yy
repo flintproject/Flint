@@ -60,6 +60,18 @@ bool IsOtherwise(Sexp *sexp)
 	return car->IsSymbol() && strcmp(car->s(), "otherwise") == 0;
 }
 
+bool IsTrial(Sexp *sexp)
+{
+	Sexp *car = sexp->GetCar();
+	return car->IsSymbol() && strcmp(car->s(), "$trial") == 0;
+}
+
+bool IsOutcome(Sexp *sexp)
+{
+	Sexp *car = sexp->GetCar();
+	return car->IsSymbol() && strcmp(car->s(), "$outcome") == 0;
+}
+
 struct Context {
 	const char *uuid;
 	const char *id;
@@ -198,6 +210,53 @@ void EmitPiecewise(int n, Sexp *sexp, Context *context)
 	printf(" L%d:\n", l);
 }
 
+void EmitTrial(int n, Sexp *sexp, Context *context)
+{
+	Sexp *cdr = sexp->GetCdr();
+	assert(cdr);
+	int l = context->avail_l++;
+	int p0 = context->avail_n++;
+	int p1 = context->avail_n++;
+	int p = context->avail_n++;
+	printf("  loadi $%d 0\n", p0);
+	printf("  loadi $%d 1\n", p1);
+	printf("  $%d = ($uniform_variate $%d $%d)\n", p, p0, p1);
+	std::vector<int> v1;
+	do {
+		Sexp *cadr = cdr->GetCar();
+		if (IsOutcome(cadr)) {
+			int l1 = context->avail_l++;
+			int m0 = context->avail_n++;
+			printf("  loadi $%d ", m0);
+			cadr->GetCdr()->GetCdr()->GetCar()->Print();
+			printf("\n");
+			int m1 = context->avail_n++;
+			printf("  $%d = (leq $%d $%d)\n", m1, p, m0);
+			printf("  br $%d L%d\n", m1, l1);
+			v1.push_back(l1);
+		} else {
+			fprintf(stderr, "error: unexpected child of $trial: %s %s\n", context->uuid, context->id);
+			exit(EXIT_FAILURE);
+		}
+		cdr = cdr->GetCdr();
+	} while (cdr);
+	printf("  ret\n");
+	cdr = sexp->GetCdr();
+	std::vector<int>::const_iterator it = v1.begin();
+	do {
+		Sexp *cadr = cdr->GetCar();
+		if (IsOutcome(cadr)) {
+			printf(" L%d:\n", *it++);
+			EmitCode(n, cadr->GetCdr()->GetCar(), context);
+			printf("  jmp L%d\n", l);
+		} else {
+			assert(false);
+		}
+		cdr = cdr->GetCdr();
+	} while (cdr);
+	printf(" L%d:\n", l);
+}
+
 void EmitCode(int n, Sexp *sexp, Context *context)
 {
 	if (sexp->IsSymbol()) {
@@ -218,6 +277,10 @@ void EmitCode(int n, Sexp *sexp, Context *context)
 		}
 		if (IsPiecewise(sexp)) {
 			EmitPiecewise(n, sexp, context);
+			return;
+		}
+		if (IsTrial(sexp)) {
+			EmitTrial(n, sexp, context);
 			return;
 		}
 

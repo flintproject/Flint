@@ -1,1 +1,2 @@
 4314d24f-375c-4309-8211-f869ab0a27ad x after (case-set (case (condition (eq %x 4)) (eq %x 1)))
+4314d24f-375c-4309-8211-f869ab0a27ad x before (eq %x (piecewise (piece ($trial ($outcome 2 0.1)) (eq %x 1)) (piece ($trial ($outcome 3 0.01)) (eq %x 2)) (piece ($trial ($outcome 4 0.001)) (eq %x 3))))

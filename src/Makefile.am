@@ -288,6 +288,7 @@ flint_phml_SOURCES = \
     branch.cc \
     phml/graph-iv-rewriter.cc \
     phml/graph-math-rewriter.cc \
+    phml/transition-form.cc \
     reach.cc \
     span.cc \
     sprinkle.cc \

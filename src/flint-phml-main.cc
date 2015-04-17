@@ -26,6 +26,7 @@
 #include "phml/graph-iv-rewriter.h"
 #include "phml/graph-math-rewriter.h"
 #include "phml/graph_reader.h"
+#include "phml/transition-form.h"
 #include "reach.h"
 #include "span.h"
 #include "sprinkle.h"
@@ -3831,6 +3832,10 @@ int main(int argc, char *argv[])
 		static const char kTpqUpdateQuery[] = "UPDATE tpqs SET math = ? WHERE rowid = ?";
 		phml::GraphMathRewriter rewriter(db, kTpqSelectQuery, kTpqUpdateQuery);
 		if (!rewriter.Rewrite()) return EXIT_FAILURE;
+	}
+	{
+		phml::TransitionForm form(db);
+		if (!form()) return EXIT_FAILURE;
 	}
 
 	{

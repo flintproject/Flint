@@ -23,6 +23,7 @@ TESTS = \
     test-gamma_variate.sh \
     test-gauss_variate.sh \
     test-poisson_variate.sh \
+    test-trial.sh \
     test-uniform_variate.sh
 
 .mk.sh:
