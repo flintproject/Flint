@@ -3,7 +3,6 @@ package jp.oist.flint.view;
 
 import jp.oist.flint.form.sub.IChartController;
 import jp.oist.flint.form.sub.IChartSetting;
-import jp.oist.flint.form.sub.SubFrame;
 import jp.oist.flint.util.ListItemModel;
 import java.util.concurrent.ExecutionException;
 import java.util.logging.Level;
@@ -14,11 +13,8 @@ public class ChartUpdater extends SwingWorker<ChartConfig, Void> {
 
     private final IChartController mController;
 
-    private final SubFrame mModelContainer;
-
-    public ChartUpdater(SubFrame container, IChartController controller) {
+    public ChartUpdater(IChartController controller) {
         mController = controller;
-        mModelContainer = container;
     }
 
     @Override

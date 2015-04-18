@@ -292,7 +292,7 @@ public class PlotWindow extends javax.swing.JFrame
     @Override
     public void renderPlot() {
         clearChart(); 
-        ChartUpdater updater = new ChartUpdater(mParent, this);
+        ChartUpdater updater = new ChartUpdater(this);
         updater.execute();
     }
 
