@@ -12,8 +12,6 @@ public class SedmlWriter {
 
     private final boolean mFull;
 
-    private static final String ESCAPE_CHARS = "";
-
     public SedmlWriter(boolean full) {
         mFull = full;
     }
