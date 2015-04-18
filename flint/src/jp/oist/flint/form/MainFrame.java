@@ -955,7 +955,7 @@ public class MainFrame extends javax.swing.JFrame
      */
     public static class Event extends EventObject {
 
-        private SubFrame mTarget;
+        private final SubFrame mTarget;
 
         public Event(Object source, SubFrame target) {
             super(source);

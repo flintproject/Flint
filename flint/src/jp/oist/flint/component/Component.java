@@ -12,7 +12,7 @@ public class Component {
         SH
     }
 
-    static private Shell mShell;
+    private static final Shell mShell;
 
     static {
         String osName = System.getProperty("os.name");

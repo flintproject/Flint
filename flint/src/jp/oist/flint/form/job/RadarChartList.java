@@ -45,13 +45,13 @@ public class RadarChartList extends JobViewerComponent
 
     private int mAnchorIndex = -1;
 
-    private Dimension mCellSize = new Dimension(64, 64);
+    private final Dimension mCellSize = new Dimension(64, 64);
 
     private boolean isMacOS = false;
 
-    private int mMinimum = 0;
+    private final int mMinimum = 0;
 
-    private int mMaximum = 100;
+    private final int mMaximum = 100;
 
     private RadarChartEventHandler mRadarChartEventHandler;
 

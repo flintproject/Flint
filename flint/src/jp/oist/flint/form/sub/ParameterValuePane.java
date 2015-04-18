@@ -70,7 +70,7 @@ public class ParameterValuePane extends JPanel
 
     private DefaultCellEditor mCellEditor;
 
-    private FormulaAutoCompleter mAutoCompleter;
+    private final FormulaAutoCompleter mAutoCompleter;
 
     public ParameterValuePane(File file, ModelLoader loader) 
             throws IOException, InterruptedException, ExecutionException {

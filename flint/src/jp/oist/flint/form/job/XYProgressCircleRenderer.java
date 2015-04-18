@@ -22,7 +22,7 @@ import org.jfree.ui.RectangleEdge;
 
 public class XYProgressCircleRenderer extends XYLineAndShapeRenderer {
 
-    private ScatterChart mDelegator;
+    private final ScatterChart mDelegator;
 
     public XYProgressCircleRenderer(ScatterChart delegator) {
         super (false, true);

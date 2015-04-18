@@ -21,7 +21,7 @@ public class RadarChart {
 
     public final static int BORDER_CIRCLE  = 0x02;
 
-    private int mNumberOfSides;
+    private final int mNumberOfSides;
 
     private String[] mTitles;
 

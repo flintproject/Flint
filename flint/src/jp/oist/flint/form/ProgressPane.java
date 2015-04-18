@@ -363,7 +363,7 @@ public class ProgressPane extends PeripheralPane
 
         public final static String IS_SELECTED_PROPERTY = "selected";
 
-        private JList mParent;
+        private final JList mParent;
 
         private JButton mJobBtn = null;
 

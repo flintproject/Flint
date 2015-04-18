@@ -6,8 +6,8 @@ package jp.oist.flint.util;
  */
 public class ListItem implements Comparable<ListItem> {
 
-    private String mKey;
-    private String mName;
+    private final String mKey;
+    private final String mName;
 
     public ListItem(String key, String name) {
         mKey = key;

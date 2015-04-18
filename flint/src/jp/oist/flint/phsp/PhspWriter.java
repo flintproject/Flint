@@ -19,7 +19,7 @@ public class PhspWriter {
 
     private final static int SHIFT_WIDTH = 2;
 
-    private String mLineFeed = System.getProperty("line.separator");
+    private final String mLineFeed = System.getProperty("line.separator");
 
     private String validateString (String s) {
         if (s==null) return "";

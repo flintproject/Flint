@@ -12,7 +12,7 @@ import java.util.prefs.Preferences;
 
 public class Session {
 
-    static private int MAX_RECENT_MODELS = 8;
+    private static final int MAX_RECENT_MODELS = 8;
 
     private ArrayList<File> mRecentModels = new ArrayList<>();
 

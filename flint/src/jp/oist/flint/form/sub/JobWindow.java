@@ -78,7 +78,7 @@ public class JobWindow extends javax.swing.JFrame
 
     private JobViewerComponent mJobViewer;
 
-    private SubFrame mParent;
+    private final SubFrame mParent;
 
     private ListSelectionModel mSelectionModel;
 

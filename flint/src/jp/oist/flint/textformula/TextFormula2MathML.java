@@ -22,13 +22,13 @@ import javax.xml.transform.TransformerException;
 public class TextFormula2MathML
             extends TextFormulaAnalyzerDefaultVisitor {
 
-    private TextFormulaAnalyzer mAnalyzer;
+    private final TextFormulaAnalyzer mAnalyzer;
 
     private Document mDocument;
 
     private boolean mUsingNamespaceURI = false;
 
-    private ArrayList<String> mUsingParameterNames; 
+    private final ArrayList<String> mUsingParameterNames; 
 
     public TextFormula2MathML () {
         mAnalyzer = new TextFormulaAnalyzer();

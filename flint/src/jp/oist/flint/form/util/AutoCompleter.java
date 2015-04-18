@@ -76,7 +76,7 @@ public class AutoCompleter implements
     private Completer mCompleter;
     private JList mCompletionList;
     private JScrollPane mListScroller;
-    private JWindow mListWindow;
+    private final JWindow mListWindow;
 
     private boolean mIsAutComplecaterEnabled = true;
 

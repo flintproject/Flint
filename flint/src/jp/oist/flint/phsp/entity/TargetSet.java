@@ -12,7 +12,7 @@ import jp.oist.flint.textformula.analyzer.ParseException;
 
 public class TargetSet {
 
-    private ArrayList<Target> mTargets = new ArrayList<>();
+    private final ArrayList<Target> mTargets = new ArrayList<>();
 
     public Target[] getTargets () {
         return (Target[]) mTargets.toArray(new Target[mTargets.size()]);

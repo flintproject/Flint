@@ -11,7 +11,7 @@ import javax.swing.JComponent;
 import javax.swing.TransferHandler;
 
 public class ModelFileTransferHandler extends TransferHandler {
-    private MainFrame mMainJFrame;
+    private final MainFrame mMainJFrame;
 
     public ModelFileTransferHandler(MainFrame mainJFrame) {
         this.mMainJFrame = mainJFrame;

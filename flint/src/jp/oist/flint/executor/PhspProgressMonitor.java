@@ -234,7 +234,7 @@ public class PhspProgressMonitor implements FileListener, Runnable {
 
     public static class Event extends PropertyChangeEvent {
 
-        private Map<Object, Object>mClientProperty;
+        private final Map<Object, Object> mClientProperty;
 
         public Event(Object source, String propertyName, Object oldValue, Object newValue) {
             super(source, propertyName, oldValue, newValue);

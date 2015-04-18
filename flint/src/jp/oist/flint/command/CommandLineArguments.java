@@ -14,14 +14,14 @@ import jp.physiome.Cli.RunOption;
 
 public class CommandLineArguments {
 
-    private Options mOptions = new Options();
+    private final Options mOptions = new Options();
 
-    private CommandLineParser mParser = new GnuParser();
+    private final CommandLineParser mParser = new GnuParser();
 
     private CommandLine mCommandLine;
 
     private boolean mIsHeadless = false;
-    private RunOption.Builder mHeadlessBuilder = RunOption.newBuilder();
+    private final RunOption.Builder mHeadlessBuilder = RunOption.newBuilder();
 
     public CommandLineArguments() {
         Option headless = OptionBuilder.withArgName("input> <output")
