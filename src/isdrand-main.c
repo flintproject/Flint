@@ -91,7 +91,7 @@ int main(int argc, char *argv[])
 	}
 
 	// num_objs
-	uint32_t num_objs = rand()%MAX_NUM_OBJS;
+	uint32_t num_objs = 1 + rand()%MAX_NUM_OBJS;
 	fwrite(&num_objs, sizeof(num_objs), 1, fp);
 
 	// num_bytes_comment
