@@ -9,7 +9,7 @@ import java.io.RandomAccessFile;
 import java.util.Collections;
 import java.util.Map;
 
-public class JobDao extends DaoObject {
+public class JobDao {
 
     private final String mDirPath;
 
@@ -22,8 +22,6 @@ public class JobDao extends DaoObject {
     private final TaskDao mParent;
 
     public JobDao(TaskDao parent, String workingDir, Map<String, Number> combination, int jobId) {
-        super();
-
         mParent = parent;
         mJobId = jobId;
 
