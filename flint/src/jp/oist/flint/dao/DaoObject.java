@@ -21,8 +21,6 @@ public abstract class DaoObject implements AutoCloseable {
         }
     }
 
-    protected Connection mConnection;
-
     /**
      * The working directory containing the database file.
      */
@@ -32,6 +30,11 @@ public abstract class DaoObject implements AutoCloseable {
      * The database file.
      */
     private final File mDatabaseFile;
+
+    /**
+     * The cached connection.
+     */
+    private Connection mConnection;
 
     public DaoObject(String dbName, File workingDir)
             throws SQLException {
@@ -54,7 +57,7 @@ public abstract class DaoObject implements AutoCloseable {
         mConnection = DriverManager.getConnection(dsn, config.toProperties());
     }
 
-    Connection getConnection () 
+    public Connection getConnection()
             throws SQLException, IOException {
         if (mConnection == null)
             connect();
