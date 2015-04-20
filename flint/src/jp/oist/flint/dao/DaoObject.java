@@ -8,8 +8,6 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
 
 public abstract class DaoObject implements AutoCloseable {
 
@@ -80,69 +78,4 @@ public abstract class DaoObject implements AutoCloseable {
         Logger.getRootLogger().error(String.format("ERROR : %s", msg));
     }
 
-    public static class Condition {
-
-        private Condition mParent = null;
-
-        private final String mLogic;
-
-        private final String mSentence;
-
-        private final List<Condition> mConditions ;
-
-        public Condition () {
-            this("", "");
-        }
-
-        public Condition (String sentence) {
-            this("", sentence);
-        }
-
-        public Condition (String logic, String sentence) {
-            mLogic = logic;
-            mSentence = sentence;
-            mConditions = new ArrayList<>();
-        }
-
-        public void addCondition (Condition condition) {
-            condition.mParent = this;
-            mConditions.add(condition);
-        }
-
-        public void removeCondition (Condition condition) {
-            mConditions.remove(condition);
-        }
-
-        @Override
-        public String toString () {
-            StringBuilder sb = new StringBuilder();
-
-            if (mSentence != null && !mSentence.isEmpty())
-                sb.append(mSentence).append(" ");
-
-            if (mLogic != null && !mLogic.isEmpty())
-                sb.append(mLogic).append(" ");
-
-            StringBuilder condition = new StringBuilder();
-            for (Condition cond : mConditions)
-                condition.append(cond.toString());
-
-            String retval;
-            if (condition.length() > 0) {
-                int lastIndex = mConditions.size() - 1;
-                Condition last = mConditions.get(lastIndex);
-                String tmp = condition.substring(0, 
-                        condition.length() - (last.mLogic.length()+2));
-
-                sb.append("(").append(tmp).append(")");
-
-                retval = "(" + sb.toString() + ")";
-
-            } else {
-                retval = sb.toString();
-            }
-
-            return retval;
-        }
-    }
 }

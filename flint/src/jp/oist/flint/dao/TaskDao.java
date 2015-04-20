@@ -294,8 +294,6 @@ public class TaskDao extends DaoObject {
     }
 
     public List<Integer> getIndicesOf(Status status) {
-        Condition condition;
-
         switch (status) {
             case PENDING:
                 return getIndices(new Condition("status = 'pending'"));
