@@ -5,10 +5,6 @@ import java.awt.Dimension;
 import java.awt.Insets;
 import javax.swing.JButton;
 
-/**
- *
- * @author kensuke
- */
 public class ComponentFactory {
 
     public static JButton createButton (String s, String actionCmd) {

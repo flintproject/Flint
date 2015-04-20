@@ -5,8 +5,6 @@ import java.awt.Color;
 
 /**
  * The class which manages the basic information on Gnuplot.
- *
- * @author miyahira
  */
 public class Gnuplot {
 

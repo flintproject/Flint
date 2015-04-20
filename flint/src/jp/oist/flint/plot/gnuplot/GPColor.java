@@ -6,9 +6,6 @@ import java.awt.color.ColorSpace;
 
 /**
  * This is a class which manages the color used by gnuplotter.
- *
- * @version 1.0, 03 September, 2011
- * @author miyahira
  */
 public class GPColor extends Color {
 

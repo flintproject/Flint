@@ -13,9 +13,6 @@ import java.util.List;
 
 /**
  * The class of an external plotter (GnuPlotter)
- *
- * @version 1.0, 03 September, 2011
- * @author miyahira
  */
 public class GnuPlotter extends BasePlotter {
 

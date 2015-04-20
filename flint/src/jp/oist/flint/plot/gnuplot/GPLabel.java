@@ -3,9 +3,6 @@ package jp.oist.flint.plot.gnuplot;
 
 /**
  * This is a class which manages the label used by gnuplotter.
- *
- * @version 1.0, 03 September, 2011
- * @author miyahira
  */
 public class GPLabel {
 
