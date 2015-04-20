@@ -44,17 +44,10 @@ public abstract class ParameterModel extends AbstractTableModel {
 
         try (DataInputStream dis = new DataInputStream(new FileInputStream(paramFile))) {
 
-        int len;
-        byte[] buf;
-        try {
-            len = dis.readInt();
-
-            if (len <= 0)
-                Logger.getRootLogger().error("invalid length of Lo.Header : " + len);
-        } catch (EOFException ex) {
-            throw ex;
-        }
-        buf = new byte[len];
+        int len = dis.readInt();
+        if (len <= 0)
+            Logger.getRootLogger().error("invalid length of Lo.Header : " + len);
+        byte[] buf = new byte[len];
         dis.readFully(buf);
 
         mHeader = Lo.Header.parseFrom(buf);

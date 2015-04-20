@@ -205,11 +205,7 @@ public class ModelLoader extends SwingWorker<Ipc.ModelProbeResponse, Void> {
         int len;
         byte[] buf;
 
-        try {
-            len = dis.readInt();
-        } catch (EOFException eofe) {
-            throw eofe;
-        }
+        len = dis.readInt();
         if (len <= 0) { // TODO
             Logger.getRootLogger().error("invalid length of Lo.Header: " + len);
             // FIXME
@@ -266,11 +262,7 @@ public class ModelLoader extends SwingWorker<Ipc.ModelProbeResponse, Void> {
         int len;
         byte[] buf;
 
-        try {
-            len = dis.readInt();
-        } catch (EOFException eofe) {
-            throw eofe;
-        }
+        len = dis.readInt();
         if (len <= 0) { // TODO
             Logger.getRootLogger().error("invalid length of Lo.Header: " + len);
             // FIXME
