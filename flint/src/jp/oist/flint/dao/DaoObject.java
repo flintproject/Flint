@@ -28,27 +28,23 @@ public abstract class DaoObject implements AutoCloseable {
      */
     protected final File mWorkingDir;
 
-    private String mDbName;
+    /**
+     * The database file.
+     */
+    private final File mDatabaseFile;
 
     public DaoObject(String dbName, File workingDir)
             throws SQLException {
         if (dbName == null || dbName.isEmpty())
             throw new IllegalArgumentException("dbName must be non null.");
 
-        File dbFile = new File(workingDir, dbName);
-
         mWorkingDir = workingDir;
-        mDbName = dbName;
+        mDatabaseFile = new File(workingDir, dbName);
         mConnection = null;
     }
 
-    public void connect () throws SQLException, IOException {
-        if (mWorkingDir == null || mDbName == null)
-            throw new IOException("It's don't  initialize yet.");
-        String driverName;
-        String dsn;
-        File dbFile = new File(mWorkingDir, mDbName);
-            dsn = String.format("jdbc:sqlite:%s", dbFile.getPath());
+    public void connect() throws SQLException, IOException {
+        String dsn = String.format("jdbc:sqlite:%s", mDatabaseFile.getCanonicalPath());
 
         if (mConnection != null)
             mConnection.close();
@@ -56,14 +52,6 @@ public abstract class DaoObject implements AutoCloseable {
         SQLiteConfig config = new SQLiteConfig();
         config.setReadOnly(true);
         mConnection = DriverManager.getConnection(dsn, config.toProperties());
-    }
-
-    public File getDatabaseFile () {
-        return new File(mWorkingDir, mDbName);
-    }
-
-    public String getDatabaseName () {
-        return mDbName;
     }
 
     Connection getConnection () 
