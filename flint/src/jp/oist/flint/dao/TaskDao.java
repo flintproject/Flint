@@ -88,26 +88,18 @@ public class TaskDao extends DaoObject {
     }
 
     public boolean isFinished () {
-        int jobCount = getCount();
-        if (jobCount <= 0)
-            return false; 
+        if (!isStarted()) return false;
+        if (isCancelled()) return true;
 
-        int total = 0;
+        int jobCount = getCount();
+        if (jobCount <= 0) return false;
         for (int i=1; i<=jobCount; i++) {
             JobDao job = obtainJob(i);
-            int progress = 0;
-
-            if ((job == null || (progress=job.getProgress())<=0) && !job.isCancelled())
-                continue;
-
-            if (job.isCancelled())
-                progress = 100;
-
-            total += progress;
+            if (job == null) return false;
+            if (job.isCancelled() || job.isCompleted()) continue;
+            return false;
         }
-        int percent = (int)((double)total / (double)jobCount);
-
-        return percent == 100 || (!isStarted() && isCancelled());
+        return true;
     }
 
     public void cancel () throws IOException {

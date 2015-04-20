@@ -108,4 +108,8 @@ public class JobDao extends DaoObject {
             return false;
         }
     }
+
+    public boolean isCompleted() {
+        return getProgress() == 100;
+    }
 }
