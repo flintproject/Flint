@@ -36,22 +36,18 @@ public class TaskDao extends DaoObject {
 
     private List<Map<String, Number>> mCombinations;
 
-    private final String mWorkingDir;
-
     private final int mTaskId;
 
     private final File mModelFile;
 
     private int mCount = -1;
 
-    protected TaskDao(int taskId, String prefix, File modelFile)
+    public TaskDao(int taskId, File dir, File modelFile)
             throws SQLException, IOException {
-        super("db", prefix + File.separator + taskId);
+        super("db", new File(dir, String.valueOf(taskId)));
 
         mTaskId = taskId;
         mModelFile = modelFile;
-        mWorkingDir = new StringBuilder(new File(prefix).getPath())
-                .append(File.separator).append(taskId).toString();
     }
 
     public int getTaskId() {
@@ -72,8 +68,7 @@ public class TaskDao extends DaoObject {
     }
 
     public boolean isStarted() {
-        File workingDir = new File(mWorkingDir);
-        File[] jobDirs = workingDir.listFiles(new FilenameFilter() {
+        File[] jobDirs = mWorkingDir.listFiles(new FilenameFilter() {
             @Override
             public boolean accept(File dir, String name) {
                 try {
@@ -103,8 +98,7 @@ public class TaskDao extends DaoObject {
     }
 
     public void cancel() throws IOException {
-        File workingDir = new File(mWorkingDir);
-        if (!workingDir.exists())
+        if (!mWorkingDir.exists())
             throw new IOException("It has not yet started.");
 
         File cancelFile = new File(mWorkingDir, "canceled");
@@ -130,8 +124,7 @@ public class TaskDao extends DaoObject {
         Map<String, Number> combination = mCombinations.get(jobId);
         File workingDir = new File(mWorkingDir, String.valueOf(jobId));
 
-        return new JobDao(this,
-                workingDir.getAbsolutePath(), combination, jobId);
+        return new JobDao(this, workingDir, combination, jobId);
     }
 
     public int indexOf(Number[] combination, String[] titles)

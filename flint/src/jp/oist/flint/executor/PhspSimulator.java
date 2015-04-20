@@ -159,7 +159,7 @@ public class PhspSimulator extends SwingWorker <Boolean, Integer>
         File sedmlFile = mSedmlFile;
         File phspFile = mPhspFile;
 
-        mSimulationDao = new SimulationDao(mWorkingDir.getAbsolutePath());
+        mSimulationDao = new SimulationDao(mWorkingDir);
         mLogFile = new File(mWorkingDir, "flint.log");
         mLogFile.deleteOnExit();
 

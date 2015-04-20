@@ -27,7 +27,7 @@ public class TaskDaoTest {
         File resourceDir = new File(System.getProperty("user.dir"), 
                 "test" + separator + "resources" + separator + "testDao");
         mWorkingDir = resourceDir.getAbsolutePath();
-        mSimulationDao = new SimulationDao(resourceDir.getPath());
+        mSimulationDao = new SimulationDao(resourceDir);
     }
     
     @BeforeClass

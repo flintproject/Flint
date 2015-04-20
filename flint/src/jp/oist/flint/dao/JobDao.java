@@ -11,7 +11,7 @@ import java.util.Map;
 
 public class JobDao {
 
-    private final String mDirPath;
+    private final File mWorkingDir;
 
     private final static int CANCEL_OPEARTION = 0x01;
 
@@ -21,12 +21,12 @@ public class JobDao {
 
     private final TaskDao mParent;
 
-    public JobDao(TaskDao parent, String workingDir, Map<String, Number> combination, int jobId) {
+    public JobDao(TaskDao parent, File workingDir, Map<String, Number> combination, int jobId) {
         mParent = parent;
+        mWorkingDir = workingDir;
         mJobId = jobId;
 
         mCombination = combination;
-        mDirPath = workingDir;
     }
 
     public TaskDao getParentTask() {
@@ -79,15 +79,15 @@ public class JobDao {
     }
 
     public File getControlFile() {
-        return new File(mDirPath, "control");
+        return new File(mWorkingDir, "control");
     }
 
     public File getPercentageFile() {
-        return new File(mDirPath, "status");
+        return new File(mWorkingDir, "status");
     }
 
     public File getIsdFile() {
-        return new File(mDirPath, "isd");
+        return new File(mWorkingDir, "isd");
     }
 
     public boolean isCancelled() {
