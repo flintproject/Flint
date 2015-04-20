@@ -21,7 +21,7 @@ public class JobDao extends DaoObject {
 
     private final TaskDao mParent;
 
-    public JobDao (TaskDao parent, String workingDir, Map<String, Number> combination, int jobId) {
+    public JobDao(TaskDao parent, String workingDir, Map<String, Number> combination, int jobId) {
         super();
 
         mParent = parent;
@@ -31,44 +31,44 @@ public class JobDao extends DaoObject {
         mDirPath = workingDir;
     }
 
-    public TaskDao getParentTask () {
+    public TaskDao getParentTask() {
         return mParent;
     }
 
-    public void cancel (boolean force) throws IOException {
-            File controlFile = getControlFile();
-            File jobDir = controlFile.getParentFile();
+    public void cancel(boolean force) throws IOException {
+        File controlFile = getControlFile();
+        File jobDir = controlFile.getParentFile();
 
-            if (!jobDir.exists())
-                return;
+        if (!jobDir.exists())
+            return;
 
-            if (force) {
-                if (!controlFile.exists()) {
-                    controlFile.createNewFile();
-                    getPercentageFile().createNewFile();
-                }
+        if (force) {
+            if (!controlFile.exists()) {
+                controlFile.createNewFile();
+                getPercentageFile().createNewFile();
             }
+        }
 
-            if (!controlFile.exists() || !controlFile.canWrite())
-                throw new IOException(String.format("%s didn't exist or you couldn't write into it.",
-                        controlFile.getName()));
+        if (!controlFile.exists() || !controlFile.canWrite())
+            throw new IOException(String.format("%s didn't exist or you couldn't write into it.",
+                                                controlFile.getName()));
 
-            if (getProgress() == 100)
-                throw new IOException("It was already simulated.");
+        if (getProgress() == 100)
+            throw new IOException("It was already simulated.");
 
         try (RandomAccessFile raf = new RandomAccessFile(controlFile, "rws")) {
             raf.write(CANCEL_OPEARTION);
         }
     }
 
-    public Map<String, Number> getCombination () {
+    public Map<String, Number> getCombination() {
         return Collections.unmodifiableMap(mCombination);
     }
 
-    public int getProgress () {
-            File percentageFile = getPercentageFile();
-            if (!percentageFile.exists() || !percentageFile.canRead())
-                return -1;
+    public int getProgress() {
+        File percentageFile = getPercentageFile();
+        if (!percentageFile.exists() || !percentageFile.canRead())
+            return -1;
         try (FileInputStream fis = new FileInputStream(percentageFile)) {
             return fis.read();
         } catch (IOException ex) {
@@ -76,30 +76,30 @@ public class JobDao extends DaoObject {
         }
     }
 
-    public int getJobId () {
+    public int getJobId() {
         return mJobId;
     }
 
-    public File getControlFile () {
+    public File getControlFile() {
         return new File(mDirPath, "control");
     }
 
-    public File getPercentageFile () {
+    public File getPercentageFile() {
         return new File(mDirPath, "status");
     }
 
-    public File getIsdFile () {
+    public File getIsdFile() {
         return new File(mDirPath, "isd");
     }
 
     public boolean isCancelled() {
-            File controlFile = getControlFile();
+        File controlFile = getControlFile();
 
-            if (!controlFile.exists() || !controlFile.canWrite())
-                return false;
+        if (!controlFile.exists() || !controlFile.canWrite())
+            return false;
 
-            if (getProgress() == 100)
-                return false;
+        if (getProgress() == 100)
+            return false;
 
         try (RandomAccessFile raf = new RandomAccessFile(controlFile, "rws")) {
             int operation = raf.read();

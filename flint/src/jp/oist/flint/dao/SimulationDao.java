@@ -18,11 +18,11 @@ public class SimulationDao extends DaoObject {
 
     private Map<Integer, String> mModelPathList;
 
-    public SimulationDao (String prefix) throws SQLException, IOException {
+    public SimulationDao(String prefix) throws SQLException, IOException {
         this("x.db", prefix);
     }
 
-    public SimulationDao (String dbName, String prefix)
+    public SimulationDao(String dbName, String prefix)
             throws SQLException, IOException {
         super(dbName, prefix);
 
@@ -31,13 +31,13 @@ public class SimulationDao extends DaoObject {
         mTaskList.put(0, null);  // SQLite indexing is based 1.
     }
 
-    private int indexOf (File modelFile, int startIndex, String order) {
-            String sql = "SELECT ts.rowid AS rowid FROM tasks AS ts "
-                            +"LEFT JOIN models AS ml " 
-                                + "ON ts.model_id = ml.rowid "
-                        + "WHERE ml.model_path = ? AND ts.model_id >= ? "
-                        + "ORDER BY ts.model_id " + order + " "
-                        + "LIMIT 1";
+    private int indexOf(File modelFile, int startIndex, String order) {
+        String sql = "SELECT ts.rowid AS rowid FROM tasks AS ts "
+            + "LEFT JOIN models AS ml "
+            + "ON ts.model_id = ml.rowid "
+            + "WHERE ml.model_path = ? AND ts.model_id >= ? "
+            + "ORDER BY ts.model_id " + order + " "
+            + "LIMIT 1";
         try (PreparedStatement stmt = getConnection().prepareStatement(sql)) {
             String modelPath = modelFile.getPath();
 
@@ -58,25 +58,25 @@ public class SimulationDao extends DaoObject {
         }
     }
 
-    public int indexOf (File modelFile) {
+    public int indexOf(File modelFile) {
         return indexOf(modelFile, 0, "ASC");
     }
 
-    public int indexOf (File modelFile, int fromIndex) {
+    public int indexOf(File modelFile, int fromIndex) {
         return indexOf(modelFile, fromIndex, "ASC");
     }
 
-    public int lastIndexOf (File modelFile) {
+    public int lastIndexOf(File modelFile) {
         return indexOf(modelFile, 0, "DESC");
     }
 
-    public int getCount () {
-            String sql = "SELECT count(ts.rowid) AS count FROM tasks AS ts "
-                    + "LEFT JOIN models AS ml "
-                    + "ON ts.model_id = ml.rowid ";
+    public int getCount() {
+        String sql = "SELECT count(ts.rowid) AS count FROM tasks AS ts "
+            + "LEFT JOIN models AS ml "
+            + "ON ts.model_id = ml.rowid ";
         try (Statement stmt = getConnection().createStatement();
              ResultSet result = stmt.executeQuery(sql)) {
-            if (!result.next()) 
+            if (!result.next())
                 return -1;
 
             return result.getInt("count");
@@ -89,14 +89,14 @@ public class SimulationDao extends DaoObject {
         }
     }
 
-    private Map<Integer, String> getModelPathList () {
+    private Map<Integer, String> getModelPathList() {
         if (mModelPathList != null && mModelPathList.size() > 1)
             return mModelPathList;
 
-            String sql = "SELECT ts.sim_id AS sim_id, ml.model_path AS model_path "
-                    + "FROM tasks AS ts "
-                        + "LEFT JOIN models AS ml "
-                            + "ON ts.model_id = ml.rowid";
+        String sql = "SELECT ts.sim_id AS sim_id, ml.model_path AS model_path "
+            + "FROM tasks AS ts "
+            + "LEFT JOIN models AS ml "
+            + "ON ts.model_id = ml.rowid";
         try (Statement stmt = getConnection().createStatement();
              ResultSet result = stmt.executeQuery(sql)) {
 
@@ -116,7 +116,7 @@ public class SimulationDao extends DaoObject {
                     }
                 }
 
-                if (taskId > 0 && modelPath != null) 
+                if (taskId > 0 && modelPath != null)
                     retvals.put(taskId, modelPath);
             }
 
@@ -124,7 +124,7 @@ public class SimulationDao extends DaoObject {
             return retvals;
         } catch (SQLException ex) {
             printError(ex.getErrorCode(), ex.getMessage());
-            return null; 
+            return null;
         } catch (IOException ex) {
             printError(ex.getMessage());
             return null;
@@ -132,23 +132,23 @@ public class SimulationDao extends DaoObject {
     }
 
 
-    public TaskDao obtainTask (File file) {
+    public TaskDao obtainTask(File file) {
         int lastIndex = lastIndexOf(file);
 
         return obtainTask(lastIndex);
     }
 
-    public TaskDao obtainTask (int taskId) {
+    public TaskDao obtainTask(int taskId) {
         try {
             if (mTaskList.keySet().contains(Integer.valueOf(taskId)))
                 return mTaskList.get(taskId);
-            
+
             Map<Integer, String> modelPathList = getModelPathList();
-            
-            if (modelPathList == null || modelPathList.size() <= 1 
+
+            if (modelPathList == null || modelPathList.size() <= 1
                     || !modelPathList.containsKey(taskId))
                 return null;
-            
+
             String modelPath = modelPathList.get(taskId);
 
             File modelFile = new File(modelPath);
@@ -162,10 +162,10 @@ public class SimulationDao extends DaoObject {
         }
     }
 
-    public JobDao obtainJob (int taskId, int jobId) {
-        if (mTaskList.containsKey(taskId)) 
+    public JobDao obtainJob(int taskId, int jobId) {
+        if (mTaskList.containsKey(taskId))
             return mTaskList.get(taskId).obtainJob(jobId);
-        
+
         TaskDao taskDao = obtainTask(taskId);
         if (taskDao == null)
             return null;

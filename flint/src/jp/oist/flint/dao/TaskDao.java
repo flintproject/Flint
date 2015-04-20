@@ -21,7 +21,7 @@ public class TaskDao extends DaoObject {
         PENDING, GENERATED, UNKNOWN;
 
         public static Status fromString (String s) {
-            if (s == null || s.isEmpty()) 
+            if (s == null || s.isEmpty())
                 return UNKNOWN;
 
             String status = s.toLowerCase();
@@ -44,7 +44,7 @@ public class TaskDao extends DaoObject {
 
     private int mCount = -1;
 
-    protected TaskDao (int taskId, String prefix, File modelFile) 
+    protected TaskDao(int taskId, String prefix, File modelFile)
             throws SQLException, IOException {
         super("db", prefix + File.separator + taskId);
 
@@ -54,24 +54,24 @@ public class TaskDao extends DaoObject {
                 .append(File.separator).append(taskId).toString();
     }
 
-    public int getTaskId () {
+    public int getTaskId() {
         return mTaskId;
     }
 
-    public File getModelFile () {
+    public File getModelFile() {
         return mModelFile;
     }
 
-    public File getTrackFile () {
+    public File getTrackFile() {
         return new File(mWorkingDir, "track");
     }
 
-    public boolean isCancelled () {
+    public boolean isCancelled() {
         File cancelFile = new File(mWorkingDir, "canceled");
         return cancelFile.exists();
     }
 
-    public boolean isStarted () {
+    public boolean isStarted() {
         File workingDir = new File(mWorkingDir);
         File[] jobDirs = workingDir.listFiles(new FilenameFilter() {
             @Override
@@ -87,7 +87,7 @@ public class TaskDao extends DaoObject {
         return jobDirs.length > 0;
     }
 
-    public boolean isFinished () {
+    public boolean isFinished() {
         if (!isStarted()) return false;
         if (isCancelled()) return true;
 
@@ -102,7 +102,7 @@ public class TaskDao extends DaoObject {
         return true;
     }
 
-    public void cancel () throws IOException {
+    public void cancel() throws IOException {
         File workingDir = new File(mWorkingDir);
         if (!workingDir.exists())
             throw new IOException("It has not yet started.");
@@ -121,7 +121,7 @@ public class TaskDao extends DaoObject {
         }
     }
 
-    public JobDao obtainJob (int jobId) {
+    public JobDao obtainJob(int jobId) {
         getCombinationList();
 
         if (jobId < 1 || jobId >= mCombinations.size())
@@ -130,14 +130,14 @@ public class TaskDao extends DaoObject {
         Map<String, Number> combination = mCombinations.get(jobId);
         File workingDir = new File(mWorkingDir, String.valueOf(jobId));
 
-        return new JobDao(this, 
+        return new JobDao(this,
                 workingDir.getAbsolutePath(), combination, jobId);
     }
 
-    public int indexOf (Number[] combination, String[] titles) 
+    public int indexOf(Number[] combination, String[] titles)
             throws IOException {
 
-        if (combination.length != titles.length) 
+        if (combination.length != titles.length)
             throw new IOException("");
 
         int length = combination.length;
@@ -149,22 +149,22 @@ public class TaskDao extends DaoObject {
         return indexOf(map);
     }
 
-    public int indexOf (Map<String, Number> combination) {
-            String sql = "SELECT js.rowid AS rowid FROM jobs AS js " 
-                            + "LEFT JOIN enum AS e " 
-                                + "ON js.enum_id = e.rowid ";
-            StringBuilder sb = new StringBuilder();
-            Number[] params = new Number[combination.size()];
-            String[] names = combination.keySet()
-                    .toArray(new String[combination.size()]);
-            for (int i=0; i<combination.size(); i++) {
-                String name = names[i];
-                params[i] = combination.get(names[i]);
-                sb.append(String.format("e.%s = ? AND ", name));
-            }
-            
-            String where = sb.substring(0, sb.length() - "AND ".length()) + " ";
-            sql = sql + "WHERE " + where + " LIMIT 1" ;
+    public int indexOf(Map<String, Number> combination) {
+        String sql = "SELECT js.rowid AS rowid FROM jobs AS js "
+            + "LEFT JOIN enum AS e "
+            + "ON js.enum_id = e.rowid ";
+        StringBuilder sb = new StringBuilder();
+        Number[] params = new Number[combination.size()];
+        String[] names = combination.keySet()
+            .toArray(new String[combination.size()]);
+        for (int i=0; i<combination.size(); i++) {
+            String name = names[i];
+            params[i] = combination.get(names[i]);
+            sb.append(String.format("e.%s = ? AND ", name));
+        }
+
+        String where = sb.substring(0, sb.length() - "AND ".length()) + " ";
+        sql = sql + "WHERE " + where + " LIMIT 1" ;
 
         try (PreparedStatement stmt = getConnection().prepareStatement(sql)) {
             for (int i=0; i<params.length; i++) {
@@ -177,7 +177,7 @@ public class TaskDao extends DaoObject {
             }
 
             try (ResultSet result = stmt.executeQuery()) {
-                if (!result.next()) 
+                if (!result.next())
                     return -1;
 
                 return result.getInt("rowid");
@@ -191,11 +191,11 @@ public class TaskDao extends DaoObject {
         }
     }
 
-    public Status getStatus (int index) {
-            String sql = "SELECT js.status AS status FROM jobs AS js " 
-                            + "LEFT JOIN enum AS e " 
-                                + "ON js.enum_id = e.rowid "
-                            + "WHERE js.rowid = ? LIMIT 1";
+    public Status getStatus(int index) {
+        String sql = "SELECT js.status AS status FROM jobs AS js "
+            + "LEFT JOIN enum AS e "
+            + "ON js.enum_id = e.rowid "
+            + "WHERE js.rowid = ? LIMIT 1";
         try (PreparedStatement stmt = getConnection().prepareStatement(sql)) {
             stmt.setInt(1, index);
             try (ResultSet result = stmt.executeQuery()) {
@@ -212,16 +212,16 @@ public class TaskDao extends DaoObject {
         return Status.UNKNOWN;
     }
 
-    private int getCount (Condition where) {
+    private int getCount(Condition where) {
 
         if (mCount > 0)
             return mCount;
 
-            String sql = "SELECT count(js.rowid) AS count FROM jobs AS js " 
-                            + "LEFT JOIN enum AS e " 
-                                + "ON js.enum_id = e.rowid ";
-            if (where != null)
-                sql += "WHERE " + where.toString();
+        String sql = "SELECT count(js.rowid) AS count FROM jobs AS js "
+            + "LEFT JOIN enum AS e "
+            + "ON js.enum_id = e.rowid ";
+        if (where != null)
+            sql += "WHERE " + where.toString();
 
         try (PreparedStatement stmt = getConnection().prepareStatement(sql);
              ResultSet result = stmt.executeQuery()) {
@@ -239,22 +239,22 @@ public class TaskDao extends DaoObject {
         }
     }
 
-    public int getCount () {
+    public int getCount() {
         if (mCount <= 0)
             mCount = getCount(null);
 
         return mCount;
     }
 
-    public int getPendingCount () {
+    public int getPendingCount() {
         return getCount(new Condition("status = 'pending'"));
     }
 
-    public int getGeneratedCount () {
+    public int getGeneratedCount() {
         return getCount(new Condition("status = 'generated'"));
     }
 
-    public int getProgress () {
+    public int getProgress() {
         int jobCount = getCount();
         if (jobCount <= 0)
             return 0;
@@ -272,14 +272,14 @@ public class TaskDao extends DaoObject {
         return (int)((double)total / (double)jobCount);
     }
 
-    private List<Integer> getIndices (Condition where) {
-            String sql = "SELECT js.rowid AS rowid FROM jobs AS js " 
-                            + "LEFT JOIN enum AS e " 
-                                + "ON js.enum_id = e.rowid ";
-            
-            if (where != null)
-                sql += "WHERE " + where.toString();
-            
+    private List<Integer> getIndices(Condition where) {
+        String sql = "SELECT js.rowid AS rowid FROM jobs AS js "
+            + "LEFT JOIN enum AS e "
+            + "ON js.enum_id = e.rowid ";
+
+        if (where != null)
+            sql += "WHERE " + where.toString();
+
         try (PreparedStatement stmt = getConnection().prepareStatement(sql);
              ResultSet result = stmt.executeQuery()) {
             List<Integer> retval = new ArrayList<>();
@@ -296,41 +296,41 @@ public class TaskDao extends DaoObject {
         }
     }
 
-    public List<Integer> getIndices () {
+    public List<Integer> getIndices() {
         return getIndices(null);
     }
 
-    public List<Integer> getIndicesOf (Status status) {
+    public List<Integer> getIndicesOf(Status status) {
         Condition condition;
 
         switch (status) {
             case PENDING:
                 return getIndices(new Condition("status = 'pending'"));
-            case GENERATED: 
+            case GENERATED:
                 return getIndices(new Condition("status = 'generated'"));
             default:
                 return Collections.unmodifiableList(new ArrayList());
         }
     }
 
-    public Map<String, Number> getCombination (int jobId) {
+    public Map<String, Number> getCombination(int jobId) {
         return getCombinationList().get(jobId);
     }
 
-    public List<Map<String, Number>> getCombinationList () {
+    public List<Map<String, Number>> getCombinationList() {
         int count = getCount();
         if (mCombinations != null && mCombinations.size() == count+1)
             return mCombinations;
 
-            StringBuilder sb = new StringBuilder();
-            
-            String sql = "SELECT js.rowid AS rowid, e.* FROM jobs AS js "
-                    + "LEFT JOIN enum AS e "
-                    + "ON js.enum_id = e.rowid ";
+        StringBuilder sb = new StringBuilder();
+
+        String sql = "SELECT js.rowid AS rowid, e.* FROM jobs AS js "
+            + "LEFT JOIN enum AS e "
+            + "ON js.enum_id = e.rowid ";
 
         try (Statement stmt = getConnection().createStatement();
              ResultSet result = stmt.executeQuery(sql)) {
-            List<Map<String, Number>> retval = 
+            List<Map<String, Number>> retval =
                     new ArrayList<>();
 
              // SQLite indexing is based 1.
