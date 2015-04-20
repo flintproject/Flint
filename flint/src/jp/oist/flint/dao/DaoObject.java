@@ -27,11 +27,6 @@ public abstract class DaoObject implements AutoCloseable {
 
     private String mDbName;
 
-    public DaoObject (String dbName)
-            throws SQLException {
-        this(dbName, "");
-    }
-
     public DaoObject (String dbName, String prefix)
             throws SQLException {
         if (dbName == null || dbName.isEmpty())
