@@ -40,7 +40,6 @@ public class FileChooser {
     }
 
     private Component mComponent;
-    private Mode mMode;
     private FileDialog mFileDialog;
     private JFileChooser mJFileChooser;
 
