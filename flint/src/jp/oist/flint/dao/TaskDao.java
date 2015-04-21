@@ -313,8 +313,6 @@ public class TaskDao extends DaoObject {
         if (mCombinations != null && mCombinations.size() == count+1)
             return mCombinations;
 
-        StringBuilder sb = new StringBuilder();
-
         String sql = "SELECT js.rowid AS rowid, e.* FROM jobs AS js "
             + "LEFT JOIN enum AS e "
             + "ON js.enum_id = e.rowid ";
