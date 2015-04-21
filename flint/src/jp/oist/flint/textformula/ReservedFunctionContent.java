@@ -3,10 +3,6 @@ package jp.oist.flint.textformula;
 
 public class ReservedFunctionContent {
 
-    private static enum SearchTarget {
-        FunctionName, MathmlName
-    };
-
     public static class FunctionInformation {
 
         public final String functionName;
