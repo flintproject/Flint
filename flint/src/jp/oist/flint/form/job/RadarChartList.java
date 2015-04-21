@@ -29,10 +29,6 @@ import jp.oist.flint.form.layout.VerticalFlowLayout;
 public class RadarChartList extends JobViewerComponent 
     implements PropertyChangeListener {
 
-    static {
-        String osName = System.getProperty("os.name");
-    }
-
     public static boolean canPlot (IParameterInfo pInfo) {
         if (pInfo == null)
             return false;
