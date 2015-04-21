@@ -47,12 +47,6 @@ public class FlintExecJob implements IJob<Boolean> {
     }
 
     @Override
-    public String getCommand() {
-        List<String> list = mProcessBuilder.command();
-        return list.get(list.size()-1);
-    }
-
-    @Override
     public Process getProcess() {
         return mProcess;
     }

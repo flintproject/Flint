@@ -19,12 +19,6 @@ public class AbstractFileJob implements IJob<File> {
     }
 
     @Override
-    public String getCommand() {
-        List<String> list = mProcessBuilder.command();
-        return list.get(list.size()-1);
-    }
-
-    @Override
     public Process getProcess() {return mProcess;}
 
 }

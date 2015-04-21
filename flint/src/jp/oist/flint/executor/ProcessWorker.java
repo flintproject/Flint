@@ -12,12 +12,10 @@ import javax.swing.SwingWorker;
 
 public class ProcessWorker extends SwingWorker<Integer, String> {
 
-    private final String mCommand;
     private final Process mProcess;
     private final IFrame mFrame;
 
-    public ProcessWorker(String command, Process process, IFrame frame) {
-        mCommand = command;
+    public ProcessWorker(Process process, IFrame frame) {
         mProcess = process;
         mFrame = frame;
     }

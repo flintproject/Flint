@@ -34,7 +34,7 @@ public class ExportWorker extends SwingWorker<Boolean, Boolean> {
     protected Boolean doInBackground() throws ExecutionException, IOException, InterruptedException {
         mMonitor.execute();
         Isd2csvJob job = new Isd2csvJob(mSource, mTarget, mMonitor.getPort());
-        ProcessWorker worker = new ProcessWorker(job.getCommand(), job.getProcess(), mFrame);
+        ProcessWorker worker = new ProcessWorker(job.getProcess(), mFrame);
         worker.execute();
         mPool.submit(job);
         return worker.get() == 0;

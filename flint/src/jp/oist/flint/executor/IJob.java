@@ -5,8 +5,6 @@ import java.util.concurrent.Callable;
 
 public interface IJob<E> extends Callable<E> {
 
-    public String getCommand();
-
     public Process getProcess();
 
 }

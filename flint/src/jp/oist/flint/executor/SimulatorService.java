@@ -22,15 +22,14 @@ public class SimulatorService {
     }
 
     public Future submit(final IJob job) {
-        final ProcessWorker processWorker = new ProcessWorker(job.getCommand(), job.getProcess(), mFrame);
+        final ProcessWorker processWorker = new ProcessWorker(job.getProcess(), mFrame);
         processWorker.execute();
         return mPool.submit(job);
     }
 
     public Future submit(final IJob job, final File logFile) throws IOException {
         final BufferedWriter writer = new BufferedWriter(new FileWriter(logFile));
-        final ProcessWorker processWorker 
-                = new ProcessWorker(job.getCommand(), job.getProcess(), mFrame) {
+        final ProcessWorker processWorker = new ProcessWorker(job.getProcess(), mFrame) {
             @Override
             protected void process(List<String> lines) {
                 try {
