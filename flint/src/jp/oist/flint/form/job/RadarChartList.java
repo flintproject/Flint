@@ -53,7 +53,7 @@ public class RadarChartList extends JobViewerComponent
 
     private final int mMaximum = 100;
 
-    private RadarChartEventHandler mRadarChartEventHandler;
+    private final RadarChartEventHandler mRadarChartEventHandler;
 
     public RadarChartList (IParameterInfo pInfo) {
         super(new VerticalFlowLayout(), pInfo);

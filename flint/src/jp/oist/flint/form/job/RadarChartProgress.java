@@ -29,7 +29,7 @@ public class RadarChartProgress extends JPanel
 
     private RadarChart mRadarChart = null;
 
-    private int mNumberOfSides;
+    private final int mNumberOfSides;
 
     private boolean mValueIsAdjusting = false;
 

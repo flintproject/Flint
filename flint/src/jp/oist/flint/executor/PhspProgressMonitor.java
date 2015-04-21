@@ -38,7 +38,7 @@ public class PhspProgressMonitor implements FileListener, Runnable {
 
     private volatile boolean mDone = false;
 
-    private LinkedList<JobDao> mQueue = new LinkedList<>();
+    private final LinkedList<JobDao> mQueue = new LinkedList<>();
 
     private ISimulationConfigurationList mSimulationConfiguration;
 
