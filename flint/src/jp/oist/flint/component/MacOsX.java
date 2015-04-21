@@ -35,10 +35,6 @@ public class MacOsX implements IOs {
         if (outputFile != null) {
             s += " > " + getQuotedFilePath(outputFile);
         }
-        File appendFile = command.getAppendFile();
-        if (appendFile != null) {
-            s += " >> " + getQuotedFilePath(appendFile);
-        }
         return s;
     }
 

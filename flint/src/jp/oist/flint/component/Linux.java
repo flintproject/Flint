@@ -27,10 +27,6 @@ public class Linux implements IOs {
         if (outputFile != null) {
             s += " > " + getQuotedFilePath(outputFile);
         }
-        File appendFile = command.getAppendFile();
-        if (appendFile != null) {
-            s += " >> " + getQuotedFilePath(appendFile);
-        }
         return s;
     }
 

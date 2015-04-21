@@ -16,8 +16,6 @@ public class Command {
 
     File mOutputFile = null;
 
-    File mAppendFile = null;
-
     public Command(String name) {
         mName = name;
     }
@@ -64,9 +62,5 @@ public class Command {
 
     public void setOutputFile(File file) {
         mOutputFile = file;
-    }
-
-    public File getAppendFile() {
-        return mAppendFile;
     }
 }
