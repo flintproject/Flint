@@ -489,8 +489,6 @@ public class MathML2TextFormula {
 
     private class MathMLHandler {
 
-        private StringBuilder builder = null;
-
         private Document document;
 
         private FormulaNode root=null, cur;
