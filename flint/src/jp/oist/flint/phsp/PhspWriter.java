@@ -21,11 +21,6 @@ public class PhspWriter {
 
     private final String mLineFeed = System.getProperty("line.separator");
 
-    private String validateString (String s) {
-        if (s==null) return "";
-        return s;
-    }
-
     private String escape(String s) {
         return s.replaceAll(">","&gt;").replaceAll("<", "&lt;").replaceAll("&", "&amp;").replaceAll("'", "&apos;");
     }
