@@ -45,22 +45,7 @@ public class Workspace {
             }
         }
 
-        Runtime.getRuntime().addShutdownHook(new Thread () {
-            @Override
-            public void run() {
-                if (mFileLock != null) {
-                    try {
-                        FileChannel channel = mFileLock.channel();
-                        mFileLock.release();
-                        channel.close();
-
-                        Workspace.recursiveDelete(Workspace.getFile());
-                    } catch (IOException ex) {
-                        Logger.getRootLogger().error(ex.getMessage());
-                    }
-                }
-            }
-        });
+        Runtime.getRuntime().addShutdownHook(new ShutdownHook());
     }
 
     private static void clear() throws IOException {
@@ -169,21 +154,16 @@ public class Workspace {
         target.delete();
     }
 
-    public static class ShutdownHook implements Runnable {
-
-        private ShutdownHook() { }
+    private static class ShutdownHook extends Thread {
 
         @Override
         public void run() {
             if (mFileLock != null) {
-                try {
-                    FileChannel channel = mFileLock.channel();
-                    mFileLock.release();
-                    channel.close();
-
+                try (FileChannel channel = mFileLock.channel()) {
                     Workspace.recursiveDelete(Workspace.getFile());
-                } catch (IOException ex) {
-                    // ignored.
+                    mFileLock.release();
+                } catch (IOException ioe) {
+                    // ignored
                 }
             }
         }
