@@ -19,8 +19,6 @@ import javax.swing.JOptionPane;
  */
 public class PlotterRegistrationDialog extends javax.swing.JDialog {
 
-    final private PlotterLoader mPlotterLoader = new PlotterLoader();
-
     /**
      * Creates new form PlotterRegistrationDialog
      */
