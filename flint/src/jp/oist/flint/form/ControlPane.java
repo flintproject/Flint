@@ -90,7 +90,6 @@ public class ControlPane extends PeripheralPane
 
     @Override
     public void onModelClosed(MainFrame.Event evt) {
-        MainFrame mainFrame = (MainFrame)evt.getSource();
     }
 
     /*

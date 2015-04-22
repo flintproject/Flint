@@ -89,7 +89,6 @@ public class FlintChartPanel extends ChartPanel
     public void mouseWheelMoved(MouseWheelEvent evt) {
         int wheelRotation = evt.getWheelRotation();
         Point2D point = translateJava2DToScreen(evt.getPoint());
-        PlotRenderingInfo plotInfo = getPlotRenderingInfo((Point)point);
 
         if (wheelRotation > 0) { // zoom out
             zoomOut(point);
@@ -174,9 +173,6 @@ public class FlintChartPanel extends ChartPanel
     }
         
     private void zoomOut (Point2D point) {
-        PlotRenderingInfo plotInfo = getPlotRenderingInfo((Point)point);
-        Rectangle2D dataArea = plotInfo.getDataArea();
-
         for (int i = 0; i < getChart().getXYPlot().getDomainAxisCount(); i++) {
             ValueAxis domainAxis = getChart().getXYPlot().getDomainAxis(i);
             double anchor = domainAxis.getRange().getCentralValue();

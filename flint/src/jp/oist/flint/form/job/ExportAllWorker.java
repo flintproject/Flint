@@ -72,7 +72,6 @@ public class ExportAllWorker extends SwingWorker<Void, Void> {
             writer = new BufferedWriter(new FileWriter(listFile));
         }
 
-        String lineSep = System.getProperty("line.separator");
         try {
             String baseName = Utility.getFileName(mTaskDao.getModelFile().getName());
             int jobCount = mTaskDao.getCount();

@@ -145,7 +145,6 @@ public class TextFormula2MathML
     @Override
     public Object visit(ASTAssignmentNode node, Object data) 
         throws ParseException {
-        Element parent = (Element)data;
         Element apply = visitOperator(node, (Element)data, "m:eq");
         defaultVisit(node, apply);
         return data;

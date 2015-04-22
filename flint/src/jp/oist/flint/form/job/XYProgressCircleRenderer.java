@@ -41,7 +41,6 @@ public class XYProgressCircleRenderer extends XYLineAndShapeRenderer {
             if (Double.isNaN(valueX) || Double.isNaN(valueY))
                 return;
 
-            PlotOrientation orientation = plot.getOrientation();
             RectangleEdge xAxisLocation = plot.getDomainAxisEdge();
             RectangleEdge yAxisLocation = plot.getRangeAxisEdge();
             double transX1 = domainAxis.valueToJava2D(valueX, dataArea, xAxisLocation);

@@ -316,7 +316,6 @@ public class AutoCompleter implements
             Point p = getCaret().getMagicCaretPosition();
             if (p!=null) return p;
 
-            String text = getText();
             int dot = getCaret().getDot();
             Rectangle area = modelToView(dot);
             scrollRectToVisible(area);

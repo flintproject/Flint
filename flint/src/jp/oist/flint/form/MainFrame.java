@@ -157,7 +157,6 @@ public class MainFrame extends javax.swing.JFrame
 
     private JComponent createContentPane () {
         final JSplitPane contentPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
-        Dimension paneSize = new Dimension(800, 600);
         contentPane.setDividerSize(10);
         contentPane.setDividerLocation(638);
         contentPane.setOneTouchExpandable(true);
@@ -171,7 +170,6 @@ public class MainFrame extends javax.swing.JFrame
         final JPanel peripheralPane = new JPanel(new BorderLayout());
         peripheralPane.setEnabled(false);
 
-        paneSize = new Dimension(150, 600);
         peripheralPane.setMaximumSize(new Dimension(Short.MAX_VALUE, Short.MAX_VALUE));
         peripheralPane.setMinimumSize(new Dimension(150, Short.MAX_VALUE));
 
@@ -267,7 +265,6 @@ public class MainFrame extends javax.swing.JFrame
                 @Override
                 public void propertyChange(PropertyChangeEvent e) {
                     String propertyName = e.getPropertyName();
-                    Object nv = e.getNewValue();
                     if ("progress".equals(propertyName)) {
                         if (e instanceof PhspProgressMonitor.Event) {
                             final PhspProgressMonitor.Event evt = (PhspProgressMonitor.Event)e;

@@ -277,7 +277,6 @@ public class PhspReader extends SwingWorker <IPhspConfiguration, Model> {
             transformer.setOutputProperty(OutputKeys.INDENT, "yes");
             transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
             transformer.transform(new DOMSource(element), new StreamResult(sw));
-            DOMSource ds = new DOMSource(element);
             return sw.toString();
     }
 

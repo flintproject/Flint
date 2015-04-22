@@ -156,7 +156,6 @@ public class ProgressPane extends PeripheralPane
      */
     @Override
     public void onModelOpened(MainFrame.Event evt) {
-        final MainFrame mainFrame = (MainFrame)evt.getSource();
         final SubFrame subFrame = evt.getTarget();
         File file = subFrame.getModelFile();
         ProgressPane.ListCell plcp = createListCell(subFrame);
@@ -211,7 +210,6 @@ public class ProgressPane extends PeripheralPane
 
 
         private void initComponents () {
-            DefaultListModel model = (DefaultListModel)getModel(); 
             super.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
             super.setDragEnabled(false);
 
@@ -292,7 +290,6 @@ public class ProgressPane extends PeripheralPane
 
         @Override
         public void intervalRemoved(ListDataEvent evt) {
-            DefaultListModel model = (DefaultListModel)evt.getSource();
             int deletedIndex = evt.getIndex0();
             int selectedIndex = deletedIndex-1;
             if(selectedIndex < 1) selectedIndex = 0; 
@@ -549,8 +546,6 @@ public class ProgressPane extends PeripheralPane
         }
 
         public void progressStarted () {
-            int max = mProgressBar.getMaximum();
-            int min = mProgressBar.getMinimum();
             String msg = "preparing...";
 
             mProgressBar.setValue(0);

@@ -575,7 +575,6 @@ public class JobWindow extends javax.swing.JFrame
 
     public void exportAllPerformed (ActionEvent evt) {
         try {
-            int dataSize = mDataModel.getSize();
             if (mSimulator == null || mSimulator.getSimulationDao() == null)
                 throw new Exception("Could not open the simulation files.");
 

@@ -121,8 +121,6 @@ public class RadarChartList extends JobViewerComponent
 
         int columnCount = getSize().width / mCellSize.width;
         int row = (int)Math.floor(index / columnCount);
-        int barPosition = scrollPane.getVerticalScrollBar().getValue() / mCellSize.height;
-
         int movement = row*mCellSize.height;
         scrollPane.getVerticalScrollBar().setValue(movement);
     }
@@ -152,7 +150,6 @@ public class RadarChartList extends JobViewerComponent
     }
 
     private int vertexToIndex (int vertexIndex) {
-        IParameterInfo pInfo = getParameterInfo();
         int[] activeIndecies = getParameterInfo().getActiveIndexes();
         if (activeIndecies == null)
             return -1;
@@ -179,7 +176,6 @@ public class RadarChartList extends JobViewerComponent
                 Number[] values = ((CombinationModel)getModel()).getValues(index);
 
                 int count = pInfo.getParameterCount();
-                StringBuilder sb = new StringBuilder();
                 for (int i=0; i<count; i++)
                     ret.put(i, values[i]);
                 return ret;
@@ -300,7 +296,6 @@ public class RadarChartList extends JobViewerComponent
 
     @Override
     public void intervalRemoved (ListDataEvent evt) {
-        ListModel model = (ListModel)evt.getSource();
         int anchor = evt.getIndex0();
         int lead = evt.getIndex1();
 
@@ -425,36 +420,26 @@ public class RadarChartList extends JobViewerComponent
         @Override
         public void mouseReleased(MouseEvent evt) {
             getSelectionModel().setValueIsAdjusting(false);
-            Component source = evt.getComponent();
-            Component dest   = RadarChartList.this;
         }
 
         @Override
         public void mouseEntered(MouseEvent evt) {
             getSelectionModel().setValueIsAdjusting(false);
-            Component source = evt.getComponent();
-            Component dest   = RadarChartList.this;
         }
 
         @Override
         public void mouseExited(MouseEvent evt) {
             getSelectionModel().setValueIsAdjusting(false);
-            Component source = evt.getComponent();
-            Component dest   = RadarChartList.this;
         }
 
         @Override
         public void mouseDragged(MouseEvent evt) {
             getSelectionModel().setValueIsAdjusting(false);
-            Component source = evt.getComponent();
-            Component dest   = RadarChartList.this;
         }
 
         @Override
         public void mouseMoved(MouseEvent evt) {
             getSelectionModel().setValueIsAdjusting(false);
-            Component source = evt.getComponent();
-            Component dest   = RadarChartList.this;
         }
     }
 

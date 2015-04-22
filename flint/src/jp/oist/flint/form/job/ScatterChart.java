@@ -93,13 +93,11 @@ public class ScatterChart extends JobViewerComponent
 
     @Override
     public int locationToIndex (Point p) {
-        ChartRenderingInfo rInfo = mChartPanel.getChartRenderingInfo();
         ChartEntity entity = mChartPanel.getEntityForPoint(p.x, p.y);
 
         if (entity instanceof XYItemEntity == false)
             return -1;
 
-        IParameterInfo pInfo = getParameterInfo();
         int index = ((XYItemEntity)entity).getItem();
         return index;
     }
@@ -130,8 +128,6 @@ public class ScatterChart extends JobViewerComponent
 
     @Override
     public void ensureIndexIsVisible (int index) {
-        XYSeriesCollection dataset = (XYSeriesCollection)mChart.getXYPlot().getDataset(0);
-        XYSeries series = dataset.getSeries(0);
     }
 
     @Override

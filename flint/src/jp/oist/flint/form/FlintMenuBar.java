@@ -289,7 +289,7 @@ public class FlintMenuBar extends JMenuBar
         int menuCount = getMenuCount();
         for (int i=0; i<menuCount; i++) {
             JMenu menu = getMenu(i);
-            JMenuItem item = findJMenuItemByName(getMenu(i), name);
+            JMenuItem item = findJMenuItemByName(menu, name);
             if (item != null) return item;
         }
         return null;
@@ -399,9 +399,6 @@ public class FlintMenuBar extends JMenuBar
      */
     @Override
     public void onModelOpened(MainFrame.Event evt) {
-        MainFrame mainFrame = (MainFrame)evt.getSource();
-        int length = mainFrame.getModelLength();
-
         mItemSaveAsPhsp.setEnabled(true);
         mItemLoadConfiguration.setEnabled(true);
         mItemSaveConfiguration.setEnabled(true);

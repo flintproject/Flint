@@ -205,7 +205,6 @@ public class RadarChartProgress extends JPanel
 
         Color defaultColor = g2d.getColor();
         Stroke defaultStroke = g2d.getStroke();
-        AffineTransform defaultAf = g2d.getTransform();
 
         mRadarChart.draw(g, getSize().width, getSize().height);
 
@@ -324,7 +323,6 @@ public class RadarChartProgress extends JPanel
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
         String propertyName = evt.getPropertyName();
-        Object oldValue = evt.getOldValue();
         Object newValue = evt.getNewValue();
 
         if (mRadarChart == null)
