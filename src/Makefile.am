@@ -338,9 +338,8 @@ flint_singleton_CPPFLAGS = $(BOOST_CPPFLAGS)
 flint_singleton_LDADD = libsqlite3.a
 flint_singleton_SOURCES = flint-singleton-main.cc
 
-BUILT_SOURCES += flint-sort-parser.hh
 flint_sort_CPPFLAGS = $(BOOST_CPPFLAGS)
-flint_sort_SOURCES = flint-sort-parser.yy flint-sort-lexer.ll
+flint_sort_SOURCES = flint-sort-main.cc
 
 flint_spec_CPPFLAGS = $(PROTOBUF_CFLAGS) $(BOOST_CPPFLAGS)
 flint_spec_LDFLAGS = $(BOOST_PROGRAM_OPTIONS_LDFLAGS)
