@@ -129,17 +129,14 @@ struct Lexer : lex::lexer<TLexer> {
 		integer = "{SIGN}?{DIGIT}+";
 		id = "[%@][a-zA-Z_][a-zA-Z_0-9:#]*";
 		keyword = "[$]?[a-zA-Z_][a-zA-Z_0-9]*";
-		whitespace = ' ';
 
-		this->self = lex::token_def<>('\n') | '\r' | '(' | ')' | uuid36 | real | integer | id | keyword;
-
-		this->self("WS") = whitespace;
+		this->self = lex::token_def<>('\n') | '\r' | '(' | ')' | ' ';
+		this->self += uuid36 | real | integer | id | keyword;
 	}
 
 	lex::token_def<std::string> uuid36, id, keyword;
 	lex::token_def<int> integer;
 	lex::token_def<double> real;
-	lex::token_def<> whitespace;
 };
 
 static int nol;
@@ -150,8 +147,8 @@ static void SetNol(int i) {
 
 static void AddEntry(const Entry &entry);
 
-template<typename TIterator, typename TLexer>
-struct Grammar : qi::grammar<TIterator, qi::in_state_skipper<TLexer> > {
+template<typename TIterator>
+struct Grammar : qi::grammar<TIterator> {
 
 	template<typename TTokenDef>
 	Grammar(TTokenDef const &td)
@@ -163,18 +160,18 @@ struct Grammar : qi::grammar<TIterator, qi::in_state_skipper<TLexer> > {
 
 		input = *(entry [&AddEntry] >> eol);
 
-		entry %= td.uuid36 >> td.id >> expr;
+		entry %= td.uuid36 >> ' ' >> td.id >> ' ' >> expr;
 
 		expr %= (compound | td.real | td.integer | td.id | td.keyword);
 
-		compound %= '(' >> +expr >> ')';
+		compound %= '(' >> (expr % ' ') >> ')';
 	}
 
-	qi::rule<TIterator, qi::in_state_skipper<TLexer> > start;
-	qi::rule<TIterator, qi::in_state_skipper<TLexer> > input;
-	qi::rule<TIterator, Entry(), qi::in_state_skipper<TLexer> > entry;
-	qi::rule<TIterator, Expr(), qi::in_state_skipper<TLexer> > expr;
-	qi::rule<TIterator, Compound(), qi::in_state_skipper<TLexer> > compound;
+	qi::rule<TIterator> start;
+	qi::rule<TIterator> input;
+	qi::rule<TIterator, Entry()> entry;
+	qi::rule<TIterator, Expr()> expr;
+	qi::rule<TIterator, Compound()> compound;
 };
 
 namespace {
@@ -306,7 +303,7 @@ bool ParseInput(std::istream &is)
 	typedef lex::lexertl::token<base_iterator_type> token_type;
 	typedef lex::lexertl::lexer<token_type> lexer_type;
 	typedef Lexer<lexer_type> RealLexer;
-	typedef Grammar<RealLexer::iterator_type, RealLexer::lexer_def> RealGrammar;
+	typedef Grammar<RealLexer::iterator_type> RealGrammar;
 
 	static const RealLexer tokens;
 	static const RealGrammar grammar(tokens);
@@ -315,9 +312,7 @@ bool ParseInput(std::istream &is)
 	input_iterator_type iit(is);
 	base_iterator_type it = make_default_multi_pass(iit);
 	base_iterator_type eit;
-	bool r = lex::tokenize_and_phrase_parse(it, eit,
-											tokens, grammar,
-											qi::in_state("WS")[tokens.self]);
+	bool r = lex::tokenize_and_parse(it, eit, tokens, grammar);
 	if (!r || it != eit) {
 		cerr << "failed to parse: " << *it << endl;
 		return false;
