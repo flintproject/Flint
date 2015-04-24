@@ -17,6 +17,7 @@
 #include <boost/scoped_ptr.hpp>
 #include <boost/spirit/include/lex_lexertl.hpp>
 #include <boost/spirit/include/qi.hpp>
+#include <boost/spirit/include/support_multi_pass.hpp>
 #include <boost/variant/recursive_variant.hpp>
 
 using std::cerr;
@@ -298,18 +299,10 @@ UuidMap *GetUuidMap()
 	return um.get();
 }
 
-std::string ReadInput()
+bool ParseInput(std::istream &is)
 {
-	using std::cin;
-
-	cin.unsetf(std::ios::skipws);
-	return std::string(std::istreambuf_iterator<char>(cin.rdbuf()),
-					   std::istreambuf_iterator<char>());
-}
-
-bool ParseInput()
-{
-	typedef std::string::iterator base_iterator_type;
+	typedef std::istreambuf_iterator<char> input_iterator_type;
+	typedef multi_pass<input_iterator_type> base_iterator_type;
 	typedef lex::lexertl::token<base_iterator_type> token_type;
 	typedef lex::lexertl::lexer<token_type> lexer_type;
 	typedef Lexer<lexer_type> RealLexer;
@@ -318,12 +311,14 @@ bool ParseInput()
 	static const RealLexer tokens;
 	static const RealGrammar grammar(tokens);
 
-	std::string input = ReadInput();
-	std::string::iterator it = input.begin();
-	bool r = lex::tokenize_and_phrase_parse(it, input.end(),
+	is.unsetf(std::ios::skipws);
+	input_iterator_type iit(is);
+	base_iterator_type it = make_default_multi_pass(iit);
+	base_iterator_type eit;
+	bool r = lex::tokenize_and_phrase_parse(it, eit,
 											tokens, grammar,
 											qi::in_state("WS")[tokens.self]);
-	if (!r || it != input.end()) {
+	if (!r || it != eit) {
 		cerr << "failed to parse: " << *it << endl;
 		return false;
 	}
@@ -340,7 +335,7 @@ static void AddEntry(const Entry &entry)
 
 int main(void)
 {
-	if (!ParseInput()) return EXIT_FAILURE;
+	if (!ParseInput(std::cin)) return EXIT_FAILURE;
 
 	printf("%d\n", nol);
 	for (UuidMap::iterator umit=GetUuidMap()->begin();umit!=GetUuidMap()->end();++umit) {
