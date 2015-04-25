@@ -142,31 +142,6 @@ private:
 	}
 };
 
-class EventTransformer : boost::noncopyable {
-public:
-	bool Transform(const char *uuid, Sexp *statement, boost::ptr_vector<Ast> *asts) {
-		if (statement->IsConditional()) {
-			Sexp *s = TransformConditionalWithPiecewise(uuid, statement);
-			return Transform(uuid, s, asts);
-		} else if (statement->IsEquation()) {
-			Sexp *lhs = GetLhs(statement);
-			Sexp *rhs = GetRhs(statement);
-			if (lhs->IsSymbol()) {
-				const char *id = lhs->s();
-				boost::scoped_array<char> id0(new char[std::strlen(id) + 3]);
-				std::sprintf(id0.get(), "%s#0", id);
-				asts->push_back(new Ast(id0.get(), rhs));
-				return true;
-			} else {
-				assert(false);
-			}
-		} else {
-			assert(false);
-		}
-		return false;
-	}
-};
-
 class EulerTransformer : boost::noncopyable {
 public:
 	bool Transform(const char *uuid, Sexp *statement, boost::ptr_vector<Ast> *asts) {

@@ -179,9 +179,8 @@ BUILT_SOURCES += flint-euler-parser.hh
 flint_euler_CPPFLAGS = $(BOOST_CPPFLAGS)
 flint_euler_SOURCES = flint-euler-parser.yy flint-euler-lexer.ll
 
-BUILT_SOURCES += flint-event-parser.hh
 flint_event_CPPFLAGS = $(BOOST_CPPFLAGS)
-flint_event_SOURCES = flint-event-parser.yy flint-event-lexer.ll
+flint_event_SOURCES = flint-event-main.cc
 
 flint_evolve_CPPFLAGS = $(PROTOBUF_CFLAGS) $(BOOST_CPPFLAGS)
 flint_evolve_LDFLAGS = $(BOOST_PROGRAM_OPTIONS_LDFLAGS)
