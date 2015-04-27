@@ -126,9 +126,8 @@ libsqlite3_a_SOURCES = sqlite3.c
 csv2isd_LDADD = libflintxx.a
 csv2isd_SOURCES = csv2isd-main.cc
 
-BUILT_SOURCES += flint-assign-parser.hh
 flint_assign_CPPFLAGS = $(BOOST_CPPFLAGS)
-flint_assign_SOURCES = flint-assign-parser.yy flint-assign-lexer.ll
+flint_assign_SOURCES = flint-assign-main.cc
 
 BUILT_SOURCES += flint-bcc-parser.hh
 flint_bcc_CPPFLAGS = $(PROTOBUF_CFLAGS) $(BOOST_CPPFLAGS)

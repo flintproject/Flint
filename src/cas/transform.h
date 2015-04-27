@@ -86,62 +86,6 @@ Sexp *TransformConditionalWithPiecewise(const char *uuid, Sexp *conditional)
 
 } // namespace
 
-class AssignmentTransformer : boost::noncopyable {
-public:
-	bool Transform(const char *uuid, Sexp *statement, boost::ptr_vector<Ast> *asts) {
-		if (statement->IsConditional()) {
-			Sexp *s = TransformConditionalWithPiecewise(uuid, statement);
-			return Transform(uuid, s, asts);
-		} else if (statement->IsEquation()) {
-			Sexp *lhs = GetLhs(statement);
-			Sexp *rhs = GetRhs(statement);
-			if (lhs->IsSymbol()) {
-				const char *id = lhs->s();
-				boost::scoped_array<char> id0(new char[std::strlen(id) + 3]);
-				std::sprintf(id0.get(), "%s#0", id);
-				asts->push_back(new Ast(id0.get(), ReplaceParameter(rhs)));
-				return true;
-			} else {
-				assert(false);
-			}
-		} else {
-			assert(false);
-		}
-		return false;
-	}
-
-private:
-	Sexp *ReplaceParameter(Sexp *s) {
-		if (s) {
-			switch (s->tag()) {
-			case Sexp::kInt:
-			case Sexp::kDouble:
-				return s->Clone();
-			case Sexp::kSymbol:
-				{
-					if (*s->s() != '%') {
-						return s->Clone();
-					} else if (strcmp(s->s(), "%time") == 0) {
-						return s->Clone();
-					} else {
-						const char *sname = s->s();
-						boost::scoped_array<char> buf(new char[std::strlen(sname) + 3]);
-						std::sprintf(buf.get(), "%s#0", sname);
-						return new Sexp(buf.get());
-					}
-				}
-			case Sexp::kCons:
-				{
-					Sexp *car = ReplaceParameter(s->GetCar());
-					Sexp *cdr = ReplaceParameter(s->GetCdr());
-					return new Sexp(car, cdr);
-				}
-			}
-		}
-		return NULL;
-	}
-};
-
 class EulerTransformer : boost::noncopyable {
 public:
 	bool Transform(const char *uuid, Sexp *statement, boost::ptr_vector<Ast> *asts) {
