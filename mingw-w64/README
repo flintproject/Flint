@@ -28,7 +28,7 @@ This step requires the following tools:
   http://launch4j.sourceforge.net/
   in order to create single .exe file from flint.jar
 * WiX 3.x
-  http://wix.sourceforge.net/
+  http://wixtoolset.org/
   in order to create .msi installer package
 The packaging script assumes that both are in PATH.
 
