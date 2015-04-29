@@ -130,7 +130,7 @@ tmp/protobuf-$(PROTOBUF_VERSION).installed: tmp/protobuf-$(PROTOBUF_VERSION) | u
 	touch $@
 
 tmp/libxml2-$(LIBXML2_VERSION).installed: tmp/libxml2-$(LIBXML2_VERSION)
-	(cd var/libxml2-$(LIBXML2_VERSION) && ./configure --host=$(HOST) --prefix=$(PREFIX) --without-python LDFLAGS='-static-libgcc -static-libstdc++' && $(MAKE) all install)
+	(cd var/libxml2-$(LIBXML2_VERSION) && ./configure --host=$(HOST) --prefix=$(PREFIX) --without-python --without-threads LDFLAGS='-static-libgcc -static-libstdc++' && $(MAKE) all install)
 	touch $@
 
 tmp/libzip-$(LIBZIP_VERSION).installed: tmp/libzip-$(LIBZIP_VERSION) tmp/zlib-$(ZLIB_VERSION).installed
