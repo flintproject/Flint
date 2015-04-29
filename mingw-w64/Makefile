@@ -204,7 +204,7 @@ flint/Makefile: flint.mk | flint
 flint/header.mk: header.mk | flint
 	install -p -m 0644 $< $@
 
-flint/flint.ico: ../windows/flint.ico | flint
+flint/flint.ico: flint.ico | flint
 	install -p -m 0644 $< $@
 
 flint/flint.xml: flint.xml | flint
