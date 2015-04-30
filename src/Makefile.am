@@ -174,9 +174,8 @@ flint_enum_CFLAGS = $(AM_CFLAGS) -std=c99 -pedantic-errors
 flint_enum_LDADD = libsqlite3.a
 flint_enum_SOURCES = flint-enum-main.c
 
-BUILT_SOURCES += flint-euler-parser.hh
 flint_euler_CPPFLAGS = $(BOOST_CPPFLAGS)
-flint_euler_SOURCES = flint-euler-parser.yy flint-euler-lexer.ll
+flint_euler_SOURCES = flint-euler-main.cc
 
 flint_event_CPPFLAGS = $(BOOST_CPPFLAGS)
 flint_event_SOURCES = flint-event-main.cc
