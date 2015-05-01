@@ -1,5 +1,4 @@
-%{
-/* Prologue */
+/* -*- Mode: C++; tab-width: 4; indent-tabs-mode: t; c-basic-offset: 4 -*- vim:set ts=4 sw=4 sts=4 noet: */
 #ifdef HAVE_CONFIG_H
 #include "config.h"
 #endif
@@ -12,6 +11,7 @@
 #include <iostream>
 #include <map>
 
+#include <boost/algorithm/string.hpp>
 #include <boost/noncopyable.hpp>
 #include <boost/program_options.hpp>
 #include <boost/scoped_array.hpp>
@@ -22,7 +22,6 @@
 #include "db/bridge-loader.h"
 #include "db/driver.h"
 #include "db/name_loader.h"
-#include "cas/sexp.h"
 
 namespace po = boost::program_options;
 
@@ -39,10 +38,6 @@ using std::string;
 using std::sscanf;
 using std::strlen;
 using std::strcmp;
-
-extern FILE *yyin;
-int yylex();
-void yyerror(char const *);
 
 namespace {
 
@@ -80,7 +75,7 @@ public:
 
 	void set_pq_id(int pq_id) {pq_id_ = pq_id;}
 
-	void Write(char c, const char *name) {
+	void Write(char c, const string &name) {
 		ofs_ << uuid_ << " " << c << " " << ++pq_id_ << " " << name << endl;
 	}
 
@@ -99,7 +94,7 @@ public:
 	ValueWriter() : LineWriter() {}
 
 	template<typename TNumber>
-	void Write(const char *name, TNumber x) {
+	void Write(const string &name, TNumber x) {
 		ofs_ << uuid_ << " " << "(eq %" << name << " " << x << ")" << endl;
 	}
 };
@@ -114,17 +109,15 @@ class FunctionWriter : public LineWriter {
 public:
 	FunctionWriter() : LineWriter() {}
 
-	void WriteFunction(const char *name, Sexp *sexp) {
-		ofs_ << uuid_ << " (eq %" << name << " ";
-		sexp->Write(ofs_);
-		ofs_ << ")" << endl;
+	void WriteFunction(const string &name, const string &sexp) {
+		ofs_ << uuid_ << " (eq %" << name << ' ' << sexp << ')' << endl;;
 	}
 
-	void WriteSet(const char *name, const string &pq_name) {
+	void WriteSet(const string &name, const string &pq_name) {
 		ofs_ << uuid_ << " (eq %" << name << " %" << pq_name << ")" << endl;
 	}
 
-	void WriteGet(const string &pq_name, const char *name) {
+	void WriteGet(const string &pq_name, const string &name) {
 		ofs_ << uuid_ << " (eq %" << pq_name << " %sbml:" << name << ")" << endl;
 	}
 };
@@ -139,10 +132,9 @@ class OdeWriter : public LineWriter {
 public:
 	OdeWriter() : LineWriter() {}
 
-	void WriteOde(const char *name, Sexp *sexp) {
-		ofs_ << uuid_ << " " << "(eq (diff (bvar %time) %" << name << ") ";
-		sexp->Write(ofs_);
-		ofs_ << ")" << endl;
+	void WriteOde(const string &name, const string &sexp) {
+		ofs_ << uuid_ << ' ' << "(eq (diff (bvar %time) %" << name << ") "
+			 << sexp << ')' << endl;
 	}
 };
 
@@ -153,7 +145,7 @@ OdeWriter *GetOdeWriter()
 }
 
 template<typename TNumber>
-void AddOde(const char *name, TNumber x, Sexp *sexp)
+void AddOde(const string &name, TNumber x, const string &sexp)
 {
 	const BridgeMap *bm = GetBridgeMap();
 	BridgeMap::const_iterator it = bm->find(name);
@@ -167,7 +159,7 @@ void AddOde(const char *name, TNumber x, Sexp *sexp)
 	}
 }
 
-void AddAssignment(const char *name, Sexp *sexp)
+void AddAssignment(const string &name, const string &sexp)
 {
 	const BridgeMap *bm = GetBridgeMap();
 	BridgeMap::const_iterator it = bm->find(name);
@@ -181,7 +173,7 @@ void AddAssignment(const char *name, Sexp *sexp)
 }
 
 template<typename TNumber>
-void AddConstant(const char *name, TNumber x)
+void AddConstant(const string &name, TNumber x)
 {
 	const BridgeMap *bm = GetBridgeMap();
 	BridgeMap::const_iterator it = bm->find(name);
@@ -251,64 +243,87 @@ private:
 	PhysicalQuantityMap *pqm_;
 };
 
-} // namespace
-
-%}
-
-/* Bison declarations */
-%error-verbose /* obsolete directive standing for "%define parse.error verbose" in Bison 2.7 or later */
-
-%union {
-	int i;
-	double d;
-	char *name;
-	Sexp *sexp;
-}
-
-%token NEWLINE
-
-%token <i> INTEGER
-%token <d> REAL
-%token <name> NAME
-%token <sexp> ID
-%token <sexp> KEYWORD
-
-%type <sexp> sexp seq0 seq1
-
-%%
-/* Grammer Rules */
-
-input: /* empty */
-    | input line
-    ;
-
-line: 'o' NAME REAL sexp NEWLINE {AddOde($2, $3, $4);free($2);}
-    | 'o' NAME INTEGER sexp NEWLINE {AddOde($2, $3, $4);free($2);}
-    | 'a' NAME sexp NEWLINE {AddAssignment($2, $3);free($2);}
-    | 'c' NAME REAL NEWLINE {AddConstant($2, $3);free($2);}
-    | 'c' NAME INTEGER NEWLINE {AddConstant($2, $3);free($2);}
-    ;
-
-sexp: REAL {$$ = new Sexp($1);}
-    | INTEGER {$$ = new Sexp($1);}
-    | ID
-    | KEYWORD
-    | '(' KEYWORD seq0 ')' {$$ = new Sexp($2, $3);}
-    ;
-
-seq0: /* empty */ {$$ = NULL;}
-    | seq1
-    ;
-
-seq1: sexp seq0 {$$ = new Sexp($1, $2);};
-
-%%
-/* Epilogue */
-
-void yyerror(char const *s)
+size_t ProcessName(const string &s)
 {
-	std::fprintf(stderr, "%s\n", s);
+	if (!boost::starts_with(s, "sbml:")) {
+		cerr << "name without prefix sbml: " << s << endl;
+		return 0;
+	}
+	size_t i = s.find(' ');
+	if (i == string::npos) {
+		cerr << "no end sentinel for name: " << s << endl;
+		return 0;
+	}
+	return i;
 }
+
+size_t ProcessNumber(const string &s)
+{
+	const char *q = s.c_str();
+	char *r;
+	(void)std::strtod(q, &r);
+	if (q == r) {
+		cerr << "failed to read double value: " << s << endl;
+		return 0;
+	}
+	return r - q;
+}
+
+bool ProcessA(const string &s)
+{
+	size_t r = ProcessName(s);
+	if (r == 0) return false;
+	AddAssignment(s.substr(0, r), s.substr(r+1));
+	return true;
+}
+
+bool ProcessC(const string &s)
+{
+	size_t r0 = ProcessName(s);
+	if (r0 == 0) return false;
+	string t = s.substr(r0+1);
+	size_t r1 = ProcessNumber(t);
+	if (r1 == 0) return false;
+	AddConstant(s.substr(0, r0), t.substr(0, r1));
+	return true;
+}
+
+bool ProcessO(const string &s)
+{
+	size_t r0 = ProcessName(s);
+	if (r0 == 0) return false;
+	string t = s.substr(r0+1);
+	size_t r1 = ProcessNumber(t);
+	if (r1 == 0) return false;
+	AddOde(s.substr(0, r0), t.substr(0, r1), t.substr(r1+1));
+	return true;
+}
+
+bool ProcessInput(std::istream &is)
+{
+	std::string line;
+
+	is.unsetf(std::ios::skipws);
+	while (std::getline(is, line)) {
+		if (line.empty()) {
+			cerr << "found an empty line" << endl;
+			return false;
+		}
+		if (boost::starts_with(line, "a ")) {
+			if (!ProcessA(line.substr(2))) return false;
+		} else if (boost::starts_with(line, "c ")) {
+			if (!ProcessC(line.substr(2))) return false;
+		} else if (boost::starts_with(line, "o ")) {
+			if (!ProcessO(line.substr(2))) return false;
+		} else {
+			cerr << "invalid line: " << line << endl;
+			return false;
+		}
+	}
+	return true;
+}
+
+} // namespace
 
 int main(int argc, char *argv[])
 {
@@ -385,5 +400,5 @@ int main(int argc, char *argv[])
 		}
 	}
 
-	return yyparse();
+	return ProcessInput(std::cin) ? EXIT_SUCCESS : EXIT_FAILURE;
 }

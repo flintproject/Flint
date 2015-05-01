@@ -151,11 +151,10 @@ flint_cli_LDFLAGS = $(BOOST_PROGRAM_OPTIONS_LDFLAGS)
 flint_cli_LDADD = $(PROTOBUF_LIBS) $(BOOST_PROGRAM_OPTIONS_LIBS)
 flint_cli_SOURCES = cli.pb.cc flint-cli-main.cc
 
-BUILT_SOURCES += flint-combine-parser.hh
 flint_combine_CPPFLAGS = $(BOOST_CPPFLAGS)
 flint_combine_LDFLAGS = $(BOOST_PROGRAM_OPTIONS_LDFLAGS)
 flint_combine_LDADD = libsqlite3.a $(BOOST_PROGRAM_OPTIONS_LIBS)
-flint_combine_SOURCES = flint-combine-parser.yy flint-combine-lexer.ll
+flint_combine_SOURCES = flint-combine-main.cc
 
 flint_combineall_CPPFLAGS = $(BOOST_CPPFLAGS)
 flint_combineall_LDFLAGS = $(BOOST_PROGRAM_OPTIONS_LDFLAGS)
