@@ -302,9 +302,8 @@ flint_phz_LDFLAGS = $(BOOST_FILESYSTEM_LDFLAGS) $(BOOST_SYSTEM_LDFLAGS)
 flint_phz_LDADD = libflintxx.a libflint.a libsqlite3.a $(BOOST_FILESYSTEM_LIBS) $(BOOST_SYSTEM_LIBS) $(LIBZIP_LIBS)
 flint_phz_SOURCES = flint-phz-main.cc
 
-BUILT_SOURCES += flint-rk4-parser.hh
 flint_rk4_CPPFLAGS = $(BOOST_CPPFLAGS)
-flint_rk4_SOURCES = flint-rk4-parser.yy flint-rk4-lexer.ll
+flint_rk4_SOURCES = flint-rk4-main.cc
 
 flint_run_CPPFLAGS = $(PROTOBUF_CFLAGS) $(BOOST_CPPFLAGS)
 flint_run_LDFLAGS = $(BOOST_FILESYSTEM_LDFLAGS) $(BOOST_SYSTEM_LDFLAGS)
