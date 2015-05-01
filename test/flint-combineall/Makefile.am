@@ -1,4 +1,3 @@
-EXECUTABLE = @top_builddir@/src/flint-combineall
 DATADIR = @top_srcdir@/test/flint-combineall
 MODELDIR = @top_srcdir@/test/models
 
