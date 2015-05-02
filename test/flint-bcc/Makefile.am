@@ -1,4 +1,3 @@
-EXECUTABLE = @top_builddir@/src/flint-bcc
 DATADIR = @top_srcdir@/test/flint-bcc
 
 CALL1_TESTS = \
@@ -66,6 +65,7 @@ TESTS = $(CALL_TESTS) $(REGRESSION_TESTS)
 
 $(TESTS):
 	echo '#!/bin/sh' > $@
+	echo 'export PATH="@abs_top_builddir@/src:$$PATH"' >> $@
 	echo '$(MAKE) -f $(@:.sh=.mk) -s clean all check' >> $@
 	chmod +x $@
 
@@ -82,10 +82,10 @@ $(EXTRA_CALL2_TESTS:.sh=.i.txt): $(DATADIR)/test-call2.in
 	m4 -DCALL2=\$$$(@:.i.txt=) $< > $@
 
 $(CALL_TESTS:.sh=.mk): $(DATADIR)/test.mk.in
-	m4 -DEXECUTABLE=$(EXECUTABLE) -DINPUT=$(@:.mk=.i.txt) -DOUTPUT=$(@:.mk=) $< > $@
+	m4 -DINPUT=$(@:.mk=.i.txt) -DOUTPUT=$(@:.mk=) $< > $@
 
 $(REGRESSION_TESTS:.sh=.mk): $(DATADIR)/test.mk.in
-	m4 -DEXECUTABLE=$(EXECUTABLE) -DINPUT=$(DATADIR)/$(@:.mk=.i.txt) -DOUTPUT=$(@:.mk=) $< > $@
+	m4 -DINPUT=$(DATADIR)/$(@:.mk=.i.txt) -DOUTPUT=$(@:.mk=) $< > $@
 
 CLEANFILES = $(TESTS) $(TESTS:.sh=) $(TESTS:.sh=.i.txt) $(TESTS:.sh=.mk)
 

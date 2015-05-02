@@ -8,4 +8,4 @@ clean:
 	-rm -f OUTPUT
 
 OUTPUT: INPUT
-	EXECUTABLE < $< > $@
+	flint-bcc < $< > $@

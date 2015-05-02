@@ -8,7 +8,7 @@ clean:
 	-rm -f DIFF OUTPUT
 
 OUTPUT: INPUT
-	EXECUTABLE < $< > $@
+	flint-assign < $< > $@
 
 DIFF: EXPECTED OUTPUT
 	diff -u $^ > $@
