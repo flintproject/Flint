@@ -1,16 +1,13 @@
-EXECUTABLE = @top_builddir@/src/isdwc
-
-ISDRAND_EXECUTABLE = @top_builddir@/src/isdrand
-
 TESTS = random.sh
 
 .mk.sh:
 	echo '#!/bin/sh' > $@
+	echo 'export PATH="@abs_top_builddir@/src:$$PATH"' >> $@
 	echo '$(MAKE) -f $< -s clean all check' >> $@
 	chmod +x $@
 
 random.mk: @top_srcdir@/test/isdwc/random.mk.in
-	m4 -DEXECUTABLE=$(EXECUTABLE) -DISDRAND_EXECUTABLE=$(ISDRAND_EXECUTABLE) $< > $@
+	m4 $< > $@
 
 CLEANFILES = $(TESTS) $(TESTS:.sh=.mk) *.txt *.isd
 

@@ -8,7 +8,7 @@ clean:
 	-rm -f random.txt random.isd
 
 random.isd:
-	ISDRAND_EXECUTABLE $@
+	isdrand $@
 
 random.txt: random.isd
-	EXECUTABLE $< > $@
+	isdls $< > $@

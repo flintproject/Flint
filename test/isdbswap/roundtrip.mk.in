@@ -8,13 +8,13 @@ clean:
 	-rm -f roundtrip.cmp output1.isd output0.isd input.isd
 
 input.isd:
-	ISDRAND_EXECUTABLE $@
+	isdrand $@
 
 output0.isd: input.isd
-	EXECUTABLE $< $@
+	isdbswap $< $@
 
 output1.isd: output0.isd
-	EXECUTABLE $< $@
+	isdbswap $< $@
 
 roundtrip.cmp: input.isd output1.isd
 	cmp $^ > $@

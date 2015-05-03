@@ -8,7 +8,7 @@ clean:
 	-rm -f random-output.isd random-input.isd
 
 random-input.isd:
-	ISDRAND_EXECUTABLE $@ 123
+	isdrand $@ 123
 
 random-output.isd: random-input.isd
-	EXECUTABLE -f0,5,10 $< > $@
+	isdcut -f0,5,10 $< > $@
