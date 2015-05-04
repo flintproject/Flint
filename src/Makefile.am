@@ -346,9 +346,8 @@ flint_store_LDFLAGS = $(BOOST_PROGRAM_OPTIONS_LDFLAGS)
 flint_store_LDADD = libsqlite3.a $(PROTOBUF_LIBS) $(BOOST_PROGRAM_OPTIONS_LIBS)
 flint_store_SOURCES = lo.pb.cc flint-store-main.cc
 
-BUILT_SOURCES += flint-tac-parser.hh
 flint_tac_CPPFLAGS = $(BOOST_CPPFLAGS)
-flint_tac_SOURCES = flint-tac-parser.yy flint-tac-lexer.ll
+flint_tac_SOURCES = flint-tac-main.cc
 
 flint_taskconfig_CPPFLAGS = $(AM_CFLAGS) -std=c99 -pedantic-errors
 flint_taskconfig_SOURCES = flint-taskconfig-main.c
