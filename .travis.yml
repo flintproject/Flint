@@ -7,7 +7,7 @@ before_install:
   - sudo apt-get update -qq
 
 install:
-  - sudo apt-get install -qq libtool bison flex
+  - sudo apt-get install -qq libtool
   - cd posix && make -s
 
 script: make check # in posix

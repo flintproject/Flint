@@ -21,8 +21,6 @@ phml.pb.cc phml.pb.h: $(top_srcdir)/pb/phml.proto
 unit.pb.cc unit.pb.h: $(top_srcdir)/pb/unit.proto
 	$(PROTOC_EXECUTABLE) -I$(top_srcdir)/pb --cpp_out=./ $<
 
-AM_YFLAGS = -d -t
-
 BUILT_SOURCES = \
     bc.pb.h \
     cli.pb.h \
@@ -129,10 +127,9 @@ csv2isd_SOURCES = csv2isd-main.cc
 flint_assign_CPPFLAGS = $(BOOST_CPPFLAGS)
 flint_assign_SOURCES = flint-assign-main.cc
 
-BUILT_SOURCES += flint-bcc-parser.hh
 flint_bcc_CPPFLAGS = $(PROTOBUF_CFLAGS) $(BOOST_CPPFLAGS)
 flint_bcc_LDADD = $(PROTOBUF_LIBS)
-flint_bcc_SOURCES = flint-bcc-block.cc flint-bcc-parser.yy flint-bcc-lexer.ll bc.pb.cc
+flint_bcc_SOURCES = flint-bcc-main.cc bc.pb.cc
 
 flint_bswap64_SOURCES = flint-bswap64-main.c
 
