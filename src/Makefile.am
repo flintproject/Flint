@@ -52,7 +52,6 @@ bin_PROGRAMS = \
 	flint-form \
 	flint-generate \
 	flint-impl \
-	flint-importdump \
 	flint-importdumpall \
 	flint-init \
 	flint-isdh \
@@ -212,15 +211,12 @@ flint_impl_LDFLAGS = $(BOOST_PROGRAM_OPTIONS_LDFLAGS)
 flint_impl_LDADD = libsqlite3.a $(BOOST_PROGRAM_OPTIONS_LIBS)
 flint_impl_SOURCES = flint-impl-main.cc
 
-flint_importdump_CPPFLAGS = $(BOOST_CPPFLAGS) $(XML_CPPFLAGS)
-flint_importdump_LDFLAGS = $(BOOST_FILESYSTEM_LDFLAGS) $(BOOST_PROGRAM_OPTIONS_LDFLAGS) $(BOOST_SYSTEM_LDFLAGS)
-flint_importdump_LDADD = libflintxx.a libflint.a libsqlite3.a $(BOOST_FILESYSTEM_LIBS) $(BOOST_PROGRAM_OPTIONS_LIBS) $(BOOST_SYSTEM_LIBS) $(XML_LIBS)
-flint_importdump_SOURCES = flint-importdump-main.cc
-
-flint_importdumpall_CPPFLAGS = $(BOOST_CPPFLAGS)
+flint_importdumpall_CPPFLAGS = $(BOOST_CPPFLAGS) $(XML_CPPFLAGS)
 flint_importdumpall_LDFLAGS = $(BOOST_FILESYSTEM_LDFLAGS) $(BOOST_SYSTEM_LDFLAGS)
-flint_importdumpall_LDADD = libflintxx.a libflint.a libsqlite3.a $(BOOST_FILESYSTEM_LIBS) $(BOOST_SYSTEM_LIBS)
-flint_importdumpall_SOURCES = flint-importdumpall-main.cc
+flint_importdumpall_LDADD = libflintxx.a libflint.a libsqlite3.a $(BOOST_FILESYSTEM_LIBS) $(BOOST_SYSTEM_LIBS) $(XML_LIBS)
+flint_importdumpall_SOURCES = \
+    phml/import.cc \
+    flint-importdumpall-main.cc
 
 flint_init_CPPFLAGS = $(PROTOBUF_CFLAGS) $(BOOST_CPPFLAGS)
 flint_init_LDFLAGS = $(BOOST_PROGRAM_OPTIONS_LDFLAGS)

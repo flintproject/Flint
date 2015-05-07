@@ -42,7 +42,6 @@ EXES := \
     flint-form \
     flint-generate \
     flint-impl \
-    flint-importdump \
     flint-importdumpall \
     flint-init \
     flint-isdh \

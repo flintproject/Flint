@@ -130,9 +130,6 @@
           <Component Id='flint_impl' Guid='2fb89374-f5bd-11e2-b93c-eb109f47cf8b'>
             <File Id='flint_impl.exe' Name='flint-impl.exe' DiskId='1' Source='flint-impl.exe' />
           </Component>
-          <Component Id='flint_importdump' Guid='2fb9841e-f5bd-11e2-9347-efd515ed8a19'>
-            <File Id='flint_importdump.exe' Name='flint-importdump.exe' DiskId='1' Source='flint-importdump.exe' />
-          </Component>
           <Component Id='flint_importdumpall' Guid='2fb9fe12-f5bd-11e2-8ee3-d3d914b65dec'>
             <File Id='flint_importdumpall.exe' Name='flint-importdumpall.exe' DiskId='1' Source='flint-importdumpall.exe' />
           </Component>
@@ -348,7 +345,6 @@
       <ComponentRef Id='flint_form' />
       <ComponentRef Id='flint_generate' />
       <ComponentRef Id='flint_impl' />
-      <ComponentRef Id='flint_importdump' />
       <ComponentRef Id='flint_importdumpall' />
       <ComponentRef Id='flint_init' />
       <ComponentRef Id='flint_isdh' />

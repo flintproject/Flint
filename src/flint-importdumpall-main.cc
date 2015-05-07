@@ -15,7 +15,7 @@
 
 #include "database.h"
 #include "db/driver.h"
-#include "system.h"
+#include "phml/import.h"
 #include "utf8path.h"
 
 using std::cerr;
@@ -74,10 +74,7 @@ int main(int argc, char *argv[])
 		if (strcmp((const char *)type, "external") == 0) {
 			if (!SaveAndPrint((const char *)uuid, (const char *)ref)) return EXIT_FAILURE;
 		} else {
-			boost::scoped_array<char> c(new char[len + 256]); // FIXME
-			sprintf(c.get(), "flint-importdump %s %s", (const char *)uuid, argv[1]);
-			int r = RunSystem(c.get());
-			if (r != 0) return r;
+			if (!DumpImport(argv[1], (const char *)uuid)) return EXIT_FAILURE;
 			boost::scoped_array<char> xml_file(new char[64]);
 			sprintf(xml_file.get(), "%s.xml", uuid);
 			boost::filesystem::path xml_path = boost::filesystem::absolute(xml_file.get());
