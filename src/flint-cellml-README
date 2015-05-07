@@ -1,10 +1,10 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; flint-cellmltr -- translate CellML
+;; flint-cellml -- parse and translate CellML
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-This porgram translates CellML.
+This porgram parses and translates CellML.
 
 = Synopsis
 
-flint-cellmltr db name iv function ode
-flint-cellmltr --help
+flint-cellml db name iv function ode
+flint-cellml --help

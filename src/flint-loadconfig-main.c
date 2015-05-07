@@ -35,8 +35,7 @@ static void PrintRecipeForCellml(void)
 	printf("\n");
 	printf("modeldb: model\n");
 	printf("\tflint-concat $< $@\n");
-	printf("\tflint-cellmlpp $@\n");
-	printf("\tflint-cellmltr $@ name.txt iv.txt function.txt ode.txt\n");
+	printf("\tflint-cellml $@ name.txt iv.txt function.txt ode.txt\n");
 	printf("\n");
 	printf("name.txt iv.txt function.txt ode.txt: modeldb\n");
 	printf("\n");

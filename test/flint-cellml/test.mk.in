@@ -3,11 +3,10 @@
 all: OUTPUT
 
 check: OUTPUT
-	flint-cellmltr $< /dev/null /dev/null /dev/null /dev/null
+	flint-cellml $< /dev/null /dev/null /dev/null /dev/null
 
 clean:
 	-rm -f OUTPUT
 
 OUTPUT: INPUT
 	test-input1 $@ $<
-	flint-cellmlpp $@

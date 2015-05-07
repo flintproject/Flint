@@ -3,6 +3,8 @@
 #include "config.h"
 #endif
 
+#include "translator.h"
+
 #include <cassert>
 #include <cstdio>
 #include <cstdlib>
@@ -473,49 +475,36 @@ private:
 	sqlite3_stmt *stmt_;
 };
 
-void Usage()
-{
-	cerr << "usage: flint-cellmltr DB NAME IV FUNCTION ODE" << endl;
-}
-
 } // namespace
 
-int main(int argc, char *argv[])
+bool TranslateCellml(const char *db_file,
+					 const char *name_file,
+					 const char *iv_file,
+					 const char *function_file,
+					 const char *ode_file)
 {
-	if (argc == 2) {
-		Usage();
-		if (strcmp("-h", argv[1]) == 0 || strcmp("--help", argv[1]) == 0) {
-			return EXIT_SUCCESS;
-		}
-		return EXIT_FAILURE;
-	}
-	if (argc != 6) {
-		Usage();
-		return EXIT_FAILURE;
-	}
-
-	boost::scoped_array<char> filename(GetModelFilename(argv[1]));
+	boost::scoped_array<char> filename(GetModelFilename(db_file));
 	boost::filesystem::path path(filename.get());
 
-	boost::scoped_ptr<db::Driver> driver(new db::Driver(argv[1]));
+	boost::scoped_ptr<db::Driver> driver(new db::Driver(db_file));
 
 	boost::scoped_ptr<TreeDumper> tree_dumper(new TreeDumper(driver->db()));
-	if (!tree_dumper->Dump(path)) return EXIT_FAILURE;
+	if (!tree_dumper->Dump(path)) return false;
 
-	boost::scoped_ptr<OdeDumper> ode_dumper(new OdeDumper(argv[5], driver->db(), tree_dumper.get()));
-	if (!ode_dumper->Dump()) return EXIT_FAILURE;
+	boost::scoped_ptr<OdeDumper> ode_dumper(new OdeDumper(ode_file, driver->db(), tree_dumper.get()));
+	if (!ode_dumper->Dump()) return false;
 
-	boost::scoped_ptr<NameDumper> name_dumper(new NameDumper(argv[2], driver->db(), tree_dumper.get()));
-	if (!name_dumper->Dump(ode_dumper.get())) return EXIT_FAILURE;
+	boost::scoped_ptr<NameDumper> name_dumper(new NameDumper(name_file, driver->db(), tree_dumper.get()));
+	if (!name_dumper->Dump(ode_dumper.get())) return false;
 
-	boost::scoped_ptr<IvDumper> iv_dumper(new IvDumper(argv[3], driver->db(), tree_dumper.get()));
-	if (!iv_dumper->Dump()) return EXIT_FAILURE;
+	boost::scoped_ptr<IvDumper> iv_dumper(new IvDumper(iv_file, driver->db(), tree_dumper.get()));
+	if (!iv_dumper->Dump()) return false;
 
-	boost::scoped_ptr<FunctionDumper> function_dumper(new FunctionDumper(argv[4], driver->db(), tree_dumper.get()));
-	if (!function_dumper->Dump()) return EXIT_FAILURE;
+	boost::scoped_ptr<FunctionDumper> function_dumper(new FunctionDumper(function_file, driver->db(), tree_dumper.get()));
+	if (!function_dumper->Dump()) return false;
 
 	boost::scoped_ptr<ReachDumper> reach_dumper(new ReachDumper(driver->db(), tree_dumper.get()));
-	if (!reach_dumper->Dump()) return EXIT_FAILURE;
+	if (!reach_dumper->Dump()) return false;
 
-	return EXIT_SUCCESS;
+	return true;
 }

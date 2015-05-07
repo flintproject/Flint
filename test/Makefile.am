@@ -3,8 +3,7 @@ SUBDIRS = \
 	csv2isd \
 	flint-assign \
 	flint-bcc \
-	flint-cellmlpp \
-	flint-cellmltr \
+	flint-cellml \
 	flint-combineall \
 	flint-euler \
 	flint-event \

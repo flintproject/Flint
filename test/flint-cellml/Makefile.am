@@ -1,4 +1,4 @@
-DATADIR = @top_srcdir@/test/flint-cellmlpp
+DATADIR = @top_srcdir@/test/flint-cellml
 MODELDIR = @top_srcdir@/test/models
 
 TESTS = \
@@ -12,7 +12,10 @@ TESTS = \
 	chmod +x $@
 
 $(TESTS:.sh=.mk): $(DATADIR)/test.mk.in
-	m4 -DINPUT=$(MODELDIR)/$(@:.mk=.cellml) -DOUTPUT=$(@:.mk=) -DSTDERR=$(@:.mk=.stderr) $< > $@
+	m4 \
+		-DINPUT=$(MODELDIR)/$(@:.mk=.cellml) \
+		-DOUTPUT=$(@:.mk=) \
+		$< > $@
 
 CLEANFILES = $(TESTS) $(TESTS:.sh=) $(TESTS:.sh=.mk) $(TESTS:.sh=.stderr)
 

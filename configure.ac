@@ -127,8 +127,7 @@ AC_CONFIG_FILES([Makefile
                  test/csv2isd/Makefile
                  test/flint-assign/Makefile
                  test/flint-bcc/Makefile
-                 test/flint-cellmlpp/Makefile
-                 test/flint-cellmltr/Makefile
+                 test/flint-cellml/Makefile
                  test/flint-combineall/Makefile
                  test/flint-euler/Makefile
                  test/flint-event/Makefile

@@ -34,8 +34,7 @@ bin_PROGRAMS = \
 	flint-assign \
 	flint-bcc \
 	flint-bswap64 \
-	flint-cellmlpp \
-	flint-cellmltr \
+	flint-cellml \
 	flint-cli \
 	flint-combine \
 	flint-combineall \
@@ -133,15 +132,10 @@ flint_bcc_SOURCES = flint-bcc-main.cc bc.pb.cc
 
 flint_bswap64_SOURCES = flint-bswap64-main.c
 
-flint_cellmlpp_CPPFLAGS = $(BOOST_CPPFLAGS) $(XML_CPPFLAGS)
-flint_cellmlpp_LDFLAGS = $(BOOST_FILESYSTEM_LDFLAGS) $(BOOST_SYSTEM_LDFLAGS)
-flint_cellmlpp_LDADD = libflintxx.a libflint.a libsqlite3.a $(BOOST_FILESYSTEM_LIBS) $(BOOST_SYSTEM_LIBS) $(XML_LIBS)
-flint_cellmlpp_SOURCES = flint-cellmlpp-main.cc
-
-flint_cellmltr_CPPFLAGS = $(BOOST_CPPFLAGS)
-flint_cellmltr_LDFLAGS = $(BOOST_FILESYSTEM_LDFLAGS) $(BOOST_SYSTEM_LDFLAGS)
-flint_cellmltr_LDADD = libflintxx.a libflint.a libsqlite3.a $(BOOST_FILESYSTEM_LIBS) $(BOOST_SYSTEM_LIBS)
-flint_cellmltr_SOURCES = uuidgen.cc flint-cellmltr-main.cc
+flint_cellml_CPPFLAGS = $(BOOST_CPPFLAGS) $(XML_CPPFLAGS)
+flint_cellml_LDFLAGS = $(BOOST_FILESYSTEM_LDFLAGS) $(BOOST_SYSTEM_LDFLAGS)
+flint_cellml_LDADD = libflintxx.a libflint.a libsqlite3.a $(BOOST_FILESYSTEM_LIBS) $(BOOST_SYSTEM_LIBS) $(XML_LIBS)
+flint_cellml_SOURCES = cellml/parser.cc cellml/translator.cc uuidgen.cc flint-cellml-main.cc
 
 flint_cli_CPPFLAGS = $(PROTOBUF_CFLAGS) $(BOOST_CPPFLAGS)
 flint_cli_LDFLAGS = $(BOOST_PROGRAM_OPTIONS_LDFLAGS)

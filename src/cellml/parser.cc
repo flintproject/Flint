@@ -3,6 +3,8 @@
 #include "config.h"
 #endif
 
+#include "parser.h"
+
 #include <cassert>
 #include <cstdio>
 #include <cstdlib>
@@ -743,18 +745,14 @@ public:
 	sqlite3_stmt *stmt_connections() const {return stmt_connections_;}
 	sqlite3_stmt *stmt_map_variables() const {return stmt_map_variables_;}
 
-	int Parse() {
+	bool Parse() {
 		boost::scoped_array<char> model_file(GetModelFilename(db_path_));
-		if (!OpenDatabase()) return EXIT_FAILURE;
-		if (!BeginTransaction()) return EXIT_FAILURE;
-		if (!CreateTables()) return EXIT_FAILURE;
-		if (!PrepareStatements()) return EXIT_FAILURE;
+		if (!OpenDatabase()) return false;
+		if (!BeginTransaction()) return false;
+		if (!CreateTables()) return false;
+		if (!PrepareStatements()) return false;
 		CellMLReader<CellMLParser> reader(model_file.get(), this);
-		if (reader.Read() == 0) {
-			if (!CommitTransaction()) return EXIT_FAILURE;
-			return EXIT_SUCCESS;
-		}
-		return EXIT_FAILURE;
+		return reader.Read() == 0 && CommitTransaction();
 	}
 
 private:
@@ -900,26 +898,12 @@ private:
 	sqlite3_stmt *stmt_map_variables_;
 };
 
-void Usage()
-{
-	cerr << "usage: flint-cellmlpp DB" << endl;
-}
-
 } // namespace
 
-int main(int argc, char *argv[])
+bool ParseCellml(const char *db)
 {
 	LIBXML_TEST_VERSION
 
-	if (argc != 2) {
-		Usage();
-		return EXIT_FAILURE;
-	}
-	if (strcmp("-h", argv[1]) == 0 || strcmp("--help", argv[1]) == 0) {
-		Usage();
-		return EXIT_SUCCESS;
-	}
-
-	CellMLParser parser(argv[1]);
+	CellMLParser parser(db);
 	return parser.Parse();
 }
