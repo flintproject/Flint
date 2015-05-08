@@ -107,7 +107,10 @@ noinst_PROGRAMS = \
 noinst_LIBRARIES = libflint.a libflintxx.a libsqlite3.a
 
 libflint_a_CPPFLAGS = $(AM_CFLAGS) -std=c99 -pedantic-errors
-libflint_a_SOURCES = database.c system.c
+libflint_a_SOURCES = \
+    database.c \
+    db/query.c \
+    system.c
 
 libflintxx_a_CPPFLAGS = $(BOOST_CPPFLAGS)
 libflintxx_a_SOURCES = \
@@ -160,7 +163,7 @@ flint_cut_LDADD = $(PROTOBUF_LIBS) $(BOOST_PROGRAM_OPTIONS_LIBS) $(BOOST_SYSTEM_
 flint_cut_SOURCES = lo.pb.cc flint-cut-main.cc
 
 flint_enum_CFLAGS = $(AM_CFLAGS) -std=c99 -pedantic-errors
-flint_enum_LDADD = libsqlite3.a
+flint_enum_LDADD = libflint.a libsqlite3.a
 flint_enum_SOURCES = flint-enum-main.c
 
 flint_euler_CPPFLAGS = $(BOOST_CPPFLAGS)
@@ -199,7 +202,7 @@ flint_flow_LDADD = libsqlite3.a $(PROTOBUF_LIBS)
 flint_flow_SOURCES = lo.pb.cc flint-flow-main.cc
 
 flint_form_CFLAGS = $(AM_CFLAGS) -std=c99 -pedantic-errors
-flint_form_LDADD = libsqlite3.a
+flint_form_LDADD = libflint.a libsqlite3.a
 flint_form_SOURCES = flint-form-main.c
 
 flint_generate_CFLAGS = $(AM_CFLAGS) -std=c99 -pedantic-errors
@@ -319,7 +322,7 @@ flint_sedml_LDADD = libflintxx.a libflint.a libsqlite3.a $(BOOST_FILESYSTEM_LIBS
 flint_sedml_SOURCES = flint-sedml-main.cc
 
 flint_singleton_CPPFLAGS = $(BOOST_CPPFLAGS)
-flint_singleton_LDADD = libsqlite3.a
+flint_singleton_LDADD = libflint.a libsqlite3.a
 flint_singleton_SOURCES = flint-singleton-main.cc
 
 flint_sort_CPPFLAGS = $(BOOST_CPPFLAGS)

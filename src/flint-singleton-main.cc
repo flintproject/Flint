@@ -12,6 +12,7 @@
 #include <boost/scoped_ptr.hpp>
 
 #include "db/driver.h"
+#include "db/query.h"
 
 using std::cerr;
 using std::endl;
@@ -57,18 +58,10 @@ int main(int argc, char *argv[])
 		cerr << "failed to create scopes: " << em << endl;
 		return EXIT_FAILURE;
 	}
-	e = sqlite3_exec(db, "CREATE TABLE IF NOT EXISTS names (space_id TEXT, type TEXT, id INTEGER, name TEXT, unit TEXT, capacity REAL)",
-					 NULL, NULL, &em);
-	if (e != SQLITE_OK) {
-		cerr << "failed to create names: " << em << endl;
+	if (!CreateTable(db, "names", "(space_id TEXT, type TEXT, id INTEGER, name TEXT, unit TEXT, capacity REAL)"))
 		return EXIT_FAILURE;
-	}
-	e = sqlite3_exec(db, "CREATE TABLE IF NOT EXISTS time_unit (name TEXT)",
-					 NULL, NULL, &em);
-	if (e != SQLITE_OK) {
-		cerr << "failed to create time_unit: " << em << endl;
+	if (!CreateTable(db, "time_unit", "(name TEXT)"))
 		return EXIT_FAILURE;
-	}
 	e = sqlite3_exec(db, "COMMIT", NULL, NULL, &em);
 	if (e != SQLITE_OK) {
 		cerr << "failed to start transaction: " << em << endl;

@@ -20,6 +20,7 @@
 #include <boost/uuid/uuid_generators.hpp>
 
 #include "db/driver.h"
+#include "db/query.h"
 #include "db/reach-driver.h"
 #include "modelpath.h"
 #include "sqlite3.h"
@@ -47,24 +48,12 @@ public:
 	{
 		char *em;
 		int e;
-		e = sqlite3_exec(db, "CREATE TABLE IF NOT EXISTS spaces (uuid TEXT, name TEXT)",
-						 NULL, NULL, &em);
-		if (e != SQLITE_OK) {
-			cerr << "failed to create table spaces: " << e << endl;
+		if (!CreateTable(db, "spaces", "(uuid TEXT, name TEXT)"))
 			exit(EXIT_FAILURE);
-		}
-		e = sqlite3_exec(db, "CREATE TABLE IF NOT EXISTS names (space_id TEXT, type TEXT, id INTEGER, name TEXT, unit TEXT, capacity REAL)",
-						 NULL, NULL, &em);
-		if (e != SQLITE_OK) {
-			cerr << "failed to create table names: " << e << endl;
+		if (!CreateTable(db, "names", "(space_id TEXT, type TEXT, id INTEGER, name TEXT, unit TEXT, capacity REAL)"))
 			exit(EXIT_FAILURE);
-		}
-		e = sqlite3_exec(db, "CREATE TABLE IF NOT EXISTS reaches (output_uuid BLOB, output_id INTEGER, input_uuid BLOB, input_id INTEGER)",
-						 NULL, NULL, &em);
-		if (e != SQLITE_OK) {
-			cerr << "failed to create table reaches: " << e << endl;
+		if (!CreateTable(db, "reaches", "(output_uuid BLOB, output_id INTEGER, input_uuid BLOB, input_id INTEGER)"))
 			exit(EXIT_FAILURE);
-		}
 		e = sqlite3_exec(db, "CREATE VIEW IF NOT EXISTS scopes AS SELECT uuid, uuid, NULL FROM spaces",
 						 NULL, NULL, &em);
 		if (e != SQLITE_OK) {

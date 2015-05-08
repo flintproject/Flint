@@ -6,6 +6,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "db/query.h"
 #include "sqlite3.h"
 
 static sqlite3 *db;
@@ -172,26 +173,14 @@ int main(int argc, char *argv[])
 		return EXIT_FAILURE;
 	}
 
-	e = sqlite3_exec(db, "CREATE TABLE IF NOT EXISTS modules (uuid TEXT, name TEXT)", NULL, NULL, &em);
-	if (e != SQLITE_OK) {
-		/* TODO */
+	if (!CreateTable(db, "modules", "(uuid TEXT, name TEXT)"))
 		return EXIT_FAILURE;
-	}
-	e = sqlite3_exec(db, "CREATE TABLE IF NOT EXISTS names (uuid TEXT, type TEXT, id INTEGER, name TEXT)", NULL, NULL, &em);
-	if (e != SQLITE_OK) {
-		/* TODO */
+	if (!CreateTable(db, "names", "(uuid TEXT, type TEXT, id INTEGER, name TEXT)"))
 		return EXIT_FAILURE;
-	}
-	e = sqlite3_exec(db, "CREATE TABLE IF NOT EXISTS edges (source_uuid TEXT, source_id INTEGER, target_uuid TEXT, target_id INTEGER)", NULL, NULL, &em);
-	if (e != SQLITE_OK) {
-		/* TODO */
+	if (!CreateTable(db, "edges", "(source_uuid TEXT, source_id INTEGER, target_uuid TEXT, target_id INTEGER)"))
 		return EXIT_FAILURE;
-	}
-	e = sqlite3_exec(db, "CREATE TABLE IF NOT EXISTS equations (uuid TEXT, body TEXT)", NULL, NULL, &em);
-	if (e != SQLITE_OK) {
-		/* TODO */
+	if (!CreateTable(db, "equations", "(uuid TEXT, body TEXT)"))
 		return EXIT_FAILURE;
-	}
 
 	/* insert the default module */
 	e = sqlite3_exec(db, "INSERT INTO modules VALUES ('00000000-0000-0000-0000-000000000000', 'default')", NULL, NULL, &em);

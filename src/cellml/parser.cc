@@ -16,6 +16,7 @@
 #include <boost/scoped_ptr.hpp>
 #include <libxml/xmlreader.h>
 
+#include "db/query.h"
 #include "mathml/math_dumper.h"
 #include "sqlite3.h"
 #include "modelpath.h"
@@ -788,52 +789,19 @@ private:
 	}
 
 	bool CreateTables() {
-		int e;
-		char *em;
-		e = sqlite3_exec(db_,
-						 "CREATE TABLE IF NOT EXISTS units (name TEXT, units TEXT, prefix TEXT, exponent TEXT, multiplier TEXT, component TEXT)",
-						 NULL, NULL, &em);
-		if (e != SQLITE_OK) {
-			cerr << "failed to create units: " << em << endl;
+		if (!CreateTable(db_, "units", "(name TEXT, units TEXT, prefix TEXT, exponent TEXT, multiplier TEXT, component TEXT)"))
 			return false;
-		}
-		e = sqlite3_exec(db_,
-						 "CREATE TABLE IF NOT EXISTS variables (component TEXT, name TEXT, units TEXT, public_interface TEXT, private_interface TEXT, initial_value TEXT)",
-						 NULL, NULL, &em);
-		if (e != SQLITE_OK) {
-			cerr << "failed to create variables: " << em << endl;
+		if (!CreateTable(db_, "variables", "(component TEXT, name TEXT, units TEXT, public_interface TEXT, private_interface TEXT, initial_value TEXT)"))
 			return false;
-		}
-		e = sqlite3_exec(db_,
-						 "CREATE TABLE IF NOT EXISTS maths (component TEXT, body TEXT)",
-						 NULL, NULL, &em);
-		if (e != SQLITE_OK) {
-			cerr << "failed to create maths: " << em << endl;
+		if (!CreateTable(db_, "maths", "(component TEXT, body TEXT)"))
 			return false;
-		}
-		e = sqlite3_exec(db_,
-						 "CREATE TABLE IF NOT EXISTS connections (component_1 TEXT, component_2 TEXT)",
-						 NULL, NULL, &em);
-		if (e != SQLITE_OK) {
-			cerr << "failed to create connections: " << em << endl;
+		if (!CreateTable(db_, "connections", "(component_1 TEXT, component_2 TEXT)"))
 			return false;
-		}
-		e = sqlite3_exec(db_,
-						 "CREATE TABLE IF NOT EXISTS map_variables (connection_id INTEGER, variable_1 TEXT, variable_2 TEXT)",
-						 NULL, NULL, &em);
-		if (e != SQLITE_OK) {
-			cerr << "failed to create map_variables: " << em << endl;
+		if (!CreateTable(db_, "map_variables", "(connection_id INTEGER, variable_1 TEXT, variable_2 TEXT)"))
 			return false;
-		}
-
 		// subsequent tables
-		e = sqlite3_exec(db_,
-						 "CREATE TABLE IF NOT EXISTS time_unit (name TEXT)",
-						 NULL, NULL, &em);
-		if (e != SQLITE_OK) {
-			cerr << "failed to create time_unit: " << em << endl;
+		if (!CreateTable(db_, "time_unit", "(name TEXT)"))
 			return false;
-		}
 		return true;
 	}
 

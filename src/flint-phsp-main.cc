@@ -19,6 +19,7 @@
 
 #include <libxml/xmlreader.h>
 
+#include "db/query.h"
 #include "mathml/math_dumper.h"
 #include "workspace/task.h"
 #include "sqlite3.h"
@@ -373,13 +374,11 @@ private:
 			return -2;
 		}
 
+		char table_name[64]; // long enough
 		// save model's format
-		sprintf(query, "CREATE TABLE db%d.model (format TEXT)", rowid);
-		e = sqlite3_exec(db_, query, NULL, NULL, &em);
-		if (e != SQLITE_OK) {
-			cerr << "failed to create table model: " << em << endl;
+		sprintf(table_name, "db%d.model", rowid);
+		if (!CreateTable(db_, table_name, "(format TEXT)"))
 			return -2;
-		}
 		sprintf(query, "INSERT INTO db%d.model VALUES (?)", rowid);
 		e = sqlite3_prepare_v2(db_, query, -1, &stmt, NULL);
 		if (e != SQLITE_OK) {
@@ -401,18 +400,12 @@ private:
 		sqlite3_finalize(stmt);
 
 		// prepare schemas
-		sprintf(query, "CREATE TABLE IF NOT EXISTS db%d.phsp_parameters (name TEXT, range TEXT)", rowid);
-		e = sqlite3_exec(db_, query, NULL, NULL, &em);
-		if (e != SQLITE_OK) {
-			cerr << "failed to create table phsp_parameters: " << em << endl;
+		sprintf(table_name, "db%d.phsp_parameters", rowid);
+		if (!CreateTable(db_, table_name, "(name TEXT, range TEXT)"))
 			return -2;
-		}
-		sprintf(query, "CREATE TABLE IF NOT EXISTS db%d.phsp_targets (uuid TEXT, id TEXT, math TEXT)", rowid);
-		e = sqlite3_exec(db_, query, NULL, NULL, &em);
-		if (e != SQLITE_OK) {
-			cerr << "failed to create table phsp_targets: " << em << endl;
+		sprintf(table_name, "db%d.phsp_targets", rowid);
+		if (!CreateTable(db_, table_name, "(uuid TEXT, id TEXT, math TEXT)"))
 			return -2;
-		}
 
 		tasks_.insert(std::make_pair(rowid, string(utf8amp.get())));
 

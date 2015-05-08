@@ -6,6 +6,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "db/query.h"
 #include "sqlite3.h"
 
 static int FindInputFile(const char *db_file,
@@ -78,12 +79,8 @@ int SaveGivenFile(const char *db_file, const char *given_file)
 		return 0;
 	}
 	int e;
-	char *em;
-	e = sqlite3_exec(db, "CREATE TABLE input (given_file BLOB, model_file BLOB)", NULL, NULL, &em);
-	if (e != SQLITE_OK) {
-		fprintf(stderr, "failed to create table named model\n");
+	if (!CreateTable(db, "input", "(given_file BLOB, model_file BLOB)"))
 		goto bail0;
-	}
 	sqlite3_stmt *stmt;
 	e = sqlite3_prepare_v2(db, "INSERT INTO input VALUES (?, ?)", -1, &stmt, NULL);
 	if (e != SQLITE_OK) {
@@ -223,12 +220,8 @@ int SaveExec(const char *db_file, const char *sedml_file, const char *phsp_file)
 		return 0;
 	}
 	int e;
-	char *em;
-	e = sqlite3_exec(db, "CREATE TABLE input (sedml_file BLOB, phsp_file BLOB)", NULL, NULL, &em);
-	if (e != SQLITE_OK) {
-		fprintf(stderr, "failed to create table named model\n");
+	if (!CreateTable(db, "input", "(sedml_file BLOB, phsp_file BLOB)"))
 		goto bail0;
-	}
 	sqlite3_stmt *stmt;
 	e = sqlite3_prepare_v2(db, "INSERT INTO input VALUES (?, ?)", -1, &stmt, NULL);
 	if (e != SQLITE_OK) {

@@ -6,6 +6,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "db/query.h"
 #include "sqlite3.h"
 
 static sqlite3 *db;
@@ -236,11 +237,8 @@ int main(int argc, char *argv[])
 		return EXIT_FAILURE;
 	}
 
-	e = sqlite3_exec(db, "CREATE TABLE IF NOT EXISTS jobs (enum_id INTEGER, status TEXT)", NULL, NULL, &em);
-	if (e != SQLITE_OK) {
-		fprintf(stderr, "failed to create table jobs: %s\n", em);
+	if (!CreateTable(db, "jobs", "(enum_id INTEGER, status TEXT)"))
 		return EXIT_FAILURE;
-	}
 
 	e = sqlite3_exec(db, "BEGIN", NULL, NULL, &em);
 	if (e != SQLITE_OK) {

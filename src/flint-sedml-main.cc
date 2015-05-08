@@ -10,8 +10,9 @@
 
 #include <sedml/reader.h>
 
-#include "sqlite3.h"
 #include "database.h"
+#include "db/query.h"
+#include "sqlite3.h"
 #include "utf8path.h"
 
 enum {
@@ -146,30 +147,14 @@ int main(int argc, char *argv[])
 		fprintf(stderr, "failed to start transaction: %s\n", em);
 		return EXIT_FAILURE;
 	}
-	/* create table tasks */
-	e = sqlite3_exec(db, "CREATE TABLE IF NOT EXISTS tasks (model_id INTEGER, sim_id INTEGER)", NULL, NULL, &em);
-	if (e != SQLITE_OK) {
-		fprintf(stderr, "failed to create table tasks: %d\n", e);
+	if (!CreateTable(db, "tasks", "(model_id INTEGER, sim_id INTEGER)"))
 		goto bail1;
-	}
-	/* create table models */
-	e = sqlite3_exec(db, "CREATE TABLE IF NOT EXISTS models (model_path TEXT, db_path TEXT)", NULL, NULL, &em);
-	if (e != SQLITE_OK) {
-		fprintf(stderr, "failed to create table models: %d\n", e);
+	if (!CreateTable(db, "models", "(model_path TEXT, db_path TEXT)"))
 		goto bail1;
-	}
-	/* create table sims */
-	e = sqlite3_exec(db, "CREATE TABLE IF NOT EXISTS sims (algorithm TEXT, length REAL, step REAL, granularity INTEGER)", NULL, NULL, &em);
-	if (e != SQLITE_OK) {
-		fprintf(stderr, "failed to create table sims: %d\n", e);
+	if (!CreateTable(db, "sims", "(algorithm TEXT, length REAL, step REAL, granularity INTEGER)"))
 		goto bail1;
-	}
-	/* create table dgs */
-	e = sqlite3_exec(db, "CREATE TABLE IF NOT EXISTS dgs (task_id INTEGER, variable TEXT)", NULL, NULL, &em);
-	if (e != SQLITE_OK) {
-		fprintf(stderr, "failed to create table dgs: %d\n", e);
+	if (!CreateTable(db, "dgs", "(task_id INTEGER, variable TEXT)"))
 		goto bail1;
-	}
 
 	for (int i=0;i<sedml->num_tasks;i++) {
 		const struct sedml_task *task = sedml->tasks[i];

@@ -21,6 +21,7 @@
 #include <libxml/xmlreader.h>
 
 #include "branch.h"
+#include "db/query.h"
 #include "modelpath.h"
 #include "phml/definition_dumper.h"
 #include "phml/graph-iv-rewriter.h"
@@ -3689,22 +3690,10 @@ const Schema kSubsequentTables[] = {
 
 void CreateTablesOrDie(sqlite3 *db, const Schema *tables, size_t n)
 {
-	char buf[1024]; // long enough
-	char *em;
-	int e;
-
 	for (size_t i=0;i<n;i++) {
 		const Schema &table = tables[i];
-		sprintf(buf, "CREATE TABLE IF NOT EXISTS %s %s",
-				table.name, table.columns);
-
-		e = sqlite3_exec(db, buf, NULL, NULL, &em);
-		if (e != SQLITE_OK) {
-			cerr << "failed to create table " << table.name
-				 << ": " << e
-				 << ": " << em << endl;
+		if (!CreateTable(db, table.name, table.columns))
 			exit(EXIT_FAILURE);
-		}
 	}
 }
 
