@@ -240,19 +240,13 @@ int main(int argc, char *argv[])
 	if (!CreateTable(db, "jobs", "(enum_id INTEGER, status TEXT)"))
 		return EXIT_FAILURE;
 
-	e = sqlite3_exec(db, "BEGIN", NULL, NULL, &em);
-	if (e != SQLITE_OK) {
-		fprintf(stderr, "failed to start transaction: %s\n", em);
+	if (!BeginTransaction(db))
 		return EXIT_FAILURE;
-	}
 
 	if (Enumerate() != 0) return EXIT_FAILURE;
 
-	e = sqlite3_exec(db, "COMMIT", NULL, NULL, &em);
-	if (e != SQLITE_OK) {
-		fprintf(stderr, "failed to commit transaction: %s\n", em);
+	if (!CommitTransaction(db))
 		return EXIT_FAILURE;
-	}
 	sqlite3_close(db);
 
 	return EXIT_SUCCESS;

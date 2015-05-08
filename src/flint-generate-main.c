@@ -6,6 +6,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "db/query.h"
 #include "sqlite3.h"
 
 static sqlite3 *db;
@@ -99,22 +100,13 @@ int main(int argc, char *argv[])
 	int enum_id = sqlite3_column_int(stmt, 1);
 	sqlite3_finalize(stmt);
 
-	/* start transaction */
-	e = sqlite3_exec(db, "BEGIN", NULL, NULL, &em);
-	if (e != SQLITE_OK) {
-		fprintf(stderr, "failed to start transaction: %s\n", em);
+	if (!BeginTransaction(db))
 		return EXIT_FAILURE;
-	}
 
 	Generate(rowid, enum_id);
 
-	/* commit transaction */
-	e = sqlite3_exec(db, "COMMIT", NULL, NULL, &em);
-	if (e != SQLITE_OK) {
-		fprintf(stderr, "failed to commit transaction: %s\n", em);
-		/* TODO */
+	if (!CommitTransaction(db))
 		return EXIT_FAILURE;
-	}
 	sqlite3_close(db);
 
 	return EXIT_SUCCESS;

@@ -11,6 +11,16 @@ extern "C" {
 /*
  * Return 1 in case of success, 0 otherwise.
  */
+int BeginTransaction(sqlite3 *db);
+
+/*
+ * Return 1 in case of success, 0 otherwise.
+ */
+int CommitTransaction(sqlite3 *db);
+
+/*
+ * Return 1 in case of success, 0 otherwise.
+ */
 int CreateTable(sqlite3 *db, const char *name, const char *columns);
 
 #ifdef __cplusplus

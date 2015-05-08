@@ -41,11 +41,8 @@ int main(int argc, char *argv[])
 	sqlite3 *db = driver->db();
 	char *em;
 	int e;
-	e = sqlite3_exec(db, "BEGIN", NULL, NULL, &em);
-	if (e != SQLITE_OK) {
-		cerr << "failed to start transaction: " << em << endl;
+	if (!BeginTransaction(db))
 		return EXIT_FAILURE;
-	}
 	e = sqlite3_exec(db, "CREATE VIEW IF NOT EXISTS spaces AS SELECT '00000000-0000-0000-0000-000000000000', 'default'",
 					 NULL, NULL, &em);
 	if (e != SQLITE_OK) {
@@ -62,10 +59,8 @@ int main(int argc, char *argv[])
 		return EXIT_FAILURE;
 	if (!CreateTable(db, "time_unit", "(name TEXT)"))
 		return EXIT_FAILURE;
-	e = sqlite3_exec(db, "COMMIT", NULL, NULL, &em);
-	if (e != SQLITE_OK) {
-		cerr << "failed to start transaction: " << em << endl;
+	if (!CommitTransaction(db))
 		return EXIT_FAILURE;
-	}
+	sqlite3_close(db);
 	return EXIT_SUCCESS;
 }

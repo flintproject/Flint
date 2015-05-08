@@ -166,12 +166,8 @@ int main(int argc, char *argv[])
 		return EXIT_FAILURE;
 	}
 
-	/* start transaction */
-	e = sqlite3_exec(db, "BEGIN", NULL, NULL, &em);
-	if (e != SQLITE_OK) {
-		fprintf(stderr, "failed to start transaction: %s\n", em);
+	if (!BeginTransaction(db))
 		return EXIT_FAILURE;
-	}
 
 	if (!CreateTable(db, "modules", "(uuid TEXT, name TEXT)"))
 		return EXIT_FAILURE;
@@ -195,13 +191,8 @@ int main(int argc, char *argv[])
 		return EXIT_FAILURE;
 	}
 
-	/* commit transaction */
-	e = sqlite3_exec(db, "COMMIT", NULL, NULL, &em);
-	if (e != SQLITE_OK) {
-		fprintf(stderr, "failed to commit transaction: %s\n", em);
-		/* TODO */
+	if (!CommitTransaction(db))
 		return EXIT_FAILURE;
-	}
 	sqlite3_close(db);
 
 	return EXIT_SUCCESS;

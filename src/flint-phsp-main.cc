@@ -368,11 +368,8 @@ private:
 		}
 
 		// begin a transaction per attached session
-		e = sqlite3_exec(db_, "BEGIN", NULL, NULL, &em);
-		if (e != SQLITE_OK) {
-			cerr << "failed to start transaction: " << em << endl;
+		if (!BeginTransaction(db_))
 			return -2;
-		}
 
 		char table_name[64]; // long enough
 		// save model's format
@@ -427,11 +424,8 @@ private:
 				const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
 				if (xmlStrEqual(local_name, BAD_CAST "model")) {
 					// commit the transaction per attached session
-					e = sqlite3_exec(db_, "COMMIT", NULL, NULL, &em);
-					if (e != SQLITE_OK) {
-						cerr << "failed to commit transaction: " << em << endl;
+					if (!CommitTransaction(db_))
 						return -2;
-					}
 					return xmlTextReaderRead(text_reader_);
 				}
 			}

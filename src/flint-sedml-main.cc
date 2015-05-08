@@ -140,13 +140,9 @@ int main(int argc, char *argv[])
 		fprintf(stderr, "failed to open database: %s\n", argv[1]);
 		goto bail0;
 	}
-	char *em;
 	int e;
-	e = sqlite3_exec(db, "BEGIN", NULL, NULL, &em);
-	if (e != SQLITE_OK) {
-		fprintf(stderr, "failed to start transaction: %s\n", em);
+	if (!BeginTransaction(db))
 		return EXIT_FAILURE;
-	}
 	if (!CreateTable(db, "tasks", "(model_id INTEGER, sim_id INTEGER)"))
 		goto bail1;
 	if (!CreateTable(db, "models", "(model_path TEXT, db_path TEXT)"))
@@ -321,11 +317,8 @@ int main(int argc, char *argv[])
 		}
 	}
 
-	e = sqlite3_exec(db, "COMMIT", NULL, NULL, &em);
-	if (e != SQLITE_OK) {
-		fprintf(stderr, "failed to commit transaction: %s\n", em);
+	if (!CommitTransaction(db))
 		return EXIT_FAILURE;
-	}
 	r = EXIT_SUCCESS;
 
  bail1:

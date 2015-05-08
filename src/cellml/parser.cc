@@ -749,11 +749,11 @@ public:
 	bool Parse() {
 		boost::scoped_array<char> model_file(GetModelFilename(db_path_));
 		if (!OpenDatabase()) return false;
-		if (!BeginTransaction()) return false;
+		if (!BeginTransaction(db_)) return false;
 		if (!CreateTables()) return false;
 		if (!PrepareStatements()) return false;
 		CellMLReader<CellMLParser> reader(model_file.get(), this);
-		return reader.Read() == 0 && CommitTransaction();
+		return reader.Read() == 0 && CommitTransaction(db_);
 	}
 
 private:
@@ -763,26 +763,6 @@ private:
 			cerr << "failed to open database: "
 				 << db_path_
 				 << endl;
-			return false;
-		}
-		return true;
-	}
-
-	bool BeginTransaction() {
-		char *em;
-		int e = sqlite3_exec(db_, "BEGIN TRANSACTION", NULL, NULL, &em);
-		if (e != SQLITE_OK) {
-			cerr << "failed to begin transaction: " << em << endl;
-			return false;
-		}
-		return true;
-	}
-
-	bool CommitTransaction() {
-		char *em;
-		int e = sqlite3_exec(db_, "COMMIT", NULL, NULL, &em);
-		if (e != SQLITE_OK) {
-			cerr << "failed to commit transaction: " << em << endl;
 			return false;
 		}
 		return true;

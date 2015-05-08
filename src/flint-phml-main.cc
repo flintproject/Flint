@@ -3760,13 +3760,8 @@ int main(int argc, char *argv[])
 		fprintf(stderr, "failed to open database: %s\n", argv[1]);
 		return EXIT_FAILURE;
 	}
-	char *em;
-	int e;
-	e = sqlite3_exec(db, "BEGIN", NULL, NULL, &em);
-	if (e != SQLITE_OK) {
-		fprintf(stderr, "failed to start transaction: %s\n", em);
+	if (!BeginTransaction(db))
 		return EXIT_FAILURE;
-	}
 	CREATE_TABLES_OR_DIE(db, kModelTables);
 
 	// subsequent tables
@@ -3837,11 +3832,8 @@ int main(int argc, char *argv[])
 	if (!Reach(db)) return EXIT_FAILURE;
 	if (!Sprinkle(db)) return EXIT_FAILURE;
 
-	e = sqlite3_exec(db, "COMMIT", NULL, NULL, &em);
-	if (e != SQLITE_OK) {
-		fprintf(stderr, "failed to commit transaction: %s\n", em);
+	if (!CommitTransaction(db))
 		return EXIT_FAILURE;
-	}
 	sqlite3_close(db);
 	return EXIT_SUCCESS;
 }

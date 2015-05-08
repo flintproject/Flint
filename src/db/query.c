@@ -5,6 +5,28 @@
 #include <stdlib.h>
 #include <string.h>
 
+int BeginTransaction(sqlite3 *db)
+{
+	char *em;
+	int e = sqlite3_exec(db, "BEGIN", NULL, NULL, &em);
+	if (e != SQLITE_OK) {
+		fprintf(stderr, "failed to begin transaction: %d: %s\n", e, em);
+		return 0;
+	}
+	return 1;
+}
+
+int CommitTransaction(sqlite3 *db)
+{
+	char *em;
+	int e = sqlite3_exec(db, "COMMIT", NULL, NULL, &em);
+	if (e != SQLITE_OK) {
+		fprintf(stderr, "failed to commit transaction: %d: %s\n", e, em);
+		return 0;
+	}
+	return 1;
+}
+
 int CreateTable(sqlite3 *db, const char *name, const char *columns)
 {
 	size_t len = 32;
