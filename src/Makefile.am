@@ -297,9 +297,11 @@ flint_run_LDADD = libflintxx.a libflint.a libsqlite3.a $(PROTOBUF_LIBS) $(BOOST_
 flint_run_SOURCES = flint-run-main.cc cli.pb.cc
 
 flint_sbml_CPPFLAGS = $(BOOST_CPPFLAGS) $(SOSLIB_CFLAGS) $(SUNDIALS_CFLAGS) $(LIBSBML_CFLAGS)
-flint_sbml_LDFLAGS = $(BOOST_FILESYSTEM_LDFLAGS) $(BOOST_PROGRAM_OPTIONS_LDFLAGS) $(BOOST_SYSTEM_LDFLAGS)
-flint_sbml_LDADD = libflintxx.a libflint.a libsqlite3.a $(BOOST_FILESYSTEM_LIBS) $(BOOST_PROGRAM_OPTIONS_LIBS) $(BOOST_SYSTEM_LIBS) $(SOSLIB_LIBS) $(SUNDIALS_LIBS) $(LIBSBML_LIBS)
-flint_sbml_SOURCES = flint-sbml-main.cc
+flint_sbml_LDFLAGS = $(BOOST_FILESYSTEM_LDFLAGS) $(BOOST_SYSTEM_LDFLAGS)
+flint_sbml_LDADD = libflintxx.a libflint.a libsqlite3.a $(BOOST_FILESYSTEM_LIBS) $(BOOST_SYSTEM_LIBS) $(SOSLIB_LIBS) $(SUNDIALS_LIBS) $(LIBSBML_LIBS)
+flint_sbml_SOURCES = \
+    sbml/parser.cc \
+    flint-sbml-main.cc
 
 flint_sbmlall_CPPFLAGS = $(BOOST_CPPFLAGS)
 flint_sbmlall_LDFLAGS = $(BOOST_FILESYSTEM_LDFLAGS) $(BOOST_PROGRAM_OPTIONS_LDFLAGS) $(BOOST_SYSTEM_LDFLAGS)
