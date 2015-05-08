@@ -128,7 +128,6 @@ void PrintLine(const std::string &uuid,
 	} else {
 		assert(lhs.which() == kExprIsCompound);
 		const Compound &c(boost::get<Compound>(lhs));
-		cerr << "c.keyword: " << c.keyword << endl;
 		assert(c.children.size() == 2);
 		const Expr &e(c.children.at(1));
 		assert(e.which() == kExprIsString);
