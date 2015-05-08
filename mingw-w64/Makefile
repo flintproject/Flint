@@ -29,6 +29,7 @@ endef
 define flint_exe
 $(call flint_exe_name,$(1)): opt/bin/$(1).exe | flint
 	install -p $$< $$@
+	strip $$@
 endef
 
 define external_binary_for_windows
