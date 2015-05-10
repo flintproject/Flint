@@ -11,12 +11,9 @@
 #include <string>
 
 #include <boost/noncopyable.hpp>
-#include <boost/program_options.hpp>
 #include <boost/ptr_container/ptr_vector.hpp>
 #include <boost/scoped_array.hpp>
 #include <boost/scoped_ptr.hpp>
-
-namespace po = boost::program_options;
 
 using std::cerr;
 using std::endl;
@@ -101,7 +98,7 @@ typedef boost::ptr_vector<Compartment> CompartmentVector;
 
 class Loader : boost::noncopyable {
 public:
-	explicit Loader(const string &file) : ifs_(file.c_str(), std::ios::in) {}
+	explicit Loader(const char *file) : ifs_(file, std::ios::in) {}
 
 	~Loader() {
 		if (ifs_.is_open()) ifs_.close();
@@ -146,7 +143,7 @@ private:
 
 class NameWriter : boost::noncopyable {
 public:
-	explicit NameWriter(const string &file) : ofs_(file.c_str(), std::ios::out), i_(1) {}
+	explicit NameWriter(const char *file) : ofs_(file, std::ios::out), i_(1) {}
 
 	~NameWriter() {
 		if (ofs_.is_open()) ofs_.close();
@@ -170,7 +167,7 @@ private:
 
 class ValueWriter : boost::noncopyable {
 public:
-	explicit ValueWriter(const string &file) : ofs_(file.c_str(), std::ios::out) {}
+	explicit ValueWriter(const char *file) : ofs_(file, std::ios::out) {}
 
 	~ValueWriter() {
 		if (ofs_.is_open()) ofs_.close();
@@ -192,7 +189,7 @@ private:
 
 class FunctionWriter : boost::noncopyable {
 public:
-	explicit FunctionWriter(const string &file) : ofs_(file.c_str(), std::ios::out) {}
+	explicit FunctionWriter(const char *file) : ofs_(file, std::ios::out) {}
 
 	~FunctionWriter() {
 		if (ofs_.is_open()) ofs_.close();
@@ -213,7 +210,7 @@ private:
 
 class OdeWriter : boost::noncopyable {
 public:
-	explicit OdeWriter(const string &file) : ofs_(file.c_str(), std::ios::out) {}
+	explicit OdeWriter(const char *file) : ofs_(file, std::ios::out) {}
 
 	~OdeWriter() {
 		if (ofs_.is_open()) ofs_.close();
@@ -232,58 +229,40 @@ private:
 	std::ofstream ofs_;
 };
 
+void Usage()
+{
+	cerr << "usage: flint-sbmlenc INPUT NAME VALUE FUNCTION ODE" << endl;
+}
+
 } // namespace
 
 int main(int argc, char *argv[])
 {
-	po::options_description opts("options");
-	po::positional_options_description popts;
-	po::variables_map vm;
-	string input, name_file, value_file, function_file, ode_file;
-	int print_help = 0;
-
-	opts.add_options()
-		("input", po::value<string>(&input), "Input file")
-		("name", po::value<string>(&name_file), "Output name file")
-		("value", po::value<string>(&value_file), "Output value file")
-		("function", po::value<string>(&function_file), "Output function file")
-		("ode", po::value<string>(&ode_file), "Output ODE file")
-		("help,h", "Show this message");
-	popts.add("input", 1).add("name", 1).add("value", 1).add("function", 1).add("ode", 1);
-
-	try {
-		po::store(po::command_line_parser(argc, argv).options(opts).positional(popts).run(), vm);
-		po::notify(vm);
-		if (vm.count("help") > 0) {
-			print_help = 1;
-		} else if ( vm.count("input") == 0 ||
-					vm.count("name") == 0 ||
-					vm.count("value") == 0 ||
-					vm.count("function") == 0 ||
-					vm.count("ode") == 0 ) {
-			print_help = 2;
+	if (argc == 2) {
+		Usage();
+		if (strcmp("-h", argv[1]) == 0 || strcmp("--help", argv[1]) == 0) {
+			return EXIT_SUCCESS;
+		} else {
+			return EXIT_FAILURE;
 		}
-	} catch (const po::error &) {
-		print_help = 2;
 	}
-	if (print_help) {
-		cerr << "usage: " << argv[0] << " INPUT NAME VALUE FUNCTION ODE" << endl;
-		cerr << opts;
-		return (print_help == 1) ? EXIT_SUCCESS : EXIT_FAILURE;
+	if (argc != 6) {
+		Usage();
+		return EXIT_FAILURE;
 	}
 
 	boost::scoped_ptr<OdeVector> ov(new OdeVector);
 	boost::scoped_ptr<AssignmentVector> av(new AssignmentVector);
 	boost::scoped_ptr<CompartmentVector> cv(new CompartmentVector);
 	{
-		boost::scoped_ptr<Loader> loader(new Loader(input));
+		boost::scoped_ptr<Loader> loader(new Loader(argv[1]));
 		if (!loader->Load(ov.get(), av.get(), cv.get())) {
 			return EXIT_FAILURE;
 		}
 	}
 
 	{
-		boost::scoped_ptr<NameWriter> writer(new NameWriter(name_file));
+		boost::scoped_ptr<NameWriter> writer(new NameWriter(argv[2]));
 		for (OdeVector::const_iterator it=ov->begin();it!=ov->end();++it) {
 			writer->Write(*it);
 		}
@@ -296,7 +275,7 @@ int main(int argc, char *argv[])
 	}
 
 	{
-		boost::scoped_ptr<ValueWriter> writer(new ValueWriter(value_file));
+		boost::scoped_ptr<ValueWriter> writer(new ValueWriter(argv[3]));
 		for (OdeVector::const_iterator it=ov->begin();it!=ov->end();++it) {
 			writer->Write(*it);
 		}
@@ -306,14 +285,14 @@ int main(int argc, char *argv[])
 	}
 
 	{
-		boost::scoped_ptr<FunctionWriter> writer(new FunctionWriter(function_file));
+		boost::scoped_ptr<FunctionWriter> writer(new FunctionWriter(argv[4]));
 		for (AssignmentVector::const_iterator it=av->begin();it!=av->end();++it) {
 			writer->Write(*it);
 		}
 	}
 
 	{
-		boost::scoped_ptr<OdeWriter> writer(new OdeWriter(ode_file));
+		boost::scoped_ptr<OdeWriter> writer(new OdeWriter(argv[5]));
 		for (OdeVector::const_iterator it=ov->begin();it!=ov->end();++it) {
 			writer->Write(*it);
 		}
