@@ -44,12 +44,14 @@ static int Generate(int rowid, int enum_id)
 	sprintf(query, "SELECT * FROM enum WHERE rowid = '%d'", enum_id);
 	e = sqlite3_exec(db, query, PrintParameter, NULL, &em);
 	if (e != SQLITE_OK) {
-		fprintf(stderr, "failed to select enum: %s\n", em);
+		fprintf(stderr, "failed to select enum: %d: %s\n", e, em);
+		sqlite3_free(em);
 		return 1;
 	}
 	e = sqlite3_exec(db, "SELECT uuid, body FROM equations", PrintEquation, NULL, &em);
 	if (e != SQLITE_OK) {
-		fprintf(stderr, "failed to select equations: %s\n", em);
+		fprintf(stderr, "failed to select equations: %d: %s\n", e, em);
+		sqlite3_free(em);
 		return 1;
 	}
 
@@ -57,7 +59,8 @@ static int Generate(int rowid, int enum_id)
 	sprintf(query, "UPDATE jobs SET status = 'generated' WHERE rowid = '%d'", rowid);
 	e = sqlite3_exec(db, query, NULL, NULL, &em);
 	if (e != SQLITE_OK) {
-		fprintf(stderr, "failed to update jobs: %s\n", em);
+		fprintf(stderr, "failed to update jobs: %d: %s\n", e, em);
+		sqlite3_free(em);
 		return EXIT_FAILURE;
 	}
 

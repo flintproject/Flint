@@ -46,13 +46,15 @@ int main(int argc, char *argv[])
 	e = sqlite3_exec(db, "CREATE VIEW IF NOT EXISTS spaces AS SELECT '00000000-0000-0000-0000-000000000000', 'default'",
 					 NULL, NULL, &em);
 	if (e != SQLITE_OK) {
-		cerr << "failed to create spaces: " << em << endl;
+		cerr << "failed to create spaces: " << e << ": " << em << endl;
+		sqlite3_free(em);
 		return EXIT_FAILURE;
 	}
 	e = sqlite3_exec(db, "CREATE VIEW IF NOT EXISTS scopes AS SELECT '00000000-0000-0000-0000-000000000000', '00000000-0000-0000-0000-000000000000'",
 					 NULL, NULL, &em);
 	if (e != SQLITE_OK) {
-		cerr << "failed to create scopes: " << em << endl;
+		cerr << "failed to create scopes: " << e << ": " << em << endl;
+		sqlite3_free(em);
 		return EXIT_FAILURE;
 	}
 	if (!CreateTable(db, "names", "(space_id TEXT, type TEXT, id INTEGER, name TEXT, unit TEXT, capacity REAL)"))

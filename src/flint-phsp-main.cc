@@ -363,7 +363,9 @@ private:
 		char *em;
 		e = sqlite3_exec(db_, query, NULL, NULL, &em);
 		if (e != SQLITE_OK) {
-			cerr << "failed to attach database: " << em << endl;
+			cerr << "failed to attach database: " << e
+				 << ": " << em << endl;
+			sqlite3_free(em);
 			return -2;
 		}
 

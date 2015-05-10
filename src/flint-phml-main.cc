@@ -3728,6 +3728,7 @@ void CreateViewsOrDie(sqlite3 *db, const View *views, size_t n)
 			cerr << "failed to create view " << view.name
 				 << ": " << e
 				 << ": " << em << endl;
+			sqlite3_free(em);
 			exit(EXIT_FAILURE);
 		}
 	}

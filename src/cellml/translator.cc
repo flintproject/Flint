@@ -57,7 +57,10 @@ public:
 		e = sqlite3_exec(db, "CREATE VIEW IF NOT EXISTS scopes AS SELECT uuid, uuid, NULL FROM spaces",
 						 NULL, NULL, &em);
 		if (e != SQLITE_OK) {
-			cerr << "failed to create view scopes: " << e << endl;
+			cerr << "failed to create view scopes: " << e
+				 << ": " << em
+				 << endl;
+			sqlite3_free(em);
 			exit(EXIT_FAILURE);
 		}
 		e = sqlite3_prepare_v2(db, kTreeQuery, -1, &query_stmt_, NULL);

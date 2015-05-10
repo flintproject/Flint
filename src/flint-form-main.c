@@ -86,12 +86,14 @@ static int InsertNames(void)
 	}
 	e = sqlite3_exec(db, "SELECT name FROM phsp_parameters", InsertParameterName, &id, &em);
 	if (e != SQLITE_OK) {
-		/* TODO */
+		fprintf(stderr, "%d: %s\n", e, em);
+		sqlite3_free(em);
 		return 1;
 	}
 	e = sqlite3_exec(db, "SELECT rowid FROM phsp_targets", InsertTargetName, &id, &em);
 	if (e != SQLITE_OK) {
-		/* TODO */
+		fprintf(stderr, "%d: %s\n", e, em);
+		sqlite3_free(em);
 		return 1;
 	}
 	sqlite3_finalize(stmt);
@@ -138,7 +140,8 @@ static int InsertEquations(void)
 	}
 	e = sqlite3_exec(db, "SELECT rowid, math FROM phsp_targets", InsertTargetEquation, NULL, &em);
 	if (e != SQLITE_OK) {
-		/* TODO */
+		fprintf(stderr, "%d: %s\n", e, em);
+		sqlite3_free(em);
 		return 1;
 	}
 	sqlite3_finalize(stmt);
@@ -181,7 +184,8 @@ int main(int argc, char *argv[])
 	/* insert the default module */
 	e = sqlite3_exec(db, "INSERT INTO modules VALUES ('00000000-0000-0000-0000-000000000000', 'default')", NULL, NULL, &em);
 	if (e != SQLITE_OK) {
-		/* TODO */
+		fprintf(stderr, "%d: %s\n", e, em);
+		sqlite3_free(em);
 		return EXIT_FAILURE;
 	}
 	if (InsertNames() != 0) {

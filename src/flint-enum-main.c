@@ -128,7 +128,8 @@ static int Enumerate(void)
 
 	e = sqlite3_exec(db, q, NULL, NULL, &em);
 	if (e != SQLITE_OK) {
-		fprintf(stderr, "failed to create table: %s\n", em);
+		fprintf(stderr, "failed to create table: %d: %s\n", e, em);
+		sqlite3_free(em);
 		return EXIT_FAILURE;
 	}
 	sqlite3_reset(stmt);

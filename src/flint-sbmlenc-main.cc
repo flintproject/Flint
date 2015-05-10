@@ -115,17 +115,20 @@ public:
 		char *em;
 		e = sqlite3_exec(db(), "SELECT * FROM odes", HandleOde, ov, &em);
 		if (e != SQLITE_OK) {
-			cerr << em << endl;
+			cerr << e << ": " << em << endl;
+			sqlite3_free(em);
 			return false;
 		}
 		e = sqlite3_exec(db(), "SELECT * FROM assignments", HandleAssignment, av, &em);
 		if (e != SQLITE_OK) {
-			cerr << em << endl;
+			cerr << e << ": " << em << endl;
+			sqlite3_free(em);
 			return false;
 		}
 		e = sqlite3_exec(db(), "SELECT * FROM constants", HandleConstant, cv, &em);
 		if (e != SQLITE_OK) {
-			cerr << em << endl;
+			cerr << e << ": " << em << endl;
+			sqlite3_free(em);
 			return false;
 		}
 		return true;
