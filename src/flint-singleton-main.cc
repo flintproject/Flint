@@ -61,8 +61,5 @@ int main(int argc, char *argv[])
 		return EXIT_FAILURE;
 	if (!CreateTable(db, "time_unit", "(name TEXT)"))
 		return EXIT_FAILURE;
-	if (!CommitTransaction(db))
-		return EXIT_FAILURE;
-	sqlite3_close(db);
-	return EXIT_SUCCESS;
+	return CommitTransaction(db) ? EXIT_SUCCESS : EXIT_FAILURE;
 }
