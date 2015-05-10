@@ -185,10 +185,8 @@ static void PrintRecipeForSbml(void)
 {
 	printf("MODEL_LANG = sbml\n");
 	printf("\n");
-	printf("sbml.txt: model\n");
-	printf("\tflint-sbml $< > $@\n");
-	printf("\n");
-	printf("name.txt: sbml.txt\n");
+	printf("name.txt: model\n");
+	printf("\tflint-sbml $<\n");
 	printf("\tflint-sbmlenc $< $@ value.txt function.txt ode.txt\n");
 	printf("\n");
 	printf("value.txt function.txt ode.txt: name.txt\n");

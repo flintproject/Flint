@@ -13,10 +13,8 @@ OUTPUT:
 OUTPUT/db: INPUT | OUTPUT
 	test-input1 $@ $<
 
-OUTPUT/sbml: OUTPUT/db
-	flint-sbml $< > $@
-
-OUTPUT/run: OUTPUT/sbml
+OUTPUT/run: OUTPUT/db
+	flint-sbml $<
 	flint-sbmlenc $< OUTPUT/name OUTPUT/value OUTPUT/function OUTPUT/ode > $@
 
 OUTPUT/name OUTPUT/value OUTPUT/function OUTPUT/ode: OUTPUT/run

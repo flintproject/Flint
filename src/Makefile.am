@@ -312,8 +312,7 @@ flint_sbmlall_LDADD = libflint.a $(BOOST_FILESYSTEM_LIBS) $(BOOST_PROGRAM_OPTION
 flint_sbmlall_SOURCES = flint-sbmlall-main.cc
 
 flint_sbmlenc_CPPFLAGS = $(BOOST_CPPFLAGS)
-flint_sbmlenc_LDFLAGS = 
-flint_sbmlenc_LDADD = 
+flint_sbmlenc_LDADD = libsqlite3.a
 flint_sbmlenc_SOURCES = flint-sbmlenc-main.cc
 
 flint_sedml_CPPFLAGS = $(BOOST_CPPFLAGS) $(CLIBSEDML_CFLAGS)

@@ -3,6 +3,7 @@
 #include "config.h"
 #endif
 
+#include <cassert>
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
@@ -14,6 +15,8 @@
 #include <boost/ptr_container/ptr_vector.hpp>
 #include <boost/scoped_array.hpp>
 #include <boost/scoped_ptr.hpp>
+
+#include "db/driver.h"
 
 using std::cerr;
 using std::endl;
@@ -96,50 +99,65 @@ typedef boost::ptr_vector<Ode> OdeVector;
 typedef boost::ptr_vector<Assignment> AssignmentVector;
 typedef boost::ptr_vector<Compartment> CompartmentVector;
 
-class Loader : boost::noncopyable {
-public:
-	explicit Loader(const char *file) : ifs_(file, std::ios::in) {}
+int HandleOde(void *data, int argc, char **argv, char **names);
+int HandleAssignment(void *data, int argc, char **argv, char **names);
+int HandleConstant(void *data, int argc, char **argv, char **names);
 
-	~Loader() {
-		if (ifs_.is_open()) ifs_.close();
+class Loader : public db::Driver {
+public:
+	explicit Loader(const char *file)
+		: db::Driver(file)
+	{
 	}
 
 	bool Load(OdeVector *ov, AssignmentVector *av, CompartmentVector *cv) {
-		static const int kUuidSize = 36;
-		static const int kLineSize = kUuidSize + 10240; // FIXME
-
-		if (!ifs_.is_open()) {
-			cerr << "failed to open input file" << endl;
+		int e;
+		char *em;
+		e = sqlite3_exec(db(), "SELECT * FROM odes", HandleOde, ov, &em);
+		if (e != SQLITE_OK) {
+			cerr << em << endl;
 			return false;
 		}
-		boost::scoped_array<char> line(new char[kLineSize]);
-		while (ifs_.getline(line.get(), kLineSize)) {
-			size_t len = strlen(line.get());
-			if (len < 2) {
-				cerr << "invalid line: " << line.get() << endl;
-				return false;
-			}
-			switch (line[0]) {
-			case 'o':
-				ov->push_back(Ode::Parse(line.get()+2));
-				break;
-			case 'a':
-				av->push_back(Assignment::Parse(line.get()+2));
-				break;
-			case 'c':
-				cv->push_back(Compartment::Parse(line.get()+2));
-				break;
-			default:
-				cerr << "invalid line: " << line.get() << endl;
-				return false;
-			}
+		e = sqlite3_exec(db(), "SELECT * FROM assignments", HandleAssignment, av, &em);
+		if (e != SQLITE_OK) {
+			cerr << em << endl;
+			return false;
+		}
+		e = sqlite3_exec(db(), "SELECT * FROM constants", HandleConstant, cv, &em);
+		if (e != SQLITE_OK) {
+			cerr << em << endl;
+			return false;
 		}
 		return true;
 	}
-
-private:
-	std::ifstream ifs_;
 };
+
+int HandleOde(void *data, int argc, char **argv, char **names)
+{
+	(void)names;
+	OdeVector *ov = (OdeVector *)data;
+	assert(argc == 3);
+	ov->push_back(new Ode(argv[0], argv[1], argv[2]));
+	return 0;
+}
+
+int HandleAssignment(void *data, int argc, char **argv, char **names)
+{
+	(void)names;
+	AssignmentVector *av = (AssignmentVector *)data;
+	assert(argc == 2);
+	av->push_back(new Assignment(argv[0], argv[1]));
+	return 0;
+}
+
+int HandleConstant(void *data, int argc, char **argv, char **names)
+{
+	(void)names;
+	CompartmentVector *cv = (CompartmentVector *)data;
+	assert(argc == 2);
+	cv->push_back(new Compartment(argv[0], argv[1]));
+	return 0;
+}
 
 class NameWriter : boost::noncopyable {
 public:
@@ -198,7 +216,6 @@ public:
 	void Write(const Assignment &a) {
 		ofs_ << "00000000-0000-0000-0000-000000000000 (eq %"
 			 << a.name()
-			 << ' '
 			 << a.rhs()
 			 << ')'
 			 << endl;
@@ -219,7 +236,7 @@ public:
 	void Write(const Ode &o) {
 		ofs_ << "00000000-0000-0000-0000-000000000000 (eq (diff (bvar %time) %"
 			 << o.name()
-			 << ") "
+			 << ')'
 			 << o.rhs()
 			 << ')'
 			 << endl;
