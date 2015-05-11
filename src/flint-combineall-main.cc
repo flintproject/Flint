@@ -7,6 +7,8 @@
 #include <cstdlib>
 #include <cstring>
 #include <iostream>
+#include <string>
+#include <vector>
 
 #define BOOST_FILESYSTEM_NO_DEPRECATED
 #include <boost/filesystem.hpp>
@@ -37,29 +39,11 @@ bool SaveFile(const char *uuid, const char *xml_file)
 	return SaveGivenFile(db_file.get(), xml_file);
 }
 
-int ParseFile(void *data, int argc, char **argv, char **names)
+bool ParseFile(const char *uuid)
 {
-	(void)data;
-	(void)names;
-	assert(argc == 1);
 	boost::scoped_array<char> db_file(new char[64]); // large enough
-	sprintf(db_file.get(), "%s.db", argv[0]);
-	if (!ParseSbml(db_file.get())) return 1;
-	return 0;
-}
-
-int CombineFile(void *data, int argc, char **argv, char **names)
-{
-	(void)names;
-	assert(argc == 1);
-	if (!Combine(argv[0],
-				 ((char **)data)[1],
-				 ((char **)data)[2],
-				 ((char **)data)[3],
-				 ((char **)data)[4],
-				 ((char **)data)[5]))
-		return 1;
-	return 0;
+	sprintf(db_file.get(), "%s.db", uuid);
+	return ParseSbml(db_file.get());
 }
 
 bool TouchFile(const char *file)
@@ -72,6 +56,8 @@ bool TouchFile(const char *file)
 	std::fclose(fp);
 	return true;
 }
+
+typedef std::vector<std::string> UuidVector;
 
 void Usage()
 {
@@ -97,6 +83,7 @@ int main(int argc, char *argv[])
 
 	boost::scoped_ptr<db::Driver> driver(new db::Driver(argv[1]));
 
+	UuidVector uv;
 	sqlite3_stmt *stmt;
 	int e = sqlite3_prepare_v2(driver->db(),
 							   "SELECT m.module_id, i.type, i.ref FROM imports AS i LEFT JOIN modules AS m ON i.module_rowid = m.rowid",
@@ -121,6 +108,7 @@ int main(int argc, char *argv[])
 			boost::scoped_array<char> xml_utf8(GetUtf8FromPath(xml_path));
 			if (!SaveFile((const char *)uuid, xml_utf8.get())) return EXIT_FAILURE;
 		}
+		uv.push_back((const char *)uuid);
 	}
 	if (e != SQLITE_DONE) {
 		cerr << "failed to step statement: " << e << endl;
@@ -128,30 +116,22 @@ int main(int argc, char *argv[])
 	}
 	sqlite3_finalize(stmt);
 
-	char *em;
-	e = sqlite3_exec(driver->db(), "SELECT m.module_id FROM imports AS i LEFT JOIN modules AS m ON i.module_rowid = m.rowid",
-					 ParseFile, NULL, &em);
-	if (e != SQLITE_OK) {
-		cerr << e << ": " << em << endl;
-		sqlite3_free(em);
-		return EXIT_FAILURE;
+	for (UuidVector::const_iterator it=uv.begin();it!=uv.end();++it) {
+		if (!ParseFile(it->c_str())) return EXIT_FAILURE;
 	}
 
-	const char *name_file = argv[2];
-	const char *value_file = argv[3];
-	const char *function_file = argv[4];
-	const char *ode_file = argv[5];
-	if (!TouchFile(name_file)) return EXIT_FAILURE;
-	if (!TouchFile(value_file)) return EXIT_FAILURE;
-	if (!TouchFile(function_file)) return EXIT_FAILURE;
-	if (!TouchFile(ode_file)) return EXIT_FAILURE;
+	for (int i=2;i<6;i++) {
+		if (!TouchFile(argv[i])) return EXIT_FAILURE;
+	}
 
-	e = sqlite3_exec(driver->db(), "SELECT m.module_id FROM imports AS i LEFT JOIN modules AS m ON i.module_rowid = m.rowid",
-					 CombineFile, argv, &em);
-	if (e != SQLITE_OK) {
-		cerr << e << ": " << em << endl;
-		sqlite3_free(em);
-		return EXIT_FAILURE;
+	for (UuidVector::const_iterator it=uv.begin();it!=uv.end();++it) {
+		if (!Combine(it->c_str(),
+					 argv[1],
+					 argv[2],
+					 argv[3],
+					 argv[4],
+					 argv[5]))
+			return EXIT_FAILURE;
 	}
 
 	return EXIT_SUCCESS;
