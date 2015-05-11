@@ -23,7 +23,6 @@ using std::endl;
 using std::printf;
 using std::sprintf;
 using std::strcmp;
-using std::strlen;
 
 namespace {
 
@@ -65,7 +64,6 @@ int main(int argc, char *argv[])
 		return EXIT_FAILURE;
 	}
 
-	size_t len = strlen(argv[1]);
 	for (e = sqlite3_step(stmt); e == SQLITE_ROW; e = sqlite3_step(stmt)) {
 		const unsigned char *uuid = sqlite3_column_text(stmt, 0);
 		const unsigned char *type = sqlite3_column_text(stmt, 1);
