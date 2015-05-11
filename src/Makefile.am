@@ -147,7 +147,7 @@ flint_cli_SOURCES = cli.pb.cc flint-cli-main.cc
 flint_combine_CPPFLAGS = $(BOOST_CPPFLAGS)
 flint_combine_LDFLAGS = $(BOOST_PROGRAM_OPTIONS_LDFLAGS)
 flint_combine_LDADD = libsqlite3.a $(BOOST_PROGRAM_OPTIONS_LIBS)
-flint_combine_SOURCES = flint-combine-main.cc
+flint_combine_SOURCES = phml/combine.cc flint-combine-main.cc
 
 flint_combineall_CPPFLAGS = $(BOOST_CPPFLAGS)
 flint_combineall_LDFLAGS = $(BOOST_PROGRAM_OPTIONS_LDFLAGS)
