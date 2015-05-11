@@ -22,7 +22,6 @@ SUBDIRS = \
 	flint-phz \
 	flint-rk4 \
 	flint-sbml \
-	flint-sbmlenc \
 	flint-sort \
 	flint-tac \
 	flint-taskpref \

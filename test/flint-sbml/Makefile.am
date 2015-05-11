@@ -12,9 +12,9 @@ TESTS = \
 	chmod +x $@
 
 $(TESTS:.sh=.mk): $(DATADIR)/test.mk.in
-	m4 -DEXPECTED=$(DATADIR)/$(@:.mk=.o.txt) -DINPUT=$(MODELDIR)/$(@:.mk=.xml) -DOUTPUT=$(@:.mk=) $< > $@
+	m4 -DEXPECTED=$(DATADIR)/$(@:.mk=) -DINPUT=$(MODELDIR)/$(@:.mk=.xml) -DOUTPUT=$(@:.mk=.out) $< > $@
 
-CLEANFILES = $(TESTS) $(TESTS:.sh=) $(TESTS:.sh=.mk)
+CLEANFILES = $(TESTS) $(TESTS:.sh=) $(TESTS:.sh=.mk) $(TESTS:.sh=.out/*)
 
 check_SCRIPTS = $(TESTS)
 

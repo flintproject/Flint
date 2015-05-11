@@ -1,15 +1,31 @@
 .PHONY: all clean check
 
-all: OUTPUT
+all: OUTPUT/run
 
-check: OUTPUT.diff
+check: OUTPUT/name.diff OUTPUT/value.diff OUTPUT/function.diff OUTPUT/ode.diff
 
 clean:
-	-rm -f OUTPUT OUTPUT.db OUTPUT.diff
+	-rm -rf OUTPUT
 
-OUTPUT: INPUT
-	test-input1 OUTPUT.db $<
-	flint-sbml OUTPUT.db > $@
+OUTPUT:
+	mkdir -p $@
 
-OUTPUT.diff: EXPECTED OUTPUT
+OUTPUT/db: INPUT | OUTPUT
+	test-input1 $@ $<
+
+OUTPUT/run: OUTPUT/db
+	flint-sbml $< OUTPUT/name OUTPUT/value OUTPUT/function OUTPUT/ode > $@
+
+OUTPUT/name OUTPUT/value OUTPUT/function OUTPUT/ode: OUTPUT/run
+
+OUTPUT/name.diff: EXPECTED/name.o.txt OUTPUT/name
+	diff -u $^ > $@
+
+OUTPUT/value.diff: EXPECTED/value.o.txt OUTPUT/value
+	diff -u $^ > $@
+
+OUTPUT/function.diff: EXPECTED/function.o.txt OUTPUT/function
+	diff -u $^ > $@
+
+OUTPUT/ode.diff: EXPECTED/ode.o.txt OUTPUT/ode
 	diff -u $^ > $@

@@ -36,7 +36,6 @@ bin_PROGRAMS = \
 	flint-bswap64 \
 	flint-cellml \
 	flint-cli \
-	flint-combine \
 	flint-combineall \
 	flint-concat \
 	flint-cut \
@@ -52,7 +51,6 @@ bin_PROGRAMS = \
 	flint-form \
 	flint-generate \
 	flint-impl \
-	flint-importdumpall \
 	flint-init \
 	flint-isdh \
 	flint-iv \
@@ -70,8 +68,6 @@ bin_PROGRAMS = \
 	flint-run \
 	flint-singleton \
 	flint-sbml \
-	flint-sbmlall \
-	flint-sbmlenc \
 	flint-sedml \
 	flint-sort \
 	flint-spec \
@@ -144,15 +140,14 @@ flint_cli_LDFLAGS = $(BOOST_PROGRAM_OPTIONS_LDFLAGS)
 flint_cli_LDADD = $(PROTOBUF_LIBS) $(BOOST_PROGRAM_OPTIONS_LIBS)
 flint_cli_SOURCES = cli.pb.cc flint-cli-main.cc
 
-flint_combine_CPPFLAGS = $(BOOST_CPPFLAGS)
-flint_combine_LDFLAGS = $(BOOST_PROGRAM_OPTIONS_LDFLAGS)
-flint_combine_LDADD = libsqlite3.a $(BOOST_PROGRAM_OPTIONS_LIBS)
-flint_combine_SOURCES = phml/combine.cc flint-combine-main.cc
-
-flint_combineall_CPPFLAGS = $(BOOST_CPPFLAGS)
-flint_combineall_LDFLAGS = $(BOOST_PROGRAM_OPTIONS_LDFLAGS)
-flint_combineall_LDADD = libflint.a $(BOOST_PROGRAM_OPTIONS_LIBS)
-flint_combineall_SOURCES = flint-combineall-main.cc
+flint_combineall_CPPFLAGS = $(BOOST_CPPFLAGS) $(SOSLIB_CFLAGS) $(SUNDIALS_CFLAGS) $(LIBSBML_CFLAGS) $(XML_CPPFLAGS)
+flint_combineall_LDFLAGS = $(BOOST_FILESYSTEM_LDFLAGS) $(BOOST_SYSTEM_LDFLAGS)
+flint_combineall_LDADD = libflintxx.a libflint.a libsqlite3.a $(BOOST_FILESYSTEM_LIBS) $(BOOST_SYSTEM_LIBS) $(SOSLIB_LIBS) $(SUNDIALS_LIBS) $(LIBSBML_LIBS) $(XML_LIBS)
+flint_combineall_SOURCES = \
+    phml/combine.cc \
+    phml/import.cc \
+    sbml/parser.cc \
+    flint-combineall-main.cc
 
 flint_concat_CFLAGS = $(AM_CFLAGS) -std=c99 -pedantic-errors
 flint_concat_SOURCES = flint-concat-main.c
@@ -213,13 +208,6 @@ flint_impl_CPPFLAGS = $(BOOST_CPPFLAGS)
 flint_impl_LDFLAGS = $(BOOST_PROGRAM_OPTIONS_LDFLAGS)
 flint_impl_LDADD = libsqlite3.a $(BOOST_PROGRAM_OPTIONS_LIBS)
 flint_impl_SOURCES = flint-impl-main.cc
-
-flint_importdumpall_CPPFLAGS = $(BOOST_CPPFLAGS) $(XML_CPPFLAGS)
-flint_importdumpall_LDFLAGS = $(BOOST_FILESYSTEM_LDFLAGS) $(BOOST_SYSTEM_LDFLAGS)
-flint_importdumpall_LDADD = libflintxx.a libflint.a libsqlite3.a $(BOOST_FILESYSTEM_LIBS) $(BOOST_SYSTEM_LIBS) $(XML_LIBS)
-flint_importdumpall_SOURCES = \
-    phml/import.cc \
-    flint-importdumpall-main.cc
 
 flint_init_CPPFLAGS = $(PROTOBUF_CFLAGS) $(BOOST_CPPFLAGS)
 flint_init_LDFLAGS = $(BOOST_PROGRAM_OPTIONS_LDFLAGS)
@@ -305,15 +293,6 @@ flint_sbml_LDADD = libflintxx.a libflint.a libsqlite3.a $(BOOST_FILESYSTEM_LIBS)
 flint_sbml_SOURCES = \
     sbml/parser.cc \
     flint-sbml-main.cc
-
-flint_sbmlall_CPPFLAGS = $(BOOST_CPPFLAGS)
-flint_sbmlall_LDFLAGS = $(BOOST_FILESYSTEM_LDFLAGS) $(BOOST_PROGRAM_OPTIONS_LDFLAGS) $(BOOST_SYSTEM_LDFLAGS)
-flint_sbmlall_LDADD = libflint.a $(BOOST_FILESYSTEM_LIBS) $(BOOST_PROGRAM_OPTIONS_LIBS) $(BOOST_SYSTEM_LIBS)
-flint_sbmlall_SOURCES = flint-sbmlall-main.cc
-
-flint_sbmlenc_CPPFLAGS = $(BOOST_CPPFLAGS)
-flint_sbmlenc_LDADD = libsqlite3.a
-flint_sbmlenc_SOURCES = flint-sbmlenc-main.cc
 
 flint_sedml_CPPFLAGS = $(BOOST_CPPFLAGS) $(CLIBSEDML_CFLAGS)
 flint_sedml_LDFLAGS = $(BOOST_FILESYSTEM_LDFLAGS) $(BOOST_SYSTEM_LDFLAGS)

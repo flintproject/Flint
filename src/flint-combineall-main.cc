@@ -1,67 +1,66 @@
 /* -*- Mode: C++; tab-width: 4; indent-tabs-mode: t; c-basic-offset: 4 -*- vim:set ts=4 sw=4 sts=4 noet: */
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
-#include <fstream>
 #include <iostream>
-#include <string>
-#include <vector>
 
-#include <boost/noncopyable.hpp>
-#include <boost/program_options.hpp>
+#define BOOST_FILESYSTEM_NO_DEPRECATED
+#include <boost/filesystem.hpp>
 #include <boost/scoped_array.hpp>
 #include <boost/scoped_ptr.hpp>
 
-#include "system.h"
+#include "database.h"
+#include "db/driver.h"
+#include "phml/combine.h"
+#include "phml/import.h"
+#include "sbml/parser.h"
+#include "utf8path.h"
 
-namespace po = boost::program_options;
+#include "system.h"
 
 using std::cerr;
 using std::endl;
-using std::pair;
 using std::printf;
 using std::sprintf;
-using std::string;
-using std::strlen;
-using std::make_pair;
-
-static const int kUuidSize = 36;
+using std::strcmp;
 
 namespace {
 
-typedef std::vector<pair<string, string> > InputVector;
+bool SaveFile(const char *uuid, const char *xml_file)
+{
+	boost::scoped_array<char> db_file(new char[64]);
+	sprintf(db_file.get(), "%s.db", uuid);
+	return SaveGivenFile(db_file.get(), xml_file);
+}
 
-class InputLoader : boost::noncopyable {
-public:
-	explicit InputLoader(const string &file) : ifs_(file.c_str(), std::ios::in) {}
+int ParseFile(void *data, int argc, char **argv, char **names)
+{
+	(void)data;
+	(void)names;
+	assert(argc == 1);
+	boost::scoped_array<char> db_file(new char[64]); // large enough
+	sprintf(db_file.get(), "%s.db", argv[0]);
+	if (!ParseSbml(db_file.get())) return 1;
+	return 0;
+}
 
-	~InputLoader() {
-		if (ifs_.is_open()) ifs_.close();
-	}
-
-	bool Load(InputVector *iv) {
-		static const int kLineSize = kUuidSize + 256; // FIXME
-
-		if (!ifs_.is_open()) {
-			cerr << "failed to open input file" << endl;
-			return false;
-		}
-		boost::scoped_array<char> line(new char[kLineSize]);
-		while (ifs_.getline(line.get(), kLineSize)) {
-			size_t len = strlen(line.get());
-			if (len < kUuidSize+2) {
-				cerr << "invalid line: " << line.get() << endl;
-				return false;
-			}
-			iv->push_back(make_pair(string(line.get(), kUuidSize),
-									string(line.get()+kUuidSize+1)));
-		}
-		return true;
-	}
-
-private:
-	std::ifstream ifs_;
-};
+int CombineFile(void *data, int argc, char **argv, char **names)
+{
+	(void)names;
+	assert(argc == 1);
+	if (!Combine(argv[0],
+				 ((char **)data)[1],
+				 ((char **)data)[2],
+				 ((char **)data)[3],
+				 ((char **)data)[4],
+				 ((char **)data)[5]))
+		return 1;
+	return 0;
+}
 
 bool TouchFile(const char *file)
 {
@@ -74,83 +73,85 @@ bool TouchFile(const char *file)
 	return true;
 }
 
+void Usage()
+{
+	cerr << "usage: flint-combineall DB NAME VALUE FUNCTION ODE" << endl;
+}
+
 } // namespace
 
 int main(int argc, char *argv[])
 {
-	po::options_description opts("options");
-	po::positional_options_description popts;
-	po::variables_map vm;
-	string input, db_file, name_file, value_file, function_file, ode_file, combine;
-	int print_help = 0;
-
-	opts.add_options()
-		("input", po::value<string>(&input), "Input file")
-		("db", po::value<string>(&db_file), "Input database file")
-		("name", po::value<string>(&name_file), "Output name file")
-		("value", po::value<string>(&value_file), "Output value file")
-		("function", po::value<string>(&function_file), "Output function file")
-		("ode", po::value<string>(&ode_file), "Output ode file")
-		("combine", po::value<string>(&combine)->default_value("flint-combine"), "combine command")
-		("help,h", "Show this message");
-	popts.add("input", 1).add("db", 1).add("name", 1).add("value", 1).add("function", 1).add("ode", 1);
-
-	try {
-		po::store(po::command_line_parser(argc, argv).options(opts).positional(popts).run(), vm);
-		po::notify(vm);
-		if (vm.count("help") > 0) {
-			print_help = 1;
-		} else if ( vm.count("input") == 0 ||
-					vm.count("db") == 0 ||
-					vm.count("name") == 0 ||
-					vm.count("value") == 0 ||
-					vm.count("function") == 0 ||
-					vm.count("ode") == 0 ) {
-			print_help = 2;
+	if (argc == 2) {
+		Usage();
+		if (strcmp("-h", argv[1]) == 0 || strcmp("--help", argv[1]) == 0) {
+			Usage();
+			return EXIT_SUCCESS;
 		}
-	} catch (const po::error &) {
-		print_help = 2;
+		return EXIT_FAILURE;
 	}
-	if (print_help) {
-		cerr << "usage: " << argv[0] << " INPUT DB NAME VALUE FUNCTION ODE" << endl;
-		cerr << opts;
-		return (print_help == 1) ? EXIT_SUCCESS : EXIT_FAILURE;
+	if (argc != 6) {
+		Usage();
+		return EXIT_FAILURE;
 	}
 
-	boost::scoped_ptr<InputVector> iv(new InputVector);
-	{
-		boost::scoped_ptr<InputLoader> loader(new InputLoader(input));
-		if (!loader->Load(iv.get())) {
-			return EXIT_FAILURE;
+	boost::scoped_ptr<db::Driver> driver(new db::Driver(argv[1]));
+
+	sqlite3_stmt *stmt;
+	int e = sqlite3_prepare_v2(driver->db(),
+							   "SELECT m.module_id, i.type, i.ref FROM imports AS i LEFT JOIN modules AS m ON i.module_rowid = m.rowid",
+							   -1, &stmt, NULL);
+	if (e != SQLITE_OK) {
+		cerr << "failed to prepare statement: " << e << endl;
+		return EXIT_FAILURE;
+	}
+
+	for (e = sqlite3_step(stmt); e == SQLITE_ROW; e = sqlite3_step(stmt)) {
+		const unsigned char *uuid = sqlite3_column_text(stmt, 0);
+		const unsigned char *type = sqlite3_column_text(stmt, 1);
+		const unsigned char *ref = sqlite3_column_text(stmt, 2);
+
+		if (strcmp((const char *)type, "external") == 0) {
+			if (!SaveFile((const char *)uuid, (const char *)ref)) return EXIT_FAILURE;
+		} else {
+			if (!DumpImport(argv[1], (const char *)uuid)) return EXIT_FAILURE;
+			boost::scoped_array<char> xml_file(new char[64]);
+			sprintf(xml_file.get(), "%s.xml", uuid);
+			boost::filesystem::path xml_path = boost::filesystem::absolute(xml_file.get());
+			boost::scoped_array<char> xml_utf8(GetUtf8FromPath(xml_path));
+			if (!SaveFile((const char *)uuid, xml_utf8.get())) return EXIT_FAILURE;
 		}
 	}
+	if (e != SQLITE_DONE) {
+		cerr << "failed to step statement: " << e << endl;
+		return EXIT_FAILURE;
+	}
+	sqlite3_finalize(stmt);
 
-	if (!TouchFile(name_file.c_str())) return EXIT_FAILURE;
-	if (!TouchFile(value_file.c_str())) return EXIT_FAILURE;
-	if (!TouchFile(function_file.c_str())) return EXIT_FAILURE;
-	if (!TouchFile(ode_file.c_str())) return EXIT_FAILURE;
+	char *em;
+	e = sqlite3_exec(driver->db(), "SELECT m.module_id FROM imports AS i LEFT JOIN modules AS m ON i.module_rowid = m.rowid",
+					 ParseFile, NULL, &em);
+	if (e != SQLITE_OK) {
+		cerr << e << ": " << em << endl;
+		sqlite3_free(em);
+		return EXIT_FAILURE;
+	}
 
-	for (InputVector::const_iterator it=iv->begin();it!=iv->end();++it) {
-		const string &uuid = it->first;
-		const string &path = it->second;
-		std::ostringstream oss;
-		oss << combine.c_str()
-			<< ' '
-			<< uuid.c_str()
-			<< ' '
-			<< db_file
-			<< ' '
-			<< name_file
-			<< ' '
-			<< value_file
-			<< ' '
-			<< function_file
-			<< ' '
-			<< ode_file
-			<< " < "
-			<< path;
-		int r = RunSystem(oss.str().c_str());
-		if (r != 0) return r;
+	const char *name_file = argv[2];
+	const char *value_file = argv[3];
+	const char *function_file = argv[4];
+	const char *ode_file = argv[5];
+	if (!TouchFile(name_file)) return EXIT_FAILURE;
+	if (!TouchFile(value_file)) return EXIT_FAILURE;
+	if (!TouchFile(function_file)) return EXIT_FAILURE;
+	if (!TouchFile(ode_file)) return EXIT_FAILURE;
+
+	e = sqlite3_exec(driver->db(), "SELECT m.module_id FROM imports AS i LEFT JOIN modules AS m ON i.module_rowid = m.rowid",
+					 CombineFile, argv, &em);
+	if (e != SQLITE_OK) {
+		cerr << e << ": " << em << endl;
+		sqlite3_free(em);
+		return EXIT_FAILURE;
 	}
 
 	return EXIT_SUCCESS;

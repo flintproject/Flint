@@ -82,9 +82,6 @@
           <Component Id='flint_bcc' Guid='2fb35030-f5bd-11e2-b463-33d9bf4db509'>
             <File Id='flint_bcc.exe' Name='flint-bcc.exe' DiskId='1' Source='flint-bcc.exe' />
           </Component>
-          <Component Id='flint_combine' Guid='2fb46434-f5bd-11e2-9a95-8fda242004c2'>
-            <File Id='flint_combine.exe' Name='flint-combine.exe' DiskId='1' Source='flint-combine.exe' />
-          </Component>
           <Component Id='flint_combineall' Guid='2fb4e36e-f5bd-11e2-bf28-f7f644f0a6c9'>
             <File Id='flint_combineall.exe' Name='flint-combineall.exe' DiskId='1' Source='flint-combineall.exe' />
           </Component>
@@ -129,9 +126,6 @@
           </Component>
           <Component Id='flint_impl' Guid='2fb89374-f5bd-11e2-b93c-eb109f47cf8b'>
             <File Id='flint_impl.exe' Name='flint-impl.exe' DiskId='1' Source='flint-impl.exe' />
-          </Component>
-          <Component Id='flint_importdumpall' Guid='2fb9fe12-f5bd-11e2-8ee3-d3d914b65dec'>
-            <File Id='flint_importdumpall.exe' Name='flint-importdumpall.exe' DiskId='1' Source='flint-importdumpall.exe' />
           </Component>
           <Component Id='flint_init' Guid='43520c4a-4c1f-11e3-b3ce-571d2a2fd0c1'>
             <File Id='flint_init.exe' Name='flint-init.exe' DiskId='1' Source='flint-init.exe' />
@@ -180,12 +174,6 @@
           </Component>
           <Component Id='flint_sbml' Guid='2fc0d282-f5bd-11e2-af20-d3eadee10937'>
             <File Id='flint_sbml.exe' Name='flint-sbml.exe' DiskId='1' Source='flint-sbml.exe' />
-          </Component>
-          <Component Id='flint_sbmlall' Guid='2fc126ec-f5bd-11e2-a58f-6b715eb69b08'>
-            <File Id='flint_sbmlall.exe' Name='flint-sbmlall.exe' DiskId='1' Source='flint-sbmlall.exe' />
-          </Component>
-          <Component Id='flint_sbmlenc' Guid='2fc17c00-f5bd-11e2-af96-1fd8b3b8eda1'>
-            <File Id='flint_sbmlenc.exe' Name='flint-sbmlenc.exe' DiskId='1' Source='flint-sbmlenc.exe' />
           </Component>
           <Component Id='flint_sedml' Guid='d2f7bae6-93c0-11e3-86f0-6ba6a092f3ee'>
             <File Id='flint_sedml.exe' Name='flint-sedml.exe' DiskId='1' Source='flint-sedml.exe' />
@@ -329,7 +317,6 @@
       <ComponentRef Id='csv2isd' />
       <ComponentRef Id='flint_assign' />
       <ComponentRef Id='flint_bcc' />
-      <ComponentRef Id='flint_combine' />
       <ComponentRef Id='flint_combineall' />
       <ComponentRef Id='flint_concat' />
       <ComponentRef Id='flint_cut' />
@@ -345,7 +332,6 @@
       <ComponentRef Id='flint_form' />
       <ComponentRef Id='flint_generate' />
       <ComponentRef Id='flint_impl' />
-      <ComponentRef Id='flint_importdumpall' />
       <ComponentRef Id='flint_init' />
       <ComponentRef Id='flint_isdh' />
       <ComponentRef Id='flint_iv' />
@@ -362,8 +348,6 @@
       <ComponentRef Id='flint_rk4' />
       <ComponentRef Id='flint_run' />
       <ComponentRef Id='flint_sbml' />
-      <ComponentRef Id='flint_sbmlall' />
-      <ComponentRef Id='flint_sbmlenc' />
       <ComponentRef Id='flint_sedml' />
       <ComponentRef Id='flint_singleton' />
       <ComponentRef Id='flint_sort' />

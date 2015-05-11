@@ -11,6 +11,7 @@
 
 #include <boost/algorithm/string.hpp>
 #include <boost/noncopyable.hpp>
+#include <boost/scoped_array.hpp>
 #include <boost/scoped_ptr.hpp>
 #include <boost/uuid/uuid_generators.hpp>
 #include <boost/uuid/uuid_io.hpp>
@@ -104,7 +105,7 @@ public:
 	FunctionWriter() : LineWriter() {}
 
 	void WriteFunction(const string &name, const string &sexp) {
-		ofs_ << uuid_ << " (eq %" << name << ' ' << sexp << ')' << endl;;
+		ofs_ << uuid_ << " (eq %" << name << sexp << ')' << endl;
 	}
 
 	void WriteSet(const string &name, const string &pq_name) {
@@ -127,7 +128,7 @@ public:
 	OdeWriter() : LineWriter() {}
 
 	void WriteOde(const string &name, const string &sexp) {
-		ofs_ << uuid_ << ' ' << "(eq (diff (bvar %time) %" << name << ") "
+		ofs_ << uuid_ << ' ' << "(eq (diff (bvar %time) %" << name << ')'
 			 << sexp << ')' << endl;
 	}
 };
@@ -237,85 +238,67 @@ private:
 	PhysicalQuantityMap *pqm_;
 };
 
-size_t ProcessName(const string &s)
+int ProcessAssignment(void *data, int argc, char **argv, char **names)
 {
-	if (!boost::starts_with(s, "sbml:")) {
-		cerr << "name without prefix sbml: " << s << endl;
-		return 0;
+	(void)data;
+	(void)names;
+	assert(argc == 2);
+	AddAssignment(argv[0], argv[1]);
+	return 0;
+}
+
+int ProcessConstant(void *data, int argc, char **argv, char **names)
+{
+	(void)data;
+	(void)names;
+	assert(argc == 2);
+	AddConstant(argv[0], argv[1]);
+	return 0;
+}
+
+int ProcessOde(void *data, int argc, char **argv, char **names)
+{
+	(void)data;
+	(void)names;
+	assert(argc == 3);
+	AddOde(argv[0], argv[1], argv[2]);
+	return 0;
+}
+
+class Loader : public db::Driver {
+public:
+	explicit Loader(const char *db_file)
+		: db::Driver(db_file)
+	{
 	}
-	size_t i = s.find(' ');
-	if (i == string::npos) {
-		cerr << "no end sentinel for name: " << s << endl;
-		return 0;
-	}
-	return i;
-}
 
-size_t ProcessNumber(const string &s)
-{
-	const char *q = s.c_str();
-	char *r;
-	(void)std::strtod(q, &r);
-	if (q == r) {
-		cerr << "failed to read double value: " << s << endl;
-		return 0;
-	}
-	return r - q;
-}
-
-bool ProcessA(const string &s)
-{
-	size_t r = ProcessName(s);
-	if (r == 0) return false;
-	AddAssignment(s.substr(0, r), s.substr(r+1));
-	return true;
-}
-
-bool ProcessC(const string &s)
-{
-	size_t r0 = ProcessName(s);
-	if (r0 == 0) return false;
-	string t = s.substr(r0+1);
-	size_t r1 = ProcessNumber(t);
-	if (r1 == 0) return false;
-	AddConstant(s.substr(0, r0), t.substr(0, r1));
-	return true;
-}
-
-bool ProcessO(const string &s)
-{
-	size_t r0 = ProcessName(s);
-	if (r0 == 0) return false;
-	string t = s.substr(r0+1);
-	size_t r1 = ProcessNumber(t);
-	if (r1 == 0) return false;
-	AddOde(s.substr(0, r0), t.substr(0, r1), t.substr(r1+1));
-	return true;
-}
-
-bool ProcessInput(std::istream &is)
-{
-	std::string line;
-
-	is.unsetf(std::ios::skipws);
-	while (std::getline(is, line)) {
-		if (line.empty()) {
-			cerr << "found an empty line" << endl;
+	bool Load() {
+		int e;
+		char *em;
+		e = sqlite3_exec(db(), "SELECT * FROM assignments", ProcessAssignment, NULL, &em);
+		if (e != SQLITE_OK) {
+			cerr << e << ": " << em << endl;
+			sqlite3_free(em);
 			return false;
 		}
-		if (boost::starts_with(line, "a ")) {
-			if (!ProcessA(line.substr(2))) return false;
-		} else if (boost::starts_with(line, "c ")) {
-			if (!ProcessC(line.substr(2))) return false;
-		} else if (boost::starts_with(line, "o ")) {
-			if (!ProcessO(line.substr(2))) return false;
-		} else {
-			cerr << "invalid line: " << line << endl;
+		e = sqlite3_exec(db(), "SELECT * FROM constants", ProcessConstant, NULL, &em);
+		if (e != SQLITE_OK) {
+			cerr << e << ": " << em << endl;
+			sqlite3_free(em);
 			return false;
 		}
+		e = sqlite3_exec(db(), "SELECT * FROM odes", ProcessOde, NULL, &em);
+		if (e != SQLITE_OK) {
+			cerr << e << ": " << em << endl;
+			sqlite3_free(em);
+			return false;
+		}
+		return true;
 	}
-	return true;
-}
+
+private:
+	sqlite3 *db_;
+};
 
 } // namespace
 
@@ -361,5 +344,8 @@ bool Combine(const char *uuid,
 		}
 	}
 
-	return ProcessInput(std::cin);
+	boost::scoped_array<char> uuid_db(new char[strlen(uuid)+4]);
+	std::sprintf(uuid_db.get(), "%s.db", uuid);
+	Loader loader(uuid_db.get());
+	return loader.Load();
 }

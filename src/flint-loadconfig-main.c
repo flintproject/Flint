@@ -103,14 +103,8 @@ static void PrintRecipeForPhml(void)
 	printf("\n");
 	printf("tsc.bin: tsc.txt\n");
 	printf("\n");
-	printf("importdumpall.txt: modeldb\n");
-	printf("\tflint-importdumpall $< > $@\n");
-	printf("\n");
-	printf("sbmlall.txt: importdumpall.txt\n");
-	printf("\tflint-sbmlall $^ > $@\n");
-	printf("\n");
-	printf("combineall.txt: sbmlall.txt modeldb\n");
-	printf("\tflint-combineall $^ combine-name.txt combine-value.txt combine-function.txt combine-ode.txt > $@\n");
+	printf("combineall.txt: modeldb\n");
+	printf("\tflint-combineall $< combine-name.txt combine-value.txt combine-function.txt combine-ode.txt > $@\n");
 	printf("\n");
 	printf("combine-name.txt combine-value.txt combine-function.txt combine-ode.txt: combineall.txt\n");
 	printf("\n");
@@ -186,8 +180,7 @@ static void PrintRecipeForSbml(void)
 	printf("MODEL_LANG = sbml\n");
 	printf("\n");
 	printf("name.txt: model\n");
-	printf("\tflint-sbml $<\n");
-	printf("\tflint-sbmlenc $< $@ value.txt function.txt ode.txt\n");
+	printf("\tflint-sbml $< $@ value.txt function.txt ode.txt\n");
 	printf("\n");
 	printf("value.txt function.txt ode.txt: name.txt\n");
 	printf("\n");

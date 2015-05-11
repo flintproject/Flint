@@ -22,7 +22,7 @@ $(TESTS:.sh=.mk): $(DATADIR)/test.mk.in
 		-DOUTPUT=$(@:.mk=) \
 		$< > $@
 
-CLEANFILES = *.name *.value *.function *.ode *.sh *.mk *.db *.importdumpall *.sbmlall
+CLEANFILES = *.name *.value *.function *.ode *.sh *.mk *.db
 
 check_SCRIPTS = $(TESTS)
 

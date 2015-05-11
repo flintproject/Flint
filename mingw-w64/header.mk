@@ -26,7 +26,6 @@ EXES := \
     csv2isd \
     flint-assign \
     flint-bcc \
-    flint-combine \
     flint-combineall \
     flint-concat \
     flint-cut \
@@ -42,7 +41,6 @@ EXES := \
     flint-form \
     flint-generate \
     flint-impl \
-    flint-importdumpall \
     flint-init \
     flint-isdh \
     flint-iv \
@@ -58,8 +56,6 @@ EXES := \
     flint-rk4 \
     flint-run \
     flint-sbml \
-    flint-sbmlall \
-    flint-sbmlenc \
     flint-sedml \
     flint-singleton \
     flint-sort \

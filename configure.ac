@@ -146,7 +146,6 @@ AC_CONFIG_FILES([Makefile
                  test/flint-phz/Makefile
                  test/flint-rk4/Makefile
                  test/flint-sbml/Makefile
-                 test/flint-sbmlenc/Makefile
                  test/flint-sort/Makefile
                  test/flint-tac/Makefile
                  test/flint-taskpref/Makefile

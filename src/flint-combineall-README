@@ -6,5 +6,5 @@ This program combines equations from all SBML files with ones from PHML.
 
 = Synopsis
 
-flint-combineall input db name value function ode
+flint-combineall db name value function ode
 flint-combineall --help
