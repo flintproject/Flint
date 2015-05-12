@@ -39,14 +39,6 @@ public class ModelLoader extends SwingWorker<Ipc.ModelProbeResponse, Void> {
         return mModelFile;
     }
 
-    public File getModuleFile() {
-        return new File(mDir, "module.txt");
-    }
-
-    public File getNameFile() {
-        return new File(mDir, "name.txt");
-    }
-
     public File getDataFile() {
         return new File(mDir, "init");
     }
