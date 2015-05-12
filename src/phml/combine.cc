@@ -288,9 +288,6 @@ public:
 		}
 		return true;
 	}
-
-private:
-	sqlite3 *db_;
 };
 
 } // namespace
@@ -328,7 +325,6 @@ bool Combine(const char *uuid,
 	GetOdeWriter()->set_uuid(uuid);
 	GetOdeWriter()->OpenFile(ode_file);
 
-	boost::scoped_ptr<BridgeMap> sm(new BridgeMap);
 	{
 		boost::scoped_ptr<db::BridgeLoader> loader(new db::BridgeLoader(driver->db()));
 		boost::scoped_ptr<BridgeHandler> handler(new BridgeHandler(u, pqm.get()));
