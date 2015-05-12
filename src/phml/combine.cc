@@ -1,15 +1,12 @@
 /* -*- Mode: C++; tab-width: 4; indent-tabs-mode: t; c-basic-offset: 4 -*- vim:set ts=4 sw=4 sts=4 noet: */
 #include "combine.h"
 
-#include <cmath>
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
 #include <fstream>
-#include <iostream>
 #include <map>
 
-#include <boost/algorithm/string.hpp>
 #include <boost/noncopyable.hpp>
 #include <boost/scoped_array.hpp>
 #include <boost/scoped_ptr.hpp>
@@ -20,17 +17,13 @@
 #include "db/driver.h"
 #include "db/name_loader.h"
 
-using std::atoi;
 using std::cerr;
-using std::cin;
 using std::endl;
-using std::ifstream;
 using std::ofstream;
 using std::ios;
 using std::make_pair;
 using std::map;
 using std::string;
-using std::sscanf;
 using std::strlen;
 using std::strcmp;
 
