@@ -14,6 +14,8 @@
 
 #include "db/bridge-loader.h"
 #include "db/driver.h"
+#include "db/name-inserter.h"
+#include "db/query.h"
 #include "db/name_loader.h"
 
 using std::cerr;
@@ -50,18 +52,22 @@ protected:
 	ofstream ofs_;
 };
 
-class NameWriter : public LineWriter {
+class NameWriter : public db::NameInserter {
 public:
-	NameWriter() : LineWriter(), pq_id_() {}
+	NameWriter(int id, const char *uuid, sqlite3 *db)
+		: db::NameInserter("private_names", db)
+		, id_(id)
+		, uuid_(uuid)
+	{
+	}
 
-	void set_pq_id(int pq_id) {pq_id_ = pq_id;}
-
-	void Write(char c, const string &name) {
-		ofs_ << uuid_ << " " << c << " " << ++pq_id_ << " " << name << endl;
+	bool Write(char c, const char *name) {
+		return InsertName(uuid_, c, ++id_, name);
 	}
 
 private:
-	int pq_id_;
+	int id_;
+	const char *uuid_;
 };
 
 class ValueWriter : public LineWriter {
@@ -69,7 +75,7 @@ public:
 	ValueWriter() : LineWriter() {}
 
 	template<typename TNumber>
-	void Write(const string &name, TNumber x) {
+	void Write(const char *name, TNumber x) {
 		ofs_ << uuid_ << " " << "(eq %" << name << " " << x << ")" << endl;
 	}
 };
@@ -78,15 +84,15 @@ class FunctionWriter : public LineWriter {
 public:
 	FunctionWriter() : LineWriter() {}
 
-	void WriteFunction(const string &name, const string &sexp) {
+	void WriteFunction(const char *name, const char *sexp) {
 		ofs_ << uuid_ << " (eq %" << name << sexp << ')' << endl;
 	}
 
-	void WriteSet(const string &name, const string &pq_name) {
+	void WriteSet(const char *name, const string &pq_name) {
 		ofs_ << uuid_ << " (eq %" << name << " %" << pq_name << ")" << endl;
 	}
 
-	void WriteGet(const string &pq_name, const string &name) {
+	void WriteGet(const string &pq_name, const char *name) {
 		ofs_ << uuid_ << " (eq %" << pq_name << " %sbml:" << name << ")" << endl;
 	}
 };
@@ -95,7 +101,7 @@ class OdeWriter : public LineWriter {
 public:
 	OdeWriter() : LineWriter() {}
 
-	void WriteOde(const string &name, const string &sexp) {
+	void WriteOde(const char *name, const char *sexp) {
 		ofs_ << uuid_ << ' ' << "(eq (diff (bvar %time) %" << name << ')'
 			 << sexp << ')' << endl;
 	}
@@ -104,14 +110,12 @@ public:
 class Writer {
 public:
 	Writer(int pq_id, const char *uuid,
-		   const char *name_file,
+		   sqlite3 *db,
 		   const char *value_file,
 		   const char *function_file,
 		   const char *ode_file)
+		: name_writer_(pq_id, uuid, db)
 	{
-		name_writer_.set_pq_id(pq_id);
-		name_writer_.set_uuid(uuid);
-		name_writer_.OpenFile(name_file);
 		value_writer_.set_uuid(uuid);
 		value_writer_.OpenFile(value_file);
 		function_writer_.set_uuid(uuid);
@@ -124,42 +128,45 @@ public:
 	FunctionWriter &function_writer() {return function_writer_;}
 
 	template<typename TNumber>
-	void AddOde(const string &name, TNumber x, const string &sexp)
+	bool AddOde(const char *name, TNumber x, const char *sexp)
 	{
 		BridgeMap::const_iterator it = bm_.find(name);
 		if (it == bm_.end()) {
-			name_writer_.Write('x', name);
+			if (!name_writer_.Write('x', name)) return false;
 			value_writer_.Write(name, x);
 			ode_writer_.WriteOde(name, sexp);
 		} else {
-			name_writer_.Write('v', name);
+			if (!name_writer_.Write('v', name)) return false;
 			function_writer_.WriteSet(name, it->second);
 		}
+		return true;
 	}
 
-	void AddAssignment(const string &name, const string &sexp)
+	bool AddAssignment(const char *name, const char *sexp)
 	{
 		BridgeMap::const_iterator it = bm_.find(name);
 		if (it == bm_.end()) {
-			name_writer_.Write('v', name);
+			if (!name_writer_.Write('v', name)) return false;
 			function_writer_.WriteFunction(name, sexp);
 		} else {
-			name_writer_.Write('v', name);
+			if (!name_writer_.Write('v', name)) return false;
 			function_writer_.WriteSet(name, it->second);
 		}
+		return true;
 	}
 
 	template<typename TNumber>
-	void AddConstant(const string &name, TNumber x)
+	bool AddConstant(const char *name, TNumber x)
 	{
 		BridgeMap::const_iterator it = bm_.find(name);
 		if (it == bm_.end()) {
-			name_writer_.Write('s', name);
+			if (!name_writer_.Write('s', name)) return false;
 			value_writer_.Write(name, x);
 		} else {
-			name_writer_.Write('v', name);
+			if (!name_writer_.Write('v', name)) return false;
 			function_writer_.WriteSet(name, it->second);
 		}
+		return true;
 	}
 
 private:
@@ -235,8 +242,7 @@ int ProcessAssignment(void *data, int argc, char **argv, char **names)
 	(void)names;
 	Writer *writer = (Writer *)data;
 	assert(argc == 2);
-	writer->AddAssignment(argv[0], argv[1]);
-	return 0;
+	return (writer->AddAssignment(argv[0], argv[1])) ? 0 : 1;
 }
 
 int ProcessConstant(void *data, int argc, char **argv, char **names)
@@ -244,8 +250,7 @@ int ProcessConstant(void *data, int argc, char **argv, char **names)
 	(void)names;
 	Writer *writer = (Writer *)data;
 	assert(argc == 2);
-	writer->AddConstant(argv[0], argv[1]);
-	return 0;
+	return (writer->AddConstant(argv[0], argv[1])) ? 0 : 1;
 }
 
 int ProcessOde(void *data, int argc, char **argv, char **names)
@@ -253,8 +258,7 @@ int ProcessOde(void *data, int argc, char **argv, char **names)
 	(void)names;
 	Writer *writer = (Writer *)data;
 	assert(argc == 3);
-	writer->AddOde(argv[0], argv[1], argv[2]);
-	return 0;
+	return (writer->AddOde(argv[0], argv[1], argv[2])) ? 0 : 1;
 }
 
 class Loader : public db::Driver {
@@ -293,7 +297,6 @@ public:
 
 bool Combine(const char *uuid,
 			 const char *db_file,
-			 const char *name_file,
 			 const char *value_file,
 			 const char *function_file,
 			 const char *ode_file)
@@ -314,7 +317,7 @@ bool Combine(const char *uuid,
 		max_pq_id = handler.max_pq_id();
 	}
 
-	Writer writer(max_pq_id, uuid, name_file, value_file, function_file, ode_file);
+	Writer writer(max_pq_id, uuid, driver.db(), value_file, function_file, ode_file);
 
 	{
 		db::BridgeLoader loader(driver.db());

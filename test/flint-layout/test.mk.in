@@ -8,7 +8,7 @@ clean:
 	-rm -f OUTPUT OUTPUT.db
 
 OUTPUT: OUTPUT.db
-	flint-layout $< /dev/null $@
+	flint-layout $< $@
 
 OUTPUT.db: INPUT
 	test-input1 $@ $<

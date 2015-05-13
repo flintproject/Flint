@@ -1,8 +1,10 @@
-.PHONY: all clean check
+SQLITE3 = sqlite3 -batch -noheader -separator ' '
+
+.PHONY: all clean check check-name
 
 all: OUTPUT/run
 
-check: OUTPUT/name.diff OUTPUT/value.diff OUTPUT/function.diff OUTPUT/ode.diff
+check: check-name OUTPUT/value.diff OUTPUT/function.diff OUTPUT/ode.diff
 
 clean:
 	-rm -rf OUTPUT
@@ -14,12 +16,12 @@ OUTPUT/db: INPUT | OUTPUT
 	test-input1 $@ $<
 
 OUTPUT/run: OUTPUT/db
-	flint-sbml $< OUTPUT/name OUTPUT/value OUTPUT/function OUTPUT/ode > $@
+	flint-sbml $< OUTPUT/value OUTPUT/function OUTPUT/ode > $@
 
-OUTPUT/name OUTPUT/value OUTPUT/function OUTPUT/ode: OUTPUT/run
+OUTPUT/value OUTPUT/function OUTPUT/ode: OUTPUT/run
 
-OUTPUT/name.diff: EXPECTED/name.o.txt OUTPUT/name
-	diff -u $^ > $@
+check-name: OUTPUT/db EXPECTED/name.o.txt
+	($(SQLITE3) $< 'SELECT space_id, type, id, name FROM names' | diff -u EXPECTED/name.o.txt -)
 
 OUTPUT/value.diff: EXPECTED/value.o.txt OUTPUT/value
 	diff -u $^ > $@

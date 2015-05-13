@@ -3,7 +3,6 @@
 #define FLINT_CELLML_TRANSLATOR_H_
 
 bool TranslateCellml(const char *db_file,
-					 const char *name_file,
 					 const char *iv_file,
 					 const char *function_file,
 					 const char *ode_file);

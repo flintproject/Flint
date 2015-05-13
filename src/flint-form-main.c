@@ -38,7 +38,6 @@ static int InsertParameterName(void *data, int argc, char **argv, char **names)
 		return 1;
 	}
 	sqlite3_reset(stmt);
-	printf("%s s %d %s\n", DEFAULT_UUID, *id, argv[0]);
 	(*id)++;
 	return 0;
 }
@@ -69,7 +68,6 @@ static int InsertTargetName(void *data, int argc, char **argv, char **names)
 		return 1;
 	}
 	sqlite3_reset(stmt);
-	printf("%s s %d %s\n", DEFAULT_UUID, *id, name);
 	(*id)++;
 	return 0;
 }
@@ -78,7 +76,7 @@ static int InsertNames(void)
 {
 	int id = 1;
 	char query[1024];
-	sprintf(query, "INSERT INTO names VALUES ('%s', 's', ?, ?)", DEFAULT_UUID);
+	sprintf(query, "INSERT INTO names VALUES ('%s', 's', ?, ?, 'dimensionless', NULL)", DEFAULT_UUID);
 	e = sqlite3_prepare_v2(db, query, -1, &stmt, NULL);
 	if (e != SQLITE_OK) {
 		/* TODO */
@@ -172,22 +170,11 @@ int main(int argc, char *argv[])
 	if (!BeginTransaction(db))
 		return EXIT_FAILURE;
 
-	if (!CreateTable(db, "modules", "(uuid TEXT, name TEXT)"))
-		return EXIT_FAILURE;
-	if (!CreateTable(db, "names", "(uuid TEXT, type TEXT, id INTEGER, name TEXT)"))
-		return EXIT_FAILURE;
-	if (!CreateTable(db, "edges", "(source_uuid TEXT, source_id INTEGER, target_uuid TEXT, target_id INTEGER)"))
+	if (!CreateSingleton(db))
 		return EXIT_FAILURE;
 	if (!CreateTable(db, "equations", "(uuid TEXT, body TEXT)"))
 		return EXIT_FAILURE;
 
-	/* insert the default module */
-	e = sqlite3_exec(db, "INSERT INTO modules VALUES ('00000000-0000-0000-0000-000000000000', 'default')", NULL, NULL, &em);
-	if (e != SQLITE_OK) {
-		fprintf(stderr, "%d: %s\n", e, em);
-		sqlite3_free(em);
-		return EXIT_FAILURE;
-	}
 	if (InsertNames() != 0) {
 		return EXIT_FAILURE;
 	}

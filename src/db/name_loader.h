@@ -20,7 +20,7 @@ public:
 		: stmt_(NULL),
 		  gen_()
 	{
-		int e = sqlite3_prepare_v2(db, "SELECT * FROM names",
+		int e = sqlite3_prepare_v2(db, "SELECT * FROM names UNION ALL SELECT * FROM private_names",
 								   -1, &stmt_, NULL);
 		if (e != SQLITE_OK) {
 			std::cerr << "failed to prepare statement: " << e << std::endl;

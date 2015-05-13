@@ -1,8 +1,5 @@
 include $(top_srcdir)/common.mk
 
-BCC_EXECUTABLE = @abs_top_builddir@/src/flint-bcc
-LAYOUT_EXECUTABLE = @abs_top_builddir@/src/flint-layout
-
 .dat1.nl1:
 	nl $< > $@
 
@@ -31,10 +28,10 @@ LAYOUT_EXECUTABLE = @abs_top_builddir@/src/flint-layout
 	echo 'test-db:' >> $@
 	echo '	flint-singleton $$@' >> $@
 	echo >> $@
-	echo 'test-layout: test-db @abs_builddir@/test-name' >> $@
-	echo '	$(LAYOUT_EXECUTABLE) $$^ $$@' >> $@
+	echo 'test-layout: test-db' >> $@
+	echo '	flint-layout $$< $$@' >> $@
 	echo >> $@
-	sed -e 's,^ *\(.*\)\t\([^ ]*\).*$$,bc-$*-\1: @abs_srcdir@/call1.in\n\tm4 -DCALL1=$* -DARG0=\2 $$< | $(BCC_EXECUTABLE) > $$@,' $< >> $@
+	sed -e 's,^ *\(.*\)\t\([^ ]*\).*$$,bc-$*-\1: @abs_srcdir@/call1.in\n\tm4 -DCALL1=$* -DARG0=\2 $$< | flint-bcc > $$@,' $< >> $@
 	echo >> $@
 	sed -e 's,^ *\(.*\)\t.*$$,test-$*-\1: test-layout bc-$*-\1\n\t$$(EXECUTABLE) $$^ /dev/null $$@,' $< >> $@
 	echo >> $@
@@ -62,19 +59,14 @@ LAYOUT_EXECUTABLE = @abs_top_builddir@/src/flint-layout
 	echo 'test-db:' >> $@
 	echo '	flint-singleton $$@' >> $@
 	echo >> $@
-	echo 'test-layout: test-db @abs_builddir@/test-name' >> $@
-	echo '	$(LAYOUT_EXECUTABLE) $$^ $$@' >> $@
+	echo 'test-layout: test-db' >> $@
+	echo '	flint-layout $$< $$@' >> $@
 	echo >> $@
-	sed -e 's,^ *\(.*\)\t\([^ ]*\) \([^ ]*\).*$$,bc-$*-\1: @abs_srcdir@/call2.in\n\tm4 -DCALL2=$* -DARG0=\2 -DARG1=\3 $$< | $(BCC_EXECUTABLE) > $$@,' $< >> $@
+	sed -e 's,^ *\(.*\)\t\([^ ]*\) \([^ ]*\).*$$,bc-$*-\1: @abs_srcdir@/call2.in\n\tm4 -DCALL2=$* -DARG0=\2 -DARG1=\3 $$< | flint-bcc > $$@,' $< >> $@
 	echo >> $@
 	sed -e 's,^ *\(.*\)\t.*$$,test-$*-\1: test-layout bc-$*-\1\n\t$$(EXECUTABLE) $$^ /dev/null $$@,' $< >> $@
 	echo >> $@
 	sed -e 's,^ *\(.*\)\t[^ ]* [^ ]* \([^ ]*\),check-$*-\1: test-$*-\1\n\t@abs_builddir@/x_check \2 $$<,' $< >> $@
-
-test-name:
-	echo '00000000-0000-0000-0000-000000000000 v 1 a' > $@
-	echo '00000000-0000-0000-0000-000000000000 v 2 b' >> $@
-	echo '00000000-0000-0000-0000-000000000000 v 3 x' >> $@
 
 MK_FILES = \
     abs.mk \
@@ -122,9 +114,9 @@ MK_FILES = \
     tanh.mk \
     times.mk
 
-MOSTLYCLEANFILES = test-name $(MK_FILES) x_check
+MOSTLYCLEANFILES = $(MK_FILES) x_check
 
-noinst_DATA = test-name $(MK_FILES)
+noinst_DATA = $(MK_FILES)
 
 noinst_PROGRAMS = x_check
 

@@ -27,7 +27,6 @@
 #include "db/driver.h"
 #include "db/name_loader.h"
 #include "db/space_loader.h"
-#include "text/physical_quantity_loader.h"
 
 namespace po = boost::program_options;
 
@@ -95,19 +94,6 @@ public:
 
 	bool Handle(boost::uuids::uuid u, char type, int id, const char *name, const char *unit, double capacity) {
 		(*nm_)[u].push_back(new Name(type, id, name, unit, capacity));
-		return true;
-	}
-
-private:
-	NameMap *nm_;
-};
-
-class PhysicalQuantityHandler : boost::noncopyable {
-public:
-	explicit PhysicalQuantityHandler(NameMap *nm) : nm_(nm) {}
-
-	bool Handle(boost::uuids::uuid u, char type, int pq_id, const char *name, double capacity) {
-		(*nm_)[u].push_back(new Name(type, pq_id, name, "", capacity)); // TODO: set proper unit
 		return true;
 	}
 
@@ -185,15 +171,14 @@ int main(int argc, char *argv[])
 	po::options_description opts("options");
 	po::positional_options_description popts;
 	po::variables_map vm;
-	string db_file, pq_file, output_file;
+	string db_file, output_file;
 	int print_help = 0;
 
 	opts.add_options()
 		("db", po::value<string>(&db_file), "Input database file")
-		("pq", po::value<string>(&pq_file), "Input physical-quantity file")
 		("output", po::value<string>(&output_file), "Output file")
 		("help,h", "Show this message");
-	popts.add("db", 1).add("pq", 1).add("output", 1);
+	popts.add("db", 1).add("output", 1);
 
 	try {
 		po::store(po::command_line_parser(argc, argv).options(opts).positional(popts).run(), vm);
@@ -201,7 +186,6 @@ int main(int argc, char *argv[])
 		if (vm.count("help") > 0) {
 			print_help = 1;
 		} else if ( vm.count("db") == 0 ||
-					vm.count("pq") == 0 ||
 					vm.count("output") == 0 ) {
 			print_help = 2;
 		}
@@ -209,7 +193,7 @@ int main(int argc, char *argv[])
 		print_help = 2;
 	}
 	if (print_help) {
-		cerr << "usage: " << argv[0] << " DB PQ OUTPUT" << endl;
+		cerr << "usage: " << argv[0] << " DB OUTPUT" << endl;
 		cerr << opts;
 		return (print_help == 1) ? EXIT_SUCCESS : EXIT_FAILURE;
 	}
@@ -227,11 +211,6 @@ int main(int argc, char *argv[])
 	{
 		boost::scoped_ptr<db::NameLoader> loader(new db::NameLoader(driver->db()));
 		boost::scoped_ptr<NameHandler> handler(new NameHandler(nm.get()));
-		if (!loader->Load(handler.get())) return EXIT_FAILURE;
-	}
-	{
-		boost::scoped_ptr<text::PhysicalQuantityLoader> loader(new text::PhysicalQuantityLoader(pq_file.c_str()));
-		boost::scoped_ptr<PhysicalQuantityHandler> handler(new PhysicalQuantityHandler(nm.get()));
 		if (!loader->Load(handler.get())) return EXIT_FAILURE;
 	}
 

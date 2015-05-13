@@ -61,13 +61,15 @@ typedef std::vector<std::string> UuidVector;
 
 void Usage()
 {
-	cerr << "usage: flint-combineall DB NAME VALUE FUNCTION ODE" << endl;
+	cerr << "usage: flint-combineall DB VALUE FUNCTION ODE" << endl;
 }
 
 } // namespace
 
 int main(int argc, char *argv[])
 {
+	static const int kNumOfArgs = 5;
+
 	if (argc == 2) {
 		Usage();
 		if (strcmp("-h", argv[1]) == 0 || strcmp("--help", argv[1]) == 0) {
@@ -76,7 +78,7 @@ int main(int argc, char *argv[])
 		}
 		return EXIT_FAILURE;
 	}
-	if (argc != 6) {
+	if (argc != kNumOfArgs) {
 		Usage();
 		return EXIT_FAILURE;
 	}
@@ -120,7 +122,7 @@ int main(int argc, char *argv[])
 		if (!ParseFile(it->c_str())) return EXIT_FAILURE;
 	}
 
-	for (int i=2;i<6;i++) {
+	for (int i=2;i<kNumOfArgs;i++) {
 		if (!TouchFile(argv[i])) return EXIT_FAILURE;
 	}
 
@@ -129,8 +131,7 @@ int main(int argc, char *argv[])
 					 argv[1],
 					 argv[2],
 					 argv[3],
-					 argv[4],
-					 argv[5]))
+					 argv[4]))
 			return EXIT_FAILURE;
 	}
 

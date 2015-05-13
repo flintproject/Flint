@@ -20,6 +20,7 @@
 #include <boost/uuid/uuid_generators.hpp>
 
 #include "db/driver.h"
+#include "db/name-inserter.h"
 #include "db/query.h"
 #include "db/reach-driver.h"
 #include "modelpath.h"
@@ -51,6 +52,8 @@ public:
 		if (!CreateTable(db, "spaces", "(uuid TEXT, name TEXT)"))
 			exit(EXIT_FAILURE);
 		if (!CreateTable(db, "names", "(space_id TEXT, type TEXT, id INTEGER, name TEXT, unit TEXT, capacity REAL)"))
+			exit(EXIT_FAILURE);
+		if (!CreateTable(db, "private_names", "(space_id TEXT, type TEXT, id INTEGER, name TEXT, unit TEXT, capacity REAL)"))
 			exit(EXIT_FAILURE);
 		if (!CreateTable(db, "reaches", "(output_uuid BLOB, output_id INTEGER, input_uuid BLOB, input_id INTEGER)"))
 			exit(EXIT_FAILURE);
@@ -215,27 +218,26 @@ private:
 
 const char kNameQuery[] = "SELECT rowid, component, name, initial_value FROM variables";
 
-class NameDumper {
+class NameDumper : public db::NameInserter {
 public:
-	NameDumper(const char *path, sqlite3 *db, const TreeDumper *tree_dumper)
-		: fp_(fopen(path, "w")),
-		  tree_dumper_(tree_dumper),
-		  stmt_()
+	NameDumper(sqlite3 *db, const TreeDumper *tree_dumper)
+		: db::NameInserter("names", db)
+		, tree_dumper_(tree_dumper)
+		, stmt_(NULL)
 	{
 		int e = sqlite3_prepare_v2(db, kNameQuery, -1, &stmt_, NULL);
-		if (e != SQLITE_OK) stmt_ = NULL;
+		if (e != SQLITE_OK) {
+			cerr << "failed to prepare statement: " << e
+				 << ": " << kNameQuery << endl;
+			exit(EXIT_FAILURE);
+		}
 	}
 
 	~NameDumper() {
-		if (stmt_) sqlite3_finalize(stmt_);
-		if (fp_) fclose(fp_);
+		sqlite3_finalize(stmt_);
 	}
 
 	bool Dump(const OdeDumper *ode_dumper) {
-		if (!stmt_) {
-			cerr << "failed to prepare statement: " << kNameQuery << endl;
-			return false;
-		}
 		int e;
 		char u[kUuidLength+1];
 		for (e = sqlite3_step(stmt_); e == SQLITE_ROW; e = sqlite3_step(stmt_)) {
@@ -259,12 +261,12 @@ public:
 				// to the system "time"
 			} else if (iv) {
 				if (ode_dumper->IsDependentVariable((const char *)c, (const char *)n)) {
-					fprintf(fp_, "%s x %d %s\n", u, id, (const char *)n);
+					if (!InsertName(u, 'x', id, (const char *)n)) return false;
 				} else {
-					fprintf(fp_, "%s s %d %s\n", u, id, (const char *)n);
+					if (!InsertName(u, 's', id, (const char *)n)) return false;
 				}
 			} else {
-				fprintf(fp_, "%s v %d %s\n", u, id, (const char *)n);
+				if (!InsertName(u, 'v', id, (const char *)n)) return false;
 			}
 		}
 		if (e != SQLITE_DONE) {
@@ -275,7 +277,6 @@ public:
 	}
 
 private:
-	FILE *fp_;
 	const TreeDumper *tree_dumper_;
 	sqlite3_stmt *stmt_;
 };
@@ -470,7 +471,6 @@ private:
 } // namespace
 
 bool TranslateCellml(const char *db_file,
-					 const char *name_file,
 					 const char *iv_file,
 					 const char *function_file,
 					 const char *ode_file)
@@ -486,7 +486,7 @@ bool TranslateCellml(const char *db_file,
 	boost::scoped_ptr<OdeDumper> ode_dumper(new OdeDumper(ode_file, driver->db(), tree_dumper.get()));
 	if (!ode_dumper->Dump()) return false;
 
-	boost::scoped_ptr<NameDumper> name_dumper(new NameDumper(name_file, driver->db(), tree_dumper.get()));
+	boost::scoped_ptr<NameDumper> name_dumper(new NameDumper(driver->db(), tree_dumper.get()));
 	if (!name_dumper->Dump(ode_dumper.get())) return false;
 
 	boost::scoped_ptr<IvDumper> iv_dumper(new IvDumper(iv_file, driver->db(), tree_dumper.get()));

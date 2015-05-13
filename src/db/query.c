@@ -49,3 +49,30 @@ int CreateTable(sqlite3 *db, const char *name, const char *columns)
 	}
 	return 1;
 }
+
+int CreateSingleton(sqlite3 *db)
+{
+	char *em;
+	int e;
+	e = sqlite3_exec(db, "CREATE VIEW IF NOT EXISTS spaces AS SELECT '00000000-0000-0000-0000-000000000000', 'default'",
+					 NULL, NULL, &em);
+	if (e != SQLITE_OK) {
+		fprintf(stderr, "failed to create spaces: %d: %s\n", e, em);
+		sqlite3_free(em);
+		return 0;
+	}
+	e = sqlite3_exec(db, "CREATE VIEW IF NOT EXISTS scopes AS SELECT '00000000-0000-0000-0000-000000000000', '00000000-0000-0000-0000-000000000000'",
+					 NULL, NULL, &em);
+	if (e != SQLITE_OK) {
+		fprintf(stderr, "failed to create scopes: %d: %s\n", e, em);
+		sqlite3_free(em);
+		return 0;
+	}
+	if (!CreateTable(db, "names", "(space_id TEXT, type TEXT, id INTEGER, name TEXT, unit TEXT, capacity REAL)"))
+		return 0;
+	if (!CreateTable(db, "private_names", "(space_id TEXT, type TEXT, id INTEGER, name TEXT, unit TEXT, capacity REAL)"))
+		return 0;
+	if (!CreateTable(db, "time_unit", "(name TEXT)"))
+		return 0;
+	return 1;
+}

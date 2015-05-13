@@ -13,7 +13,7 @@ OUTPUT.db: INPUT
 	flint-phml $@
 
 OUTPUT.layout: OUTPUT.db
-	flint-layout $< /dev/null $@
+	flint-layout $< $@
 
 OUTPUT: OUTPUT.db OUTPUT.layout
 	flint-flow $^ > $@

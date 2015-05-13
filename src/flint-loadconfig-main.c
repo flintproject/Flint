@@ -19,13 +19,10 @@ static void PrintCommonRecipe(void)
 	printf("\tflint-isdh $< $@\n");
 	printf("\n");
 	printf("form.txt: db\n");
-	printf("\tflint-form $^ > $@\n");
+	printf("\tflint-form $< > $@\n");
 	printf("\n");
-	printf("generated:\n");
-	printf("\tflint-singleton $@\n");
-	printf("\n");
-	printf("generated-layout: generated form.txt\n");
-	printf("\tflint-layout $^ $@\n"); /* TODO */
+	printf("generated-layout: db form.txt\n");
+	printf("\tflint-layout $< $@\n"); /* TODO */
 	printf("\n");
 }
 
@@ -35,12 +32,12 @@ static void PrintRecipeForCellml(void)
 	printf("\n");
 	printf("modeldb: model\n");
 	printf("\tflint-concat $< $@\n");
-	printf("\tflint-cellml $@ name.txt iv.txt function.txt ode.txt\n");
+	printf("\tflint-cellml $@ iv.txt function.txt ode.txt\n");
 	printf("\n");
-	printf("name.txt iv.txt function.txt ode.txt: modeldb\n");
+	printf("iv.txt function.txt ode.txt: modeldb\n");
 	printf("\n");
-	printf("layout: modeldb name.txt\n");
-	printf("\tflint-layout $^ $@\n");
+	printf("layout: modeldb\n");
+	printf("\tflint-layout $< $@\n");
 	printf("\n");
 	printf("flow.txt: modeldb layout\n");
 	printf("\tflint-flow $^ > $@\n");
@@ -104,15 +101,15 @@ static void PrintRecipeForPhml(void)
 	printf("tsc.bin: tsc.txt\n");
 	printf("\n");
 	printf("combineall.txt: modeldb\n");
-	printf("\tflint-combineall $< combine-name.txt combine-value.txt combine-function.txt combine-ode.txt > $@\n");
+	printf("\tflint-combineall $< combine-value.txt combine-function.txt combine-ode.txt > $@\n");
 	printf("\n");
-	printf("combine-name.txt combine-value.txt combine-function.txt combine-ode.txt: combineall.txt\n");
+	printf("combine-value.txt combine-function.txt combine-ode.txt: combineall.txt\n");
 	printf("\n");
 	printf("value.txt: impl-sv.txt iv.txt tsc.txt combine-value.txt combine-function.txt\n");
 	printf("\tflint-concat $^ $@\n");
 	printf("\n");
-	printf("layout: modeldb combine-name.txt\n");
-	printf("\tflint-layout $^ $@\n");
+	printf("layout: modeldb combineall.txt\n");
+	printf("\tflint-layout $< $@\n");
 	printf("\n");
 	printf("flow.txt: modeldb layout\n");
 	printf("\tflint-flow $^ > $@\n");
@@ -179,16 +176,16 @@ static void PrintRecipeForSbml(void)
 {
 	printf("MODEL_LANG = sbml\n");
 	printf("\n");
-	printf("name.txt: model\n");
-	printf("\tflint-sbml $< $@ value.txt function.txt ode.txt\n");
+	printf("sbml.txt: model\n");
+	printf("\tflint-sbml $< value.txt function.txt ode.txt > $@\n");
 	printf("\n");
-	printf("value.txt function.txt ode.txt: name.txt\n");
+	printf("value.txt function.txt ode.txt: sbml.txt\n");
 	printf("\n");
-	printf("modeldb:\n");
-	printf("\tflint-singleton $@\n");
+	printf("modeldb: model sbml.txt\n");
+	printf("\tflint-concat $< $@\n");
 	printf("\n");
-	printf("layout: modeldb name.txt\n");
-	printf("\tflint-layout $^ $@\n");
+	printf("layout: modeldb\n");
+	printf("\tflint-layout $< $@\n");
 	printf("\n");
 	printf("flow.txt:\n");
 	printf("\tflint-concat $@\n");

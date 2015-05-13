@@ -6,5 +6,5 @@ This porgram parses and translates CellML.
 
 = Synopsis
 
-flint-cellml db name iv function ode
+flint-cellml db iv function ode
 flint-cellml --help

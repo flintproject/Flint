@@ -6,5 +6,5 @@ This program arranges data layout for variables.
 
 = Synopsis
 
-flint-layout db pq output
+flint-layout db output
 flint-layout --help

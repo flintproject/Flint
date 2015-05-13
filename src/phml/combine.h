@@ -4,7 +4,6 @@
 
 bool Combine(const char *uuid,
 			 const char *db_file,
-			 const char *name_file,
 			 const char *value_file,
 			 const char *function_file,
 			 const char *ode_file);

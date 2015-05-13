@@ -23,6 +23,11 @@ int CommitTransaction(sqlite3 *db);
  */
 int CreateTable(sqlite3 *db, const char *name, const char *columns);
 
+/*
+ * Return 1 in case of success, 0 otherwise.
+ */
+int CreateSingleton(sqlite3 *db);
+
 #ifdef __cplusplus
 }
 #endif

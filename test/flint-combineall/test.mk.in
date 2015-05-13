@@ -1,15 +1,16 @@
+SQLITE3 = sqlite3 -batch -noheader -separator ' '
+
 .PHONY: all clean check check-name check-value check-function check-ode
 
-all: OUTPUT.db
-	flint-combineall $< OUTPUT.name OUTPUT.value OUTPUT.function OUTPUT.ode
+all: OUTPUT
 
 clean:
-	-rm -f UUID.db UUID.xml OUTPUT.name OUTPUT.value OUTPUT.function OUTPUT.ode OUTPUT.db
+	-rm -f UUID.db UUID.xml OUTPUT.value OUTPUT.function OUTPUT.ode OUTPUT.db
 
 check: check-name check-value check-function check-ode
 
-check-name: NAME OUTPUT.name
-	diff -u $^
+check-name: NAME OUTPUT
+	($(SQLITE3) OUTPUT.db 'SELECT space_id, type, id, name FROM private_names' | diff -u $< -)
 
 check-value: VALUE OUTPUT.value
 	diff -u $^
@@ -19,6 +20,10 @@ check-function: FUNCTION OUTPUT.function
 
 check-ode: ODE OUTPUT.ode
 	diff -u $^
+
+OUTPUT: OUTPUT.db
+	flint-combineall $< OUTPUT.value OUTPUT.function OUTPUT.ode
+	touch $@
 
 OUTPUT.db: MODEL
 	test-input1 $@ $<

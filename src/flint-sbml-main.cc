@@ -17,6 +17,8 @@
 #include <boost/scoped_ptr.hpp>
 
 #include "db/driver.h"
+#include "db/name-inserter.h"
+#include "db/query.h"
 #include "sbml/parser.h"
 
 using std::cerr;
@@ -104,29 +106,29 @@ int HandleOde(void *data, int argc, char **argv, char **names);
 int HandleAssignment(void *data, int argc, char **argv, char **names);
 int HandleConstant(void *data, int argc, char **argv, char **names);
 
-class Loader : public db::Driver {
+class Loader {
 public:
-	explicit Loader(const char *file)
-		: db::Driver(file)
+	explicit Loader(sqlite3 *db)
+		: db_(db)
 	{
 	}
 
 	bool Load(OdeVector *ov, AssignmentVector *av, CompartmentVector *cv) {
 		int e;
 		char *em;
-		e = sqlite3_exec(db(), "SELECT * FROM odes", HandleOde, ov, &em);
+		e = sqlite3_exec(db_, "SELECT * FROM odes", HandleOde, ov, &em);
 		if (e != SQLITE_OK) {
 			cerr << e << ": " << em << endl;
 			sqlite3_free(em);
 			return false;
 		}
-		e = sqlite3_exec(db(), "SELECT * FROM assignments", HandleAssignment, av, &em);
+		e = sqlite3_exec(db_, "SELECT * FROM assignments", HandleAssignment, av, &em);
 		if (e != SQLITE_OK) {
 			cerr << e << ": " << em << endl;
 			sqlite3_free(em);
 			return false;
 		}
-		e = sqlite3_exec(db(), "SELECT * FROM constants", HandleConstant, cv, &em);
+		e = sqlite3_exec(db_, "SELECT * FROM constants", HandleConstant, cv, &em);
 		if (e != SQLITE_OK) {
 			cerr << e << ": " << em << endl;
 			sqlite3_free(em);
@@ -134,6 +136,9 @@ public:
 		}
 		return true;
 	}
+
+private:
+	sqlite3 *db_;
 };
 
 int HandleOde(void *data, int argc, char **argv, char **names)
@@ -163,27 +168,23 @@ int HandleConstant(void *data, int argc, char **argv, char **names)
 	return 0;
 }
 
-class NameWriter : boost::noncopyable {
+class NameWriter : public db::NameInserter {
 public:
-	explicit NameWriter(const char *file) : ofs_(file, std::ios::out), i_(1) {}
-
-	~NameWriter() {
-		if (ofs_.is_open()) ofs_.close();
+	explicit NameWriter(sqlite3 *db)
+		: db::NameInserter("names", db)
+		, i_(1)
+	{
 	}
 
 	template<typename TType>
-	void Write(const TType &x) {
-		ofs_ << "00000000-0000-0000-0000-000000000000 "
-			 << x.type()
-			 << ' '
-			 << i_++
-			 << ' '
-			 << x.name()
-			 << endl;
+	bool Write(const TType &x) {
+		return InsertName("00000000-0000-0000-0000-000000000000",
+						  x.type(),
+						  i_++,
+						  x.name().c_str());
 	}
 
 private:
-	std::ofstream ofs_;
 	int i_;
 };
 
@@ -252,13 +253,15 @@ private:
 
 void Usage()
 {
-	cerr << "usage: flint-sbml DB NAME VALUE FUNCTION ODE" << endl;
+	cerr << "usage: flint-sbml DB VALUE FUNCTION ODE" << endl;
 }
 
 } // namespace
 
 int main(int argc, char *argv[])
 {
+	static const int kNumOfArgs = 5;
+
 	if (argc == 2) {
 		Usage();
 		if (strcmp("-h", argv[1]) == 0 || strcmp("--help", argv[1]) == 0) {
@@ -267,7 +270,7 @@ int main(int argc, char *argv[])
 			return EXIT_FAILURE;
 		}
 	}
-	if (argc != 6) {
+	if (argc != kNumOfArgs) {
 		Usage();
 		return EXIT_FAILURE;
 	}
@@ -275,18 +278,24 @@ int main(int argc, char *argv[])
 	if (!ParseSbml(argv[1]))
 		return EXIT_FAILURE;
 
+	db::Driver driver(argv[1]);
+	if (!CreateSingleton(driver.db()))
+		return EXIT_FAILURE;
+	if (!BeginTransaction(driver.db()))
+		return EXIT_FAILURE;
+
 	boost::scoped_ptr<OdeVector> ov(new OdeVector);
 	boost::scoped_ptr<AssignmentVector> av(new AssignmentVector);
 	boost::scoped_ptr<CompartmentVector> cv(new CompartmentVector);
 	{
-		boost::scoped_ptr<Loader> loader(new Loader(argv[1]));
+		boost::scoped_ptr<Loader> loader(new Loader(driver.db()));
 		if (!loader->Load(ov.get(), av.get(), cv.get())) {
 			return EXIT_FAILURE;
 		}
 	}
 
 	{
-		boost::scoped_ptr<NameWriter> writer(new NameWriter(argv[2]));
+		boost::scoped_ptr<NameWriter> writer(new NameWriter(driver.db()));
 		for (OdeVector::const_iterator it=ov->begin();it!=ov->end();++it) {
 			writer->Write(*it);
 		}
@@ -299,7 +308,7 @@ int main(int argc, char *argv[])
 	}
 
 	{
-		boost::scoped_ptr<ValueWriter> writer(new ValueWriter(argv[3]));
+		boost::scoped_ptr<ValueWriter> writer(new ValueWriter(argv[2]));
 		for (OdeVector::const_iterator it=ov->begin();it!=ov->end();++it) {
 			writer->Write(*it);
 		}
@@ -309,18 +318,18 @@ int main(int argc, char *argv[])
 	}
 
 	{
-		boost::scoped_ptr<FunctionWriter> writer(new FunctionWriter(argv[4]));
+		boost::scoped_ptr<FunctionWriter> writer(new FunctionWriter(argv[3]));
 		for (AssignmentVector::const_iterator it=av->begin();it!=av->end();++it) {
 			writer->Write(*it);
 		}
 	}
 
 	{
-		boost::scoped_ptr<OdeWriter> writer(new OdeWriter(argv[5]));
+		boost::scoped_ptr<OdeWriter> writer(new OdeWriter(argv[4]));
 		for (OdeVector::const_iterator it=ov->begin();it!=ov->end();++it) {
 			writer->Write(*it);
 		}
 	}
 
-	return EXIT_SUCCESS;
+	return CommitTransaction(driver.db()) ? EXIT_SUCCESS : EXIT_FAILURE;
 }

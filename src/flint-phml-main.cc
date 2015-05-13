@@ -3680,6 +3680,7 @@ const Schema kModelTables[] = {
 };
 
 const Schema kSubsequentTables[] = {
+	{"private_names", "(space_id TEXT, type TEXT, id INTEGER, name TEXT, unit TEXT, capacity REAL)"}, // the same columns as names
 	{"trees", "(module_id TEXT, level INTEGER)"},
 	{"scopes", "(uuid TEXT, space_id TEXT, label TEXT)"},
 	{"journals", "(indent INTEGER, uuid TEXT)"},
