@@ -57,7 +57,6 @@ EXES := \
     flint-run \
     flint-sbml \
     flint-sedml \
-    flint-singleton \
     flint-sort \
     flint-spec \
     flint-store \

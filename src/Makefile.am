@@ -66,7 +66,6 @@ bin_PROGRAMS = \
 	flint-phz \
 	flint-rk4 \
 	flint-run \
-	flint-singleton \
 	flint-sbml \
 	flint-sedml \
 	flint-sort \
@@ -98,7 +97,8 @@ bin_PROGRAMS = \
 noinst_PROGRAMS = \
 	test-input1 \
 	test-input2 \
-	test-run
+	test-run \
+	test-singleton
 
 noinst_LIBRARIES = libflint.a libflintxx.a libsqlite3.a
 
@@ -299,10 +299,6 @@ flint_sedml_LDFLAGS = $(BOOST_FILESYSTEM_LDFLAGS) $(BOOST_SYSTEM_LDFLAGS)
 flint_sedml_LDADD = libflintxx.a libflint.a libsqlite3.a $(BOOST_FILESYSTEM_LIBS) $(BOOST_SYSTEM_LIBS)  $(CLIBSEDML_LIBS)
 flint_sedml_SOURCES = flint-sedml-main.cc
 
-flint_singleton_CPPFLAGS = $(BOOST_CPPFLAGS)
-flint_singleton_LDADD = libflint.a libsqlite3.a
-flint_singleton_SOURCES = flint-singleton-main.cc
-
 flint_sort_CPPFLAGS = $(BOOST_CPPFLAGS)
 flint_sort_SOURCES = flint-sort-main.cc
 
@@ -425,3 +421,7 @@ test_input2_SOURCES = test-input2-main.c
 test_run_CPPFLAGS = $(PROTOBUF_CFLAGS) $(BOOST_CPPFLAGS)
 test_run_LDADD = $(PROTOBUF_LIBS)
 test_run_SOURCES = test-run-main.cc cli.pb.cc
+
+test_singleton_CPPFLAGS = $(BOOST_CPPFLAGS)
+test_singleton_LDADD = libflint.a libsqlite3.a
+test_singleton_SOURCES = test-singleton-main.cc

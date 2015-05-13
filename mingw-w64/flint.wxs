@@ -178,9 +178,6 @@
           <Component Id='flint_sedml' Guid='d2f7bae6-93c0-11e3-86f0-6ba6a092f3ee'>
             <File Id='flint_sedml.exe' Name='flint-sedml.exe' DiskId='1' Source='flint-sedml.exe' />
           </Component>
-          <Component Id='flint_singleton' Guid='750bd430-0c88-11e4-962e-bbc078f528f6'>
-            <File Id='flint_singleton.exe' Name='flint-singleton.exe' DiskId='1' Source='flint-singleton.exe' />
-          </Component>
           <Component Id='flint_sort' Guid='2fc1d0b0-f5bd-11e2-97b4-d7e2784b5593'>
             <File Id='flint_sort.exe' Name='flint-sort.exe' DiskId='1' Source='flint-sort.exe' />
           </Component>
@@ -349,7 +346,6 @@
       <ComponentRef Id='flint_run' />
       <ComponentRef Id='flint_sbml' />
       <ComponentRef Id='flint_sedml' />
-      <ComponentRef Id='flint_singleton' />
       <ComponentRef Id='flint_sort' />
       <ComponentRef Id='flint_spec' />
       <ComponentRef Id='flint_store' />

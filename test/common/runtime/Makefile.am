@@ -26,7 +26,7 @@ include $(top_srcdir)/common.mk
 	echo '	-rm -f $$(TEST) $$(BC)' >> $@
 	echo >> $@
 	echo 'test-db:' >> $@
-	echo '	flint-singleton $$@' >> $@
+	echo '	test-singleton $$@' >> $@
 	echo >> $@
 	echo 'test-layout: test-db' >> $@
 	echo '	flint-layout $$< $$@' >> $@
@@ -57,7 +57,7 @@ include $(top_srcdir)/common.mk
 	echo '	-rm -f $$(TEST) $$(BC)' >> $@
 	echo >> $@
 	echo 'test-db:' >> $@
-	echo '	flint-singleton $$@' >> $@
+	echo '	test-singleton $$@' >> $@
 	echo >> $@
 	echo 'test-layout: test-db' >> $@
 	echo '	flint-layout $$< $$@' >> $@
