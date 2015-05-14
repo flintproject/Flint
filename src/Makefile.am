@@ -37,6 +37,7 @@ bin_PROGRAMS = \
 	flint-cellml \
 	flint-cli \
 	flint-combineall \
+	flint-compile \
 	flint-concat \
 	flint-cut \
 	flint-enum \
@@ -148,6 +149,15 @@ flint_combineall_SOURCES = \
     phml/import.cc \
     sbml/parser.cc \
     flint-combineall-main.cc
+
+flint_compile_CPPFLAGS = $(PROTOBUF_CFLAGS) $(BOOST_CPPFLAGS)
+flint_compile_LDADD = libflint.a libsqlite3.a $(PROTOBUF_LIBS)
+flint_compile_SOURCES = \
+    bc.pb.cc \
+    compiler/bcc.cc \
+    compiler/sort.cc \
+    compiler/tac.cc \
+    flint-compile-main.cc
 
 flint_concat_CFLAGS = $(AM_CFLAGS) -std=c99 -pedantic-errors
 flint_concat_SOURCES = flint-concat-main.c

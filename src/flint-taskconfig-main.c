@@ -8,25 +8,14 @@
 #include <stdlib.h>
 #include <string.h>
 
-static void PrintCommonPart(void)
-{
-	printf("tac.txt: sort.txt\n");
-	printf("\tflint-tac < $< > $@\n");
-	printf("\n");
-	printf("bc: tac.txt\n");
-	printf("\tflint-bcc < $< > $@\n");
-	printf("\n");
-}
-
 static void PrintRecipeForEuler(void)
 {
 	printf("euler.txt: statement.txt\n");
 	printf("\tflint-euler < $< > $@\n");
 	printf("\n");
-	printf("sort.txt: euler.txt\n");
-	printf("\tflint-sort < $< > $@\n");
+	printf("bc: euler.txt\n");
+	printf("\tflint-compile euler.db < $< > $@\n");
 	printf("\n");
-	PrintCommonPart();
 }
 
 static void PrintRecipeForRk4(void)
@@ -34,10 +23,9 @@ static void PrintRecipeForRk4(void)
 	printf("rk4.txt: statement.txt\n");
 	printf("\tflint-rk4 < $< > $@\n");
 	printf("\n");
-	printf("sort.txt: rk4.txt\n");
-	printf("\tflint-sort < $< > $@\n");
+	printf("bc: rk4.txt\n");
+	printf("\tflint-compile rk4.db < $< > $@\n");
 	printf("\n");
-	PrintCommonPart();
 }
 
 static void Usage(void)
@@ -116,14 +104,8 @@ int main(int argc, char *argv[])
 	printf("$(1)/generated-assign.txt: $(1)/generated-equation.txt\n");
 	printf("\tflint-assign < $$< > $$@\n");
 	printf("\n");
-	printf("$(1)/generated-sort.txt: $(1)/generated-assign.txt\n");
-	printf("\tflint-sort < $$< > $$@\n");
-	printf("\n");
-	printf("$(1)/generated-tac.txt: $(1)/generated-sort.txt\n");
-	printf("\tflint-tac < $$< > $$@\n");
-	printf("\n");
-	printf("$(1)/generated-bc: $(1)/generated-tac.txt\n");
-	printf("\tflint-bcc < $$< > $$@\n");
+	printf("$(1)/generated-bc: $(1)/generated-assign.txt\n");
+	printf("\tflint-compile $(1)/generated.db < $$< > $$@\n");
 	printf("\n");
 	printf("$(1)/generated-init: generated-layout $(1)/generated-bc\n");
 #ifdef _WIN32
