@@ -168,7 +168,7 @@ flint/lib: | flint
 	install -d $@
 
 var/flint/Makefile: tmp/protobuf-$(PROTOBUF_VERSION).installed ../configure | usr/bin/protoc var/flint
-	(cd var/flint && env CPPFLAGS='-DWIN32_LEAN_AND_MEAN -D_WIN32_WINNT=0x0600 -DWIN32 -DSBML_ODESOLVER_EXPORTS=1' LDFLAGS='-static-libgcc -static-libstdc++' LIBS='-lole32 -loleaut32 -lmswsock -lws2_32' PKG_CONFIG_PATH=$(PKG_CONFIG_PATH) ../../../configure --host=$(HOST) --prefix=$(PREFIX) --with-boost=$(PREFIX) --with-xml-prefix=$(PREFIX) --disable-xmltest --with-protoc=$(abspath usr/bin/protoc) --with-sundials=$(PREFIX) --without-mysql --disable-shared)
+	(cd var/flint && env CPPFLAGS='-DWIN32_LEAN_AND_MEAN -D_WIN32_WINNT=0x0600 -DWIN32 -DSBML_ODESOLVER_EXPORTS=1' LDFLAGS='-static-libgcc -static-libstdc++' LIBS='-lole32 -loleaut32 -lmswsock -lws2_32' PKG_CONFIG_PATH=$(PKG_CONFIG_PATH) ../../../configure --host=$(HOST) --prefix=$(PREFIX) --with-boost=$(PREFIX) --with-xml-prefix=$(PREFIX) --disable-xmltest --with-protoc=$(abspath usr/bin/protoc) --with-sundials=$(PREFIX) --disable-shared)
 
 $(foreach e,$(EXES),opt/bin/$(e).exe): $(foreach d,$(BIN_DLLS) $(BOOST_DLLS) libsedml-0,$(call flint_dll_name,$(d))) tmp/sundials-$(SUNDIALS_VERSION).installed tmp/SBML_odeSolver-$(SOSLIB_COMMIT).installed var/flint/Makefile
 	$(MAKE) -C var/flint all install-exec
