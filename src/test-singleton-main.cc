@@ -1,4 +1,5 @@
 /* -*- Mode: C++; tab-width: 4; indent-tabs-mode: t; c-basic-offset: 4 -*- vim:set ts=4 sw=4 sts=4 noet: */
+#include <cassert>
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
@@ -15,6 +16,7 @@ int main(int argc, char *argv[])
 {
 	static const char kDefaultSpaceId[] = "00000000-0000-0000-0000-000000000000";
 
+	assert(argc == 2);
 	db::Driver driver(argv[1]);
 	sqlite3 *db = driver.db();
 	if (!BeginTransaction(db))
