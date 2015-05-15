@@ -104,12 +104,16 @@ noinst_PROGRAMS = \
 lib_LTLIBRARIES = libflint.la libflintxx.la libsqlite3.la
 
 libflint_la_CPPFLAGS = $(AM_CFLAGS) -std=c99 -pedantic-errors
+libflint_la_LIBADD = libsqlite3.la
+libflint_la_LDFLAGS = -no-undefined
 libflint_la_SOURCES = \
     database.c \
     db/query.c \
     system.c
 
 libflintxx_la_CPPFLAGS = $(BOOST_CPPFLAGS)
+libflintxx_la_LIBADD = libflint.la $(BOOST_FILESYSTEM_LIBS) $(BOOST_SYSTEM_LIBS)
+libflintxx_la_LDFLAGS = -no-undefined $(BOOST_FILESYSTEM_LDFLAGS) $(BOOST_SYSTEM_LDFLAGS)
 libflintxx_la_SOURCES = \
     csv/export.cc \
     modelpath.cc \
@@ -117,6 +121,7 @@ libflintxx_la_SOURCES = \
     utf8path.cc
 
 libsqlite3_la_CPPFLAGS = -DSQLITE_THREADSAFE=0 -DSQLITE_OMIT_LOAD_EXTENSION
+libsqlite3_la_LDFLAGS = -no-undefined
 libsqlite3_la_SOURCES = sqlite3.c
 
 csv2isd_CPPFLAGS = $(BOOST_CPPFLAGS)
