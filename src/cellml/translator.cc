@@ -23,6 +23,7 @@
 #include "db/name-inserter.h"
 #include "db/query.h"
 #include "db/reach-driver.h"
+#include "db/statement-driver.h"
 #include "modelpath.h"
 #include "sqlite3.h"
 #include "uuidgen.h"
@@ -134,38 +135,31 @@ private:
 
 const char kOdeQuery[] = "SELECT component, body FROM maths WHERE body LIKE ' (eq (diff (bvar ~%time) ~%%' ESCAPE '~'";
 
-class OdeDumper {
+class OdeDumper : public db::StatementDriver {
 public:
 	OdeDumper(const char *path, sqlite3 *db, const TreeDumper *tree_dumper)
-		: fp_(fopen(path, "w")),
-		  tree_dumper_(tree_dumper),
-		  stmt_(),
-		  dvm_()
+		: db::StatementDriver(db, kOdeQuery)
+		, fp_(fopen(path, "w"))
+		, tree_dumper_(tree_dumper)
+		, dvm_()
 	{
-		int e = sqlite3_prepare_v2(db, kOdeQuery, -1, &stmt_, NULL);
-		if (e != SQLITE_OK) stmt_ = NULL;
 	}
 
 	~OdeDumper() {
-		if (stmt_) sqlite3_finalize(stmt_);
 		if (fp_) fclose(fp_);
 	}
 
 	bool Dump() {
-		if (!stmt_) {
-			cerr << "failed to prepare statement: " << kOdeQuery << endl;
-			return false;
-		}
 		int e;
 		char u[kUuidLength+1];
-		for (e = sqlite3_step(stmt_); e == SQLITE_ROW; e = sqlite3_step(stmt_)) {
-			const unsigned char *c = sqlite3_column_text(stmt_, 0);
+		for (e = sqlite3_step(stmt()); e == SQLITE_ROW; e = sqlite3_step(stmt())) {
+			const unsigned char *c = sqlite3_column_text(stmt(), 0);
 			size_t clen = strlen((const char *)c);
 			if (clen == 0) {
 				cerr << "empty component name" << endl;
 				return false;
 			}
-			const unsigned char *body = sqlite3_column_text(stmt_, 1);
+			const unsigned char *body = sqlite3_column_text(stmt(), 1);
 			size_t nlen = strlen((const char *)body);
 			if (nlen == 0) {
 				cerr << "empty body" << endl;
@@ -204,49 +198,38 @@ private:
 
 	FILE *fp_;
 	const TreeDumper *tree_dumper_;
-	sqlite3_stmt *stmt_;
 	DependentVariableMap dvm_;
 };
 
 const char kNameQuery[] = "SELECT rowid, component, name, initial_value FROM variables";
 
-class NameDumper : public db::NameInserter {
+class NameDumper : public db::NameInserter, public db::StatementDriver {
 public:
 	NameDumper(sqlite3 *db, const TreeDumper *tree_dumper)
 		: db::NameInserter("names", db)
+		, db::StatementDriver(db, kNameQuery)
 		, tree_dumper_(tree_dumper)
-		, stmt_(NULL)
 	{
-		int e = sqlite3_prepare_v2(db, kNameQuery, -1, &stmt_, NULL);
-		if (e != SQLITE_OK) {
-			cerr << "failed to prepare statement: " << e
-				 << ": " << kNameQuery << endl;
-			exit(EXIT_FAILURE);
-		}
-	}
-
-	~NameDumper() {
-		sqlite3_finalize(stmt_);
 	}
 
 	bool Dump(const OdeDumper *ode_dumper) {
 		int e;
 		char u[kUuidLength+1];
-		for (e = sqlite3_step(stmt_); e == SQLITE_ROW; e = sqlite3_step(stmt_)) {
-			int id = static_cast<int>(sqlite3_column_int64(stmt_, 0));
-			const unsigned char *c = sqlite3_column_text(stmt_, 1);
+		for (e = sqlite3_step(stmt()); e == SQLITE_ROW; e = sqlite3_step(stmt())) {
+			int id = static_cast<int>(sqlite3_column_int64(stmt(), 0));
+			const unsigned char *c = sqlite3_column_text(stmt(), 1);
 			size_t clen = strlen((const char *)c);
 			if (clen == 0) {
 				cerr << "empty component name" << endl;
 				return false;
 			}
-			const unsigned char *n = sqlite3_column_text(stmt_, 2);
+			const unsigned char *n = sqlite3_column_text(stmt(), 2);
 			size_t nlen = strlen((const char *)n);
 			if (nlen == 0) {
 				cerr << "empty variable name" << endl;
 				return false;
 			}
-			const unsigned char *iv = sqlite3_column_text(stmt_, 3);
+			const unsigned char *iv = sqlite3_column_text(stmt(), 3);
 			if (!tree_dumper_->Find((const char *)c, u)) return false;
 			if (strcmp("time", (const char *)n) == 0) {
 				// ignore "time", because we suppose all of them are equivalent
@@ -270,48 +253,40 @@ public:
 
 private:
 	const TreeDumper *tree_dumper_;
-	sqlite3_stmt *stmt_;
 };
 
 const char kIvQuery[] = "SELECT component, name, initial_value FROM variables WHERE initial_value IS NOT NULL";
 
-class IvDumper {
+class IvDumper : public db::StatementDriver {
 public:
 	IvDumper(const char *path, sqlite3 *db, const TreeDumper *tree_dumper)
-		: fp_(fopen(path, "w")),
-		  tree_dumper_(tree_dumper),
-		  stmt_()
+		: db::StatementDriver(db, kIvQuery)
+		, fp_(fopen(path, "w"))
+		, tree_dumper_(tree_dumper)
 	{
-		int e = sqlite3_prepare_v2(db, kIvQuery, -1, &stmt_, NULL);
-		if (e != SQLITE_OK) stmt_ = NULL;
 	}
 
 	~IvDumper() {
-		if (stmt_) sqlite3_finalize(stmt_);
 		if (fp_) fclose(fp_);
 	}
 
 	bool Dump() {
-		if (!stmt_) {
-			cerr << "failed to prepare statement: " << kIvQuery << endl;
-			return false;
-		}
 		int e;
 		char u[kUuidLength+1];
-		for (e = sqlite3_step(stmt_); e == SQLITE_ROW; e = sqlite3_step(stmt_)) {
-			const unsigned char *c = sqlite3_column_text(stmt_, 0);
+		for (e = sqlite3_step(stmt()); e == SQLITE_ROW; e = sqlite3_step(stmt())) {
+			const unsigned char *c = sqlite3_column_text(stmt(), 0);
 			size_t clen = strlen((const char *)c);
 			if (clen == 0) {
 				cerr << "empty component name" << endl;
 				return false;
 			}
-			const unsigned char *n = sqlite3_column_text(stmt_, 1);
+			const unsigned char *n = sqlite3_column_text(stmt(), 1);
 			size_t nlen = strlen((const char *)n);
 			if (nlen == 0) {
 				cerr << "empty variable name" << endl;
 				return false;
 			}
-			const unsigned char *iv = sqlite3_column_text(stmt_, 2);
+			const unsigned char *iv = sqlite3_column_text(stmt(), 2);
 			if (!tree_dumper_->Find((const char *)c, u)) return false;
 			fprintf(fp_, "%s (eq %%%s %s)\n", u, (const char *)n, (const char *)iv);
 		}
@@ -325,42 +300,34 @@ public:
 private:
 	FILE *fp_;
 	const TreeDumper *tree_dumper_;
-	sqlite3_stmt *stmt_;
 };
 
 const char kFunctionQuery[] = "SELECT component, body FROM maths WHERE body LIKE ' (eq ~%%' ESCAPE '~'";
 
-class FunctionDumper {
+class FunctionDumper : public db::StatementDriver {
 public:
 	FunctionDumper(const char *path, sqlite3 *db, const TreeDumper *tree_dumper)
-		: fp_(fopen(path, "w")),
-		  tree_dumper_(tree_dumper),
-		  stmt_()
+		: db::StatementDriver(db, kFunctionQuery)
+		, fp_(fopen(path, "w"))
+		, tree_dumper_(tree_dumper)
 	{
-		int e = sqlite3_prepare_v2(db, kFunctionQuery, -1, &stmt_, NULL);
-		if (e != SQLITE_OK) stmt_ = NULL;
 	}
 
 	~FunctionDumper() {
-		if (stmt_) sqlite3_finalize(stmt_);
 		if (fp_) fclose(fp_);
 	}
 
 	bool Dump() {
-		if (!stmt_) {
-			cerr << "failed to prepare statement: " << kFunctionQuery << endl;
-			return false;
-		}
 		int e;
 		char u[kUuidLength+1];
-		for (e = sqlite3_step(stmt_); e == SQLITE_ROW; e = sqlite3_step(stmt_)) {
-			const unsigned char *c = sqlite3_column_text(stmt_, 0);
+		for (e = sqlite3_step(stmt()); e == SQLITE_ROW; e = sqlite3_step(stmt())) {
+			const unsigned char *c = sqlite3_column_text(stmt(), 0);
 			size_t clen = strlen((const char *)c);
 			if (clen == 0) {
 				cerr << "empty component name" << endl;
 				return false;
 			}
-			const unsigned char *body = sqlite3_column_text(stmt_, 1);
+			const unsigned char *body = sqlite3_column_text(stmt(), 1);
 			size_t nlen = strlen((const char *)body);
 			if (nlen == 0) {
 				cerr << "empty body" << endl;
@@ -379,7 +346,6 @@ public:
 private:
 	FILE *fp_;
 	const TreeDumper *tree_dumper_;
-	sqlite3_stmt *stmt_;
 };
 
 const char kReachQuery[] = "SELECT "
@@ -390,40 +356,30 @@ const char kReachQuery[] = "SELECT "
  "LEFT JOIN variables AS v2 ON c.component_2 = v2.component AND mv.variable_2 = v2.name "
  "WHERE v1.name != 'time' AND v2.name != 'time'"; // ignore any mapping from "time" to "time"
 
-class ReachDumper {
+class ReachDumper : public db::StatementDriver {
 public:
 	ReachDumper(sqlite3 *db, const TreeDumper *tree_dumper)
-		: driver_(new db::ReachDriver(db)),
-		  gen_(),
-		  tree_dumper_(tree_dumper),
-		  stmt_()
+		: db::StatementDriver(db, kReachQuery)
+		, driver_(new db::ReachDriver(db))
+		, gen_()
+		, tree_dumper_(tree_dumper)
 	{
-		int e = sqlite3_prepare_v2(db, kReachQuery, -1, &stmt_, NULL);
-		if (e != SQLITE_OK) stmt_ = NULL;
-	}
-
-	~ReachDumper() {
-		if (stmt_) sqlite3_finalize(stmt_);
 	}
 
 	bool Dump() {
-		if (!stmt_) {
-			cerr << "failed to prepare statement: " << kReachQuery << endl;
-			return false;
-		}
 		int e;
 		char u1[kUuidLength+1], u2[kUuidLength+1];
-		for (e = sqlite3_step(stmt_); e == SQLITE_ROW; e = sqlite3_step(stmt_)) {
-			const unsigned char *c1 = sqlite3_column_text(stmt_, 0);
-			int id1 = static_cast<int>(sqlite3_column_int64(stmt_, 1));
-			const unsigned char *n1 = sqlite3_column_text(stmt_, 2);
-			const unsigned char *pub1 = sqlite3_column_text(stmt_, 3);
-			const unsigned char *pri1 = sqlite3_column_text(stmt_, 4);
-			const unsigned char *c2 = sqlite3_column_text(stmt_, 5);
-			int id2 = static_cast<int>(sqlite3_column_int64(stmt_, 6));
-			const unsigned char *n2 = sqlite3_column_text(stmt_, 7);
-			const unsigned char *pub2 = sqlite3_column_text(stmt_, 8);
-			const unsigned char *pri2 = sqlite3_column_text(stmt_, 9);
+		for (e = sqlite3_step(stmt()); e == SQLITE_ROW; e = sqlite3_step(stmt())) {
+			const unsigned char *c1 = sqlite3_column_text(stmt(), 0);
+			int id1 = static_cast<int>(sqlite3_column_int64(stmt(), 1));
+			const unsigned char *n1 = sqlite3_column_text(stmt(), 2);
+			const unsigned char *pub1 = sqlite3_column_text(stmt(), 3);
+			const unsigned char *pri1 = sqlite3_column_text(stmt(), 4);
+			const unsigned char *c2 = sqlite3_column_text(stmt(), 5);
+			int id2 = static_cast<int>(sqlite3_column_int64(stmt(), 6));
+			const unsigned char *n2 = sqlite3_column_text(stmt(), 7);
+			const unsigned char *pub2 = sqlite3_column_text(stmt(), 8);
+			const unsigned char *pri2 = sqlite3_column_text(stmt(), 9);
 			if (!tree_dumper_->Find((const char *)c1, u1)) return false;
 			if (!tree_dumper_->Find((const char *)c2, u2)) return false;
 
@@ -457,7 +413,6 @@ private:
 	boost::scoped_ptr<db::ReachDriver> driver_;
 	boost::uuids::string_generator gen_;
 	const TreeDumper *tree_dumper_;
-	sqlite3_stmt *stmt_;
 };
 
 } // namespace

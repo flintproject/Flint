@@ -13,6 +13,7 @@
 #include <boost/ptr_container/ptr_vector.hpp>
 #include <boost/scoped_ptr.hpp>
 
+#include "db/statement-driver.h"
 #include "uuidgen.h"
 
 using std::cerr;
@@ -54,35 +55,19 @@ private:
 
 typedef boost::ptr_multimap<string, Instance> InstanceMap;
 
-class InstanceLoader : boost::noncopyable {
+class InstanceLoader : public db::StatementDriver {
 public:
 	explicit InstanceLoader(sqlite3 *db)
-	: stmt_(NULL)
+		: db::StatementDriver(db, "SELECT * FROM joins")
 	{
-		int e = sqlite3_prepare_v2(db, "SELECT * FROM joins",
-								   -1, &stmt_, NULL);
-		if (e != SQLITE_OK) {
-			cerr << "failed to prepare statement: "
-				 << e
-				 << ": "
-				 << __FILE__
-				 << ":"
-				 << __LINE__
-				 << endl;
-			exit(EXIT_FAILURE);
-		}
-	}
-
-	~InstanceLoader() {
-		sqlite3_finalize(stmt_);
 	}
 
 	bool Load(InstanceMap *m) {
 		int e;
-		for (e = sqlite3_step(stmt_); e == SQLITE_ROW; e = sqlite3_step(stmt_)) {
-			const unsigned char *module_id = sqlite3_column_text(stmt_, 0);
-			const unsigned char *uuid = sqlite3_column_text(stmt_, 1);
-			const unsigned char *label = sqlite3_column_text(stmt_, 2);
+		for (e = sqlite3_step(stmt()); e == SQLITE_ROW; e = sqlite3_step(stmt())) {
+			const unsigned char *module_id = sqlite3_column_text(stmt(), 0);
+			const unsigned char *uuid = sqlite3_column_text(stmt(), 1);
+			const unsigned char *label = sqlite3_column_text(stmt(), 2);
 
 			assert(uuid);
 			if (!module_id) {
@@ -104,117 +89,76 @@ public:
 			cerr << "failed to step statement: " << e << endl;
 			return false;
 		}
-		sqlite3_reset(stmt_);
+		sqlite3_reset(stmt());
 		return true;
 	}
-
-private:
-	sqlite3_stmt *stmt_;
 };
 
-class JournalDriver : boost::noncopyable {
+class JournalDriver : public db::StatementDriver {
 public:
 	explicit JournalDriver(sqlite3 *db)
-		: stmt_(NULL)
+		: db::StatementDriver(db, "INSERT INTO journals VALUES (?, ?)")
 	{
-		int e = sqlite3_prepare_v2(db, "INSERT INTO journals VALUES (?, ?)",
-								   -1, &stmt_, NULL);
-		if (e != SQLITE_OK) {
-			cerr << "failed to prepare statement: "
-				 << e
-				 << ": "
-				 << __FILE__
-				 << ":"
-				 << __LINE__
-				 << endl;
-			exit(EXIT_FAILURE);
-		}
-	}
-
-	~JournalDriver() {
-		sqlite3_finalize(stmt_);
 	}
 
 	bool Save(int indent, const char *uuid) {
 		int e;
-		e = sqlite3_bind_int(stmt_, 1, indent);
+		e = sqlite3_bind_int(stmt(), 1, indent);
 		if (e != SQLITE_OK) {
 			cerr << "failed to bind indent: " << e << endl;
 			return false;
 		}
-		e = sqlite3_bind_text(stmt_, 2, uuid, -1, SQLITE_STATIC);
+		e = sqlite3_bind_text(stmt(), 2, uuid, -1, SQLITE_STATIC);
 		if (e != SQLITE_OK) {
 			cerr << "failed to bind uuid: " << e << endl;
 			return false;
 		}
-		e = sqlite3_step(stmt_);
+		e = sqlite3_step(stmt());
 		if (e != SQLITE_DONE) {
 			cerr << "failed to step statement: " << e << endl;
 			return false;
 		}
-		sqlite3_reset(stmt_);
+		sqlite3_reset(stmt());
 		return true;
 	}
-
-private:
-	sqlite3_stmt *stmt_;
 };
 
-class NodeDriver : boost::noncopyable {
+class NodeDriver : public db::StatementDriver {
 public:
 	explicit NodeDriver(sqlite3 *db)
-		: stmt_(NULL)
+		: db::StatementDriver(db, "INSERT INTO scopes VALUES (?, ?, ?)")
 	{
-		int e = sqlite3_prepare_v2(db, "INSERT INTO scopes VALUES (?, ?, ?)",
-								   -1, &stmt_, NULL);
-		if (e != SQLITE_OK) {
-			cerr << "failed to prepare statement: "
-				 << e
-				 << ": "
-				 << __FILE__
-				 << ":"
-				 << __LINE__
-				 << endl;
-			exit(EXIT_FAILURE);
-		}
-	}
-
-	~NodeDriver() {
-		sqlite3_finalize(stmt_);
 	}
 
 	bool Save(const Node &node) {
 		int e;
-		e = sqlite3_bind_text(stmt_, 1, node.uuid().c_str(), -1, SQLITE_STATIC);
+		e = sqlite3_bind_text(stmt(), 1, node.uuid().c_str(), -1, SQLITE_STATIC);
 		if (e != SQLITE_OK) {
 			cerr << "failed to bind uuid: " << e << endl;
 			return false;
 		}
-		e = sqlite3_bind_text(stmt_, 2, node.module_id().c_str(), -1, SQLITE_STATIC);
+		e = sqlite3_bind_text(stmt(), 2, node.module_id().c_str(), -1, SQLITE_STATIC);
 		if (e != SQLITE_OK) {
 			cerr << "failed to bind space_id: " << e << endl;
 			return false;
 		}
 		if (node.label().empty()) {
-			e = sqlite3_bind_null(stmt_, 3);
+			e = sqlite3_bind_null(stmt(), 3);
 		} else {
-			e = sqlite3_bind_text(stmt_, 3, node.label().c_str(), -1, SQLITE_STATIC);
+			e = sqlite3_bind_text(stmt(), 3, node.label().c_str(), -1, SQLITE_STATIC);
 		}
 		if (e != SQLITE_OK) {
 			cerr << "failed to bind label: " << e << endl;
 			return false;
 		}
-		e = sqlite3_step(stmt_);
+		e = sqlite3_step(stmt());
 		if (e != SQLITE_DONE) {
 			cerr << "failed to step statement: " << e << endl;
 			return false;
 		}
-		sqlite3_reset(stmt_);
+		sqlite3_reset(stmt());
 		return true;
 	}
-
-private:
-	sqlite3_stmt *stmt_;
 };
 
 } // namespace
