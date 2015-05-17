@@ -47,7 +47,6 @@ public:
 		  insert_stmt_(NULL),
 		  cm_()
 	{
-		char *em;
 		int e;
 		if (!CreateTable(db, "spaces", "(uuid TEXT, name TEXT)"))
 			exit(EXIT_FAILURE);
@@ -57,15 +56,8 @@ public:
 			exit(EXIT_FAILURE);
 		if (!CreateTable(db, "reaches", "(output_uuid BLOB, output_id INTEGER, input_uuid BLOB, input_id INTEGER)"))
 			exit(EXIT_FAILURE);
-		e = sqlite3_exec(db, "CREATE VIEW IF NOT EXISTS scopes AS SELECT uuid, uuid, NULL FROM spaces",
-						 NULL, NULL, &em);
-		if (e != SQLITE_OK) {
-			cerr << "failed to create view scopes: " << e
-				 << ": " << em
-				 << endl;
-			sqlite3_free(em);
+		if (!CreateView(db, "scopes", "SELECT uuid, uuid, NULL FROM spaces"))
 			exit(EXIT_FAILURE);
-		}
 		e = sqlite3_prepare_v2(db, kTreeQuery, -1, &query_stmt_, NULL);
 		if (e != SQLITE_OK) {
 			cerr << "failed to prepare statement: " << kTreeQuery << endl;

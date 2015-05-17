@@ -50,6 +50,31 @@ int CreateTable(sqlite3 *db, const char *name, const char *columns)
 	return 1;
 }
 
+int CreateView(sqlite3 *db, const char *name, const char *query)
+{
+	size_t len = 32;
+	len += strlen(name);
+	len += strlen(query);
+
+	char *buf = malloc(len);
+	if (!buf) {
+		fprintf(stderr, "failed to malloc");
+		return 0;
+	}
+	sprintf(buf, "CREATE VIEW %s AS %s", name, query);
+
+	char *em;
+	int e = sqlite3_exec(db, buf, NULL, NULL, &em);
+	free(buf);
+	if (e != SQLITE_OK) {
+		fprintf(stderr, "failed to create view: %s: %d: %s\n",
+				name, e, em);
+		sqlite3_free(em);
+		return 0;
+	}
+	return 1;
+}
+
 int CreateSingleton(sqlite3 *db)
 {
 	char *em;
