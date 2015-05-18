@@ -13,8 +13,15 @@ This step requires the following tools:
   http://mingw-w64.sourceforge.net/
   in order to cross-compile Flint components on a POSIX build for Windows host.
 
-Put config.mk in this directory to specify the HOST Make variables.
+Put config.mk in this directory to specify some Make variables as follows:
+* HOST
+  The configury host system name.
+* LIBGCC_DIR / LIBGCC_DLL
+  The dirname and basename to locate the libgcc's dll for the host.
+* LIBSTDCXX_DIR / LIBSTDCXX_DLL
+  The dirname and basename to locate the libstdc++'s dll for the host.
 See config.mk.example for example.
+
 Then running `make` will produce flint.zip in case of success, which contains
 all you need at the next step.
 

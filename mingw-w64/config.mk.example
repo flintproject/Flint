@@ -1,1 +1,5 @@
 HOST = i686-w64-mingw32
+LIBGCC_DIR = /usr/lib/gcc/$(HOST)/4.9-win32
+LIBGCC_DLL = libgcc_s_sjlj-1.dll
+LIBSTDCXX_DIR = /usr/lib/gcc/$(HOST)/4.9-win32
+LIBSTDCXX_DLL = libstdc++-6.dll

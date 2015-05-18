@@ -111,14 +111,12 @@ tmp/$(BOOST_UNDERSCORE).installed: tmp/$(BOOST_UNDERSCORE)
 	echo "using gcc : : $(HOST)-g++" > var/$(BOOST_UNDERSCORE)/user-config.jam
 	echo "        :" >> var/$(BOOST_UNDERSCORE)/user-config.jam
 	echo "        <rc>$(HOST)-windres" >> var/$(BOOST_UNDERSCORE)/user-config.jam
-	echo "        <linkflags>-static-libgcc" >> var/$(BOOST_UNDERSCORE)/user-config.jam
-	echo "        <linkflags>-static-libstdc++" >> var/$(BOOST_UNDERSCORE)/user-config.jam
 	echo ";" >> var/$(BOOST_UNDERSCORE)/user-config.jam
 	(cd var/$(BOOST_UNDERSCORE) && ./b2 -d0 --prefix=$(PREFIX) --without-context --without-coroutine --without-log --without-mpi --without-python --layout=tagged --user-config=user-config.jam -j 2 -sNO_BZIP2=1 -q toolset=gcc target-os=windows variant=release threading=multi threadapi=win32 link=shared runtime-link=shared install)
 	touch $@
 
 tmp/clibsedml-$(CLIBSEDML_COMMIT).installed: tmp/clibsedml-$(CLIBSEDML_COMMIT) tmp/libxml2-$(LIBXML2_VERSION).installed
-	(cd var/clibsedml-$(CLIBSEDML_COMMIT) && autoreconf -i -f && env CFLAGS='-std=c99 -Wall -W -Werror' LDFLAGS='-static-libgcc -static-libstdc++' ./configure --host=$(HOST) --prefix=$(PREFIX) --with-xml-prefix=$(PREFIX) --disable-xmltest && $(MAKE) all install)
+	(cd var/clibsedml-$(CLIBSEDML_COMMIT) && autoreconf -i -f && env CFLAGS='-std=c99 -Wall -W -Werror' ./configure --host=$(HOST) --prefix=$(PREFIX) --with-xml-prefix=$(PREFIX) --disable-xmltest && $(MAKE) all install)
 	touch $@
 
 usr/bin/protoc: src/protobuf-$(PROTOBUF_VERSION).tar.gz | build
@@ -131,28 +129,28 @@ tmp/protobuf-$(PROTOBUF_VERSION).installed: tmp/protobuf-$(PROTOBUF_VERSION) | u
 	touch $@
 
 tmp/libxml2-$(LIBXML2_VERSION).installed: tmp/libxml2-$(LIBXML2_VERSION)
-	(cd var/libxml2-$(LIBXML2_VERSION) && ./configure --host=$(HOST) --prefix=$(PREFIX) --without-python --without-threads LDFLAGS='-static-libgcc -static-libstdc++' && $(MAKE) all install)
+	(cd var/libxml2-$(LIBXML2_VERSION) && ./configure --host=$(HOST) --prefix=$(PREFIX) --without-python --without-threads && $(MAKE) all install)
 	touch $@
 
 tmp/libzip-$(LIBZIP_VERSION).installed: tmp/libzip-$(LIBZIP_VERSION) tmp/zlib-$(ZLIB_VERSION).installed
-	(cd var/libzip-$(LIBZIP_VERSION) && ./configure --host=$(HOST) --prefix=$(PREFIX) --with-zlib=$(PREFIX) LDFLAGS='-static-libgcc -static-libstdc++' && $(MAKE) all install)
+	(cd var/libzip-$(LIBZIP_VERSION) && ./configure --host=$(HOST) --prefix=$(PREFIX) --with-zlib=$(PREFIX) && $(MAKE) all install)
 	touch $@
 
 tmp/sundials-$(SUNDIALS_VERSION).installed: tmp/sundials-$(SUNDIALS_VERSION)
-	(cd var/sundials-$(SUNDIALS_VERSION) && ./configure --host=$(HOST) --prefix=$(PREFIX) --disable-mpi LDFLAGS='-static-libgcc -static-libstdc++' && $(MAKE) all install)
+	(cd var/sundials-$(SUNDIALS_VERSION) && ./configure --host=$(HOST) --prefix=$(PREFIX) --disable-mpi && $(MAKE) all install)
 	touch $@
 
 tmp/libsbml-$(LIBSBML_VERSION).installed: tmp/libsbml-$(LIBSBML_VERSION) tmp/libxml2-$(LIBXML2_VERSION).installed
-	(cd var/libsbml-$(LIBSBML_VERSION) && ./configure --host=$(HOST) --prefix=$(PREFIX) --with-xerces=no --with-libxml=$(PREFIX) LDFLAGS='-static-libgcc -static-libstdc++' && $(MAKE) all install)
+	(cd var/libsbml-$(LIBSBML_VERSION) && ./configure --host=$(HOST) --prefix=$(PREFIX) --with-xerces=no --with-libxml=$(PREFIX) && $(MAKE) all install)
 	touch $@
 
 tmp/SBML_odeSolver-$(SOSLIB_COMMIT).installed: tmp/SBML_odeSolver-$(SOSLIB_COMMIT) tmp/sundials-$(SUNDIALS_VERSION).installed tmp/libsbml-$(LIBSBML_VERSION).installed
-	(cd var/SBML_odeSolver-$(SOSLIB_COMMIT) && autoreconf -i -f && ./configure --host=$(HOST) --prefix=$(PREFIX) --with-libsbml=$(PREFIX) --with-libxml2=$(PREFIX) --without-xerces --with-sundials=$(PREFIX) --without-grace --without-graphviz CPPFLAGS='-DSBML_ODESOLVER_EXPORTS=1 -DWIN32' LDFLAGS='-static-libgcc -static-libstdc++')
+	(cd var/SBML_odeSolver-$(SOSLIB_COMMIT) && autoreconf -i -f && ./configure --host=$(HOST) --prefix=$(PREFIX) --with-libsbml=$(PREFIX) --with-libxml2=$(PREFIX) --without-xerces --with-sundials=$(PREFIX) --without-grace --without-graphviz CPPFLAGS='-DSBML_ODESOLVER_EXPORTS=1 -DWIN32')
 	-(cd var/SBML_odeSolver-$(SOSLIB_COMMIT) && $(MAKE) install)
 	touch $@
 
 tmp/zlib-$(ZLIB_VERSION).installed: tmp/zlib-$(ZLIB_VERSION)
-	(cd var/zlib-$(ZLIB_VERSION) && $(MAKE) -fwin32/Makefile.gcc all install PREFIX=$(HOST)- DESTDIR=$(PREFIX)/ INCLUDE_PATH=include LIBRARY_PATH=lib BINARY_PATH=bin SHARED_MODE=1 LDFLAGS='-static-libgcc -static-libstdc++')
+	(cd var/zlib-$(ZLIB_VERSION) && $(MAKE) -fwin32/Makefile.gcc all install PREFIX=$(HOST)- DESTDIR=$(PREFIX)/ INCLUDE_PATH=include LIBRARY_PATH=lib BINARY_PATH=bin SHARED_MODE=1)
 	touch $@
 
 ../flint/dist/flint.jar: $(foreach e,$(EXES),opt/bin/$(e).exe)
@@ -168,7 +166,7 @@ flint/lib: | flint
 	install -d $@
 
 var/flint/Makefile: tmp/protobuf-$(PROTOBUF_VERSION).installed ../configure | usr/bin/protoc var/flint
-	(cd var/flint && env CPPFLAGS='-DWIN32_LEAN_AND_MEAN -D_WIN32_WINNT=0x0600 -DWIN32 -DSBML_ODESOLVER_EXPORTS=1' LDFLAGS='-static-libgcc -static-libstdc++' LIBS='-lole32 -loleaut32 -lmswsock -lws2_32' PKG_CONFIG_PATH=$(PKG_CONFIG_PATH) ../../../configure --host=$(HOST) --prefix=$(PREFIX) --with-boost=$(PREFIX) --with-xml-prefix=$(PREFIX) --disable-xmltest --with-protoc=$(abspath usr/bin/protoc) --with-sundials=$(PREFIX) --enable-shared --disable-static)
+	(cd var/flint && env CPPFLAGS='-DWIN32_LEAN_AND_MEAN -D_WIN32_WINNT=0x0600 -DWIN32 -DSBML_ODESOLVER_EXPORTS=1' LIBS='-lole32 -loleaut32 -lmswsock -lws2_32' PKG_CONFIG_PATH=$(PKG_CONFIG_PATH) ../../../configure --host=$(HOST) --prefix=$(PREFIX) --with-boost=$(PREFIX) --with-xml-prefix=$(PREFIX) --disable-xmltest --with-protoc=$(abspath usr/bin/protoc) --with-sundials=$(PREFIX) --enable-shared --disable-static)
 
 $(foreach d,$(FLINT_DLLS),opt/bin/$(d).dll) $(foreach e,$(EXES),opt/bin/$(e).exe): $(foreach d,$(BIN_DLLS) $(BOOST_DLLS) libsedml-0,$(call flint_dll_name,$(d))) tmp/sundials-$(SUNDIALS_VERSION).installed tmp/SBML_odeSolver-$(SOSLIB_COMMIT).installed var/flint/Makefile
 	$(MAKE) -C var/flint all install-exec
@@ -199,6 +197,12 @@ $(call flint_dll_name,libsedml-0): opt/bin/libsedml-0.dll | flint
 
 $(foreach e,$(EXES),$(eval $(call flint_exe,$(e))))
 
+flint/$(LIBGCC_DLL): $(LIBGCC_DIR)/$(LIBGCC_DLL) | flint
+	install -p -m 0755 $< $@
+
+flint/$(LIBSTDCXX_DLL): $(LIBSTDCXX_DIR)/$(LIBSTDCXX_DLL) | flint
+	install -p -m 0755 $< $@
+
 flint/Makefile: flint.mk | flint
 	install -p -m 0644 $< $@
 
@@ -211,8 +215,8 @@ flint/flint.ico: flint.ico | flint
 flint/flint.xml: flint.xml | flint
 	install -p -m 0644 $< $@
 
-flint/flint.wxs: flint.wxs | flint
-	install -p -m 0644 $< $@
+flint/flint.wxs: flint.wxs.in | flint
+	m4 -DLIBGCC_DLL=$(LIBGCC_DLL) -DLIBSTDCXX_DLL=$(LIBSTDCXX_DLL) $< > $@
 
 flint/icon.png: ../flint/src/jp/oist/flint/image/icon.png | flint
 	install -p -m 0644 $< $@
@@ -253,7 +257,7 @@ $(eval $(call external_binary_for_windows,flint-make.exe,2cf0a6086532b58e395fea1
 $(eval $(call external_binary_for_windows,libiconv2.dll,331f570aa7c20bc93deb7b237b21cc9c))
 $(eval $(call external_binary_for_windows,libintl3.dll,d202baa425176287017ffe1fb5d1b77c))
 
-flint.zip: $(foreach e,$(EXES) $(EXT_EXES),$(call flint_exe_name,$(e))) $(foreach d,$(EXT_DLLS) $(FLINT_DLLS),$(call flint_dll_name,$(d))) flint/flint.jar $(foreach j,$(JARS),$(call flint_jar_name,$(j))) flint/Makefile flint/header.mk flint/flint.ico flint/flint.xml flint/flint.wxs flint/icon.png flint/license.rtf flint/third-party-licenses.txt
+flint.zip: $(foreach e,$(EXES) $(EXT_EXES),$(call flint_exe_name,$(e))) $(foreach d,$(EXT_DLLS) $(FLINT_DLLS),$(call flint_dll_name,$(d))) flint/$(LIBGCC_DLL) flint/$(LIBSTDCXX_DLL) flint/flint.jar $(foreach j,$(JARS),$(call flint_jar_name,$(j))) flint/Makefile flint/header.mk flint/flint.ico flint/flint.xml flint/flint.wxs flint/icon.png flint/license.rtf flint/third-party-licenses.txt
 	zip -r flint flint
 
 .DEFAULT_GOAL := all
