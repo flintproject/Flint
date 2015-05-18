@@ -168,9 +168,9 @@ flint/lib: | flint
 	install -d $@
 
 var/flint/Makefile: tmp/protobuf-$(PROTOBUF_VERSION).installed ../configure | usr/bin/protoc var/flint
-	(cd var/flint && env CPPFLAGS='-DWIN32_LEAN_AND_MEAN -D_WIN32_WINNT=0x0600 -DWIN32 -DSBML_ODESOLVER_EXPORTS=1' LDFLAGS='-static-libgcc -static-libstdc++' LIBS='-lole32 -loleaut32 -lmswsock -lws2_32' PKG_CONFIG_PATH=$(PKG_CONFIG_PATH) ../../../configure --host=$(HOST) --prefix=$(PREFIX) --with-boost=$(PREFIX) --with-xml-prefix=$(PREFIX) --disable-xmltest --with-protoc=$(abspath usr/bin/protoc) --with-sundials=$(PREFIX) --disable-shared)
+	(cd var/flint && env CPPFLAGS='-DWIN32_LEAN_AND_MEAN -D_WIN32_WINNT=0x0600 -DWIN32 -DSBML_ODESOLVER_EXPORTS=1' LDFLAGS='-static-libgcc -static-libstdc++' LIBS='-lole32 -loleaut32 -lmswsock -lws2_32' PKG_CONFIG_PATH=$(PKG_CONFIG_PATH) ../../../configure --host=$(HOST) --prefix=$(PREFIX) --with-boost=$(PREFIX) --with-xml-prefix=$(PREFIX) --disable-xmltest --with-protoc=$(abspath usr/bin/protoc) --with-sundials=$(PREFIX) --enable-shared --disable-static)
 
-$(foreach e,$(EXES),opt/bin/$(e).exe): $(foreach d,$(BIN_DLLS) $(BOOST_DLLS) libsedml-0,$(call flint_dll_name,$(d))) tmp/sundials-$(SUNDIALS_VERSION).installed tmp/SBML_odeSolver-$(SOSLIB_COMMIT).installed var/flint/Makefile
+$(foreach d,$(FLINT_DLLS),opt/bin/$(d).dll) $(foreach e,$(EXES),opt/bin/$(e).exe): $(foreach d,$(BIN_DLLS) $(BOOST_DLLS) libsedml-0,$(call flint_dll_name,$(d))) tmp/sundials-$(SUNDIALS_VERSION).installed tmp/SBML_odeSolver-$(SOSLIB_COMMIT).installed var/flint/Makefile
 	$(MAKE) -C var/flint all install-exec
 
 flint/flint.jar: ../flint/dist/flint.jar | flint
@@ -186,7 +186,7 @@ opt/bin/libzip-2.dll: tmp/libzip-$(LIBZIP_VERSION).installed
 
 opt/bin/zlib1.dll: tmp/zlib-$(ZLIB_VERSION).installed
 
-$(foreach d,$(BIN_DLLS),$(eval $(call flint_bin_dll,$(d))))
+$(foreach d,$(BIN_DLLS) $(FLINT_DLLS),$(eval $(call flint_bin_dll,$(d))))
 
 $(foreach d,$(BOOST_DLLS),opt/lib/$(d).dll): tmp/$(BOOST_UNDERSCORE).installed
 
@@ -253,7 +253,7 @@ $(eval $(call external_binary_for_windows,flint-make.exe,2cf0a6086532b58e395fea1
 $(eval $(call external_binary_for_windows,libiconv2.dll,331f570aa7c20bc93deb7b237b21cc9c))
 $(eval $(call external_binary_for_windows,libintl3.dll,d202baa425176287017ffe1fb5d1b77c))
 
-flint.zip: $(foreach e,$(EXES) $(EXT_EXES),$(call flint_exe_name,$(e))) $(foreach d,$(EXT_DLLS),$(call flint_dll_name,$(d))) flint/flint.jar $(foreach j,$(JARS),$(call flint_jar_name,$(j))) flint/Makefile flint/header.mk flint/flint.ico flint/flint.xml flint/flint.wxs flint/icon.png flint/license.rtf flint/third-party-licenses.txt
+flint.zip: $(foreach e,$(EXES) $(EXT_EXES),$(call flint_exe_name,$(e))) $(foreach d,$(EXT_DLLS) $(FLINT_DLLS),$(call flint_dll_name,$(d))) flint/flint.jar $(foreach j,$(JARS),$(call flint_jar_name,$(j))) flint/Makefile flint/header.mk flint/flint.ico flint/flint.xml flint/flint.wxs flint/icon.png flint/license.rtf flint/third-party-licenses.txt
 	zip -r flint flint
 
 .DEFAULT_GOAL := all

@@ -248,6 +248,15 @@
           <Component Id='clibsedml' Guid='72d89bf4-8921-11e1-8be9-8ffa90143fcb'>
             <File Id='libsedml' Name='libsedml-0.dll' DiskId='1' Source='libsedml-0.dll' />
           </Component>
+          <Component Id='libflint' Guid='f521dc04-fac2-11e4-b86c-13339de56753'>
+            <File Id='libflint_0' Name='libflint-0.dll' DiskId='1' Source='libflint-0.dll' />
+          </Component>
+          <Component Id='libflintxx' Guid='f5b2d4d4-fac2-11e4-be8d-1b1200ada46c'>
+            <File Id='libflintxx_0' Name='libflintxx-0.dll' DiskId='1' Source='libflintxx-0.dll' />
+          </Component>
+          <Component Id='libsqlite3' Guid='f4918b0e-fac2-11e4-9c95-875728d9f517'>
+            <File Id='libsqlite3_0' Name='libsqlite3-0.dll' DiskId='1' Source='libsqlite3-0.dll' />
+          </Component>
           <Component Id='xml2' Guid='d02ce240-1a7e-11e1-8c5d-b793ab03d5f9'>
             <File Id='libxml2' Name='libxml2-2.dll' DiskId='1' Source='libxml2-2.dll' />
           </Component>
@@ -363,6 +372,9 @@
       <ComponentRef Id='iconv2' />
       <ComponentRef Id='intl3' />
       <ComponentRef Id='clibsedml' />
+      <ComponentRef Id='libflint' />
+      <ComponentRef Id='libflintxx' />
+      <ComponentRef Id='libsqlite3' />
       <ComponentRef Id='xml2' />
       <ComponentRef Id='zip' />
       <ComponentRef Id='zlib' />

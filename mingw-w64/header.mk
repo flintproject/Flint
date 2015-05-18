@@ -22,6 +22,10 @@ BOOST_DLLS := \
 EXT_DLLS := \
     libiconv2 \
     libintl3
+FLINT_DLLS := \
+    libflint-0 \
+    libflintxx-0 \
+    libsqlite3-0
 EXES := \
     csv2isd \
     flint-assign \

@@ -26,7 +26,7 @@ AS_IF([test "$GXX" = yes],
       [WARNINGCXXFLAGS="-Wall -Wextra -Wcast-align -Wpointer-arith -Wmissing-declarations"])
 AC_SUBST([WARNINGCXXFLAGS])
 
-LT_INIT
+LT_INIT([win32-dll])
 AC_PROG_INSTALL
 
 AC_ARG_WITH([protoc],
