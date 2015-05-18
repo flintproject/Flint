@@ -15,6 +15,7 @@
 #include "unit.pb.h"
 
 #include "db/driver.h"
+#include "db/statement-driver.h"
 #include "bc/binary.h"
 #include "bc/pack.h"
 
@@ -25,35 +26,25 @@ using std::string;
 
 namespace {
 
-class ElementLoader : boost::noncopyable {
+class ElementLoader : db::StatementDriver {
 public:
 	explicit ElementLoader(sqlite3 *db)
-		: stmt_(NULL)
+		: db::StatementDriver(db, "SELECT unit_id, exponent, factor, multiplier, offset FROM elements WHERE unit_rowid = ?")
 	{
-		int e = sqlite3_prepare_v2(db, "SELECT unit_id, exponent, factor, multiplier, offset FROM elements WHERE unit_rowid = ?",
-								   -1, &stmt_, NULL);
-		if (e != SQLITE_OK) {
-			cerr << "failed to prepare statement: " << e << endl;
-			exit(EXIT_FAILURE);
-		}
-	}
-
-	~ElementLoader() {
-		sqlite3_finalize(stmt_);
 	}
 
 	bool Load(sqlite3_int64 rowid, unit::Unit *unit) {
-		int e = sqlite3_bind_int64(stmt_, 1, rowid);
+		int e = sqlite3_bind_int64(stmt(), 1, rowid);
 		if (e != SQLITE_OK) {
 			cerr << "failed to bind unit_rowid: " << e << endl;
 			return false;
 		}
-		for (e = sqlite3_step(stmt_); e == SQLITE_ROW; e = sqlite3_step(stmt_)) {
-			int unit_id = sqlite3_column_int(stmt_, 0);
-			double exponent = sqlite3_column_double(stmt_, 1);
-			int factor = sqlite3_column_int(stmt_, 2);
-			double multiplier = sqlite3_column_double(stmt_, 3);
-			double offset = sqlite3_column_double(stmt_, 4);
+		for (e = sqlite3_step(stmt()); e == SQLITE_ROW; e = sqlite3_step(stmt())) {
+			int unit_id = sqlite3_column_int(stmt(), 0);
+			double exponent = sqlite3_column_double(stmt(), 1);
+			int factor = sqlite3_column_int(stmt(), 2);
+			double multiplier = sqlite3_column_double(stmt(), 3);
+			double offset = sqlite3_column_double(stmt(), 4);
 
 			unit::Element *e = unit->add_element();
 			e->set_unit_id(unit_id);
@@ -66,12 +57,9 @@ public:
 			cerr << "failed to step statement: " << e << endl;
 			return false;
 		}
-		sqlite3_reset(stmt_);
+		sqlite3_reset(stmt());
 		return true;
 	}
-
-private:
-	sqlite3_stmt *stmt_;
 };
 
 void Usage()

@@ -24,6 +24,7 @@
 
 #include "db/driver.h"
 #include "db/query.h"
+#include "db/statement-driver.h"
 
 using std::cerr;
 using std::endl;
@@ -376,51 +377,38 @@ bool InsertNol(sqlite3 *db)
 	return r;
 }
 
-class Inserter {
+class Inserter : db::StatementDriver {
 public:
 	Inserter(sqlite3 *db)
-		: stmt_(NULL)
+		: db::StatementDriver(db, "INSERT INTO sorts VALUES (?, ?, ?)")
 	{
-		int e;
-		e = sqlite3_prepare_v2(db, "INSERT INTO sorts VALUES (?, ?, ?)", -1, &stmt_, NULL);
-		if (e != SQLITE_OK) {
-			cerr << "failed to prepare statement: " << e << endl;
-			exit(EXIT_FAILURE);
-		}
-	}
-
-	~Inserter() {
-		sqlite3_finalize(stmt_);
 	}
 
 	bool Insert(const char *uuid, const char *name, const char *math) {
 		int e;
-		e = sqlite3_bind_text(stmt_, 1, uuid, -1, SQLITE_STATIC);
+		e = sqlite3_bind_text(stmt(), 1, uuid, -1, SQLITE_STATIC);
 		if (e != SQLITE_OK) {
 			cerr << "failed to bind uuid: " << e << endl;
 			return false;
 		}
-		e = sqlite3_bind_text(stmt_, 2, name, -1, SQLITE_STATIC);
+		e = sqlite3_bind_text(stmt(), 2, name, -1, SQLITE_STATIC);
 		if (e != SQLITE_OK) {
 			cerr << "failed to bind name: " << e << endl;
 			return false;
 		}
-		e = sqlite3_bind_text(stmt_, 3, math, -1, SQLITE_STATIC);
+		e = sqlite3_bind_text(stmt(), 3, math, -1, SQLITE_STATIC);
 		if (e != SQLITE_OK) {
 			cerr << "failed to bind math: " << e << endl;
 			return false;
 		}
-		e = sqlite3_step(stmt_);
+		e = sqlite3_step(stmt());
 		if (e != SQLITE_DONE) {
 			cerr << "failed to step: " << e << endl;
 			return false;
 		}
-		sqlite3_reset(stmt_);
+		sqlite3_reset(stmt());
 		return true;
 	}
-
-private:
-	sqlite3_stmt *stmt_;
 };
 
 }

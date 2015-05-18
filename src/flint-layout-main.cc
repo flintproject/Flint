@@ -27,6 +27,7 @@
 #include "db/driver.h"
 #include "db/name_loader.h"
 #include "db/space_loader.h"
+#include "db/statement-driver.h"
 
 namespace po = boost::program_options;
 
@@ -118,30 +119,20 @@ typedef boost::ptr_vector<Node> NodeVector;
 
 typedef boost::ptr_map<boost::uuids::uuid, NodeVector> TMap;
 
-class TreeLoader : boost::noncopyable {
+class TreeLoader : db::StatementDriver {
 public:
 	explicit TreeLoader(sqlite3 *db)
-		: stmt_(NULL),
-		  gen_()
+		: db::StatementDriver(db, "SELECT * FROM scopes")
+		, gen_()
 	{
-		int e = sqlite3_prepare_v2(db, "SELECT * FROM scopes",
-								   -1, &stmt_, NULL);
-		if (e != SQLITE_OK) {
-			std::cerr << "failed to prepare statement: " << e << std::endl;
-			exit(EXIT_FAILURE);
-		}
-	}
-
-	~TreeLoader() {
-		sqlite3_finalize(stmt_);
 	}
 
 	bool Load(TMap *m) {
 		int e;
-		for (e = sqlite3_step(stmt_); e == SQLITE_ROW; e = sqlite3_step(stmt_)) {
-			const unsigned char *uuid = sqlite3_column_text(stmt_, 0);
-			const unsigned char *space_id = sqlite3_column_text(stmt_, 1);
-			const unsigned char *label = sqlite3_column_text(stmt_, 2);
+		for (e = sqlite3_step(stmt()); e == SQLITE_ROW; e = sqlite3_step(stmt())) {
+			const unsigned char *uuid = sqlite3_column_text(stmt(), 0);
+			const unsigned char *space_id = sqlite3_column_text(stmt(), 1);
+			const unsigned char *label = sqlite3_column_text(stmt(), 2);
 			boost::uuids::uuid key = gen_((const char *)space_id);
 			if (label) {
 				(*m)[key].push_back(new Node(gen_(string((const char *)uuid, kUuidSize)), string((const char *)label)));
@@ -153,12 +144,11 @@ public:
 			std::cerr << "failed to step statement: " << e << std::endl;
 			return false;
 		}
-		sqlite3_reset(stmt_);
+		sqlite3_reset(stmt());
 		return true;
 	}
 
 private:
-	sqlite3_stmt *stmt_;
 	boost::uuids::string_generator gen_;
 };
 

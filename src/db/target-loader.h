@@ -6,42 +6,30 @@
 #include <cstdlib>
 #include <iostream>
 
-#include <boost/noncopyable.hpp>
 #include <boost/spirit/include/phoenix.hpp>
 #include <boost/spirit/include/qi.hpp>
 #include <boost/uuid/uuid_generators.hpp>
 
-#include "sqlite3.h"
+#include "statement-driver.h"
 
 namespace db {
 
-class TargetLoader : boost::noncopyable {
+class TargetLoader : StatementDriver {
 public:
 	explicit TargetLoader(sqlite3 *db)
-		: stmt_(NULL),
-		  gen_()
+		: StatementDriver(db, "SELECT instances.module_id, tms.module_id, tpqs.pq_id, tpqs.math FROM tpqs LEFT JOIN tms ON tpqs.tm_rowid = tms.rowid LEFT JOIN instances ON tms.instance_rowid = instances.rowid")
+		, gen_()
 	{
-		int e = sqlite3_prepare_v2(db,
-								   "SELECT instances.module_id, tms.module_id, tpqs.pq_id, tpqs.math FROM tpqs LEFT JOIN tms ON tpqs.tm_rowid = tms.rowid LEFT JOIN instances ON tms.instance_rowid = instances.rowid",
-								   -1, &stmt_, NULL);
-		if (e != SQLITE_OK) {
-			std::cerr << "failed to prepare statement: " << e << std::endl;
-			exit(EXIT_FAILURE);
-		}
-	}
-
-	~TargetLoader() {
-		sqlite3_finalize(stmt_);
 	}
 
 	template<typename THandler>
 	bool Load(THandler *handler) {
 		int e;
-		for (e = sqlite3_step(stmt_); e == SQLITE_ROW; e = sqlite3_step(stmt_)) {
-			const unsigned char *uuid0 = sqlite3_column_text(stmt_, 0);
-			const unsigned char *uuid1 = sqlite3_column_text(stmt_, 1);
-			int pq_id = sqlite3_column_int(stmt_, 2);
-			const unsigned char *math = sqlite3_column_text(stmt_, 3);
+		for (e = sqlite3_step(stmt()); e == SQLITE_ROW; e = sqlite3_step(stmt())) {
+			const unsigned char *uuid0 = sqlite3_column_text(stmt(), 0);
+			const unsigned char *uuid1 = sqlite3_column_text(stmt(), 1);
+			int pq_id = sqlite3_column_int(stmt(), 2);
+			const unsigned char *math = sqlite3_column_text(stmt(), 3);
 			double val;
 			if (!Parse((const char *)math, &val)) return false;
 			if (!handler->Handle(gen_((const char *)uuid0), gen_((const char *)uuid1), pq_id, val)) return false;
@@ -50,7 +38,7 @@ public:
 			std::cerr << "failed to step statement: " << e << std::endl;
 			return false;
 		}
-		sqlite3_reset(stmt_);
+		sqlite3_reset(stmt());
 		return true;
 	}
 
@@ -81,7 +69,6 @@ private:
 		return true;
 	}
 
-	sqlite3_stmt *stmt_;
 	boost::uuids::string_generator gen_;
 };
 

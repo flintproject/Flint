@@ -19,6 +19,7 @@
 #include <boost/variant/recursive_variant.hpp>
 
 #include "db/query.h"
+#include "db/statement-driver.h"
 
 using std::cerr;
 using std::endl;
@@ -640,56 +641,43 @@ struct Grammar : qi::grammar<TIterator, Expr()> {
 	qi::rule<TIterator, std::deque<Expr>()> seq0, seq1, pseq1, lseq1;
 };
 
-class Inserter {
+class Inserter : db::StatementDriver {
 public:
 	Inserter(sqlite3 *db)
-		: stmt_(NULL)
+		: db::StatementDriver(db, "INSERT INTO tacs VALUES (?, ?, ?, ?)")
 	{
-		int e;
-		e = sqlite3_prepare_v2(db, "INSERT INTO tacs VALUES (?, ?, ?, ?)", -1, &stmt_, NULL);
-		if (e != SQLITE_OK) {
-			cerr << "failed to prepare statement: " << e << endl;
-			exit(EXIT_FAILURE);
-		}
-	}
-
-	~Inserter() {
-		sqlite3_finalize(stmt_);
 	}
 
 	bool Insert(const char *uuid, const char *name, int nod, const char *body) {
 		int e;
-		e = sqlite3_bind_text(stmt_, 1, uuid, -1, SQLITE_STATIC);
+		e = sqlite3_bind_text(stmt(), 1, uuid, -1, SQLITE_STATIC);
 		if (e != SQLITE_OK) {
 			cerr << "failed to bind uuid: " << e << endl;
 			return false;
 		}
-		e = sqlite3_bind_text(stmt_, 2, name, -1, SQLITE_STATIC);
+		e = sqlite3_bind_text(stmt(), 2, name, -1, SQLITE_STATIC);
 		if (e != SQLITE_OK) {
 			cerr << "failed to bind name: " << e << endl;
 			return false;
 		}
-		e = sqlite3_bind_int(stmt_, 3, nod);
+		e = sqlite3_bind_int(stmt(), 3, nod);
 		if (e != SQLITE_OK) {
 			cerr << "failed to bind nod: " << e << endl;
 			return false;
 		}
-		e = sqlite3_bind_text(stmt_, 4, body, -1, SQLITE_STATIC);
+		e = sqlite3_bind_text(stmt(), 4, body, -1, SQLITE_STATIC);
 		if (e != SQLITE_OK) {
 			cerr << "failed to bind body: " << e << endl;
 			return false;
 		}
-		e = sqlite3_step(stmt_);
+		e = sqlite3_step(stmt());
 		if (e != SQLITE_DONE) {
 			cerr << "failed to step: " << e << endl;
 			return false;
 		}
-		sqlite3_reset(stmt_);
+		sqlite3_reset(stmt());
 		return true;
 	}
-
-private:
-	sqlite3_stmt *stmt_;
 };
 
 int Process(void *data, int argc, char **argv, char **names)

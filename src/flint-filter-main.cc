@@ -26,6 +26,7 @@
 
 #include "bc/index.h"
 #include "db/driver.h"
+#include "db/statement-driver.h"
 #include "filter/spec_loader.h"
 #include "lo/layout_loader.h"
 
@@ -39,42 +40,29 @@ using std::string;
 
 namespace {
 
-class TimeUnitLoader : boost::noncopyable {
+class TimeUnitLoader : db::StatementDriver {
 public:
 	TimeUnitLoader(sqlite3 *db)
-		: stmt_(NULL)
+		: db::StatementDriver(db, "SELECT * from time_unit")
 	{
-		int e = sqlite3_prepare_v2(db, "SELECT * from time_unit",
-								   -1, &stmt_, NULL);
-		if (e != SQLITE_OK) {
-			cerr << "failed to prepare statement: " << e << endl;
-			exit(EXIT_FAILURE);
-		}
-	}
-
-	~TimeUnitLoader() {
-		sqlite3_finalize(stmt_);
 	}
 
 	bool Load(string *time_unit) {
-		int e = sqlite3_step(stmt_);
+		int e = sqlite3_step(stmt());
 		if (e == SQLITE_DONE) {
 			// nothing to do
-			sqlite3_reset(stmt_);
+			sqlite3_reset(stmt());
 			return true;
 		}
 		if (e == SQLITE_ROW) {
-			const unsigned char *name = sqlite3_column_text(stmt_, 0);
+			const unsigned char *name = sqlite3_column_text(stmt(), 0);
 			*time_unit = string((const char *)name);
-			sqlite3_reset(stmt_);
+			sqlite3_reset(stmt());
 			return true;
 		}
 		cerr << "failed to step statement: " << e << endl;
 		return false;
 	}
-
-private:
-	sqlite3_stmt *stmt_;
 };
 
 class Spec : boost::noncopyable {

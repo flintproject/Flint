@@ -7,39 +7,27 @@
 #include <cstring>
 #include <iostream>
 
-#include <boost/noncopyable.hpp>
 #include <boost/uuid/uuid.hpp>
 
-#include "sqlite3.h"
+#include "statement-driver.h"
 
 namespace db {
 
-class SprinkleLoader : boost::noncopyable {
+class SprinkleLoader : StatementDriver {
 public:
 	explicit SprinkleLoader(sqlite3 *db)
-		: stmt_(NULL)
+		: StatementDriver(db, "SELECT * FROM sprinkles")
 	{
-		int e = sqlite3_prepare_v2(db,
-								   "SELECT * FROM sprinkles",
-								   -1, &stmt_, NULL);
-		if (e != SQLITE_OK) {
-			std::cerr << "failed to prepare statement: " << e << std::endl;
-			exit(EXIT_FAILURE);
-		}
-	}
-
-	~SprinkleLoader() {
-		sqlite3_finalize(stmt_);
 	}
 
 	template<typename THandler>
 	bool Load(THandler *handler) {
 		int e;
-		for (e = sqlite3_step(stmt_); e == SQLITE_ROW; e = sqlite3_step(stmt_)) {
-			const void *track_id = sqlite3_column_blob(stmt_, 0);
-			const void *sector_id = sqlite3_column_blob(stmt_, 1);
-			int pq_id = sqlite3_column_int(stmt_, 2);
-			double val = sqlite3_column_double(stmt_, 3);
+		for (e = sqlite3_step(stmt()); e == SQLITE_ROW; e = sqlite3_step(stmt())) {
+			const void *track_id = sqlite3_column_blob(stmt(), 0);
+			const void *sector_id = sqlite3_column_blob(stmt(), 1);
+			int pq_id = sqlite3_column_int(stmt(), 2);
+			double val = sqlite3_column_double(stmt(), 3);
 
 			boost::uuids::uuid tu;
 			std::memcpy(&tu, track_id, 16);
@@ -51,12 +39,9 @@ public:
 			std::cerr << "failed to step statement: " << e << std::endl;
 			return false;
 		}
-		sqlite3_reset(stmt_);
+		sqlite3_reset(stmt());
 		return true;
 	}
-
-private:
-	sqlite3_stmt *stmt_;
 };
 
 } // namespace db

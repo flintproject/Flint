@@ -7,41 +7,30 @@
 #include <cstdlib>
 #include <iostream>
 
-#include <boost/noncopyable.hpp>
 #include <boost/uuid/uuid_generators.hpp>
 
-#include "sqlite3.h"
+#include "statement-driver.h"
 
 namespace db {
 
-class NameLoader : boost::noncopyable {
+class NameLoader : StatementDriver {
 public:
 	explicit NameLoader(sqlite3 *db)
-		: stmt_(NULL),
-		  gen_()
+		: StatementDriver(db, "SELECT * FROM names UNION ALL SELECT * FROM private_names")
+		, gen_()
 	{
-		int e = sqlite3_prepare_v2(db, "SELECT * FROM names UNION ALL SELECT * FROM private_names",
-								   -1, &stmt_, NULL);
-		if (e != SQLITE_OK) {
-			std::cerr << "failed to prepare statement: " << e << std::endl;
-			exit(EXIT_FAILURE);
-		}
-	}
-
-	~NameLoader() {
-		sqlite3_finalize(stmt_);
 	}
 
 	template<typename THandler>
 	bool Load(THandler *handler) {
 		int e;
-		for (e = sqlite3_step(stmt_); e == SQLITE_ROW; e = sqlite3_step(stmt_)) {
-			const unsigned char *space_id = sqlite3_column_text(stmt_, 0);
-			const unsigned char *type = sqlite3_column_text(stmt_, 1);
-			int id = sqlite3_column_int(stmt_, 2);
-			const unsigned char *name = sqlite3_column_text(stmt_, 3);
-			const unsigned char *unit = sqlite3_column_text(stmt_, 4);
-			double capacity = sqlite3_column_double(stmt_, 5);
+		for (e = sqlite3_step(stmt()); e == SQLITE_ROW; e = sqlite3_step(stmt())) {
+			const unsigned char *space_id = sqlite3_column_text(stmt(), 0);
+			const unsigned char *type = sqlite3_column_text(stmt(), 1);
+			int id = sqlite3_column_int(stmt(), 2);
+			const unsigned char *name = sqlite3_column_text(stmt(), 3);
+			const unsigned char *unit = sqlite3_column_text(stmt(), 4);
+			double capacity = sqlite3_column_double(stmt(), 5);
 
 			assert(space_id);
 			if (!name) {
@@ -68,12 +57,11 @@ public:
 			std::cerr << "failed to step statement: " << e << std::endl;
 			return false;
 		}
-		sqlite3_reset(stmt_);
+		sqlite3_reset(stmt());
 		return true;
 	}
 
 private:
-	sqlite3_stmt *stmt_;
 	boost::uuids::string_generator gen_;
 };
 
