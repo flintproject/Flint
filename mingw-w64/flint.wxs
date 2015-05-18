@@ -79,11 +79,11 @@
           <Component Id='flint_assign' Guid='2fb2f7ca-f5bd-11e2-af36-13c35391bb14'>
             <File Id='flint_assign.exe' Name='flint-assign.exe' DiskId='1' Source='flint-assign.exe' />
           </Component>
-          <Component Id='flint_bcc' Guid='2fb35030-f5bd-11e2-b463-33d9bf4db509'>
-            <File Id='flint_bcc.exe' Name='flint-bcc.exe' DiskId='1' Source='flint-bcc.exe' />
-          </Component>
           <Component Id='flint_combineall' Guid='2fb4e36e-f5bd-11e2-bf28-f7f644f0a6c9'>
             <File Id='flint_combineall.exe' Name='flint-combineall.exe' DiskId='1' Source='flint-combineall.exe' />
+          </Component>
+          <Component Id='flint_compile' Guid='6b4c9aa2-fa11-11e4-8ce0-136163bb982d'>
+            <File Id='flint_compile.exe' Name='flint-compile.exe' DiskId='1' Source='flint-compile.exe' />
           </Component>
           <Component Id='flint_concat' Guid='ca98bde6-eae1-11e3-8b7f-078b033eeb4c'>
             <File Id='flint_concat.exe' Name='flint-concat.exe' DiskId='1' Source='flint-concat.exe' />
@@ -178,17 +178,11 @@
           <Component Id='flint_sedml' Guid='d2f7bae6-93c0-11e3-86f0-6ba6a092f3ee'>
             <File Id='flint_sedml.exe' Name='flint-sedml.exe' DiskId='1' Source='flint-sedml.exe' />
           </Component>
-          <Component Id='flint_sort' Guid='2fc1d0b0-f5bd-11e2-97b4-d7e2784b5593'>
-            <File Id='flint_sort.exe' Name='flint-sort.exe' DiskId='1' Source='flint-sort.exe' />
-          </Component>
           <Component Id='flint_spec' Guid='2fc27c90-f5bd-11e2-aaf0-33918569217c'>
             <File Id='flint_spec.exe' Name='flint-spec.exe' DiskId='1' Source='flint-spec.exe' />
           </Component>
           <Component Id='flint_store' Guid='0034e3fe-5d6a-11e3-8d2d-67654be0c476'>
             <File Id='flint_store.exe' Name='flint-store.exe' DiskId='1' Source='flint-store.exe' />
-          </Component>
-          <Component Id='flint_tac' Guid='2fc327d0-f5bd-11e2-8117-4bf7ef15dc4a'>
-            <File Id='flint_tac.exe' Name='flint-tac.exe' DiskId='1' Source='flint-tac.exe' />
           </Component>
           <Component Id='flint_taskconfig' Guid='f651a338-d03f-11e3-b3b2-53e8319cbe7c'>
             <File Id='flint_taskconfig.exe' Name='flint-taskconfig.exe' DiskId='1' Source='flint-taskconfig.exe' />
@@ -313,8 +307,8 @@
       <ComponentRef Id='Environment' />
       <ComponentRef Id='csv2isd' />
       <ComponentRef Id='flint_assign' />
-      <ComponentRef Id='flint_bcc' />
       <ComponentRef Id='flint_combineall' />
+      <ComponentRef Id='flint_compile' />
       <ComponentRef Id='flint_concat' />
       <ComponentRef Id='flint_cut' />
       <ComponentRef Id='flint_enum' />
@@ -346,10 +340,8 @@
       <ComponentRef Id='flint_run' />
       <ComponentRef Id='flint_sbml' />
       <ComponentRef Id='flint_sedml' />
-      <ComponentRef Id='flint_sort' />
       <ComponentRef Id='flint_spec' />
       <ComponentRef Id='flint_store' />
-      <ComponentRef Id='flint_tac' />
       <ComponentRef Id='flint_taskconfig' />
       <ComponentRef Id='flint_taskpref' />
       <ComponentRef Id='flint_taskspec' />

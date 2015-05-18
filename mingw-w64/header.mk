@@ -25,8 +25,8 @@ EXT_DLLS := \
 EXES := \
     csv2isd \
     flint-assign \
-    flint-bcc \
     flint-combineall \
+    flint-compile \
     flint-concat \
     flint-cut \
     flint-enum \
@@ -57,10 +57,8 @@ EXES := \
     flint-run \
     flint-sbml \
     flint-sedml \
-    flint-sort \
     flint-spec \
     flint-store \
-    flint-tac \
     flint-taskconfig \
     flint-taskpref \
     flint-taskspec \
