@@ -136,6 +136,8 @@ define flint_frameworks_flint_dylib
 $(call flint_frameworks_dylib_name,$(1)): opt/lib/$(1).dylib tmp/bundled
 	install -p -m 0644 $$< $$@
 	install_name_tool -id @executable_path/../Frameworks/$(1).dylib $$@
+	for name in $(BOOST_DYLIBS); do install_name_tool -change libboost_$$$$name-mt.dylib @executable_path/../Frameworks/libboost_$$$$name-mt.dylib $$@; done
+	for name in $(FLINT_DYLIBS); do install_name_tool -change $(CURDIR)/opt/lib/$$$$name.dylib @executable_path/../Frameworks/$$$$name.dylib $$@; done
 endef
 
 define flint_macos_program
