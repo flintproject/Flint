@@ -1,5 +1,5 @@
 /* -*- Mode: C++; tab-width: 4; indent-tabs-mode: t; c-basic-offset: 4 -*- vim:set ts=4 sw=4 sts=4 noet: */
-#include "parser.h"
+#include "sbml.hh"
 
 #include <cassert>
 #include <cstdio>
@@ -549,7 +549,10 @@ private:
 
 } // namespace
 
-bool ParseSbml(const char *db_file)
+namespace flint {
+namespace sbml {
+
+bool Parse(const char *db_file)
 {
 	boost::scoped_array<char> model_file(GetModelFilename(db_file));
 	odeModel_t *model = ODEModel_createFromFile(model_file.get());
@@ -560,4 +563,7 @@ bool ParseSbml(const char *db_file)
 	}
 	boost::scoped_ptr<Analysis> analysis(new Analysis(db_file, model));
 	return analysis->Run();
+}
+
+}
 }

@@ -41,4 +41,5 @@ SUBDIRS = \
 	isdwc \
 	base \
 	mathml \
+	sbml \
 	sys

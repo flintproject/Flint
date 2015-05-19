@@ -121,6 +121,7 @@ AC_CONFIG_FILES([Makefile
                  test/Makefile
                  test/base/Makefile
                  test/mathml/Makefile
+                 test/sbml/Makefile
                  test/sys/Makefile
                  test/common/Makefile
                  test/common/runtime/Makefile

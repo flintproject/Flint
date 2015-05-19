@@ -19,7 +19,7 @@
 #include "db/driver.h"
 #include "phml/combine.h"
 #include "phml/import.h"
-#include "sbml/parser.h"
+#include "sbml.hh"
 #include "utf8path.h"
 
 #include "system.h"
@@ -43,7 +43,7 @@ bool ParseFile(const char *uuid)
 {
 	boost::scoped_array<char> db_file(new char[64]); // large enough
 	sprintf(db_file.get(), "%s.db", uuid);
-	return ParseSbml(db_file.get());
+	return flint::sbml::Parse(db_file.get());
 }
 
 bool TouchFile(const char *file)

@@ -19,7 +19,7 @@
 #include "db/driver.h"
 #include "db/name-inserter.h"
 #include "db/query.h"
-#include "sbml/parser.h"
+#include "sbml.hh"
 
 using std::cerr;
 using std::endl;
@@ -275,7 +275,7 @@ int main(int argc, char *argv[])
 		return EXIT_FAILURE;
 	}
 
-	if (!ParseSbml(argv[1]))
+	if (!flint::sbml::Parse(argv[1]))
 		return EXIT_FAILURE;
 
 	db::Driver driver(argv[1]);
