@@ -118,7 +118,8 @@ libflintxx_la_SOURCES = \
     csv/export.cc \
     modelpath.cc \
     sys/temporary_path.cc \
-    utf8path.cc
+    utf8path.cc \
+    uuidgen.cc
 
 libsqlite3_la_CPPFLAGS = -DSQLITE_THREADSAFE=0 -DSQLITE_OMIT_LOAD_EXTENSION
 libsqlite3_la_LDFLAGS = -no-undefined
@@ -141,7 +142,7 @@ flint_bswap64_SOURCES = flint-bswap64-main.c
 flint_cellml_CPPFLAGS = $(BOOST_CPPFLAGS) $(XML_CPPFLAGS)
 flint_cellml_LDFLAGS = $(BOOST_FILESYSTEM_LDFLAGS) $(BOOST_SYSTEM_LDFLAGS)
 flint_cellml_LDADD = libflintxx.la libflint.la libsqlite3.la $(BOOST_FILESYSTEM_LIBS) $(BOOST_SYSTEM_LIBS) $(XML_LIBS)
-flint_cellml_SOURCES = cellml/parser.cc cellml/translator.cc uuidgen.cc flint-cellml-main.cc
+flint_cellml_SOURCES = cellml/parser.cc cellml/translator.cc flint-cellml-main.cc
 
 flint_cli_CPPFLAGS = $(PROTOBUF_CFLAGS) $(BOOST_CPPFLAGS)
 flint_cli_LDFLAGS = $(BOOST_PROGRAM_OPTIONS_LDFLAGS)
@@ -283,7 +284,6 @@ flint_phml_SOURCES = \
     reach.cc \
     span.cc \
     sprinkle.cc \
-    uuidgen.cc \
     flint-phml-main.cc
 
 flint_phsp_CPPFLAGS = $(BOOST_CPPFLAGS) $(XML_CPPFLAGS)
