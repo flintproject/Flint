@@ -111,12 +111,13 @@ libflint_la_SOURCES = \
     db/query.c \
     system.c
 
-libflintxx_la_CPPFLAGS = $(BOOST_CPPFLAGS)
+libflintxx_la_CPPFLAGS = $(BOOST_CPPFLAGS) $(SOSLIB_CFLAGS) $(SUNDIALS_CFLAGS) $(LIBSBML_CFLAGS)
 libflintxx_la_LIBADD = libflint.la $(BOOST_FILESYSTEM_LIBS) $(BOOST_SYSTEM_LIBS)
-libflintxx_la_LDFLAGS = -no-undefined $(BOOST_FILESYSTEM_LDFLAGS) $(BOOST_SYSTEM_LDFLAGS)
+libflintxx_la_LDFLAGS = -no-undefined $(BOOST_FILESYSTEM_LDFLAGS) $(BOOST_SYSTEM_LDFLAGS) $(SOSLIB_LIBS) $(SUNDIALS_LIBS) $(LIBSBML_LIBS)
 libflintxx_la_SOURCES = \
     csv/export.cc \
     modelpath.cc \
+    sbml/parser.cc \
     sys/temporary_path.cc \
     utf8path.cc \
     uuidgen.cc
@@ -155,7 +156,6 @@ flint_combineall_LDADD = libflintxx.la libflint.la libsqlite3.la $(BOOST_FILESYS
 flint_combineall_SOURCES = \
     phml/combine.cc \
     phml/import.cc \
-    sbml/parser.cc \
     flint-combineall-main.cc
 
 flint_compile_CPPFLAGS = $(PROTOBUF_CFLAGS) $(BOOST_CPPFLAGS)
@@ -308,7 +308,6 @@ flint_sbml_CPPFLAGS = $(BOOST_CPPFLAGS) $(SOSLIB_CFLAGS) $(SUNDIALS_CFLAGS) $(LI
 flint_sbml_LDFLAGS = $(BOOST_FILESYSTEM_LDFLAGS) $(BOOST_SYSTEM_LDFLAGS)
 flint_sbml_LDADD = libflintxx.la libflint.la libsqlite3.la $(BOOST_FILESYSTEM_LIBS) $(BOOST_SYSTEM_LIBS) $(SOSLIB_LIBS) $(SUNDIALS_LIBS) $(LIBSBML_LIBS)
 flint_sbml_SOURCES = \
-    sbml/parser.cc \
     flint-sbml-main.cc
 
 flint_sedml_CPPFLAGS = $(BOOST_CPPFLAGS) $(CLIBSEDML_CFLAGS)
