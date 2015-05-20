@@ -12,6 +12,7 @@ JARS := \
     protobuf-java-2.6.1 \
     sqlite-jdbc-3.8.6
 BIN_DLLS := \
+    libprotobuf-9 \
     libxml2-2 \
     libzip-2 \
     zlib1

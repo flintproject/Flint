@@ -56,6 +56,10 @@ distclean: clean
 build var:
 	install -d $@
 
+var/toolchain.cmake: toolchain.cmake.in | var
+	echo 'set(COMPILER_PREFIX "$(HOST)")' > $@
+	cat $< >> $@
+
 tmp: | var
 	install -d $@
 
@@ -124,7 +128,8 @@ usr/bin/protoc: src/protobuf-$(PROTOBUF_VERSION).tar.gz | build
 	(cd build/protobuf-$(PROTOBUF_VERSION) && ./configure --prefix=$(abspath usr) && $(MAKE) all install)
 
 tmp/protobuf-$(PROTOBUF_VERSION).installed: tmp/protobuf-$(PROTOBUF_VERSION) | usr/bin/protoc
-	(cd var/protobuf-$(PROTOBUF_VERSION) && ./configure --host=$(HOST) --prefix=$(PREFIX) --with-protoc=$(abspath usr/bin/protoc) --disable-shared && $(MAKE) all install)
+	(cd var/protobuf-$(PROTOBUF_VERSION) && ./configure --host=$(HOST) --prefix=$(PREFIX) --with-protoc=$(abspath usr/bin/protoc) --enable-shared --disable-static)
+	$(MAKE) -C var/protobuf-$(PROTOBUF_VERSION) all install
 	touch $@
 
 tmp/libxml2-$(LIBXML2_VERSION).installed: tmp/libxml2-$(LIBXML2_VERSION)
@@ -136,16 +141,19 @@ tmp/libzip-$(LIBZIP_VERSION).installed: tmp/libzip-$(LIBZIP_VERSION) tmp/zlib-$(
 	touch $@
 
 tmp/sundials-$(SUNDIALS_VERSION).installed: tmp/sundials-$(SUNDIALS_VERSION)
-	(cd var/sundials-$(SUNDIALS_VERSION) && ./configure --host=$(HOST) --prefix=$(PREFIX) --disable-mpi && $(MAKE) all install)
+	(cd var/sundials-$(SUNDIALS_VERSION) && ./configure --host=$(HOST) --prefix=$(PREFIX) --enable-shared --disable-static --disable-mpi)
+	$(MAKE) -C var/sundials-$(SUNDIALS_VERSION) all install LDFLAGS='-no-undefined' LIBS='' # to drop -lm
 	touch $@
 
-tmp/libsbml-$(LIBSBML_VERSION).installed: tmp/libsbml-$(LIBSBML_VERSION) tmp/libxml2-$(LIBXML2_VERSION).installed
-	(cd var/libsbml-$(LIBSBML_VERSION) && ./configure --host=$(HOST) --prefix=$(PREFIX) --with-xerces=no --with-libxml=$(PREFIX) && $(MAKE) all install)
+tmp/libsbml-$(LIBSBML_VERSION).installed: var/toolchain.cmake tmp/libsbml-$(LIBSBML_VERSION) tmp/libxml2-$(LIBXML2_VERSION).installed
+	mkdir -p var/libsbml-$(LIBSBML_VERSION)/build
+	(cd var/libsbml-$(LIBSBML_VERSION)/build && cmake --host=$(HOST) -DCMAKE_INSTALL_PREFIX=$(PREFIX) -DCMAKE_TOOLCHAIN_FILE=$(CURDIR)/var/toolchain.cmake -DLIBXML_INCLUDE_DIR=$(PREFIX)/include/libxml2 -DLIBXML_LIBRARY=$(PREFIX)/bin/libxml2-2.dll ..)
+	$(MAKE) -C var/libsbml-$(LIBSBML_VERSION)/build all install
 	touch $@
 
 tmp/SBML_odeSolver-$(SOSLIB_COMMIT).installed: tmp/SBML_odeSolver-$(SOSLIB_COMMIT) tmp/sundials-$(SUNDIALS_VERSION).installed tmp/libsbml-$(LIBSBML_VERSION).installed
-	(cd var/SBML_odeSolver-$(SOSLIB_COMMIT) && autoreconf -i -f && ./configure --host=$(HOST) --prefix=$(PREFIX) --with-libsbml=$(PREFIX) --with-libxml2=$(PREFIX) --without-xerces --with-sundials=$(PREFIX) --without-grace --without-graphviz CPPFLAGS='-DSBML_ODESOLVER_EXPORTS=1 -DWIN32')
-	-(cd var/SBML_odeSolver-$(SOSLIB_COMMIT) && $(MAKE) install)
+	(cd var/SBML_odeSolver-$(SOSLIB_COMMIT) && autoreconf -i -f && ./configure --host=$(HOST) --prefix=$(PREFIX) --enable-shared --disable-static --with-libsbml=$(PREFIX) --with-libxml2=$(PREFIX) --without-xerces --with-sundials=$(PREFIX) --without-grace --without-graphviz CPPFLAGS='-DSBML_ODESOLVER_EXPORTS=1 -DWIN32')
+	-$(MAKE) -C var/SBML_odeSolver-$(SOSLIB_COMMIT) install LDFLAGS='-no-undefined'
 	touch $@
 
 tmp/zlib-$(ZLIB_VERSION).installed: tmp/zlib-$(ZLIB_VERSION)
@@ -164,8 +172,8 @@ flint opt usr var/flint:
 flint/lib: | flint
 	install -d $@
 
-var/flint/Makefile: tmp/protobuf-$(PROTOBUF_VERSION).installed ../configure | usr/bin/protoc var/flint
-	(cd var/flint && env CPPFLAGS='-DWIN32_LEAN_AND_MEAN -D_WIN32_WINNT=0x0600 -DWIN32 -DSBML_ODESOLVER_EXPORTS=1' LIBS='-lole32 -loleaut32 -lmswsock -lws2_32' PKG_CONFIG_PATH=$(PKG_CONFIG_PATH) ../../../configure --host=$(HOST) --prefix=$(PREFIX) --with-boost=$(PREFIX) --with-xml-prefix=$(PREFIX) --disable-xmltest --with-protoc=$(abspath usr/bin/protoc) --with-sundials=$(PREFIX) --enable-shared --disable-static)
+var/flint/Makefile: tmp/$(BOOST_UNDERSCORE).installed tmp/clibsedml-$(CLIBSEDML_COMMIT).installed tmp/protobuf-$(PROTOBUF_VERSION).installed tmp/libzip-$(LIBZIP_VERSION).installed tmp/SBML_odeSolver-$(SOSLIB_COMMIT).installed ../configure | usr/bin/protoc var/flint
+	(cd var/flint && env CPPFLAGS='-DWIN32_LEAN_AND_MEAN -D_WIN32_WINNT=0x0600 -DWIN32 -DSBML_ODESOLVER_EXPORTS=1' LIBS='-lole32 -loleaut32 -lmswsock -lws2_32' PKG_CONFIG_PATH=$(PKG_CONFIG_PATH) LIBSBML_CFLAGS=$(PREFIX)/include LIBSBML_LIBS='-lsbml' SOSLIB_CFLAGS=$(PREFIX)/include SOSLIB_LIBS='-lODES' ../../../configure --host=$(HOST) --prefix=$(PREFIX) --with-boost=$(PREFIX) --with-xml-prefix=$(PREFIX) --disable-xmltest --with-protoc=$(abspath usr/bin/protoc) --with-sundials=$(PREFIX) --enable-shared --disable-static)
 
 $(foreach d,$(FLINT_DLLS),opt/bin/$(d).dll) $(foreach e,$(EXES),opt/bin/$(e).exe): $(foreach d,$(BIN_DLLS) $(BOOST_DLLS) libsedml-0,$(call flint_dll_name,$(d))) tmp/sundials-$(SUNDIALS_VERSION).installed tmp/SBML_odeSolver-$(SOSLIB_COMMIT).installed var/flint/Makefile
 	$(MAKE) -C var/flint all install-exec
@@ -175,7 +183,7 @@ flint/flint.jar: ../flint/dist/flint.jar | flint
 
 $(foreach j,$(JARS),$(eval $(call flint_jar,$(j))))
 
-# opt/bin/libprotobuf-9.dll: tmp/protobuf-$(PROTOBUF_VERSION).installed
+opt/bin/libprotobuf-9.dll: tmp/protobuf-$(PROTOBUF_VERSION).installed
 
 opt/bin/libxml2-2.dll: tmp/libxml2-$(LIBXML2_VERSION).installed
 
