@@ -112,7 +112,7 @@ libflint_la_SOURCES = \
     system.c
 
 libflintxx_la_CPPFLAGS = $(BOOST_CPPFLAGS) $(SOSLIB_CFLAGS) $(SUNDIALS_CFLAGS) $(LIBSBML_CFLAGS)
-libflintxx_la_LIBADD = libflint.la $(BOOST_FILESYSTEM_LIBS) $(BOOST_SYSTEM_LIBS)
+libflintxx_la_LIBADD = libflint.la libsqlite3.la $(BOOST_FILESYSTEM_LIBS) $(BOOST_SYSTEM_LIBS)
 libflintxx_la_LDFLAGS = -no-undefined $(BOOST_FILESYSTEM_LDFLAGS) $(BOOST_SYSTEM_LDFLAGS) $(SOSLIB_LIBS) $(SUNDIALS_LIBS) $(LIBSBML_LIBS)
 libflintxx_la_SOURCES = \
     csv/export.cc \
