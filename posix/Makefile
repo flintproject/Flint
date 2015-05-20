@@ -90,7 +90,8 @@ tmp/libzip-$(LIBZIP_VERSION).installed: tmp/libzip-$(LIBZIP_VERSION)
 	touch $@
 
 tmp/sundials-$(SUNDIALS_VERSION).installed: tmp/sundials-$(SUNDIALS_VERSION)
-	(cd var/sundials-$(SUNDIALS_VERSION) && ./configure --prefix=$(PREFIX)/sundials-$(SUNDIALS_VERSION) --enable-shared && $(MAKE) all install)
+	(cd var/sundials-$(SUNDIALS_VERSION) && ./configure --prefix=$(PREFIX)/sundials-$(SUNDIALS_VERSION) --enable-shared --disable-static && $(MAKE) all install)
+	(cd $(PREFIX)/sundials-$(SUNDIALS_VERSION)/lib && for x in cvode cvodes ida kinsol nvecserial; do ln -s libsundials_$$x libsundials_$$x.so; done)
 	touch $@
 
 tmp/libsbml-$(LIBSBML_VERSION).installed: tmp/libsbml-$(LIBSBML_VERSION) tmp/libxml2-$(LIBXML2_VERSION).installed
