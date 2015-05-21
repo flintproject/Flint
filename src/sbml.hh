@@ -2,10 +2,14 @@
 #ifndef FLINT_SBML_HH_
 #define FLINT_SBML_HH_
 
+#include "sqlite3.h"
+
 namespace flint {
 namespace sbml {
 
 bool Parse(const char *db_file);
+
+bool Load(sqlite3 *db);
 
 }
 }

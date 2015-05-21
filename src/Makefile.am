@@ -126,6 +126,7 @@ libflintxx_la_SOURCES = \
     phml/import.cc \
     phml/transition-form.cc \
     reach.cc \
+    sbml/load.cc \
     sbml/parser.cc \
     span.cc \
     sprinkle.cc \
