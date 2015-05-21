@@ -578,7 +578,14 @@ private:
 				oss << ',' << boost::rational_cast<double>(d);
 			}
 			string s(oss.str());
-			e = sqlite3_bind_text(stmt, 2, s.c_str(), -1, SQLITE_STATIC);
+			size_t len = s.size();
+			char *p = static_cast<char *>(malloc(len));
+			if (!p) {
+				cerr << "failed to malloc: " << len << endl;
+				return -2;
+			}
+			memcpy(p, s.c_str(), len);
+			e = sqlite3_bind_text(stmt, 2, p, len, free);
 			if (e != SQLITE_OK) {
 				cerr << "failed to bind parameter: " << e << endl;
 				return -2;
