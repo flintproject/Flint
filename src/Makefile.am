@@ -115,9 +115,20 @@ libflintxx_la_CPPFLAGS = $(BOOST_CPPFLAGS) $(SOSLIB_CFLAGS) $(SUNDIALS_CFLAGS) $
 libflintxx_la_LIBADD = libflint.la libsqlite3.la $(BOOST_FILESYSTEM_LIBS) $(BOOST_SYSTEM_LIBS)
 libflintxx_la_LDFLAGS = -no-undefined $(BOOST_FILESYSTEM_LDFLAGS) $(BOOST_SYSTEM_LDFLAGS) $(SOSLIB_LIBS) $(SUNDIALS_LIBS) $(LIBSBML_LIBS)
 libflintxx_la_SOURCES = \
+    branch.cc \
+    cellml/parser.cc \
+    cellml/translator.cc \
     csv/export.cc \
     modelpath.cc \
+    phml/combine.cc \
+    phml/graph-iv-rewriter.cc \
+    phml/graph-math-rewriter.cc \
+    phml/import.cc \
+    phml/transition-form.cc \
+    reach.cc \
     sbml/parser.cc \
+    span.cc \
+    sprinkle.cc \
     sys/temporary_path.cc \
     utf8path.cc \
     uuidgen.cc
@@ -143,7 +154,7 @@ flint_bswap64_SOURCES = flint-bswap64-main.c
 flint_cellml_CPPFLAGS = $(BOOST_CPPFLAGS) $(XML_CPPFLAGS)
 flint_cellml_LDFLAGS = $(BOOST_FILESYSTEM_LDFLAGS) $(BOOST_SYSTEM_LDFLAGS)
 flint_cellml_LDADD = libflintxx.la libflint.la libsqlite3.la $(BOOST_FILESYSTEM_LIBS) $(BOOST_SYSTEM_LIBS) $(XML_LIBS)
-flint_cellml_SOURCES = cellml/parser.cc cellml/translator.cc flint-cellml-main.cc
+flint_cellml_SOURCES = flint-cellml-main.cc
 
 flint_cli_CPPFLAGS = $(PROTOBUF_CFLAGS) $(BOOST_CPPFLAGS)
 flint_cli_LDFLAGS = $(BOOST_PROGRAM_OPTIONS_LDFLAGS)
@@ -153,10 +164,7 @@ flint_cli_SOURCES = cli.pb.cc flint-cli-main.cc
 flint_combineall_CPPFLAGS = $(BOOST_CPPFLAGS) $(SOSLIB_CFLAGS) $(SUNDIALS_CFLAGS) $(LIBSBML_CFLAGS) $(XML_CPPFLAGS)
 flint_combineall_LDFLAGS = $(BOOST_FILESYSTEM_LDFLAGS) $(BOOST_SYSTEM_LDFLAGS)
 flint_combineall_LDADD = libflintxx.la libflint.la libsqlite3.la $(BOOST_FILESYSTEM_LIBS) $(BOOST_SYSTEM_LIBS) $(SOSLIB_LIBS) $(SUNDIALS_LIBS) $(LIBSBML_LIBS) $(XML_LIBS)
-flint_combineall_SOURCES = \
-    phml/combine.cc \
-    phml/import.cc \
-    flint-combineall-main.cc
+flint_combineall_SOURCES = flint-combineall-main.cc
 
 flint_compile_CPPFLAGS = $(PROTOBUF_CFLAGS) $(BOOST_CPPFLAGS)
 flint_compile_LDADD = libflint.la libsqlite3.la $(PROTOBUF_LIBS)
@@ -276,15 +284,7 @@ flint_param_SOURCES = lo.pb.cc flint-param-main.cc
 flint_phml_CPPFLAGS = $(BOOST_CPPFLAGS) $(XML_CPPFLAGS)
 flint_phml_LDFLAGS = $(BOOST_FILESYSTEM_LDFLAGS) $(BOOST_SYSTEM_LDFLAGS)
 flint_phml_LDADD = libflintxx.la libflint.la libsqlite3.la $(BOOST_FILESYSTEM_LIBS) $(BOOST_SYSTEM_LIBS) $(XML_LIBS)
-flint_phml_SOURCES = \
-    branch.cc \
-    phml/graph-iv-rewriter.cc \
-    phml/graph-math-rewriter.cc \
-    phml/transition-form.cc \
-    reach.cc \
-    span.cc \
-    sprinkle.cc \
-    flint-phml-main.cc
+flint_phml_SOURCES = flint-phml-main.cc
 
 flint_phsp_CPPFLAGS = $(BOOST_CPPFLAGS) $(XML_CPPFLAGS)
 flint_phsp_LDFLAGS = $(BOOST_FILESYSTEM_LDFLAGS) $(BOOST_SYSTEM_LDFLAGS)
@@ -307,8 +307,7 @@ flint_run_SOURCES = flint-run-main.cc cli.pb.cc
 flint_sbml_CPPFLAGS = $(BOOST_CPPFLAGS) $(SOSLIB_CFLAGS) $(SUNDIALS_CFLAGS) $(LIBSBML_CFLAGS)
 flint_sbml_LDFLAGS = $(BOOST_FILESYSTEM_LDFLAGS) $(BOOST_SYSTEM_LDFLAGS)
 flint_sbml_LDADD = libflintxx.la libflint.la libsqlite3.la $(BOOST_FILESYSTEM_LIBS) $(BOOST_SYSTEM_LIBS) $(SOSLIB_LIBS) $(SUNDIALS_LIBS) $(LIBSBML_LIBS)
-flint_sbml_SOURCES = \
-    flint-sbml-main.cc
+flint_sbml_SOURCES = flint-sbml-main.cc
 
 flint_sedml_CPPFLAGS = $(BOOST_CPPFLAGS) $(CLIBSEDML_CFLAGS)
 flint_sedml_LDFLAGS = $(BOOST_FILESYSTEM_LDFLAGS) $(BOOST_SYSTEM_LDFLAGS)
