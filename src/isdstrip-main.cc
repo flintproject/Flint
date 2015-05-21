@@ -116,13 +116,10 @@ public:
 		  buf_size_((num_objs-cv.size())*sizeof(double)),
 		  buf_(new char[buf_size_])
 	{}
-	~StepFilter() {
-		delete buf_;
-	}
 
 	int GetStep(size_t, const char *buf) {
 		const char *b0 = buf;
-		char *b1 = buf_;
+		char *b1 = buf_.get();
 		vector<boost::uint32_t>::const_iterator it = cv_.begin();
 		for (boost::uint32_t i=0;i<num_objs_;i++) {
 			if (it != cv_.end() && i == *it) { // skip this entry
@@ -133,7 +130,7 @@ public:
 			}
 			b0 += sizeof(double);
 		}
-		os_->write(buf_, buf_size_);
+		os_->write(buf_.get(), buf_size_);
 		if (!os_->good()) {
 			cerr << "failed to write data" << endl;
 			return -1;
@@ -146,7 +143,7 @@ private:
 	const vector<boost::uint32_t> &cv_;
 	ostream *os_;
 	size_t buf_size_;
-	char *buf_;
+	boost::scoped_array<char> buf_;
 };
 
 int Filter(const char *input,
