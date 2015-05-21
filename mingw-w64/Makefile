@@ -26,6 +26,11 @@ $(call flint_dll_name,$(1)): opt/lib/$(1).dll | flint
 	install -p $$< $$@
 endef
 
+define flint_sundials_dll
+$(call flint_dll_name,$(1)): opt/lib/$(1) | flint
+	install -p $$< $$@
+endef
+
 define flint_exe
 $(call flint_exe_name,$(1)): opt/bin/$(1).exe | flint
 	install -p $$< $$@
@@ -175,7 +180,7 @@ flint/lib: | flint
 var/flint/Makefile: tmp/$(BOOST_UNDERSCORE).installed tmp/clibsedml-$(CLIBSEDML_COMMIT).installed tmp/protobuf-$(PROTOBUF_VERSION).installed tmp/libzip-$(LIBZIP_VERSION).installed tmp/SBML_odeSolver-$(SOSLIB_COMMIT).installed ../configure | usr/bin/protoc var/flint
 	(cd var/flint && env CPPFLAGS='-DWIN32_LEAN_AND_MEAN -D_WIN32_WINNT=0x0600 -DWIN32 -DSBML_ODESOLVER_EXPORTS=1' LIBS='-lole32 -loleaut32 -lmswsock -lws2_32' PKG_CONFIG_PATH=$(PKG_CONFIG_PATH) LIBSBML_CFLAGS=$(PREFIX)/include LIBSBML_LIBS='-lsbml' SOSLIB_CFLAGS=$(PREFIX)/include SOSLIB_LIBS='-lODES' ../../../configure --host=$(HOST) --prefix=$(PREFIX) --with-boost=$(PREFIX) --with-xml-prefix=$(PREFIX) --disable-xmltest --with-protoc=$(abspath usr/bin/protoc) --with-sundials=$(PREFIX) --enable-shared --disable-static)
 
-$(foreach d,$(FLINT_DLLS),opt/bin/$(d).dll) $(foreach e,$(EXES),opt/bin/$(e).exe): $(foreach d,$(BIN_DLLS) $(BOOST_DLLS) libsedml-0,$(call flint_dll_name,$(d))) tmp/sundials-$(SUNDIALS_VERSION).installed tmp/SBML_odeSolver-$(SOSLIB_COMMIT).installed var/flint/Makefile
+$(foreach d,$(FLINT_DLLS),opt/bin/$(d).dll) $(foreach e,$(EXES),opt/bin/$(e).exe): $(foreach d,$(BIN_DLLS) $(BOOST_DLLS),$(call flint_dll_name,$(d))) tmp/sundials-$(SUNDIALS_VERSION).installed tmp/SBML_odeSolver-$(SOSLIB_COMMIT).installed var/flint/Makefile
 	$(MAKE) -C var/flint all install-exec
 
 flint/flint.jar: ../flint/dist/flint.jar | flint
@@ -183,7 +188,13 @@ flint/flint.jar: ../flint/dist/flint.jar | flint
 
 $(foreach j,$(JARS),$(eval $(call flint_jar,$(j))))
 
+opt/bin/libODES-0.dll: tmp/SBML_odeSolver-$(SOSLIB_COMMIT).installed
+
 opt/bin/libprotobuf-9.dll: tmp/protobuf-$(PROTOBUF_VERSION).installed
+
+opt/bin/libsedml-0.dll: tmp/clibsedml-$(CLIBSEDML_COMMIT).installed
+
+opt/bin/libsbml.all: tmp/libsbml-$(LIBSBML_VERSION).installed
 
 opt/bin/libxml2-2.dll: tmp/libxml2-$(LIBXML2_VERSION).installed
 
@@ -197,10 +208,9 @@ $(foreach d,$(BOOST_DLLS),opt/lib/$(d).dll): tmp/$(BOOST_UNDERSCORE).installed
 
 $(foreach d,$(BOOST_DLLS),$(eval $(call flint_boost_dll,$(d))))
 
-opt/bin/libsedml-0.dll: tmp/clibsedml-$(CLIBSEDML_COMMIT).installed
+$(foreach d,$(SUNDIALS_DLLS),$(eval $(call flint_sundials_dll,$(d))))
 
-$(call flint_dll_name,libsedml-0): opt/bin/libsedml-0.dll | flint
-	install -p $< $@
+$(foreach d,$(SUNDIALS_DLLS),opt/lib/$(d)): tmp/sundials-$(SUNDIALS_VERSION).installed
 
 $(foreach e,$(EXES),$(eval $(call flint_exe,$(e))))
 
@@ -264,7 +274,7 @@ $(eval $(call external_binary_for_windows,flint-make.exe,2cf0a6086532b58e395fea1
 $(eval $(call external_binary_for_windows,libiconv2.dll,331f570aa7c20bc93deb7b237b21cc9c))
 $(eval $(call external_binary_for_windows,libintl3.dll,d202baa425176287017ffe1fb5d1b77c))
 
-flint.zip: $(foreach e,$(EXES) $(EXT_EXES),$(call flint_exe_name,$(e))) $(foreach d,$(EXT_DLLS) $(FLINT_DLLS),$(call flint_dll_name,$(d))) flint/$(LIBGCC_DLL) flint/$(LIBSTDCXX_DLL) flint/flint.jar $(foreach j,$(JARS),$(call flint_jar_name,$(j))) flint/Makefile flint/header.mk flint/flint.ico flint/flint.xml flint/flint.wxs flint/icon.png flint/license.rtf flint/third-party-licenses.txt
+flint.zip: $(foreach e,$(EXES) $(EXT_EXES),$(call flint_exe_name,$(e))) $(foreach d,$(BOOST_DLLS) $(SUNDIALS_DLLS) $(EXT_DLLS) $(FLINT_DLLS),$(call flint_dll_name,$(d))) flint/$(LIBGCC_DLL) flint/$(LIBSTDCXX_DLL) flint/flint.jar $(foreach j,$(JARS),$(call flint_jar_name,$(j))) flint/Makefile flint/header.mk flint/flint.ico flint/flint.xml flint/flint.wxs flint/icon.png flint/license.rtf flint/third-party-licenses.txt
 	zip -r flint flint
 
 .DEFAULT_GOAL := all

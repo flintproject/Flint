@@ -12,7 +12,10 @@ JARS := \
     protobuf-java-2.6.1 \
     sqlite-jdbc-3.8.6
 BIN_DLLS := \
+    libODES-0 \
     libprotobuf-9 \
+    libsbml \
+    libsedml-0 \
     libxml2-2 \
     libzip-2 \
     zlib1
@@ -20,6 +23,11 @@ BOOST_DLLS := \
     libboost_filesystem-mt \
     libboost_program_options-mt \
     libboost_system-mt
+SUNDIALS_DLLS := \
+    libsundials_cvodes-1 \
+    libsundials_ida-1 \
+    libsundials_kinsol-0 \
+    libsundials_nvecserial-0
 EXT_DLLS := \
     libiconv2 \
     libintl3

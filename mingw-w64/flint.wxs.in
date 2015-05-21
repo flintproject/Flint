@@ -239,6 +239,18 @@
           <Component Id='boost.system' Guid='d02c802a-1a7e-11e1-8142-7b383aa4b0d4'>
             <File Id='libboost_system' Name='libboost_system-mt.dll' DiskId='1' Source='libboost_system-mt.dll' />
           </Component>
+          <Component Id='sundials.cvodes' Guid='3076eb1a-ff63-11e4-bdb9-6b3b5e708c9b'>
+            <File Id='libsundials_cvodes' Name='libsundials_cvodes-1.dll' DiskId='1' Source='libsundials_cvodes-1.dll' />
+          </Component>
+          <Component Id='sundials.ida' Guid='3077328c-ff63-11e4-bd07-ef14b7d588b2'>
+            <File Id='libsundials_ida' Name='libsundials_ida-1.dll' DiskId='1' Source='libsundials_ida-1.dll' />
+          </Component>
+          <Component Id='sundials.kinsol' Guid='30779150-ff63-11e4-9e3e-f30fef28e749'>
+            <File Id='libsundials_kinsol' Name='libsundials_kinsol-0.dll' DiskId='1' Source='libsundials_kinsol-0.dll' />
+          </Component>
+          <Component Id='sundials.nvecserial' Guid='3077d142-ff63-11e4-a856-4ff3f7384135'>
+            <File Id='libsundials_nvecserial' Name='libsundials_nvecserial-0.dll' DiskId='1' Source='libsundials_nvecserial-0.dll' />
+          </Component>
           <Component Id='iconv2' Guid='8fc7ac4a-cad9-11e3-a98d-ef05774eb08a'>
             <File Id='libiconv2' Name='libiconv2.dll' DiskId='1' Source='libiconv2.dll' />
           </Component>
@@ -247,6 +259,15 @@
           </Component>
           <Component Id='clibsedml' Guid='72d89bf4-8921-11e1-8be9-8ffa90143fcb'>
             <File Id='libsedml' Name='libsedml-0.dll' DiskId='1' Source='libsedml-0.dll' />
+          </Component>
+          <Component Id='protobuf' Guid='233d044c-ff5f-11e4-bcee-2f0a32a0ce0d'>
+            <File Id='libprotobuf' Name='libprotobuf-9.dll' DiskId='1' Source='libprotobuf-9.dll' />
+          </Component>
+          <Component Id='sbml' Guid='e23853ca-ff5e-11e4-a61d-873a99f64190'>
+            <File Id='libsbml' Name='libsbml.dll' DiskId='1' Source='libsbml.dll' />
+          </Component>
+          <Component Id='soslib' Guid='fe0ea6b2-ff5e-11e4-9eff-3f83ebaed478'>
+            <File Id='libODES' Name='libODES-0.dll' DiskId='1' Source='libODES-0.dll' />
           </Component>
           <Component Id='libflint' Guid='f521dc04-fac2-11e4-b86c-13339de56753'>
             <File Id='libflint_0' Name='libflint-0.dll' DiskId='1' Source='libflint-0.dll' />
@@ -375,9 +396,16 @@
       <ComponentRef Id='boost.filesystem' />
       <ComponentRef Id='boost.program_options' />
       <ComponentRef Id='boost.system' />
+      <ComponentRef Id='sundials.cvodes' />
+      <ComponentRef Id='sundials.ida' />
+      <ComponentRef Id='sundials.kinsol' />
+      <ComponentRef Id='sundials.nvecserial' />
       <ComponentRef Id='iconv2' />
       <ComponentRef Id='intl3' />
       <ComponentRef Id='clibsedml' />
+      <ComponentRef Id='protobuf' />
+      <ComponentRef Id='sbml' />
+      <ComponentRef Id='soslib' />
       <ComponentRef Id='libflint' />
       <ComponentRef Id='libflintxx' />
       <ComponentRef Id='libsqlite3' />
