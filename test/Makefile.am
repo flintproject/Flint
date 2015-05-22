@@ -1,5 +1,6 @@
 SUBDIRS = \
 	common \
+	method \
 	csv2isd \
 	flint-assign \
 	flint-bcc \

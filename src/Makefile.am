@@ -119,6 +119,10 @@ libflintxx_la_SOURCES = \
     cellml/parser.cc \
     cellml/translator.cc \
     csv/export.cc \
+    method/assign.cc \
+    method/euler.cc \
+    method/event.cc \
+    method/rk4.cc \
     modelpath.cc \
     phml/combine.cc \
     phml/graph-iv-rewriter.cc \
