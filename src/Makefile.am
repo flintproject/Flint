@@ -203,6 +203,7 @@ flint_form_CFLAGS = $(AM_CFLAGS) -std=c99 -pedantic-errors
 flint_form_LDADD = libflint.la libsqlite3.la
 flint_form_SOURCES = flint-form-main.c
 
+flint_generate_CPPFLAGS = $(BOOST_CPPFLAGS)
 flint_generate_LDADD = libflintxx.la libflint.la libsqlite3.la
 flint_generate_SOURCES = flint-generate-main.cc
 
