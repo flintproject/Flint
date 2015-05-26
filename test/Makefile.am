@@ -2,29 +2,18 @@ SUBDIRS = \
 	common \
 	method \
 	csv2isd \
-	flint-assign \
-	flint-bcc \
 	flint-cellml \
-	flint-combineall \
-	flint-euler \
-	flint-event \
 	flint-evolve \
-	flint-extra \
 	flint-file \
 	flint-flow \
-	flint-impl \
 	flint-init \
-	flint-iv \
 	flint-layout \
 	flint-nc \
 	flint-phml \
 	flint-phml-xfail \
 	flint-phsp \
 	flint-phz \
-	flint-rk4 \
 	flint-sbml \
-	flint-sort \
-	flint-tac \
 	flint-taskpref \
 	flint-taskspec \
 	flint-tsc \

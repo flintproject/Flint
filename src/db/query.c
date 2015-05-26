@@ -101,3 +101,35 @@ int CreateSingleton(sqlite3 *db)
 		return 0;
 	return 1;
 }
+
+int SaveNol(int nol, sqlite3 *db)
+{
+	static const char kQuery[] = "INSERT INTO nol VALUES (?)";
+
+	int r = 0;
+	int e;
+	sqlite3_stmt *stmt;
+
+	if (!CreateTable(db, "nol", "(nol INTEGER)"))
+		return 0;
+	e = sqlite3_prepare_v2(db, kQuery, -1, &stmt, NULL);
+	if (e != SQLITE_OK) {
+		fprintf(stderr, "failed to prepare statement: %d\n", e);
+		return 0;
+	}
+	e = sqlite3_bind_int(stmt, 1, nol);
+	if (e != SQLITE_OK) {
+		fprintf(stderr, "failed to bind nol: %d\n", e);
+		goto bail;
+	}
+	e = sqlite3_step(stmt);
+	if (e != SQLITE_DONE) {
+		fprintf(stderr, "failed to step: %d\n", e);
+		goto bail;
+	}
+	r = 1;
+
+ bail:
+	sqlite3_finalize(stmt);
+	return r;
+}

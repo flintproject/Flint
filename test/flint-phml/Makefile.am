@@ -62,7 +62,7 @@ $(TESTS:.sh=.mk): $(DATADIR)/test.mk.in
 		-DREACHES=$(DATADIR)/$(@:.mk=.reaches) \
 		$< > $@
 
-CLEANFILES = *.output *.sh *.mk
+CLEANFILES = *.db *.output *.sh *.mk *.xml
 
 check_SCRIPTS = $(TESTS)
 

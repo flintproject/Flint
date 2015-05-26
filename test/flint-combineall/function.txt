@@ -1,3 +1,0 @@
-4d96c8de-d10a-48e2-a0e0-be9d74e58e78 (eq %k1 %sbml:k1)
-4d96c8de-d10a-48e2-a0e0-be9d74e58e78 (eq %sbml:re1 (times %sbml:k1 %sbml:s1))
-4d96c8de-d10a-48e2-a0e0-be9d74e58e78 (eq %sbml:s1 %CDFDA_Hep_IS)

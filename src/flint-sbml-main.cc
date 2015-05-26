@@ -9,6 +9,7 @@
 #include <cstring>
 #include <fstream>
 #include <iostream>
+#include <sstream>
 #include <string>
 
 #include <boost/noncopyable.hpp>
@@ -19,6 +20,7 @@
 #include "db/driver.h"
 #include "db/name-inserter.h"
 #include "db/query.h"
+#include "db/statement-driver.h"
 #include "sbml.hh"
 
 using std::cerr;
@@ -188,91 +190,108 @@ private:
 	int i_;
 };
 
-class ValueWriter : boost::noncopyable {
+class ValueWriter : db::StatementDriver {
 public:
-	explicit ValueWriter(const char *file) : ofs_(file, std::ios::out) {}
-
-	~ValueWriter() {
-		if (ofs_.is_open()) ofs_.close();
+	explicit ValueWriter(sqlite3 *db)
+		: db::StatementDriver(db, "INSERT INTO input_values VALUES ('00000000-0000-0000-0000-000000000000', ?)")
+	{
 	}
 
 	template<typename TType>
-	void Write(const TType &x) {
-		ofs_ << "00000000-0000-0000-0000-000000000000 (eq %"
-			 << x.name()
-			 << ' '
-			 << x.value()
-			 << ')'
-			 << endl;
+	bool Write(const TType &x) {
+		std::ostringstream oss;
+		oss << "(eq %" << x.name() << ' ' << x.value() << ')';
+		std::string math = oss.str();
+		int e;
+		e = sqlite3_bind_text(stmt(), 1, math.c_str(), -1, SQLITE_STATIC);
+		if (e != SQLITE_OK) {
+			cerr << "failed to bind math: " << e << endl;
+			return false;
+		}
+		e = sqlite3_step(stmt());
+		if (e != SQLITE_DONE) {
+			cerr << "failed to step: " << e << endl;
+			return false;
+		}
+		sqlite3_reset(stmt());
+		return true;
 	}
-
-private:
-	std::ofstream ofs_;
 };
 
-class FunctionWriter : boost::noncopyable {
+class FunctionWriter : db::StatementDriver {
 public:
-	explicit FunctionWriter(const char *file) : ofs_(file, std::ios::out) {}
+	explicit FunctionWriter(sqlite3 *db)
+		: db::StatementDriver(db, "INSERT INTO input_functions VALUES ('00000000-0000-0000-0000-000000000000', ?)")
+	{}
 
-	~FunctionWriter() {
-		if (ofs_.is_open()) ofs_.close();
+	bool Write(const Assignment &a) {
+		std::ostringstream oss;
+		oss << "(eq %" << a.name() << a.rhs() << ')';
+		std::string math = oss.str();
+		int e;
+		e = sqlite3_bind_text(stmt(), 1, math.c_str(), -1, SQLITE_STATIC);
+		if (e != SQLITE_OK) {
+			cerr << "failed to bind math: " << e << endl;
+			return false;
+		}
+		e = sqlite3_step(stmt());
+		if (e != SQLITE_DONE) {
+			cerr << "failed to step: " << e << endl;
+			return false;
+		}
+		sqlite3_reset(stmt());
+		return true;
 	}
-
-	void Write(const Assignment &a) {
-		ofs_ << "00000000-0000-0000-0000-000000000000 (eq %"
-			 << a.name()
-			 << a.rhs()
-			 << ')'
-			 << endl;
-	}
-
-private:
-	std::ofstream ofs_;
 };
 
-class OdeWriter : boost::noncopyable {
+class OdeWriter : db::StatementDriver {
 public:
-	explicit OdeWriter(const char *file) : ofs_(file, std::ios::out) {}
+	explicit OdeWriter(sqlite3 *db)
+		: db::StatementDriver(db, "INSERT INTO input_odes VALUES ('00000000-0000-0000-0000-000000000000', ?)")
+	{}
 
-	~OdeWriter() {
-		if (ofs_.is_open()) ofs_.close();
+	bool Write(const Ode &o) {
+		std::ostringstream oss;
+		oss << "(eq (diff (bvar %time) %"
+			<< o.name()
+			<< ')'
+			<< o.rhs()
+			<< ')';
+		std::string math = oss.str();
+		int e;
+		e = sqlite3_bind_text(stmt(), 1, math.c_str(), -1, SQLITE_STATIC);
+		if (e != SQLITE_OK) {
+			cerr << "failed to bind math: " << e << endl;
+			return false;
+		}
+		e = sqlite3_step(stmt());
+		if (e != SQLITE_DONE) {
+			cerr << "failed to step: " << e << endl;
+			return false;
+		}
+		sqlite3_reset(stmt());
+		return true;
 	}
-
-	void Write(const Ode &o) {
-		ofs_ << "00000000-0000-0000-0000-000000000000 (eq (diff (bvar %time) %"
-			 << o.name()
-			 << ')'
-			 << o.rhs()
-			 << ')'
-			 << endl;
-	}
-
-private:
-	std::ofstream ofs_;
 };
 
 void Usage()
 {
-	cerr << "usage: flint-sbml DB VALUE FUNCTION ODE" << endl;
+	cerr << "usage: flint-sbml DB" << endl;
 }
 
 } // namespace
 
 int main(int argc, char *argv[])
 {
-	static const int kNumOfArgs = 5;
+	static const int kNumOfArgs = 2;
 
-	if (argc == 2) {
-		Usage();
-		if (strcmp("-h", argv[1]) == 0 || strcmp("--help", argv[1]) == 0) {
-			return EXIT_SUCCESS;
-		} else {
-			return EXIT_FAILURE;
-		}
-	}
 	if (argc != kNumOfArgs) {
 		Usage();
 		return EXIT_FAILURE;
+	}
+	if (strcmp("-h", argv[1]) == 0 || strcmp("--help", argv[1]) == 0) {
+		Usage();
+		return EXIT_SUCCESS;
 	}
 
 	if (!flint::sbml::Parse(argv[1]))
@@ -307,29 +326,43 @@ int main(int argc, char *argv[])
 		}
 	}
 
+	if (!CreateTable(driver.db(), "input_values", "(space_id TEXT, math TEXT)"))
+		return EXIT_FAILURE;
+	if (!CreateTable(driver.db(), "input_functions", "(space_id TEXT, math TEXT)"))
+		return EXIT_FAILURE;
+	if (!CreateTable(driver.db(), "input_odes", "(space_id TEXT, math TEXT)"))
+		return EXIT_FAILURE;
+
 	{
-		boost::scoped_ptr<ValueWriter> writer(new ValueWriter(argv[2]));
+		boost::scoped_ptr<ValueWriter> writer(new ValueWriter(driver.db()));
 		for (OdeVector::const_iterator it=ov->begin();it!=ov->end();++it) {
-			writer->Write(*it);
+			if (!writer->Write(*it)) return false;
 		}
 		for (CompartmentVector::const_iterator it=cv->begin();it!=cv->end();++it) {
-			writer->Write(*it);
+			if (!writer->Write(*it)) return false;
 		}
 	}
 
 	{
-		boost::scoped_ptr<FunctionWriter> writer(new FunctionWriter(argv[3]));
+		boost::scoped_ptr<FunctionWriter> writer(new FunctionWriter(driver.db()));
 		for (AssignmentVector::const_iterator it=av->begin();it!=av->end();++it) {
-			writer->Write(*it);
+			if (!writer->Write(*it)) return false;
 		}
 	}
 
 	{
-		boost::scoped_ptr<OdeWriter> writer(new OdeWriter(argv[4]));
+		boost::scoped_ptr<OdeWriter> writer(new OdeWriter(driver.db()));
 		for (OdeVector::const_iterator it=ov->begin();it!=ov->end();++it) {
-			writer->Write(*it);
+			if (!writer->Write(*it)) return false;
 		}
 	}
+
+	if (!CreateView(driver.db(), "input_ivs",
+					"SELECT * FROM input_values UNION ALL SELECT * FROM input_functions"))
+		return EXIT_FAILURE;
+	if (!CreateView(driver.db(), "input_eqs",
+					"SELECT * FROM input_functions UNION ALL SELECT * FROM input_odes"))
+		return EXIT_FAILURE;
 
 	return CommitTransaction(driver.db()) ? EXIT_SUCCESS : EXIT_FAILURE;
 }

@@ -28,6 +28,7 @@
 #include "phml/graph-math-rewriter.h"
 #include "phml/graph_reader.h"
 #include "phml/transition-form.h"
+#include "phml.hh"
 #include "reach.h"
 #include "span.h"
 #include "sprinkle.h"
@@ -3686,7 +3687,11 @@ const Schema kSubsequentTables[] = {
 	{"journals", "(indent INTEGER, uuid TEXT)"},
 	{"spans", "(tail_uuid TEXT, tail_port_id INTEGER, head_uuid TEXT, head_port_id INTEGER)"},
 	{"reaches", "(output_uuid BLOB, output_id INTEGER, input_uuid BLOB, input_id INTEGER)"},
-	{"sprinkles", "(track_id BLOB, sector_id BLOB, pq_id INTEGER, val REAL)"}
+	{"sprinkles", "(track_id BLOB, sector_id BLOB, pq_id INTEGER, val REAL)"},
+	{"combined_values", "(uuid TEXT, math TEXT)"},
+	{"combined_functions", "(uuid TEXT, math TEXT)"},
+	{"combined_odes", "(uuid TEXT, math TEXT)"},
+	{"tscs", "(uuid TEXT, math TEXT)"},
 };
 
 void CreateTablesOrDie(sqlite3 *db, const Schema *tables, size_t n)
@@ -3710,7 +3715,14 @@ const View kViews[] = {
 	{"joins", "m.module_id AS module_id, i.module_id AS uuid, i.label AS label FROM instances AS i LEFT JOIN templates As t ON i.template_id = t.template_id LEFT JOIN modules AS m ON m.module_id = t.ref_module_id"},
 	{"spaces", "module_id, name FROM modules WHERE type = 'functional-unit'"},
 	{"names", "m.module_id, p.type, p.pq_id, p.name, u.name, p.max_delay FROM pqs AS p LEFT JOIN modules AS m ON p.module_rowid = m.rowid LEFT JOIN units AS u ON p.unit_id = u.unit_id"},
-	{"time_unit", "u.name FROM tds AS t JOIN units AS u ON t.unit_id = u.unit_id WHERE t.module_id IS NULL"}
+	{"time_unit", "u.name FROM tds AS t JOIN units AS u ON t.unit_id = u.unit_id WHERE t.module_id IS NULL"},
+	{"sv_eqs", "m.module_id, ltrim(i.math) FROM impls AS i LEFT JOIN pqs AS p ON i.pq_rowid = p.rowid LEFT JOIN modules AS m ON p.module_rowid = m.rowid WHERE p.type = 's' OR p.type = 'v'"},
+	{"vx_eqs", "m.module_id, ltrim(i.math) FROM impls AS i LEFT JOIN pqs AS p ON i.pq_rowid = p.rowid LEFT JOIN modules AS m ON p.module_rowid = m.rowid WHERE p.type = 'v' OR p.type = 'x'"},
+	{"iv_eqs", "m.module_id, ltrim(i.math) FROM ivs AS i LEFT JOIN pqs AS p ON i.pq_rowid = p.rowid LEFT JOIN modules AS m ON p.module_rowid = m.rowid"},
+	{"input_ivs", "* FROM sv_eqs UNION ALL SELECT * FROM iv_eqs UNION ALL SELECT * FROM tscs UNION ALL SELECT * FROM combined_values UNION ALL SELECT * FROM combined_functions"},
+	{"input_eqs", "* FROM vx_eqs UNION ALL SELECT * FROM tscs UNION ALL SELECT * FROM combined_functions UNION ALL SELECT * FROM combined_odes"},
+	{"before_eqs", "m.module_id, ltrim(e.math) FROM extras AS e LEFT JOIN pqs AS p ON e.pq_rowid = p.rowid LEFT JOIN modules AS m ON p.module_rowid = m.rowid WHERE e.order_type = 'before'"},
+	{"after_eqs", "m.module_id, ltrim(e.math) FROM extras AS e LEFT JOIN pqs AS p ON e.pq_rowid = p.rowid LEFT JOIN modules AS m ON p.module_rowid = m.rowid WHERE e.order_type = 'after'"}
 };
 
 void CreateViewsOrDie(sqlite3 *db, const View *views, size_t n)
@@ -3837,5 +3849,8 @@ int main(int argc, char *argv[])
 	if (!CommitTransaction(db))
 		return EXIT_FAILURE;
 	sqlite3_close(db);
+
+	if (!phml::CombineAll(argv[1]))
+		return EXIT_FAILURE;
 	return EXIT_SUCCESS;
 }

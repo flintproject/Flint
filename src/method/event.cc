@@ -15,6 +15,8 @@
 #include <boost/spirit/include/phoenix.hpp>
 #include <boost/spirit/include/qi.hpp>
 
+#include "db/driver.h"
+#include "db/query.h"
 #include "db/statement-driver.h"
 
 using std::cerr;
@@ -62,8 +64,8 @@ private:
 
 class Inserter : db::StatementDriver {
 public:
-	Inserter(sqlite3 *db, const char *query)
-		: db::StatementDriver(db, query)
+	explicit Inserter(sqlite3 *db)
+		: db::StatementDriver(db, "INSERT INTO asts VALUES (?, ?, ?)")
 	{
 	}
 
@@ -88,17 +90,17 @@ public:
 private:
 	bool Insert(const char *uuid, const char *name, const char *math) {
 		int e;
-		e = sqlite3_bind_text(stmt(), 1, uuid, -1, NULL);
+		e = sqlite3_bind_text(stmt(), 1, uuid, -1, SQLITE_STATIC);
 		if (e != SQLITE_OK) {
 			cerr << "failed to bind uuid: " << e << endl;
 			return false;
 		}
-		e = sqlite3_bind_text(stmt(), 2, name, -1, NULL);
+		e = sqlite3_bind_text(stmt(), 2, name, -1, SQLITE_STATIC);
 		if (e != SQLITE_OK) {
 			cerr << "failed to bind name: " << e << endl;
 			return false;
 		}
-		e = sqlite3_bind_text(stmt(), 3, math, -1, NULL);
+		e = sqlite3_bind_text(stmt(), 3, math, -1, SQLITE_STATIC);
 		if (e != SQLITE_OK) {
 			cerr << "failed to bind math: " << e << endl;
 			return false;
@@ -387,15 +389,16 @@ int Process(void *data, int argc, char **argv, char **names)
 
 }
 
-bool Event(sqlite3 *db, const char *input, const char *output)
+bool Event(sqlite3 *db, const char *input, sqlite3 *output)
 {
+	if (!SaveNol(1, output))
+		return false;
+	if (!CreateTable(output, "asts", "(uuid TEXT, name TEXT, math TEXT)"))
+		return false;
+
+	Inserter inserter(output);
+
 	std::ostringstream oss;
-
-	oss << "INSERT INTO " << output << " VALUES (?, ?, ?)";
-	std::string query_o = oss.str();
-	Inserter inserter(db, query_o.c_str());
-
-	oss.str("");
 	oss << "SELECT * FROM " << input;
 	std::string query_i = oss.str();
 

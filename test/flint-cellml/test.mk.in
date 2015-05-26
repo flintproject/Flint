@@ -3,7 +3,7 @@
 all: OUTPUT
 
 check: OUTPUT
-	flint-cellml $< /dev/null /dev/null /dev/null
+	flint-cellml $<
 
 clean:
 	-rm -f OUTPUT

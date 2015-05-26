@@ -16,30 +16,26 @@ namespace {
 
 void Usage()
 {
-	cerr << "usage: flint-cellml DB IV FUNCTION ODE" << endl;
+	cerr << "usage: flint-cellml DB" << endl;
 }
 
 } // namespace
 
 int main(int argc, char *argv[])
 {
-	static const int kNumOfArgs = 5;
+	static const int kNumOfArgs = 2;
 
-	if (argc == 2) {
-		Usage();
-		if (strcmp("-h", argv[1]) == 0 || strcmp("--help", argv[1]) == 0) {
-			return EXIT_SUCCESS;
-		}
-		return EXIT_FAILURE;
-	}
 	if (argc != kNumOfArgs) {
 		Usage();
 		return EXIT_FAILURE;
 	}
-
+	if (strcmp("-h", argv[1]) == 0 || strcmp("--help", argv[1]) == 0) {
+		Usage();
+		return EXIT_SUCCESS;
+	}
 	if (!ParseCellml(argv[1]))
 		return EXIT_FAILURE;
-	if (!TranslateCellml(argv[1], argv[2], argv[3], argv[4]))
+	if (!TranslateCellml(argv[1]))
 		return EXIT_FAILURE;
 	return EXIT_SUCCESS;
 }

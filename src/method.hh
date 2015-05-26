@@ -44,25 +44,25 @@ namespace method {
  * Generate imperative AST for assignment statements.
  * Return true in case of success, false otherwise.
  */
-bool Assign(sqlite3 *db, const char *input, const char *output);
+bool Assign(sqlite3 *db, const char *input, sqlite3 *output);
 
 /*
  * Generate imperative AST for event statements.
  * Return true in case of success, false otherwise.
  */
-bool Event(sqlite3 *db, const char *input, const char *output);
+bool Event(sqlite3 *db, const char *input, sqlite3 *output);
 
 /*
  * Generate imperative AST from equations by Euler method.
  * Return true in case of success, false otherwise.
  */
-bool Euler(sqlite3 *db, const char *input, const char *output);
+bool Euler(sqlite3 *db, const char *input, sqlite3 *output);
 
 /*
  * Generate imperative AST from equations by Runge-Kutta 4th method.
  * Return true in case of success, false otherwise.
  */
-bool Rk4(sqlite3 *db, const char *input, const char *output);
+bool Rk4(sqlite3 *db, const char *input, sqlite3 *output);
 
 }
 

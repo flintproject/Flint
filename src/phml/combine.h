@@ -2,10 +2,6 @@
 #ifndef FLINT_PHML_COMBINE_H_
 #define FLINT_PHML_COMBINE_H_
 
-bool Combine(const char *uuid,
-			 const char *db_file,
-			 const char *value_file,
-			 const char *function_file,
-			 const char *ode_file);
+bool Combine(const char *uuid, const char *db_file);
 
 #endif

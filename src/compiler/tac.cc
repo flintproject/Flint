@@ -643,7 +643,7 @@ struct Grammar : qi::grammar<TIterator, Expr()> {
 
 class Inserter : db::StatementDriver {
 public:
-	Inserter(sqlite3 *db)
+	explicit Inserter(sqlite3 *db)
 		: db::StatementDriver(db, "INSERT INTO tacs VALUES (?, ?, ?, ?)")
 	{
 	}

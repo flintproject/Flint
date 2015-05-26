@@ -1,2 +1,0 @@
-e92c7a90-6bf0-4c35-817d-fd9505050830 (case-set (case (condition (geq %v 30)) (eq %v %c)))
-055edf9e-8eb2-4812-abb2-e3e6f5be12e1 (case-set (case (condition (geq %v 30)) (eq %u (plus %u %d))))

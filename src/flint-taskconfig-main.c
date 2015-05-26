@@ -10,21 +10,15 @@
 
 static void PrintRecipeForEuler(void)
 {
-	printf("euler.txt: statement.txt\n");
-	printf("\tflint-euler < $< > $@\n");
-	printf("\n");
-	printf("bc: euler.txt\n");
-	printf("\tflint-compile euler.db < $< > $@\n");
+	printf("bc: modeldb\n");
+	printf("\tflint-compile modeldb input_eqs euler euler.db > $@\n");
 	printf("\n");
 }
 
 static void PrintRecipeForRk4(void)
 {
-	printf("rk4.txt: statement.txt\n");
-	printf("\tflint-rk4 < $< > $@\n");
-	printf("\n");
-	printf("bc: rk4.txt\n");
-	printf("\tflint-compile rk4.db < $< > $@\n");
+	printf("bc: modeldb\n");
+	printf("\tflint-compile modeldb input_eqs rk4 rk4.db > $@\n");
 	printf("\n");
 }
 
@@ -98,14 +92,11 @@ int main(int argc, char *argv[])
 	}
 
 	printf("define generate\n");
-	printf("$(1)/generated-equation.txt: db form.txt | $(1)\n");
-	printf("\tflint-generate $$< > $$@\n");
+	printf("$(1)/generated.db: db form.txt | $(1)\n");
+	printf("\tflint-generate $$< $$@\n");
 	printf("\n");
-	printf("$(1)/generated-assign.txt: $(1)/generated-equation.txt\n");
-	printf("\tflint-assign < $$< > $$@\n");
-	printf("\n");
-	printf("$(1)/generated-bc: $(1)/generated-assign.txt\n");
-	printf("\tflint-compile $(1)/generated.db < $$< > $$@\n");
+	printf("$(1)/generated-bc: $(1)/generated.db\n");
+	printf("\tflint-compile $$< parameter_eqs assign $(1)/output.db > $$@\n");
 	printf("\n");
 	printf("$(1)/generated-init: generated-layout $(1)/generated-bc\n");
 #ifdef _WIN32

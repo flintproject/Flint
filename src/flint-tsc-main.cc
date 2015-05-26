@@ -11,6 +11,7 @@
 #include <iostream>
 #include <map>
 #include <set>
+#include <sstream>
 #include <string>
 
 #define BOOST_FILESYSTEM_NO_DEPRECATED
@@ -23,7 +24,9 @@
 
 #include "csv/export.h"
 #include "db/driver.h"
+#include "db/eq-inserter.h"
 #include "db/name_loader.h"
+#include "db/query.h"
 #include "db/timeseries-loader.h"
 #include "db/tsref-loader.h"
 #include "isdf/reader.h"
@@ -147,13 +150,14 @@ private:
 
 typedef boost::ptr_map<string, ColumnMap> IsdfMap;
 
-class TsrefHandler : boost::noncopyable {
+class TsrefHandler : db::EqInserter {
 public:
-	TsrefHandler(PqMap *pqm, PathSet *ps, TimeseriesMap *tm, IsdfMap *im)
-		: pqm_(pqm),
-		  ps_(ps),
-		  tm_(tm),
-		  im_(im)
+	TsrefHandler(sqlite3 *db, PqMap *pqm, PathSet *ps, TimeseriesMap *tm, IsdfMap *im)
+		: db::EqInserter("tscs", db)
+		, pqm_(pqm)
+		, ps_(ps)
+		, tm_(tm)
+		, im_(im)
 	{}
 
 	bool Handle(boost::uuids::uuid uuid, int pq_id, int ts_id, const char *element_id) {
@@ -204,16 +208,18 @@ public:
 		}
 		int idx0 = static_cast<int>(std::distance(ps_->begin(), mit->second));
 		int idx1 = static_cast<int>(cit->second);
-		cout << uuid
-			 << " (eq %"
-			 << qit->second.c_str()
-			 << " ($At "
-			 << idx0
-			 << " "
-			 << idx1
-			 << " %time))"
-			 << endl;
-		return true;
+
+		std::string uuid_s = boost::uuids::to_string(uuid);
+		std::ostringstream oss;
+		oss << "(eq %"
+			<< qit->second.c_str()
+			<< " ($At "
+			<< idx0
+			<< " "
+			<< idx1
+			<< " %time))";
+		std::string math = oss.str();
+		return Insert(uuid_s.c_str(), math.c_str());
 	}
 
 private:
@@ -242,16 +248,18 @@ int main(int argc, char *argv[])
 	}
 
 	boost::scoped_ptr<db::Driver> driver(new db::Driver(argv[1]));
+	sqlite3 *db = driver->db();
+
 	boost::scoped_ptr<PqMap> pqm(new PqMap);
 	{
-		boost::scoped_ptr<db::NameLoader> loader(new db::NameLoader(driver->db()));
+		boost::scoped_ptr<db::NameLoader> loader(new db::NameLoader(db));
 		boost::scoped_ptr<PqHandler> handler(new PqHandler(pqm.get()));
 		if (!loader->Load(handler.get())) return EXIT_FAILURE;
 	}
 	boost::scoped_ptr<PathSet> ps(new PathSet);
 	boost::scoped_ptr<TimeseriesMap> tm(new TimeseriesMap);
 	{
-		boost::scoped_ptr<db::TimeseriesLoader> loader(new db::TimeseriesLoader(driver->db()));
+		boost::scoped_ptr<db::TimeseriesLoader> loader(new db::TimeseriesLoader(db));
 		boost::scoped_ptr<TimeseriesHandler> handler(new TimeseriesHandler(ps.get(), tm.get()));
 		if (!loader->Load(handler.get())) return EXIT_FAILURE;
 	}
@@ -280,12 +288,14 @@ int main(int argc, char *argv[])
 		}
 		fclose(fp);
 	}
+	if (!BeginTransaction(db))
+		return EXIT_FAILURE;
 	{
-		boost::scoped_ptr<db::TsrefLoader> loader(new db::TsrefLoader(driver->db()));
-		boost::scoped_ptr<TsrefHandler> handler(new TsrefHandler(pqm.get(), ps.get(), tm.get(), im.get()));
+		boost::scoped_ptr<db::TsrefLoader> loader(new db::TsrefLoader(db));
+		boost::scoped_ptr<TsrefHandler> handler(new TsrefHandler(db, pqm.get(), ps.get(), tm.get(), im.get()));
 		if (!loader->Load(handler.get())) {
 			return EXIT_FAILURE;
 		}
 	}
-	return EXIT_SUCCESS;
+	return CommitTransaction(db) ? EXIT_SUCCESS : EXIT_FAILURE;
 }

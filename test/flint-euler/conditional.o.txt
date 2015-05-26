@@ -1,8 +1,0 @@
-1
-00000000-0000-0000-0000-000000000000 %a#0 (piecewise (piece (plus 1 pi) (eq %x#0 %y#0)))
-00000000-0000-0000-0000-000000000000 %b#0 (piecewise (piece 0 (leq %x#0 %y#0)) (otherwise 1))
-00000000-0000-0000-0000-000000000000 %c#0 (piecewise (piece 0 (eq %x#0 %y#0)) (piece 1 (lt %x#0 %y#0)))
-00000000-0000-0000-0000-000000000000 %d#0 (piecewise (piece 0 (eq %x#0 %y#0)) (piece 1 (gt %x#0 %y#0)) (otherwise 2))
-00000000-0000-0000-0000-000000000000 %x#0 (piecewise (piece (plus %y#0 1) (and (geq (plus %time @dt) %a#0) (lt (plus %time @dt) (plus %a#0 5)))) (otherwise 0))
-00000000-0000-0000-0000-000000000000 %y#0 (piecewise (piece %b#0 (eq (plus %time @dt) 0.1)) (piece %c#0 (neq (plus %time @dt) 0.2)))
-00000000-0000-0000-0000-000000000000 %z#0 (piecewise (piece 0 (lt %x#0 1)) (piece (piecewise (piece 1 (lt %y#0 1)) (piece 2 (lt %y#0 2)) (otherwise 3)) (lt %x#0 2)) (otherwise (piecewise (piece 4 (lt %y#0 3)) (otherwise 5))))

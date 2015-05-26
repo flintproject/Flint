@@ -76,12 +76,6 @@
           <Component Id='csv2isd' Guid='f4b4b0b8-823f-11e3-8e59-bf8a1e617bcf'>
             <File Id='csv2isd.exe' Name='csv2isd.exe' DiskId='1' Source='csv2isd.exe' />
           </Component>
-          <Component Id='flint_assign' Guid='2fb2f7ca-f5bd-11e2-af36-13c35391bb14'>
-            <File Id='flint_assign.exe' Name='flint-assign.exe' DiskId='1' Source='flint-assign.exe' />
-          </Component>
-          <Component Id='flint_combineall' Guid='2fb4e36e-f5bd-11e2-bf28-f7f644f0a6c9'>
-            <File Id='flint_combineall.exe' Name='flint-combineall.exe' DiskId='1' Source='flint-combineall.exe' />
-          </Component>
           <Component Id='flint_compile' Guid='6b4c9aa2-fa11-11e4-8ce0-136163bb982d'>
             <File Id='flint_compile.exe' Name='flint-compile.exe' DiskId='1' Source='flint-compile.exe' />
           </Component>
@@ -94,20 +88,11 @@
           <Component Id='flint_enum' Guid='b23f030a-5d69-11e3-823f-f3a829d6a3a6'>
             <File Id='flint_enum.exe' Name='flint-enum.exe' DiskId='1' Source='flint-enum.exe' />
           </Component>
-          <Component Id='flint_euler' Guid='2fb5eb1a-f5bd-11e2-8982-ffa48b375eaa'>
-            <File Id='flint_euler.exe' Name='flint-euler.exe' DiskId='1' Source='flint-euler.exe' />
-          </Component>
-          <Component Id='flint_event' Guid='7506700e-e586-11e3-9356-3327d2730e65'>
-            <File Id='flint_event.exe' Name='flint-event.exe' DiskId='1' Source='flint-event.exe' />
-          </Component>
           <Component Id='flint_evolve' Guid='2fb63ff2-f5bd-11e2-815a-db7246e0cea3'>
             <File Id='flint_evolve.exe' Name='flint-evolve.exe' DiskId='1' Source='flint-evolve.exe' />
           </Component>
           <Component Id='flint_exec' Guid='86688738-5d69-11e3-9595-f317fcf3e8c5'>
             <File Id='flint_exec.exe' Name='flint-exec.exe' DiskId='1' Source='flint-exec.exe' />
-          </Component>
-          <Component Id='flint_extra' Guid='2fb6b2fc-f5bd-11e2-a6cc-777135db6461'>
-            <File Id='flint_extra.exe' Name='flint-extra.exe' DiskId='1' Source='flint-extra.exe' />
           </Component>
           <Component Id='flint_file' Guid='2fb73f60-f5bd-11e2-b24a-0b7e6d1637a0'>
             <File Id='flint_file.exe' Name='flint-file.exe' DiskId='1' Source='flint-file.exe' />
@@ -124,17 +109,11 @@
           <Component Id='flint_generate' Guid='e1db23aa-5d69-11e3-af2a-1fa42ba3525f'>
             <File Id='flint_generate.exe' Name='flint-generate.exe' DiskId='1' Source='flint-generate.exe' />
           </Component>
-          <Component Id='flint_impl' Guid='2fb89374-f5bd-11e2-b93c-eb109f47cf8b'>
-            <File Id='flint_impl.exe' Name='flint-impl.exe' DiskId='1' Source='flint-impl.exe' />
-          </Component>
           <Component Id='flint_init' Guid='43520c4a-4c1f-11e3-b3ce-571d2a2fd0c1'>
             <File Id='flint_init.exe' Name='flint-init.exe' DiskId='1' Source='flint-init.exe' />
           </Component>
           <Component Id='flint_isdh' Guid='2fbb4376-f5bd-11e2-b99a-a3d231cb4856'>
             <File Id='flint_isdh.exe' Name='flint-isdh.exe' DiskId='1' Source='flint-isdh.exe' />
-          </Component>
-          <Component Id='flint_iv' Guid='2fbc059a-f5bd-11e2-912f-e766ae4dfdaa'>
-            <File Id='flint_iv.exe' Name='flint-iv.exe' DiskId='1' Source='flint-iv.exe' />
           </Component>
           <Component Id='flint_lands' Guid='2fbcbd28-f5bd-11e2-a909-339b6e0fe698'>
             <File Id='flint_lands.exe' Name='flint-lands.exe' DiskId='1' Source='flint-lands.exe' />
@@ -165,9 +144,6 @@
           </Component>
           <Component Id='flint_phz' Guid='7b0fc2dc-6490-11e4-9e25-a7cb15212d3e'>
             <File Id='flint_phz.exe' Name='flint-phz.exe' DiskId='1' Source='flint-phz.exe' />
-          </Component>
-          <Component Id='flint_rk4' Guid='2fc07d46-f5bd-11e2-9e94-e3789b4471f2'>
-            <File Id='flint_rk4.exe' Name='flint-rk4.exe' DiskId='1' Source='flint-rk4.exe' />
           </Component>
           <Component Id='flint_run' Guid='c7541b2a-9d03-11e3-9698-b745a2cde4a7'>
             <File Id='flint_run.exe' Name='flint-run.exe' DiskId='1' Source='flint-run.exe' />
@@ -342,26 +318,19 @@
     <Feature Id='BaseFeature' Title='Base Feature' Level='1'>
       <ComponentRef Id='Environment' />
       <ComponentRef Id='csv2isd' />
-      <ComponentRef Id='flint_assign' />
-      <ComponentRef Id='flint_combineall' />
       <ComponentRef Id='flint_compile' />
       <ComponentRef Id='flint_concat' />
       <ComponentRef Id='flint_cut' />
       <ComponentRef Id='flint_enum' />
-      <ComponentRef Id='flint_euler' />
-      <ComponentRef Id='flint_event' />
       <ComponentRef Id='flint_evolve' />
       <ComponentRef Id='flint_exec' />
-      <ComponentRef Id='flint_extra' />
       <ComponentRef Id='flint_file' />
       <ComponentRef Id='flint_filter' />
       <ComponentRef Id='flint_flow' />
       <ComponentRef Id='flint_form' />
       <ComponentRef Id='flint_generate' />
-      <ComponentRef Id='flint_impl' />
       <ComponentRef Id='flint_init' />
       <ComponentRef Id='flint_isdh' />
-      <ComponentRef Id='flint_iv' />
       <ComponentRef Id='flint_lands' />
       <ComponentRef Id='flint_layout' />
       <ComponentRef Id='flint_loadconfig' />
@@ -372,7 +341,6 @@
       <ComponentRef Id='flint_phml' />
       <ComponentRef Id='flint_phsp' />
       <ComponentRef Id='flint_phz' />
-      <ComponentRef Id='flint_rk4' />
       <ComponentRef Id='flint_run' />
       <ComponentRef Id='flint_sbml' />
       <ComponentRef Id='flint_sedml' />

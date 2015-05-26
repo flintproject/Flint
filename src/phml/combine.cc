@@ -4,8 +4,9 @@
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
-#include <fstream>
 #include <map>
+#include <sstream>
+#include <string>
 
 #include <boost/noncopyable.hpp>
 #include <boost/scoped_array.hpp>
@@ -14,14 +15,13 @@
 
 #include "db/bridge-loader.h"
 #include "db/driver.h"
+#include "db/eq-inserter.h"
 #include "db/name-inserter.h"
 #include "db/query.h"
 #include "db/name_loader.h"
 
 using std::cerr;
 using std::endl;
-using std::ofstream;
-using std::ios;
 using std::make_pair;
 using std::map;
 using std::string;
@@ -32,24 +32,20 @@ namespace {
 
 typedef map<string, string> BridgeMap;
 
-class LineWriter : boost::noncopyable {
+class LineWriter {
 public:
-	LineWriter() : uuid_(NULL), ofs_() {}
+	LineWriter(const char *uuid, const char *table, sqlite3 *db)
+		: uuid_(uuid)
+		, inserter_(table, db)
+	{}
 
-    ~LineWriter() {
-		ofs_.close();
+	bool Insert(const char *math) {
+		return inserter_.Insert(uuid_, math);
 	}
 
-	void set_uuid(const char *uuid) {uuid_ = uuid;}
-
-	bool OpenFile(const char *file) {
-		ofs_.open(file, ios::out|ios::app|ios::binary);
-		return ofs_.is_open();
-	}
-
-protected:
+private:
 	const char *uuid_;
-	ofstream ofs_;
+	db::EqInserter inserter_;
 };
 
 class NameWriter : public db::NameInserter {
@@ -70,58 +66,72 @@ private:
 	const char *uuid_;
 };
 
-class ValueWriter : public LineWriter {
+class ValueWriter : LineWriter {
 public:
-	ValueWriter() : LineWriter() {}
+	ValueWriter(const char *uuid, sqlite3 *db)
+		: LineWriter(uuid, "combined_values", db)
+	{}
 
 	template<typename TNumber>
 	void Write(const char *name, TNumber x) {
-		ofs_ << uuid_ << " " << "(eq %" << name << " " << x << ")" << endl;
+		std::ostringstream oss;
+		oss << "(eq %" << name << ' ' << x << ')';
+		std::string math = oss.str();
+		Insert(math.c_str());
 	}
 };
 
-class FunctionWriter : public LineWriter {
+class FunctionWriter : LineWriter {
 public:
-	FunctionWriter() : LineWriter() {}
+	FunctionWriter(const char *uuid, sqlite3 *db)
+		: LineWriter(uuid, "combined_functions", db)
+	{}
 
 	void WriteFunction(const char *name, const char *sexp) {
-		ofs_ << uuid_ << " (eq %" << name << sexp << ')' << endl;
+		std::ostringstream oss;
+		oss << "(eq %" << name << sexp << ')';
+		std::string math = oss.str();
+		Insert(math.c_str());
 	}
 
 	void WriteSet(const char *name, const string &pq_name) {
-		ofs_ << uuid_ << " (eq %" << name << " %" << pq_name << ")" << endl;
+		std::ostringstream oss;
+		oss << "(eq %" << name << " %" << pq_name << ')';
+		std::string math = oss.str();
+		Insert(math.c_str());
 	}
 
 	void WriteGet(const string &pq_name, const char *name) {
-		ofs_ << uuid_ << " (eq %" << pq_name << " %sbml:" << name << ")" << endl;
+		std::ostringstream oss;
+		oss << "(eq %" << pq_name << " %sbml:" << name << ')';
+		std::string math = oss.str();
+		Insert(math.c_str());
 	}
 };
 
-class OdeWriter : public LineWriter {
+class OdeWriter : LineWriter {
 public:
-	OdeWriter() : LineWriter() {}
+	OdeWriter(const char *uuid, sqlite3 *db)
+		: LineWriter(uuid, "combined_odes", db)
+	{}
 
 	void WriteOde(const char *name, const char *sexp) {
-		ofs_ << uuid_ << ' ' << "(eq (diff (bvar %time) %" << name << ')'
-			 << sexp << ')' << endl;
+		std::ostringstream oss;
+		oss << "(eq (diff (bvar %time) %" << name << ')'
+			<< sexp << ')';
+		std::string math = oss.str();
+		Insert(math.c_str());
 	}
 };
 
 class Writer {
 public:
-	Writer(int pq_id, const char *uuid,
-		   sqlite3 *db,
-		   const char *value_file,
-		   const char *function_file,
-		   const char *ode_file)
+	Writer(int pq_id, const char *uuid, sqlite3 *db)
 		: name_writer_(pq_id, uuid, db)
+		, value_writer_(uuid, db)
+		, function_writer_(uuid, db)
+		, ode_writer_(uuid, db)
 	{
-		value_writer_.set_uuid(uuid);
-		value_writer_.OpenFile(value_file);
-		function_writer_.set_uuid(uuid);
-		function_writer_.OpenFile(function_file);
-		ode_writer_.set_uuid(uuid);
-		ode_writer_.OpenFile(ode_file);
 	}
 
 	BridgeMap &bm() {return bm_;}
@@ -295,11 +305,7 @@ public:
 
 } // namespace
 
-bool Combine(const char *uuid,
-			 const char *db_file,
-			 const char *value_file,
-			 const char *function_file,
-			 const char *ode_file)
+bool Combine(const char *uuid, const char *db_file)
 {
 	boost::uuids::string_generator gen;
 	boost::uuids::uuid u = gen(uuid);
@@ -317,7 +323,7 @@ bool Combine(const char *uuid,
 		max_pq_id = handler.max_pq_id();
 	}
 
-	Writer writer(max_pq_id, uuid, driver.db(), value_file, function_file, ode_file);
+	Writer writer(max_pq_id, uuid, driver.db());
 
 	{
 		db::BridgeLoader loader(driver.db());

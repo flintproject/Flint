@@ -9,14 +9,14 @@
 BOOST_FIXTURE_TEST_SUITE(test_rk4, F)
 
 BOOST_AUTO_TEST_CASE(empty) {
-	BOOST_CHECK(method::Rk4(db, "input", "output"));
+	BOOST_CHECK(method::Rk4(input_db, "input", output_db));
 }
 
 BOOST_AUTO_TEST_CASE(conditional) {
 	SetupConditional();
-	BOOST_CHECK(method::Rk4(db, "input", "output"));
+	BOOST_CHECK(method::Rk4(input_db, "input", output_db));
 	std::vector<std::string> r;
-	sql.Table("output", &r);
+	output.Table("asts", &r);
 	BOOST_CHECK_EQUAL(r.size(), 28u);
 	BOOST_CHECK_EQUAL(r[0], "00000000-0000-0000-0000-000000000000 %a#2 (piecewise (piece (plus 1 pi) (eq %x#2 %y#2)))");
 	BOOST_CHECK_EQUAL(r[1], "00000000-0000-0000-0000-000000000000 %a#4 (piecewise (piece (plus 1 pi) (eq %x#4 %y#4)))");
@@ -51,9 +51,9 @@ BOOST_AUTO_TEST_CASE(conditional) {
 BOOST_AUTO_TEST_CASE(function)
 {
 	SetupFunction();
-	BOOST_CHECK(method::Rk4(db, "input", "output"));
+	BOOST_CHECK(method::Rk4(input_db, "input", output_db));
 	std::vector<std::string> r;
-	sql.Table("output", &r);
+	output.Table("asts", &r);
 	BOOST_CHECK_EQUAL(r.size(), 32u);
 	BOOST_CHECK_EQUAL(r[0], "00000000-0000-0000-0000-000000000000 %x#2 ($exponential_variate 10)");
 	BOOST_CHECK_EQUAL(r[1], "00000000-0000-0000-0000-000000000000 %x#4 ($exponential_variate 10)");
@@ -92,9 +92,9 @@ BOOST_AUTO_TEST_CASE(function)
 BOOST_AUTO_TEST_CASE(literal)
 {
 	SetupLiteral();
-	BOOST_CHECK(method::Rk4(db, "input", "output"));
+	BOOST_CHECK(method::Rk4(input_db, "input", output_db));
 	std::vector<std::string> r;
-	sql.Table("output", &r);
+	output.Table("asts", &r);
 	BOOST_CHECK_EQUAL(r.size(), 12u);
 	BOOST_CHECK_EQUAL(r[0], "00000000-0000-0000-0000-000000000000 %x#2 0.0012");
 	BOOST_CHECK_EQUAL(r[1], "00000000-0000-0000-0000-000000000000 %x#4 0.0012");
@@ -113,9 +113,9 @@ BOOST_AUTO_TEST_CASE(literal)
 BOOST_AUTO_TEST_CASE(ode)
 {
 	SetupOde();
-	BOOST_CHECK(method::Rk4(db, "input", "output"));
+	BOOST_CHECK(method::Rk4(input_db, "input", output_db));
 	std::vector<std::string> r;
-	sql.Table("output", &r);
+	output.Table("asts", &r);
 	BOOST_CHECK_EQUAL(r.size(), 24u);
 	BOOST_CHECK_EQUAL(r[0], "00000000-0000-0000-0000-000000000000 %x#1 (times @dt (minus %y))");
 	BOOST_CHECK_EQUAL(r[1], "00000000-0000-0000-0000-000000000000 %x#2 (plus %x (divide %x#1 2))");
@@ -146,9 +146,9 @@ BOOST_AUTO_TEST_CASE(ode)
 BOOST_AUTO_TEST_CASE(sbml)
 {
 	SetupSbml();
-	BOOST_CHECK(method::Rk4(db, "input", "output"));
+	BOOST_CHECK(method::Rk4(input_db, "input", output_db));
 	std::vector<std::string> r;
-	sql.Table("output", &r);
+	output.Table("asts", &r);
 	BOOST_CHECK_EQUAL(r.size(), 8u);
 	BOOST_CHECK_EQUAL(r[0], "00000000-0000-0000-0000-000000000000 %sbml:y#2 (power %sbml:x#2 2)");
 	BOOST_CHECK_EQUAL(r[1], "00000000-0000-0000-0000-000000000000 %sbml:y#4 (power %sbml:x#4 2)");

@@ -1,9 +1,0 @@
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; flint-rk4 -- generate imperative AST by Runge-Kutta 4th method
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-This program generates imperative AST from equations by Runge-Kutta 4th method.
-
-= Synopsis
-
-flint-rk4

@@ -5,6 +5,7 @@
 #include <cassert>
 #include <cstdio>
 #include <cstdlib>
+#include <cstring>
 #include <iterator>
 #include <set>
 #include <sstream>
@@ -163,37 +164,18 @@ struct Lexer : lex::lexer<TLexer> {
 	lex::token_def<double> real;
 };
 
-int nol;
-
-void SetNol(int i) {
-	nol = i;
-}
-
-void AddEntry(const Entry &entry);
-
 template<typename TIterator>
-struct Grammar : qi::grammar<TIterator> {
+struct Grammar : qi::grammar<TIterator, Expr()> {
 
 	template<typename TTokenDef>
 	Grammar(TTokenDef const &td)
-	: Grammar::base_type(start)
+	: Grammar::base_type(expr)
 	{
-		using boost::spirit::qi::eol;
-
-		start = td.integer [&SetNol] >> eol >> input;
-
-		input = *(entry [&AddEntry] >> eol);
-
-		entry %= td.uuid36 >> ' ' >> td.id >> ' ' >> expr;
-
 		expr %= (compound | td.real | td.integer | td.id | td.keyword);
 
 		compound %= '(' >> (expr % ' ') >> ')';
 	}
 
-	qi::rule<TIterator> start;
-	qi::rule<TIterator> input;
-	qi::rule<TIterator, Entry()> entry;
 	qi::rule<TIterator, Expr()> expr;
 	qi::rule<TIterator, Compound()> compound;
 };
@@ -312,16 +294,9 @@ private:
 
 typedef boost::ptr_map<string, LineVector> UuidMap;
 
-UuidMap *GetUuidMap()
+int Process(void *data, int argc, char **argv, char **names)
 {
-	static boost::scoped_ptr<UuidMap> um(new UuidMap);
-	return um.get();
-}
-
-bool ParseInput(std::istream &is)
-{
-	typedef std::istreambuf_iterator<char> input_iterator_type;
-	typedef multi_pass<input_iterator_type> base_iterator_type;
+	typedef const char *base_iterator_type;
 	typedef lex::lexertl::token<base_iterator_type> token_type;
 	typedef lex::lexertl::lexer<token_type> lexer_type;
 	typedef Lexer<lexer_type> RealLexer;
@@ -330,56 +305,27 @@ bool ParseInput(std::istream &is)
 	static const RealLexer tokens;
 	static const RealGrammar grammar(tokens);
 
-	is.unsetf(std::ios::skipws);
-	input_iterator_type iit(is);
-	base_iterator_type it = make_default_multi_pass(iit);
-	base_iterator_type eit;
-	bool r = lex::tokenize_and_parse(it, eit, tokens, grammar);
+	(void)names;
+	assert(argc == 3);
+	UuidMap *um = static_cast<UuidMap *>(data);
+	const char *uuid = argv[0];
+	const char *name = argv[1];
+	const char *math = argv[2];
+	base_iterator_type it = math;
+	base_iterator_type eit = math + std::strlen(math);
+	Expr expr;
+	bool r = lex::tokenize_and_parse(it, eit, tokens, grammar, expr);
 	if (!r || it != eit) {
 		cerr << "failed to parse: " << *it << endl;
-		return false;
+		return 1;
 	}
-	return true;
-}
-
-void AddEntry(const Entry &entry)
-{
-	UuidMap *um = GetUuidMap();
-	(*um)[entry.uuid].Add(new Line(entry.name, entry.expr));
-}
-
-bool InsertNol(sqlite3 *db)
-{
-	static const char kQuery[] = "INSERT INTO nol VALUES (?)";
-
-	bool r = false;
-	int e;
-	sqlite3_stmt *stmt;
-	e = sqlite3_prepare_v2(db, kQuery, -1, &stmt, NULL);
-	if (e != SQLITE_OK) {
-		cerr << "failed to prepare statement: " << e << endl;
-		return false;
-	}
-	e = sqlite3_bind_int(stmt, 1, nol);
-	if (e != SQLITE_OK) {
-		cerr << "failed to bind nol: " << e << endl;
-		goto bail;
-	}
-	e = sqlite3_step(stmt);
-	if (e != SQLITE_DONE) {
-		cerr << "failed to step: " << e << endl;
-		goto bail;
-	}
-	r = true;
-
- bail:
-	sqlite3_finalize(stmt);
-	return r;
+	(*um)[uuid].Add(new Line(name, expr));
+	return 0;
 }
 
 class Inserter : db::StatementDriver {
 public:
-	Inserter(sqlite3 *db)
+	explicit Inserter(sqlite3 *db)
 		: db::StatementDriver(db, "INSERT INTO sorts VALUES (?, ?, ?)")
 	{
 	}
@@ -413,21 +359,27 @@ public:
 
 }
 
-bool Sort(std::istream &is, sqlite3 *db)
+bool Sort(sqlite3 *db)
 {
-	if (!ParseInput(is)) return false;
+	UuidMap um;
+
+	char *em;
+	int e;
+	e = sqlite3_exec(db, "SELECT * FROM asts", Process, &um, &em);
+	if (e != SQLITE_OK) {
+		cerr << "failed to exec: " << e
+			 << ": " << em << endl;
+		sqlite3_free(em);
+		return false;
+	}
 
 	if (!BeginTransaction(db))
-		return false;
-	if (!CreateTable(db, "nol", "(nol INTEGER)"))
-		return false;
-	if (!InsertNol(db))
 		return false;
 	if (!CreateTable(db, "sorts", "(uuid TEXT, name TEXT, math TEXT)"))
 		return false;
 
 	Inserter inserter(db);
-	for (UuidMap::iterator umit=GetUuidMap()->begin();umit!=GetUuidMap()->end();++umit) {
+	for (UuidMap::iterator umit=um.begin();umit!=um.end();++umit) {
 		size_t n = umit->second->GetSize();
 		boost::scoped_array<int> arr(new int[n]);
 		if (!umit->second->CalculateLevels(arr.get())) {

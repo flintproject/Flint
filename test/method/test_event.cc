@@ -9,14 +9,14 @@
 BOOST_FIXTURE_TEST_SUITE(test_event, F)
 
 BOOST_AUTO_TEST_CASE(empty) {
-	BOOST_CHECK(method::Event(db, "input", "output"));
+	BOOST_CHECK(method::Event(input_db, "input", output_db));
 }
 
 BOOST_AUTO_TEST_CASE(conditional) {
 	SetupConditional();
-	BOOST_CHECK(method::Event(db, "input", "output"));
+	BOOST_CHECK(method::Event(input_db, "input", output_db));
 	std::vector<std::string> r;
-	sql.Table("output", &r);
+	output.Table("asts", &r);
 	BOOST_CHECK_EQUAL(r.size(), 7u);
 	BOOST_CHECK_EQUAL(r[0], "00000000-0000-0000-0000-000000000000 %a#0 (piecewise (piece (plus 1 pi) (eq %x %y)))");
 	BOOST_CHECK_EQUAL(r[1], "00000000-0000-0000-0000-000000000000 %b#0 (piecewise (piece 0 (leq %x %y)) (otherwise 1))");
@@ -30,9 +30,9 @@ BOOST_AUTO_TEST_CASE(conditional) {
 BOOST_AUTO_TEST_CASE(function)
 {
 	SetupFunction();
-	BOOST_CHECK(method::Event(db, "input", "output"));
+	BOOST_CHECK(method::Event(input_db, "input", output_db));
 	std::vector<std::string> r;
-	sql.Table("output", &r);
+	output.Table("asts", &r);
 	BOOST_CHECK_EQUAL(r.size(), 8u);
 	BOOST_CHECK_EQUAL(r[0], "00000000-0000-0000-0000-000000000000 %x#0 ($exponential_variate 10)");
 	BOOST_CHECK_EQUAL(r[1], "00000000-0000-0000-0000-000000000000 %y#0 ($gamma_variate 2 1)");
@@ -47,9 +47,9 @@ BOOST_AUTO_TEST_CASE(function)
 BOOST_AUTO_TEST_CASE(literal)
 {
 	SetupLiteral();
-	BOOST_CHECK(method::Event(db, "input", "output"));
+	BOOST_CHECK(method::Event(input_db, "input", output_db));
 	std::vector<std::string> r;
-	sql.Table("output", &r);
+	output.Table("asts", &r);
 	BOOST_CHECK_EQUAL(r.size(), 3u);
 	BOOST_CHECK_EQUAL(r[0], "00000000-0000-0000-0000-000000000000 %x#0 0.0012");
 	BOOST_CHECK_EQUAL(r[1], "00000000-0000-0000-0000-000000000000 %y#0 4.5e-05");
@@ -59,9 +59,9 @@ BOOST_AUTO_TEST_CASE(literal)
 BOOST_AUTO_TEST_CASE(sbml)
 {
 	SetupSbml();
-	BOOST_CHECK(method::Event(db, "input", "output"));
+	BOOST_CHECK(method::Event(input_db, "input", output_db));
 	std::vector<std::string> r;
-	sql.Table("output", &r);
+	output.Table("asts", &r);
 	BOOST_CHECK_EQUAL(r.size(), 2u);
 	BOOST_CHECK_EQUAL(r[0], "00000000-0000-0000-0000-000000000000 %sbml:y#0 (power %sbml:x 2)");
 	BOOST_CHECK_EQUAL(r[1], "00000000-0000-0000-0000-000000000000 %sbml:z#0 (times %sbml:y 0.5)");

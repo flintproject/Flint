@@ -1,9 +1,0 @@
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; flint-euler -- generate imperative AST by Euler method
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-This program generates imperative AST from equations by Euler method.
-
-= Synopsis
-
-flint-euler

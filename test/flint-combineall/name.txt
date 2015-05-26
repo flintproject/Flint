@@ -1,6 +1,0 @@
-4d96c8de-d10a-48e2-a0e0-be9d74e58e78 v 6 sbml:re1
-4d96c8de-d10a-48e2-a0e0-be9d74e58e78 s 7 sbml:default
-4d96c8de-d10a-48e2-a0e0-be9d74e58e78 s 8 sbml:c1
-4d96c8de-d10a-48e2-a0e0-be9d74e58e78 s 9 sbml:k1
-4d96c8de-d10a-48e2-a0e0-be9d74e58e78 v 10 sbml:s1
-4d96c8de-d10a-48e2-a0e0-be9d74e58e78 x 11 sbml:s2

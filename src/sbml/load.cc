@@ -200,7 +200,7 @@ public:
 		oss << "(eq %" << x.name() << ' ' << x.value() << ')';
 		std::string math = oss.str();
 		int e;
-		e = sqlite3_bind_text(stmt(), 1, math.c_str(), -1, NULL);
+		e = sqlite3_bind_text(stmt(), 1, math.c_str(), -1, SQLITE_STATIC);
 		if (e != SQLITE_OK) {
 			cerr << "failed to bind math: " << e << endl;
 			return false;
@@ -226,7 +226,7 @@ public:
 		oss << "(eq %" << a.name() << a.rhs() << ')';
 		std::string math = oss.str();
 		int e;
-		e = sqlite3_bind_text(stmt(), 1, math.c_str(), -1, NULL);
+		e = sqlite3_bind_text(stmt(), 1, math.c_str(), -1, SQLITE_STATIC);
 		if (e != SQLITE_OK) {
 			cerr << "failed to bind math: " << e << endl;
 			return false;
@@ -256,7 +256,7 @@ public:
 			<< ')';
 		std::string math = oss.str();
 		int e;
-		e = sqlite3_bind_text(stmt(), 1, math.c_str(), -1, NULL);
+		e = sqlite3_bind_text(stmt(), 1, math.c_str(), -1, SQLITE_STATIC);
 		if (e != SQLITE_OK) {
 			cerr << "failed to bind math: " << e << endl;
 			return false;

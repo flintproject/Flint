@@ -1,10 +1,10 @@
 SQLITE3 = sqlite3 -batch -noheader -separator ' '
 
-.PHONY: all clean check check-name
+.PHONY: all clean check check-name check-value check-function check-ode
 
 all: OUTPUT/run
 
-check: check-name OUTPUT/value.diff OUTPUT/function.diff OUTPUT/ode.diff
+check: check-name check-value check-function check-ode
 
 clean:
 	-rm -rf OUTPUT
@@ -16,18 +16,18 @@ OUTPUT/db: INPUT | OUTPUT
 	test-input1 $@ $<
 
 OUTPUT/run: OUTPUT/db
-	flint-sbml $< OUTPUT/value OUTPUT/function OUTPUT/ode > $@
+	flint-sbml $< > $@
 
 OUTPUT/value OUTPUT/function OUTPUT/ode: OUTPUT/run
 
 check-name: OUTPUT/db EXPECTED/name.o.txt
 	($(SQLITE3) $< 'SELECT space_id, type, id, name FROM names' | diff -u EXPECTED/name.o.txt -)
 
-OUTPUT/value.diff: EXPECTED/value.o.txt OUTPUT/value
-	diff -u $^ > $@
+check-value: OUTPUT/db EXPECTED/value.o.txt
+	($(SQLITE3) $< 'SELECT * FROM input_values' | diff -u EXPECTED/value.o.txt -)
 
-OUTPUT/function.diff: EXPECTED/function.o.txt OUTPUT/function
-	diff -u $^ > $@
+check-function: OUTPUT/db EXPECTED/function.o.txt
+	($(SQLITE3) $< 'SELECT * FROM input_functions' | diff -u EXPECTED/function.o.txt -)
 
-OUTPUT/ode.diff: EXPECTED/ode.o.txt OUTPUT/ode
-	diff -u $^ > $@
+check-ode: OUTPUT/db EXPECTED/ode.o.txt
+	($(SQLITE3) $< 'SELECT * FROM input_odes' | diff -u EXPECTED/ode.o.txt -)

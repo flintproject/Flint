@@ -20,6 +20,7 @@
 #include <boost/uuid/uuid_generators.hpp>
 
 #include "db/driver.h"
+#include "db/eq-inserter.h"
 #include "db/name-inserter.h"
 #include "db/query.h"
 #include "db/reach-driver.h"
@@ -30,6 +31,7 @@
 
 using std::cerr;
 using std::endl;
+using std::sprintf;
 using std::strcmp;
 using std::strcpy;
 using std::string;
@@ -133,20 +135,30 @@ private:
 	ComponentMap cm_;
 };
 
+class IvInserter : public db::EqInserter {
+public:
+	explicit IvInserter(sqlite3 *db)
+		: db::EqInserter("input_ivs", db)
+	{}
+};
+
+class EqInserter : public db::EqInserter {
+public:
+	explicit EqInserter(sqlite3 *db)
+		: db::EqInserter("input_eqs", db)
+	{}
+};
+
 const char kOdeQuery[] = "SELECT component, body FROM maths WHERE body LIKE ' (eq (diff (bvar ~%time) ~%%' ESCAPE '~'";
 
 class OdeDumper : public db::StatementDriver {
 public:
-	OdeDumper(const char *path, sqlite3 *db, const TreeDumper *tree_dumper)
+	OdeDumper(sqlite3 *db, const TreeDumper *tree_dumper)
 		: db::StatementDriver(db, kOdeQuery)
-		, fp_(fopen(path, "w"))
+		, ei_(db)
 		, tree_dumper_(tree_dumper)
 		, dvm_()
 	{
-	}
-
-	~OdeDumper() {
-		if (fp_) fclose(fp_);
 	}
 
 	bool Dump() {
@@ -166,7 +178,8 @@ public:
 				return false;
 			}
 			if (!tree_dumper_->Find((const char *)c, u)) return false;
-			fprintf(fp_, "%s%s\n", u, (const char *)body);
+
+			if (!ei_.Insert(u, (const char *)&body[1])) return false;
 
 			// register it as a dependent variable
 			boost::scoped_array<char> tail(new char[nlen+1]);
@@ -196,7 +209,7 @@ private:
 	static const size_t kPrefixLength = 25; // length of " (eq (diff (bvar %time) %"
 	typedef boost::ptr_map<string, std::set<string> > DependentVariableMap;
 
-	FILE *fp_;
+	EqInserter ei_;
 	const TreeDumper *tree_dumper_;
 	DependentVariableMap dvm_;
 };
@@ -259,15 +272,11 @@ const char kIvQuery[] = "SELECT component, name, initial_value FROM variables WH
 
 class IvDumper : public db::StatementDriver {
 public:
-	IvDumper(const char *path, sqlite3 *db, const TreeDumper *tree_dumper)
+	IvDumper(sqlite3 *db, const TreeDumper *tree_dumper)
 		: db::StatementDriver(db, kIvQuery)
-		, fp_(fopen(path, "w"))
+		, ii_(db)
 		, tree_dumper_(tree_dumper)
 	{
-	}
-
-	~IvDumper() {
-		if (fp_) fclose(fp_);
 	}
 
 	bool Dump() {
@@ -288,7 +297,11 @@ public:
 			}
 			const unsigned char *iv = sqlite3_column_text(stmt(), 2);
 			if (!tree_dumper_->Find((const char *)c, u)) return false;
-			fprintf(fp_, "%s (eq %%%s %s)\n", u, (const char *)n, (const char *)iv);
+
+			size_t blen = strlen((const char *)n) + strlen((const char *)iv);
+			boost::scoped_array<char> buf(new char[blen+8]);
+			sprintf(buf.get(), "(eq %%%s %s)", (const char *)n, (const char *)iv);
+			if (!ii_.Insert(u, buf.get())) return false;
 		}
 		if (e != SQLITE_DONE) {
 			cerr << "failed to step statement: " << e << endl;
@@ -298,7 +311,7 @@ public:
 	}
 
 private:
-	FILE *fp_;
+	IvInserter ii_;
 	const TreeDumper *tree_dumper_;
 };
 
@@ -306,15 +319,12 @@ const char kFunctionQuery[] = "SELECT component, body FROM maths WHERE body LIKE
 
 class FunctionDumper : public db::StatementDriver {
 public:
-	FunctionDumper(const char *path, sqlite3 *db, const TreeDumper *tree_dumper)
+	FunctionDumper(sqlite3 *db, const TreeDumper *tree_dumper)
 		: db::StatementDriver(db, kFunctionQuery)
-		, fp_(fopen(path, "w"))
+		, ei_(db)
+		, ii_(db)
 		, tree_dumper_(tree_dumper)
 	{
-	}
-
-	~FunctionDumper() {
-		if (fp_) fclose(fp_);
 	}
 
 	bool Dump() {
@@ -334,7 +344,10 @@ public:
 				return false;
 			}
 			if (!tree_dumper_->Find((const char *)c, u)) return false;
-			fprintf(fp_, "%s%s\n", u, (const char *)body);
+
+			const char *math = (const char *)&body[1];
+			if (!ei_.Insert(u, math)) return false;
+			if (!ii_.Insert(u, math)) return false;
 		}
 		if (e != SQLITE_DONE) {
 			cerr << "failed to step statement: " << e << endl;
@@ -344,7 +357,8 @@ public:
 	}
 
 private:
-	FILE *fp_;
+	EqInserter ei_;
+	IvInserter ii_;
 	const TreeDumper *tree_dumper_;
 };
 
@@ -417,33 +431,38 @@ private:
 
 } // namespace
 
-bool TranslateCellml(const char *db_file,
-					 const char *iv_file,
-					 const char *function_file,
-					 const char *ode_file)
+bool TranslateCellml(const char *db_file)
 {
 	boost::scoped_array<char> filename(GetModelFilename(db_file));
 	boost::filesystem::path path(filename.get());
 
 	boost::scoped_ptr<db::Driver> driver(new db::Driver(db_file));
 
+	if (!BeginTransaction(driver->db()))
+		return false;
+
+	if (!CreateTable(driver->db(), "input_ivs", "(uuid TEXT, math TEXT)"))
+		return false;
+	if (!CreateTable(driver->db(), "input_eqs", "(uuid TEXT, math TEXT)"))
+		return false;
+
 	boost::scoped_ptr<TreeDumper> tree_dumper(new TreeDumper(driver->db()));
 	if (!tree_dumper->Dump(path)) return false;
 
-	boost::scoped_ptr<OdeDumper> ode_dumper(new OdeDumper(ode_file, driver->db(), tree_dumper.get()));
+	boost::scoped_ptr<OdeDumper> ode_dumper(new OdeDumper(driver->db(), tree_dumper.get()));
 	if (!ode_dumper->Dump()) return false;
 
 	boost::scoped_ptr<NameDumper> name_dumper(new NameDumper(driver->db(), tree_dumper.get()));
 	if (!name_dumper->Dump(ode_dumper.get())) return false;
 
-	boost::scoped_ptr<IvDumper> iv_dumper(new IvDumper(iv_file, driver->db(), tree_dumper.get()));
+	boost::scoped_ptr<IvDumper> iv_dumper(new IvDumper(driver->db(), tree_dumper.get()));
 	if (!iv_dumper->Dump()) return false;
 
-	boost::scoped_ptr<FunctionDumper> function_dumper(new FunctionDumper(function_file, driver->db(), tree_dumper.get()));
+	boost::scoped_ptr<FunctionDumper> function_dumper(new FunctionDumper(driver->db(), tree_dumper.get()));
 	if (!function_dumper->Dump()) return false;
 
 	boost::scoped_ptr<ReachDumper> reach_dumper(new ReachDumper(driver->db(), tree_dumper.get()));
 	if (!reach_dumper->Dump()) return false;
 
-	return true;
+	return CommitTransaction(driver->db());
 }

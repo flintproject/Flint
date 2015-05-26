@@ -37,26 +37,19 @@ FLINT_DLLS := \
     libsqlite3-0
 EXES := \
     csv2isd \
-    flint-assign \
-    flint-combineall \
     flint-compile \
     flint-concat \
     flint-cut \
     flint-enum \
-    flint-euler \
-    flint-event \
     flint-evolve \
     flint-exec \
-    flint-extra \
     flint-file \
     flint-filter \
     flint-flow \
     flint-form \
     flint-generate \
-    flint-impl \
     flint-init \
     flint-isdh \
-    flint-iv \
     flint-lands \
     flint-layout \
     flint-loadconfig \
@@ -66,7 +59,6 @@ EXES := \
     flint-phml \
     flint-phsp \
     flint-phz \
-    flint-rk4 \
     flint-run \
     flint-sbml \
     flint-sedml \
