@@ -19,7 +19,7 @@
 #include <boost/variant/recursive_variant.hpp>
 
 #include "db/query.h"
-#include "db/statement-driver.h"
+#include "db/tac-inserter.hh"
 
 using std::cerr;
 using std::endl;
@@ -641,45 +641,6 @@ struct Grammar : qi::grammar<TIterator, Expr()> {
 	qi::rule<TIterator, std::deque<Expr>()> seq0, seq1, pseq1, lseq1;
 };
 
-class Inserter : db::StatementDriver {
-public:
-	explicit Inserter(sqlite3 *db)
-		: db::StatementDriver(db, "INSERT INTO tacs VALUES (?, ?, ?, ?)")
-	{
-	}
-
-	bool Insert(const char *uuid, const char *name, int nod, const char *body) {
-		int e;
-		e = sqlite3_bind_text(stmt(), 1, uuid, -1, SQLITE_STATIC);
-		if (e != SQLITE_OK) {
-			cerr << "failed to bind uuid: " << e << endl;
-			return false;
-		}
-		e = sqlite3_bind_text(stmt(), 2, name, -1, SQLITE_STATIC);
-		if (e != SQLITE_OK) {
-			cerr << "failed to bind name: " << e << endl;
-			return false;
-		}
-		e = sqlite3_bind_int(stmt(), 3, nod);
-		if (e != SQLITE_OK) {
-			cerr << "failed to bind nod: " << e << endl;
-			return false;
-		}
-		e = sqlite3_bind_text(stmt(), 4, body, -1, SQLITE_STATIC);
-		if (e != SQLITE_OK) {
-			cerr << "failed to bind body: " << e << endl;
-			return false;
-		}
-		e = sqlite3_step(stmt());
-		if (e != SQLITE_DONE) {
-			cerr << "failed to step: " << e << endl;
-			return false;
-		}
-		sqlite3_reset(stmt());
-		return true;
-	}
-};
-
 int Process(void *data, int argc, char **argv, char **names)
 {
 	typedef const char *base_iterator_type;
@@ -692,7 +653,7 @@ int Process(void *data, int argc, char **argv, char **names)
 	static const RealGrammar grammar(tokens);
 
 	(void)names;
-	Inserter *inserter = (Inserter *)data;
+	db::TacInserter *inserter = static_cast<db::TacInserter *>(data);
 	assert(argc == 3);
 	const char *uuid = argv[0];
 	const char *name = argv[1];
@@ -722,7 +683,7 @@ bool Tac(sqlite3 *db)
 	if (!CreateTable(db, "tacs", "(uuid TEXT, name TEXT, nod INTEGER, body TEXT)"))
 		return false;
 
-	Inserter inserter(db);
+	db::TacInserter inserter(db);
 	char *em;
 	int e;
 	e = sqlite3_exec(db, "SELECT * FROM sorts", Process, &inserter, &em);
