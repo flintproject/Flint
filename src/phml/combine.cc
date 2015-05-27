@@ -73,11 +73,11 @@ public:
 	{}
 
 	template<typename TNumber>
-	void Write(const char *name, TNumber x) {
+	bool Write(const char *name, TNumber x) {
 		std::ostringstream oss;
 		oss << "(eq %" << name << ' ' << x << ')';
 		std::string math = oss.str();
-		Insert(math.c_str());
+		return Insert(math.c_str());
 	}
 };
 
@@ -87,25 +87,25 @@ public:
 		: LineWriter(uuid, "combined_functions", db)
 	{}
 
-	void WriteFunction(const char *name, const char *sexp) {
+	bool WriteFunction(const char *name, const char *sexp) {
 		std::ostringstream oss;
 		oss << "(eq %" << name << sexp << ')';
 		std::string math = oss.str();
-		Insert(math.c_str());
+		return Insert(math.c_str());
 	}
 
-	void WriteSet(const char *name, const string &pq_name) {
+	bool WriteSet(const char *name, const string &pq_name) {
 		std::ostringstream oss;
 		oss << "(eq %" << name << " %" << pq_name << ')';
 		std::string math = oss.str();
-		Insert(math.c_str());
+		return Insert(math.c_str());
 	}
 
-	void WriteGet(const string &pq_name, const char *name) {
+	bool WriteGet(const string &pq_name, const char *name) {
 		std::ostringstream oss;
 		oss << "(eq %" << pq_name << " %sbml:" << name << ')';
 		std::string math = oss.str();
-		Insert(math.c_str());
+		return Insert(math.c_str());
 	}
 };
 
@@ -115,12 +115,12 @@ public:
 		: LineWriter(uuid, "combined_odes", db)
 	{}
 
-	void WriteOde(const char *name, const char *sexp) {
+	bool WriteOde(const char *name, const char *sexp) {
 		std::ostringstream oss;
 		oss << "(eq (diff (bvar %time) %" << name << ')'
 			<< sexp << ')';
 		std::string math = oss.str();
-		Insert(math.c_str());
+		return Insert(math.c_str());
 	}
 };
 
@@ -143,11 +143,14 @@ public:
 		BridgeMap::const_iterator it = bm_.find(name);
 		if (it == bm_.end()) {
 			if (!name_writer_.Write('x', name)) return false;
-			value_writer_.Write(name, x);
-			ode_writer_.WriteOde(name, sexp);
+			if (!value_writer_.Write(name, x))
+				return false;
+			if (!ode_writer_.WriteOde(name, sexp))
+				return false;
 		} else {
 			if (!name_writer_.Write('v', name)) return false;
-			function_writer_.WriteSet(name, it->second);
+			if (!function_writer_.WriteSet(name, it->second))
+				return false;
 		}
 		return true;
 	}
@@ -157,10 +160,12 @@ public:
 		BridgeMap::const_iterator it = bm_.find(name);
 		if (it == bm_.end()) {
 			if (!name_writer_.Write('v', name)) return false;
-			function_writer_.WriteFunction(name, sexp);
+			if (!function_writer_.WriteFunction(name, sexp))
+				return false;
 		} else {
 			if (!name_writer_.Write('v', name)) return false;
-			function_writer_.WriteSet(name, it->second);
+			if (!function_writer_.WriteSet(name, it->second))
+				return false;
 		}
 		return true;
 	}
@@ -171,10 +176,12 @@ public:
 		BridgeMap::const_iterator it = bm_.find(name);
 		if (it == bm_.end()) {
 			if (!name_writer_.Write('s', name)) return false;
-			value_writer_.Write(name, x);
+			if (!value_writer_.Write(name, x))
+				return false;
 		} else {
 			if (!name_writer_.Write('v', name)) return false;
-			function_writer_.WriteSet(name, it->second);
+			if (!function_writer_.WriteSet(name, it->second))
+				return false;
 		}
 		return true;
 	}
