@@ -1,5 +1,6 @@
 SUBDIRS = \
 	common \
+	compiler \
 	method \
 	csv2isd \
 	flint-cellml \

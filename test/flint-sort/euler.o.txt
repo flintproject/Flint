@@ -1,5 +1,0 @@
-1
-6ac35158-41ed-11e3-bb0b-53c9de954475 %y#0 (plus %y (times @dt (divide (plus %v %w) pi)))
-6ac35158-41ed-11e3-bb0b-53c9de954475 %x#0 (plus %x (times @dt (minus %y)))
-6ac35158-41ed-11e3-bb0b-53c9de954475 %v#0 (plus %x#0 %y#0)
-6ac35158-41ed-11e3-bb0b-53c9de954475 %w#0 (power exponentiale %v#0)

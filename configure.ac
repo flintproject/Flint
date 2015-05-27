@@ -120,6 +120,7 @@ AC_CONFIG_FILES([Makefile
                  src/Makefile
                  test/Makefile
                  test/base/Makefile
+                 test/compiler/Makefile
                  test/mathml/Makefile
                  test/method/Makefile
                  test/sbml/Makefile
