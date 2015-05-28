@@ -7,6 +7,7 @@
 #include "compiler/sort.h"
 #include "compiler/tac.h"
 #include "db/driver.h"
+#include "db/read-only-driver.hh"
 #include "method.hh"
 
 using std::cerr;
@@ -35,7 +36,7 @@ int main(int argc, char *argv[])
 		return EXIT_FAILURE;
 	}
 
-	db::Driver input(argv[1]);
+	db::ReadOnlyDriver input(argv[1]);
 	const char *table = argv[2];
 	const char *method = argv[3];
 

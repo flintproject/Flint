@@ -10,12 +10,12 @@
 #include <iostream>
 #include <string>
 
-#include <boost/noncopyable.hpp>
 #include <boost/scoped_ptr.hpp>
 
 #include "phml.pb.h"
 
 #include "bc/binary.h"
+#include "db/read-only-driver.hh"
 #include "sqlite3.h"
 
 using std::cerr;
@@ -24,27 +24,22 @@ using std::strcmp;
 
 namespace {
 
-class Driver : boost::noncopyable {
+class Driver : db::ReadOnlyDriver {
 public:
 	Driver(const char *filename, phml::NumericalConfiguration *nc)
-		: nc_(nc),
-		  db_(NULL),
-		  nc_stmt_(NULL),
-		  td_stmt_(NULL)
+		: db::ReadOnlyDriver(filename)
+		, nc_(nc)
+		, nc_stmt_(NULL)
+		, td_stmt_(NULL)
 	{
-		if (sqlite3_open_v2(filename, &db_, SQLITE_OPEN_READONLY, NULL) != SQLITE_OK) {
-			cerr << "failed to open database: " << filename;
-			exit(EXIT_FAILURE);
-		}
-
 		int e;
-		e = sqlite3_prepare_v2(db_, "SELECT * FROM ncs",
+		e = sqlite3_prepare_v2(db(), "SELECT * FROM ncs",
 							   -1, &nc_stmt_, NULL);
 		if (e != SQLITE_OK) {
 			cerr << "failed to prepare statement: " << e << endl;
 			exit(EXIT_FAILURE);
 		}
-		e = sqlite3_prepare_v2(db_, "SELECT unit_id, step FROM tds WHERE module_id IS NULL",
+		e = sqlite3_prepare_v2(db(), "SELECT unit_id, step FROM tds WHERE module_id IS NULL",
 							   -1, &td_stmt_, NULL);
 		if (e != SQLITE_OK) {
 			cerr << "failed to prepare statement: " << e << endl;
@@ -55,7 +50,6 @@ public:
 	~Driver() {
 		sqlite3_finalize(nc_stmt_);
 		sqlite3_finalize(td_stmt_);
-		sqlite3_close(db_);
 	}
 
 	bool Drive() {
@@ -117,7 +111,6 @@ private:
 
 private:
 	phml::NumericalConfiguration *nc_;
-	sqlite3 *db_;
 	sqlite3_stmt *nc_stmt_;
 	sqlite3_stmt *td_stmt_;
 };

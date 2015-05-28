@@ -14,6 +14,7 @@ namespace db {
 
 class TimeseriesLoader : StatementDriver {
 public:
+	// Note that db is for read only.
 	explicit TimeseriesLoader(sqlite3 *db)
 		: StatementDriver(db, "SELECT m.module_id, t.timeseries_id, t.format, t.ref FROM timeseries AS t LEFT JOIN modules AS m ON t.module_rowid = m.rowid")
 		, gen_()

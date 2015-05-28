@@ -9,12 +9,11 @@
 #include <iostream>
 #include <string>
 
-#include <boost/scoped_array.hpp>
 #include <boost/scoped_ptr.hpp>
 
 #include "unit.pb.h"
 
-#include "db/driver.h"
+#include "db/read-only-driver.hh"
 #include "db/statement-driver.h"
 #include "bc/binary.h"
 #include "bc/pack.h"
@@ -28,6 +27,7 @@ namespace {
 
 class ElementLoader : db::StatementDriver {
 public:
+	// Note that db is for read only.
 	explicit ElementLoader(sqlite3 *db)
 		: db::StatementDriver(db, "SELECT unit_id, exponent, factor, multiplier, offset FROM elements WHERE unit_rowid = ?")
 	{
@@ -84,9 +84,9 @@ int main(int argc, char *argv[])
 		return EXIT_SUCCESS;
 	}
 
-	boost::scoped_ptr<db::Driver> driver(new db::Driver(argv[1]));
+	db::ReadOnlyDriver driver(argv[1]);
 	sqlite3_stmt *stmt;
-	int e = sqlite3_prepare_v2(driver->db(),
+	int e = sqlite3_prepare_v2(driver.db(),
 							   "SELECT rowid, unit_id, name FROM units",
 							   -1, &stmt, NULL);
 	if (e != SQLITE_OK) {
@@ -94,7 +94,7 @@ int main(int argc, char *argv[])
 		return EXIT_FAILURE;
 	}
 	{
-		boost::scoped_ptr<ElementLoader> loader(new ElementLoader(driver->db()));
+		ElementLoader loader(driver.db());
 		for (e = sqlite3_step(stmt); e == SQLITE_ROW; e = sqlite3_step(stmt)) {
 			sqlite3_int64 rowid = sqlite3_column_int64(stmt, 0);
 			int unit_id = sqlite3_column_int(stmt, 1);
@@ -102,7 +102,7 @@ int main(int argc, char *argv[])
 			boost::scoped_ptr<unit::Unit> unit(new unit::Unit);
 			unit->set_id(unit_id);
 			unit->set_name(string((const char *)name));
-			if (!loader->Load(rowid, unit.get())) return EXIT_FAILURE;
+			if (!loader.Load(rowid, unit.get())) return EXIT_FAILURE;
 			if (!PackToOstream(*unit, &std::cout)) {
 				cerr << "failed to pack Unit" << endl;
 				return EXIT_FAILURE;

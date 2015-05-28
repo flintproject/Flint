@@ -14,6 +14,7 @@ namespace db {
 
 class SpaceLoader : StatementDriver {
 public:
+	// Note that db is for read only.
 	explicit SpaceLoader(sqlite3 *db)
 		: StatementDriver(db, "SELECT * FROM spaces")
 		, gen_()

@@ -12,6 +12,7 @@ namespace db {
 
 class ReachLoader : StatementDriver {
 public:
+	// Note that db is for read only.
 	explicit ReachLoader(sqlite3 *db)
 		: StatementDriver(db, "SELECT * FROM reaches")
 	{

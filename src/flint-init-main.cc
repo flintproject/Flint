@@ -24,7 +24,7 @@
 #include "bc/locater.h"
 #include "bc/mounter.h"
 #include "bc/pack.h"
-#include "db/driver.h"
+#include "db/read-only-driver.hh"
 #include "db/sprinkle-loader.h"
 #include "filter/cutter.h"
 #include "lo/layout.h"
@@ -232,11 +232,11 @@ int main(int argc, char *argv[])
 	executor->set_target(target.get());
 	// read targets from database, if any
 	if (vm.count("db") > 0) {
-		boost::scoped_ptr<db::Driver> driver(new db::Driver(db_file.c_str()));
+		db::ReadOnlyDriver driver(db_file.c_str());
 		{
-			boost::scoped_ptr<db::SprinkleLoader> loader(new db::SprinkleLoader(driver->db()));
+			db::SprinkleLoader loader(driver.db());
 			boost::scoped_ptr<TargetHandler> handler(new TargetHandler(dom.get(), som.get(), data.get(), target.get()));
-			if (!loader->Load(handler.get())) {
+			if (!loader.Load(handler.get())) {
 				return EXIT_FAILURE;
 			}
 		}

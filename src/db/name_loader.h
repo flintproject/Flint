@@ -15,6 +15,7 @@ namespace db {
 
 class NameLoader : StatementDriver {
 public:
+	// Note that db is for read only.
 	explicit NameLoader(sqlite3 *db)
 		: StatementDriver(db, "SELECT * FROM names UNION ALL SELECT * FROM private_names")
 		, gen_()

@@ -18,14 +18,13 @@
 #include <boost/program_options.hpp>
 #include <boost/ptr_container/ptr_map.hpp>
 #include <boost/ptr_container/ptr_vector.hpp>
-#include <boost/scoped_array.hpp>
 #include <boost/scoped_ptr.hpp>
 #include <boost/uuid/uuid_io.hpp>
 
 #include "lo.pb.h"
 
 #include "bc/index.h"
-#include "db/driver.h"
+#include "db/read-only-driver.hh"
 #include "db/statement-driver.h"
 #include "filter/spec_loader.h"
 #include "lo/layout_loader.h"
@@ -42,6 +41,7 @@ namespace {
 
 class TimeUnitLoader : db::StatementDriver {
 public:
+	// Note that db is for read only.
 	TimeUnitLoader(sqlite3 *db)
 		: db::StatementDriver(db, "SELECT * from time_unit")
 	{
@@ -197,10 +197,10 @@ int main(int argc, char *argv[])
 
 	string time_unit;
 	{
-		boost::scoped_ptr<db::Driver> driver(new db::Driver(db_file.c_str()));
+		db::ReadOnlyDriver driver(db_file.c_str());
 		{
-			boost::scoped_ptr<TimeUnitLoader> loader(new TimeUnitLoader(driver->db()));
-			if (!loader->Load(&time_unit)) return EXIT_FAILURE;
+			TimeUnitLoader loader(driver.db());
+			if (!loader.Load(&time_unit)) return EXIT_FAILURE;
 		}
 	}
 

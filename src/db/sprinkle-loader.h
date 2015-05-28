@@ -15,6 +15,7 @@ namespace db {
 
 class SprinkleLoader : StatementDriver {
 public:
+	// Note that db is for read only.
 	explicit SprinkleLoader(sqlite3 *db)
 		: StatementDriver(db, "SELECT * FROM sprinkles")
 	{

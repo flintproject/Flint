@@ -14,6 +14,7 @@ namespace db {
 
 class InputPortLoader : StatementDriver {
 public:
+	// Note that db is for read only.
 	explicit InputPortLoader(sqlite3 *db)
 		: StatementDriver(db, "SELECT m.module_id, p.pq_id, p.type, r.port_id FROM refports AS r LEFT JOIN pqs AS p ON r.pq_rowid = p.rowid LEFT JOIN modules AS m ON p.module_rowid = m.rowid")
 		, gen_()

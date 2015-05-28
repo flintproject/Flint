@@ -14,6 +14,7 @@ namespace db {
 
 class BridgeLoader : StatementDriver {
 public:
+	// Note that db is for read only.
 	explicit BridgeLoader(sqlite3 *db)
 		: StatementDriver(db, "SELECT m.module_id, p.pq_id, b.direction, b.sub_type, b.connector FROM bridges AS b LEFT JOIN pqs AS p ON b.pq_rowid = p.rowid LEFT JOIN modules AS m ON p.module_rowid = m.rowid")
 		, gen_()

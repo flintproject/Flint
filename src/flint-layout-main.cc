@@ -24,8 +24,8 @@
 #include "lo.pb.h"
 
 #include "bc/pack.h"
-#include "db/driver.h"
 #include "db/name_loader.h"
+#include "db/read-only-driver.hh"
 #include "db/space_loader.h"
 #include "db/statement-driver.h"
 
@@ -121,6 +121,7 @@ typedef boost::ptr_map<boost::uuids::uuid, NodeVector> TMap;
 
 class TreeLoader : db::StatementDriver {
 public:
+	// Note that db is for read only.
 	explicit TreeLoader(sqlite3 *db)
 		: db::StatementDriver(db, "SELECT * FROM scopes")
 		, gen_()
@@ -188,26 +189,26 @@ int main(int argc, char *argv[])
 		return (print_help == 1) ? EXIT_SUCCESS : EXIT_FAILURE;
 	}
 
-	boost::scoped_ptr<db::Driver> driver(new db::Driver(db_file.c_str()));
+	db::ReadOnlyDriver driver(db_file.c_str());
 
 	boost::scoped_ptr<ModuleMap> mm(new ModuleMap);
 	{
-		boost::scoped_ptr<db::SpaceLoader> loader(new db::SpaceLoader(driver->db()));
+		db::SpaceLoader loader(driver.db());
 		boost::scoped_ptr<ModuleHandler> handler(new ModuleHandler(mm.get()));
-		if (!loader->Load(handler.get())) return EXIT_FAILURE;
+		if (!loader.Load(handler.get())) return EXIT_FAILURE;
 	}
 
 	boost::scoped_ptr<NameMap> nm(new NameMap);
 	{
-		boost::scoped_ptr<db::NameLoader> loader(new db::NameLoader(driver->db()));
+		db::NameLoader loader(driver.db());
 		boost::scoped_ptr<NameHandler> handler(new NameHandler(nm.get()));
-		if (!loader->Load(handler.get())) return EXIT_FAILURE;
+		if (!loader.Load(handler.get())) return EXIT_FAILURE;
 	}
 
 	TMap tm;
 	{
-		boost::scoped_ptr<TreeLoader> loader(new TreeLoader(driver->db()));
-		if (!loader->Load(&tm)) return EXIT_FAILURE;
+		TreeLoader loader(driver.db());
+		if (!loader.Load(&tm)) return EXIT_FAILURE;
 	}
 
 	std::ofstream ofs(output_file.c_str(), std::ios::out|std::ios::binary);

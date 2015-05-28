@@ -14,6 +14,7 @@ namespace db {
 
 class TsrefLoader : StatementDriver {
 public:
+	// Note that db is for read only.
 	explicit TsrefLoader(sqlite3 *db)
 		: StatementDriver(db, "SELECT m.module_id, p.pq_id, r.timeseries_id, r.element_id FROM refts AS r LEFT JOIN pqs AS p ON r.pq_rowid = p.rowid LEFT JOIN modules AS m ON p.module_rowid = m.rowid")
 		, gen_()

@@ -15,8 +15,8 @@
 #include "lo.pb.h"
 
 #include "bc/index.h"
-#include "db/driver.h"
 #include "db/reach-loader.h"
+#include "db/read-only-driver.hh"
 #include "lo/layout_loader.h"
 
 using std::cerr;
@@ -131,11 +131,11 @@ int main(int argc, char *argv[])
 		if (!loader->Load(layout.get())) return EXIT_FAILURE;
 	}
 
-	boost::scoped_ptr<db::Driver> driver(new db::Driver(argv[1]));
 	{
-		boost::scoped_ptr<db::ReachLoader> loader(new db::ReachLoader(driver->db()));
+		db::ReadOnlyDriver driver(argv[1]);
+		db::ReachLoader loader(driver.db());
 		boost::scoped_ptr<ReachHandler> handler(new ReachHandler(layout.get()));
-		if (!loader->Load(handler.get())) return EXIT_FAILURE;
+		if (!loader.Load(handler.get())) return EXIT_FAILURE;
 	}
 
 	google::protobuf::ShutdownProtobufLibrary();

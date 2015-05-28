@@ -42,24 +42,28 @@ namespace method {
 
 /*
  * Generate imperative AST for assignment statements.
+ * Note that db is for read only.
  * Return true in case of success, false otherwise.
  */
 bool Assign(sqlite3 *db, const char *input, sqlite3 *output);
 
 /*
  * Generate imperative AST for event statements.
+ * Note that db is for read only.
  * Return true in case of success, false otherwise.
  */
 bool Event(sqlite3 *db, const char *input, sqlite3 *output);
 
 /*
  * Generate imperative AST from equations by Euler method.
+ * Note that db is for read only.
  * Return true in case of success, false otherwise.
  */
 bool Euler(sqlite3 *db, const char *input, sqlite3 *output);
 
 /*
  * Generate imperative AST from equations by Runge-Kutta 4th method.
+ * Note that db is for read only.
  * Return true in case of success, false otherwise.
  */
 bool Rk4(sqlite3 *db, const char *input, sqlite3 *output);

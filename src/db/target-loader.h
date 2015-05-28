@@ -16,6 +16,7 @@ namespace db {
 
 class TargetLoader : StatementDriver {
 public:
+	// Note that db is for read only.
 	explicit TargetLoader(sqlite3 *db)
 		: StatementDriver(db, "SELECT instances.module_id, tms.module_id, tpqs.pq_id, tpqs.math FROM tpqs LEFT JOIN tms ON tpqs.tm_rowid = tms.rowid LEFT JOIN instances ON tms.instance_rowid = instances.rowid")
 		, gen_()

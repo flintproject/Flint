@@ -22,6 +22,8 @@
 #include "lo.pb.h"
 
 #include "bc/index.h"
+#include "db/read-only-driver.hh"
+#include "db/statement-driver.h"
 #include "lo/layout_loader.h"
 
 #include "sqlite3.h"
@@ -42,6 +44,30 @@ using std::string;
 using std::strlen;
 
 namespace {
+
+class FormatLoader : db::StatementDriver {
+public:
+	// Note that db is for read only.
+	explicit FormatLoader(sqlite3 *db)
+		: db::StatementDriver(db, "SELECT format FROM model")
+	{}
+
+	// the return value should be freed by caller.
+	char *Load()
+	{
+		int e;
+		e = sqlite3_step(stmt());
+		if (e != SQLITE_ROW) {
+			cerr << "failed to step statement: " << e << endl;
+			return NULL;
+		}
+		const char *f = (const char *)sqlite3_column_text(stmt(), 0);
+		size_t len = strlen(f);
+		char *format = new char[len+1];
+		strcpy(format, f);
+		return format;
+	}
+};
 
 typedef std::map<int, int> TargetMap;
 
@@ -105,6 +131,35 @@ private:
 };
 
 typedef boost::ptr_map<string, std::map<string, double> > TargetValueMap;
+
+class TargetLoader : db::StatementDriver {
+public:
+	// Note that db is for read only.
+	explicit TargetLoader(sqlite3 *db)
+		: db::StatementDriver(db, "SELECT uuid, id FROM phsp_targets WHERE rowid = ?")
+	{}
+
+	bool Load(const TargetMap &tm, const double *data, TargetValueMap *tvm) {
+		boost::uuids::uuid u;
+		boost::uuids::string_generator gen;
+		for (TargetMap::const_iterator it=tm.begin();it!=tm.end();++it) {
+			int e = sqlite3_bind_int(stmt(), 1, it->first);
+			if (e != SQLITE_OK) {
+				cerr << "failed to bind rowid: " << e << endl;
+				return false;
+			}
+			e = sqlite3_step(stmt());
+			if (e != SQLITE_ROW) {
+				cerr << "missing row with rowid " << it->first << " in phsp_targets" << endl;
+				return false;
+			}
+			u = gen((const char *)sqlite3_column_text(stmt(), 0));
+			(*tvm)[string((const char *)u.data, 16)].insert(make_pair((const char *)sqlite3_column_text(stmt(), 1), data[it->second]));
+			sqlite3_reset(stmt());
+		}
+		return true;
+	}
+};
 
 class TargetLayout : boost::noncopyable {
 public:
@@ -258,56 +313,22 @@ int main(int argc, char *argv[])
 	}
 	fclose(fp);
 
-	sqlite3 *db;
-	if (sqlite3_open(db_file.c_str(), &db) != SQLITE_OK) {
-		cerr << "could not open database: " << db_file << endl;
-		return EXIT_FAILURE;
-	}
-	sqlite3_stmt *stmt;
-	// check model's format
-	int e = sqlite3_prepare_v2(db, "SELECT format FROM model", -1, &stmt, NULL);
-	if (e != SQLITE_OK) {
-		cerr << "failed to prepare statement: "
-			 << e << " (" << __FILE__ << ":" << __LINE__ << ")"
-			 << endl;
-		return -2;
-	}
-	e = sqlite3_step(stmt);
-	if (e != SQLITE_ROW) {
-		cerr << "failed to step statement: " << e << endl;
-		return -2;
-	}
-	const char *f = (const char *)sqlite3_column_text(stmt, 0);
-	size_t len = strlen(f);
-	boost::scoped_array<char> format(new char[len+1]);
-	strcpy(format.get(), f);
-	sqlite3_finalize(stmt);
-
-	e = sqlite3_prepare_v2(db, "SELECT uuid, id FROM phsp_targets WHERE rowid = ?", -1, &stmt, NULL);
-	if (e != SQLITE_OK) {
-		/* TODO */
-		return EXIT_FAILURE;
-	}
+	boost::scoped_array<char> format;
 	TargetValueMap tvm;
-	boost::uuids::uuid u;
-	boost::uuids::string_generator gen;
-	for (TargetMap::const_iterator it=tm.begin();it!=tm.end();++it) {
-		e = sqlite3_bind_int(stmt, 1, it->first);
-		if (e != SQLITE_OK) {
-			/* TODO */
-			return EXIT_FAILURE;
+	{
+		db::ReadOnlyDriver driver(db_file.c_str());
+		// check model's format
+		{
+			FormatLoader loader(driver.db());
+			format.reset(loader.Load());
+			if (!format) return EXIT_FAILURE;
 		}
-		e = sqlite3_step(stmt);
-		if (e != SQLITE_ROW) {
-			cerr << "missing row with rowid " << it->first << " in phsp_targets" << endl;
-			return EXIT_FAILURE;
+		{
+			TargetLoader loader(driver.db());
+			if (!loader.Load(tm, data.get(), &tvm))
+				return EXIT_FAILURE;
 		}
-		u = gen((const char *)sqlite3_column_text(stmt, 0));
-		tvm[string((const char *)u.data, 16)].insert(make_pair((const char *)sqlite3_column_text(stmt, 1), data[it->second]));
-		sqlite3_reset(stmt);
 	}
-	sqlite3_finalize(stmt);
-	sqlite3_close(db);
 
 	fp = fopen(target_data_file.c_str(), "r+b");
 	if (!fp) {

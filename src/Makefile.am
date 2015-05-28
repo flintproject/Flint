@@ -113,6 +113,7 @@ libflintxx_la_SOURCES = \
     branch.cc \
     cellml/parser.cc \
     cellml/translator.cc \
+    db/read-only-driver.cc \
     compiler/bcc.cc \
     compiler/sort.cc \
     compiler/tac.cc \

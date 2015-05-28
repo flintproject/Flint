@@ -14,6 +14,7 @@ namespace db {
 
 class ScopeLoader : StatementDriver  {
 public:
+	// Note that db is for read only.
 	explicit ScopeLoader(sqlite3 *db)
 		: StatementDriver(db, "SELECT * FROM scopes")
 		, gen_()

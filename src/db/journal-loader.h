@@ -14,6 +14,7 @@ namespace db {
 
 class JournalLoader : StatementDriver {
 public:
+	// Note that db is for read only.
 	explicit JournalLoader(sqlite3 *db)
 		: StatementDriver(db, "SELECT * FROM journals")
 		, gen_()

@@ -14,6 +14,7 @@ namespace db {
 
 class SpanLoader : StatementDriver {
 public:
+	// Note that db is for read only.
 	explicit SpanLoader(sqlite3 *db)
 		: StatementDriver(db, "SELECT * FROM spans")
 		, gen_()
