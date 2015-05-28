@@ -175,9 +175,6 @@
           <Component Id='flint_track' Guid='2fc5cda0-f5bd-11e2-837a-076fee1bcf8e'>
             <File Id='flint_track.exe' Name='flint-track.exe' DiskId='1' Source='flint-track.exe' />
           </Component>
-          <Component Id='flint_tsc' Guid='664b8e1c-8403-11e3-bbc7-0bc1e424c0b7'>
-            <File Id='flint_tsc.exe' Name='flint-tsc.exe' DiskId='1' Source='flint-tsc.exe' />
-          </Component>
           <Component Id='flint_unit' Guid='2fc686f0-f5bd-11e2-9c23-83875620380b'>
             <File Id='flint_unit.exe' Name='flint-unit.exe' DiskId='1' Source='flint-unit.exe' />
           </Component>
@@ -351,7 +348,6 @@
       <ComponentRef Id='flint_taskspec' />
       <ComponentRef Id='flint_timer' />
       <ComponentRef Id='flint_track' />
-      <ComponentRef Id='flint_tsc' />
       <ComponentRef Id='flint_unit' />
       <ComponentRef Id='flint_unitoftime' />
       <ComponentRef Id='flint_var' />

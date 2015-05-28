@@ -8,32 +8,33 @@
 #include <fstream>
 #include <set>
 
+#define BOOST_FILESYSTEM_NO_DEPRECATED
+#include <boost/filesystem.hpp>
+#include <boost/filesystem/fstream.hpp>
 #define BOOST_DATE_TIME_NO_LIB
 #include <boost/interprocess/file_mapping.hpp>
 #include <boost/interprocess/mapped_region.hpp>
 #include <boost/math/special_functions/fpclassify.hpp>
 #include <boost/noncopyable.hpp>
 #include <boost/ptr_container/ptr_vector.hpp>
+#include <boost/scoped_ptr.hpp>
 
 #include "isdf/reader.h"
 
 class TimeseriesData : boost::noncopyable {
 public:
-	explicit TimeseriesData(const char *file)
-	: file_(file),
-	  fm_(file, boost::interprocess::read_only),
-	  offset_(),
-	  step_size_(),
-	  ts_()
-	{}
-
-	~TimeseriesData() {}
+	explicit TimeseriesData(boost::filesystem::path path)
+		: path_(path)
+	{
+		std::string path_s = path_.string();
+		fm_ = boost::interprocess::file_mapping(path_s.c_str(), boost::interprocess::read_only);
+	}
 
 	bool Load() {
-		std::ifstream ifs(file_, std::ios::in|std::ios::binary);
+		boost::filesystem::ifstream ifs(path_, std::ios::in|std::ios::binary);
 		if (!ifs.is_open()) {
 			std::cerr << "failed to open timeseries data: "
-					  << file_
+					  << path_
 					  << std::endl;
 			return false;
 		}
@@ -54,7 +55,7 @@ public:
 		std::memcpy(&t, buf, sizeof(t));
 		if (!ts_.insert(t).second) {
 			std::cerr << "duplicate time step in "
-					  << file_
+					  << path_
 					  << ": "
 					  << t
 					  << std::endl;
@@ -117,7 +118,7 @@ private:
 		}
 	}
 
-	const char *file_;
+	boost::filesystem::path path_;
 	boost::interprocess::file_mapping fm_;
 	size_t offset_;
 	boost::uint32_t step_size_;
@@ -125,56 +126,5 @@ private:
 };
 
 typedef boost::ptr_vector<TimeseriesData> TimeseriesVector;
-
-class TimeseriesLoader : boost::noncopyable {
-public:
-	explicit TimeseriesLoader(const char *file)	: file_(file) {}
-
-	bool Load(TimeseriesVector *tv) {
-		assert(tv);
-
-		// check whether the file is empty or not
-		FILE *fp = std::fopen(file_, "rb");
-		if (!fp) {
-			std::perror(file_);
-			return false;
-		}
-		int r = std::fseek(fp, 0L, SEEK_END);
-		if (r < 0) {
-			std::perror(file_);
-			std::fclose(fp);
-			return false;
-		}
-		long s = std::ftell(fp);
-		if (s < 0) {
-			std::perror(file_);
-			std::fclose(fp);
-			return false;
-		}
-		if (s == 0) { // OK, it's empty. Nothing to do
-			std::fclose(fp);
-			return true;
-		}
-		std::fclose(fp);
-
-		boost::interprocess::file_mapping fm(file_, boost::interprocess::read_only);
-		boost::interprocess::mapped_region mr(fm, boost::interprocess::read_only);
-		char *addr = static_cast<char *>(mr.get_address());
-		size_t size = mr.get_size();
-		assert(size > 0);
-		char *p = addr;
-		do {
-			tv->push_back(new TimeseriesData(p));
-			while (*p++) ;
-		} while (p < addr + size);
-		for (TimeseriesVector::iterator it=tv->begin();it!=tv->end();++it) {
-			if (!it->Load()) return false;
-		}
-		return true;
-	}
-
-private:
-	const char *file_;
-};
 
 #endif

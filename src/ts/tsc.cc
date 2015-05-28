@@ -1,4 +1,6 @@
 /* -*- Mode: C++; tab-width: 4; indent-tabs-mode: t; c-basic-offset: 4 -*- vim:set ts=4 sw=4 sts=4 noet: */
+#include "ts.hh"
+
 #ifdef HAVE_CONFIG_H
 #include "config.h"
 #endif
@@ -16,8 +18,10 @@
 
 #define BOOST_FILESYSTEM_NO_DEPRECATED
 #include <boost/filesystem.hpp>
+#include <boost/filesystem/fstream.hpp>
 #include <boost/noncopyable.hpp>
 #include <boost/ptr_container/ptr_map.hpp>
+#include <boost/scoped_array.hpp>
 #include <boost/scoped_ptr.hpp>
 #include <boost/uuid/uuid.hpp>
 #include <boost/uuid/uuid_io.hpp>
@@ -30,15 +34,16 @@
 #include "db/timeseries-loader.h"
 #include "db/tsref-loader.h"
 #include "isdf/reader.h"
+#include "utf8path.h"
 
 using std::cerr;
-using std::cout;
 using std::endl;
 using std::make_pair;
 using std::map;
 using std::strcmp;
 using std::string;
-using std::strlen;
+
+namespace ts {
 
 namespace {
 
@@ -60,7 +65,7 @@ private:
 	PqMap *map_;
 };
 
-typedef std::set<string> PathSet;
+typedef std::set<boost::filesystem::path> PathSet;
 typedef boost::ptr_map<boost::uuids::uuid, map<int, PathSet::iterator> > TimeseriesMap;
 
 class TimeseriesHandler : boost::noncopyable {
@@ -71,6 +76,7 @@ public:
 	{}
 
 	bool Handle(boost::uuids::uuid uuid, int ts_id, const char *format, const char *ref) {
+		boost::filesystem::path ref_path(GetPathFromUtf8(ref));
 		if (strcmp(format, "csv") == 0) {
 			boost::system::error_code ec;
 			boost::filesystem::path temp_path("tsc.%%%%-%%%%-%%%%-%%%%.isd");
@@ -84,9 +90,8 @@ public:
 				return false;
 			}
 			boost::filesystem::path a_path = boost::filesystem::absolute(isd_path);
-			std::string a_str = a_path.string();
-			if (!ExportIsdFromCsv(ref, a_str.c_str())) return false;
-			PathSet::iterator it = ps_->insert(a_str).first;
+			if (!ExportIsdFromCsv(ref_path, a_path)) return false;
+			PathSet::iterator it = ps_->insert(a_path).first;
 			(*tm_)[uuid].insert(make_pair(ts_id, it));
 			return true;
 		}
@@ -94,8 +99,7 @@ public:
 			cerr << "unknown format: " << format << endl;
 			return false;
 		}
-		string path(ref);
-		PathSet::iterator it = ps_->insert(path).first;
+		PathSet::iterator it = ps_->insert(ref_path).first;
 		(*tm_)[uuid].insert(make_pair(ts_id, it));
 		return true;
 	}
@@ -103,6 +107,31 @@ public:
 private:
 	PathSet *ps_;
 	TimeseriesMap *tm_;
+};
+
+class TsfilesInserter : db::StatementDriver {
+public:
+	explicit TsfilesInserter(sqlite3 *db)
+		: db::StatementDriver(db, "INSERT INTO tsfiles VALUES (?)")
+	{}
+
+	bool Insert(const boost::filesystem::path &path)
+	{
+		boost::scoped_array<char> filename(GetUtf8FromPath(path));
+		int e;
+		e = sqlite3_bind_text(stmt(), 1, filename.get(), -1, NULL);
+		if (e != SQLITE_OK) {
+			cerr << "failed to bind filename: " << e << endl;
+			return false;
+		}
+		e = sqlite3_step(stmt());
+		if (e != SQLITE_DONE) {
+			cerr << "failed to step: " << e << endl;
+			return false;
+		}
+		sqlite3_reset(stmt());
+		return true;
+	}
 };
 
 typedef map<string, boost::uint32_t> ColumnMap;
@@ -123,7 +152,10 @@ private:
 
 class IsdfLoader : boost::noncopyable {
 public:
-	explicit IsdfLoader(const char *file) : file_(file), ifs_(file, std::ios::in|std::ios::binary) {}
+	explicit IsdfLoader(const boost::filesystem::path &path)
+		: path_(path)
+		, ifs_(path, std::ios::in|std::ios::binary)
+	{}
 
 	~IsdfLoader() {
 		if (ifs_.is_open()) ifs_.close();
@@ -132,7 +164,7 @@ public:
 	bool Load(ColumnMap *cm) {
 		if (!ifs_.is_open()) {
 			cerr << "failed to open ISDF file: "
-				 << file_
+				 << path_
 				 << endl;
 			return false;
 		}
@@ -144,11 +176,11 @@ public:
 	}
 
 private:
-	const char *file_;
-	std::ifstream ifs_;
+	boost::filesystem::path path_;
+	boost::filesystem::ifstream ifs_;
 };
 
-typedef boost::ptr_map<string, ColumnMap> IsdfMap;
+typedef boost::ptr_map<boost::filesystem::path, ColumnMap> IsdfMap;
 
 class TsrefHandler : db::EqInserter {
 public:
@@ -229,73 +261,49 @@ private:
 	IsdfMap *im_;
 };
 
-void usage()
-{
-	cerr << "usage: flint-tsc DB ENTRIES" << endl;
 }
 
-} // namespace
-
-int main(int argc, char *argv[])
+bool Tsc(sqlite3 *db)
 {
-	if ( argc == 2 && (strcmp(argv[1], "-h") == 0 || strcmp(argv[1], "--help") == 0) ) {
-		usage();
-		return EXIT_SUCCESS;
-	}
-	if (argc != 3) {
-		usage();
-		return EXIT_FAILURE;
-	}
-
-	boost::scoped_ptr<db::Driver> driver(new db::Driver(argv[1]));
-	sqlite3 *db = driver->db();
-
 	boost::scoped_ptr<PqMap> pqm(new PqMap);
 	{
 		boost::scoped_ptr<db::NameLoader> loader(new db::NameLoader(db));
 		boost::scoped_ptr<PqHandler> handler(new PqHandler(pqm.get()));
-		if (!loader->Load(handler.get())) return EXIT_FAILURE;
+		if (!loader->Load(handler.get())) return false;
 	}
 	boost::scoped_ptr<PathSet> ps(new PathSet);
 	boost::scoped_ptr<TimeseriesMap> tm(new TimeseriesMap);
 	{
 		boost::scoped_ptr<db::TimeseriesLoader> loader(new db::TimeseriesLoader(db));
 		boost::scoped_ptr<TimeseriesHandler> handler(new TimeseriesHandler(ps.get(), tm.get()));
-		if (!loader->Load(handler.get())) return EXIT_FAILURE;
+		if (!loader->Load(handler.get())) return false;
 	}
+	if (!BeginTransaction(db))
+		return false;
 	boost::scoped_ptr<IsdfMap> im(new IsdfMap);
 	{
-		FILE *fp = fopen(argv[2], "wb");
-		if (!fp) {
-			cerr << "failed to open " << argv[2] << endl;
-			return EXIT_FAILURE;
-		}
-		for (PathSet::iterator it=ps->begin(); it!=ps->end(); ++it) {
-			const char *p = it->c_str();
-			size_t s = strlen(p);
-			fwrite(p, s, 1, fp);
-			fputc('\0', fp);
+		TsfilesInserter ti(db);
+		for (PathSet::const_iterator it=ps->begin();it!=ps->end();++it) {
+			boost::filesystem::path p = *it;
+			if (!ti.Insert(p)) return false;
 
 			ColumnMap *cm = new ColumnMap;
 			IsdfLoader loader(p);
 			if (!loader.Load(cm)) {
 				delete cm;
-				fclose(fp);
-				return EXIT_FAILURE;
+				return false;
 			}
-			string path(p);
-			im->insert(path, cm);
+			im->insert(p, cm);
 		}
-		fclose(fp);
 	}
-	if (!BeginTransaction(db))
-		return EXIT_FAILURE;
 	{
 		boost::scoped_ptr<db::TsrefLoader> loader(new db::TsrefLoader(db));
 		boost::scoped_ptr<TsrefHandler> handler(new TsrefHandler(db, pqm.get(), ps.get(), tm.get(), im.get()));
 		if (!loader->Load(handler.get())) {
-			return EXIT_FAILURE;
+			return false;
 		}
 	}
-	return CommitTransaction(db) ? EXIT_SUCCESS : EXIT_FAILURE;
+	return CommitTransaction(db);
+}
+
 }

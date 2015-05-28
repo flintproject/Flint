@@ -75,9 +75,11 @@ typedef std::map<boost::uint32_t, boost::uint32_t> UnitLengthMap;
 
 } // namespace
 
-bool ExportIsdFromCsv(const char *input_file, const char *output_file)
+bool ExportIsdFromCsv(const boost::filesystem::path &input_path,
+					  const boost::filesystem::path &output_path)
 {
-	boost::interprocess::file_mapping ifm(input_file, boost::interprocess::read_only);
+	std::string input_file = input_path.string();
+	boost::interprocess::file_mapping ifm(input_file.c_str(), boost::interprocess::read_only);
 	boost::interprocess::mapped_region imr(ifm, boost::interprocess::read_only);
 	char *addr = static_cast<char *>(imr.get_address());
 	size_t s = imr.get_size();
@@ -167,9 +169,10 @@ bool ExportIsdFromCsv(const char *input_file, const char *output_file)
 	header.num_bytes_descs = num_bytes_descs;
 	header.num_bytes_units = num_bytes_units;
 
-	FILE *ofp = std::fopen(output_file, "wb");
+	std::string output_file = output_path.string();
+	FILE *ofp = std::fopen(output_file.c_str(), "wb");
 	if (!ofp) {
-		std::perror(output_file);
+		std::perror(output_file.c_str());
 		return false;
 	}
 	if (fwrite(&header, sizeof(header), 1, ofp) != 1) {

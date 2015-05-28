@@ -15,7 +15,6 @@ SUBDIRS = \
 	flint-sbml \
 	flint-taskpref \
 	flint-taskspec \
-	flint-tsc \
 	flint-unit \
 	isd2csv \
 	isdbswap \

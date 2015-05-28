@@ -34,6 +34,7 @@
 #include "span.h"
 #include "sprinkle.h"
 #include "sqlite3.h"
+#include "ts.hh"
 #include "utf8path.h"
 
 using std::atoi;
@@ -3693,6 +3694,7 @@ const Schema kSubsequentTables[] = {
 	{"combined_functions", "(uuid TEXT, math TEXT)"},
 	{"combined_odes", "(uuid TEXT, math TEXT)"},
 	{"tscs", "(uuid TEXT, math TEXT)"},
+	{"tsfiles", "(filename TEXT)"},
 };
 
 void CreateTablesOrDie(sqlite3 *db, const Schema *tables, size_t n)
@@ -3849,6 +3851,8 @@ int main(int argc, char *argv[])
 		return EXIT_FAILURE;
 
 	if (!phml::CombineAll(db))
+		return EXIT_FAILURE;
+	if (!ts::Tsc(db))
 		return EXIT_FAILURE;
 	return EXIT_SUCCESS;
 }

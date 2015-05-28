@@ -32,6 +32,7 @@
 #include "runtime/processor.h"
 #include "runtime/timeseries.h"
 #include "text/flow_loader.h"
+#include "ts.hh"
 
 namespace po = boost::program_options;
 
@@ -175,7 +176,7 @@ int main(int argc, char *argv[])
 	po::positional_options_description popts;
 	po::variables_map vm;
 	string layout_file, bc_file, flow_file, filter_file, output_file;
-	string db_file, input_timeseries_file;
+	string db_file;
 	int print_help = 0;
 
 	opts.add_options()
@@ -184,7 +185,6 @@ int main(int argc, char *argv[])
 		("flow", po::value<string>(&flow_file), "Input flow file")
 		("filter", po::value<string>(&filter_file), "Input filter file")
 		("db", po::value<string>(&db_file), "Input database file")
-		("input-timeseries", po::value<string>(&input_timeseries_file), "Input timeseries file")
 		("output", po::value<string>(&output_file), "Output file")
 		("help,h", "Show this message");
 	popts.add("layout", 1).add("bc", 1).add("flow", 1).add("output", 1);
@@ -230,6 +230,9 @@ int main(int argc, char *argv[])
 
 	boost::scoped_array<bool> target(new bool[layer_size]()); // default-initialized
 	executor->set_target(target.get());
+
+	// arrange input timeseries data
+	boost::scoped_ptr<TimeseriesVector> tv;
 	// read targets from database, if any
 	if (vm.count("db") > 0) {
 		db::ReadOnlyDriver driver(db_file.c_str());
@@ -239,6 +242,12 @@ int main(int argc, char *argv[])
 			if (!loader.Load(handler.get())) {
 				return EXIT_FAILURE;
 			}
+		}
+		{
+			tv.reset(new TimeseriesVector);
+			if (!ts::LoadTimeseriesVector(driver.db(), tv.get()))
+				return EXIT_FAILURE;
+			processor->set_tv(tv.get());
 		}
 	}
 
@@ -277,15 +286,6 @@ int main(int argc, char *argv[])
 	}
 
 	if (!processor->SolveDependencies(nol, inbound.get(), outbound.get(), false)) return EXIT_FAILURE;
-
-	// arrange input timeseries data
-	boost::scoped_ptr<TimeseriesVector> tv;
-	if (vm.count("input-timeseries")) {
-		tv.reset(new TimeseriesVector);
-		TimeseriesLoader loader(input_timeseries_file.c_str());
-		if (!loader.Load(tv.get())) return EXIT_FAILURE;
-		processor->set_tv(tv.get());
-	}
 
 	// calculate max number of data of block
 	int max_nod = processor->GetMaxNumberOfData();

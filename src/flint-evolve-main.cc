@@ -25,6 +25,7 @@
 #include "bc/locater.h"
 #include "bc/mounter.h"
 #include "bc/pack.h"
+#include "db/read-only-driver.hh"
 #include "filter/cutter.h"
 #include "lo/layout.h"
 #include "lo/layout_loader.h"
@@ -32,6 +33,7 @@
 #include "runtime/processor.h"
 #include "runtime/timeseries.h"
 #include "text/flow_loader.h"
+#include "ts.hh"
 
 namespace po = boost::program_options;
 
@@ -247,7 +249,7 @@ int main(int argc, char *argv[])
 	string layout_file, bc_file, pre_file, post_file, flow_file, filter_file;
 	string input_data_file, output_data_file;
 	string input_history_file, output_history_file;
-	string input_timeseries_file;
+	string db_file;
 	string control_file, status_file;
 	size_t granularity = 0;
 	string output_file;
@@ -262,7 +264,7 @@ int main(int argc, char *argv[])
 		("filter", po::value<string>(&filter_file), "Input filter file")
 		("input-data", po::value<string>(&input_data_file), "Input data file")
 		("input-history", po::value<string>(&input_history_file), "Input history file")
-		("input-timeseries", po::value<string>(&input_timeseries_file), "Input timeseries file")
+		("db", po::value<string>(&db_file), "Input database file")
 		("control", po::value<string>(&control_file), "Input control file")
 		("output-data", po::value<string>(&output_data_file), "Output data file")
 		("output-history", po::value<string>(&output_history_file), "Output history file")
@@ -429,10 +431,11 @@ int main(int argc, char *argv[])
 
 	// arrange input timeseries data
 	boost::scoped_ptr<TimeseriesVector> tv;
-	if (vm.count("input-timeseries")) {
+	if (vm.count("db")) {
+		db::ReadOnlyDriver driver(db_file.c_str());
 		tv.reset(new TimeseriesVector);
-		TimeseriesLoader loader(input_timeseries_file.c_str());
-		if (!loader.Load(tv.get())) return EXIT_FAILURE;
+		if (!ts::LoadTimeseriesVector(driver.db(), tv.get()))
+			return EXIT_FAILURE;
 		processor->set_tv(tv.get());
 		if (with_pre) preprocessor->set_tv(tv.get());
 		if (with_post) postprocessor->set_tv(tv.get());

@@ -67,7 +67,6 @@ bin_PROGRAMS = \
 	flint-taskspec \
 	flint-timer \
 	flint-track \
-	flint-tsc \
 	flint-unit \
 	flint-unitoftime \
 	flint-var \
@@ -136,6 +135,8 @@ libflintxx_la_SOURCES = \
     span.cc \
     sprinkle.cc \
     sys/temporary_path.cc \
+    ts/tsc.cc \
+    ts/tsfiles.cc \
     utf8path.cc \
     uuidgen.cc
 
@@ -177,8 +178,8 @@ flint_enum_LDADD = libflint.la libsqlite3.la
 flint_enum_SOURCES = flint-enum-main.c
 
 flint_evolve_CPPFLAGS = $(PROTOBUF_CFLAGS) $(BOOST_CPPFLAGS)
-flint_evolve_LDFLAGS = $(BOOST_PROGRAM_OPTIONS_LDFLAGS)
-flint_evolve_LDADD = libflintxx.la libflint.la libsqlite3.la $(PROTOBUF_LIBS) $(BOOST_PROGRAM_OPTIONS_LIBS)
+flint_evolve_LDFLAGS = $(BOOST_PROGRAM_OPTIONS_LDFLAGS) $(BOOST_FILESYSTEM_LDFLAGS) $(BOOST_SYSTEM_LDFLAGS)
+flint_evolve_LDADD = libflintxx.la libflint.la libsqlite3.la $(PROTOBUF_LIBS) $(BOOST_PROGRAM_OPTIONS_LIBS) $(BOOST_FILESYSTEM_LIBS) $(BOOST_SYSTEM_LIBS)
 flint_evolve_SOURCES = flint-evolve-main.cc
 
 flint_exec_CPPFLAGS = $(BOOST_CPPFLAGS)
@@ -209,8 +210,8 @@ flint_generate_LDADD = libflintxx.la libflint.la libsqlite3.la
 flint_generate_SOURCES = flint-generate-main.cc
 
 flint_init_CPPFLAGS = $(PROTOBUF_CFLAGS) $(BOOST_CPPFLAGS)
-flint_init_LDFLAGS = $(BOOST_PROGRAM_OPTIONS_LDFLAGS)
-flint_init_LDADD = libflintxx.la libflint.la libsqlite3.la $(PROTOBUF_LIBS) $(BOOST_PROGRAM_OPTIONS_LIBS)
+flint_init_LDFLAGS = $(BOOST_PROGRAM_OPTIONS_LDFLAGS) $(BOOST_FILESYSTEM_LDFLAGS) $(BOOST_SYSTEM_LDFLAGS)
+flint_init_LDADD = libflintxx.la libflint.la libsqlite3.la $(PROTOBUF_LIBS) $(BOOST_PROGRAM_OPTIONS_LIBS) $(BOOST_FILESYSTEM_LIBS) $(BOOST_SYSTEM_LIBS)
 flint_init_SOURCES = flint-init-main.cc
 
 flint_isdh_CPPFLAGS = $(PROTOBUF_CFLAGS) $(BOOST_CPPFLAGS)
@@ -310,11 +311,6 @@ flint_track_LDFLAGS = $(BOOST_PROGRAM_OPTIONS_LDFLAGS) $(BOOST_SYSTEM_LDFLAGS)
 flint_track_LDADD = libflintxx.la libflint.la libsqlite3.la $(PROTOBUF_LIBS) $(BOOST_PROGRAM_OPTIONS_LIBS) $(BOOST_SYSTEM_LIBS)
 flint_track_SOURCES = flint-track-main.cc
 
-flint_tsc_CPPFLAGS = $(BOOST_CPPFLAGS)
-flint_tsc_LDFLAGS = $(BOOST_FILESYSTEM_LDFLAGS) $(BOOST_SYSTEM_LDFLAGS)
-flint_tsc_LDADD = libflintxx.la libflint.la libsqlite3.la $(BOOST_FILESYSTEM_LIBS) $(BOOST_SYSTEM_LIBS)
-flint_tsc_SOURCES = flint-tsc-main.cc
-
 flint_unit_CPPFLAGS = $(PROTOBUF_CFLAGS) $(BOOST_CPPFLAGS)
 flint_unit_LDADD = libflintxx.la libflint.la libsqlite3.la $(PROTOBUF_LIBS)
 flint_unit_SOURCES = flint-unit-main.cc
@@ -386,9 +382,11 @@ isdwc_LDFLAGS = $(BOOST_PROGRAM_OPTIONS_LDFLAGS)
 isdwc_LDADD = $(BOOST_PROGRAM_OPTIONS_LIBS)
 isdwc_SOURCES = isdwc-main.cc
 
+test_input1_CPPFLAGS = $(BOOST_CPPFLAGS)
 test_input1_LDADD = libflint.la libsqlite3.la
 test_input1_SOURCES = test-input1-main.cc
 
+test_input2_CPPFLAGS = $(BOOST_CPPFLAGS)
 test_input2_LDADD = libflint.la libsqlite3.la
 test_input2_SOURCES = test-input2-main.cc
 

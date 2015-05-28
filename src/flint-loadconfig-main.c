@@ -63,9 +63,6 @@ static void PrintRecipeForPhml(void)
 	printf("unit: modeldb\n");
 	printf("\tflint-unit $< > $@\n");
 	printf("\n");
-	printf("tsc.bin: modeldb\n");
-	printf("\tflint-tsc $< $@\n");
-	printf("\n");
 	printf("layout: modeldb\n");
 	printf("\tflint-layout $< $@\n");
 	printf("\n");
@@ -81,8 +78,8 @@ static void PrintRecipeForPhml(void)
 	printf("before-bc: modeldb\n");
 	printf("\tflint-compile modeldb before_eqs event before.db > $@\n");
 	printf("\n");
-	printf("init: tsc.bin layout const-bc flow.txt\n");
-	printf("\tflint-init --db modeldb --input-timeseries $^ $@\n");
+	printf("init: modeldb layout const-bc flow.txt\n");
+	printf("\tflint-init --db $^ $@\n");
 	printf("\n");
 	printf("param: layout\n");
 	printf("\tflint-param $^ > $@\n");

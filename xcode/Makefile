@@ -74,7 +74,6 @@ PROGRAMS := \
     flint-taskspec \
     flint-timer \
     flint-track \
-    flint-tsc \
     flint-unit \
     flint-unitoftime \
     flint-var \

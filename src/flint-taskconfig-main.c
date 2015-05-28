@@ -129,9 +129,9 @@ int main(int argc, char *argv[])
 	printf("$(1)/control: | $(1)\n");
 	printf("\techo 0 > $$@\n"); /* TODO */
 	printf("\n");
-	printf("$(1)/run: isdh $(1)/first filter $(1)/start $(1)/control layout bc flow.txt $(if $(filter phml,$(MODEL_LANG)),before-bc after-bc tsc.bin)\n");
+	printf("$(1)/run: isdh $(1)/first filter $(1)/start $(1)/control layout bc flow.txt $(if $(filter phml,$(MODEL_LANG)),before-bc after-bc modeldb)\n");
 	printf("\tflint-concat isdh $(1)/first $(1)/isd\n");
-	printf("\tflint-evolve --filter filter --granularity %s --input-data $(1)/start --control $(1)/control --output-data $(1)/output-data --output-history $(1)/output-history --status $(1)/status $(if $(filter phml,$(MODEL_LANG)),--pre before-bc --post after-bc --input-timeseries tsc.bin) layout bc flow.txt $(1)/isd\n",
+	printf("\tflint-evolve --filter filter --granularity %s --input-data $(1)/start --control $(1)/control --output-data $(1)/output-data --output-history $(1)/output-history --status $(1)/status $(if $(filter phml,$(MODEL_LANG)),--pre before-bc --post after-bc --db modeldb) layout bc flow.txt $(1)/isd\n",
 		   granularity);
 	printf("\tflint-concat $$@\n");
 	printf("endef\n");

@@ -2,6 +2,10 @@
 #ifndef FLINT_CSV_EXPORT_H_
 #define FLINT_CSV_EXPORT_H_
 
-bool ExportIsdFromCsv(const char *input_file, const char *output_file);
+#define BOOST_FILESYSTEM_NO_DEPRECATED
+#include <boost/filesystem.hpp>
+
+bool ExportIsdFromCsv(const boost::filesystem::path &input_path,
+					  const boost::filesystem::path &output_path);
 
 #endif
