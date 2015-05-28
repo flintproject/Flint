@@ -2,9 +2,11 @@
 #ifndef FLINT_PHML_HH_
 #define FLINT_PHML_HH_
 
+#include "sqlite3.h"
+
 namespace phml {
 
-bool CombineAll(const char *db_file);
+bool CombineAll(sqlite3 *db);
 
 }
 

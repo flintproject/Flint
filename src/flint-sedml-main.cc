@@ -11,6 +11,7 @@
 #include <sedml/reader.h>
 
 #include "database.h"
+#include "db/driver.h"
 #include "db/query.h"
 #include "sqlite3.h"
 #include "utf8path.h"
@@ -102,8 +103,11 @@ int main(int argc, char *argv[])
 		return EXIT_SUCCESS;
 	}
 
+	db::Driver driver(argv[1]);
+	sqlite3 *db = driver.db();
+
 	char sedml_file[1024]; // FIXME
-	if (!LoadExec(argv[1], sedml_file, NULL)) return EXIT_FAILURE;
+	if (!LoadExec(db, sedml_file, NULL)) return EXIT_FAILURE;
 	boost::filesystem::path sedml_path = GetPathFromUtf8(sedml_file);
 	std::string sedml_path_s = sedml_path.string();
 
@@ -115,48 +119,42 @@ int main(int argc, char *argv[])
 	}
 	if (sedml_read_file(sedml_path_s.c_str(), NULL, doc) < 0) {
 		fprintf(stderr, "failed to read SED-ML file: %s\n", sedml_file);
-		goto bail0;
+		goto bail;
 	}
 	sedml = doc->sedml;
 	if (!sedml) {
 		fprintf(stderr, "no <sedML> element in SED-ML\n");
-		goto bail0;
+		goto bail;
 	}
 	if (sedml->num_models <=0 || !sedml->models) {
 		fprintf(stderr, "no <model>s in SED-ML\n");
-		goto bail0;
+		goto bail;
 	}
 	if (sedml->num_simulations <= 0 || !sedml->simulations) {
 		fprintf(stderr, "no simulations in SED-ML\n");
-		goto bail0;
+		goto bail;
 	}
 	if (sedml->num_tasks <= 0 || !sedml->tasks) {
 		fprintf(stderr, "no tasks in SED-ML\n");
-		goto bail0;
+		goto bail;
 	}
 
-	sqlite3 *db;
-	if (sqlite3_open(argv[1], &db) != SQLITE_OK) {
-		fprintf(stderr, "failed to open database: %s\n", argv[1]);
-		goto bail0;
-	}
-	int e;
 	if (!BeginTransaction(db))
 		return EXIT_FAILURE;
 	if (!CreateTable(db, "tasks", "(model_id INTEGER, sim_id INTEGER)"))
-		goto bail1;
+		goto bail;
 	if (!CreateTable(db, "models", "(model_path TEXT, db_path TEXT)"))
-		goto bail1;
+		goto bail;
 	if (!CreateTable(db, "sims", "(algorithm TEXT, length REAL, step REAL, granularity INTEGER)"))
-		goto bail1;
+		goto bail;
 	if (!CreateTable(db, "dgs", "(task_id INTEGER, variable TEXT)"))
-		goto bail1;
+		goto bail;
 
 	for (int i=0;i<sedml->num_tasks;i++) {
 		const struct sedml_task *task = sedml->tasks[i];
 		if (!task || !task->modelReference || !task->simulationReference) {
 			fprintf(stderr, "invalid task in SED-ML\n");
-			goto bail1;
+			goto bail;
 		}
 
 		const struct sedml_model *model = NULL;
@@ -171,27 +169,28 @@ int main(int argc, char *argv[])
 		if (!model) {
 			fprintf(stderr, "invalid model reference in SED-ML: %s\n",
 					task->modelReference);
-			goto bail1;
+			goto bail;
 		}
 
 		sqlite3_stmt *stmt;
+		int e;
 		e = sqlite3_prepare_v2(db, "INSERT INTO models VALUES (?, NULL)",
 							   -1, &stmt, NULL);
 		if (e != SQLITE_OK) {
 			fprintf(stderr, "failed to prepare statement: %d\n", e);
-			goto bail1;
+			goto bail;
 		}
 		e = sqlite3_bind_text(stmt, 1, model->source, -1, SQLITE_STATIC);
 		if (e != SQLITE_OK) {
 			fprintf(stderr, "failed to bind parameter: %d\n", e);
 			sqlite3_finalize(stmt);
-			goto bail1;
+			goto bail;
 		}
 		e = sqlite3_step(stmt);
 		if (e != SQLITE_DONE) {
 			fprintf(stderr, "failed to step statement: %d\n", e);
 			sqlite3_finalize(stmt);
-			goto bail1;
+			goto bail;
 		}
 		sqlite3_finalize(stmt);
 
@@ -208,12 +207,12 @@ int main(int argc, char *argv[])
 		}
 		if (!simulation) {
 			fprintf(stderr, "invalid simulation reference in SED-ML\n");
-			goto bail1;
+			goto bail;
 		}
 		if (simulation->simulation_type != SEDML_UNIFORM_TIME_COURSE) {
 			fprintf(stderr,
 					"simulation other than uniform time course in SED-ML\n");
-			goto bail1;
+			goto bail;
 		}
 
 		const struct sedml_uniformtimecourse *utc;
@@ -223,33 +222,33 @@ int main(int argc, char *argv[])
 							   -1, &stmt, NULL);
 		if (e != SQLITE_OK) {
 			fprintf(stderr, "failed to prepare statement: %d\n", e);
-			goto bail1;
+			goto bail;
 		}
 		if (!BindAlgorithm(utc, stmt)) {
 			fprintf(stderr, "failed to bind algorithm: %d\n", e);
 			sqlite3_finalize(stmt);
-			goto bail1;
+			goto bail;
 		}
 		if (!BindLength(utc, stmt)) {
 			fprintf(stderr, "failed to bind length: %d\n", e);
 			sqlite3_finalize(stmt);
-			goto bail1;
+			goto bail;
 		}
 		if (!BindStep(utc, stmt)) {
 			fprintf(stderr, "failed to bind step: %d\n", e);
 			sqlite3_finalize(stmt);
-			goto bail1;
+			goto bail;
 		}
 		if (!BindGranularity(utc, stmt)) {
 			fprintf(stderr, "failed to bind granularity: %d\n", e);
 			sqlite3_finalize(stmt);
-			goto bail1;
+			goto bail;
 		}
 		e = sqlite3_step(stmt);
 		if (e != SQLITE_DONE) {
 			fprintf(stderr, "failed to step statement: %d\n", e);
 			sqlite3_finalize(stmt);
-			goto bail1;
+			goto bail;
 		}
 		sqlite3_finalize(stmt);
 
@@ -261,19 +260,19 @@ int main(int argc, char *argv[])
 		if (e != SQLITE_OK) {
 			fprintf(stderr, "failed to bind model_id: %d\n", e);
 			sqlite3_finalize(stmt);
-			goto bail1;
+			goto bail;
 		}
 		e = sqlite3_bind_int64(stmt, 2, sim_id);
 		if (e != SQLITE_OK) {
 			fprintf(stderr, "failed to bind sim_id: %d\n", e);
 			sqlite3_finalize(stmt);
-			goto bail1;
+			goto bail;
 		}
 		e = sqlite3_step(stmt);
 		if (e != SQLITE_DONE) {
 			fprintf(stderr, "failed to step statement: %d\n", e);
 			sqlite3_finalize(stmt);
-			goto bail1;
+			goto bail;
 		}
 		sqlite3_finalize(stmt);
 
@@ -298,19 +297,19 @@ int main(int argc, char *argv[])
 				if (e != SQLITE_OK) {
 					fprintf(stderr, "failed to bind task_id: %d\n", e);
 					sqlite3_finalize(stmt);
-					goto bail1;
+					goto bail;
 				}
 				e = sqlite3_bind_text(stmt, 2, variable->target, -1, SQLITE_STATIC);
 				if (e != SQLITE_OK) {
 					fprintf(stderr, "failed to bind variable: %d\n", e);
 					sqlite3_finalize(stmt);
-					goto bail1;
+					goto bail;
 				}
 				e = sqlite3_step(stmt);
 				if (e != SQLITE_DONE) {
 					fprintf(stderr, "failed to step statement: %d\n", e);
 					sqlite3_finalize(stmt);
-					goto bail1;
+					goto bail;
 				}
 				sqlite3_finalize(stmt);
 			}
@@ -321,9 +320,7 @@ int main(int argc, char *argv[])
 		return EXIT_FAILURE;
 	r = EXIT_SUCCESS;
 
- bail1:
-	sqlite3_close(db);
- bail0:
+ bail:
 	sedml_destroy_document(doc);
 	return r;
 }

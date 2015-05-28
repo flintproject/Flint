@@ -312,17 +312,15 @@ public:
 
 } // namespace
 
-bool Combine(const char *uuid, const char *db_file)
+bool Combine(const char *uuid, sqlite3 *db)
 {
 	boost::uuids::string_generator gen;
 	boost::uuids::uuid u = gen(uuid);
 
-	db::Driver driver(db_file);
-
 	PhysicalQuantityMap pqm;
 	int max_pq_id = 0;
 	{
-		db::NameLoader loader(driver.db());
+		db::NameLoader loader(db);
 		PhysicalQuantityHandler handler(u, &pqm);
 		if (!loader.Load(&handler)) {
 			return false;
@@ -330,10 +328,10 @@ bool Combine(const char *uuid, const char *db_file)
 		max_pq_id = handler.max_pq_id();
 	}
 
-	Writer writer(max_pq_id, uuid, driver.db());
+	Writer writer(max_pq_id, uuid, db);
 
 	{
-		db::BridgeLoader loader(driver.db());
+		db::BridgeLoader loader(db);
 		BridgeHandler handler(u, &pqm, &writer);
 		if (!loader.Load(&handler)) {
 			return false;

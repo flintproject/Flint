@@ -294,27 +294,29 @@ int main(int argc, char *argv[])
 		return EXIT_SUCCESS;
 	}
 
-	if (!flint::sbml::Parse(argv[1]))
+	db::Driver driver(argv[1]);
+	sqlite3 *db = driver.db();
+
+	if (!flint::sbml::Parse(db))
 		return EXIT_FAILURE;
 
-	db::Driver driver(argv[1]);
-	if (!CreateSingleton(driver.db()))
+	if (!CreateSingleton(db))
 		return EXIT_FAILURE;
-	if (!BeginTransaction(driver.db()))
+	if (!BeginTransaction(db))
 		return EXIT_FAILURE;
 
 	boost::scoped_ptr<OdeVector> ov(new OdeVector);
 	boost::scoped_ptr<AssignmentVector> av(new AssignmentVector);
 	boost::scoped_ptr<CompartmentVector> cv(new CompartmentVector);
 	{
-		boost::scoped_ptr<Loader> loader(new Loader(driver.db()));
+		boost::scoped_ptr<Loader> loader(new Loader(db));
 		if (!loader->Load(ov.get(), av.get(), cv.get())) {
 			return EXIT_FAILURE;
 		}
 	}
 
 	{
-		boost::scoped_ptr<NameWriter> writer(new NameWriter(driver.db()));
+		boost::scoped_ptr<NameWriter> writer(new NameWriter(db));
 		for (OdeVector::const_iterator it=ov->begin();it!=ov->end();++it) {
 			writer->Write(*it);
 		}
@@ -326,15 +328,15 @@ int main(int argc, char *argv[])
 		}
 	}
 
-	if (!CreateTable(driver.db(), "input_values", "(space_id TEXT, math TEXT)"))
+	if (!CreateTable(db, "input_values", "(space_id TEXT, math TEXT)"))
 		return EXIT_FAILURE;
-	if (!CreateTable(driver.db(), "input_functions", "(space_id TEXT, math TEXT)"))
+	if (!CreateTable(db, "input_functions", "(space_id TEXT, math TEXT)"))
 		return EXIT_FAILURE;
-	if (!CreateTable(driver.db(), "input_odes", "(space_id TEXT, math TEXT)"))
+	if (!CreateTable(db, "input_odes", "(space_id TEXT, math TEXT)"))
 		return EXIT_FAILURE;
 
 	{
-		boost::scoped_ptr<ValueWriter> writer(new ValueWriter(driver.db()));
+		boost::scoped_ptr<ValueWriter> writer(new ValueWriter(db));
 		for (OdeVector::const_iterator it=ov->begin();it!=ov->end();++it) {
 			if (!writer->Write(*it)) return false;
 		}
@@ -344,25 +346,25 @@ int main(int argc, char *argv[])
 	}
 
 	{
-		boost::scoped_ptr<FunctionWriter> writer(new FunctionWriter(driver.db()));
+		boost::scoped_ptr<FunctionWriter> writer(new FunctionWriter(db));
 		for (AssignmentVector::const_iterator it=av->begin();it!=av->end();++it) {
 			if (!writer->Write(*it)) return false;
 		}
 	}
 
 	{
-		boost::scoped_ptr<OdeWriter> writer(new OdeWriter(driver.db()));
+		boost::scoped_ptr<OdeWriter> writer(new OdeWriter(db));
 		for (OdeVector::const_iterator it=ov->begin();it!=ov->end();++it) {
 			if (!writer->Write(*it)) return false;
 		}
 	}
 
-	if (!CreateView(driver.db(), "input_ivs",
+	if (!CreateView(db, "input_ivs",
 					"SELECT * FROM input_values UNION ALL SELECT * FROM input_functions"))
 		return EXIT_FAILURE;
-	if (!CreateView(driver.db(), "input_eqs",
+	if (!CreateView(db, "input_eqs",
 					"SELECT * FROM input_functions UNION ALL SELECT * FROM input_odes"))
 		return EXIT_FAILURE;
 
-	return CommitTransaction(driver.db()) ? EXIT_SUCCESS : EXIT_FAILURE;
+	return CommitTransaction(db) ? EXIT_SUCCESS : EXIT_FAILURE;
 }

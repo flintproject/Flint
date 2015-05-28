@@ -19,6 +19,7 @@
 #include <zip.h>
 
 #include "database.h"
+#include "db/driver.h"
 #include "modelpath.h"
 #include "utf8path.h"
 
@@ -52,7 +53,9 @@ int main(int argc, char *argv[])
 		return EXIT_FAILURE;
 	}
 
-	boost::scoped_array<char> filename(GetGivenFilename(argv[1]));
+	db::Driver driver(argv[1]);
+
+	boost::scoped_array<char> filename(GetGivenFilename(driver.db()));
 	int ze;
 	struct zip *zp = zip_open(filename.get(), 0, &ze);
 	if (!zp) {
@@ -157,7 +160,7 @@ int main(int argc, char *argv[])
 			 << endl;
 		return EXIT_FAILURE;
 	}
-	if (!SaveModelFile(argv[1], mf.get())) return EXIT_FAILURE;
+	if (!SaveModelFile(driver.db(), mf.get())) return EXIT_FAILURE;
 
 	return EXIT_SUCCESS;
 }

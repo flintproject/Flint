@@ -19,6 +19,7 @@
 
 #include <libxml/xmlreader.h>
 
+#include "db/driver.h"
 #include "db/query.h"
 #include "mathml/math_dumper.h"
 #include "workspace/task.h"
@@ -826,8 +827,10 @@ int main(int argc, char *argv[])
 		return EXIT_SUCCESS;
 	}
 
+	db::Driver driver(argv[1]);
+
 	char phsp_file[1024];
-	if (!LoadExec(argv[1], NULL, phsp_file)) return EXIT_FAILURE;
+	if (!LoadExec(driver.db(), NULL, phsp_file)) return EXIT_FAILURE;
 	boost::filesystem::path pp = GetPathFromUtf8(phsp_file);
 	string pp_s = pp.string();
 
@@ -841,17 +844,9 @@ int main(int argc, char *argv[])
 		return EXIT_FAILURE;
 	}
 
-	sqlite3 *db;
-	if (sqlite3_open(argv[1], &db) != SQLITE_OK) {
-		cerr << "could not open database: " << argv[1] << endl;
-		return EXIT_FAILURE;
-	}
-
-	boost::scoped_ptr<Reader> reader(new Reader(text_reader, db));
+	boost::scoped_ptr<Reader> reader(new Reader(text_reader, driver.db()));
 	boost::filesystem::path cp = pp.parent_path();
 	if (reader->Read(cp) < 0) return EXIT_FAILURE;
-
-	sqlite3_close(db);
 
 	return EXIT_SUCCESS;
 }

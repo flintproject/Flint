@@ -2,6 +2,8 @@
 #ifndef FLINT_CELLML_TRANSLATOR_H_
 #define FLINT_CELLML_TRANSLATOR_H_
 
-bool TranslateCellml(const char *db_file);
+#include "sqlite3.h"
+
+bool TranslateCellml(sqlite3 *db);
 
 #endif

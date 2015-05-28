@@ -15,6 +15,7 @@
 
 #include "bc/binary.h"
 #include "database.h"
+#include "db/driver.h"
 #include "system.h"
 
 using std::cerr;
@@ -68,10 +69,11 @@ int main(int argc, char *argv[])
 	const char *phsp_filename = filenames;
 	while (*phsp_filename++) {}
 
-	char db_file[32];
-	sprintf(db_file, "x.db");
-	if (!SaveExec(db_file, sedml_filename, phsp_filename))
-		return EXIT_FAILURE;
+	{
+		db::Driver driver("x.db");
+		if (!SaveExec(driver.db(), sedml_filename, phsp_filename))
+			return EXIT_FAILURE;
+	}
 
 	FILE *fp = fopen("exec.mk", "w");
 	if (!fp) {

@@ -7,7 +7,7 @@
 namespace flint {
 namespace sbml {
 
-bool Parse(const char *db_file);
+bool Parse(sqlite3 *db);
 
 bool Load(sqlite3 *db);
 

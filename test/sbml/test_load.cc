@@ -24,17 +24,17 @@ BOOST_FIXTURE_TEST_SUITE(test_load, F)
 
 BOOST_AUTO_TEST_CASE(BIOMD0000000114) {
 	db_file = "BIOMD0000000114.db";
-	BOOST_CHECK_EQUAL(SaveGivenFile(db_file, TEST_MODELS("BIOMD0000000114.xml")), 1);
-	BOOST_CHECK(flint::sbml::Parse(db_file));
 	db::Driver driver(db_file);
+	BOOST_CHECK_EQUAL(SaveGivenFile(driver.db(), TEST_MODELS("BIOMD0000000114.xml")), 1);
+	BOOST_CHECK(flint::sbml::Parse(driver.db()));
 	BOOST_CHECK(flint::sbml::Load(driver.db()));
 }
 
 BOOST_AUTO_TEST_CASE(BIOMD0000000152) {
 	db_file = "BIOMD0000000152.db";
-	BOOST_CHECK_EQUAL(SaveGivenFile(db_file, TEST_MODELS("BIOMD0000000152.xml")), 1);
-	BOOST_CHECK(flint::sbml::Parse(db_file));
 	db::Driver driver(db_file);
+	BOOST_CHECK_EQUAL(SaveGivenFile(driver.db(), TEST_MODELS("BIOMD0000000152.xml")), 1);
+	BOOST_CHECK(flint::sbml::Parse(driver.db()));
 	BOOST_CHECK(flint::sbml::Load(driver.db()));
 }
 

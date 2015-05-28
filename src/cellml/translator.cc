@@ -19,7 +19,6 @@
 #include <boost/scoped_ptr.hpp>
 #include <boost/uuid/uuid_generators.hpp>
 
-#include "db/driver.h"
 #include "db/eq-inserter.h"
 #include "db/name-inserter.h"
 #include "db/query.h"
@@ -431,38 +430,36 @@ private:
 
 } // namespace
 
-bool TranslateCellml(const char *db_file)
+bool TranslateCellml(sqlite3 *db)
 {
-	boost::scoped_array<char> filename(GetModelFilename(db_file));
+	boost::scoped_array<char> filename(GetModelFilename(db));
 	boost::filesystem::path path(filename.get());
 
-	boost::scoped_ptr<db::Driver> driver(new db::Driver(db_file));
-
-	if (!BeginTransaction(driver->db()))
+	if (!BeginTransaction(db))
 		return false;
 
-	if (!CreateTable(driver->db(), "input_ivs", "(uuid TEXT, math TEXT)"))
+	if (!CreateTable(db, "input_ivs", "(uuid TEXT, math TEXT)"))
 		return false;
-	if (!CreateTable(driver->db(), "input_eqs", "(uuid TEXT, math TEXT)"))
+	if (!CreateTable(db, "input_eqs", "(uuid TEXT, math TEXT)"))
 		return false;
 
-	boost::scoped_ptr<TreeDumper> tree_dumper(new TreeDumper(driver->db()));
+	boost::scoped_ptr<TreeDumper> tree_dumper(new TreeDumper(db));
 	if (!tree_dumper->Dump(path)) return false;
 
-	boost::scoped_ptr<OdeDumper> ode_dumper(new OdeDumper(driver->db(), tree_dumper.get()));
+	boost::scoped_ptr<OdeDumper> ode_dumper(new OdeDumper(db, tree_dumper.get()));
 	if (!ode_dumper->Dump()) return false;
 
-	boost::scoped_ptr<NameDumper> name_dumper(new NameDumper(driver->db(), tree_dumper.get()));
+	boost::scoped_ptr<NameDumper> name_dumper(new NameDumper(db, tree_dumper.get()));
 	if (!name_dumper->Dump(ode_dumper.get())) return false;
 
-	boost::scoped_ptr<IvDumper> iv_dumper(new IvDumper(driver->db(), tree_dumper.get()));
+	boost::scoped_ptr<IvDumper> iv_dumper(new IvDumper(db, tree_dumper.get()));
 	if (!iv_dumper->Dump()) return false;
 
-	boost::scoped_ptr<FunctionDumper> function_dumper(new FunctionDumper(driver->db(), tree_dumper.get()));
+	boost::scoped_ptr<FunctionDumper> function_dumper(new FunctionDumper(db, tree_dumper.get()));
 	if (!function_dumper->Dump()) return false;
 
-	boost::scoped_ptr<ReachDumper> reach_dumper(new ReachDumper(driver->db(), tree_dumper.get()));
+	boost::scoped_ptr<ReachDumper> reach_dumper(new ReachDumper(db, tree_dumper.get()));
 	if (!reach_dumper->Dump()) return false;
 
-	return CommitTransaction(driver->db());
+	return CommitTransaction(db);
 }

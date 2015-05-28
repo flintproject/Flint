@@ -13,7 +13,6 @@
 #include <sbmlsolver/odeModel.h>
 #include <sbmlsolver/solverError.h>
 
-#include "db/driver.h"
 #include "db/query.h"
 #include "modelpath.h"
 
@@ -371,50 +370,52 @@ bool PrintPiecesToOstream(const ASTNode_t *node, std::ostream *os)
 	return true;
 }
 
-class Analysis : public db::Driver {
+class Analysis {
 public:
-	Analysis(const char *db_file, odeModel_t *model)
-		: db::Driver(db_file)
+	Analysis(sqlite3 *db, odeModel_t *model)
+		: db_(db)
 		, model_(model)
+		, stmt_a_(NULL)
+		, stmt_c_(NULL)
+		, stmt_o_(NULL)
 	{
 		assert(model);
-
 	}
 
 	~Analysis() {
-		if (stmt_a_) sqlite3_finalize(stmt_a_);
-		if (stmt_c_) sqlite3_finalize(stmt_c_);
-		if (stmt_o_) sqlite3_finalize(stmt_o_);
+		sqlite3_finalize(stmt_a_);
+		sqlite3_finalize(stmt_c_);
+		sqlite3_finalize(stmt_o_);
 		ODEModel_free(model_);
 	}
 
 	bool Run() {
-		if ( !CreateTable(db(), "assignments", "(name TEXT, math TEXT)") ||
-			 !CreateTable(db(), "constants", "(name TEXT, value REAL)") ||
-			 !CreateTable(db(), "odes", "(name TEXT, initial_value REAL, math TEXT)") )
+		if ( !CreateTable(db_, "assignments", "(name TEXT, math TEXT)") ||
+			 !CreateTable(db_, "constants", "(name TEXT, value REAL)") ||
+			 !CreateTable(db_, "odes", "(name TEXT, initial_value REAL, math TEXT)") )
 			return false;
 
 		int e;
-		e = sqlite3_prepare_v2(db(), "INSERT INTO assignments VALUES (?, ?)",
+		e = sqlite3_prepare_v2(db_, "INSERT INTO assignments VALUES (?, ?)",
 							   -1, &stmt_a_, NULL);
 		if (e != SQLITE_OK) {
 			cerr << "failed to prepare statement: " << e << endl;
 			return false;
 		}
-		e = sqlite3_prepare_v2(db(), "INSERT INTO constants VALUES (?, ?)",
+		e = sqlite3_prepare_v2(db_, "INSERT INTO constants VALUES (?, ?)",
 							   -1, &stmt_c_, NULL);
 		if (e != SQLITE_OK) {
 			cerr << "failed to prepare statement: " << e << endl;
 			return false;
 		}
-		e = sqlite3_prepare_v2(db(), "INSERT INTO odes VALUES (?, ?, ?)",
+		e = sqlite3_prepare_v2(db_, "INSERT INTO odes VALUES (?, ?, ?)",
 							   -1, &stmt_o_, NULL);
 		if (e != SQLITE_OK) {
 			cerr << "failed to prepare statement: " << e << endl;
 			return false;
 		}
 
-		if (!BeginTransaction(db())) return false;
+		if (!BeginTransaction(db_)) return false;
 
 		boost::scoped_array<char> sbml_name;
 		int neq = ODEModel_getNeq(model_);
@@ -466,7 +467,7 @@ public:
 			if (!InsertConstant(sbml_name.get(), model_->values[neq+nass+i]))
 				return false;
 		}
-		return CommitTransaction(db());
+		return CommitTransaction(db_);
 	}
 
 private:
@@ -541,6 +542,7 @@ private:
 		return true;
 	}
 
+	sqlite3 *db_;
 	odeModel_t *model_;
 	sqlite3_stmt *stmt_a_;
 	sqlite3_stmt *stmt_c_;
@@ -552,16 +554,16 @@ private:
 namespace flint {
 namespace sbml {
 
-bool Parse(const char *db_file)
+bool Parse(sqlite3 *db)
 {
-	boost::scoped_array<char> model_file(GetModelFilename(db_file));
+	boost::scoped_array<char> model_file(GetModelFilename(db));
 	odeModel_t *model = ODEModel_createFromFile(model_file.get());
 	if (!model) {
 		cerr << "could not create ODE system from an SBML model: " << model_file.get() << endl;
 		SolverError_dumpAndClearErrors();
 		return false;
 	}
-	boost::scoped_ptr<Analysis> analysis(new Analysis(db_file, model));
+	boost::scoped_ptr<Analysis> analysis(new Analysis(db, model));
 	return analysis->Run();
 }
 

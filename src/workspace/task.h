@@ -4,6 +4,7 @@
 
 #include <string>
 #include "database.h"
+#include "db/driver.h"
 
 namespace workspace {
 
@@ -24,7 +25,8 @@ public:
 		} else {
 			std::sprintf(db_file, "model");
 		}
-		return SaveGivenFile(db_file, given_file_) > 0;
+		db::Driver driver(db_file);
+		return SaveGivenFile(driver.db(), given_file_) > 0;
 	}
 
 private:

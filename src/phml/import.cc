@@ -92,9 +92,9 @@ private:
 
 } // namespace
 
-bool DumpImport(const char *db_file, const char *uuid)
+bool DumpImport(sqlite3 *db, const char *uuid)
 {
-	boost::scoped_array<char> model_file(GetModelFilename(db_file));
+	boost::scoped_array<char> model_file(GetModelFilename(db));
 	xmlDocPtr doc = xmlParseFile(model_file.get());
 	if (!doc) {
 		cerr << "xml file seems malformed: " << model_file.get() << endl;

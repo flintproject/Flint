@@ -15,6 +15,7 @@
 
 #include <libxml/xmlreader.h>
 
+#include "db/driver.h"
 #include "modelpath.h"
 
 namespace po = boost::program_options;
@@ -147,7 +148,11 @@ int main(int argc, char *argv[])
 		return (print_help == 1) ? EXIT_SUCCESS : EXIT_FAILURE;
 	}
 
-	boost::scoped_array<char> model_file(GetGivenFilename(input_file.c_str()));
+	boost::scoped_array<char> model_file;
+	{
+		db::Driver driver(input_file.c_str());
+		model_file.reset(GetGivenFilename(driver.db()));
+	}
 
 	CheckPhz(model_file.get());
 

@@ -13,6 +13,7 @@
 
 #include "bc/binary.h"
 #include "database.h"
+#include "db/driver.h"
 #include "system.h"
 
 using std::cerr;
@@ -49,8 +50,11 @@ int main(int argc, char *argv[])
 		return EXIT_FAILURE;
 	}
 	given_file[s] = '\0';
-	if (!SaveGivenFile("model", given_file)) {
-		return EXIT_FAILURE;
+
+	{
+		db::Driver driver("model");
+		if (!SaveGivenFile(driver.db(), given_file))
+			return EXIT_FAILURE;
 	}
 
 	FILE *fp = fopen("open.mk", "w");

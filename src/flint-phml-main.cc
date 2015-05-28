@@ -21,6 +21,7 @@
 #include <libxml/xmlreader.h>
 
 #include "branch.h"
+#include "db/driver.h"
 #include "db/query.h"
 #include "modelpath.h"
 #include "phml/definition_dumper.h"
@@ -3763,17 +3764,15 @@ int main(int argc, char *argv[])
 		return EXIT_SUCCESS;
 	}
 
-	boost::scoped_array<char> given_filename(GetGivenFilename(argv[1]));
+	db::Driver driver(argv[1]);
+	sqlite3 *db = driver.db();
+
+	boost::scoped_array<char> given_filename(GetGivenFilename(db));
 	boost::filesystem::path given_path(given_filename.get());
-	boost::scoped_array<char> model_filename(GetModelFilename(argv[1]));
+	boost::scoped_array<char> model_filename(GetModelFilename(db));
 	boost::filesystem::path model_path(model_filename.get());
 
 	// prepare database; create tables
-	sqlite3 *db;
-	if (sqlite3_open(argv[1], &db) != SQLITE_OK) {
-		fprintf(stderr, "failed to open database: %s\n", argv[1]);
-		return EXIT_FAILURE;
-	}
 	if (!BeginTransaction(db))
 		return EXIT_FAILURE;
 	CREATE_TABLES_OR_DIE(db, kModelTables);
@@ -3848,9 +3847,8 @@ int main(int argc, char *argv[])
 
 	if (!CommitTransaction(db))
 		return EXIT_FAILURE;
-	sqlite3_close(db);
 
-	if (!phml::CombineAll(argv[1]))
+	if (!phml::CombineAll(db))
 		return EXIT_FAILURE;
 	return EXIT_SUCCESS;
 }

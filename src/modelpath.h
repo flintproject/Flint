@@ -2,11 +2,14 @@
 #ifndef FLINT_MODELPATH_H_
 #define FLINT_MODELPATH_H_
 
+#include "sqlite3.h"
+
 /*
  * Read the input file, and return an internal C string, which the client
  * code is responsible for freeing by delete [] after use.
+ * Note that db is for read only.
  */
-char *GetGivenFilename(const char *input);
-char *GetModelFilename(const char *input);
+char *GetGivenFilename(sqlite3 *db);
+char *GetModelFilename(sqlite3 *db);
 
 #endif

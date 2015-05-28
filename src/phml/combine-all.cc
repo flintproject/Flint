@@ -39,27 +39,27 @@ bool SaveFile(const char *uuid, const char *xml_file)
 {
 	boost::scoped_array<char> db_file(new char[64]);
 	sprintf(db_file.get(), "%s.db", uuid);
-	return SaveGivenFile(db_file.get(), xml_file);
+	db::Driver driver(db_file.get());
+	return SaveGivenFile(driver.db(), xml_file);
 }
 
 bool ParseFile(const char *uuid)
 {
 	boost::scoped_array<char> db_file(new char[64]); // large enough
 	sprintf(db_file.get(), "%s.db", uuid);
-	return flint::sbml::Parse(db_file.get());
+	db::Driver driver(db_file.get());
+	return flint::sbml::Parse(driver.db());
 }
 
 typedef std::vector<std::string> UuidVector;
 
 }
 
-bool CombineAll(const char *db_file)
+bool CombineAll(sqlite3 *db)
 {
-	boost::scoped_ptr<db::Driver> driver(new db::Driver(db_file));
-
 	UuidVector uv;
 	sqlite3_stmt *stmt;
-	int e = sqlite3_prepare_v2(driver->db(),
+	int e = sqlite3_prepare_v2(db,
 							   "SELECT m.module_id, i.type, i.ref FROM imports AS i LEFT JOIN modules AS m ON i.module_rowid = m.rowid",
 							   -1, &stmt, NULL);
 	if (e != SQLITE_OK) {
@@ -75,7 +75,7 @@ bool CombineAll(const char *db_file)
 		if (strcmp((const char *)type, "external") == 0) {
 			if (!SaveFile((const char *)uuid, (const char *)ref)) return false;
 		} else {
-			if (!DumpImport(db_file, (const char *)uuid)) return false;
+			if (!DumpImport(db, (const char *)uuid)) return false;
 			boost::scoped_array<char> xml_file(new char[64]);
 			sprintf(xml_file.get(), "%s.xml", uuid);
 			boost::filesystem::path xml_path = boost::filesystem::absolute(xml_file.get());
@@ -95,7 +95,7 @@ bool CombineAll(const char *db_file)
 	}
 
 	for (UuidVector::const_iterator it=uv.begin();it!=uv.end();++it) {
-		if (!Combine(it->c_str(), db_file))
+		if (!Combine(it->c_str(), db))
 			return false;
 	}
 

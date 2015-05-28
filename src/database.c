@@ -9,18 +9,13 @@
 #include "db/query.h"
 #include "sqlite3.h"
 
-static int FindInputFile(const char *db_file,
+static int FindInputFile(sqlite3 *db,
 						 const char column_name[],
 						 char *input_file)
 {
 	static const int kMaxBytes = 1023;
 
 	int r = 0;
-	sqlite3 *db;
-	if (sqlite3_open_v2(db_file, &db, SQLITE_OPEN_READONLY, NULL) != SQLITE_OK) {
-		fprintf(stderr, "failed to open database: %s\n", db_file);
-		return 0;
-	}
 	int e;
 	sqlite3_stmt *stmt;
 	char query[32]; /* long enough */
@@ -56,28 +51,22 @@ static int FindInputFile(const char *db_file,
  bail1:
 	sqlite3_finalize(stmt);
  bail0:
-	sqlite3_close(db);
 	return r;
 }
 
-int FindGivenFile(const char *db_file, char *given_file)
+int FindGivenFile(sqlite3 *db, char *given_file)
 {
-	return FindInputFile(db_file, "given_file", given_file);
+	return FindInputFile(db, "given_file", given_file);
 }
 
-int FindModelFile(const char *db_file, char *model_file)
+int FindModelFile(sqlite3 *db, char *model_file)
 {
-	return FindInputFile(db_file, "model_file", model_file);
+	return FindInputFile(db, "model_file", model_file);
 }
 
-int SaveGivenFile(const char *db_file, const char *given_file)
+int SaveGivenFile(sqlite3 *db, const char *given_file)
 {
 	int r = 0;
-	sqlite3 *db;
-	if (sqlite3_open(db_file, &db) != SQLITE_OK) {
-		fprintf(stderr, "failed to open database: %s\n", db_file);
-		return 0;
-	}
 	int e;
 	if (!CreateTable(db, "input", "(given_file BLOB, model_file BLOB)"))
 		goto bail0;
@@ -108,18 +97,12 @@ int SaveGivenFile(const char *db_file, const char *given_file)
  bail1:
 	sqlite3_finalize(stmt);
  bail0:
-	sqlite3_close(db);
 	return r;
 }
 
-int SaveModelFile(const char *db_file, const char *model_file)
+int SaveModelFile(sqlite3 *db, const char *model_file)
 {
 	int r = 0;
-	sqlite3 *db;
-	if (sqlite3_open(db_file, &db) != SQLITE_OK) {
-		fprintf(stderr, "failed to open database: %s\n", db_file);
-		return 0;
-	}
 	int e;
 	sqlite3_stmt *stmt;
 	e = sqlite3_prepare_v2(db, "UPDATE input SET model_file = ?", -1, &stmt, NULL);
@@ -143,20 +126,14 @@ int SaveModelFile(const char *db_file, const char *model_file)
  bail1:
 	sqlite3_finalize(stmt);
  bail0:
-	sqlite3_close(db);
 	return r;
 }
 
-int LoadExec(const char *db_file, char *sedml_file, char *phsp_file)
+int LoadExec(sqlite3 *db, char *sedml_file, char *phsp_file)
 {
 	static const int kMaxBytes = 1023;
 
 	int r = 0;
-	sqlite3 *db;
-	if (sqlite3_open_v2(db_file, &db, SQLITE_OPEN_READONLY, NULL) != SQLITE_OK) {
-		fprintf(stderr, "failed to open database: %s\n", db_file);
-		return 0;
-	}
 	int e;
 	sqlite3_stmt *stmt;
 	e = sqlite3_prepare_v2(db, "SELECT sedml_file, phsp_file FROM input", -1, &stmt, NULL);
@@ -207,18 +184,12 @@ int LoadExec(const char *db_file, char *sedml_file, char *phsp_file)
  bail1:
 	sqlite3_finalize(stmt);
  bail0:
-	sqlite3_close(db);
 	return r;
 }
 
-int SaveExec(const char *db_file, const char *sedml_file, const char *phsp_file)
+int SaveExec(sqlite3 *db, const char *sedml_file, const char *phsp_file)
 {
 	int r = 0;
-	sqlite3 *db;
-	if (sqlite3_open(db_file, &db) != SQLITE_OK) {
-		fprintf(stderr, "failed to open database: %s\n", db_file);
-		return 0;
-	}
 	int e;
 	if (!CreateTable(db, "input", "(sedml_file BLOB, phsp_file BLOB)"))
 		goto bail0;
@@ -250,6 +221,5 @@ int SaveExec(const char *db_file, const char *sedml_file, const char *phsp_file)
  bail1:
 	sqlite3_finalize(stmt);
  bail0:
-	sqlite3_close(db);
 	return r;
 }

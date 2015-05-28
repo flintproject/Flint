@@ -13,12 +13,12 @@
 
 namespace {
 
-typedef int (*FindFunction)(const char *, char *);
+typedef int (*FindFunction)(sqlite3 *, char *);
 
-char *GetInputFilename(const char *input, FindFunction f)
+char *GetInputFilename(sqlite3 *db, FindFunction f)
 {
 	boost::scoped_array<char> utf8(new char[1024]); // FIXME
-	if (!f(input, utf8.get())) {
+	if (!f(db, utf8.get())) {
 		std::exit(EXIT_FAILURE);
 	}
 	boost::filesystem::path path = GetPathFromUtf8(utf8.get());
@@ -32,12 +32,12 @@ char *GetInputFilename(const char *input, FindFunction f)
 
 } // namespace
 
-char *GetGivenFilename(const char *input)
+char *GetGivenFilename(sqlite3 *db)
 {
-	return GetInputFilename(input, FindGivenFile);
+	return GetInputFilename(db, FindGivenFile);
 }
 
-char *GetModelFilename(const char *input)
+char *GetModelFilename(sqlite3 *db)
 {
-	return GetInputFilename(input, FindModelFile);
+	return GetInputFilename(db, FindModelFile);
 }

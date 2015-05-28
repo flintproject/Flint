@@ -2,6 +2,8 @@
 #ifndef FLINT_CELLML_PARSER_H_
 #define FLINT_CELLML_PARSER_H_
 
-bool ParseCellml(const char *db);
+#include "sqlite3.h"
+
+bool ParseCellml(sqlite3 *db);
 
 #endif

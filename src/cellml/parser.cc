@@ -718,9 +718,8 @@ private:
 
 class CellMLParser {
 public:
-	CellMLParser(const char *db_path)
-		: db_path_(db_path),
-		  db_(),
+	explicit CellMLParser(sqlite3 *db)
+		: db_(db),
 		  stmt_units_(),
 		  stmt_variables_(),
 		  stmt_maths_(),
@@ -729,14 +728,11 @@ public:
 	{}
 
 	~CellMLParser() {
-		if (db_) {
-			if (stmt_units_) sqlite3_finalize(stmt_units_);
-			if (stmt_variables_) sqlite3_finalize(stmt_variables_);
-			if (stmt_maths_) sqlite3_finalize(stmt_maths_);
-			if (stmt_connections_) sqlite3_finalize(stmt_connections_);
-			if (stmt_map_variables_) sqlite3_finalize(stmt_map_variables_);
-			sqlite3_close(db_);
-		}
+		sqlite3_finalize(stmt_units_);
+		sqlite3_finalize(stmt_variables_);
+		sqlite3_finalize(stmt_maths_);
+		sqlite3_finalize(stmt_connections_);
+		sqlite3_finalize(stmt_map_variables_);
 	}
 
 	sqlite3 *db() const {return db_;}
@@ -747,8 +743,7 @@ public:
 	sqlite3_stmt *stmt_map_variables() const {return stmt_map_variables_;}
 
 	bool Parse() {
-		boost::scoped_array<char> model_file(GetModelFilename(db_path_));
-		if (!OpenDatabase()) return false;
+		boost::scoped_array<char> model_file(GetModelFilename(db_));
 		if (!BeginTransaction(db_)) return false;
 		if (!CreateTables()) return false;
 		if (!PrepareStatements()) return false;
@@ -757,17 +752,6 @@ public:
 	}
 
 private:
-	bool OpenDatabase() {
-		assert(db_path_);
-		if (sqlite3_open(db_path_, &db_) != SQLITE_OK) {
-			cerr << "failed to open database: "
-				 << db_path_
-				 << endl;
-			return false;
-		}
-		return true;
-	}
-
 	bool CreateTables() {
 		if (!CreateTable(db_, "units", "(name TEXT, units TEXT, prefix TEXT, exponent TEXT, multiplier TEXT, component TEXT)"))
 			return false;
@@ -837,7 +821,6 @@ private:
 		return true;
 	}
 
-	const char *db_path_;
 	sqlite3 *db_;
 	sqlite3_stmt *stmt_units_;
 	sqlite3_stmt *stmt_variables_;
@@ -848,7 +831,7 @@ private:
 
 } // namespace
 
-bool ParseCellml(const char *db)
+bool ParseCellml(sqlite3 *db)
 {
 	LIBXML_TEST_VERSION
 
