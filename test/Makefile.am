@@ -4,10 +4,8 @@ SUBDIRS = \
 	method \
 	csv2isd \
 	flint-cellml \
-	flint-evolve \
 	flint-file \
 	flint-flow \
-	flint-init \
 	flint-layout \
 	flint-nc \
 	flint-phml \
