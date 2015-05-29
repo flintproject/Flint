@@ -1,19 +1,19 @@
 .PHONY: all clean check
 
-all: OUTPUT
+all: flow.txt
 
-check: EXPECTED OUTPUT
+check: EXPECTED flow.txt
 	diff -u $^
 
 clean:
-	-rm -f OUTPUT OUTPUT.db OUTPUT.layout
+	-rm -f flow.txt output.db layout
 
-OUTPUT.db: INPUT
+output.db: INPUT
 	test-input1 $@ $<
 	flint-phml $@
 
-OUTPUT.layout: OUTPUT.db
+layout: output.db
 	flint-layout $< $@
 
-OUTPUT: OUTPUT.db OUTPUT.layout
+flow.txt: output.db layout
 	flint-flow $^ > $@
