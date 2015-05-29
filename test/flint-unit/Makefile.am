@@ -1,5 +1,5 @@
-DATADIR = @top_srcdir@/test/flint-unit
-MODELDIR = @top_srcdir@/test/models
+DATADIR = @abs_top_srcdir@/test/flint-unit
+MODELDIR = @abs_top_srcdir@/test/models
 
 TESTS = \
 	self-circular-unit.phml.sh \
@@ -10,13 +10,17 @@ XFAIL_TESTS = self-circular-unit.phml.sh
 .mk.sh:
 	echo '#!/bin/sh' > $@
 	echo 'export PATH="@abs_top_builddir@/src:$$PATH"' >> $@
-	echo '$(MAKE) -f $< -s clean all check' >> $@
+	echo 'install -d $(@:.sh=)' >> $@
+	echo '$(MAKE) -C $(@:.sh=) -f ../$< -s clean all check' >> $@
 	chmod +x $@
 
 $(TESTS:.sh=.mk): $(DATADIR)/test.mk.in
-	m4 -DINPUT=$(MODELDIR)/$(@:.mk=) -DOUTPUT=$(@:.mk=.output) $< > $@
+	m4 -DINPUT=$(MODELDIR)/$(@:.mk=) $< > $@
 
-CLEANFILES = $(TESTS) $(TESTS:.sh=.mk) $(TESTS:.sh=.output) $(TESTS:.sh=.output.db) $(TESTS:.sh=.output.db-journal)
+CLEANFILES = $(TESTS) $(TESTS:.sh=.mk)
+
+clean-local:
+	-rm -rf $(TESTS:.sh=)
 
 check_SCRIPTS = $(TESTS)
 
