@@ -1,4 +1,4 @@
-TESTDIR = @top_srcdir@/test
+TESTDIR = @abs_top_srcdir@/test
 DATADIR = $(TESTDIR)/flint-layout
 
 TESTS = \
@@ -8,16 +8,19 @@ TESTS = \
 .mk.sh:
 	echo '#!/bin/sh' > $@
 	echo 'export PATH="@abs_top_builddir@/src:$$PATH"' >> $@
-	echo '$(MAKE) -f $< -s clean all check' >> $@
+	echo 'install -d $(@:.sh=)' >> $@
+	echo '$(MAKE) -C $(@:.sh=) -f ../$< -s clean all check' >> $@
 	chmod +x $@
 
 $(TESTS:.sh=.mk): $(DATADIR)/test.mk.in
 	m4 \
 		-DINPUT=$(TESTDIR)/models/$(@:.mk=) \
-		-DOUTPUT=$(@:.mk=.output) \
 		$< > $@
 
-CLEANFILES = $(TESTS) $(TESTS:.sh=.output) $(TESTS:.sh=.output.db) $(TESTS:.sh=.mk)
+CLEANFILES = $(TESTS) $(TESTS:.sh=.mk)
+
+clean-local:
+	-rm -rf $(TESTS:.sh=)
 
 check_SCRIPTS = $(TESTS)
 

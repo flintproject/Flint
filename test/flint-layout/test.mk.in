@@ -1,15 +1,15 @@
 .PHONY: all clean check
 
-all: OUTPUT
+all: layout
 
-check: OUTPUT
+check: layout
 
 clean:
-	-rm -f OUTPUT OUTPUT.db
+	-rm -f layout output.db
 
-OUTPUT: OUTPUT.db
+layout: output.db
 	flint-layout $< $@
 
-OUTPUT.db: INPUT
+output.db: INPUT
 	test-input1 $@ $<
 	flint-phml $@
