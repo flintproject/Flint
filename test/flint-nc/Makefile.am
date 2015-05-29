@@ -1,5 +1,5 @@
-DATADIR = @top_srcdir@/test/flint-nc
-MODELDIR = @top_srcdir@/test/models
+DATADIR = @abs_top_srcdir@/test/flint-nc
+MODELDIR = @abs_top_srcdir@/test/models
 
 TESTS = \
 	Izhikevich_2003_model.isml.sh \
@@ -10,13 +10,17 @@ TESTS = \
 .mk.sh:
 	echo '#!/bin/sh' > $@
 	echo 'export PATH="@abs_top_builddir@/src:$$PATH"' >> $@
-	echo '$(MAKE) -f $< -s clean all check' >> $@
+	echo 'install -d $(@:.sh=)' >> $@
+	echo '$(MAKE) -C $(@:.sh=) -f ../$< -s clean all check' >> $@
 	chmod +x $@
 
 $(TESTS:.sh=.mk): $(DATADIR)/test.mk.in
-	m4 -DEXPECTED=$(DATADIR)/$(@:.mk=.txt) -DINPUT=$(MODELDIR)/$(@:.mk=) -DOUTPUT=$(@:.mk=.output) $< > $@
+	m4 -DEXPECTED=$(DATADIR)/$(@:.mk=.txt) -DINPUT=$(MODELDIR)/$(@:.mk=) $< > $@
 
-CLEANFILES = *.output *.output.db *.output.pb *.sh *.mk
+CLEANFILES = $(TESTS) $(TESTS:.sh=.mk)
+
+clean-local:
+	-rm -rf $(TESTS:.sh=)
 
 check_SCRIPTS = $(TESTS)
 

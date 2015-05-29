@@ -1,14 +1,16 @@
 .PHONY: all clean check
 
-all: OUTPUT
+all: method.txt
 
 clean:
-	-rm -f OUTPUT OUTPUT.db OUTPUT.pb
+	-rm -f method.txt output.db
 
-check: EXPECTED OUTPUT
+check: EXPECTED method.txt
 	diff -u $^
 
-OUTPUT: INPUT
-	test-input1 OUTPUT.db $<
-	flint-phml OUTPUT.db
-	flint-nc OUTPUT.db $@ > OUTPUT.pb
+output.db: INPUT
+	test-input1 $@ $<
+	flint-phml $@
+
+method.txt: output.db
+	flint-nc $< $@ > /dev/null
