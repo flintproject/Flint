@@ -1,5 +1,5 @@
-DATADIR = @top_srcdir@/test/flint-phml
-MODELDIR = @top_srcdir@/test/models
+DATADIR = @abs_top_srcdir@/test/flint-phml
+MODELDIR = @abs_top_srcdir@/test/models
 
 TESTS = \
 	Izhikevich_2003_model.isml.sh \
@@ -26,7 +26,7 @@ TESTS = \
 	ringed_Beeler_Reuter_1977_model_with_static_instance.isml.sh \
 	ringed_Luo_Rudy_1991_model_with_instance.isml.sh \
 	sine_curves.isml.sh \
-	target.phml.sh
+	target.phml.sh \
 	template-test_no-instance_no-edge.phml.sh \
 	template-test_with-instace.phml.sh \
 	time_units.isml.sh \
@@ -36,13 +36,13 @@ TESTS = \
 .mk.sh:
 	echo '#!/bin/sh' > $@
 	echo 'export PATH="@abs_top_builddir@/src:$$PATH"' >> $@
-	echo '$(MAKE) -f $< -s clean all check' >> $@
+	echo 'install -d $(@:.sh=)' >> $@
+	echo '$(MAKE) -C $(@:.sh=) -f ../$< -s clean all check' >> $@
 	chmod +x $@
 
 $(TESTS:.sh=.mk): $(DATADIR)/test.mk.in
 	m4 \
 		-DINPUT=$(MODELDIR)/$(@:.mk=) \
-		-DOUTPUT=$(@:.mk=.output) \
 		-DMODULES=$(DATADIR)/$(@:.mk=.modules) \
 		-DPQS=$(DATADIR)/$(@:.mk=.pqs) \
 		-DIMPLS=$(DATADIR)/$(@:.mk=.impls) \
@@ -62,7 +62,10 @@ $(TESTS:.sh=.mk): $(DATADIR)/test.mk.in
 		-DREACHES=$(DATADIR)/$(@:.mk=.reaches) \
 		$< > $@
 
-CLEANFILES = *.db *.output *.sh *.mk *.xml
+CLEANFILES = *.sh *.mk
+
+clean-local:
+	-rm -rf $(TESTS:.sh=)
 
 check_SCRIPTS = $(TESTS)
 

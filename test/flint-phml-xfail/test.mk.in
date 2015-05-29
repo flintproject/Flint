@@ -1,13 +1,13 @@
 .PHONY: all clean check
 
-all: OUTPUT
+all: output.db
 
 clean:
-	-rm -f OUTPUT STDERR
+	-rm -f output.db stderr.txt
 
-check: EXPECTED STDERR
+check: EXPECTED stderr.txt
 	diff -u $^
 
-OUTPUT: INPUT
+output.db: INPUT
 	test-input1 $@ $<
-	! flint-phml $@ 2> STDERR
+	! flint-phml $@ 2> stderr.txt
