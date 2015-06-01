@@ -461,5 +461,8 @@ bool TranslateCellml(sqlite3 *db)
 	boost::scoped_ptr<ReachDumper> reach_dumper(new ReachDumper(db, tree_dumper.get()));
 	if (!reach_dumper->Dump()) return false;
 
+	if (!CreateLayout(db))
+		return false;
+
 	return CommitTransaction(db);
 }

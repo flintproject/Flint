@@ -6,5 +6,5 @@ This program obtains specs from layout.
 
 = Synopsis
 
-flint-spec layout
+flint-spec db
 flint-spec --help

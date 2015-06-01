@@ -200,8 +200,8 @@ int main(int argc, char *argv[])
 	PrintCommonRecipe();
 	if (strcmp(argv[1], "run") == 0) {
 		/* create the list of all variables */
-		printf("spec.txt: layout\n");
-		printf("\tflint-spec $^ > $@\n");
+		printf("spec.txt: modeldb\n");
+		printf("\tflint-spec $< > $@\n");
 		printf("\n");
 	}
 	return EXIT_SUCCESS;

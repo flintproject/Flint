@@ -365,6 +365,8 @@ int main(int argc, char *argv[])
 	if (!CreateView(db, "input_eqs",
 					"SELECT * FROM input_functions UNION ALL SELECT * FROM input_odes"))
 		return EXIT_FAILURE;
+	if (!CreateLayout(db))
+		return EXIT_FAILURE;
 
 	return CommitTransaction(db) ? EXIT_SUCCESS : EXIT_FAILURE;
 }

@@ -34,9 +34,14 @@ int CreateView(sqlite3 *db, const char *name, const char *query);
 int CreateSingleton(sqlite3 *db);
 
 /*
- * Return 1 incase of success, 0 otherwise.
+ * Return 1 in case of success, 0 otherwise.
  */
 int SaveNol(int nol, sqlite3 *db);
+
+/*
+ * Return 1 in case of success, 0 otherwise.
+ */
+int CreateLayout(sqlite3 *db);
 
 #ifdef __cplusplus
 }

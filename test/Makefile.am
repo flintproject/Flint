@@ -13,6 +13,7 @@ SUBDIRS = \
 	flint-phsp \
 	flint-phz \
 	flint-sbml \
+	flint-spec \
 	flint-taskpref \
 	flint-taskspec \
 	flint-unit \

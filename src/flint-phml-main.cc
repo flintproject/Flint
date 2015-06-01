@@ -3784,6 +3784,8 @@ int main(int argc, char *argv[])
 
 	// views
 	CREATE_VIEWS_OR_DIE(db, kViews);
+	if (!CreateLayout(db))
+		return EXIT_FAILURE;
 
 	LIBXML_TEST_VERSION
 	xmlInitParser();

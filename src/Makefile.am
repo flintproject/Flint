@@ -280,9 +280,8 @@ flint_sedml_LDFLAGS = $(BOOST_FILESYSTEM_LDFLAGS) $(BOOST_SYSTEM_LDFLAGS)
 flint_sedml_LDADD = libflintxx.la libflint.la libsqlite3.la $(BOOST_FILESYSTEM_LIBS) $(BOOST_SYSTEM_LIBS)  $(CLIBSEDML_LIBS)
 flint_sedml_SOURCES = flint-sedml-main.cc
 
-flint_spec_CPPFLAGS = $(PROTOBUF_CFLAGS) $(BOOST_CPPFLAGS)
-flint_spec_LDFLAGS = $(BOOST_PROGRAM_OPTIONS_LDFLAGS)
-flint_spec_LDADD = libflintxx.la libflint.la libsqlite3.la $(PROTOBUF_LIBS) $(BOOST_PROGRAM_OPTIONS_LIBS)
+flint_spec_CPPFLAGS = $(BOOST_CPPFLAGS)
+flint_spec_LDADD = libflintxx.la libflint.la libsqlite3.la
 flint_spec_SOURCES = flint-spec-main.cc
 
 flint_store_CPPFLAGS = $(PROTOBUF_CFLAGS) $(BOOST_CPPFLAGS)
