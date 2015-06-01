@@ -50,7 +50,7 @@ public:
 		  cm_()
 	{
 		int e;
-		if (!CreateTable(db, "spaces", "(uuid TEXT, name TEXT)"))
+		if (!CreateTable(db, "spaces", "(space_id TEXT, name TEXT)"))
 			exit(EXIT_FAILURE);
 		if (!CreateTable(db, "names", "(space_id TEXT, type TEXT, id INTEGER, name TEXT, unit TEXT, capacity REAL)"))
 			exit(EXIT_FAILURE);
@@ -58,7 +58,7 @@ public:
 			exit(EXIT_FAILURE);
 		if (!CreateTable(db, "reaches", "(output_uuid BLOB, output_id INTEGER, input_uuid BLOB, input_id INTEGER)"))
 			exit(EXIT_FAILURE);
-		if (!CreateView(db, "scopes", "SELECT uuid, uuid, NULL FROM spaces"))
+		if (!CreateView(db, "scopes", "SELECT space_id AS uuid, space_id, NULL AS label FROM spaces"))
 			exit(EXIT_FAILURE);
 		e = sqlite3_prepare_v2(db, kTreeQuery, -1, &query_stmt_, NULL);
 		if (e != SQLITE_OK) {

@@ -3716,8 +3716,8 @@ struct View {
 
 const View kViews[] = {
 	{"joins", "m.module_id AS module_id, i.module_id AS uuid, i.label AS label FROM instances AS i LEFT JOIN templates As t ON i.template_id = t.template_id LEFT JOIN modules AS m ON m.module_id = t.ref_module_id"},
-	{"spaces", "module_id, name FROM modules WHERE type = 'functional-unit'"},
-	{"names", "m.module_id, p.type, p.pq_id, p.name, u.name, p.max_delay FROM pqs AS p LEFT JOIN modules AS m ON p.module_rowid = m.rowid LEFT JOIN units AS u ON p.unit_id = u.unit_id"},
+	{"spaces", "module_id AS space_id, name FROM modules WHERE type = 'functional-unit'"},
+	{"names", "m.module_id AS space_id, p.type, p.pq_id AS id, p.name, u.name AS unit, p.max_delay AS capacity FROM pqs AS p LEFT JOIN modules AS m ON p.module_rowid = m.rowid LEFT JOIN units AS u ON p.unit_id = u.unit_id"},
 	{"time_unit", "u.name FROM tds AS t JOIN units AS u ON t.unit_id = u.unit_id WHERE t.module_id IS NULL"},
 	{"sv_eqs", "m.module_id, ltrim(i.math) FROM impls AS i LEFT JOIN pqs AS p ON i.pq_rowid = p.rowid LEFT JOIN modules AS m ON p.module_rowid = m.rowid WHERE p.type = 's' OR p.type = 'v'"},
 	{"vx_eqs", "m.module_id, ltrim(i.math) FROM impls AS i LEFT JOIN pqs AS p ON i.pq_rowid = p.rowid LEFT JOIN modules AS m ON p.module_rowid = m.rowid WHERE p.type = 'v' OR p.type = 'x'"},
