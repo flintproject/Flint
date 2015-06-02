@@ -95,8 +95,6 @@ int CreateSingleton(sqlite3 *db)
 	}
 	if (!CreateTable(db, "names", "(space_id TEXT, type TEXT, id INTEGER, name TEXT, unit TEXT, capacity REAL)"))
 		return 0;
-	if (!CreateTable(db, "private_names", "(space_id TEXT, type TEXT, id INTEGER, name TEXT, unit TEXT, capacity REAL)"))
-		return 0;
 	if (!CreateTable(db, "time_unit", "(name TEXT)"))
 		return 0;
 	return 1;

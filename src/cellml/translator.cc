@@ -54,8 +54,6 @@ public:
 			exit(EXIT_FAILURE);
 		if (!CreateTable(db, "names", "(space_id TEXT, type TEXT, id INTEGER, name TEXT, unit TEXT, capacity REAL)"))
 			exit(EXIT_FAILURE);
-		if (!CreateTable(db, "private_names", "(space_id TEXT, type TEXT, id INTEGER, name TEXT, unit TEXT, capacity REAL)"))
-			exit(EXIT_FAILURE);
 		if (!CreateTable(db, "reaches", "(output_uuid BLOB, output_id INTEGER, input_uuid BLOB, input_id INTEGER)"))
 			exit(EXIT_FAILURE);
 		if (!CreateView(db, "scopes", "SELECT space_id AS uuid, space_id, NULL AS label FROM spaces"))
