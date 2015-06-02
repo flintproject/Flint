@@ -1,0 +1,16 @@
+.PHONY: all clean check
+
+all: param
+
+check: EXPECTED param
+	cmp $^
+
+clean:
+	-rm -f output.db param
+
+output.db: INPUT
+	test-input1 $@ $<
+	COMMAND $@
+
+param: output.db
+	flint-param $< $@

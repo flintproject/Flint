@@ -6,5 +6,5 @@ This program obtains parameters according to layout.
 
 = Synopsis
 
-flint-param layout
+flint-param input output
 flint-param --help

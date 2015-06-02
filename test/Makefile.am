@@ -8,6 +8,7 @@ SUBDIRS = \
 	flint-flow \
 	flint-layout \
 	flint-nc \
+	flint-param \
 	flint-phml \
 	flint-phml-xfail \
 	flint-phsp \

@@ -81,8 +81,8 @@ static void PrintRecipeForPhml(void)
 	printf("init: modeldb layout const-bc flow.txt\n");
 	printf("\tflint-init --db $^ $@\n");
 	printf("\n");
-	printf("param: layout\n");
-	printf("\tflint-param $^ > $@\n");
+	printf("param: modeldb\n");
+	printf("\tflint-param $< $@\n");
 	printf("\n");
 	printf("unitoftime: unit\n");
 	printf("\tflint-unitoftime < $^ > $@\n");
@@ -124,8 +124,8 @@ static void PrintRecipeForSbml(void)
 	printf("\tflint-init $^ /dev/null $@\n");
 #endif
 	printf("\n");
-	printf("param: layout\n");
-	printf("\tflint-param $^ > $@\n");
+	printf("param: modeldb\n");
+	printf("\tflint-param $< $@\n");
 	printf("\n");
 	printf("var: layout\n");
 	printf("\tflint-var $^ > $@\n");

@@ -135,7 +135,7 @@ int SaveNol(int nol, sqlite3 *db)
 int CreateLayout(sqlite3 *db)
 {
 	return CreateView(db, "layout",
-					  "SELECT p.space_id AS track_id, c.uuid AS sector_id, c.label, n.name, n.type, n.id, n.unit, n.capacity FROM spaces AS p"
+					  "SELECT p.space_id AS track_id, p.name AS track_name, c.uuid AS sector_id, c.label, n.name, n.type, n.id, n.unit, n.capacity FROM spaces AS p"
 					  " LEFT JOIN scopes AS c ON p.space_id = c.space_id"
 					  " LEFT JOIN names AS n ON p.space_id = n.space_id"
 					  " WHERE n.name IS NOT NULL ORDER BY p.space_id, c.rowid, n.rowid");
