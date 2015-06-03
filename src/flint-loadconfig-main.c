@@ -9,6 +9,12 @@
 
 static void PrintCommonRecipe(void)
 {
+	printf("param: modeldb\n");
+	printf("\tflint-param $< $@\n");
+	printf("\n");
+	printf("var: modeldb\n");
+	printf("\tflint-var $< $@\n");
+	printf("\n");
 	printf("filter: modeldb spec.txt layout\n");
 	printf("\tflint-filter $^ $@\n");
 	printf("\n");
@@ -46,8 +52,7 @@ static void PrintRecipeForCellml(void)
 	printf("init: layout const-bc flow.txt\n");
 	printf("\tflint-init $^ $@\n");
 	printf("\n");
-	printf("var: layout\n");
-	printf("\tflint-var $^ > $@\n");
+	printf("load: init param var\n");
 	printf("\n");
 }
 
@@ -81,14 +86,8 @@ static void PrintRecipeForPhml(void)
 	printf("init: modeldb layout const-bc flow.txt\n");
 	printf("\tflint-init --db $^ $@\n");
 	printf("\n");
-	printf("param: modeldb\n");
-	printf("\tflint-param $< $@\n");
-	printf("\n");
 	printf("unitoftime: unit\n");
 	printf("\tflint-unitoftime < $^ > $@\n");
-	printf("\n");
-	printf("var: layout\n");
-	printf("\tflint-var $^ > $@\n");
 	printf("\n");
 	printf("lands.txt: nc unitoftime\n");
 	printf("\tflint-lands $^ > $@\n");
@@ -123,12 +122,6 @@ static void PrintRecipeForSbml(void)
 #else
 	printf("\tflint-init $^ /dev/null $@\n");
 #endif
-	printf("\n");
-	printf("param: modeldb\n");
-	printf("\tflint-param $< $@\n");
-	printf("\n");
-	printf("var: layout\n");
-	printf("\tflint-var $^ > $@\n");
 	printf("\n");
 	printf("load: init param var\n");
 	printf("\n");
