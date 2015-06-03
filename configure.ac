@@ -145,6 +145,7 @@ AC_CONFIG_FILES([Makefile
                  test/flint-taskpref/Makefile
                  test/flint-taskspec/Makefile
                  test/flint-unit/Makefile
+                 test/flint-var/Makefile
                  test/isd2csv/Makefile
                  test/isdbswap/Makefile
                  test/isdcut/Makefile

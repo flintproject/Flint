@@ -18,6 +18,7 @@ SUBDIRS = \
 	flint-taskpref \
 	flint-taskspec \
 	flint-unit \
+	flint-var \
 	isd2csv \
 	isdbswap \
 	isdcut \

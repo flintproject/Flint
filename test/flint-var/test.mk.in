@@ -1,0 +1,19 @@
+.PHONY: all clean check
+
+all: var
+
+check: EXPECTED var
+	cmp $^
+
+clean:
+	-rm -f *.db *.xml var layout
+
+output.db: INPUT
+	test-input1 $@ $<
+	COMMAND $@
+
+var: layout
+	flint-var $< > $@
+
+layout: output.db
+	flint-layout $< $@
