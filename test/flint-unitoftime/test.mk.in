@@ -1,0 +1,19 @@
+.PHONY: all clean check
+
+all: output.db
+
+clean:
+	-rm -f *.db *.xml unitoftime unit
+
+check: EXPECTED unitoftime
+	cmp $^
+
+unit: output.db
+	flint-unit $< > $@
+
+output.db: INPUT
+	test-input1 $@ $<
+	flint-phml $@
+
+unitoftime: unit
+	flint-unitoftime $< > $@
