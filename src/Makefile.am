@@ -67,7 +67,6 @@ bin_PROGRAMS = \
 	flint-taskspec \
 	flint-timer \
 	flint-track \
-	flint-unit \
 	flint-unitoftime \
 	flint-var \
 	isd2csv \
@@ -308,10 +307,6 @@ flint_track_CPPFLAGS = $(PROTOBUF_CFLAGS) $(BOOST_CPPFLAGS)
 flint_track_LDFLAGS = $(BOOST_PROGRAM_OPTIONS_LDFLAGS) $(BOOST_SYSTEM_LDFLAGS)
 flint_track_LDADD = libflintxx.la libflint.la libsqlite3.la $(PROTOBUF_LIBS) $(BOOST_PROGRAM_OPTIONS_LIBS) $(BOOST_SYSTEM_LIBS)
 flint_track_SOURCES = flint-track-main.cc
-
-flint_unit_CPPFLAGS = $(PROTOBUF_CFLAGS) $(BOOST_CPPFLAGS)
-flint_unit_LDADD = libflintxx.la libflint.la libsqlite3.la $(PROTOBUF_LIBS)
-flint_unit_SOURCES = flint-unit-main.cc
 
 flint_unitoftime_CPPFLAGS = $(PROTOBUF_CFLAGS) $(BOOST_CPPFLAGS)
 flint_unitoftime_LDADD = libflintxx.la libflint.la libsqlite3.la $(PROTOBUF_LIBS)

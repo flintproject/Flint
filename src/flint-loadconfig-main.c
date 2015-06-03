@@ -65,9 +65,6 @@ static void PrintRecipeForPhml(void)
 	printf("\n");
 	printf("method.txt: nc\n");
 	printf("\n");
-	printf("unit: modeldb\n");
-	printf("\tflint-unit $< > $@\n");
-	printf("\n");
 	printf("layout: modeldb\n");
 	printf("\tflint-layout $< $@\n");
 	printf("\n");

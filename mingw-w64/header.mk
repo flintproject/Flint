@@ -69,7 +69,6 @@ EXES := \
     flint-taskspec \
     flint-timer \
     flint-track \
-    flint-unit \
     flint-unitoftime \
     flint-var \
     isd2csv \
