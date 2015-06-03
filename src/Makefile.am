@@ -31,7 +31,6 @@ BUILT_SOURCES = \
 
 bin_PROGRAMS = \
 	csv2isd \
-	flint-bswap64 \
 	flint-cellml \
 	flint-cli \
 	flint-compile \
@@ -147,8 +146,6 @@ csv2isd_CPPFLAGS = $(BOOST_CPPFLAGS)
 csv2isd_LDFLAGS = $(BOOST_FILESYSTEM_LDFLAGS) $(BOOST_SYSTEM_LDFLAGS)
 csv2isd_LDADD = libflintxx.la libflint.la libsqlite3.la $(BOOST_FILESYSTEM_LIBS) $(BOOST_SYSTEM_LIBS)
 csv2isd_SOURCES = csv2isd-main.cc
-
-flint_bswap64_SOURCES = flint-bswap64-main.c
 
 flint_cellml_CPPFLAGS = $(BOOST_CPPFLAGS)
 flint_cellml_LDFLAGS = $(BOOST_FILESYSTEM_LDFLAGS) $(BOOST_SYSTEM_LDFLAGS)
