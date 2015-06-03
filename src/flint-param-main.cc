@@ -19,8 +19,8 @@
 #include "lo.pb.h"
 
 #include "bc/index.h"
+#include "bc/pack.h"
 #include "db/read-only-driver.hh"
-#include "lo/layout_loader.h"
 #include "sqlite3.h"
 
 using std::cerr;

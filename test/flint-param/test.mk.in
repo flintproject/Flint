@@ -6,7 +6,7 @@ check: EXPECTED param
 	cmp $^
 
 clean:
-	-rm -f output.db param
+	-rm -f *.db *.xml param
 
 output.db: INPUT
 	test-input1 $@ $<
