@@ -6,5 +6,5 @@ This program filters units of times.
 
 = Synopsis
 
-flint-unitoftime
+flint-unitoftime input output
 flint-unitoftime --help

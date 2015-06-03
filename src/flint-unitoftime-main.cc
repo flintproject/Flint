@@ -6,33 +6,99 @@
 #include <cassert>
 #include <cstdio>
 #include <cstdlib>
+#include <cstring>
 #include <fstream>
 #include <iostream>
 #include <memory>
 #include <string>
 
-#include <boost/program_options.hpp>
 #include <boost/ptr_container/ptr_map.hpp>
-#include <boost/scoped_ptr.hpp>
 
 #include "ipc.pb.h"
 #include "unit.pb.h"
-#include "bc/binary.h"
 #include "bc/pack.h"
-
-namespace po = boost::program_options;
+#include "db/read-only-driver.hh"
+#include "db/statement-driver.h"
+#include "sqlite3.h"
 
 using std::cerr;
 using std::endl;
 using std::printf;
-using std::string;
-
-using unit::Element;
-using unit::Unit;
+using std::strcmp;
 
 namespace {
 
-typedef boost::ptr_map<int, Unit> UnitMap;
+class ElementLoader : db::StatementDriver {
+public:
+	// Note that db is for read only.
+	explicit ElementLoader(sqlite3 *db)
+		: db::StatementDriver(db, "SELECT unit_id, exponent, factor, multiplier, offset FROM elements WHERE unit_rowid = ?")
+	{
+	}
+
+	bool Load(sqlite3_int64 rowid, unit::Unit *unit) {
+		int e = sqlite3_bind_int64(stmt(), 1, rowid);
+		if (e != SQLITE_OK) {
+			cerr << "failed to bind unit_rowid: " << e << endl;
+			return false;
+		}
+		for (e = sqlite3_step(stmt()); e == SQLITE_ROW; e = sqlite3_step(stmt())) {
+			int unit_id = sqlite3_column_int(stmt(), 0);
+			double exponent = sqlite3_column_double(stmt(), 1);
+			int factor = sqlite3_column_int(stmt(), 2);
+			double multiplier = sqlite3_column_double(stmt(), 3);
+			double offset = sqlite3_column_double(stmt(), 4);
+
+			unit::Element *e = unit->add_element();
+			e->set_unit_id(unit_id);
+			if (factor) e->set_factor(factor);
+			if (exponent) e->set_exponent(exponent);
+			if (multiplier) e->set_multiplier(multiplier);
+			if (offset) e->set_offset(offset);
+		}
+		if (e != SQLITE_DONE) {
+			cerr << "failed to step statement: " << e << endl;
+			return false;
+		}
+		sqlite3_reset(stmt());
+		return true;
+	}
+};
+
+typedef boost::ptr_map<int, unit::Unit> UnitMap;
+
+class UnitMapLoader : db::StatementDriver {
+public:
+	// Note that db is for read only.
+	explicit UnitMapLoader(sqlite3 *db)
+		: db::StatementDriver(db, "SELECT rowid, unit_id, name FROM units")
+		, loader_(db)
+	{
+	}
+
+	bool Load(UnitMap *units) {
+		int e;
+		for (e = sqlite3_step(stmt()); e == SQLITE_ROW; e = sqlite3_step(stmt())) {
+			sqlite3_int64 rowid = sqlite3_column_int64(stmt(), 0);
+			int unit_id = sqlite3_column_int(stmt(), 1);
+			const unsigned char *name = sqlite3_column_text(stmt(), 2);
+			std::auto_ptr<unit::Unit> unit(new unit::Unit);
+			unit->set_id(unit_id);
+			unit->set_name(std::string((const char *)name));
+			if (!loader_.Load(rowid, unit.get()))
+				return false;
+			units->insert(unit_id, unit.release());
+		}
+		if (e != SQLITE_DONE) {
+			cerr << "failed to step statement: " << e << endl;
+			return false;
+		}
+		return true;
+	}
+
+private:
+	ElementLoader loader_;
+};
 
 bool IsOfTime(const UnitMap &units, int id, long *denominator, long *numerator)
 {
@@ -41,14 +107,14 @@ bool IsOfTime(const UnitMap &units, int id, long *denominator, long *numerator)
 		cerr << "missing unit with unit-id " << id << endl;
 		return false;
 	}
-	const Unit *unit = it->second;
+	const unit::Unit *unit = it->second;
 	if (unit->name() == "second") {
 		*denominator = 1;
 		*numerator = 1;
 		return true;
 	} else if (unit->element_size() == 1) {
 		long d, n;
-		const Element &element = unit->element(0);
+		const unit::Element &element = unit->element(0);
 		if (IsOfTime(units, element.unit_id(), &d, &n)) {
 			if (element.has_exponent() && element.exponent() != 1) return false;
 			if (element.has_offset() && element.offset() != 0) return false;
@@ -85,18 +151,9 @@ bool IsOfTime(const UnitMap &units, int id, long *denominator, long *numerator)
 	return false;
 }
 
-bool Load(std::istream *is, UnitMap *units)
+void Usage()
 {
-	while (is->peek() != EOF) {
-		std::auto_ptr<Unit> unit(new Unit);
-		if (!UnpackFromIstream(*unit, is)) {
-			cerr << "could not read Unit" << endl;
-			return false;
-		}
-		int unit_id = unit->id();
-		units->insert(unit_id, unit.release());
-	}
-	return true;
+	cerr << "flint-unitoftime INPUT OUTPUT" << endl;
 }
 
 } // namespace
@@ -105,65 +162,46 @@ int main(int argc, char *argv[])
 {
 	GOOGLE_PROTOBUF_VERIFY_VERSION;
 
-	RequestBinaryStdio();
-
-	po::options_description opts("options");
-	po::positional_options_description popts;
-	po::variables_map vm;
-	string input_file;
-	int print_help = 0;
-
-	opts.add_options()
-		("input", po::value<string>(&input_file), "Input file name")
-		("text", "Specify plain text output")
-		("help,h", "Show this message");
-	popts.add("input", 1);
-
-	try {
-		po::store(po::command_line_parser(argc, argv).options(opts).positional(popts).run(), vm);
-		po::notify(vm);
-		if (vm.count("help")) print_help = 1;
-	} catch (const po::error &) {
-		print_help = 2;
+	if (argc == 2) {
+		Usage();
+		if ( strcmp(argv[1], "-h") == 0 ||
+			 strcmp(argv[1], "--help") == 0 )
+			return EXIT_SUCCESS;
+		return EXIT_FAILURE;
 	}
-	if (print_help) {
-		cerr << "usage: " << argv[0] << " [PATH]" << endl;
-		cerr << opts;
-		return (print_help == 1) ? EXIT_SUCCESS : EXIT_FAILURE;
+	if (argc != 3) {
+		Usage();
+		return EXIT_FAILURE;
 	}
 
 	UnitMap units;
-	if (vm.count("input") == 0) {
-		if (!Load(&std::cin, &units)) return EXIT_FAILURE;
-	} else {
-		std::ifstream ifs(input_file.c_str(), std::ios::in|std::ios::binary);
-		if (!ifs.is_open()) {
-			cerr << "could not open file: " << input_file << endl;
+	{
+		db::ReadOnlyDriver driver(argv[1]);
+		UnitMapLoader loader(driver.db());
+		if (!loader.Load(&units))
 			return EXIT_FAILURE;
-		}
-		bool r = Load(&ifs, &units);
-		ifs.close();
-		if (!r) return EXIT_FAILURE;
 	}
 
+	std::ofstream ofs(argv[2], std::ios::out|std::ios::binary);
+	if (!ofs) {
+		cerr << "failed to open " << argv[2] << endl;
+		return EXIT_FAILURE;
+	}
 	ipc::TimeUnit tu;
 	long d, n;
 	for (UnitMap::const_iterator it=units.begin();it!=units.end();++it) {
 		if (IsOfTime(units, it->first, &d, &n)) {
-			if (vm.count("text") > 0) {
-				printf("%d %s %ld %ld\n", it->first, it->second->name().c_str(), d, n);
-			} else {
-				tu.set_name(it->second->name());
-				tu.set_d(d);
-				tu.set_n(n);
-				tu.set_id(it->first);
-				if (!PackToOstream(tu, &std::cout)) {
-					cerr << "failed to pack TimeUnit" << endl;
-					return EXIT_FAILURE;
-				}
+			tu.set_name(it->second->name());
+			tu.set_d(d);
+			tu.set_n(n);
+			tu.set_id(it->first);
+			if (!PackToOstream(tu, &ofs)) {
+				cerr << "failed to pack TimeUnit" << endl;
+				return EXIT_FAILURE;
 			}
 		}
 	}
+	ofs.close();
 
 	google::protobuf::ShutdownProtobufLibrary();
 

@@ -86,8 +86,8 @@ static void PrintRecipeForPhml(void)
 	printf("init: modeldb layout const-bc flow.txt\n");
 	printf("\tflint-init --db $^ $@\n");
 	printf("\n");
-	printf("unitoftime: unit\n");
-	printf("\tflint-unitoftime < $^ > $@\n");
+	printf("unitoftime: modeldb\n");
+	printf("\tflint-unitoftime $< $@\n");
 	printf("\n");
 	printf("lands.txt: nc unitoftime\n");
 	printf("\tflint-lands $^ > $@\n");
