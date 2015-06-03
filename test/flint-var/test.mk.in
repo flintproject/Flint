@@ -6,14 +6,11 @@ check: EXPECTED var
 	cmp $^
 
 clean:
-	-rm -f *.db *.xml var layout
+	-rm -f *.db *.xml var
 
 output.db: INPUT
 	test-input1 $@ $<
 	COMMAND $@
 
-var: layout
-	flint-var $< > $@
-
-layout: output.db
-	flint-layout $< $@
+var: output.db
+	flint-var $< $@

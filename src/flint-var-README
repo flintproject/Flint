@@ -6,5 +6,5 @@ This program obtains variables according to layout.
 
 = Synopsis
 
-flint-var layout
+flint-var input output
 flint-var --help

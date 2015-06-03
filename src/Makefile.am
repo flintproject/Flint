@@ -319,8 +319,7 @@ flint_unitoftime_LDADD = libflintxx.la libflint.la libsqlite3.la $(PROTOBUF_LIBS
 flint_unitoftime_SOURCES = flint-unitoftime-main.cc
 
 flint_var_CPPFLAGS = $(PROTOBUF_CFLAGS) $(BOOST_CPPFLAGS)
-flint_var_LDFLAGS = $(BOOST_PROGRAM_OPTIONS_LDFLAGS) $(BOOST_SYSTEM_LDFLAGS)
-flint_var_LDADD = libflintxx.la libflint.la libsqlite3.la $(PROTOBUF_LIBS) $(BOOST_PROGRAM_OPTIONS_LIBS) $(BOOST_SYSTEM_LIBS)
+flint_var_LDADD = libflintxx.la libflint.la libsqlite3.la $(PROTOBUF_LIBS)
 flint_var_SOURCES = flint-var-main.cc
 
 isd2csv_CPPFLAGS = $(BOOST_CPPFLAGS)
