@@ -127,6 +127,7 @@ libflintxx_la_SOURCES = \
     phml/graph-iv-rewriter.cc \
     phml/graph-math-rewriter.cc \
     phml/import.cc \
+    phml/read.cc \
     phml/transition-form.cc \
     reach.cc \
     runtime/flow.cc \
