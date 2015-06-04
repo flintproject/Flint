@@ -7,6 +7,7 @@
 
 #include "cellml/parser.h"
 #include "cellml/translator.h"
+#include "db.hh"
 #include "db/driver.h"
 
 using std::cerr;
@@ -39,6 +40,8 @@ int main(int argc, char *argv[])
 	if (!ParseCellml(db))
 		return EXIT_FAILURE;
 	if (!TranslateCellml(db))
+		return EXIT_FAILURE;
+	if (!db::Flow(db))
 		return EXIT_FAILURE;
 	return EXIT_SUCCESS;
 }

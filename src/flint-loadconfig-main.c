@@ -43,13 +43,10 @@ static void PrintRecipeForCellml(void)
 	printf("layout: modeldb\n");
 	printf("\tflint-layout $< $@\n");
 	printf("\n");
-	printf("flow.txt: modeldb layout\n");
-	printf("\tflint-flow $^ > $@\n");
-	printf("\n");
 	printf("const-bc: modeldb\n");
 	printf("\tflint-compile $< input_ivs assign const.db > $@\n");
 	printf("\n");
-	printf("init: layout const-bc flow.txt\n");
+	printf("init: modeldb layout const-bc\n");
 	printf("\tflint-init $^ $@\n");
 	printf("\n");
 	printf("load: init param var\n");
@@ -68,9 +65,6 @@ static void PrintRecipeForPhml(void)
 	printf("layout: modeldb\n");
 	printf("\tflint-layout $< $@\n");
 	printf("\n");
-	printf("flow.txt: modeldb layout\n");
-	printf("\tflint-flow $^ > $@\n");
-	printf("\n");
 	printf("const-bc: modeldb\n");
 	printf("\tflint-compile modeldb input_ivs assign const.db > $@\n");
 	printf("\n");
@@ -80,8 +74,8 @@ static void PrintRecipeForPhml(void)
 	printf("before-bc: modeldb\n");
 	printf("\tflint-compile modeldb before_eqs event before.db > $@\n");
 	printf("\n");
-	printf("init: modeldb layout const-bc flow.txt\n");
-	printf("\tflint-init --db $^ $@\n");
+	printf("init: modeldb layout const-bc\n");
+	printf("\tflint-init $^ $@\n");
 	printf("\n");
 	printf("unitoftime: modeldb\n");
 	printf("\tflint-unitoftime $< $@\n");
@@ -106,19 +100,11 @@ static void PrintRecipeForSbml(void)
 	printf("layout: modeldb\n");
 	printf("\tflint-layout $< $@\n");
 	printf("\n");
-	printf("flow.txt:\n");
-	printf("\tflint-concat $@\n");
-	printf("\n");
 	printf("output-bc: modeldb\n");
 	printf("\tflint-compile $< input_ivs assign assign.db > $@\n");
 	printf("\n");
-	printf("init: layout output-bc\n");
-#ifdef _WIN32
-	/* use NUL */
-	printf("\tflint-init $^ NUL $@\n");
-#else
-	printf("\tflint-init $^ /dev/null $@\n");
-#endif
+	printf("init: modeldb layout output-bc\n");
+	printf("\tflint-init $^ $@\n");
 	printf("\n");
 	printf("load: init param var\n");
 	printf("\n");

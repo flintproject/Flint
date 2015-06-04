@@ -110,6 +110,7 @@ libflintxx_la_SOURCES = \
     branch.cc \
     cellml/parser.cc \
     cellml/translator.cc \
+    db/flow.cc \
     db/read-only-driver.cc \
     compiler/bcc.cc \
     compiler/sort.cc \
@@ -128,6 +129,7 @@ libflintxx_la_SOURCES = \
     phml/import.cc \
     phml/transition-form.cc \
     reach.cc \
+    runtime/flow.cc \
     sbml/load.cc \
     sbml/parser.cc \
     span.cc \

@@ -97,6 +97,12 @@ int CreateSingleton(sqlite3 *db)
 		return 0;
 	if (!CreateTable(db, "time_unit", "(name TEXT)"))
 		return 0;
+	if (!CreateTable(db, "flows", "(source INTEGER, target INTEGER)"))
+		return EXIT_FAILURE;
+	if (!CreateSprinkles(db))
+		return EXIT_FAILURE;
+	if (!CreateTsfiles(db))
+		return EXIT_FAILURE;
 	return 1;
 }
 
@@ -140,4 +146,15 @@ int CreateLayout(sqlite3 *db)
 					  " LEFT JOIN names AS n ON p.space_id = n.space_id"
 					  " WHERE c.uuid IS NOT NULL AND n.name IS NOT NULL"
 					  " ORDER BY p.space_id, c.rowid, n.rowid");
+}
+
+int CreateSprinkles(sqlite3 *db)
+{
+	return CreateTable(db, "sprinkles",
+					   "(track_id BLOB, sector_id BLOB, pq_id INTEGER, val REAL)");
+}
+
+int CreateTsfiles(sqlite3 *db)
+{
+	return CreateTable(db, "tsfiles", "(filename TEXT)");
 }

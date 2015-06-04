@@ -31,7 +31,6 @@
 #include "lo/layout_loader.h"
 #include "runtime/processor.h"
 #include "runtime/timeseries.h"
-#include "text/flow_loader.h"
 #include "ts.hh"
 
 namespace po = boost::program_options;
@@ -175,28 +174,27 @@ int main(int argc, char *argv[])
 	po::options_description opts("options");
 	po::positional_options_description popts;
 	po::variables_map vm;
-	string layout_file, bc_file, flow_file, filter_file, output_file;
+	string layout_file, bc_file, filter_file, output_file;
 	string db_file;
 	int print_help = 0;
 
 	opts.add_options()
 		("layout", po::value<string>(&layout_file), "Input layout file")
 		("bc", po::value<string>(&bc_file), "Input bytecode file")
-		("flow", po::value<string>(&flow_file), "Input flow file")
 		("filter", po::value<string>(&filter_file), "Input filter file")
 		("db", po::value<string>(&db_file), "Input database file")
 		("output", po::value<string>(&output_file), "Output file")
 		("help,h", "Show this message");
-	popts.add("layout", 1).add("bc", 1).add("flow", 1).add("output", 1);
+	popts.add("db", 1).add("layout", 1).add("bc", 1).add("output", 1);
 
 	try {
 		po::store(po::command_line_parser(argc, argv).options(opts).positional(popts).run(), vm);
 		po::notify(vm);
 		if (vm.count("help") > 0) {
 			print_help = 1;
-		} else if ( vm.count("layout") == 0 ||
+		} else if ( vm.count("db") == 0 ||
+					vm.count("layout") == 0 ||
 					vm.count("bc") == 0 ||
-					vm.count("flow") == 0 ||
 					vm.count("output") == 0 ) {
 			print_help = 2;
 		}
@@ -204,7 +202,7 @@ int main(int argc, char *argv[])
 		print_help = 2;
 	}
 	if (print_help) {
-		cerr << "usage: " << argv[0] << " LAYOUT BC FLOW OUTPUT" << endl;
+		cerr << "usage: " << argv[0] << " DB LAYOUT BC OUTPUT" << endl;
 		cerr << opts;
 		return (print_help == 1) ? EXIT_SUCCESS : EXIT_FAILURE;
 	}
@@ -233,8 +231,12 @@ int main(int argc, char *argv[])
 
 	// arrange input timeseries data
 	boost::scoped_ptr<TimeseriesVector> tv;
+
+	boost::scoped_ptr<FlowInboundMap> inbound(new FlowInboundMap);
+	boost::scoped_ptr<FlowOutboundMap> outbound(new FlowOutboundMap);
+
 	// read targets from database, if any
-	if (vm.count("db") > 0) {
+	{
 		db::ReadOnlyDriver driver(db_file.c_str());
 		{
 			db::SprinkleLoader loader(driver.db());
@@ -249,6 +251,8 @@ int main(int argc, char *argv[])
 				return EXIT_FAILURE;
 			processor->set_tv(tv.get());
 		}
+		if (!LoadFlows(driver.db(), inbound.get(), outbound.get()))
+			return EXIT_FAILURE;
 	}
 
 	// load filter next
@@ -273,16 +277,6 @@ int main(int argc, char *argv[])
 	// replace nominal location in bytecode
 	if (!processor->SolveLocation()) {
 		return EXIT_FAILURE;
-	}
-
-	// load flow
-	boost::scoped_ptr<FlowInboundMap> inbound(new FlowInboundMap);
-	boost::scoped_ptr<FlowOutboundMap> outbound(new FlowOutboundMap);
-	{
-		boost::scoped_ptr<text::FlowLoader> loader(new text::FlowLoader(flow_file));
-		boost::scoped_ptr<FlowHandler> handler(new FlowHandler(inbound.get(),
-															   outbound.get()));
-		if (!loader->Load(handler.get())) return EXIT_FAILURE;
 	}
 
 	if (!processor->SolveDependencies(nol, inbound.get(), outbound.get(), false)) return EXIT_FAILURE;

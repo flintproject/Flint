@@ -98,13 +98,8 @@ int main(int argc, char *argv[])
 	printf("$(1)/generated-bc: $(1)/generated.db\n");
 	printf("\tflint-compile $$< parameter_eqs assign $(1)/output.db > $$@\n");
 	printf("\n");
-	printf("$(1)/generated-init: generated-layout $(1)/generated-bc\n");
-#ifdef _WIN32
-	/* use NUL */
-	printf("\tflint-init $$^ NUL $$@\n");
-#else
-	printf("\tflint-init $$^ /dev/null $$@\n");
-#endif
+	printf("$(1)/generated-init: db generated-layout $(1)/generated-bc\n");
+	printf("\tflint-init $$^ $$@\n");
 	printf("\n");
 	printf("$(1)/stored: init generated-layout $(1)/generated-init layout\n");
 	printf("\tflint-concat $$< $$@\n");
@@ -129,9 +124,18 @@ int main(int argc, char *argv[])
 	printf("$(1)/control: | $(1)\n");
 	printf("\techo 0 > $$@\n"); /* TODO */
 	printf("\n");
-	printf("$(1)/run: isdh $(1)/first filter $(1)/start $(1)/control layout bc flow.txt $(if $(filter phml,$(MODEL_LANG)),before-bc after-bc modeldb)\n");
+	printf("$(1)/run: isdh $(1)/first filter $(1)/start $(1)/control modeldb layout bc $(if $(filter phml,$(MODEL_LANG)),before-bc after-bc)\n");
 	printf("\tflint-concat isdh $(1)/first $(1)/isd\n");
-	printf("\tflint-evolve --filter filter --granularity %s --input-data $(1)/start --control $(1)/control --output-data $(1)/output-data --output-history $(1)/output-history --status $(1)/status $(if $(filter phml,$(MODEL_LANG)),--pre before-bc --post after-bc --db modeldb) layout bc flow.txt $(1)/isd\n",
+	printf("\tflint-evolve"
+		   " --filter filter"
+		   " --granularity %s"
+		   " --input-data $(1)/start"
+		   " --control $(1)/control"
+		   " --output-data $(1)/output-data"
+		   " --output-history $(1)/output-history"
+		   " --status $(1)/status"
+		   " $(if $(filter phml,$(MODEL_LANG)),--pre before-bc --post after-bc)"
+		   " modeldb layout bc $(1)/isd\n",
 		   granularity);
 	printf("\tflint-concat $$@\n");
 	printf("endef\n");

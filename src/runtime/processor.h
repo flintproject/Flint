@@ -28,6 +28,7 @@
 #include "bc/bc_loader.h"
 #include "lo/layout.h"
 #include "numeric/prng.h"
+#include "runtime/flow.hh"
 #include "runtime/timeseries.h"
 
 namespace {
@@ -247,36 +248,6 @@ void DoGen2(const bc::Gen2 &c2, double *tmp, TRng *rng)
 }
 
 } // namespace
-
-typedef boost::ptr_map<int, std::set<int> > FlowInboundMap;
-typedef boost::ptr_map<int, std::set<int> > FlowOutboundMap;
-
-class FlowHandler : boost::noncopyable {
-public:
-	explicit FlowHandler(FlowInboundMap *inbound, FlowOutboundMap *outbound)
-		: inbound_(inbound),
-		  outbound_(outbound)
-	{
-		assert(inbound);
-		assert(outbound);
-	}
-
-	bool Handle(int source, int target) {
-		if ( (*inbound_)[target].insert(source).second &&
-			 (*outbound_)[source].insert(target).second )
-			return true;
-		std::cerr << "duplicate entries in flows: "
-			 << source
-			 << " -> "
-			 << target
-			 << std::endl;
-		return false;
-	}
-
-private:
-	FlowInboundMap *inbound_;
-	FlowOutboundMap *outbound_;
-};
 
 class FlowDependency {
 public:

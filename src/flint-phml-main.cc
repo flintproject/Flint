@@ -21,6 +21,7 @@
 #include <libxml/xmlreader.h>
 
 #include "branch.h"
+#include "db.hh"
 #include "db/driver.h"
 #include "db/query.h"
 #include "modelpath.h"
@@ -3689,12 +3690,10 @@ const Schema kSubsequentTables[] = {
 	{"journals", "(indent INTEGER, uuid TEXT)"},
 	{"spans", "(tail_uuid TEXT, tail_port_id INTEGER, head_uuid TEXT, head_port_id INTEGER)"},
 	{"reaches", "(output_uuid BLOB, output_id INTEGER, input_uuid BLOB, input_id INTEGER)"},
-	{"sprinkles", "(track_id BLOB, sector_id BLOB, pq_id INTEGER, val REAL)"},
 	{"combined_values", "(uuid TEXT, math TEXT)"},
 	{"combined_functions", "(uuid TEXT, math TEXT)"},
 	{"combined_odes", "(uuid TEXT, math TEXT)"},
-	{"tscs", "(uuid TEXT, math TEXT)"},
-	{"tsfiles", "(filename TEXT)"},
+	{"tscs", "(uuid TEXT, math TEXT)"}
 };
 
 void CreateTablesOrDie(sqlite3 *db, const Schema *tables, size_t n)
@@ -3782,6 +3781,10 @@ int main(int argc, char *argv[])
 
 	// subsequent tables
 	CREATE_TABLES_OR_DIE(db, kSubsequentTables);
+	if (!CreateSprinkles(db))
+		return EXIT_FAILURE;
+	if (!CreateTsfiles(db))
+		return EXIT_FAILURE;
 
 	// views
 	CREATE_VIEWS_OR_DIE(db, kViews);
@@ -3856,6 +3859,8 @@ int main(int argc, char *argv[])
 	if (!phml::CombineAll(db))
 		return EXIT_FAILURE;
 	if (!ts::Tsc(db))
+		return EXIT_FAILURE;
+	if (!db::Flow(db))
 		return EXIT_FAILURE;
 	return EXIT_SUCCESS;
 }

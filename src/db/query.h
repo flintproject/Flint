@@ -43,6 +43,16 @@ int SaveNol(int nol, sqlite3 *db);
  */
 int CreateLayout(sqlite3 *db);
 
+/*
+ * Return 1 in case of success, 0 otherwise.
+ */
+int CreateSprinkles(sqlite3 *db);
+
+/*
+ * Return 1 in case of success, 0 otherwise.
+ */
+int CreateTsfiles(sqlite3 *db);
+
 #ifdef __cplusplus
 }
 #endif
