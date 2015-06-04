@@ -57,7 +57,7 @@ public:
 		return i;
 	}
 
-	int ReadElement(int space);
+	inline int ReadElement(int space);
 
 	int ReadApply()
 	{
