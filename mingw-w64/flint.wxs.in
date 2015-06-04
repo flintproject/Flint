@@ -100,9 +100,6 @@
           <Component Id='flint_filter' Guid='2fb7b396-f5bd-11e2-9c74-9bab714e21e6'>
             <File Id='flint_filter.exe' Name='flint-filter.exe' DiskId='1' Source='flint-filter.exe' />
           </Component>
-          <Component Id='flint_flow' Guid='2fb8225e-f5bd-11e2-abba-3ba530544c5b'>
-            <File Id='flint_flow.exe' Name='flint-flow.exe' DiskId='1' Source='flint-flow.exe' />
-          </Component>
           <Component Id='flint_form' Guid='c8caaee4-5d69-11e3-80f9-bb96620edf97'>
             <File Id='flint_form.exe' Name='flint-form.exe' DiskId='1' Source='flint-form.exe' />
           </Component>
@@ -320,7 +317,6 @@
       <ComponentRef Id='flint_exec' />
       <ComponentRef Id='flint_file' />
       <ComponentRef Id='flint_filter' />
-      <ComponentRef Id='flint_flow' />
       <ComponentRef Id='flint_form' />
       <ComponentRef Id='flint_generate' />
       <ComponentRef Id='flint_init' />

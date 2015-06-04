@@ -131,7 +131,6 @@ AC_CONFIG_FILES([Makefile
                  test/flint-cellml/Makefile
                  test/flint-evolve/Makefile
                  test/flint-file/Makefile
-                 test/flint-flow/Makefile
                  test/flint-init/Makefile
                  test/flint-layout/Makefile
                  test/flint-nc/Makefile

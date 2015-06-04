@@ -60,6 +60,7 @@ $(TESTS:.sh=.mk): $(DATADIR)/test.mk.in
 		-DJOURNALS=$(DATADIR)/$(@:.mk=.journals) \
 		-DSPANS=$(DATADIR)/$(@:.mk=.spans) \
 		-DREACHES=$(DATADIR)/$(@:.mk=.reaches) \
+		-DFLOWS=$(DATADIR)/$(@:.mk=.flows) \
 		$< > $@
 
 CLEANFILES = *.sh *.mk

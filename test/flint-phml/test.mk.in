@@ -17,7 +17,8 @@ SUBCHECKS = \
 	check-scopes \
 	check-journals \
 	check-spans \
-	check-reaches
+	check-reaches \
+	check-flows
 
 .PHONY: all clean check $(SUBCHECKS)
 
@@ -78,6 +79,9 @@ check-spans: output.db
 
 check-reaches: output.db
 	test ! -f REACHES || ($(SQLITE3) $< 'SELECT lower(hex(output_uuid)), output_id, lower(hex(input_uuid)), input_id FROM reaches' | diff -u REACHES -)
+
+check-flows: output.db
+	test ! -f FLOWS || ($(SQLITE3) $< 'SELECT source, target FROM flows' | diff -u FLOWS -)
 
 output.db: INPUT
 	test-input1 $@ $<

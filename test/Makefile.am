@@ -5,7 +5,6 @@ SUBDIRS = \
 	csv2isd \
 	flint-cellml \
 	flint-file \
-	flint-flow \
 	flint-layout \
 	flint-nc \
 	flint-param \

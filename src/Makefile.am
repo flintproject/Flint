@@ -41,7 +41,6 @@ bin_PROGRAMS = \
 	flint-exec \
 	flint-file \
 	flint-filter \
-	flint-flow \
 	flint-form \
 	flint-generate \
 	flint-init \
@@ -195,10 +194,6 @@ flint_filter_CPPFLAGS = $(PROTOBUF_CFLAGS) $(BOOST_CPPFLAGS)
 flint_filter_LDFLAGS = $(BOOST_PROGRAM_OPTIONS_LDFLAGS) $(BOOST_SYSTEM_LDFLAGS)
 flint_filter_LDADD = libflintxx.la libflint.la libsqlite3.la $(PROTOBUF_LIBS) $(BOOST_PROGRAM_OPTIONS_LIBS) $(BOOST_SYSTEM_LIBS)
 flint_filter_SOURCES = flint-filter-main.cc
-
-flint_flow_CPPFLAGS = $(PROTOBUF_CFLAGS) $(BOOST_CPPFLAGS)
-flint_flow_LDADD = libflintxx.la libflint.la libsqlite3.la $(PROTOBUF_LIBS)
-flint_flow_SOURCES = flint-flow-main.cc
 
 flint_form_CFLAGS = $(AM_CFLAGS) -std=c99 -pedantic-errors
 flint_form_LDADD = libflint.la libsqlite3.la

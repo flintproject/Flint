@@ -45,7 +45,6 @@ EXES := \
     flint-exec \
     flint-file \
     flint-filter \
-    flint-flow \
     flint-form \
     flint-generate \
     flint-init \
