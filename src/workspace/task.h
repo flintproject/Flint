@@ -2,6 +2,8 @@
 #ifndef FLINT_WORKSPACE_TASK_H_
 #define FLINT_WORKSPACE_TASK_H_
 
+#include "file.hh"
+
 namespace workspace {
 
 class Task {
@@ -11,7 +13,7 @@ public:
 	 */
 	explicit Task(const char *given_file, int task_id = 0);
 
-	bool Setup();
+	bool Setup(file::Format *format);
 
 private:
 	const char *given_file_;

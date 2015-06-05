@@ -115,9 +115,6 @@
           <Component Id='flint_layout' Guid='2fbd1138-f5bd-11e2-87e7-47f7d510ba53'>
             <File Id='flint_layout.exe' Name='flint-layout.exe' DiskId='1' Source='flint-layout.exe' />
           </Component>
-          <Component Id='flint_loadconfig' Guid='f651ba1c-d03f-11e3-a1b4-2fa2a7e5c6d8'>
-            <File Id='flint_loadconfig.exe' Name='flint-loadconfig.exe' DiskId='1' Source='flint-loadconfig.exe' />
-          </Component>
           <Component Id='flint_make' Guid='6c558eee-cad9-11e3-a40b-c775ed5cf8a1'>
             <File Id='flint_make.exe' Name='flint-make.exe' DiskId='1' Source='flint-make.exe' />
           </Component>
@@ -319,7 +316,6 @@
       <ComponentRef Id='flint_isdh' />
       <ComponentRef Id='flint_lands' />
       <ComponentRef Id='flint_layout' />
-      <ComponentRef Id='flint_loadconfig' />
       <ComponentRef Id='flint_make' />
       <ComponentRef Id='flint_nc' />
       <ComponentRef Id='flint_open' />

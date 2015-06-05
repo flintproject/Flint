@@ -7,7 +7,6 @@
 
 #include "database.h"
 #include "db/driver.h"
-#include "file.hh"
 
 namespace workspace {
 
@@ -16,7 +15,7 @@ Task::Task(const char *given_file, int task_id)
 	  task_id_(task_id)
 {}
 
-bool Task::Setup()
+bool Task::Setup(file::Format *format)
 {
 	char db_file[32]; // FIXME
 	// create the database
@@ -37,7 +36,7 @@ bool Task::Setup()
 			 !boost::filesystem::create_directory(dir_path) )
 			return false;
 	}
-	return file::Txt(given_file_, task_id_);
+	return file::Txt(given_file_, format, task_id_);
 }
 
 }

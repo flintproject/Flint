@@ -10,12 +10,11 @@ using std::perror;
 
 namespace file {
 
-bool Txt(const char *filename, int dir)
+bool Txt(const char *filename, Format *format, int dir)
 {
 	boost::filesystem::path path = GetPathFromUtf8(filename);
 	std::string path_s = path.string();
-	Format format;
-	if (!DetectFormat(path_s.c_str(), &format))
+	if (!DetectFormat(path_s.c_str(), format))
 		return false;
 	FILE *fp;
 	if (dir == 0) {
@@ -29,7 +28,7 @@ bool Txt(const char *filename, int dir)
 		perror(filename);
 		return false;
 	}
-	switch (format) {
+	switch (*format) {
 	case file::kCellml:
 		fprintf(fp, "cellml\n");
 		break;

@@ -9,15 +9,12 @@
 #include <iostream>
 
 #include "bc/binary.h"
+#include "load.hh"
 #include "system.h"
 #include "workspace/task.h"
 
 using std::cerr;
 using std::endl;
-using std::fclose;
-using std::fopen;
-using std::fprintf;
-using std::perror;
 using std::strcmp;
 
 namespace {
@@ -51,23 +48,10 @@ int main(int argc, char *argv[])
 	given_file[s] = '\0';
 
 	workspace::Task task(given_file);
-	if (!task.Setup())
+	file::Format format;
+	if (!task.Setup(&format))
 		return EXIT_FAILURE;
-
-	FILE *fp = fopen("open.mk", "w");
-	if (!fp) {
-		perror(argv[0]);
+	if (!load::Config(format, load::kRun))
 		return EXIT_FAILURE;
-	}
-	fprintf(fp, ".PHONY: all\n");
-	fprintf(fp, "\n");
-	fprintf(fp, "all: load.mk\n");
-	fprintf(fp, "\t$(MAKE) -f load.mk load\n");
-	fprintf(fp, "\n");
-	fprintf(fp, "load.mk: file.txt model\n");
-	fprintf(fp, "\tflint-loadconfig run < $< > $@\n");
-	fprintf(fp, "\n");
-	fclose(fp);
-
-	return RunSystem("flint-make -j -rs -f open.mk");
+	return RunSystem("flint-make -j -rs -f load.mk load");
 }

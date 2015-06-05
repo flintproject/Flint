@@ -13,9 +13,11 @@
 #include <boost/scoped_ptr.hpp>
 
 #include "bc/binary.h"
-#include "workspace/task.h"
+#include "file.hh"
+#include "load.hh"
 #include "system.h"
 #include "utf8path.h"
+#include "workspace/task.h"
 
 #include "cli.pb.h"
 
@@ -65,7 +67,8 @@ int main(int argc, char *argv[])
 	boost::filesystem::path target_path = GetPathFromUtf8(option.output_filename().c_str());
 
 	boost::scoped_ptr<workspace::Task> task(new workspace::Task(option.model_filename().c_str()));
-	if (!task->Setup()) {
+	file::Format format;
+	if (!task->Setup(&format)) {
 		return EXIT_FAILURE;
 	}
 
@@ -86,6 +89,8 @@ int main(int argc, char *argv[])
 			return EXIT_FAILURE;
 		}
 	}
+	if (!load::Config(format, load::kRun))
+		return EXIT_FAILURE;
 
 	FILE *fp = fopen("run.mk", "w");
 	if (!fp) {
@@ -97,21 +102,18 @@ int main(int argc, char *argv[])
 	fprintf(fp, "all: Makefile\n");
 	fprintf(fp, "\t$(MAKE)\n");
 	fprintf(fp, "\n");
-	fprintf(fp, "Makefile: load.mk conf.txt\n");
+	fprintf(fp, "Makefile: conf.txt\n");
 	fprintf(fp, "\techo JOBS = 0 > $@\n");
 	fprintf(fp, "\techo include load.mk >> $@\n");
-	fprintf(fp, "\tflint-taskconfig run conf.txt >> $@\n");
+	fprintf(fp, "\tflint-taskconfig run $< >> $@\n");
 	fprintf(fp, "\n");
 	fprintf(fp, "conf.txt: load.mk\n");
-	fprintf(fp, "\t$(MAKE) -f load.mk $@\n");
+	fprintf(fp, "\t$(MAKE) -f $< $@\n");
 	if (option.has_granularity()) {
 		fprintf(fp, "\techo %d >> $@\n", option.granularity());
 	} else {
 		fprintf(fp, "\techo 1 >> $@\n");
 	}
-	fprintf(fp, "\n");
-	fprintf(fp, "load.mk: file.txt model\n");
-	fprintf(fp, "\tflint-loadconfig run < $< > $@\n");
 	fprintf(fp, "\n");
 	fclose(fp);
 

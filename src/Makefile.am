@@ -46,7 +46,6 @@ bin_PROGRAMS = \
 	flint-isdh \
 	flint-lands \
 	flint-layout \
-	flint-loadconfig \
 	flint-lodbg \
 	flint-nc \
 	flint-open \
@@ -117,6 +116,7 @@ libflintxx_la_SOURCES = \
     file/detect.cc \
     file/txt.cc \
     job/generate.cc \
+    load/config.cc \
     method/assign.cc \
     method/euler.cc \
     method/event.cc \
@@ -219,9 +219,6 @@ flint_layout_CPPFLAGS = $(PROTOBUF_CFLAGS) $(BOOST_CPPFLAGS)
 flint_layout_LDFLAGS = $(BOOST_PROGRAM_OPTIONS_LDFLAGS)
 flint_layout_LDADD = libflintxx.la libflint.la libsqlite3.la $(PROTOBUF_LIBS) $(BOOST_PROGRAM_OPTIONS_LIBS)
 flint_layout_SOURCES = flint-layout-main.cc
-
-flint_loadconfig_CPPFLAGS = $(AM_CFLAGS) -std=c99 -pedantic-errors
-flint_loadconfig_SOURCES = flint-loadconfig-main.c
 
 flint_lodbg_CPPFLAGS = $(PROTOBUF_CFLAGS) $(BOOST_CPPFLAGS)
 flint_lodbg_LDADD = libflintxx.la libflint.la libsqlite3.la $(PROTOBUF_LIBS)

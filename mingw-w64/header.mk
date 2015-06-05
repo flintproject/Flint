@@ -50,7 +50,6 @@ EXES := \
     flint-isdh \
     flint-lands \
     flint-layout \
-    flint-loadconfig \
     flint-nc \
     flint-open \
     flint-param \

@@ -85,6 +85,7 @@ int main(int argc, char *argv[])
 		return EXIT_FAILURE;
 	}
 
+	printf("\n");
 	if (strcmp(type, "euler") == 0) {
 		PrintRecipeForEuler();
 	} else {

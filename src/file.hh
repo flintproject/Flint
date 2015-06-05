@@ -27,7 +27,7 @@ bool DetectFormat(const char *filename, Format *format);
  * Note that filename is encoded in UTF-8.
  * Return true in case of success, otherwise false.
  */
-bool Txt(const char *filename, int dir = 0);
+bool Txt(const char *filename, Format *format, int dir = 0);
 
 }
 

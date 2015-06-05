@@ -21,6 +21,7 @@
 
 #include "db/driver.h"
 #include "db/query.h"
+#include "load.hh"
 #include "mathml/math_dumper.h"
 #include "workspace/task.h"
 #include "sqlite3.h"
@@ -193,11 +194,15 @@ public:
 				if (xmlStrEqual(local_name, BAD_CAST "phsp")) {
 					for (TaskMap::const_iterator it=tasks_.begin();it!=tasks_.end();++it) {
 						boost::scoped_ptr<workspace::Task> task(new workspace::Task(it->second.c_str(), it->first));
-						if (!task->Setup()) {
+						file::Format format;
+						if (!task->Setup(&format)) {
 							return -2;
 						}
+						if (!load::Config(format, load::kExec, it->first))
+							return -2;
+						PrintRules(it->first);
 					}
-					PrintRules();
+					PrintRestOfRules();
 					return 1;
 				}
 			}
@@ -209,21 +214,21 @@ public:
 private:
 	typedef std::map<int, string> TaskMap;
 
-	void PrintRules() {
-		for (TaskMap::const_iterator it=tasks_.begin();it!=tasks_.end();++it) {
-			int task_id = it->first;
-			printf("%d/conf.txt:\n", task_id);
-			printf("\tflint-taskpref %d x.db > $@\n", task_id);
-			printf("\n");
-			printf("%d/spec.txt:\n", task_id);
-			printf("\tflint-taskspec %d x.db > $@\n", task_id);
-			printf("\n");
-			printf("%d/Makefile: %d/file.txt %d/conf.txt\n", task_id, task_id, task_id);
-			printf("\tflint-enum %d/db > $@\n", task_id);
-			printf("\tflint-loadconfig exec < %d/file.txt >> $@\n", task_id);
-			printf("\tflint-taskconfig exec %d/conf.txt >> $@\n", task_id);
-			printf("\n");
-		}
+	void PrintRules(int task_id) {
+		printf("%d/conf.txt:\n", task_id);
+		printf("\tflint-taskpref %d x.db > $@\n", task_id);
+		printf("\n");
+		printf("%d/spec.txt:\n", task_id);
+		printf("\tflint-taskspec %d x.db > $@\n", task_id);
+		printf("\n");
+		printf("%d/Makefile: %d/file.txt %d/conf.txt\n", task_id, task_id, task_id);
+		printf("\tflint-enum %d/db > $@\n", task_id);
+		printf("\techo include load.mk >> $@\n", task_id);
+		printf("\tflint-taskconfig exec %d/conf.txt >> $@\n", task_id);
+		printf("\n");
+	}
+
+	void PrintRestOfRules() {
 		printf("all:");
 		for (TaskMap::const_iterator it=tasks_.begin();it!=tasks_.end();++it) {
 			printf(" %d/spec.txt %d/Makefile", it->first, it->first);
