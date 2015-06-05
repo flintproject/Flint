@@ -113,9 +113,6 @@ int main(int argc, char *argv[])
 	fprintf(fp, "load.mk: file.txt model\n");
 	fprintf(fp, "\tflint-loadconfig run < $< > $@\n");
 	fprintf(fp, "\n");
-	fprintf(fp, "file.txt: model\n");
-	fprintf(fp, "\tflint-file $< > $@\n");
-	fprintf(fp, "\n");
 	fclose(fp);
 
 	int r = RunSystem("flint-make -j -rs -f run.mk");

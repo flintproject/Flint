@@ -81,7 +81,7 @@ public class Setup implements Runnable {
 
             // try to find a command executable in order to check the component directory
             String userDir = System.getProperty("user.dir");
-            if (!new File(userDir + File.separator + "bin" + File.separator + "flint-file").isFile()) {
+            if (!new File(userDir + File.separator + "bin" + File.separator + "flint-evolve").isFile()) {
                 File dir = setupComponent();
                 Component.setPath(dir);
             }

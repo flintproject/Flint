@@ -8,17 +8,16 @@
 #include <cstring>
 #include <iostream>
 
-#define BOOST_FILESYSTEM_NO_DEPRECATED
-#include <boost/filesystem.hpp>
-
 #include "bc/binary.h"
-#include "database.h"
-#include "db/driver.h"
 #include "system.h"
+#include "workspace/task.h"
 
 using std::cerr;
 using std::endl;
+using std::fclose;
+using std::fopen;
 using std::fprintf;
+using std::perror;
 using std::strcmp;
 
 namespace {
@@ -51,11 +50,9 @@ int main(int argc, char *argv[])
 	}
 	given_file[s] = '\0';
 
-	{
-		db::Driver driver("model");
-		if (!SaveGivenFile(driver.db(), given_file))
-			return EXIT_FAILURE;
-	}
+	workspace::Task task(given_file);
+	if (!task.Setup())
+		return EXIT_FAILURE;
 
 	FILE *fp = fopen("open.mk", "w");
 	if (!fp) {
@@ -69,9 +66,6 @@ int main(int argc, char *argv[])
 	fprintf(fp, "\n");
 	fprintf(fp, "load.mk: file.txt model\n");
 	fprintf(fp, "\tflint-loadconfig run < $< > $@\n");
-	fprintf(fp, "\n");
-	fprintf(fp, "file.txt: model\n");
-	fprintf(fp, "\tflint-file $< > $@\n");
 	fprintf(fp, "\n");
 	fclose(fp);
 

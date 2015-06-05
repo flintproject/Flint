@@ -1,10 +1,10 @@
 SUBDIRS = \
 	common \
 	compiler \
+	file \
 	method \
 	csv2isd \
 	flint-cellml \
-	flint-file \
 	flint-layout \
 	flint-nc \
 	flint-param \

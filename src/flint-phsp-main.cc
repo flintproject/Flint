@@ -212,13 +212,10 @@ private:
 	void PrintRules() {
 		for (TaskMap::const_iterator it=tasks_.begin();it!=tasks_.end();++it) {
 			int task_id = it->first;
-			printf("%d/file.txt: %d/model | %d\n", task_id, task_id, task_id);
-			printf("\tflint-file $< > $@\n");
-			printf("\n");
-			printf("%d/conf.txt: | %d\n", task_id, task_id);
+			printf("%d/conf.txt:\n", task_id);
 			printf("\tflint-taskpref %d x.db > $@\n", task_id);
 			printf("\n");
-			printf("%d/spec.txt: | %d\n", task_id, task_id);
+			printf("%d/spec.txt:\n", task_id);
 			printf("\tflint-taskspec %d x.db > $@\n", task_id);
 			printf("\n");
 			printf("%d/Makefile: %d/file.txt %d/conf.txt\n", task_id, task_id, task_id);
@@ -227,12 +224,6 @@ private:
 			printf("\tflint-taskconfig exec %d/conf.txt >> $@\n", task_id);
 			printf("\n");
 		}
-		for (TaskMap::const_iterator it=tasks_.begin();it!=tasks_.end();++it) {
-			printf("%d ", it->first);
-		}
-		printf(":\n");
-		printf("\tmkdir $@\n");
-		printf("\n");
 		printf("all:");
 		for (TaskMap::const_iterator it=tasks_.begin();it!=tasks_.end();++it) {
 			printf(" %d/spec.txt %d/Makefile", it->first, it->first);

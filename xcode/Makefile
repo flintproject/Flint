@@ -48,7 +48,6 @@ PROGRAMS := \
     flint-enum \
     flint-evolve \
     flint-exec \
-    flint-file \
     flint-filter \
     flint-form \
     flint-generate \

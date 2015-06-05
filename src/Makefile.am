@@ -39,7 +39,6 @@ bin_PROGRAMS = \
 	flint-enum \
 	flint-evolve \
 	flint-exec \
-	flint-file \
 	flint-filter \
 	flint-form \
 	flint-generate \
@@ -115,6 +114,8 @@ libflintxx_la_SOURCES = \
     compiler/sort.cc \
     compiler/tac.cc \
     csv/export.cc \
+    file/detect.cc \
+    file/txt.cc \
     job/generate.cc \
     method/assign.cc \
     method/euler.cc \
@@ -138,7 +139,8 @@ libflintxx_la_SOURCES = \
     ts/tsc.cc \
     ts/tsfiles.cc \
     utf8path.cc \
-    uuidgen.cc
+    uuidgen.cc \
+    workspace/task.cc
 
 libsqlite3_la_CPPFLAGS = -DSQLITE_THREADSAFE=0 -DSQLITE_OMIT_LOAD_EXTENSION
 libsqlite3_la_LDFLAGS = -no-undefined
@@ -185,11 +187,6 @@ flint_exec_LDFLAGS = $(BOOST_FILESYSTEM_LDFLAGS) $(BOOST_SYSTEM_LDFLAGS)
 flint_exec_LDADD = libflint.la libsqlite3.la $(BOOST_FILESYSTEM_LIBS) $(BOOST_SYSTEM_LIBS)
 flint_exec_SOURCES = flint-exec-main.cc
 
-flint_file_CPPFLAGS = $(BOOST_CPPFLAGS) $(XML_CPPFLAGS)
-flint_file_LDFLAGS = $(BOOST_FILESYSTEM_LDFLAGS) $(BOOST_SYSTEM_LDFLAGS) $(BOOST_PROGRAM_OPTIONS_LDFLAGS)
-flint_file_LDADD = libflintxx.la libflint.la libsqlite3.la $(BOOST_FILESYSTEM_LIBS) $(BOOST_SYSTEM_LIBS) $(BOOST_PROGRAM_OPTIONS_LIBS) $(XML_LIBS)
-flint_file_SOURCES = flint-file-main.cc
-
 flint_filter_CPPFLAGS = $(PROTOBUF_CFLAGS) $(BOOST_CPPFLAGS)
 flint_filter_LDFLAGS = $(BOOST_PROGRAM_OPTIONS_LDFLAGS) $(BOOST_SYSTEM_LDFLAGS)
 flint_filter_LDADD = libflintxx.la libflint.la libsqlite3.la $(PROTOBUF_LIBS) $(BOOST_PROGRAM_OPTIONS_LIBS) $(BOOST_SYSTEM_LIBS)
@@ -235,8 +232,7 @@ flint_nc_LDADD = libflintxx.la libflint.la libsqlite3.la $(PROTOBUF_LIBS)
 flint_nc_SOURCES = flint-nc-main.cc
 
 flint_open_CPPFLAGS = $(BOOST_CPPFLAGS)
-flint_open_LDFLAGS = $(BOOST_FILESYSTEM_LDFLAGS) $(BOOST_SYSTEM_LDFLAGS)
-flint_open_LDADD = libflint.la libsqlite3.la $(BOOST_FILESYSTEM_LIBS) $(BOOST_SYSTEM_LIBS)
+flint_open_LDADD = libflintxx.la libflint.la libsqlite3.la
 flint_open_SOURCES = flint-open-main.cc
 
 flint_param_CPPFLAGS = $(PROTOBUF_CFLAGS) $(BOOST_CPPFLAGS)

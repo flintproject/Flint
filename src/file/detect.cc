@@ -3,67 +3,64 @@
 #include "config.h"
 #endif
 
+#include "file.hh"
+
 #include <cassert>
 #include <cstdio>
 #include <cstdlib>
+#include <cstring>
 #include <iostream>
-#include <string>
-
-#include <boost/program_options.hpp>
-#include <boost/scoped_array.hpp>
-#include <boost/scoped_ptr.hpp>
 
 #include <libxml/xmlreader.h>
 
-#include "db/driver.h"
-#include "modelpath.h"
-
-namespace po = boost::program_options;
-
 using std::cerr;
-using std::cout;
 using std::endl;
-using std::exit;
 using std::fclose;
 using std::fopen;
 using std::fread;
 using std::perror;
-using std::string;
 using std::strncmp;
+
+namespace file {
 
 namespace {
 
-void CheckPhz(const char *model_file)
+/*
+ * Return 1 if it is PHZ; 0 if it is not; -1 in case of error.
+ */
+int CheckPhz(const char *filename)
 {
-	assert(model_file);
+	assert(filename);
 
-	FILE *fp = fopen(model_file, "rb");
+	FILE *fp = fopen(filename, "rb");
 	if (!fp) {
-		perror(model_file);
-		exit(EXIT_FAILURE);
+		perror(filename);
+		return -1;
 	}
 	char magic[2];
 	int r = fread(magic, 2, 1, fp);
 	fclose(fp);
 	if (r != 1) {
 		cerr << "failed to read magic in model file: "
-			 << model_file
+			 << filename
 			 << endl;
-		exit(EXIT_FAILURE);
+		return -1;
 	}
 	if (strncmp(magic, "PK", 2) == 0) { // looks like zip
-		cout << "phz" << endl;
-		exit(EXIT_SUCCESS);
+		return 1;
 	}
+	return 0;
 }
 
 class Reader {
 public:
-	explicit Reader(xmlTextReaderPtr &text_reader) : text_reader_(text_reader) {}
+	Reader(xmlTextReaderPtr &text_reader, Format *format)
+		: text_reader_(text_reader)
+		, format_(format)
+	{}
 
 	~Reader() {
 		xmlFreeTextReader(text_reader_);
-		xmlCleanupParser();
 	}
 
 	bool Read() {
@@ -74,31 +71,31 @@ public:
 				const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
 				if ( xmlStrEqual(uri, BAD_CAST "http://www.physiodesigner.org/2013/ns/phsp/1.0") &&
 					 xmlStrEqual(local_name, BAD_CAST "phsp") ) {
-					cout << "phsp" << endl;
+					*format_ = kPhsp;
 					return true;
 				} else if ( xmlStrEqual(uri, BAD_CAST "http://www.physiodesigner.org/2012/ns/physiodesigner/1.0") &&
 					 xmlStrEqual(local_name, BAD_CAST "insilico-model") ) {
-					cout << "phml" << endl;
+					*format_ = kPhml;
 					return true;
 				} else if ( xmlStrEqual(uri, BAD_CAST "http://www.physiome.jp/ns/insilicoml") &&
 							xmlStrEqual(local_name, BAD_CAST "insilico-model") ) {
-					cout << "isml" << endl;
+					*format_ = kIsml;
 					return true;
 				} else if ( xmlStrstr(uri, BAD_CAST "http://www.cellml.org/cellml/") &&
 							xmlStrEqual(local_name, BAD_CAST "model") ) {
-					cout << "cellml" << endl;
+					*format_ = kCellml;
 					return true;
 				} else if ( xmlStrstr(uri, BAD_CAST "http://www.sbml.org/sbml/") &&
 							xmlStrEqual(local_name, BAD_CAST "sbml") ) {
-					cout << "sbml" << endl;
+					*format_ = kSbml;
 					return true;
 				} else if ( xmlStrEqual(uri ,BAD_CAST "http://www.w3.org/1998/Math/MathML") &&
 							xmlStrEqual(local_name, BAD_CAST "math")) {
-					cout << "mathml" << endl;
+					*format_ = kMathml;
 					return true;
 				} else if ( xmlStrEqual(uri ,BAD_CAST "http://sed-ml.org/") &&
 							xmlStrEqual(local_name, BAD_CAST "sedML")) {
-					cout << "sedml" << endl;
+					*format_ = kSedml;
 					return true;
 				} else {
 					cerr << "unknown pair of namespace and element";
@@ -114,57 +111,31 @@ public:
 
 private:
 	xmlTextReaderPtr &text_reader_;
+	Format *format_;
 };
 
-} // namespace
+}
 
-int main(int argc, char *argv[])
+bool DetectFormat(const char *filename, Format *format)
 {
-	LIBXML_TEST_VERSION
-	xmlInitParser();
-
-	po::options_description opts("options");
-	po::positional_options_description popts;
-	po::variables_map vm;
-	string input_file;
-	int print_help = 0;
-
-	opts.add_options()
-		("input", po::value<string>(&input_file), "Input file name")
-		("help,h", "Show this message");
-	popts.add("input", 1);
-
-	try {
-		po::store(po::command_line_parser(argc, argv).options(opts).positional(popts).run(), vm);
-		po::notify(vm);
-		if (vm.count("help")) print_help = 1;
-		else if (vm.count("input") == 0) print_help = 2;
-	} catch (const po::error &) {
-		print_help = 2;
-	}
-	if (print_help) {
-		cerr << "usage: " << argv[0] << " PATH" << endl;
-		cerr << opts;
-		return (print_help == 1) ? EXIT_SUCCESS : EXIT_FAILURE;
+	switch (CheckPhz(filename)) {
+	case 0:
+		// go to next
+		break;
+	case 1:
+		*format = kPhz;
+		return true;
+	default:
+		return false;
 	}
 
-	boost::scoped_array<char> model_file;
-	{
-		db::Driver driver(input_file.c_str());
-		model_file.reset(GetGivenFilename(driver.db()));
-	}
-
-	CheckPhz(model_file.get());
-
-	xmlTextReaderPtr text_reader = xmlReaderForFile(model_file.get(), NULL, 0);
+	xmlTextReaderPtr text_reader = xmlReaderForFile(filename, NULL, 0);
 	if (!text_reader) {
 		cerr << "could not read the input" << endl;
-		xmlCleanupParser();
-		return EXIT_FAILURE;
+		return false;
 	}
+	Reader reader(text_reader, format);
+	return reader.Read();
+}
 
-	boost::scoped_ptr<Reader> reader(new Reader(text_reader));
-	if (!reader->Read()) return EXIT_FAILURE;
-
-	return EXIT_SUCCESS;
 }

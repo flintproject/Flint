@@ -2,10 +2,6 @@
 #ifndef FLINT_WORKSPACE_TASK_H_
 #define FLINT_WORKSPACE_TASK_H_
 
-#include <string>
-#include "database.h"
-#include "db/driver.h"
-
 namespace workspace {
 
 class Task {
@@ -13,21 +9,9 @@ public:
 	/*
 	 * `given_file' should be a UTF-8 filename.
 	 */
-	explicit Task(const char *given_file, int task_id = 0)
-		: given_file_(given_file),
-		  task_id_(task_id) {
-	}
+	explicit Task(const char *given_file, int task_id = 0);
 
-	bool Setup() {
-		char db_file[32]; // FIXME
-		if (task_id_) {
-			std::sprintf(db_file, "%d/model", task_id_);
-		} else {
-			std::sprintf(db_file, "model");
-		}
-		db::Driver driver(db_file);
-		return SaveGivenFile(driver.db(), given_file_) > 0;
-	}
+	bool Setup();
 
 private:
 	const char *given_file_;

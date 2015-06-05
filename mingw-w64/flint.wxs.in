@@ -94,9 +94,6 @@
           <Component Id='flint_exec' Guid='86688738-5d69-11e3-9595-f317fcf3e8c5'>
             <File Id='flint_exec.exe' Name='flint-exec.exe' DiskId='1' Source='flint-exec.exe' />
           </Component>
-          <Component Id='flint_file' Guid='2fb73f60-f5bd-11e2-b24a-0b7e6d1637a0'>
-            <File Id='flint_file.exe' Name='flint-file.exe' DiskId='1' Source='flint-file.exe' />
-          </Component>
           <Component Id='flint_filter' Guid='2fb7b396-f5bd-11e2-9c74-9bab714e21e6'>
             <File Id='flint_filter.exe' Name='flint-filter.exe' DiskId='1' Source='flint-filter.exe' />
           </Component>
@@ -315,7 +312,6 @@
       <ComponentRef Id='flint_enum' />
       <ComponentRef Id='flint_evolve' />
       <ComponentRef Id='flint_exec' />
-      <ComponentRef Id='flint_file' />
       <ComponentRef Id='flint_filter' />
       <ComponentRef Id='flint_form' />
       <ComponentRef Id='flint_generate' />

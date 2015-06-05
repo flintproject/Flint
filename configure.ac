@@ -121,6 +121,7 @@ AC_CONFIG_FILES([Makefile
                  test/Makefile
                  test/base/Makefile
                  test/compiler/Makefile
+                 test/file/Makefile
                  test/mathml/Makefile
                  test/method/Makefile
                  test/sbml/Makefile
@@ -130,7 +131,6 @@ AC_CONFIG_FILES([Makefile
                  test/csv2isd/Makefile
                  test/flint-cellml/Makefile
                  test/flint-evolve/Makefile
-                 test/flint-file/Makefile
                  test/flint-init/Makefile
                  test/flint-layout/Makefile
                  test/flint-nc/Makefile
