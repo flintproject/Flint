@@ -66,7 +66,6 @@ PROGRAMS := \
     flint-spec \
     flint-store \
     flint-taskconfig \
-    flint-taskpref \
     flint-taskspec \
     flint-timer \
     flint-track \

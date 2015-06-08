@@ -58,7 +58,6 @@ bin_PROGRAMS = \
 	flint-spec \
 	flint-store \
 	flint-taskconfig \
-	flint-taskpref \
 	flint-taskspec \
 	flint-timer \
 	flint-track \
@@ -137,6 +136,7 @@ libflintxx_la_SOURCES = \
     span.cc \
     sprinkle.cc \
     sys/temporary_path.cc \
+    task/pref.cc \
     ts/tsc.cc \
     ts/tsfiles.cc \
     utf8path.cc \
@@ -273,10 +273,6 @@ flint_store_SOURCES = flint-store-main.cc
 
 flint_taskconfig_CPPFLAGS = $(AM_CFLAGS) -std=c99 -pedantic-errors
 flint_taskconfig_SOURCES = flint-taskconfig-main.c
-
-flint_taskpref_CFLAGS = $(AM_CFLAGS) -std=c99 -pedantic-errors
-flint_taskpref_LDADD = libsqlite3.la
-flint_taskpref_SOURCES = flint-taskpref-main.c
 
 flint_taskspec_CFLAGS = $(AM_CFLAGS) -std=c99 -pedantic-errors
 flint_taskspec_LDADD = libsqlite3.la

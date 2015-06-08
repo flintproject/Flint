@@ -27,14 +27,18 @@
 #include "load.hh"
 #include "mathml/math_dumper.h"
 #include "sqlite3.h"
+#include "task.hh"
 #include "utf8path.h"
 #include "workspace/task.h"
 
 using std::cerr;
 using std::endl;
+using std::fclose;
+using std::fopen;
 using std::fprintf;
-using std::string;
+using std::perror;
 using std::sprintf;
+using std::string;
 
 namespace phsp {
 
@@ -163,9 +167,6 @@ private:
 
 void PrintRules(int task_id, FILE *fp)
 {
-	fprintf(fp, "%d/conf.txt:\n", task_id);
-	fprintf(fp, "\tflint-taskpref %d x.db > $@\n", task_id);
-	fprintf(fp, "\n");
 	fprintf(fp, "%d/spec.txt:\n", task_id);
 	fprintf(fp, "\tflint-taskspec %d x.db > $@\n", task_id);
 	fprintf(fp, "\n");
@@ -210,13 +211,16 @@ public:
 				if (xmlStrEqual(local_name, BAD_CAST "phsp")) {
 					for (TaskMap::const_iterator it=tasks_.begin();it!=tasks_.end();++it) {
 						boost::scoped_ptr<workspace::Task> task(new workspace::Task(it->second.c_str(), it->first));
+						int task_id = it->first;
 						file::Format format;
 						if (!task->Setup(&format)) {
 							return -2;
 						}
-						if (!load::Config(format, load::kExec, it->first))
+						if (!load::Config(format, load::kExec, task_id))
 							return -2;
-						PrintRules(it->first, fp);
+						if (!CreateConfTxt(task_id))
+							return -2;
+						PrintRules(task_id, fp);
 					}
 					PrintRestOfRules(fp);
 					return 1;
@@ -229,6 +233,20 @@ public:
 
 private:
 	typedef std::map<int, string> TaskMap;
+
+	bool CreateConfTxt(int id) {
+		char conf_txt[64]; // large enough
+		sprintf(conf_txt, "%d/conf.txt", id);
+		FILE *fp = fopen(conf_txt, "w");
+		if (!fp) {
+			perror(conf_txt);
+			return false;
+		}
+		if (!task::Pref(id, db_, fp))
+			return false;
+		fclose(fp);
+		return true;
+	}
 
 	void PrintRestOfRules(FILE *fp) {
 		fprintf(fp, "all:");

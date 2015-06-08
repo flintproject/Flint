@@ -151,9 +151,6 @@
           <Component Id='flint_taskconfig' Guid='f651a338-d03f-11e3-b3b2-53e8319cbe7c'>
             <File Id='flint_taskconfig.exe' Name='flint-taskconfig.exe' DiskId='1' Source='flint-taskconfig.exe' />
           </Component>
-          <Component Id='flint_taskpref' Guid='d3bf7234-93c0-11e3-9cfa-af4e9397840f'>
-            <File Id='flint_taskpref.exe' Name='flint-taskpref.exe' DiskId='1' Source='flint-taskpref.exe' />
-          </Component>
           <Component Id='flint_taskspec' Guid='d4d21474-93c0-11e3-8e10-ab3e41c3850d'>
             <File Id='flint_taskspec.exe' Name='flint-taskspec.exe' DiskId='1' Source='flint-taskspec.exe' />
           </Component>
@@ -325,7 +322,6 @@
       <ComponentRef Id='flint_spec' />
       <ComponentRef Id='flint_store' />
       <ComponentRef Id='flint_taskconfig' />
-      <ComponentRef Id='flint_taskpref' />
       <ComponentRef Id='flint_taskspec' />
       <ComponentRef Id='flint_timer' />
       <ComponentRef Id='flint_track' />
