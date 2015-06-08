@@ -66,7 +66,6 @@ PROGRAMS := \
     flint-spec \
     flint-store \
     flint-taskconfig \
-    flint-taskspec \
     flint-timer \
     flint-track \
     flint-unitoftime \

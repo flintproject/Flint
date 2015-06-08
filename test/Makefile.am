@@ -13,7 +13,6 @@ SUBDIRS = \
 	flint-phz \
 	flint-sbml \
 	flint-spec \
-	flint-taskspec \
 	flint-unitoftime \
 	flint-var \
 	isd2csv \

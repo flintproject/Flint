@@ -14,6 +14,13 @@ namespace task {
  */
 bool Pref(int id, sqlite3 *db, FILE *fp);
 
+/*
+ * List a task's spec.
+ * Note that db is for read only.
+ * Return true in case of success, false otherwise.
+ */
+bool Spec(int id, sqlite3 *db, FILE *fp);
+
 }
 
 #endif

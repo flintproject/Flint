@@ -167,9 +167,6 @@ private:
 
 void PrintRules(int task_id, FILE *fp)
 {
-	fprintf(fp, "%d/spec.txt:\n", task_id);
-	fprintf(fp, "\tflint-taskspec %d x.db > $@\n", task_id);
-	fprintf(fp, "\n");
 	fprintf(fp, "%d/Makefile: %d/file.txt %d/conf.txt\n", task_id, task_id, task_id);
 	fprintf(fp, "\tflint-enum %d/db > $@\n", task_id);
 	fprintf(fp, "\techo include load.mk >> $@\n");
@@ -220,6 +217,8 @@ public:
 							return -2;
 						if (!CreateConfTxt(task_id))
 							return -2;
+						if (!CreateSpecTxt(task_id))
+							return -2;
 						PrintRules(task_id, fp);
 					}
 					PrintRestOfRules(fp);
@@ -248,10 +247,24 @@ private:
 		return true;
 	}
 
+	bool CreateSpecTxt(int id) {
+		char spec_txt[64]; // large enough
+		sprintf(spec_txt, "%d/spec.txt", id);
+		FILE *fp = fopen(spec_txt, "w");
+		if (!fp) {
+			perror(spec_txt);
+			return false;
+		}
+		if (!task::Spec(id, db_, fp))
+			return false;
+		fclose(fp);
+		return true;
+	}
+
 	void PrintRestOfRules(FILE *fp) {
 		fprintf(fp, "all:");
 		for (TaskMap::const_iterator it=tasks_.begin();it!=tasks_.end();++it) {
-			fprintf(fp, " %d/spec.txt %d/Makefile", it->first, it->first);
+			fprintf(fp, " %d/Makefile", it->first);
 		}
 		fprintf(fp, "\n");
 		fprintf(fp, "\n");
