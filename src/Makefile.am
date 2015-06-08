@@ -129,6 +129,7 @@ libflintxx_la_SOURCES = \
     phml/import.cc \
     phml/read.cc \
     phml/transition-form.cc \
+    phsp/read.cc \
     reach.cc \
     runtime/flow.cc \
     sbml/load.cc \
