@@ -2,11 +2,16 @@
 #ifndef FLINT_PHSP_HH_
 #define FLINT_PHSP_HH_
 
+#include <cstdio>
 #include "sqlite3.h"
 
 namespace phsp {
 
-bool Read(sqlite3 *db);
+/*
+ * Read a PHSP file and print a Makefile script.
+ * Return true in case of success, false otherwise.
+ */
+bool Read(sqlite3 *db, FILE *fp);
 
 }
 

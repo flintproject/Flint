@@ -16,6 +16,8 @@
 #include "bc/binary.h"
 #include "database.h"
 #include "db/driver.h"
+#include "phsp.hh"
+#include "sedml.hh"
 #include "system.h"
 
 using std::cerr;
@@ -71,26 +73,23 @@ int main(int argc, char *argv[])
 
 	{
 		db::Driver driver("x.db");
-		if (!SaveExec(driver.db(), sedml_filename, phsp_filename))
+		sqlite3 *db = driver.db();
+		if (!SaveExec(db, sedml_filename, phsp_filename))
 			return EXIT_FAILURE;
+
+		FILE *fp = fopen("x.mk", "w");
+		if (!fp) {
+			perror(argv[0]);
+			return EXIT_FAILURE;
+		}
+		if (!sedml::Read(db))
+			return EXIT_FAILURE;
+		if (!phsp::Read(db, fp))
+			return EXIT_FAILURE;
+		fclose(fp);
 	}
 
-	FILE *fp = fopen("exec.mk", "w");
-	if (!fp) {
-		perror(argv[0]);
-		return EXIT_FAILURE;
-	}
-	fprintf(fp, ".PHONY: all\n");
-	fprintf(fp, "\n");
-	fprintf(fp, "all: x.mk\n");
-	fprintf(fp, "\t$(MAKE) -f $<\n");
-	fprintf(fp, "\n");
-	fprintf(fp, "x.mk: x.db\n");
-	fprintf(fp, "\tflint-sedml $<\n");
-	fprintf(fp, "\tflint-phsp $< > $@\n");
-	fclose(fp);
-
-	int r = RunSystem("flint-make -rs -f exec.mk");
+	int r = RunSystem("flint-make -rs -f x.mk");
 	if (r != EXIT_SUCCESS) return r;
 
 	boost::system::error_code ec;

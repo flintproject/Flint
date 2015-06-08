@@ -137,7 +137,6 @@ AC_CONFIG_FILES([Makefile
                  test/flint-param/Makefile
                  test/flint-phml/Makefile
                  test/flint-phml-xfail/Makefile
-                 test/flint-phsp/Makefile
                  test/flint-phz/Makefile
                  test/flint-sbml/Makefile
                  test/flint-spec/Makefile

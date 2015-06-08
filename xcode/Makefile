@@ -59,7 +59,6 @@ PROGRAMS := \
     flint-open \
     flint-param \
     flint-phml \
-    flint-phsp \
     flint-phz \
     flint-run \
     flint-sbml \

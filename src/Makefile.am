@@ -51,7 +51,6 @@ bin_PROGRAMS = \
 	flint-open \
 	flint-param \
 	flint-phml \
-	flint-phsp \
 	flint-phz \
 	flint-run \
 	flint-sbml \
@@ -186,7 +185,7 @@ flint_evolve_SOURCES = flint-evolve-main.cc
 
 flint_exec_CPPFLAGS = $(BOOST_CPPFLAGS)
 flint_exec_LDFLAGS = $(BOOST_FILESYSTEM_LDFLAGS) $(BOOST_SYSTEM_LDFLAGS)
-flint_exec_LDADD = libflint.la libsqlite3.la $(BOOST_FILESYSTEM_LIBS) $(BOOST_SYSTEM_LIBS)
+flint_exec_LDADD = libflintxx.la libflint.la libsqlite3.la $(BOOST_FILESYSTEM_LIBS) $(BOOST_SYSTEM_LIBS)
 flint_exec_SOURCES = flint-exec-main.cc
 
 flint_filter_CPPFLAGS = $(PROTOBUF_CFLAGS) $(BOOST_CPPFLAGS)
@@ -242,11 +241,6 @@ flint_phml_CPPFLAGS = $(BOOST_CPPFLAGS) $(XML_CPPFLAGS)
 flint_phml_LDFLAGS = $(BOOST_FILESYSTEM_LDFLAGS) $(BOOST_SYSTEM_LDFLAGS)
 flint_phml_LDADD = libflintxx.la libflint.la libsqlite3.la $(BOOST_FILESYSTEM_LIBS) $(BOOST_SYSTEM_LIBS) $(XML_LIBS)
 flint_phml_SOURCES = flint-phml-main.cc
-
-flint_phsp_CPPFLAGS = $(BOOST_CPPFLAGS) $(XML_CPPFLAGS)
-flint_phsp_LDFLAGS = $(BOOST_FILESYSTEM_LDFLAGS) $(BOOST_SYSTEM_LDFLAGS)
-flint_phsp_LDADD = libflintxx.la libflint.la libsqlite3.la $(BOOST_FILESYSTEM_LIBS) $(BOOST_SYSTEM_LIBS) $(XML_LIBS)
-flint_phsp_SOURCES = flint-phsp-main.cc
 
 flint_phz_CPPFLAGS = $(BOOST_CPPFLAGS) $(LIBZIP_CFLAGS)
 flint_phz_LDFLAGS = $(BOOST_FILESYSTEM_LDFLAGS) $(BOOST_SYSTEM_LDFLAGS)

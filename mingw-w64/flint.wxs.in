@@ -130,9 +130,6 @@
           <Component Id='flint_phml' Guid='c81ebea0-0709-11e4-9d3d-3fe6daa6634d'>
             <File Id='flint_phml.exe' Name='flint-phml.exe' DiskId='1' Source='flint-phml.exe' />
           </Component>
-          <Component Id='flint_phsp' Guid='1aef5082-5d72-11e3-9ed4-a3f3d2482294'>
-            <File Id='flint_phsp.exe' Name='flint-phsp.exe' DiskId='1' Source='flint-phsp.exe' />
-          </Component>
           <Component Id='flint_phz' Guid='7b0fc2dc-6490-11e4-9e25-a7cb15212d3e'>
             <File Id='flint_phz.exe' Name='flint-phz.exe' DiskId='1' Source='flint-phz.exe' />
           </Component>
@@ -321,7 +318,6 @@
       <ComponentRef Id='flint_open' />
       <ComponentRef Id='flint_param' />
       <ComponentRef Id='flint_phml' />
-      <ComponentRef Id='flint_phsp' />
       <ComponentRef Id='flint_phz' />
       <ComponentRef Id='flint_run' />
       <ComponentRef Id='flint_sbml' />

@@ -10,7 +10,6 @@ SUBDIRS = \
 	flint-param \
 	flint-phml \
 	flint-phml-xfail \
-	flint-phsp \
 	flint-phz \
 	flint-sbml \
 	flint-spec \

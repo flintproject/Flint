@@ -6,6 +6,10 @@
 
 namespace sedml {
 
+/*
+ * Extract simulation configuration in SEDML.
+ * Return true in case of success, false otherwise.
+ */
 bool Read(sqlite3 *db);
 
 }
