@@ -54,7 +54,6 @@ bin_PROGRAMS = \
 	flint-phz \
 	flint-run \
 	flint-sbml \
-	flint-sedml \
 	flint-spec \
 	flint-store \
 	flint-taskconfig \
@@ -256,11 +255,6 @@ flint_sbml_CPPFLAGS = $(BOOST_CPPFLAGS) $(SOSLIB_CFLAGS) $(SUNDIALS_CFLAGS) $(LI
 flint_sbml_LDFLAGS = $(BOOST_FILESYSTEM_LDFLAGS) $(BOOST_SYSTEM_LDFLAGS)
 flint_sbml_LDADD = libflintxx.la libflint.la libsqlite3.la $(BOOST_FILESYSTEM_LIBS) $(BOOST_SYSTEM_LIBS) $(SOSLIB_LIBS) $(SUNDIALS_LIBS) $(LIBSBML_LIBS)
 flint_sbml_SOURCES = flint-sbml-main.cc
-
-flint_sedml_CPPFLAGS = $(BOOST_CPPFLAGS)
-flint_sedml_LDFLAGS = $(BOOST_FILESYSTEM_LDFLAGS) $(BOOST_SYSTEM_LDFLAGS)
-flint_sedml_LDADD = libflintxx.la libflint.la libsqlite3.la $(BOOST_FILESYSTEM_LIBS) $(BOOST_SYSTEM_LIBS)
-flint_sedml_SOURCES = flint-sedml-main.cc
 
 flint_spec_CPPFLAGS = $(BOOST_CPPFLAGS)
 flint_spec_LDADD = libflintxx.la libflint.la libsqlite3.la

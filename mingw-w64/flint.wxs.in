@@ -139,9 +139,6 @@
           <Component Id='flint_sbml' Guid='2fc0d282-f5bd-11e2-af20-d3eadee10937'>
             <File Id='flint_sbml.exe' Name='flint-sbml.exe' DiskId='1' Source='flint-sbml.exe' />
           </Component>
-          <Component Id='flint_sedml' Guid='d2f7bae6-93c0-11e3-86f0-6ba6a092f3ee'>
-            <File Id='flint_sedml.exe' Name='flint-sedml.exe' DiskId='1' Source='flint-sedml.exe' />
-          </Component>
           <Component Id='flint_spec' Guid='2fc27c90-f5bd-11e2-aaf0-33918569217c'>
             <File Id='flint_spec.exe' Name='flint-spec.exe' DiskId='1' Source='flint-spec.exe' />
           </Component>
@@ -315,7 +312,6 @@
       <ComponentRef Id='flint_phz' />
       <ComponentRef Id='flint_run' />
       <ComponentRef Id='flint_sbml' />
-      <ComponentRef Id='flint_sedml' />
       <ComponentRef Id='flint_spec' />
       <ComponentRef Id='flint_store' />
       <ComponentRef Id='flint_taskconfig' />

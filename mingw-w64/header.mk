@@ -57,7 +57,6 @@ EXES := \
     flint-phz \
     flint-run \
     flint-sbml \
-    flint-sedml \
     flint-spec \
     flint-store \
     flint-taskconfig \
