@@ -94,8 +94,8 @@ libflint_la_SOURCES = \
     db/query.c \
     system.c
 
-libflintxx_la_CPPFLAGS = $(BOOST_CPPFLAGS) $(PROTOBUF_CFLAGS) $(SOSLIB_CFLAGS) $(SUNDIALS_CFLAGS) $(LIBSBML_CFLAGS) $(XML_CPPFLAGS)
-libflintxx_la_LIBADD = libflint.la libsqlite3.la $(BOOST_FILESYSTEM_LIBS) $(BOOST_SYSTEM_LIBS) $(PROTOBUF_LIBS) $(SOSLIB_LIBS) $(SUNDIALS_LIBS) $(LIBSBML_LIBS) $(XML_LIBS)
+libflintxx_la_CPPFLAGS = $(BOOST_CPPFLAGS) $(PROTOBUF_CFLAGS) $(SOSLIB_CFLAGS) $(SUNDIALS_CFLAGS) $(LIBSBML_CFLAGS) $(CLIBSEDML_CFLAGS) $(XML_CPPFLAGS)
+libflintxx_la_LIBADD = libflint.la libsqlite3.la $(BOOST_FILESYSTEM_LIBS) $(BOOST_SYSTEM_LIBS) $(PROTOBUF_LIBS) $(SOSLIB_LIBS) $(SUNDIALS_LIBS) $(LIBSBML_LIBS) $(CLIBSEDML_LIBS) $(XML_LIBS)
 libflintxx_la_LDFLAGS = -no-undefined $(BOOST_FILESYSTEM_LDFLAGS) $(BOOST_SYSTEM_LDFLAGS)
 libflintxx_la_SOURCES = \
     bc.pb.cc \
@@ -134,6 +134,7 @@ libflintxx_la_SOURCES = \
     runtime/flow.cc \
     sbml/load.cc \
     sbml/parser.cc \
+    sedml/read.cc \
     span.cc \
     sprinkle.cc \
     sys/temporary_path.cc \
@@ -262,9 +263,9 @@ flint_sbml_LDFLAGS = $(BOOST_FILESYSTEM_LDFLAGS) $(BOOST_SYSTEM_LDFLAGS)
 flint_sbml_LDADD = libflintxx.la libflint.la libsqlite3.la $(BOOST_FILESYSTEM_LIBS) $(BOOST_SYSTEM_LIBS) $(SOSLIB_LIBS) $(SUNDIALS_LIBS) $(LIBSBML_LIBS)
 flint_sbml_SOURCES = flint-sbml-main.cc
 
-flint_sedml_CPPFLAGS = $(BOOST_CPPFLAGS) $(CLIBSEDML_CFLAGS)
+flint_sedml_CPPFLAGS = $(BOOST_CPPFLAGS)
 flint_sedml_LDFLAGS = $(BOOST_FILESYSTEM_LDFLAGS) $(BOOST_SYSTEM_LDFLAGS)
-flint_sedml_LDADD = libflintxx.la libflint.la libsqlite3.la $(BOOST_FILESYSTEM_LIBS) $(BOOST_SYSTEM_LIBS)  $(CLIBSEDML_LIBS)
+flint_sedml_LDADD = libflintxx.la libflint.la libsqlite3.la $(BOOST_FILESYSTEM_LIBS) $(BOOST_SYSTEM_LIBS)
 flint_sedml_SOURCES = flint-sedml-main.cc
 
 flint_spec_CPPFLAGS = $(BOOST_CPPFLAGS)
