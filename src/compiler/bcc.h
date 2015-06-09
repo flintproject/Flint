@@ -2,12 +2,13 @@
 #ifndef FLINT_COMPILER_BCC_H_
 #define FLINT_COMPILER_BCC_H_
 
+#include <iostream>
 #include "sqlite3.h"
 
 namespace compiler {
 namespace bcc {
 
-bool Bcc(sqlite3 *db);
+bool Bcc(sqlite3 *db, std::ostream *os);
 
 }
 }

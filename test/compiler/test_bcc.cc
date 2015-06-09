@@ -54,237 +54,237 @@ BOOST_FIXTURE_TEST_SUITE(test_bcc, F)
 
 BOOST_AUTO_TEST_CASE(Abs) {
 	SetupCall1("abs");
-	BOOST_CHECK(compiler::bcc::Bcc(db));
+	BOOST_CHECK(compiler::bcc::Bcc(db, &std::cout));
 }
 
 BOOST_AUTO_TEST_CASE(Arccos) {
 	SetupCall1("arccos");
-	BOOST_CHECK(compiler::bcc::Bcc(db));
+	BOOST_CHECK(compiler::bcc::Bcc(db, &std::cout));
 }
 
 BOOST_AUTO_TEST_CASE(Arccosh) {
 	SetupCall1("arccosh");
-	BOOST_CHECK(compiler::bcc::Bcc(db));
+	BOOST_CHECK(compiler::bcc::Bcc(db, &std::cout));
 }
 
 BOOST_AUTO_TEST_CASE(Arccot) {
 	SetupCall1("arccot");
-	BOOST_CHECK(compiler::bcc::Bcc(db));
+	BOOST_CHECK(compiler::bcc::Bcc(db, &std::cout));
 }
 
 BOOST_AUTO_TEST_CASE(Arccoth) {
 	SetupCall1("arccoth");
-	BOOST_CHECK(compiler::bcc::Bcc(db));
+	BOOST_CHECK(compiler::bcc::Bcc(db, &std::cout));
 }
 
 BOOST_AUTO_TEST_CASE(Arccsc) {
 	SetupCall1("arccsc");
-	BOOST_CHECK(compiler::bcc::Bcc(db));
+	BOOST_CHECK(compiler::bcc::Bcc(db, &std::cout));
 }
 
 BOOST_AUTO_TEST_CASE(Arccsch) {
 	SetupCall1("arccsch");
-	BOOST_CHECK(compiler::bcc::Bcc(db));
+	BOOST_CHECK(compiler::bcc::Bcc(db, &std::cout));
 }
 
 BOOST_AUTO_TEST_CASE(Arcsec) {
 	SetupCall1("arcsec");
-	BOOST_CHECK(compiler::bcc::Bcc(db));
+	BOOST_CHECK(compiler::bcc::Bcc(db, &std::cout));
 }
 
 BOOST_AUTO_TEST_CASE(Arcsech) {
 	SetupCall1("arcsech");
-	BOOST_CHECK(compiler::bcc::Bcc(db));
+	BOOST_CHECK(compiler::bcc::Bcc(db, &std::cout));
 }
 
 BOOST_AUTO_TEST_CASE(Arcsin) {
 	SetupCall1("arcsin");
-	BOOST_CHECK(compiler::bcc::Bcc(db));
+	BOOST_CHECK(compiler::bcc::Bcc(db, &std::cout));
 }
 
 BOOST_AUTO_TEST_CASE(Arcsinh) {
 	SetupCall1("arcsinh");
-	BOOST_CHECK(compiler::bcc::Bcc(db));
+	BOOST_CHECK(compiler::bcc::Bcc(db, &std::cout));
 }
 
 BOOST_AUTO_TEST_CASE(Arctan) {
 	SetupCall1("arctan");
-	BOOST_CHECK(compiler::bcc::Bcc(db));
+	BOOST_CHECK(compiler::bcc::Bcc(db, &std::cout));
 }
 
 BOOST_AUTO_TEST_CASE(Arctanh) {
 	SetupCall1("arctanh");
-	BOOST_CHECK(compiler::bcc::Bcc(db));
+	BOOST_CHECK(compiler::bcc::Bcc(db, &std::cout));
 }
 
 BOOST_AUTO_TEST_CASE(Ceiling) {
 	SetupCall1("ceiling");
-	BOOST_CHECK(compiler::bcc::Bcc(db));
+	BOOST_CHECK(compiler::bcc::Bcc(db, &std::cout));
 }
 
 BOOST_AUTO_TEST_CASE(Cos) {
 	SetupCall1("cos");
-	BOOST_CHECK(compiler::bcc::Bcc(db));
+	BOOST_CHECK(compiler::bcc::Bcc(db, &std::cout));
 }
 
 BOOST_AUTO_TEST_CASE(Cosh) {
 	SetupCall1("cosh");
-	BOOST_CHECK(compiler::bcc::Bcc(db));
+	BOOST_CHECK(compiler::bcc::Bcc(db, &std::cout));
 }
 
 BOOST_AUTO_TEST_CASE(Cot) {
 	SetupCall1("cot");
-	BOOST_CHECK(compiler::bcc::Bcc(db));
+	BOOST_CHECK(compiler::bcc::Bcc(db, &std::cout));
 }
 
 BOOST_AUTO_TEST_CASE(Coth) {
 	SetupCall1("coth");
-	BOOST_CHECK(compiler::bcc::Bcc(db));
+	BOOST_CHECK(compiler::bcc::Bcc(db, &std::cout));
 }
 
 BOOST_AUTO_TEST_CASE(Csc) {
 	SetupCall1("csc");
-	BOOST_CHECK(compiler::bcc::Bcc(db));
+	BOOST_CHECK(compiler::bcc::Bcc(db, &std::cout));
 }
 
 BOOST_AUTO_TEST_CASE(Csch) {
 	SetupCall1("csch");
-	BOOST_CHECK(compiler::bcc::Bcc(db));
+	BOOST_CHECK(compiler::bcc::Bcc(db, &std::cout));
 }
 
 BOOST_AUTO_TEST_CASE(Exp) {
 	SetupCall1("exp");
-	BOOST_CHECK(compiler::bcc::Bcc(db));
+	BOOST_CHECK(compiler::bcc::Bcc(db, &std::cout));
 }
 
 BOOST_AUTO_TEST_CASE(Floor) {
 	SetupCall1("floor");
-	BOOST_CHECK(compiler::bcc::Bcc(db));
+	BOOST_CHECK(compiler::bcc::Bcc(db, &std::cout));
 }
 
 BOOST_AUTO_TEST_CASE(Ln) {
 	SetupCall1("ln");
-	BOOST_CHECK(compiler::bcc::Bcc(db));
+	BOOST_CHECK(compiler::bcc::Bcc(db, &std::cout));
 }
 
 BOOST_AUTO_TEST_CASE(Log10) {
 	SetupCall1("log10");
-	BOOST_CHECK(compiler::bcc::Bcc(db));
+	BOOST_CHECK(compiler::bcc::Bcc(db, &std::cout));
 }
 
 BOOST_AUTO_TEST_CASE(Sec) {
 	SetupCall1("sec");
-	BOOST_CHECK(compiler::bcc::Bcc(db));
+	BOOST_CHECK(compiler::bcc::Bcc(db, &std::cout));
 }
 
 BOOST_AUTO_TEST_CASE(Sech) {
 	SetupCall1("sech");
-	BOOST_CHECK(compiler::bcc::Bcc(db));
+	BOOST_CHECK(compiler::bcc::Bcc(db, &std::cout));
 }
 
 BOOST_AUTO_TEST_CASE(Sin) {
 	SetupCall1("sin");
-	BOOST_CHECK(compiler::bcc::Bcc(db));
+	BOOST_CHECK(compiler::bcc::Bcc(db, &std::cout));
 }
 
 BOOST_AUTO_TEST_CASE(Sinh) {
 	SetupCall1("sinh");
-	BOOST_CHECK(compiler::bcc::Bcc(db));
+	BOOST_CHECK(compiler::bcc::Bcc(db, &std::cout));
 }
 
 BOOST_AUTO_TEST_CASE(Tan) {
 	SetupCall1("tan");
-	BOOST_CHECK(compiler::bcc::Bcc(db));
+	BOOST_CHECK(compiler::bcc::Bcc(db, &std::cout));
 }
 
 BOOST_AUTO_TEST_CASE(Tanh) {
 	SetupCall1("tanh");
-	BOOST_CHECK(compiler::bcc::Bcc(db));
+	BOOST_CHECK(compiler::bcc::Bcc(db, &std::cout));
 }
 
 BOOST_AUTO_TEST_CASE(ExponentialVariate) {
 	SetupCall1("$exponential_variate");
-	BOOST_CHECK(compiler::bcc::Bcc(db));
+	BOOST_CHECK(compiler::bcc::Bcc(db, &std::cout));
 }
 
 BOOST_AUTO_TEST_CASE(PoissonVariate) {
 	SetupCall1("$poisson_variate");
-	BOOST_CHECK(compiler::bcc::Bcc(db));
+	BOOST_CHECK(compiler::bcc::Bcc(db, &std::cout));
 }
 
 BOOST_AUTO_TEST_CASE(Eq) {
 	SetupCall2("eq");
-	BOOST_CHECK(compiler::bcc::Bcc(db));
+	BOOST_CHECK(compiler::bcc::Bcc(db, &std::cout));
 }
 
 BOOST_AUTO_TEST_CASE(Geq) {
 	SetupCall2("geq");
-	BOOST_CHECK(compiler::bcc::Bcc(db));
+	BOOST_CHECK(compiler::bcc::Bcc(db, &std::cout));
 }
 
 BOOST_AUTO_TEST_CASE(Gt) {
 	SetupCall2("gt");
-	BOOST_CHECK(compiler::bcc::Bcc(db));
+	BOOST_CHECK(compiler::bcc::Bcc(db, &std::cout));
 }
 
 BOOST_AUTO_TEST_CASE(Leq) {
 	SetupCall2("leq");
-	BOOST_CHECK(compiler::bcc::Bcc(db));
+	BOOST_CHECK(compiler::bcc::Bcc(db, &std::cout));
 }
 
 BOOST_AUTO_TEST_CASE(Log) {
 	SetupCall2("log");
-	BOOST_CHECK(compiler::bcc::Bcc(db));
+	BOOST_CHECK(compiler::bcc::Bcc(db, &std::cout));
 }
 
 BOOST_AUTO_TEST_CASE(Lt) {
 	SetupCall2("lt");
-	BOOST_CHECK(compiler::bcc::Bcc(db));
+	BOOST_CHECK(compiler::bcc::Bcc(db, &std::cout));
 }
 
 BOOST_AUTO_TEST_CASE(Max) {
 	SetupCall2("max");
-	BOOST_CHECK(compiler::bcc::Bcc(db));
+	BOOST_CHECK(compiler::bcc::Bcc(db, &std::cout));
 }
 
 BOOST_AUTO_TEST_CASE(Min) {
 	SetupCall2("min");
-	BOOST_CHECK(compiler::bcc::Bcc(db));
+	BOOST_CHECK(compiler::bcc::Bcc(db, &std::cout));
 }
 
 BOOST_AUTO_TEST_CASE(Neq) {
 	SetupCall2("neq");
-	BOOST_CHECK(compiler::bcc::Bcc(db));
+	BOOST_CHECK(compiler::bcc::Bcc(db, &std::cout));
 }
 
 BOOST_AUTO_TEST_CASE(Plus) {
 	SetupCall2("plus");
-	BOOST_CHECK(compiler::bcc::Bcc(db));
+	BOOST_CHECK(compiler::bcc::Bcc(db, &std::cout));
 }
 
 BOOST_AUTO_TEST_CASE(Power) {
 	SetupCall2("power");
-	BOOST_CHECK(compiler::bcc::Bcc(db));
+	BOOST_CHECK(compiler::bcc::Bcc(db, &std::cout));
 }
 
 BOOST_AUTO_TEST_CASE(Times) {
 	SetupCall2("times");
-	BOOST_CHECK(compiler::bcc::Bcc(db));
+	BOOST_CHECK(compiler::bcc::Bcc(db, &std::cout));
 }
 
 BOOST_AUTO_TEST_CASE(GammaVariate) {
 	SetupCall2("$gamma_variate");
-	BOOST_CHECK(compiler::bcc::Bcc(db));
+	BOOST_CHECK(compiler::bcc::Bcc(db, &std::cout));
 }
 
 BOOST_AUTO_TEST_CASE(GaussVariate) {
 	SetupCall2("$gauss_variate");
-	BOOST_CHECK(compiler::bcc::Bcc(db));
+	BOOST_CHECK(compiler::bcc::Bcc(db, &std::cout));
 }
 
 BOOST_AUTO_TEST_CASE(UniformVariate) {
 	SetupCall2("$uniform_variate");
-	BOOST_CHECK(compiler::bcc::Bcc(db));
+	BOOST_CHECK(compiler::bcc::Bcc(db, &std::cout));
 }
 
 BOOST_AUTO_TEST_CASE(DuplicateLabels) {
@@ -393,7 +393,7 @@ BOOST_AUTO_TEST_CASE(DuplicateLabels) {
 		  " L0:\n"
 		  "  store %boolin $0\n"
 		  );
-	BOOST_CHECK(compiler::bcc::Bcc(db));
+	BOOST_CHECK(compiler::bcc::Bcc(db, &std::cout));
 }
 
 BOOST_AUTO_TEST_SUITE_END()

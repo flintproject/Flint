@@ -68,7 +68,7 @@ int main(int argc, char *argv[])
 		return EXIT_FAILURE;
 	if (!compiler::tac::Tac(output.db()))
 		return EXIT_FAILURE;
-	if (!compiler::bcc::Bcc(output.db()))
+	if (!compiler::bcc::Bcc(output.db(), &std::cout))
 		return EXIT_FAILURE;
 	return EXIT_SUCCESS;
 }

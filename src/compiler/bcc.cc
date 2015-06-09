@@ -8,7 +8,6 @@
 #include <cassert>
 #include <cstdio>
 #include <cstdlib>
-#include <iostream>
 #include <string>
 #include <vector>
 
@@ -113,9 +112,9 @@ struct Block {
 		return static_cast<int>(code.size());
 	}
 
-	void Print() const {
+	void Print(std::ostream *os) const {
 		for (std::vector<bc::Code>::const_iterator it=code.begin();it!=code.end();++it) {
-			PackToOstream(*it, &std::cout);
+			PackToOstream(*it, os);
 		}
 	}
 
@@ -667,7 +666,7 @@ int SetNol(void *data, int argc, char **argv, char **names)
 
 }
 
-bool Bcc(sqlite3 *db)
+bool Bcc(sqlite3 *db, std::ostream *os)
 {
 	GOOGLE_PROTOBUF_VERIFY_VERSION;
 
@@ -708,7 +707,7 @@ bool Bcc(sqlite3 *db)
 		}
 	}
 	header->set_nos(static_cast<int>(nv->size()));
-	if (!PackToOstream(*header, &std::cout)) {
+	if (!PackToOstream(*header, os)) {
 		return false;
 	}
 	// write section headers
@@ -720,7 +719,7 @@ bool Bcc(sqlite3 *db)
 		std::copy(u.begin(), u.end(), bu.get());
 		sh->set_id(bu.get(), 16);
 		sh->set_nob(nit->second);
-		if (!PackToOstream(*sh, &std::cout)) {
+		if (!PackToOstream(*sh, os)) {
 			return false;
 		}
 	}
@@ -730,13 +729,13 @@ bool Bcc(sqlite3 *db)
 		bh->set_name(it->name);
 		bh->set_nod(it->nod);
 		bh->set_noc(it->GetCodeSize());
-		if (!PackToOstream(*bh, &std::cout)) {
+		if (!PackToOstream(*bh, os)) {
 			return false;
 		}
 	}
 	// write body
 	for (BlockVector::const_iterator it=bv.begin();it!=bv.end();++it) {
-		it->Print();
+		it->Print(os);
 	}
 
 	return true;
