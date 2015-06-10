@@ -98,11 +98,11 @@ int CreateSingleton(sqlite3 *db)
 	if (!CreateTable(db, "time_unit", "(name TEXT)"))
 		return 0;
 	if (!CreateTable(db, "flows", "(source INTEGER, target INTEGER)"))
-		return EXIT_FAILURE;
+		return 0;
 	if (!CreateSprinkles(db))
-		return EXIT_FAILURE;
+		return 0;
 	if (!CreateTsfiles(db))
-		return EXIT_FAILURE;
+		return 0;
 	return 1;
 }
 
