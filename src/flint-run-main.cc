@@ -104,7 +104,6 @@ int main(int argc, char *argv[])
 	fprintf(fp, "\n");
 	fprintf(fp, "Makefile: conf.txt\n");
 	fprintf(fp, "\techo JOBS = 0 > $@\n");
-	fprintf(fp, "\techo include load.mk >> $@\n");
 	fprintf(fp, "\tflint-taskconfig run $< >> $@\n");
 	fprintf(fp, "\n");
 	fprintf(fp, "conf.txt: load.mk\n");

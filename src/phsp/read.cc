@@ -169,7 +169,6 @@ void PrintRules(int task_id, FILE *fp)
 {
 	fprintf(fp, "%d/Makefile: %d/file.txt %d/conf.txt\n", task_id, task_id, task_id);
 	fprintf(fp, "\tflint-enum %d/db > $@\n", task_id);
-	fprintf(fp, "\techo include load.mk >> $@\n");
 	fprintf(fp, "\tflint-taskconfig exec %d/conf.txt >> $@\n", task_id);
 	fprintf(fp, "\n");
 }

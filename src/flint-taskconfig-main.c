@@ -85,6 +85,7 @@ int main(int argc, char *argv[])
 		return EXIT_FAILURE;
 	}
 
+	printf("include load.mk\n");
 	printf("\n");
 	if (strcmp(type, "euler") == 0) {
 		PrintRecipeForEuler();
