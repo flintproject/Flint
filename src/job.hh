@@ -8,6 +8,14 @@ namespace job {
 
 bool Generate(sqlite3 *input, sqlite3 *output);
 
+/*
+ * Note that db is for read only.
+ * Return true in case of success, false otherwise.
+ */
+bool Store(sqlite3 *db,
+		   const char *source_layout_file, const char *source_data_file,
+		   const char *target_layout_file, const char *target_data_file);
+
 }
 
 #endif

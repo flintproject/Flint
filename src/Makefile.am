@@ -119,6 +119,7 @@ libflintxx_la_SOURCES = \
     filter/isdh.cc \
     filter/track.cc \
     job/generate.cc \
+    job/store.cc \
     load/config.cc \
     method/assign.cc \
     method/euler.cc \
