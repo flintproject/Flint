@@ -111,6 +111,7 @@ libflintxx_la_SOURCES = \
     compiler/sort.cc \
     compiler/tac.cc \
     csv/export.cc \
+    exec/enum.cc \
     file/detect.cc \
     file/txt.cc \
     filter/create.cc \
@@ -181,9 +182,8 @@ flint_cut_LDFLAGS = $(BOOST_PROGRAM_OPTIONS_LDFLAGS) $(BOOST_SYSTEM_LDFLAGS)
 flint_cut_LDADD = libflintxx.la libflint.la libsqlite3.la $(PROTOBUF_LIBS) $(BOOST_PROGRAM_OPTIONS_LIBS) $(BOOST_SYSTEM_LIBS)
 flint_cut_SOURCES = flint-cut-main.cc
 
-flint_enum_CFLAGS = $(AM_CFLAGS) -std=c99 -pedantic-errors
-flint_enum_LDADD = libflint.la libsqlite3.la
-flint_enum_SOURCES = flint-enum-main.c
+flint_enum_LDADD = libflintxx.la libflint.la libsqlite3.la
+flint_enum_SOURCES = flint-enum-main.cc
 
 flint_evolve_CPPFLAGS = $(PROTOBUF_CFLAGS) $(BOOST_CPPFLAGS)
 flint_evolve_LDFLAGS = $(BOOST_PROGRAM_OPTIONS_LDFLAGS) $(BOOST_FILESYSTEM_LDFLAGS) $(BOOST_SYSTEM_LDFLAGS)
