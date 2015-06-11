@@ -6,5 +6,5 @@ This program cuts columns according to filter.
 
 = Synopsis
 
-flint-cut filter
+flint-cut filter input output
 flint-cut --help

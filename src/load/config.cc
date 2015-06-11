@@ -32,7 +32,7 @@ void PrintCommonRecipe(FILE *fp)
 	fprintf(fp, "\tflint-filter $^ $@\n");
 	fprintf(fp, "\n");
 	fprintf(fp, "track: filter\n");
-	fprintf(fp, "\tflint-track $< > $@\n");
+	fprintf(fp, "\tflint-track $< $@\n");
 	fprintf(fp, "\n");
 	fprintf(fp, "isdh: filter\n");
 	fprintf(fp, "\tflint-isdh $< $@\n");

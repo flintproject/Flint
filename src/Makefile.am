@@ -111,6 +111,10 @@ libflintxx_la_SOURCES = \
     csv/export.cc \
     file/detect.cc \
     file/txt.cc \
+    filter/create.cc \
+    filter/cut.cc \
+    filter/isdh.cc \
+    filter/track.cc \
     job/generate.cc \
     load/config.cc \
     method/assign.cc \

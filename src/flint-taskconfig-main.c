@@ -121,7 +121,7 @@ int main(int argc, char *argv[])
 	printf("\tflint-timer 0 %s %s $$< > $$@\n", length, step);
 	printf("\n");
 	printf("$(1)/first: filter $(1)/start\n");
-	printf("\tflint-cut filter < $(1)/start > $$@\n");
+	printf("\tflint-cut filter $(1)/start $$@\n");
 	printf("\n");
 	printf("$(1)/control: | $(1)\n");
 	printf("\techo 0 > $$@\n"); /* TODO */

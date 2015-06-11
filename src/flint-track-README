@@ -6,5 +6,5 @@ This program generates track information from filter
 
 = Synopsis
 
-flint-track filter
+flint-track filter output
 flint-track --help
