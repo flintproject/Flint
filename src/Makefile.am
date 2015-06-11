@@ -107,6 +107,7 @@ libflintxx_la_SOURCES = \
     db/flow.cc \
     db/read-only-driver.cc \
     compiler/bcc.cc \
+    compiler/compile.cc \
     compiler/sort.cc \
     compiler/tac.cc \
     csv/export.cc \
