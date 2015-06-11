@@ -11,6 +11,12 @@ bool Parse(sqlite3 *db);
 
 bool Load(sqlite3 *db);
 
+/*
+ * Read an SBML model.
+ * Return true in case of success, false otherwise.
+ */
+bool Read(sqlite3 *db);
+
 }
 }
 

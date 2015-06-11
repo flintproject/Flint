@@ -135,6 +135,7 @@ libflintxx_la_SOURCES = \
     runtime/flow.cc \
     sbml/load.cc \
     sbml/parser.cc \
+    sbml/read.cc \
     sedml/read.cc \
     span.cc \
     sprinkle.cc \
