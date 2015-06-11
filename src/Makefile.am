@@ -102,6 +102,7 @@ libflintxx_la_SOURCES = \
     unit.pb.cc \
     branch.cc \
     cellml/parser.cc \
+    cellml/read.cc \
     cellml/translator.cc \
     db/flow.cc \
     db/read-only-driver.cc \

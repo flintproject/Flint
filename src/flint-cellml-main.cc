@@ -5,9 +5,7 @@
 #include <cstring>
 #include <iostream>
 
-#include "cellml/parser.h"
-#include "cellml/translator.h"
-#include "db.hh"
+#include "cellml.hh"
 #include "db/driver.h"
 
 using std::cerr;
@@ -36,12 +34,5 @@ int main(int argc, char *argv[])
 		return EXIT_SUCCESS;
 	}
 	db::Driver driver(argv[1]);
-	sqlite3 *db = driver.db();
-	if (!ParseCellml(db))
-		return EXIT_FAILURE;
-	if (!TranslateCellml(db))
-		return EXIT_FAILURE;
-	if (!db::Flow(db))
-		return EXIT_FAILURE;
-	return EXIT_SUCCESS;
+	return cellml::Read(driver.db()) ? EXIT_SUCCESS : EXIT_FAILURE;
 }
