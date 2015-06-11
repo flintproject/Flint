@@ -21,6 +21,11 @@ bool Pref(int id, sqlite3 *db, FILE *fp);
  */
 bool Spec(int id, sqlite3 *db, FILE *fp);
 
+/*
+ * Return true in case of success, false otherwise.
+ */
+bool Form(sqlite3 *db);
+
 }
 
 #endif

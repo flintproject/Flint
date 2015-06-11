@@ -144,6 +144,7 @@ libflintxx_la_SOURCES = \
     span.cc \
     sprinkle.cc \
     sys/temporary_path.cc \
+    task/form.cc \
     task/pref.cc \
     task/spec.cc \
     ts/tsc.cc \
@@ -201,9 +202,8 @@ flint_filter_LDFLAGS = $(BOOST_PROGRAM_OPTIONS_LDFLAGS) $(BOOST_SYSTEM_LDFLAGS)
 flint_filter_LDADD = libflintxx.la libflint.la libsqlite3.la $(PROTOBUF_LIBS) $(BOOST_PROGRAM_OPTIONS_LIBS) $(BOOST_SYSTEM_LIBS)
 flint_filter_SOURCES = flint-filter-main.cc
 
-flint_form_CFLAGS = $(AM_CFLAGS) -std=c99 -pedantic-errors
-flint_form_LDADD = libflint.la libsqlite3.la
-flint_form_SOURCES = flint-form-main.c
+flint_form_LDADD = libflintxx.la libflint.la libsqlite3.la
+flint_form_SOURCES = flint-form-main.cc
 
 flint_generate_CPPFLAGS = $(BOOST_CPPFLAGS)
 flint_generate_LDADD = libflintxx.la libflint.la libsqlite3.la
