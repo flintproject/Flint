@@ -42,40 +42,15 @@ FLINT_DYLIBS := \
     libsqlite3.0
 PROGRAMS := \
     csv2isd \
-    flint-compile \
-    flint-concat \
-    flint-cut \
-    flint-enum \
-    flint-evolve \
     flint-exec \
-    flint-filter \
-    flint-form \
-    flint-generate \
-    flint-init \
-    flint-isdh \
-    flint-lands \
-    flint-layout \
-    flint-nc \
     flint-open \
-    flint-param \
-    flint-phml \
-    flint-phz \
     flint-run \
-    flint-sbml \
-    flint-spec \
-    flint-store \
-    flint-taskconfig \
-    flint-timer \
-    flint-track \
-    flint-unitoftime \
-    flint-var \
     isd2csv \
     isddiff \
     isdplot \
     isdsort \
     isdstrip \
     isdwc
-EXT_PROGRAMS = flint-make
 
 DMGS = flint.dmg
 
@@ -86,12 +61,6 @@ flint_frameworks_boost_dylib_name = $(APP)/Contents/Frameworks/libboost_$(1)-mt.
 flint_frameworks_dylib_name = $(APP)/Contents/Frameworks/$(1).dylib
 flint_frameworks_sundials_dylib_name = $(APP)/Contents/Frameworks/libsundials_$(1)
 flint_macos_program_name = $(APP)/Contents/MacOS/$(1)
-
-define external_library_source_for_osx
-src/$(1):
-	curl $(DEPOSIT_URL)/$(1) -o $$@
-	md5 $$@ | grep $(2)
-endef
 
 define flint_frameworks_boost_dylib
 $(call flint_frameworks_boost_dylib_name,$(1)): tmp/$(BOOST_UNDERSCORE).installed tmp/bundled
@@ -134,11 +103,6 @@ $(call flint_macos_program_name,$(1)): opt/bin/$(1) tmp/bundled
 	for name in $(FLINT_DYLIBS); do install_name_tool -change $(CURDIR)/opt/lib/$$$$name.dylib @executable_path/../Frameworks/$$$$name.dylib $$@; done
 endef
 
-define flint_ext_program
-$(call flint_macos_program_name,$(1)): usr/bin/$(1) tmp/bundled
-	install $$< $$@
-endef
-
 .PHONY: all check mostlyclean clean distclean
 
 all: $(foreach lib,$(BOOST_UNDERSCORE) clibsedml-$(CLIBSEDML_COMMIT) libsbml-$(LIBSBML_VERSION) libxml2-$(LIBXML2_VERSION) libzip-$(LIBZIP_VERSION) protobuf-$(PROTOBUF_VERSION) SBML_odeSolver-$(SOSLIB_COMMIT) sundials-$(SUNDIALS_VERSION),tmp/$(lib).installed) $(DMGS)
@@ -151,10 +115,10 @@ mostlyclean:
 	ant -f ../flint/build.xml clean
 
 clean: mostlyclean
-	-rm -rf usr tmp/make-3.82 var/make-3.82 $(foreach lib,$(EXTERNAL_LIBRARY_DIRS),tmp/$(lib).installed tmp/$(lib) var/$(lib))
+	-rm -rf usr $(foreach lib,$(EXTERNAL_LIBRARY_DIRS),tmp/$(lib).installed tmp/$(lib) var/$(lib))
 
 distclean: clean
-	-rm -f $(foreach lib,make-3.82.tar.gz $(EXTERNAL_LIBRARIES),src/$(lib))
+	-rm -f $(foreach lib,$(EXTERNAL_LIBRARIES),src/$(lib))
 
 var:
 	install -d $@
@@ -184,11 +148,6 @@ tmp/libxml2-$(LIBXML2_VERSION): src/libxml2-sources-$(LIBXML2_VERSION).tar.gz | 
 
 tmp/libzip-$(LIBZIP_VERSION): src/libzip-$(LIBZIP_VERSION).tar.gz | tmp
 	-rm -rf var/libzip-$(LIBZIP_VERSION)
-	tar -C var -zxf $<
-	touch $@
-
-tmp/make-3.82: src/make-3.82.tar.gz | tmp
-	-rm -rf var/make-3.82
 	tar -C var -zxf $<
 	touch $@
 
@@ -240,9 +199,6 @@ tmp/SBML_odeSolver-$(SOSLIB_COMMIT).installed: tmp/SBML_odeSolver-$(SOSLIB_COMMI
 	(cd var/SBML_odeSolver-$(SOSLIB_COMMIT) && autoreconf -i && export MACOSX_DEPLOYMENT_TARGET=10.7 && env CFLAGS='-arch x86_64 -mmacosx-version-min=10.7' CXXFLAGS='-arch x86_64 -mmacosx-version-min=10.7' LDFLAGS='-arch x86_64 -mmacosx-version-min=10.7' ./configure --prefix=$(PREFIX) --with-libsbml=$(PREFIX) --with-libxml2=$(PREFIX) --with-sundials=$(PREFIX) --without-grace --without-graphviz && $(MAKE) all install)
 	touch $@
 
-usr/bin/flint-make: tmp/make-3.82
-	(cd var/make-3.82 && export MACOSX_DEPLOYMENT_TARGET=10.7 && ./configure --prefix=$(PREFIX) --program-prefix=flint- CFLAGS='-arch x86_64 -mmacosx-version-min=10.7' LDFLAGS='-arch x86_64 -mmacosx-version-min=10.7' && $(MAKE) all install)
-
 # for Flint
 
 ../flint/dist/flint.jar: $(foreach p,$(PROGRAMS),opt/bin/$(p))
@@ -282,8 +238,6 @@ $(APP)/Contents/Info.plist $(APP)/Contents/Java/flint.jar $(foreach j,$(JARS),$(
 
 $(foreach p,$(PROGRAMS),$(eval $(call flint_macos_program,$(p))))
 
-$(eval $(call flint_ext_program,flint-make))
-
 $(APP)/Contents/Resources/third-party-licenses.txt: tmp/libsbml-$(LIBSBML_VERSION) tmp/libxml2-$(LIBXML2_VERSION) tmp/protobuf-$(PROTOBUF_VERSION) tmp/SBML_odeSolver-$(SOSLIB_COMMIT) tmp/sundials-$(SUNDIALS_VERSION)
 	install -d $(dir $@)
 	echo ';;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;' > $@
@@ -318,7 +272,7 @@ $(APP)/Contents/Resources/icon.png: ../flint/src/jp/oist/flint/image/icon.png
 	install -d $(dir $@)
 	install -p -m 0644 $< $@
 
-flint-component.pkg: component.plist $(foreach d,$(BOOST_DYLIBS),$(call flint_frameworks_boost_dylib_name,$(d))) $(foreach d,$(DYLIBS) $(FLINT_DYLIBS),$(call flint_frameworks_dylib_name,$(d))) $(foreach d,$(SUNDIALS_DYLIBS),$(call flint_frameworks_sundials_dylib_name,$(d))) $(foreach p,$(PROGRAMS) $(EXT_PROGRAMS),$(call flint_macos_program_name,$(p))) $(foreach j,$(JARS),$(call flint_java_jar_name,$(j))) $(APP)/Contents/Resources/third-party-licenses.txt $(APP)/Contents/Resources/flint.icns $(APP)/Contents/Resources/icon.png $(APP)/Contents/Java/flint.jar $(APP)/Contents/MacOS/JavaAppLauncher $(APP)/Contents/Info.plist $(APP)/Contents/PkgInfo
+flint-component.pkg: component.plist $(foreach d,$(BOOST_DYLIBS),$(call flint_frameworks_boost_dylib_name,$(d))) $(foreach d,$(DYLIBS) $(FLINT_DYLIBS),$(call flint_frameworks_dylib_name,$(d))) $(foreach d,$(SUNDIALS_DYLIBS),$(call flint_frameworks_sundials_dylib_name,$(d))) $(foreach p,$(PROGRAMS),$(call flint_macos_program_name,$(p))) $(foreach j,$(JARS),$(call flint_java_jar_name,$(j))) $(APP)/Contents/Resources/third-party-licenses.txt $(APP)/Contents/Resources/flint.icns $(APP)/Contents/Resources/icon.png $(APP)/Contents/Java/flint.jar $(APP)/Contents/MacOS/JavaAppLauncher $(APP)/Contents/Info.plist $(APP)/Contents/PkgInfo
 	pkgbuild --quiet --identifier jp.oist.flint --component-plist $< --root root $@
 
 flint resources:
@@ -333,7 +287,5 @@ flint/flint.pkg: distribution.xml flint-component.pkg resources/license.rtf | fl
 flint.dmg: flint/flint.pkg
 	hdiutil create -fs HFS+ -ov -srcfolder flint $@
 	install -p -m 0644 $@ flint-`date +%Y%m%d`.dmg
-
-$(eval $(call external_library_source_for_osx,make-3.82.tar.gz,7f7c000e3b30c6840f2e9cf86b254fac))
 
 .DEFAULT_GOAL := all

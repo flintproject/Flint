@@ -10,7 +10,6 @@
 
 #include "bc/binary.h"
 #include "load.hh"
-#include "system.h"
 #include "workspace/task.h"
 
 using std::cerr;
@@ -51,7 +50,5 @@ int main(int argc, char *argv[])
 	file::Format format;
 	if (!task.Setup(&format))
 		return EXIT_FAILURE;
-	if (!load::Config(format, load::kRun))
-		return EXIT_FAILURE;
-	return RunSystem("flint-make -j -rs -f load.mk load");
+	return load::Load(format, load::kRun) ? EXIT_SUCCESS : EXIT_FAILURE;
 }

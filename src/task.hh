@@ -8,11 +8,10 @@
 namespace task {
 
 /*
- * Print the given task's preference.
- * Note that db is for read only.
+ * Save a task's configuration into an attached database.
  * Return true in case of success, false otherwise.
  */
-bool Pref(int id, sqlite3 *db, FILE *fp);
+bool Config(int id, sqlite3 *db);
 
 /*
  * List a task's spec.
@@ -25,6 +24,11 @@ bool Spec(int id, sqlite3 *db, FILE *fp);
  * Return true in case of success, false otherwise.
  */
 bool Form(sqlite3 *db);
+
+/*
+ * Return true in case of success, false otherwise.
+ */
+bool Timer(double length, double step, FILE *fp);
 
 }
 

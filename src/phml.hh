@@ -6,6 +6,22 @@
 
 namespace phml {
 
+/*
+ * Return true in case of success, false otherwise.
+ */
+bool Nc(sqlite3 *db, const char *output);
+
+/*
+ * Note that db is for read only.
+ * Return true in case of success, false otherwise.
+ */
+bool UnitOfTime(sqlite3 *db, const char *output);
+
+/*
+ * Return true in case of success, false otherwise.
+ */
+bool LengthAndStep(sqlite3 *db, const char *nc_file, const char *uot_file);
+
 bool CombineAll(sqlite3 *db);
 
 bool Read(sqlite3 *db);

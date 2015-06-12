@@ -11,6 +11,11 @@ namespace exec {
  */
 bool Enum(sqlite3 *db);
 
+/*
+ * Return true in case of success, false otherwise.
+ */
+bool Exec(sqlite3 *db);
+
 }
 
 #endif

@@ -165,14 +165,6 @@ private:
 	xmlChar *reaction_id_;
 };
 
-void PrintRules(int task_id, FILE *fp)
-{
-	fprintf(fp, "%d/Makefile: %d/file.txt %d/conf.txt\n", task_id, task_id, task_id);
-	fprintf(fp, "\tflint-enum %d/db > $@\n", task_id);
-	fprintf(fp, "\tflint-taskconfig exec %d/conf.txt >> $@\n", task_id);
-	fprintf(fp, "\n");
-}
-
 class Reader {
 public:
 	Reader(xmlTextReaderPtr &text_reader, sqlite3 *db)
@@ -186,7 +178,7 @@ public:
 		xmlFreeTextReader(text_reader_);
 	}
 
-	int Read(const boost::filesystem::path &cp, FILE *fp) {
+	int Read(const boost::filesystem::path &cp) {
 		int i = xmlTextReaderRead(text_reader_);
 		while (i > 0) {
 			int type = xmlTextReaderNodeType(text_reader_);
@@ -212,15 +204,13 @@ public:
 						if (!task->Setup(&format)) {
 							return -2;
 						}
-						if (!load::Config(format, load::kExec, task_id))
+						if (!load::Load(format, load::kExec, task_id))
 							return -2;
-						if (!CreateConfTxt(task_id))
+						if (!task::Config(task_id, db_))
 							return -2;
-						if (!CreateSpecTxt(task_id))
+						if (!CreateSpec(task_id))
 							return -2;
-						PrintRules(task_id, fp);
 					}
-					PrintRestOfRules(fp);
 					return 1;
 				}
 			}
@@ -232,43 +222,18 @@ public:
 private:
 	typedef std::map<int, string> TaskMap;
 
-	bool CreateConfTxt(int id) {
-		char conf_txt[64]; // large enough
-		sprintf(conf_txt, "%d/conf.txt", id);
-		FILE *fp = fopen(conf_txt, "w");
+	bool CreateSpec(int id) {
+		char spec_file[64]; // large enough
+		sprintf(spec_file, "%d/spec.txt", id);
+		FILE *fp = fopen(spec_file, "w");
 		if (!fp) {
-			perror(conf_txt);
-			return false;
-		}
-		if (!task::Pref(id, db_, fp))
-			return false;
-		fclose(fp);
-		return true;
-	}
-
-	bool CreateSpecTxt(int id) {
-		char spec_txt[64]; // large enough
-		sprintf(spec_txt, "%d/spec.txt", id);
-		FILE *fp = fopen(spec_txt, "w");
-		if (!fp) {
-			perror(spec_txt);
+			perror(spec_file);
 			return false;
 		}
 		if (!task::Spec(id, db_, fp))
 			return false;
 		fclose(fp);
 		return true;
-	}
-
-	void PrintRestOfRules(FILE *fp) {
-		fprintf(fp, "all:");
-		for (TaskMap::const_iterator it=tasks_.begin();it!=tasks_.end();++it) {
-			fprintf(fp, " %d/Makefile", it->first);
-		}
-		fprintf(fp, "\n");
-		fprintf(fp, "\n");
-		fprintf(fp, ".PHONY: all\n");
-		fprintf(fp, ".DEFAULT_GOAL = all\n");
 	}
 
 	int ReadModel(const boost::filesystem::path &cp) {
@@ -842,7 +807,7 @@ private:
 
 }
 
-bool Read(sqlite3 *db, FILE *fp)
+bool Read(sqlite3 *db)
 {
 	char phsp_file[1024];
 	if (!LoadExec(db, NULL, phsp_file)) return false;
@@ -857,7 +822,7 @@ bool Read(sqlite3 *db, FILE *fp)
 
 	boost::scoped_ptr<Reader> reader(new Reader(text_reader, db));
 	boost::filesystem::path cp = pp.parent_path();
-	if (reader->Read(cp, fp) < 0) return false;
+	if (reader->Read(cp) < 0) return false;
 
 	return true;
 }

@@ -129,19 +129,6 @@ AC_CONFIG_FILES([Makefile
                  test/common/Makefile
                  test/common/runtime/Makefile
                  test/csv2isd/Makefile
-                 test/flint-cellml/Makefile
-                 test/flint-evolve/Makefile
-                 test/flint-init/Makefile
-                 test/flint-layout/Makefile
-                 test/flint-nc/Makefile
-                 test/flint-param/Makefile
-                 test/flint-phml/Makefile
-                 test/flint-phml-xfail/Makefile
-                 test/flint-phz/Makefile
-                 test/flint-sbml/Makefile
-                 test/flint-spec/Makefile
-                 test/flint-unitoftime/Makefile
-                 test/flint-var/Makefile
                  test/isd2csv/Makefile
                  test/isdbswap/Makefile
                  test/isdcut/Makefile

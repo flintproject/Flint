@@ -1,17 +1,16 @@
 /* -*- Mode: C++; tab-width: 4; indent-tabs-mode: t; c-basic-offset: 4 -*- vim:set ts=4 sw=4 sts=4 noet: */
-#ifndef FLINT_PHSP_HH_
-#define FLINT_PHSP_HH_
+#ifndef FLINT_RUN_SPEC_HH_
+#define FLINT_RUN_SPEC_HH_
 
 #include <cstdio>
 #include "sqlite3.h"
 
-namespace phsp {
+namespace run {
 
 /*
- * Read a PHSP model.
- * Return true in case of success, false otherwise.
+ * Return true in case of success, otherwise false.
  */
-bool Read(sqlite3 *db);
+bool Spec(sqlite3 *db, FILE *fp);
 
 }
 

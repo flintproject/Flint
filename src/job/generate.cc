@@ -6,6 +6,10 @@
 #include <sstream>
 #include <string>
 
+#define BOOST_FILESYSTEM_NO_DEPRECATED
+#include <boost/filesystem.hpp>
+
+#include "db/driver.h"
 #include "db/eq-inserter.h"
 #include "db/query.h"
 #include "db/statement-driver.h"
@@ -128,15 +132,29 @@ private:
 
 }
 
-bool Generate(sqlite3 *input, sqlite3 *output)
+bool Generate(sqlite3 *input, int *job_id)
 {
 	int rowid;
 	int enum_id;
 	{
 		NextJob nj(input);
-		if (!nj.Get(&rowid, &enum_id))
-			return false;
+		if (!nj.Get(&rowid, &enum_id)) {
+			*job_id = 0;
+			return true;
+		}
 	}
+	char path[64];
+	sprintf(path, "%d", rowid);
+	boost::system::error_code ec;
+	boost::filesystem::create_directory(path, ec);
+	if (ec) {
+		cerr << "failed to create directory: " << path
+			 << ": " << ec << endl;
+		return false;
+	}
+	sprintf(path, "%d/generated.db", rowid);
+	db::Driver driver(path);
+	sqlite3 *output = driver.db();
 	if (!BeginTransaction(input))
 		return false;
 	if (!BeginTransaction(output))
@@ -150,6 +168,7 @@ bool Generate(sqlite3 *input, sqlite3 *output)
 		return false;
 	if (!CommitTransaction(input))
 		return false;
+	*job_id = rowid;
 	return true;
 }
 

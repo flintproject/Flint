@@ -37,13 +37,6 @@ $(call flint_exe_name,$(1)): opt/bin/$(1).exe | flint
 	strip $$@
 endef
 
-define external_binary_for_windows
-flint/$(1):
-	wget -O $$@ $(DEPOSIT_URL)/$(1)
-	test "$(2)" = `md5sum $$@ | cut -d' ' -f1`
-	chmod +x $$@
-endef
-
 .PHONY: all mostlyclean clean distclean
 
 all: flint.zip
@@ -270,11 +263,7 @@ flint/third-party-licenses.txt: tmp/libsbml-$(LIBSBML_VERSION) tmp/libxml2-$(LIB
 	echo >> $@
 	cat var/sundials-$(SUNDIALS_VERSION)/LICENSE >> $@
 
-$(eval $(call external_binary_for_windows,flint-make.exe,2cf0a6086532b58e395fea16f892fd43))
-$(eval $(call external_binary_for_windows,libiconv2.dll,331f570aa7c20bc93deb7b237b21cc9c))
-$(eval $(call external_binary_for_windows,libintl3.dll,d202baa425176287017ffe1fb5d1b77c))
-
-flint.zip: $(foreach e,$(EXES) $(EXT_EXES),$(call flint_exe_name,$(e))) $(foreach d,$(BOOST_DLLS) $(SUNDIALS_DLLS) $(EXT_DLLS) $(FLINT_DLLS),$(call flint_dll_name,$(d))) flint/$(LIBGCC_DLL) flint/$(LIBSTDCXX_DLL) flint/flint.jar $(foreach j,$(JARS),$(call flint_jar_name,$(j))) flint/Makefile flint/header.mk flint/flint.ico flint/flint.xml flint/flint.wxs flint/icon.png flint/license.rtf flint/third-party-licenses.txt
+flint.zip: $(foreach e,$(EXES),$(call flint_exe_name,$(e))) $(foreach d,$(BOOST_DLLS) $(SUNDIALS_DLLS) $(FLINT_DLLS),$(call flint_dll_name,$(d))) flint/$(LIBGCC_DLL) flint/$(LIBSTDCXX_DLL) flint/flint.jar $(foreach j,$(JARS),$(call flint_jar_name,$(j))) flint/Makefile flint/header.mk flint/flint.ico flint/flint.xml flint/flint.wxs flint/icon.png flint/license.rtf flint/third-party-licenses.txt
 	zip -r flint flint
 
 .DEFAULT_GOAL := all

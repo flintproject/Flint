@@ -221,13 +221,6 @@ bool Enumerate(sqlite3 *db)
 	}
 	sqlite3_finalize(stmt);
 	sqlite3_finalize(job_stmt);
-
-	printf("JOBS =");
-	for (int i=0;i<num_rows;i++) {
-		printf(" %d", job_ids[i]);
-	}
-	printf("\n");
-	printf("\n");
 	return true;
 }
 

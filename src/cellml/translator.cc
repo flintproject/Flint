@@ -465,6 +465,8 @@ bool TranslateCellml(sqlite3 *db)
 		return false;
 	if (!CreateTsfiles(db))
 		return false;
+	if (!CreateConfig(db))
+		return false;
 
 	return CommitTransaction(db);
 }

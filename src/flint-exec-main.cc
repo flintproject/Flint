@@ -1,43 +1,31 @@
 /* -*- Mode: C++; tab-width: 4; indent-tabs-mode: t; c-basic-offset: 4 -*- vim:set ts=4 sw=4 sts=4 noet: */
-#ifdef HAVE_CONFIG_H
-#include "config.h"
-#endif
-
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
 #include <iostream>
-#include <string>
-
-#define BOOST_FILESYSTEM_NO_DEPRECATED
-#include <boost/filesystem.hpp>
-#include <boost/scoped_ptr.hpp>
 
 #include "bc/binary.h"
 #include "database.h"
 #include "db/driver.h"
-#include "phsp.hh"
-#include "sedml.hh"
-#include "system.h"
+#include "exec.hh"
 
 using std::cerr;
 using std::endl;
-using std::printf;
 using std::strcmp;
 
 namespace {
-
-const size_t kInputLength = 2048;
 
 void Usage()
 {
 	cerr << "usage: flint-exec" << endl;
 }
 
-} // namespace
+}
 
 int main(int argc, char *argv[])
 {
+	const size_t kInputLength = 2048;
+
 	if (argc == 2) {
 		Usage();
 		if ( strcmp(argv[1], "-h") == 0 ||
@@ -71,44 +59,9 @@ int main(int argc, char *argv[])
 	const char *phsp_filename = filenames;
 	while (*phsp_filename++) {}
 
-	{
-		db::Driver driver("x.db");
-		sqlite3 *db = driver.db();
-		if (!SaveExec(db, sedml_filename, phsp_filename))
-			return EXIT_FAILURE;
-
-		FILE *fp = fopen("x.mk", "w");
-		if (!fp) {
-			perror(argv[0]);
-			return EXIT_FAILURE;
-		}
-		if (!sedml::Read(db))
-			return EXIT_FAILURE;
-		if (!phsp::Read(db, fp))
-			return EXIT_FAILURE;
-		fclose(fp);
-	}
-
-	int r = RunSystem("flint-make -rs -f x.mk");
-	if (r != EXIT_SUCCESS) return r;
-
-	boost::system::error_code ec;
-	bool b;
-	char buf[128]; // FIXME
-	for (int i=1;;i++) {
-		sprintf(buf, "%d", i);
-		boost::filesystem::path dir_path(buf);
-		b = boost::filesystem::exists(dir_path, ec);
-		if (ec || !b) break;
-
-		sprintf(buf, "%d/canceled", i);
-		boost::filesystem::path canceled_path(buf);
-		b = boost::filesystem::exists(canceled_path, ec);
-		if (!ec && b) continue;
-
-		sprintf(buf, "flint-make -rs -C %d", i);
-		r = RunSystem(buf);
-		if (r != EXIT_SUCCESS) return r;
-	}
-	return EXIT_SUCCESS;
+	db::Driver driver("x.db");
+	sqlite3 *db = driver.db();
+	if (!SaveExec(db, sedml_filename, phsp_filename))
+		return EXIT_FAILURE;
+	return exec::Exec(db) ? EXIT_SUCCESS : EXIT_FAILURE;
 }

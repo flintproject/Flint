@@ -4,17 +4,6 @@ SUBDIRS = \
 	file \
 	method \
 	csv2isd \
-	flint-cellml \
-	flint-layout \
-	flint-nc \
-	flint-param \
-	flint-phml \
-	flint-phml-xfail \
-	flint-phz \
-	flint-sbml \
-	flint-spec \
-	flint-unitoftime \
-	flint-var \
 	isd2csv \
 	isdbswap \
 	isdcut \

@@ -2,8 +2,8 @@
 MSI_DEPENDENCY = \
     flint.jar \
     $(foreach j,$(JARS),$(j).jar) \
-    $(foreach d,$(BIN_DLLS) $(BOOST_DLLS) $(EXT_DLLS),lib/$(d).dll) \
-    $(foreach e,$(EXES) $(EXT_EXES),$(e).exe)
+    $(foreach d,$(BIN_DLLS) $(BOOST_DLLS),lib/$(d).dll) \
+    $(foreach e,$(EXES),$(e).exe)
 
 .PHONY: all clean install uninstall timestamp
 

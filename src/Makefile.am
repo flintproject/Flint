@@ -31,36 +31,11 @@ BUILT_SOURCES = \
 
 bin_PROGRAMS = \
 	csv2isd \
-	flint-cellml \
 	flint-cli \
-	flint-compile \
-	flint-concat \
-	flint-cut \
-	flint-enum \
-	flint-evolve \
 	flint-exec \
-	flint-filter \
-	flint-form \
-	flint-generate \
-	flint-init \
-	flint-isdh \
-	flint-lands \
-	flint-layout \
 	flint-lodbg \
-	flint-nc \
 	flint-open \
-	flint-param \
-	flint-phml \
-	flint-phz \
 	flint-run \
-	flint-sbml \
-	flint-spec \
-	flint-store \
-	flint-taskconfig \
-	flint-timer \
-	flint-track \
-	flint-unitoftime \
-	flint-var \
 	isd2csv \
 	isdbswap \
 	isdcut \
@@ -104,23 +79,29 @@ libflintxx_la_SOURCES = \
     cellml/parser.cc \
     cellml/read.cc \
     cellml/translator.cc \
-    db/flow.cc \
-    db/read-only-driver.cc \
     compiler/bcc.cc \
     compiler/compile.cc \
     compiler/sort.cc \
     compiler/tac.cc \
     csv/export.cc \
+    db/flow.cc \
+    db/read-only-driver.cc \
     exec/enum.cc \
+    exec/exec.cc \
     file/detect.cc \
     file/txt.cc \
     filter/create.cc \
     filter/cut.cc \
     filter/isdh.cc \
     filter/track.cc \
+    job/evolve.cc \
     job/generate.cc \
+    job/job.cc \
     job/store.cc \
-    load/config.cc \
+    layout/generate.cc \
+    load/load.cc \
+    load/param.cc \
+    load/var.cc \
     method/assign.cc \
     method/euler.cc \
     method/event.cc \
@@ -131,11 +112,17 @@ libflintxx_la_SOURCES = \
     phml/graph-iv-rewriter.cc \
     phml/graph-math-rewriter.cc \
     phml/import.cc \
+    phml/lands.cc \
+    phml/nc.cc \
     phml/read.cc \
     phml/transition-form.cc \
+    phml/unit-of-time.cc \
     phsp/read.cc \
     phz/read.cc \
     reach.cc \
+    run/run.cc \
+    run/spec.cc \
+    runtime/init.cc \
     runtime/flow.cc \
     sbml/load.cc \
     sbml/parser.cc \
@@ -144,9 +131,11 @@ libflintxx_la_SOURCES = \
     span.cc \
     sprinkle.cc \
     sys/temporary_path.cc \
+    task/config.cc \
+    task/config-reader.cc \
     task/form.cc \
-    task/pref.cc \
     task/spec.cc \
+    task/timer.cc \
     ts/tsc.cc \
     ts/tsfiles.cc \
     utf8path.cc \
@@ -162,138 +151,28 @@ csv2isd_LDFLAGS = $(BOOST_FILESYSTEM_LDFLAGS) $(BOOST_SYSTEM_LDFLAGS)
 csv2isd_LDADD = libflintxx.la libflint.la libsqlite3.la $(BOOST_FILESYSTEM_LIBS) $(BOOST_SYSTEM_LIBS)
 csv2isd_SOURCES = csv2isd-main.cc
 
-flint_cellml_CPPFLAGS = $(BOOST_CPPFLAGS)
-flint_cellml_LDFLAGS = $(BOOST_FILESYSTEM_LDFLAGS) $(BOOST_SYSTEM_LDFLAGS)
-flint_cellml_LDADD = libflintxx.la libflint.la libsqlite3.la $(BOOST_FILESYSTEM_LIBS) $(BOOST_SYSTEM_LIBS)
-flint_cellml_SOURCES = flint-cellml-main.cc
-
 flint_cli_CPPFLAGS = $(PROTOBUF_CFLAGS) $(BOOST_CPPFLAGS)
 flint_cli_LDFLAGS = $(BOOST_PROGRAM_OPTIONS_LDFLAGS)
 flint_cli_LDADD = libflintxx.la libflint.la libsqlite3.la $(PROTOBUF_LIBS) $(BOOST_PROGRAM_OPTIONS_LIBS)
 flint_cli_SOURCES = flint-cli-main.cc
-
-flint_compile_CPPFLAGS = $(PROTOBUF_CFLAGS) $(BOOST_CPPFLAGS)
-flint_compile_LDADD = libflintxx.la libflint.la libsqlite3.la $(PROTOBUF_LIBS)
-flint_compile_SOURCES = flint-compile-main.cc
-
-flint_concat_CFLAGS = $(AM_CFLAGS) -std=c99 -pedantic-errors
-flint_concat_SOURCES = flint-concat-main.c
-
-flint_cut_CPPFLAGS = $(PROTOBUF_CFLAGS) $(BOOST_CPPFLAGS)
-flint_cut_LDFLAGS = $(BOOST_PROGRAM_OPTIONS_LDFLAGS) $(BOOST_SYSTEM_LDFLAGS)
-flint_cut_LDADD = libflintxx.la libflint.la libsqlite3.la $(PROTOBUF_LIBS) $(BOOST_PROGRAM_OPTIONS_LIBS) $(BOOST_SYSTEM_LIBS)
-flint_cut_SOURCES = flint-cut-main.cc
-
-flint_enum_LDADD = libflintxx.la libflint.la libsqlite3.la
-flint_enum_SOURCES = flint-enum-main.cc
-
-flint_evolve_CPPFLAGS = $(PROTOBUF_CFLAGS) $(BOOST_CPPFLAGS)
-flint_evolve_LDFLAGS = $(BOOST_PROGRAM_OPTIONS_LDFLAGS) $(BOOST_FILESYSTEM_LDFLAGS) $(BOOST_SYSTEM_LDFLAGS)
-flint_evolve_LDADD = libflintxx.la libflint.la libsqlite3.la $(PROTOBUF_LIBS) $(BOOST_PROGRAM_OPTIONS_LIBS) $(BOOST_FILESYSTEM_LIBS) $(BOOST_SYSTEM_LIBS)
-flint_evolve_SOURCES = flint-evolve-main.cc
 
 flint_exec_CPPFLAGS = $(BOOST_CPPFLAGS)
 flint_exec_LDFLAGS = $(BOOST_FILESYSTEM_LDFLAGS) $(BOOST_SYSTEM_LDFLAGS)
 flint_exec_LDADD = libflintxx.la libflint.la libsqlite3.la $(BOOST_FILESYSTEM_LIBS) $(BOOST_SYSTEM_LIBS)
 flint_exec_SOURCES = flint-exec-main.cc
 
-flint_filter_CPPFLAGS = $(PROTOBUF_CFLAGS) $(BOOST_CPPFLAGS)
-flint_filter_LDFLAGS = $(BOOST_PROGRAM_OPTIONS_LDFLAGS) $(BOOST_SYSTEM_LDFLAGS)
-flint_filter_LDADD = libflintxx.la libflint.la libsqlite3.la $(PROTOBUF_LIBS) $(BOOST_PROGRAM_OPTIONS_LIBS) $(BOOST_SYSTEM_LIBS)
-flint_filter_SOURCES = flint-filter-main.cc
-
-flint_form_LDADD = libflintxx.la libflint.la libsqlite3.la
-flint_form_SOURCES = flint-form-main.cc
-
-flint_generate_CPPFLAGS = $(BOOST_CPPFLAGS)
-flint_generate_LDADD = libflintxx.la libflint.la libsqlite3.la
-flint_generate_SOURCES = flint-generate-main.cc
-
-flint_init_CPPFLAGS = $(PROTOBUF_CFLAGS) $(BOOST_CPPFLAGS)
-flint_init_LDFLAGS = $(BOOST_PROGRAM_OPTIONS_LDFLAGS) $(BOOST_FILESYSTEM_LDFLAGS) $(BOOST_SYSTEM_LDFLAGS)
-flint_init_LDADD = libflintxx.la libflint.la libsqlite3.la $(PROTOBUF_LIBS) $(BOOST_PROGRAM_OPTIONS_LIBS) $(BOOST_FILESYSTEM_LIBS) $(BOOST_SYSTEM_LIBS)
-flint_init_SOURCES = flint-init-main.cc
-
-flint_isdh_CPPFLAGS = $(PROTOBUF_CFLAGS) $(BOOST_CPPFLAGS)
-flint_isdh_LDFLAGS = $(BOOST_PROGRAM_OPTIONS_LDFLAGS)
-flint_isdh_LDADD = libflintxx.la libflint.la libsqlite3.la $(PROTOBUF_LIBS) $(BOOST_PROGRAM_OPTIONS_LIBS)
-flint_isdh_SOURCES = flint-isdh-main.cc
-
-flint_lands_CPPFLAGS = $(PROTOBUF_CFLAGS) $(BOOST_CPPFLAGS)
-flint_lands_LDFLAGS = $(BOOST_PROGRAM_OPTIONS_LDFLAGS)
-flint_lands_LDADD = libflintxx.la libflint.la libsqlite3.la $(PROTOBUF_LIBS) $(BOOST_PROGRAM_OPTIONS_LIBS)
-flint_lands_SOURCES = flint-lands-main.cc
-
-flint_layout_CPPFLAGS = $(PROTOBUF_CFLAGS) $(BOOST_CPPFLAGS)
-flint_layout_LDFLAGS = $(BOOST_PROGRAM_OPTIONS_LDFLAGS)
-flint_layout_LDADD = libflintxx.la libflint.la libsqlite3.la $(PROTOBUF_LIBS) $(BOOST_PROGRAM_OPTIONS_LIBS)
-flint_layout_SOURCES = flint-layout-main.cc
-
 flint_lodbg_CPPFLAGS = $(PROTOBUF_CFLAGS) $(BOOST_CPPFLAGS)
 flint_lodbg_LDADD = libflintxx.la libflint.la libsqlite3.la $(PROTOBUF_LIBS)
 flint_lodbg_SOURCES = flint-lodbg-main.cc
-
-flint_nc_CPPFLAGS = $(PROTOBUF_CFLAGS) $(BOOST_CPPFLAGS)
-flint_nc_LDADD = libflintxx.la libflint.la libsqlite3.la $(PROTOBUF_LIBS)
-flint_nc_SOURCES = flint-nc-main.cc
 
 flint_open_CPPFLAGS = $(BOOST_CPPFLAGS)
 flint_open_LDADD = libflintxx.la libflint.la libsqlite3.la
 flint_open_SOURCES = flint-open-main.cc
 
-flint_param_CPPFLAGS = $(PROTOBUF_CFLAGS) $(BOOST_CPPFLAGS)
-flint_param_LDADD = libflintxx.la libflint.la libsqlite3.la $(PROTOBUF_LIBS)
-flint_param_SOURCES = flint-param-main.cc
-
-flint_phml_CPPFLAGS = $(BOOST_CPPFLAGS) $(XML_CPPFLAGS)
-flint_phml_LDFLAGS = $(BOOST_FILESYSTEM_LDFLAGS) $(BOOST_SYSTEM_LDFLAGS)
-flint_phml_LDADD = libflintxx.la libflint.la libsqlite3.la $(BOOST_FILESYSTEM_LIBS) $(BOOST_SYSTEM_LIBS) $(XML_LIBS)
-flint_phml_SOURCES = flint-phml-main.cc
-
-flint_phz_CPPFLAGS = $(BOOST_CPPFLAGS)
-flint_phz_LDFLAGS = $(BOOST_FILESYSTEM_LDFLAGS) $(BOOST_SYSTEM_LDFLAGS)
-flint_phz_LDADD = libflintxx.la libflint.la libsqlite3.la $(BOOST_FILESYSTEM_LIBS) $(BOOST_SYSTEM_LIBS)
-flint_phz_SOURCES = flint-phz-main.cc
-
 flint_run_CPPFLAGS = $(PROTOBUF_CFLAGS) $(BOOST_CPPFLAGS)
 flint_run_LDFLAGS = $(BOOST_FILESYSTEM_LDFLAGS) $(BOOST_SYSTEM_LDFLAGS)
 flint_run_LDADD = libflintxx.la libflint.la libsqlite3.la $(PROTOBUF_LIBS) $(BOOST_FILESYSTEM_LIBS) $(BOOST_SYSTEM_LIBS)
 flint_run_SOURCES = flint-run-main.cc
-
-flint_sbml_CPPFLAGS = $(BOOST_CPPFLAGS) $(SOSLIB_CFLAGS) $(SUNDIALS_CFLAGS) $(LIBSBML_CFLAGS)
-flint_sbml_LDFLAGS = $(BOOST_FILESYSTEM_LDFLAGS) $(BOOST_SYSTEM_LDFLAGS)
-flint_sbml_LDADD = libflintxx.la libflint.la libsqlite3.la $(BOOST_FILESYSTEM_LIBS) $(BOOST_SYSTEM_LIBS) $(SOSLIB_LIBS) $(SUNDIALS_LIBS) $(LIBSBML_LIBS)
-flint_sbml_SOURCES = flint-sbml-main.cc
-
-flint_spec_CPPFLAGS = $(BOOST_CPPFLAGS)
-flint_spec_LDADD = libflintxx.la libflint.la libsqlite3.la
-flint_spec_SOURCES = flint-spec-main.cc
-
-flint_store_CPPFLAGS = $(PROTOBUF_CFLAGS) $(BOOST_CPPFLAGS)
-flint_store_LDFLAGS = $(BOOST_PROGRAM_OPTIONS_LDFLAGS)
-flint_store_LDADD = libflintxx.la libflint.la libsqlite3.la $(PROTOBUF_LIBS) $(BOOST_PROGRAM_OPTIONS_LIBS)
-flint_store_SOURCES = flint-store-main.cc
-
-flint_taskconfig_CPPFLAGS = $(AM_CFLAGS) -std=c99 -pedantic-errors
-flint_taskconfig_SOURCES = flint-taskconfig-main.c
-
-flint_timer_CPPFLAGS = $(BOOST_CPPFLAGS)
-flint_timer_LDFLAGS = $(BOOST_PROGRAM_OPTIONS_LDFLAGS)
-flint_timer_LDADD = $(BOOST_PROGRAM_OPTIONS_LIBS)
-flint_timer_SOURCES = flint-timer-main.cc
-
-flint_track_CPPFLAGS = $(PROTOBUF_CFLAGS) $(BOOST_CPPFLAGS)
-flint_track_LDFLAGS = $(BOOST_PROGRAM_OPTIONS_LDFLAGS) $(BOOST_SYSTEM_LDFLAGS)
-flint_track_LDADD = libflintxx.la libflint.la libsqlite3.la $(PROTOBUF_LIBS) $(BOOST_PROGRAM_OPTIONS_LIBS) $(BOOST_SYSTEM_LIBS)
-flint_track_SOURCES = flint-track-main.cc
-
-flint_unitoftime_CPPFLAGS = $(PROTOBUF_CFLAGS) $(BOOST_CPPFLAGS)
-flint_unitoftime_LDADD = libflintxx.la libflint.la libsqlite3.la $(PROTOBUF_LIBS)
-flint_unitoftime_SOURCES = flint-unitoftime-main.cc
-
-flint_var_CPPFLAGS = $(PROTOBUF_CFLAGS) $(BOOST_CPPFLAGS)
-flint_var_LDADD = libflintxx.la libflint.la libsqlite3.la $(PROTOBUF_LIBS)
-flint_var_SOURCES = flint-var-main.cc
 
 isd2csv_CPPFLAGS = $(BOOST_CPPFLAGS)
 isd2csv_LDFLAGS = $(BOOST_PROGRAM_OPTIONS_LDFLAGS)

@@ -7,7 +7,7 @@ PKG_CONFIG_PATH = $(PREFIX)/clibsedml-$(CLIBSEDML_COMMIT)/lib/pkgconfig:$(PREFIX
 
 .PHONY: all check check-sequential-version mostlyclean clean distclean install
 
-all: $(foreach lib,$(EXTERNAL_LIBRARIES),src/$(lib)) tmp/sequential-version.installed $(PREFIX)/sequential-version/bin/flint-make
+all: $(foreach lib,$(EXTERNAL_LIBRARIES),src/$(lib)) tmp/sequential-version.installed
 
 check: check-sequential-version
 
@@ -107,9 +107,5 @@ tmp/sequential-version.installed: tmp/$(BOOST_UNDERSCORE).installed tmp/clibsedm
 	install -d var/sequential-version
 	(cd var/sequential-version && env LDFLAGS='-Wl,-rpath -Wl,$(PREFIX)/libsbml-$(LIBSBML_VERSION)/lib' PKG_CONFIG_PATH=$(PKG_CONFIG_PATH) ../../../configure --prefix=$(PREFIX)/sequential-version --with-boost=$(PREFIX)/$(BOOST_UNDERSCORE) --with-xml-prefix=$(PREFIX)/libxml2-$(LIBXML2_VERSION) --with-protoc=$(PREFIX)/protobuf-$(PROTOBUF_VERSION)/bin/protoc --with-sundials=$(PREFIX)/sundials-$(SUNDIALS_VERSION) && $(MAKE) all install)
 	touch $@
-
-$(PREFIX)/sequential-version/bin/flint-make:
-	mkdir -p $(dir $@)
-	if test -f /usr/bin/gmake; then ln -s /usr/bin/gmake $@; else ln -s /usr/bin/make $@; fi
 
 .DEFAULT_GOAL := all

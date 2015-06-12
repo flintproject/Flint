@@ -103,6 +103,8 @@ int CreateSingleton(sqlite3 *db)
 		return 0;
 	if (!CreateTsfiles(db))
 		return 0;
+	if (!CreateConfig(db))
+		return 0;
 	return 1;
 }
 
@@ -157,4 +159,20 @@ int CreateSprinkles(sqlite3 *db)
 int CreateTsfiles(sqlite3 *db)
 {
 	return CreateTable(db, "tsfiles", "(filename TEXT)");
+}
+
+int CreateConfig(sqlite3 *db)
+{
+	if (!CreateTable(db, "config", "(method TEXT, length REAL, step REAL, granularity INTEGER)"))
+		return 0;
+	char *em;
+	int e;
+	e = sqlite3_exec(db, "INSERT INTO config VALUES (NULL, NULL, NULL, NULL)",
+					 NULL, NULL, &em);
+	if (e != SQLITE_OK) {
+		fprintf(stderr, "failed to insert config: %d: %s\n", e, em);
+		sqlite3_free(em);
+		return 0;
+	}
+	return 1;
 }

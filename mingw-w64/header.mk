@@ -28,46 +28,18 @@ SUNDIALS_DLLS := \
     libsundials_ida-1 \
     libsundials_kinsol-0 \
     libsundials_nvecserial-0
-EXT_DLLS := \
-    libiconv2 \
-    libintl3
 FLINT_DLLS := \
     libflint-0 \
     libflintxx-0 \
     libsqlite3-0
 EXES := \
     csv2isd \
-    flint-compile \
-    flint-concat \
-    flint-cut \
-    flint-enum \
-    flint-evolve \
     flint-exec \
-    flint-filter \
-    flint-form \
-    flint-generate \
-    flint-init \
-    flint-isdh \
-    flint-lands \
-    flint-layout \
-    flint-nc \
     flint-open \
-    flint-param \
-    flint-phml \
-    flint-phz \
     flint-run \
-    flint-sbml \
-    flint-spec \
-    flint-store \
-    flint-taskconfig \
-    flint-timer \
-    flint-track \
-    flint-unitoftime \
-    flint-var \
     isd2csv \
     isddiff \
     isdplot \
     isdsort \
     isdstrip \
     isdwc
-EXT_EXES := flint-make
