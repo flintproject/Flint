@@ -267,6 +267,7 @@ bool Store(sqlite3 *db,
 	}
 	if (fread(data.get(), sizeof(double), source_layer_size, fp) != static_cast<size_t>(source_layer_size)) {
 		cerr << "could not read data with size: " << source_layer_size << endl;
+		fclose(fp);
 		return false;
 	}
 	fclose(fp);
@@ -298,6 +299,7 @@ bool Store(sqlite3 *db,
 		if (!loader->Load(&target_layout)) return false;
 	}
 	if (!target_layout.Rewrite(format.get(), tvm, fp)) {
+		fclose(fp);
 		return false;
 	}
 	fclose(fp);
