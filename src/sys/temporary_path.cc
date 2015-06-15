@@ -100,6 +100,7 @@ char *TemporaryPath::Create(const void *data, size_t size)
 	size_t s = fwrite(data, size, 1, fp);
 	if (s == 0) {
 		cerr << "could not write to file: " << path << endl;
+		fclose(fp);
 		free(path);
 		return NULL;
 	}
