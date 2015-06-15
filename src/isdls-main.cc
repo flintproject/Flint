@@ -15,6 +15,7 @@ using std::endl;
 using std::ifstream;
 using std::istream;
 using std::ios;
+using std::memcpy;
 using std::string;
 
 namespace {
@@ -48,7 +49,8 @@ public:
 	}
 
 	int GetStep(size_t, const char *buf) {
-		double d = *reinterpret_cast<const double *>(buf + offset_);
+		double d;
+		memcpy(&d, buf + offset_, sizeof(double));
 		cout << d << endl;
 		return 1;
 	}
