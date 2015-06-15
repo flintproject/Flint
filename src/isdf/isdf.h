@@ -39,7 +39,7 @@ typedef struct ISDFHeaderStruct{
 #else
 		{
 			int i = 1;
-			isdfheader.little_endian = *(char*)&i;
+			little_endian = *(char*)&i;
         }
 #endif
 		padding[0] = padding[1] = 0;
