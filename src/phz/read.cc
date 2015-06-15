@@ -91,6 +91,7 @@ bool Read(sqlite3 *db, const char *dir)
 		struct zip_file *zfp = zip_fopen_index(zp, i, 0);
 		if (!zfp) {
 			cerr << zip_strerror(zp) << endl;
+			fclose(ofp);
 			return false;
 		}
 
@@ -103,6 +104,7 @@ bool Read(sqlite3 *db, const char *dir)
 					 << " in the zip archive: "
 					 << filename.get()
 					 << endl;
+				fclose(ofp);
 				return false;
 			}
 			assert(len <= 1024);
@@ -112,6 +114,7 @@ bool Read(sqlite3 *db, const char *dir)
 					 << " in the zip archive: "
 					 << filename.get()
 					 << endl;
+				fclose(ofp);
 				return false;
 			}
 		}
