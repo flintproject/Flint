@@ -168,12 +168,12 @@ int CompareBody(boost::uint32_t num_objs,
 
 		if (strncmp(buf0.get(), buf1.get(), nb) == 0) continue;
 
-		double v0, v1, av0, av1;
 		for (boost::uint32_t k=0;k<num_objs;k++) {
+			double v0, v1;
 			memcpy(&v0, &buf0[k * sizeof(double)], sizeof(double));
 			memcpy(&v1, &buf1[k * sizeof(double)], sizeof(double));
-			av0 = std::fabs(v0);
-			av1 = std::fabs(v1);
+			double av0 = std::fabs(v0);
+			double av1 = std::fabs(v1);
 			if (av0 < av1) std::swap(av0, av1);
 			if ( (av0 - av1) > adelta &&
 				 (1 - av1/av0) > rdelta ) {
