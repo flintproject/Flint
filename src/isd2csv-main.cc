@@ -27,6 +27,7 @@ using std::endl;
 using std::ifstream;
 using std::istream;
 using std::ios;
+using std::memcpy;
 using std::ofstream;
 using std::ostream;
 using std::string;
@@ -86,7 +87,8 @@ public:
 		char *eob = buf + buf_size;
 		char *b = buf;
 		while (b < eob) {
-			double d = *reinterpret_cast<double *>(b);
+			double d;
+			memcpy(&d, b, sizeof(double));
 			if (b != buf) *os_ << ',';
 			*os_ << d;
 			b += sizeof(double);
