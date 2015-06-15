@@ -70,8 +70,10 @@ bool Job(int job_id, const char *data_file, const task::ConfigReader &reader, sq
 		perror(control_file);
 		return false;
 	}
-	if (fputc('0', fp) == EOF)
+	if (fputc('0', fp) == EOF) {
+		fclose(fp);
 		return false;
+	}
 	fclose(fp);
 
 	char output_data_file[64];
@@ -116,6 +118,7 @@ bool Job(int job_id, const char *data_file, const task::ConfigReader &reader, sq
 	FILE *ofp = fopen(isd_file, "ab");
 	if (!ofp) {
 		perror(isd_file);
+		fclose(ifp);
 		return false;
 	}
 	if (!filter::Cut("filter", ifp, ofp))
