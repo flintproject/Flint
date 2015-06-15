@@ -18,7 +18,7 @@ using std::endl;
 
 namespace {
 
-char *MakeTemporaryFile(const std::string name, const std::string &dir, int *fd)
+char *MakeTemporaryFile(const std::string &name, const std::string &dir, int *fd)
 {
 	using namespace boost::filesystem;
 
