@@ -8,6 +8,7 @@
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
+#include <iostream>
 #include <string>
 
 #include <sedml/reader.h>
@@ -16,6 +17,9 @@
 #include "db/query.h"
 #include "sqlite3.h"
 #include "utf8path.h"
+
+using std::cerr;
+using std::endl;
 
 namespace sedml {
 
@@ -245,6 +249,10 @@ bool Read(sqlite3 *db)
 
 		e = sqlite3_prepare_v2(db, "INSERT INTO tasks VALUES (?, ?)",
 							   -1, &stmt, NULL);
+		if (e != SQLITE_OK) {
+			cerr << "failed to prepare statement: " << e << endl;
+			goto bail;
+		}
 		e = sqlite3_bind_int64(stmt, 1, model_id);
 		if (e != SQLITE_OK) {
 			fprintf(stderr, "failed to bind model_id: %d\n", e);
@@ -282,6 +290,10 @@ bool Read(sqlite3 *db)
 
 				e = sqlite3_prepare_v2(db, "INSERT INTO dgs VALUES (?, ?)",
 									   -1, &stmt, NULL);
+				if (e != SQLITE_OK) {
+					cerr << "failed to prepare statement: " << e << endl;
+					goto bail;
+				}
 				e = sqlite3_bind_int64(stmt, 1, task_id);
 				if (e != SQLITE_OK) {
 					fprintf(stderr, "failed to bind task_id: %d\n", e);
