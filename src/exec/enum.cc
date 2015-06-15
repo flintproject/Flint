@@ -176,12 +176,6 @@ bool Enumerate(sqlite3 *db)
 	for (int i=0;i<num_params;i++) {
 		num_rows *= ranges[i].num_values;
 	}
-	int *job_ids = static_cast<int *>(calloc(num_rows, sizeof(int)));
-	if (!job_ids) {
-		fprintf(stderr, "failed to calloc");
-		/* TODO */
-		return false;
-	}
 	for (int i=0;i<num_rows;i++) {
 		int d0 = 1;
 		int d1 = 1;
@@ -214,8 +208,6 @@ bool Enumerate(sqlite3 *db)
 			/* TODO */
 			return false;
 		}
-		int job_id = (int)sqlite3_last_insert_rowid(db); /* TODO */
-		job_ids[i] = job_id;
 		sqlite3_reset(stmt);
 		sqlite3_reset(job_stmt);
 	}
