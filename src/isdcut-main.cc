@@ -81,10 +81,9 @@ public:
 			boost::uint32_t i = static_cast<boost::uint32_t>(*it);
 			if (i >= header.num_objs) break;
 
-			size_t s;
 			do {
 				memcpy(&len, p, sizeof(len));
-				s = sizeof(len)+len;
+				size_t s = sizeof(len)+len;
 				if (n == i) {
 					memcpy(d, p, s);
 					d += s;
