@@ -237,10 +237,9 @@ public:
 			return true;
 		}
 		int level = 1;
-		bool found = false;
 		while (!std::includes(solved.begin(), solved.end(),
 							  names.begin(), names.end())) {
-			found = false;
+			bool found = false;
 			for (size_t i=0;i<n;i++) {
 				if (levels[i] < 0) {
 					const Line &line = lines_[i];
