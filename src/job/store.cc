@@ -76,7 +76,7 @@ public:
 	}
 
 	void AddSector(lo::Sector *sector) {
-		sv_.push_back(sector);
+		(void)sector; // nothing to do
 	}
 
 	void AddData(lo::Data *data) {
@@ -94,8 +94,7 @@ public:
 			int dib = di;
 			int die = di + nod;
 
-			while (si < sie) {
-				const lo::Sector &s = sv_.at(si++);
+			while (si++ < sie) {
 				di = dib;
 				while (di < die) {
 					const lo::Data &d = dv_.at(di++);
@@ -120,11 +119,9 @@ public:
 
 private:
 	typedef boost::ptr_vector<lo::Track> TrackVector;
-	typedef boost::ptr_vector<lo::Sector> SectorVector;
 	typedef boost::ptr_vector<lo::Data> DataVector;
 
 	TrackVector tv_;
-	SectorVector sv_;
 	DataVector dv_;
 };
 
