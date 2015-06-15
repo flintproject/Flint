@@ -375,7 +375,7 @@ int Process(void *data, int argc, char **argv, char **names)
 	static const RealLexer tokens;
 	static const RealGrammar grammar(tokens);
 
-	Inserter *inserter = (Inserter *)data;
+	Inserter *inserter = static_cast<Inserter *>(data);
 	(void)names;
 	assert(argc == 2);
 	const char *uuid = argv[0];

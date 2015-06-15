@@ -257,7 +257,7 @@ private:
 int ProcessAssignment(void *data, int argc, char **argv, char **names)
 {
 	(void)names;
-	Writer *writer = (Writer *)data;
+	Writer *writer = static_cast<Writer *>(data);
 	assert(argc == 2);
 	return (writer->AddAssignment(argv[0], argv[1])) ? 0 : 1;
 }
@@ -265,7 +265,7 @@ int ProcessAssignment(void *data, int argc, char **argv, char **names)
 int ProcessConstant(void *data, int argc, char **argv, char **names)
 {
 	(void)names;
-	Writer *writer = (Writer *)data;
+	Writer *writer = static_cast<Writer *>(data);
 	assert(argc == 2);
 	return (writer->AddConstant(argv[0], argv[1])) ? 0 : 1;
 }
@@ -273,7 +273,7 @@ int ProcessConstant(void *data, int argc, char **argv, char **names)
 int ProcessOde(void *data, int argc, char **argv, char **names)
 {
 	(void)names;
-	Writer *writer = (Writer *)data;
+	Writer *writer = static_cast<Writer *>(data);
 	assert(argc == 3);
 	return (writer->AddOde(argv[0], argv[1], argv[2])) ? 0 : 1;
 }
