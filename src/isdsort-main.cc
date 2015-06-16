@@ -12,6 +12,7 @@
 #include <string>
 #include <vector>
 
+#include <boost/noncopyable.hpp>
 #include <boost/scoped_array.hpp>
 #include <boost/scoped_ptr.hpp>
 
@@ -134,6 +135,35 @@ bool CopyFile(const char *source, const char *target)
 	return false;
 }
 
+class Writer : boost::noncopyable {
+public:
+	explicit Writer(FILE *fp)
+		: fp_(fp)
+	{
+		assert(fp);
+	}
+
+	~Writer() {
+		fclose(fp_);
+	}
+
+	bool Write(boost::uint32_t skip, isdf::Reader *reader, std::istream *is) {
+		fwrite(&reader->header(), sizeof(isdf::ISDFHeader), 1, fp_);
+
+		if (!reader->ReadComment(is)) return false;
+		fwrite(reader->comment(), reader->num_bytes_comment(), 1, fp_);
+
+		boost::scoped_ptr<ColumnHandler> handler(new ColumnHandler(skip, fp_));
+		if ( !reader->ReadDescriptions(*handler, is) ||
+			 !reader->ReadUnits(*handler, is) ) return false;
+		handler->WriteDescriptionsAndUnits();
+		return reader->ReadSteps(*handler, is);
+	}
+
+private:
+	FILE *fp_;
+};
+
 void Usage()
 {
 	cerr << "usage: isdsort INPUT OUTPUT [SKIP]" << endl;
@@ -186,18 +216,11 @@ int main(int argc, char *argv[])
 		perror(argv[2]);
 		return EXIT_FAILURE;
 	}
-	fwrite(&reader->header(), sizeof(isdf::ISDFHeader), 1, fp);
-
-	if (!reader->ReadComment(&ifs)) return EXIT_FAILURE;
-	fwrite(reader->comment(), reader->num_bytes_comment(), 1, fp);
-
-	boost::scoped_ptr<ColumnHandler> handler(new ColumnHandler(skip, fp));
-	if ( !reader->ReadDescriptions(*handler, &ifs) ||
-		 !reader->ReadUnits(*handler, &ifs) ) return EXIT_FAILURE;
-	handler->WriteDescriptionsAndUnits();
-	if (!reader->ReadSteps(*handler, &ifs)) return EXIT_FAILURE;
-
-	fclose(fp);
+	{
+		Writer writer(fp);
+		if (!writer.Write(skip, reader.get(), &ifs))
+			return EXIT_FAILURE;
+	}
 	ifs.close();
 
 	return EXIT_SUCCESS;
