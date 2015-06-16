@@ -5,6 +5,7 @@
 
 #include "sedml.hh"
 
+#include <cassert>
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
@@ -173,6 +174,7 @@ bool Read(sqlite3 *db)
 			fprintf(stderr, "failed to prepare statement: %d\n", e);
 			goto bail;
 		}
+		assert(model);
 		e = sqlite3_bind_text(stmt, 1, model->source, -1, SQLITE_STATIC);
 		if (e != SQLITE_OK) {
 			fprintf(stderr, "failed to bind parameter: %d\n", e);
@@ -202,6 +204,7 @@ bool Read(sqlite3 *db)
 			fprintf(stderr, "invalid simulation reference in SED-ML\n");
 			goto bail;
 		}
+		assert(simulation);
 		if (simulation->simulation_type != SEDML_UNIFORM_TIME_COURSE) {
 			fprintf(stderr,
 					"simulation other than uniform time course in SED-ML\n");
