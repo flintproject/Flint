@@ -243,7 +243,7 @@ bool SaveData(const char *output_data_file, size_t layer_size, double *data)
 bool Evolve(sqlite3 *db,
 			const char *layout_file,
 			const char *bc_file,
-			const char *output_file,
+			FILE *output_fp,
 			const Option &option)
 {
 	size_t granularity = 1;
@@ -435,12 +435,6 @@ bool Evolve(sqlite3 *db,
 
 	size_t g = 0;
 
-	FILE *output_fp = fopen(output_file, "ab");
-	if (!output_fp) {
-		std::perror(output_file);
-		return false;
-	}
-
 	bool result = true;
 	// execute bytecode
 	do {
@@ -539,7 +533,7 @@ bool Evolve(sqlite3 *db,
 		}
 
 	} while (data[kIndexTime] < data[kIndexEnd]);
-	fclose(output_fp);
+	fflush(output_fp);
 
 	if (option.output_data_file != NULL) {
 		if (!SaveData(option.output_data_file, layer_size, data.get())) return false;

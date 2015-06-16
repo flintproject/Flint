@@ -100,7 +100,9 @@ bool Task(const char *dir)
 		if (!job::Store(driver.db(), "generated-layout", init_file, "layout", stored_file))
 			return false;
 
-		if (!job::Job(job_id, stored_file, reader, m.db()))
+		char isd_file[64];
+		sprintf(isd_file, "%d/isd", job_id);
+		if (!job::Job(job_id, stored_file, isd_file, reader, m.db()))
 			return false;
 	}
 

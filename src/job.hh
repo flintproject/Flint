@@ -2,6 +2,7 @@
 #ifndef FLINT_JOB_HH_
 #define FLINT_JOB_HH_
 
+#include <cstdio>
 #include "sqlite3.h"
 
 namespace task {
@@ -42,13 +43,14 @@ struct Option {
 bool Evolve(sqlite3 *db,
 			const char *layout_file,
 			const char *bc_file,
-			const char *output_file,
+			FILE *output_fp,
 			const Option &option);
 
 /*
+ * Note that output_file is in the native encoding.
  * Return true in case of success, false otherwise.
  */
-bool Job(int job_id, const char *data_file,
+bool Job(int job_id, const char *data_file, const char *output_file,
 		 const task::ConfigReader &reader, sqlite3 *db);
 
 }

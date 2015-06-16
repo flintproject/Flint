@@ -35,7 +35,8 @@ using std::strcmp;
 
 namespace job {
 
-bool Job(int job_id, const char *data_file, const task::ConfigReader &reader, sqlite3 *db)
+bool Job(int job_id, const char *data_file, const char *output_file,
+		 const task::ConfigReader &reader, sqlite3 *db)
 {
 	boost::system::error_code ec;
 	// ensure the job directory
@@ -102,11 +103,9 @@ bool Job(int job_id, const char *data_file, const task::ConfigReader &reader, sq
 	option.output_history_file = output_history_file;
 	option.status_file = status_file;
 
-	char isd_file[64];
-	sprintf(isd_file, "%d/isd", job_id);
-	boost::filesystem::copy_file("isdh", isd_file, ec);
+	boost::filesystem::copy_file("isdh", output_file, ec);
 	if (ec) {
-		cerr << "failed to copy isdh to " << isd_file
+		cerr << "failed to copy isdh to " << output_file
 			 << ": " << ec << endl;
 		return false;
 	}
@@ -115,17 +114,21 @@ bool Job(int job_id, const char *data_file, const task::ConfigReader &reader, sq
 		perror(start_file);
 		return false;
 	}
-	FILE *ofp = fopen(isd_file, "ab");
+	FILE *ofp = fopen(output_file, "ab");
 	if (!ofp) {
-		perror(isd_file);
+		perror(output_file);
 		fclose(ifp);
 		return false;
 	}
-	if (!filter::Cut("filter", ifp, ofp))
+	if (!filter::Cut("filter", ifp, ofp)) {
+		fclose(ofp);
+		fclose(ifp);
 		return false;
-	fclose(ofp);
+	}
 	fclose(ifp);
-	return job::Evolve(db, "layout", "bc", isd_file, option);
+	bool r = job::Evolve(db, "layout", "bc", ofp, option);
+	fclose(ofp);
+	return r;
 }
 
 }

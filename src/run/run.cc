@@ -60,33 +60,6 @@ public:
 	}
 };
 
-bool CopyOutput(const cli::RunOption &option)
-{
-	boost::filesystem::path target_path = GetPathFromUtf8(option.output_filename().c_str());
-
-	boost::filesystem::path output_path("0/isd");
-	boost::system::error_code ec;
-	bool b = boost::filesystem::exists(output_path, ec);
-	if (ec) {
-		cerr << "failed to stat file: "
-			 << ec.message()
-			 << endl;
-		return false;
-	}
-	if (!b) return false;
-
-	boost::filesystem::copy_file(output_path, target_path, ec);
-	if (ec) {
-		cerr << "failed to copy output to "
-			 << option.output_filename()
-			 << ": "
-			 << ec.message()
-			 << endl;
-		return false;
-	}
-	return true;
-}
-
 }
 
 bool Run(const char *input, int size)
@@ -154,9 +127,9 @@ bool Run(const char *input, int size)
 		return false;
 	if (!compiler::Compile(db, "input_eqs", reader.GetCanonicalMethodName(), "bc"))
 		return false;
-	if (!job::Job(0, "init", reader, db))
-		return false;
-	return CopyOutput(option);
+	boost::filesystem::path output_path = GetPathFromUtf8(option.output_filename().c_str());
+	std::string output_file = output_path.string();
+	return job::Job(0, "init", output_file.c_str(), reader, db);
 }
 
 }
