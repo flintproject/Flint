@@ -77,9 +77,8 @@ int BindGranularity(const struct sedml_uniformtimecourse *utc,
 {
 	int e;
 	if (utc->num_xml_attributes > 0 && utc->xml_attributes) {
-		struct sedml_xml_attribute *attr;
 		for (int i=0;i<utc->num_xml_attributes;i++) {
-			attr = utc->xml_attributes[i];
+			struct sedml_xml_attribute *attr = utc->xml_attributes[i];
 			if (!attr || !attr->local_name) continue;
 			if (strcmp(attr->local_name, "granularity") == 0) {
 				if (!attr->value) continue;
