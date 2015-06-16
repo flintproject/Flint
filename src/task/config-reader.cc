@@ -10,6 +10,7 @@
 using std::cerr;
 using std::endl;
 using std::memcpy;
+using std::strcmp;
 
 namespace task {
 
@@ -64,6 +65,14 @@ bool ConfigReader::Read()
 	}
 
 	return true;
+}
+
+const char *ConfigReader::GetCanonicalMethodName()
+{
+	static const char kRk4[] = "rk4";
+	if (!method_) return kRk4;
+	if (strcmp(method_, "euler") == 0) return method_;
+	return kRk4;
 }
 
 }

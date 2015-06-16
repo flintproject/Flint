@@ -152,7 +152,7 @@ bool Run(const char *input, int size)
 		return false;
 	if (!filter::Isdh("filter", "isdh"))
 		return false;
-	if (!compiler::Compile(db, "input_eqs", reader.method(), "bc"))
+	if (!compiler::Compile(db, "input_eqs", reader.GetCanonicalMethodName(), "bc"))
 		return false;
 	if (!job::Job(0, "init", reader, db))
 		return false;

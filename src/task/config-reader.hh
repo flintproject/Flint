@@ -12,14 +12,24 @@ public:
 
 	~ConfigReader();
 
-	const char *method() const {return method_;}
 	double length() const {return length_;}
 	double step() const {return step_;}
 	int granularity() const {return granularity_;}
 
 	bool Read();
 
+	/*
+	 * Return "euler" or "rk4".
+	 */
+	const char *GetCanonicalMethodName();
+
 private:
+	/*
+	 * possible values:
+	 * "4th-rungekutta" from PHML
+	 * "euler"
+	 * "rk4"
+	 */
 	char *method_;
 	double length_;
 	double step_;

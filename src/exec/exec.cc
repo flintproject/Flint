@@ -57,7 +57,7 @@ bool Task(const char *dir)
 	task::ConfigReader reader(m.db());
 	if (!reader.Read())
 		return false;
-	if (!compiler::Compile(m.db(), "input_eqs", reader.method(), "bc"))
+	if (!compiler::Compile(m.db(), "input_eqs", reader.GetCanonicalMethodName(), "bc"))
 		return false;
 
 	db::Driver driver("db");
