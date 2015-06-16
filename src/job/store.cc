@@ -288,15 +288,15 @@ bool Store(sqlite3 *db,
 		}
 	}
 
-	fp = fopen(target_data_file, "r+b");
-	if (!fp) {
-		perror(target_data_file);
-		return false;
-	}
 	TargetLayout target_layout;
 	{
 		boost::scoped_ptr<LayoutLoader> loader(new LayoutLoader(target_layout_file));
 		if (!loader->Load(&target_layout)) return false;
+	}
+	fp = fopen(target_data_file, "r+b");
+	if (!fp) {
+		perror(target_data_file);
+		return false;
 	}
 	if (!target_layout.Rewrite(format.get(), tvm, fp)) {
 		fclose(fp);
