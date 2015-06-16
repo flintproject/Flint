@@ -32,6 +32,7 @@
 
 using std::cerr;
 using std::endl;
+using std::perror;
 
 namespace run {
 
@@ -69,6 +70,17 @@ bool Run(const char *input, int size)
 		cerr << "failed to parse the input" << endl;
 		return false;
 	}
+
+	// redirect errors if requested
+	if (option.has_error_filename()) {
+		boost::filesystem::path error_path = GetPathFromUtf8(option.error_filename().c_str());
+		std::string error_file = error_path.string();
+		if (!std::freopen(error_file.c_str(), "w", stderr)) {
+			perror(error_file.c_str());
+			return false;
+		}
+	}
+
 	workspace::Task task(option.model_filename().c_str());
 	file::Format format;
 	if (!task.Setup(&format)) {
