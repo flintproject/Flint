@@ -11,17 +11,10 @@ namespace isdf {
 
 class Reader {
 public:
-	Reader() : header_(), comment_(NULL), descriptions_(NULL), units_(NULL) {}
-	~Reader() {
-		delete [] units_;
-		delete [] descriptions_;
-		delete [] comment_;
-	}
-
 	const ISDFHeader &header() const {return header_;}
-	const char *comment() const {return comment_;}
-	const char *descriptions() const {return descriptions_;}
-	const char *units() const {return units_;}
+	const char *comment() const {return comment_.get();}
+	const char *descriptions() const {return descriptions_.get();}
+	const char *units() const {return units_.get();}
 	boost::uint32_t num_bytes_comment() const {
 		return header_.num_bytes_comment;
 	}
@@ -62,8 +55,8 @@ public:
 	bool ReadComment(std::istream *is) {
 		boost::uint32_t n = num_bytes_comment();
 		if (n == 0) return true;
-		comment_ = new char[n];
-		is->read(comment_, n);
+		comment_.reset(new char[n]);
+		is->read(comment_.get(), n);
 		if (!is->good()) {
 			std::cerr << "could not read comment" << std::endl;
 			return false;
@@ -83,8 +76,8 @@ public:
 	}
 
 	bool ReadDescriptions(std::istream *is) {
-		descriptions_ = new char[num_bytes_descs()];
-		is->read(descriptions_, num_bytes_descs());
+		descriptions_.reset(new char[num_bytes_descs()]);
+		is->read(descriptions_.get(), num_bytes_descs());
 		if (!is->good()) {
 			std::cerr << "could not read descriptions" << std::endl;
 			return false;
@@ -96,7 +89,7 @@ public:
 	bool ReadDescriptions(TDescHandler &handler, std::istream *is) {
 		if (!ReadDescriptions(is)) return false;
 
-		const char *d = descriptions_;
+		const char *d = descriptions_.get();
 		for (boost::uint32_t i=0;i<num_objs();i++) {
 #ifdef TYPE_PUNNING_BY_CAST
 			boost::uint32_t bytes = *reinterpret_cast<const boost::uint32_t *>(d);
@@ -104,7 +97,7 @@ public:
 			boost::uint32_t bytes = 0;
 			std::memcpy(&bytes, d, sizeof(bytes));
 #endif
-			if (d + bytes > descriptions_ + num_bytes_descs()) {
+			if (d + bytes > descriptions_.get() + num_bytes_descs()) {
 				std::cerr << "exceeded end of descriptions: " << bytes << std::endl;
 				return false;
 			}
@@ -112,7 +105,7 @@ public:
 			handler.GetDescription(i, bytes, d);
 			d += bytes;
 		}
-		if (d != descriptions_ + num_bytes_descs()) {
+		if (d != descriptions_.get() + num_bytes_descs()) {
 			std::cerr << "wrong value of num_bytes_descs: " << num_bytes_descs() << std::endl;
 			return false;
 		}
@@ -131,8 +124,8 @@ public:
 	bool ReadUnits(std::istream *is) {
 		boost::uint32_t n = num_bytes_units();
 		if (n == 0) return true;
-		units_ = new char[n];
-		is->read(units_, n);
+		units_.reset(new char[n]);
+		is->read(units_.get(), n);
 		if (!is->good()) {
 			std::cerr << "could not read units" << std::endl;
 			return false;
@@ -144,14 +137,14 @@ public:
 	bool ReadUnits(THandler &handler, std::istream *is) {
 		boost::uint32_t n = num_bytes_units();
 		if (n == 0) return true;
-		units_ = new char[n];
-		is->read(units_, n);
+		units_.reset(new char[n]);
+		is->read(units_.get(), n);
 		if (!is->good()) {
 			std::cerr << "could not read units" << std::endl;
 			return false;
 		}
 
-		const char *d = units_;
+		const char *d = units_.get();
 		for (boost::uint32_t i=0;i<num_objs();i++) {
 #ifdef TYPE_PUNNING_BY_CAST
 			boost::uint32_t bytes = *reinterpret_cast<const boost::uint32_t *>(d);
@@ -159,7 +152,7 @@ public:
 			boost::uint32_t bytes = 0;
 			std::memcpy(&bytes, d, sizeof(bytes));
 #endif
-			if (d + bytes > units_ + num_bytes_units()) {
+			if (d + bytes > units_.get() + num_bytes_units()) {
 				std::cerr << "exceeded end of units: " << bytes << std::endl;
 				return false;
 			}
@@ -167,7 +160,7 @@ public:
 			handler.GetUnit(i, bytes, d);
 			d += bytes;
 		}
-		if (d != units_ + num_bytes_units()) {
+		if (d != units_.get() + num_bytes_units()) {
 			std::cerr << "wrong value of num_bytes_units: " << num_bytes_units() << std::endl;
 			return false;
 		}
@@ -224,9 +217,9 @@ public:
 
 private:
 	ISDFHeader header_;
-	char *comment_;
-	char *descriptions_;
-	char *units_;
+	boost::scoped_array<char> comment_;
+	boost::scoped_array<char> descriptions_;
+	boost::scoped_array<char> units_;
 };
 
 } // namespace isdf
