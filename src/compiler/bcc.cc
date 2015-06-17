@@ -451,6 +451,12 @@ void ProcessInstStore(bc::Code &code, const InstStore &inst_store)
 	store->set_a(inst_store.a);
 }
 
+void ProcessAddress(InstOp &inst_op, const std::string &s)
+{
+	int a = std::atoi(s.c_str()+1);
+	inst_op.a = a;
+}
+
 void ProcessTail(int &x, const std::string &s)
 {
 	x = std::atoi(s.c_str()+1);
@@ -485,7 +491,7 @@ struct Grammar : qi::grammar<TIterator, Body()> {
 			| inst_store [bind(&ProcessInstStore, _val, _1)]
 			;
 
-		inst_op = td.address [bind(&ProcessTail, at_c<0>(_val), _1)]
+		inst_op = td.address [bind(&ProcessAddress, _val, _1)]
 			>> ' ' >> '=' >> ' ' >> '(' >> operation [at_c<1>(_val) = _1] >> ')';
 
 		inst_br = td.br_ >> address [at_c<0>(_val) = _1]
