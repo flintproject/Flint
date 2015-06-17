@@ -167,7 +167,8 @@ bool EmitCondition(int n, int l, Expr &sexp, Context *context)
 			*context->os << " L" << l2 << ':' << endl;
 			if (!EmitCondition(n, l, comp.children.at(1), context))
 				return false;
-			return *context->os << " L" << l1 << ':' << endl;
+			*context->os << " L" << l1 << ':' << endl;
+			return bool(*context->os);
 		} else if (IsOr(comp)) {
 			return EmitCondition(n, l, comp.children.at(0), context)
 				&& EmitCondition(n, l, comp.children.at(1), context);
