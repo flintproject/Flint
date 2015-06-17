@@ -176,7 +176,8 @@ bool EmitCondition(int n, int l, Expr &sexp, Context *context)
 
 	if (!EmitCode(n, sexp, context))
 		return false;
-	return *context->os << "  br $" << n << " L" << l << endl;
+	*context->os << "  br $" << n << " L" << l << endl;
+	return bool(*context->os);
 }
 
 bool EmitAt(int n, std::deque<Expr> &children, Context *context)
@@ -201,7 +202,7 @@ bool EmitAt(int n, std::deque<Expr> &children, Context *context)
 	int m = context->avail_n++;
 	if (!EmitCode(m, children.at(2), context))
 		return false;
-	return *context->os << "  ld $"
+	*context->os << "  ld $"
 						<< n
 						<< ' '
 						<< boost::get<int>(children.at(0))
@@ -210,6 +211,7 @@ bool EmitAt(int n, std::deque<Expr> &children, Context *context)
 						<< " $"
 						<< m
 						<< endl;
+	return bool(*context->os);
 }
 
 bool EmitLookback(int n, std::deque<Expr> &children, Context *context)
@@ -230,13 +232,14 @@ bool EmitLookback(int n, std::deque<Expr> &children, Context *context)
 	int m = context->avail_n++;
 	if (!EmitCode(m, children.at(1), context))
 		return false;
-	return *context->os << "  lb $"
+	*context->os << "  lb $"
 						<< n
 						<< ' '
 						<< boost::get<std::string>(children.at(0)).c_str()
 						<< " $"
 						<< m
 						<< endl;
+	return bool(*context->os);
 }
 
 bool EmitPiecewise(int n, std::deque<Expr> &children, Context *context)
@@ -277,7 +280,8 @@ bool EmitPiecewise(int n, std::deque<Expr> &children, Context *context)
 			assert(false);
 		}
 	}
-	return *context->os << " L" << l << ':' << endl;
+	*context->os << " L" << l << ':' << endl;
+	return bool(*context->os);
 }
 
 bool EmitTrial(int n, std::deque<Expr> &children, Context *context)
@@ -322,7 +326,8 @@ bool EmitTrial(int n, std::deque<Expr> &children, Context *context)
 			assert(false);
 		}
 	}
-	return *context->os << " L" << l << ':' << endl;
+	*context->os << " L" << l << ':' << endl;
+	return bool(*context->os);
 }
 
 bool EmitCode(int n, Expr &sexp, Context *context)
