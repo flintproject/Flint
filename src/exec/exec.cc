@@ -27,6 +27,7 @@
 
 using std::cerr;
 using std::endl;
+using std::sprintf;
 
 namespace exec {
 
@@ -34,82 +35,96 @@ namespace {
 
 bool Task(const char *dir)
 {
-	boost::system::error_code ec;
-	boost::filesystem::current_path(dir, ec);
-	if (ec) {
-		cerr << "failed to change directory to " << dir
-			 << ": " << ec << endl;
-		return false;
-	}
+	static const int kShort = 64;
+	static const int kLong = 96;
 
-	if (boost::filesystem::exists("canceled")) {
+	char canceled_file[kShort];
+	sprintf(canceled_file, "%s/canceled", dir);
+	if (boost::filesystem::exists(canceled_file)) {
 		// exit early if file "canceled" exists
 		return true;
 	}
 
-	db::ReadOnlyDriver m("modeldb");
-	if (!filter::Create(m.db(), "spec.txt", "layout", "filter"))
+	char modeldb_file[kShort];
+	sprintf(modeldb_file, "%s/modeldb", dir);
+	db::ReadOnlyDriver m(modeldb_file);
+	char spec_file[kShort];
+	sprintf(spec_file, "%s/spec.txt", dir);
+	char layout_file[kShort];
+	sprintf(layout_file, "%s/layout", dir);
+	char filter_file[kShort];
+	sprintf(filter_file, "%s/filter", dir);
+	if (!filter::Create(m.db(), spec_file, layout_file, filter_file))
 		return false;
-	if (!filter::Track("filter", "track"))
+	char track_file[kShort];
+	sprintf(track_file, "%s/track", dir);
+	if (!filter::Track(filter_file, track_file))
 		return false;
-	if (!filter::Isdh("filter", "isdh"))
+	char isdh_file[kShort];
+	sprintf(isdh_file, "%s/isdh", dir);
+	if (!filter::Isdh(filter_file, isdh_file))
 		return false;
 	task::ConfigReader reader(m.db());
 	if (!reader.Read())
 		return false;
-	if (!compiler::Compile(m.db(), "input_eqs", reader.GetCanonicalMethodName(), "bc"))
+	char bc_file[kShort];
+	sprintf(bc_file, "%s/bc", dir);
+	if (!compiler::Compile(m.db(), "input_eqs", reader.GetCanonicalMethodName(), bc_file))
 		return false;
 
-	db::Driver driver("db");
+	char db_file[kShort];
+	sprintf(db_file, "%s/db", dir);
+	db::Driver driver(db_file);
 	if (!exec::Enum(driver.db()))
 		return false;
 	if (!task::Form(driver.db()))
 		return false;
-	if (!layout::Generate(driver.db(), "generated-layout"))
+	char generated_layout_file[kShort];
+	sprintf(generated_layout_file, "%s/generated-layout", dir);
+	if (!layout::Generate(driver.db(), generated_layout_file))
 		return false;
 	int job_id;
 	for (;;) {
-		if (!job::Generate(driver.db(), &job_id))
+		if (!job::Generate(driver.db(), dir, &job_id))
 			return false;
 		if (job_id == 0)
 			break; // all jobs are done now
 
-		char db_file[64];
-		sprintf(db_file, "%d/generated.db", job_id);
+		char job_dir[kShort];
+		sprintf(job_dir, "%s/%d", dir, job_id);
 
+		char db_file[kLong];
+		sprintf(db_file, "%s/generated.db", job_dir);
 		db::ReadOnlyDriver g(db_file);
 
-		char bc_file[64];
-		sprintf(bc_file, "%d/generated-bc", job_id);
-		if (!compiler::Compile(g.db(), "parameter_eqs", "assign", bc_file))
+		char generated_bc_file[kLong];
+		sprintf(generated_bc_file, "%s/generated-bc", job_dir);
+		if (!compiler::Compile(g.db(), "parameter_eqs", "assign", generated_bc_file))
 			return false;
 
-		char init_file[64];
-		sprintf(init_file, "%d/generated-init", job_id);
-		if (!runtime::Init(driver.db(), "generated-layout", bc_file, init_file))
+		char generated_init_file[kLong];
+		sprintf(generated_init_file, "%s/generated-init",job_dir);
+		if (!runtime::Init(driver.db(), generated_layout_file, generated_bc_file, generated_init_file))
 			return false;
 
-		char stored_file[64];
-		sprintf(stored_file, "%d/stored", job_id);
-		boost::filesystem::copy_file("init", stored_file, ec);
+		char init_file[kShort];
+		sprintf(init_file, "%s/init", dir);
+		char stored_file[kLong];
+		sprintf(stored_file, "%s/stored", job_dir);
+		boost::system::error_code ec;
+		boost::filesystem::copy_file(init_file, stored_file, ec);
 		if (ec) {
 			cerr << "failed to copy init to " << stored_file
 				 << ": " << ec << endl;
 			return false;
 		}
-		if (!job::Store(driver.db(), "generated-layout", init_file, "layout", stored_file))
+		if (!job::Store(driver.db(), generated_layout_file, generated_init_file, layout_file, stored_file))
 			return false;
 
-		char isd_file[64];
-		sprintf(isd_file, "%d/isd", job_id);
-		if (!job::Job(job_id, stored_file, isd_file, reader, m.db()))
+		char isd_file[kLong];
+		sprintf(isd_file, "%s/isd", job_dir);
+		if (!job::Job(dir, job_dir, stored_file, isd_file, reader, m.db()))
 			return false;
-	}
-
-	boost::filesystem::current_path("..", ec);
-	if (ec) {
-		cerr << "failed to change directory to ..:" << ec << endl;
-		return false;
 	}
 	return true;
 }

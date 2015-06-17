@@ -14,7 +14,7 @@ namespace job {
 /*
  * Return true in case of success, false otherwise.
  */
-bool Generate(sqlite3 *input, int *job_id);
+bool Generate(sqlite3 *input, const char *dir, int *job_id);
 
 /*
  * Note that db is for read only.
@@ -50,8 +50,12 @@ bool Evolve(sqlite3 *db,
  * Note that output_file is in the native encoding.
  * Return true in case of success, false otherwise.
  */
-bool Job(int job_id, const char *data_file, const char *output_file,
-		 const task::ConfigReader &reader, sqlite3 *db);
+bool Job(const char *task_dir,
+		 const char *job_dir,
+		 const char *data_file,
+		 const char *output_file,
+		 const task::ConfigReader &reader,
+		 sqlite3 *db);
 
 }
 

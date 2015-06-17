@@ -132,7 +132,7 @@ private:
 
 }
 
-bool Generate(sqlite3 *input, int *job_id)
+bool Generate(sqlite3 *input, const char *dir, int *job_id)
 {
 	int rowid;
 	int enum_id;
@@ -143,8 +143,8 @@ bool Generate(sqlite3 *input, int *job_id)
 			return true;
 		}
 	}
-	char path[64];
-	sprintf(path, "%d", rowid);
+	char path[96];
+	sprintf(path, "%s/%d", dir, rowid);
 	boost::system::error_code ec;
 	boost::filesystem::create_directory(path, ec);
 	if (ec) {
@@ -152,7 +152,7 @@ bool Generate(sqlite3 *input, int *job_id)
 			 << ": " << ec << endl;
 		return false;
 	}
-	sprintf(path, "%d/generated.db", rowid);
+	sprintf(path, "%s/%d/generated.db", dir, rowid);
 	db::Driver driver(path);
 	sqlite3 *output = driver.db();
 	if (!BeginTransaction(input))
