@@ -412,11 +412,13 @@ bool EmitCode(const char *uuid, const char *id, Expr &sexp,
 	return true;
 }
 
-void ReduceL(const char *op, Compound &c, std::deque<Expr> &children)
+/*
+ * Precondition: given c's keyword is already set
+ */
+void ReduceL(Compound &c, std::deque<Expr> &children)
 {
 	size_t len = children.size();
 	assert(len >= 2);
-	c.keyword = op;
 	if (len == 2) {
 		c.children.swap(children);
 		return;
@@ -424,15 +426,18 @@ void ReduceL(const char *op, Compound &c, std::deque<Expr> &children)
 	c.children.push_back(children.back());
 	children.pop_back();
 	Compound c0;
-	ReduceL(op, c0, children);
+	c0.keyword = c.keyword;
+	ReduceL(c0, children);
 	c.children.push_front(c0);
 }
 
-void ReduceR(const char *op, Compound &c, std::deque<Expr> &children)
+/*
+ * Precondition: given c's keyword is already set
+ */
+void ReduceR(Compound &c, std::deque<Expr> &children)
 {
 	size_t len = children.size();
 	assert(len >= 2);
-	c.keyword = op;
 	if (len == 2) {
 		c.children.swap(children);
 		return;
@@ -440,7 +445,8 @@ void ReduceR(const char *op, Compound &c, std::deque<Expr> &children)
 	c.children.push_front(children.front());
 	children.pop_front();
 	Compound c1;
-	ReduceR(op, c1, children);
+	c1.keyword = c.keyword;
+	ReduceR(c1, children);
 	c.children.push_back(c1);
 }
 
@@ -519,7 +525,8 @@ void Mean(Compound &c, std::deque<Expr> &children)
 	assert(len >= 2);
 	c.keyword = "divide";
 	Compound c1;
-	ReduceR("plus", c1, children);
+	c1.keyword = "plus";
+	ReduceR(c1, children);
 	c.children.push_back(c1);
 	c.children.push_back((int)len);
 }
@@ -601,11 +608,11 @@ struct Grammar : qi::grammar<TIterator, Expr()> {
 												>> ' ' >> expr [push_back(at_c<1>(_val), _1)]
 			| td.log_ [at_c<0>(_val) = val("log10")] >> ' ' >> expr [push_back(at_c<1>(_val), _1)]
 			| td.piecewise_ [at_c<0>(_val) = _1] >> pseq1 [at_c<1>(_val) = _1]
-			| td.max_ >> seq1 [bind(&ReduceR, val("max"), _val, _1)]
+			| td.max_ [at_c<0>(_val) = _1] >> seq1 [bind(&ReduceR, _val, _1)]
 			| td.mean_ >> seq1 [bind(&Mean, _val, _1)]
-			| td.min_ >> seq1 [bind(&ReduceR, val("min"), _val, _1)]
-			| td.plus_ >> seq1 [bind(&ReduceR, val("plus"), _val, _1)]
-			| td.times_ >> seq1 [bind(&ReduceR, val("times"), _val, _1)]
+			| td.min_ [at_c<0>(_val) = _1] >> seq1 [bind(&ReduceR, _val, _1)]
+			| td.plus_ [at_c<0>(_val) = _1] >> seq1 [bind(&ReduceR, _val, _1)]
+			| td.times_ [at_c<0>(_val) = _1] >> seq1 [bind(&ReduceR, _val, _1)]
 			| td.uniform_variate_ [at_c<0>(_val) = _1]
 						   >> ' ' >> expr [push_back(at_c<1>(_val), _1)]
 						   >> ' ' >> expr [push_back(at_c<1>(_val), _1)]
@@ -624,9 +631,9 @@ struct Grammar : qi::grammar<TIterator, Expr()> {
 
 		lexp = '(' >> lcomp [_val = _1] >> ')';
 
-		lcomp = td.and_ >> lseq1 [bind(&ReduceL, val("and"), _val, _1)]
-			| td.or_ >> lseq1 [bind(&ReduceL, val("or"), _val, _1)]
-			| td.xor_ >> lseq1 [bind(&ReduceL, val("neq"), _val, _1)] // logical XOR can be considered as NEQ
+		lcomp = td.and_ [at_c<0>(_val) = _1] >> lseq1 [bind(&ReduceL, _val, _1)]
+			| td.or_ [at_c<0>(_val) = _1] >> lseq1 [bind(&ReduceL, _val, _1)]
+			| td.xor_ [at_c<0>(_val) = val("neq")] >> lseq1 [bind(&ReduceL, _val, _1)] // logical XOR can be considered as NEQ
 			| td.not_ >> ' ' >> lexp [bind(&Negate, _val, _1)]
 			| (td.eq_ | td.geq_ | td.gt_ | td.leq_ | td.lt_ | td.neq_) [at_c<0>(_val) = _1] >> ' ' >> expr [push_back(at_c<1>(_val), _1)] >> ' ' >> expr [push_back(at_c<1>(_val), _1)];
 
