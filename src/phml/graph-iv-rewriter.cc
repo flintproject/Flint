@@ -89,7 +89,6 @@ bool GraphIvRewriter::Process(sqlite3_int64 pq_rowid,
 							  const char *math)
 {
 	using boost::phoenix::push_back;
-	using boost::phoenix::ref;
 	using boost::spirit::_1;
 	using boost::spirit::qi::char_;
 	using boost::spirit::qi::graph;
@@ -102,9 +101,9 @@ bool GraphIvRewriter::Process(sqlite3_int64 pq_rowid,
 	bool r = parse(p, math + len,
 				   *char_(' ')
 				   >> "($is %"
-				   >> +((graph - ')')[push_back(ref(lhs), _1)])
+				   >> +((graph - ')')[push_back(boost::phoenix::ref(lhs), _1)])
 				   >> " %"
-				   >> +((graph - ')')[push_back(ref(rhs), _1)])
+				   >> +((graph - ')')[push_back(boost::phoenix::ref(rhs), _1)])
 				   >> ')');
 	if (!r || p != math + len) {
 		cerr << "failed to parse the definition of "
