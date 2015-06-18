@@ -161,6 +161,9 @@
           <Component Id='libstdcxx' Guid='0a7f81da-fd04-11e4-a457-17338bf4b16d'>
             <File Id='libstdcxx_dll' Name='LIBSTDCXX_DLL' DiskId='1' Source='LIBSTDCXX_DLL' />
           </Component>
+          <Component Id='libwinpthread' Guid='4876bdc6-1584-11e5-8ee4-d720e79c179c'>
+            <File Id='libwinpthread_dll' Name='LIBWINPTHREAD_DLL' DiskId='1' Source='LIBWINPTHREAD_DLL' />
+          </Component>
 
           <Component Id='third_party_licenses' Guid='6699ad54-8e3f-11e3-ae53-e3655a982178'>
             <File Id='third_party_licenses.txt' Name='third-party-licenses.txt' DiskId='1' Source='third-party-licenses.txt' />
@@ -238,6 +241,7 @@
       <ComponentRef Id='zlib' />
       <ComponentRef Id='libgcc' />
       <ComponentRef Id='libstdcxx' />
+      <ComponentRef Id='libwinpthread' />
       <ComponentRef Id='third_party_licenses' />
     </Feature>
 

@@ -113,7 +113,7 @@ tmp/$(BOOST_UNDERSCORE).installed: tmp/$(BOOST_UNDERSCORE)
 	echo "        :" >> var/$(BOOST_UNDERSCORE)/user-config.jam
 	echo "        <rc>$(HOST)-windres" >> var/$(BOOST_UNDERSCORE)/user-config.jam
 	echo ";" >> var/$(BOOST_UNDERSCORE)/user-config.jam
-	(cd var/$(BOOST_UNDERSCORE) && ./b2 -d0 --prefix=$(PREFIX) --without-context --without-coroutine --without-log --without-mpi --without-python --layout=tagged --user-config=user-config.jam -j 2 -sNO_BZIP2=1 -q toolset=gcc target-os=windows variant=release threading=multi threadapi=win32 link=shared runtime-link=shared install)
+	(cd var/$(BOOST_UNDERSCORE) && ./b2 -d0 --prefix=$(PREFIX) --without-context --without-coroutine --without-log --without-mpi --without-python --without-wave --layout=tagged --user-config=user-config.jam -j 2 -sNO_BZIP2=1 -q toolset=gcc target-os=windows variant=release threading=multi threadapi=pthread link=shared runtime-link=shared install)
 	touch $@
 
 tmp/clibsedml-$(CLIBSEDML_COMMIT).installed: tmp/clibsedml-$(CLIBSEDML_COMMIT) tmp/libxml2-$(LIBXML2_VERSION).installed
@@ -213,6 +213,9 @@ flint/$(LIBGCC_DLL): $(LIBGCC_DIR)/$(LIBGCC_DLL) | flint
 flint/$(LIBSTDCXX_DLL): $(LIBSTDCXX_DIR)/$(LIBSTDCXX_DLL) | flint
 	install -p -m 0755 $< $@
 
+flint/$(LIBWINPTHREAD_DLL): $(LIBWINPTHREAD_DIR)/$(LIBWINPTHREAD_DLL) | flint
+	install -p -m 0755 $< $@
+
 flint/Makefile: flint.mk | flint
 	install -p -m 0644 $< $@
 
@@ -226,7 +229,7 @@ flint/flint.xml: flint.xml | flint
 	install -p -m 0644 $< $@
 
 flint/flint.wxs: flint.wxs.in | flint
-	m4 -DLIBGCC_DLL=$(LIBGCC_DLL) -DLIBSTDCXX_DLL=$(LIBSTDCXX_DLL) $< > $@
+	m4 -DLIBGCC_DLL=$(LIBGCC_DLL) -DLIBSTDCXX_DLL=$(LIBSTDCXX_DLL) -DLIBWINPTHREAD_DLL=$(LIBWINPTHREAD_DLL) $< > $@
 
 flint/icon.png: ../flint/src/jp/oist/flint/image/icon.png | flint
 	install -p -m 0644 $< $@
@@ -263,7 +266,7 @@ flint/third-party-licenses.txt: tmp/libsbml-$(LIBSBML_VERSION) tmp/libxml2-$(LIB
 	echo >> $@
 	cat var/sundials-$(SUNDIALS_VERSION)/LICENSE >> $@
 
-flint.zip: $(foreach e,$(EXES),$(call flint_exe_name,$(e))) $(foreach d,$(BOOST_DLLS) $(SUNDIALS_DLLS) $(FLINT_DLLS),$(call flint_dll_name,$(d))) flint/$(LIBGCC_DLL) flint/$(LIBSTDCXX_DLL) flint/flint.jar $(foreach j,$(JARS),$(call flint_jar_name,$(j))) flint/Makefile flint/header.mk flint/flint.ico flint/flint.xml flint/flint.wxs flint/icon.png flint/license.rtf flint/third-party-licenses.txt
+flint.zip: $(foreach e,$(EXES),$(call flint_exe_name,$(e))) $(foreach d,$(BOOST_DLLS) $(SUNDIALS_DLLS) $(FLINT_DLLS),$(call flint_dll_name,$(d))) flint/$(LIBGCC_DLL) flint/$(LIBSTDCXX_DLL) flint/$(LIBWINPTHREAD_DLL) flint/flint.jar $(foreach j,$(JARS),$(call flint_jar_name,$(j))) flint/Makefile flint/header.mk flint/flint.ico flint/flint.xml flint/flint.wxs flint/icon.png flint/license.rtf flint/third-party-licenses.txt
 	zip -r flint flint
 
 .DEFAULT_GOAL := all
