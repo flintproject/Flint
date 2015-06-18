@@ -29,17 +29,24 @@ public:
 	{
 	}
 
-	bool Get(int *rowid, int *enum_id)
+	/*
+	 * Return 1 if a pending job is found, 0 if no more pending one, or -1 otherwise.
+	 */
+	int Get(int *rowid, int *enum_id)
 	{
 		int e;
 		e = sqlite3_step(stmt());
+		if (e == SQLITE_DONE) {
+			// no more pending row
+			return 0;
+		}
 		if (e != SQLITE_ROW) {
-			cerr << "no more pending row" << endl;
-			return false;
+			cerr << "failed to get a next job: " << e << endl;
+			return -1;
 		}
 		*rowid = sqlite3_column_int(stmt(), 0);
 		*enum_id = sqlite3_column_int(stmt(), 1);
-		return true;
+		return 1;
 	}
 };
 
@@ -138,10 +145,12 @@ bool Generate(sqlite3 *input, const char *dir, int *job_id)
 	int enum_id;
 	{
 		NextJob nj(input);
-		if (!nj.Get(&rowid, &enum_id)) {
+		int r = nj.Get(&rowid, &enum_id);
+		if (r == 0) {
 			*job_id = 0;
 			return true;
 		}
+		if (r < 0) return false;
 	}
 	char path[96];
 	sprintf(path, "%s/%d", dir, rowid);
