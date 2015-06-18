@@ -625,39 +625,59 @@ struct Grammar : qi::grammar<TIterator, Body()> {
 
 typedef std::vector<std::pair<std::string, int> > NobVector;
 
-int Process(void *data, int argc, char **argv, char **names)
-{
+/*
+ * This class creates and keeps both tokens and grammar objects which
+ * construction is expensive in terms of performance.
+ */
+class Parser {
+public:
 	typedef const char *base_iterator_type;
 	typedef lex::lexertl::token<base_iterator_type> token_type;
 	typedef lex::lexertl::lexer<token_type> lexer_type;
 	typedef Lexer<lexer_type> RealLexer;
 	typedef Grammar<RealLexer::iterator_type> RealGrammar;
 
-	static const RealLexer tokens;
-	static const RealGrammar grammar(tokens);
+	explicit Parser(BlockVector *bv)
+		: tokens_()
+		, grammar_(tokens_)
+		, bv_(bv)
+	{
+	}
 
+	int Parse(const char *uuid, const char *name, int nod, const char *code) {
+		base_iterator_type it = code;
+		base_iterator_type eit = code + std::strlen(code);
+		Body body;
+		bool r = lex::tokenize_and_parse(it, eit, tokens_, grammar_, body);
+		if (!r || it != eit) {
+			cerr << "failed to parse: " << it << endl;
+			return 1;
+		}
+		Block block;
+		block.uuid = uuid;
+		block.name = name;
+		block.nod = nod;
+		ProcessBody(block, body);
+		bv_->push_back(block);
+		return 0;
+	}
+
+private:
+	RealLexer tokens_;
+	RealGrammar grammar_;
+	BlockVector *bv_;
+};
+
+int Process(void *data, int argc, char **argv, char **names)
+{
 	(void)names;
-	BlockVector *bv = (BlockVector *)data;
+	Parser *parser = static_cast<Parser *>(data);
 	assert(argc == 4);
 	const char *uuid = argv[0];
 	const char *name = argv[1];
 	int nod = std::atoi(argv[2]);
 	const char *code = argv[3];
-	base_iterator_type it = code;
-	base_iterator_type eit = code + std::strlen(code);
-	Body body;
-	bool r = lex::tokenize_and_parse(it, eit, tokens, grammar, body);
-	if (!r || it != eit) {
-		cerr << "failed to parse: " << it << endl;
-		return 1;
-	}
-	Block block;
-	block.uuid = uuid;
-	block.name = name;
-	block.nod = nod;
-	ProcessBody(block, body);
-	bv->push_back(block);
-	return 0;
+	return parser->Parse(uuid, name, nod, code);
 }
 
 int SetNol(void *data, int argc, char **argv, char **names)
@@ -674,13 +694,12 @@ int SetNol(void *data, int argc, char **argv, char **names)
 
 bool Bcc(sqlite3 *db, std::ostream *os)
 {
-	GOOGLE_PROTOBUF_VERIFY_VERSION;
-
 	BlockVector bv;
 	{
+		Parser parser(&bv);
 		char *em;
 		int e;
-		e = sqlite3_exec(db, "SELECT * FROM tacs", Process, &bv, &em);
+		e = sqlite3_exec(db, "SELECT * FROM tacs", Process, &parser, &em);
 		if (e != SQLITE_OK) {
 			cerr << "failed to enumerate tacs: " << e
 				 << ": " << em << endl;

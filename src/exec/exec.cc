@@ -9,6 +9,9 @@
 #include <cstdlib>
 #include <cstring>
 #include <iostream>
+#include <future>
+#include <system_error>
+#include <thread>
 
 #define BOOST_FILESYSTEM_NO_DEPRECATED
 #include <boost/filesystem.hpp>
@@ -33,10 +36,13 @@ namespace exec {
 
 namespace {
 
-bool Task(const char *dir)
+bool Task(int id)
 {
 	static const int kShort = 64;
 	static const int kLong = 96;
+
+	char dir[32];
+	sprintf(dir, "%d", id);
 
 	char canceled_file[kShort];
 	sprintf(canceled_file, "%s/canceled", dir);
@@ -129,12 +135,32 @@ bool Task(const char *dir)
 	return true;
 }
 
-int CallTask(void *data, int argc, char **argv, char **names)
+typedef std::vector<std::future<bool> > FutureTasks;
+
+int PickTask(void *data, int argc, char **argv, char **names)
 {
-	(void)data;
+	FutureTasks *v = static_cast<FutureTasks *>(data);
 	(void)names;
 	assert(argc == 1);
-	return Task(argv[0]) ? 0 : 1;
+	int id = std::atoi(argv[0]);
+	assert(id > 0);
+	v->emplace_back(std::async(std::launch::async, [id](){return Task(id);}));
+	return 0;
+}
+
+bool CollectTasks(sqlite3 *db, FutureTasks *v)
+{
+	char *em;
+	int e;
+	e = sqlite3_exec(db,
+					 "SELECT t.rowid FROM tasks AS t WHERE EXISTS (SELECT * FROM models AS m WHERE t.model_id = m.rowid)",
+					 &PickTask, v, &em);
+	if (e != SQLITE_OK) {
+		cerr << "failed to exec: " << e
+			 << ": " << em << endl;
+		return false;
+	}
+	return true;
 }
 
 }
@@ -146,15 +172,12 @@ bool Exec(sqlite3 *db)
 	if (!phsp::Read(db))
 		return false;
 
-	char *em;
-	int e;
-	e = sqlite3_exec(db,
-					 "SELECT t.rowid FROM tasks AS t WHERE EXISTS (SELECT * FROM models AS m WHERE t.model_id = m.rowid)",
-					 &CallTask, NULL, &em);
-	if (e != SQLITE_OK) {
-		cerr << "failed to exec: " << e
-			 << ": " << em << endl;
+	FutureTasks v;
+	if (!CollectTasks(db, &v))
 		return false;
+	for (auto &f : v) {
+		if (!f.get())
+			return false;
 	}
 	return true;
 }

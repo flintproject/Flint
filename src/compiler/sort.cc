@@ -293,33 +293,50 @@ private:
 
 typedef boost::ptr_map<string, LineVector> UuidMap;
 
-int Process(void *data, int argc, char **argv, char **names)
-{
+/*
+ * This class creates and keeps both tokens and grammar objects which
+ * construction is expensive in terms of performance.
+ */
+class Parser {
+public:
 	typedef const char *base_iterator_type;
 	typedef lex::lexertl::token<base_iterator_type> token_type;
 	typedef lex::lexertl::lexer<token_type> lexer_type;
 	typedef Lexer<lexer_type> RealLexer;
 	typedef Grammar<RealLexer::iterator_type> RealGrammar;
 
-	static const RealLexer tokens;
-	static const RealGrammar grammar(tokens);
+	explicit Parser(UuidMap *um)
+		: tokens_()
+		, grammar_(tokens_)
+		, um_(um)
+	{
+	}
 
+	int Parse(const char *uuid, const char *name, const char *math) {
+		base_iterator_type it = math;
+		base_iterator_type eit = math + std::strlen(math);
+		Expr expr;
+		bool r = lex::tokenize_and_parse(it, eit, tokens_, grammar_, expr);
+		if (!r || it != eit) {
+			cerr << "failed to parse: " << *it << endl;
+			return 1;
+		}
+		(*um_)[uuid].Add(new Line(name, expr));
+		return 0;
+	}
+
+private:
+	RealLexer tokens_;
+	RealGrammar grammar_;
+	UuidMap *um_;
+};
+
+int Process(void *data, int argc, char **argv, char **names)
+{
 	(void)names;
 	assert(argc == 3);
-	UuidMap *um = static_cast<UuidMap *>(data);
-	const char *uuid = argv[0];
-	const char *name = argv[1];
-	const char *math = argv[2];
-	base_iterator_type it = math;
-	base_iterator_type eit = math + std::strlen(math);
-	Expr expr;
-	bool r = lex::tokenize_and_parse(it, eit, tokens, grammar, expr);
-	if (!r || it != eit) {
-		cerr << "failed to parse: " << *it << endl;
-		return 1;
-	}
-	(*um)[uuid].Add(new Line(name, expr));
-	return 0;
+	Parser *parser = static_cast<Parser *>(data);
+	return parser->Parse(argv[0], argv[1], argv[2]);
 }
 
 class Inserter : db::StatementDriver {
@@ -361,15 +378,17 @@ public:
 bool Sort(sqlite3 *db)
 {
 	UuidMap um;
-
-	char *em;
-	int e;
-	e = sqlite3_exec(db, "SELECT * FROM asts", Process, &um, &em);
-	if (e != SQLITE_OK) {
-		cerr << "failed to exec: " << e
-			 << ": " << em << endl;
-		sqlite3_free(em);
-		return false;
+	{
+		Parser parser(&um);
+		char *em;
+		int e;
+		e = sqlite3_exec(db, "SELECT * FROM asts", Process, &parser, &em);
+		if (e != SQLITE_OK) {
+			cerr << "failed to exec: " << e
+				 << ": " << em << endl;
+			sqlite3_free(em);
+			return false;
+		}
 	}
 
 	if (!BeginTransaction(db))

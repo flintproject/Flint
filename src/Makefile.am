@@ -142,7 +142,7 @@ libflintxx_la_SOURCES = \
     uuidgen.cc \
     workspace/task.cc
 
-libsqlite3_la_CPPFLAGS = -DSQLITE_THREADSAFE=0 -DSQLITE_OMIT_LOAD_EXTENSION
+libsqlite3_la_CPPFLAGS = -DSQLITE_THREADSAFE=1 -DSQLITE_OMIT_LOAD_EXTENSION
 libsqlite3_la_LDFLAGS = -no-undefined
 libsqlite3_la_SOURCES = sqlite3.c
 

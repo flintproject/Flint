@@ -501,55 +501,72 @@ struct Grammar : qi::grammar<TIterator, Compound()> {
 	qi::rule<TIterator, std::vector<Expr>()> cseq, seq0, seq1;
 };
 
-int ProcessUuidAndStatement(const char *uuid, Compound &statement,
-							Inserter *inserter)
-{
-	if (IsConditional(statement)) {
-		Expr lhs;
-		Compound rhs;
-		if (!TransformConditional(statement, lhs, rhs)) {
-			ReportInvalidLeafOfCaseSet(uuid);
-			return 1;
-		}
-		if (!inserter->PrintAndInsert(uuid, lhs, rhs))
-			return 1;
-	} else if (IsEquation(statement)) {
-		if (!inserter->PrintAndInsert(uuid,
-									  statement.children[0],
-									  statement.children[1]))
-			return 1;
-	} else {
-		assert(false);
-		return 1;
-	}
-	return 0;
-}
-
-int Process(void *data, int argc, char **argv, char **names)
-{
+/*
+ * This class creates and keeps both tokens and grammar objects which
+ * construction is expensive in terms of performance.
+ */
+class Parser {
+public:
 	typedef const char *base_iterator_type;
 	typedef lex::lexertl::token<base_iterator_type> token_type;
 	typedef lex::lexertl::lexer<token_type> lexer_type;
 	typedef Lexer<lexer_type> RealLexer;
 	typedef Grammar<RealLexer::iterator_type> RealGrammar;
 
-	static const RealLexer tokens;
-	static const RealGrammar grammar(tokens);
+	explicit Parser(sqlite3 *db)
+		: tokens_()
+		, grammar_(tokens_)
+		, inserter_(db)
+	{
+	}
 
-	Inserter *inserter = static_cast<Inserter *>(data);
+	int Parse(const char *uuid, const char *math) {
+		base_iterator_type it = math;
+		base_iterator_type eit = math + std::strlen(math);
+		Compound statement;
+		bool r = lex::tokenize_and_parse(it, eit, tokens_, grammar_, statement);
+		if (!r || it != eit) {
+			cerr << "failed to parse: " << it << endl;
+			return 1;
+		}
+		return ProcessUuidAndStatement(uuid, statement);
+	}
+
+private:
+	int ProcessUuidAndStatement(const char *uuid, Compound &statement)
+	{
+		if (IsConditional(statement)) {
+			Expr lhs;
+			Compound rhs;
+			if (!TransformConditional(statement, lhs, rhs)) {
+				ReportInvalidLeafOfCaseSet(uuid);
+				return 1;
+			}
+			if (!inserter_.PrintAndInsert(uuid, lhs, rhs))
+				return 1;
+		} else if (IsEquation(statement)) {
+			if (!inserter_.PrintAndInsert(uuid,
+										  statement.children[0],
+										  statement.children[1]))
+				return 1;
+		} else {
+			assert(false);
+			return 1;
+		}
+		return 0;
+	}
+
+	RealLexer tokens_;
+	RealGrammar grammar_;
+	Inserter inserter_;
+};
+
+int Process(void *data, int argc, char **argv, char **names)
+{
+	Parser *parser = static_cast<Parser *>(data);
 	(void)names;
 	assert(argc == 2);
-	const char *uuid = argv[0];
-	const char *math = argv[1];
-	base_iterator_type it = math;
-	base_iterator_type eit = math + std::strlen(math);
-	Compound statement;
-	bool r = lex::tokenize_and_parse(it, eit, tokens, grammar, statement);
-	if (!r || it != eit) {
-		cerr << "failed to parse: " << it << endl;
-		return 1;
-	}
-	return ProcessUuidAndStatement(uuid, statement, inserter);
+	return parser->Parse(argv[0], argv[1]);
 }
 
 }
@@ -561,7 +578,7 @@ bool Rk4(sqlite3 *db, const char *input, sqlite3 *output)
 	if (!CreateTable(output, "asts", "(uuid TEXT, name TEXT, math TEXT)"))
 		return false;
 
-	Inserter inserter(output);
+	Parser parser(output);
 
 	std::ostringstream oss;
 	oss << "SELECT * FROM " << input;
@@ -569,7 +586,7 @@ bool Rk4(sqlite3 *db, const char *input, sqlite3 *output)
 
 	char *em;
 	int e;
-	e = sqlite3_exec(db, query_i.c_str(), Process, &inserter, &em);
+	e = sqlite3_exec(db, query_i.c_str(), Process, &parser, &em);
 	if (e != SQLITE_OK) {
 		cerr << "failed to exec: " << e
 			 << ": " << em << endl;

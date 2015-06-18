@@ -654,37 +654,54 @@ struct Grammar : qi::grammar<TIterator, Expr()> {
 	qi::rule<TIterator, std::deque<Expr>()> seq0, seq1, pseq1, lseq1;
 };
 
-int Process(void *data, int argc, char **argv, char **names)
-{
+/*
+ * This class creates and keeps both tokens and grammar objects which
+ * construction is expensive in terms of performance.
+ */
+class Parser {
+public:
 	typedef const char *base_iterator_type;
 	typedef lex::lexertl::token<base_iterator_type> token_type;
 	typedef lex::lexertl::lexer<token_type> lexer_type;
 	typedef Lexer<lexer_type> RealLexer;
 	typedef Grammar<RealLexer::iterator_type> RealGrammar;
 
-	static const RealLexer tokens;
-	static const RealGrammar grammar(tokens);
-
-	(void)names;
-	db::TacInserter *inserter = static_cast<db::TacInserter *>(data);
-	assert(argc == 3);
-	const char *uuid = argv[0];
-	const char *name = argv[1];
-	const char *math = argv[2];
-	base_iterator_type it = math;
-	base_iterator_type eit = math + std::strlen(math);
-	Expr expr;
-	bool r = lex::tokenize_and_parse(it, eit, tokens, grammar, expr);
-	if (!r || it != eit) {
-		cerr << "failed to parse: " << it << endl;
-		return 1;
+	explicit Parser(sqlite3 *db)
+		: tokens_()
+		, grammar_(tokens_)
+		, inserter_(db)
+	{
 	}
-	std::ostringstream oss;
-	int nod;
-	if (!EmitCode(uuid, name, expr, &nod, &oss))
-		return 1;
-	std::string body = oss.str();
-	return (inserter->Insert(uuid, name, nod, body.c_str())) ? 0 : 1;
+
+	int Parse(const char *uuid, const char *name, const char *math) {
+		base_iterator_type it = math;
+		base_iterator_type eit = math + std::strlen(math);
+		Expr expr;
+		bool r = lex::tokenize_and_parse(it, eit, tokens_, grammar_, expr);
+		if (!r || it != eit) {
+			cerr << "failed to parse: " << it << endl;
+			return 1;
+		}
+		std::ostringstream oss;
+		int nod;
+		if (!EmitCode(uuid, name, expr, &nod, &oss))
+			return 1;
+		std::string body = oss.str();
+		return (inserter_.Insert(uuid, name, nod, body.c_str())) ? 0 : 1;
+	}
+
+private:
+	RealLexer tokens_;
+	RealGrammar grammar_;
+	db::TacInserter inserter_;
+};
+
+int Process(void *data, int argc, char **argv, char **names)
+{
+	(void)names;
+	Parser *parser = static_cast<Parser *>(data);
+	assert(argc == 3);
+	return parser->Parse(argv[0], argv[1], argv[2]);
 }
 
 }
@@ -696,10 +713,10 @@ bool Tac(sqlite3 *db)
 	if (!CreateTable(db, "tacs", "(uuid TEXT, name TEXT, nod INTEGER, body TEXT)"))
 		return false;
 
-	db::TacInserter inserter(db);
+	Parser parser(db);
 	char *em;
 	int e;
-	e = sqlite3_exec(db, "SELECT * FROM sorts", Process, &inserter, &em);
+	e = sqlite3_exec(db, "SELECT * FROM sorts", Process, &parser, &em);
 	if (e != SQLITE_OK) {
 		cerr << "failed to enumerate sorts: " << e
 			 << ": " << em << endl;
