@@ -88,6 +88,8 @@ libflintxx_la_SOURCES = \
     db/read-only-driver.cc \
     exec/enum.cc \
     exec/exec.cc \
+    exec/job-runner.cc \
+    exec/task-runner.cc \
     file/detect.cc \
     file/txt.cc \
     filter/create.cc \
