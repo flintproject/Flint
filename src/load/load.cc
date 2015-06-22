@@ -11,6 +11,7 @@
 #include <cstdio>
 #include <cstring>
 #include <iostream>
+#include <memory>
 #include <string>
 #include <vector>
 
@@ -32,6 +33,7 @@ using std::fclose;
 using std::fopen;
 using std::fprintf;
 using std::perror;
+using std::sprintf;
 
 namespace load {
 
@@ -70,6 +72,125 @@ public:
 	}
 };
 
+class Loader {
+public:
+	static const int kFilenameLength = 64;
+
+	explicit Loader(int dir)
+		: dir_(new char[kFilenameLength])
+		, after_bc_(new char[kFilenameLength])
+		, before_bc_(new char[kFilenameLength])
+		, const_bc_(new char[kFilenameLength])
+		, init_(new char[kFilenameLength])
+		, layout_(new char[kFilenameLength])
+		, model_(new char[kFilenameLength])
+		, modeldb_(new char[kFilenameLength])
+		, nc_(new char[kFilenameLength])
+		, param_(new char[kFilenameLength])
+		, phz_(new char[kFilenameLength])
+		, unitoftime_(new char[kFilenameLength])
+		, var_(new char[kFilenameLength])
+	{
+		if (dir) {
+			sprintf(dir_.get(), "%d", dir);
+		} else {
+			sprintf(dir_.get(), ".");
+		}
+		sprintf(after_bc_.get(), "%s/after-bc", dir_.get());
+		sprintf(before_bc_.get(), "%s/before-bc", dir_.get());
+		sprintf(const_bc_.get(), "%s/const-bc", dir_.get());
+		sprintf(init_.get(), "%s/init", dir_.get());
+		sprintf(layout_.get(), "%s/layout", dir_.get());
+		sprintf(model_.get(), "%s/model", dir_.get());
+		sprintf(modeldb_.get(), "%s/modeldb", dir_.get());
+		sprintf(nc_.get(), "%s/nc", dir_.get());
+		sprintf(param_.get(), "%s/param", dir_.get());
+		sprintf(phz_.get(), "%s/phz", dir_.get());
+		sprintf(unitoftime_.get(), "%s/unitoftime", dir_.get());
+		sprintf(var_.get(), "%s/var", dir_.get());
+	}
+
+	const char *model() const {return model_.get();}
+	const char *modeldb() const {return modeldb_.get();}
+	const char *param() const {return param_.get();}
+	const char *phz() const {return phz_.get();}
+	const char *var() const {return var_.get();}
+
+	bool LoadCellml(ConfigMode mode, sqlite3 *db)
+	{
+		if (!cellml::Read(db))
+			return false;
+		if (!layout::Generate(db, layout_.get()))
+			return false;
+		if (!compiler::Compile(db, "input_ivs", "assign", const_bc_.get()))
+			return false;
+		if (!runtime::Init(db, layout_.get(), const_bc_.get(), init_.get()))
+			return false;
+		if (mode == kRun) {
+			ConfigWriter writer(db);
+			if (!writer.Write("rk4", "2000", "0.01"))
+				return false;
+		}
+		return true;
+	}
+
+	bool LoadPhml(sqlite3 *db)
+	{
+		if (!phml::Read(db))
+			return false;
+		if (!phml::Nc(db, nc_.get()))
+			return false;
+		if (!phml::UnitOfTime(db, unitoftime_.get()))
+			return false;
+		if (!phml::LengthAndStep(db, nc_.get(), unitoftime_.get()))
+			return false;
+		if (!layout::Generate(db, layout_.get()))
+			return false;
+		if (!compiler::Compile(db, "input_ivs", "assign", const_bc_.get()))
+			return false;
+		if (!compiler::Compile(db, "after_eqs", "event", after_bc_.get()))
+			return false;
+		if (!compiler::Compile(db, "before_eqs", "event", before_bc_.get()))
+			return false;
+		if (!runtime::Init(db, layout_.get(), const_bc_.get(), init_.get()))
+			return false;
+		return true;
+	}
+
+	bool LoadSbml(ConfigMode mode, sqlite3 *db)
+	{
+		if (!flint::sbml::Read(db))
+			return false;
+		if (!layout::Generate(db, layout_.get()))
+			return false;
+		if (!compiler::Compile(db, "input_ivs", "assign", const_bc_.get()))
+			return false;
+		if (!runtime::Init(db, layout_.get(), const_bc_.get(), init_.get()))
+			return false;
+		if (mode == kRun) {
+			ConfigWriter writer(db);
+			if (!writer.Write("rk4", "100", "0.01"))
+				return false;
+		}
+		return true;
+	}
+
+private:
+	std::unique_ptr<char[]> dir_;
+	std::unique_ptr<char[]> after_bc_;
+	std::unique_ptr<char[]> before_bc_;
+	std::unique_ptr<char[]> const_bc_;
+	std::unique_ptr<char[]> init_;
+	std::unique_ptr<char[]> layout_;
+	std::unique_ptr<char[]> model_;
+	std::unique_ptr<char[]> modeldb_;
+	std::unique_ptr<char[]> nc_;
+	std::unique_ptr<char[]> param_;
+	std::unique_ptr<char[]> phz_;
+	std::unique_ptr<char[]> unitoftime_;
+	std::unique_ptr<char[]> var_;
+};
+
 bool CopyFile(const char *source, const char *target)
 {
 	boost::system::error_code ec;
@@ -81,122 +202,43 @@ bool CopyFile(const char *source, const char *target)
 	return true;
 }
 
-bool LoadCellml(ConfigMode mode, sqlite3 *db)
-{
-	if (!cellml::Read(db))
-		return false;
-	if (!layout::Generate(db, "layout"))
-		return false;
-	if (!compiler::Compile(db, "input_ivs", "assign", "const-bc"))
-		return false;
-	if (!runtime::Init(db, "layout", "const-bc", "init"))
-		return false;
-	if (mode == kRun) {
-		ConfigWriter writer(db);
-		if (!writer.Write("rk4", "2000", "0.01"))
-			return false;
-	}
-	return true;
-}
-
-bool LoadPhml(sqlite3 *db)
-{
-	if (!phml::Read(db))
-		return false;
-	if (!phml::Nc(db, "nc"))
-		return false;
-	if (!phml::UnitOfTime(db, "unitoftime"))
-		return false;
-	if (!phml::LengthAndStep(db, "nc", "unitoftime"))
-		return false;
-	if (!layout::Generate(db, "layout"))
-		return false;
-	if (!compiler::Compile(db, "input_ivs", "assign", "const-bc"))
-		return false;
-	if (!compiler::Compile(db, "after_eqs", "event", "after-bc"))
-		return false;
-	if (!compiler::Compile(db, "before_eqs", "event", "before-bc"))
-		return false;
-	if (!runtime::Init(db, "layout", "const-bc", "init"))
-		return false;
-	return true;
-}
-
-bool LoadSbml(ConfigMode mode, sqlite3 *db)
-{
-	if (!flint::sbml::Read(db))
-		return false;
-	if (!layout::Generate(db, "layout"))
-		return false;
-	if (!compiler::Compile(db, "input_ivs", "assign", "output-bc"))
-		return false;
-	if (!runtime::Init(db, "layout", "output-bc", "init"))
-		return false;
-	if (mode == kRun) {
-		ConfigWriter writer(db);
-		if (!writer.Write("rk4", "100", "0.01"))
-			return false;
-	}
-	return true;
-}
-
 }
 
 bool Load(file::Format format, ConfigMode mode, int dir)
 {
-	if (dir) {
-		char buf[32];
-		sprintf(buf, "%d", dir);
-		boost::system::error_code ec;
-		boost::filesystem::current_path(buf, ec);
-		if (ec) {
-			cerr << "failed to change directory: " << buf
-				 << ": " << ec << endl;
-			return false;
-		}
-	}
-
-	if (!CopyFile("model", "modeldb"))
+	Loader loader(dir);
+	if (!CopyFile(loader.model(), loader.modeldb()))
 		return false;
-	db::Driver driver("modeldb");
+	db::Driver driver(loader.modeldb());
 	sqlite3 *db = driver.db();
 	switch (format) {
 	case file::kIsml:
 	case file::kPhml:
-		if (!LoadPhml(db))
+		if (!loader.LoadPhml(db))
 			return false;
 		break;
 	case file::kPhz:
-		if (!phz::Read(db, "phz"))
+		if (!phz::Read(db, loader.phz()))
 			return false;
-		if (!LoadPhml(db))
+		if (!loader.LoadPhml(db))
 			return false;
 		break;
 	case file::kCellml:
-		if (!LoadCellml(mode, db))
+		if (!loader.LoadCellml(mode, db))
 			return false;
 		break;
 	case file::kSbml:
-		if (!LoadSbml(mode, db))
+		if (!loader.LoadSbml(mode, db))
 			return false;
 		break;
 	default:
 		cerr << "unexpected file format: " << format << endl;
 		return false;
 	}
-	if (!Param(db, "param"))
+	if (!Param(db, loader.param()))
 		return false;
-	if (!Var(db, "var"))
+	if (!Var(db, loader.var()))
 		return false;
-
-	if (dir) {
-		boost::system::error_code ec;
-		boost::filesystem::current_path("..", ec);
-		if (ec) {
-			cerr << "failed to change directory to :.. : " << ec << endl;
-			return false;
-		}
-	}
 
 	return true;
 }
