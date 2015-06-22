@@ -14,7 +14,6 @@
 
 #include <sedml/reader.h>
 
-#include "database.h"
 #include "db/query.h"
 #include "sqlite3.h"
 #include "utf8path.h"
@@ -96,11 +95,9 @@ int BindGranularity(const struct sedml_uniformtimecourse *utc,
 
 }
 
-bool Read(sqlite3 *db)
+bool Read(const char *sedml_file, sqlite3 *db)
 {
 	bool r = false;
-	char sedml_file[1024]; // FIXME
-	if (!LoadExec(db, sedml_file, NULL)) return false;
 	boost::filesystem::path sedml_path = GetPathFromUtf8(sedml_file);
 	std::string sedml_path_s = sedml_path.string();
 

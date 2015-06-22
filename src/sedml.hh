@@ -8,9 +8,10 @@ namespace sedml {
 
 /*
  * Extract simulation configuration in SEDML.
+ * sedml_file is encoded in UTF-8.
  * Return true in case of success, false otherwise.
  */
-bool Read(sqlite3 *db);
+bool Read(const char *sedml_file, sqlite3 *db);
 
 }
 

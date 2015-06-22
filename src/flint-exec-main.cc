@@ -5,8 +5,6 @@
 #include <iostream>
 
 #include "bc/binary.h"
-#include "database.h"
-#include "db/driver.h"
 #include "exec.hh"
 
 using std::cerr;
@@ -59,9 +57,5 @@ int main(int argc, char *argv[])
 	const char *phsp_filename = filenames;
 	while (*phsp_filename++) {}
 
-	db::Driver driver("x.db");
-	sqlite3 *db = driver.db();
-	if (!SaveExec(db, sedml_filename, phsp_filename))
-		return EXIT_FAILURE;
-	return exec::Exec(db) ? EXIT_SUCCESS : EXIT_FAILURE;
+	return exec::Exec(sedml_filename, phsp_filename) ? EXIT_SUCCESS : EXIT_FAILURE;
 }

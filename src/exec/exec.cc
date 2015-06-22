@@ -15,6 +15,7 @@
 #include <thread>
 #include <vector>
 
+#include "db/driver.h"
 #include "exec/task-runner.hh"
 #include "phsp.hh"
 #include "sedml.hh"
@@ -58,15 +59,8 @@ bool CollectTasks(sqlite3 *db, FutureTasks *v)
 	return true;
 }
 
-}
-
-bool Exec(sqlite3 *db)
+bool RunTasks(sqlite3 *db)
 {
-	if (!sedml::Read(db))
-		return false;
-	if (!phsp::Read(db))
-		return false;
-
 	FutureTasks v;
 	if (!CollectTasks(db, &v))
 		return false;
@@ -75,6 +69,19 @@ bool Exec(sqlite3 *db)
 			return false;
 	}
 	return true;
+}
+
+}
+
+bool Exec(const char *sedml_file, const char *phsp_file)
+{
+	db::Driver driver("x.db");
+	sqlite3 *db = driver.db();
+	if (!sedml::Read(sedml_file, db))
+		return false;
+	if (!phsp::Read(phsp_file, db))
+		return false;
+	return RunTasks(db);
 }
 
 }

@@ -22,7 +22,6 @@
 #include <libxml/xmlreader.h>
 
 #include "base/rational.h"
-#include "database.h"
 #include "db/query.h"
 #include "load.hh"
 #include "mathml/math_dumper.h"
@@ -807,10 +806,8 @@ private:
 
 }
 
-bool Read(sqlite3 *db)
+bool Read(const char *phsp_file, sqlite3 *db)
 {
-	char phsp_file[1024];
-	if (!LoadExec(db, NULL, phsp_file)) return false;
 	boost::filesystem::path pp = GetPathFromUtf8(phsp_file);
 	string pp_s = pp.string();
 

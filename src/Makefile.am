@@ -51,7 +51,6 @@ bin_PROGRAMS = \
 
 noinst_PROGRAMS = \
 	test-input1 \
-	test-input2 \
 	test-run \
 	test-singleton
 
@@ -236,10 +235,6 @@ isdwc_SOURCES = isdwc-main.cc
 test_input1_CPPFLAGS = $(BOOST_CPPFLAGS)
 test_input1_LDADD = libflint.la libsqlite3.la
 test_input1_SOURCES = test-input1-main.cc
-
-test_input2_CPPFLAGS = $(BOOST_CPPFLAGS)
-test_input2_LDADD = libflint.la libsqlite3.la
-test_input2_SOURCES = test-input2-main.cc
 
 test_run_CPPFLAGS = $(PROTOBUF_CFLAGS) $(BOOST_CPPFLAGS)
 test_run_LDADD = libflintxx.la libflint.la libsqlite3.la $(PROTOBUF_LIBS)

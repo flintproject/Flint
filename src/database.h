@@ -21,18 +21,6 @@ int FindModelFile(sqlite3 *db, char *model_file);
 int SaveGivenFile(sqlite3 *db, const char *given_file);
 int SaveModelFile(sqlite3 *db, const char *model_file);
 
-/*
- * Both `sedml_file' and `phsp_file' have to be >= 1024 byte-length.
- * Note that db is for read only.
- */
-int LoadExec(sqlite3 *db, char *sedml_file, char *phsp_file);
-
-/*
- * Both `sedml_file' and `phsp_file' should be UTF-8 filenames
- * with < 1024 byte-length.
- */
-int SaveExec(sqlite3 *db, const char *sedml_file, const char *phsp_file);
-
 #ifdef __cplusplus
 }
 #endif

@@ -12,9 +12,10 @@ namespace exec {
 bool Enum(sqlite3 *db);
 
 /*
+ * Both sedml_file and phsp_file are encoded in UTF-8.
  * Return true in case of success, false otherwise.
  */
-bool Exec(sqlite3 *db);
+bool Exec(const char *sedml_file, const char *phsp_file);
 
 }
 

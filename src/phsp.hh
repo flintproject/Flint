@@ -9,9 +9,10 @@ namespace phsp {
 
 /*
  * Read a PHSP model.
+ * phsp_file is encoded in UTF-8.
  * Return true in case of success, false otherwise.
  */
-bool Read(sqlite3 *db);
+bool Read(const char *phsp_file, sqlite3 *db);
 
 }
 
