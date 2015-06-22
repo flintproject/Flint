@@ -53,7 +53,7 @@ bool Config(int id, sqlite3 *db)
 	sprintf(query, "DETACH DATABASE m");
 	e = sqlite3_exec(db, query, NULL, NULL, &em);
 	if (e != SQLITE_OK) {
-		cerr << "failed to datach database: " << e
+		cerr << "failed to detach database: " << e
 			 << ": " << em << endl;
 		return false;
 	}
