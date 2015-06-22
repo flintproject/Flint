@@ -7,6 +7,7 @@
 namespace load {
 
 /*
+ * Note that db is for read only.
  * Return true in case of success, otherwise false.
  */
 bool Param(sqlite3 *db, const char *output);
