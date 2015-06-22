@@ -421,6 +421,15 @@ private:
 					// commit the transaction per attached session
 					if (!CommitTransaction(db_))
 						return -2;
+					// detach the database after the transaction
+					sprintf(query, "DETACH DATABASE 'db%d'", rowid);
+					e = sqlite3_exec(db_, query, NULL, NULL, &em);
+					if (e != SQLITE_OK) {
+						cerr << "failed to detach database: " << e
+							 << ": " << em << endl;
+						sqlite3_free(em);
+						return -2;
+					}
 					return xmlTextReaderRead(text_reader_);
 				}
 			}
