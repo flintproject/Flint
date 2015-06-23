@@ -116,7 +116,7 @@ public:
 	const char *phz() const {return phz_.get();}
 	const char *var() const {return var_.get();}
 
-	bool LoadCellml(ConfigMode mode, sqlite3 *db)
+	bool LoadCellml(sqlite3 *db)
 	{
 		if (!cellml::Read(db))
 			return false;
@@ -124,14 +124,7 @@ public:
 			return false;
 		if (!compiler::Compile(db, "input_ivs", "assign", const_bc_.get()))
 			return false;
-		if (!runtime::Init(db, layout_.get(), const_bc_.get(), init_.get()))
-			return false;
-		if (mode == kRun) {
-			ConfigWriter writer(db);
-			if (!writer.Write("rk4", "2000", "0.01"))
-				return false;
-		}
-		return true;
+		return runtime::Init(db, layout_.get(), const_bc_.get(), init_.get());
 	}
 
 	bool LoadPhml(sqlite3 *db)
@@ -152,12 +145,10 @@ public:
 			return false;
 		if (!compiler::Compile(db, "before_eqs", "event", before_bc_.get()))
 			return false;
-		if (!runtime::Init(db, layout_.get(), const_bc_.get(), init_.get()))
-			return false;
-		return true;
+		return runtime::Init(db, layout_.get(), const_bc_.get(), init_.get());
 	}
 
-	bool LoadSbml(ConfigMode mode, sqlite3 *db)
+	bool LoadSbml(sqlite3 *db)
 	{
 		if (!flint::sbml::Read(db))
 			return false;
@@ -165,14 +156,7 @@ public:
 			return false;
 		if (!compiler::Compile(db, "input_ivs", "assign", const_bc_.get()))
 			return false;
-		if (!runtime::Init(db, layout_.get(), const_bc_.get(), init_.get()))
-			return false;
-		if (mode == kRun) {
-			ConfigWriter writer(db);
-			if (!writer.Write("rk4", "100", "0.01"))
-				return false;
-		}
-		return true;
+		return runtime::Init(db, layout_.get(), const_bc_.get(), init_.get());
 	}
 
 private:
@@ -224,22 +208,33 @@ bool Load(file::Format format, ConfigMode mode, int dir)
 			return false;
 		break;
 	case file::kCellml:
-		if (!loader.LoadCellml(mode, db))
+		if (!loader.LoadCellml(db))
 			return false;
+		if (mode == kRun) {
+			ConfigWriter writer(db);
+			if (!writer.Write("rk4", "2000", "0.01"))
+				return false;
+		}
 		break;
 	case file::kSbml:
-		if (!loader.LoadSbml(mode, db))
+		if (!loader.LoadSbml(db))
 			return false;
+		if (mode == kRun) {
+			ConfigWriter writer(db);
+			if (!writer.Write("rk4", "100", "0.01"))
+				return false;
+		}
 		break;
 	default:
 		cerr << "unexpected file format: " << format << endl;
 		return false;
 	}
-	if (!Param(db, loader.param()))
-		return false;
-	if (!Var(db, loader.var()))
-		return false;
-
+	if (mode == kOpen) {
+		if (!Param(db, loader.param()))
+			return false;
+		if (!Var(db, loader.var()))
+			return false;
+	}
 	return true;
 }
 

@@ -50,5 +50,5 @@ int main(int argc, char *argv[])
 	file::Format format;
 	if (!task.Setup(&format))
 		return EXIT_FAILURE;
-	return load::Load(format, load::kRun) ? EXIT_SUCCESS : EXIT_FAILURE;
+	return load::Load(format, load::kOpen) ? EXIT_SUCCESS : EXIT_FAILURE;
 }

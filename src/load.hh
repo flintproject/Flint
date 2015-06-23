@@ -8,6 +8,7 @@ namespace load {
 
 enum ConfigMode {
 	kExec,
+	kOpen,
 	kRun
 };
 
