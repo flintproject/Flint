@@ -12,7 +12,7 @@ namespace exec {
 
 class TaskRunner {
 public:
-	explicit TaskRunner(int id);
+	TaskRunner(int id, char *path);
 
 	const char *dir() const {return dir_.get();}
 	const char *layout() const {return layout_.get();}
@@ -26,6 +26,8 @@ public:
 	bool Run();
 
 private:
+	int id_;
+	std::unique_ptr<char[]> path_;
 	std::unique_ptr<char[]> dir_;
 	std::unique_ptr<char[]> layout_;
 	std::unique_ptr<char[]> generated_layout_;

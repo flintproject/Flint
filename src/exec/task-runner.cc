@@ -16,12 +16,16 @@
 #include <boost/filesystem.hpp>
 
 #include "compiler.hh"
+#include "db/driver.h"
+#include "db/read-only-driver.hh"
 #include "exec.hh"
 #include "exec/job-runner.hh"
 #include "filter.hh"
 #include "job.hh"
 #include "layout.hh"
+#include "load.hh"
 #include "task.hh"
+#include "workspace/task.h"
 
 using std::cerr;
 using std::endl;
@@ -30,11 +34,50 @@ using std::sprintf;
 namespace exec {
 
 namespace {
-const int kFilenameLength = 64;
+
+bool CreateSpec(int id, sqlite3 *db)
+{
+	char spec_file[64]; // large enough
+	sprintf(spec_file, "%d/spec.txt", id);
+	FILE *fp = fopen(spec_file, "w");
+	if (!fp) {
+		perror(spec_file);
+		return false;
+	}
+	bool r = task::Spec(id, db, fp);
+	fclose(fp);
+	return r;
 }
 
-TaskRunner::TaskRunner(int id)
-	: dir_(new char[kFilenameLength])
+bool Setup(int id, const char *path)
+{
+	{
+		file::Format format;
+		{
+			workspace::Task wt(path, id);
+			if (!wt.Setup(&format))
+				return false;
+		}
+		if (!load::Load(format, load::kExec, id))
+			return false;
+	}
+	{
+		db::Driver driver("x.db");
+		if (!task::Config(id, driver.db()))
+			return false;
+	}
+	db::ReadOnlyDriver driver("x.db");
+	return CreateSpec(id, driver.db());
+}
+
+const int kFilenameLength = 64;
+
+}
+
+TaskRunner::TaskRunner(int id, char *path)
+	: id_(id)
+	, path_(path)
+	, dir_(new char[kFilenameLength])
 	, layout_(new char[kFilenameLength])
 	, generated_layout_(new char[kFilenameLength])
 	, init_(new char[kFilenameLength])
@@ -57,6 +100,9 @@ sqlite3 *TaskRunner::GetModelDatabase()
 
 bool TaskRunner::Run()
 {
+	if (!Setup(id_, path_.get()))
+		return false;
+
 	{
 		char canceled_file[kFilenameLength];
 		sprintf(canceled_file, "%s/canceled", dir_.get());

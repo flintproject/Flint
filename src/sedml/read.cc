@@ -133,7 +133,7 @@ bool Read(const char *sedml_file, sqlite3 *db)
 		goto bail;
 	if (!CreateTable(db, "tasks", "(model_id INTEGER, sim_id INTEGER)"))
 		goto bail;
-	if (!CreateTable(db, "models", "(model_path TEXT, db_path TEXT)"))
+	if (!CreateTable(db, "models", "(model_path TEXT, absolute_path TEXT)"))
 		goto bail;
 	if (!CreateTable(db, "sims", "(algorithm TEXT, length REAL, step REAL, granularity INTEGER)"))
 		goto bail;

@@ -11,6 +11,7 @@
 #include <cstring>
 #include <iostream>
 #include <future>
+#include <memory>
 #include <system_error>
 #include <thread>
 #include <vector>
@@ -27,30 +28,54 @@ namespace exec {
 
 namespace {
 
-typedef std::vector<std::future<bool> > FutureTasks;
+class FutureTaskPool {
+public:
+	void Add(int id, const char *path) {
+		size_t len = strlen(path);
+		std::unique_ptr<char[]> p(new char[len+1]);
+		memcpy(p.get(), path, len);
+		p[len] = '\0';
+		auto lmbd = [id](char *p){
+			TaskRunner runner(id, p);
+			return runner.Run();
+		};
+		tasks_.emplace_back(std::async(std::launch::async, lmbd, p.release()));
+	}
+
+	bool Wait() {
+		for (auto &f : tasks_) {
+			if (!f.get())
+				return false;
+		}
+		return true;
+	}
+
+private:
+	std::vector<std::future<bool> > tasks_;
+};
 
 int PickTask(void *data, int argc, char **argv, char **names)
 {
-	FutureTasks *v = static_cast<FutureTasks *>(data);
+	FutureTaskPool *pool = static_cast<FutureTaskPool *>(data);
 	(void)names;
-	assert(argc == 1);
+	assert(argc == 2);
 	int id = std::atoi(argv[0]);
 	assert(id > 0);
-	auto lmbd = [id](){
-		TaskRunner runner(id);
-		return runner.Run();
-	};
-	v->emplace_back(std::async(std::launch::async, lmbd));
+	const char *path = argv[1];
+	assert(path != nullptr);
+	pool->Add(id, path);
 	return 0;
 }
 
-bool CollectTasks(sqlite3 *db, FutureTasks *v)
+bool CollectTasks(sqlite3 *db, FutureTaskPool *pool)
 {
 	char *em;
 	int e;
 	e = sqlite3_exec(db,
-					 "SELECT t.rowid FROM tasks AS t WHERE EXISTS (SELECT * FROM models AS m WHERE t.model_id = m.rowid)",
-					 &PickTask, v, &em);
+					 "SELECT t.rowid, m.absolute_path FROM tasks AS t"
+					 " LEFT JOIN models AS m ON t.model_id = m.rowid"
+					 " WHERE m.absolute_path IS NOT NULL",
+					 &PickTask, pool, &em);
 	if (e != SQLITE_OK) {
 		cerr << "failed to exec: " << e
 			 << ": " << em << endl;
@@ -61,14 +86,10 @@ bool CollectTasks(sqlite3 *db, FutureTasks *v)
 
 bool RunTasks(sqlite3 *db)
 {
-	FutureTasks v;
-	if (!CollectTasks(db, &v))
+	FutureTaskPool pool;
+	if (!CollectTasks(db, &pool))
 		return false;
-	for (auto &f : v) {
-		if (!f.get())
-			return false;
-	}
-	return true;
+	return pool.Wait();
 }
 
 }

@@ -23,12 +23,9 @@
 
 #include "base/rational.h"
 #include "db/query.h"
-#include "load.hh"
 #include "mathml/math_dumper.h"
 #include "sqlite3.h"
-#include "task.hh"
 #include "utf8path.h"
-#include "workspace/task.h"
 
 using std::cerr;
 using std::endl;
@@ -167,9 +164,8 @@ private:
 class Reader {
 public:
 	Reader(xmlTextReaderPtr &text_reader, sqlite3 *db)
-  	: text_reader_(text_reader),
-	  db_(db),
-	  tasks_()
+		: text_reader_(text_reader)
+		, db_(db)
 	{
 	}
 
@@ -196,20 +192,6 @@ public:
 			} else if (type == XML_READER_TYPE_END_ELEMENT) {
 				const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
 				if (xmlStrEqual(local_name, BAD_CAST "phsp")) {
-					for (TaskMap::const_iterator it=tasks_.begin();it!=tasks_.end();++it) {
-						boost::scoped_ptr<workspace::Task> task(new workspace::Task(it->second.c_str(), it->first));
-						int task_id = it->first;
-						file::Format format;
-						if (!task->Setup(&format)) {
-							return -2;
-						}
-						if (!load::Load(format, load::kExec, task_id))
-							return -2;
-						if (!task::Config(task_id, db_))
-							return -2;
-						if (!CreateSpec(task_id))
-							return -2;
-					}
 					return 1;
 				}
 			}
@@ -219,22 +201,6 @@ public:
 	}
 
 private:
-	typedef std::map<int, string> TaskMap;
-
-	bool CreateSpec(int id) {
-		char spec_file[64]; // large enough
-		sprintf(spec_file, "%d/spec.txt", id);
-		FILE *fp = fopen(spec_file, "w");
-		if (!fp) {
-			perror(spec_file);
-			return false;
-		}
-		if (!task::Spec(id, db_, fp))
-			return false;
-		fclose(fp);
-		return true;
-	}
-
 	int ReadModel(const boost::filesystem::path &cp) {
 		boost::scoped_ptr<Model> model(new Model);
 		int i;
@@ -323,7 +289,7 @@ private:
 		boost::scoped_array<char> utf8amp(GetUtf8FromPath(amp));
 
 		// update the model entry
-		e = sqlite3_prepare_v2(db_, "UPDATE models SET db_path = ? WHERE rowid = ?",
+		e = sqlite3_prepare_v2(db_, "UPDATE models SET absolute_path = ? WHERE rowid = ?",
 							   -1, &stmt, NULL);
 		if (e != SQLITE_OK) {
 			cerr << "failed to prepare statement: "
@@ -331,16 +297,14 @@ private:
 				 << endl;
 			return -2;
 		}
-		char path[1024];
-		sprintf(path, "%d/db", rowid);
-		e = sqlite3_bind_text(stmt, 1, (const char *)path, -1, SQLITE_STATIC);
+		e = sqlite3_bind_text(stmt, 1, utf8amp.get(), -1, SQLITE_STATIC);
 		if (e != SQLITE_OK) {
-			cerr << "failed to bind parameter: " << e << endl;
+			cerr << "failed to bind absolute_path: " << e << endl;
 			return -2;
 		}
 		e = sqlite3_bind_int64(stmt, 2, rowid);
 		if (e != SQLITE_OK) {
-			cerr << "failed to bind parameter: " << e << endl;
+			cerr << "failed to bind rowid: " << e << endl;
 			return -2;
 		}
 		e = sqlite3_step(stmt);
@@ -352,7 +316,7 @@ private:
 
 		// attach a specific database for the model
 		char query[1024];
-		sprintf(query, "ATTACH DATABASE '%s' AS 'db%d'", path, rowid);
+		sprintf(query, "ATTACH DATABASE '%d/db' AS 'db%d'", rowid, rowid);
 		char *em;
 		e = sqlite3_exec(db_, query, NULL, NULL, &em);
 		if (e != SQLITE_OK) {
@@ -398,8 +362,6 @@ private:
 		sprintf(table_name, "db%d.phsp_targets", rowid);
 		if (!CreateTable(db_, table_name, "(uuid TEXT, id TEXT, math TEXT)"))
 			return -2;
-
-		tasks_.insert(std::make_pair(rowid, string(utf8amp.get())));
 
 		i = xmlTextReaderRead(text_reader_);
 		while (i > 0) {
@@ -810,7 +772,6 @@ private:
 
 	xmlTextReaderPtr &text_reader_;
 	sqlite3 *db_;
-	TaskMap tasks_;
 };
 
 }
