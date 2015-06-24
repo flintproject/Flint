@@ -2,8 +2,6 @@
 #include "task.h"
 
 #include <cstdio>
-#define BOOST_FILESYSTEM_NO_DEPRECATED
-#include <boost/filesystem.hpp>
 
 #include "database.h"
 #include "db/driver.h"
@@ -27,15 +25,6 @@ bool Task::Setup(file::Format *format)
 	db::Driver driver(db_file);
 	if (!SaveGivenFile(driver.db(), given_file_))
 		return false;
-	if (task_id_) {
-		char dir[32]; // FIXME
-		std::sprintf(dir, "%d", task_id_);
-		boost::filesystem::path dir_path(dir);
-		// create working directories if it does not exist
-		if ( !boost::filesystem::is_directory(dir_path) &&
-			 !boost::filesystem::create_directory(dir_path) )
-			return false;
-	}
 	return file::Txt(given_file_, format, task_id_);
 }
 
