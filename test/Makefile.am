@@ -6,6 +6,7 @@ SUBDIRS = \
 	load \
 	mathml \
 	method \
+	phml \
 	phsp \
 	run \
 	sbml \
