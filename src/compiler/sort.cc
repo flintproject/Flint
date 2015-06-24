@@ -25,7 +25,7 @@
 
 #include "db/driver.hh"
 #include "db/query.h"
-#include "db/statement-driver.h"
+#include "db/statement-driver.hh"
 
 using std::cerr;
 using std::endl;

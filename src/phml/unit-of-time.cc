@@ -19,7 +19,7 @@
 #include "ipc.pb.h"
 #include "unit.pb.h"
 #include "bc/pack.h"
-#include "db/statement-driver.h"
+#include "db/statement-driver.hh"
 
 using std::cerr;
 using std::endl;

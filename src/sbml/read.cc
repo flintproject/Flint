@@ -18,7 +18,7 @@
 
 #include "db/name-inserter.h"
 #include "db/query.h"
-#include "db/statement-driver.h"
+#include "db/statement-driver.hh"
 #include "sbml.hh"
 
 using std::cerr;

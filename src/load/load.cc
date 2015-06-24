@@ -16,7 +16,7 @@
 #include "compiler.hh"
 #include "database.h"
 #include "db/driver.hh"
-#include "db/statement-driver.h"
+#include "db/statement-driver.hh"
 #include "file.hh"
 #include "layout.hh"
 #include "load/param.hh"

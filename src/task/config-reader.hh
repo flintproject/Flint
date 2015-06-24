@@ -2,7 +2,7 @@
 #ifndef FLINT_TASK_CONFIG_READER_HH_
 #define FLINT_TASK_CONFIG_READER_HH_
 
-#include "db/statement-driver.h"
+#include "db/statement-driver.hh"
 
 namespace task {
 

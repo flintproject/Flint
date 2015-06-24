@@ -12,7 +12,7 @@
 #include "db/driver.hh"
 #include "db/eq-inserter.h"
 #include "db/query.h"
-#include "db/statement-driver.h"
+#include "db/statement-driver.hh"
 
 using std::endl;
 using std::cerr;

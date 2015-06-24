@@ -17,7 +17,7 @@
 #include <boost/rational.hpp>
 #include <boost/scoped_ptr.hpp>
 
-#include "db/statement-driver.h"
+#include "db/statement-driver.hh"
 #include "ipc.pb.h"
 #include "phml.pb.h"
 #include "bc/pack.h"

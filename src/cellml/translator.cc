@@ -23,7 +23,7 @@
 #include "db/name-inserter.h"
 #include "db/query.h"
 #include "db/reach-driver.h"
-#include "db/statement-driver.h"
+#include "db/statement-driver.hh"
 #include "modelpath.h"
 #include "sqlite3.h"
 #include "uuidgen.h"

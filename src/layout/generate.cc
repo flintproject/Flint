@@ -26,7 +26,7 @@
 #include "bc/pack.h"
 #include "db/name_loader.h"
 #include "db/space_loader.h"
-#include "db/statement-driver.h"
+#include "db/statement-driver.hh"
 
 using std::cerr;
 using std::endl;

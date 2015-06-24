@@ -15,7 +15,7 @@
 
 #include "compiler.hh"
 #include "db/driver.hh"
-#include "db/statement-driver.h"
+#include "db/statement-driver.hh"
 #include "file.hh"
 #include "filter.hh"
 #include "job.hh"

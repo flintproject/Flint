@@ -13,7 +13,7 @@
 #include <boost/ptr_container/ptr_vector.hpp>
 #include <boost/scoped_ptr.hpp>
 
-#include "db/statement-driver.h"
+#include "db/statement-driver.hh"
 #include "uuidgen.h"
 
 using std::cerr;

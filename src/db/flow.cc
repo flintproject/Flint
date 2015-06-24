@@ -9,7 +9,7 @@
 #include <boost/uuid/string_generator.hpp>
 
 #include "bc/index.h"
-#include "statement-driver.h"
+#include "statement-driver.hh"
 #include "query.h"
 
 using std::cerr;

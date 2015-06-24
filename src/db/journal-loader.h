@@ -8,7 +8,7 @@
 
 #include <boost/uuid/uuid_generators.hpp>
 
-#include "statement-driver.h"
+#include "statement-driver.hh"
 
 namespace db {
 

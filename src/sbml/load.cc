@@ -19,7 +19,7 @@
 
 #include "db/name-inserter.h"
 #include "db/query.h"
-#include "db/statement-driver.h"
+#include "db/statement-driver.hh"
 
 using std::cerr;
 using std::endl;

@@ -23,7 +23,7 @@
 #include "lo.pb.h"
 
 #include "bc/index.h"
-#include "db/statement-driver.h"
+#include "db/statement-driver.hh"
 #include "lo/layout_loader.h"
 
 using std::cerr;
