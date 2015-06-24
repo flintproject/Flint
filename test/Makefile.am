@@ -3,6 +3,7 @@ SUBDIRS = \
 	common \
 	compiler \
 	file \
+	load \
 	mathml \
 	method \
 	phsp \
