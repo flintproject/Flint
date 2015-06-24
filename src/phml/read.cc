@@ -2033,7 +2033,8 @@ private:
 					td->set_unit_id(unit_id);
 				} else {
 					// generously ignore invalid unit-id
-					cerr << "invalid unit-id of <time-discretization>" << endl;
+					cerr << "invalid unit-id of <time-discretization>: "
+						 << unit_id << endl;
 				}
 			}
 		}
