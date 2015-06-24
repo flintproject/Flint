@@ -6,7 +6,7 @@
 #include "sbml.hh"
 
 #include "database.h"
-#include "db/driver.h"
+#include "db/driver.hh"
 
 #define BOOST_TEST_MODULE test_parse
 #include "test.hh"

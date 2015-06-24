@@ -8,7 +8,7 @@
 #include "compiler/bcc.h"
 #include "compiler/sort.h"
 #include "compiler/tac.h"
-#include "db/driver.h"
+#include "db/driver.hh"
 #include "method.hh"
 
 using std::cerr;

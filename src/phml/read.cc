@@ -23,7 +23,7 @@
 
 #include "branch.h"
 #include "db.hh"
-#include "db/driver.h"
+#include "db/driver.hh"
 #include "db/query.h"
 #include "modelpath.h"
 #include "phml/definition_dumper.h"

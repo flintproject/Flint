@@ -15,7 +15,7 @@
 #include "cellml.hh"
 #include "compiler.hh"
 #include "database.h"
-#include "db/driver.h"
+#include "db/driver.hh"
 #include "db/statement-driver.h"
 #include "file.hh"
 #include "layout.hh"

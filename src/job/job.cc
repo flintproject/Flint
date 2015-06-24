@@ -16,7 +16,7 @@
 #include "bc/binary.h"
 #include "compiler.hh"
 #include "database.h"
-#include "db/driver.h"
+#include "db/driver.hh"
 #include "db/read-only-driver.hh"
 #include "exec.hh"
 #include "filter.hh"

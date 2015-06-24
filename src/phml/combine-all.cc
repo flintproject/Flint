@@ -18,7 +18,7 @@
 #include <boost/scoped_ptr.hpp>
 
 #include "database.h"
-#include "db/driver.h"
+#include "db/driver.hh"
 #include "phml/combine.h"
 #include "phml/import.h"
 #include "sbml.hh"

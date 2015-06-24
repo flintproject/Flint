@@ -5,7 +5,7 @@
 #include <cstring>
 #include <iostream>
 
-#include "db/driver.h"
+#include "db/driver.hh"
 #include "db/name-inserter.h"
 #include "db/query.h"
 

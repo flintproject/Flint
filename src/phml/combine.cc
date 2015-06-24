@@ -14,7 +14,7 @@
 #include <boost/uuid/uuid_io.hpp>
 
 #include "db/bridge-loader.h"
-#include "db/driver.h"
+#include "db/driver.hh"
 #include "db/eq-inserter.h"
 #include "db/name-inserter.h"
 #include "db/query.h"

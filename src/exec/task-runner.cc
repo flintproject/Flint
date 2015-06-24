@@ -16,7 +16,7 @@
 #include <boost/filesystem.hpp>
 
 #include "compiler.hh"
-#include "db/driver.h"
+#include "db/driver.hh"
 #include "db/read-only-driver.hh"
 #include "exec.hh"
 #include "exec/job-runner.hh"

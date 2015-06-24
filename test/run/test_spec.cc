@@ -10,7 +10,7 @@
 #include <boost/filesystem/fstream.hpp>
 #include "cellml.hh"
 #include "database.h"
-#include "db/driver.h"
+#include "db/driver.hh"
 #include "phml.hh"
 #include "sbml.hh"
 

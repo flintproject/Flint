@@ -9,7 +9,7 @@
 #include <boost/filesystem.hpp>
 #include <boost/filesystem/fstream.hpp>
 #include "database.h"
-#include "db/driver.h"
+#include "db/driver.hh"
 
 #define BOOST_TEST_MODULE test_uot
 #include "test.hh"

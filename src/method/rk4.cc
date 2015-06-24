@@ -15,7 +15,7 @@
 #include <boost/spirit/include/phoenix.hpp>
 #include <boost/spirit/include/qi.hpp>
 
-#include "db/driver.h"
+#include "db/driver.hh"
 #include "db/query.h"
 #include "db/statement-driver.h"
 

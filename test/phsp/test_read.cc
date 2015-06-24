@@ -7,7 +7,7 @@
 
 #define BOOST_FILESYSTEM_NO_DEPRECATED
 #include <boost/filesystem.hpp>
-#include "db/driver.h"
+#include "db/driver.hh"
 #include "sedml.hh"
 
 #define BOOST_TEST_MODULE test_read

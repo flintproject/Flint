@@ -83,6 +83,7 @@ libflintxx_la_SOURCES = \
     compiler/sort.cc \
     compiler/tac.cc \
     csv/export.cc \
+    db/driver.cc \
     db/flow.cc \
     db/read-only-driver.cc \
     exec/enum.cc \
@@ -232,7 +233,7 @@ isdwc_LDADD = $(BOOST_PROGRAM_OPTIONS_LIBS)
 isdwc_SOURCES = isdwc-main.cc
 
 test_input1_CPPFLAGS = $(BOOST_CPPFLAGS)
-test_input1_LDADD = libflint.la libsqlite3.la
+test_input1_LDADD = libflintxx.la libflint.la libsqlite3.la
 test_input1_SOURCES = test-input1-main.cc
 
 test_run_CPPFLAGS = $(PROTOBUF_CFLAGS) $(BOOST_CPPFLAGS)
@@ -240,5 +241,5 @@ test_run_LDADD = libflintxx.la libflint.la libsqlite3.la $(PROTOBUF_LIBS)
 test_run_SOURCES = test-run-main.cc
 
 test_singleton_CPPFLAGS = $(BOOST_CPPFLAGS)
-test_singleton_LDADD = libflint.la libsqlite3.la
+test_singleton_LDADD = libflintxx.la libflint.la libsqlite3.la
 test_singleton_SOURCES = test-singleton-main.cc

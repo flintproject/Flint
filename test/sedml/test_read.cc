@@ -5,7 +5,7 @@
 
 #include "sedml.hh"
 
-#include "db/driver.h"
+#include "db/driver.hh"
 
 #define BOOST_TEST_MODULE test_read
 #include "test.hh"

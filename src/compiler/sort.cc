@@ -23,7 +23,7 @@
 #include <boost/spirit/include/support_multi_pass.hpp>
 #include <boost/variant/recursive_variant.hpp>
 
-#include "db/driver.h"
+#include "db/driver.hh"
 #include "db/query.h"
 #include "db/statement-driver.h"
 

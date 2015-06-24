@@ -4,7 +4,7 @@
 #define BOOST_TEST_MODULE test_sort
 #include "test.hh"
 
-#include "db/driver.h"
+#include "db/driver.hh"
 
 struct F {
 	F()

@@ -14,7 +14,7 @@
 #include <boost/filesystem.hpp>
 
 #include "compiler.hh"
-#include "db/driver.h"
+#include "db/driver.hh"
 #include "db/statement-driver.h"
 #include "file.hh"
 #include "filter.hh"

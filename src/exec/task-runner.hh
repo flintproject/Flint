@@ -3,7 +3,7 @@
 #define FLINT_EXEC_TASK_RUNNER_HH_
 
 #include <memory>
-#include "db/driver.h"
+#include "db/driver.hh"
 #include "db/read-only-driver.hh"
 #include "task/config-reader.hh"
 #include "sqlite3.h"

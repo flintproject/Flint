@@ -16,7 +16,7 @@
 #include <thread>
 #include <vector>
 
-#include "db/driver.h"
+#include "db/driver.hh"
 #include "exec/task-runner.hh"
 #include "phsp.hh"
 #include "sedml.hh"

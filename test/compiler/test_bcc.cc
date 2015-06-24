@@ -4,7 +4,7 @@
 #define BOOST_TEST_MODULE test_bcc
 #include "test.hh"
 
-#include "db/driver.h"
+#include "db/driver.hh"
 #include "db/query.h"
 #include "db/tac-inserter.hh"
 

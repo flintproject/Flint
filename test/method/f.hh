@@ -2,7 +2,7 @@
 #ifndef FLINT_TEST_METHOD_F_HH_
 #define FLINT_TEST_METHOD_F_HH_
 
-#include "db/driver.h"
+#include "db/driver.hh"
 
 struct F {
 	F()

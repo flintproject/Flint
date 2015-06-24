@@ -4,7 +4,7 @@
 #include <cstdlib>
 
 #include "database.h"
-#include "db/driver.h"
+#include "db/driver.hh"
 
 int main(int argc, char *argv[])
 {
