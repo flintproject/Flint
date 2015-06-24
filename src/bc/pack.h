@@ -13,12 +13,11 @@
 
 #include <boost/scoped_array.hpp>
 
-// thread-unsafe
 template<typename TMessage>
 bool PackToOstream(const TMessage &message, std::ostream *os)
 {
 	static const size_t kHeadSize = 4;
-	static char buffer[kHeadSize];
+	char buffer[kHeadSize];
 
 	uint32_t byte_size = static_cast<uint32_t>(message.ByteSize());
 	uint32_t n_byte_size = htonl(byte_size);
@@ -27,12 +26,11 @@ bool PackToOstream(const TMessage &message, std::ostream *os)
 	return message.SerializeToOstream(os);
 }
 
-// thread-unsafe
 template<typename TMessage>
 bool UnpackFromIstream(TMessage &message, std::istream *is)
 {
 	static const size_t kHeadSize = 4;
-	static char buffer[kHeadSize];
+	char buffer[kHeadSize];
 
 	if (!is->read(buffer, kHeadSize).good()) return false;
 	uint32_t n_byte_size = 0;
