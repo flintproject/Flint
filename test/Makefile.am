@@ -7,6 +7,7 @@ SUBDIRS = \
 	mathml \
 	method \
 	phsp \
+	run \
 	sbml \
 	sedml \
 	sys \
