@@ -2,8 +2,6 @@
 #ifndef FLINT_LOAD_HH_
 #define FLINT_LOAD_HH_
 
-#include "file.hh"
-
 namespace load {
 
 enum ConfigMode {
@@ -14,9 +12,10 @@ enum ConfigMode {
 
 /*
  * Load the given model.
+ * given_file is encoded in UTF-8.
  * Return true in case of success, otherwise false.
  */
-bool Load(file::Format format, ConfigMode mode, int dir = 0);
+bool Load(const char *given_file, ConfigMode mode, int dir = 0);
 
 }
 

@@ -5,9 +5,6 @@
 
 #include "load.hh"
 
-#define BOOST_FILESYSTEM_NO_DEPRECATED
-#include <boost/filesystem.hpp>
-
 #include <cstdio>
 #include <cstring>
 #include <iostream>
@@ -17,8 +14,10 @@
 
 #include "cellml.hh"
 #include "compiler.hh"
+#include "database.h"
 #include "db/driver.h"
 #include "db/statement-driver.h"
+#include "file.hh"
 #include "layout.hh"
 #include "load/param.hh"
 #include "load/var.hh"
@@ -175,26 +174,18 @@ private:
 	std::unique_ptr<char[]> var_;
 };
 
-bool CopyFile(const char *source, const char *target)
-{
-	boost::system::error_code ec;
-	boost::filesystem::copy_file(source, target, ec);
-	if (ec) {
-		cerr << ec << endl;
-		return false;
-	}
-	return true;
 }
 
-}
-
-bool Load(file::Format format, ConfigMode mode, int dir)
+bool Load(const char *given_file, ConfigMode mode, int dir)
 {
 	Loader loader(dir);
-	if (!CopyFile(loader.model(), loader.modeldb()))
-		return false;
 	db::Driver driver(loader.modeldb());
 	sqlite3 *db = driver.db();
+	if (!SaveGivenFile(db, given_file))
+		return false;
+	file::Format format;
+	if (!file::Txt(given_file, &format, dir))
+		return false;
 	switch (format) {
 	case file::kIsml:
 	case file::kPhml:

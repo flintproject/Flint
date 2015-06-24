@@ -140,8 +140,7 @@ libflintxx_la_SOURCES = \
     ts/tsc.cc \
     ts/tsfiles.cc \
     utf8path.cc \
-    uuidgen.cc \
-    workspace/task.cc
+    uuidgen.cc
 
 libsqlite3_la_CPPFLAGS = -DSQLITE_THREADSAFE=1 -DSQLITE_OMIT_LOAD_EXTENSION
 libsqlite3_la_LDFLAGS = -no-undefined

@@ -10,7 +10,6 @@
 
 #include "bc/binary.h"
 #include "load.hh"
-#include "workspace/task.h"
 
 using std::cerr;
 using std::endl;
@@ -45,10 +44,5 @@ int main(int argc, char *argv[])
 		return EXIT_FAILURE;
 	}
 	given_file[s] = '\0';
-
-	workspace::Task task(given_file);
-	file::Format format;
-	if (!task.Setup(&format))
-		return EXIT_FAILURE;
-	return load::Load(format, load::kOpen) ? EXIT_SUCCESS : EXIT_FAILURE;
+	return load::Load(given_file, load::kOpen) ? EXIT_SUCCESS : EXIT_FAILURE;
 }

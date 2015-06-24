@@ -23,10 +23,8 @@
 #include "run/spec.hh"
 #include "system.h"
 #include "task.hh"
-#include "task.hh"
 #include "task/config-reader.hh"
 #include "utf8path.h"
-#include "workspace/task.h"
 
 #include "cli.pb.h"
 
@@ -81,12 +79,7 @@ bool Run(const char *input, int size)
 		}
 	}
 
-	workspace::Task task(option.model_filename().c_str());
-	file::Format format;
-	if (!task.Setup(&format)) {
-		return false;
-	}
-	if (!load::Load(format, load::kRun))
+	if (!load::Load(option.model_filename().c_str(), load::kRun))
 		return false;
 
 	db::Driver driver("modeldb");

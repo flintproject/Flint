@@ -25,7 +25,6 @@
 #include "layout.hh"
 #include "load.hh"
 #include "task.hh"
-#include "workspace/task.h"
 
 using std::cerr;
 using std::endl;
@@ -51,16 +50,8 @@ bool CreateSpec(int id, sqlite3 *db)
 
 bool Setup(int id, const char *path)
 {
-	{
-		file::Format format;
-		{
-			workspace::Task wt(path, id);
-			if (!wt.Setup(&format))
-				return false;
-		}
-		if (!load::Load(format, load::kExec, id))
-			return false;
-	}
+	if (!load::Load(path, load::kExec, id))
+		return false;
 	{
 		db::Driver driver("x.db");
 		if (!task::Config(id, driver.db()))
