@@ -4,6 +4,7 @@ SUBDIRS = \
 	common \
 	compiler \
 	file \
+	layout \
 	load \
 	mathml \
 	method \
