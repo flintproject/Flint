@@ -9,6 +9,7 @@ SUBDIRS = \
 	method \
 	phml \
 	phsp \
+	phz \
 	run \
 	sbml \
 	sedml \

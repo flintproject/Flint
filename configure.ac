@@ -128,6 +128,7 @@ AC_CONFIG_FILES([Makefile
                  test/method/Makefile
                  test/phml/Makefile
                  test/phsp/Makefile
+                 test/phz/Makefile
                  test/run/Makefile
                  test/sbml/Makefile
                  test/sedml/Makefile
