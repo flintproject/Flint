@@ -505,7 +505,7 @@ bool Evolve(sqlite3 *db,
 			}
 			p = static_cast<char>(100 * (data[kIndexTime] / data[kIndexEnd]));
 			if (p != q) {
-				FILE *fp = fopen(option.status_file, "wb");
+				FILE *fp = fopen(option.status_file, "r+b");
 				if (fp) {
 					fwrite(&p, 1, 1, fp);
 					fclose(fp);
