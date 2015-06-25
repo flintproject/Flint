@@ -56,6 +56,13 @@ public:
 		BOOST_CHECK_EQUAL(e, SQLITE_OK);
 	}
 
+	void CheckTable(const char *table, std::vector<std::string> &expected) {
+		std::vector<std::string> rows;
+		Table(table, &rows);
+		BOOST_CHECK_EQUAL_COLLECTIONS(rows.begin(), rows.end(),
+									  expected.begin(), expected.end());
+	}
+
 private:
 	sqlite3 *db_;
 };
