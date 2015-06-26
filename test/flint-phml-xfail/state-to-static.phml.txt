@@ -1,7 +1,0 @@
-found invalid edge from a state to a static-parameter
-  from
-    port-id: 1
-    module-id: 3e10b8f4-75f8-11e4-ae2e-d39dff277ccb
-  to
-    port-id: 1
-    module-id: 3cb504a6-75f8-11e4-85b6-8b3365a37bec

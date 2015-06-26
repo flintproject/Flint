@@ -67,6 +67,26 @@ private:
 	sqlite3 *db_;
 };
 
+class StderrCapture {
+public:
+	StderrCapture()
+		: oss_()
+		, orig_(std::cerr.rdbuf(oss_.rdbuf()))
+	{}
+
+	~StderrCapture() {
+		std::cerr.rdbuf(orig_);
+	}
+
+	std::string Get() {
+		return oss_.str();
+	}
+
+private:
+	std::ostringstream oss_;
+	std::streambuf *orig_;
+};
+
 }
 
 #endif
