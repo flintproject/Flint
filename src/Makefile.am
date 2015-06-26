@@ -108,6 +108,7 @@ libflintxx_la_SOURCES = \
     method/assign.cc \
     method/euler.cc \
     method/event.cc \
+    method/helper.cc \
     method/rk4.cc \
     modelpath.cc \
     phml/combine-all.cc \

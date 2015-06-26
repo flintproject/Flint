@@ -18,6 +18,7 @@
 #include "db/driver.hh"
 #include "db/query.h"
 #include "db/statement-driver.hh"
+#include "method/helper.hh"
 
 using std::cerr;
 using std::endl;
@@ -307,17 +308,6 @@ void RewriteDelayParam(Compound &x, const Expr &expr)
 	x.children.push_back(c);
 }
 
-void RewriteDeltaTimeParam(Compound &x, const Expr &expr)
-{
-	x.children.push_back(expr);
-
-	Compound c;
-	c.keyword = "minus";
-	c.children.push_back("%time");
-	c.children.push_back("@dt");
-	x.children.push_back(c);
-}
-
 template<typename TIterator>
 struct Grammar : qi::grammar<TIterator, Compound()> {
 
@@ -373,8 +363,8 @@ struct Grammar : qi::grammar<TIterator, Compound()> {
 						 >> ' ' >> expr [bind(&RewriteDelayParam, _val, _1)]
 						 >> ')';
 
-		delta_time_expr = '(' >> td.delta_time_ [at_c<0>(_val) = val("$lookback")]
-							  >> ' ' >> expr [bind(&RewriteDeltaTimeParam, _val, _1)]
+		delta_time_expr = '(' >> td.delta_time_
+							  >> ' ' >> td.id [bind(&RewriteDeltaTime, _val, _1)]
 							  >> ')';
 
 		eq_expr = '(' >> td.eq_

@@ -8,7 +8,7 @@
     </is:meta-information>
     <is:date>
       <is:created>2013-08-05T16:40:15+09:00</is:created>
-      <is:last-modified>2013-08-05T16:40:15+09:00</is:last-modified>
+      <is:last-modified>2015-06-26T12:30:00+09:00</is:last-modified>
     </is:date>
     <is:description>An example using DeltaTime</is:description>
   </is:header>
@@ -123,6 +123,45 @@
       </is:physical-quantity-set>
       <is:event-set />
       <is:morphology />
+    </is:module>
+    <is:module module-id="3d329a50-1bb2-11e5-ada9-dbc5225a9505" type="functional-unit">
+      <is:property>
+        <is:name>b</is:name>
+        <is:capsulation state="false" />
+        <is:template state="false" />
+        <is:instance state="false" />
+      </is:property>
+      <is:port-set />
+      <is:physical-quantity-set>
+        <is:physical-quantity type="variable-parameter" physical-quantity-id="1">
+          <is:name>dt</is:name>
+          <is:implementation>
+            <is:definition format="mathml" type="ae">
+              <m:math xmlns:m="http://www.w3.org/1998/Math/MathML">
+                <m:apply>
+                  <m:eq />
+                  <m:ci>dt</m:ci>
+                  <m:apply>
+                    <m:minus/>
+                    <m:ci>time</m:ci>
+                    <m:apply>
+                      <m:csymbol>DeltaTime</m:csymbol>
+                      <m:ci>time</m:ci>
+                    </m:apply>
+                  </m:apply>
+                </m:apply>
+              </m:math>
+            </is:definition>
+          </is:implementation>
+          <is:dimension type="scalar" />
+          <is:value-type-set>
+            <is:value-type unit-id="0" precision="double" />
+          </is:value-type-set>
+          <is:initial-value></is:initial-value>
+          <is:problem-condition-set />
+          <is:description>The time step</is:description>
+        </is:physical-quantity>
+      </is:physical-quantity-set>
     </is:module>
   </is:module-set>
   <is:controller-set />

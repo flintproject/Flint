@@ -31,17 +31,18 @@ BOOST_AUTO_TEST_CASE(function)
 {
 	SetupFunction();
 	BOOST_CHECK(method::Euler(input_db, "input", output_db));
-	std::vector<std::string> r;
-	output.Table("asts", &r);
-	BOOST_CHECK_EQUAL(r.size(), 8u);
-	BOOST_CHECK_EQUAL(r[0], "00000000-0000-0000-0000-000000000000 %x#0 ($exponential_variate 10)");
-	BOOST_CHECK_EQUAL(r[1], "00000000-0000-0000-0000-000000000000 %y#0 ($gamma_variate 2 1)");
-	BOOST_CHECK_EQUAL(r[2], "00000000-0000-0000-0000-000000000000 %z#0 ($gauss_variate 0 1)");
-	BOOST_CHECK_EQUAL(r[3], "00000000-0000-0000-0000-000000000000 %x0#0 ($poisson_variate 10)");
-	BOOST_CHECK_EQUAL(r[4], "00000000-0000-0000-0000-000000000000 %x1#0 ($uniform_variate 0 100 0 1)");
-	BOOST_CHECK_EQUAL(r[5], "00000000-0000-0000-0000-000000000000 %v#0 ($lookback %x#0 (minus (plus %time @dt) 0.001))");
-	BOOST_CHECK_EQUAL(r[6], "00000000-0000-0000-0000-000000000000 %w#0 ($lookback %x#0 (minus (plus %time @dt) @dt))");
-	BOOST_CHECK_EQUAL(r[7], "00000000-0000-0000-0000-000000000000 %t2#0 (times (plus %time @dt) 2)");
+	std::vector<std::string> rows{
+		"00000000-0000-0000-0000-000000000000 %x#0 ($exponential_variate 10)",
+		"00000000-0000-0000-0000-000000000000 %y#0 ($gamma_variate 2 1)",
+		"00000000-0000-0000-0000-000000000000 %z#0 ($gauss_variate 0 1)",
+		"00000000-0000-0000-0000-000000000000 %x0#0 ($poisson_variate 10)",
+		"00000000-0000-0000-0000-000000000000 %x1#0 ($uniform_variate 0 100 0 1)",
+		"00000000-0000-0000-0000-000000000000 %v#0 ($lookback %x#0 (minus (plus %time @dt) 0.001))",
+		"00000000-0000-0000-0000-000000000000 %w#0 ($lookback %x#0 (minus (plus %time @dt) @dt))",
+		"00000000-0000-0000-0000-000000000000 %last_time#0 (minus (plus %time @dt) @dt)",
+		"00000000-0000-0000-0000-000000000000 %t2#0 (times (plus %time @dt) 2)"
+	};
+	output.CheckTable("asts", rows);
 }
 
 BOOST_AUTO_TEST_CASE(literal)

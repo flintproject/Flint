@@ -39,6 +39,7 @@ struct F {
 		input.Exec("INSERT INTO input VALUES ('00000000-0000-0000-0000-000000000000', '(eq %x1 ($uniform_variate 0 100 0 1))')");
 		input.Exec("INSERT INTO input VALUES ('00000000-0000-0000-0000-000000000000', '(eq %v ($Delay %x 0.001))')");
 		input.Exec("INSERT INTO input VALUES ('00000000-0000-0000-0000-000000000000', '(eq %w ($DeltaTime %x))')");
+		input.Exec("INSERT INTO input VALUES ('00000000-0000-0000-0000-000000000000', '(eq %last_time ($DeltaTime %time))')");
 		input.Exec("INSERT INTO input VALUES ('00000000-0000-0000-0000-000000000000', '(eq %t2 (times %time 2))')");
 	}
 

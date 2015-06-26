@@ -52,41 +52,45 @@ BOOST_AUTO_TEST_CASE(function)
 {
 	SetupFunction();
 	BOOST_CHECK(method::Rk4(input_db, "input", output_db));
-	std::vector<std::string> r;
-	output.Table("asts", &r);
-	BOOST_CHECK_EQUAL(r.size(), 32u);
-	BOOST_CHECK_EQUAL(r[0], "00000000-0000-0000-0000-000000000000 %x#2 ($exponential_variate 10)");
-	BOOST_CHECK_EQUAL(r[1], "00000000-0000-0000-0000-000000000000 %x#4 ($exponential_variate 10)");
-	BOOST_CHECK_EQUAL(r[2], "00000000-0000-0000-0000-000000000000 %x#6 ($exponential_variate 10)");
-	BOOST_CHECK_EQUAL(r[3], "00000000-0000-0000-0000-000000000000 %x#0 ($exponential_variate 10)");
-	BOOST_CHECK_EQUAL(r[4], "00000000-0000-0000-0000-000000000000 %y#2 ($gamma_variate 2 1)");
-	BOOST_CHECK_EQUAL(r[5], "00000000-0000-0000-0000-000000000000 %y#4 ($gamma_variate 2 1)");
-	BOOST_CHECK_EQUAL(r[6], "00000000-0000-0000-0000-000000000000 %y#6 ($gamma_variate 2 1)");
-	BOOST_CHECK_EQUAL(r[7], "00000000-0000-0000-0000-000000000000 %y#0 ($gamma_variate 2 1)");
-	BOOST_CHECK_EQUAL(r[8], "00000000-0000-0000-0000-000000000000 %z#2 ($gauss_variate 0 1)");
-	BOOST_CHECK_EQUAL(r[9], "00000000-0000-0000-0000-000000000000 %z#4 ($gauss_variate 0 1)");
-	BOOST_CHECK_EQUAL(r[10], "00000000-0000-0000-0000-000000000000 %z#6 ($gauss_variate 0 1)");
-	BOOST_CHECK_EQUAL(r[11], "00000000-0000-0000-0000-000000000000 %z#0 ($gauss_variate 0 1)");
-	BOOST_CHECK_EQUAL(r[12], "00000000-0000-0000-0000-000000000000 %x0#2 ($poisson_variate 10)");
-	BOOST_CHECK_EQUAL(r[13], "00000000-0000-0000-0000-000000000000 %x0#4 ($poisson_variate 10)");
-	BOOST_CHECK_EQUAL(r[14], "00000000-0000-0000-0000-000000000000 %x0#6 ($poisson_variate 10)");
-	BOOST_CHECK_EQUAL(r[15], "00000000-0000-0000-0000-000000000000 %x0#0 ($poisson_variate 10)");
-	BOOST_CHECK_EQUAL(r[16], "00000000-0000-0000-0000-000000000000 %x1#2 ($uniform_variate 0 100 0 1)");
-	BOOST_CHECK_EQUAL(r[17], "00000000-0000-0000-0000-000000000000 %x1#4 ($uniform_variate 0 100 0 1)");
-	BOOST_CHECK_EQUAL(r[18], "00000000-0000-0000-0000-000000000000 %x1#6 ($uniform_variate 0 100 0 1)");
-	BOOST_CHECK_EQUAL(r[19], "00000000-0000-0000-0000-000000000000 %x1#0 ($uniform_variate 0 100 0 1)");
-	BOOST_CHECK_EQUAL(r[20], "00000000-0000-0000-0000-000000000000 %v#2 ($lookback %x#2 (minus (plus %time (divide @dt 2)) 0.001))");
-	BOOST_CHECK_EQUAL(r[21], "00000000-0000-0000-0000-000000000000 %v#4 ($lookback %x#4 (minus (plus %time (divide @dt 2)) 0.001))");
-	BOOST_CHECK_EQUAL(r[22], "00000000-0000-0000-0000-000000000000 %v#6 ($lookback %x#6 (minus (plus %time @dt) 0.001))");
-	BOOST_CHECK_EQUAL(r[23], "00000000-0000-0000-0000-000000000000 %v#0 ($lookback %x#0 (minus (plus %time @dt) 0.001))");
-	BOOST_CHECK_EQUAL(r[24], "00000000-0000-0000-0000-000000000000 %w#2 ($lookback %x#2 (minus (plus %time (divide @dt 2)) @dt))");
-	BOOST_CHECK_EQUAL(r[25], "00000000-0000-0000-0000-000000000000 %w#4 ($lookback %x#4 (minus (plus %time (divide @dt 2)) @dt))");
-	BOOST_CHECK_EQUAL(r[26], "00000000-0000-0000-0000-000000000000 %w#6 ($lookback %x#6 (minus (plus %time @dt) @dt))");
-	BOOST_CHECK_EQUAL(r[27], "00000000-0000-0000-0000-000000000000 %w#0 ($lookback %x#0 (minus (plus %time @dt) @dt))");
-	BOOST_CHECK_EQUAL(r[28], "00000000-0000-0000-0000-000000000000 %t2#2 (times (plus %time (divide @dt 2)) 2)");
-	BOOST_CHECK_EQUAL(r[29], "00000000-0000-0000-0000-000000000000 %t2#4 (times (plus %time (divide @dt 2)) 2)");
-	BOOST_CHECK_EQUAL(r[30], "00000000-0000-0000-0000-000000000000 %t2#6 (times (plus %time @dt) 2)");
-	BOOST_CHECK_EQUAL(r[31], "00000000-0000-0000-0000-000000000000 %t2#0 (times (plus %time @dt) 2)");
+	std::vector<std::string> rows{
+		"00000000-0000-0000-0000-000000000000 %x#2 ($exponential_variate 10)",
+		"00000000-0000-0000-0000-000000000000 %x#4 ($exponential_variate 10)",
+		"00000000-0000-0000-0000-000000000000 %x#6 ($exponential_variate 10)",
+		"00000000-0000-0000-0000-000000000000 %x#0 ($exponential_variate 10)",
+		"00000000-0000-0000-0000-000000000000 %y#2 ($gamma_variate 2 1)",
+		"00000000-0000-0000-0000-000000000000 %y#4 ($gamma_variate 2 1)",
+		"00000000-0000-0000-0000-000000000000 %y#6 ($gamma_variate 2 1)",
+		"00000000-0000-0000-0000-000000000000 %y#0 ($gamma_variate 2 1)",
+		"00000000-0000-0000-0000-000000000000 %z#2 ($gauss_variate 0 1)",
+		"00000000-0000-0000-0000-000000000000 %z#4 ($gauss_variate 0 1)",
+		"00000000-0000-0000-0000-000000000000 %z#6 ($gauss_variate 0 1)",
+		"00000000-0000-0000-0000-000000000000 %z#0 ($gauss_variate 0 1)",
+		"00000000-0000-0000-0000-000000000000 %x0#2 ($poisson_variate 10)",
+		"00000000-0000-0000-0000-000000000000 %x0#4 ($poisson_variate 10)",
+		"00000000-0000-0000-0000-000000000000 %x0#6 ($poisson_variate 10)",
+		"00000000-0000-0000-0000-000000000000 %x0#0 ($poisson_variate 10)",
+		"00000000-0000-0000-0000-000000000000 %x1#2 ($uniform_variate 0 100 0 1)",
+		"00000000-0000-0000-0000-000000000000 %x1#4 ($uniform_variate 0 100 0 1)",
+		"00000000-0000-0000-0000-000000000000 %x1#6 ($uniform_variate 0 100 0 1)",
+		"00000000-0000-0000-0000-000000000000 %x1#0 ($uniform_variate 0 100 0 1)",
+		"00000000-0000-0000-0000-000000000000 %v#2 ($lookback %x#2 (minus (plus %time (divide @dt 2)) 0.001))",
+		"00000000-0000-0000-0000-000000000000 %v#4 ($lookback %x#4 (minus (plus %time (divide @dt 2)) 0.001))",
+		"00000000-0000-0000-0000-000000000000 %v#6 ($lookback %x#6 (minus (plus %time @dt) 0.001))",
+		"00000000-0000-0000-0000-000000000000 %v#0 ($lookback %x#0 (minus (plus %time @dt) 0.001))",
+		"00000000-0000-0000-0000-000000000000 %w#2 ($lookback %x#2 (minus (plus %time (divide @dt 2)) @dt))",
+		"00000000-0000-0000-0000-000000000000 %w#4 ($lookback %x#4 (minus (plus %time (divide @dt 2)) @dt))",
+		"00000000-0000-0000-0000-000000000000 %w#6 ($lookback %x#6 (minus (plus %time @dt) @dt))",
+		"00000000-0000-0000-0000-000000000000 %w#0 ($lookback %x#0 (minus (plus %time @dt) @dt))",
+		"00000000-0000-0000-0000-000000000000 %last_time#2 (minus (plus %time (divide @dt 2)) @dt)",
+		"00000000-0000-0000-0000-000000000000 %last_time#4 (minus (plus %time (divide @dt 2)) @dt)",
+		"00000000-0000-0000-0000-000000000000 %last_time#6 (minus (plus %time @dt) @dt)",
+		"00000000-0000-0000-0000-000000000000 %last_time#0 (minus (plus %time @dt) @dt)",
+		"00000000-0000-0000-0000-000000000000 %t2#2 (times (plus %time (divide @dt 2)) 2)",
+		"00000000-0000-0000-0000-000000000000 %t2#4 (times (plus %time (divide @dt 2)) 2)",
+		"00000000-0000-0000-0000-000000000000 %t2#6 (times (plus %time @dt) 2)",
+		"00000000-0000-0000-0000-000000000000 %t2#0 (times (plus %time @dt) 2)",
+	};
+	output.CheckTable("asts", rows);
 }
 
 BOOST_AUTO_TEST_CASE(literal)
