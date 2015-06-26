@@ -1,1 +1,0 @@
-531f5aea-c961-11e4-a5fe-a74d28f4c4e3 y before (eq %y (piecewise (piece (piecewise (piece 2 (geq %x 0.5))) (eq %y 1)) (piece (piecewise (piece 3 (leq %x 0))) (eq %y 2)) (piece (piecewise (piece 2 (gt %x 0)) (piece 4 (geq %x 0.5))) (eq %y 3))))

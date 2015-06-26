@@ -48,15 +48,22 @@ public:
 		BOOST_CHECK_EQUAL(e, SQLITE_OK);
 	}
 
-	void Table(const char *table, std::vector<std::string> *rows) {
+	void CheckRows(const char *query, const std::vector<std::string> &expected) {
+		std::vector<std::string> rows;
+		CollectRows(query, &rows);
+		BOOST_CHECK_EQUAL_COLLECTIONS(rows.cbegin(), rows.cend(),
+									  expected.cbegin(), expected.cend());
+	}
+
+	void Table(const char *table, std::vector<std::string> *rows)
+	{
 		std::ostringstream oss;
 		oss << "SELECT * FROM " << table;
 		std::string query = oss.str();
-		int e = sqlite3_exec(db_, query.c_str(), AddRow, rows, NULL);
-		BOOST_CHECK_EQUAL(e, SQLITE_OK);
+		CollectRows(query.c_str(), rows);
 	}
 
-	void CheckTable(const char *table, std::vector<std::string> &expected) {
+	void CheckTable(const char *table, const std::vector<std::string> &expected) {
 		std::vector<std::string> rows;
 		Table(table, &rows);
 		BOOST_CHECK_EQUAL_COLLECTIONS(rows.begin(), rows.end(),
@@ -64,6 +71,12 @@ public:
 	}
 
 private:
+	void CollectRows(const char *query, std::vector<std::string> *rows)
+	{
+		int e = sqlite3_exec(db_, query, &AddRow, rows, NULL);
+		BOOST_CHECK_EQUAL(e, SQLITE_OK);
+	}
+
 	sqlite3 *db_;
 };
 
