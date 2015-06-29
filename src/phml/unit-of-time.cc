@@ -82,7 +82,7 @@ public:
 			sqlite3_int64 rowid = sqlite3_column_int64(stmt(), 0);
 			int unit_id = sqlite3_column_int(stmt(), 1);
 			const unsigned char *name = sqlite3_column_text(stmt(), 2);
-			std::auto_ptr<unit::Unit> unit(new unit::Unit);
+			std::unique_ptr<unit::Unit> unit(new unit::Unit);
 			unit->set_id(unit_id);
 			unit->set_name(std::string((const char *)name));
 			if (!loader_.Load(rowid, unit.get()))

@@ -45,7 +45,7 @@ public:
 			return false;
 		}
 		while (ifs_.peek() != EOF) {
-			std::auto_ptr<ipc::TimeUnit> tu(new ipc::TimeUnit);
+			std::unique_ptr<ipc::TimeUnit> tu(new ipc::TimeUnit);
 			if (!UnpackFromIstream(*tu, &ifs_)) {
 				cerr << "failed to read TimeUnit" << endl;
 				return false;

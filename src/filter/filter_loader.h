@@ -35,7 +35,7 @@ public:
 		}
 		filter->ReadHeader(header->size());
 		while (ifs_.peek() != EOF) {
-			std::auto_ptr<lo::Column> column(new lo::Column);
+			std::unique_ptr<lo::Column> column(new lo::Column);
 			if (!UnpackFromIstream(*column, &ifs_)) {
 				cerr << "could not read Column" << endl;
 				return false;

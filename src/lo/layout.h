@@ -52,7 +52,7 @@ public:
 			int sie = si + nos;
 			int sector_size = 0;
 
-			std::auto_ptr<Locater> locater(new Locater);
+			std::unique_ptr<Locater> locater(new Locater);
 			while (di < die) {
 				const lo::Data &d = dv_.at(di++);
 				locater->SetPosition(d.name(), sector_size);
@@ -61,7 +61,7 @@ public:
 			}
 			lm_.insert(key, locater.release());
 
-			std::auto_ptr<Mounter> mounter(new Mounter(nos));
+			std::unique_ptr<Mounter> mounter(new Mounter(nos));
 			for (int i=0;i<nos;i++) {
 				mounter->SetOffset(i, offset);
 				const lo::Sector &s = sv_.at(si++);

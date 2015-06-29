@@ -371,7 +371,7 @@ private:
 	}
 
 	boost::ptr_set<Edge> *edge_set_;
-	std::auto_ptr<vector<string> > instance_descendants_;
+	std::unique_ptr<vector<string> > instance_descendants_;
 	boost::ptr_map<string, vector<string> > instance_map_;
 	vector<string> template_descendants_;
 };

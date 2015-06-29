@@ -32,7 +32,7 @@ public:
 			int nos = 0;
 			int nod = 0;
 			{
-				std::auto_ptr<lo::Track> track(new lo::Track);
+				std::unique_ptr<lo::Track> track(new lo::Track);
 				if (!UnpackFromIstream(*track, &ifs_)) {
 					cerr << "could not read Track" << endl;
 					return false;
@@ -43,7 +43,7 @@ public:
 			}
 
 			for (int di=0;di<nod;di++) {
-				std::auto_ptr<lo::Data> data(new lo::Data);
+				std::unique_ptr<lo::Data> data(new lo::Data);
 				if (!UnpackFromIstream(*data, &ifs_)) {
 					cerr << "could not read Data" << endl;
 					return false;
@@ -51,7 +51,7 @@ public:
 				layout->AddData(data.release());
 			}
 			for (int si=0;si<nos;si++) {
-				std::auto_ptr<lo::Sector> sector(new lo::Sector);
+				std::unique_ptr<lo::Sector> sector(new lo::Sector);
 				if (!UnpackFromIstream(*sector, &ifs_)) {
 					cerr << "could not read Sector" << endl;
 					return false;

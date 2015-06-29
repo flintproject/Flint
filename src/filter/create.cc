@@ -100,7 +100,7 @@ public:
 	}
 
 	int Fill(const string &time_unit, const Spec *spec, boost::ptr_vector<lo::Column> *columns) const {
-		std::auto_ptr<lo::Column> c(new lo::Column);
+		std::unique_ptr<lo::Column> c(new lo::Column);
 
 		char us0[16] = {0};
 		c->set_position(0);

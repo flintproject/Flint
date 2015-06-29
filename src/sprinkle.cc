@@ -104,7 +104,7 @@ public:
 
 private:
 	JournalMap *jm_;
-	std::auto_ptr<vector<boost::uuids::uuid> > instances_;
+	std::unique_ptr<vector<boost::uuids::uuid> > instances_;
 	boost::ptr_map<boost::uuids::uuid, vector<boost::uuids::uuid> > im_;
 	vector<boost::uuids::uuid> templates_;
 };

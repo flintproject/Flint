@@ -45,7 +45,7 @@ int AddColumn(void *data, int argc, char **argv, char **names)
 	State *state = static_cast<State *>(data);
 	(void)names;
 	assert(argc == 9);
-	std::auto_ptr<lo::Column> c(new lo::Column);
+	std::unique_ptr<lo::Column> c(new lo::Column);
 	c->set_position(state->pos);
 	c->set_size(1); // TODO: variable size
 	boost::uuids::uuid u = gen(argv[2]);
