@@ -3782,7 +3782,7 @@ bool Read(sqlite3 *db)
 
 	xmlTextReaderPtr text_reader = xmlReaderForFile(model_filename.get(), NULL, 0);
 	if (!text_reader) {
-		cerr << "could not read the input" << endl;
+		cerr << "could not read the input: " << model_filename.get() << endl;
 		xmlCleanupParser();
 		return false;
 	}

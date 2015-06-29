@@ -131,7 +131,7 @@ bool DetectFormat(const char *filename, Format *format)
 
 	xmlTextReaderPtr text_reader = xmlReaderForFile(filename, NULL, 0);
 	if (!text_reader) {
-		cerr << "could not read the input" << endl;
+		cerr << "could not read the input: " << filename << endl;
 		return false;
 	}
 	Reader reader(text_reader, format);
