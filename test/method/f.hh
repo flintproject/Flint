@@ -45,10 +45,10 @@ struct F {
 
 	void SetupLiteral()
 	{
+		input.Exec("INSERT INTO input VALUES ('00000000-0000-0000-0000-000000000000', '(eq %e 2.71828182845904523536028747135266249775724709369995)')");
 		input.Exec("INSERT INTO input VALUES ('00000000-0000-0000-0000-000000000000', '(eq %x 1.2e-3)')");
 		input.Exec("INSERT INTO input VALUES ('00000000-0000-0000-0000-000000000000', '(eq %y 45E-06)')");
 		input.Exec("INSERT INTO input VALUES ('00000000-0000-0000-0000-000000000000', '(eq %z (times -2.3e+30 .5E-10))')");
-
 	}
 
 	void SetupOde()

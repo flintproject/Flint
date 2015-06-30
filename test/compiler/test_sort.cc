@@ -30,7 +30,7 @@ struct F {
 
 	// Generated from the following input:
 	// 4017c8b0-41ef-11e3-aec2-6f7051ba7a7a (eq %x %Y)
-	// 4017c8b0-41ef-11e3-aec2-6f7051ba7a7a (eq %y (divide %x 2))
+	// 4017c8b0-41ef-11e3-aec2-6f7051ba7a7a (eq %y (divide %x 2.71828182845904523536028747135266249775724709369995))
 	// 4017c8b0-41ef-11e3-aec2-6f7051ba7a7a (eq %z ($DeltaTime %y))
 	// 4017c8b0-41ef-11e3-aec2-6f7051ba7a7a (eq (diff (bvar %time) %X) (minus %Y))
 	// 4017c8b0-41ef-11e3-aec2-6f7051ba7a7a (eq (diff (bvar %time) %Y) (times %X 2))
@@ -40,10 +40,10 @@ struct F {
 		sql.Exec("INSERT INTO asts VALUES ('4017c8b0-41ef-11e3-aec2-6f7051ba7a7a', '%x#4', '%Y#4')");
 		sql.Exec("INSERT INTO asts VALUES ('4017c8b0-41ef-11e3-aec2-6f7051ba7a7a', '%x#6', '%Y#6')");
 		sql.Exec("INSERT INTO asts VALUES ('4017c8b0-41ef-11e3-aec2-6f7051ba7a7a', '%x#0', '%Y#0')");
-		sql.Exec("INSERT INTO asts VALUES ('4017c8b0-41ef-11e3-aec2-6f7051ba7a7a', '%y#2', '(divide %x#2 2)')");
-		sql.Exec("INSERT INTO asts VALUES ('4017c8b0-41ef-11e3-aec2-6f7051ba7a7a', '%y#4', '(divide %x#4 2)')");
-		sql.Exec("INSERT INTO asts VALUES ('4017c8b0-41ef-11e3-aec2-6f7051ba7a7a', '%y#6', '(divide %x#6 2)')");
-		sql.Exec("INSERT INTO asts VALUES ('4017c8b0-41ef-11e3-aec2-6f7051ba7a7a', '%y#0', '(divide %x#0 2)')");
+		sql.Exec("INSERT INTO asts VALUES ('4017c8b0-41ef-11e3-aec2-6f7051ba7a7a', '%y#2', '(divide %x#2 2.71828182845904523536028747135266249775724709369995)')");
+		sql.Exec("INSERT INTO asts VALUES ('4017c8b0-41ef-11e3-aec2-6f7051ba7a7a', '%y#4', '(divide %x#4 2.71828182845904523536028747135266249775724709369995)')");
+		sql.Exec("INSERT INTO asts VALUES ('4017c8b0-41ef-11e3-aec2-6f7051ba7a7a', '%y#6', '(divide %x#6 2.71828182845904523536028747135266249775724709369995)')");
+		sql.Exec("INSERT INTO asts VALUES ('4017c8b0-41ef-11e3-aec2-6f7051ba7a7a', '%y#0', '(divide %x#0 2.71828182845904523536028747135266249775724709369995)')");
 		sql.Exec("INSERT INTO asts VALUES ('4017c8b0-41ef-11e3-aec2-6f7051ba7a7a', '%z#2', '($lookback %y#2 (minus (plus %time (divide @dt 2)) @dt))')");
 		sql.Exec("INSERT INTO asts VALUES ('4017c8b0-41ef-11e3-aec2-6f7051ba7a7a', '%z#4', '($lookback %y#4 (minus (plus %time (divide @dt 2)) @dt))')");
 		sql.Exec("INSERT INTO asts VALUES ('4017c8b0-41ef-11e3-aec2-6f7051ba7a7a', '%z#6', '($lookback %y#6 (minus (plus %time @dt) @dt))')");
@@ -108,37 +108,37 @@ BOOST_AUTO_TEST_CASE(Euler) {
 BOOST_AUTO_TEST_CASE(Rk4) {
 	SetupRk4();
 	BOOST_CHECK(compiler::sort::Sort(db));
-	std::vector<std::string> r;
-	sql.Table("sorts", &r);
-	BOOST_CHECK_EQUAL(r.size(), 28u);
-	BOOST_CHECK_EQUAL(r[0], "4017c8b0-41ef-11e3-aec2-6f7051ba7a7a %X#1 (times @dt (minus %Y))");
-	BOOST_CHECK_EQUAL(r[1], "4017c8b0-41ef-11e3-aec2-6f7051ba7a7a %Y#1 (times @dt (times %X 2))");
-	BOOST_CHECK_EQUAL(r[2], "4017c8b0-41ef-11e3-aec2-6f7051ba7a7a %X#2 (plus %X (divide %X#1 2))");
-	BOOST_CHECK_EQUAL(r[3], "4017c8b0-41ef-11e3-aec2-6f7051ba7a7a %Y#2 (plus %Y (divide %Y#1 2))");
-	BOOST_CHECK_EQUAL(r[4], "4017c8b0-41ef-11e3-aec2-6f7051ba7a7a %Y#3 (times @dt (times %X#2 2))");
-	BOOST_CHECK_EQUAL(r[5], "4017c8b0-41ef-11e3-aec2-6f7051ba7a7a %Y#4 (plus %Y (divide %Y#3 2))");
-	BOOST_CHECK_EQUAL(r[6], "4017c8b0-41ef-11e3-aec2-6f7051ba7a7a %x#2 %Y#2");
-	BOOST_CHECK_EQUAL(r[7], "4017c8b0-41ef-11e3-aec2-6f7051ba7a7a %x#4 %Y#4");
-	BOOST_CHECK_EQUAL(r[8], "4017c8b0-41ef-11e3-aec2-6f7051ba7a7a %y#2 (divide %x#2 2)");
-	BOOST_CHECK_EQUAL(r[9], "4017c8b0-41ef-11e3-aec2-6f7051ba7a7a %y#4 (divide %x#4 2)");
-	BOOST_CHECK_EQUAL(r[10], "4017c8b0-41ef-11e3-aec2-6f7051ba7a7a %z#2 ($lookback %y#2 (minus (plus %time (divide @dt 2)) @dt))");
-	BOOST_CHECK_EQUAL(r[11], "4017c8b0-41ef-11e3-aec2-6f7051ba7a7a %z#4 ($lookback %y#4 (minus (plus %time (divide @dt 2)) @dt))");
-	BOOST_CHECK_EQUAL(r[12], "4017c8b0-41ef-11e3-aec2-6f7051ba7a7a %X#3 (times @dt (minus %Y#2))");
-	BOOST_CHECK_EQUAL(r[13], "4017c8b0-41ef-11e3-aec2-6f7051ba7a7a %X#4 (plus %X (divide %X#3 2))");
-	BOOST_CHECK_EQUAL(r[14], "4017c8b0-41ef-11e3-aec2-6f7051ba7a7a %X#5 (times @dt (minus %Y#4))");
-	BOOST_CHECK_EQUAL(r[15], "4017c8b0-41ef-11e3-aec2-6f7051ba7a7a %X#6 (plus %X %X#5)");
-	BOOST_CHECK_EQUAL(r[16], "4017c8b0-41ef-11e3-aec2-6f7051ba7a7a %Y#5 (times @dt (times %X#4 2))");
-	BOOST_CHECK_EQUAL(r[17], "4017c8b0-41ef-11e3-aec2-6f7051ba7a7a %Y#6 (plus %Y %Y#5)");
-	BOOST_CHECK_EQUAL(r[18], "4017c8b0-41ef-11e3-aec2-6f7051ba7a7a %Y#7 (times @dt (times %X#6 2))");
-	BOOST_CHECK_EQUAL(r[19], "4017c8b0-41ef-11e3-aec2-6f7051ba7a7a %Y#0 (plus %Y (divide (plus %Y#1 (plus (times 2 %Y#3) (plus (times 2 %Y#5) %Y#7))) 6))");
-	BOOST_CHECK_EQUAL(r[20], "4017c8b0-41ef-11e3-aec2-6f7051ba7a7a %x#6 %Y#6");
-	BOOST_CHECK_EQUAL(r[21], "4017c8b0-41ef-11e3-aec2-6f7051ba7a7a %x#0 %Y#0");
-	BOOST_CHECK_EQUAL(r[22], "4017c8b0-41ef-11e3-aec2-6f7051ba7a7a %y#6 (divide %x#6 2)");
-	BOOST_CHECK_EQUAL(r[23], "4017c8b0-41ef-11e3-aec2-6f7051ba7a7a %y#0 (divide %x#0 2)");
-	BOOST_CHECK_EQUAL(r[24], "4017c8b0-41ef-11e3-aec2-6f7051ba7a7a %z#6 ($lookback %y#6 (minus (plus %time @dt) @dt))");
-	BOOST_CHECK_EQUAL(r[25], "4017c8b0-41ef-11e3-aec2-6f7051ba7a7a %z#0 ($lookback %y#0 (minus (plus %time @dt) @dt))");
-	BOOST_CHECK_EQUAL(r[26], "4017c8b0-41ef-11e3-aec2-6f7051ba7a7a %X#7 (times @dt (minus %Y#6))");
-	BOOST_CHECK_EQUAL(r[27], "4017c8b0-41ef-11e3-aec2-6f7051ba7a7a %X#0 (plus %X (divide (plus %X#1 (plus (times 2 %X#3) (plus (times 2 %X#5) %X#7))) 6))");
+	std::vector<std::string> rows{
+		"4017c8b0-41ef-11e3-aec2-6f7051ba7a7a %X#1 (times @dt (minus %Y))",
+		"4017c8b0-41ef-11e3-aec2-6f7051ba7a7a %Y#1 (times @dt (times %X 2))",
+		"4017c8b0-41ef-11e3-aec2-6f7051ba7a7a %X#2 (plus %X (divide %X#1 2))",
+		"4017c8b0-41ef-11e3-aec2-6f7051ba7a7a %Y#2 (plus %Y (divide %Y#1 2))",
+		"4017c8b0-41ef-11e3-aec2-6f7051ba7a7a %Y#3 (times @dt (times %X#2 2))",
+		"4017c8b0-41ef-11e3-aec2-6f7051ba7a7a %Y#4 (plus %Y (divide %Y#3 2))",
+		"4017c8b0-41ef-11e3-aec2-6f7051ba7a7a %x#2 %Y#2",
+		"4017c8b0-41ef-11e3-aec2-6f7051ba7a7a %x#4 %Y#4",
+		"4017c8b0-41ef-11e3-aec2-6f7051ba7a7a %y#2 (divide %x#2 2.71828182845904523536028747135266249775724709369995)",
+		"4017c8b0-41ef-11e3-aec2-6f7051ba7a7a %y#4 (divide %x#4 2.71828182845904523536028747135266249775724709369995)",
+		"4017c8b0-41ef-11e3-aec2-6f7051ba7a7a %z#2 ($lookback %y#2 (minus (plus %time (divide @dt 2)) @dt))",
+		"4017c8b0-41ef-11e3-aec2-6f7051ba7a7a %z#4 ($lookback %y#4 (minus (plus %time (divide @dt 2)) @dt))",
+		"4017c8b0-41ef-11e3-aec2-6f7051ba7a7a %X#3 (times @dt (minus %Y#2))",
+		"4017c8b0-41ef-11e3-aec2-6f7051ba7a7a %X#4 (plus %X (divide %X#3 2))",
+		"4017c8b0-41ef-11e3-aec2-6f7051ba7a7a %X#5 (times @dt (minus %Y#4))",
+		"4017c8b0-41ef-11e3-aec2-6f7051ba7a7a %X#6 (plus %X %X#5)",
+		"4017c8b0-41ef-11e3-aec2-6f7051ba7a7a %Y#5 (times @dt (times %X#4 2))",
+		"4017c8b0-41ef-11e3-aec2-6f7051ba7a7a %Y#6 (plus %Y %Y#5)",
+		"4017c8b0-41ef-11e3-aec2-6f7051ba7a7a %Y#7 (times @dt (times %X#6 2))",
+		"4017c8b0-41ef-11e3-aec2-6f7051ba7a7a %Y#0 (plus %Y (divide (plus %Y#1 (plus (times 2 %Y#3) (plus (times 2 %Y#5) %Y#7))) 6))",
+		"4017c8b0-41ef-11e3-aec2-6f7051ba7a7a %x#6 %Y#6",
+		"4017c8b0-41ef-11e3-aec2-6f7051ba7a7a %x#0 %Y#0",
+		"4017c8b0-41ef-11e3-aec2-6f7051ba7a7a %y#6 (divide %x#6 2.71828182845904523536028747135266249775724709369995)",
+		"4017c8b0-41ef-11e3-aec2-6f7051ba7a7a %y#0 (divide %x#0 2.71828182845904523536028747135266249775724709369995)",
+		"4017c8b0-41ef-11e3-aec2-6f7051ba7a7a %z#6 ($lookback %y#6 (minus (plus %time @dt) @dt))",
+		"4017c8b0-41ef-11e3-aec2-6f7051ba7a7a %z#0 ($lookback %y#0 (minus (plus %time @dt) @dt))",
+		"4017c8b0-41ef-11e3-aec2-6f7051ba7a7a %X#7 (times @dt (minus %Y#6))",
+		"4017c8b0-41ef-11e3-aec2-6f7051ba7a7a %X#0 (plus %X (divide (plus %X#1 (plus (times 2 %X#3) (plus (times 2 %X#5) %X#7))) 6))"
+	};
+	sql.CheckTable("sorts", rows);
 }
 
 BOOST_AUTO_TEST_CASE(Sbml) {

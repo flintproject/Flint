@@ -26,6 +26,7 @@
 #include "db/driver.hh"
 #include "db/query.h"
 #include "db/statement-driver.hh"
+#include "lexer.hh"
 
 using std::cerr;
 using std::endl;
@@ -40,7 +41,11 @@ namespace sort {
 
 struct Compound;
 
-typedef boost::variant<boost::recursive_wrapper<Compound>, std::string, int, double> Expr;
+typedef boost::variant<boost::recursive_wrapper<Compound>,
+					   std::string,
+					   int,
+					   flint::lexer::Real
+					   > Expr;
 
 struct Compound {
 	std::vector<Expr> children;
@@ -94,7 +99,7 @@ public:
 		// nothing to do
 	}
 
-	void operator()(double /*d*/) const {
+	void operator()(const flint::lexer::Real &) const {
 		// nothing to do
 	}
 
@@ -130,8 +135,8 @@ public:
 		*os_ << i;
 	}
 
-	void operator()(double d) const {
-		*os_ << d;
+	void operator()(const flint::lexer::Real &r) const {
+		*os_ << r.lexeme;
 	}
 
 private:
@@ -161,7 +166,7 @@ struct Lexer : lex::lexer<TLexer> {
 
 	lex::token_def<std::string> uuid36, id, keyword;
 	lex::token_def<int> integer;
-	lex::token_def<double> real;
+	lex::token_def<flint::lexer::Real> real;
 };
 
 template<typename TIterator>

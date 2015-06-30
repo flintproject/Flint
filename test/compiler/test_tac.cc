@@ -46,6 +46,15 @@ struct F {
 
 BOOST_FIXTURE_TEST_SUITE(test_tac, F)
 
+BOOST_AUTO_TEST_CASE(Literal) {
+	Setup("2.71828182845904523536028747135266249775724709369995");
+	BOOST_CHECK(compiler::tac::Tac(db));
+	Check(1,
+		  "  loadi $0 2.71828182845904523536028747135266249775724709369995\n"
+		  "  store %x $0\n"
+		  );
+}
+
 BOOST_AUTO_TEST_CASE(Delay) {
 	Setup("($lookback %y (minus %time %z))");
 	BOOST_CHECK(compiler::tac::Tac(db));

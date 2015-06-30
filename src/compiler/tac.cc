@@ -20,6 +20,7 @@
 
 #include "db/query.h"
 #include "db/tac-inserter.hh"
+#include "lexer.hh"
 
 using std::cerr;
 using std::endl;
@@ -34,14 +35,14 @@ struct Compound;
 enum {
 	kExprIsCompound,
 	kExprIsString,
-	kExprIsInt,
-	kExprIsDouble
+	kExprIsInteger,
+	kExprIsReal
 };
 
 typedef boost::variant<boost::recursive_wrapper<Compound>,
 					   std::string,
 					   int,
-					   double
+					   flint::lexer::Real
 					   > Expr;
 
 struct Compound {
@@ -85,8 +86,8 @@ public:
 		*os_ << i;
 	}
 
-	void operator()(double d) const {
-		*os_ << d;
+	void operator()(const flint::lexer::Real &r) const {
+		*os_ << r.lexeme;
 	}
 
 private:
@@ -192,11 +193,11 @@ bool EmitAt(int n, std::deque<Expr> &children, Context *context)
 		cerr << "error: EmitAt: missing arguments: " << context->uuid << ' ' << context->id << endl;
 		return false;
 	}
-	if (children.at(0).which() != kExprIsInt) {
+	if (children.at(0).which() != kExprIsInteger) {
 		cerr << "error: invalid 1st argument of At: " << context->uuid << ' ' << context->id << endl;
 		return false;
 	}
-	if (children.at(1).which() != kExprIsInt) {
+	if (children.at(1).which() != kExprIsInteger) {
 		cerr << "error: invalid 2nd argument of At: " << context->uuid << ' ' << context->id << endl;
 		return false;
 	}
@@ -385,8 +386,8 @@ bool EmitCode(int n, Expr &sexp, Context *context)
 			*context->os << endl;
 		}
 		break;
-	case kExprIsInt:
-	case kExprIsDouble:
+	case kExprIsInteger:
+	case kExprIsReal:
 		{
 			*context->os << "  loadi $" << n << ' ';
 			boost::apply_visitor(Printer(context->os), sexp);
@@ -584,7 +585,7 @@ struct Lexer : lex::lexer<TLexer> {
 	lex::token_def<std::string> uniform_variate_;
 	lex::token_def<std::string> id, keyword;
 	lex::token_def<int> integer;
-	lex::token_def<double> real;
+	lex::token_def<flint::lexer::Real> real;
 };
 
 template<typename TIterator>

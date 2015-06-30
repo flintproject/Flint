@@ -55,8 +55,8 @@ public:
 		*os_ << i;
 	}
 
-	void operator()(double d) const {
-		*os_ << d;
+	void operator()(const flint::lexer::Real &r) const {
+		*os_ << r.lexeme;
 	}
 
 private:
@@ -240,7 +240,7 @@ struct Lexer : lex::lexer<TLexer> {
 	lex::token_def<std::string> case_set_, case_, condition_, eq_, delay_, delta_time_;
 	lex::token_def<std::string> id, keyword;
 	lex::token_def<int> integer;
-	lex::token_def<double> real;
+	lex::token_def<flint::lexer::Real> real;
 };
 
 void RewriteDelayParam(Compound &x, const Expr &expr)

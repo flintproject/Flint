@@ -8,6 +8,7 @@
 #include <boost/fusion/include/adapt_struct.hpp>
 #include <boost/variant/recursive_variant.hpp>
 
+#include "lexer.hh"
 #include "sqlite3.h"
 
 namespace method {
@@ -17,14 +18,14 @@ struct Compound;
 enum {
 	kExprIsCompound,
 	kExprIsString,
-	kExprIsInt,
-	kExprIsDouble
+	kExprIsInteger,
+	kExprIsReal
 };
 
 typedef boost::variant<boost::recursive_wrapper<Compound>,
 					   std::string,
 					   int,
-					   double
+					   flint::lexer::Real
 					   > Expr;
 
 struct Compound {
