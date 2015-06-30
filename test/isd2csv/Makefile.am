@@ -1,4 +1,4 @@
-TESTS = random.sh
+TESTS = random.sh roundtrip.sh
 
 .mk.sh:
 	echo '#!/bin/sh' > $@
@@ -7,6 +7,9 @@ TESTS = random.sh
 	chmod +x $@
 
 random.mk: @top_srcdir@/test/isd2csv/random.mk.in
+	m4 $< > $@
+
+roundtrip.mk: @top_srcdir@/test/isd2csv/roundtrip.mk.in
 	m4 $< > $@
 
 CLEANFILES = $(TESTS) $(TESTS:.sh=.mk) *.csv *.isd

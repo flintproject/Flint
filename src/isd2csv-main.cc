@@ -35,6 +35,14 @@ using std::vector;
 
 namespace {
 
+void RequestMaxNumOfDigits(std::ostream *os)
+{
+	// choose the defaultfloat
+	os->unsetf(std::ios::floatfield);
+	// See Theorem 15 of <http://docs.oracle.com/cd/E19957-01/806-3568/ncg_goldberg.html>.
+	os->precision(17);
+}
+
 class Converter {
 public:
 #ifdef ENABLE_TCP
@@ -182,6 +190,7 @@ int main(int argc, char *argv[])
 #ifdef ENABLE_TCP
 		("progress", po::value<string>(&port), "Send progress in percentage")
 #endif
+		("maximum-precision,M", "Request the maximum number of decimal digits to print double-precision floating-point numbers")
 		("output,o", po::value<string>(&output_file), "Output file name")
 		("input", po::value<string>(&input_file), "Input file name");
 	popts.add("input", 1);
@@ -206,6 +215,8 @@ int main(int argc, char *argv[])
 			cerr << "could not open output file: " << output_file << endl;
 			return EXIT_FAILURE;
 		}
+		if (vm.count("maximum-precision"))
+			RequestMaxNumOfDigits(&ofs);
 		if (vm.count("input")) {
 			ifstream ifs(input_file.c_str(), ios::in|ios::binary);
 			if (!ifs.is_open()) {
@@ -227,6 +238,8 @@ int main(int argc, char *argv[])
 		}
 		ofs.close();
 	} else {
+		if (vm.count("maximum-precision"))
+			RequestMaxNumOfDigits(&cout);
 		if (vm.count("input")) {
 			ifstream ifs(input_file.c_str(), ios::in|ios::binary);
 			if (!ifs.is_open()) {

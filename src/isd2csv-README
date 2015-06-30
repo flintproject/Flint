@@ -13,5 +13,9 @@ isd2csv --help
 --output, -o
     write to file at `output` instead of stdout.
 
+--maximum-precision, -M
+    request the maximum number of decimal digits to print double-precision
+    floating-point numbers.
+
 --help, -h
     show help.

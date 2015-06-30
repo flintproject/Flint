@@ -1,0 +1,18 @@
+.PHONY: all clean check
+
+all: input.isd
+
+check: input.isd output.isd
+	isddiff -C -T $^
+
+clean:
+	-rm -f output.isd output.csv input.isd
+
+input.isd:
+	isdrand $@
+
+output.csv: input.isd
+	isd2csv -M -o $@ $<
+
+output.isd: output.csv
+	csv2isd $< $@
