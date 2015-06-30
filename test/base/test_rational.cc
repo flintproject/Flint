@@ -1,7 +1,7 @@
 /* -*- Mode: C++; tab-width: 4; indent-tabs-mode: t; c-basic-offset: 4 -*- vim:set ts=4 sw=4 sts=4 noet: */
 #include "base/rational.h"
 #define BOOST_TEST_MODULE base/test_rational
-#include <boost/test/unit_test.hpp>
+#include "test.hh"
 
 BOOST_AUTO_TEST_CASE(FromString)
 {

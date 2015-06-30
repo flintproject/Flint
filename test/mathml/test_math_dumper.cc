@@ -3,11 +3,7 @@
 
 #include <sstream>
 #define BOOST_TEST_MODULE test_math_dumper
-#include <boost/test/unit_test.hpp>
-
-#define TEST_MATHML_0(dirname, basename) (#dirname "/" basename)
-#define TEST_MATHML_1(dirname, basename) TEST_MATHML_0(dirname, basename)
-#define TEST_MATHML(basename) TEST_MATHML_1(TEST_XML_MODELS, basename)
+#include "test.hh"
 
 struct GF {
 	GF() {
@@ -55,37 +51,37 @@ BOOST_FIXTURE_TEST_SUITE(test_math_dumper, F)
 
 BOOST_AUTO_TEST_CASE(mathml_cosh)
 {
-	ReadAndDump(TEST_MATHML("mathml_cosh.xml"),
+	ReadAndDump(TEST_MODELS("mathml_cosh.xml"),
 				" math (eq (cosh %x) (divide (plus (exp %x) (exp (minus %x))) 2))");
 }
 
 BOOST_AUTO_TEST_CASE(mathml_matrix)
 {
-	ReadAndDump(TEST_MATHML("mathml_matrix.xml"),
+	ReadAndDump(TEST_MODELS("mathml_matrix.xml"),
 				" math (eq %M (matrix (matrixrow 0 1 0) (matrixrow 0 0 1) (matrixrow 1 0 0)))");
 }
 
 BOOST_AUTO_TEST_CASE(mathml_piecewise)
 {
-	ReadAndDump(TEST_MATHML("mathml_piecewise.xml"),
+	ReadAndDump(TEST_MODELS("mathml_piecewise.xml"),
 				" math (eq (abs %x) (piecewise (piece (minus %x) (lt %x 0)) (piece 0 (eq %x 0)) (piece %x (gt %x 0))))");
 }
 
 BOOST_AUTO_TEST_CASE(mathml_sinh)
 {
-	ReadAndDump(TEST_MATHML("mathml_sinh.xml"),
+	ReadAndDump(TEST_MODELS("mathml_sinh.xml"),
 				" math (eq (sinh %x) (divide (minus (exp %x) (exp (minus %x))) 2))");
 }
 
 BOOST_AUTO_TEST_CASE(mathml_tanh)
 {
-	ReadAndDump(TEST_MATHML("mathml_tanh.xml"),
+	ReadAndDump(TEST_MODELS("mathml_tanh.xml"),
 				" math (eq (tanh %x) (divide (sinh %x) (cosh %x)))");
 }
 
 BOOST_AUTO_TEST_CASE(mathml_vector)
 {
-	ReadAndDump(TEST_MATHML("mathml_vector.xml"),
+	ReadAndDump(TEST_MODELS("mathml_vector.xml"),
 				" math (eq %V (vector 1 2.34e-10 3/4 %x))");
 }
 
