@@ -12,6 +12,7 @@ SUBDIRS = \
 	phsp \
 	phz \
 	run \
+	runtime \
 	sbml \
 	sedml \
 	sys \
