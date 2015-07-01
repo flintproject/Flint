@@ -63,7 +63,7 @@
               <File Id='jsonic.jar' Name='jsonic-1.2.10.jar' DiskId='1' Source='lib/jsonic-1.2.10.jar' />
             </Component>
             <Component Id='log4j' Guid='278080d0-da1c-11e1-99c1-4783ff8d51ca'>
-              <File Id='log4j.jar' Name='log4j-1.2.16.jar' DiskId='1' Source='lib/log4j-1.2.16.jar' />
+              <File Id='log4j.jar' Name='log4j-1.2.17.jar' DiskId='1' Source='lib/log4j-1.2.17.jar' />
             </Component>
             <Component Id='protobuf_java' Guid='e62bbfaa-1fae-11e1-a3c7-c705326b6d6c'>
               <File Id='protobuf_java.jar' Name='protobuf-java-2.6.1.jar' DiskId='1' Source='lib/protobuf-java-2.6.1.jar' />

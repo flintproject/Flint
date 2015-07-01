@@ -16,7 +16,7 @@ JARS := \
     jcommon-1.0.22 \
     jfreechart-1.0.18 \
     jsonic-1.2.10 \
-    log4j-1.2.16 \
+    log4j-1.2.17 \
     protobuf-java-$(PROTOBUF_VERSION) \
     sqlite-jdbc-3.8.6
 BOOST_DYLIBS := \
