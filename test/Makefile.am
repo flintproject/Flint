@@ -1,9 +1,9 @@
 SUBDIRS = \
 	base \
 	cellml \
-	common \
 	compiler \
 	file \
+	job \
 	layout \
 	load \
 	mathml \

@@ -3,7 +3,7 @@
 #include "config.h"
 #endif
 
-#include "runtime.hh"
+#include "job.hh"
 
 #define BOOST_FILESYSTEM_NO_DEPRECATED
 #include <boost/filesystem.hpp>
@@ -15,7 +15,7 @@
 #include "db/tac-inserter.hh"
 #include "layout.hh"
 
-#define BOOST_TEST_MODULE test_init
+#define BOOST_TEST_MODULE test_evolve
 #include "test.hh"
 
 
@@ -28,11 +28,11 @@ void CheckOutput(double expected)
 	static const int kBufferSize = 56;
 
 	FILE *fp = std::fopen("output", "rb");
-	BOOST_CHECK(fp);
+	BOOST_REQUIRE(fp);
 	char buf[kBufferSize];
 	size_t s = fread(buf, kBufferSize, 1, fp);
 	fclose(fp);
-	BOOST_CHECK_EQUAL(s, 1u);
+	BOOST_REQUIRE_EQUAL(s, 1u);
 	double x;
 	memcpy(&x, &buf[48], sizeof(x));
 	BOOST_CHECK_EQUAL(x, expected);
@@ -45,6 +45,8 @@ struct F {
 		: driver_(":memory:")
 	{
 		BOOST_REQUIRE_EQUAL(CreateSingleton(driver_.db()), 1);
+		test::Sql sql(driver_.db());
+		sql.Exec("UPDATE config SET method = 'euler', length = '0.01', step = '0.01', granularity = '1'");
 		db::NameInserter ni("names", driver_.db());
 		BOOST_REQUIRE(ni.InsertName(kDefaultSpaceId, 'v', 1, "a"));
 		BOOST_REQUIRE(ni.InsertName(kDefaultSpaceId, 'v', 2, "b"));
@@ -52,6 +54,8 @@ struct F {
 		BOOST_REQUIRE(layout::Generate(driver_.db(), "layout"));
 		BOOST_REQUIRE_EQUAL(CreateTable(driver_.db(), "tacs", "(uuid TEXT, name TEXT, nod INTEGER, body TEXT)"), 1);
 		BOOST_REQUIRE_EQUAL(SaveNol(1, driver_.db()), 1);
+
+		std::memset(&option_, 0, sizeof(option_));
 	}
 
 	~F()
@@ -64,10 +68,11 @@ struct F {
 	void Insert(const char *name, int nod, const char *body)
 	{
 		db::TacInserter ti(driver_.db());
-		BOOST_CHECK(ti.Insert(kDefaultSpaceId, name, nod, body));
+		BOOST_REQUIRE(ti.Insert(kDefaultSpaceId, name, nod, body));
 	}
 
 	db::Driver driver_;
+	job::Option option_;
 };
 
 #define SETUP(a, b) do {						\
@@ -90,7 +95,10 @@ struct F {
 		std::ofstream ofs("bc", std::ios::out|std::ios::binary);		\
 		BOOST_REQUIRE(compiler::bcc::Bcc(driver_.db(), &ofs));			\
 		ofs.close();													\
-		BOOST_CHECK(runtime::Init(driver_.db(), "layout", "bc", "output"));	\
+		FILE *fp = std::fopen("output", "wb");							\
+		BOOST_REQUIRE(fp);												\
+		BOOST_REQUIRE(job::Evolve(driver_.db(), "layout", "bc", fp, option_)); \
+		std::fclose(fp);												\
 		CheckOutput(expected);											\
 	} while (0)
 
@@ -104,11 +112,14 @@ struct F {
 		std::ofstream ofs("bc", std::ios::out|std::ios::binary);		\
 		BOOST_REQUIRE(compiler::bcc::Bcc(driver_.db(), &ofs));			\
 		ofs.close();													\
-		BOOST_CHECK(runtime::Init(driver_.db(), "layout", "bc", "output"));	\
+		FILE *fp = std::fopen("output", "wb");							\
+		BOOST_REQUIRE(fp);												\
+		BOOST_REQUIRE(job::Evolve(driver_.db(), "layout", "bc", fp, option_)); \
+		std::fclose(fp);												\
 		CheckOutput(expected);											\
 	} while (0)
 
-BOOST_FIXTURE_TEST_SUITE(test_init, F)
+BOOST_FIXTURE_TEST_SUITE(test_evolve, F)
 
 #include "common/runtime/call-testcases.hh"
 
