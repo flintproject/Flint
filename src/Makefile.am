@@ -50,8 +50,7 @@ bin_PROGRAMS = \
 	isdwc
 
 noinst_PROGRAMS = \
-	test-run \
-	test-singleton
+	test-run
 
 lib_LTLIBRARIES = libflint.la libflintxx.la libsqlite3.la
 
@@ -236,7 +235,3 @@ isdwc_SOURCES = isdwc-main.cc
 test_run_CPPFLAGS = $(PROTOBUF_CFLAGS) $(BOOST_CPPFLAGS)
 test_run_LDADD = libflintxx.la libflint.la libsqlite3.la $(PROTOBUF_LIBS)
 test_run_SOURCES = test-run-main.cc
-
-test_singleton_CPPFLAGS = $(BOOST_CPPFLAGS)
-test_singleton_LDADD = libflintxx.la libflint.la libsqlite3.la
-test_singleton_SOURCES = test-singleton-main.cc
