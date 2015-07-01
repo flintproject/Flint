@@ -9,7 +9,7 @@ PKG_CONFIG_PATH = $(PREFIX)/lib/pkgconfig
 JARS := \
     GarudaBackend \
     commons-cli-1.2 \
-    commons-logging-1.1.3 \
+    commons-logging-1.2 \
     commons-vfs2-2.0 \
     dom4j-1.6.1 \
     garuda-csr \
