@@ -39,7 +39,7 @@
               <File Id='GarudaBackend.jar' Name='GarudaBackend.jar' DiskId='1' Source='lib/GarudaBackend.jar' />
             </Component>
             <Component Id='commons_cli' Guid='2ca271c8-7593-11e2-8411-271d74e77d40'>
-              <File Id='commons_cli.jar' Name='commons-cli-1.2.jar' DiskId='1' Source='lib/commons-cli-1.2.jar' />
+              <File Id='commons_cli.jar' Name='commons-cli-1.3.1.jar' DiskId='1' Source='lib/commons-cli-1.3.1.jar' />
             </Component>
             <Component Id='commons_logging' Guid='97ddc5e4-3552-11e3-b56b-efd74f2f8d34'>
               <File Id='commons_logging.jar' Name='commons-logging-1.2.jar' DiskId='1' Source='lib/commons-logging-1.2.jar' />
