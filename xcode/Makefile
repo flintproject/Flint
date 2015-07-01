@@ -13,8 +13,8 @@ JARS := \
     commons-vfs2-2.0 \
     dom4j-1.6.1 \
     garuda-csr \
-    jcommon-1.0.22 \
-    jfreechart-1.0.18 \
+    jcommon-1.0.23 \
+    jfreechart-1.0.19 \
     jsonic-1.2.10 \
     log4j-1.2.17 \
     protobuf-java-$(PROTOBUF_VERSION) \

@@ -22,11 +22,11 @@
 	<classpath file="../flint/lib/commons-vfs2-2.0.jar"/>
 	<classpath file="../flint/lib/dom4j-1.6.1.jar"/>
 	<classpath file="../flint/lib/garuda-csr.jar"/>
-	<classpath file="../flint/lib/jcommon-1.0.22.jar"/>
-	<classpath file="../flint/lib/jfreechart-1.0.18.jar"/>
+	<classpath file="../flint/lib/jcommon-1.0.23.jar"/>
+	<classpath file="../flint/lib/jfreechart-1.0.19.jar"/>
 	<classpath file="../flint/lib/jsonic-1.2.10.jar"/>
 	<classpath file="../flint/lib/log4j-1.2.17.jar"/>
-	<classpath file="../flint/lib/jfreechart-1.0.18.jar"/>
+	<classpath file="../flint/lib/jfreechart-1.0.19.jar"/>
 	<classpath file="../flint/lib/protobuf-java-2.6.1.jar"/>
 	<classpath file="../flint/lib/sqlite-jdbc-3.8.6.jar"/>
 

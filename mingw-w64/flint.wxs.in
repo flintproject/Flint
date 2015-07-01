@@ -54,10 +54,10 @@
               <File Id='garuda_csr.jar' Name='garuda-csr.jar' DiskId='1' Source='lib/garuda-csr.jar' />
             </Component>
             <Component Id='jcommon' Guid='3032ea7a-cc92-11e1-9ce1-77b4b70ee673'>
-              <File Id='jcommon.jar' Name='jcommon-1.0.22.jar' DiskId='1' Source='lib/jcommon-1.0.22.jar' />
+              <File Id='jcommon.jar' Name='jcommon-1.0.23.jar' DiskId='1' Source='lib/jcommon-1.0.23.jar' />
             </Component>
             <Component Id='jfreechart' Guid='393169b2-cc92-11e1-8207-5b9a33bb7817'>
-              <File Id='jfreechart.jar' Name='jfreechart-1.0.18.jar' DiskId='1' Source='lib/jfreechart-1.0.18.jar' />
+              <File Id='jfreechart.jar' Name='jfreechart-1.0.19.jar' DiskId='1' Source='lib/jfreechart-1.0.19.jar' />
             </Component>
             <Component Id='jsonic' Guid='26d71536-da1c-11e1-99f0-5798c6b9e64f'>
               <File Id='jsonic.jar' Name='jsonic-1.2.10.jar' DiskId='1' Source='lib/jsonic-1.2.10.jar' />
