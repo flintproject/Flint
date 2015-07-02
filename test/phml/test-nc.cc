@@ -9,16 +9,11 @@
 #include <boost/filesystem.hpp>
 #include <boost/filesystem/fstream.hpp>
 #include "database.h"
-#include "db/driver.hh"
 
 #define BOOST_TEST_MODULE test_nc
 #include "test.hh"
 
-struct F {
-
-	F()
-		: driver_("") // generating a temporary file
-	{}
+struct F : public test::MemoryFixture {
 
 	void Phml(const char *file) {
 		SaveGivenFile(driver_.db(), file);
@@ -37,8 +32,6 @@ struct F {
 		BOOST_CHECK_EQUAL(config.size(), 1u);
 		BOOST_CHECK_EQUAL(config[0], expected);
 	}
-
-	db::Driver driver_;
 };
 
 BOOST_FIXTURE_TEST_SUITE(test_nc, F)

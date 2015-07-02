@@ -5,22 +5,10 @@
 
 #include "sedml.hh"
 
-#include "db/driver.hh"
-
 #define BOOST_TEST_MODULE test_read
 #include "test.hh"
 
-struct F {
-
-	F()
-		: driver_("") // generating a temporary file
-	{
-	}
-
-	db::Driver driver_;
-};
-
-BOOST_FIXTURE_TEST_SUITE(test_read, F)
+BOOST_FIXTURE_TEST_SUITE(test_read, test::MemoryFixture)
 
 BOOST_AUTO_TEST_CASE(Izhikevich_2003) {
 	BOOST_CHECK(sedml::Read(TEST_MODELS("Izhikevich_2003.xml"), driver_.db()));

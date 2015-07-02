@@ -4,12 +4,9 @@
 #define BOOST_TEST_MODULE test_tac
 #include "test.hh"
 
-#include "db/driver.hh"
-
-struct F {
+struct F : public test::MemoryFixture {
 	F()
-		: driver("")
-		, db(driver.db())
+		: db(driver_.db())
 		, sql(db)
 	{
 		sql.Exec("CREATE TABLE sorts (uuid TEXT, name TEXT, math TEXT)");
@@ -39,7 +36,6 @@ struct F {
 		BOOST_CHECK_EQUAL(r[0], expected);
 	}
 
-	db::Driver driver;
 	sqlite3 *db;
 	test::Sql sql;
 };

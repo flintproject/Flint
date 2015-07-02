@@ -6,10 +6,10 @@
 
 struct F {
 	F()
-		: input_driver("")
+		: input_driver(":memory:")
 		, input_db(input_driver.db())
 		, input(input_db)
-		, output_driver("")
+		, output_driver(":memory:")
 		, output_db(output_driver.db())
 		, output(output_db)
 	{

@@ -4,14 +4,12 @@
 #define BOOST_TEST_MODULE test_bcc
 #include "test.hh"
 
-#include "db/driver.hh"
 #include "db/query.h"
 #include "db/tac-inserter.hh"
 
-struct F {
+struct F : test::MemoryFixture {
 	F()
-		: driver("")
-		, db(driver.db())
+		: db(driver_.db())
 		, sql(db)
 	{
 		BOOST_CHECK_EQUAL(SaveNol(1, db), 1);
@@ -45,7 +43,6 @@ struct F {
 		Setup("00000000-0000-0000-0000-000000000000", "%x", 3, body.c_str());
 	}
 
-	db::Driver driver;
 	sqlite3 *db;
 	test::Sql sql;
 };

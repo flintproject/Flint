@@ -10,18 +10,13 @@
 #include <boost/filesystem/fstream.hpp>
 #include "cellml.hh"
 #include "database.h"
-#include "db/driver.hh"
 #include "phml.hh"
 #include "sbml.hh"
 
 #define BOOST_TEST_MODULE test_spec
 #include "test.hh"
 
-struct F {
-
-	F()
-		: driver_("") // generating a temporary file
-	{}
+struct F : public test::MemoryFixture {
 
 	void Cellml(const char *file) {
 		SaveGivenFile(driver_.db(), file);
@@ -59,8 +54,6 @@ struct F {
 
 		boost::filesystem::remove(output);
 	}
-
-	db::Driver driver_;
 };
 
 BOOST_FIXTURE_TEST_SUITE(test_spec, F)

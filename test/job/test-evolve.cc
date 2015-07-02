@@ -9,7 +9,6 @@
 #include <boost/filesystem.hpp>
 #include "compiler/bcc.h"
 #include "database.h"
-#include "db/driver.hh"
 #include "db/name-inserter.h"
 #include "db/query.h"
 #include "db/tac-inserter.hh"
@@ -40,9 +39,8 @@ void CheckOutput(double expected)
 
 }
 
-struct F {
+struct F : public test::MemoryFixture {
 	F()
-		: driver_(":memory:")
 	{
 		BOOST_REQUIRE_EQUAL(CreateSingleton(driver_.db()), 1);
 		test::Sql sql(driver_.db());
@@ -71,7 +69,6 @@ struct F {
 		BOOST_REQUIRE(ti.Insert(kDefaultSpaceId, name, nod, body));
 	}
 
-	db::Driver driver_;
 	job::Option option_;
 };
 

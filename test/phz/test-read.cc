@@ -8,16 +8,11 @@
 #define BOOST_FILESYSTEM_NO_DEPRECATED
 #include <boost/filesystem.hpp>
 #include "database.h"
-#include "db/driver.hh"
 
 #define BOOST_TEST_MODULE test_read
 #include "test.hh"
 
-struct F {
-
-	F()
-		: driver_(":memory:")
-	{}
+struct F : public test::MemoryFixture {
 
 	void ReadAndCheck(const char *file) {
 		BOOST_REQUIRE_EQUAL(SaveGivenFile(driver_.db(), file), 1);
@@ -26,8 +21,6 @@ struct F {
 		BOOST_CHECK(boost::filesystem::is_regular_file("foo/model.phml"));
 		boost::filesystem::remove_all("foo");
 	}
-
-	db::Driver driver_;
 };
 
 BOOST_FIXTURE_TEST_SUITE(test_read, F)

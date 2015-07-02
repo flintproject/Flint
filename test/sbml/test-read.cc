@@ -11,11 +11,7 @@
 #define BOOST_TEST_MODULE test_read
 #include "test.hh"
 
-struct F {
-
-	F()
-		: driver_(":memory:")
-	{}
+struct F : public test::MemoryFixture {
 
 	void ReadAndCheck(const char *file,
 					  std::vector<std::string> &names,
@@ -32,8 +28,6 @@ struct F {
 		sql.CheckTable("input_functions", input_functions);
 		sql.CheckTable("input_odes", input_odes);
 	}
-
-	db::Driver driver_;
 };
 
 BOOST_FIXTURE_TEST_SUITE(test_read, F)

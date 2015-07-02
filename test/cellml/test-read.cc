@@ -6,21 +6,11 @@
 #include "cellml.hh"
 
 #include "database.h"
-#include "db/driver.hh"
 
 #define BOOST_TEST_MODULE test_read
 #include "test.hh"
 
-struct F {
-
-	F()
-		: driver_("") // generating a temporary file
-	{}
-
-	db::Driver driver_;
-};
-
-BOOST_FIXTURE_TEST_SUITE(test_read, F)
+BOOST_FIXTURE_TEST_SUITE(test_read, test::MemoryFixture)
 
 BOOST_AUTO_TEST_CASE(lockwood_ewy_hermann_holford_2006) {
 	BOOST_REQUIRE_EQUAL(SaveGivenFile(driver_.db(), TEST_MODELS("lockwood_ewy_hermann_holford_2006.cellml")), 1);

@@ -8,16 +8,14 @@
 #define BOOST_FILESYSTEM_NO_DEPRECATED
 #include <boost/filesystem.hpp>
 #include "database.h"
-#include "db/driver.hh"
 
 #define BOOST_TEST_MODULE test_read
 #include "test.hh"
 
-class F {
+class F : public test::MemoryFixture {
 public:
 	F()
-		: driver_(":memory:")
-		, sql_(driver_.db())
+		: sql_(driver_.db())
 	{
 		// start working at the temporary directory
 		boost::filesystem::create_directory("tmp");
@@ -150,7 +148,6 @@ public:
 	}
 
 private:
-	db::Driver driver_;
 	test::Sql sql_;
 };
 

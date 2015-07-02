@@ -4,12 +4,9 @@
 #define BOOST_TEST_MODULE test_sort
 #include "test.hh"
 
-#include "db/driver.hh"
-
-struct F {
+struct F : public test::MemoryFixture {
 	F()
-		: driver("")
-		, db(driver.db())
+		: db(driver_.db())
 		, sql(db)
 	{
 		sql.Exec("CREATE TABLE asts (uuid TEXT, name TEXT, math TEXT)");
@@ -79,7 +76,6 @@ struct F {
 		sql.Exec("INSERT INTO asts VALUES ('d1b5df78-4762-11e3-ba82-f38d65ddd815', '%sbml:v#0', '(plus %sbml:x#0 %sbml:y#0)')");
 	}
 
-	db::Driver driver;
 	sqlite3 *db;
 	test::Sql sql;
 };

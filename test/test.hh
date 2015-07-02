@@ -13,6 +13,7 @@
 
 #include <boost/test/unit_test.hpp>
 
+#include "db/driver.hh"
 #include "sqlite3.h"
 
 #define TEST_MODELS_0(dirname, basename) (#dirname "/" basename)
@@ -20,6 +21,15 @@
 #define TEST_MODELS(basename) TEST_MODELS_1(TEST_MODELS_DIR, basename)
 
 namespace test {
+
+struct MemoryFixture {
+
+	MemoryFixture()
+		: driver_(":memory:") // In-memory database
+	{}
+
+	db::Driver driver_;
+};
 
 namespace {
 
