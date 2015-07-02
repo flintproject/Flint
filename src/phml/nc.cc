@@ -144,7 +144,8 @@ bool Nc(sqlite3 *db, const char *output)
 	boost::scoped_ptr<phml::NumericalConfiguration> nc(new phml::NumericalConfiguration);
 	{
 		boost::scoped_ptr<Driver> driver(new Driver(db, nc.get()));
-		if (!driver->Drive()) return EXIT_FAILURE;
+		if (!driver->Drive())
+			return false;
 	}
 	{
 		std::ofstream ofs(output, std::ios::binary);

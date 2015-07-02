@@ -144,7 +144,7 @@ bool Enumerate(sqlite3 *db)
 	if (e != SQLITE_OK) {
 		fprintf(stderr, "failed to create table: %d: %s\n", e, em);
 		sqlite3_free(em);
-		return EXIT_FAILURE;
+		return false;
 	}
 	sqlite3_reset(stmt);
 	sqlite3_finalize(stmt);
