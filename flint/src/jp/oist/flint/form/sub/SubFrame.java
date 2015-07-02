@@ -182,7 +182,7 @@ public class SubFrame extends JInternalFrame
         pnl_GeneralSetting = new GeneralSettingPane(mOriginalFile, mLoader);
         pnl_Content.addTab("General Settings", pnl_GeneralSetting);
 
-        pnl_VariableSelection = new VariableSelectionPane(mOriginalFile, mLoader);
+        pnl_VariableSelection = new VariableSelectionPane(mLoader);
         pnl_Content.addTab("Output Variables", pnl_VariableSelection);
 
         pnl_ParameterValue = new ParameterValuePane(mOriginalFile, mLoader);

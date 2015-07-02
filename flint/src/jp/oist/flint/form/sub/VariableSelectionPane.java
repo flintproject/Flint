@@ -25,17 +25,14 @@ import javax.swing.table.TableRowSorter;
 public class VariableSelectionPane extends javax.swing.JPanel 
     implements PropertyChangeListener {
 
-    private final File mFile;
     private final HashTableModel mVariableModel;
     private TableRowSorter<HashTableModel> mEnabledSorter;
 
-    public VariableSelectionPane(File file, ModelLoader loader) 
+    public VariableSelectionPane(ModelLoader loader)
             throws ExecutionException, InterruptedException {
         initComponents();
 
         addPropertyChangeListener(this);
-
-        mFile = file;
 
         Ipc.ModelProbeResponse response = loader.get();
         Ipc.ModelVariableTable variableTable = response.getVariableTable();
