@@ -18,7 +18,7 @@ public class FunctionFormulaNode extends FormulaNode {
         List<FunctionInformation> funcInfos =
             ReservedFunctionContent.getFunctionInformationFromMathmlName(name);
 
-        if (funcInfos == null || funcInfos.size() == 0)
+        if (funcInfos == null || funcInfos.isEmpty())
             throw new IOException(String.format("%s is not supported yet.", name));
 
         FunctionInformation funcInfo = null;

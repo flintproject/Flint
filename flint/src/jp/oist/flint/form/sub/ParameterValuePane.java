@@ -313,7 +313,7 @@ public class ParameterValuePane extends JPanel
     }
 
     public void loadParameterAndTarget (Model model) {
-        if (model == null || model.getParameterSet().size() == 0)
+        if (model == null || model.getParameterSet().isEmpty())
             return;
         mValueEditWindow.loadParameterSet(model.getParameterSet());
             TargetSet tset = model.getTargetSet();

@@ -334,7 +334,7 @@ public class TextFormula2MathML
             ReservedFunctionContent.getFunctionInformationFromFunctionName(functionName);
 
 
-        if (funcInfos == null || funcInfos.size() == 0) 
+        if (funcInfos == null || funcInfos.isEmpty())
             throw new ParseException(
                 String.format("`%s` functions are not available.", 
                 functionName));
