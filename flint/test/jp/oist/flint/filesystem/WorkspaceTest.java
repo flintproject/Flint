@@ -32,26 +32,22 @@ public class WorkspaceTest {
     }
 
     @Test
-    public void testCreateTempFile() {
+    public void testCreateTempFile() throws IOException {
         File f;
-        try {
-            f = Workspace.createTempFile("", "");
-            assertTrue(f.isFile());
-            f.deleteOnExit();
-            f = Workspace.createTempFile("a", "x");
-            assertTrue(f.isFile());
-            f.deleteOnExit();
-            f = Workspace.createTempFile("ab", "y");
-            assertTrue(f.isFile());
-            f.deleteOnExit();
-            f = Workspace.createTempFile("abc", "xml");
-            assertTrue(f.isFile());
-            f.deleteOnExit();
-            f = Workspace.createTempFile("abcd", "tmp");
-            assertTrue(f.isFile());
-            f.deleteOnExit();
-        } catch (IOException ioe) {
-            fail(ioe.getMessage());
-        }
+        f = Workspace.createTempFile("", "");
+        assertTrue(f.isFile());
+        f.deleteOnExit();
+        f = Workspace.createTempFile("a", "x");
+        assertTrue(f.isFile());
+        f.deleteOnExit();
+        f = Workspace.createTempFile("ab", "y");
+        assertTrue(f.isFile());
+        f.deleteOnExit();
+        f = Workspace.createTempFile("abc", "xml");
+        assertTrue(f.isFile());
+        f.deleteOnExit();
+        f = Workspace.createTempFile("abcd", "tmp");
+        assertTrue(f.isFile());
+        f.deleteOnExit();
     }
 }

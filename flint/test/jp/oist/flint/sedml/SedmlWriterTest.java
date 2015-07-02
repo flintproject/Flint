@@ -86,56 +86,52 @@ public class SedmlWriterTest {
     }
 
     @Test
-    public void testWriteSimulationConfiguration() {
+    public void testWriteSimulationConfiguration() throws ArithmeticException, IOException {
         SimulationConfiguration config = new SimulationConfiguration();
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        try {
-            mSedmlWriter.writeSimulationConfiguration(config, baos);
-            assertEquals("<?xml version='1.0' encoding='UTF-8'?>\n" +
-                         "<sedML xmlns='http://sed-ml.org/' xmlns:math='http://www.w3.org/1998/Math/MathML' xmlns:flint='http://physiodesigner.org/namespace/flint' version='1' level='1'>\n" +
-                         "  <annotation>\n" +
-                         "    <flint:filter syntax='2' pattern='e2' column='1' />\n" +
-                         "  </annotation>\n" +
-                         "  <listOfSimulations>\n" +
-                         "    <uniformTimeCourse id='sim0' name='Simulation 0' initialTime='0' outputStartTime='0' outputEndTime='10' numberOfPoints='2000' flint:granularity='50'>\n" +
-                         "      <algorithm kisaoID='KISAO:0000032'/>\n" +
-                         "    </uniformTimeCourse>\n" +
-                         "  </listOfSimulations>\n" +
-                         "  <listOfModels>\n" +
-                         "    <model id='model0' name='Model 0' language='urn:sedml:language:phml' source='/tmp/foo.phml'/>\n" +
-                         "  </listOfModels>\n" +
-                         "  <listOfTasks>\n" +
-                         "    <task id='task0' name='Task 0' modelReference='model0' simulationReference='sim0'/>\n" +
-                         "  </listOfTasks>\n" +
-                         "  <listOfDataGenerators>\n" +
-                         "    <dataGenerator id='dg0' name='028dc220-92ad-11e2-ad45-af668ae8fba2:x'>\n" +
-                         "      <listOfVariables>\n" +
-                         "        <variable id='v0' taskReference='task0' target='028dc220-92ad-11e2-ad45-af668ae8fba2:x'/>\n" +
-                         "      </listOfVariables>\n" +
-                         "      <math:math>\n" +
-                         "        <math:ci>v0</math:ci>\n" +
-                         "      </math:math>\n" +
-                         "    </dataGenerator>\n" +
-                         "    <dataGenerator id='dg1' name='028dc220-92ad-11e2-ad45-af668ae8fba2:y'>\n" +
-                         "      <listOfVariables>\n" +
-                         "        <variable id='v1' taskReference='task0' target='028dc220-92ad-11e2-ad45-af668ae8fba2:y'/>\n" +
-                         "      </listOfVariables>\n" +
-                         "      <math:math>\n" +
-                         "        <math:ci>v1</math:ci>\n" +
-                         "      </math:math>\n" +
-                         "    </dataGenerator>\n" +
-                         "    <dataGenerator id='dg2' name='030a3af8-92ad-11e2-b314-b792d07c842c:z'>\n" +
-                         "      <listOfVariables>\n" +
-                         "        <variable id='v2' taskReference='task0' target='030a3af8-92ad-11e2-b314-b792d07c842c:z'/>\n" +
-                         "      </listOfVariables>\n" +
-                         "      <math:math>\n" +
-                         "        <math:ci>v2</math:ci>\n" +
-                         "      </math:math>\n" +
-                         "    </dataGenerator>\n" +
-                         "  </listOfDataGenerators>\n" +
-                         "</sedML>\n", new String(baos.toByteArray(), "UTF-8"));
-        } catch (ArithmeticException | IOException e) {
-            fail(e.getMessage());
-        }
+        mSedmlWriter.writeSimulationConfiguration(config, baos);
+        assertEquals("<?xml version='1.0' encoding='UTF-8'?>\n" +
+                     "<sedML xmlns='http://sed-ml.org/' xmlns:math='http://www.w3.org/1998/Math/MathML' xmlns:flint='http://physiodesigner.org/namespace/flint' version='1' level='1'>\n" +
+                     "  <annotation>\n" +
+                     "    <flint:filter syntax='2' pattern='e2' column='1' />\n" +
+                     "  </annotation>\n" +
+                     "  <listOfSimulations>\n" +
+                     "    <uniformTimeCourse id='sim0' name='Simulation 0' initialTime='0' outputStartTime='0' outputEndTime='10' numberOfPoints='2000' flint:granularity='50'>\n" +
+                     "      <algorithm kisaoID='KISAO:0000032'/>\n" +
+                     "    </uniformTimeCourse>\n" +
+                     "  </listOfSimulations>\n" +
+                     "  <listOfModels>\n" +
+                     "    <model id='model0' name='Model 0' language='urn:sedml:language:phml' source='/tmp/foo.phml'/>\n" +
+                     "  </listOfModels>\n" +
+                     "  <listOfTasks>\n" +
+                     "    <task id='task0' name='Task 0' modelReference='model0' simulationReference='sim0'/>\n" +
+                     "  </listOfTasks>\n" +
+                     "  <listOfDataGenerators>\n" +
+                     "    <dataGenerator id='dg0' name='028dc220-92ad-11e2-ad45-af668ae8fba2:x'>\n" +
+                     "      <listOfVariables>\n" +
+                     "        <variable id='v0' taskReference='task0' target='028dc220-92ad-11e2-ad45-af668ae8fba2:x'/>\n" +
+                     "      </listOfVariables>\n" +
+                     "      <math:math>\n" +
+                     "        <math:ci>v0</math:ci>\n" +
+                     "      </math:math>\n" +
+                     "    </dataGenerator>\n" +
+                     "    <dataGenerator id='dg1' name='028dc220-92ad-11e2-ad45-af668ae8fba2:y'>\n" +
+                     "      <listOfVariables>\n" +
+                     "        <variable id='v1' taskReference='task0' target='028dc220-92ad-11e2-ad45-af668ae8fba2:y'/>\n" +
+                     "      </listOfVariables>\n" +
+                     "      <math:math>\n" +
+                     "        <math:ci>v1</math:ci>\n" +
+                     "      </math:math>\n" +
+                     "    </dataGenerator>\n" +
+                     "    <dataGenerator id='dg2' name='030a3af8-92ad-11e2-b314-b792d07c842c:z'>\n" +
+                     "      <listOfVariables>\n" +
+                     "        <variable id='v2' taskReference='task0' target='030a3af8-92ad-11e2-b314-b792d07c842c:z'/>\n" +
+                     "      </listOfVariables>\n" +
+                     "      <math:math>\n" +
+                     "        <math:ci>v2</math:ci>\n" +
+                     "      </math:math>\n" +
+                     "    </dataGenerator>\n" +
+                     "  </listOfDataGenerators>\n" +
+                     "</sedML>\n", new String(baos.toByteArray(), "UTF-8"));
     }
 }

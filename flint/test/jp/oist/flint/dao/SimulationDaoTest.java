@@ -2,6 +2,8 @@
 package jp.oist.flint.dao;
 
 import java.io.File;
+import java.io.IOException;
+import java.sql.SQLException;
 import junit.framework.Assert;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -31,7 +33,7 @@ public class SimulationDaoTest {
     }
 
     @Test
-    public void testIndexOf_File() {
+    public void testIndexOf_File() throws IOException, SQLException {
             String separator = File.separator;
             File resourceDir = new File(System.getProperty("user.dir"), 
                     "test" + separator + "resources" + separator + "testDao");
@@ -41,13 +43,11 @@ public class SimulationDaoTest {
             int result = simulationDao.indexOf(modelFile);
             Assert.assertEquals(expResult, result);
 
-        } catch (Exception ex) {
-            Assert.fail(String.format("%s : %s", ex.getClass().getName(), ex.getMessage()));
         }
     }
 
     @Test
-    public void testIndexOf_File_int() {
+    public void testIndexOf_File_int() throws IOException, SQLException {
             String separator = File.separator;
             File resourceDir = new File(System.getProperty("user.dir"), 
                     "test" + separator + "resources" + separator + "testDao");
@@ -57,13 +57,11 @@ public class SimulationDaoTest {
             int expResult = 1;
             int result = simulationDao.indexOf(modelFile, fromIndex);
             Assert.assertEquals(expResult, result);
-        } catch (Exception ex) {
-            Assert.fail(String.format("%s : %s", ex.getClass().getName(), ex.getMessage()));
         }
     }
 
     @Test
-    public void testLastIndexOf() {
+    public void testLastIndexOf() throws IOException, SQLException {
             String separator = File.separator;
             File resourceDir = new File(System.getProperty("user.dir"), 
                     "test" + separator + "resources" + separator + "testDao");
@@ -72,13 +70,11 @@ public class SimulationDaoTest {
             int expResult = 1;
             int result = simulationDao.lastIndexOf(modelFile);
             Assert.assertEquals(expResult, result);
-        } catch (Exception ex) {
-            Assert.fail(String.format("%s : %s", ex.getClass().getName(), ex.getMessage()));
         }
     }
 
     @Test
-    public void testGetCount() {
+    public void testGetCount() throws IOException, SQLException {
             String separator = File.separator;
             File resourceDir = new File(System.getProperty("user.dir"), 
                     "test" + separator + "resources" + separator + "testDao");
@@ -86,13 +82,11 @@ public class SimulationDaoTest {
             int expResult = 1;
             int result = simulationDao.getCount();
             Assert.assertEquals(expResult, result);
-        } catch (Exception ex) {
-            Assert.fail(String.format("%s : %s", ex.getClass().getName(), ex.getMessage()));
         }
     }
 
     @Test
-    public void testObtainTask_File() {
+    public void testObtainTask_File() throws IOException, SQLException {
             String separator = File.separator;
             File resourceDir = new File(System.getProperty("user.dir"), 
                     "test" + separator + "resources" + separator + "testDao");
@@ -106,13 +100,11 @@ public class SimulationDaoTest {
             modelFile = new File("file_not_exist");
             result = simulationDao.obtainTask(modelFile);
             Assert.assertNull(result);
-        } catch (Exception ex) {
-            Assert.fail(String.format("%s : %s", ex.getClass().getName(), ex.getMessage()));
         }
     }
 
     @Test
-    public void testObtainTask_int() {
+    public void testObtainTask_int() throws IOException, SQLException {
             String separator = File.separator;
             File resourceDir = new File(System.getProperty("user.dir"), 
                     "test" + separator + "resources" + separator + "testDao");
@@ -124,13 +116,11 @@ public class SimulationDaoTest {
             taskId = 21;
             result = simulationDao.obtainTask(taskId);
             Assert.assertNull(result);
-        } catch (Exception ex) {
-            Assert.fail(String.format("%s : %s", ex.getClass().getName(), ex.getMessage()));
         }
     }
 
     @Test
-    public void testObtainJob() {
+    public void testObtainJob() throws IOException, SQLException {
             String separator = File.separator;
             File resourceDir = new File(System.getProperty("user.dir"), 
                     "test" + separator + "resources" + separator + "testDao");
@@ -139,8 +129,6 @@ public class SimulationDaoTest {
             int jobId = 1;
             JobDao result = simulationDao.obtainJob(taskId, jobId);
             Assert.assertNotNull(result);
-        } catch (Exception ex) {
-            Assert.fail(String.format("%s : %s", ex.getClass().getName(), ex.getMessage()));
         }
     }
 }
