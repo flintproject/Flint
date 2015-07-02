@@ -239,7 +239,7 @@ public class PhspProgressMonitor implements FileListener, Runnable {
         public Event(Object source, String propertyName, Object oldValue, Object newValue) {
             super(source, propertyName, oldValue, newValue);
 
-            mClientProperty = new HashMap<Object, Object>();
+            mClientProperty = new HashMap<>();
         }
 
         public Object getClientProperty (Object key) {

@@ -338,10 +338,10 @@ public class PlotWindow extends javax.swing.JFrame
 
         mMap.clear();
 
-        LinkedHashMap<String, String> xTrack = new LinkedHashMap<String, String>();
-        LinkedHashMap<String, String> yTrack = new LinkedHashMap<String, String>();
-        LinkedHashMap<String, String> y2Track = new LinkedHashMap<String, String>();
-        LinkedHashMap<String, String> variableTrack = new LinkedHashMap<String, String>();
+        LinkedHashMap<String, String> xTrack = new LinkedHashMap<>();
+        LinkedHashMap<String, String> yTrack = new LinkedHashMap<>();
+        LinkedHashMap<String, String> y2Track = new LinkedHashMap<>();
+        LinkedHashMap<String, String> variableTrack = new LinkedHashMap<>();
 
         for (int i = 0; i < numTracks; i++) {
             String key = simTrack.getKey(i);

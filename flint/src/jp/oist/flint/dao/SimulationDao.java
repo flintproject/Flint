@@ -26,7 +26,7 @@ public class SimulationDao extends DaoObject {
             throws SQLException, IOException {
         super(dbName, dir);
 
-        mTaskList = new HashMap<Integer, TaskDao>();
+        mTaskList = new HashMap<>();
         mModelPathList = new HashMap<>();
         mTaskList.put(0, null);  // SQLite indexing is based 1.
     }
@@ -100,7 +100,7 @@ public class SimulationDao extends DaoObject {
         try (Statement stmt = getConnection().createStatement();
              ResultSet result = stmt.executeQuery(sql)) {
 
-            Map<Integer, String> retvals = new HashMap<Integer, String>();
+            Map<Integer, String> retvals = new HashMap<>();
             retvals.put(0, null);  // SQLite indexing is based 1.
             ResultSetMetaData metaData = result.getMetaData();
             int columnCount = metaData.getColumnCount();

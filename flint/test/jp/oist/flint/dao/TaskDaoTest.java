@@ -148,7 +148,7 @@ public class TaskDaoTest {
         try {
             int taskId = 1;
 
-            Map<String, Number> combination = new HashMap<String, Number>();
+            Map<String, Number> combination = new HashMap<>();
             combination.put("Fs_Ms_Values", 299.1);
 
             TaskDao task = mSimulationDao.obtainTask(taskId);

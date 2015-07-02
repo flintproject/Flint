@@ -98,7 +98,7 @@ public class ModelLoader extends SwingWorker<Ipc.ModelProbeResponse, Void> {
 
     private void readPhmlConfiguration() throws IOException, TimeUnitException {
         ArrayList<Ipc.TimeUnit> unitoftime = readUnitoftime();
-        HashMap<Integer, Ipc.TimeUnit> tus = new HashMap<Integer, Ipc.TimeUnit>();
+        HashMap<Integer, Ipc.TimeUnit> tus = new HashMap<>();
         Ipc.TimeUnit u0 = null;
         for (Ipc.TimeUnit tu : unitoftime) {
             if (u0 == null) u0 = tu;
@@ -152,7 +152,7 @@ public class ModelLoader extends SwingWorker<Ipc.ModelProbeResponse, Void> {
     }
 
     private ArrayList<Ipc.TimeUnit> readUnitoftime() throws IOException {
-        ArrayList<Ipc.TimeUnit> result = new ArrayList<Ipc.TimeUnit>();
+        ArrayList<Ipc.TimeUnit> result = new ArrayList<>();
         File file = new File(mDir, "unitoftime");
         try (DataInputStream dis = new DataInputStream(new FileInputStream(file))) {
         for (;;) {

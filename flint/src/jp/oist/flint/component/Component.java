@@ -82,7 +82,7 @@ public class Component {
     }
 
     public static ArrayList<String> getCommandByName(String name) {
-        ArrayList<String> list = new ArrayList<String>();
+        ArrayList<String> list = new ArrayList<>();
         if (mShell == Shell.CMD) {
             list.add("cmd");
             list.add("/c");

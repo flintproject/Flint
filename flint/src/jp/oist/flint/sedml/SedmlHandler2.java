@@ -16,7 +16,7 @@ public class SedmlHandler2 extends SedmlHandler
     implements ISimulationConfigurationList {
 
     private final List<ISimulationConfiguration> mConfigurationList 
-                = new ArrayList<ISimulationConfiguration>();
+                = new ArrayList<>();
 
     private final HashMap<String, Map> mModelInfos;
 

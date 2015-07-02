@@ -45,7 +45,7 @@ public class SedmlWriterTest {
 
         @Override
         public ArrayList<String> getKeys() {
-            ArrayList<String> keys = new ArrayList<String>();
+            ArrayList<String> keys = new ArrayList<>();
             keys.add("028dc220-92ad-11e2-ad45-af668ae8fba2:x");
             keys.add("028dc220-92ad-11e2-ad45-af668ae8fba2:y");
             keys.add("030a3af8-92ad-11e2-b314-b792d07c842c:z");

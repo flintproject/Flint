@@ -27,7 +27,7 @@ public class ListItemModelTest {
 
     @Before
     public void setUp() {
-        LinkedHashMap<String, String> map = new LinkedHashMap<String, String>();
+        LinkedHashMap<String, String> map = new LinkedHashMap<>();
         map.put("x", "X");
         map.put("y", "Y");
         map.put("z", "ZZZ");
@@ -97,7 +97,7 @@ public class ListItemModelTest {
 
     @Test
     public void testKeys() {
-        Vector<String> keys = new Vector<String>();
+        Vector<String> keys = new Vector<>();
         keys.add("x");
         keys.add("y");
         keys.add("z");
