@@ -34,11 +34,13 @@ public class SedmlHandler extends DefaultHandler implements ISimulationConfigura
 
     @Override
     public Ipc.IntegrationMethod getIntegrationMethod() {
-        if (mKisaoId.equals("KISAO:0000032")) {
+        switch (mKisaoId) {
+        case "KISAO:0000032":
             return Ipc.IntegrationMethod.RUNGE_KUTTA;
-        } else if (mKisaoId.equals("KISAO:0000280")) {
+        case "KISAO:0000280":
             return Ipc.IntegrationMethod.ADAMS_MOULTON;
-        } else { // KISAO:0000030
+        default:
+            // KISAO:0000030
             return Ipc.IntegrationMethod.EULER;
         }
     }
@@ -96,42 +98,60 @@ public class SedmlHandler extends DefaultHandler implements ISimulationConfigura
     @Override
     public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
         if (mDone) return;
-        if (localName.equals("filter")) {
-            int i = 0;
-            while (i < attributes.getLength()) {
-                String aName = attributes.getLocalName(i);
-                if (aName.equals("syntax")) {
-                    mFilterSyntax = attributes.getValue(i);
-                } else if (aName.equals("pattern")) {
-                    mFilterPattern = attributes.getValue(i);
-                } else if (aName.equals("column")) {
-                    mFilterColumn = attributes.getValue(i);
+        switch (localName) {
+        case "filter":
+            {
+                int i = 0;
+                while (i < attributes.getLength()) {
+                    String aName = attributes.getLocalName(i);
+                    switch (aName) {
+                    case "syntax":
+                        mFilterSyntax = attributes.getValue(i);
+                        break;
+                    case "pattern":
+                        mFilterPattern = attributes.getValue(i);
+                        break;
+                    case "column":
+                        mFilterColumn = attributes.getValue(i);
+                        break;
+                    }
+                    i += 1;
                 }
-                i += 1;
             }
-        } else if (localName.equals("uniformTimeCourse")) {
-            int i = 0;
-            while (i < attributes.getLength()) {
-                String aName = attributes.getLocalName(i);
-                if (aName.equals("outputEndTime")) {
-                    mOutputEndTime = attributes.getValue(i);
-                } else if (aName.equals("numberOfPoints")) {
-                    mNumberOfPoints = attributes.getValue(i);
-                } else if (aName.equals("granularity")) {
-                    mGranularity = attributes.getValue(i);
+            break;
+        case "uniformTimeCourse":
+            {
+                int i = 0;
+                while (i < attributes.getLength()) {
+                    String aName = attributes.getLocalName(i);
+                    switch (aName) {
+                    case "outputEndTime":
+                        mOutputEndTime = attributes.getValue(i);
+                        break;
+                    case "numberOfPoints":
+                        mNumberOfPoints = attributes.getValue(i);
+                        break;
+                    case "granularity":
+                        mGranularity = attributes.getValue(i);
+                        break;
+                    }
+                    i += 1;
                 }
-                i += 1;
             }
-        } else if (localName.equals("algorithm")) {
-            int i = 0;
-            while (i < attributes.getLength()) {
-                String aName = attributes.getLocalName(i);
-                if (aName.equals("kisaoID")) {
-                    mKisaoId = attributes.getValue(i);
+            break;
+        case "algorithm":
+            {
+                int i = 0;
+                while (i < attributes.getLength()) {
+                    String aName = attributes.getLocalName(i);
+                    if (aName.equals("kisaoID")) {
+                        mKisaoId = attributes.getValue(i);
+                    }
+                    i += 1;
                 }
-                i += 1;
+                mDone = true;
             }
-            mDone = true;
+            break;
         }
     }
 }

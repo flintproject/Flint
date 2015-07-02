@@ -557,13 +557,18 @@ public class AutoCompleter implements
         @Override
         public void propertyChange(PropertyChangeEvent evt) {
             String propertyName = evt.getPropertyName();
+            if (propertyName == null)
+                return;
             Object newValue = evt.getNewValue();
-            if ("foreground".equals(propertyName)) {
+            switch (propertyName) {
+            case "foreground":
                 mLeftLabel.setForeground((Color)newValue);
                 mRightLabel.setForeground((Color)newValue);
-            } else if ("background".equals(propertyName)) {
+                break;
+            case "background":
                 mLeftLabel.setBackground((Color)newValue);
                 mRightLabel.setBackground((Color)newValue);
+                break;
             }
         }
     }

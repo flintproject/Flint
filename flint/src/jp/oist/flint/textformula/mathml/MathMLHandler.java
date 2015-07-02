@@ -69,24 +69,31 @@ public class MathMLHandler {
 			cur = node;
 		} else if (isFunctionTag(localName)) {
 			FormulaNode node = new FunctionFormulaNode(localName);
-			if ("log".equals(localName)) {
-				Element child = searchChild((Element)element.getParentNode(), "logbase");
-				if (child != null) {
-					FormulaNode childNode = new ValueOrVariableFormulaNode("logbase");
-					childNode.value = child.getFirstChild().getTextContent().trim();
-					node.addChildNode(childNode);
-				}
-			} else if ("root".equals(localName)) {
-				Element child = searchChild((Element)element.getParentNode(), "degree");
-				if (child != null) {
-					FormulaNode childNode = new ValueOrVariableFormulaNode("degree");
-					childNode.value = child.getFirstChild().getTextContent().trim();
-					node.addChildNode(childNode);
-				}
-			} else if ("fn".equals(localName)) {
-				node = new CustomFunctionFormulaNode(
-													 element.getTextContent().trim());
-			}
+            switch (localName) {
+            case "log":
+                {
+                    Element child = searchChild((Element)element.getParentNode(), "logbase");
+                    if (child != null) {
+                        FormulaNode childNode = new ValueOrVariableFormulaNode("logbase");
+                        childNode.value = child.getFirstChild().getTextContent().trim();
+                        node.addChildNode(childNode);
+                    }
+                }
+                break;
+            case "root":
+                {
+                    Element child = searchChild((Element)element.getParentNode(), "degree");
+                    if (child != null) {
+                        FormulaNode childNode = new ValueOrVariableFormulaNode("degree");
+                        childNode.value = child.getFirstChild().getTextContent().trim();
+                        node.addChildNode(childNode);
+                    }
+                }
+                break;
+            case "fn":
+                node = new CustomFunctionFormulaNode(element.getTextContent().trim());
+                break;
+            }
 
 			cur.addChildNode(node);
 			cur = node;

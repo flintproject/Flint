@@ -209,18 +209,27 @@ public class ValueEditWindow extends JFrame
     @Override
     public void actionPerformed (ActionEvent evt) {
         String actionCommand = evt.getActionCommand();
-        if (ACTION_ADD_ROW.equals(actionCommand)) {
+        if (actionCommand == null)
+            return;
+        switch (actionCommand) {
+        case ACTION_ADD_ROW:
             addRowActionPerformed(evt);
-        } else if (ACTION_DELETE_ROW.equals(actionCommand)) {
+            break;
+        case ACTION_DELETE_ROW:
             deleteRowActionPerformed(evt);
-        } else if (ACTION_GENERATE.equals(actionCommand)) {
+            break;
+        case ACTION_GENERATE:
             generateActionPerformed(evt);
-        } else if (ACTION_CANCEL.equals(actionCommand)) {
+            break;
+        case ACTION_CANCEL:
             cancelActionPerformed(evt);
-        } else if (ACTION_OK.equals(actionCommand)) {
+            break;
+        case ACTION_OK:
             okActionPerformed(evt);
-        } else if (ACTION_APPLY.equals(actionCommand)) {
+            break;
+        case ACTION_APPLY:
             applyActionPerformed(evt);
+            break;
         }
     }
 
@@ -260,24 +269,27 @@ public class ValueEditWindow extends JFrame
         updateComponents(p);
     }
 
-    private String getParameterKey (String name) {
-        if (NAME_TEXT.equals(name)) {
+    private String getParameterKey(String name) {
+        if (name == null)
+            return null;
+        switch (name) {
+        case NAME_TEXT:
             return ParameterSet.Parameter.NAME;
-        } else if (ENUM_VALUE_TEXT.equals(name)) {
+        case ENUM_VALUE_TEXT:
             return ParameterSet.Parameter.ENUM_VALUE;
-        } else if (RM_COUNT_TEXT.equals(name)) {
+        case RM_COUNT_TEXT:
             return ParameterSet.Parameter.RANDOMIZER_COUNT;
-        } else if (RM_SEED_TEXT.equals(name)) {
+        case RM_SEED_TEXT:
             return ParameterSet.Parameter.RANDOMIZER_SEED;
-        } else if (RM_LOWER_LIMIT_TEXT.equals(name)) {
+        case RM_LOWER_LIMIT_TEXT:
             return ParameterSet.Parameter.RANDOMIZER_LOWER_LIMIT;
-        } else if (RM_UPPER_LIMIT_TEXT.equals(name)) {
+        case RM_UPPER_LIMIT_TEXT:
             return ParameterSet.Parameter.RANDOMIZER_UPPER_LIMIT;
-        } else if (RANGE_LOWER_TEXT.equals(name)) {
+        case RANGE_LOWER_TEXT:
             return ParameterSet.Parameter.RANGE_LOWER;
-        } else if (RANGE_UPPER_TEXT.equals(name)) {
+        case RANGE_UPPER_TEXT:
             return ParameterSet.Parameter.RANGE_UPPER;
-        } else if (RANGE_STEP_TEXT.equals(name)) {
+        case RANGE_STEP_TEXT:
             return ParameterSet.Parameter.RANGE_STEP;
         }
         return null;

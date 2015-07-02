@@ -55,99 +55,123 @@ public class SedmlHandler2 extends SedmlHandler
     public void startElement(String uri, String localName, String qName, Attributes attributes) 
             throws SAXException { 
         super.startElement(uri, localName, qName, attributes);
-        if (localName.equals("uniformTimeCourse")) {
-            int i = 0;
-            String id = null;
-            while (i < attributes.getLength()) {
-                String aName = attributes.getLocalName(i);
-                if ("id".equals(aName)) {
-                    id = attributes.getValue(i); 
-                    break;
+        switch (localName) {
+        case "uniformTimeCourse":
+            {
+                int i = 0;
+                String id = null;
+                while (i < attributes.getLength()) {
+                    String aName = attributes.getLocalName(i);
+                    if ("id".equals(aName)) {
+                        id = attributes.getValue(i);
+                        break;
+                    }
+                    i += 1;
                 }
-                i += 1;
+                if (id != null) {
+                    Map<String, String> data = new HashMap<>();
+                    data.put("outputEndTime", mOutputEndTime);
+                    data.put("numberOfPoints", mNumberOfPoints);
+                    data.put("granularity", mGranularity);
+                    mSimulationInfos.put(id, data);
+                    mLastSimId = id;
+                }
             }
-            if (id != null) {
-                Map<String, String> data = new HashMap<>();
-                data.put("outputEndTime", mOutputEndTime);
-                data.put("numberOfPoints", mNumberOfPoints);
-                data.put("granularity", mGranularity);
-                mSimulationInfos.put(id, data);
-                mLastSimId = id;
-            }
-
-        } else if (localName.equals("algorithm")) {
+            break;
+        case "algorithm":
             if (mLastSimId != null) {
                 Map data = mSimulationInfos.get(mLastSimId);
                 data.put("kisaoId", mKisaoId);
             }
-        } else if (localName.equals("model")) {
-            int i = 0;
-            String id = null;
-            String source = null;
-            while (i < attributes.getLength()) {
-                String aName = attributes.getLocalName(i);
-                if ("source".equals(aName)) {
-                    source = attributes.getValue(i);
-                } else if ("id".equals(aName)) {
-                    id = attributes.getValue(i); 
+            break;
+        case "model":
+            {
+                int i = 0;
+                String id = null;
+                String source = null;
+                while (i < attributes.getLength()) {
+                    String aName = attributes.getLocalName(i);
+                    assert aName != null;
+                    switch (aName) {
+                    case "source":
+                        source = attributes.getValue(i);
+                        break;
+                    case "id":
+                        id = attributes.getValue(i);
+                        break;
+                    }
+                    i += 1;
                 }
-                i += 1;
-            }
-            if (id != null) {
-                Map<String, String> data = new HashMap<>();
-                data.put("source", source);
-                mModelInfos.put(id, data);
-            }
-        } else if (localName.equals("variable")) {
-            int i = 0;
-            String target = null;
-            String taskId = null;
-            while (i < attributes.getLength()) {
-                String aName = attributes.getLocalName(i);
-                if ("taskReference".equals(aName)) {
-                    taskId = attributes.getValue(i);
-                } else if ("target".equals(aName)) {
-                    target = attributes.getValue(i);
+                if (id != null) {
+                    Map<String, String> data = new HashMap<>();
+                    data.put("source", source);
+                    mModelInfos.put(id, data);
                 }
-                i += 1;
             }
-
-            if (taskId != null && !taskId.isEmpty()) {
-                Map data;
-                if (!mTaskInfos.containsKey(taskId))
-                    mTaskInfos.put(taskId, new HashMap<String, Object>());
-                data = mTaskInfos.get(taskId);
-                if (!data.containsKey("targets"))
-                    data.put("targets", new ArrayList<String>());
-                List targets = (List)data.get("targets");
-                targets.add(target);
-            }
-
-        } else if (localName.equals("task")) {
-            int i = 0;
-            String modelId = null;
-            String simId = null;
-            String taskId = null;
-            while (i < attributes.getLength()) {
-                String aName = attributes.getLocalName(i);
-                if ("id".equals(aName)) {
-                    taskId = attributes.getValue(i);
-                } else if ("modelReference".equals(aName)) {
-                    modelId = attributes.getValue(i);
-                } else if ("simulationReference".equals(aName)) {
-                    simId = attributes.getValue(i);
+            break;
+        case "variable":
+            {
+                int i = 0;
+                String target = null;
+                String taskId = null;
+                while (i < attributes.getLength()) {
+                    String aName = attributes.getLocalName(i);
+                    assert aName != null;
+                    switch (aName) {
+                    case "taskReference":
+                        taskId = attributes.getValue(i);
+                        break;
+                    case "target":
+                        target = attributes.getValue(i);
+                        break;
+                    }
+                    i += 1;
                 }
-                i += 1;
+                if (taskId != null && !taskId.isEmpty()) {
+                    Map data;
+                    if (!mTaskInfos.containsKey(taskId))
+                        mTaskInfos.put(taskId, new HashMap<String, Object>());
+                    data = mTaskInfos.get(taskId);
+                    if (!data.containsKey("targets"))
+                        data.put("targets", new ArrayList<String>());
+                    List targets = (List)data.get("targets");
+                    targets.add(target);
+                }
             }
-            if (taskId != null && !taskId.isEmpty()) { 
-                if (!mTaskInfos.containsKey(taskId))
-                    mTaskInfos.put(taskId, new HashMap<String, Object>());
+            break;
+        case "task":
+            {
+                int i = 0;
+                String modelId = null;
+                String simId = null;
+                String taskId = null;
+                while (i < attributes.getLength()) {
+                    String aName = attributes.getLocalName(i);
+                    assert aName != null;
+                    switch (aName) {
+                    case "id":
+                        taskId = attributes.getValue(i);
+                        break;
+                    case "modelReference":
+                        modelId = attributes.getValue(i);
+                        break;
+                    case "simulationReference":
+                        simId = attributes.getValue(i);
+                        break;
+                    }
+                    i += 1;
+                }
+                if (taskId != null && !taskId.isEmpty()) {
+                    if (!mTaskInfos.containsKey(taskId))
+                        mTaskInfos.put(taskId, new HashMap<String, Object>());
 
-                Map data = mTaskInfos.get(taskId);
+                    Map data = mTaskInfos.get(taskId);
 
-                data.put("modelReference", modelId);
-                data.put("simulationReference", simId);
+                    data.put("modelReference", modelId);
+                    data.put("simulationReference", simId);
+                }
             }
+            break;
         }
     }
 
@@ -251,11 +275,13 @@ public class SedmlHandler2 extends SedmlHandler
 
         @Override
         public Ipc.IntegrationMethod getIntegrationMethod() {
-            if (mKisaoId.equals("KISAO:0000032")) {
+            switch (mKisaoId) {
+            case "KISAO:0000032":
                 return Ipc.IntegrationMethod.RUNGE_KUTTA;
-            } else if (mKisaoId.equals("KISAO:0000280")) {
+            case "KISAO:0000280":
                 return Ipc.IntegrationMethod.ADAMS_MOULTON;
-            } else { // KISAO:0000030
+            default:
+                // KISAO:0000030
                 return Ipc.IntegrationMethod.EULER;
             }
         }

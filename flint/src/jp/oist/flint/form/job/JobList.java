@@ -127,19 +127,22 @@ public class JobList extends JobViewerComponent
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
         String propertyName = evt.getPropertyName();
+        if (propertyName == null)
+            return;
         Object newValue = evt.getNewValue();
         Object oldValue = evt.getOldValue();
 
-        if ("model".equals(propertyName)) {
+        switch (propertyName) {
+        case "model":
             if (oldValue != null)
                 ((ListModel)oldValue).removeListDataListener(this);
-
             if (newValue != null)
                 ((ListModel)newValue).addListDataListener(this);
-
             mJobList.setModel((ListModel)newValue);
-        } else if ("selectionModel".equals(propertyName)) {
+            break;
+        case "selectionModel":
             mJobList.setSelectionModel((ListSelectionModel)newValue);
+            break;
         }
     }
 

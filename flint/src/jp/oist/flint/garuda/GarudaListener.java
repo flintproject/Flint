@@ -39,7 +39,10 @@ public class GarudaListener implements PropertyChangeListener {
         if (e instanceof GarudaBackendPropertyChangeEvent) {
             GarudaBackendPropertyChangeEvent evt = (GarudaBackendPropertyChangeEvent)e;
             String propertyName = evt.getPropertyName();
-            if (propertyName.equals(GarudaClientBackend.LOAD_DATA_PROPERTY_CHANGE_ID)) {
+            if (propertyName == null)
+                return;
+            switch (propertyName) {
+            case GarudaClientBackend.LOAD_DATA_PROPERTY_CHANGE_ID:
                 Gadget gadget = (Gadget)evt.getFirstProperty();
                 final String path = (String)evt.getSecondProperty();
                 File file = new File(path);
@@ -52,22 +55,29 @@ public class GarudaListener implements PropertyChangeListener {
                 } else {
                     mGarudaClientBackend.sentLoadDataResponse(false, gadget);
                 }
-            } else if (propertyName.equals(GarudaClientBackend.CONNECTION_NOT_INITIALIZED_ID)) {
+                break;
+            case GarudaClientBackend.CONNECTION_NOT_INITIALIZED_ID:
                 mFrame.showErrorDialog("Could not establish connection to Garuda", "Error on connecting to Garuda");
-            } else if (propertyName.equals(GarudaClientBackend.GADGET_REGISTRATION_ERROR_ID)) {
+                break;
+            case GarudaClientBackend.GADGET_REGISTRATION_ERROR_ID:
                 Logger.getRootLogger().error("error no registering to Garuda");
-            } else if (propertyName.equals(GarudaClientBackend.GADGET_REGISTRERED_ID)) {
+                break;
+            case GarudaClientBackend.GADGET_REGISTRERED_ID:
                 Logger.getRootLogger().error("registered to Garuda");
-            } else if (propertyName.equals(GarudaClientBackend.GOT_GADGETS_PROPERTY_CHANGE_ID)) {
-                if (mCompatibleGadgetClient == null) return; // nothing to do
+                break;
+            case GarudaClientBackend.GOT_GADGETS_PROPERTY_CHANGE_ID:
+                if (mCompatibleGadgetClient == null)
+                    return; // nothing to do
                 if ("csv".equalsIgnoreCase(mCompatibleType)) {
                     mCompatibleGadgetClient.loadGadgetsForCsv(mGarudaClientBackend.getCompatibleGadgetList());
                 } else if ("isd".equalsIgnoreCase(mCompatibleType)) {
                     mCompatibleGadgetClient.loadGadgetsForIsd(mGarudaClientBackend.getCompatibleGadgetList());
                 }
                 mCompatibleGadgetClient = null; // stop listening
-            } else {
+                break;
+            default:
                 Logger.getRootLogger().error("unexpected property name: " + propertyName);
+                break;
             }
         }
     }

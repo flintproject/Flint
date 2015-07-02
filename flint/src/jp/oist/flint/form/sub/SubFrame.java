@@ -408,14 +408,21 @@ public class SubFrame extends JInternalFrame
     @Override
     public void actionPerformed(ActionEvent evt) {
         String actionCommand = evt.getActionCommand();
-        if (ProgressPane.STOP_ACTION_COMMAND.equals(actionCommand)) {
+        if (actionCommand == null)
+            return;
+        switch (actionCommand) {
+        case ProgressPane.STOP_ACTION_COMMAND:
             progressStopActionPerformed(evt);
-        } else if (ProgressPane.CANCEL_ACTION_COMMAND.equals(actionCommand)) {
+            break;
+        case ProgressPane.CANCEL_ACTION_COMMAND:
             progressCancelActionPerformed(evt);
-        } else if (ProgressPane.LOG_ACTION_COMMAND.equals(actionCommand)) {
+            break;
+        case ProgressPane.LOG_ACTION_COMMAND:
             progressLogActionPerformed(evt);
-        } else if (ProgressPane.JOB_ACTION_COMMAND.equals(actionCommand)) {
+            break;
+        case ProgressPane.JOB_ACTION_COMMAND:
             progressJobViewActionPerformed(evt);
+            break;
         }
     }
 

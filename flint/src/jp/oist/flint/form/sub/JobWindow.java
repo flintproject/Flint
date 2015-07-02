@@ -510,22 +510,28 @@ public class JobWindow extends javax.swing.JFrame
     @Override
     public void actionPerformed(ActionEvent evt) {
         String actionCommand = evt.getActionCommand();
+        if (actionCommand == null)
+            return;
 
         CardLayout cardLayout = (CardLayout)pnl_Body.getLayout();
         int selectedIndex = mSelectionModel.getMinSelectionIndex();
-        if (ACTION_LIST.equals(actionCommand)) {
+        switch (actionCommand) {
+        case ACTION_LIST:
             cardLayout.show(pnl_Body, PANELKEY_LIST);
             if (selectedIndex >= 0)
                 mJobList.ensureIndexIsVisible(selectedIndex);
-        
-        } else if (ACTION_VIEWER.equals(actionCommand)) {
+            break;
+        case ACTION_VIEWER:
             cardLayout.show(pnl_Body, PANELKEY_VIEWER);
             if (selectedIndex >= 0)
                 mJobViewer.ensureIndexIsVisible(selectedIndex);
-        } else if (ACTION_EXPORT_ALL.equals(actionCommand)) {
+            break;
+        case ACTION_EXPORT_ALL:
             exportAllPerformed(evt);
-        } else if (ACTION_EXPORT_CANCEL.equals(actionCommand)) {
+            break;
+        case ACTION_EXPORT_CANCEL:
             exportCancelPerformed(evt);
+            break;
         }
     }
 
@@ -843,16 +849,24 @@ public class JobWindow extends javax.swing.JFrame
         @Override
         public void handleEvent(JobViewerComponent.Event evt) {
             String action = evt.getAction();
-            if ("plot".equals(action)) {
+            if (action == null)
+                return;
+            switch (action) {
+            case "plot":
                 plotPerformed(evt);
-            } else if ("export".equals(action)) {
+                break;
+            case "export":
                 exportPerformed(evt);
-            } else if ("sendViaGaruda".equals(action)) {
+                break;
+            case "sendViaGaruda":
                 sendViaGarudaPerformed(evt);
-            } else if ("cancelTask".equals(action)) {
+                break;
+            case "cancelTask":
                 cancelTaskPerformed(evt);
-            } else if ("cancelJob".equals(action)) {
+                break;
+            case "cancelJob":
                 cancelJobPerformed(evt);
+                break;
             }
         }
     }

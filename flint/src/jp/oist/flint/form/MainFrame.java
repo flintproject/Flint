@@ -440,15 +440,20 @@ public class MainFrame extends javax.swing.JFrame
     }
 
     protected void fireMainFrameEvent (String eventName, SubFrame target) {
+        assert eventName != null;
+
         MainFrame.Listener[] listeners = mEventListenerList.getListeners(MainFrame.Listener.class);
         MainFrame.Event evt = new MainFrame.Event(this, target);
 
-        if ("ModelOpened".equals(eventName)) {
+        switch (eventName) {
+        case "ModelOpened":
             for (MainFrame.Listener l : listeners)
                 l.onModelOpened(evt);
-        } else if ("ModelClosed".equals(eventName)) {
+            break;
+        case "ModelClosed":
             for (MainFrame.Listener l : listeners)
                 l.onModelClosed(evt);
+            break;
         }
     }
 

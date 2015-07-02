@@ -23,11 +23,10 @@ public class TaskDao extends DaoObject {
         public static Status fromString (String s) {
             if (s == null || s.isEmpty())
                 return UNKNOWN;
-
-            String status = s.toLowerCase();
-            if ("pending".equals(status)) {
+            switch (s.toLowerCase()) {
+            case "pending":
                 return PENDING;
-            } else if ("generated".equals(status)) {
+            case "generated":
                 return GENERATED;
             }
             return UNKNOWN;

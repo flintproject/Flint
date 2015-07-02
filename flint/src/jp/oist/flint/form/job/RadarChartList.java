@@ -458,24 +458,31 @@ public class MoveSelectionAction extends AbstractAction {
         @Override
         public void actionPerformed(ActionEvent evt) {
             String name = (String)getValue(NAME);
+            if (name == null)
+                return;
 
             Dimension dim = getSize();
             int column = dim.width / mCellSize.width;
             int last = getModel().getSize()-1;
             int movement = 0;
 
-            if (name.equals("selectUp")) {
+            switch (name) {
+            case "selectUp":
                 movement = mAnchorIndex - column;
                 if (movement < 0) movement = mAnchorIndex;
-            } else if (name.equals("selectDown")) {
+                break;
+            case "selectDown":
                 movement = mAnchorIndex + column;
                 if (movement >= last) movement = last;
-            } else if (name.equals("selectLeft")) {
+                break;
+            case "selectLeft":
                 movement = mAnchorIndex-1;
                 movement = (movement >= 0)? movement : 0;
-            } else if (name.equals("selectRight")) {
+                break;
+            case "selectRight":
                 movement = mAnchorIndex+1;
                 movement = (movement <= last)? movement : last;
+                break;
             }
             getSelectionModel().setSelectionInterval(movement, movement);
             mAnchorIndex = movement;

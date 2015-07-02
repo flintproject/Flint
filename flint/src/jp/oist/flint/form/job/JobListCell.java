@@ -190,14 +190,21 @@ public class JobListCell extends JPanel implements ActionListener  {
     @Override
     public void actionPerformed(ActionEvent evt) {
         String actionCommand = evt.getActionCommand();
-        if (ACTION_PLOT.equals(actionCommand)) {
+        if (actionCommand == null)
+            return;
+        switch (actionCommand) {
+        case ACTION_PLOT:
             mParent.handleContextMenuEvent(new JobViewerComponent.Event(mParent, "plot", mIndex));
-        } else if (ACTION_EXPORT.equals(actionCommand)) {
+            break;
+        case ACTION_EXPORT:
             mParent.handleContextMenuEvent(new JobViewerComponent.Event(mParent, "export", mIndex));
-        } else if (ACTION_SENDVIAGARUDA.equals(actionCommand)) {
+            break;
+        case ACTION_SENDVIAGARUDA:
             mParent.handleContextMenuEvent(new JobViewerComponent.Event(mParent, "sendViaGaruda", mIndex));
-        } else if (ACTION_CANCEL.equals(actionCommand)) {
+            break;
+        case ACTION_CANCEL:
             mParent.handleContextMenuEvent(new JobViewerComponent.Event(mParent, "cancelJob", mIndex));
+            break;
         }
     }
 

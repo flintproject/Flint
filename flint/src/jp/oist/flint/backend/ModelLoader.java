@@ -127,10 +127,13 @@ public class ModelLoader extends SwingWorker<Ipc.ModelProbeResponse, Void> {
             mResponseBuilder.setSeed(seed);
         }
         if (nc.hasIntegration()) {
-            if (nc.getIntegration().equals("euler")) {
+            switch (nc.getIntegration()) {
+            case "euler":
                 mResponseBuilder.setIntegrationMethod(Ipc.IntegrationMethod.EULER);
-            } else if (nc.getIntegration().equals("4th-rungekutta")) {
+                break;
+            case "4th-rungekutta":
                 mResponseBuilder.setIntegrationMethod(Ipc.IntegrationMethod.RUNGE_KUTTA);
+                break;
             }
         }
         if (nc.hasSts()) {

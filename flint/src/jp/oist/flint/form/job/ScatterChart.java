@@ -241,46 +241,57 @@ public class ScatterChart extends JobViewerComponent
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
         String propertyName = evt.getPropertyName();
+        if (propertyName == null)
+            return;
         Object newValue = evt.getNewValue();
         Object oldValue = evt.getOldValue();
 
-        if ("model".equals(propertyName)) {
+        switch (propertyName) {
+        case "model":
             if (oldValue instanceof ListModel)
                 ((ListModel)oldValue).removeListDataListener(this);
-
             if (newValue instanceof ListModel)
                 ((ListModel)newValue).addListDataListener(this);
-
             if (mChart == null) return;
             XYSeriesCollection dataset = (XYSeriesCollection)mChart.getXYPlot().getDataset(0);
             XYSeries series = dataset.getSeries(0);
             ListModel model = getModel();
             series.clear();
-            ListDataEvent lde = new ListDataEvent(model, 
-                    ListDataEvent.INTERVAL_ADDED, 0, model.getSize()-1);
+            ListDataEvent lde = new ListDataEvent(model,
+                                                  ListDataEvent.INTERVAL_ADDED, 0, model.getSize()-1);
             intervalAdded(lde);
-        } else if ("parameterInfo".equals(propertyName)) {
-            XYPlot plot = (XYPlot)mChart.getPlot();
-            NumberAxis xAxis = (NumberAxis) plot.getDomainAxis();
-            NumberAxis yAxis = (NumberAxis) plot.getRangeAxis();
-            if (getActiveParameterCount() == 1) {
-                yAxis.setNumberFormatOverride(new EmptyNumberFormat());
-                TickUnits tickUnits = new TickUnits();
-                TickUnit unit = new NumberTickUnit(1);
-                tickUnits.add(unit);
-                yAxis.setStandardTickUnits(tickUnits);
-            } else if (getActiveParameterCount() == 2) {
-                xAxis.setAttributedLabel(getParameterInfo().getTitle(0));
-                yAxis.setAttributedLabel(getParameterInfo().getTitle(1));
-                ((NumberAxis) yAxis).setNumberFormatOverride(null);
+            break;
+        case "parameterInfo":
+            {
+                XYPlot plot = (XYPlot)mChart.getPlot();
+                NumberAxis xAxis = (NumberAxis) plot.getDomainAxis();
+                NumberAxis yAxis = (NumberAxis) plot.getRangeAxis();
+                if (getActiveParameterCount() == 1) {
+                    yAxis.setNumberFormatOverride(new EmptyNumberFormat());
+                    TickUnits tickUnits = new TickUnits();
+                    TickUnit unit = new NumberTickUnit(1);
+                    tickUnits.add(unit);
+                    yAxis.setStandardTickUnits(tickUnits);
+                } else if (getActiveParameterCount() == 2) {
+                    xAxis.setAttributedLabel(getParameterInfo().getTitle(0));
+                    yAxis.setAttributedLabel(getParameterInfo().getTitle(1));
+                    ((NumberAxis) yAxis).setNumberFormatOverride(null);
+                }
             }
-        } else if ("background".equals(propertyName)) {
-            XYPlot plot = (XYPlot)mChart.getPlot();
-            plot.setBackgroundPaint(getBackground());
-        } else if ("foreground".equals(propertyName)) {
-            XYPlot plot = (XYPlot)mChart.getPlot();
-            plot.setRangeGridlinePaint(getForeground());
-            plot.setDomainGridlinePaint(getForeground());
+            break;
+        case "background":
+            {
+                XYPlot plot = (XYPlot)mChart.getPlot();
+                plot.setBackgroundPaint(getBackground());
+            }
+            break;
+        case "foreground":
+            {
+                XYPlot plot = (XYPlot)mChart.getPlot();
+                plot.setRangeGridlinePaint(getForeground());
+                plot.setDomainGridlinePaint(getForeground());
+            }
+            break;
         }
     }
 
