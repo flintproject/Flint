@@ -40,7 +40,9 @@ int AddRow(void *data, int argc, char **argv, char **names)
 	std::ostringstream oss;
 	for (int i=0;i<argc;i++) {
 		if (i != 0) oss.put(' ');
-		oss << argv[i];
+		if (argv[i]) { // print non-null only
+			oss << argv[i];
+		}
 	}
 	rows->push_back(oss.str());
 	return 0;

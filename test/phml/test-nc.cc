@@ -27,10 +27,9 @@ struct F : public test::MemoryFixture {
 		boost::filesystem::remove(output);
 
 		test::Sql sql(driver_.db());
-		std::vector<std::string> config;
-		sql.Table("config", &config);
-		BOOST_CHECK_EQUAL(config.size(), 1u);
-		BOOST_CHECK_EQUAL(config[0], expected);
+		std::vector<std::string> rows;
+		rows.push_back(expected);
+		sql.CheckRows("SELECT method FROM config", rows);
 	}
 };
 
@@ -39,25 +38,25 @@ BOOST_FIXTURE_TEST_SUITE(test_nc, F)
 BOOST_AUTO_TEST_CASE(bogus_td) {
 	Phml(TEST_MODELS("bogus-td.phml"));
 	GenerateAndCheck("bogus-td.phml.nc",
-					 "rk4 ");
+					 "rk4");
 }
 
 BOOST_AUTO_TEST_CASE(Izhikevich_2003_model) {
 	Phml(TEST_MODELS("Izhikevich_2003_model.isml"));
 	GenerateAndCheck("Izhikevich_2003_model.isml.nc",
-					 "rk4 ");
+					 "rk4");
 }
 
 BOOST_AUTO_TEST_CASE(LR1_ring_reentry_initiate) {
 	Phml(TEST_MODELS("LR1-ring_reentry_initiate.isml"));
 	GenerateAndCheck("LR1-ring_reentry_initiate.isml.nc",
-					 "4th-rungekutta ");
+					 "4th-rungekutta");
 }
 
 BOOST_AUTO_TEST_CASE(Rybak_2006_with_static_instance_and_multiple_input) {
 	Phml(TEST_MODELS("Rybak_2006_with_static_instance_and_multiple_input.isml"));
 	GenerateAndCheck("Rybak_2006_with_static_instance_and_multiple_input.isml.nc",
-					 "euler ");
+					 "euler");
 }
 
 BOOST_AUTO_TEST_SUITE_END()
