@@ -239,7 +239,7 @@ public class MainFrame extends javax.swing.JFrame
                         StringBuilder sb = new StringBuilder();
                         if (logFile != null) {
                             try (BufferedReader reader = new BufferedReader(new FileReader(logFile))) {
-                                String line = null;
+                                String line;
                                 while ((line = reader.readLine()) != null) {
                                     sb.append(line).append(System.getProperty("line.separator"));
                                 }

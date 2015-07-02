@@ -342,7 +342,7 @@ public class AutoCompleter implements
     public void upSelectedPredict (boolean looping) {
         int selectedIndex = mCompletionList.getSelectedIndex();
         int lastIndex = mCompletionList.getModel().getSize()-1;
-        int index = -1;
+        int index;
         if (selectedIndex > 0) {
             index = selectedIndex-1;
         } else if(looping) {
@@ -357,7 +357,7 @@ public class AutoCompleter implements
         int selectedIndex = mCompletionList.getSelectedIndex();
         int lastIndex = mCompletionList.getModel().getSize()-1;
         int firstIndex = 0;
-        int index = -1;
+        int index;
         if (lastIndex > selectedIndex) {
             index = selectedIndex+1;
         } else if(looping) {

@@ -89,7 +89,7 @@ public class ParameterTest {
 
 
         String enumValue;
-        boolean result = true;
+        boolean result;
 
 
         /* Test for Enum value */

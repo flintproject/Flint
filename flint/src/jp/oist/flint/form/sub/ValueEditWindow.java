@@ -330,9 +330,9 @@ public class ValueEditWindow extends JFrame
 
         int rowCount = tbl_Values.getRowCount();
         ParameterSetTableModel model = (ParameterSetTableModel)tbl_Values.getModel();
-        String name = null;
-        String expression = null;
-        int row = 0;
+        String name;
+        String expression;
+        int row;
 
         HashSet<String> names = new HashSet<>();
 

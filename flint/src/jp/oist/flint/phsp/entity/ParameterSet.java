@@ -102,7 +102,7 @@ public class ParameterSet {
     } 
 
     public Number parseNumber (String s) {
-        Number retval = null;
+        Number retval;
         try {
             retval = Long.parseLong(s);
         } catch (NumberFormatException ex) {
@@ -370,7 +370,7 @@ public class ParameterSet {
         @Override
         public String toString () {
             Double step, lower, upper;
-            Number[] result = null;
+            Number[] result;
 
             StringBuilder sb = new StringBuilder();
             String separator = ", ";
