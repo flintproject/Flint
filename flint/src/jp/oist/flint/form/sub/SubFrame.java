@@ -132,9 +132,6 @@ public class SubFrame extends JInternalFrame
         String[] integrationMethodArr = tmpIntegrationMethod.split("_");
         String integrationMethod = "";
 
-        Ipc.ModelVariableTable variableTable = response.getVariableTable();
-        Vector<String> columnVector = new Vector<>(variableTable.getColumnList());
-
         if (integrationMethodArr.length > 1) {
             for (String str : integrationMethodArr) {
                 str = str.substring(0, 1).toUpperCase() + str.substring(1).toLowerCase();
