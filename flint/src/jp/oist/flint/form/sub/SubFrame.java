@@ -3,7 +3,6 @@ package jp.oist.flint.form.sub;
 
 import jp.oist.flint.executor.ModelReloader;
 import java.awt.Component;
-import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.KeyboardFocusManager;
 import java.awt.event.ActionEvent;
@@ -32,7 +31,6 @@ import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JComponent;
-import javax.swing.SwingUtilities;
 import javax.xml.parsers.ParserConfigurationException;
 import jp.oist.flint.dao.TaskDao;
 import jp.oist.flint.backend.ModelLoader;

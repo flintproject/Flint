@@ -17,7 +17,6 @@ import java.util.EventObject;
 import java.util.HashMap;
 import java.util.Map;
 import javax.swing.DefaultListSelectionModel;
-import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;

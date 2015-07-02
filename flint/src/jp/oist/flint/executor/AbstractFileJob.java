@@ -3,7 +3,6 @@ package jp.oist.flint.executor;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.List;
 
 public class AbstractFileJob implements IJob<File> {
 

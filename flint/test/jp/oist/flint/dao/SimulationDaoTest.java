@@ -2,9 +2,7 @@
 package jp.oist.flint.dao;
 
 import java.io.File;
-import java.sql.SQLException;
 import junit.framework.Assert;
-import org.apache.log4j.xml.DOMConfigurator;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
