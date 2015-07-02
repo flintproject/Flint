@@ -27,7 +27,6 @@ import javax.swing.AbstractAction;
 import javax.swing.BoxLayout;
 import javax.swing.DefaultCellEditor;
 import javax.swing.JButton;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -265,11 +264,6 @@ public class ParameterValuePane extends JPanel
         mValueEditWindow.setVisible(true);
     }
 
-    private void showErrorDialog(String message, String title) {
-        JOptionPane.showMessageDialog(this, message, title, 
-                JOptionPane.ERROR_MESSAGE);
-    }
-
     public ParameterSet getParameterSet () {
         return mValueEditWindow.getParameterSet();
     }
@@ -282,8 +276,6 @@ public class ParameterValuePane extends JPanel
                     PhmlParameterModel model = (PhmlParameterModel)tbl_Parameter.getModel();
                     for (int row=0; row<rowCount; row++) {
                         String moduleId   = model.getModuleIdAt(row);
-                        String moduleName = model.getModuleNameAt(row);
-                        String pqName   = model.getPhysicalQuantityNameAt(row);
                         String pqId     = model.getPhysicalQuantityIdAt(row);
                         String value    = model.getExpressionAt(row);
 

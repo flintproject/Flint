@@ -1079,7 +1079,6 @@ public class ValueEditWindow extends JFrame
 
         public void setPamraterSet (ParameterSet parameterSet) {
             mParameterSet = parameterSet;
-            int lastIndex = mParameterSet.size() - 1;
             this.fireTableStructureChanged();
         }
 
