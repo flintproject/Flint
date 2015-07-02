@@ -73,9 +73,6 @@
                   <Properties>
                     <Property name="text" type="java.lang.String" value="Define value set"/>
                     <Property name="actionCommand" type="java.lang.String" value="parametervaluepane.action.define_value_set"/>
-                    <Property name="margin" type="java.awt.Insets" editor="org.netbeans.beaninfo.editors.InsetsEditor">
-                      <Insets value="[0, 0, 0, 0]"/>
-                    </Property>
                     <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                       <Dimension value="[145, 24]"/>
                     </Property>

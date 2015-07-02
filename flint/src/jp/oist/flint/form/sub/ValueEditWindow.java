@@ -7,7 +7,6 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
-import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
@@ -491,7 +490,6 @@ public class ValueEditWindow extends JFrame
 
         btn_AddRow.setText("+");
         btn_AddRow.setActionCommand("flint.valueeditwindow.action.add_row");
-        btn_AddRow.setMargin(new Insets(0, 0, 0, 0));
         btn_AddRow.setMaximumSize(new Dimension(24, 24));
         btn_AddRow.setMinimumSize(new Dimension(24, 24));
         btn_AddRow.setName("flint.valueeditwindow.button.add_row"); // NOI18N
@@ -500,7 +498,6 @@ public class ValueEditWindow extends JFrame
 
         btn_DeleteRow.setText("-");
         btn_DeleteRow.setActionCommand("flint.valueeditwindow.action.delete_row");
-        btn_DeleteRow.setMargin(new Insets(0, 0, 0, 0));
         btn_DeleteRow.setMaximumSize(new Dimension(24, 24));
         btn_DeleteRow.setMinimumSize(new Dimension(24, 24));
         btn_DeleteRow.setName("flint.valueeditwindow.button.delete_row"); // NOI18N
