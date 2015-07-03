@@ -52,7 +52,8 @@ bin_PROGRAMS = \
 noinst_PROGRAMS = \
 	test-run
 
-lib_LTLIBRARIES = libflint.la libflintxx.la libsqlite3.la
+# Dependency comes first
+lib_LTLIBRARIES = libsqlite3.la libflint.la libflintxx.la
 
 libflint_la_CPPFLAGS = $(AM_CFLAGS) -std=c99 -pedantic-errors
 libflint_la_LIBADD = libsqlite3.la
