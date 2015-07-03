@@ -73,7 +73,7 @@ tmp/clibsedml-$(CLIBSEDML_COMMIT): src/clibsedml-$(CLIBSEDML_COMMIT).tar.gz | tm
 
 tmp/libsbml-$(LIBSBML_VERSION): src/libSBML-$(LIBSBML_VERSION)-core-src.zip | tmp
 	-rm -rf var/libsbml-$(LIBSBML_VERSION)
-	(cd var && unzip ../$<)
+	(cd var && unzip -qq ../$<)
 	touch $@
 
 tmp/libxml2-$(LIBXML2_VERSION): src/libxml2-sources-$(LIBXML2_VERSION).tar.gz | tmp

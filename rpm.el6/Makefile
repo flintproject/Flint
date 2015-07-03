@@ -108,7 +108,7 @@ endef
 
 define flint_unzip
 var/$(1): src/$(2).zip | var
-	(cd var && unzip ../$$<)
+	(cd var && unzip -qq ../$$<)
 	touch $$@
 endef
 
