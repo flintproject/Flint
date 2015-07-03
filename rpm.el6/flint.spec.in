@@ -86,17 +86,14 @@ rm -rf %{buildroot}
 /opt/flint/bin/isdsort
 /opt/flint/bin/isdstrip
 /opt/flint/bin/isdwc
-/opt/flint/lib/libflint.a
 /opt/flint/lib/libflint.la
 /opt/flint/lib/libflint.so
 /opt/flint/lib/libflint.so.0
 /opt/flint/lib/libflint.so.0.0.0
-/opt/flint/lib/libflintxx.a
 /opt/flint/lib/libflintxx.la
 /opt/flint/lib/libflintxx.so
 /opt/flint/lib/libflintxx.so.0
 /opt/flint/lib/libflintxx.so.0.0.0
-/opt/flint/lib/libsqlite3.a
 /opt/flint/lib/libsqlite3.la
 /opt/flint/lib/libsqlite3.so
 /opt/flint/lib/libsqlite3.so.0

@@ -17,7 +17,7 @@ This is a SUNDIALS package for Flint.
 
 %build
 %_openmpi_load
-./configure --prefix=%{buildroot}/opt/flint --enable-shared
+./configure --prefix=%{buildroot}/opt/flint --enable-shared --disable-static
 make
 
 %install
@@ -35,6 +35,7 @@ sed -i -e "s,%{buildroot},," %{buildroot}/opt/flint/lib/libsundials_ida.la
 sed -i -e "s,%{buildroot},," %{buildroot}/opt/flint/lib/libsundials_kinsol.la
 sed -i -e "s,%{buildroot},," %{buildroot}/opt/flint/lib/libsundials_nvecparallel.la
 sed -i -e "s,%{buildroot},," %{buildroot}/opt/flint/lib/libsundials_nvecserial.la
+for x in cvode cvodes ida kinsol nvecparallel nvecserial; do (cd %{buildroot}/opt/flint/lib && ln -s libsundials_$x libsundials_$x.so); done
 
 %clean
 rm -rf %{buildroot}
