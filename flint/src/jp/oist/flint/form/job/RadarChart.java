@@ -10,7 +10,6 @@ import java.awt.Polygon;
 import java.awt.RenderingHints;
 import java.awt.Stroke;
 import java.awt.geom.AffineTransform;
-import java.math.BigDecimal;
 import java.util.Arrays;
 
 public class RadarChart {
@@ -181,20 +180,17 @@ public class RadarChart {
         for (int i=0; i<mNumberOfSides; i++) {
 
             double ratio;
-            try {
-                BigDecimal dmax = new BigDecimal(mMaximums[i].doubleValue());
-                BigDecimal dmin = new BigDecimal(mMinimums[i].doubleValue());
-                if (dmax.compareTo(dmin) == 0) {
-                    ratio = 1.0;
-                } else {
-                    ratio = (mValues[i].doubleValue() - mMinimums[i].doubleValue()) 
-                            / (mMaximums[i].doubleValue() - mMinimums[i].doubleValue());
-                }
-            } catch (Exception ex) {
-                ratio = 0.0;
+            double dmax = mMaximums[i].doubleValue();
+            double dmin = mMinimums[i].doubleValue();
+            double diff = dmax - dmin;
+            if (diff == 0) {
+                ratio = 1.0;
+            } else {
+                ratio = (mValues[i].doubleValue() - dmin) / diff;
             }
-            if (new BigDecimal(MINIMUM_RATIO).compareTo(new BigDecimal(ratio)) > 0)
+            if (MINIMUM_RATIO > ratio) {
                 ratio = MINIMUM_RATIO;
+            }
 
             double theta = radian * vertex;
 
