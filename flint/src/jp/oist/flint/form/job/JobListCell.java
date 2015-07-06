@@ -172,6 +172,7 @@ public class JobListCell extends JPanel implements ActionListener  {
         btn_Plot.setMinimumSize(new Dimension(75, 20));
         btn_Plot.setPreferredSize(new Dimension(75, 20));
         btn_Plot.addActionListener(new ActionListener() {
+            @Override
             public void actionPerformed(ActionEvent evt) {
                 btn_PlotActionPerformed(evt);
             }

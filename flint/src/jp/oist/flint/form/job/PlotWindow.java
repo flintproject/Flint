@@ -588,6 +588,7 @@ public class PlotWindow extends javax.swing.JFrame
         checkBoxXlog.setFont(new java.awt.Font("Osaka", 0, 13)); // NOI18N
         checkBoxXlog.setText("log");
         checkBoxXlog.addActionListener(new java.awt.event.ActionListener() {
+            @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 checkBoxXlogActionPerformed(evt);
             }
@@ -597,6 +598,7 @@ public class PlotWindow extends javax.swing.JFrame
         checkBoxLegend.setSelected(true);
         checkBoxLegend.setText("Legend");
         checkBoxLegend.addActionListener(new java.awt.event.ActionListener() {
+            @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 checkBoxLegendActionPerformed(evt);
             }
@@ -608,6 +610,7 @@ public class PlotWindow extends javax.swing.JFrame
         checkBoxY1log.setFont(new java.awt.Font("Osaka", 0, 13)); // NOI18N
         checkBoxY1log.setText("log");
         checkBoxY1log.addActionListener(new java.awt.event.ActionListener() {
+            @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 checkBoxY1logActionPerformed(evt);
             }
@@ -616,6 +619,7 @@ public class PlotWindow extends javax.swing.JFrame
         checkBoxY2log.setFont(new java.awt.Font("Osaka", 0, 13)); // NOI18N
         checkBoxY2log.setText("log");
         checkBoxY2log.addActionListener(new java.awt.event.ActionListener() {
+            @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 checkBoxY2logActionPerformed(evt);
             }
@@ -765,6 +769,7 @@ public class PlotWindow extends javax.swing.JFrame
         radio_OutputFile.setFont(new java.awt.Font("Osaka", 0, 13)); // NOI18N
         radio_OutputFile.setText("File");
         radio_OutputFile.addActionListener(new java.awt.event.ActionListener() {
+            @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 radio_OutputFileActionPerformed(evt);
             }
@@ -811,6 +816,7 @@ public class PlotWindow extends javax.swing.JFrame
         btn_Range_X_Default.setSelected(true);
         btn_Range_X_Default.setText("Default");
         btn_Range_X_Default.addActionListener(new java.awt.event.ActionListener() {
+            @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btn_Range_X_DefaultActionPerformed(evt);
             }
@@ -819,6 +825,7 @@ public class PlotWindow extends javax.swing.JFrame
         btngrp_RangeX.add(btn_Range_X_Specified);
         btn_Range_X_Specified.setText("Specified");
         btn_Range_X_Specified.addActionListener(new java.awt.event.ActionListener() {
+            @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btn_Range_X_SpecifiedActionPerformed(evt);
             }
@@ -860,6 +867,7 @@ public class PlotWindow extends javax.swing.JFrame
         btn_Range_Y_Default.setSelected(true);
         btn_Range_Y_Default.setText("Default");
         btn_Range_Y_Default.addActionListener(new java.awt.event.ActionListener() {
+            @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btn_Range_Y_DefaultActionPerformed(evt);
             }
@@ -868,6 +876,7 @@ public class PlotWindow extends javax.swing.JFrame
         btngrp_RangeY1.add(btn_Range_Y_Specified);
         btn_Range_Y_Specified.setText("Specified");
         btn_Range_Y_Specified.addActionListener(new java.awt.event.ActionListener() {
+            @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btn_Range_Y_SpecifiedActionPerformed(evt);
             }
@@ -908,6 +917,7 @@ public class PlotWindow extends javax.swing.JFrame
         btngrp_RangeY2.add(btn_Range_Y2_Specified);
         btn_Range_Y2_Specified.setText("Specified");
         btn_Range_Y2_Specified.addActionListener(new java.awt.event.ActionListener() {
+            @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btn_Range_Y2_SpecifiedActionPerformed(evt);
             }
@@ -917,6 +927,7 @@ public class PlotWindow extends javax.swing.JFrame
         btn_Range_Y2_Default.setSelected(true);
         btn_Range_Y2_Default.setText("Default");
         btn_Range_Y2_Default.addActionListener(new java.awt.event.ActionListener() {
+            @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btn_Range_Y2_DefaultActionPerformed(evt);
             }
@@ -997,6 +1008,7 @@ public class PlotWindow extends javax.swing.JFrame
         btn_Legend_X_Default.setSelected(true);
         btn_Legend_X_Default.setText("Default");
         btn_Legend_X_Default.addActionListener(new java.awt.event.ActionListener() {
+            @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btn_Legend_X_DefaultActionPerformed(evt);
             }
@@ -1005,6 +1017,7 @@ public class PlotWindow extends javax.swing.JFrame
         btngrp_LegendX.add(btn_Legend_X_Specified);
         btn_Legend_X_Specified.setText("Specified");
         btn_Legend_X_Specified.addActionListener(new java.awt.event.ActionListener() {
+            @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btn_Legend_X_SpecifiedActionPerformed(evt);
             }
@@ -1043,6 +1056,7 @@ public class PlotWindow extends javax.swing.JFrame
         btngrp_LegendY1.add(btn_Legend_Y_Specified);
         btn_Legend_Y_Specified.setText("Specified");
         btn_Legend_Y_Specified.addActionListener(new java.awt.event.ActionListener() {
+            @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btn_Legend_Y_SpecifiedActionPerformed(evt);
             }
@@ -1052,6 +1066,7 @@ public class PlotWindow extends javax.swing.JFrame
         btn_Legend_Y_Default.setSelected(true);
         btn_Legend_Y_Default.setText("Default");
         btn_Legend_Y_Default.addActionListener(new java.awt.event.ActionListener() {
+            @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btn_Legend_Y_DefaultActionPerformed(evt);
             }
@@ -1092,6 +1107,7 @@ public class PlotWindow extends javax.swing.JFrame
         btn_Legend_Y2_Default.setSelected(true);
         btn_Legend_Y2_Default.setText("Default");
         btn_Legend_Y2_Default.addActionListener(new java.awt.event.ActionListener() {
+            @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btn_Legend_Y2_DefaultActionPerformed(evt);
             }
@@ -1100,6 +1116,7 @@ public class PlotWindow extends javax.swing.JFrame
         btngrp_LegendY2.add(btn_Legend_Y2_Specified);
         btn_Legend_Y2_Specified.setText("Specified");
         btn_Legend_Y2_Specified.addActionListener(new java.awt.event.ActionListener() {
+            @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btn_Legend_Y2_SpecifiedActionPerformed(evt);
             }
@@ -1160,6 +1177,7 @@ public class PlotWindow extends javax.swing.JFrame
         btn_Plot.setText("Plot");
         btn_Plot.setMaximumSize(new java.awt.Dimension(32767, 23));
         btn_Plot.addActionListener(new java.awt.event.ActionListener() {
+            @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btn_PlotActionPerformed(evt);
             }

@@ -172,6 +172,7 @@ public class PreferenceDialog extends javax.swing.JDialog {
         jLabel4.setText("Plotter:");
 
         comboBoxPlotter.addActionListener(new java.awt.event.ActionListener() {
+            @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 comboBoxPlotterActionPerformed(evt);
             }
@@ -179,6 +180,7 @@ public class PreferenceDialog extends javax.swing.JDialog {
 
         buttonDeletePlotter.setText("Delete Plotter");
         buttonDeletePlotter.addActionListener(new java.awt.event.ActionListener() {
+            @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 buttonDeletePlotterActionPerformed(evt);
             }
@@ -186,6 +188,7 @@ public class PreferenceDialog extends javax.swing.JDialog {
 
         buttonConfigure.setText("Configure");
         buttonConfigure.addActionListener(new java.awt.event.ActionListener() {
+            @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 buttonConfigureActionPerformed(evt);
             }
@@ -193,6 +196,7 @@ public class PreferenceDialog extends javax.swing.JDialog {
 
         buttonRegisterPlotter.setText("Register Plotter");
         buttonRegisterPlotter.addActionListener(new java.awt.event.ActionListener() {
+            @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 buttonRegisterPlotterActionPerformed(evt);
             }
@@ -236,6 +240,7 @@ public class PreferenceDialog extends javax.swing.JDialog {
 
         radioButtonEnabled.setText("Online");
         radioButtonEnabled.addActionListener(new java.awt.event.ActionListener() {
+            @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 radioButtonEnabledActionPerformed(evt);
             }
@@ -244,6 +249,7 @@ public class PreferenceDialog extends javax.swing.JDialog {
         radioButtonDisabled.setSelected(true);
         radioButtonDisabled.setText("Offline");
         radioButtonDisabled.addActionListener(new java.awt.event.ActionListener() {
+            @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 radioButtonDisabledActionPerformed(evt);
             }
@@ -334,6 +340,7 @@ public class PreferenceDialog extends javax.swing.JDialog {
         buttonClose.setMinimumSize(new java.awt.Dimension(80, 24));
         buttonClose.setPreferredSize(new java.awt.Dimension(80, 24));
         buttonClose.addActionListener(new java.awt.event.ActionListener() {
+            @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 buttonCloseActionPerformed(evt);
             }

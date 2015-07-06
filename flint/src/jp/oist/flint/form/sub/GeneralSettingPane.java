@@ -267,6 +267,7 @@ public class GeneralSettingPane extends javax.swing.JPanel
         txt_Simulation_Step.setMinimumSize(new java.awt.Dimension(130, 19));
         txt_Simulation_Step.setPreferredSize(new java.awt.Dimension(130, 19));
         txt_Simulation_Step.addActionListener(new java.awt.event.ActionListener() {
+            @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 txt_Simulation_StepActionPerformed(evt);
             }

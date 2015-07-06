@@ -81,6 +81,7 @@ public class AboutDialog extends javax.swing.JDialog {
         jLabel3.setToolTipText(URL);
         jLabel3.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         jLabel3.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 jLabel3MouseClicked(evt);
             }
@@ -93,6 +94,7 @@ public class AboutDialog extends javax.swing.JDialog {
 
         jButton1.setText("Close");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
+            @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton1ActionPerformed(evt);
             }

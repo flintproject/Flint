@@ -57,6 +57,7 @@ public class PlotterRegistrationDialog extends javax.swing.JDialog {
 
         buttonPlotterPathSelect.setText("Select");
         buttonPlotterPathSelect.addActionListener(new java.awt.event.ActionListener() {
+            @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 buttonPlotterPathSelectActionPerformed(evt);
             }
@@ -64,6 +65,7 @@ public class PlotterRegistrationDialog extends javax.swing.JDialog {
 
         buttonAddPlotterCancel.setText("Cancel");
         buttonAddPlotterCancel.addActionListener(new java.awt.event.ActionListener() {
+            @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 buttonAddPlotterCancelActionPerformed(evt);
             }
@@ -71,6 +73,7 @@ public class PlotterRegistrationDialog extends javax.swing.JDialog {
 
         buttonAddPlotterOk.setText("OK");
         buttonAddPlotterOk.addActionListener(new java.awt.event.ActionListener() {
+            @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 buttonAddPlotterOkActionPerformed(evt);
             }
