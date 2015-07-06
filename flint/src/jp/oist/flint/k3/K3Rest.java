@@ -437,8 +437,6 @@ public class K3Rest {
         // 戻り値
         List<K3JobModel> jobModelList = new ArrayList<>();
 
-        try {
-
             // ジョブモデルのインスタンス生成
             K3JobModel jobModel;
             // rootから親要素(entry)を取得する
@@ -458,10 +456,6 @@ public class K3Rest {
                 }
                 jobModelList.add(jobModel);
             }
-        } catch (Exception ex) {
-            // 読み込みエラー
-            Logger.getRootLogger().error(ex.getMessage());
-        }
         return jobModelList;
     }
 }

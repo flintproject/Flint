@@ -62,6 +62,7 @@ import javax.swing.event.InternalFrameAdapter;
 import javax.swing.event.InternalFrameEvent;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.TransformerException;
 import jp.oist.flint.dao.SimulationDao;
 import jp.oist.flint.dao.TaskDao;
 import jp.oist.flint.executor.PhspSimulator;
@@ -309,9 +310,7 @@ public class MainFrame extends javax.swing.JFrame
             simulator.execute();
             mSimulator = simulator;
             monitor.start();
-        } catch (IOException ex) {
-            showErrorDialog(ex.getMessage(), "ERROR");
-        } catch (ParserConfigurationException | SQLException ex) {
+        } catch (IOException | ParserConfigurationException | SQLException | TransformerException ex) {
             showErrorDialog(ex.getMessage(), "ERROR");
         }
     }
@@ -489,12 +488,7 @@ public class MainFrame extends javax.swing.JFrame
 
     @Override
     public void closePerformed (Object source) {
-        try {
-            closeModel(getSelectedSubFrame());
-        } catch (Exception ex) {
-            showErrorDialog("Please select a target frame at first",
-                             "Error on loading configulation");
-        }
+        closeModel(getSelectedSubFrame());
     }
 
     @Override
@@ -601,10 +595,8 @@ public class MainFrame extends javax.swing.JFrame
                 }
                 JOptionPane.showMessageDialog(this, "Saved phsp as " + file.getPath());
            }
-        } catch (IOException ex) {
-            showErrorDialog(ex.getMessage(), "PHSP Save failed");
-        } catch (ParserConfigurationException pce) {
-            showErrorDialog(pce.getMessage(), "Saving as PHSP failed");
+        } catch (IOException | ParserConfigurationException | TransformerException ex) {
+            showErrorDialog(ex.getMessage(), "Saving as PHSP failed");
         } finally {
             setEnabled(true);
         }
@@ -619,24 +611,14 @@ public class MainFrame extends javax.swing.JFrame
 
     @Override
     public void copyPerformed (Object source) {
-        try {
-            SubFrame subFrame = getSelectedSubFrame();
-            subFrame.copy();
-        } catch (Exception ex) {
-            showErrorDialog("Please select a target frame at first",
-                             "Error on loading configulation");
-        }
+        SubFrame subFrame = getSelectedSubFrame();
+        subFrame.copy();
     }
 
     @Override
     public void cutPerformed (Object source) {
-        try {
-            SubFrame subFrame = getSelectedSubFrame();
-            subFrame.cut();
-        } catch (Exception ex) {
-            showErrorDialog("Please select a target frame at first",
-                             "Error on loading configulation");
-        }
+        SubFrame subFrame = getSelectedSubFrame();
+        subFrame.cut();
     }
 
     @Override

@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.StringReader;
 import javax.swing.text.JTextComponent;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.TransformerException;
 import jp.oist.flint.textformula.ReservedFunctionContent;
 import jp.oist.flint.textformula.ReservedFunctionContent.FunctionInformation;
 import jp.oist.flint.textformula.TextFormula2MathML;
@@ -53,7 +54,7 @@ public class FormulaAutoCompleter extends AutoCompleter {
     }
 
     public String getTextAsMathML()
-        throws ParseException, ParserConfigurationException {
+        throws ParseException, ParserConfigurationException, TransformerException {
         formula2mml.parse(new StringReader(getText()));
 
         return formula2mml.getMathML();

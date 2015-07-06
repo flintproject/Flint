@@ -8,6 +8,7 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import static org.junit.Assert.*;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.TransformerException;
 
 public class TextFormula2MathMLTest {
 
@@ -28,7 +29,7 @@ public class TextFormula2MathMLTest {
 
     @Test
     public void testParse_Number()
-        throws ParseException, ParserConfigurationException {
+        throws ParseException, ParserConfigurationException, TransformerException {
         String[] numberExpressions = new String[] {
             "x = 1.215752192E1",
             "x = 1",
@@ -60,7 +61,7 @@ public class TextFormula2MathMLTest {
 
     @Test
     public void testParse_Variable()
-        throws ParseException, ParserConfigurationException {
+        throws ParseException, ParserConfigurationException, TransformerException {
         String[] variableExpressions = new String[] {
             "y = bulldog",
             "y = Dachshund",
@@ -80,7 +81,7 @@ public class TextFormula2MathMLTest {
 
     @Test
     public void testParse_Functions()
-        throws ParseException, ParserConfigurationException {
+        throws ParseException, ParserConfigurationException, TransformerException {
         String[] functionExpressions = new String[] {
             "y = log(2)",
             "y = pow(2, 4)",
@@ -97,7 +98,7 @@ public class TextFormula2MathMLTest {
 
     @Test
     public void testParse_Condition()
-        throws ParseException, ParserConfigurationException {
+        throws ParseException, ParserConfigurationException, TransformerException {
         String[] conditionExpressions = new String[] {
             "x == 2",
             "x != 2",
@@ -118,7 +119,7 @@ public class TextFormula2MathMLTest {
 
     @Test
     public void testParse_Vector()
-        throws ParseException, ParserConfigurationException {
+        throws ParseException, ParserConfigurationException, TransformerException {
         String[] vecterExpressions = new String[] {
             "x1 = {1}",
             "x2 = {-8223}",
@@ -141,7 +142,7 @@ public class TextFormula2MathMLTest {
 
     @Test
     public void testParse_Matrix()
-        throws ParseException, ParserConfigurationException {
+        throws ParseException, ParserConfigurationException, TransformerException {
         String[] matrixExpressions = new String[] {
             "{{1,2},{3,2},{a,v}}*{{a,v},{d,d},{1,2}}",
             "{1,2,val2}*{{a},{d},{2}}",
@@ -154,7 +155,7 @@ public class TextFormula2MathMLTest {
 
     @Test
     public void testParse_Expression()
-        throws ParseException, ParserConfigurationException {
+        throws ParseException, ParserConfigurationException, TransformerException {
         String[] simpleExpressions = new String[] {
             "x = (-b+sqrt(pow(b,2)-4*a*c))/2*a",
             "y = a*pow(x,2)+b*x+c",
@@ -186,7 +187,7 @@ public class TextFormula2MathMLTest {
     }
 
     private void testParse(String[] expressions, String[] result)
-        throws ParseException, ParserConfigurationException {
+        throws ParseException, ParserConfigurationException, TransformerException {
 		assertEquals("length mismatch between expressions and results",
 					 expressions.length, result.length);
         for (int i=0; i<result.length; i++) {

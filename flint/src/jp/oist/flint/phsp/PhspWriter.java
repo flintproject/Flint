@@ -10,6 +10,7 @@ import java.io.OutputStreamWriter;
 import java.io.StringReader;
 import java.util.Arrays;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.TransformerException;
 import jp.oist.flint.phsp.entity.ParameterSet;
 import jp.oist.flint.phsp.entity.TargetSet;
 import jp.oist.flint.textformula.TextFormula2MathML;
@@ -33,7 +34,7 @@ public class PhspWriter {
     }
 
     public void write (IPhspConfiguration conf, OutputStream os, boolean removeParameterIfNotUsed) 
-        throws IOException, ParserConfigurationException {
+        throws IOException, ParserConfigurationException, TransformerException {
         try (BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(os, "UTF-8"))) {
             StringBuilder sb = new StringBuilder();
 

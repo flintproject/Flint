@@ -66,12 +66,8 @@ public class TextFormula2MathML
         return mDocument;
     }
 
-    public String getMathML () {
-        try {
-            return value2mathml();
-        } catch (Exception ex) {
-            return null;
-        }
+    public String getMathML() throws TransformerException {
+        return value2mathml();
     }
 
     public List getUsingParameterNames () 

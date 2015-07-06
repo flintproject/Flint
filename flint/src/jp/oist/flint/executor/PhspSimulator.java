@@ -16,6 +16,7 @@ import java.util.concurrent.Future;
 import javax.swing.SwingWorker;
 import javax.swing.event.EventListenerList;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.TransformerException;
 import jp.oist.flint.dao.SimulationDao;
 import jp.oist.flint.filesystem.Workspace;
 import jp.oist.flint.phsp.IPhspConfiguration;
@@ -53,7 +54,7 @@ public class PhspSimulator extends SwingWorker <Boolean, Integer>
     public PhspSimulator (SimulatorService service, 
                             ISimulationConfigurationList sedml, 
                             IPhspConfiguration phsp) 
-        throws IOException, ParserConfigurationException, SQLException {
+        throws IOException, ParserConfigurationException, SQLException, TransformerException {
 
         mService = service;
         mSedmlConfig = sedml;
