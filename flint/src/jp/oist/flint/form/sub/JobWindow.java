@@ -642,7 +642,7 @@ public class JobWindow extends javax.swing.JFrame
                             }
                         } catch (CancellationException ex) {
                             JOptionPane.showMessageDialog(JobWindow.this, 
-                                    "Eporting simulation data is cancelled.",
+                                    "Exporting simulation data is cancelled.",
                                     "Exporting is cancelled.", JOptionPane.INFORMATION_MESSAGE);
                         } catch (InterruptedException | ExecutionException | HeadlessException ex) {
                             showErrorDialog(ex.getMessage(),
