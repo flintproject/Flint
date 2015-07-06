@@ -350,7 +350,7 @@ public class MainFrame extends javax.swing.JFrame
             });
             phspLoader.execute();
             return true;
-        } catch (Exception ex) {
+        } catch (IOException ex) {
             setEditable(true);
             showErrorDialog(ex.getMessage(), "Error on load file of phsp");
             return false;

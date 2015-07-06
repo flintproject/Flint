@@ -84,7 +84,7 @@ public class ModelFileWatcher implements Runnable {
                     continue; // TODO: remove invalid key from the map?
                 }
             }
-        } catch (Exception e) {
+        } catch (InterruptedException e) {
             Logger.getRootLogger().error(e.getMessage());
         }
     }
