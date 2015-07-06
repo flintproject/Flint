@@ -588,7 +588,7 @@ public class JobWindow extends javax.swing.JFrame
             JFileChooser fileChooser = new JFileChooser();
             fileChooser.setCurrentDirectory(defaultDir);
             fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-            int result = fileChooser.showDialog(mParent, "Save All");
+            int result = fileChooser.showDialog(mParent, "Export All");
 
             if (result != JFileChooser.APPROVE_OPTION)
                 return;
