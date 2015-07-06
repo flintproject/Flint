@@ -37,7 +37,7 @@ public class ExportAllWorker extends SwingWorker<Void, Void> {
     public ExportAllWorker (Container parent, File outputDir, TaskDao taskDao)
             throws IOException {
         if (!outputDir.isDirectory()) 
-            throw new IOException(String.format("%s is not directory.", outputDir.getName()));
+            throw new IOException(String.format("%s is not a directory.", outputDir.getName()));
 
         mParent = parent;
         mTaskDao = taskDao;
