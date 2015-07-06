@@ -14,8 +14,6 @@ import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.HeadlessException;
 import java.awt.Window;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
@@ -55,16 +53,7 @@ import jp.oist.flint.util.Utility;
 import jp.physiome.Ipc;
 
 public class JobWindow extends javax.swing.JFrame
-    implements MouseListener, MouseMotionListener, ActionListener,
-               IProgressManager {
-
-    private final static String ACTION_LIST    = "jobwindow.action.joblist"; 
-
-    private final static String ACTION_VIEWER   = "jobwindow.action.jobviewer";
-
-    private final static String ACTION_EXPORT_ALL = "jobwindow.action.exportAll";
-
-    private final static String ACTION_EXPORT_CANCEL = "jobwindow.action.exportCancel";
+    implements MouseListener, MouseMotionListener, IProgressManager {
 
     private final static String PANELKEY_LIST  = "jobwindow.cardlayout.joblist";
 
@@ -120,11 +109,6 @@ public class JobWindow extends javax.swing.JFrame
                 setVisible(false);
             }
         }); 
-        btn_Viewer.addActionListener(this);
-        btn_List.addActionListener(this);
-
-        btn_ExportAll.addActionListener(this);
-        btn_ExportCancel.addActionListener(this);
     }
 
     private JobList newJobList () {
@@ -273,6 +257,11 @@ public class JobWindow extends javax.swing.JFrame
         btn_List.setMaximumSize(new java.awt.Dimension(100, 22));
         btn_List.setMinimumSize(new java.awt.Dimension(100, 22));
         btn_List.setPreferredSize(new java.awt.Dimension(100, 22));
+        btn_List.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_ListActionPerformed(evt);
+            }
+        });
         jPanel4.add(btn_List);
 
         buttonGroup1.add(btn_Viewer);
@@ -315,6 +304,11 @@ public class JobWindow extends javax.swing.JFrame
         btn_ExportAll.setMaximumSize(new java.awt.Dimension(110, 22));
         btn_ExportAll.setMinimumSize(new java.awt.Dimension(110, 22));
         btn_ExportAll.setPreferredSize(new java.awt.Dimension(110, 22));
+        btn_ExportAll.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_ExportAllActionPerformed(evt);
+            }
+        });
         jPanel3.add(btn_ExportAll);
 
         jPanel2.add(jPanel3);
@@ -348,6 +342,11 @@ public class JobWindow extends javax.swing.JFrame
         btn_ExportCancel.setMaximumSize(new java.awt.Dimension(20, 20));
         btn_ExportCancel.setMinimumSize(new java.awt.Dimension(20, 20));
         btn_ExportCancel.setPreferredSize(new java.awt.Dimension(20, 20));
+        btn_ExportCancel.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_ExportCancelActionPerformed(evt);
+            }
+        });
         jPanel5.add(btn_ExportCancel);
 
         pnl_StatusBar.add(jPanel5, "jobwindow.statusbar.progress");
@@ -358,8 +357,36 @@ public class JobWindow extends javax.swing.JFrame
     }// </editor-fold>//GEN-END:initComponents
 
     private void btn_ViewerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_ViewerActionPerformed
-        // TODO add your handling code here:
+        CardLayout cardLayout = (CardLayout)pnl_Body.getLayout();
+        int selectedIndex = mSelectionModel.getMinSelectionIndex();
+        cardLayout.show(pnl_Body, PANELKEY_VIEWER);
+        if (selectedIndex >= 0)
+            mJobViewer.ensureIndexIsVisible(selectedIndex);
     }//GEN-LAST:event_btn_ViewerActionPerformed
+
+    private void btn_ListActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_ListActionPerformed
+        CardLayout cardLayout = (CardLayout)pnl_Body.getLayout();
+        int selectedIndex = mSelectionModel.getMinSelectionIndex();
+        cardLayout.show(pnl_Body, PANELKEY_LIST);
+        if (selectedIndex >= 0)
+            mJobList.ensureIndexIsVisible(selectedIndex);
+    }//GEN-LAST:event_btn_ListActionPerformed
+
+    private void btn_ExportAllActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_ExportAllActionPerformed
+        try {
+            exportAll();
+        } catch (IOException ioe) {
+            showErrorDialog(ioe.getMessage(),
+                            "Error on exporting simulation data");
+        }
+    }//GEN-LAST:event_btn_ExportAllActionPerformed
+
+    private void btn_ExportCancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_ExportCancelActionPerformed
+        if (mExportWorker != null) {
+            mExportWorker.cancel(true);
+            mExportWorker = null;
+        }
+    }//GEN-LAST:event_btn_ExportCancelActionPerformed
 
     public void setMessageOnStatusBar (String msg) {
         CardLayout layout = (CardLayout)pnl_StatusBar.getLayout();
@@ -505,42 +532,6 @@ public class JobWindow extends javax.swing.JFrame
     }
 
     /*
-     * Implements ActionListener
-     */
-    @Override
-    public void actionPerformed(ActionEvent evt) {
-        String actionCommand = evt.getActionCommand();
-        if (actionCommand == null)
-            return;
-
-        CardLayout cardLayout = (CardLayout)pnl_Body.getLayout();
-        int selectedIndex = mSelectionModel.getMinSelectionIndex();
-        switch (actionCommand) {
-        case ACTION_LIST:
-            cardLayout.show(pnl_Body, PANELKEY_LIST);
-            if (selectedIndex >= 0)
-                mJobList.ensureIndexIsVisible(selectedIndex);
-            break;
-        case ACTION_VIEWER:
-            cardLayout.show(pnl_Body, PANELKEY_VIEWER);
-            if (selectedIndex >= 0)
-                mJobViewer.ensureIndexIsVisible(selectedIndex);
-            break;
-        case ACTION_EXPORT_ALL:
-            try {
-                exportAllPerformed(evt);
-            } catch (IOException ioe) {
-                showErrorDialog(ioe.getMessage(),
-                                "Error on exporting simulation data");
-            }
-            break;
-        case ACTION_EXPORT_CANCEL:
-            exportCancelPerformed(evt);
-            break;
-        }
-    }
-
-    /*
      * Implements JobViewComponent.Handler
      */
     public void plotPerformed (JobViewerComponent.Event evt) {
@@ -584,7 +575,7 @@ public class JobWindow extends javax.swing.JFrame
         }
     }
 
-    public void exportAllPerformed(ActionEvent evt) throws IOException {
+    private void exportAll() throws IOException {
             if (mSimulator == null || mSimulator.getSimulationDao() == null)
                 return; // nothing to do
 
@@ -658,13 +649,6 @@ public class JobWindow extends javax.swing.JFrame
                 }
             });
             mExportWorker.execute();
-    }
-
-    public void exportCancelPerformed (ActionEvent evt) {
-        if (mExportWorker != null) {
-            mExportWorker.cancel(true);
-            mExportWorker = null;
-        }
     }
 
     public void exportPerformed(JobViewerComponent.Event evt) {

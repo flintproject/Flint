@@ -118,6 +118,9 @@
                       <Dimension value="[100, 22]"/>
                     </Property>
                   </Properties>
+                  <Events>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btn_ListActionPerformed"/>
+                  </Events>
                 </Component>
                 <Component class="javax.swing.JToggleButton" name="btn_Viewer">
                   <Properties>
@@ -283,6 +286,9 @@
                       <Dimension value="[110, 22]"/>
                     </Property>
                   </Properties>
+                  <Events>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btn_ExportAllActionPerformed"/>
+                  </Events>
                 </Component>
               </SubComponents>
             </Container>
@@ -459,6 +465,9 @@
                   <Dimension value="[20, 20]"/>
                 </Property>
               </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btn_ExportCancelActionPerformed"/>
+              </Events>
             </Component>
           </SubComponents>
         </Container>
