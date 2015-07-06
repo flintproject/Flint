@@ -527,7 +527,12 @@ public class JobWindow extends javax.swing.JFrame
                 mJobViewer.ensureIndexIsVisible(selectedIndex);
             break;
         case ACTION_EXPORT_ALL:
-            exportAllPerformed(evt);
+            try {
+                exportAllPerformed(evt);
+            } catch (IOException ioe) {
+                showErrorDialog(ioe.getMessage(),
+                                "Error on exporting simulation data");
+            }
             break;
         case ACTION_EXPORT_CANCEL:
             exportCancelPerformed(evt);
@@ -579,10 +584,9 @@ public class JobWindow extends javax.swing.JFrame
         }
     }
 
-    public void exportAllPerformed (ActionEvent evt) {
-        try {
+    public void exportAllPerformed(ActionEvent evt) throws IOException {
             if (mSimulator == null || mSimulator.getSimulationDao() == null)
-                throw new Exception("Could not open the simulation files.");
+                return; // nothing to do
 
             File defaultDir = new File(System.getProperty("user.home"));
             JFileChooser fileChooser = new JFileChooser();
@@ -654,10 +658,6 @@ public class JobWindow extends javax.swing.JFrame
                 }
             });
             mExportWorker.execute();
-        } catch (Exception ex) {
-            showErrorDialog(ex.getMessage(),
-                            "Error on exporting simulation data");
-        }
     }
 
     public void exportCancelPerformed (ActionEvent evt) {
