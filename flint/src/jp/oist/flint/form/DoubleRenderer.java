@@ -23,7 +23,7 @@ class DoubleRenderer implements TableCellRenderer {
                                                    int row, int column) {
         JLabel label = new JLabel();
         label.setHorizontalAlignment(SwingConstants.RIGHT);
-        double d = ((Double)value).doubleValue();
+        double d = ((Double)value);
         if ((long)d == d) {
             String text = mNf.format(d);
             label.setText(text);

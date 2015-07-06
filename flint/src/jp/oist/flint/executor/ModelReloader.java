@@ -54,7 +54,7 @@ public class ModelReloader extends SwingWorker<Boolean, Void> {
             // ignored
             return;
         }
-        if (r.booleanValue()) {
+        if (r) {
             mParentFrame.closeModel(mTargetFrame);
             mParentFrame.openModel(mModelFile);
         }

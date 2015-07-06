@@ -42,9 +42,8 @@ public class TimeSeriesReader extends SwingWorker<ArrayList<XYSeries>, Void> {
     protected ArrayList<XYSeries> doInBackground() throws IOException, InterruptedException, IsdfException {
         int max = 0;
         for (Integer key : mMap.keySet()) {
-            int k = key.intValue();
-            if (max < k) {
-                max = k;
+            if (max < key) {
+                max = key;
             }
         }
 
@@ -70,7 +69,7 @@ public class TimeSeriesReader extends SwingWorker<ArrayList<XYSeries>, Void> {
             double d0 = 0.0;
             for (int i = 0; i < numberOfColumns; i++) {
                 Double d = bb.getDouble();
-                if (i == 0) d0 = d.doubleValue();
+                if (i == 0) d0 = d;
                 Integer k = mMap.get(i);
                 if (k instanceof Integer) {
                     mResult.get(k).add(d0, d.doubleValue());

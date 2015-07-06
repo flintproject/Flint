@@ -516,8 +516,8 @@ public class ProgressPane extends PeripheralPane
             if (mIsSelected == isSelected)
                 return;
 
-            Boolean oldValue = Boolean.valueOf(mIsSelected);
-            Boolean newValue = Boolean.valueOf(isSelected);
+            Boolean oldValue = mIsSelected;
+            Boolean newValue = isSelected;
             firePropertyChange(IS_SELECTED_PROPERTY, oldValue, newValue);
 
             mIsSelected = isSelected;

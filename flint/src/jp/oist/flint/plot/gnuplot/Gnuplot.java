@@ -77,7 +77,7 @@ public class Gnuplot {
         } else if (i == 5) {
             addStyleOpt = (String) value;
         } else if (i == 6) {
-            doPlotFlg = ((Boolean) value).booleanValue();
+            doPlotFlg = ((Boolean) value);
         }
     }
 

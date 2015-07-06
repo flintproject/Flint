@@ -41,7 +41,7 @@ public class Command {
     }
 
     public void addArgument(int i) {
-        mArguments.add(new Integer(i));
+        mArguments.add(i);
     }
 
     public void addArgument(String s) {

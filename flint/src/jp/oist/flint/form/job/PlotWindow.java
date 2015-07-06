@@ -231,7 +231,7 @@ public class PlotWindow extends javax.swing.JFrame
 
     @Override
     public int getTrackIndex(Object key) {
-        return mMap.get(key.toString()).intValue();
+        return mMap.get(key.toString());
     }
 
     @Override

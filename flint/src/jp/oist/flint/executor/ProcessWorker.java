@@ -57,11 +57,10 @@ public class ProcessWorker extends SwingWorker<Integer, String> {
             mFrame.showErrorDialog(ie.getMessage(), "A process interrupted");
             return;
         }
-        int r = result.intValue();
-        if (r == 0) {
+        if (result == 0) {
             // nothing to do
         } else {
-            mFrame.showErrorDialog("A process exited abnormally: " + r, "A process exited abnormally");
+            mFrame.showErrorDialog("A process exited abnormally: " + result, "A process exited abnormally");
         }
     }
 }

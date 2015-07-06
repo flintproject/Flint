@@ -131,13 +131,13 @@ public class GPLabel {
         if (i == 0) {
             text = (String) value;
         } else if (i == 1) {
-            x = ((Double) value).doubleValue();
+            x = ((Double) value);
         } else if (i == 2) {
-            y = ((Double) value).doubleValue();
+            y = ((Double) value);
         } else if (i == 3) {
             relativePos = (GPRelativePos) value;
         } else if (i == 4) {
-            doPlotFlg = ((Boolean) value).booleanValue();
+            doPlotFlg = ((Boolean) value);
         }
     }
 

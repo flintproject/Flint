@@ -140,7 +140,7 @@ public class SimulationDao extends DaoObject {
 
     public TaskDao obtainTask(int taskId) {
         try {
-            if (mTaskList.keySet().contains(Integer.valueOf(taskId)))
+            if (mTaskList.keySet().contains(taskId))
                 return mTaskList.get(taskId);
 
             Map<Integer, String> modelPathList = getModelPathList();
