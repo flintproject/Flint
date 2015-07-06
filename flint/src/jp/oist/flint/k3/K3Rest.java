@@ -39,9 +39,6 @@ public class K3Rest {
     /** REST URL:本系ドメイン */
     private static final String URL_TOP_H = "https://flintk3.unit.oist.jp";
 
-    /** REST URL:デバッグドメイン */
-    private static final String URL_TOP_D = "https://local.oist.jp";
-
     /** REST URL:ジョブリスト(部品) */
     private static final String URL_JOB_LIST_PT = "/authifs/@UID@/job/list";
 
