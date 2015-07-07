@@ -184,7 +184,7 @@ public class PhspProgressMonitor implements FileListener, Runnable {
             }
 
             try {
-                Thread.currentThread().sleep(100);
+                Thread.sleep(100);
             } catch (InterruptedException ex) {
             }
         }
