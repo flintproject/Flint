@@ -2,13 +2,13 @@
 #ifndef FLINT_RUNTIME_FLOW_HH_
 #define FLINT_RUNTIME_FLOW_HH_
 
-#include <set>
-#include <boost/ptr_container/ptr_map.hpp>
+#include <unordered_set>
+#include <boost/ptr_container/ptr_unordered_map.hpp>
 
 #include "sqlite3.h"
 
-typedef boost::ptr_map<int, std::set<int> > FlowInboundMap;
-typedef boost::ptr_map<int, std::set<int> > FlowOutboundMap;
+typedef boost::ptr_unordered_map<int, std::unordered_set<int> > FlowInboundMap;
+typedef boost::ptr_unordered_map<int, std::unordered_set<int> > FlowOutboundMap;
 
 /*
  * Note that db is for read only.

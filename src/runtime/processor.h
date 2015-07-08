@@ -8,6 +8,7 @@
 #include <iostream>
 #include <iterator>
 #include <memory>
+#include <unordered_set>
 #include <set>
 #include <string>
 
@@ -285,9 +286,9 @@ public:
 	int block_index() const {return block_index_;}
 	const std::set<int> &flow_addrs() const {return flow_addrs_;}
 
-	void Insert(int offset, const std::set<int> &flow_addrs) {
-		for (std::set<int>::const_iterator it=flow_addrs.begin();it!=flow_addrs.end();++it) {
-			flow_addrs_.insert(offset + *it);
+	void Insert(int offset, const std::unordered_set<int> &flow_addrs) {
+		for (int a : flow_addrs) {
+			flow_addrs_.insert(offset + a);
 		}
 	}
 
@@ -463,8 +464,7 @@ public:
 
 			FlowOutboundMap::iterator sobit = sub_outbound.find(source);
 			if (sobit == sub_outbound.end()) continue;
-			for (std::set<int>::const_iterator tit=sobit->second->begin();tit!=sobit->second->end();++tit) {
-				int target = *tit;
+			for (int target : *sobit->second) {
 				output[target] += output[source];
 				disposition[target] = disposition[source] + 1;
 				// remove an (inbound) edge
@@ -854,8 +854,8 @@ private:
 			for (int i=0;i<nol;i++) {
 				if (i%2 == 0) { // only on an even layer
 					FlowDependency *fd = new FlowDependency(it->first + (i * layer_size_));
-					for (std::set<int>::const_iterator tit=it->second->begin();tit!=it->second->end();++tit) {
-						fd->AddSourceAddr(*tit + (i * layer_size_));
+					for (int src : *it->second) {
+						fd->AddSourceAddr(src + (i * layer_size_));
 					}
 					fdv->push_back(fd);
 				}
@@ -879,11 +879,11 @@ private:
 		}
 	}
 
-	void AnnotateFlow(const FlowOutboundMap *outbound, const std::set<int> &addrs,
+	void AnnotateFlow(const FlowOutboundMap *outbound, const std::unordered_set<int> &addrs,
 					  int offset, ExecutionUnit *eu) {
 		eu->Insert(offset, addrs);
-		for (std::set<int>::const_iterator it=addrs.begin();it!=addrs.end();++it) {
-			FlowOutboundMap::const_iterator fit = outbound->find(*it);
+		for (int a : addrs) {
+			FlowOutboundMap::const_iterator fit = outbound->find(a);
 			if (fit == outbound->end()) continue;
 			AnnotateFlow(outbound, *fit->second, offset, eu);
 		}

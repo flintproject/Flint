@@ -159,8 +159,7 @@ public:
 	void Communicate(const FlowInboundMap *inbound) {
 		for (FlowInboundMap::const_iterator it=inbound->begin();it!=inbound->end();++it) {
 			int dst = it->first;
-			for (std::set<int>::const_iterator tit=it->second->begin();tit!=it->second->end();++tit) {
-				int src = *tit;
+			for (int src : *it->second) {
 				if (color_[src]) {
 					data_[dst] += data_[src];
 				} else {
