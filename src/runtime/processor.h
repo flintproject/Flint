@@ -7,6 +7,7 @@
 #include <cmath>
 #include <iostream>
 #include <iterator>
+#include <memory>
 #include <set>
 #include <string>
 
@@ -491,19 +492,21 @@ public:
 		boost::scoped_ptr<FlowDependencyVector> fdv(new FlowDependencyVector);
 		CollectFlowDependencies(nol, inbound, fdv.get());
 
-		std::set<int> ready_addresses;
-		if (constantAvailable) layout_->CollectConstant(nol, layer_size_, &ready_addresses);
+		std::unique_ptr<char[]> ready_addresses(new char[nol * layer_size_]());
+		if (constantAvailable)
+			layout_->MarkConstant(nol, layer_size_, ready_addresses.get());
 		while (!edv->empty() || !fdv->empty()) {
-			size_t num_ra = ready_addresses.size();
+			size_t n = 0;
 
 			// Level 2N
 			ExecutionDependencyVector::iterator eit = edv->begin();
 			while (eit != edv->end()) {
 				const std::set<int> &la = eit->load_addrs();
-				if (std::includes(ready_addresses.begin(), ready_addresses.end(),
-								  la.begin(), la.end())) {
+				if (std::all_of(la.begin(), la.end(),
+								[&ready_addresses](int i){return ready_addresses[i] == 1;})) {
 					euv_.push_back(eit->eu());
-					ready_addresses.insert(eit->store_addr());
+					ready_addresses[eit->store_addr()] = 1;
+					n++;
 					eit = edv->erase(eit);
 				} else {
 					++eit;
@@ -514,16 +517,17 @@ public:
 			FlowDependencyVector::iterator fit = fdv->begin();
 			while (fit != fdv->end()) {
 				const std::set<int> &sa = fit->source_addrs();
-				if (std::includes(ready_addresses.begin(), ready_addresses.end(),
-								  sa.begin(), sa.end())) {
-					ready_addresses.insert(fit->target_addr());
+				if (std::all_of(sa.begin(), sa.end(),
+								[&ready_addresses](int i){return ready_addresses[i] == 1;})) {
+					ready_addresses[fit->target_addr()] = 1;
+					n++;
 					fit = fdv->erase(fit);
 				} else {
 					++fit;
 				}
 			}
 
-			if (num_ra == ready_addresses.size()) {
+			if (n == 0) {
 				std::cerr << "failed to solve the rest of dependencies: "
 					 << edv->size()
 					 << "/"
@@ -538,7 +542,7 @@ public:
 							std::cerr << "," << *lait;
 						}
 						// append a question mark if the address is unprepared
-						if (ready_addresses.find(*lait) == ready_addresses.end()) {
+						if (ready_addresses[*lait] == 0) {
 							std::cerr << "?";
 						}
 					}

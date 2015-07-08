@@ -181,6 +181,11 @@ public:
 		assert(offset == size);
 	}
 
+	/*
+	 * Return the number of "on".
+	 */
+	size_t MarkConstant(int nol, size_t size, char *arr) const;
+
 	void CollectVariable(size_t size, std::set<int> *offsets) const {
 		size_t offset = kOffsetBase;
 		int di = 0;
