@@ -24,21 +24,6 @@ using std::string;
 
 namespace {
 
-class Counter {
-public:
-	Counter() : nrows_() {}
-
-	boost::uint32_t nrows() const {return nrows_;}
-
-	int GetStep(size_t, const char *) {
-		nrows_++;
-		return 1;
-	}
-
-private:
-	boost::uint32_t nrows_;
-};
-
 int ReadAndCount(bool columns, istream *is, ostream *os)
 {
 	isdf::Reader reader;
@@ -52,9 +37,9 @@ int ReadAndCount(bool columns, istream *is, ostream *os)
 
 	if (!reader.SkipDescriptions(is)) return EXIT_FAILURE;
 	if (!reader.SkipUnits(is)) return EXIT_FAILURE;
-	Counter counter;
-	if (!reader.ReadSteps(counter, is)) return EXIT_FAILURE;
-	*os << reader.num_objs() << " " << counter.nrows() << endl;
+	size_t num_steps;
+	if (!reader.CountSteps(is, &num_steps)) return EXIT_FAILURE;
+	*os << reader.num_objs() << " " << num_steps << endl;
 	return EXIT_SUCCESS;
 }
 

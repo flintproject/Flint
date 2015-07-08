@@ -2,6 +2,7 @@
 #ifndef ISDF_READER_H_
 #define ISDF_READER_H_
 
+#include <cassert>
 #include <cstring>
 #include <iostream>
 #include <boost/scoped_array.hpp>
@@ -213,6 +214,41 @@ public:
 			}
 		}
 		return r;
+	}
+
+	bool CountSteps(std::istream *is, size_t *num_steps) const {
+		size_t buf_size = num_objs() * sizeof(double);
+		if (buf_size == 0) {
+			std::cerr << "num_objs was 0" << std::endl;
+			return false;
+		}
+		auto p = is->tellg();
+		if (p < 0) {
+			std::cerr << "failed to get position in input stream" << std::endl;
+			return false;
+		}
+		is->seekg(0, std::ios::end);
+		if (is->fail()) {
+			std::cerr << "truncated input" << std::endl;
+			return false;
+		}
+		if (is->bad()) {
+			std::cerr << "error occurred at ignoring input" << std::endl;
+			return false;
+		}
+		auto q = is->tellg();
+		if (q < 0) {
+			std::cerr << "failed to get position in input stream" << std::endl;
+			return false;
+		}
+		assert(p <= q);
+		size_t len = q - p;
+		if (len % buf_size != 0) {
+			std::cerr << "truncated input: " << len << "/" << buf_size << std::endl;
+			return false;
+		}
+		*num_steps = len / buf_size;
+		return true;
 	}
 
 private:
