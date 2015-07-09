@@ -11,6 +11,7 @@
 #include <cstring>
 #include <fstream>
 #include <iostream>
+#include <memory>
 #include <set>
 #include <sstream>
 #include <string>
@@ -287,13 +288,11 @@ bool Tsc(sqlite3 *db)
 			boost::filesystem::path p = *it;
 			if (!ti.Insert(p)) return false;
 
-			ColumnMap *cm = new ColumnMap;
+			std::unique_ptr<ColumnMap> cm(new ColumnMap);
 			IsdfLoader loader(p);
-			if (!loader.Load(cm)) {
-				delete cm;
+			if (!loader.Load(cm.get()))
 				return false;
-			}
-			im->insert(p, cm);
+			im->insert(p, cm.release());
 		}
 	}
 	{
