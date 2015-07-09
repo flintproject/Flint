@@ -14,7 +14,7 @@
 
 #include <boost/fusion/include/adapt_struct.hpp>
 #include <boost/noncopyable.hpp>
-#include <boost/ptr_container/ptr_map.hpp>
+#include <boost/ptr_container/ptr_unordered_map.hpp>
 #include <boost/ptr_container/ptr_vector.hpp>
 #include <boost/scoped_array.hpp>
 #include <boost/scoped_ptr.hpp>
@@ -296,7 +296,7 @@ private:
 	int level_;
 };
 
-typedef boost::ptr_map<string, LineVector> UuidMap;
+typedef boost::ptr_unordered_map<string, LineVector> UuidMap;
 
 /*
  * This class creates and keeps both tokens and grammar objects which

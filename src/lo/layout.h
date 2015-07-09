@@ -4,13 +4,13 @@
 
 #include <algorithm>
 #include <iomanip>
-#include <map>
 #include <memory>
 #include <set>
 #include <string>
+#include <unordered_map>
 
 #include <boost/noncopyable.hpp>
-#include <boost/ptr_container/ptr_map.hpp>
+#include <boost/ptr_container/ptr_unordered_map.hpp>
 #include <boost/ptr_container/ptr_vector.hpp>
 #include <boost/uuid/uuid_io.hpp>
 
@@ -19,8 +19,13 @@
 #include "bc/mounter.h"
 #include "lo.pb.h"
 
-typedef boost::ptr_map<boost::uuids::uuid, std::map<int, int> > DataOffsetMap;
-typedef std::map<boost::uuids::uuid, int> SectorOffsetMap;
+typedef boost::ptr_unordered_map<boost::uuids::uuid,
+								 std::unordered_map<int, int>
+								 > DataOffsetMap;
+typedef std::unordered_map<boost::uuids::uuid,
+						   int,
+						   boost::hash<boost::uuids::uuid>
+						   > SectorOffsetMap;
 
 class Layout : boost::noncopyable {
 public:
@@ -267,8 +272,8 @@ private:
 	typedef boost::ptr_vector<lo::Track> TrackVector;
 	typedef boost::ptr_vector<lo::Sector> SectorVector;
 	typedef boost::ptr_vector<lo::Data> DataVector;
-	typedef boost::ptr_map<std::string, Locater> LocaterMap;
-	typedef boost::ptr_map<std::string, Mounter> MounterMap;
+	typedef boost::ptr_unordered_map<std::string, Locater> LocaterMap;
+	typedef boost::ptr_unordered_map<std::string, Mounter> MounterMap;
 
 	TrackVector tv_;
 	SectorVector sv_;

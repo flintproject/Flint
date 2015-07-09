@@ -7,7 +7,9 @@
 #include <map>
 #include <set>
 #include <string>
+#include <unordered_map>
 
+#include <boost/functional/hash.hpp>
 #include <boost/noncopyable.hpp>
 #include <boost/ptr_container/ptr_map.hpp>
 #include <boost/ptr_container/ptr_set.hpp>
@@ -25,7 +27,6 @@
 using std::cerr;
 using std::endl;
 using std::make_pair;
-using std::map;
 using std::multimap;
 using std::set;
 using std::string;
@@ -157,7 +158,10 @@ bool LoadOutputPorts(sqlite3 *db, boost::ptr_map<Node, Port> *ports)
 
 typedef boost::ptr_set<Scope> ScopeSet;
 typedef multimap<boost::uuids::uuid, ScopeSet::iterator> Mmap;
-typedef map<boost::uuids::uuid, ScopeSet::iterator> Umap;
+typedef std::unordered_map<boost::uuids::uuid,
+						   ScopeSet::iterator,
+						   boost::hash<boost::uuids::uuid>
+						   > Umap;
 
 class ScopeHandler : boost::noncopyable {
 public:

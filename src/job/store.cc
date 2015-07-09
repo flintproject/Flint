@@ -10,10 +10,10 @@
 #include <cstring>
 #include <fstream>
 #include <iostream>
-#include <map>
 #include <string>
+#include <unordered_map>
 
-#include <boost/ptr_container/ptr_map.hpp>
+#include <boost/ptr_container/ptr_unordered_map.hpp>
 #include <boost/ptr_container/ptr_vector.hpp>
 #include <boost/scoped_array.hpp>
 #include <boost/scoped_ptr.hpp>
@@ -67,7 +67,7 @@ public:
 	}
 };
 
-typedef std::map<int, int> TargetMap;
+typedef std::unordered_map<int, int> TargetMap;
 
 class SourceLayout : boost::noncopyable {
 public:
@@ -125,7 +125,7 @@ private:
 	DataVector dv_;
 };
 
-typedef boost::ptr_map<string, std::map<string, double> > TargetValueMap;
+typedef boost::ptr_unordered_map<string, std::unordered_map<string, double> > TargetValueMap;
 
 class TargetLoader : db::StatementDriver {
 public:
@@ -199,7 +199,7 @@ public:
 									return false;
 								}
 							} else {
-								std::map<string, double>::const_iterator mit;
+								std::unordered_map<string, double>::const_iterator mit;
 								if (strcmp("phml", format) == 0) {
 									sprintf(buf.get(), "%d", d.id());
 									mit = it->second->find(buf.get());

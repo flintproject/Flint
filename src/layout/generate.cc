@@ -11,11 +11,12 @@
 #include <cstring>
 #include <fstream>
 #include <iostream>
-#include <map>
 #include <string>
+#include <unordered_map>
 
 #include <boost/noncopyable.hpp>
 #include <boost/ptr_container/ptr_map.hpp>
+#include <boost/ptr_container/ptr_unordered_map.hpp>
 #include <boost/ptr_container/ptr_vector.hpp>
 #include <boost/scoped_array.hpp>
 #include <boost/scoped_ptr.hpp>
@@ -31,14 +32,16 @@
 using std::cerr;
 using std::endl;
 using std::make_pair;
-using std::map;
 using std::string;
 
 namespace layout {
 
 namespace {
 
-typedef map<boost::uuids::uuid, string> ModuleMap;
+typedef std::unordered_map<boost::uuids::uuid,
+						   string,
+						   boost::hash<boost::uuids::uuid>
+						   > ModuleMap;
 
 class ModuleHandler : boost::noncopyable {
 public:
@@ -78,7 +81,7 @@ private:
 	double capacity_;
 };
 
-typedef boost::ptr_map<boost::uuids::uuid, boost::ptr_vector<Name> > NameMap;
+typedef boost::ptr_unordered_map<boost::uuids::uuid, boost::ptr_vector<Name> > NameMap;
 
 class NameHandler : boost::noncopyable {
 public:

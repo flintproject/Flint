@@ -8,7 +8,7 @@
 #include <sstream>
 #include <string>
 #include <map>
-#include <boost/ptr_container/ptr_map.hpp>
+#include <boost/ptr_container/ptr_unordered_map.hpp>
 
 using std::cerr;
 using std::endl;
@@ -44,7 +44,7 @@ private:
 
 typedef std::map<sqlite3_int64, std::string> NameMap;
 typedef std::multimap<int, Arc> ArcMultimap;
-typedef boost::ptr_map<sqlite3_int64, ArcMultimap> PqArcMap;
+typedef boost::ptr_unordered_map<sqlite3_int64, ArcMultimap> PqArcMap;
 
 bool Insert(sqlite3_stmt *stmt, sqlite3_int64 pq_rowid, const std::string &math)
 {

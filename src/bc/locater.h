@@ -4,8 +4,8 @@
 
 #include <cctype>
 #include <iostream>
-#include <map>
 #include <string>
+#include <unordered_map>
 
 #include <boost/noncopyable.hpp>
 
@@ -36,7 +36,7 @@ public:
 				} else {
 					n = name.substr(1, p-1);
 				}
-				std::map<std::string, int>::const_iterator it = m_.find(n);
+				std::unordered_map<std::string, int>::const_iterator it = m_.find(n);
 				if (it == m_.end()) {
 					cerr << "missing name: " << n << endl;
 					return false;
@@ -73,7 +73,7 @@ public:
 	}
 
 private:
-	std::map<std::string, int> m_;
+	std::unordered_map<std::string, int> m_;
 };
 
 #endif

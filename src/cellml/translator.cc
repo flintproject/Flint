@@ -10,11 +10,11 @@
 #include <cstdlib>
 #include <cstring>
 #include <iostream>
-#include <map>
 #include <set>
 #include <sstream>
+#include <unordered_map>
 
-#include <boost/ptr_container/ptr_map.hpp>
+#include <boost/ptr_container/ptr_unordered_map.hpp>
 #include <boost/scoped_array.hpp>
 #include <boost/scoped_ptr.hpp>
 #include <boost/uuid/uuid_generators.hpp>
@@ -125,7 +125,7 @@ public:
 	}
 
 private:
-	typedef std::map<string, string> ComponentMap;
+	typedef std::unordered_map<string, string> ComponentMap;
 
 	sqlite3_stmt *query_stmt_;
 	sqlite3_stmt *insert_stmt_;
@@ -204,7 +204,7 @@ public:
 
 private:
 	static const size_t kPrefixLength = 25; // length of " (eq (diff (bvar %time) %"
-	typedef boost::ptr_map<string, std::set<string> > DependentVariableMap;
+	typedef boost::ptr_unordered_map<string, std::set<string> > DependentVariableMap;
 
 	EqInserter ei_;
 	const TreeDumper *tree_dumper_;

@@ -17,7 +17,6 @@
 #include <boost/math/special_functions/atanh.hpp>
 #include <boost/math/special_functions/fpclassify.hpp>
 #include <boost/noncopyable.hpp>
-#include <boost/ptr_container/ptr_map.hpp>
 #include <boost/ptr_container/ptr_vector.hpp>
 #include <boost/random.hpp>
 #include <boost/scoped_array.hpp>

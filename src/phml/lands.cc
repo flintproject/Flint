@@ -13,7 +13,7 @@
 #include <memory>
 
 #include <boost/noncopyable.hpp>
-#include <boost/ptr_container/ptr_map.hpp>
+#include <boost/ptr_container/ptr_unordered_map.hpp>
 #include <boost/rational.hpp>
 #include <boost/scoped_ptr.hpp>
 
@@ -59,7 +59,7 @@ private:
 	std::ifstream ifs_;
 };
 
-typedef boost::ptr_map<int, ipc::TimeUnit> TimeUnitMap;
+typedef boost::ptr_unordered_map<int, ipc::TimeUnit> TimeUnitMap;
 
 class UnitOfTimeHandler : boost::noncopyable {
 public:

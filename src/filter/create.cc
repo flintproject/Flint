@@ -17,7 +17,7 @@
 #include <string>
 
 #include <boost/noncopyable.hpp>
-#include <boost/ptr_container/ptr_map.hpp>
+#include <boost/ptr_container/ptr_unordered_map.hpp>
 #include <boost/ptr_container/ptr_vector.hpp>
 #include <boost/scoped_ptr.hpp>
 #include <boost/uuid/uuid_io.hpp>
@@ -76,13 +76,13 @@ public:
 	}
 
 	bool Contains(const string &id, const string &name) const {
-		boost::ptr_map<string, set<string> >::const_iterator it = m_.find(id);
+		boost::ptr_unordered_map<string, set<string> >::const_iterator it = m_.find(id);
 		if (it == m_.end()) return false;
 		return it->second->count(name) > 0;
 	}
 
 private:
-	boost::ptr_map<string, set<string> > m_;
+	boost::ptr_unordered_map<string, set<string> > m_;
 };
 
 class Layout : boost::noncopyable {

@@ -11,16 +11,16 @@
 #include <cstring>
 #include <fstream>
 #include <iostream>
-#include <map>
 #include <set>
 #include <sstream>
 #include <string>
+#include <unordered_map>
 
 #define BOOST_FILESYSTEM_NO_DEPRECATED
 #include <boost/filesystem.hpp>
 #include <boost/filesystem/fstream.hpp>
 #include <boost/noncopyable.hpp>
-#include <boost/ptr_container/ptr_map.hpp>
+#include <boost/ptr_container/ptr_unordered_map.hpp>
 #include <boost/scoped_array.hpp>
 #include <boost/scoped_ptr.hpp>
 #include <boost/uuid/uuid.hpp>
@@ -39,7 +39,6 @@
 using std::cerr;
 using std::endl;
 using std::make_pair;
-using std::map;
 using std::strcmp;
 using std::string;
 
@@ -47,7 +46,7 @@ namespace ts {
 
 namespace {
 
-typedef boost::ptr_map<boost::uuids::uuid, map<int, string> > PqMap;
+typedef boost::ptr_unordered_map<boost::uuids::uuid, std::unordered_map<int, string> > PqMap;
 
 class PqHandler : boost::noncopyable {
 public:
@@ -66,7 +65,8 @@ private:
 };
 
 typedef std::set<boost::filesystem::path> PathSet;
-typedef boost::ptr_map<boost::uuids::uuid, map<int, PathSet::iterator> > TimeseriesMap;
+typedef boost::ptr_unordered_map<boost::uuids::uuid,
+								 std::unordered_map<int, PathSet::iterator> > TimeseriesMap;
 
 class TimeseriesHandler : boost::noncopyable {
 public:
@@ -134,7 +134,7 @@ public:
 	}
 };
 
-typedef map<string, boost::uint32_t> ColumnMap;
+typedef std::unordered_map<string, boost::uint32_t> ColumnMap;
 
 class DescriptionHandler : boost::noncopyable {
 public:
@@ -180,7 +180,7 @@ private:
 	boost::filesystem::ifstream ifs_;
 };
 
-typedef boost::ptr_map<boost::filesystem::path, ColumnMap> IsdfMap;
+typedef boost::ptr_unordered_map<boost::filesystem::path, ColumnMap> IsdfMap;
 
 class TsrefHandler : db::EqInserter {
 public:
@@ -198,7 +198,7 @@ public:
 			cerr << "missing module-id in timeseries: " << uuid << endl;
 			return false;
 		}
-		map<int, PathSet::iterator>::const_iterator mit = it->second->find(ts_id);
+		std::unordered_map<int, PathSet::iterator>::const_iterator mit = it->second->find(ts_id);
 		if (mit == it->second->end()) {
 			cerr << "missing timeseries: "
 				 << uuid
@@ -214,7 +214,7 @@ public:
 				 << endl;
 			return false;
 		}
-		map<int, string>::const_iterator qit = pit->second->find(pq_id);
+		std::unordered_map<int, string>::const_iterator qit = pit->second->find(pq_id);
 		if (qit == pit->second->end()) {
 			cerr << "missing physical-quantity-id: "
 				 << uuid
