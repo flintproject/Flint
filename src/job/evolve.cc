@@ -9,6 +9,7 @@
 #include <cstdio>
 #include <cstdlib>
 #include <iostream>
+#include <memory>
 #include <string>
 
 #define BOOST_DATE_TIME_NO_LIB
@@ -268,9 +269,11 @@ bool Evolve(sqlite3 *db,
 	size_t layer_size = layout->Calculate();
 
 	// load filter next
-	boost::scoped_ptr<Cutter> cutter(new Cutter);
+	std::unique_ptr<filter::Writer> writer;
 	if (with_filter) {
-		if (!cutter->Load(option.filter_file, layer_size)) return false;
+		filter::Cutter cutter;
+		if (!cutter.Load(option.filter_file, layer_size)) return false;
+		writer.reset(cutter.CreateWriter());
 	}
 
 	boost::scoped_ptr<Executor> executor(new Executor(layer_size));
@@ -484,7 +487,7 @@ bool Evolve(sqlite3 *db,
 
 		if (granularity <= 1 || ++g == granularity) {
 			if (with_filter) {
-				if (!cutter->Apply(data.get(), output_fp)) {
+				if (!writer->Write(data.get(), output_fp)) {
 					return false;
 				}
 			} else {

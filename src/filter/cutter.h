@@ -10,12 +10,13 @@
 #include "lo.pb.h"
 
 #include "filter/filter_loader.h"
+#include "filter/writer.hh"
+
+namespace filter {
 
 class Cutter : boost::noncopyable {
 public:
 	Cutter() : size_(), columns_() {}
-
-	size_t size() const {return size_;}
 
 	bool Load(const char *filter_file, size_t layer_size) {
 		boost::scoped_ptr<FilterLoader> loader(new FilterLoader(filter_file));
@@ -36,21 +37,15 @@ public:
 		delete column;
 	}
 
-	bool Apply(const double *data, FILE *fp) const {
-		for (std::map<int, int>::const_iterator it=columns_.begin();it!=columns_.end();++it) {
-			size_t p = static_cast<size_t>(it->first);
-			size_t s = static_cast<size_t>(it->second);
-			if (fwrite(data+p, sizeof(double), s, fp) != s) {
-				std::cerr << "failed to filter output" << std::endl;
-				return false;
-			}
-		}
-		return true;
+	Writer *CreateWriter() const {
+		return new Writer(columns_);
 	}
 
 private:
 	size_t size_;
 	std::map<int, int> columns_;
 };
+
+}
 
 #endif

@@ -96,6 +96,7 @@ libflintxx_la_SOURCES = \
     filter/cut.cc \
     filter/isdh.cc \
     filter/track.cc \
+    filter/writer.cc \
     job/evolve.cc \
     job/generate.cc \
     job/job.cc \
