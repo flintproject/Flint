@@ -395,7 +395,7 @@ bool Evolve(sqlite3 *db,
 	preexecutor->set_history(history.get());
 	postexecutor->set_history(history.get());
 
-	std::set<int> vo;
+	std::vector<int> vo;
 	layout->CollectVariable(layer_size, &vo);
 
 	// calculate max number of data of block
@@ -467,8 +467,8 @@ bool Evolve(sqlite3 *db,
 
 		// update prev, but keep end, dt, seed, and constant values
 		prev[kIndexTime] = data[kIndexTime];
-		for (std::set<int>::const_iterator vit=vo.begin();vit!=vo.end();++vit) {
-			prev[*vit] = data[*vit];
+		for (int i : vo) {
+			prev[i] = data[i];
 		}
 		if (std::memcmp(prev.get()+1, data.get()+1, (layer_size-1)*sizeof(double)) != 0) {
 			cerr << "layer_size: " << layer_size << endl;

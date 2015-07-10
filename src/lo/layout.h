@@ -9,6 +9,7 @@
 #include <string>
 #include <unordered_map>
 #include <unordered_set>
+#include <vector>
 
 #include <boost/noncopyable.hpp>
 #include <boost/ptr_container/ptr_unordered_map.hpp>
@@ -192,34 +193,7 @@ public:
 	 */
 	size_t MarkConstant(int nol, size_t size, char *arr) const;
 
-	void CollectVariable(size_t size, std::set<int> *offsets) const {
-		size_t offset = kOffsetBase;
-		int di = 0;
-		for (TrackVector::const_iterator it=tv_.begin();it!=tv_.end();++it) {
-			int nos = it->nos();
-			int nod = it->nod();
-			int dib = di;
-			int die = di + nod;
-
-			for (int i=0;i<nos;i++) {
-				di = dib;
-				while (di < die) {
-					const lo::Data &d = dv_.at(di++);
-					assert(offset < size);
-					switch (d.type()) {
-					case lo::S:
-						// nothing to do
-						break;
-					default:
-						offsets->insert(offset);
-						break;
-					}
-					offset += d.size();
-				}
-			}
-		}
-		assert(offset == size);
-	}
+	void CollectVariable(size_t size, std::vector<int> *offsets) const;
 
 	void Debug(size_t size) const {
 		using std::cout;
