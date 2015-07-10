@@ -29,6 +29,7 @@
 #include "bc/pack.h"
 #include "db/read-only-driver.hh"
 #include "filter/cutter.h"
+#include "layout/copier.hh"
 #include "lo/layout.h"
 #include "lo/layout_loader.h"
 #include "runtime/history.h"
@@ -395,8 +396,12 @@ bool Evolve(sqlite3 *db,
 	preexecutor->set_history(history.get());
 	postexecutor->set_history(history.get());
 
-	std::vector<int> vo;
-	layout->CollectVariable(layer_size, &vo);
+	std::unique_ptr<layout::Copier> copier;
+	{
+		std::vector<int> vo;
+		layout->CollectVariable(layer_size, &vo);
+		copier.reset(new layout::Copier(vo));
+	}
 
 	// calculate max number of data of block
 	int max_nod = processor->GetMaxNumberOfData();
@@ -467,9 +472,7 @@ bool Evolve(sqlite3 *db,
 
 		// update prev, but keep end, dt, seed, and constant values
 		prev[kIndexTime] = data[kIndexTime];
-		for (int i : vo) {
-			prev[i] = data[i];
-		}
+		copier->Copy(data.get(), prev.get());
 		if (std::memcmp(prev.get()+1, data.get()+1, (layer_size-1)*sizeof(double)) != 0) {
 			cerr << "layer_size: " << layer_size << endl;
 			cerr << "prev:" << endl;
