@@ -123,7 +123,7 @@ public:
 		return true;
 	}
 
-	double Store(const bc::Store &store, int offset, const std::set<int> &flow_addrs) {
+	double Store(const bc::Store &store, int offset, const std::unordered_set<int> &flow_addrs) {
 		assert(store.lo() == 0);
 		int k = offset + store.so();
 		double v = tmp_[store.a()];
@@ -134,9 +134,9 @@ public:
 
 		// send stored value through flows
 		// FIXME: sum only
-		for (std::set<int>::const_iterator it=flow_addrs.begin();it!=flow_addrs.end();++it) {
-			data_[*it] += data_[k];
-			color_[*it]++;
+		for (int a : flow_addrs) {
+			data_[a] += data_[k];
+			color_[a]++;
 		}
 
 		return v;

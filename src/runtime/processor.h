@@ -8,9 +8,9 @@
 #include <iostream>
 #include <iterator>
 #include <memory>
-#include <unordered_set>
 #include <set>
 #include <string>
+#include <unordered_set>
 
 #include <boost/math/special_functions/acosh.hpp>
 #include <boost/math/special_functions/asinh.hpp>
@@ -258,7 +258,7 @@ public:
 	{}
 
 	int target_addr() const {return target_addr_;}
-	const std::set<int> &source_addrs() const {return source_addrs_;}
+	const std::unordered_set<int> &source_addrs() const {return source_addrs_;}
 
 	void AddSourceAddr(int source_addr) {
 		source_addrs_.insert(source_addr);
@@ -266,7 +266,7 @@ public:
 
 private:
 	int target_addr_;
-	std::set<int> source_addrs_;
+	std::unordered_set<int> source_addrs_;
 };
 
 typedef boost::ptr_vector<FlowDependency> FlowDependencyVector;
@@ -283,7 +283,7 @@ public:
 	int section_index() const {return section_index_;}
 	int sector_index() const {return sector_index_;}
 	int block_index() const {return block_index_;}
-	const std::set<int> &flow_addrs() const {return flow_addrs_;}
+	const std::unordered_set<int> &flow_addrs() const {return flow_addrs_;}
 
 	void Insert(int offset, const std::unordered_set<int> &flow_addrs) {
 		for (int a : flow_addrs) {
@@ -295,7 +295,7 @@ private:
 	int section_index_;
 	int sector_index_;
 	int block_index_;
-	std::set<int> flow_addrs_;
+	std::unordered_set<int> flow_addrs_;
 };
 
 class ExecutionDependency {
@@ -304,7 +304,7 @@ public:
 	explicit ExecutionDependency(ExecutionUnit *eu) : eu_(eu), load_addrs_(), store_addr_(-1) {}
 
 	ExecutionUnit *eu() {return eu_;}
-	const std::set<int> &load_addrs() const {return load_addrs_;}
+	const std::unordered_set<int> &load_addrs() const {return load_addrs_;}
 	int store_addr() const {return store_addr_;}
 
 	void AddLoadAddress(int load_addr)
@@ -321,7 +321,7 @@ public:
 
 private:
 	ExecutionUnit *eu_;
-	std::set<int> load_addrs_;
+	std::unordered_set<int> load_addrs_;
 	int store_addr_;
 };
 
@@ -500,7 +500,7 @@ public:
 			// Level 2N
 			ExecutionDependencyVector::iterator eit = edv->begin();
 			while (eit != edv->end()) {
-				const std::set<int> &la = eit->load_addrs();
+				const std::unordered_set<int> &la = eit->load_addrs();
 				if (std::all_of(la.begin(), la.end(),
 								[&ready_addresses](int i){return ready_addresses[i] == 1;})) {
 					euv_.push_back(eit->eu());
@@ -515,7 +515,7 @@ public:
 			// Level 2N+1
 			FlowDependencyVector::iterator fit = fdv->begin();
 			while (fit != fdv->end()) {
-				const std::set<int> &sa = fit->source_addrs();
+				const std::unordered_set<int> &sa = fit->source_addrs();
 				if (std::all_of(sa.begin(), sa.end(),
 								[&ready_addresses](int i){return ready_addresses[i] == 1;})) {
 					ready_addresses[fit->target_addr()] = 1;
@@ -533,8 +533,8 @@ public:
 					 << fdv->size()
 					 << std::endl;
 				for (ExecutionDependencyVector::const_iterator eit=edv->begin();eit!=edv->end();++eit) {
-					const std::set<int> &la = eit->load_addrs();
-					for (std::set<int>::const_iterator lait=la.begin();lait!=la.end();++lait) {
+					const std::unordered_set<int> &la = eit->load_addrs();
+					for (std::unordered_set<int>::const_iterator lait=la.begin();lait!=la.end();++lait) {
 						if (lait == la.begin()) {
 							std::cerr << *lait;
 						} else {
@@ -550,7 +550,7 @@ public:
 				for (FlowDependencyVector::const_iterator fit=fdv->begin();fit!=fdv->end();++fit) {
 					std::cerr << "target_addr: " << fit->target_addr()
 							  << " <- ";
-					for (std::set<int>::const_iterator sit=fit->source_addrs().begin();sit!=fit->source_addrs().end();++sit) {
+					for (std::unordered_set<int>::const_iterator sit=fit->source_addrs().begin();sit!=fit->source_addrs().end();++sit) {
 						if (sit == fit->source_addrs().begin()) {
 							std::cerr << *sit;
 						} else {

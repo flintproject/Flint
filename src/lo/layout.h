@@ -8,6 +8,7 @@
 #include <set>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 
 #include <boost/noncopyable.hpp>
 #include <boost/ptr_container/ptr_unordered_map.hpp>
@@ -123,7 +124,7 @@ public:
 	}
 
 	void DetectRed(size_t size, const size_t *color) const {
-		std::set<std::string> red;
+		std::unordered_set<std::string> red;
 
 		size_t offset = kOffsetBase;
 		int di = 0;

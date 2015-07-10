@@ -13,8 +13,8 @@
 #include <fstream>
 #include <iostream>
 #include <memory>
-#include <set>
 #include <string>
+#include <unordered_set>
 
 #include <boost/noncopyable.hpp>
 #include <boost/ptr_container/ptr_unordered_map.hpp>
@@ -76,13 +76,13 @@ public:
 	}
 
 	bool Contains(const string &id, const string &name) const {
-		boost::ptr_unordered_map<string, set<string> >::const_iterator it = m_.find(id);
+		boost::ptr_unordered_map<string, std::unordered_set<string> >::const_iterator it = m_.find(id);
 		if (it == m_.end()) return false;
-		return it->second->count(name) > 0;
+		return it->second->find(name) != it->second->end();
 	}
 
 private:
-	boost::ptr_unordered_map<string, set<string> > m_;
+	boost::ptr_unordered_map<string, std::unordered_set<string> > m_;
 };
 
 class Layout : boost::noncopyable {

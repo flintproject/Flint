@@ -10,9 +10,9 @@
 #include <cstdlib>
 #include <cstring>
 #include <iostream>
-#include <set>
 #include <sstream>
 #include <unordered_map>
+#include <unordered_set>
 
 #include <boost/ptr_container/ptr_unordered_map.hpp>
 #include <boost/scoped_array.hpp>
@@ -204,7 +204,7 @@ public:
 
 private:
 	static const size_t kPrefixLength = 25; // length of " (eq (diff (bvar %time) %"
-	typedef boost::ptr_unordered_map<string, std::set<string> > DependentVariableMap;
+	typedef boost::ptr_unordered_map<string, std::unordered_set<string> > DependentVariableMap;
 
 	EqInserter ei_;
 	const TreeDumper *tree_dumper_;
