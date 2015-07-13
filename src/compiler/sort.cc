@@ -7,10 +7,11 @@
 #include <cstdlib>
 #include <cstring>
 #include <iterator>
-#include <set>
 #include <sstream>
 #include <string>
 #include <vector>
+#include <unordered_map>
+#include <unordered_set>
 
 #include <boost/fusion/include/adapt_struct.hpp>
 #include <boost/noncopyable.hpp>
@@ -30,7 +31,6 @@
 
 using std::cerr;
 using std::endl;
-using std::set;
 using std::string;
 using std::vector;
 
@@ -75,8 +75,8 @@ namespace {
 class DependencyCollector : public boost::static_visitor<> {
 public:
 	DependencyCollector(const string &name,
-						const set<string> &candidates,
-						set<string> *dependencies)
+						const std::unordered_map<string, size_t> &candidates,
+						std::unordered_set<size_t> *dependencies)
 		: name_(name)
 		, candidates_(candidates)
 		, dependencies_(dependencies)
@@ -90,9 +90,11 @@ public:
 	}
 
 	void operator()(const std::string &s) const {
-		if (s != name_ && candidates_.count(s) > 0) {
-			dependencies_->insert(s);
-		}
+		if (s == name_)
+			return;
+		std::unordered_map<string, size_t>::const_iterator it = candidates_.find(s);
+		if (it != candidates_.cend())
+			dependencies_->insert(it->second);
 	}
 
 	void operator()(int /*i*/) const {
@@ -105,8 +107,8 @@ public:
 
 private:
 	const string &name_;
-	const set<string> &candidates_;
-	set<string> *dependencies_;
+	const std::unordered_map<string, size_t> &candidates_;
+	std::unordered_set<size_t> *dependencies_;
 };
 
 class Printer : public boost::static_visitor<> {
@@ -195,7 +197,7 @@ public:
 
 	const string &name() const {return name_;}
 
-	size_t CollectDependencies(const std::set<string> &candidates, set<string> *dependencies) {
+	size_t CollectDependencies(const std::unordered_map<string, size_t> &candidates, std::unordered_set<size_t> *dependencies) {
 		boost::apply_visitor(DependencyCollector(name_, candidates, dependencies), expr_);
 		return dependencies->size();
 	}
@@ -223,47 +225,45 @@ public:
 
 	bool CalculateLevels(int *levels) {
 		size_t n = lines_.size();
-		set<string> names;
+		std::unordered_map<string, size_t> nm;
 		for (size_t i=0;i<n;i++) {
-			names.insert(lines_[i].name());
+			auto p = nm.insert(std::make_pair(lines_[i].name(), i));
+			if (!p.second) {
+				cerr << "more than one entries for " << p.first->first << endl;
+				return false;
+			}
 			levels[i] = -1;
 		}
-		set<string> solved;
-		boost::scoped_array<set<string> > dependencies(new set<string>[n]);
+		std::unique_ptr<std::unordered_set<size_t>[]> dependencies(new std::unordered_set<size_t>[n]);
+		size_t total = 0;
 		for (size_t i=0;i<n;i++) {
 			Line &line = lines_[i];
-			if (line.CollectDependencies(names, dependencies.get()+i) == 0) {
-				solved.insert(line.name());
+			if (line.CollectDependencies(nm, dependencies.get()+i) == 0) {
 				levels[i] = 0;
+				total++;
 			}
 		}
-		if (solved.empty()) {
+		if (total == 0) {
 			// we have nothing to do if there is no level 0
 			return true;
 		}
 		int level = 1;
-		while (!std::includes(solved.begin(), solved.end(),
-							  names.begin(), names.end())) {
+		while (total < n) {
 			bool found = false;
 			for (size_t i=0;i<n;i++) {
-				if (levels[i] < 0) {
-					const Line &line = lines_[i];
-					if (std::includes(solved.begin(), solved.end(),
-									  dependencies[i].begin(), dependencies[i].end())) {
-						solved.insert(line.name());
-						levels[i] = level;
-						found = true;
-					}
+				if (levels[i] >= 0) continue;
+				if (std::all_of(dependencies[i].begin(), dependencies[i].end(),
+								[&levels](size_t k){return 0 <= levels[k];})) {
+					levels[i] = level;
+					total++;
+					found = true;
 				}
 			}
 			if (!found) {
-				set<string> unsolved;
-				std::set_difference(names.begin(), names.end(),
-									solved.begin(), solved.end(),
-									std::inserter(unsolved, unsolved.end()));
 				cerr << "failed to calculate level:";
-				for (set<string>::const_iterator it=unsolved.begin();it!=unsolved.end();++it) {
-					cerr << " " << *it;
+				for (size_t i=0;i<n;i++) {
+					if (levels[i] < 0)
+						cerr << " " << lines_[i].name();
 				}
 				cerr << endl;
 				return false;
