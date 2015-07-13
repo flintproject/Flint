@@ -12,10 +12,6 @@
 #include <string>
 #include <unordered_set>
 
-#include <boost/math/special_functions/acosh.hpp>
-#include <boost/math/special_functions/asinh.hpp>
-#include <boost/math/special_functions/atanh.hpp>
-#include <boost/math/special_functions/fpclassify.hpp>
 #include <boost/noncopyable.hpp>
 #include <boost/ptr_container/ptr_vector.hpp>
 #include <boost/random.hpp>
@@ -36,7 +32,7 @@ namespace {
 
 bool IsFinite(double v, int offset)
 {
-	switch (boost::math::fpclassify(v)) {
+	switch (std::fpclassify(v)) {
 	case FP_NAN:
 		std::cerr << "NaN happened at " << offset << ", stopped" << std::endl;
 		return false;
@@ -64,37 +60,37 @@ void DoCall1(const bc::Call1 &c1, double *tmp)
 		tmp[a] = std::acos(tmp[a1]);
 		break;
 	case bc::Call1::kArccosh:
-		tmp[a] = boost::math::acosh(tmp[a1]);
+		tmp[a] = std::acosh(tmp[a1]);
 		break;
 	case bc::Call1::kArccot:
 		tmp[a] = std::atan(1/tmp[a1]);
 		break;
 	case bc::Call1::kArccoth:
-		tmp[a] = boost::math::atanh(1/tmp[a1]);
+		tmp[a] = std::atanh(1/tmp[a1]);
 		break;
 	case bc::Call1::kArccsc:
 		tmp[a] = std::asin(1/tmp[a1]);
 		break;
 	case bc::Call1::kArccsch:
-		tmp[a] = boost::math::asinh(1/tmp[a1]);
+		tmp[a] = std::asinh(1/tmp[a1]);
 		break;
 	case bc::Call1::kArcsec:
 		tmp[a] = std::acos(1/tmp[a1]);
 		break;
 	case bc::Call1::kArcsech:
-		tmp[a] = boost::math::acosh(1/tmp[a1]);
+		tmp[a] = std::acosh(1/tmp[a1]);
 		break;
 	case bc::Call1::kArcsin:
 		tmp[a] = std::asin(tmp[a1]);
 		break;
 	case bc::Call1::kArcsinh:
-		tmp[a] = boost::math::asinh(tmp[a1]);
+		tmp[a] = std::asinh(tmp[a1]);
 		break;
 	case bc::Call1::kArctan:
 		tmp[a] = std::atan(tmp[a1]);
 		break;
 	case bc::Call1::kArctanh:
-		tmp[a] = boost::math::atanh(tmp[a1]);
+		tmp[a] = std::atanh(tmp[a1]);
 		break;
 	case bc::Call1::kCeiling:
 		tmp[a] = std::ceil(tmp[a1]);

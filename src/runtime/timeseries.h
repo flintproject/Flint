@@ -3,6 +3,7 @@
 #define FLINT_RUNTIME_TIMESERIES_H_
 
 #include <cassert>
+#include <cmath>
 #include <cstdio>
 #include <cstring>
 #include <fstream>
@@ -14,7 +15,6 @@
 #define BOOST_DATE_TIME_NO_LIB
 #include <boost/interprocess/file_mapping.hpp>
 #include <boost/interprocess/mapped_region.hpp>
-#include <boost/math/special_functions/fpclassify.hpp>
 #include <boost/noncopyable.hpp>
 #include <boost/ptr_container/ptr_vector.hpp>
 #include <boost/scoped_ptr.hpp>
@@ -107,7 +107,7 @@ private:
 		Store(i, it1, &d1);
 		// take the linear interpolation
 		double dl = d0 + ((d1-d0)/(*it1-*it0))*(t-*it0);
-		if (boost::math::isfinite(dl)) {
+		if (std::isfinite(dl)) {
 			*d = dl;
 		} else { // fall back on the nearest neighbor
 			if ((t-*it0) < (*it1-t)) {
