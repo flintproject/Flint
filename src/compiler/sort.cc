@@ -253,7 +253,7 @@ public:
 			for (size_t i=0;i<n;i++) {
 				if (levels[i] >= 0) continue;
 				if (std::all_of(dependencies[i].begin(), dependencies[i].end(),
-								[&levels](size_t k){return 0 <= levels[k];})) {
+								[&levels, level](size_t k){return 0 <= levels[k] && levels[k] < level;})) {
 					levels[i] = level;
 					total++;
 					found = true;
