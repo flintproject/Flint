@@ -3,7 +3,15 @@ DATADIR = @top_srcdir@/test/csv2isd
 TESTS = \
 	no-steps.sh \
 	no-units.sh \
-	x.sh
+	x.sh \
+	$(XFAIL_TESTS)
+
+XFAIL_TESTS = \
+	x-empty.sh \
+	x-empty-first-line.sh \
+	x-fewer-data.sh \
+	x-more-data.sh \
+	x-unix.sh
 
 .mk.sh:
 	echo '#!/bin/sh' > $@
