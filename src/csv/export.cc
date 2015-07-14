@@ -111,7 +111,8 @@ bool ExportIsdFromCsv(const boost::filesystem::path &input_path,
 
 	size_t first_line_len = eol[0];
 	boost::scoped_array<char> first_line(new char[first_line_len + 1]);
-	memcpy(first_line.get(), addr, first_line_len);
+	if (first_line_len > 0)
+		memcpy(first_line.get(), addr, first_line_len);
 	first_line[first_line_len] = '\0';
 	vector<char *> columns;
 	columns.push_back(first_line.get());

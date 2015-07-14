@@ -22,6 +22,7 @@ namespace po = boost::program_options;
 
 using std::cerr;
 using std::endl;
+using std::memcpy;
 using std::string;
 
 namespace {

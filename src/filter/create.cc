@@ -32,7 +32,6 @@
 
 using std::cerr;
 using std::endl;
-using std::memcpy;
 using std::set;
 using std::string;
 

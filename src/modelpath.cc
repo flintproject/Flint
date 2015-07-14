@@ -11,6 +11,8 @@
 #include "database.h"
 #include "utf8path.h"
 
+using std::memcpy;
+
 namespace {
 
 typedef int (*FindFunction)(sqlite3 *, char *);
@@ -25,7 +27,8 @@ char *GetInputFilename(sqlite3 *db, FindFunction f)
 	std::string path_s = path.string();
 	size_t s = path_s.size();
 	char *filename = new char[s+1]; // FIXME
-	memcpy(filename, path_s.c_str(), s);
+	if (s > 0)
+		memcpy(filename, path_s.c_str(), s);
 	filename[s] = '\0';
 	return filename;
 }

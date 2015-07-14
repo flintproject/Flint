@@ -23,6 +23,7 @@
 
 using std::cerr;
 using std::endl;
+using std::memcpy;
 
 namespace exec {
 
@@ -33,7 +34,8 @@ public:
 	void Add(int id, const char *path) {
 		size_t len = strlen(path);
 		std::unique_ptr<char[]> p(new char[len+1]);
-		memcpy(p.get(), path, len);
+		if (len > 0)
+			memcpy(p.get(), path, len);
 		p[len] = '\0';
 		auto lmbd = [id](char *p){
 			TaskRunner runner(id, p);

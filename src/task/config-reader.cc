@@ -43,7 +43,8 @@ bool ConfigReader::Read()
 	}
 	int len_m = sqlite3_column_bytes(stmt(), 0);
 	method_ = new char[len_m+1];
-	memcpy(method_, method, len_m);
+	if (len_m > 0)
+		memcpy(method_, method, len_m);
 	method_[len_m] = '\0';
 
 	length_ = sqlite3_column_double(stmt(), 1);

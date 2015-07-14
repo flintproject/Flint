@@ -44,7 +44,8 @@ static int FindInputFile(sqlite3 *db,
 		fprintf(stderr, "%s is too long: %d\n", column_name, n);
 		goto bail1;
 	}
-	memcpy(input_file, f, n);
+	if (n > 0)
+		memcpy(input_file, f, n);
 	input_file[n] = '\0';
 	r = n;
 
