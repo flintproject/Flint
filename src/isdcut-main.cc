@@ -65,9 +65,9 @@ public:
 
 		isdf::ISDFHeader header = reader_.header();
 
-		boost::uint32_t num_objs = 0;
-		boost::uint32_t num_bytes_descs = 0;
-		boost::uint32_t num_bytes_units = 0;
+		std::uint32_t num_objs = 0;
+		std::uint32_t num_bytes_descs = 0;
+		std::uint32_t num_bytes_units = 0;
 		std::unique_ptr<char[]> descriptions(new char[reader_.num_bytes_descs()]);
 		std::unique_ptr<char[]> units(new char[reader_.num_bytes_units()]);
 
@@ -75,10 +75,10 @@ public:
 		char *u = units.get();
 		const char *p = reader_.descriptions();
 		const char *pu = reader_.units();
-		boost::uint32_t n = 0;
-		boost::uint32_t len;
+		std::uint32_t n = 0;
+		std::uint32_t len;
 		for (FieldSet::const_iterator it=fields_.begin();it!=fields_.end();++it) {
-			boost::uint32_t i = static_cast<boost::uint32_t>(*it);
+			std::uint32_t i = static_cast<std::uint32_t>(*it);
 			if (i >= header.num_objs) break;
 
 			do {

@@ -27,9 +27,9 @@ namespace {
 
 class NumberOfRowsHandler : boost::noncopyable {
 public:
-	NumberOfRowsHandler(boost::uint32_t num_rows, std::ostream *os) : n_(), num_rows_(num_rows), os_(os) {}
+	NumberOfRowsHandler(std::uint32_t num_rows, std::ostream *os) : n_(), num_rows_(num_rows), os_(os) {}
 
-	int GetStep(boost::uint32_t buf_size, const char *buf) {
+	int GetStep(std::uint32_t buf_size, const char *buf) {
 		os_->write(buf, buf_size);
 		if (!os_->good()) {
 			cerr << "could not write step" << endl;
@@ -43,8 +43,8 @@ public:
 	}
 
 private:
-	boost::uint32_t n_;
-	boost::uint32_t num_rows_;
+	std::uint32_t n_;
+	std::uint32_t num_rows_;
 	std::ostream *os_;
 };
 
@@ -52,7 +52,7 @@ class EndOfTimeHandler : boost::noncopyable {
 public:
 	EndOfTimeHandler(double eot, std::ostream *os) : eot_(eot), os_(os) {}
 
-	int GetStep(boost::uint32_t buf_size, const char *buf) {
+	int GetStep(std::uint32_t buf_size, const char *buf) {
 		double t = 0;
 		memcpy(&t, buf, sizeof(t));
 		if (t < eot_) {
@@ -75,7 +75,7 @@ private:
 
 class Dam : boost::noncopyable {
 public:
-	explicit Dam(boost::uint32_t num_rows) : num_rows_(num_rows), eot_(), reader_() {}
+	explicit Dam(std::uint32_t num_rows) : num_rows_(num_rows), eot_(), reader_() {}
 	explicit Dam(double eot) : num_rows_(), eot_(eot), reader_() {}
 
 	bool Pass(std::istream *is, std::ostream *os) {
@@ -99,7 +99,7 @@ public:
 	}
 
 private:
-	boost::uint32_t num_rows_;
+	std::uint32_t num_rows_;
 	double eot_;
 	isdf::Reader reader_;
 };
@@ -113,13 +113,13 @@ int main(int argc, char *argv[])
 	po::options_description opts("options");
 	po::positional_options_description popts;
 	po::variables_map vm;
-	boost::uint32_t num_rows = 0;
+	std::uint32_t num_rows = 0;
 	double eot = 0;
 	string input_file, output_file;
 	int print_help = 0;
 
 	opts.add_options()
-		("rows,n", po::value<boost::uint32_t>(&num_rows), "Specify the number of rows to be extracted")
+		("rows,n", po::value<std::uint32_t>(&num_rows), "Specify the number of rows to be extracted")
 		("eot,t", po::value<double>(&eot), "Specify the end of time")
 		("help,h", "Show this message")
 		("output,o", po::value<string>(&output_file), "Output file name")

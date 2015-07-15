@@ -30,7 +30,7 @@ namespace {
 
 class ColumnHandler {
 public:
-	explicit ColumnHandler(boost::uint32_t skip, FILE *fp)
+	explicit ColumnHandler(std::uint32_t skip, FILE *fp)
 		: skip_(skip),
 		  fp_(fp),
 		  leading_descs_(),
@@ -38,7 +38,7 @@ public:
 		  units_()
 	{}
 
-	void GetDescription(boost::uint32_t i, boost::uint32_t len, const char *d)
+	void GetDescription(std::uint32_t i, std::uint32_t len, const char *d)
 	{
 		string desc(d, len);
 		if (i < skip_) {
@@ -48,7 +48,7 @@ public:
 		}
 	}
 
-	void GetUnit(boost::uint32_t /*i*/, boost::uint32_t len, const char *u)
+	void GetUnit(std::uint32_t /*i*/, std::uint32_t len, const char *u)
 	{
 		units_.push_back(string(u, len));
 	}
@@ -58,7 +58,7 @@ public:
 		if (skip_ > 0) {
 			fwrite(buf, sizeof(double), skip_, fp_);
 		}
-		for (std::map<string, boost::uint32_t>::const_iterator it=rest_descs_.begin();it!=rest_descs_.end();++it) {
+		for (std::map<string, std::uint32_t>::const_iterator it=rest_descs_.begin();it!=rest_descs_.end();++it) {
 			size_t i = it->second * sizeof(double);
 			assert(i < size);
 			fwrite(buf + i, sizeof(double), 1, fp_);
@@ -71,14 +71,14 @@ public:
 		for (std::vector<string>::const_iterator it=leading_descs_.begin();it!=leading_descs_.end();++it) {
 			WriteEntry(*it);
 		}
-		for (std::map<string, boost::uint32_t>::const_iterator it=rest_descs_.begin();it!=rest_descs_.end();++it) {
+		for (std::map<string, std::uint32_t>::const_iterator it=rest_descs_.begin();it!=rest_descs_.end();++it) {
 			WriteEntry(it->first);
 		}
 		if (!units_.empty()) {
-			for (boost::uint32_t i=0;i<skip_;i++) {
+			for (std::uint32_t i=0;i<skip_;i++) {
 				WriteEntry(units_[i]);
 			}
-			for (std::map<string, boost::uint32_t>::const_iterator it=rest_descs_.begin();it!=rest_descs_.end();++it) {
+			for (std::map<string, std::uint32_t>::const_iterator it=rest_descs_.begin();it!=rest_descs_.end();++it) {
 				WriteEntry(units_[it->second]);
 			}
 		}
@@ -87,15 +87,15 @@ public:
 private:
 	void WriteEntry(const string &d)
 	{
-		boost::uint32_t len = static_cast<boost::uint32_t>(d.size());
+		std::uint32_t len = static_cast<std::uint32_t>(d.size());
 		fwrite(&len, sizeof(len), 1, fp_);
 		if (len > 0) fwrite(d.c_str(), len, 1, fp_);
 	}
 
-	boost::uint32_t skip_;
+	std::uint32_t skip_;
 	FILE *fp_;
 	std::vector<string> leading_descs_;
-	std::map<string, boost::uint32_t> rest_descs_;
+	std::map<string, std::uint32_t> rest_descs_;
 	std::vector<string> units_;
 };
 
@@ -146,7 +146,7 @@ public:
 		fclose(fp_);
 	}
 
-	bool Write(boost::uint32_t skip, isdf::Reader *reader, std::istream *is) {
+	bool Write(std::uint32_t skip, isdf::Reader *reader, std::istream *is) {
 		fwrite(&reader->header(), sizeof(isdf::ISDFHeader), 1, fp_);
 
 		if (!reader->ReadComment(is)) return false;
@@ -186,14 +186,14 @@ int main(int argc, char *argv[])
 	}
 
 	assert(argc == 3 || argc == 4);
-	boost::uint32_t skip = 0;
+	std::uint32_t skip = 0;
 	if (argc == 4) {
 		int s = std::atoi(argv[3]);
 		if (s <= 0) {
 			cerr << "invalid skip: " << argv[3] << endl;
 			return EXIT_FAILURE;
 		}
-		skip = static_cast<boost::uint32_t>(s);
+		skip = static_cast<std::uint32_t>(s);
 	}
 
 	std::ifstream ifs(argv[1], std::ios::in|std::ios::binary);

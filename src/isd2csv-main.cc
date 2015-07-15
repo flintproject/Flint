@@ -46,7 +46,7 @@ void RequestMaxNumOfDigits(std::ostream *os)
 class Converter {
 public:
 #ifdef ENABLE_TCP
-	Converter(ostream *os, boost::uint32_t num_objs, size_t length = 0,
+	Converter(ostream *os, std::uint32_t num_objs, size_t length = 0,
 			  boost::asio::ip::udp::endpoint *endpoint = NULL,
 			  boost::asio::ip::udp::socket *socket = NULL)
 		: length_(length),
@@ -70,16 +70,16 @@ public:
 	explicit Converter(ostream *os) : os_(os) {}
 #endif
 
-	void GetDescription(boost::uint32_t i, size_t bytes, const char *desc) {
+	void GetDescription(std::uint32_t i, size_t bytes, const char *desc) {
 		descriptions_[i] = string(desc, bytes);
 	}
 
-	void GetUnit(boost::uint32_t i, size_t bytes, const char *unit) {
+	void GetUnit(std::uint32_t i, size_t bytes, const char *unit) {
 		units_[i] = string(unit, bytes);
 	}
 
 	void WriteFirstLine() const {
-		for (boost::uint32_t i=0;i<num_objs_;i++) {
+		for (std::uint32_t i=0;i<num_objs_;i++) {
 			if (i > 0) *os_ << ',';
 			os_->write(descriptions_[i].c_str(), descriptions_[i].size());
 			if (!units_[i].empty()) {
@@ -123,7 +123,7 @@ private:
 	char progress_;
 #endif
 	ostream *os_;
-	boost::uint32_t num_objs_;
+	std::uint32_t num_objs_;
 	vector<string> descriptions_;
 	vector<string> units_;
 };

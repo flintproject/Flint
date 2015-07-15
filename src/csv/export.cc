@@ -70,8 +70,8 @@ bool DecomposeColumn(char *column, char **unit)
 	return true;
 }
 
-typedef std::map<boost::uint32_t, char *> UnitMap;
-typedef std::map<boost::uint32_t, boost::uint32_t> UnitLengthMap;
+typedef std::map<std::uint32_t, char *> UnitMap;
+typedef std::map<std::uint32_t, std::uint32_t> UnitLengthMap;
 
 } // namespace
 
@@ -125,38 +125,38 @@ bool ExportIsdFromCsv(const boost::filesystem::path &input_path,
 		}
 	}
 
-	boost::uint32_t num_cols = static_cast<boost::uint32_t>(columns.size());
+	std::uint32_t num_cols = static_cast<std::uint32_t>(columns.size());
 
 	UnitMap units;
 	UnitLengthMap unit_len;
-	for (boost::uint32_t i=0;i<num_cols;i++) {
+	for (std::uint32_t i=0;i<num_cols;i++) {
 		char *unit = NULL;
 		if (!DecomposeColumn(columns[i], &unit)) return false;
 		if (!unit) continue;
 		units.insert(std::make_pair(i, unit));
 		size_t len = strlen(unit);
 		assert(len);
-		unit_len.insert(std::make_pair(i, static_cast<boost::uint32_t>(len)));
+		unit_len.insert(std::make_pair(i, static_cast<std::uint32_t>(len)));
 	}
 	assert(units.size() == unit_len.size());
 	bool no_units = (units.size() == 0);
 
-	boost::uint32_t num_bytes_descs = 4 * num_cols;
-	vector<boost::uint32_t> desc_len;
-	for (boost::uint32_t i=0; i<num_cols; i++) {
+	std::uint32_t num_bytes_descs = 4 * num_cols;
+	vector<std::uint32_t> desc_len;
+	for (std::uint32_t i=0; i<num_cols; i++) {
 		size_t len = strlen(columns[i]);
 		if (len == 0) {
 			cerr << "empty column name at " << i << endl;
 			return false;
 		}
-		boost::uint32_t u32len = static_cast<boost::uint32_t>(len);
+		std::uint32_t u32len = static_cast<std::uint32_t>(len);
 		desc_len.push_back(u32len);
 		num_bytes_descs += u32len;
 	}
 
-	boost::uint32_t num_bytes_units = (no_units) ? 0 : 4 * num_cols;
+	std::uint32_t num_bytes_units = (no_units) ? 0 : 4 * num_cols;
 	if (!no_units) {
-		for (boost::uint32_t i=0;i<num_cols;i++) {
+		for (std::uint32_t i=0;i<num_cols;i++) {
 			UnitLengthMap::const_iterator it = unit_len.find(i);
 			if (it != unit_len.end()) {
 				num_bytes_units += it->second;
@@ -181,8 +181,8 @@ bool ExportIsdFromCsv(const boost::filesystem::path &input_path,
 		return false;
 	}
 	// descriptions
-	for (boost::uint32_t i=0; i<num_cols; i++) {
-		boost::uint32_t u32len = desc_len[i];
+	for (std::uint32_t i=0; i<num_cols; i++) {
+		std::uint32_t u32len = desc_len[i];
 		if (fwrite(&u32len, 4, 1, ofp) != 1) {
 			cerr << "failed to write length" << endl;
 			return false;
@@ -193,16 +193,16 @@ bool ExportIsdFromCsv(const boost::filesystem::path &input_path,
 		}
 	}
 	if (!no_units) { // units
-		for (boost::uint32_t i=0;i<num_cols;i++) {
+		for (std::uint32_t i=0;i<num_cols;i++) {
 			UnitMap::const_iterator it = units.find(i);
 			if (it == units.end()) {
-				boost::uint32_t u32len = 0;
+				std::uint32_t u32len = 0;
 				if (fwrite(&u32len, 4, 1, ofp) != 1) {
 					cerr << "failed to write unit's length" << endl;
 					return false;
 				}
 			} else {
-				boost::uint32_t u32len = unit_len[i];
+				std::uint32_t u32len = unit_len[i];
 				if (fwrite(&u32len, 4, 1, ofp) != 1) {
 					cerr << "failed to write unit's length" << endl;
 					return false;
@@ -217,7 +217,7 @@ bool ExportIsdFromCsv(const boost::filesystem::path &input_path,
 	// body
 	for (size_t i=1; i<bol.size(); i++) {
 		char *p = addr + bol[i];
-		boost::uint32_t nc = 0;
+		std::uint32_t nc = 0;
 		do {
 			char *q;
 			double d = strtod(p, &q);

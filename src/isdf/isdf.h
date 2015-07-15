@@ -2,9 +2,9 @@
 #ifndef ISDF_HEADER_
 #define ISDF_HEADER_
 
+#include <cstdint>
 #include <cstring>
 #include <ctime>
-#include <boost/cstdint.hpp>
 
 namespace isdf {
 
@@ -23,10 +23,10 @@ typedef struct ISDFHeaderStruct{
         char little_endian;        // 1 if little endian file
         char padding[2];           // should be 0
 	char timestamp[20];
-	boost::uint32_t num_objs;     // number of objects recorded in each step
-	boost::uint32_t num_bytes_comment; // number of bytes for comment
-	boost::uint32_t num_bytes_descs; // number of bytes for descriptions
-	boost::uint32_t num_bytes_units; // number of bytes for units
+	std::uint32_t num_objs;     // number of objects recorded in each step
+	std::uint32_t num_bytes_comment; // number of bytes for comment
+	std::uint32_t num_bytes_descs; // number of bytes for descriptions
+	std::uint32_t num_bytes_units; // number of bytes for units
 
 	ISDFHeaderStruct() {
 		magic[0] = 'I'; magic[1] = 'S';

@@ -121,7 +121,7 @@ private:
 	boost::filesystem::path path_;
 	boost::interprocess::file_mapping fm_;
 	size_t offset_;
-	boost::uint32_t step_size_;
+	std::uint32_t step_size_;
 	TimestampSet ts_;
 };
 

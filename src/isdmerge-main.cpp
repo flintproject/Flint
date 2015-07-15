@@ -107,15 +107,15 @@ int main(int argc, char *argv[]) {
 			has_units = false;
 		}
 		for(size_t j = 0; j < reader.num_objs(); j++) {
-			boost::uint32_t bytes = *reinterpret_cast<const boost::uint32_t *>(rd);
+			std::uint32_t bytes = *reinterpret_cast<const std::uint32_t *>(rd);
 			rd += sizeof(bytes);
 			string name(rd, bytes);
 			rd += bytes;
 			//read unit
-			boost::uint32_t bu = 0;
+			std::uint32_t bu = 0;
 			string unit;
 			if (has_units) {
-				bu = *reinterpret_cast<const boost::uint32_t *>(ru);
+				bu = *reinterpret_cast<const std::uint32_t *>(ru);
 				ru += sizeof(bu);
 				unit.assign(ru, bu);
 				ru += bu;
@@ -185,7 +185,7 @@ int main(int argc, char *argv[]) {
 
 void OutputHeader(ostream &ost, size_t num_objs, string &descriptions, string &units) {
 	isdf::ISDFHeader oheader;
-	oheader.num_objs = static_cast<boost::uint32_t>(num_objs);
+	oheader.num_objs = static_cast<std::uint32_t>(num_objs);
 	oheader.num_bytes_comment = 0; // discard original comments
 	oheader.num_bytes_descs = descriptions.size();
 	oheader.num_bytes_units = units.size();

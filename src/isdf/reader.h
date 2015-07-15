@@ -16,16 +16,16 @@ public:
 	const char *comment() const {return comment_.get();}
 	const char *descriptions() const {return descriptions_.get();}
 	const char *units() const {return units_.get();}
-	boost::uint32_t num_bytes_comment() const {
+	std::uint32_t num_bytes_comment() const {
 		return header_.num_bytes_comment;
 	}
-	boost::uint32_t num_bytes_descs() const {
+	std::uint32_t num_bytes_descs() const {
 		return header_.num_bytes_descs;
 	}
-	boost::uint32_t num_bytes_units() const {
+	std::uint32_t num_bytes_units() const {
 		return header_.num_bytes_units;
 	}
-	boost::uint32_t num_objs() const {
+	std::uint32_t num_objs() const {
 		return header_.num_objs;
 	}
 
@@ -54,7 +54,7 @@ public:
 	}
 
 	bool ReadComment(std::istream *is) {
-		boost::uint32_t n = num_bytes_comment();
+		std::uint32_t n = num_bytes_comment();
 		if (n == 0) return true;
 		comment_.reset(new char[n]);
 		is->read(comment_.get(), n);
@@ -66,7 +66,7 @@ public:
 	}
 
 	bool SkipComment(std::istream *is) {
-		boost::uint32_t n = num_bytes_comment();
+		std::uint32_t n = num_bytes_comment();
 		if (n == 0) return true;
 		is->seekg(n, std::ios::cur);
 		if (!is->good()) {
@@ -91,18 +91,18 @@ public:
 		if (!ReadDescriptions(is)) return false;
 
 		const char *d = descriptions_.get();
-		for (boost::uint32_t i=0;i<num_objs();i++) {
+		for (std::uint32_t i=0;i<num_objs();i++) {
 #ifdef TYPE_PUNNING_BY_CAST
-			boost::uint32_t bytes = *reinterpret_cast<const boost::uint32_t *>(d);
+			std::uint32_t bytes = *reinterpret_cast<const std::uint32_t *>(d);
 #else
-			boost::uint32_t bytes = 0;
+			std::uint32_t bytes = 0;
 			std::memcpy(&bytes, d, sizeof(bytes));
 #endif
 			if (d + bytes > descriptions_.get() + num_bytes_descs()) {
 				std::cerr << "exceeded end of descriptions: " << bytes << std::endl;
 				return false;
 			}
-			d += sizeof(boost::uint32_t);
+			d += sizeof(std::uint32_t);
 			handler.GetDescription(i, bytes, d);
 			d += bytes;
 		}
@@ -123,7 +123,7 @@ public:
 	}
 
 	bool ReadUnits(std::istream *is) {
-		boost::uint32_t n = num_bytes_units();
+		std::uint32_t n = num_bytes_units();
 		if (n == 0) return true;
 		units_.reset(new char[n]);
 		is->read(units_.get(), n);
@@ -136,7 +136,7 @@ public:
 
 	template<typename THandler>
 	bool ReadUnits(THandler &handler, std::istream *is) {
-		boost::uint32_t n = num_bytes_units();
+		std::uint32_t n = num_bytes_units();
 		if (n == 0) return true;
 		units_.reset(new char[n]);
 		is->read(units_.get(), n);
@@ -146,18 +146,18 @@ public:
 		}
 
 		const char *d = units_.get();
-		for (boost::uint32_t i=0;i<num_objs();i++) {
+		for (std::uint32_t i=0;i<num_objs();i++) {
 #ifdef TYPE_PUNNING_BY_CAST
-			boost::uint32_t bytes = *reinterpret_cast<const boost::uint32_t *>(d);
+			std::uint32_t bytes = *reinterpret_cast<const std::uint32_t *>(d);
 #else
-			boost::uint32_t bytes = 0;
+			std::uint32_t bytes = 0;
 			std::memcpy(&bytes, d, sizeof(bytes));
 #endif
 			if (d + bytes > units_.get() + num_bytes_units()) {
 				std::cerr << "exceeded end of units: " << bytes << std::endl;
 				return false;
 			}
-			d += sizeof(boost::uint32_t);
+			d += sizeof(std::uint32_t);
 			handler.GetUnit(i, bytes, d);
 			d += bytes;
 		}
@@ -169,7 +169,7 @@ public:
 	}
 
 	bool SkipUnits(std::istream *is) {
-		boost::uint32_t n = num_bytes_units();
+		std::uint32_t n = num_bytes_units();
 		if (n == 0) return true;
 		is->seekg(n, std::ios::cur);
 		if (!is->good()) {

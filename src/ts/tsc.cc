@@ -133,13 +133,13 @@ public:
 	}
 };
 
-typedef std::unordered_map<string, boost::uint32_t> ColumnMap;
+typedef std::unordered_map<string, std::uint32_t> ColumnMap;
 
 class DescriptionHandler : boost::noncopyable {
 public:
 	explicit DescriptionHandler(ColumnMap *cm) : cm_(cm) {}
 
-	void GetDescription(boost::uint32_t i, boost::uint32_t bytes, const char *d) {
+	void GetDescription(std::uint32_t i, std::uint32_t bytes, const char *d) {
 		if (!cm_->insert(make_pair(string(d, bytes), i)).second) {
 			cerr << "found duplicate name of columns: " << endl;
 		}

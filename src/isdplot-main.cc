@@ -45,13 +45,13 @@ bool ReadHeader(istream *is, char *header)
 	return is->good();
 }
 
-bool ReadDescriptions(boost::uint32_t num_bytes_descs, istream *is, char *rest)
+bool ReadDescriptions(std::uint32_t num_bytes_descs, istream *is, char *rest)
 {
 	is->read(rest, num_bytes_descs);
 	return is->good();
 }
 
-bool CountColumns(const char *input, boost::uint32_t *num_columns)
+bool CountColumns(const char *input, std::uint32_t *num_columns)
 {
 	ifstream ifs(input, ios::in|ios::binary);
 	if (!ifs.is_open()) {
@@ -108,7 +108,7 @@ void PutQuotedPath(const char *path, ostringstream *bss)
 	*bss << "\"";
 }
 
-void CreateScript(boost::uint32_t num_columns,
+void CreateScript(std::uint32_t num_columns,
 				  const char *csv_path,
 				  const char *output_path,
 				  ostringstream *bss)
@@ -159,7 +159,7 @@ void CreateScript(boost::uint32_t num_columns,
 // POSIX
 
 int CallGnuplot(const char *gnuplot,
-				boost::uint32_t num_columns,
+				std::uint32_t num_columns,
 				const char *csv_path,
 				const char *output_path)
 {
@@ -216,7 +216,7 @@ int CallGnuplot(const char *gnuplot,
 // Windows
 
 int CallGnuplot(const char *gnuplot,
-				boost::uint32_t num_columns,
+				std::uint32_t num_columns,
 				const char *csv_path,
 				const char *output_path)
 {
@@ -358,7 +358,7 @@ int main(int argc, char *argv[])
 		input_path = stripped_path;
 	}
 
-	boost::uint32_t num_columns = 0;
+	std::uint32_t num_columns = 0;
 	if (!CountColumns(input_path, &num_columns)) {
 		return EXIT_FAILURE;
 	}

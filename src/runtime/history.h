@@ -3,10 +3,10 @@
 #define FLINT_RUNTIME_HISTORY_H_
 
 #include <cassert>
+#include <cstdint>
 #include <cstdio>
 #include <map>
 
-#include <boost/cstdint.hpp>
 #define BOOST_DATE_TIME_NO_LIB
 #include <boost/interprocess/file_mapping.hpp>
 #include <boost/interprocess/mapped_region.hpp>
@@ -25,7 +25,7 @@ public:
 
 		assert(fp);
 
-		boost::uint64_t n = static_cast<boost::uint64_t>(m_.size());
+		std::uint64_t n = static_cast<std::uint64_t>(m_.size());
 		fwrite(&n, sizeof(n), 1, fp);
 		for (HistoryMap::const_iterator it=m_.begin();it!=m_.end();++it) {
 			fwrite(&it->first, sizeof(double), 1, fp);
@@ -51,10 +51,10 @@ public:
 
 		assert(p);
 
-		boost::uint64_t n;
+		std::uint64_t n;
 		memcpy(&n, p, sizeof(n));
 		p += sizeof(n);
-		for (boost::uint64_t k=0;k<n;k++) {
+		for (std::uint64_t k=0;k<n;k++) {
 			double t;
 			double v;
 			memcpy(&t, p, sizeof(t));

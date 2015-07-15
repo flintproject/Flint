@@ -54,8 +54,8 @@ int CompareTimestamp(const isdf::ISDFHeader &header0,
 int CompareComment(const isdf::Reader &reader0,
 				   const isdf::Reader &reader1)
 {
-	boost::uint32_t nb0 = reader0.num_bytes_comment();
-	boost::uint32_t nb1 = reader1.num_bytes_comment();
+	std::uint32_t nb0 = reader0.num_bytes_comment();
+	std::uint32_t nb1 = reader1.num_bytes_comment();
 	if (nb0 != nb1) {
 		cout << "comment" << endl;
 		return kExitDifferent;
@@ -71,8 +71,8 @@ int CompareComment(const isdf::Reader &reader0,
 int CompareDescriptions(const isdf::Reader &reader0,
 						const isdf::Reader &reader1)
 {
-	boost::uint32_t nb0 = reader0.num_bytes_descs();
-	boost::uint32_t nb1 = reader1.num_bytes_descs();
+	std::uint32_t nb0 = reader0.num_bytes_descs();
+	std::uint32_t nb1 = reader1.num_bytes_descs();
 	if (nb0 != nb1) {
 		cout << "descriptions" << endl;
 		return kExitDifferent;
@@ -87,8 +87,8 @@ int CompareDescriptions(const isdf::Reader &reader0,
 int CompareUnits(const isdf::Reader &reader0,
 				 const isdf::Reader &reader1)
 {
-	boost::uint32_t nb0 = reader0.num_bytes_units();
-	boost::uint32_t nb1 = reader1.num_bytes_units();
+	std::uint32_t nb0 = reader0.num_bytes_units();
+	std::uint32_t nb1 = reader1.num_bytes_units();
 	if (nb0 != nb1) {
 		cout << "units" << endl;
 		return kExitDifferent;
@@ -101,7 +101,7 @@ int CompareUnits(const isdf::Reader &reader0,
 	return EXIT_SUCCESS;
 }
 
-void PrintDifference(boost::uint32_t i, boost::uint32_t k,
+void PrintDifference(std::uint32_t i, std::uint32_t k,
 					 double v0, double v1)
 {
 	cout << "step " << i << " [" << k << "]: "
@@ -111,17 +111,17 @@ void PrintDifference(boost::uint32_t i, boost::uint32_t k,
 		 << endl;
 }
 
-int CompareBody(boost::uint32_t num_objs,
+int CompareBody(std::uint32_t num_objs,
 				double adelta, double rdelta,
 				const string &input_file0, std::istream &is0,
 				const string &input_file1, std::istream &is1)
 {
-	boost::uint32_t nb = num_objs * sizeof(double);
+	std::uint32_t nb = num_objs * sizeof(double);
 	assert(nb > 0);
 	std::unique_ptr<char[]> buf0(new char[nb]);
 	std::unique_ptr<char[]> buf1(new char[nb]);
 	int r = EXIT_SUCCESS;
-	for (boost::uint32_t i=0;;i++) {
+	for (std::uint32_t i=0;;i++) {
 		is0.read(buf0.get(), nb);
 		is1.read(buf1.get(), nb);
 		bool f0 = is0.fail();
@@ -167,7 +167,7 @@ int CompareBody(boost::uint32_t num_objs,
 
 		if (strncmp(buf0.get(), buf1.get(), nb) == 0) continue;
 
-		for (boost::uint32_t k=0;k<num_objs;k++) {
+		for (std::uint32_t k=0;k<num_objs;k++) {
 			double v0, v1;
 			memcpy(&v0, &buf0[k * sizeof(double)], sizeof(double));
 			memcpy(&v1, &buf1[k * sizeof(double)], sizeof(double));
@@ -255,8 +255,8 @@ int main(int argc, char *argv[])
 		if (r != EXIT_SUCCESS) result = kExitDifferent;
 	}
 
-	boost::uint32_t no0 = reader0->num_objs();
-	boost::uint32_t no1 = reader1->num_objs();
+	std::uint32_t no0 = reader0->num_objs();
+	std::uint32_t no1 = reader1->num_objs();
 	if (no0 != no1) {
 		result = kExitDifferent;
 		cerr << "num_objs: "

@@ -33,8 +33,8 @@ using std::vector;
 namespace {
 
 bool ExtractConstantColumns(const char *input,
-							boost::uint32_t *num_columns,
-							vector<boost::uint32_t> *cv)
+							std::uint32_t *num_columns,
+							vector<std::uint32_t> *cv)
 {
 	ifstream ifs(input, ios::in|ios::binary);
 	if (!ifs.is_open()) {
@@ -50,7 +50,7 @@ bool ExtractConstantColumns(const char *input,
 		return false;
 	}
 
-	boost::uint32_t num_objs = reader.num_objs();
+	std::uint32_t num_objs = reader.num_objs();
 	*num_columns = num_objs;
 
 	size_t buf_size = num_objs * sizeof(double);
@@ -60,7 +60,7 @@ bool ExtractConstantColumns(const char *input,
 		if (ifs.gcount() == 0) {
 			ifs.close();
 			// there seems no data, so let's keep all columns
-			for (boost::uint32_t i=0;i<num_objs;i++) {
+			for (std::uint32_t i=0;i<num_objs;i++) {
 				cv->push_back(i);
 			}
 			return true;
@@ -71,7 +71,7 @@ bool ExtractConstantColumns(const char *input,
 		return false;
 	}
 
-	for (boost::uint32_t i=0;i<num_objs;i++) {
+	for (std::uint32_t i=0;i<num_objs;i++) {
 		cv->push_back(i);
 	}
 	std::unique_ptr<char[]> buf1(new char[buf_size]);
@@ -87,7 +87,7 @@ bool ExtractConstantColumns(const char *input,
 				return false;
 			}
 		}
-		vector<boost::uint32_t>::iterator it = cv->begin();
+		vector<std::uint32_t>::iterator it = cv->begin();
 		while (it != cv->end()) {
 			size_t n = (*it) * sizeof(double);
 			// we can ignore endianness by using memcmp()
@@ -106,7 +106,7 @@ bool ExtractConstantColumns(const char *input,
 
 class StepFilter {
 public:
-	StepFilter(boost::uint32_t num_objs, const vector<boost::uint32_t> &cv, ostream *os)
+	StepFilter(std::uint32_t num_objs, const vector<std::uint32_t> &cv, ostream *os)
 		: num_objs_(num_objs),
 		  cv_(cv),
 		  os_(os),
@@ -117,8 +117,8 @@ public:
 	int GetStep(size_t, const char *buf) {
 		const char *b0 = buf;
 		char *b1 = buf_.get();
-		vector<boost::uint32_t>::const_iterator it = cv_.begin();
-		for (boost::uint32_t i=0;i<num_objs_;i++) {
+		vector<std::uint32_t>::const_iterator it = cv_.begin();
+		for (std::uint32_t i=0;i<num_objs_;i++) {
 			if (it != cv_.end() && i == *it) { // skip this entry
 				++it;
 			} else {
@@ -136,15 +136,15 @@ public:
 	}
 
 private:
-	boost::uint32_t num_objs_;
-	const vector<boost::uint32_t> &cv_;
+	std::uint32_t num_objs_;
+	const vector<std::uint32_t> &cv_;
 	ostream *os_;
 	size_t buf_size_;
 	std::unique_ptr<char[]> buf_;
 };
 
 int Filter(const char *input,
-		   const vector<boost::uint32_t> &cv,
+		   const vector<std::uint32_t> &cv,
 		   ostream *os)
 {
 	ifstream ifs(input, ios::in|ios::binary);
@@ -164,9 +164,9 @@ int Filter(const char *input,
 	const char *rd = reader.descriptions();
 	std::unique_ptr<char[]> descs(new char[reader.num_bytes_descs()]);
 	char *d = descs.get();
-	vector<boost::uint32_t>::const_iterator it = cv.begin();
-	for (boost::uint32_t i=0;i<reader.num_objs();i++) {
-		boost::uint32_t bd = *reinterpret_cast<const boost::uint32_t *>(rd);
+	vector<std::uint32_t>::const_iterator it = cv.begin();
+	for (std::uint32_t i=0;i<reader.num_objs();i++) {
+		std::uint32_t bd = *reinterpret_cast<const std::uint32_t *>(rd);
 		if (it != cv.end() && i == *it) { // skip this entry
 			++it;
 		} else {
@@ -183,8 +183,8 @@ int Filter(const char *input,
 		units.reset(new char[reader.num_bytes_units()]);
 		u = units.get();
 		it = cv.begin();
-		for (boost::uint32_t i=0;i<reader.num_objs();i++) {
-			boost::uint32_t bu = *reinterpret_cast<const boost::uint32_t *>(ru);
+		for (std::uint32_t i=0;i<reader.num_objs();i++) {
+			std::uint32_t bu = *reinterpret_cast<const std::uint32_t *>(ru);
 			if (it != cv.end() && i == *it) { // skip this entry
 				++it;
 			} else {
@@ -199,9 +199,9 @@ int Filter(const char *input,
 	memcpy(header.get(), &reader.header(), sizeof(isdf::ISDFHeader));
 	reinterpret_cast<isdf::ISDFHeader *>(header.get())->num_objs -= cv.size();
 	reinterpret_cast<isdf::ISDFHeader *>(header.get())->num_bytes_comment = 0; // discard the original comment
-	reinterpret_cast<isdf::ISDFHeader *>(header.get())->num_bytes_descs = static_cast<boost::uint32_t>(d - descs.get());
+	reinterpret_cast<isdf::ISDFHeader *>(header.get())->num_bytes_descs = static_cast<std::uint32_t>(d - descs.get());
 	if (ru) { // when units are available
-		reinterpret_cast<isdf::ISDFHeader *>(header.get())->num_bytes_units = static_cast<boost::uint32_t>(u - units.get());
+		reinterpret_cast<isdf::ISDFHeader *>(header.get())->num_bytes_units = static_cast<std::uint32_t>(u - units.get());
 	} else {
 		reinterpret_cast<isdf::ISDFHeader *>(header.get())->num_bytes_units = 0;
 	}
@@ -236,9 +236,9 @@ int Filter(const char *input,
 	return EXIT_SUCCESS;
 }
 
-void PrintNumOfColumns(boost::uint32_t num_columns, const vector<boost::uint32_t> &cv)
+void PrintNumOfColumns(std::uint32_t num_columns, const vector<std::uint32_t> &cv)
 {
-	cout << num_columns - static_cast<boost::uint32_t>(cv.size()) << endl;
+	cout << num_columns - static_cast<std::uint32_t>(cv.size()) << endl;
 }
 
 } // namespace
@@ -272,8 +272,8 @@ int main(int argc, char *argv[])
 		return (print_help == 1) ? EXIT_SUCCESS : EXIT_FAILURE;
 	}
 
-	std::unique_ptr<vector<boost::uint32_t> > cv(new vector<boost::uint32_t>);
-	boost::uint32_t num_columns = 0;
+	std::unique_ptr<vector<std::uint32_t> > cv(new vector<std::uint32_t>);
+	std::uint32_t num_columns = 0;
 		const char *input_path = input_file.c_str();
 		if (!ExtractConstantColumns(input_path, &num_columns, cv.get())) {
 			return EXIT_FAILURE;

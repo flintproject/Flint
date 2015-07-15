@@ -58,8 +58,8 @@ public:
 			if (column->has_label()) s += "@" + column->label();
 		}
 		num_objs_ += column->size();
-		num_bytes_descs_ += (sizeof(boost::uint32_t)+s.size()) * column->size();
-		num_bytes_units_ += (sizeof(boost::uint32_t)+column->unit().size()) * column->size();
+		num_bytes_descs_ += (sizeof(std::uint32_t)+s.size()) * column->size();
+		num_bytes_units_ += (sizeof(std::uint32_t)+column->unit().size()) * column->size();
 		for (int i=0;i<column->size();i++) {
 			descriptions_.push_back(s);
 			units_.push_back(column->unit());
@@ -78,13 +78,13 @@ public:
 		ofs->write(buf, sizeof(header));
 
 		for (vector<string>::const_iterator it=descriptions_.begin();it!=descriptions_.end();++it) {
-			boost::uint32_t len = it->size();
+			std::uint32_t len = it->size();
 			memcpy(buf, &len, sizeof(len));
 			ofs->write(buf, sizeof(len));
 			ofs->write(it->c_str(), len);
 		}
 		for (vector<string>::const_iterator it=units_.begin();it!=units_.end();++it) {
-			boost::uint32_t len = it->size();
+			std::uint32_t len = it->size();
 			memcpy(buf, &len, sizeof(len));
 			ofs->write(buf, sizeof(len));
 			ofs->write(it->c_str(), len);
@@ -92,9 +92,9 @@ public:
 	}
 
 private:
-	boost::uint32_t num_objs_;
-	boost::uint32_t num_bytes_descs_;
-	boost::uint32_t num_bytes_units_;
+	std::uint32_t num_objs_;
+	std::uint32_t num_bytes_descs_;
+	std::uint32_t num_bytes_units_;
 	vector<string> descriptions_;
 	vector<string> units_;
 };

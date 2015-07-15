@@ -21,7 +21,7 @@ using std::string;
 namespace {
 
 struct ColumnPrinter {
-	void GetDescription(boost::uint32_t, size_t bytes, const char *desc) {
+	void GetDescription(std::uint32_t, size_t bytes, const char *desc) {
 		cout.write(desc, bytes);
 		cout << endl;
 	}
@@ -39,9 +39,9 @@ int ListColumns(istream *is)
 
 class IndexedColumnPrinter {
 public:
-	IndexedColumnPrinter(boost::uint32_t row) : row_(row), offset_(row * sizeof(double)) {}
+	IndexedColumnPrinter(std::uint32_t row) : row_(row), offset_(row * sizeof(double)) {}
 
-	void GetDescription(boost::uint32_t i, size_t bytes, const char *desc) {
+	void GetDescription(std::uint32_t i, size_t bytes, const char *desc) {
 		if (i == row_) {
 			cout.write(desc, bytes);
 			cout << endl;
@@ -56,16 +56,16 @@ public:
 	}
 
 private:
-	boost::uint32_t row_;
+	std::uint32_t row_;
 	size_t offset_;
 };
 
-int ListRow(boost::uint32_t row, istream *is)
+int ListRow(std::uint32_t row, istream *is)
 {
 	isdf::Reader reader;
 	if (!reader.ReadHeader(is)) return EXIT_FAILURE;
 
-	boost::uint32_t num_objs = reader.num_objs();
+	std::uint32_t num_objs = reader.num_objs();
 	if (num_objs <= row) {
 		cerr << "boundary error of index exceeding num_objs: " << num_objs << endl;
 		return EXIT_FAILURE;
@@ -95,13 +95,13 @@ int main(int argc, char *argv[])
 	po::positional_options_description popts;
 	po::variables_map vm;
 	string input_file;
-	boost::uint32_t row = 0;
+	std::uint32_t row = 0;
 	int print_help = 0;
 
 	opts.add_options()
 		("columns,c", "Print the columns (default)")
 		("data-offset", "Print the offset (in bytes) where the data section starts")
-		("row,r", po::value<boost::uint32_t>(&row), "Print the row of given index")
+		("row,r", po::value<std::uint32_t>(&row), "Print the row of given index")
 		("help,h", "Show this message")
 		("input", po::value<string>(&input_file), "Input file name");
 	popts.add("input", 1);

@@ -25,15 +25,15 @@ public:
 	{
 	}
 
-	bool Load(boost::uint32_t *value) {
+	bool Load(std::uint32_t *value) {
 		void *addr = mr_.get_address();
 		size_t size = mr_.get_size();
 		if (size == 0) {
 			cerr << "mapped region is of size 0" << endl;
 			return false;
 		}
-		boost::uint32_t a = 1;
-		boost::uint32_t b = 0;
+		std::uint32_t a = 1;
+		std::uint32_t b = 0;
 		char *data = static_cast<char *>(addr);
 		for (size_t i=0;i<size;i++) {
 			a += data[i];
@@ -59,7 +59,7 @@ UuidGenerator::UuidGenerator(const boost::filesystem::path &path)
 	  gen_(&ran_)
 {
 	std::string path_s = path.string();
-	boost::uint32_t value;
+	std::uint32_t value;
 	std::unique_ptr<Adler32Loader> loader(new Adler32Loader(path_s.c_str()));
 	if (!loader->Load(&value)) exit(EXIT_FAILURE);
 	ran_.seed(value);
