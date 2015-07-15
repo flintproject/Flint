@@ -19,7 +19,6 @@
 #include <boost/ptr_container/ptr_map.hpp>
 #include <boost/ptr_container/ptr_unordered_map.hpp>
 #include <boost/ptr_container/ptr_vector.hpp>
-#include <boost/scoped_ptr.hpp>
 #include <boost/uuid/uuid_generators.hpp>
 
 #include "lo.pb.h"
@@ -155,17 +154,17 @@ private:
 
 bool Generate(sqlite3 *db, const char *filename)
 {
-	boost::scoped_ptr<ModuleMap> mm(new ModuleMap);
+	std::unique_ptr<ModuleMap> mm(new ModuleMap);
 	{
 		db::SpaceLoader loader(db);
-		boost::scoped_ptr<ModuleHandler> handler(new ModuleHandler(mm.get()));
+		std::unique_ptr<ModuleHandler> handler(new ModuleHandler(mm.get()));
 		if (!loader.Load(handler.get())) return false;
 	}
 
-	boost::scoped_ptr<NameMap> nm(new NameMap);
+	std::unique_ptr<NameMap> nm(new NameMap);
 	{
 		db::NameLoader loader(db);
-		boost::scoped_ptr<NameHandler> handler(new NameHandler(nm.get()));
+		std::unique_ptr<NameHandler> handler(new NameHandler(nm.get()));
 		if (!loader.Load(handler.get())) return false;
 	}
 
@@ -181,9 +180,9 @@ bool Generate(sqlite3 *db, const char *filename)
 		return false;
 	}
 
-	boost::scoped_ptr<lo::Track> track(new lo::Track);
-	boost::scoped_ptr<lo::Sector> sector(new lo::Sector);
-	boost::scoped_ptr<lo::Data> data(new lo::Data);
+	std::unique_ptr<lo::Track> track(new lo::Track);
+	std::unique_ptr<lo::Sector> sector(new lo::Sector);
+	std::unique_ptr<lo::Data> data(new lo::Data);
 	std::unique_ptr<char[]> tbu(new char[16]); // 16 is UUID's size
 	std::unique_ptr<char[]> sbu(new char[16]); // 16 is UUID's size
 	for (TMap::const_iterator it=tm.begin();it!=tm.end();++it) {

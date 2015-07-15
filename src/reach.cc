@@ -14,7 +14,6 @@
 #include <boost/noncopyable.hpp>
 #include <boost/ptr_container/ptr_map.hpp>
 #include <boost/ptr_container/ptr_set.hpp>
-#include <boost/scoped_ptr.hpp>
 #include <boost/uuid/uuid.hpp>
 #include <boost/uuid/uuid_io.hpp>
 
@@ -127,8 +126,8 @@ private:
 
 bool LoadInputPorts(sqlite3 *db, boost::ptr_multimap<boost::uuids::uuid, Port> *ports)
 {
-	boost::scoped_ptr<db::InputPortLoader> loader(new db::InputPortLoader(db));
-	boost::scoped_ptr<InputPortHandler> handler(new InputPortHandler(ports));
+	std::unique_ptr<db::InputPortLoader> loader(new db::InputPortLoader(db));
+	std::unique_ptr<InputPortHandler> handler(new InputPortHandler(ports));
 	return loader->Load(handler.get());
 }
 
@@ -151,8 +150,8 @@ private:
 
 bool LoadOutputPorts(sqlite3 *db, boost::ptr_map<Node, Port> *ports)
 {
-	boost::scoped_ptr<db::OutputPortLoader> loader(new db::OutputPortLoader(db));
-	boost::scoped_ptr<OutputPortHandler> handler(new OutputPortHandler(ports));
+	std::unique_ptr<db::OutputPortLoader> loader(new db::OutputPortLoader(db));
+	std::unique_ptr<OutputPortHandler> handler(new OutputPortHandler(ports));
 	return loader->Load(handler.get());
 }
 
@@ -195,8 +194,8 @@ private:
 
 bool LoadScopes(sqlite3 *db, ScopeSet *scopes, Mmap *mmap, Umap *umap)
 {
-	boost::scoped_ptr<db::ScopeLoader> loader(new db::ScopeLoader(db));
-	boost::scoped_ptr<ScopeHandler> handler(new ScopeHandler(scopes, mmap, umap));
+	std::unique_ptr<db::ScopeLoader> loader(new db::ScopeLoader(db));
+	std::unique_ptr<ScopeHandler> handler(new ScopeHandler(scopes, mmap, umap));
 	return loader->Load(handler.get());
 }
 
@@ -218,8 +217,8 @@ private:
 
 bool LoadEdges(sqlite3 *db, multimap<Node, Node> *edges)
 {
-	boost::scoped_ptr<db::SpanLoader> loader(new db::SpanLoader(db));
-	boost::scoped_ptr<SpanHandler> handler(new SpanHandler(edges));
+	std::unique_ptr<db::SpanLoader> loader(new db::SpanLoader(db));
+	std::unique_ptr<SpanHandler> handler(new SpanHandler(edges));
 	return loader->Load(handler.get());
 }
 
@@ -269,7 +268,7 @@ bool Reach(sqlite3 *db)
 	multimap<Node, Node> edges;
 	if (!LoadEdges(db, &edges)) return false;
 
-	boost::scoped_ptr<db::ReachDriver> driver(new db::ReachDriver(db));
+	std::unique_ptr<db::ReachDriver> driver(new db::ReachDriver(db));
 	// trace from each input-port
 	for (boost::ptr_multimap<boost::uuids::uuid, Port>::const_iterator it=inports.begin();it!=inports.end();++it) {
 		const boost::uuids::uuid &module_id = it->first;

@@ -14,7 +14,6 @@
 #include <string>
 
 #include <boost/noncopyable.hpp>
-#include <boost/scoped_ptr.hpp>
 
 #include "lo.pb.h"
 
@@ -77,9 +76,9 @@ private:
 
 bool Cut(const char *filter_file, FILE *ifp, FILE *ofp)
 {
-	boost::scoped_ptr<Filter> filter(new Filter);
+	std::unique_ptr<Filter> filter(new Filter);
 	{
-		boost::scoped_ptr<FilterLoader> loader(new FilterLoader(filter_file));
+		std::unique_ptr<FilterLoader> loader(new FilterLoader(filter_file));
 		if (!loader->Load(filter.get())) return false;
 	}
 	return filter->Apply(ifp, ofp);

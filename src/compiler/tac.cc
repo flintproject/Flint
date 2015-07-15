@@ -11,7 +11,6 @@
 #include <vector>
 
 #include <boost/fusion/include/adapt_struct.hpp>
-#include <boost/scoped_ptr.hpp>
 #include <boost/spirit/include/lex_lexertl.hpp>
 #include <boost/spirit/include/phoenix.hpp>
 #include <boost/spirit/include/qi.hpp>
@@ -401,7 +400,7 @@ bool EmitCode(int n, Expr &sexp, Context *context)
 bool EmitCode(const char *uuid, const char *id, Expr &sexp,
 			  int *nod, std::ostream *os)
 {
-	boost::scoped_ptr<Context> context(new Context);
+	std::unique_ptr<Context> context(new Context);
 	context->uuid = uuid;
 	context->id = id;
 	context->avail_n = 1;

@@ -9,8 +9,6 @@
 #include <memory>
 #include <string>
 
-#include <boost/scoped_ptr.hpp>
-
 #include <libxml/parser.h>
 #include <libxml/xpath.h>
 #include <libxml/xpathInternals.h>
@@ -102,6 +100,6 @@ bool DumpImport(sqlite3 *db, const char *uuid)
 	}
 	std::unique_ptr<char[]> dump_file(new char[64]);
 	sprintf(dump_file.get(), "%s.xml", uuid);
-	boost::scoped_ptr<Parser> parser(new Parser(uuid, doc));
+	std::unique_ptr<Parser> parser(new Parser(uuid, doc));
 	return parser->Dump(dump_file.get());
 }

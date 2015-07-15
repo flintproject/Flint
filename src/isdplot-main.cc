@@ -22,7 +22,6 @@
 #endif
 
 #include <boost/program_options.hpp>
-#include <boost/scoped_ptr.hpp>
 #include "isdf/isdf.h"
 #include "sys/temporary_path.h"
 
@@ -37,7 +36,6 @@ using std::istream;
 using std::ios;
 using std::ostringstream;
 using std::string;
-using boost::scoped_ptr;
 
 namespace {
 
@@ -341,7 +339,7 @@ int main(int argc, char *argv[])
 
 	std::atexit(Cleanup);
 
-	scoped_ptr<TemporaryPath> temp_path(new TemporaryPath("isdplot"));
+	std::unique_ptr<TemporaryPath> temp_path(new TemporaryPath("isdplot"));
 	const char *input_path = input_file.c_str();
 
 	if (vm.count("isdstrip")) {

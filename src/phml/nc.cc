@@ -10,9 +10,9 @@
 #include <cstring>
 #include <fstream>
 #include <iostream>
+#include <memory>
 
 #include <boost/noncopyable.hpp>
-#include <boost/scoped_ptr.hpp>
 
 #include "db/statement-driver.hh"
 #include "phml.pb.h"
@@ -141,9 +141,9 @@ public:
 
 bool Nc(sqlite3 *db, const char *output)
 {
-	boost::scoped_ptr<phml::NumericalConfiguration> nc(new phml::NumericalConfiguration);
+	std::unique_ptr<phml::NumericalConfiguration> nc(new phml::NumericalConfiguration);
 	{
-		boost::scoped_ptr<Driver> driver(new Driver(db, nc.get()));
+		std::unique_ptr<Driver> driver(new Driver(db, nc.get()));
 		if (!driver->Drive())
 			return false;
 	}

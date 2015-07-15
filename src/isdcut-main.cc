@@ -11,7 +11,6 @@
 #include <set>
 #include <boost/noncopyable.hpp>
 #include <boost/program_options.hpp>
-#include <boost/scoped_ptr.hpp>
 
 #include "bc/binary.h"
 
@@ -114,7 +113,7 @@ public:
 		os->write(h.get(), sizeof(header));
 		os->write(descriptions.get(), num_bytes_descs);
 		os->write(units.get(), num_bytes_units);
-		boost::scoped_ptr<Handler> handler(new Handler(fields_, os));
+		std::unique_ptr<Handler> handler(new Handler(fields_, os));
 		return reader_.ReadSteps(*handler, is);
 	}
 
@@ -156,7 +155,7 @@ int main(int argc, char *argv[])
 		return (print_help == 1) ? EXIT_SUCCESS : EXIT_FAILURE;
 	}
 
-	boost::scoped_ptr<Dam> dam(new Dam);
+	std::unique_ptr<Dam> dam(new Dam);
 	if (vm.count("fields") > 0) {
 		size_t s = fields.size();
 		std::unique_ptr<char[]> fa(new char[s+1]());

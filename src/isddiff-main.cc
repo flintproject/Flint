@@ -15,7 +15,6 @@
 #include <string>
 
 #include <boost/program_options.hpp>
-#include <boost/scoped_ptr.hpp>
 
 #include "isdf/reader.h"
 
@@ -235,14 +234,14 @@ int main(int argc, char *argv[])
 		return kExitFailure;
 	}
 
-	boost::scoped_ptr<isdf::Reader> reader0(new isdf::Reader);
+	std::unique_ptr<isdf::Reader> reader0(new isdf::Reader);
 	if (!reader0->ReadHeader(&ifs0)) {
 		ifs0.close();
 		ifs1.close();
 		return kExitFailure;
 	}
 
-	boost::scoped_ptr<isdf::Reader> reader1(new isdf::Reader);
+	std::unique_ptr<isdf::Reader> reader1(new isdf::Reader);
 	if (!reader1->ReadHeader(&ifs1)) {
 		ifs0.close();
 		ifs1.close();

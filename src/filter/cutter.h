@@ -4,8 +4,8 @@
 
 #include <cstdio>
 #include <map>
+#include <memory>
 #include <boost/noncopyable.hpp>
-#include <boost/scoped_ptr.hpp>
 
 #include "lo.pb.h"
 
@@ -19,7 +19,7 @@ public:
 	Cutter() : size_(), columns_() {}
 
 	bool Load(const char *filter_file, size_t layer_size) {
-		boost::scoped_ptr<FilterLoader> loader(new FilterLoader(filter_file));
+		std::unique_ptr<FilterLoader> loader(new FilterLoader(filter_file));
 		if (!loader->Load(this)) return false;
 		if (size_ != layer_size) {
 			std::cerr << "filter's size differs from layer's: " << size_ << " vs " << layer_size << std::endl;

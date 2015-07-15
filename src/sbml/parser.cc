@@ -8,8 +8,6 @@
 #include <memory>
 #include <string>
 
-#include <boost/scoped_ptr.hpp>
-
 #include <sbmlsolver/odeModel.h>
 #include <sbmlsolver/solverError.h>
 
@@ -563,7 +561,7 @@ bool Parse(sqlite3 *db)
 		SolverError_dumpAndClearErrors();
 		return false;
 	}
-	boost::scoped_ptr<Analysis> analysis(new Analysis(db, model));
+	std::unique_ptr<Analysis> analysis(new Analysis(db, model));
 	return analysis->Run();
 }
 

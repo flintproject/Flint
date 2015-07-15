@@ -22,7 +22,6 @@
 #include <boost/filesystem/fstream.hpp>
 #include <boost/noncopyable.hpp>
 #include <boost/ptr_container/ptr_unordered_map.hpp>
-#include <boost/scoped_ptr.hpp>
 #include <boost/uuid/uuid.hpp>
 #include <boost/uuid/uuid_io.hpp>
 
@@ -265,22 +264,22 @@ private:
 
 bool Tsc(sqlite3 *db)
 {
-	boost::scoped_ptr<PqMap> pqm(new PqMap);
+	std::unique_ptr<PqMap> pqm(new PqMap);
 	{
-		boost::scoped_ptr<db::NameLoader> loader(new db::NameLoader(db));
-		boost::scoped_ptr<PqHandler> handler(new PqHandler(pqm.get()));
+		std::unique_ptr<db::NameLoader> loader(new db::NameLoader(db));
+		std::unique_ptr<PqHandler> handler(new PqHandler(pqm.get()));
 		if (!loader->Load(handler.get())) return false;
 	}
-	boost::scoped_ptr<PathSet> ps(new PathSet);
-	boost::scoped_ptr<TimeseriesMap> tm(new TimeseriesMap);
+	std::unique_ptr<PathSet> ps(new PathSet);
+	std::unique_ptr<TimeseriesMap> tm(new TimeseriesMap);
 	{
-		boost::scoped_ptr<db::TimeseriesLoader> loader(new db::TimeseriesLoader(db));
-		boost::scoped_ptr<TimeseriesHandler> handler(new TimeseriesHandler(ps.get(), tm.get()));
+		std::unique_ptr<db::TimeseriesLoader> loader(new db::TimeseriesLoader(db));
+		std::unique_ptr<TimeseriesHandler> handler(new TimeseriesHandler(ps.get(), tm.get()));
 		if (!loader->Load(handler.get())) return false;
 	}
 	if (!BeginTransaction(db))
 		return false;
-	boost::scoped_ptr<IsdfMap> im(new IsdfMap);
+	std::unique_ptr<IsdfMap> im(new IsdfMap);
 	{
 		TsfilesInserter ti(db);
 		for (PathSet::const_iterator it=ps->begin();it!=ps->end();++it) {
@@ -295,8 +294,8 @@ bool Tsc(sqlite3 *db)
 		}
 	}
 	{
-		boost::scoped_ptr<db::TsrefLoader> loader(new db::TsrefLoader(db));
-		boost::scoped_ptr<TsrefHandler> handler(new TsrefHandler(db, pqm.get(), ps.get(), tm.get(), im.get()));
+		std::unique_ptr<db::TsrefLoader> loader(new db::TsrefLoader(db));
+		std::unique_ptr<TsrefHandler> handler(new TsrefHandler(db, pqm.get(), ps.get(), tm.get(), im.get()));
 		if (!loader->Load(handler.get())) {
 			return false;
 		}

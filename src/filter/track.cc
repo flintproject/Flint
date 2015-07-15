@@ -14,7 +14,6 @@
 #include <string>
 
 #include <boost/noncopyable.hpp>
-#include <boost/scoped_ptr.hpp>
 #include <boost/uuid/uuid_io.hpp>
 
 #include "lo.pb.h"
@@ -62,12 +61,12 @@ private:
 
 bool Track(const char *filter_file, const char *output_file)
 {
-	boost::scoped_ptr<ipc::SimulationTrack> st(new ipc::SimulationTrack);
+	std::unique_ptr<ipc::SimulationTrack> st(new ipc::SimulationTrack);
 
 	// load filter
-	boost::scoped_ptr<Filter> filter(new Filter(st.get()));
+	std::unique_ptr<Filter> filter(new Filter(st.get()));
 	{
-		boost::scoped_ptr<FilterLoader> loader(new FilterLoader(filter_file));
+		std::unique_ptr<FilterLoader> loader(new FilterLoader(filter_file));
 		if (!loader->Load(filter.get())) return false;
 	}
 	std::ofstream ofs(output_file, std::ios::binary);

@@ -14,7 +14,6 @@
 
 #include <boost/noncopyable.hpp>
 #include <boost/random.hpp>
-#include <boost/scoped_ptr.hpp>
 #include <boost/uuid/uuid_io.hpp>
 
 #include "bc.pb.h"
@@ -163,17 +162,17 @@ bool IsAllGreen(size_t *color, size_t size)
 bool Init(sqlite3 *db, const char *layout_file, const char *bc_file, const char *output_file)
 {
 	// load layout at first
-	boost::scoped_ptr<Layout> layout(new Layout);
+	std::unique_ptr<Layout> layout(new Layout);
 	{
-		boost::scoped_ptr<LayoutLoader> loader(new LayoutLoader(layout_file));
+		std::unique_ptr<LayoutLoader> loader(new LayoutLoader(layout_file));
 		if (!loader->Load(layout.get())) return false;
 	}
-	boost::scoped_ptr<DataOffsetMap> dom(new DataOffsetMap);
-	boost::scoped_ptr<SectorOffsetMap> som(new SectorOffsetMap);
+	std::unique_ptr<DataOffsetMap> dom(new DataOffsetMap);
+	std::unique_ptr<SectorOffsetMap> som(new SectorOffsetMap);
 	size_t layer_size = layout->Calculate(dom.get(), som.get());
 
-	boost::scoped_ptr<Executor> executor(new Executor(layer_size));
-	boost::scoped_ptr<Processor> processor(new Processor(layout.get(), layer_size));
+	std::unique_ptr<Executor> executor(new Executor(layer_size));
+	std::unique_ptr<Processor> processor(new Processor(layout.get(), layer_size));
 
 	// arrange data space
 	std::unique_ptr<double[]> data(new double[layer_size]()); // default-initialized
@@ -183,15 +182,15 @@ bool Init(sqlite3 *db, const char *layout_file, const char *bc_file, const char 
 	executor->set_target(target.get());
 
 	// arrange input timeseries data
-	boost::scoped_ptr<TimeseriesVector> tv;
+	std::unique_ptr<TimeseriesVector> tv;
 
-	boost::scoped_ptr<FlowInboundMap> inbound(new FlowInboundMap);
-	boost::scoped_ptr<FlowOutboundMap> outbound(new FlowOutboundMap);
+	std::unique_ptr<FlowInboundMap> inbound(new FlowInboundMap);
+	std::unique_ptr<FlowOutboundMap> outbound(new FlowOutboundMap);
 
 	// read targets from database, if any
 	{
 		db::SprinkleLoader loader(db);
-		boost::scoped_ptr<TargetHandler> handler(new TargetHandler(dom.get(), som.get(), data.get(), target.get()));
+		std::unique_ptr<TargetHandler> handler(new TargetHandler(dom.get(), som.get(), data.get(), target.get()));
 		if (!loader.Load(handler.get())) {
 			return false;
 		}
@@ -208,7 +207,7 @@ bool Init(sqlite3 *db, const char *layout_file, const char *bc_file, const char 
 	// load bc next
 	int nol = 0;
 	{
-		boost::scoped_ptr<BcLoader> loader(new BcLoader(bc_file));
+		std::unique_ptr<BcLoader> loader(new BcLoader(bc_file));
 		if (!loader->Load(&nol, processor.get())) return false;
 	}
 	if (nol != 1) { // nol should be always 1
@@ -241,7 +240,7 @@ bool Init(sqlite3 *db, const char *layout_file, const char *bc_file, const char 
 	// FIXME: specify the seed given by user
 	int seed = static_cast<int>(time(NULL));
 	data[kIndexSeed] = seed;
-	boost::scoped_ptr<boost::mt19937> rng(new boost::mt19937(seed));
+	std::unique_ptr<boost::mt19937> rng(new boost::mt19937(seed));
 	processor->set_rng(rng.get());
 
 	if (!processor->Process(executor.get())) return false;

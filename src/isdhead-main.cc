@@ -7,10 +7,10 @@
 #include <cstring>
 #include <iostream>
 #include <fstream>
+#include <memory>
 #include <string>
 #include <boost/noncopyable.hpp>
 #include <boost/program_options.hpp>
-#include <boost/scoped_ptr.hpp>
 
 #include "bc/binary.h"
 
@@ -22,7 +22,6 @@ namespace po = boost::program_options;
 using std::cerr;
 using std::endl;
 using std::string;
-using boost::scoped_ptr;
 
 namespace {
 
@@ -140,7 +139,7 @@ int main(int argc, char *argv[])
 		return (print_help == 1) ? EXIT_SUCCESS : EXIT_FAILURE;
 	}
 
-	boost::scoped_ptr<Dam> dam;
+	std::unique_ptr<Dam> dam;
 	if (vm.count("rows") > 0) {
 		if (vm.count("eot") > 0) {
 			cerr << "please specify one and only one of the following options: --rows(-n) / --eot(-t)" << endl;

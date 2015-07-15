@@ -14,7 +14,6 @@
 #include <vector>
 
 #include <boost/noncopyable.hpp>
-#include <boost/scoped_ptr.hpp>
 
 #include "isdf/reader.h"
 
@@ -153,7 +152,7 @@ public:
 		if (!reader->ReadComment(is)) return false;
 		fwrite(reader->comment(), reader->num_bytes_comment(), 1, fp_);
 
-		boost::scoped_ptr<ColumnHandler> handler(new ColumnHandler(skip, fp_));
+		std::unique_ptr<ColumnHandler> handler(new ColumnHandler(skip, fp_));
 		if ( !reader->ReadDescriptions(*handler, is) ||
 			 !reader->ReadUnits(*handler, is) ) return false;
 		handler->WriteDescriptionsAndUnits();
@@ -202,7 +201,7 @@ int main(int argc, char *argv[])
 		cerr << "failed to open file: " << argv[1] << endl;
 		return EXIT_FAILURE;
 	}
-	boost::scoped_ptr<isdf::Reader> reader(new isdf::Reader);
+	std::unique_ptr<isdf::Reader> reader(new isdf::Reader);
 	if (!reader->ReadHeader(&ifs)) return EXIT_FAILURE;
 
 	if (reader->num_objs() <= skip) {

@@ -13,7 +13,6 @@
 
 #include <boost/noncopyable.hpp>
 #include <boost/ptr_container/ptr_map.hpp>
-#include <boost/scoped_ptr.hpp>
 #include <boost/uuid/uuid_io.hpp>
 
 #include "db/journal-loader.h"
@@ -114,26 +113,26 @@ private:
 bool Sprinkle(sqlite3 *db)
 {
 	// load target
-	boost::scoped_ptr<TargetMap> tm(new TargetMap);
+	std::unique_ptr<TargetMap> tm(new TargetMap);
 	{
-		boost::scoped_ptr<db::TargetLoader> loader(new db::TargetLoader(db));
-		boost::scoped_ptr<TargetHandler> handler(new TargetHandler(tm.get()));
+		std::unique_ptr<db::TargetLoader> loader(new db::TargetLoader(db));
+		std::unique_ptr<TargetHandler> handler(new TargetHandler(tm.get()));
 		if (!loader->Load(handler.get())) {
 			return false;
 		}
 	}
 
 	// load journal
-	boost::scoped_ptr<JournalMap> jm(new JournalMap);
+	std::unique_ptr<JournalMap> jm(new JournalMap);
 	{
-		boost::scoped_ptr<db::JournalLoader> loader(new db::JournalLoader(db));
-		boost::scoped_ptr<JournalHandler> handler(new JournalHandler(jm.get()));
+		std::unique_ptr<db::JournalLoader> loader(new db::JournalLoader(db));
+		std::unique_ptr<JournalHandler> handler(new JournalHandler(jm.get()));
 		if (!loader->Load(handler.get())) {
 			return false;
 		}
 	}
 
-	boost::scoped_ptr<db::SprinkleDriver> driver(new db::SprinkleDriver(db));
+	std::unique_ptr<db::SprinkleDriver> driver(new db::SprinkleDriver(db));
 	for (TargetMap::const_iterator it=tm->begin();it!=tm->end();++it) {
 		JournalMap::const_iterator jmit = jm->find(it->first);
 		if (jmit == jm->end()) {

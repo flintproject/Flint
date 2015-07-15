@@ -4,12 +4,12 @@
 #include <cstdio>
 #include <cstdlib>
 #include <iostream>
+#include <memory>
 
 #define BOOST_DATE_TIME_NO_LIB
 #include <boost/interprocess/file_mapping.hpp>
 #include <boost/interprocess/mapped_region.hpp>
 #include <boost/noncopyable.hpp>
-#include <boost/scoped_ptr.hpp>
 #include <boost/uuid/uuid_io.hpp>
 
 using std::cerr;
@@ -60,7 +60,7 @@ UuidGenerator::UuidGenerator(const boost::filesystem::path &path)
 {
 	std::string path_s = path.string();
 	boost::uint32_t value;
-	boost::scoped_ptr<Adler32Loader> loader(new Adler32Loader(path_s.c_str()));
+	std::unique_ptr<Adler32Loader> loader(new Adler32Loader(path_s.c_str()));
 	if (!loader->Load(&value)) exit(EXIT_FAILURE);
 	ran_.seed(value);
 }

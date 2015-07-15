@@ -4,8 +4,8 @@
 
 #include <cassert>
 #include <cctype>
+#include <memory>
 #include <boost/noncopyable.hpp>
-#include <boost/scoped_ptr.hpp>
 #include <libxml/xmlreader.h>
 
 #include "mathml/math_dumper.h"
@@ -192,7 +192,7 @@ private:
 			cerr << "missing node-id of <node>" << endl;
 			return -2;
 		}
-		boost::scoped_ptr<Node> node(new Node(node_id));
+		std::unique_ptr<Node> node(new Node(node_id));
 		i = xmlTextReaderRead(text_reader_);
 		while (i > 0) {
 			int type = xmlTextReaderNodeType(text_reader_);
@@ -295,7 +295,7 @@ private:
 			cerr << "missing arc-id of <arc>" << endl;
 			return -2;
 		}
-		boost::scoped_ptr<Arc> arc(new Arc(arc_id));
+		std::unique_ptr<Arc> arc(new Arc(arc_id));
 		i = xmlTextReaderRead(text_reader_);
 		while (i > 0) {
 			int type = xmlTextReaderNodeType(text_reader_);

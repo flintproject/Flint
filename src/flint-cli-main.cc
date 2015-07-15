@@ -10,7 +10,6 @@
 #include <memory>
 
 #include <boost/program_options.hpp>
-#include <boost/scoped_ptr.hpp>
 
 #include "bc/binary.h"
 
@@ -57,7 +56,7 @@ int main(int argc, char *argv[])
 
 	RequestBinaryStdio();
 
-	boost::scoped_ptr<cli::RunOption> option(new cli::RunOption);
+	std::unique_ptr<cli::RunOption> option(new cli::RunOption);
 	option->set_model_filename(model_file);
 	option->set_output_filename(output_file);
 

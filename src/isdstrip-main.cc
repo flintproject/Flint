@@ -14,7 +14,6 @@
 #include <sstream>
 #include <vector>
 #include <boost/program_options.hpp>
-#include <boost/scoped_ptr.hpp>
 #include "isdf/isdf.h"
 #include "isdf/reader.h"
 #include "sys/temporary_path.h"
@@ -30,7 +29,6 @@ using std::ofstream;
 using std::ostream;
 using std::string;
 using std::vector;
-using boost::scoped_ptr;
 
 namespace {
 
@@ -274,7 +272,7 @@ int main(int argc, char *argv[])
 		return (print_help == 1) ? EXIT_SUCCESS : EXIT_FAILURE;
 	}
 
-	scoped_ptr<vector<boost::uint32_t> > cv(new vector<boost::uint32_t>);
+	std::unique_ptr<vector<boost::uint32_t> > cv(new vector<boost::uint32_t>);
 	boost::uint32_t num_columns = 0;
 		const char *input_path = input_file.c_str();
 		if (!ExtractConstantColumns(input_path, &num_columns, cv.get())) {
@@ -293,7 +291,7 @@ int main(int argc, char *argv[])
 		} else {
 			char *output_path = NULL;
 			{
-				scoped_ptr<TemporaryPath> temp_path(new TemporaryPath("isdstrip"));
+				std::unique_ptr<TemporaryPath> temp_path(new TemporaryPath("isdstrip"));
 				output_path = temp_path->Touch();
 				if (!output_path) {
 					cerr << "could not create temporary path" << endl;

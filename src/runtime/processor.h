@@ -15,7 +15,6 @@
 #include <boost/noncopyable.hpp>
 #include <boost/ptr_container/ptr_vector.hpp>
 #include <boost/random.hpp>
-#include <boost/scoped_ptr.hpp>
 #include <boost/uuid/uuid.hpp>
 #include <boost/uuid/uuid_io.hpp>
 
@@ -478,12 +477,12 @@ public:
 						   const FlowInboundMap *inbound,
 						   const FlowOutboundMap *outbound,
 						   bool constantAvailable) {
-		boost::scoped_ptr<ExecutionDependencyVector> edv(new ExecutionDependencyVector);
+		std::unique_ptr<ExecutionDependencyVector> edv(new ExecutionDependencyVector);
 		CollectExecutionDependencies(edv.get());
 
 		AnnotateFlow(outbound, edv.get());
 
-		boost::scoped_ptr<FlowDependencyVector> fdv(new FlowDependencyVector);
+		std::unique_ptr<FlowDependencyVector> fdv(new FlowDependencyVector);
 		CollectFlowDependencies(nol, inbound, fdv.get());
 
 		std::unique_ptr<char[]> ready_addresses(new char[nol * layer_size_]());
@@ -891,9 +890,9 @@ private:
 	const Layout *layout_;
 	size_t layer_size_;
 
-	boost::scoped_ptr<ShVector> shv_;
-	boost::scoped_ptr<BhVector> bhv_;
-	boost::scoped_ptr<CVector> cv_;
+	std::unique_ptr<ShVector> shv_;
+	std::unique_ptr<BhVector> bhv_;
+	std::unique_ptr<CVector> cv_;
 
 	boost::ptr_vector<ExecutionUnit> euv_;
 

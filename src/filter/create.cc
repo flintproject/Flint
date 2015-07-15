@@ -19,7 +19,6 @@
 #include <boost/noncopyable.hpp>
 #include <boost/ptr_container/ptr_unordered_map.hpp>
 #include <boost/ptr_container/ptr_vector.hpp>
-#include <boost/scoped_ptr.hpp>
 #include <boost/uuid/uuid_io.hpp>
 
 #include "lo.pb.h"
@@ -165,23 +164,23 @@ bool Create(sqlite3 *db, const char *spec_file, const char *layout_file, const c
 		if (!loader.Load(&time_unit)) return false;
 	}
 
-	boost::scoped_ptr<Spec> spec(new Spec);
+	std::unique_ptr<Spec> spec(new Spec);
 	// load spec
 	{
-		boost::scoped_ptr<SpecLoader> loader(new SpecLoader(spec_file));
+		std::unique_ptr<SpecLoader> loader(new SpecLoader(spec_file));
 		if (!loader->Load(spec.get())) return false;
 	}
 
 	// load layout
-	boost::scoped_ptr<Layout> layout(new Layout);
+	std::unique_ptr<Layout> layout(new Layout);
 	{
-		boost::scoped_ptr<LayoutLoader> loader(new LayoutLoader(layout_file));
+		std::unique_ptr<LayoutLoader> loader(new LayoutLoader(layout_file));
 		if (!loader->Load(layout.get())) return false;
 	}
 
-	boost::scoped_ptr<boost::ptr_vector<lo::Column> > columns(new boost::ptr_vector<lo::Column>);
+	std::unique_ptr<boost::ptr_vector<lo::Column> > columns(new boost::ptr_vector<lo::Column>);
 	int size = layout->Fill(time_unit, spec.get(), columns.get());
-	boost::scoped_ptr<lo::Header> header(new lo::Header);
+	std::unique_ptr<lo::Header> header(new lo::Header);
 	header->set_size(size);
 
 	std::ofstream ofs(output_file, std::ios::out|std::ios::binary);

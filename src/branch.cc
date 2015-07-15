@@ -5,13 +5,13 @@
 #include <cstdlib>
 #include <ctime>
 #include <iostream>
+#include <memory>
 #include <string>
 
 #include <boost/cstdint.hpp>
 #include <boost/noncopyable.hpp>
 #include <boost/ptr_container/ptr_map.hpp>
 #include <boost/ptr_container/ptr_vector.hpp>
-#include <boost/scoped_ptr.hpp>
 
 #include "db/statement-driver.hh"
 #include "uuidgen.h"
@@ -168,13 +168,13 @@ bool Branch(const boost::filesystem::path &path, sqlite3 *db)
 	// load instances at first
 	InstanceMap instance_map;
 	{
-		boost::scoped_ptr<InstanceLoader> loader(new InstanceLoader(db));
+		std::unique_ptr<InstanceLoader> loader(new InstanceLoader(db));
 		if (!loader->Load(&instance_map)) return false;
 	}
 
-	boost::scoped_ptr<UuidGenerator> gen(new UuidGenerator(path));
+	std::unique_ptr<UuidGenerator> gen(new UuidGenerator(path));
 
-	boost::scoped_ptr<JournalDriver> jd(new JournalDriver(db));
+	std::unique_ptr<JournalDriver> jd(new JournalDriver(db));
 
 	sqlite3_stmt *stmt;
 	int e = sqlite3_prepare_v2(db, "SELECT t.module_id, t.level, m.template_state FROM trees AS t LEFT JOIN modules AS m ON t.module_id = m.module_id",
@@ -254,7 +254,7 @@ bool Branch(const boost::filesystem::path &path, sqlite3 *db)
 		return false;
 	}
 
-	boost::scoped_ptr<NodeDriver> nd(new NodeDriver(db));
+	std::unique_ptr<NodeDriver> nd(new NodeDriver(db));
 	for (boost::ptr_vector<Node>::const_iterator it=result.begin();it!=result.end();++it) {
 		if (!nd->Save(*it)) return false;
 	}

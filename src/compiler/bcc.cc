@@ -14,7 +14,6 @@
 
 #include <boost/fusion/include/adapt_struct.hpp>
 #include <boost/math/constants/constants.hpp>
-#include <boost/scoped_ptr.hpp>
 #include <boost/spirit/include/lex_lexertl.hpp>
 #include <boost/spirit/include/phoenix.hpp>
 #include <boost/spirit/include/qi.hpp>
@@ -708,7 +707,7 @@ bool Bcc(sqlite3 *db, std::ostream *os)
 		}
 	}
 
-	boost::scoped_ptr<NobVector> nv(new NobVector);
+	std::unique_ptr<NobVector> nv(new NobVector);
 	for (BlockVector::const_iterator it=bv.begin();it!=bv.end();++it) {
 		if (nv->empty()) {
 			nv->push_back(make_pair(it->uuid, 1));
@@ -719,7 +718,7 @@ bool Bcc(sqlite3 *db, std::ostream *os)
 		}
 	}
 	// write header
-	boost::scoped_ptr<bc::Header> header(new bc::Header);
+	std::unique_ptr<bc::Header> header(new bc::Header);
 	{
 		char *em;
 		int e;
@@ -738,7 +737,7 @@ bool Bcc(sqlite3 *db, std::ostream *os)
 	// write section headers
 	boost::uuids::string_generator gen;
 	std::unique_ptr<char[]> bu(new char[16]); // 16 is UUID's size
-	boost::scoped_ptr<bc::SectionHeader> sh(new bc::SectionHeader);
+	std::unique_ptr<bc::SectionHeader> sh(new bc::SectionHeader);
 	for (NobVector::const_iterator nit=nv->begin();nit!=nv->end();++nit) {
 		boost::uuids::uuid u = gen(nit->first);
 		std::copy(u.begin(), u.end(), bu.get());
@@ -749,7 +748,7 @@ bool Bcc(sqlite3 *db, std::ostream *os)
 		}
 	}
 	// write block headers
-	boost::scoped_ptr<bc::BlockHeader> bh(new bc::BlockHeader);
+	std::unique_ptr<bc::BlockHeader> bh(new bc::BlockHeader);
 	for (BlockVector::const_iterator it=bv.begin();it!=bv.end();++it) {
 		bh->set_name(it->name);
 		bh->set_nod(it->nod);

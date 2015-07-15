@@ -7,6 +7,7 @@
 #include <cstdio>
 #include <cstring>
 #include <fstream>
+#include <memory>
 #include <set>
 
 #define BOOST_FILESYSTEM_NO_DEPRECATED
@@ -17,7 +18,6 @@
 #include <boost/interprocess/mapped_region.hpp>
 #include <boost/noncopyable.hpp>
 #include <boost/ptr_container/ptr_vector.hpp>
-#include <boost/scoped_ptr.hpp>
 
 #include "isdf/reader.h"
 
@@ -38,7 +38,7 @@ public:
 					  << std::endl;
 			return false;
 		}
-		boost::scoped_ptr<isdf::Reader> reader(new isdf::Reader);
+		std::unique_ptr<isdf::Reader> reader(new isdf::Reader);
 		if (!reader->ReadHeader(&ifs)) return false;
 		offset_ = reader->GetDataOffset();
 		step_size_ = reader->num_objs()*sizeof(double);

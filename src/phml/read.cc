@@ -17,7 +17,6 @@
 #define BOOST_FILESYSTEM_NO_DEPRECATED
 #include <boost/filesystem.hpp>
 #include <boost/noncopyable.hpp>
-#include <boost/scoped_ptr.hpp>
 
 #include <libxml/xmlreader.h>
 
@@ -1981,7 +1980,7 @@ private:
 	}
 
 	int ReadNumericalConfiguration() {
-		boost::scoped_ptr<NumericalConfiguration> nc(new NumericalConfiguration);
+		std::unique_ptr<NumericalConfiguration> nc(new NumericalConfiguration);
 		int i = xmlTextReaderRead(text_reader_);
 		while (i > 0) {
 			int type = xmlTextReaderNodeType(text_reader_);
@@ -2020,7 +2019,7 @@ private:
 			// no children, so we can ignore this <time-discretization>
 			return xmlTextReaderRead(text_reader_);
 		}
-		boost::scoped_ptr<TimeDiscretization> td(new TimeDiscretization);
+		std::unique_ptr<TimeDiscretization> td(new TimeDiscretization);
 		int i;
 		while ( (i = xmlTextReaderMoveToNextAttribute(text_reader_)) > 0) {
 			if (xmlTextReaderIsNamespaceDecl(text_reader_)) continue;
@@ -2235,7 +2234,7 @@ private:
 			cerr << "invalid unit-id " << unit_id << endl;
 			return -2;
 		}
-		boost::scoped_ptr<Unit> unit(new Unit(unit_id));
+		std::unique_ptr<Unit> unit(new Unit(unit_id));
 		i = xmlTextReaderRead(text_reader_);
 		while (i > 0) {
 			int type = xmlTextReaderNodeType(text_reader_);
@@ -2293,7 +2292,7 @@ private:
 			return -2;
 		}
 
-		boost::scoped_ptr<Element> element(new Element);
+		std::unique_ptr<Element> element(new Element);
 		int i;
 		while ( (i = xmlTextReaderMoveToNextAttribute(text_reader_)) > 0) {
 			if (xmlTextReaderIsNamespaceDecl(text_reader_)) continue;
@@ -2571,7 +2570,7 @@ private:
 	}
 
 	int ReadPort() {
-		boost::scoped_ptr<Port> port(new Port);
+		std::unique_ptr<Port> port(new Port);
 		int i;
 		while ( (i = xmlTextReaderMoveToNextAttribute(text_reader_)) > 0) {
 			if (xmlTextReaderIsNamespaceDecl(text_reader_)) continue;
@@ -2885,7 +2884,7 @@ private:
 	}
 
 	int ReadDefinitionOfImplementation() {
-		boost::scoped_ptr<Definition> definition(new Definition);
+		std::unique_ptr<Definition> definition(new Definition);
 		int i;
 		while ( (i = xmlTextReaderMoveToNextAttribute(text_reader_)) > 0) {
 			if (xmlTextReaderIsNamespaceDecl(text_reader_)) continue;
@@ -3161,7 +3160,7 @@ private:
 	}
 
 	int ReadImport() const {
-		boost::scoped_ptr<Import> import(new Import);
+		std::unique_ptr<Import> import(new Import);
 		int i;
 		while ( (i = xmlTextReaderMoveToNextAttribute(text_reader_)) > 0) {
 			if (xmlTextReaderIsNamespaceDecl(text_reader_)) continue;
@@ -3210,7 +3209,7 @@ private:
 	}
 
 	int ReadTimeseries() {
-		boost::scoped_ptr<Timeseries> ts(new Timeseries);
+		std::unique_ptr<Timeseries> ts(new Timeseries);
 		int i;
 		while ( (i = xmlTextReaderMoveToNextAttribute(text_reader_)) > 0) {
 			if (xmlTextReaderIsNamespaceDecl(text_reader_)) continue;
@@ -3286,7 +3285,7 @@ private:
 
 	int ReadTemplate() {
 		int i;
-		boost::scoped_ptr<Template> t(new Template);
+		std::unique_ptr<Template> t(new Template);
 		while ( (i = xmlTextReaderMoveToNextAttribute(text_reader_)) > 0) {
 			if (xmlTextReaderIsNamespaceDecl(text_reader_)) continue;
 
@@ -3408,7 +3407,7 @@ private:
 			cerr << "missing module-id of <target-module>: " << instance_->module_id() << endl;
 			return i;
 		}
-		boost::scoped_ptr<TargetModule> tm(new TargetModule(module_id));
+		std::unique_ptr<TargetModule> tm(new TargetModule(module_id));
 		if (!dd_->SaveTargetModule(instance_.get(), tm.get())) return -2;
 		i = xmlTextReaderRead(text_reader_);
 		while (i > 0) {
@@ -3453,8 +3452,8 @@ private:
 			cerr << "missing physical-quantity-id of <target-physical-quantity>: " << tm->module_id() << endl;
 			return -2;
 		}
-		boost::scoped_ptr<TargetPq> tpq(new TargetPq(pq_id));
-		boost::scoped_ptr<phml::DefinitionDumper<TargetPq> > tpq_dumper(new phml::DefinitionDumper<TargetPq>(text_reader_, tpq.get()));
+		std::unique_ptr<TargetPq> tpq(new TargetPq(pq_id));
+		std::unique_ptr<phml::DefinitionDumper<TargetPq> > tpq_dumper(new phml::DefinitionDumper<TargetPq>(text_reader_, tpq.get()));
 		i = xmlTextReaderRead(text_reader_);
 		while (i > 0) {
 			int type = xmlTextReaderNodeType(text_reader_);
@@ -3632,21 +3631,21 @@ private:
 	const boost::filesystem::path &given_path_;
 	const boost::filesystem::path &model_path_;
 	xmlTextReaderPtr &text_reader_;
-	boost::scoped_ptr<DatabaseDriver> dd_;
+	std::unique_ptr<DatabaseDriver> dd_;
 
-	boost::scoped_ptr<Module> module_;
-	boost::scoped_ptr<PQ> pq_;
-	boost::scoped_ptr<InitialValue> iv_;
-	boost::scoped_ptr<Implementation> impl_;
-	boost::scoped_ptr<Reference> ref_;
-	boost::scoped_ptr<ExtraImplementation> extra_;
-	boost::scoped_ptr<Edge> edge_;
-	boost::scoped_ptr<Bridge> bridge_;
-	boost::scoped_ptr<Instance> instance_;
+	std::unique_ptr<Module> module_;
+	std::unique_ptr<PQ> pq_;
+	std::unique_ptr<InitialValue> iv_;
+	std::unique_ptr<Implementation> impl_;
+	std::unique_ptr<Reference> ref_;
+	std::unique_ptr<ExtraImplementation> extra_;
+	std::unique_ptr<Edge> edge_;
+	std::unique_ptr<Bridge> bridge_;
+	std::unique_ptr<Instance> instance_;
 
-	boost::scoped_ptr<phml::DefinitionDumper<InitialValue> > iv_dumper_;
-	boost::scoped_ptr<phml::DefinitionDumper<Implementation> > impl_dumper_;
-	boost::scoped_ptr<phml::DefinitionDumper<ExtraImplementation> > extra_dumper_;
+	std::unique_ptr<phml::DefinitionDumper<InitialValue> > iv_dumper_;
+	std::unique_ptr<phml::DefinitionDumper<Implementation> > impl_dumper_;
+	std::unique_ptr<phml::DefinitionDumper<ExtraImplementation> > extra_dumper_;
 };
 
 struct Schema {
@@ -3788,17 +3787,17 @@ bool Read(sqlite3 *db)
 	}
 
 	{
-		boost::scoped_ptr<Reader> reader(new Reader(given_path, model_path, text_reader, db));
+		std::unique_ptr<Reader> reader(new Reader(given_path, model_path, text_reader, db));
 		if (reader->Read() < 0) return false;
 	}
 
 	{
-		boost::scoped_ptr<CapsulatedByValidator> validator(new CapsulatedByValidator(db));
+		std::unique_ptr<CapsulatedByValidator> validator(new CapsulatedByValidator(db));
 		if (!validator->Validate()) return false;
 	}
 
 	{
-		boost::scoped_ptr<phml::GraphIvRewriter> rewriter(new phml::GraphIvRewriter(db));
+		std::unique_ptr<phml::GraphIvRewriter> rewriter(new phml::GraphIvRewriter(db));
 		if (!rewriter->Rewrite()) return false;
 	}
 	{
@@ -3830,7 +3829,7 @@ bool Read(sqlite3 *db)
 	}
 
 	{
-		boost::scoped_ptr<TreeWriter> tw(new TreeWriter(db));
+		std::unique_ptr<TreeWriter> tw(new TreeWriter(db));
 		if (!tw->Write()) return false;
 	}
 

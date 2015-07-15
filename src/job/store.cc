@@ -16,7 +16,6 @@
 
 #include <boost/ptr_container/ptr_unordered_map.hpp>
 #include <boost/ptr_container/ptr_vector.hpp>
-#include <boost/scoped_ptr.hpp>
 #include <boost/uuid/string_generator.hpp>
 #include <boost/uuid/uuid_io.hpp>
 
@@ -250,7 +249,7 @@ bool Store(sqlite3 *db,
 {
 	SourceLayout source_layout;
 	{
-		boost::scoped_ptr<LayoutLoader> loader(new LayoutLoader(source_layout_file));
+		std::unique_ptr<LayoutLoader> loader(new LayoutLoader(source_layout_file));
 		if (!loader->Load(&source_layout)) return false;
 	}
 	TargetMap tm;
@@ -290,7 +289,7 @@ bool Store(sqlite3 *db,
 
 	TargetLayout target_layout;
 	{
-		boost::scoped_ptr<LayoutLoader> loader(new LayoutLoader(target_layout_file));
+		std::unique_ptr<LayoutLoader> loader(new LayoutLoader(target_layout_file));
 		if (!loader->Load(&target_layout)) return false;
 	}
 	fp = fopen(target_data_file, "r+b");

@@ -2,11 +2,9 @@
 #ifndef FLINT_FILTER_FILTER_LOADER_H_
 #define FLINT_FILTER_FILTER_LOADER_H_
 
+#include <fstream>
 #include <memory>
 #include <string>
-#include <fstream>
-
-#include <boost/scoped_ptr.hpp>
 
 #include "bc/pack.h"
 
@@ -28,7 +26,7 @@ public:
 			return false;
 		}
 
-		boost::scoped_ptr<lo::Header> header(new lo::Header);
+		std::unique_ptr<lo::Header> header(new lo::Header);
 		if (!UnpackFromIstream(*header, &ifs_)) {
 			cerr << "could not read Header" << endl;
 			return false;

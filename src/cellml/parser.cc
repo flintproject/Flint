@@ -13,7 +13,6 @@
 #include <memory>
 #include <sstream>
 
-#include <boost/scoped_ptr.hpp>
 #include <libxml/xmlreader.h>
 
 #include "db/query.h"
@@ -295,7 +294,7 @@ public:
 
 private:
 	int ReadUnits(const CellMLComponent *component) {
-		boost::scoped_ptr<CellMLUnits> units;
+		std::unique_ptr<CellMLUnits> units;
 		int i;
 		while ( (i = xmlTextReaderMoveToNextAttribute(text_reader_)) > 0) {
 			if (xmlTextReaderIsNamespaceDecl(text_reader_)) continue;
@@ -339,7 +338,7 @@ private:
 	}
 
 	int ReadUnit(const CellMLComponent *component, const CellMLUnits *units) {
-		boost::scoped_ptr<CellMLUnit> unit(new CellMLUnit);
+		std::unique_ptr<CellMLUnit> unit(new CellMLUnit);
 		int i;
 		while ( (i = xmlTextReaderMoveToNextAttribute(text_reader_)) > 0) {
 			if (xmlTextReaderIsNamespaceDecl(text_reader_)) continue;
@@ -413,7 +412,7 @@ private:
 	}
 
 	int ReadComponent() {
-		boost::scoped_ptr<CellMLComponent> component;
+		std::unique_ptr<CellMLComponent> component;
 		int i;
 		while ( (i = xmlTextReaderMoveToNextAttribute(text_reader_)) > 0) {
 			if (xmlTextReaderIsNamespaceDecl(text_reader_)) continue;
@@ -439,8 +438,8 @@ private:
 				if (type == XML_READER_TYPE_ELEMENT) {
 					const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
 					if (xmlStrEqual(local_name, BAD_CAST "math")) {
-						boost::scoped_ptr<FormulaHandler<TParser> > handler(new FormulaHandler<TParser>(parser_, component.get()));
-						boost::scoped_ptr<mathml::MathDumper> math_dumper(new mathml::MathDumper(text_reader_, handler->oss()));
+						std::unique_ptr<FormulaHandler<TParser> > handler(new FormulaHandler<TParser>(parser_, component.get()));
+						std::unique_ptr<mathml::MathDumper> math_dumper(new mathml::MathDumper(text_reader_, handler->oss()));
 						i = math_dumper->Read(handler.get());
 						if (i <= 0) return i;
 						continue;
@@ -485,7 +484,7 @@ private:
 	}
 
 	int ReadVariable(const CellMLComponent *component) {
-		boost::scoped_ptr<CellMLVariable> variable(new CellMLVariable);
+		std::unique_ptr<CellMLVariable> variable(new CellMLVariable);
 		int i;
 		while ( (i = xmlTextReaderMoveToNextAttribute(text_reader_)) > 0) {
 			if (xmlTextReaderIsNamespaceDecl(text_reader_)) continue;
@@ -561,7 +560,7 @@ private:
 	}
 
 	int ReadConnection() {
-		boost::scoped_ptr<CellMLConnection> connection;
+		std::unique_ptr<CellMLConnection> connection;
 		int i = xmlTextReaderRead(text_reader_);
 		while (i > 0) {
 			const xmlChar *uri = xmlTextReaderConstNamespaceUri(text_reader_);
@@ -656,7 +655,7 @@ private:
 	}
 
 	int ReadMapVariables(CellMLConnection *connection) {
-		boost::scoped_ptr<CellMLMapVariables> map_variables(new CellMLMapVariables);
+		std::unique_ptr<CellMLMapVariables> map_variables(new CellMLMapVariables);
 		int i;
 		while ( (i = xmlTextReaderMoveToNextAttribute(text_reader_)) > 0) {
 			if (xmlTextReaderIsNamespaceDecl(text_reader_)) continue;

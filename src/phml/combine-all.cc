@@ -15,7 +15,6 @@
 
 #define BOOST_FILESYSTEM_NO_DEPRECATED
 #include <boost/filesystem.hpp>
-#include <boost/scoped_ptr.hpp>
 
 #include "database.h"
 #include "db/driver.hh"

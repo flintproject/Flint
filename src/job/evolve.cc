@@ -17,7 +17,6 @@
 #include <boost/interprocess/mapped_region.hpp>
 #include <boost/noncopyable.hpp>
 #include <boost/random.hpp>
-#include <boost/scoped_ptr.hpp>
 
 #include "bc.pb.h"
 
@@ -261,9 +260,9 @@ bool Evolve(sqlite3 *db,
 	bool with_status = option.status_file != NULL;
 
 	// load layout at first
-	boost::scoped_ptr<Layout> layout(new Layout);
+	std::unique_ptr<Layout> layout(new Layout);
 	{
-		boost::scoped_ptr<LayoutLoader> loader(new LayoutLoader(layout_file));
+		std::unique_ptr<LayoutLoader> loader(new LayoutLoader(layout_file));
 		if (!loader->Load(layout.get())) return false;
 	}
 	size_t layer_size = layout->Calculate();
@@ -276,17 +275,17 @@ bool Evolve(sqlite3 *db,
 		writer.reset(cutter.CreateWriter());
 	}
 
-	boost::scoped_ptr<Executor> executor(new Executor(layer_size));
-	boost::scoped_ptr<Processor> processor(new Processor(layout.get(), layer_size));
-	boost::scoped_ptr<PExecutor> preexecutor(new PExecutor(layer_size));
-	boost::scoped_ptr<Processor> preprocessor(new Processor(layout.get(), layer_size));
-	boost::scoped_ptr<PExecutor> postexecutor(new PExecutor(layer_size));
-	boost::scoped_ptr<Processor> postprocessor(new Processor(layout.get(), layer_size));
+	std::unique_ptr<Executor> executor(new Executor(layer_size));
+	std::unique_ptr<Processor> processor(new Processor(layout.get(), layer_size));
+	std::unique_ptr<PExecutor> preexecutor(new PExecutor(layer_size));
+	std::unique_ptr<Processor> preprocessor(new Processor(layout.get(), layer_size));
+	std::unique_ptr<PExecutor> postexecutor(new PExecutor(layer_size));
+	std::unique_ptr<Processor> postprocessor(new Processor(layout.get(), layer_size));
 
 	// load bc next
 	int nol = 0;
 	{
-		boost::scoped_ptr<BcLoader> loader(new BcLoader(bc_file));
+		std::unique_ptr<BcLoader> loader(new BcLoader(bc_file));
 		if (!loader->Load(&nol, processor.get())) return false;
 	}
 	if (nol <= 0) {
@@ -295,12 +294,12 @@ bool Evolve(sqlite3 *db,
 	}
 	// load preprocess bytecode if specified
 	if (with_pre) {
-		boost::scoped_ptr<BcLoader> loader(new BcLoader(option.pre_file));
+		std::unique_ptr<BcLoader> loader(new BcLoader(option.pre_file));
 		if (!loader->Load(NULL, preprocessor.get())) return false;
 	}
 	// load postprocess bytecode if specified
 	if (with_post) {
-		boost::scoped_ptr<BcLoader> loader(new BcLoader(option.post_file));
+		std::unique_ptr<BcLoader> loader(new BcLoader(option.post_file));
 		if (!loader->Load(NULL, postprocessor.get())) return false;
 	}
 
@@ -320,10 +319,10 @@ bool Evolve(sqlite3 *db,
 	}
 
 	// arrange input timeseries data
-	boost::scoped_ptr<TimeseriesVector> tv;
+	std::unique_ptr<TimeseriesVector> tv;
 
-	boost::scoped_ptr<FlowInboundMap> inbound(new FlowInboundMap);
-	boost::scoped_ptr<FlowOutboundMap> outbound(new FlowOutboundMap);
+	std::unique_ptr<FlowInboundMap> inbound(new FlowInboundMap);
+	std::unique_ptr<FlowOutboundMap> outbound(new FlowOutboundMap);
 	{
 		tv.reset(new TimeseriesVector);
 		if (!ts::LoadTimeseriesVector(db, tv.get()))
@@ -421,13 +420,13 @@ bool Evolve(sqlite3 *db,
 	}
 
 	// initialize pseudo random number generator
-	boost::scoped_ptr<boost::mt19937> rng(new boost::mt19937(static_cast<int>(data[kIndexSeed])));
+	std::unique_ptr<boost::mt19937> rng(new boost::mt19937(static_cast<int>(data[kIndexSeed])));
 	processor->set_rng(rng.get());
 	if (with_pre) preprocessor->set_rng(rng.get());
 	if (with_post) postprocessor->set_rng(rng.get());
 
-	boost::scoped_ptr<boost::interprocess::file_mapping> control_fm;
-	boost::scoped_ptr<boost::interprocess::mapped_region> control_region;
+	std::unique_ptr<boost::interprocess::file_mapping> control_fm;
+	std::unique_ptr<boost::interprocess::mapped_region> control_region;
 	if (with_control) {
 		control_fm.reset(new boost::interprocess::file_mapping(option.control_file, boost::interprocess::read_only));
 		control_region.reset(new boost::interprocess::mapped_region(*control_fm, boost::interprocess::read_only));

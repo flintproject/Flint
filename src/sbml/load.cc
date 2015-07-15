@@ -11,11 +11,11 @@
 #include <cstring>
 #include <fstream>
 #include <iostream>
+#include <memory>
 #include <sstream>
 #include <string>
 
 #include <boost/ptr_container/ptr_vector.hpp>
-#include <boost/scoped_ptr.hpp>
 
 #include "db/name-inserter.h"
 #include "db/query.h"
@@ -283,18 +283,18 @@ bool Load(sqlite3 *db)
 	if (!BeginTransaction(db))
 		return false;
 
-	boost::scoped_ptr<OdeVector> ov(new OdeVector);
-	boost::scoped_ptr<AssignmentVector> av(new AssignmentVector);
-	boost::scoped_ptr<CompartmentVector> cv(new CompartmentVector);
+	std::unique_ptr<OdeVector> ov(new OdeVector);
+	std::unique_ptr<AssignmentVector> av(new AssignmentVector);
+	std::unique_ptr<CompartmentVector> cv(new CompartmentVector);
 	{
-		boost::scoped_ptr<Loader> loader(new Loader(db));
+		std::unique_ptr<Loader> loader(new Loader(db));
 		if (!loader->Load(ov.get(), av.get(), cv.get())) {
 			return false;
 		}
 	}
 
 	{
-		boost::scoped_ptr<NameWriter> writer(new NameWriter(db));
+		std::unique_ptr<NameWriter> writer(new NameWriter(db));
 		for (OdeVector::const_iterator it=ov->begin();it!=ov->end();++it) {
 			writer->Write(*it);
 		}
@@ -314,7 +314,7 @@ bool Load(sqlite3 *db)
 		return false;
 
 	{
-		boost::scoped_ptr<ValueWriter> writer(new ValueWriter(db));
+		std::unique_ptr<ValueWriter> writer(new ValueWriter(db));
 		for (OdeVector::const_iterator it=ov->begin();it!=ov->end();++it) {
 			if (!writer->Write(*it)) return false;
 		}
@@ -324,14 +324,14 @@ bool Load(sqlite3 *db)
 	}
 
 	{
-		boost::scoped_ptr<FunctionWriter> writer(new FunctionWriter(db));
+		std::unique_ptr<FunctionWriter> writer(new FunctionWriter(db));
 		for (AssignmentVector::const_iterator it=av->begin();it!=av->end();++it) {
 			if (!writer->Write(*it)) return false;
 		}
 	}
 
 	{
-		boost::scoped_ptr<OdeWriter> writer(new OdeWriter(db));
+		std::unique_ptr<OdeWriter> writer(new OdeWriter(db));
 		for (OdeVector::const_iterator it=ov->begin();it!=ov->end();++it) {
 			if (!writer->Write(*it)) return false;
 		}

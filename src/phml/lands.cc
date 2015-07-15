@@ -15,7 +15,6 @@
 #include <boost/noncopyable.hpp>
 #include <boost/ptr_container/ptr_unordered_map.hpp>
 #include <boost/rational.hpp>
-#include <boost/scoped_ptr.hpp>
 
 #include "db/statement-driver.hh"
 #include "ipc.pb.h"
@@ -128,14 +127,14 @@ bool LengthAndStep(sqlite3 *db, const char *nc_file, const char *uot_file)
 {
 	phml::NumericalConfiguration nc;
 	{
-		boost::scoped_ptr<NumericalConfigurationLoader> loader(new NumericalConfigurationLoader(nc_file));
+		std::unique_ptr<NumericalConfigurationLoader> loader(new NumericalConfigurationLoader(nc_file));
 		if (!loader->Load(&nc)) return false;
 	}
 
 	TimeUnitMap tum;
 	{
-		boost::scoped_ptr<UnitOfTimeHandler> handler(new UnitOfTimeHandler(&tum));
-		boost::scoped_ptr<UnitOfTimeLoader> loader(new UnitOfTimeLoader(uot_file));
+		std::unique_ptr<UnitOfTimeHandler> handler(new UnitOfTimeHandler(&tum));
+		std::unique_ptr<UnitOfTimeLoader> loader(new UnitOfTimeLoader(uot_file));
 		if (!loader->Load(handler.get())) return false;
 	}
 

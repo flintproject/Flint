@@ -7,8 +7,7 @@
 #include <cstdio>
 #include <cstdlib>
 #include <iostream>
-
-#include <boost/scoped_ptr.hpp>
+#include <memory>
 
 #include "lo/layout.h"
 #include "lo/layout_loader.h"
@@ -41,9 +40,9 @@ int main(int argc, char *argv[])
 	}
 
 	// load layout
-	boost::scoped_ptr<Layout> layout(new Layout);
+	std::unique_ptr<Layout> layout(new Layout);
 	{
-		boost::scoped_ptr<LayoutLoader> loader(new LayoutLoader(argv[1]));
+		std::unique_ptr<LayoutLoader> loader(new LayoutLoader(argv[1]));
 		if (!loader->Load(layout.get())) return EXIT_FAILURE;
 	}
 	size_t layer_size = layout->Calculate();

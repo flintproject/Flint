@@ -16,7 +16,6 @@
 #include <unordered_set>
 
 #include <boost/ptr_container/ptr_unordered_map.hpp>
-#include <boost/scoped_ptr.hpp>
 #include <boost/uuid/uuid_generators.hpp>
 
 #include "db/eq-inserter.h"
@@ -77,7 +76,7 @@ public:
 	}
 
 	bool Dump(const boost::filesystem::path &path) {
-		boost::scoped_ptr<UuidGenerator> gen(new UuidGenerator(path));
+		std::unique_ptr<UuidGenerator> gen(new UuidGenerator(path));
 		int e;
 		for (e = sqlite3_step(query_stmt_); e == SQLITE_ROW; e = sqlite3_step(query_stmt_)) {
 			const unsigned char *c = sqlite3_column_text(query_stmt_, 0);
@@ -421,7 +420,7 @@ public:
 	}
 
 private:
-	boost::scoped_ptr<db::ReachDriver> driver_;
+	std::unique_ptr<db::ReachDriver> driver_;
 	boost::uuids::string_generator gen_;
 	const TreeDumper *tree_dumper_;
 };
@@ -441,22 +440,22 @@ bool TranslateCellml(sqlite3 *db)
 	if (!CreateTable(db, "input_eqs", "(uuid TEXT, math TEXT)"))
 		return false;
 
-	boost::scoped_ptr<TreeDumper> tree_dumper(new TreeDumper(db));
+	std::unique_ptr<TreeDumper> tree_dumper(new TreeDumper(db));
 	if (!tree_dumper->Dump(path)) return false;
 
-	boost::scoped_ptr<OdeDumper> ode_dumper(new OdeDumper(db, tree_dumper.get()));
+	std::unique_ptr<OdeDumper> ode_dumper(new OdeDumper(db, tree_dumper.get()));
 	if (!ode_dumper->Dump()) return false;
 
-	boost::scoped_ptr<NameDumper> name_dumper(new NameDumper(db, tree_dumper.get()));
+	std::unique_ptr<NameDumper> name_dumper(new NameDumper(db, tree_dumper.get()));
 	if (!name_dumper->Dump(ode_dumper.get())) return false;
 
-	boost::scoped_ptr<IvDumper> iv_dumper(new IvDumper(db, tree_dumper.get()));
+	std::unique_ptr<IvDumper> iv_dumper(new IvDumper(db, tree_dumper.get()));
 	if (!iv_dumper->Dump()) return false;
 
-	boost::scoped_ptr<FunctionDumper> function_dumper(new FunctionDumper(db, tree_dumper.get()));
+	std::unique_ptr<FunctionDumper> function_dumper(new FunctionDumper(db, tree_dumper.get()));
 	if (!function_dumper->Dump()) return false;
 
-	boost::scoped_ptr<ReachDumper> reach_dumper(new ReachDumper(db, tree_dumper.get()));
+	std::unique_ptr<ReachDumper> reach_dumper(new ReachDumper(db, tree_dumper.get()));
 	if (!reach_dumper->Dump()) return false;
 
 	if (!CreateLayout(db))

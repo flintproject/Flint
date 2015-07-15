@@ -17,7 +17,6 @@
 #define BOOST_FILESYSTEM_NO_DEPRECATED
 #include <boost/filesystem.hpp>
 #include <boost/noncopyable.hpp>
-#include <boost/scoped_ptr.hpp>
 
 #include <libxml/xmlreader.h>
 
@@ -202,7 +201,7 @@ public:
 
 private:
 	int ReadModel(const boost::filesystem::path &cp) {
-		boost::scoped_ptr<Model> model(new Model);
+		std::unique_ptr<Model> model(new Model);
 		int i;
 		while ( (i = xmlTextReaderMoveToNextAttribute(text_reader_)) > 0) {
 			if (xmlTextReaderIsNamespaceDecl(text_reader_)) continue;
@@ -426,7 +425,7 @@ private:
 	}
 
 	int ReadParameter(int rowid) {
-		boost::scoped_ptr<Parameter> parameter;
+		std::unique_ptr<Parameter> parameter;
 		int i;
 		while ( (i = xmlTextReaderMoveToNextAttribute(text_reader_)) > 0) {
 			if (xmlTextReaderIsNamespaceDecl(text_reader_)) continue;
@@ -464,7 +463,7 @@ private:
 	}
 
 	int ReadRange(int rowid, Parameter *parameter) {
-		boost::scoped_ptr<Range> range(new Range);
+		std::unique_ptr<Range> range(new Range);
 		int i;
 		while ( (i = xmlTextReaderMoveToNextAttribute(text_reader_)) > 0) {
 			if (xmlTextReaderIsNamespaceDecl(text_reader_)) continue;
@@ -600,7 +599,7 @@ private:
 
 	int ReadTarget(int rowid) {
 		std::ostringstream oss;
-		boost::scoped_ptr<Target> target(new Target);
+		std::unique_ptr<Target> target(new Target);
 
 		int i;
 		while ( (i = xmlTextReaderMoveToNextAttribute(text_reader_)) > 0) {
@@ -750,8 +749,8 @@ private:
 			if (type == XML_READER_TYPE_ELEMENT) {
 				const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
 				if (xmlStrEqual(local_name, BAD_CAST "math")) {
-					boost::scoped_ptr<Handler> handler(new Handler);
-					boost::scoped_ptr<mathml::MathDumper> math_dumper(new mathml::MathDumper(text_reader_, oss));
+					std::unique_ptr<Handler> handler(new Handler);
+					std::unique_ptr<mathml::MathDumper> math_dumper(new mathml::MathDumper(text_reader_, oss));
 					i = math_dumper->Read(handler.get());
 					if (i <= 0) return i;
 					continue;
@@ -787,7 +786,7 @@ bool Read(const char *phsp_file, sqlite3 *db)
 		return false;
 	}
 
-	boost::scoped_ptr<Reader> reader(new Reader(text_reader, db));
+	std::unique_ptr<Reader> reader(new Reader(text_reader, db));
 	boost::filesystem::path cp = pp.parent_path();
 	if (reader->Read(cp) < 0) return false;
 

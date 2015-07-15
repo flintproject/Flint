@@ -5,6 +5,7 @@
 #include <cassert>
 #include <cstdio>
 #include <iostream>
+#include <memory>
 #include <libxml/xmlreader.h>
 
 #include "mathml/math_dumper.h"
@@ -69,7 +70,7 @@ public:
 					if (i <= 0) return i;
 					continue;
 				} else if (xmlStrEqual(local_name, BAD_CAST "math")) {
-					boost::scoped_ptr<Handler> handler(new Handler);
+					std::unique_ptr<Handler> handler(new Handler);
 					i = math_dumper_.Read(handler.get());
 					if (i < 0) return i;
 					if (name_ && !math_dumper_.TargetIsFound()) {
@@ -192,7 +193,7 @@ private:
 			if (type == XML_READER_TYPE_ELEMENT) {
 				const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
 				if (xmlStrEqual(local_name, BAD_CAST "math")) {
-					boost::scoped_ptr<Handler> handler(new Handler);
+					std::unique_ptr<Handler> handler(new Handler);
 					i = math_dumper_.Read(handler.get());
 					if (i <= 0) return i;
 					continue;

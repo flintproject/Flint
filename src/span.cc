@@ -13,7 +13,6 @@
 #include <boost/noncopyable.hpp>
 #include <boost/ptr_container/ptr_map.hpp>
 #include <boost/ptr_container/ptr_set.hpp>
-#include <boost/scoped_ptr.hpp>
 
 using std::atoi;
 using std::cerr;
@@ -439,19 +438,19 @@ bool Span(sqlite3 *db)
 {
 	boost::ptr_set<Edge> edge_set;
 	{
-		boost::scoped_ptr<EdgeLoader> loader(new EdgeLoader(db));
+		std::unique_ptr<EdgeLoader> loader(new EdgeLoader(db));
 		if (!loader->Load(&edge_set)) return false;
 	}
 
 	// do spanning with journals
 	{
-		boost::scoped_ptr<JournalLoader> loader(new JournalLoader(db));
-		boost::scoped_ptr<JournalHandler> handler(new JournalHandler(&edge_set));
+		std::unique_ptr<JournalLoader> loader(new JournalLoader(db));
+		std::unique_ptr<JournalHandler> handler(new JournalHandler(&edge_set));
 		if (!loader->Load(handler.get())) return false;
 	}
 
 	// write into spans
-	boost::scoped_ptr<SpanDriver> driver(new SpanDriver(db));
+	std::unique_ptr<SpanDriver> driver(new SpanDriver(db));
 	for (boost::ptr_set<Edge>::const_iterator it=edge_set.begin();it!=edge_set.end();++it) {
 		if (!driver->Save(*it)) return false;
 	}

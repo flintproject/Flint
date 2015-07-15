@@ -8,7 +8,6 @@
 #include <sstream>
 #include <string>
 #include <vector>
-#include <boost/scoped_ptr.hpp>
 #include <boost/fusion/include/adapt_struct.hpp>
 #include <boost/spirit/include/lex_lexertl.hpp>
 #include <boost/spirit/include/phoenix.hpp>
