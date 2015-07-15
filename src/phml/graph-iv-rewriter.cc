@@ -4,7 +4,7 @@
 #include <cassert>
 #include <cstdlib>
 #include <cstring>
-#include <boost/scoped_array.hpp>
+#include <memory>
 #include <boost/spirit/include/phoenix.hpp>
 #include <boost/spirit/include/qi.hpp>
 
@@ -119,7 +119,7 @@ bool GraphIvRewriter::Process(sqlite3_int64 pq_rowid,
 	}
 	int node_id;
 	if (!FindNode(pq_rowid, rhs.c_str(), &node_id)) return false;
-	boost::scoped_array<char> buf(new char[len + 64]); // long enough
+	std::unique_ptr<char[]> buf(new char[len + 64]); // long enough
 	sprintf(buf.get(), " (eq %%%s %d)", name, node_id);
 	m_.insert(std::make_pair(pq_rowid, buf.get()));
 	return true;

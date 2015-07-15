@@ -2,8 +2,8 @@
 #ifndef FLINT_BC_MOUNTER_H_
 #define FLINT_BC_MOUNTER_H_
 
+#include <memory>
 #include <boost/noncopyable.hpp>
-#include <boost/scoped_array.hpp>
 
 class Mounter : boost::noncopyable {
 public:
@@ -23,7 +23,7 @@ public:
 
 private:
 	int size_;
-	boost::scoped_array<int> offsets_;
+	std::unique_ptr<int[]> offsets_;
 };
 
 #endif

@@ -10,12 +10,12 @@
 #include <cstring>
 #include <fstream>
 #include <iostream>
+#include <memory>
 #include <string>
 #include <unordered_map>
 
 #include <boost/ptr_container/ptr_unordered_map.hpp>
 #include <boost/ptr_container/ptr_vector.hpp>
-#include <boost/scoped_array.hpp>
 #include <boost/scoped_ptr.hpp>
 #include <boost/uuid/string_generator.hpp>
 #include <boost/uuid/uuid_io.hpp>
@@ -171,7 +171,7 @@ public:
 	}
 
 	bool Rewrite(const char *format, const TargetValueMap &tvm, FILE *fp) const {
-		boost::scoped_array<char> buf(new char[32]); // FIXME
+		std::unique_ptr<char[]> buf(new char[32]); // FIXME
 		int si = 0;
 		int di = 0;
 		if (fseek(fp, kOffsetBase*sizeof(double), SEEK_SET) != 0) {
@@ -259,7 +259,7 @@ bool Store(sqlite3 *db,
 		return false;
 	}
 
-	boost::scoped_array<double> data(new double[source_layer_size]);
+	std::unique_ptr<double[]> data(new double[source_layer_size]);
 	FILE *fp = fopen(source_data_file, "rb");
 	if (!fp) {
 		perror(source_data_file);
@@ -272,7 +272,7 @@ bool Store(sqlite3 *db,
 	}
 	fclose(fp);
 
-	boost::scoped_array<char> format;
+	std::unique_ptr<char[]> format;
 	TargetValueMap tvm;
 	{
 		// check model's format

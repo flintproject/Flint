@@ -8,10 +8,9 @@
 #include <cassert>
 #include <cstdio>
 #include <cstdlib>
+#include <memory>
 
 #include <windows.h>
-
-#include <boost/scoped_array.hpp>
 #endif
 
 using std::memcpy;
@@ -33,7 +32,7 @@ boost::filesystem::path GetPathFromUtf8(const char *utf8)
 				  << std::endl;
 		std::exit(EXIT_FAILURE);
 	}
-	boost::scoped_array<wchar_t> buf(new wchar_t[len]);
+	std::unique_ptr<wchar_t[]> buf(new wchar_t[len]);
 	int r = MultiByteToWideChar(CP_UTF8,
 								MB_ERR_INVALID_CHARS,
 								utf8,

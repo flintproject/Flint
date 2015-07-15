@@ -11,10 +11,10 @@
 #include <cstring>
 #include <fstream>
 #include <iostream>
+#include <memory>
 #include <string>
 
 #include <boost/program_options.hpp>
-#include <boost/scoped_array.hpp>
 #include <boost/scoped_ptr.hpp>
 
 #include "isdf/reader.h"
@@ -36,8 +36,8 @@ int CompareTimestamp(const isdf::ISDFHeader &header0,
 					 const isdf::ISDFHeader &header1)
 {
 	if (strncmp(header0.timestamp, header1.timestamp, 20) != 0) {
-		boost::scoped_array<char> ts0(new char[21]);
-		boost::scoped_array<char> ts1(new char[21]);
+		std::unique_ptr<char[]> ts0(new char[21]);
+		std::unique_ptr<char[]> ts1(new char[21]);
 		memcpy(ts0.get(), header0.timestamp, 20);
 		memcpy(ts1.get(), header1.timestamp, 20);
 		ts0[20] = 0;
@@ -119,8 +119,8 @@ int CompareBody(boost::uint32_t num_objs,
 {
 	boost::uint32_t nb = num_objs * sizeof(double);
 	assert(nb > 0);
-	boost::scoped_array<char> buf0(new char[nb]);
-	boost::scoped_array<char> buf1(new char[nb]);
+	std::unique_ptr<char[]> buf0(new char[nb]);
+	std::unique_ptr<char[]> buf1(new char[nb]);
 	int r = EXIT_SUCCESS;
 	for (boost::uint32_t i=0;;i++) {
 		is0.read(buf0.get(), nb);

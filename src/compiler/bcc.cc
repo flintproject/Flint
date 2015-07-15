@@ -8,12 +8,12 @@
 #include <cassert>
 #include <cstdio>
 #include <cstdlib>
+#include <memory>
 #include <string>
 #include <vector>
 
 #include <boost/fusion/include/adapt_struct.hpp>
 #include <boost/math/constants/constants.hpp>
-#include <boost/scoped_array.hpp>
 #include <boost/scoped_ptr.hpp>
 #include <boost/spirit/include/lex_lexertl.hpp>
 #include <boost/spirit/include/phoenix.hpp>
@@ -737,7 +737,7 @@ bool Bcc(sqlite3 *db, std::ostream *os)
 	}
 	// write section headers
 	boost::uuids::string_generator gen;
-	boost::scoped_array<char> bu(new char[16]); // 16 is UUID's size
+	std::unique_ptr<char[]> bu(new char[16]); // 16 is UUID's size
 	boost::scoped_ptr<bc::SectionHeader> sh(new bc::SectionHeader);
 	for (NobVector::const_iterator nit=nv->begin();nit!=nv->end();++nit) {
 		boost::uuids::uuid u = gen(nit->first);

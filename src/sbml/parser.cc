@@ -5,9 +5,9 @@
 #include <cstdio>
 #include <cstdlib>
 #include <iostream>
+#include <memory>
 #include <string>
 
-#include <boost/scoped_array.hpp>
 #include <boost/scoped_ptr.hpp>
 
 #include <sbmlsolver/odeModel.h>
@@ -417,7 +417,7 @@ public:
 
 		if (!BeginTransaction(db_)) return false;
 
-		boost::scoped_array<char> sbml_name;
+		std::unique_ptr<char[]> sbml_name;
 		int neq = ODEModel_getNeq(model_);
 		int nass = ODEModel_getNumAssignments(model_);
 		int nconst = ODEModel_getNumConstants(model_);
@@ -556,7 +556,7 @@ namespace sbml {
 
 bool Parse(sqlite3 *db)
 {
-	boost::scoped_array<char> model_file(GetModelFilename(db));
+	std::unique_ptr<char[]> model_file(GetModelFilename(db));
 	odeModel_t *model = ODEModel_createFromFile(model_file.get());
 	if (!model) {
 		cerr << "could not create ODE system from an SBML model: " << model_file.get() << endl;

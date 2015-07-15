@@ -7,9 +7,9 @@
 #include <cstdlib>
 #include <cstring>
 #include <iostream>
+#include <memory>
 
 #include <boost/noncopyable.hpp>
-#include <boost/scoped_array.hpp>
 
 #include "sqlite3.h"
 
@@ -73,7 +73,7 @@ public:
 	}
 
 private:
-	boost::scoped_array<char> query_;
+	std::unique_ptr<char[]> query_;
 	sqlite3_stmt *stmt_;
 };
 

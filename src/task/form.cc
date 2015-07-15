@@ -7,8 +7,7 @@
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
-
-#include <boost/scoped_array.hpp>
+#include <memory>
 
 #include "db/query.h"
 #include "db/eq-inserter.h"
@@ -82,7 +81,7 @@ int InsertTargetEquation(void *data, int argc, char **argv, char **names)
 	db::EqInserter *inserter = static_cast<db::EqInserter *>(data);
 	int rowid = atoi(argv[0]);
 	const char *math = argv[1];
-	boost::scoped_array<char> eqn(new char[strlen(math) + 32]);
+	std::unique_ptr<char[]> eqn(new char[strlen(math) + 32]);
 	sprintf(eqn.get(), "(eq %%phsp:target%d%s)", rowid, math);
 	if (!inserter->Insert(DEFAULT_UUID, eqn.get())) {
 		return 1;

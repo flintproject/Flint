@@ -4,9 +4,8 @@
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
+#include <memory>
 #include <string>
-
-#include <boost/scoped_array.hpp>
 
 #include "database.h"
 #include "utf8path.h"
@@ -19,7 +18,7 @@ typedef int (*FindFunction)(sqlite3 *, char *);
 
 char *GetInputFilename(sqlite3 *db, FindFunction f)
 {
-	boost::scoped_array<char> utf8(new char[1024]); // FIXME
+	std::unique_ptr<char[]> utf8(new char[1024]); // FIXME
 	if (!f(db, utf8.get())) {
 		std::exit(EXIT_FAILURE);
 	}

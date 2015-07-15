@@ -7,6 +7,7 @@
 #include <cstdlib>
 #include <cstring>
 #include <iterator>
+#include <memory>
 #include <sstream>
 #include <string>
 #include <vector>
@@ -17,7 +18,6 @@
 #include <boost/noncopyable.hpp>
 #include <boost/ptr_container/ptr_unordered_map.hpp>
 #include <boost/ptr_container/ptr_vector.hpp>
-#include <boost/scoped_array.hpp>
 #include <boost/scoped_ptr.hpp>
 #include <boost/spirit/include/lex_lexertl.hpp>
 #include <boost/spirit/include/qi.hpp>
@@ -404,7 +404,7 @@ bool Sort(sqlite3 *db)
 	Inserter inserter(db);
 	for (UuidMap::iterator umit=um.begin();umit!=um.end();++umit) {
 		size_t n = umit->second->GetSize();
-		boost::scoped_array<int> arr(new int[n]);
+		std::unique_ptr<int[]> arr(new int[n]);
 		if (!umit->second->CalculateLevels(arr.get())) {
 			return false;
 		}

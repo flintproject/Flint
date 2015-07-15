@@ -8,12 +8,12 @@
 #include <iostream>
 #include <iomanip>
 #include <fstream>
+#include <memory>
 #include <string>
 #include <sstream>
 #include <vector>
 #include <utility>
 
-#include <boost/scoped_array.hpp>
 #include <boost/program_options.hpp>
 
 #include "isdf/isdf.h"
@@ -32,7 +32,6 @@ using std::make_pair;
 using std::string;
 using std::stringstream;
 using std::vector;
-using boost::scoped_array;
 
 void OutputHeader(ostream &ost, size_t num_objs, string &descriptions, string &units);
 
@@ -64,7 +63,7 @@ int main(int argc, char *argv[]) {
 
 	// open files
 	vector<string> input_files = vm["input-files"].as<vector<string> >();
-	scoped_array<ifstream> ifs(new ifstream[input_files.size()]);
+	std::unique_ptr<ifstream[]> ifs(new ifstream[input_files.size()]);
 	for(size_t i = 0; i < input_files.size(); i++) {
 		ifs[i].open(input_files[i].c_str(), ios::binary|ios::in);
 		if (!ifs[i]) {
@@ -150,7 +149,7 @@ int main(int argc, char *argv[]) {
 	OutputHeader(ofs, num_objs, str, ustr);
 
 	// read & write vals
-	boost::scoped_array<double> buf;
+	std::unique_ptr<double[]> buf;
 	{
 		std::vector<size_t>::iterator it = std::max_element(vals_in_file.begin(), vals_in_file.end());
 		assert(it != vals_in_file.end());

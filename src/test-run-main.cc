@@ -7,8 +7,7 @@
 #include <cstdlib>
 #include <cstring>
 #include <iostream>
-
-#include <boost/scoped_array.hpp>
+#include <memory>
 
 #include "bc/binary.h"
 
@@ -54,7 +53,7 @@ int main(int argc, char *argv[])
 		option.set_spec_filename(argv[4]);
 	}
 	int s = option.ByteSize();
-	boost::scoped_array<char> buffer(new char[s]);
+	std::unique_ptr<char[]> buffer(new char[s]);
 	if (!option.SerializeToArray(buffer.get(), s)) {
 		cerr << "failed to serialize to array" << endl;
 		return EXIT_FAILURE;

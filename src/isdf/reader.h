@@ -5,7 +5,7 @@
 #include <cassert>
 #include <cstring>
 #include <iostream>
-#include <boost/scoped_array.hpp>
+#include <memory>
 #include "isdf/isdf.h"
 
 namespace isdf {
@@ -186,7 +186,7 @@ public:
 			std::cerr << "num_objs was 0" << std::endl;
 			return false;
 		}
-		boost::scoped_array<char> buf(new char[buf_size]);
+		std::unique_ptr<char[]> buf(new char[buf_size]);
 		bool r = false;
 		for (;;) {
 			is->read(buf.get(), buf_size);
@@ -253,9 +253,9 @@ public:
 
 private:
 	ISDFHeader header_;
-	boost::scoped_array<char> comment_;
-	boost::scoped_array<char> descriptions_;
-	boost::scoped_array<char> units_;
+	std::unique_ptr<char[]> comment_;
+	std::unique_ptr<char[]> descriptions_;
+	std::unique_ptr<char[]> units_;
 };
 
 } // namespace isdf

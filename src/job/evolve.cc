@@ -17,7 +17,6 @@
 #include <boost/interprocess/mapped_region.hpp>
 #include <boost/noncopyable.hpp>
 #include <boost/random.hpp>
-#include <boost/scoped_array.hpp>
 #include <boost/scoped_ptr.hpp>
 
 #include "bc.pb.h"
@@ -342,7 +341,7 @@ bool Evolve(sqlite3 *db,
 	}
 
 	// arrange previous data space
-	boost::scoped_array<double> prev(new double[layer_size]()); // default-initialized
+	std::unique_ptr<double[]> prev(new double[layer_size]()); // default-initialized
 	if (option.input_data_file != NULL) { // fill the first layer with input
 		if (!LoadData(option.input_data_file, layer_size, prev.get())) return false;
 	}
@@ -350,13 +349,13 @@ bool Evolve(sqlite3 *db,
 	preexecutor->set_prev(prev.get());
 
 	// arrange data space
-	boost::scoped_array<double> data(new double[layer_size * nol]()); // default-initialized
+	std::unique_ptr<double[]> data(new double[layer_size * nol]()); // default-initialized
 	executor->set_data(data.get());
 	postexecutor->set_prev(data.get());
 
 	// arrange disposition
-	boost::scoped_array<double> cdata(new double[layer_size]());
-	boost::scoped_array<size_t> disposition(new size_t[layer_size]()); // default-initialized
+	std::unique_ptr<double[]> cdata(new double[layer_size]());
+	std::unique_ptr<size_t[]> disposition(new size_t[layer_size]()); // default-initialized
 	processor->SolveConstantDisposition(outbound.get(),
 										prev.get(),
 										cdata.get(),
@@ -374,17 +373,17 @@ bool Evolve(sqlite3 *db,
 	}
 
 	// arrange work space
-	boost::scoped_array<double> work(new double[layer_size]()); // default-initialized
+	std::unique_ptr<double[]> work(new double[layer_size]()); // default-initialized
 	preexecutor->set_data(work.get());
 	postexecutor->set_data(work.get());
 
 	// arrange color space
-	boost::scoped_array<int> color(new int[layer_size]()); // default-initialized
+	std::unique_ptr<int[]> color(new int[layer_size]()); // default-initialized
 	preexecutor->set_color(color.get());
 	postexecutor->set_color(color.get());
 
 	// arrange history
-	boost::scoped_array<History> history(new History[layer_size]);
+	std::unique_ptr<History[]> history(new History[layer_size]);
 	if (!layout->SpecifyCapacity(layer_size, history.get())) {
 		return false;
 	}
@@ -409,7 +408,7 @@ bool Evolve(sqlite3 *db,
 	if (with_post) max_nod = std::max(max_nod, postprocessor->GetMaxNumberOfData());
 
 	// initialize temporary data
-	boost::scoped_array<double> tmp(new double[max_nod]);
+	std::unique_ptr<double[]> tmp(new double[max_nod]);
 	executor->set_tmp(tmp.get());
 	processor->set_tmp(tmp.get());
 	if (with_pre) {

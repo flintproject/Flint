@@ -10,9 +10,9 @@
 #include <cstdlib>
 #include <cstring>
 #include <iostream>
+#include <memory>
 #include <sstream>
 
-#include <boost/scoped_array.hpp>
 #include <boost/scoped_ptr.hpp>
 #include <libxml/xmlreader.h>
 
@@ -743,7 +743,7 @@ public:
 	sqlite3_stmt *stmt_map_variables() const {return stmt_map_variables_;}
 
 	bool Parse() {
-		boost::scoped_array<char> model_file(GetModelFilename(db_));
+		std::unique_ptr<char[]> model_file(GetModelFilename(db_));
 		if (!BeginTransaction(db_)) return false;
 		if (!CreateTables()) return false;
 		if (!PrepareStatements()) return false;

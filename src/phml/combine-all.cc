@@ -9,12 +9,12 @@
 #include <cstdlib>
 #include <cstring>
 #include <iostream>
+#include <memory>
 #include <string>
 #include <vector>
 
 #define BOOST_FILESYSTEM_NO_DEPRECATED
 #include <boost/filesystem.hpp>
-#include <boost/scoped_array.hpp>
 #include <boost/scoped_ptr.hpp>
 
 #include "database.h"
@@ -37,7 +37,7 @@ namespace {
 
 bool SaveFile(const char *uuid, const char *xml_file)
 {
-	boost::scoped_array<char> db_file(new char[64]);
+	std::unique_ptr<char[]> db_file(new char[64]);
 	sprintf(db_file.get(), "%s.db", uuid);
 	db::Driver driver(db_file.get());
 	return SaveGivenFile(driver.db(), xml_file);
@@ -45,7 +45,7 @@ bool SaveFile(const char *uuid, const char *xml_file)
 
 bool ParseFile(const char *uuid)
 {
-	boost::scoped_array<char> db_file(new char[64]); // large enough
+	std::unique_ptr<char[]> db_file(new char[64]); // large enough
 	sprintf(db_file.get(), "%s.db", uuid);
 	db::Driver driver(db_file.get());
 	return flint::sbml::Parse(driver.db());
@@ -76,10 +76,10 @@ bool CombineAll(sqlite3 *db)
 			if (!SaveFile((const char *)uuid, (const char *)ref)) return false;
 		} else {
 			if (!DumpImport(db, (const char *)uuid)) return false;
-			boost::scoped_array<char> xml_file(new char[64]);
+			std::unique_ptr<char[]> xml_file(new char[64]);
 			sprintf(xml_file.get(), "%s.xml", uuid);
 			boost::filesystem::path xml_path = boost::filesystem::absolute(xml_file.get());
-			boost::scoped_array<char> xml_utf8(GetUtf8FromPath(xml_path));
+			std::unique_ptr<char[]> xml_utf8(GetUtf8FromPath(xml_path));
 			if (!SaveFile((const char *)uuid, xml_utf8.get())) return false;
 		}
 		uv.push_back((const char *)uuid);

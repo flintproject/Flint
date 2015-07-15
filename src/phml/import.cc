@@ -6,9 +6,9 @@
 #include <cstdlib>
 #include <cstring>
 #include <iostream>
+#include <memory>
 #include <string>
 
-#include <boost/scoped_array.hpp>
 #include <boost/scoped_ptr.hpp>
 
 #include <libxml/parser.h>
@@ -52,7 +52,7 @@ public:
 			cerr << "failed to create XPath context" << endl;
 			return false;
 		}
-		boost::scoped_array<char> pattern(new char[128]);
+		std::unique_ptr<char[]> pattern(new char[128]);
 		sprintf(pattern.get(), "//is:module[@module-id='%s']/is:import/*", uuid_);
 		xmlXPathRegisterNs(context_, BAD_CAST "is", BAD_CAST "http://www.physiome.jp/ns/insilicoml");
 		object_ = xmlXPathEvalExpression(BAD_CAST pattern.get(), context_);
@@ -94,13 +94,13 @@ private:
 
 bool DumpImport(sqlite3 *db, const char *uuid)
 {
-	boost::scoped_array<char> model_file(GetModelFilename(db));
+	std::unique_ptr<char[]> model_file(GetModelFilename(db));
 	xmlDocPtr doc = xmlParseFile(model_file.get());
 	if (!doc) {
 		cerr << "xml file seems malformed: " << model_file.get() << endl;
 		return false;
 	}
-	boost::scoped_array<char> dump_file(new char[64]);
+	std::unique_ptr<char[]> dump_file(new char[64]);
 	sprintf(dump_file.get(), "%s.xml", uuid);
 	boost::scoped_ptr<Parser> parser(new Parser(uuid, doc));
 	return parser->Dump(dump_file.get());

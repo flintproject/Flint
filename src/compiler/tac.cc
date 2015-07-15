@@ -6,11 +6,11 @@
 #include <cstdlib>
 #include <deque>
 #include <iostream>
+#include <memory>
 #include <string>
 #include <vector>
 
 #include <boost/fusion/include/adapt_struct.hpp>
-#include <boost/scoped_array.hpp>
 #include <boost/scoped_ptr.hpp>
 #include <boost/spirit/include/lex_lexertl.hpp>
 #include <boost/spirit/include/phoenix.hpp>
@@ -377,7 +377,7 @@ bool EmitCode(int n, Expr &sexp, Context *context)
 				int m = context->avail_n++;
 				if (!EmitCode(m, *it, context))
 					return false;
-				boost::scoped_array<char> buf(new char[20]);
+				std::unique_ptr<char[]> buf(new char[20]);
 				sprintf(buf.get(), "$%d", m);
 				*it = buf.get();
 			}

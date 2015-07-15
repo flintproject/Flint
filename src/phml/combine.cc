@@ -5,11 +5,11 @@
 #include <cstdlib>
 #include <cstring>
 #include <map>
+#include <memory>
 #include <sstream>
 #include <string>
 
 #include <boost/noncopyable.hpp>
-#include <boost/scoped_array.hpp>
 #include <boost/uuid/uuid_generators.hpp>
 #include <boost/uuid/uuid_io.hpp>
 
@@ -338,7 +338,7 @@ bool Combine(const char *uuid, sqlite3 *db)
 		}
 	}
 
-	boost::scoped_array<char> uuid_db(new char[strlen(uuid)+4]);
+	std::unique_ptr<char[]> uuid_db(new char[strlen(uuid)+4]);
 	std::sprintf(uuid_db.get(), "%s.db", uuid);
 	Loader loader(uuid_db.get());
 	return loader.Load(&writer);

@@ -11,6 +11,7 @@
 #include <cstring>
 #include <fstream>
 #include <iostream>
+#include <memory>
 #include <string>
 #include <unordered_map>
 
@@ -18,7 +19,6 @@
 #include <boost/ptr_container/ptr_map.hpp>
 #include <boost/ptr_container/ptr_unordered_map.hpp>
 #include <boost/ptr_container/ptr_vector.hpp>
-#include <boost/scoped_array.hpp>
 #include <boost/scoped_ptr.hpp>
 #include <boost/uuid/uuid_generators.hpp>
 
@@ -184,8 +184,8 @@ bool Generate(sqlite3 *db, const char *filename)
 	boost::scoped_ptr<lo::Track> track(new lo::Track);
 	boost::scoped_ptr<lo::Sector> sector(new lo::Sector);
 	boost::scoped_ptr<lo::Data> data(new lo::Data);
-	boost::scoped_array<char> tbu(new char[16]); // 16 is UUID's size
-	boost::scoped_array<char> sbu(new char[16]); // 16 is UUID's size
+	std::unique_ptr<char[]> tbu(new char[16]); // 16 is UUID's size
+	std::unique_ptr<char[]> sbu(new char[16]); // 16 is UUID's size
 	for (TMap::const_iterator it=tm.begin();it!=tm.end();++it) {
 		const boost::uuids::uuid &tu(it->first);
 		NameMap::const_iterator nmit = nm->find(tu);

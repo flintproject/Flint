@@ -7,7 +7,6 @@
 #include <string>
 #include <fstream>
 
-#include <boost/scoped_array.hpp>
 #include <boost/uuid/string_generator.hpp>
 
 class SpecLoader : boost::noncopyable {
@@ -33,7 +32,7 @@ public:
 		}
 
 		boost::uuids::string_generator gen;
-		boost::scoped_array<char> line(new char[kLineSize]);
+		std::unique_ptr<char[]> line(new char[kLineSize]);
 		boost::uuids::uuid u;
 		while (ifs_.getline(line.get(), kLineSize)) {
 			if (strlen(line.get()) < kUuidSize + 2) {

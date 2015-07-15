@@ -9,11 +9,11 @@
 #include <iostream>
 #include <iomanip>
 #include <fstream>
+#include <memory>
 #include <string>
 #include <sstream>
 #include <vector>
 #include <boost/program_options.hpp>
-#include <boost/scoped_array.hpp>
 #include <boost/scoped_ptr.hpp>
 #include "isdf/isdf.h"
 #include "isdf/reader.h"
@@ -30,7 +30,6 @@ using std::ofstream;
 using std::ostream;
 using std::string;
 using std::vector;
-using boost::scoped_array;
 using boost::scoped_ptr;
 
 namespace {
@@ -57,7 +56,7 @@ bool ExtractConstantColumns(const char *input,
 	*num_columns = num_objs;
 
 	size_t buf_size = num_objs * sizeof(double);
-	scoped_array<char> buf0(new char[buf_size]);
+	std::unique_ptr<char[]> buf0(new char[buf_size]);
 	ifs.read(buf0.get(), buf_size);
 	if (ifs.fail()) {
 		if (ifs.gcount() == 0) {
@@ -77,7 +76,7 @@ bool ExtractConstantColumns(const char *input,
 	for (boost::uint32_t i=0;i<num_objs;i++) {
 		cv->push_back(i);
 	}
-	scoped_array<char> buf1(new char[buf_size]);
+	std::unique_ptr<char[]> buf1(new char[buf_size]);
 	for (;;) {
 		ifs.read(buf1.get(), buf_size);
 		if (ifs.fail()) {
@@ -143,7 +142,7 @@ private:
 	const vector<boost::uint32_t> &cv_;
 	ostream *os_;
 	size_t buf_size_;
-	boost::scoped_array<char> buf_;
+	std::unique_ptr<char[]> buf_;
 };
 
 int Filter(const char *input,
@@ -165,7 +164,7 @@ int Filter(const char *input,
 	}
 
 	const char *rd = reader.descriptions();
-	scoped_array<char> descs(new char[reader.num_bytes_descs()]);
+	std::unique_ptr<char[]> descs(new char[reader.num_bytes_descs()]);
 	char *d = descs.get();
 	vector<boost::uint32_t>::const_iterator it = cv.begin();
 	for (boost::uint32_t i=0;i<reader.num_objs();i++) {
@@ -180,7 +179,7 @@ int Filter(const char *input,
 	}
 
 	const char *ru = reader.units();
-	scoped_array<char> units;
+	std::unique_ptr<char[]> units;
 	char *u = NULL;
 	if (ru) { // when units are available
 		units.reset(new char[reader.num_bytes_units()]);
@@ -198,7 +197,7 @@ int Filter(const char *input,
 		}
 	}
 
-	scoped_array<char> header(new char[sizeof(isdf::ISDFHeader)]);
+	std::unique_ptr<char[]> header(new char[sizeof(isdf::ISDFHeader)]);
 	memcpy(header.get(), &reader.header(), sizeof(isdf::ISDFHeader));
 	reinterpret_cast<isdf::ISDFHeader *>(header.get())->num_objs -= cv.size();
 	reinterpret_cast<isdf::ISDFHeader *>(header.get())->num_bytes_comment = 0; // discard the original comment

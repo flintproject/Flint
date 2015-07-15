@@ -8,6 +8,7 @@
 #include <iostream>
 #include <iomanip>
 #include <fstream>
+#include <memory>
 #include <string>
 #include <sstream>
 
@@ -21,7 +22,6 @@
 #endif
 
 #include <boost/program_options.hpp>
-#include <boost/scoped_array.hpp>
 #include <boost/scoped_ptr.hpp>
 #include "isdf/isdf.h"
 #include "sys/temporary_path.h"
@@ -37,7 +37,6 @@ using std::istream;
 using std::ios;
 using std::ostringstream;
 using std::string;
-using boost::scoped_array;
 using boost::scoped_ptr;
 
 namespace {
@@ -61,7 +60,7 @@ bool CountColumns(const char *input, boost::uint32_t *num_columns)
 		cerr << "could not open input file: " << input << endl;
 		return false;
 	}
-	scoped_array<char> header(new char[sizeof(isdf::ISDFHeader)]);
+	std::unique_ptr<char[]> header(new char[sizeof(isdf::ISDFHeader)]);
 	if (!ReadHeader(&ifs, header.get())) {
 		cerr << "could not read header: " << input << endl;
 		ifs.close();
@@ -77,7 +76,7 @@ int CallIsdstrip(const string &isdstrip, const char *input, const char *output)
 	static const char kCommand[] = "%s -o \"%s\" \"%s\"";
 
 	size_t cmd_len = isdstrip.size() + strlen(input) + strlen(output) + 64;
-	scoped_array<char> cmd(new char[cmd_len]);
+	std::unique_ptr<char[]> cmd(new char[cmd_len]);
 	sprintf(cmd.get(), kCommand, isdstrip.c_str(), output, input);
 	int r = RunSystem(cmd.get());
 	return r;
@@ -88,7 +87,7 @@ int CallIsd2csv(const string &isd2csv, const char *input, const char *output)
 	static const char kCommand[] = "%s -o \"%s\" \"%s\"";
 
 	size_t cmd_len = isd2csv.size() + strlen(input) + strlen(output) + 64;
-	scoped_array<char> cmd(new char[cmd_len]);
+	std::unique_ptr<char[]> cmd(new char[cmd_len]);
 	sprintf(cmd.get(), kCommand, isd2csv.c_str(), output, input);
 	int r = RunSystem(cmd.get());
 	return r;

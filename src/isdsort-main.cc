@@ -8,12 +8,12 @@
 #include <cstdlib>
 #include <cstring>
 #include <fstream>
+#include <memory>
 #include <map>
 #include <string>
 #include <vector>
 
 #include <boost/noncopyable.hpp>
-#include <boost/scoped_array.hpp>
 #include <boost/scoped_ptr.hpp>
 
 #include "isdf/reader.h"
@@ -115,7 +115,7 @@ bool CopyFile(const char *source, const char *target)
 		fclose(ifp);
 		return false;
 	}
-	boost::scoped_array<char> buf(new char[kLength]);
+	std::unique_ptr<char[]> buf(new char[kLength]);
 	size_t s;
 	do {
 		if ( (s = fread(buf.get(), 1, kLength, ifp)) == 0) {

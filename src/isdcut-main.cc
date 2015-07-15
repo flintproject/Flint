@@ -6,11 +6,11 @@
 #include <cstdlib>
 #include <iostream>
 #include <fstream>
+#include <memory>
 #include <string>
 #include <set>
 #include <boost/noncopyable.hpp>
 #include <boost/program_options.hpp>
-#include <boost/scoped_array.hpp>
 #include <boost/scoped_ptr.hpp>
 
 #include "bc/binary.h"
@@ -69,8 +69,8 @@ public:
 		boost::uint32_t num_objs = 0;
 		boost::uint32_t num_bytes_descs = 0;
 		boost::uint32_t num_bytes_units = 0;
-		boost::scoped_array<char> descriptions(new char[reader_.num_bytes_descs()]);
-		boost::scoped_array<char> units(new char[reader_.num_bytes_units()]);
+		std::unique_ptr<char[]> descriptions(new char[reader_.num_bytes_descs()]);
+		std::unique_ptr<char[]> units(new char[reader_.num_bytes_units()]);
 
 		char *d = descriptions.get();
 		char *u = units.get();
@@ -109,7 +109,7 @@ public:
 		header.num_bytes_comment = 0; // discard the original comment
 		header.num_bytes_descs = num_bytes_descs;
 		header.num_bytes_units = num_bytes_units;
-		boost::scoped_array<char> h(new char[sizeof(header)]);
+		std::unique_ptr<char[]> h(new char[sizeof(header)]);
 		memcpy(h.get(), &header, sizeof(header));
 		os->write(h.get(), sizeof(header));
 		os->write(descriptions.get(), num_bytes_descs);
@@ -159,7 +159,7 @@ int main(int argc, char *argv[])
 	boost::scoped_ptr<Dam> dam(new Dam);
 	if (vm.count("fields") > 0) {
 		size_t s = fields.size();
-		boost::scoped_array<char> fa(new char[s+1]());
+		std::unique_ptr<char[]> fa(new char[s+1]());
 		memcpy(fa.get(), fields.c_str(), s);
 		std::replace(fa.get(), fa.get()+s, ',', '\0');
 		char *p = fa.get();

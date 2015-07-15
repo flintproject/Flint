@@ -10,10 +10,10 @@
 #include <cstdlib>
 #include <iostream>
 #include <map>
+#include <memory>
 
 #include <boost/noncopyable.hpp>
 #include <boost/random.hpp>
-#include <boost/scoped_array.hpp>
 #include <boost/scoped_ptr.hpp>
 #include <boost/uuid/uuid_io.hpp>
 
@@ -176,10 +176,10 @@ bool Init(sqlite3 *db, const char *layout_file, const char *bc_file, const char 
 	boost::scoped_ptr<Processor> processor(new Processor(layout.get(), layer_size));
 
 	// arrange data space
-	boost::scoped_array<double> data(new double[layer_size]()); // default-initialized
+	std::unique_ptr<double[]> data(new double[layer_size]()); // default-initialized
 	executor->set_data(data.get());
 
-	boost::scoped_array<bool> target(new bool[layer_size]()); // default-initialized
+	std::unique_ptr<bool[]> target(new bool[layer_size]()); // default-initialized
 	executor->set_target(target.get());
 
 	// arrange input timeseries data
@@ -229,12 +229,12 @@ bool Init(sqlite3 *db, const char *layout_file, const char *bc_file, const char 
 	int max_nod = processor->GetMaxNumberOfData();
 
 	// initialize temporary data
-	boost::scoped_array<double> tmp(new double[max_nod]);
+	std::unique_ptr<double[]> tmp(new double[max_nod]);
 	executor->set_tmp(tmp.get());
 	processor->set_tmp(tmp.get());
 
 	// initialize color space
-	boost::scoped_array<size_t> color(new size_t[layer_size]()); // default-initialized
+	std::unique_ptr<size_t[]> color(new size_t[layer_size]()); // default-initialized
 	executor->set_color(color.get());
 
 	// initialize pseudo random number generator

@@ -10,10 +10,10 @@
 #include <cstring>
 #include <iostream>
 #include <map>
+#include <memory>
 #include <string>
 
 #include <boost/noncopyable.hpp>
-#include <boost/scoped_array.hpp>
 #include <boost/scoped_ptr.hpp>
 
 #include "lo.pb.h"
@@ -48,7 +48,7 @@ public:
 			cerr << "size is zero" << endl;
 			return false;
 		}
-		boost::scoped_array<double> data(new double[size_]);
+		std::unique_ptr<double[]> data(new double[size_]);
 		for (;;) {
 			size_t s = fread(data.get(), sizeof(double), size_, ifp);
 			if (s == 0) break;

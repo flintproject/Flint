@@ -10,12 +10,12 @@
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
-#include <string>
 #include <iostream>
+#include <memory>
+#include <string>
 
 #define BOOST_FILESYSTEM_NO_DEPRECATED
 #include <boost/filesystem.hpp>
-#include <boost/scoped_array.hpp>
 
 #include <zip.h>
 
@@ -32,7 +32,7 @@ namespace phz {
 
 bool Read(sqlite3 *db, const char *dir)
 {
-	boost::scoped_array<char> filename(GetGivenFilename(db));
+	std::unique_ptr<char[]> filename(GetGivenFilename(db));
 	int ze;
 	struct zip *zp = zip_open(filename.get(), 0, &ze);
 	if (!zp) {
@@ -133,7 +133,7 @@ bool Read(sqlite3 *db, const char *dir)
 	}
 
 	boost::filesystem::path amp = boost::filesystem::absolute(tp);
-	boost::scoped_array<char> mf(GetUtf8FromPath(amp));
+	std::unique_ptr<char[]> mf(GetUtf8FromPath(amp));
 	if (strlen(mf.get()) >= 1024) {
 		cerr << "resulting filename is too long: "
 			 << mf.get()

@@ -15,7 +15,6 @@
 #include <boost/noncopyable.hpp>
 #include <boost/ptr_container/ptr_vector.hpp>
 #include <boost/random.hpp>
-#include <boost/scoped_array.hpp>
 #include <boost/scoped_ptr.hpp>
 #include <boost/uuid/uuid.hpp>
 #include <boost/uuid/uuid_io.hpp>
@@ -898,7 +897,7 @@ private:
 
 	boost::ptr_vector<ExecutionUnit> euv_;
 
-	boost::scoped_array<int> code_offset_;
+	std::unique_ptr<int[]> code_offset_;
 	double *tmp_;
 	TimeseriesVector *tv_;
 	boost::mt19937 *rng_;

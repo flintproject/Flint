@@ -10,12 +10,12 @@
 #include <cstdlib>
 #include <cstring>
 #include <iostream>
+#include <memory>
 #include <sstream>
 #include <unordered_map>
 #include <unordered_set>
 
 #include <boost/ptr_container/ptr_unordered_map.hpp>
-#include <boost/scoped_array.hpp>
 #include <boost/scoped_ptr.hpp>
 #include <boost/uuid/uuid_generators.hpp>
 
@@ -179,7 +179,7 @@ public:
 			if (!ei_.Insert(u, (const char *)&body[1])) return false;
 
 			// register it as a dependent variable
-			boost::scoped_array<char> tail(new char[nlen+1]);
+			std::unique_ptr<char[]> tail(new char[nlen+1]);
 			strcpy(tail.get(), (const char *)&body[kPrefixLength]);
 			for (size_t i=0;i<nlen-kPrefixLength;i++) {
 				if (tail[i] == ')') {
@@ -296,7 +296,7 @@ public:
 			if (!tree_dumper_->Find((const char *)c, u)) return false;
 
 			size_t blen = strlen((const char *)n) + strlen((const char *)iv);
-			boost::scoped_array<char> buf(new char[blen+8]);
+			std::unique_ptr<char[]> buf(new char[blen+8]);
 			sprintf(buf.get(), "(eq %%%s %s)", (const char *)n, (const char *)iv);
 			if (!ii_.Insert(u, buf.get())) return false;
 		}
@@ -430,7 +430,7 @@ private:
 
 bool TranslateCellml(sqlite3 *db)
 {
-	boost::scoped_array<char> filename(GetModelFilename(db));
+	std::unique_ptr<char[]> filename(GetModelFilename(db));
 	boost::filesystem::path path(filename.get());
 
 	if (!BeginTransaction(db))

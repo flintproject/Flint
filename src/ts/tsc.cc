@@ -22,7 +22,6 @@
 #include <boost/filesystem/fstream.hpp>
 #include <boost/noncopyable.hpp>
 #include <boost/ptr_container/ptr_unordered_map.hpp>
-#include <boost/scoped_array.hpp>
 #include <boost/scoped_ptr.hpp>
 #include <boost/uuid/uuid.hpp>
 #include <boost/uuid/uuid_io.hpp>
@@ -118,7 +117,7 @@ public:
 
 	bool Insert(const boost::filesystem::path &path)
 	{
-		boost::scoped_array<char> filename(GetUtf8FromPath(path));
+		std::unique_ptr<char[]> filename(GetUtf8FromPath(path));
 		int e;
 		e = sqlite3_bind_text(stmt(), 1, filename.get(), -1, NULL);
 		if (e != SQLITE_OK) {

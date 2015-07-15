@@ -9,14 +9,14 @@
 #include <cstdlib>
 #include <cstring>
 #include <iostream>
+#include <map>
+#include <memory>
 #include <sstream>
 #include <string>
-#include <map>
 
 #define BOOST_FILESYSTEM_NO_DEPRECATED
 #include <boost/filesystem.hpp>
 #include <boost/noncopyable.hpp>
-#include <boost/scoped_array.hpp>
 #include <boost/scoped_ptr.hpp>
 
 #include <libxml/xmlreader.h>
@@ -286,7 +286,7 @@ private:
 
 		boost::filesystem::path mp = GetPathFromUtf8((const char *)model->iref());
 		boost::filesystem::path amp = boost::filesystem::absolute(mp, cp);
-		boost::scoped_array<char> utf8amp(GetUtf8FromPath(amp));
+		std::unique_ptr<char[]> utf8amp(GetUtf8FromPath(amp));
 
 		// update the model entry
 		e = sqlite3_prepare_v2(db_, "UPDATE models SET absolute_path = ? WHERE rowid = ?",

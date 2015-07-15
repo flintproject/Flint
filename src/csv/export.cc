@@ -7,11 +7,11 @@
 #include <cstring>
 #include <iostream>
 #include <map>
+#include <memory>
 #include <vector>
 #define BOOST_DATE_TIME_NO_LIB
 #include <boost/interprocess/file_mapping.hpp>
 #include <boost/interprocess/mapped_region.hpp>
-#include <boost/scoped_array.hpp>
 #include "isdf/isdf.h"
 
 using std::cerr;
@@ -110,7 +110,7 @@ bool ExportIsdFromCsv(const boost::filesystem::path &input_path,
 	}
 
 	size_t first_line_len = eol[0];
-	boost::scoped_array<char> first_line(new char[first_line_len + 1]);
+	std::unique_ptr<char[]> first_line(new char[first_line_len + 1]);
 	if (first_line_len > 0)
 		memcpy(first_line.get(), addr, first_line_len);
 	first_line[first_line_len] = '\0';

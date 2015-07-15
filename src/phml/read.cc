@@ -10,13 +10,13 @@
 #include <cstdlib>
 #include <iostream>
 #include <map>
+#include <memory>
 #include <sstream>
 #include <string>
 
 #define BOOST_FILESYSTEM_NO_DEPRECATED
 #include <boost/filesystem.hpp>
 #include <boost/noncopyable.hpp>
-#include <boost/scoped_array.hpp>
 #include <boost/scoped_ptr.hpp>
 
 #include <libxml/xmlreader.h>
@@ -1484,7 +1484,7 @@ public:
 			return false;
 		}
 
-		boost::scoped_array<char> utf8;
+		std::unique_ptr<char[]> utf8;
 		if (xmlStrEqual(import->type(), BAD_CAST "external")) {
 			boost::filesystem::path path;
 			if (!GetAbsolutePathFromReference(import, given_path, model_path, &path)) {
@@ -1695,7 +1695,7 @@ public:
 			cerr << "timeseries without reference" << endl;
 			return false;
 		}
-		boost::scoped_array<char> utf8(GetUtf8FromPath(path));
+		std::unique_ptr<char[]> utf8(GetUtf8FromPath(path));
 		e = sqlite3_bind_text(timeseries_stmt_, 4, utf8.get(), -1, SQLITE_STATIC);
 		if (e != SQLITE_OK) {
 			cerr << "failed to bind ref: " << e << endl;
@@ -3753,9 +3753,9 @@ void CreateViewsOrDie(sqlite3 *db, const View *views, size_t n)
 
 bool Read(sqlite3 *db)
 {
-	boost::scoped_array<char> given_filename(GetGivenFilename(db));
+	std::unique_ptr<char[]> given_filename(GetGivenFilename(db));
 	boost::filesystem::path given_path(given_filename.get());
-	boost::scoped_array<char> model_filename(GetModelFilename(db));
+	std::unique_ptr<char[]> model_filename(GetModelFilename(db));
 	boost::filesystem::path model_path(model_filename.get());
 
 	// prepare database; create tables
