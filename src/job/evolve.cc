@@ -10,13 +10,13 @@
 #include <cstdlib>
 #include <iostream>
 #include <memory>
+#include <random>
 #include <string>
 
 #define BOOST_DATE_TIME_NO_LIB
 #include <boost/interprocess/file_mapping.hpp>
 #include <boost/interprocess/mapped_region.hpp>
 #include <boost/noncopyable.hpp>
-#include <boost/random.hpp>
 
 #include "bc.pb.h"
 
@@ -420,7 +420,7 @@ bool Evolve(sqlite3 *db,
 	}
 
 	// initialize pseudo random number generator
-	std::unique_ptr<boost::mt19937> rng(new boost::mt19937(static_cast<int>(data[kIndexSeed])));
+	std::unique_ptr<std::mt19937> rng(new std::mt19937(static_cast<int>(data[kIndexSeed])));
 	processor->set_rng(rng.get());
 	if (with_pre) preprocessor->set_rng(rng.get());
 	if (with_post) postprocessor->set_rng(rng.get());

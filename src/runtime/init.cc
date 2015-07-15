@@ -11,9 +11,9 @@
 #include <iostream>
 #include <map>
 #include <memory>
+#include <random>
 
 #include <boost/noncopyable.hpp>
-#include <boost/random.hpp>
 #include <boost/uuid/uuid_io.hpp>
 
 #include "bc.pb.h"
@@ -240,7 +240,7 @@ bool Init(sqlite3 *db, const char *layout_file, const char *bc_file, const char 
 	// FIXME: specify the seed given by user
 	int seed = static_cast<int>(time(NULL));
 	data[kIndexSeed] = seed;
-	std::unique_ptr<boost::mt19937> rng(new boost::mt19937(seed));
+	std::unique_ptr<std::mt19937> rng(new std::mt19937(seed));
 	processor->set_rng(rng.get());
 
 	if (!processor->Process(executor.get())) return false;

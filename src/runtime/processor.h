@@ -8,13 +8,13 @@
 #include <iostream>
 #include <iterator>
 #include <memory>
+#include <random>
 #include <set>
 #include <string>
 #include <unordered_set>
 
 #include <boost/noncopyable.hpp>
 #include <boost/ptr_container/ptr_vector.hpp>
-#include <boost/random.hpp>
 #include <boost/uuid/uuid.hpp>
 #include <boost/uuid/uuid_io.hpp>
 
@@ -334,7 +334,7 @@ public:
 
 	void set_tmp(double *tmp) {tmp_ = tmp;}
 	void set_tv(TimeseriesVector *tv) {tv_ = tv;}
-	void set_rng(boost::mt19937 *rng) {rng_ = rng;}
+	void set_rng(std::mt19937 *rng) {rng_ = rng;}
 
 	void CalculateCodeOffset() {
 		code_offset_.reset(new int[bhv_->size()]);
@@ -899,7 +899,7 @@ private:
 	std::unique_ptr<int[]> code_offset_;
 	double *tmp_;
 	TimeseriesVector *tv_;
-	boost::mt19937 *rng_;
+	std::mt19937 *rng_;
 };
 
 #endif
