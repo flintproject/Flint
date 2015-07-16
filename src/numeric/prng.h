@@ -58,4 +58,14 @@ TReal GetUniformVariate(TReal x, TReal y, TRng *rng)
 	return ur(*rng);
 }
 
+template<typename TReal, typename TRng>
+TReal GetWeibullVariate(TReal scale, TReal shape, TRng *rng)
+{
+	if (scale > 0 && shape > 0) {
+		std::weibull_distribution<TReal> w(shape, scale); // parameters given in the reverse order
+		return w(*rng);
+	}
+	return 0.0; // FIXME
+}
+
 #endif // FLINT_NUMERIC_PRNG_H_

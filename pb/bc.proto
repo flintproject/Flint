@@ -146,6 +146,7 @@ message Gen2 {
     kGaussVariate = 2;
     kLognormalVariate = 4;
     kUniformVariate = 3;
+    kWeibullVariate = 5;
   }
 
   required int32 a   = 1;

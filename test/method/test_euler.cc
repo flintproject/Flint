@@ -38,6 +38,7 @@ BOOST_AUTO_TEST_CASE(function)
 		"00000000-0000-0000-0000-000000000000 %lnv#0 ($lognormal_variate 0 1)",
 		"00000000-0000-0000-0000-000000000000 %x0#0 ($poisson_variate 10)",
 		"00000000-0000-0000-0000-000000000000 %x1#0 ($uniform_variate 0 100 0 1)",
+		"00000000-0000-0000-0000-000000000000 %wv#0 ($weibull_variate 1 0.5)",
 		"00000000-0000-0000-0000-000000000000 %v#0 ($lookback %x#0 (minus (plus %time @dt) 0.001))",
 		"00000000-0000-0000-0000-000000000000 %w#0 ($lookback %x#0 (minus (plus %time @dt) @dt))",
 		"00000000-0000-0000-0000-000000000000 %last_time#0 (minus (plus %time @dt) @dt)",

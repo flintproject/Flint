@@ -129,6 +129,17 @@ BOOST_AUTO_TEST_CASE(UniformVariate) {
 		  );
 }
 
+BOOST_AUTO_TEST_CASE(WeibullVariate) {
+	Setup("($weibull_variate %a %b)");
+	BOOST_CHECK(compiler::tac::Tac(db));
+	Check(3,
+		  "  load $1 %a\n"
+		  "  load $2 %b\n"
+		  "  $0 = ($weibull_variate $1 $2)\n"
+		  "  store %x $0\n"
+		  );
+}
+
 BOOST_AUTO_TEST_CASE(PoissonVariate) {
 	Setup("($poisson_variate %y)");
 	BOOST_CHECK(compiler::tac::Tac(db));

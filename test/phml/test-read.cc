@@ -20604,6 +20604,15 @@ BOOST_AUTO_TEST_CASE(variable_to_static) {
 				 "    module-id: 57a14bc8-75f6-11e4-aa25-37030d28703a\n");
 }
 
+BOOST_AUTO_TEST_CASE(weibull)
+{
+	ReadAndCheck(TEST_MODELS("weibull.phml"));
+	std::vector<std::string> impls{
+		"b5a6cbc4-2b5b-11e5-ad31-4f1d7174b098 x (eq %x ($weibull_variate 1 3))",
+	};
+	CheckImpls(impls);
+}
+
 BOOST_AUTO_TEST_CASE(x_capsulated_by) {
 	ReadAndError(TEST_MODELS("x-capsulated-by.phml"),
 				 "module of module-id daa7dafe-7641-4280-9559-2e080e93578b is capsulated by unknown capsule module: 9114256a-d9bf-11e4-8933-5b24fd24d827\n");

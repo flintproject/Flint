@@ -242,6 +242,9 @@ void DoGen2(const bc::Gen2 &c2, double *tmp, TRng *rng)
 	case bc::Gen2::kUniformVariate:
 		tmp[a] = GetUniformVariate(tmp[a1], tmp[a2], rng);
 		break;
+	case bc::Gen2::kWeibullVariate:
+		tmp[a] = GetWeibullVariate(tmp[a1], tmp[a2], rng);
+		break;
 	}
 }
 

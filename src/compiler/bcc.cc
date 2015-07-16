@@ -258,6 +258,7 @@ struct Lexer : lex::lexer<TLexer> {
 		lognormal_variate_ = "$lognormal_variate";
 		poisson_variate_ = "$poisson_variate";
 		uniform_variate_ = "$uniform_variate";
+		weibull_variate_ = "$weibull_variate";
 
 		eulergamma_ = "eulergamma";
 		exponentiale_ = "exponentiale";
@@ -282,6 +283,7 @@ struct Lexer : lex::lexer<TLexer> {
 		this->self += tan_ | tanh_ | times_;
 		this->self += exponential_variate_ | gamma_variate_ | gauss_variate_;
 		this->self += lognormal_variate_ | poisson_variate_ | uniform_variate_;
+		this->self += weibull_variate_;
 		this->self += eulergamma_ | exponentiale_ | pi_;
 		this->self += real | integer | address | label | id;
 	}
@@ -298,6 +300,7 @@ struct Lexer : lex::lexer<TLexer> {
 	lex::token_def<> tan_, tanh_, times_;
 	lex::token_def<> exponential_variate_, gamma_variate_, gauss_variate_;
 	lex::token_def<> lognormal_variate_, poisson_variate_, uniform_variate_;
+	lex::token_def<> weibull_variate_;
 	lex::token_def<> eulergamma_, exponentiale_, pi_;
 	lex::token_def<std::string> id;
 	lex::token_def<int> integer;
@@ -587,6 +590,7 @@ struct Grammar : qi::grammar<TIterator, Body()> {
 			| td.gauss_variate_ [_val = val(bc::Gen2::kGaussVariate)]
 			| td.lognormal_variate_ [_val = val(bc::Gen2::kLognormalVariate)]
 			| td.uniform_variate_ [_val = val(bc::Gen2::kUniformVariate)]
+			| td.weibull_variate_ [_val = val(bc::Gen2::kWeibullVariate)]
 			;
 
 		address = ' ' >> td.address [bind(&ProcessTail, _val, _1)];

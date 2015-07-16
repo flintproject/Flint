@@ -289,6 +289,11 @@ BOOST_AUTO_TEST_CASE(UniformVariate) {
 	BOOST_CHECK(compiler::bcc::Bcc(db, &std::cout));
 }
 
+BOOST_AUTO_TEST_CASE(WeibullVariate) {
+	SetupCall2("$weibull_variate");
+	BOOST_CHECK(compiler::bcc::Bcc(db, &std::cout));
+}
+
 BOOST_AUTO_TEST_CASE(DuplicateLabels) {
 	Setup("72b52587-043b-4950-98bb-b29c97237140",
 		  "%boolin",

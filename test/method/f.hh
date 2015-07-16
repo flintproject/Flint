@@ -38,6 +38,7 @@ struct F {
 		input.Exec("INSERT INTO input VALUES ('00000000-0000-0000-0000-000000000000', '(eq %lnv ($lognormal_variate 0 1))')");
 		input.Exec("INSERT INTO input VALUES ('00000000-0000-0000-0000-000000000000', '(eq %x0 ($poisson_variate 10))')");
 		input.Exec("INSERT INTO input VALUES ('00000000-0000-0000-0000-000000000000', '(eq %x1 ($uniform_variate 0 100 0 1))')");
+		input.Exec("INSERT INTO input VALUES ('00000000-0000-0000-0000-000000000000', '(eq %wv ($weibull_variate 1 0.5))')");
 		input.Exec("INSERT INTO input VALUES ('00000000-0000-0000-0000-000000000000', '(eq %v ($Delay %x 0.001))')");
 		input.Exec("INSERT INTO input VALUES ('00000000-0000-0000-0000-000000000000', '(eq %w ($DeltaTime %x))')");
 		input.Exec("INSERT INTO input VALUES ('00000000-0000-0000-0000-000000000000', '(eq %last_time ($DeltaTime %time))')");
