@@ -2,7 +2,18 @@
 #ifndef FLINT_NUMERIC_PRNG_H_
 #define FLINT_NUMERIC_PRNG_H_
 
+#include <limits>
 #include <random>
+
+template<typename TReal>
+TReal FallbackValue()
+{
+	if (std::numeric_limits<TReal>::has_signaling_NaN)
+		return std::numeric_limits<TReal>::signaling_NaN();
+	if (std::numeric_limits<TReal>::has_quiet_NaN)
+		return std::numeric_limits<TReal>::quiet_NaN();
+	return 0.0; // FIXME
+}
 
 template<typename TReal, typename TRng>
 TReal GetExponentialVariate(TReal lmbd, TRng *rng)
@@ -11,7 +22,7 @@ TReal GetExponentialVariate(TReal lmbd, TRng *rng)
 		std::exponential_distribution<TReal> p(lmbd);
 		return p(*rng);
 	}
-	return 0.0; // FIXME
+	return FallbackValue<TReal>();
 }
 
 template<typename TReal, typename TRng>
@@ -21,7 +32,7 @@ int GetPoissonVariate(TReal mean, TRng *rng)
 		std::poisson_distribution<int> p(mean);
 		return p(*rng);
 	}
-	return 0.0; // FIXME
+	return FallbackValue<TReal>();
 }
 
 template<typename TReal, typename TRng>
@@ -31,7 +42,7 @@ TReal GetGammaVariate(TReal alpha, TReal beta, TRng *rng)
 		std::gamma_distribution<TReal> g(alpha, beta);
 		return g(*rng);
 	}
-	return 0.0; // FIXME
+	return FallbackValue<TReal>();
 }
 
 template<typename TReal, typename TRng>
@@ -48,7 +59,7 @@ TReal GetLognormalVariate(TReal mu, TReal sigma, TRng *rng)
 		std::lognormal_distribution<> ln(mu, sigma);
 		return ln(*rng);
 	}
-	return 0.0; // FIXME
+	return FallbackValue<TReal>();
 }
 
 template<typename TReal, typename TRng>
@@ -65,7 +76,7 @@ TReal GetWeibullVariate(TReal scale, TReal shape, TRng *rng)
 		std::weibull_distribution<TReal> w(shape, scale); // parameters given in the reverse order
 		return w(*rng);
 	}
-	return 0.0; // FIXME
+	return FallbackValue<TReal>();
 }
 
 #endif // FLINT_NUMERIC_PRNG_H_
