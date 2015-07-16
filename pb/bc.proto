@@ -144,6 +144,7 @@ message Gen2 {
   enum Type {
     kGammaVariate = 1;
     kGaussVariate = 2;
+    kLognormalVariate = 4;
     kUniformVariate = 3;
   }
 

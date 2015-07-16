@@ -107,6 +107,17 @@ BOOST_AUTO_TEST_CASE(GaussVariate) {
 		  );
 }
 
+BOOST_AUTO_TEST_CASE(LognormalVariate) {
+	Setup("($lognormal_variate %y %z)");
+	BOOST_CHECK(compiler::tac::Tac(db));
+	Check(3,
+		  "  load $1 %y\n"
+		  "  load $2 %z\n"
+		  "  $0 = ($lognormal_variate $1 $2)\n"
+		  "  store %x $0\n"
+		  );
+}
+
 BOOST_AUTO_TEST_CASE(UniformVariate) {
 	Setup("($uniform_variate %y %z %a %b)");
 	BOOST_CHECK(compiler::tac::Tac(db));

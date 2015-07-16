@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<is:insilico-model xmlns:m="http://www.w3.org/1998/Math/MathML" xmlns:is="http://www.physiome.jp/ns/insilicoml" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemalocation="http://www.physiome.jp/ns/insilicoml-1.0 insilicoml.xsd" version="1.0">
+  <is:header>
+    <is:model-name>lognormal</is:model-name>
+    <is:meta-information>
+      <is:article-set />
+      <is:isml-creator-set />
+    </is:meta-information>
+    <is:description>An example using lognormal_variate()</is:description>
+  </is:header>
+  <is:unit-set>
+    <is:unit unit-id="0">
+      <is:name>dimensionless</is:name>
+    </is:unit>
+    <is:unit unit-id="1">
+      <is:name>meter</is:name>
+    </is:unit>
+    <is:unit unit-id="2">
+      <is:name>kilogram</is:name>
+    </is:unit>
+    <is:unit unit-id="3">
+      <is:name>second</is:name>
+    </is:unit>
+    <is:unit unit-id="4">
+      <is:name>ampere</is:name>
+    </is:unit>
+    <is:unit unit-id="5">
+      <is:name>kelvin</is:name>
+    </is:unit>
+    <is:unit unit-id="6">
+      <is:name>mole</is:name>
+    </is:unit>
+    <is:unit unit-id="7">
+      <is:name>candela</is:name>
+    </is:unit>
+  </is:unit-set>
+  <is:edge-set />
+  <is:module-set>
+    <is:module module-id="9f3ff5b6-2b53-11e5-86cf-1b4225aa123b" type="functional-unit">
+      <is:property>
+        <is:name>a</is:name>
+        <is:capsulation state="false" />
+        <is:template state="false" />
+        <is:instance state="false" />
+        <is:description>a</is:description>
+      </is:property>
+      <is:port-set />
+      <is:physical-quantity-set>
+        <is:physical-quantity type="variable-parameter" physical-quantity-id="1">
+          <is:name>x</is:name>
+          <is:implementation>
+            <is:definition format="mathml" type="ae">
+              <m:math>
+                <m:apply>
+                  <m:eq />
+                  <m:ci>x</m:ci>
+                  <m:apply>
+                    <m:csymbol>lognormal_variate</m:csymbol>
+                    <m:cn>0</m:cn>
+                    <m:cn>1</m:cn>
+                  </m:apply>
+                </m:apply>
+              </m:math>
+            </is:definition>
+          </is:implementation>
+          <is:dimension type="scalar" />
+          <is:value-type-set>
+            <is:value-type unit-id="0" precision="double" />
+          </is:value-type-set>
+          <is:description>A random variable based on the log-normal distribution</is:description>
+        </is:physical-quantity>
+      </is:physical-quantity-set>
+    </is:module>
+  </is:module-set>
+</is:insilico-model>

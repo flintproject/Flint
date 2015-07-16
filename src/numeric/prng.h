@@ -42,6 +42,16 @@ TReal GetGaussVariate(TReal mean, TReal sigma, TRng *rng)
 }
 
 template<typename TReal, typename TRng>
+TReal GetLognormalVariate(TReal mu, TReal sigma, TRng *rng)
+{
+	if (sigma > 0) {
+		std::lognormal_distribution<> ln(mu, sigma);
+		return ln(*rng);
+	}
+	return 0.0; // FIXME
+}
+
+template<typename TReal, typename TRng>
 TReal GetUniformVariate(TReal x, TReal y, TRng *rng)
 {
 	std::uniform_real_distribution<TReal> ur(x, y);

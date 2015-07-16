@@ -279,6 +279,11 @@ BOOST_AUTO_TEST_CASE(GaussVariate) {
 	BOOST_CHECK(compiler::bcc::Bcc(db, &std::cout));
 }
 
+BOOST_AUTO_TEST_CASE(LognormalVariate) {
+	SetupCall2("$lognormal_variate");
+	BOOST_CHECK(compiler::bcc::Bcc(db, &std::cout));
+}
+
 BOOST_AUTO_TEST_CASE(UniformVariate) {
 	SetupCall2("$uniform_variate");
 	BOOST_CHECK(compiler::bcc::Bcc(db, &std::cout));

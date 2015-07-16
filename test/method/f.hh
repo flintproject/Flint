@@ -35,6 +35,7 @@ struct F {
 		input.Exec("INSERT INTO input VALUES ('00000000-0000-0000-0000-000000000000', '(eq %x ($exponential_variate 10))')");
 		input.Exec("INSERT INTO input VALUES ('00000000-0000-0000-0000-000000000000', '(eq %y ($gamma_variate 2 1))')");
 		input.Exec("INSERT INTO input VALUES ('00000000-0000-0000-0000-000000000000', '(eq %z ($gauss_variate 0 1))')");
+		input.Exec("INSERT INTO input VALUES ('00000000-0000-0000-0000-000000000000', '(eq %lnv ($lognormal_variate 0 1))')");
 		input.Exec("INSERT INTO input VALUES ('00000000-0000-0000-0000-000000000000', '(eq %x0 ($poisson_variate 10))')");
 		input.Exec("INSERT INTO input VALUES ('00000000-0000-0000-0000-000000000000', '(eq %x1 ($uniform_variate 0 100 0 1))')");
 		input.Exec("INSERT INTO input VALUES ('00000000-0000-0000-0000-000000000000', '(eq %v ($Delay %x 0.001))')");

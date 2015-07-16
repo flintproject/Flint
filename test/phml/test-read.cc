@@ -397,6 +397,15 @@ BOOST_AUTO_TEST_CASE(LR_pulse_189_164)
 	CheckPqs(pqs);
 }
 
+BOOST_AUTO_TEST_CASE(lognormal)
+{
+	ReadAndCheck(TEST_MODELS("lognormal.phml"));
+	std::vector<std::string> impls{
+		"9f3ff5b6-2b53-11e5-86cf-1b4225aa123b x (eq %x ($lognormal_variate 0 1))",
+	};
+	CheckImpls(impls);
+}
+
 BOOST_AUTO_TEST_CASE(ringed_Beeler_Reuter_1977_model_with_static_instance)
 {
 	ReadAndCheck(TEST_MODELS("ringed_Beeler_Reuter_1977_model_with_static_instance.isml"));
