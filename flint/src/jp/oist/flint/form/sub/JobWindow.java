@@ -3,9 +3,10 @@ package jp.oist.flint.form.sub;
 
 import jp.oist.flint.form.job.CombinationModel;
 import jp.oist.flint.form.job.GadgetDialog;
-import jp.oist.flint.form.job.ParameterFilter;
 import jp.oist.flint.form.job.JobList;
+import jp.oist.flint.form.job.ParameterFilter;
 import jp.oist.flint.garuda.GarudaClient;
+import jp.oist.flint.job.Progress;
 import jp.oist.flint.phsp.entity.ParameterSet;
 import jp.sbi.garuda.platform.commons.net.GarudaConnectionNotInitializedException;
 import java.awt.CardLayout;
@@ -442,7 +443,7 @@ public class JobWindow extends javax.swing.JFrame
     }
 
     @Override
-    public void setProgress (int index, int progress) {
+    public void setProgress(int index, Progress progress) {
         mJobViewer.setProgress(index, progress);
         mJobList.setProgress(index, progress);
 

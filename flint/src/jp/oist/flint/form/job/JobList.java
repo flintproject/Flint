@@ -1,6 +1,7 @@
 /* -*- Mode: Java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- vim:set ts=4 sw=4 sts=4 et: */
 package jp.oist.flint.form.job;
 
+import jp.oist.flint.job.Progress;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Container;
@@ -185,7 +186,7 @@ public class JobList extends JobViewerComponent
     }
 
     @Override
-    public void setProgress (int index, int progress) {
+    public void setProgress(int index, Progress progress) {
         if (0<=index && index < mCells.size())
             mCells.get(index).setProgress(progress);
     }

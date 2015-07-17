@@ -2,6 +2,7 @@
 package jp.oist.flint.form.job;
 
 import jp.oist.flint.garuda.GarudaClient;
+import jp.oist.flint.job.Progress;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -9,6 +10,7 @@ import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.text.SimpleDateFormat;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
@@ -241,13 +243,18 @@ public class JobListCell extends JPanel implements ActionListener  {
         return mProgressBar.getModel().getValueIsAdjusting();
     }
 
-    public void setMessage (String msg) {
-        mProgressBar.setString(msg);
-    }
-
-    public void setProgress (int progress) {
-        mProgressBar.setValue(progress);
-        String message = (isCancelled())? "cancelled" : progress + " %";
+    public void setProgress(Progress progress) {
+        int percent = progress.getPercent();
+        mProgressBar.setValue(percent);
+        String message;
+        if (isCancelled()) {
+            message = "cancelled";
+        } else {
+            SimpleDateFormat sdf = new SimpleDateFormat("yyy-MM-dd HH:mm:ss");
+            String date = sdf.format(progress.getDateOfLastModified());
+            String nf = String.format("%1$3d", percent);
+            message = nf + " % [" + date + "]";
+        }
 
         if (isFinished()) {
             btn_Cancel.setEnabled(false);

@@ -5,6 +5,7 @@ package jp.oist.flint.executor;
 import jp.oist.flint.dao.JobDao;
 import jp.oist.flint.dao.SimulationDao;
 import jp.oist.flint.dao.TaskDao;
+import jp.oist.flint.job.Progress;
 import jp.oist.flint.sedml.ISimulationConfiguration;
 import jp.oist.flint.sedml.ISimulationConfigurationList;
 import org.apache.log4j.Logger;
@@ -107,7 +108,7 @@ public class PhspProgressMonitor implements FileListener, Runnable {
         mPropetyChangeSupport.firePropertyChange(propertyName, oldValue, newValue);
     }
 
-    protected void setProgress(int taskId, int jobId, final int progress) {
+    private void setProgress(int taskId, int jobId, final Progress progress) {
         if (!getPropertyChangeSupport().hasListeners("progress"))
             return;
 
@@ -145,7 +146,7 @@ public class PhspProgressMonitor implements FileListener, Runnable {
                 if (task.isCancelled())
                     job.cancel(true);
 
-                setProgress(taskId, jobId, 0);
+                setProgress(taskId, jobId, job.getProgress());
 
                 synchronized (mLock) {
                     mQueue.addFirst(job);
@@ -173,13 +174,17 @@ public class PhspProgressMonitor implements FileListener, Runnable {
                 for (int i=0; i<mQueue.size(); i++) {
                     JobDao job = mQueue.get(i);
 
-                    int progress = job.getProgress();
-                    int taskId = job.getParentTask().getTaskId();
-                    int jobId  = job.getJobId();
-                    setProgress(taskId, jobId, progress);
+                    try {
+                        Progress progress = job.getProgress();
+                        int taskId = job.getParentTask().getTaskId();
+                        int jobId  = job.getJobId();
+                        setProgress(taskId, jobId, progress);
 
-                    if (progress >= 100 || job.isCancelled())
-                        mQueue.remove(i);
+                        if (progress.isCompleted() || job.isCancelled())
+                            mQueue.remove(i);
+                    } catch (IOException ioe) {
+                        // nothing to do
+                    }
                 }
             }
 
@@ -195,7 +200,11 @@ public class PhspProgressMonitor implements FileListener, Runnable {
             int jobCount = task.getCount();
             for (int j=1; j<=jobCount; j++) {
                 JobDao job = task.obtainJob(j);
-                setProgress(i, j, job.getProgress());
+                try {
+                    setProgress(i, j, job.getProgress());
+                } catch (IOException ioe) {
+                    // nothing to do
+                }
             }
         }
     }

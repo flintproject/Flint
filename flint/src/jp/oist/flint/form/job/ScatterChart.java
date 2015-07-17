@@ -1,6 +1,7 @@
 /* -*- Mode: Java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- vim:set ts=4 sw=4 sts=4 et: */
 package jp.oist.flint.form.job;
 
+import jp.oist.flint.job.Progress;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Point;
@@ -160,8 +161,8 @@ public class ScatterChart extends JobViewerComponent
     }
 
     @Override
-    public void setProgress (int index, int progress) {
-        setProgress(0, index, progress);
+    public void setProgress(int index, Progress progress) {
+        setProgress(0, index, progress.getPercent());
     }
 
     public void setProgress (int seriesIndex, int index, int progress) {

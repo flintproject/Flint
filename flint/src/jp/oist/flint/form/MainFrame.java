@@ -7,6 +7,7 @@ import jp.oist.flint.control.FileChooser;
 import jp.oist.flint.control.ModelFileTransferHandler;
 import jp.oist.flint.executor.SimulatorService;
 import jp.oist.flint.filesystem.ModelFileWatcher;
+import jp.oist.flint.job.Progress;
 import jp.oist.flint.phsp.IPhspConfiguration;
 import jp.oist.flint.phsp.entity.Model;
 import jp.oist.flint.form.sub.SubFrame;
@@ -278,7 +279,7 @@ public class MainFrame extends javax.swing.JFrame
                                     SimulationDao simulationDao = simulator.getSimulationDao();
                                     TaskDao taskDao = simulationDao.obtainTask(new File(subFrame.getRelativeModelPath()));
 
-                                    Integer progress = (Integer)evt.getNewValue();
+                                    Progress progress = (Progress)evt.getNewValue();
                                     Map<String, Number> target = (Map<String, Number>)evt.getClientProperty("target");
                                     IProgressManager progressMgr = subFrame.getProgressManager();
                                     int index = progressMgr.indexOf(target);
@@ -288,17 +289,22 @@ public class MainFrame extends javax.swing.JFrame
                                     if (taskDao.isCancelled())
                                         progressMgr.setCancelled(index, rootPaneCheckingEnabled);
 
-                                    progress = taskDao.getProgress();
+                                    int taskProgress;
+                                    try {
+                                        taskProgress = taskDao.getProgress();
+                                    } catch (IOException ioe) {
+                                        taskProgress = 0; // FIXME
+                                    }
                                     ProgressPane.ListCell cell = 
                                             mProgressPane.getListCellOfModel(new File(modelPath));
 
                                     String status;
                                     if (taskDao.isFinished()) {
                                         status = (taskDao.isCancelled())? "finished" : "completed";
-                                        cell.progressFinished(status, 0, 100, progress);
+                                        cell.progressFinished(status, 0, 100, taskProgress);
                                     } else if (taskDao.isStarted()) { 
-                                        status = (taskDao.isCancelled())? "cancelling..." :  progress + " %";
-                                        cell.setProgress(status, 0, 100, progress);
+                                        status = (taskDao.isCancelled())? "cancelling..." : taskProgress + " %";
+                                        cell.setProgress(status, 0, 100, taskProgress);
                                     }
                                 }
                             });

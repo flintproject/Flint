@@ -1,6 +1,7 @@
 /* -*- Mode: Java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- vim:set ts=4 sw=4 sts=4 et: */
 package jp.oist.flint.form.job;
 
+import jp.oist.flint.job.Progress;
 import java.awt.AWTEvent;
 import java.awt.Color;
 import java.awt.Component;
@@ -270,7 +271,7 @@ public abstract class JobViewerComponent extends JPanel
 
     abstract public int getProgress (int index);
 
-    abstract public void setProgress (int index, int progress);
+    abstract public void setProgress(int index, Progress progress);
 
     abstract public boolean isCancelled (int index);
 
@@ -379,7 +380,7 @@ public abstract class JobViewerComponent extends JPanel
         }
 
         @Override
-        public void setProgress(int index, int progress) {
+        public void setProgress(int index, Progress progress) {
             // nothing to do...
         }
 

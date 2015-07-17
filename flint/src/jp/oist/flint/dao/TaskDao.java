@@ -1,6 +1,7 @@
 /* -*- Mode: Java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- vim:set ts=4 sw=4 sts=4 et: */
 package jp.oist.flint.dao;
 
+import jp.oist.flint.job.Progress;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
@@ -90,7 +91,7 @@ public class TaskDao extends DaoObject {
         for (int i=1; i<=jobCount; i++) {
             JobDao job = obtainJob(i);
             if (job == null) return false;
-            if (job.isCancelled() || job.isCompleted()) continue;
+            if (job.isFinished()) continue;
             return false;
         }
         return true;
@@ -107,7 +108,7 @@ public class TaskDao extends DaoObject {
         for (int i=1; i<=jobCount; i++) {
             JobDao job = obtainJob(i);
 
-            if (job == null || job.getProgress()==100 || job.isCancelled())
+            if (job == null || job.isFinished())
                 continue;
 
             job.cancel(true);
@@ -246,7 +247,7 @@ public class TaskDao extends DaoObject {
         return getCount(new Condition("status = 'generated'"));
     }
 
-    public int getProgress() {
+    public int getProgress() throws IOException {
         int jobCount = getCount();
         if (jobCount <= 0)
             return 0;
@@ -254,12 +255,13 @@ public class TaskDao extends DaoObject {
         int total = 0;
         for (int i=1; i<=jobCount; i++) {
             JobDao job = obtainJob(i);
-            int progress = 0;
-
-            if (job == null || (progress=job.getProgress())<=0)
+            if (job == null)
                 continue;
-
-            total += progress;
+            Progress progress = job.getProgress();
+            int p = progress.getPercent();
+            if (p <= 0)
+                continue;
+            total += p;
         }
         return (int)((double)total / (double)jobCount);
     }

@@ -1,7 +1,7 @@
 /* -*- Mode: Java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- vim:set ts=4 sw=4 sts=4 et: */
-
 package jp.oist.flint.dao;
 
+import jp.oist.flint.job.Progress;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -12,6 +12,8 @@ import java.util.Map;
 public class JobDao {
 
     private final File mWorkingDir;
+
+    private final File mStatusFile;
 
     private final static int CANCEL_OPEARTION = 0x01;
 
@@ -24,6 +26,7 @@ public class JobDao {
     public JobDao(TaskDao parent, File workingDir, Map<String, Number> combination, int jobId) {
         mParent = parent;
         mWorkingDir = workingDir;
+        mStatusFile = new File(mWorkingDir, "status");
         mJobId = jobId;
 
         mCombination = combination;
@@ -43,7 +46,7 @@ public class JobDao {
         if (force) {
             if (!controlFile.exists()) {
                 controlFile.createNewFile();
-                getPercentageFile().createNewFile();
+                mStatusFile.createNewFile();
             }
         }
 
@@ -51,7 +54,7 @@ public class JobDao {
             throw new IOException(String.format("%s didn't exist or you couldn't write into it.",
                                                 controlFile.getName()));
 
-        if (getProgress() == 100)
+        if (getProgress().isCompleted())
             throw new IOException("It was already simulated.");
 
         try (RandomAccessFile raf = new RandomAccessFile(controlFile, "rws")) {
@@ -63,15 +66,8 @@ public class JobDao {
         return Collections.unmodifiableMap(mCombination);
     }
 
-    public int getProgress() {
-        File percentageFile = getPercentageFile();
-        if (!percentageFile.exists() || !percentageFile.canRead())
-            return -1;
-        try (FileInputStream fis = new FileInputStream(percentageFile)) {
-            return fis.read();
-        } catch (IOException ex) {
-            return -1;
-        }
+    public Progress getProgress() throws IOException {
+        return new Progress(mStatusFile);
     }
 
     public int getJobId() {
@@ -82,21 +78,17 @@ public class JobDao {
         return new File(mWorkingDir, "control");
     }
 
-    public File getPercentageFile() {
-        return new File(mWorkingDir, "status");
-    }
-
     public File getIsdFile() {
         return new File(mWorkingDir, "isd");
     }
 
-    public boolean isCancelled() {
+    public boolean isCancelled() throws IOException {
         File controlFile = getControlFile();
 
         if (!controlFile.exists() || !controlFile.canWrite())
             return false;
 
-        if (getProgress() == 100)
+        if (getProgress().isCompleted())
             return false;
 
         try (RandomAccessFile raf = new RandomAccessFile(controlFile, "rws")) {
@@ -107,7 +99,12 @@ public class JobDao {
         }
     }
 
-    public boolean isCompleted() {
-        return getProgress() == 100;
+    public boolean isFinished() {
+        try {
+            Progress progress = getProgress();
+            return progress.isCompleted() || isCancelled();
+        } catch (IOException ioe) {
+            return false;
+        }
     }
 }

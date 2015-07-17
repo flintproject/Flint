@@ -1,6 +1,7 @@
 /* -*- Mode: Java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- vim:set ts=4 sw=4 sts=4 et: */
 package jp.oist.flint.form.job;
 
+import jp.oist.flint.job.Progress;
 import java.awt.BorderLayout;
 import java.awt.HeadlessException;
 import java.beans.PropertyChangeEvent;
@@ -313,10 +314,15 @@ public class PlotWindow extends javax.swing.JFrame
 
     @Override
     public void displaySummary(Summary summary) {
-        lbl_trackInfo.setText(summary.getName() + " "
-                + " max:" + Utility.getEfficientRound(new BigDecimal(summary.getMax()), 3)
-                + " min:" + Utility.getEfficientRound(new BigDecimal(summary.getMin()), 3)
-                + " [" + mTaskDao.obtainJob(mJobId).getProgress() + " %]");
+        try {
+            Progress progress = mTaskDao.obtainJob(mJobId).getProgress();
+            lbl_trackInfo.setText(summary.getName() + " "
+                                  + " max:" + Utility.getEfficientRound(new BigDecimal(summary.getMax()), 3)
+                                  + " min:" + Utility.getEfficientRound(new BigDecimal(summary.getMin()), 3)
+                                  + " [" + progress.getPercent() + " %]");
+        } catch (IOException ioe) {
+            // nothing to do
+        }
     }
 
     @Override
