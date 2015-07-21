@@ -1744,10 +1744,9 @@ private:
 class CapsulatedByValidator {
 public:
 	explicit CapsulatedByValidator(sqlite3 *db)
-		: db_(db),
-		  query_stmt_(NULL)
+		: query_stmt_(NULL)
 	{
-		int e = sqlite3_prepare_v2(db_, kQuery, -1, &query_stmt_, NULL);
+		int e = sqlite3_prepare_v2(db, kQuery, -1, &query_stmt_, NULL);
 		if (e != SQLITE_OK) {
 			cerr << "failed to prepare statement: " << kQuery << ": " << e << endl;
 			exit(EXIT_FAILURE);
@@ -1780,7 +1779,6 @@ public:
 private:
 	static const char kQuery[];
 
-	sqlite3 *db_;
 	sqlite3_stmt *query_stmt_;
 };
 
