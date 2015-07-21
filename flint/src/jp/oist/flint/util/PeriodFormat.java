@@ -30,4 +30,10 @@ public class PeriodFormat {
         return sb.toString();
     }
 
+    public static String fromTo(long from, long to) {
+		if (to == 0)
+			return "-";
+		return fromTo(new Date(from), new Date(to));
+    }
+
 }

@@ -4,19 +4,21 @@ package jp.oist.flint.job;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.Date;
 
 public class Progress {
 
     private long mStarted;
 
-    private long mLastModified;
+    private long mLastUpdated;
 
     private int mPercent;
 
     public Progress(File start, File file) {
         mStarted = start.lastModified();
-        mLastModified = file.lastModified();
+        mLastUpdated = file.lastModified();
+        if (mLastUpdated < mStarted) {
+            mLastUpdated = mStarted;
+        }
         if (!file.exists() || !file.canRead()) {
             mPercent = 0;
             return;
@@ -28,16 +30,16 @@ public class Progress {
         }
     }
 
-    public Date getDateOfStarted() {
-        return new Date(mStarted);
+    public long getStarted() {
+        return mStarted;
     }
 
-    public Date getDateOfLastModified() {
-        return new Date(mLastModified);
+    public long getLastUpdated() {
+        return mLastUpdated;
     }
 
     public long getElapsedMillis() {
-        return mLastModified - mStarted;
+        return mLastUpdated - mStarted;
     }
 
     public int getPercent() {

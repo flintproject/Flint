@@ -254,8 +254,8 @@ public class JobListCell extends JPanel implements ActionListener  {
         }
         sb.append(String.format("%1$3d", percent));
         sb.append(" % | ");
-        sb.append(PeriodFormat.fromTo(progress.getDateOfStarted(),
-                                      progress.getDateOfLastModified()));
+        sb.append(PeriodFormat.fromTo(progress.getStarted(),
+                                      progress.getLastUpdated()));
         sb.append(" (");
         sb.append(DurationFormat.fromMillis(progress.getElapsedMillis()));
         sb.append(")");
