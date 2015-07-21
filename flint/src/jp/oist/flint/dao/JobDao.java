@@ -66,8 +66,8 @@ public class JobDao {
         return Collections.unmodifiableMap(mCombination);
     }
 
-    public Progress getProgress() throws IOException {
-        return new Progress(mStatusFile);
+    public Progress getProgress() {
+        return new Progress(new File(mWorkingDir, "start"), mStatusFile);
     }
 
     public int getJobId() {
@@ -82,7 +82,7 @@ public class JobDao {
         return new File(mWorkingDir, "isd");
     }
 
-    public boolean isCancelled() throws IOException {
+    public boolean isCancelled() {
         File controlFile = getControlFile();
 
         if (!controlFile.exists() || !controlFile.canWrite())
@@ -100,11 +100,7 @@ public class JobDao {
     }
 
     public boolean isFinished() {
-        try {
-            Progress progress = getProgress();
-            return progress.isCompleted() || isCancelled();
-        } catch (IOException ioe) {
-            return false;
-        }
+        Progress progress = getProgress();
+        return progress.isCompleted() || isCancelled();
     }
 }

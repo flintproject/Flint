@@ -247,7 +247,7 @@ public class TaskDao extends DaoObject {
         return getCount(new Condition("status = 'generated'"));
     }
 
-    public int getProgress() throws IOException {
+    public int getProgress() {
         int jobCount = getCount();
         if (jobCount <= 0)
             return 0;

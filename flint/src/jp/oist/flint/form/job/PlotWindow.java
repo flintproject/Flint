@@ -314,15 +314,11 @@ public class PlotWindow extends javax.swing.JFrame
 
     @Override
     public void displaySummary(Summary summary) {
-        try {
-            Progress progress = mTaskDao.obtainJob(mJobId).getProgress();
-            lbl_trackInfo.setText(summary.getName() + " "
-                                  + " max:" + Utility.getEfficientRound(new BigDecimal(summary.getMax()), 3)
-                                  + " min:" + Utility.getEfficientRound(new BigDecimal(summary.getMin()), 3)
-                                  + " [" + progress.getPercent() + " %]");
-        } catch (IOException ioe) {
-            // nothing to do
-        }
+        Progress progress = mTaskDao.obtainJob(mJobId).getProgress();
+        lbl_trackInfo.setText(summary.getName() + " "
+                              + " max:" + Utility.getEfficientRound(new BigDecimal(summary.getMax()), 3)
+                              + " min:" + Utility.getEfficientRound(new BigDecimal(summary.getMin()), 3)
+                              + " [" + progress.getPercent() + " %]");
     }
 
     @Override

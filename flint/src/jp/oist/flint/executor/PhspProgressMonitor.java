@@ -174,17 +174,13 @@ public class PhspProgressMonitor implements FileListener, Runnable {
                 for (int i=0; i<mQueue.size(); i++) {
                     JobDao job = mQueue.get(i);
 
-                    try {
-                        Progress progress = job.getProgress();
-                        int taskId = job.getParentTask().getTaskId();
-                        int jobId  = job.getJobId();
-                        setProgress(taskId, jobId, progress);
+                    Progress progress = job.getProgress();
+                    int taskId = job.getParentTask().getTaskId();
+                    int jobId  = job.getJobId();
+                    setProgress(taskId, jobId, progress);
 
-                        if (progress.isCompleted() || job.isCancelled())
-                            mQueue.remove(i);
-                    } catch (IOException ioe) {
-                        // nothing to do
-                    }
+                    if (progress.isCompleted() || job.isCancelled())
+                        mQueue.remove(i);
                 }
             }
 
@@ -200,11 +196,7 @@ public class PhspProgressMonitor implements FileListener, Runnable {
             int jobCount = task.getCount();
             for (int j=1; j<=jobCount; j++) {
                 JobDao job = task.obtainJob(j);
-                try {
-                    setProgress(i, j, job.getProgress());
-                } catch (IOException ioe) {
-                    // nothing to do
-                }
+                setProgress(i, j, job.getProgress());
             }
         }
     }

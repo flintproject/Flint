@@ -289,12 +289,7 @@ public class MainFrame extends javax.swing.JFrame
                                     if (taskDao.isCancelled())
                                         progressMgr.setCancelled(index, rootPaneCheckingEnabled);
 
-                                    int taskProgress;
-                                    try {
-                                        taskProgress = taskDao.getProgress();
-                                    } catch (IOException ioe) {
-                                        taskProgress = 0; // FIXME
-                                    }
+                                    int taskProgress = taskDao.getProgress();
                                     ProgressPane.ListCell cell = 
                                             mProgressPane.getListCellOfModel(new File(modelPath));
 

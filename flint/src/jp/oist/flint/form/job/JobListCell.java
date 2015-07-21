@@ -3,6 +3,8 @@ package jp.oist.flint.form.job;
 
 import jp.oist.flint.garuda.GarudaClient;
 import jp.oist.flint.job.Progress;
+import jp.oist.flint.util.DurationFormat;
+import jp.oist.flint.util.PeriodFormat;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -10,7 +12,6 @@ import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.text.SimpleDateFormat;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
@@ -246,21 +247,24 @@ public class JobListCell extends JPanel implements ActionListener  {
     public void setProgress(Progress progress) {
         int percent = progress.getPercent();
         mProgressBar.setValue(percent);
-        String message;
+
+        StringBuilder sb = new StringBuilder();
         if (isCancelled()) {
-            message = "cancelled";
-        } else {
-            SimpleDateFormat sdf = new SimpleDateFormat("yyy-MM-dd HH:mm:ss");
-            String date = sdf.format(progress.getDateOfLastModified());
-            String nf = String.format("%1$3d", percent);
-            message = nf + " % [" + date + "]";
+            sb.append("cancelled | ");
         }
+        sb.append(String.format("%1$3d", percent));
+        sb.append(" % | ");
+        sb.append(PeriodFormat.fromTo(progress.getDateOfStarted(),
+                                      progress.getDateOfLastModified()));
+        sb.append(" (");
+        sb.append(DurationFormat.fromMillis(progress.getElapsedMillis()));
+        sb.append(")");
 
         if (isFinished()) {
             btn_Cancel.setEnabled(false);
         }
 
-        mProgressBar.setString(message);
+        mProgressBar.setString(sb.toString());
         mProgressBar.repaint();
     }
 

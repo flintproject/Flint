@@ -8,11 +8,14 @@ import java.util.Date;
 
 public class Progress {
 
+    private long mStarted;
+
     private long mLastModified;
 
     private int mPercent;
 
-    public Progress(File file) throws IOException {
+    public Progress(File start, File file) {
+        mStarted = start.lastModified();
         mLastModified = file.lastModified();
         if (!file.exists() || !file.canRead()) {
             mPercent = 0;
@@ -20,11 +23,21 @@ public class Progress {
         }
         try (FileInputStream fis = new FileInputStream(file)) {
             mPercent = fis.read();
+        } catch (IOException ioe) {
+            mPercent = 0;
         }
+    }
+
+    public Date getDateOfStarted() {
+        return new Date(mStarted);
     }
 
     public Date getDateOfLastModified() {
         return new Date(mLastModified);
+    }
+
+    public long getElapsedMillis() {
+        return mLastModified - mStarted;
     }
 
     public int getPercent() {
