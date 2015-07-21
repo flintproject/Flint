@@ -178,13 +178,6 @@ public class TaskDaoTest {
     }
 
     @Test
-    public void testGetProgress() {
-        int taskId = 1;
-        TaskDao task = mSimulationDao.obtainTask(taskId);
-        Assert.assertEquals(52, task.getProgress());
-    }
-
-    @Test
     public void testGetIndices() {
         int taskId = 1;
         TaskDao task = mSimulationDao.obtainTask(taskId);
