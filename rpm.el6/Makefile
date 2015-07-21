@@ -4,7 +4,7 @@ include config.mk
 
 ARCH := $(shell uname -m)
 
-VERSION = 1.3.0
+VERSION = 1.4.0
 RELEASE = 1
 
 DEPS := \
