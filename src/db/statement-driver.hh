@@ -14,7 +14,7 @@ public:
 
 	~StatementDriver();
 
-	sqlite3_stmt *stmt() {return stmt_;}
+	sqlite3_stmt *stmt() const {return stmt_;}
 
 private:
 	sqlite3_stmt *stmt_;

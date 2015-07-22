@@ -115,6 +115,7 @@ libflintxx_la_SOURCES = \
     modelpath.cc \
     phml/combine-all.cc \
     phml/combine.cc \
+    phml/delay-arg-validator.cc \
     phml/graph-iv-rewriter.cc \
     phml/graph-math-rewriter.cc \
     phml/import.cc \

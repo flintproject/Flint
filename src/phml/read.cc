@@ -26,6 +26,7 @@
 #include "db/query.h"
 #include "modelpath.h"
 #include "phml/definition_dumper.h"
+#include "phml/delay-arg-validator.hh"
 #include "phml/graph-iv-rewriter.h"
 #include "phml/graph-math-rewriter.h"
 #include "phml/graph_reader.h"
@@ -3792,6 +3793,10 @@ bool Read(sqlite3 *db)
 	{
 		std::unique_ptr<CapsulatedByValidator> validator(new CapsulatedByValidator(db));
 		if (!validator->Validate()) return false;
+	}
+	{
+		DelayArgValidator dav(db);
+		if (!dav.Validate()) return false;
 	}
 
 	{

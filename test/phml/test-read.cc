@@ -20618,4 +20618,9 @@ BOOST_AUTO_TEST_CASE(x_capsulated_by) {
 				 "module of module-id daa7dafe-7641-4280-9559-2e080e93578b is capsulated by unknown capsule module: 9114256a-d9bf-11e4-8933-5b24fd24d827\n");
 }
 
+BOOST_AUTO_TEST_CASE(x_delay_without_max_delay) {
+	ReadAndError(TEST_MODELS("x-delay-without-max-delay.phml"),
+				 "a is given as 1st argument of Delay(), but it lacks <max-delay>\n");
+}
+
 BOOST_AUTO_TEST_SUITE_END()
