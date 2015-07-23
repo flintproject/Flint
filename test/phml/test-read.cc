@@ -20588,6 +20588,11 @@ BOOST_AUTO_TEST_CASE(state_to_static) {
 				 "    module-id: 3cb504a6-75f8-11e4-85b6-8b3365a37bec\n");
 }
 
+BOOST_AUTO_TEST_CASE(static_to_static)
+{
+	ReadAndCheck(TEST_MODELS("static-to-static.phml"));
+}
+
 BOOST_AUTO_TEST_CASE(swapped_definitions) {
 	ReadAndError(TEST_MODELS("swapped-definitions.phml"),
 				 "invalid definition of <implementation> for y in 22ddc4e8-c6ff-11e4-a78c-576e48c58a72\n");

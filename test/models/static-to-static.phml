@@ -1,0 +1,243 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<is:insilico-model  xmlns:m="http://www.w3.org/1998/Math/MathML" xmlns:is="http://www.physiome.jp/ns/insilicoml" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:pd="http://www.physiodesigner.org/2012/ns/physiodesigner/1.0" version="1.0" xsi:schemalocation="http://www.physiome.jp/ns/insilicoml-1.0 insilicoml.xsd">
+<is:header>
+<is:model-name>static-to-static</is:model-name>
+<is:numerical-configuration>
+<is:time-discretization unit-id="12" evolution="true">
+<is:step>0.01</is:step>
+<is:step-min/>
+<is:step-max/>
+</is:time-discretization>
+<is:simulation-time-span unit-id="12">10</is:simulation-time-span>
+<is:algorithm>
+<is:integration name="euler"/>
+</is:algorithm>
+</is:numerical-configuration>
+</is:header>
+<is:unit-set>
+<is:unit unit-id="0">
+<is:name>dimensionless</is:name>
+</is:unit>
+<is:unit unit-id="1">
+<is:name>metre</is:name>
+</is:unit>
+<is:unit unit-id="2">
+<is:name>kilogram</is:name>
+</is:unit>
+<is:unit unit-id="3">
+<is:name>second</is:name>
+</is:unit>
+<is:unit unit-id="4">
+<is:name>ampere</is:name>
+</is:unit>
+<is:unit unit-id="5">
+<is:name>kelvin</is:name>
+</is:unit>
+<is:unit unit-id="6">
+<is:name>mole</is:name>
+</is:unit>
+<is:unit unit-id="7">
+<is:name>candela</is:name>
+</is:unit>
+<is:unit unit-id="8">
+<is:name>radian</is:name>
+</is:unit>
+<is:unit unit-id="9">
+<is:name>meter</is:name>
+<is:element unit-id="1"/>
+</is:unit>
+<is:unit unit-id="10">
+<is:name>gram</is:name>
+<is:element unit-id="2" prefix="milli"/>
+</is:unit>
+<is:unit unit-id="11">
+<is:name>degree</is:name>
+</is:unit>
+<is:unit unit-id="12">
+<is:name>millisecond</is:name>
+<is:element unit-id="3" exponent="1" prefix="milli"/>
+</is:unit>
+<is:unit unit-id="13">
+<is:name>volt</is:name>
+<is:element unit-id="1" exponent="2"/>
+<is:element unit-id="2" exponent="1"/>
+<is:element unit-id="3" exponent="-3"/>
+<is:element unit-id="4" exponent="-1"/>
+</is:unit>
+<is:unit unit-id="14">
+<is:name>siemens</is:name>
+<is:element unit-id="1" exponent="-2"/>
+<is:element unit-id="2" exponent="-1"/>
+<is:element unit-id="3" exponent="3"/>
+<is:element unit-id="4" exponent="2"/>
+</is:unit>
+<is:unit unit-id="15">
+<is:name>farad</is:name>
+<is:element unit-id="1" exponent="-2"/>
+<is:element unit-id="2" exponent="-1"/>
+<is:element unit-id="3" exponent="4"/>
+<is:element unit-id="4" exponent="2"/>
+</is:unit>
+</is:unit-set>
+
+<is:module-set>
+
+<is:module module-id="eae478a8-d6e0-4d5e-8e1f-2f341dea82c1" type="functional-unit">
+<is:property>
+<is:name>p</is:name>
+<is:capsulation state="false"/>
+<is:template state="false"/>
+</is:property>
+
+<is:port-set>
+<is:port port-id="1" direction="out" ref-physical-quantity-id="1">
+<is:name>p</is:name>
+</is:port>
+</is:port-set>
+
+<is:physical-quantity-set>
+<is:physical-quantity physical-quantity-id="1" type="static-parameter">
+<is:name>p</is:name>
+<is:dimension type="scalar"/>
+<is:value-type-set>
+<is:value-type precision="double" unit-id="0"/>
+</is:value-type-set>
+<is:implementation>
+<is:definition type="ae" sub-type="" format="mathml">
+<m:math><m:apply><m:eq/><m:ci>p</m:ci><m:cn>3.14</m:cn></m:apply></m:math>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+</is:physical-quantity-set>
+</is:module>
+
+<is:module module-id="7f773265-a4e6-4131-bcb8-023599ffce6e" type="functional-unit">
+<is:property>
+<is:name>q</is:name>
+<is:capsulation state="false"/>
+<is:template state="false"/>
+</is:property>
+
+<is:port-set>
+<is:port port-id="1" direction="in">
+<is:name>p</is:name>
+</is:port>
+<is:port port-id="2" direction="out" ref-physical-quantity-id="2">
+<is:name>x</is:name>
+</is:port>
+</is:port-set>
+
+<is:physical-quantity-set>
+<is:physical-quantity physical-quantity-id="1" type="static-parameter">
+<is:name>p</is:name>
+<is:dimension type="scalar"/>
+<is:value-type-set>
+<is:value-type precision="double" unit-id="0"/>
+</is:value-type-set>
+<is:implementation>
+<is:definition type="assign" sub-type="port" format="reference">
+<is:reference port-id="1"/>
+</is:definition>
+<is:extra-implementation type="multiple-input-assignment">
+<is:definition type="reduction" sub-type="sum" format=""/>
+</is:extra-implementation>
+</is:implementation>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="2" type="state">
+<is:name>x</is:name>
+<is:dimension type="scalar"/>
+<is:value-type-set>
+<is:value-type precision="double" unit-id="0"/>
+</is:value-type-set>
+<is:initial-value>
+<is:definition type="ae" format="mathml">
+<m:math><m:apply><m:eq/><m:ci>x</m:ci><m:cn>0</m:cn></m:apply></m:math>
+</is:definition>
+</is:initial-value>
+<is:implementation>
+<is:definition type="ode" sub-type="" format="mathml">
+<m:math><m:apply><m:eq/><m:apply><m:diff/><m:bvar><m:ci>time</m:ci></m:bvar><m:ci>x</m:ci></m:apply><m:apply><m:minus/><m:ci>p</m:ci><m:ci>x</m:ci></m:apply></m:apply></m:math>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+</is:physical-quantity-set>
+</is:module>
+
+<is:module module-id="642f3a53-8e54-4e52-8f18-d793c97f7467" type="functional-unit">
+<is:property>
+<is:name>r</is:name>
+<is:capsulation state="false"/>
+<is:template state="false"/>
+</is:property>
+
+<is:port-set>
+<is:port port-id="1" direction="in">
+<is:name>p</is:name>
+</is:port>
+<is:port port-id="2" direction="in">
+<is:name>x</is:name>
+</is:port>
+</is:port-set>
+
+<is:physical-quantity-set>
+<is:physical-quantity physical-quantity-id="1" type="static-parameter">
+<is:name>p</is:name>
+<is:dimension type="scalar"/>
+<is:value-type-set>
+<is:value-type precision="double" unit-id="0"/>
+</is:value-type-set>
+<is:implementation>
+<is:definition type="assign" sub-type="port" format="reference">
+<is:reference port-id="1"/>
+</is:definition>
+<is:extra-implementation type="multiple-input-assignment">
+<is:definition type="reduction" sub-type="sum" format=""/>
+</is:extra-implementation>
+</is:implementation>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="2" type="variable-parameter">
+<is:name>x</is:name>
+<is:dimension type="scalar"/>
+<is:value-type-set>
+<is:value-type precision="double" unit-id="0"/>
+</is:value-type-set>
+<is:implementation>
+<is:definition type="assign" sub-type="port" format="reference">
+<is:reference port-id="2"/>
+</is:definition>
+<is:extra-implementation type="multiple-input-assignment">
+<is:definition type="reduction" sub-type="sum" format=""/>
+</is:extra-implementation>
+</is:implementation>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="3" type="variable-parameter">
+<is:name>y</is:name>
+<is:dimension type="scalar"/>
+<is:value-type-set>
+<is:value-type precision="double" unit-id="0"/>
+</is:value-type-set>
+<is:implementation>
+<is:definition type="ae" sub-type="" format="mathml">
+<m:math><m:apply><m:eq/><m:ci>y</m:ci><m:apply><m:plus/><m:ci>x</m:ci><m:ci>p</m:ci><m:cn>1</m:cn></m:apply></m:apply></m:math>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+</is:physical-quantity-set>
+</is:module>
+</is:module-set>
+
+<is:edge-set>
+<is:edge edge-id="816dc716-e76e-42d3-b568-1e90ef280b0f" type="functional">
+<is:tail module-id="eae478a8-d6e0-4d5e-8e1f-2f341dea82c1" port-id="1"/>
+<is:head module-id="7f773265-a4e6-4131-bcb8-023599ffce6e" port-id="1"/>
+</is:edge>
+<is:edge edge-id="0f3fa553-3023-4ec8-a83f-f874c8d25b4a" type="functional">
+<is:tail module-id="eae478a8-d6e0-4d5e-8e1f-2f341dea82c1" port-id="1"/>
+<is:head module-id="642f3a53-8e54-4e52-8f18-d793c97f7467" port-id="1"/>
+</is:edge>
+<is:edge edge-id="95288b63-2031-4751-9dfb-ded66232890e" type="functional">
+<is:tail module-id="7f773265-a4e6-4131-bcb8-023599ffce6e" port-id="2"/>
+<is:head module-id="642f3a53-8e54-4e52-8f18-d793c97f7467" port-id="2"/>
+</is:edge>
+</is:edge-set>
+</is:insilico-model>
