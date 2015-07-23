@@ -251,9 +251,9 @@ public class MainFrame extends javax.swing.JFrame
                         }
                         String detail = sb.toString();
                         MessageDialog.showMessageDialog(MainFrame.this, 
-                                "Error occurrd while execution of simulation.", 
+                                "The following error occurred during simulation:",
                                 detail, 
-                                "Error on simualtion the model.", 
+                                "Error on simulation",
                                 JOptionPane.ERROR_MESSAGE, null, new Object[]{" OK "});
                     }
                 }
