@@ -3,21 +3,15 @@ package jp.oist.flint.form;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
 import javax.swing.Icon;
 import javax.swing.JDialog;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
-import javax.swing.UIManager;
 
 public class MessageDialog extends JPanel {
-
-    private final static int WIDTH  = 480;
-
-    private final static int HEIGHT = 320;
 
     public static void showMessageDialog (Component parent, Object msg, Object detail, String title) {
         showMessageDialog(parent, msg, detail, title, JOptionPane.INFORMATION_MESSAGE, null, new Object[] {"CANCEL", "OK"});
@@ -61,36 +55,12 @@ public class MessageDialog extends JPanel {
     }
 
     private void initComponents () {
-        Dimension size = new Dimension(WIDTH, HEIGHT);
-        setSize(size);
-        setPreferredSize(size);
-        setMaximumSize(new Dimension(Short.MAX_VALUE, Short.MAX_VALUE));
-        setMinimumSize(size);
-
-        JTextArea messageArea = new JTextArea(mMessage);
-        messageArea.setBackground(UIManager.getColor("Panel.background"));
-        messageArea.setEditable(false);
+        JLabel messageLabel = new JLabel(mMessage);
 
         JTextArea detailArea = new JTextArea(mDetail);
         detailArea.setEditable(false);
 
-        JPanel messageField = new JPanel();
-        messageField.setLayout(new FlowLayout(FlowLayout.LEADING));
-
-        size = new Dimension(WIDTH, 80);
-        messageArea.setSize(size);
-        messageArea.setPreferredSize(size);
-        messageArea.setMaximumSize(size);
-        messageArea.setMinimumSize(size);
-
-        messageField.setSize(size);
-        messageField.setPreferredSize(size);
-        messageField.setMaximumSize(size);
-        messageField.setMinimumSize(size);
-
-        messageField.add(messageArea);
-
-        add(messageField, BorderLayout.NORTH);
+        add(messageLabel, BorderLayout.NORTH);
         add(new JScrollPane(detailArea), BorderLayout.CENTER);
     }
 
