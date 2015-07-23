@@ -65,7 +65,7 @@ public:
 
 	bool Lb(const bc::Lb &lb, int offset) {
 		int k = offset + lb.so();
-		return history_[k].Lookback(lb, tmp_);
+		return history_[k].Lookback(lb, data_[kIndexTime], tmp_);
 	}
 
 	bool Load(const bc::Load &load, int offset) {
@@ -127,7 +127,7 @@ public:
 
 	bool Lb(const bc::Lb &lb, int offset) {
 		int k = offset + lb.so();
-		return history_[k].Lookback(lb, tmp_);
+		return history_[k].Lookback(lb, prev_[kIndexTime], tmp_);
 	}
 
 	bool Load(const bc::Load &load, int offset) {

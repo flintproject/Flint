@@ -73,7 +73,7 @@ public:
 		return p;
 	}
 
-	bool Lookback(const bc::Lb &lb, double *tmp)
+	bool Lookback(const bc::Lb &lb, double time, double *tmp)
 	{
 		assert(tmp);
 
@@ -85,6 +85,19 @@ public:
 			return true;
 		}
 		if (r.first == m_.begin()) { // older than every existing one
+			// check if delay overflows capacity
+			if (t < time - capacity_) {
+				std::cerr << "failed to look back the value (index "
+						  << lb.d()
+						  << ", time "
+						  << t
+						  << "), possibly due to too small value of <max-delay>: "
+						  << capacity_
+						  << ": "
+						  << time
+						  << std::endl;
+				return false;
+			}
 			tmp[lb.a()] = r.first->second;
 			return true;
 		}
