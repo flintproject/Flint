@@ -434,12 +434,13 @@ public:
 			for (std::set<int>::iterator it=offsets.begin();it!=offsets.end();++it) {
 				FlowOutboundMap::iterator obit = outbound->find(*it);
 				if (obit == outbound->end()) continue;
+				// make targets ordered for std::set_difference()
+				std::set<int> targets(obit->second->begin(), obit->second->end());
+				outbound->erase(obit);
 				std::set<int> diff;
-				std::set_difference(obit->second->begin(), obit->second->end(),
+				std::set_difference(targets.begin(), targets.end(),
 									constants.begin(), constants.end(),
 									std::inserter(diff, diff.begin()));
-				outbound->erase(obit);
-				if (diff.empty()) continue;
 				for (std::set<int>::const_iterator dit=diff.begin();dit!=diff.end();++dit) {
 					sub_inbound[*dit].insert(*it);
 					sub_outbound[*it].insert(*dit);
