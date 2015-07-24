@@ -21,7 +21,7 @@ bool Config(int id, sqlite3 *db)
 	char *em;
 	int e;
 
-	sprintf(query, "ATTACH DATABASE '%d/modeldb' AS m%d", id, id);
+	sprintf(query, "ATTACH DATABASE '%d/model.db' AS m%d", id, id);
 	e = sqlite3_exec(db, query, NULL, NULL, &em);
 	if (e != SQLITE_OK) {
 		cerr << "failed to attach database: " << e

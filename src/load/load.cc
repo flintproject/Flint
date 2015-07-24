@@ -101,7 +101,7 @@ public:
 		sprintf(init_.get(), "%s/init", dir_.get());
 		sprintf(layout_.get(), "%s/layout", dir_.get());
 		sprintf(model_.get(), "%s/model", dir_.get());
-		sprintf(modeldb_.get(), "%s/modeldb", dir_.get());
+		sprintf(modeldb_.get(), "%s/model.db", dir_.get());
 		sprintf(nc_.get(), "%s/nc", dir_.get());
 		sprintf(param_.get(), "%s/param", dir_.get());
 		sprintf(phz_.get(), "%s/phz", dir_.get());

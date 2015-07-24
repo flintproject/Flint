@@ -104,7 +104,7 @@ bool TaskRunner::Run()
 	}
 
 	char modeldb_file[kFilenameLength];
-	sprintf(modeldb_file, "%s/modeldb", dir_.get());
+	sprintf(modeldb_file, "%s/model.db", dir_.get());
 	modeldb_driver_.reset(new db::ReadOnlyDriver(modeldb_file));
 
 	char spec_file[kFilenameLength];

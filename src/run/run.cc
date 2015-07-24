@@ -82,7 +82,7 @@ bool Run(const char *input, int size)
 	if (!load::Load(option.model_filename().c_str(), load::kRun))
 		return false;
 
-	db::Driver driver("modeldb");
+	db::Driver driver("model.db");
 	sqlite3 *db = driver.db();
 	// prepare spec.txt in both cases
 	if (option.has_spec_filename()) {
