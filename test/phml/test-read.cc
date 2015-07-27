@@ -70,6 +70,11 @@ public:
 					   expected);
 	}
 
+	void CheckRefports(const std::vector<std::string> &expected)
+	{
+		sql_.CheckTable("refports", expected);
+	}
+
 	void CheckIports(const std::vector<std::string> &expected)
 	{
 		sql_.CheckRows("SELECT m.module_id||':'||r.port_id, p.pq_id FROM refports AS r LEFT JOIN pqs AS p ON r.pq_rowid = p.rowid LEFT JOIN modules AS m ON p.module_rowid = m.rowid",
@@ -20591,6 +20596,12 @@ BOOST_AUTO_TEST_CASE(state_to_static) {
 BOOST_AUTO_TEST_CASE(static_to_static)
 {
 	ReadAndCheck(TEST_MODELS("static-to-static.phml"));
+	std::vector<std::string> refports{
+		"2 1 sum",
+		"4 1 sum",
+		"5 2 sum"
+	};
+	CheckRefports(refports);
 }
 
 BOOST_AUTO_TEST_CASE(swapped_definitions) {

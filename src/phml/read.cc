@@ -559,15 +559,23 @@ class ExtraImplementation : boost::noncopyable {
 public:
 	static const char *kName;
 
-	ExtraImplementation() : stream_(), order_(NULL) {
+	ExtraImplementation()
+		: type_(nullptr)
+		, order_(nullptr)
+	{
 	}
 
 	~ExtraImplementation() {
+		if (type_) xmlFree(type_);
 		if (order_) xmlFree(order_);
 	}
 
+	const xmlChar *type() const {return type_;}
+	void set_type(xmlChar *type) {type_ = type;}
 	const xmlChar *order() const {return order_;}
 	void set_order(xmlChar *order) {order_ = order;}
+	const Definition *definition() const {return definition_.get();}
+	void set_definition(Definition *definition) {definition_.reset(definition);}
 
 	void OpenDefinition(int /*level*/) const {}
 
@@ -590,8 +598,10 @@ public:
 	}
 
 private:
-	std::ostringstream stream_;
+	xmlChar *type_;
 	xmlChar *order_;
+	std::unique_ptr<Definition> definition_;
+	std::ostringstream stream_;
 };
 
 const char *ExtraImplementation::kName = "extra-implementation";
@@ -819,7 +829,7 @@ public:
 			exit(EXIT_FAILURE);
 		}
 
-		e = sqlite3_prepare_v2(db, "INSERT INTO refports VALUES (?, ?)",
+		e = sqlite3_prepare_v2(db, "INSERT INTO refports VALUES (?, ?, ?)",
 							   -1, &refport_stmt_, NULL);
 		if (e != SQLITE_OK) {
 			cerr << "failed to prepare statement: " << e << endl;
@@ -1328,7 +1338,7 @@ public:
 		return true;
 	}
 
-	bool SaveReference(const PQ *pq, const Reference *reference) {
+	bool SaveReference(const PQ *pq, const Reference *reference, const ExtraImplementation *extra) {
 		int e;
 		if (reference->port_id() > 0) { // reference to port
 			e = sqlite3_bind_int64(refport_stmt_, 1, pq->rowid());
@@ -1340,6 +1350,16 @@ public:
 			if (e != SQLITE_OK) {
 				cerr << "failed to bind port_id: " << e << endl;
 				return false;
+			}
+			if ( extra &&
+				 extra->definition() &&
+				 xmlStrEqual(extra->definition()->type(), BAD_CAST "reduction") &&
+				 extra->definition()->sub_type() ) {
+				e = sqlite3_bind_text(refport_stmt_, 3,
+									  (const char *)extra->definition()->sub_type(),
+									  -1, SQLITE_STATIC);
+			} else {
+				e = sqlite3_bind_null(refport_stmt_, 3);
 			}
 			e = sqlite3_step(refport_stmt_);
 			if (e != SQLITE_DONE) {
@@ -2697,13 +2717,14 @@ private:
 						impl_dumper_.reset();
 					}
 					if (ref_) {
-						if (!dd_->SaveReference(pq_.get(), ref_.get())) return -2;
+						if (!dd_->SaveReference(pq_.get(), ref_.get(), extra_.get())) return -2;
 						ref_.reset();
 					}
 					if (extra_dumper_) {
 						if (extra_->IsProper() && !dd_->SaveExtraImplementation(pq_.get(), extra_.get())) return -2;
 						extra_dumper_.reset();
 					}
+					extra_.reset();
 					if (bridge_) {
 						if (!dd_->SaveBridge(pq_.get(), bridge_.get())) return -2;
 						bridge_.reset();
@@ -2977,11 +2998,7 @@ private:
 
 			const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
 			if (xmlStrEqual(local_name, BAD_CAST "type")) {
-				const xmlChar *value = xmlTextReaderConstValue(text_reader_);
-				if (xmlStrEqual(value, BAD_CAST "multiple-input-assignment")) {
-					// skip this
-					return xmlTextReaderNext(text_reader_);
-				}
+				extra_->set_type(xmlTextReaderValue(text_reader_));
 			} else if (xmlStrEqual(local_name, BAD_CAST "order")) {
 				xmlChar *value = xmlTextReaderValue(text_reader_);
 				if (xmlStrEqual(value, BAD_CAST "before")) {
@@ -3006,8 +3023,8 @@ private:
 				return -2;
 			}
 		}
-		if (!extra_->order()) {
-			cerr << "missing order of <extra-implementation>" << endl;
+		if (!extra_->type()) {
+			cerr << "missing type of <extra-implementation>" << endl;
 			return -2;
 		}
 
@@ -3017,11 +3034,7 @@ private:
 			if (type == XML_READER_TYPE_ELEMENT) {
 				const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
 				if (xmlStrEqual(local_name, BAD_CAST "definition")) {
-					extra_dumper_.reset(new phml::DefinitionDumper<ExtraImplementation>(text_reader_,
-																						module_->module_id(),
-																						pq_->name(),
-																						extra_.get()));
-					i = extra_dumper_->Read(0);
+					i = ReadDefinitionOfExtraImplementation();
 					if (i <= 0) return i;
 					continue;
 				} else {
@@ -3037,6 +3050,45 @@ private:
 			i = xmlTextReaderRead(text_reader_);
 		}
 		return i;
+	}
+
+	int ReadDefinitionOfExtraImplementation() {
+		std::unique_ptr<Definition> def(new Definition);
+		int i;
+		while ( (i = xmlTextReaderMoveToNextAttribute(text_reader_)) > 0) {
+			if (xmlTextReaderIsNamespaceDecl(text_reader_)) continue;
+
+			const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
+			if (xmlStrEqual(local_name, BAD_CAST "type")) {
+				def->set_type(xmlTextReaderValue(text_reader_));
+			} else if (xmlStrEqual(local_name, BAD_CAST "sub-type")) {
+				def->set_sub_type(xmlTextReaderValue(text_reader_));
+			} else if (xmlStrEqual(local_name, BAD_CAST "format")) {
+				def->set_format(xmlTextReaderValue(text_reader_));
+			}
+		}
+		if (ref_ && ref_->port_id() > 0) {
+			if (xmlStrEqual(extra_->type(), BAD_CAST "multiple-input-assignment")) {
+				if (!xmlStrEqual(def->type(), BAD_CAST "reduction")) {
+					cerr << "found <extra-implementation> of type multiple-input-assignment, but its definition's type is not reduction: "
+						 << def->type() << endl;
+					return -2;
+				}
+				extra_->set_definition(def.release());
+			}
+			// TODO: other types of <extra-implementation>
+			return xmlTextReaderNext(text_reader_);
+		}
+		if (!extra_->order()) {
+			cerr << "missing order of <extra-implementation>" << endl;
+			return -2;
+		}
+		// expect definition in MathML
+		extra_dumper_.reset(new phml::DefinitionDumper<ExtraImplementation>(text_reader_,
+																			module_->module_id(),
+																			pq_->name(),
+																			extra_.get()));
+		return extra_dumper_->Read(0);
 	}
 
 	int ReadBridge() {
@@ -3663,7 +3715,7 @@ const Schema kModelTables[] = {
 	{"impls", "(pq_rowid INTEGER, math TEXT)"},
 	{"nodes", "(pq_rowid INTEGER, node_id INTEGER, name TEXT)"},
 	{"arcs", "(pq_rowid INTEGER, tail_node_id INTEGER, head_node_id INTEGER, type TEXT, math TEXT)"},
-	{"refports", "(pq_rowid INTEGER, port_id INTEGER)"},
+	{"refports", "(pq_rowid INTEGER, port_id INTEGER, reduction TEXT)"},
 	{"refts", "(pq_rowid INTEGER, timeseries_id INTEGER, element_id TEXT)"},
 	{"extras", "(pq_rowid INTEGER, order_type TEXT, math TEXT)"},
 	{"templates", "(template_id TEXT, ref_module_id TEXT)"},
