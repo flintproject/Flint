@@ -17,19 +17,19 @@ public:
 	// Note that db is for read only.
 	explicit OutputPortLoader(sqlite3 *db)
 		: StatementDriver(db, "SELECT m.module_id, p.port_id, p.ref_pq_id, q.type FROM ports AS p LEFT JOIN modules AS m ON p.module_rowid = m.rowid LEFT JOIN pqs AS q ON p.ref_pq_id = q.pq_id AND m.rowid = q.module_rowid WHERE p.direction = 'out' AND p.ref_pq_id IS NOT NULL")
-		, gen_()
 	{
 	}
 
 	template<typename THandler>
 	bool Load(THandler *handler) {
+		boost::uuids::string_generator gen;
 		int e;
 		for (e = sqlite3_step(stmt()); e == SQLITE_ROW; e = sqlite3_step(stmt())) {
 			const unsigned char *module_id = sqlite3_column_text(stmt(), 0);
 			int port_id = sqlite3_column_int(stmt(), 1);
 			int pq_id = sqlite3_column_int(stmt(), 2);
 			const unsigned char *pq_type = sqlite3_column_text(stmt(), 3);
-			if (!handler->Handle(gen_((const char *)module_id), port_id, pq_id, *((const char *)pq_type))) return false;
+			if (!handler->Handle(gen((const char *)module_id), port_id, pq_id, *((const char *)pq_type))) return false;
 		}
 		if (e != SQLITE_DONE) {
 			std::cerr << "failed to step statement: " << e << std::endl;
@@ -38,9 +38,6 @@ public:
 		sqlite3_reset(stmt());
 		return true;
 	}
-
-private:
-	boost::uuids::string_generator gen_;
 };
 
 } // namespace db

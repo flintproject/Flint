@@ -19,12 +19,12 @@ public:
 	// Note that db is for read only.
 	explicit TargetLoader(sqlite3 *db)
 		: StatementDriver(db, "SELECT instances.module_id, tms.module_id, tpqs.pq_id, tpqs.math FROM tpqs LEFT JOIN tms ON tpqs.tm_rowid = tms.rowid LEFT JOIN instances ON tms.instance_rowid = instances.rowid")
-		, gen_()
 	{
 	}
 
 	template<typename THandler>
 	bool Load(THandler *handler) {
+		boost::uuids::string_generator gen;
 		int e;
 		for (e = sqlite3_step(stmt()); e == SQLITE_ROW; e = sqlite3_step(stmt())) {
 			const unsigned char *uuid0 = sqlite3_column_text(stmt(), 0);
@@ -33,7 +33,7 @@ public:
 			const unsigned char *math = sqlite3_column_text(stmt(), 3);
 			double val;
 			if (!Parse((const char *)math, &val)) return false;
-			if (!handler->Handle(gen_((const char *)uuid0), gen_((const char *)uuid1), pq_id, val)) return false;
+			if (!handler->Handle(gen((const char *)uuid0), gen((const char *)uuid1), pq_id, val)) return false;
 		}
 		if (e != SQLITE_DONE) {
 			std::cerr << "failed to step statement: " << e << std::endl;
@@ -69,8 +69,6 @@ private:
 		*val = v;
 		return true;
 	}
-
-	boost::uuids::string_generator gen_;
 };
 
 } // namespace db

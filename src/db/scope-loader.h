@@ -17,18 +17,18 @@ public:
 	// Note that db is for read only.
 	explicit ScopeLoader(sqlite3 *db)
 		: StatementDriver(db, "SELECT * FROM scopes")
-		, gen_()
 	{
 	}
 
 	template<typename THandler>
 	bool Load(THandler *handler) {
+		boost::uuids::string_generator gen;
 		int e;
 		for (e = sqlite3_step(stmt()); e == SQLITE_ROW; e = sqlite3_step(stmt())) {
 			const unsigned char *uuid = sqlite3_column_text(stmt(), 0);
 			const unsigned char *space_id = sqlite3_column_text(stmt(), 1);
 			const unsigned char *label = sqlite3_column_text(stmt(), 2);
-			if (!handler->Handle(gen_((const char *)uuid), gen_((const char *)space_id), (const char *)label)) return false;
+			if (!handler->Handle(gen((const char *)uuid), gen((const char *)space_id), (const char *)label)) return false;
 		}
 		if (e != SQLITE_DONE) {
 			std::cerr << "failed to step statement: " << e << std::endl;
@@ -37,9 +37,6 @@ public:
 		sqlite3_reset(stmt());
 		return true;
 	}
-
-private:
-	boost::uuids::string_generator gen_;
 };
 
 } // namespace db

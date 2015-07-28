@@ -371,12 +371,12 @@ public:
 	ReachDumper(sqlite3 *db, const TreeDumper *tree_dumper)
 		: db::StatementDriver(db, kReachQuery)
 		, driver_(new db::ReachDriver(db))
-		, gen_()
 		, tree_dumper_(tree_dumper)
 	{
 	}
 
 	bool Dump() {
+		boost::uuids::string_generator gen;
 		int e;
 		char u1[kUuidLength+1], u2[kUuidLength+1];
 		for (e = sqlite3_step(stmt()); e == SQLITE_ROW; e = sqlite3_step(stmt())) {
@@ -397,12 +397,12 @@ public:
 				   (pri1 && strcmp((const char *)pri1, "out") == 0) ) &&
 				 ( (pub2 && strcmp((const char *)pub2, "in") == 0) ||
 				   (pri2 && strcmp((const char *)pri2, "in") == 0) ) ) {
-				if (!driver_->Save(gen_(u1), id1, gen_(u2), id2)) return false;
+				if (!driver_->Save(gen(u1), id1, gen(u2), id2)) return false;
 			} else if ( ( (pub1 && strcmp((const char *)pub1, "in") == 0) ||
 						  (pri1 && strcmp((const char *)pri1, "in") == 0) ) &&
 						( (pub2 && strcmp((const char *)pub2, "out") == 0) ||
 						  (pri2 && strcmp((const char *)pri2, "out") == 0) ) ) {
-				if (!driver_->Save(gen_(u2), id2, gen_(u1), id1)) return false;
+				if (!driver_->Save(gen(u2), id2, gen(u1), id1)) return false;
 			} else {
 				cerr << "invalid variable mapping found: "
 					 << c1 << '|' << n1 << '|' << pub1 << '|' << pri1
@@ -421,7 +421,6 @@ public:
 
 private:
 	std::unique_ptr<db::ReachDriver> driver_;
-	boost::uuids::string_generator gen_;
 	const TreeDumper *tree_dumper_;
 };
 

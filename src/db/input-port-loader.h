@@ -17,19 +17,19 @@ public:
 	// Note that db is for read only.
 	explicit InputPortLoader(sqlite3 *db)
 		: StatementDriver(db, "SELECT m.module_id, p.pq_id, p.type, r.port_id FROM refports AS r LEFT JOIN pqs AS p ON r.pq_rowid = p.rowid LEFT JOIN modules AS m ON p.module_rowid = m.rowid")
-		, gen_()
 	{
 	}
 
 	template<typename THandler>
 	bool Load(THandler *handler) {
+		boost::uuids::string_generator gen;
 		int e;
 		for (e = sqlite3_step(stmt()); e == SQLITE_ROW; e = sqlite3_step(stmt())) {
 			const unsigned char *module_id = sqlite3_column_text(stmt(), 0);
 			int pq_id = sqlite3_column_int(stmt(), 1);
 			const unsigned char *pq_type = sqlite3_column_text(stmt(), 2);
 			int port_id = sqlite3_column_int(stmt(), 3);
-			if (!handler->Handle(gen_((const char *)module_id), port_id, pq_id, *((const char *)pq_type))) return false;
+			if (!handler->Handle(gen((const char *)module_id), port_id, pq_id, *((const char *)pq_type))) return false;
 		}
 		if (e != SQLITE_DONE) {
 			std::cerr << "failed to step statement: " << e << std::endl;
@@ -38,9 +38,6 @@ public:
 		sqlite3_reset(stmt());
 		return true;
 	}
-
-private:
-	boost::uuids::string_generator gen_;
 };
 
 } // namespace db

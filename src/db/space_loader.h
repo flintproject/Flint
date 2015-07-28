@@ -17,17 +17,17 @@ public:
 	// Note that db is for read only.
 	explicit SpaceLoader(sqlite3 *db)
 		: StatementDriver(db, "SELECT * FROM spaces")
-		, gen_()
 	{
 	}
 
 	template<typename THandler>
 	bool Load(THandler *handler) {
+		boost::uuids::string_generator gen;
 		int e;
 		for (e = sqlite3_step(stmt()); e == SQLITE_ROW; e = sqlite3_step(stmt())) {
 			const unsigned char *uuid = sqlite3_column_text(stmt(), 0);
 			const unsigned char *name = sqlite3_column_text(stmt(), 1);
-			if (!handler->Handle(gen_((const char *)uuid), (const char *)name)) return false;
+			if (!handler->Handle(gen((const char *)uuid), (const char *)name)) return false;
 		}
 		if (e != SQLITE_DONE) {
 			std::cerr << "failed to step statement: " << e << std::endl;
@@ -36,9 +36,6 @@ public:
 		sqlite3_reset(stmt());
 		return true;
 	}
-
-private:
-	boost::uuids::string_generator gen_;
 };
 
 } // namespace db

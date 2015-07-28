@@ -18,12 +18,12 @@ public:
 	// Note that db is for read only.
 	explicit NameLoader(sqlite3 *db)
 		: StatementDriver(db, "SELECT * FROM names")
-		, gen_()
 	{
 	}
 
 	template<typename THandler>
 	bool Load(THandler *handler) {
+		boost::uuids::string_generator gen;
 		int e;
 		for (e = sqlite3_step(stmt()); e == SQLITE_ROW; e = sqlite3_step(stmt())) {
 			const unsigned char *space_id = sqlite3_column_text(stmt(), 0);
@@ -52,7 +52,7 @@ public:
 						  << std::endl;
 				return false;
 			}
-			if (!handler->Handle(gen_((const char *)space_id), (char)type[0], id, (const char *)name, (const char *)unit, capacity)) return false;
+			if (!handler->Handle(gen((const char *)space_id), (char)type[0], id, (const char *)name, (const char *)unit, capacity)) return false;
 		}
 		if (e != SQLITE_DONE) {
 			std::cerr << "failed to step statement: " << e << std::endl;
@@ -61,9 +61,6 @@ public:
 		sqlite3_reset(stmt());
 		return true;
 	}
-
-private:
-	boost::uuids::string_generator gen_;
 };
 
 } // namespace db
