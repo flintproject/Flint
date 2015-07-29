@@ -122,7 +122,7 @@ public:
 		return true;
 	}
 
-	double Store(const bc::Store &store, int offset, const std::unordered_set<int> &flow_addrs) {
+	double Store(const bc::Store &store, int offset) {
 		assert(store.lo() == 0);
 		int k = offset + store.so();
 		double v = tmp_[store.a()];
@@ -130,15 +130,15 @@ public:
 			data_[k] = v;
 		}
 		color_[k] = 1;
-
-		// send stored value through flows
-		// FIXME: sum only
-		for (int a : flow_addrs) {
-			data_[a] += data_[k];
-			color_[a]++;
-		}
-
 		return v;
+	}
+
+	bool Reduce(const ReductionUnit &ru) {
+		if (!ru(data_))
+			return false;
+		size_t n = ru.source_addrs().size();
+		color_[ru.target_addr()] = (n > 0) ? n : 1u;
+		return true;
 	}
 
 private:
@@ -185,7 +185,6 @@ bool Init(sqlite3 *db, const char *layout_file, const char *bc_file, const char 
 	std::unique_ptr<TimeseriesVector> tv;
 
 	std::unique_ptr<FlowInboundMap> inbound(new FlowInboundMap);
-	std::unique_ptr<FlowOutboundMap> outbound(new FlowOutboundMap);
 
 	// read targets from database, if any
 	{
@@ -201,7 +200,7 @@ bool Init(sqlite3 *db, const char *layout_file, const char *bc_file, const char 
 			return false;
 		processor->set_tv(tv.get());
 	}
-	if (!LoadFlows(db, inbound.get(), outbound.get()))
+	if (!LoadFlows(db, inbound.get()))
 		return false;
 
 	// load bc next
@@ -222,7 +221,7 @@ bool Init(sqlite3 *db, const char *layout_file, const char *bc_file, const char 
 		return false;
 	}
 
-	if (!processor->SolveDependencies(nol, inbound.get(), outbound.get(), false)) return false;
+	if (!processor->SolveDependencies(nol, inbound.get(), false)) return false;
 
 	// calculate max number of data of block
 	int max_nod = processor->GetMaxNumberOfData();

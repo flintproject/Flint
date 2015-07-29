@@ -53,7 +53,7 @@ public:
 			exit(EXIT_FAILURE);
 		if (!CreateTable(db, "names", "(space_id TEXT, type TEXT, id INTEGER, name TEXT, unit TEXT, capacity REAL)"))
 			exit(EXIT_FAILURE);
-		if (!CreateTable(db, "reaches", "(output_uuid BLOB, output_id INTEGER, input_uuid BLOB, input_id INTEGER)"))
+		if (!CreateTable(db, "reaches", "(output_uuid BLOB, output_id INTEGER, input_uuid BLOB, input_id INTEGER, reduction INTEGER)"))
 			exit(EXIT_FAILURE);
 		if (!CreateView(db, "scopes", "SELECT space_id AS uuid, space_id, NULL AS label FROM spaces"))
 			exit(EXIT_FAILURE);
@@ -397,12 +397,14 @@ public:
 				   (pri1 && strcmp((const char *)pri1, "out") == 0) ) &&
 				 ( (pub2 && strcmp((const char *)pub2, "in") == 0) ||
 				   (pri2 && strcmp((const char *)pri2, "in") == 0) ) ) {
-				if (!driver_->Save(gen(u1), id1, gen(u2), id2)) return false;
+				if (!driver_->Save(gen(u1), id1, gen(u2), id2, Reduction::kSum))
+					return false;
 			} else if ( ( (pub1 && strcmp((const char *)pub1, "in") == 0) ||
 						  (pri1 && strcmp((const char *)pri1, "in") == 0) ) &&
 						( (pub2 && strcmp((const char *)pub2, "out") == 0) ||
 						  (pri2 && strcmp((const char *)pri2, "out") == 0) ) ) {
-				if (!driver_->Save(gen(u2), id2, gen(u1), id1)) return false;
+				if (!driver_->Save(gen(u2), id2, gen(u1), id1, Reduction::kSum))
+					return false;
 			} else {
 				cerr << "invalid variable mapping found: "
 					 << c1 << '|' << n1 << '|' << pub1 << '|' << pri1

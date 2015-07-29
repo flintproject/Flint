@@ -20597,9 +20597,9 @@ BOOST_AUTO_TEST_CASE(static_to_static)
 {
 	ReadAndCheck(TEST_MODELS("static-to-static.phml"));
 	std::vector<std::string> refports{
-		"2 1 sum",
-		"4 1 sum",
-		"5 2 sum"
+		"2 1 1",
+		"4 1 1",
+		"5 2 1"
 	};
 	CheckRefports(refports);
 }

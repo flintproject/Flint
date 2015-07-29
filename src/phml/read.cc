@@ -32,6 +32,7 @@
 #include "phml/graph_reader.h"
 #include "phml/transition-form.h"
 #include "reach.h"
+#include "reduction.hh"
 #include "span.h"
 #include "sprinkle.h"
 #include "sqlite3.h"
@@ -1353,13 +1354,15 @@ public:
 			}
 			if ( extra &&
 				 extra->definition() &&
-				 xmlStrEqual(extra->definition()->type(), BAD_CAST "reduction") &&
-				 extra->definition()->sub_type() ) {
-				e = sqlite3_bind_text(refport_stmt_, 3,
-									  (const char *)extra->definition()->sub_type(),
-									  -1, SQLITE_STATIC);
+				 xmlStrEqual(extra->definition()->type(), BAD_CAST "reduction") ) {
+				Reduction reduction;
+				if (!ConvertStringToReduction((const char *)extra->definition()->sub_type(),
+											  &reduction))
+					return false;
+				e = sqlite3_bind_int(refport_stmt_, 3, static_cast<int>(reduction));
 			} else {
-				e = sqlite3_bind_null(refport_stmt_, 3);
+				// assume "sum" by default, for backward compatibility
+				e = sqlite3_bind_int(refport_stmt_, 3, static_cast<int>(Reduction::kSum));
 			}
 			e = sqlite3_step(refport_stmt_);
 			if (e != SQLITE_DONE) {
@@ -3715,7 +3718,7 @@ const Schema kModelTables[] = {
 	{"impls", "(pq_rowid INTEGER, math TEXT)"},
 	{"nodes", "(pq_rowid INTEGER, node_id INTEGER, name TEXT)"},
 	{"arcs", "(pq_rowid INTEGER, tail_node_id INTEGER, head_node_id INTEGER, type TEXT, math TEXT)"},
-	{"refports", "(pq_rowid INTEGER, port_id INTEGER, reduction TEXT)"},
+	{"refports", "(pq_rowid INTEGER, port_id INTEGER, reduction INTEGER)"},
 	{"refts", "(pq_rowid INTEGER, timeseries_id INTEGER, element_id TEXT)"},
 	{"extras", "(pq_rowid INTEGER, order_type TEXT, math TEXT)"},
 	{"templates", "(template_id TEXT, ref_module_id TEXT)"},
@@ -3735,7 +3738,7 @@ const Schema kSubsequentTables[] = {
 	{"scopes", "(uuid TEXT, space_id TEXT, label TEXT)"},
 	{"journals", "(indent INTEGER, uuid TEXT)"},
 	{"spans", "(tail_uuid TEXT, tail_port_id INTEGER, head_uuid TEXT, head_port_id INTEGER)"},
-	{"reaches", "(output_uuid BLOB, output_id INTEGER, input_uuid BLOB, input_id INTEGER)"},
+	{"reaches", "(output_uuid BLOB, output_id INTEGER, input_uuid BLOB, input_id INTEGER, reduction INTEGER)"},
 	{"combined_values", "(uuid TEXT, math TEXT)"},
 	{"combined_functions", "(uuid TEXT, math TEXT)"},
 	{"combined_odes", "(uuid TEXT, math TEXT)"},

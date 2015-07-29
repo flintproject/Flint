@@ -5,6 +5,7 @@
 
 #include "job.hh"
 
+#include <algorithm>
 #include <cassert>
 #include <cstdio>
 #include <cstdlib>
@@ -86,19 +87,16 @@ public:
 		return true;
 	}
 
-	double Store(const bc::Store &store, int offset, const std::unordered_set<int> &flow_addrs) {
+	double Store(const bc::Store &store, int offset) {
 		assert(store.lo() >= 0);
 		int k = offset + store.so() + (layer_size_ * store.lo());
 		double v = tmp_[store.a()];
 		data_[k] = v;
-
-		// send stored value through flows
-		// FIXME: sum only
-		for (int a : flow_addrs) {
-			data_[a] += data_[k];
-		}
-
 		return v;
+	}
+
+	bool Reduce(const ReductionUnit &ru) {
+		return ru(data_);
 	}
 
 private:
@@ -156,16 +154,63 @@ public:
 		return v;
 	}
 
+
 	void Communicate(const FlowInboundMap *inbound) {
-		for (FlowInboundMap::const_iterator it=inbound->begin();it!=inbound->end();++it) {
+		for (auto it=inbound->cbegin();it!=inbound->cend();++it) {
 			int dst = it->first;
-			for (int src : *it->second) {
-				if (color_[src]) {
-					data_[dst] += data_[src];
-				} else {
-					data_[dst] += prev_[src];
+			auto &sources = it->second->second;
+			double d;
+			switch (it->second->first) {
+			case Reduction::kUnspecified:
+				assert(false);
+				break;
+
+#define DATA_AT(i) (color_[i]) ? data_[i] : prev_[i]
+
+			case Reduction::kSum:
+				d = 0;
+				for (auto src : sources)
+					d += DATA_AT(src);
+				break;
+			case Reduction::kMax:
+				{
+					auto sit = sources.cbegin();
+					auto seit = sources.cend();
+					assert(sit != seit);
+					d = DATA_AT(*sit);
+					while (++sit != seit)
+						d = std::max(d, DATA_AT(*sit));
 				}
+				break;
+			case Reduction::kMin:
+				{
+					auto sit = sources.cbegin();
+					auto seit = sources.cend();
+					assert(sit != seit);
+					d = DATA_AT(*sit);
+					while (++sit != seit)
+						d = std::min(d, DATA_AT(*sit));
+				}
+				break;
+			case Reduction::kMean:
+				{
+					auto sit = sources.cbegin();
+					auto seit = sources.cend();
+					assert(sit != seit);
+					d = DATA_AT(*sit);
+					while (++sit != seit)
+						d += DATA_AT(*sit);
+					d /= sources.size();
+				}
+				break;
+
+#undef DATA_AT
+
+			case Reduction::kDegree:
+				d = sources.size();
+				break;
 			}
+			data_[dst] = d;
 			color_[dst] = 1;
 		}
 	}
@@ -322,7 +367,6 @@ bool Evolve(sqlite3 *db,
 	std::unique_ptr<TimeseriesVector> tv;
 
 	std::unique_ptr<FlowInboundMap> inbound(new FlowInboundMap);
-	std::unique_ptr<FlowOutboundMap> outbound(new FlowOutboundMap);
 	{
 		tv.reset(new TimeseriesVector);
 		if (!ts::LoadTimeseriesVector(db, tv.get()))
@@ -331,11 +375,11 @@ bool Evolve(sqlite3 *db,
 		if (with_pre) preprocessor->set_tv(tv.get());
 		if (with_post) postprocessor->set_tv(tv.get());
 
-		if (!LoadFlows(db, inbound.get(), outbound.get()))
+		if (!LoadFlows(db, inbound.get()))
 			return false;
 	}
 
-	if (!processor->SolveDependencies(nol, inbound.get(), outbound.get(), true)) {
+	if (!processor->SolveDependencies(nol, inbound.get(), true)) {
 		return false;
 	}
 
@@ -352,21 +396,15 @@ bool Evolve(sqlite3 *db,
 	executor->set_data(data.get());
 	postexecutor->set_prev(data.get());
 
-	// arrange disposition
-	std::unique_ptr<double[]> cdata(new double[layer_size]());
-	std::unique_ptr<size_t[]> disposition(new size_t[layer_size]()); // default-initialized
-	processor->SolveConstantDisposition(outbound.get(),
-										prev.get(),
-										cdata.get(),
-										disposition.get());
-
 	// copy time, dt, end and seed to data
 	std::memcpy(data.get(), prev.get(), kOffsetBase * sizeof(double));
-	// disposition
-	for (size_t offset=kOffsetBase;offset<layer_size;offset++) {
-		if (disposition[offset]) {
+	// constant disposition
+	{
+		std::set<int> constants;
+		layout->CollectConstant(1, layer_size, &constants);
+		for (auto offset : constants) {
 			for (int i=0;i<nol;i++) {
-				data[offset + i*layer_size] = cdata[offset];
+				data[offset + i*layer_size] = prev[offset];
 			}
 		}
 	}
@@ -521,17 +559,6 @@ bool Evolve(sqlite3 *db,
 			memcpy(&control, control_region->get_address(), 1);
 			if (control == 1) {
 				break;
-			}
-		}
-
-		// clear data
-		std::memset(data.get()+kOffsetBase, 0, (nol*layer_size-kOffsetBase)*sizeof(double));
-		// disposition
-		for (size_t offset=kOffsetBase;offset<layer_size;offset++) {
-			if (disposition[offset]) {
-				for (int i=0;i<nol;i++) {
-					data[offset + i*layer_size] = cdata[offset];
-				}
 			}
 		}
 

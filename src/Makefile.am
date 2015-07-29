@@ -127,10 +127,13 @@ libflintxx_la_SOURCES = \
     phsp/read.cc \
     phz/read.cc \
     reach.cc \
+    reduction.cc \
     run/run.cc \
     run/spec.cc \
+    runtime/calculation-dependency.cc \
     runtime/init.cc \
     runtime/flow.cc \
+    runtime/reduction-unit.cc \
     sbml/load.cc \
     sbml/parser.cc \
     sbml/read.cc \

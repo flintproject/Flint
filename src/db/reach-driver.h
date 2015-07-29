@@ -8,6 +8,7 @@
 
 #include <boost/uuid/uuid.hpp>
 
+#include "reduction.hh"
 #include "statement-driver.hh"
 
 namespace db {
@@ -15,12 +16,14 @@ namespace db {
 class ReachDriver : StatementDriver {
 public:
 	explicit ReachDriver(sqlite3 *db)
-		: StatementDriver(db, "INSERT INTO reaches VALUES (?, ?, ?, ?)")
+		: StatementDriver(db, "INSERT INTO reaches VALUES (?, ?, ?, ?, ?)")
 	{
 	}
 
 	bool Save(const boost::uuids::uuid &output_uuid, int output_id,
-			  const boost::uuids::uuid &input_uuid, int input_id) {
+			  const boost::uuids::uuid &input_uuid, int input_id,
+			  Reduction reduction = Reduction::kUnspecified)
+	{
 		int e;
 		e = sqlite3_bind_blob(stmt(), 1, &output_uuid, 16, SQLITE_STATIC);
 		if (e != SQLITE_OK) {
@@ -40,6 +43,15 @@ public:
 		e = sqlite3_bind_int(stmt(), 4, input_id);
 		if (e != SQLITE_OK) {
 			std::cerr << "failed to bind input_id: " << e << std::endl;
+			return false;
+		}
+		if (reduction == Reduction::kUnspecified) {
+			e = sqlite3_bind_null(stmt(), 5);
+		} else {
+			e = sqlite3_bind_int(stmt(), 5, static_cast<int>(reduction));
+		}
+		if (e != SQLITE_OK) {
+			std::cerr << "failed to bind reduction: " << e << std::endl;
 			return false;
 		}
 		e = sqlite3_step(stmt());

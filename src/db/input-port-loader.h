@@ -8,6 +8,7 @@
 
 #include <boost/uuid/uuid_generators.hpp>
 
+#include "reduction.hh"
 #include "statement-driver.hh"
 
 namespace db {
@@ -16,7 +17,7 @@ class InputPortLoader : StatementDriver {
 public:
 	// Note that db is for read only.
 	explicit InputPortLoader(sqlite3 *db)
-		: StatementDriver(db, "SELECT m.module_id, p.pq_id, p.type, r.port_id FROM refports AS r LEFT JOIN pqs AS p ON r.pq_rowid = p.rowid LEFT JOIN modules AS m ON p.module_rowid = m.rowid")
+		: StatementDriver(db, "SELECT m.module_id, p.pq_id, p.type, r.port_id, r.reduction FROM refports AS r LEFT JOIN pqs AS p ON r.pq_rowid = p.rowid LEFT JOIN modules AS m ON p.module_rowid = m.rowid")
 	{
 	}
 
@@ -29,7 +30,11 @@ public:
 			int pq_id = sqlite3_column_int(stmt(), 1);
 			const unsigned char *pq_type = sqlite3_column_text(stmt(), 2);
 			int port_id = sqlite3_column_int(stmt(), 3);
-			if (!handler->Handle(gen((const char *)module_id), port_id, pq_id, *((const char *)pq_type))) return false;
+			int reduction = sqlite3_column_int(stmt(), 4);
+			if (!handler->Handle(gen((const char *)module_id), port_id, pq_id,
+								 *((const char *)pq_type),
+								 static_cast<Reduction>(reduction)))
+				return false;
 		}
 		if (e != SQLITE_DONE) {
 			std::cerr << "failed to step statement: " << e << std::endl;

@@ -98,7 +98,7 @@ bool Flow(sqlite3 *db)
 	if (!CreateOffsets(db))
 		return false;
 	if (!CreateView(db, "flows",
-					"SELECT s.value AS source, t.value AS target FROM reaches AS r"
+					"SELECT s.value AS source, t.value AS target, r.reduction FROM reaches AS r"
 					" LEFT JOIN offsets AS s ON r.output_uuid = s.uuid AND r.output_id = s.id"
 					" LEFT JOIN offsets AS t ON r.input_uuid = t.uuid AND r.input_id = t.id"))
 		return false;

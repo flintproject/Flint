@@ -22,6 +22,7 @@
 #include "db/reach-driver.h"
 #include "db/scope-loader.h"
 #include "db/span-loader.h"
+#include "reduction.hh"
 
 using std::cerr;
 using std::endl;
@@ -69,11 +70,13 @@ private:
 
 class Port : boost::noncopyable {
 public:
-	Port(boost::uuids::uuid module_id, int port_id, int physical_quantity_id, char pq_type)
+	Port(boost::uuids::uuid module_id, int port_id, int physical_quantity_id,
+		 char pq_type, Reduction reduction)
 		: module_id_(module_id),
 		  port_id_(port_id),
 		  physical_quantity_id_(physical_quantity_id),
 		  pq_type_(pq_type)
+		, reduction_(reduction)
 	{
 	}
 
@@ -81,12 +84,14 @@ public:
 	int port_id() const {return port_id_;}
 	int physical_quantity_id() const {return physical_quantity_id_;}
 	char pq_type() const {return pq_type_;}
+	Reduction reduction() const {return reduction_;}
 
 private:
 	boost::uuids::uuid module_id_;
 	int port_id_;
 	int physical_quantity_id_;
 	char pq_type_;
+	Reduction reduction_;
 };
 
 class Node {
@@ -115,8 +120,10 @@ public:
 	{
 	}
 
-	bool Handle(boost::uuids::uuid uuid, int port_id, int pq_id, char pq_type) {
-		ports_->insert(uuid, new Port(uuid, port_id, pq_id, pq_type));
+	bool Handle(boost::uuids::uuid uuid, int port_id, int pq_id,
+				char pq_type, Reduction reduction)
+	{
+		ports_->insert(uuid, new Port(uuid, port_id, pq_id, pq_type, reduction));
 		return true;
 	}
 
@@ -140,7 +147,8 @@ public:
 
 	bool Handle(boost::uuids::uuid uuid, int port_id, int pq_id, char pq_type) {
 		Node node(uuid, port_id);
-		ports_->insert(node, new Port(uuid, port_id, pq_id, pq_type));
+		// reduction makes little sense for output port, so just call it unspecified
+		ports_->insert(node, new Port(uuid, port_id, pq_id, pq_type, Reduction::kUnspecified));
 		return true;
 	}
 
@@ -318,9 +326,9 @@ bool Reach(sqlite3 *db)
 					}
 				}
 				if (!driver->Save(tit->uuid(), oit->second->physical_quantity_id(),
-								  uuid, inport->physical_quantity_id())) {
+								  uuid, inport->physical_quantity_id(),
+								  inport->reduction()))
 					return false;
-				}
 			}
 		}
 	}

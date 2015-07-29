@@ -12,6 +12,7 @@
 #include <set>
 #include <string>
 #include <unordered_set>
+#include <vector>
 
 #include <boost/noncopyable.hpp>
 #include <boost/ptr_container/ptr_vector.hpp>
@@ -25,6 +26,9 @@
 #include "numeric/prng.h"
 #include "runtime/flow.hh"
 #include "runtime/timeseries.h"
+
+#include "calculation-dependency.hh"
+#include "execution-unit.hh"
 
 namespace {
 
@@ -250,82 +254,10 @@ void DoGen2(const bc::Gen2 &c2, double *tmp, TRng *rng)
 
 } // namespace
 
-class FlowDependency {
-public:
-	explicit FlowDependency(int target_addr)
-	: target_addr_(target_addr),
-	  source_addrs_()
-	{}
+typedef boost::ptr_vector<ReductionUnit> ReductionUnitVector;
 
-	int target_addr() const {return target_addr_;}
-	const std::unordered_set<int> &source_addrs() const {return source_addrs_;}
+typedef boost::ptr_vector<CalculationDependency> CalculationDependencyVector;
 
-	void AddSourceAddr(int source_addr) {
-		source_addrs_.insert(source_addr);
-	}
-
-private:
-	int target_addr_;
-	std::unordered_set<int> source_addrs_;
-};
-
-typedef boost::ptr_vector<FlowDependency> FlowDependencyVector;
-
-class ExecutionUnit : boost::noncopyable {
-public:
-	ExecutionUnit(int section_index, int sector_index, int block_index)
-		: section_index_(section_index),
-		  sector_index_(sector_index),
-		  block_index_(block_index),
-		  flow_addrs_()
-	{}
-
-	int section_index() const {return section_index_;}
-	int sector_index() const {return sector_index_;}
-	int block_index() const {return block_index_;}
-	const std::unordered_set<int> &flow_addrs() const {return flow_addrs_;}
-
-	void Insert(int offset, const std::unordered_set<int> &flow_addrs) {
-		for (int a : flow_addrs) {
-			flow_addrs_.insert(offset + a);
-		}
-	}
-
-private:
-	int section_index_;
-	int sector_index_;
-	int block_index_;
-	std::unordered_set<int> flow_addrs_;
-};
-
-class ExecutionDependency {
-public:
-	// This does *not* own the given ExecutionUnit
-	explicit ExecutionDependency(ExecutionUnit *eu) : eu_(eu), load_addrs_(), store_addr_(-1) {}
-
-	ExecutionUnit *eu() {return eu_;}
-	const std::unordered_set<int> &load_addrs() const {return load_addrs_;}
-	int store_addr() const {return store_addr_;}
-
-	void AddLoadAddress(int load_addr)
-	{
-		load_addrs_.insert(load_addr);
-	}
-
-	void SetStoreAddr(int store_addr) {
-		if (store_addr_ >= 0) {
-			std::cerr << "more than one store addr found: " << store_addr_ << std::endl;
-		}
-		store_addr_ = store_addr;
-	}
-
-private:
-	ExecutionUnit *eu_;
-	std::unordered_set<int> load_addrs_;
-	int store_addr_;
-};
-
-typedef boost::ptr_vector<ExecutionDependency> ExecutionDependencyVector;
 class Processor : boost::noncopyable {
 public:
 	Processor(const Layout *layout, int layer_size)
@@ -417,126 +349,61 @@ public:
 		return max_nod;
 	}
 
-	// Suppose output and disposition are zero-initialized
-	// Note that this destroys the outbound map!
-	void SolveConstantDisposition(FlowOutboundMap *outbound,
-								  const double *input,
-								  double *output,
-								  size_t *disposition) const {
-		// construct a subgraph of the flow graph
-		std::set<int> constants;
-		layout_->CollectConstant(1, layer_size_, &constants);
-		FlowInboundMap sub_inbound;
-		FlowOutboundMap sub_outbound;
-		std::set<int> offsets(constants);
-		while (!offsets.empty()) {
-			std::set<int> neighbors;
-			for (std::set<int>::iterator it=offsets.begin();it!=offsets.end();++it) {
-				FlowOutboundMap::iterator obit = outbound->find(*it);
-				if (obit == outbound->end()) continue;
-				// make targets ordered for std::set_difference()
-				std::set<int> targets(obit->second->begin(), obit->second->end());
-				outbound->erase(obit);
-				std::set<int> diff;
-				std::set_difference(targets.begin(), targets.end(),
-									constants.begin(), constants.end(),
-									std::inserter(diff, diff.begin()));
-				for (std::set<int>::const_iterator dit=diff.begin();dit!=diff.end();++dit) {
-					sub_inbound[*dit].insert(*it);
-					sub_outbound[*it].insert(*dit);
-					neighbors.insert(*dit);
-				}
-			}
-			offsets.swap(neighbors);
-		}
-		// initial output
-		for (std::set<int>::const_iterator it=constants.begin();it!=constants.end();++it) {
-			output[*it] = input[*it];
-			disposition[*it] = 1;
-		}
-		// propagate values via topological sorting
-		offsets.swap(constants);
-		for (;;) {
-			std::set<int>::iterator it = offsets.begin();
-			if (it == offsets.end()) return; // done
-			int source = *it;
-			offsets.erase(it);
-
-			FlowOutboundMap::iterator sobit = sub_outbound.find(source);
-			if (sobit == sub_outbound.end()) continue;
-			for (int target : *sobit->second) {
-				output[target] += output[source];
-				disposition[target] = disposition[source] + 1;
-				// remove an (inbound) edge
-				size_t i = sub_inbound[target].erase(source);
-				assert(i == 1);
-				if (sub_inbound[target].empty()) { // no other incoming edges to the target node
-					sub_inbound.erase(target);
-					offsets.insert(target); // queue
-				}
-			}
-			// remove (outbound) edges
-			sub_outbound.erase(sobit);
-		}
-	}
-
 	bool SolveDependencies(int nol,
 						   const FlowInboundMap *inbound,
-						   const FlowOutboundMap *outbound,
 						   bool constantAvailable) {
-		std::unique_ptr<ExecutionDependencyVector> edv(new ExecutionDependencyVector);
-		CollectExecutionDependencies(edv.get());
+		std::unique_ptr<CalculationDependencyVector> cdv(new CalculationDependencyVector);
+		CollectCalculationDependencies(cdv.get());
 
-		AnnotateFlow(outbound, edv.get());
-
-		std::unique_ptr<FlowDependencyVector> fdv(new FlowDependencyVector);
-		CollectFlowDependencies(nol, inbound, fdv.get());
+		std::unique_ptr<ReductionUnitVector> ruv(new ReductionUnitVector);
+		CollectReductionUnits(nol, inbound, ruv.get());
 
 		std::unique_ptr<char[]> ready_addresses(new char[nol * layer_size_]());
 		if (constantAvailable)
 			layout_->MarkConstant(nol, layer_size_, ready_addresses.get());
-		while (!edv->empty() || !fdv->empty()) {
+		while (!cdv->empty() || !ruv->empty()) {
 			size_t n = 0;
 
 			// Level 2N
-			ExecutionDependencyVector::iterator eit = edv->begin();
-			while (eit != edv->end()) {
-				const std::unordered_set<int> &la = eit->load_addrs();
+			CalculationDependencyVector::iterator cit = cdv->begin();
+			while (cit != cdv->end()) {
+				const std::unordered_set<int> &la = cit->load_addrs();
 				if (std::all_of(la.begin(), la.end(),
 								[&ready_addresses](int i){return ready_addresses[i] == 1;})) {
-					euv_.push_back(eit->eu());
-					ready_addresses[eit->store_addr()] = 1;
+					euv_.push_back(cit->cu());
+					ready_addresses[cit->store_addr()] = 1;
 					n++;
-					eit = edv->erase(eit);
+					cit = cdv->erase(cit);
 				} else {
-					++eit;
+					++cit;
 				}
 			}
 
 			// Level 2N+1
-			FlowDependencyVector::iterator fit = fdv->begin();
-			while (fit != fdv->end()) {
-				const std::unordered_set<int> &sa = fit->source_addrs();
+			ReductionUnitVector::iterator rit = ruv->begin();
+			while (rit != ruv->end()) {
+				const std::unordered_set<int> &sa = rit->source_addrs();
 				if (std::all_of(sa.begin(), sa.end(),
 								[&ready_addresses](int i){return ready_addresses[i] == 1;})) {
-					ready_addresses[fit->target_addr()] = 1;
+					euv_.push_back(*rit);
+					ready_addresses[rit->target_addr()] = 1;
 					n++;
-					fit = fdv->erase(fit);
+					rit = ruv->erase(rit);
 				} else {
-					++fit;
+					++rit;
 				}
 			}
 
 			if (n == 0) {
 				std::cerr << "failed to solve the rest of dependencies: "
-					 << edv->size()
+					 << cdv->size()
 					 << "/"
-					 << fdv->size()
+					 << ruv->size()
 					 << std::endl;
-				for (ExecutionDependencyVector::const_iterator eit=edv->begin();eit!=edv->end();++eit) {
-					const std::unordered_set<int> &la = eit->load_addrs();
-					for (std::unordered_set<int>::const_iterator lait=la.begin();lait!=la.end();++lait) {
-						if (lait == la.begin()) {
+				for (auto cit=cdv->cbegin();cit!=cdv->cend();++cit) {
+					const std::unordered_set<int> &la = cit->load_addrs();
+					for (auto lait=la.cbegin();lait!=la.cend();++lait) {
+						if (lait == la.cbegin()) {
 							std::cerr << *lait;
 						} else {
 							std::cerr << "," << *lait;
@@ -546,13 +413,13 @@ public:
 							std::cerr << "?";
 						}
 					}
-					std::cerr << " -> " << eit->store_addr() << std::endl;
+					std::cerr << " -> " << cit->store_addr() << std::endl;
 				}
-				for (FlowDependencyVector::const_iterator fit=fdv->begin();fit!=fdv->end();++fit) {
-					std::cerr << "target_addr: " << fit->target_addr()
+				for (auto rit=ruv->cbegin();rit!=ruv->cend();++rit) {
+					std::cerr << "target_addr: " << rit->target_addr()
 							  << " <- ";
-					for (std::unordered_set<int>::const_iterator sit=fit->source_addrs().begin();sit!=fit->source_addrs().end();++sit) {
-						if (sit == fit->source_addrs().begin()) {
+					for (auto sit=rit->source_addrs().cbegin();sit!=rit->source_addrs().cend();++sit) {
+						if (sit == rit->source_addrs().cbegin()) {
 							std::cerr << *sit;
 						} else {
 							std::cerr << ", " << *sit;
@@ -568,10 +435,12 @@ public:
 
 	template<typename TExecutor>
 	bool Process(TExecutor *executor) {
-		for (boost::ptr_vector<ExecutionUnit>::const_iterator it=euv_.begin();it!=euv_.end();++it) {
-			int si = it->section_index();
-			int k = it->sector_index();
-			int bi = it->block_index();
+		for (const ExecutionUnit &eu : euv_) {
+			if (eu.which() == 0) {
+				const CalculationUnit &cu = boost::get<CalculationUnit>(eu);
+				int si = cu.section_index();
+				int k = cu.sector_index();
+				int bi = cu.block_index();
 
 			const bc::SectionHeader &sh(shv_->at(si));
 			const std::string &id(sh.id());
@@ -650,7 +519,7 @@ public:
 					ci = cie;
 					break;
 				case bc::Code::kStore:
-					double v = executor->Store(code.store(), offset, it->flow_addrs());
+					double v = executor->Store(code.store(), offset);
 					if (!IsFinite(v, offset)) {
 						boost::uuids::uuid u;
 						std::memcpy(&u, sh.id().c_str(), 16);
@@ -666,6 +535,11 @@ public:
 					ci++;
 					break;
 				}
+			}
+			} else {
+				const ReductionUnit &ru = boost::get<ReductionUnit>(eu);
+				if (!executor->Reduce(ru))
+					return false;
 			}
 		}
 		return true;
@@ -778,8 +652,8 @@ public:
 	}
 
 private:
-	void CollectExecutionDependencies(ExecutionDependencyVector *edv) {
-		assert(edv);
+	void CollectCalculationDependencies(CalculationDependencyVector *cdv) {
+		assert(cdv);
 
 		int si = 0; // section index
 		int bi = 0; // block index
@@ -797,8 +671,7 @@ private:
 					bi = bib; // reset block index
 					int offset = mounter.GetOffset(k);
 					for (;bi < bie; bi++) {
-						ExecutionUnit *eu = new ExecutionUnit(si, k, bi);
-						ExecutionDependency *ed = new ExecutionDependency(eu);
+						std::unique_ptr<CalculationDependency> cd(new CalculationDependency(si, k, bi));
 
 						const bc::BlockHeader &bh(bhv_->at(bi));
 						ci = code_offset_[bi];
@@ -820,7 +693,7 @@ private:
 									default:
 										{
 											int addr = offset + load.so() + (layer_size_ * load.lo());
-											ed->AddLoadAddress(addr);
+											cd->AddLoadAddress(addr);
 										}
 										break;
 									}
@@ -830,7 +703,7 @@ private:
 								{
 									const bc::Store &store = code.store();
 									int addr = offset + store.so() + (layer_size_ * store.lo());
-									ed->SetStoreAddr(addr);
+									cd->SetStoreAddr(addr);
 								}
 								break;
 							default:
@@ -838,54 +711,29 @@ private:
 							}
 						}
 
-						edv->push_back(ed);
+						cdv->push_back(cd.release());
 					}
 				}
 			}
 	}
 
-	void CollectFlowDependencies(int nol, const FlowInboundMap *inbound,
-								 FlowDependencyVector *fdv)
+	void CollectReductionUnits(int nol, const FlowInboundMap *inbound,
+							   ReductionUnitVector *ruv)
 	{
 		assert(inbound);
-		assert(fdv);
+		assert(ruv);
 
 		for (FlowInboundMap::const_iterator it=inbound->begin();it!=inbound->end();++it) {
 			for (int i=0;i<nol;i++) {
 				if (i%2 == 0) { // only on an even layer
-					FlowDependency *fd = new FlowDependency(it->first + (i * layer_size_));
-					for (int src : *it->second) {
-						fd->AddSourceAddr(src + (i * layer_size_));
+					std::unique_ptr<ReductionUnit> rd(new ReductionUnit(it->second->first,
+																		it->first + (i * layer_size_)));
+					for (int src : it->second->second) {
+						rd->AddSourceAddr(src + (i * layer_size_));
 					}
-					fdv->push_back(fd);
+					ruv->push_back(rd.release());
 				}
 			}
-		}
-	}
-
-	void AnnotateFlow(const FlowOutboundMap *outbound,
-					  ExecutionDependencyVector *edv) {
-		assert(outbound);
-		assert(edv);
-
-		for (boost::ptr_vector<ExecutionDependency>::iterator it=edv->begin();it!=edv->end();++it) {
-			int store_addr = it->store_addr();
-			int local_addr = store_addr % layer_size_;
-			int layer_offset = store_addr / layer_size_;
-			if (layer_offset%2) continue; // skip an odd layer
-			FlowOutboundMap::const_iterator fit = outbound->find(local_addr);
-			if (fit == outbound->end()) continue;
-			AnnotateFlow(outbound, *fit->second, layer_offset * layer_size_, it->eu());
-		}
-	}
-
-	void AnnotateFlow(const FlowOutboundMap *outbound, const std::unordered_set<int> &addrs,
-					  int offset, ExecutionUnit *eu) {
-		eu->Insert(offset, addrs);
-		for (int a : addrs) {
-			FlowOutboundMap::const_iterator fit = outbound->find(a);
-			if (fit == outbound->end()) continue;
-			AnnotateFlow(outbound, *fit->second, offset, eu);
 		}
 	}
 
@@ -901,7 +749,7 @@ private:
 	std::unique_ptr<BhVector> bhv_;
 	std::unique_ptr<CVector> cv_;
 
-	boost::ptr_vector<ExecutionUnit> euv_;
+	std::vector<ExecutionUnit> euv_;
 
 	std::unique_ptr<int[]> code_offset_;
 	double *tmp_;
