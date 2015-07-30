@@ -1303,21 +1303,8 @@
                         <is:definition type="assign" sub-type="port" format="reference">
                             <is:reference port-id="4"/>
                         </is:definition>
-                        <is:extra-implementation order="after" type="instantaneous">
-                            <is:definition type="loop" sub-type="iteration" format="">
-                                <is:iteration substructure-id="1">
-                                    <is:iterator>rgf_input</is:iterator>
-                                    <is:aggregate type="port"/>
-                                    <is:begin>
-                                        <is:definition format="mathml">
-                                            <m:math><m:apply><m:eq/><m:ci>spike_from_RG_F</m:ci><m:cn>0</m:cn></m:apply></m:math>
-                                        </is:definition>
-                                    </is:begin>
-                                    <is:definition type="ae" sub-type="" format="mathml">
-                                        <m:math><m:apply><m:eq/><m:ci>spike_from_RG_F</m:ci><m:apply><m:plus/><m:ci>spike_from_RG_F</m:ci><m:ci>rgf_input</m:ci></m:apply></m:apply></m:math>
-                                    </is:definition>
-                                </is:iteration>
-                            </is:definition>
+                        <is:extra-implementation type="multiple-input-assignment">
+                            <is:definition type="reduction" sub-type="sum"/>
                         </is:extra-implementation>
                     </is:implementation>
                     <is:problem-condition-set/>
@@ -1472,21 +1459,8 @@
                         <is:definition type="assign" sub-type="port" format="reference">
                             <is:reference port-id="5"/>
                         </is:definition>
-                        <is:extra-implementation order="after" type="instantaneous">
-                            <is:definition type="loop" sub-type="iteration" format="">
-                                <is:iteration substructure-id="1">
-                                    <is:iterator>rge_input</is:iterator>
-                                    <is:aggregate type="port"/>
-                                    <is:begin>
-                                        <is:definition format="mathml">
-                                            <m:math><m:apply><m:eq/><m:ci>spike_from_RG_E</m:ci><m:cn>0</m:cn></m:apply></m:math>
-                                        </is:definition>
-                                    </is:begin>
-                                    <is:definition type="ae" sub-type="" format="mathml">
-                                        <m:math><m:apply><m:eq/><m:ci>spike_from_RG_E</m:ci><m:apply><m:plus/><m:ci>spike_from_RG_E</m:ci><m:ci>rge_input</m:ci></m:apply></m:apply></m:math>
-                                    </is:definition>
-                                </is:iteration>
-                            </is:definition>
+                        <is:extra-implementation type="multiple-input-assignment">
+                            <is:definition type="reduction" sub-type="sum"/>
                         </is:extra-implementation>
                     </is:implementation>
                     <is:problem-condition-set/>
@@ -1609,21 +1583,8 @@
                         <is:definition type="assign" sub-type="port" format="reference">
                             <is:reference port-id="3"/>
                         </is:definition>
-                        <is:extra-implementation order="after" type="instantaneous">
-                            <is:definition type="loop" sub-type="iteration" format="">
-                                <is:iteration substructure-id="1">
-                                    <is:iterator>inrge_input</is:iterator>
-                                    <is:aggregate type="port"/>
-                                    <is:begin>
-                                        <is:definition format="mathml">
-                                            <m:math><m:apply><m:eq/><m:ci>spike_from_Inrg_E</m:ci><m:cn>0</m:cn></m:apply></m:math>
-                                        </is:definition>
-                                    </is:begin>
-                                    <is:definition type="ae" sub-type="" format="mathml">
-                                        <m:math><m:apply><m:eq/><m:ci>spike_from_Inrg_E</m:ci><m:apply><m:plus/><m:ci>spike_from_Inrg_E</m:ci><m:ci>inrge_input</m:ci></m:apply></m:apply></m:math>
-                                    </is:definition>
-                                </is:iteration>
-                            </is:definition>
+                        <is:extra-implementation type="multiple-input-assignment">
+                            <is:definition type="reduction" sub-type="sum"/>
                         </is:extra-implementation>
                     </is:implementation>
                     <is:problem-condition-set/>
@@ -3165,21 +3126,8 @@
                         <is:definition type="assign" sub-type="port" format="reference">
                             <is:reference port-id="4"/>
                         </is:definition>
-                        <is:extra-implementation order="after" type="instantaneous">
-                            <is:definition type="loop" sub-type="iteration" format="">
-                                <is:iteration substructure-id="1">
-                                    <is:iterator>rge_input</is:iterator>
-                                    <is:aggregate type="port"/>
-                                    <is:begin>
-                                        <is:definition format="mathml">
-                                            <m:math><m:apply><m:eq/><m:ci>spike_from_RG_E</m:ci><m:cn>0</m:cn></m:apply></m:math>
-                                        </is:definition>
-                                    </is:begin>
-                                    <is:definition type="ae" sub-type="" format="mathml">
-                                        <m:math><m:apply><m:eq/><m:ci>spike_from_RG_E</m:ci><m:apply><m:plus/><m:ci>spike_from_RG_E</m:ci><m:ci>rge_input</m:ci></m:apply></m:apply></m:math>
-                                    </is:definition>
-                                </is:iteration>
-                            </is:definition>
+                        <is:extra-implementation type="multiple-input-assignment">
+                            <is:definition type="reduction" sub-type="sum"/>
                         </is:extra-implementation>
                     </is:implementation>
                     <is:problem-condition-set/>
@@ -3334,21 +3282,8 @@
                         <is:definition type="assign" sub-type="port" format="reference">
                             <is:reference port-id="5"/>
                         </is:definition>
-                        <is:extra-implementation order="after" type="instantaneous">
-                            <is:definition type="loop" sub-type="iteration" format="">
-                                <is:iteration substructure-id="1">
-                                    <is:iterator>rgf_input</is:iterator>
-                                    <is:aggregate type="port"/>
-                                    <is:begin>
-                                        <is:definition format="mathml">
-                                            <m:math><m:apply><m:eq/><m:ci>spike_from_RG_F</m:ci><m:cn>0</m:cn></m:apply></m:math>
-                                        </is:definition>
-                                    </is:begin>
-                                    <is:definition type="ae" sub-type="" format="mathml">
-                                        <m:math><m:apply><m:eq/><m:ci>spike_from_RG_F</m:ci><m:apply><m:plus/><m:ci>spike_from_RG_F</m:ci><m:ci>rgf_input</m:ci></m:apply></m:apply></m:math>
-                                    </is:definition>
-                                </is:iteration>
-                            </is:definition>
+                        <is:extra-implementation type="multiple-input-assignment">
+                            <is:definition type="reduction" sub-type="sum"/>
                         </is:extra-implementation>
                     </is:implementation>
                     <is:problem-condition-set/>
@@ -3473,21 +3408,8 @@
                         <is:definition type="assign" sub-type="port" format="reference">
                             <is:reference port-id="3"/>
                         </is:definition>
-                        <is:extra-implementation order="after" type="instantaneous">
-                            <is:definition type="loop" sub-type="iteration" format="">
-                                <is:iteration substructure-id="1">
-                                    <is:iterator>inrgf_input</is:iterator>
-                                    <is:aggregate type="port"/>
-                                    <is:begin>
-                                        <is:definition format="mathml">
-                                            <m:math><m:apply><m:eq/><m:ci>spike_from_Inrg_F</m:ci><m:cn>0</m:cn></m:apply></m:math>
-                                        </is:definition>
-                                    </is:begin>
-                                    <is:definition type="ae" sub-type="" format="mathml">
-                                        <m:math><m:apply><m:eq/><m:ci>spike_from_Inrg_F</m:ci><m:apply><m:plus/><m:ci>spike_from_Inrg_F</m:ci><m:ci>inrgf_input</m:ci></m:apply></m:apply></m:math>
-                                    </is:definition>
-                                </is:iteration>
-                            </is:definition>
+                        <is:extra-implementation type="multiple-input-assignment">
+                            <is:definition type="reduction" sub-type="sum"/>
                         </is:extra-implementation>
                     </is:implementation>
                     <is:problem-condition-set/>
@@ -4668,21 +4590,8 @@
                         <is:definition type="assign" sub-type="port" format="reference">
                             <is:reference port-id="3"/>
                         </is:definition>
-                        <is:extra-implementation order="after" type="instantaneous">
-                            <is:definition type="loop" sub-type="iteration" format="">
-                                <is:iteration substructure-id="1">
-                                    <is:iterator>rgf_input</is:iterator>
-                                    <is:aggregate type="port"/>
-                                    <is:begin>
-                                        <is:definition format="mathml">
-                                            <m:math><m:apply><m:eq/><m:ci>spike_from_RG_F</m:ci><m:cn>0</m:cn></m:apply></m:math>
-                                        </is:definition>
-                                    </is:begin>
-                                    <is:definition type="ae" sub-type="" format="mathml">
-                                        <m:math><m:apply><m:eq/><m:ci>spike_from_RG_F</m:ci><m:apply><m:plus/><m:ci>spike_from_RG_F</m:ci><m:ci>rgf_input</m:ci></m:apply></m:apply></m:math>
-                                    </is:definition>
-                                </is:iteration>
-                            </is:definition>
+                        <is:extra-implementation type="multiple-input-assignment">
+                            <is:definition type="reduction" sub-type="sum"/>
                         </is:extra-implementation>
                     </is:implementation>
                     <is:problem-condition-set/>
@@ -5866,21 +5775,8 @@
                         <is:definition type="assign" sub-type="port" format="reference">
                             <is:reference port-id="3"/>
                         </is:definition>
-                        <is:extra-implementation order="after" type="instantaneous">
-                            <is:definition type="loop" sub-type="iteration" format="">
-                                <is:iteration substructure-id="1">
-                                    <is:iterator>rge_input</is:iterator>
-                                    <is:aggregate type="port"/>
-                                    <is:begin>
-                                        <is:definition format="mathml">
-                                            <m:math><m:apply><m:eq/><m:ci>spike_from_RG_E</m:ci><m:cn>0</m:cn></m:apply></m:math>
-                                        </is:definition>
-                                    </is:begin>
-                                    <is:definition type="ae" sub-type="" format="mathml">
-                                        <m:math><m:apply><m:eq/><m:ci>spike_from_RG_E</m:ci><m:apply><m:plus/><m:ci>spike_from_RG_E</m:ci><m:ci>rge_input</m:ci></m:apply></m:apply></m:math>
-                                    </is:definition>
-                                </is:iteration>
-                            </is:definition>
+                        <is:extra-implementation type="multiple-input-assignment">
+                            <is:definition type="reduction" sub-type="sum"/>
                         </is:extra-implementation>
                     </is:implementation>
                     <is:problem-condition-set/>

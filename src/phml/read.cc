@@ -3072,6 +3072,10 @@ private:
 		}
 		if (ref_ && ref_->port_id() > 0) {
 			if (xmlStrEqual(extra_->type(), BAD_CAST "multiple-input-assignment")) {
+				if (xmlStrEqual(def->type(), BAD_CAST "loop")) {
+					cerr << "multiple-input-assignment's definition of type loop is not supported yet" << endl;
+					return -2;
+				}
 				if (!xmlStrEqual(def->type(), BAD_CAST "reduction")) {
 					cerr << "found <extra-implementation> of type multiple-input-assignment, but its definition's type is not reduction: "
 						 << def->type() << endl;
