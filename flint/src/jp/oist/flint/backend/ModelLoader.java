@@ -77,7 +77,7 @@ public class ModelLoader extends SwingWorker<Ipc.ModelProbeResponse, Void> {
 
     private boolean readConfiguration() throws IOException, TimeUnitException {
         File file = new File(mDir, "file.txt");
-        try (Scanner scanner = new Scanner(file)) {
+        try (Scanner scanner = new Scanner(file, "UTF8")) {
         String lang = scanner.next();
         if (lang == null) {
             mResponseBuilder.setErrorMessage(ByteString.copyFromUtf8("unknown language"));
