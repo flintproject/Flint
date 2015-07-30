@@ -78,20 +78,22 @@ public class ModelLoader extends SwingWorker<Ipc.ModelProbeResponse, Void> {
     private boolean readConfiguration() throws IOException, TimeUnitException {
         File file = new File(mDir, "file.txt");
         try (Scanner scanner = new Scanner(file, "UTF8")) {
-        String lang = scanner.next();
-        if (lang == null) {
-            mResponseBuilder.setErrorMessage(ByteString.copyFromUtf8("unknown language"));
-            return false;
-        } else if (lang.equals("isml") || lang.equals("phml") || lang.equals("phz")) {
-            mResponseBuilder.setLanguage(Ipc.ModelLanguage.ISML);
-            readPhmlConfiguration();
-        } else if (lang.equals("sbml")) {
-            mResponseBuilder.setLanguage(Ipc.ModelLanguage.SBML);
-            readSbmlConfiguration();
-        } else {
-            mResponseBuilder.setErrorMessage(ByteString.copyFromUtf8("unknown language: " + lang));
-            return false;
-        }
+            String lang = scanner.next();
+            switch (lang) {
+            case "isml":
+            case "phml":
+            case "phz":
+                mResponseBuilder.setLanguage(Ipc.ModelLanguage.ISML);
+                readPhmlConfiguration();
+                break;
+            case "sbml":
+                mResponseBuilder.setLanguage(Ipc.ModelLanguage.SBML);
+                readSbmlConfiguration();
+                break;
+            default:
+                mResponseBuilder.setErrorMessage(ByteString.copyFromUtf8("unknown language: " + lang));
+                return false;
+            }
         }
         return true;
     }
