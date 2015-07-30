@@ -134,6 +134,7 @@ public class ModelLoader extends SwingWorker<Ipc.ModelProbeResponse, Void> {
                 mResponseBuilder.setIntegrationMethod(Ipc.IntegrationMethod.EULER);
                 break;
             case "4th-rungekutta":
+            default:
                 mResponseBuilder.setIntegrationMethod(Ipc.IntegrationMethod.RUNGE_KUTTA);
                 break;
             }
