@@ -37,6 +37,7 @@ public class Launch implements Runnable {
 
         try {
             mMainFrame = new MainFrame(mSession);
+            mMainFrame.startWatching();
         } catch (IOException ex) {
             Logger.getRootLogger().fatal("could not launch " + MainFrame.class.getName() + ": " + ex.getMessage());
             System.exit(1);

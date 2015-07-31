@@ -127,12 +127,9 @@ public class MainFrame extends javax.swing.JFrame
         setTransferHandler(new ModelFileTransferHandler(this));
 
         initComponents();
-        initEvents();
         loadRecentModels();
 
         mModelFileWatcher = new ModelFileWatcher();
-        Thread t = new Thread(mModelFileWatcher);
-        t.start();
     }
 
     private void initComponents () {
@@ -154,9 +151,6 @@ public class MainFrame extends javax.swing.JFrame
 
         setContentPane(createContentPane());
         pack();
-    }
-
-    private void initEvents () {
     }
 
     private JComponent createContentPane () {
@@ -201,6 +195,11 @@ public class MainFrame extends javax.swing.JFrame
     private void loadRecentModels () {
         FlintMenuBar.getInstance()
             .fireUpdateRecentModels(mSession.getRecentModels());
+    }
+
+    public void startWatching() {
+        Thread t = new Thread(mModelFileWatcher);
+        t.start();
     }
 
     private void simulationRun () {
