@@ -774,8 +774,11 @@ public class MainFrame extends javax.swing.JFrame
     }
 
     public boolean openModel (final File file) {
-
-        if (file == null || !file.exists()) {
+        if (file == null) {
+            // just ignore it
+            return false;
+        }
+        if (!file.exists()) {
             String separator = System.getProperty("line.separator");
             String msg = String.format("The file named \"%s\" " + separator
                     + "does not exist.", file.getPath());
