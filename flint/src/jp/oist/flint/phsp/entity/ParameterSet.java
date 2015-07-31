@@ -123,8 +123,12 @@ public class ParameterSet {
         return clone;
     }
 
-    public boolean equals (ParameterSet other) {
-        if (other == null || size() != other.size())
+    @Override
+    public boolean equals(Object object) {
+        if (!(object instanceof ParameterSet))
+            return false;
+        ParameterSet other = (ParameterSet)object;
+        if (size() != other.size())
             return false;
 
         for (int i=0; i<size(); i++) {
@@ -441,10 +445,11 @@ public class ParameterSet {
             return clone;
         }
 
-        public boolean equals (Parameter other) {
-            if (other == null)
+        @Override
+        public boolean equals(Object object) {
+            if (!(object instanceof Parameter))
                 return false;
-
+            Parameter other = (Parameter)object;
             for (String key : mData.keySet()) {
                 if (get(key).equals(other.get(key)) == false)
                     return false;
