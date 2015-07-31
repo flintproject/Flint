@@ -5,6 +5,7 @@ import com.sun.net.httpserver.Headers;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 
 public class OpenModelRequestHandler extends RequestHandler implements HttpHandler {
 
@@ -20,7 +21,7 @@ public class OpenModelRequestHandler extends RequestHandler implements HttpHandl
             Headers requestHeaders = exchange.getRequestHeaders();
 
             byte[] body = readRequestBody(exchange, requestHeaders);
-            String name = new String(body, "UTF-8");
+            String name = new String(body, StandardCharsets.UTF_8);
 
             respondOk(exchange);
 

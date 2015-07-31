@@ -8,6 +8,7 @@ import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.nio.charset.StandardCharsets;
 import java.security.GeneralSecurityException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -271,7 +272,7 @@ public class Utility {
     public static String encrypt(String str) throws GeneralSecurityException {
             Cipher cipher  = Cipher.getInstance("AES");
             cipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(KEY, "AES"));
-            byte[] encryptData = cipher.doFinal(str.getBytes());
+            byte[] encryptData = cipher.doFinal(str.getBytes(StandardCharsets.UTF_8));
 
             return Base64.encode(encryptData);
     }
@@ -282,7 +283,7 @@ public class Utility {
             cipher.init(Cipher.DECRYPT_MODE, new SecretKeySpec(KEY, "AES"));
             byte[] data = cipher.doFinal(encryptData);
 
-            return new String(data);
+            return new String(data, StandardCharsets.UTF_8);
     }
 
     private static class BreakException extends SAXException { 

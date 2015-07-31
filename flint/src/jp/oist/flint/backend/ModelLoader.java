@@ -16,6 +16,7 @@ import java.io.DataInputStream;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.Scanner;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -54,7 +55,7 @@ public class ModelLoader extends SwingWorker<Ipc.ModelProbeResponse, Void> {
         Component.setUpEnvironment(builder);
         builder.redirectErrorStream(true);
         Process process = builder.start();
-        byte[] bytes = mModelFile.getCanonicalPath().getBytes("UTF-8");
+        byte[] bytes = mModelFile.getCanonicalPath().getBytes(StandardCharsets.UTF_8);
         try (OutputStream os = process.getOutputStream()) {
             os.write(bytes);
         }

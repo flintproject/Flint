@@ -12,6 +12,7 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateException;
@@ -221,12 +222,13 @@ public class K3Rest {
 
         // Responceを受信します。
         StringBuilder resString = new StringBuilder();
-        BufferedReader reader = new BufferedReader(
-                            new InputStreamReader(http.getInputStream()));
+        try (InputStreamReader isr = new InputStreamReader(http.getInputStream(), StandardCharsets.UTF_8);
+             BufferedReader reader = new BufferedReader(isr)) {
         String line;
         while((line = reader.readLine()) != null) {
             resString.append(line);
             resString.append("\n");
+        }
         }
 
         // デバッグ的にPOST後のレスポンス情報を出力します
@@ -316,7 +318,7 @@ public class K3Rest {
         http.setDoInput(true);
         http.setRequestMethod("POST");
         http.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-        http.setRequestProperty("Content-Length", String.valueOf(postString.toString().getBytes().length));
+        http.setRequestProperty("Content-Length", String.valueOf(postString.toString().getBytes(StandardCharsets.UTF_8).length));
 
         // デバッグモードがtrueの場合のみこの処理は実行します。
         // SSLが似非、ホストが似非の場合でも通す仕組みを通します。
@@ -332,7 +334,7 @@ public class K3Rest {
         http.connect();
 
         // POST送信をします。
-        try (OutputStreamWriter osw = new OutputStreamWriter(http.getOutputStream())) {
+        try (OutputStreamWriter osw = new OutputStreamWriter(http.getOutputStream(), StandardCharsets.UTF_8)) {
         osw.write(postString.toString());
         }
 

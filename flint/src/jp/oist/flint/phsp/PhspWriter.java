@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.StringReader;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
@@ -35,7 +36,8 @@ public class PhspWriter {
 
     public void write (IPhspConfiguration conf, OutputStream os, boolean removeParameterIfNotUsed) 
         throws IOException, ParserConfigurationException, TransformerException {
-        try (BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(os, "UTF-8"))) {
+        try (OutputStreamWriter osw = new OutputStreamWriter(os, StandardCharsets.UTF_8);
+             BufferedWriter writer = new BufferedWriter(osw)) {
             StringBuilder sb = new StringBuilder();
 
             int sw = 0;

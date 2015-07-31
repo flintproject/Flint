@@ -29,10 +29,12 @@ import java.beans.PropertyChangeListener;
 import java.beans.PropertyVetoException;
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.SQLException;
@@ -240,7 +242,9 @@ public class MainFrame extends javax.swing.JFrame
                         File logFile = simulator.getLogFile();
                         StringBuilder sb = new StringBuilder();
                         if (logFile != null) {
-                            try (BufferedReader reader = new BufferedReader(new FileReader(logFile))) {
+                            try (FileInputStream fis = new FileInputStream(logFile);
+                                 InputStreamReader isr = new InputStreamReader(fis, StandardCharsets.UTF_8);
+                                 BufferedReader reader = new BufferedReader(isr)) {
                                 String line;
                                 while ((line = reader.readLine()) != null) {
                                     sb.append(line).append(System.getProperty("line.separator"));

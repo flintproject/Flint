@@ -6,6 +6,7 @@ import java.io.OutputStreamWriter;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.nio.charset.StandardCharsets;
 
 
 public class SedmlWriter {
@@ -23,7 +24,8 @@ public class SedmlWriter {
     public void writeSimulationConfiguration(final ISimulationConfigurationList configs, final OutputStream os) 
         throws IOException {
 
-        try (BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(os, "UTF-8"))) {
+        try (OutputStreamWriter osw = new OutputStreamWriter(os, StandardCharsets.UTF_8);
+             BufferedWriter writer = new BufferedWriter(osw)) {
         writer.append("<?xml version='1.0' encoding='UTF-8'?>\n");
         writer.append("<sedML xmlns='http://sed-ml.org/' xmlns:math='http://www.w3.org/1998/Math/MathML' xmlns:flint='http://physiodesigner.org/namespace/flint' version='1' level='1'>\n");
 
@@ -105,7 +107,8 @@ public class SedmlWriter {
         BigDecimal nop = new BigDecimal(config.getLength()).divide(new BigDecimal(config.getStep()));
         int numberOfPoints = nop.intValueExact();
 
-        try (BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(os, "UTF-8"))) {
+        try (OutputStreamWriter osw = new OutputStreamWriter(os, StandardCharsets.UTF_8);
+             BufferedWriter writer = new BufferedWriter(osw)) {
         writer.append("<?xml version='1.0' encoding='UTF-8'?>\n");
         writer.append("<sedML xmlns='http://sed-ml.org/' xmlns:math='http://www.w3.org/1998/Math/MathML' xmlns:flint='http://physiodesigner.org/namespace/flint' version='1' level='1'>\n");
         if (mFull) {

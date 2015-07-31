@@ -7,6 +7,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 
 public class K3RequestBuilder {
 
@@ -23,7 +24,7 @@ public class K3RequestBuilder {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         SedmlWriter writer = new SedmlWriter(false);
         writer.writeSimulationConfiguration(mSimulationConfiguration, baos);
-        return new String(baos.toByteArray(), "UTF-8");
+        return new String(baos.toByteArray(), StandardCharsets.UTF_8);
     }
 
     private byte[] readModel() throws IOException {
@@ -42,7 +43,7 @@ public class K3RequestBuilder {
     public K3Request build(String title, String username, String password) throws IOException {
         K3Request request = new K3Request(username, password);
         request.setJobTitle(title);
-        request.setModel(new String(readModel()));
+        request.setModel(new String(readModel(), StandardCharsets.UTF_8));
         request.setSedml(getSedml());
         return request;
     }

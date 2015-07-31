@@ -5,8 +5,10 @@ package jp.oist.flint.form.job;
 import java.awt.Container;
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileWriter;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import javax.swing.BorderFactory;
 import javax.swing.JCheckBox;
@@ -65,20 +67,15 @@ public class ExportAllWorker extends SwingWorker<Void, Void> {
                 break;
             }
         } 
-
-        BufferedWriter writer = null;
-        if (listFile != null)  { 
-            listFile.createNewFile();
-            writer = new BufferedWriter(new FileWriter(listFile));
-        }
-
-        try {
+        try (FileOutputStream fos = new FileOutputStream(listFile);
+             OutputStreamWriter osw = new OutputStreamWriter(fos, StandardCharsets.UTF_8);
+             BufferedWriter writer = new BufferedWriter(osw)) {
             String baseName = Utility.getFileName(mTaskDao.getModelFile().getName());
             int jobCount = mTaskDao.getCount();
             for (int ji=1; ji<=jobCount; ji++) {
                 JobDao job = mTaskDao.obtainJob(ji);
 
-                int numberOfDigits = String.valueOf(jobCount).getBytes().length;
+                int numberOfDigits = String.valueOf(jobCount).getBytes(StandardCharsets.UTF_8).length;
                 File publishFile = createPublishFile(baseName, ji, numberOfDigits);
 
                 if (publishFile.exists()) {
@@ -98,13 +95,7 @@ public class ExportAllWorker extends SwingWorker<Void, Void> {
                 String line = createLine(publishFile.getName(), job.getCombination());
                 if (writer != null) writer.write(line);
             }
-        } finally {
-            if (writer != null) {
-                writer.flush();
-                writer.close();
-            }
         }
-
         return null;
     }
 

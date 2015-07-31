@@ -5,6 +5,7 @@ package jp.oist.flint.executor;
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.nio.charset.StandardCharsets;
 import jp.oist.flint.component.Component;
 
 
@@ -31,8 +32,8 @@ public class FlintExecJob implements IJob<Boolean> {
 
     @Override
     public Boolean call() throws IOException, InterruptedException, JobException {
-        byte[] sedmlBytes = mSedmlFile.getAbsolutePath().getBytes("UTF-8");
-        byte[] phspBytes = mPhspFile.getAbsolutePath().getBytes("UTF-8");
+        byte[] sedmlBytes = mSedmlFile.getAbsolutePath().getBytes(StandardCharsets.UTF_8);
+        byte[] phspBytes = mPhspFile.getAbsolutePath().getBytes(StandardCharsets.UTF_8);
         try (OutputStream os = mProcess.getOutputStream()) {
         os.write(sedmlBytes);
         os.write(0);

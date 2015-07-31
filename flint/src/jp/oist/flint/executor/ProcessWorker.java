@@ -6,6 +6,7 @@ import jp.oist.flint.form.IFrame;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import javax.swing.SwingWorker;
@@ -24,7 +25,8 @@ public class ProcessWorker extends SwingWorker<Integer, String> {
     protected Integer doInBackground() throws IOException, InterruptedException {
         // This takes care of a process's stdout, because the process is
         // supposed to redirect its stderr to its stdout.
-        try (BufferedReader reader = new BufferedReader(new InputStreamReader(mProcess.getInputStream()))) {
+        try (InputStreamReader isr = new InputStreamReader(mProcess.getInputStream(), StandardCharsets.UTF_8);
+             BufferedReader reader = new BufferedReader(isr)) {
             String line;
             for (;;) {
                 line = reader.readLine();

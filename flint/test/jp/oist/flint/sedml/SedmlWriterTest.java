@@ -4,6 +4,7 @@ package jp.oist.flint.sedml;
 import jp.physiome.Ipc;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -132,6 +133,6 @@ public class SedmlWriterTest {
                      "      </math:math>\n" +
                      "    </dataGenerator>\n" +
                      "  </listOfDataGenerators>\n" +
-                     "</sedML>\n", new String(baos.toByteArray(), "UTF-8"));
+                     "</sedML>\n", new String(baos.toByteArray(), StandardCharsets.UTF_8));
     }
 }

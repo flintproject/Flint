@@ -3,8 +3,10 @@ package jp.oist.flint.executor;
 
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileWriter;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import jp.oist.flint.form.IFrame;
 
@@ -28,7 +30,9 @@ public class SimulatorService {
     }
 
     public Future submit(final IJob job, final File logFile) throws IOException {
-        final BufferedWriter writer = new BufferedWriter(new FileWriter(logFile));
+        try (FileOutputStream fos = new FileOutputStream(logFile);
+             OutputStreamWriter osw = new OutputStreamWriter(fos, StandardCharsets.UTF_8);
+             BufferedWriter writer = new BufferedWriter(osw)) {
         final ProcessWorker processWorker = new ProcessWorker(job.getProcess(), mFrame) {
             @Override
             protected void process(List<String> lines) {
@@ -51,5 +55,6 @@ public class SimulatorService {
         };
         processWorker.execute();
         return mPool.submit(job);
+        }
     }
 }

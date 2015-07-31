@@ -4,10 +4,12 @@ package jp.oist.flint.plot.gnuplot;
 import org.apache.log4j.Logger;
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileOutputStream;
 import jp.oist.flint.plot.BasePlotter;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -469,7 +471,8 @@ public class GnuPlotter extends BasePlotter {
         mConfigFilePath = getDataFilePath() + "." + PLOT_FILE_EXTENSION;
             File outputFile = new File(mConfigFilePath);
             outputFile.deleteOnExit();
-        try (FileWriter configWriter = new FileWriter(outputFile, false)) {
+        try (FileOutputStream fos = new FileOutputStream(outputFile, false);
+             OutputStreamWriter configWriter = new OutputStreamWriter(fos, StandardCharsets.UTF_8)) {
             configWriter.write(getPlotString());
         }
     }
@@ -491,12 +494,13 @@ public class GnuPlotter extends BasePlotter {
 
         String separator = System.getProperty("line.separator");
 
-        BufferedReader reader = new BufferedReader(new InputStreamReader(getProcess().getInputStream()));
-
         StringBuilder sb = new StringBuilder();
+        try (InputStreamReader isr = new InputStreamReader(getProcess().getInputStream(), StandardCharsets.UTF_8);
+             BufferedReader reader = new BufferedReader(isr)) {
         String line;
         while ((line=reader.readLine()) != null)
             sb.append(line).append(separator);
+        }
 
         if (!result) {
             Logger.getRootLogger().error(sb.toString());
