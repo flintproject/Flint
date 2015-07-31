@@ -245,7 +245,7 @@ public class ValueEditWindow extends JFrame
             cardName = CARD_INTERVAL;
             tableModel.setParameterValue(rowIndex, 
                     ParameterSet.Parameter.TYPE, ParameterSet.ParameterType.INTERVAL);
-        } else if (chk_Enum.equals(chk_Enum)) {
+        } else {
             cardName = CARD_ENUM;
             tableModel.setParameterValue(rowIndex, 
                     ParameterSet.Parameter.TYPE, ParameterSet.ParameterType.ENUM);
