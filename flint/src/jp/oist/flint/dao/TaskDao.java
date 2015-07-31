@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 public class TaskDao extends DaoObject {
@@ -24,7 +25,7 @@ public class TaskDao extends DaoObject {
         public static Status fromString (String s) {
             if (s == null || s.isEmpty())
                 return UNKNOWN;
-            switch (s.toLowerCase()) {
+            switch (s.toLowerCase(Locale.ENGLISH)) {
             case "pending":
                 return PENDING;
             case "generated":
