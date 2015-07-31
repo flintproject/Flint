@@ -41,8 +41,6 @@ public class PhspProgressMonitor implements FileListener, Runnable {
 
     private final LinkedList<JobDao> mQueue = new LinkedList<>();
 
-    private ISimulationConfigurationList mSimulationConfiguration;
-
     public PhspProgressMonitor (PhspSimulator simulator)
             throws FileSystemException {
         mObserver = new Thread(this);
@@ -63,12 +61,7 @@ public class PhspProgressMonitor implements FileListener, Runnable {
         mFileMonitor.addFile(mgr.toFileObject(simulator.getWorkingDirectory()));
     }
 
-    protected void onStarted () {
-        mSimulationConfiguration = mSimulator.getSimulationConfigurationList();
-    }
-
     public void start () {
-        onStarted();
         mFileMonitor.start();
         mObserver.start();
     }
@@ -115,7 +108,7 @@ public class PhspProgressMonitor implements FileListener, Runnable {
         SimulationDao simulationDao = mSimulator.getSimulationDao();
         JobDao job = simulationDao.obtainJob(taskId, jobId);
 
-        ISimulationConfiguration config = mSimulationConfiguration.getConfiguration(taskId-1);
+        ISimulationConfiguration config = mSimulator.getSimulationConfigurationList().getConfiguration(taskId-1);
         Map<String, Number> combination = job.getCombination();
         String modelPath = config.getModelCanonicalPath();
 

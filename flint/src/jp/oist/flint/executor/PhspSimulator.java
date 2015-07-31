@@ -37,7 +37,7 @@ public class PhspSimulator extends SwingWorker <Boolean, Integer>
 
     private SimulationDao mSimulationDao;
 
-    private ISimulationConfigurationList mSedmlConfig = null;
+    private final ISimulationConfigurationList mSedmlConfig;
 
     private IPhspConfiguration mPhspConfig = null;
 
