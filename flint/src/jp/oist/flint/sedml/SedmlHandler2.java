@@ -38,14 +38,14 @@ public class SedmlHandler2 extends SedmlHandler
         mFilterColumn  = "0";
     }
 
-    private int getIndexBy (Equalator equalator) {
-        if (equalator == null)
+    private int getIndexBy(Matcher matcher) {
+        if (matcher == null)
             return -1;
 
         for (int i=0; i<mConfigurationList.size(); i++) {
             SimulationConfiguration conf = 
                     (SimulationConfiguration)mConfigurationList.get(i);
-            if (equalator.equals(conf))
+            if (matcher.match(conf))
                 return i;
         }
         return -1;
@@ -214,9 +214,9 @@ public class SedmlHandler2 extends SedmlHandler
 
     @Override
     public ISimulationConfiguration getConfigurationByModelPath(String modelPath) {
-        return mConfigurationList.get(getIndexBy(new Equalator<String>(modelPath) {
+        return mConfigurationList.get(getIndexBy(new Matcher<String>(modelPath) {
             @Override
-            public boolean equal(SimulationConfiguration other) {
+            public boolean match(SimulationConfiguration other) {
                 return getTarget().equals(other.getModelCanonicalPath());
             }
         }));
@@ -235,18 +235,18 @@ public class SedmlHandler2 extends SedmlHandler
         return Collections.unmodifiableList(mConfigurationList);
     }
 
-    private static abstract class Equalator <T> {
+    private static abstract class Matcher<T> {
         final T mTarget;
 
-        public Equalator (T target) {
+        public Matcher(T target) {
             mTarget = target;
         }
 
-        public T getTarget () {
+        public T getTarget() {
             return mTarget;
         }
 
-        public abstract boolean equal (SimulationConfiguration other);
+        public abstract boolean match(SimulationConfiguration other);
     }
 
     private static class SimulationConfiguration 
