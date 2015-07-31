@@ -144,7 +144,7 @@ public class PhspProgressMonitor implements FileListener, Runnable {
                 JobDao job = task.obtainJob(jobId);
 
                 if (task.isCancelled())
-                    job.cancel(true);
+                    job.cancel();
 
                 setProgress(taskId, jobId, job.getProgress());
 

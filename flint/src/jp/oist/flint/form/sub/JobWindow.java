@@ -808,10 +808,10 @@ public class JobWindow extends javax.swing.JFrame
                     evt.getIndex()), mDataModel.getTitles());
 
             JobDao job = taskDao.obtainJob(rowId);
-            job.cancel(false);
-
-            mJobViewer.setCancelled(evt.getIndex(), true);
-            mJobList.setCancelled(evt.getIndex(), true);
+            if (job.cancel()) {
+                mJobViewer.setCancelled(evt.getIndex(), true);
+                mJobList.setCancelled(evt.getIndex(), true);
+            }
         } catch (IOException ex) {
             showErrorDialog("Cancellation failed\n\n" + ex.getMessage(),
             "Cancellation failed");

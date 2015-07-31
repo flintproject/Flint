@@ -97,22 +97,25 @@ public class TaskDao extends DaoObject {
         return true;
     }
 
-    public void cancel() throws IOException {
+    /*
+     * Return true if cancellation succeeded, otherwise false.
+     */
+    public boolean cancel() throws IOException {
         if (!mWorkingDir.exists())
-            throw new IOException("It has not yet started.");
-
+            return false;
         File cancelFile = new File(mWorkingDir, "canceled");
-        cancelFile.createNewFile();
-        int jobCount = getCount();
+        if ( !cancelFile.exists() &&
+             !cancelFile.createNewFile() )
+            return false;
 
+        boolean result = true;
+        int jobCount = getCount();
         for (int i=1; i<=jobCount; i++) {
             JobDao job = obtainJob(i);
-
-            if (job == null || job.isFinished())
-                continue;
-
-            job.cancel(true);
+            if (job == null || !job.cancel())
+                result = false;
         }
+        return result;
     }
 
     public JobDao obtainJob(int jobId) {

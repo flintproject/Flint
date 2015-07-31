@@ -36,30 +36,26 @@ public class JobDao {
         return mParent;
     }
 
-    public void cancel(boolean force) throws IOException {
+    /*
+     * Return true if cancellation succeeded, otherwise false.
+     */
+    public boolean cancel() throws IOException {
         File controlFile = getControlFile();
         File jobDir = controlFile.getParentFile();
-
         if (!jobDir.exists())
-            return;
-
-        if (force) {
-            if (!controlFile.exists()) {
-                controlFile.createNewFile();
-                mStatusFile.createNewFile();
-            }
-        }
-
-        if (!controlFile.exists() || !controlFile.canWrite())
-            throw new IOException(String.format("%s didn't exist or you couldn't write into it.",
-                                                controlFile.getName()));
-
+            return false;
+        if ( !controlFile.exists() &&
+             !controlFile.createNewFile() )
+            return false;
+        if ( !mStatusFile.exists() &&
+             !mStatusFile.createNewFile() )
+            return false;
         if (getProgress().isCompleted())
-            throw new IOException("It was already simulated.");
-
+            return false;
         try (RandomAccessFile raf = new RandomAccessFile(controlFile, "rws")) {
             raf.write(CANCEL_OPEARTION);
         }
+        return true;
     }
 
     public Map<String, Number> getCombination() {
