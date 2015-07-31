@@ -122,7 +122,7 @@ public class TaskDao extends DaoObject {
     public JobDao obtainJob(int jobId) {
         getCombinationList();
 
-        if (jobId < 1 || jobId >= mCombinations.size())
+        if (jobId < 1 || mCombinations == null || jobId >= mCombinations.size())
             return null;
 
         Map<String, Number> combination = mCombinations.get(jobId);
