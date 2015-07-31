@@ -134,10 +134,6 @@ public class JobWindow extends javax.swing.JFrame
         mJobList = newComponent;
     }
 
-    private JobList getJobList () {
-        return mJobList;
-    }
-
     private JobViewerComponent newJobViewer (IParameterInfo pInfo) {
         JobViewerComponent viewer = JobViewerComponent.factory(pInfo);
         viewer.setModel(mDataModel);

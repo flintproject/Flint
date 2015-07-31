@@ -275,18 +275,10 @@ public class SubFrame extends JInternalFrame
         mJobWindow.setVisible(true);
     }
 
-    private void showMessageDialog(String message, String title) {
-        JOptionPane.showMessageDialog(this, message, title,
-                JOptionPane.DEFAULT_OPTION);
-    }
-
     @Override
     public void showErrorDialog(ByteString message, String title) {
         JOptionPane.showMessageDialog(this, message.toStringUtf8(), title,
                 JOptionPane.ERROR_MESSAGE);
-    }
-
-    private void setExportCsvAndPlotEnabled(boolean enabled) {
     }
 
     public void setStatusComponent (ProgressPane.ListCell pane) {
