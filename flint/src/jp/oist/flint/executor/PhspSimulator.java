@@ -3,6 +3,7 @@
 package jp.oist.flint.executor;
 
 import jp.oist.flint.phsp.PhspException;
+import jp.oist.flint.sedml.SedmlException;
 import org.apache.log4j.Logger;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -55,7 +56,8 @@ public class PhspSimulator extends SwingWorker <Boolean, Integer>
     public PhspSimulator (SimulatorService service, 
                             ISimulationConfigurationList sedml, 
                             IPhspConfiguration phsp) 
-        throws IOException, ParserConfigurationException, PhspException, SQLException, TransformerException {
+        throws IOException, ParserConfigurationException, PhspException,
+               SQLException, SedmlException, TransformerException {
 
         mService = service;
         mSedmlConfig = sedml;

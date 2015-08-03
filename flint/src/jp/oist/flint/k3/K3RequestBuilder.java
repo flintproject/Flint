@@ -2,6 +2,7 @@
 package jp.oist.flint.k3;
 
 import jp.oist.flint.sedml.ISimulationConfiguration;
+import jp.oist.flint.sedml.SedmlException;
 import jp.oist.flint.sedml.SedmlWriter;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -20,7 +21,7 @@ public class K3RequestBuilder {
         mSimulationConfiguration = simulationConfiguration;
     }
 
-    private String getSedml() throws IOException {
+    private String getSedml() throws IOException, SedmlException {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         SedmlWriter writer = new SedmlWriter(false);
         writer.writeSimulationConfiguration(mSimulationConfiguration, baos);
@@ -36,11 +37,13 @@ public class K3RequestBuilder {
         return buf;
     }
 
-    public K3Request build(String title, String username, char[] password) throws IOException {
+    public K3Request build(String title, String username, char[] password)
+        throws IOException, SedmlException {
         return build(title, username, new String(password));
     }
 
-    public K3Request build(String title, String username, String password) throws IOException {
+    public K3Request build(String title, String username, String password)
+        throws IOException, SedmlException {
         K3Request request = new K3Request(username, password);
         request.setJobTitle(title);
         request.setModel(new String(readModel(), StandardCharsets.UTF_8));

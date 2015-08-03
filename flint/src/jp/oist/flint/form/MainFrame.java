@@ -16,6 +16,7 @@ import jp.oist.flint.phsp.PhspReader;
 import jp.oist.flint.phsp.PhspReaderListener;
 import jp.oist.flint.phsp.PhspWriter;
 import jp.oist.flint.rpc.ICallee;
+import jp.oist.flint.sedml.SedmlException;
 import jp.oist.flint.sedml.SedmlReader;
 import jp.oist.flint.sedml.SedmlWriter;
 import jp.oist.flint.util.Utility;
@@ -315,7 +316,8 @@ public class MainFrame extends javax.swing.JFrame
             simulator.execute();
             mSimulator = simulator;
             monitor.start();
-        } catch (IOException | ParserConfigurationException | PhspException | SQLException | TransformerException ex) {
+        } catch (IOException | ParserConfigurationException | PhspException |
+                 SQLException | SedmlException | TransformerException ex) {
             showErrorDialog(ex.getMessage(), "ERROR");
         }
     }
@@ -550,7 +552,7 @@ public class MainFrame extends javax.swing.JFrame
             } catch (HeadlessException e) {
                 showErrorDialog(e.getMessage(), "Error on saving configuration");
                 return;
-            } catch (IOException | ArithmeticException e) {
+            } catch (IOException | ArithmeticException | SedmlException e) {
                 showErrorDialog(e.getMessage(), "Error on saving configuration");
                 return;
             }

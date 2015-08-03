@@ -1,6 +1,7 @@
 /* -*- Mode: Java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- vim:set ts=4 sw=4 sts=4 et: */
 package jp.oist.flint.sedml;
 
+import jp.oist.flint.util.IntegrationMethodFormat;
 import java.math.BigDecimal;
 import java.io.OutputStreamWriter;
 import java.io.BufferedWriter;
@@ -22,7 +23,7 @@ public class SedmlWriter {
     }
 
     public void writeSimulationConfiguration(final ISimulationConfigurationList configs, final OutputStream os) 
-        throws IOException {
+        throws IOException, SedmlException {
 
         try (OutputStreamWriter osw = new OutputStreamWriter(os, StandardCharsets.UTF_8);
              BufferedWriter writer = new BufferedWriter(osw)) {
@@ -44,17 +45,10 @@ public class SedmlWriter {
             writer.append(String.format("    <uniformTimeCourse id='sim%s' name='Simulation %s' initialTime='0' outputStartTime='0' outputEndTime='%s' numberOfPoints='%s' flint:granularity='%s'>\n", 
                     i, i, config.getLength(), numberOfPoints, config.getGranularity()));
             writer.append("      <algorithm kisaoID='KISAO:");
-            switch (config.getIntegrationMethod()) {
-            case EULER:
-                writer.append("0000030");
-                break;
-            case RUNGE_KUTTA:
-                writer.append("0000032");
-                break;
-            case ADAMS_MOULTON:
-                writer.append("0000280");
-                break;
-            }
+            String kisaoId = IntegrationMethodFormat.kisaoId(config.getIntegrationMethod());
+            if (kisaoId == null)
+                throw new SedmlException("invalid integration method: " + config.getIntegrationMethod());
+            writer.append(kisaoId);
             writer.append("'/>\n");
             writer.append("    </uniformTimeCourse>\n");
         }
@@ -103,7 +97,7 @@ public class SedmlWriter {
     }
 
     public void writeSimulationConfiguration(final ISimulationConfiguration config, final OutputStream os)
-        throws ArithmeticException, IOException {
+        throws ArithmeticException, IOException, SedmlException {
         BigDecimal nop = new BigDecimal(config.getLength()).divide(new BigDecimal(config.getStep()));
         int numberOfPoints = nop.intValueExact();
 
@@ -119,17 +113,10 @@ public class SedmlWriter {
         writer.append("  <listOfSimulations>\n");
         writer.append("    <uniformTimeCourse id='sim0' name='Simulation 0' initialTime='0' outputStartTime='0' outputEndTime='" + config.getLength() + "' numberOfPoints='" + numberOfPoints + "' flint:granularity='" + config.getGranularity() + "'>\n");
         writer.append("      <algorithm kisaoID='KISAO:");
-        switch (config.getIntegrationMethod()) {
-        case EULER:
-            writer.append("0000030");
-            break;
-        case RUNGE_KUTTA:
-            writer.append("0000032");
-            break;
-        case ADAMS_MOULTON:
-            writer.append("0000280");
-            break;
-        }
+        String kisaoId = IntegrationMethodFormat.kisaoId(config.getIntegrationMethod());
+        if (kisaoId == null)
+            throw new SedmlException("invalid integration method: " + config.getIntegrationMethod());
+        writer.append(kisaoId);
         writer.append("'/>\n");
         writer.append("    </uniformTimeCourse>\n");
         writer.append("  </listOfSimulations>\n");

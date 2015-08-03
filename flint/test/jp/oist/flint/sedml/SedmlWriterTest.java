@@ -87,7 +87,8 @@ public class SedmlWriterTest {
     }
 
     @Test
-    public void testWriteSimulationConfiguration() throws ArithmeticException, IOException {
+    public void testWriteSimulationConfiguration()
+        throws ArithmeticException, IOException, SedmlException {
         SimulationConfiguration config = new SimulationConfiguration();
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         mSedmlWriter.writeSimulationConfiguration(config, baos);

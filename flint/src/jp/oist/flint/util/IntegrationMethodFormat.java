@@ -15,4 +15,14 @@ public class IntegrationMethodFormat {
         return null;
     }
 
+    public static String kisaoId(Ipc.IntegrationMethod method) {
+        if (method == null) return null;
+        switch (method) {
+        case EULER:         return "0000030";
+        case RUNGE_KUTTA:   return "0000032";
+        case ADAMS_MOULTON: return "0000280";
+        }
+        return null;
+    }
+
 }
