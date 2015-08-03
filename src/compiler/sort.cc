@@ -222,7 +222,7 @@ public:
 		lines_.push_back(line);
 	}
 
-	bool CalculateLevels(int *levels) {
+	bool CalculateLevels(const std::string &uuid, int *levels) {
 		size_t n = lines_.size();
 		std::unordered_map<string, size_t> nm;
 		for (size_t i=0;i<n;i++) {
@@ -259,12 +259,17 @@ public:
 				}
 			}
 			if (!found) {
-				cerr << "failed to calculate level:";
+				cerr << "failed to calculate level in "
+					 << uuid
+					 << ':'
+					 << endl;
 				for (size_t i=0;i<n;i++) {
 					if (levels[i] < 0)
-						cerr << " " << lines_[i].name();
+						cerr << ' ' << lines_[i].name()
+							 << ": "
+							 << lines_[i].GetMath()
+							 << endl;
 				}
-				cerr << endl;
 				return false;
 			}
 			level++;
@@ -404,7 +409,7 @@ bool Sort(sqlite3 *db)
 	for (UuidMap::iterator umit=um.begin();umit!=um.end();++umit) {
 		size_t n = umit->second->GetSize();
 		std::unique_ptr<int[]> arr(new int[n]);
-		if (!umit->second->CalculateLevels(arr.get())) {
+		if (!umit->second->CalculateLevels(umit->first, arr.get())) {
 			return false;
 		}
 		vector<IndexAndLevel> v;
