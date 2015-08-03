@@ -1,6 +1,7 @@
 /* -*- Mode: Java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- vim:set ts=4 sw=4 sts=4 et: */
 package jp.oist.flint.phsp.entity;
 
+import jp.oist.flint.phsp.PhspException;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -37,7 +38,7 @@ public class ParameterTest {
         try {
             p.setName(name);
             p.validateName();
-        } catch (Exception ex) {
+        } catch (PhspException ex) {
             result = false;
         }
         assertEquals(true, result);
@@ -47,7 +48,7 @@ public class ParameterTest {
         try {
             p.setName(name);
             p.validateName();
-        } catch (Exception ex) {
+        } catch (PhspException ex) {
             result = false;
         }
         assertEquals(true, result);
@@ -57,7 +58,7 @@ public class ParameterTest {
         try {
             p.setName(name);
             p.validateName();
-        } catch (Exception ex) {
+        } catch (PhspException ex) {
             result = false;
         }
         assertEquals(true, result);
@@ -67,7 +68,7 @@ public class ParameterTest {
         try {
             p.setName(name);
             p.validateName();
-        } catch (Exception ex) {
+        } catch (PhspException ex) {
             result = false;
         }
         assertEquals(false, result);
@@ -77,7 +78,7 @@ public class ParameterTest {
         try {
             p.setName(name);
             p.validateName();
-        } catch (Exception ex) {
+        } catch (PhspException ex) {
             result = false;
         }
         assertEquals(false, result);
@@ -99,7 +100,7 @@ public class ParameterTest {
         try {
             p.setEnumValue(enumValue);
             p.validateValue();
-        } catch (Exception ex) {
+        } catch (PhspException ex) {
             result = false;
         }
         assertEquals(true, result);
@@ -109,7 +110,7 @@ public class ParameterTest {
         try {
             p.setEnumValue(enumValue);
             p.validateValue();
-        } catch (Exception ex) {
+        } catch (PhspException ex) {
             result = false;
         }
         assertEquals(true, result);
@@ -119,7 +120,7 @@ public class ParameterTest {
         try {
             p.setEnumValue(enumValue);
             p.validateValue();
-        } catch (Exception ex) {
+        } catch (PhspException ex) {
             result = false;
         }
         assertEquals(true, result);
@@ -129,7 +130,7 @@ public class ParameterTest {
         try {
             p.setEnumValue(enumValue);
             p.validateValue();
-        } catch (Exception ex) {
+        } catch (PhspException ex) {
             result = false;
         }
         assertEquals(true, result);
@@ -139,7 +140,7 @@ public class ParameterTest {
         try {
             p.setEnumValue(enumValue);
             p.validateValue();
-        } catch (Exception ex) {
+        } catch (PhspException ex) {
             result = false;
         }
         assertEquals(false, result);
@@ -149,7 +150,7 @@ public class ParameterTest {
         try {
             p.setEnumValue(enumValue);
             p.validateValue();
-        } catch (Exception ex) {
+        } catch (PhspException ex) {
             result = false;
         }
         assertEquals(false, result);

@@ -10,6 +10,7 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.concurrent.ExecutionException;
 import javax.swing.SwingWorker;
 import javax.xml.XMLConstants;
@@ -68,7 +69,7 @@ public class PhspReader extends SwingWorker <IPhspConfiguration, Model> {
 
     @Override
     protected IPhspConfiguration doInBackground()
-        throws IOException, ParserConfigurationException, SAXException, TransformerException {
+        throws IOException, ParserConfigurationException, PhspException, SAXException, TransformerException {
         if (mConfiguration != null)
             return mConfiguration;
 
@@ -105,7 +106,7 @@ public class PhspReader extends SwingWorker <IPhspConfiguration, Model> {
     }
 
     private List<Model> visitPhsp(Element element)
-        throws IOException, ParserConfigurationException, SAXException, TransformerException {
+        throws IOException, ParserConfigurationException, PhspException, SAXException, TransformerException {
         List<Model> models = new ArrayList<>();
         int length = element.getChildNodes().getLength();
         for (int i=0; i<length; i++) {
@@ -123,7 +124,7 @@ public class PhspReader extends SwingWorker <IPhspConfiguration, Model> {
     }
 
     private Model visitModel(Element element)
-        throws IOException, ParserConfigurationException, SAXException, TransformerException {
+        throws IOException, ParserConfigurationException, PhspException, SAXException, TransformerException {
         String fmt    = element.getAttribute("format");
         String iref   = element.getAttribute("iref");
 
@@ -159,7 +160,8 @@ public class PhspReader extends SwingWorker <IPhspConfiguration, Model> {
                     description, parameterSet, targetSet);
     }
 
-    private ParameterSet visitParameterSet (Element element) {
+    private ParameterSet visitParameterSet(Element element)
+        throws PhspException {
         ParameterSet parameterSet = new ParameterSet();
         int length = element.getChildNodes().getLength();
         for (int i=0; i<length; i++) {
@@ -177,7 +179,8 @@ public class PhspReader extends SwingWorker <IPhspConfiguration, Model> {
         return parameterSet;
     }
 
-    private ParameterSet.Parameter visitParameter(Element element) {
+    private ParameterSet.Parameter visitParameter(Element element)
+        throws PhspException {
         int length = element.getChildNodes().getLength();
         ParameterSet.Parameter pp = new ParameterSet.Parameter();
 
@@ -188,9 +191,16 @@ public class PhspReader extends SwingWorker <IPhspConfiguration, Model> {
             Element child = (Element)item;
             String localName = child.getLocalName().toLowerCase();
             if ("range".equals(localName)) {
-                pp.setType(ParameterSet.ParameterType
-                        .fromString(child.getAttribute("type")));
-
+                String type = child.getAttribute("type");
+                if (type == null)
+                    throw new PhspException("range without type");
+                ParameterSet.ParameterType eType;
+                try {
+                    eType = ParameterSet.ParameterType.valueOf(type.trim().toUpperCase(Locale.ENGLISH));
+                } catch (IllegalArgumentException iae) {
+                    throw new PhspException("unknown type of range: " + type, iae);
+                }
+                pp.setType(eType);
                 pp.setRangeLower(child.getAttribute("lower"));
                 pp.setRangeUpper(child.getAttribute("upper"));
                 pp.setRangeStep(child.getAttribute("step"));

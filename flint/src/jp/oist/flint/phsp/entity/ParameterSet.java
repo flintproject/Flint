@@ -1,6 +1,7 @@
 /* -*- Mode: Java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- vim:set ts=4 sw=4 sts=4 et: */
 package jp.oist.flint.phsp.entity;
 
+import jp.oist.flint.phsp.PhspException;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.text.NumberFormat;
@@ -14,20 +15,8 @@ import jp.oist.flint.util.Utility;
 public class ParameterSet {
 
     public enum ParameterType {
-        UNKNOWN, ENUM, INTERVAL;
-
-        public static ParameterType fromString (String t) {
-            if (t == null) return UNKNOWN;
-
-            String type = t.toUpperCase();
-            if (ENUM.name().equals(type))
-                return ENUM;
-            
-            if (INTERVAL.name().equals(type))
-                return INTERVAL;
-
-            return UNKNOWN;
-        }
+        ENUM,
+        INTERVAL
     }
 
     private final List<Parameter> mParameters;
@@ -220,17 +209,17 @@ public class ParameterSet {
             mData.put(RANGE_STEP, step);
         }
 
-        public void validate () throws Exception {
+        public void validate() throws PhspException {
             validateName();
             validateValue();
         }
 
-        public void validateName () throws Exception {
+        public void validateName() throws PhspException {
 
             String name = getName();
 
             if ((name == null || name.trim().isEmpty()))
-                throw new IllegalArgumentException("Name is empty");
+                throw new PhspException("name is empty");
 
             name = name.trim();
 
@@ -239,10 +228,10 @@ public class ParameterSet {
             if (name.matches(validationRegex))
                 return;
 
-            throw new IllegalArgumentException("Invalid Name");
+            throw new PhspException("invalid name");
         }
 
-        public void validateValue () throws Exception {
+        public void validateValue() throws PhspException {
             switch (getType()) {
             case ENUM:
                 validateEnum();
@@ -250,17 +239,14 @@ public class ParameterSet {
             case INTERVAL:
                 validateInterval();
                 break;
-            case UNKNOWN:
-            default:
-                throw new IllegalArgumentException("Type is Unknown");
             }
         }
 
-        private void validateEnum () throws Exception {
+        private void validateEnum() throws PhspException {
             String enumValue = getEnumValue();
 
             if (enumValue == null || enumValue.trim().isEmpty())
-                throw new IllegalArgumentException("Enum Value is empty");
+                throw new PhspException("enum value is empty");
 
 
             enumValue = enumValue.trim();
@@ -269,37 +255,37 @@ public class ParameterSet {
             if (enumValue.matches(validationRegex))
                 return;
 
-            throw new IllegalArgumentException("Invalid Enum Value");
+            throw new PhspException("invalid enum value");
         }
 
-        private void validateInterval () throws Exception {
+        private void validateInterval() throws PhspException {
             String rangeLower = getRangeLower();
             String rangeUpper = getRangeUpper();
             String rangeStep  = getRangeStep();
 
             if (rangeLower == null || rangeLower.trim().isEmpty())
-                throw new IllegalArgumentException("Range Lower is empty");
+                throw new PhspException("range lower is empty");
 
             if (rangeUpper == null || rangeUpper.trim().isEmpty())
-                throw new IllegalArgumentException("Range Upper is empty");
+                throw new PhspException("range upper is empty");
 
             if (rangeStep == null || rangeStep.trim().isEmpty())
-                throw new IllegalArgumentException("Range Step is empty");
+                throw new PhspException("range step is empty");
 
             try {
                 Double.valueOf(rangeLower);
             } catch (NumberFormatException ex) {
-                throw new IllegalArgumentException("Invalid number format (RangeLower)");
+                throw new PhspException("invalid number format for range's lower", ex);
             }
             try {
                 Double.valueOf(rangeUpper);
             } catch (NumberFormatException ex) {
-                throw new IllegalArgumentException("Invalid number format (RangeUpper)");
+                throw new PhspException("invalid number format for range's upper", ex);
             }
             try {
                 Double.valueOf(rangeStep);
             } catch (NumberFormatException ex) {
-                throw new IllegalArgumentException("Invalid number format (RangeStep)");
+                throw new PhspException("invalid number format for range's step", ex);
             }
         }
 
