@@ -12,6 +12,7 @@ import java.math.BigDecimal;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.Locale;
 import java.util.Vector;
 import java.util.concurrent.ExecutionException;
 import javax.swing.ImageIcon;
@@ -1340,7 +1341,7 @@ public class PlotWindow extends javax.swing.JFrame
         GnuPlotter.TerminalType terminalType = GnuPlotter.TerminalType.valueOf(getTerminalType());
 
         if (!GnuPlotter.TerminalType.WINDOW.equals(terminalType))
-            extension = "." + terminalType.name().toLowerCase();
+            extension = "." + terminalType.name().toLowerCase(Locale.ENGLISH);
 
         String filePath = txt_OutputFilePath.getText();
 

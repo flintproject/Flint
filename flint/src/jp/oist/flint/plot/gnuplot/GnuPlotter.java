@@ -12,6 +12,7 @@ import java.io.OutputStreamWriter;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * The class of an external plotter (GnuPlotter)
@@ -520,7 +521,7 @@ public class GnuPlotter extends BasePlotter {
         case PDF:
         case PNG:
         case EPS:
-            s += "set terminal " + getTerminalType().name().toLowerCase() + "\n";
+            s += "set terminal " + getTerminalType().name().toLowerCase(Locale.ENGLISH) + "\n";
             break;
         default:
             String osName = System.getProperty("os.name");

@@ -10,6 +10,7 @@ import java.io.OutputStreamWriter;
 import java.io.StringReader;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
+import java.util.Locale;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 import jp.oist.flint.phsp.entity.ParameterSet;
@@ -54,7 +55,7 @@ public class PhspWriter {
 
             Model[] models = conf.getModels();
             for (Model model : models) {
-                String format = model.getModelFormat().name().toLowerCase();
+                String format = model.getModelFormat().name().toLowerCase(Locale.ENGLISH);
                 File modelFile = model.getModelFile();
                 String path = escape(modelFile.getCanonicalPath());
 
@@ -124,7 +125,7 @@ public class PhspWriter {
                     writeLine(String.format("<parameter name='%s'>", name), sw, writer);
                     sw += SHIFT_WIDTH;
 
-                    String type = p.getType().name().toLowerCase();
+                    String type = p.getType().name().toLowerCase(Locale.ENGLISH);
                     switch (p.getType()) {
                     case ENUM:
                         sb.append(String.format("<range type='%s'>", type))
