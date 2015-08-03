@@ -127,8 +127,8 @@ public class MathMLHandler {
 			if ("apply".equals(child.getLocalName()) && cur != root)
 				cur = cur.getParentNode();
 
-			if ("matrixrow".equals(child.getLocalName().toLowerCase())
-				|| "matrix".equals(child.getLocalName().toLowerCase())) {
+			if ("matrixrow".equals(child.getLocalName())
+				|| "matrix".equals(child.getLocalName())) {
 				cur = cur.getParentNode();
 			}
 		}
@@ -156,59 +156,48 @@ public class MathMLHandler {
 	}
 
 	public boolean isIgnoreTag (String localName) {
-		localName = localName.toLowerCase();
 		return "logbase".equals(localName) || "degree".equals(localName);
 	}
 
 	public boolean isAdditiveTag (String localName) {
-		localName = localName.toLowerCase();
 		return "plus".equals(localName) || "minus".equals(localName);
 	}
 
 	public boolean isMultiveTag (String localName) {
-		localName = localName.toLowerCase();
 		return "times".equals(localName) || "divide".equals(localName);
 	}
 
 	public boolean isEqualityTag (String localName) {
-		localName = localName.toLowerCase();
 		return "neq".equals(localName) || "eq".equals(localName);
 	}
 
 	public boolean isLogicalTag (String localName) {
-		localName = localName.toLowerCase();
 		return "and".equals(localName) || "or".equals(localName);
 	}
 
 	public boolean isRelationalTag (String localName) {
-		localName = localName.toLowerCase();
 		return "gt".equals(localName) || "lt".equals(localName)
 			|| "geq".equals(localName) || "leq".equals(localName);
 	}
 
 	public boolean isValueOrVariableTag (String localName) {
-		localName = localName.toLowerCase();
 		return "cn".equals(localName) || "ci".equals(localName);
 	}
 
 	public boolean isFunctionTag (String localName) {
-		localName = localName.toLowerCase();
 		return (ReservedFunctionContent.indexOfMathmlName(localName) >= 0 ||
 				"fn".equals(localName));
 	}
 
 	public boolean isVectorTag (String localName) {
-		localName = localName.toLowerCase();
 		return "vector".equals(localName);
 	}
 
 	public boolean isMatrixTag (String localName) {
-		localName = localName.toLowerCase();
 		return "matrix".equals(localName);
 	}
 
 	public boolean isMatrixRowTag (String localName) {
-		localName = localName.toLowerCase();
 		return "matrixrow".equals(localName);
 	}
 }
