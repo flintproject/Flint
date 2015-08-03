@@ -30,7 +30,7 @@ public class RequestHandler {
         throws IOException, RpcException {
         String contentLength = headers.getFirst("Content-Length");
         int length;
-        if (contentLength instanceof String) {
+        if (contentLength != null) {
             try {
                 length = Integer.parseInt(contentLength);
             } catch (NumberFormatException nfe) {
@@ -51,7 +51,7 @@ public class RequestHandler {
                 len += s;
             }
         }
-        if (contentLength instanceof String) {
+        if (contentLength != null) {
             if (length != len) {
                 throw new RpcException("failed to read request body: " + length + " vs " + len);
             }

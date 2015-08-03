@@ -281,18 +281,11 @@ public class SubFrame extends JInternalFrame
                 JOptionPane.ERROR_MESSAGE);
     }
 
-    public void setStatusComponent (ProgressPane.ListCell pane) {
-
-        if (mStatusComponent != null) {
-            mStatusComponent.addPropertyChangeListener(mSelectionHandler);
-        }
+    public void setStatusComponent(ProgressPane.ListCell pane) {
+        assert pane != null;
+        pane.addActionListener(this);
+        pane.setGeneralButtonEnabled(false);
         mStatusComponent = pane;
-        if (pane instanceof ProgressPane.ListCell) {
-            ProgressPane.ListCell cell = ((ProgressPane.ListCell) pane);
-            cell.addActionListener(this);
-            cell.setGeneralButtonEnabled(false);
-        }
-
         mStatusComponent.addPropertyChangeListener(mSelectionHandler);
     }
 

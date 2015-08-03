@@ -159,7 +159,7 @@ public class K3Rest {
         // XML のタイトルを取得し判定する
         String xmlTitle = doc.getRootElement().elementText("title");
 
-        if (xmlTitle instanceof String && xmlTitle.equals("error")) {
+        if (xmlTitle != null && xmlTitle.equals("error")) {
             throw new K3Exception(doc.getRootElement().element("entry").elementText("content"));
         } else {
             // モデルに設定する

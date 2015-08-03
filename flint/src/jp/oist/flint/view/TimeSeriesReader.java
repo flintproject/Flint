@@ -71,7 +71,7 @@ public class TimeSeriesReader extends SwingWorker<ArrayList<XYSeries>, Void> {
                 Double d = bb.getDouble();
                 if (i == 0) d0 = d;
                 Integer k = mMap.get(i);
-                if (k instanceof Integer) {
+                if (k != null) {
                     mResult.get(k).add(d0, d.doubleValue());
                 }
                 if (i == max) break;
