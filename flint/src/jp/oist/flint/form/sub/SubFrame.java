@@ -3,6 +3,7 @@ package jp.oist.flint.form.sub;
 
 import jp.oist.flint.executor.ModelReloader;
 import jp.oist.flint.phsp.PhspException;
+import jp.oist.flint.util.IntegrationMethodFormat;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.KeyboardFocusManager;
@@ -129,22 +130,9 @@ public class SubFrame extends JInternalFrame
 
         initSubWindow();
 
-        String tmpIntegrationMethod = response.getIntegrationMethod().toString();
-        String[] integrationMethodArr = tmpIntegrationMethod.split("_");
-        String integrationMethod = "";
-
-        if (integrationMethodArr.length > 1) {
-            for (String str : integrationMethodArr) {
-                str = str.substring(0, 1).toUpperCase() + str.substring(1).toLowerCase();
-                integrationMethod += str + "-";
-            }
-            int index = integrationMethod.lastIndexOf("-");
-            integrationMethod = integrationMethod.substring(0, index);
-        } else {
-            integrationMethod = tmpIntegrationMethod.substring(0, 1).toUpperCase()
-                    + tmpIntegrationMethod.substring(1).toLowerCase();
-        }
-        pnl_GeneralSetting.setSelectedIntegrationMethod(integrationMethod);
+        String integrationMethod = IntegrationMethodFormat.name(response.getIntegrationMethod());
+        if (integrationMethod != null)
+            pnl_GeneralSetting.setSelectedIntegrationMethod(integrationMethod);
         pnl_GeneralSetting.setSimulationLegnth(response.getLength());
         pnl_GeneralSetting.setSimulationStep(response.getStep());
 
