@@ -1,6 +1,7 @@
 /* -*- Mode: Java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- vim:set ts=4 sw=4 sts=4 et: */
 package jp.oist.flint.phsp.entity;
 
+import jp.oist.flint.phsp.PhspException;
 import jp.physiome.Ipc.ModelLanguage;
 import java.io.File;
 import java.io.IOException;
@@ -8,34 +9,16 @@ import javax.xml.parsers.ParserConfigurationException;
 
 public class Model {
     public static enum ModelFormat {
-        UNKNOWN("UNKNOWN"), PHML("PHML"), SBML("SBML");
+        PHML, SBML;
 
-        private final String name;
-
-        private ModelFormat(String name) {
-            this.name = name;
-        }
-
-        public static ModelFormat fromString (String format) {
-            if (format == null) return UNKNOWN;
-
-            if (PHML.name().equals(format.toUpperCase()))
-                return PHML;
-
-            if (SBML.name().equals(format.toUpperCase()))
-                return SBML;
-
-            return UNKNOWN;
-        }
-
-        public static ModelFormat valueOf(ModelLanguage lang) {
+        public static ModelFormat valueOf(ModelLanguage lang) throws PhspException {
             if (ModelLanguage.ISML.equals(lang)) 
                 return PHML; 
 
             if (ModelLanguage.SBML.equals(lang)) 
                 return SBML;
 
-            return UNKNOWN;
+            throw new PhspException("no corresponding format of language: " + lang.toString());
         }
     }
 

@@ -5,9 +5,9 @@ import jp.oist.flint.phsp.entity.Model;
 
 public interface IPhspConfiguration {
 
-    public Model[] getModels();
+    public Model[] getModels() throws PhspException;
 
-    public Model getModel(int index);
+    public Model getModel(int index) throws PhspException;
 
     public int getModelLength();
 }

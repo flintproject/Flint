@@ -2,6 +2,7 @@
 package jp.oist.flint.form.sub;
 
 import jp.oist.flint.executor.ModelReloader;
+import jp.oist.flint.phsp.PhspException;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.KeyboardFocusManager;
@@ -408,7 +409,7 @@ public class SubFrame extends JInternalFrame
         }
     }
 
-    public Model getModel () {
+    public Model getModel() throws PhspException {
         Ipc.ModelProbeResponse response = mModelProbeResponse;
         Model.ModelFormat format = Model.ModelFormat.valueOf(response.getLanguage());
 

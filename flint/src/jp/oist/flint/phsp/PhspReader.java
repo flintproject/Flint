@@ -128,10 +128,17 @@ public class PhspReader extends SwingWorker <IPhspConfiguration, Model> {
         String fmt    = element.getAttribute("format");
         String iref   = element.getAttribute("iref");
 
+        if (fmt == null)
+            throw new PhspException("model without format");
+        ModelFormat format;
+        try {
+            format = ModelFormat.valueOf(fmt.trim().toUpperCase(Locale.ENGLISH));
+        } catch (IllegalArgumentException iae) {
+            throw new PhspException("unknown format of model: " + fmt, iae);
+        }
+
         if (!new File(iref).isAbsolute())
             iref = mBasePath + File.separator + iref;
-
-        ModelFormat format = ModelFormat.fromString(fmt.toUpperCase());
         File modelFile     = new File(iref);
 
         TargetSet targetSet = null;

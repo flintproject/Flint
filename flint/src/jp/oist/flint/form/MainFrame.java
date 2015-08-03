@@ -11,6 +11,7 @@ import jp.oist.flint.job.Progress;
 import jp.oist.flint.phsp.IPhspConfiguration;
 import jp.oist.flint.phsp.entity.Model;
 import jp.oist.flint.form.sub.SubFrame;
+import jp.oist.flint.phsp.PhspException;
 import jp.oist.flint.phsp.PhspReader;
 import jp.oist.flint.phsp.PhspReaderListener;
 import jp.oist.flint.phsp.PhspWriter;
@@ -314,7 +315,7 @@ public class MainFrame extends javax.swing.JFrame
             simulator.execute();
             mSimulator = simulator;
             monitor.start();
-        } catch (IOException | ParserConfigurationException | SQLException | TransformerException ex) {
+        } catch (IOException | ParserConfigurationException | PhspException | SQLException | TransformerException ex) {
             showErrorDialog(ex.getMessage(), "ERROR");
         }
     }
@@ -599,7 +600,7 @@ public class MainFrame extends javax.swing.JFrame
                 }
                 JOptionPane.showMessageDialog(this, "Saved phsp as " + file.getPath());
            }
-        } catch (IOException | ParserConfigurationException | TransformerException ex) {
+        } catch (IOException | ParserConfigurationException | PhspException | TransformerException ex) {
             showErrorDialog(ex.getMessage(), "Saving as PHSP failed");
         } finally {
             setEnabled(true);
@@ -875,7 +876,7 @@ public class MainFrame extends javax.swing.JFrame
      * Implements IPhspConfiguration 
      */
     @Override
-    public Model[] getModels() {
+    public Model[] getModels() throws PhspException {
         ArrayList<Model> models = new ArrayList<>();
         ProgressPane.ListCell[] cells = mProgressPane.getListCells();
         for (ProgressPane.ListCell cell : cells) {
@@ -887,7 +888,7 @@ public class MainFrame extends javax.swing.JFrame
     }
 
     @Override
-    public Model getModel(int index) {
+    public Model getModel(int index) throws PhspException {
         ProgressPane.ListCell cell = 
                 (ProgressPane.ListCell) mProgressPane.getComponent(index);
         SubFrame sub = (SubFrame)cell.getValue("container");

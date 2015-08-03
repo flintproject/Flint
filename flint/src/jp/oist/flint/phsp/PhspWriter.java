@@ -35,7 +35,7 @@ public class PhspWriter {
     }
 
     public void write (IPhspConfiguration conf, OutputStream os, boolean removeParameterIfNotUsed) 
-        throws IOException, ParserConfigurationException, TransformerException {
+        throws IOException, ParserConfigurationException, PhspException, TransformerException {
         try (OutputStreamWriter osw = new OutputStreamWriter(os, StandardCharsets.UTF_8);
              BufferedWriter writer = new BufferedWriter(osw)) {
             StringBuilder sb = new StringBuilder();
