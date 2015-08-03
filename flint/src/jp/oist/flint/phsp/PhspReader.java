@@ -152,7 +152,7 @@ public class PhspReader extends SwingWorker <IPhspConfiguration, Model> {
             if (item.getNodeType() != Node.ELEMENT_NODE) 
                 continue;
             Element child = (Element)item;
-            String localName = child.getLocalName().toLowerCase();
+            String localName = child.getLocalName();
             if ("parameter-set".equals(localName))
                 parameterSet = visitParameterSet(child);
 
@@ -176,7 +176,7 @@ public class PhspReader extends SwingWorker <IPhspConfiguration, Model> {
             if (item.getNodeType() != Node.ELEMENT_NODE) 
                 continue;
             Element child = (Element)item;
-            String localName = child.getLocalName().toLowerCase();
+            String localName = child.getLocalName();
             if ("parameter".equals(localName)) {
                 ParameterSet.Parameter pp = visitParameter(child);
                 pp.setName(child.getAttribute("name"));
@@ -196,7 +196,7 @@ public class PhspReader extends SwingWorker <IPhspConfiguration, Model> {
             if (item.getNodeType() != Node.ELEMENT_NODE) 
                 continue;
             Element child = (Element)item;
-            String localName = child.getLocalName().toLowerCase();
+            String localName = child.getLocalName();
             if ("range".equals(localName)) {
                 String type = child.getAttribute("type");
                 if (type == null)
@@ -226,7 +226,7 @@ public class PhspReader extends SwingWorker <IPhspConfiguration, Model> {
             if (item.getNodeType() != Node.ELEMENT_NODE) 
                 continue;
             Element child = (Element)item;
-            String localName = child.getLocalName().toLowerCase();
+            String localName = child.getLocalName();
             if ("target".equals(localName)) {
                 TargetSet.Target target = visitTarget(child, format);
                     targetSet.add(target);
@@ -250,7 +250,7 @@ public class PhspReader extends SwingWorker <IPhspConfiguration, Model> {
             if (item.getNodeType() != Node.ELEMENT_NODE) 
                 continue;
             Element child = (Element)item;
-            String localName = child.getLocalName().toLowerCase();
+            String localName = child.getLocalName();
             if ("value".equals(localName)) {
                 target.setValue(visitValue(child));
                 break;
@@ -269,7 +269,7 @@ public class PhspReader extends SwingWorker <IPhspConfiguration, Model> {
             if (item.getNodeType() != Node.ELEMENT_NODE)
                 continue;
             child = (Element)item;
-            String localName = child.getLocalName().toLowerCase();
+            String localName = child.getLocalName();
             if ("math".equals(localName))
                 break;
 
