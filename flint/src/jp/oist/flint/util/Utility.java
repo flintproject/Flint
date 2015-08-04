@@ -61,7 +61,7 @@ public class Utility {
     public static String getFileName(String filePath) {
         File file = new File(filePath);
         String fileName = file.getName();
-        int postion = fileName.lastIndexOf(".");
+        int postion = fileName.lastIndexOf('.');
         if (postion == -1) return fileName;
         return fileName.substring(0, postion);
     }
@@ -74,7 +74,7 @@ public class Utility {
      */
     public static String getFileExtension(File file) {
         String fileName = file.getName();
-        int position = fileName.lastIndexOf(".");
+        int position = fileName.lastIndexOf('.');
         if (position == -1) return null;
         return fileName.substring(position+1);
     }

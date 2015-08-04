@@ -360,7 +360,7 @@ public class ParameterValuePane extends JPanel
             }
             if (enumValue.length() > 30) {
                 String s = enumValue.replaceAll("\n", "").substring(0, 27);
-                int index = s.lastIndexOf(",");
+                int index = s.lastIndexOf(',');
                 enumValue = s.substring(0, index);
                 enumValue += "...";
             }

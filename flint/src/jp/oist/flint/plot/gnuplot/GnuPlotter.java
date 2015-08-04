@@ -636,7 +636,7 @@ public class GnuPlotter extends BasePlotter {
         }
 
         s = s.trim();
-        if (s.lastIndexOf(",") == s.length() - 1) {
+        if (s.lastIndexOf(',') == s.length() - 1) {
             s = s.substring(0, s.length() - 1);
         }
         s += "\n";
