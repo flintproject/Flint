@@ -320,10 +320,6 @@ public class K3Rest {
         http.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
         http.setRequestProperty("Content-Length", String.valueOf(postString.toString().getBytes(StandardCharsets.UTF_8).length));
 
-        // デバッグモードがtrueの場合のみこの処理は実行します。
-        // SSLが似非、ホストが似非の場合でも通す仕組みを通します。
-        //nonCheckSSL(http);
-
         // リダイレクトまでは追わないものとします。(そんなサイトへの接続はしないが)
         http.setInstanceFollowRedirects(false);
         HttpURLConnection.setFollowRedirects(false);
@@ -352,51 +348,6 @@ public class K3Rest {
 
         // HttpURLConnection を戻します
         return http;
-    }
-
-    /**
-     * 似非SSLや似非SSL-HOSTを通すための処理を定義します。
-     *
-     * <pre>
-     * 引数のコネクションに対してSSL関係の不備を無視させて通します。
-     * ※ デバッグモードの場合のみ実行される
-     * （正規SSLであればこの処理を通さずして問題なく通るのでデバッグ時のみ。）
-     * </pre>
-     *
-     * @param http httpコネクション
-     */
-    private static void nonCheckSSL(HttpURLConnection http)
-        throws KeyManagementException, NoSuchAlgorithmException {
-        // SSL接続で証明書の正当性を無視させるために何もしないTrustManagerを生成しときます
-        TrustManager nonCheckTrustManager = new X509TrustManager() {
-                    @Override
-                public void checkClientTrusted(X509Certificate[] chain,
-                                               String authType) throws CertificateException {
-                }
-                    @Override
-                public void checkServerTrusted(X509Certificate[] chain,
-                                               String authType) throws CertificateException {
-                }
-                    @Override
-                public X509Certificate[] getAcceptedIssuers() {
-                    return null;
-                }
-            };
-
-        //
-        SSLContext sslcontext = SSLContext.getInstance("TLS");
-        sslcontext.init(null, new TrustManager[] { nonCheckTrustManager }, null);
-        ((HttpsURLConnection) http).setSSLSocketFactory(sslcontext.getSocketFactory());
-
-        // 証明書にあるホスト名とアクセスしているホスト名の違いを無視する
-        ((HttpsURLConnection) http).setHostnameVerifier(
-                                                        new javax.net.ssl.HostnameVerifier() {
-                                                                                                                    @Override
-                                                            public boolean verify(String host, javax.net.ssl.SSLSession ses) {
-                                                                return true;
-                                                            }
-                                                        }
-                                                        );
     }
 
     /**
