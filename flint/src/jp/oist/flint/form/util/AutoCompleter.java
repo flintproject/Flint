@@ -573,10 +573,9 @@ public class AutoCompleter implements
         }
     }
 
-    /*
-     * Innner Class AutoCompleterListCellRenderer
-     */
-    private class AutoCompleterListCellRenderer extends DefaultListCellRenderer {
+    private static class AutoCompleterListCellRenderer
+        extends DefaultListCellRenderer {
+
         @Override
         public Component getListCellRendererComponent(JList list, Object value,
                     int index, boolean isSelected, boolean cellHasFocus) {
@@ -602,10 +601,7 @@ public class AutoCompleter implements
     }
 
 
-    /*
-     *  Inner Class StringRange
-     */
-    private class StringRange {
+    private static class StringRange {
 
         private final int begin;
         private final int end;

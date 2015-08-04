@@ -17,7 +17,7 @@ public class SedmlWriterTest {
 
     private SedmlWriter mSedmlWriter;
 
-    class SimulationConfiguration implements ISimulationConfiguration {
+    private static class SimulationConfiguration implements ISimulationConfiguration {
 
         @Override
         public String getModelCanonicalPath() {

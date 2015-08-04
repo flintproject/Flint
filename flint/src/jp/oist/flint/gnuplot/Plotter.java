@@ -34,7 +34,7 @@ public class Plotter implements IPlotter {
 
     static final int ISDF_HEADER_SIZE = 40;
 
-    class GnuplotDialog extends JDialog {
+    private static class GnuplotDialog extends JDialog {
         final JTextField mTf = new JTextField();
         final JLabel mLabel = new JLabel("executable path");
         final JButton mSelect = new JButton("Select");

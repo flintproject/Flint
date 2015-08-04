@@ -183,7 +183,7 @@ public class ProgressPane extends PeripheralPane
     /**
      * Child Components
      */
-    private class List extends JList 
+    private static class List extends JList
         implements ListDataListener, MouseListener, ListCellRenderer {
 
         private JButton mPressedBtn;

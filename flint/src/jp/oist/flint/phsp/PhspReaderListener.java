@@ -40,7 +40,7 @@ public class PhspReaderListener implements PropertyChangeListener {
         }
     }
 
-    private class PhspModelFileLoaderListener implements PropertyChangeListener {
+    private static class PhspModelFileLoaderListener implements PropertyChangeListener {
 
         private final ModelLoaderLogger mLogger;
         private final Model mModel;

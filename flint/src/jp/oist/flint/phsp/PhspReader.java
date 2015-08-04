@@ -297,10 +297,7 @@ public class PhspReader extends SwingWorker <IPhspConfiguration, Model> {
             return sw.toString();
     }
 
-    /**
-     * Inner Class PhspConfiguration
-     */
-    private class PhspConfiguration implements IPhspConfiguration {
+    private static class PhspConfiguration implements IPhspConfiguration {
 
         private final List<Model> mModels;
 

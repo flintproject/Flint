@@ -421,7 +421,7 @@ public class ParameterValuePane extends JPanel
     private JPanel pnl_Table;
     // End of variables declaration//GEN-END:variables
 
-    private class StripeTableCellRenderer extends DefaultTableCellRenderer {
+    private static class StripeTableCellRenderer extends DefaultTableCellRenderer {
         @Override
         public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
             Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
