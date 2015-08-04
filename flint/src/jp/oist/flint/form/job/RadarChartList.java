@@ -46,10 +46,6 @@ public class RadarChartList extends JobViewerComponent
 
     private boolean isMacOS = false;
 
-    private final int mMinimum = 0;
-
-    private final int mMaximum = 100;
-
     private final RadarChartEventHandler mRadarChartEventHandler;
 
     public RadarChartList (IParameterInfo pInfo) {
@@ -283,9 +279,7 @@ public class RadarChartList extends JobViewerComponent
 
             child.setMaximumValues(maximums);
             child.setMinimumValues(minimums);
-            child.setMaximumProgress(mMaximum);
-            child.setMinimumProgress(mMinimum);
-            child.setProgress(mMinimum);
+            child.setProgress(0);
             child.setValueIsAdjusting(false);
             child.setTitles(titles);
             child.setAntialiasing(true);
@@ -361,18 +355,6 @@ public class RadarChartList extends JobViewerComponent
         } else if ("foreground".equals(propertyName)) {
             for (Component c : getComponents())
                 c.setForeground(getForeground());
-        } else if ("maximum".equals(propertyName)) {
-            for (Component c : getComponents()) {
-                try {
-                    ((RadarChartProgress)c).setMaximumProgress((Integer)newValue);
-                } catch (ClassCastException ex) { }
-            }
-        } else if ("minimum".equals(propertyName)) {
-            for (Component c : getComponents()) {
-                try {
-                    ((RadarChartProgress)c).setMinimumProgress((Integer)newValue);
-                } catch (ClassCastException ex) { }
-            }
         }
     }
 

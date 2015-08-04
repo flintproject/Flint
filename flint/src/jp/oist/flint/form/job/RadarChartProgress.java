@@ -33,10 +33,6 @@ public class RadarChartProgress extends JPanel
 
     private boolean mValueIsAdjusting = false;
 
-    private int mMaximumProgress = 100;
-
-    private int mMinimumProgress = 0;
-
     private int mProgress = 0;
 
     private boolean mIsCancelled = false;
@@ -169,22 +165,6 @@ public class RadarChartProgress extends JPanel
         mValueIsAdjusting = isAdjusting;
     }
 
-    public int getMaximumProgress () {
-        return mMaximumProgress;
-    }
-
-    public void setMaximumProgress (int maximum) {
-        mMaximumProgress = maximum;
-    }
-
-    public int getMinimumProgress () {
-        return mMinimumProgress;
-    }
-
-    public void setMinimumProgress (int minimum) {
-        mMinimumProgress = minimum;
-    }
-
     public int getProgress () {
         return mProgress;
     }
@@ -215,11 +195,7 @@ public class RadarChartProgress extends JPanel
         Point center = new Point(dim.width/2, dim.height/2);
 
         double p     = (double)mProgress;
-        double min   = (double)mMaximumProgress;
-        double max   = (double)mMinimumProgress;
-
-
-        double percent = (p-min)/(max-min);
+        double percent = p/100;
         int angle = (int)(360 - 360 * percent);
 
         int radius = (Math.min(dim.width, dim.height) - mRadarChart.getVertexRadius()*2)/2;

@@ -50,10 +50,6 @@ public abstract class JobViewerComponent extends JPanel
 
     private JobViewerComponent.ContextMenuHandler mContextMenuHandler;
 
-    private int mMinimum = 0;
-
-    private int mMaximum = 100;
-
     public static JobViewerComponent factory (IParameterInfo pInfo) {
         JobViewerComponent viewer = EMPTY;
 
@@ -218,26 +214,6 @@ public abstract class JobViewerComponent extends JPanel
     @Override
     public void firePropertyChange (String propertyName, Object oldValue, Object newValue) {
         firePropertyChange(new PropertyChangeEvent(this, propertyName, oldValue, newValue));
-    }
-
-    public int getMaximum () {
-        return mMaximum;
-    }
-
-    public void setMaximum (int maximum) {
-        int old = mMaximum;
-        mMaximum = maximum;
-        firePropertyChange("maximum", old, mMaximum);
-    }
-
-    public int getMinimum () {
-        return mMinimum;
-    }
-
-    public void setMinimum (int minimum) {
-        int old = mMinimum;
-        mMinimum = minimum;
-        firePropertyChange("minimum", old, mMinimum);
     }
 
     protected void dispatchEventToParent (AWTEvent evt) {

@@ -270,11 +270,6 @@ public class CombinationModel extends AbstractListModel
     }
 
     @Override
-    public Number[] getMaximums () {
-        return mMaximumValues;
-    }
-
-    @Override
     public Number[] getActiveMaximums () {
         if (mMaximumValues == null && getActiveParameterCount() < 0) 
             return null;
@@ -285,11 +280,6 @@ public class CombinationModel extends AbstractListModel
             maximums[i] = mMaximumValues[indexes[i]];
 
         return maximums;
-    }
-
-    @Override
-    public Number[] getMinimums () {
-        return mMinimumValues;
     }
 
     @Override

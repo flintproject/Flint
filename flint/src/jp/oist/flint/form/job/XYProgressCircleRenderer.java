@@ -79,11 +79,8 @@ public class XYProgressCircleRenderer extends XYLineAndShapeRenderer {
         int x1 = (int)(x - radius);
         int y1 = (int)(y - radius);
 
-        double max   = (double)mDelegator.getMaximum();
-        double min   = (double)mDelegator.getMinimum();
         double value = (double)series.getProgress(item);
-
-        double percent = (value-min) / (max- min);
+        double percent = value/100;
         int angle = (int)(360.0 * percent);
         AffineTransform af = new AffineTransform();
         af.rotate(Math.toRadians(angle-90), (int)x, (int)y);

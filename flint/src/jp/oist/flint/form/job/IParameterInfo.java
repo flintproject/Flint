@@ -13,11 +13,7 @@ public interface IParameterInfo {
 
     public String[] getActiveTitles ();
 
-    public Number[] getMaximums ();
-
     public Number[] getActiveMaximums ();
-
-    public Number[] getMinimums ();
 
     public Number[] getActiveMinimums ();
 

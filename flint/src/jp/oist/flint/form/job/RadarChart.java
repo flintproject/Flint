@@ -115,16 +115,8 @@ public class RadarChart {
         mMaximums = maximums;
     }
 
-    public void setMaximum (int side, Double maximum) {
-        mMaximums[side] = maximum;
-    }
-
     public void setMinimums (Number[] minimums) {
         mMinimums = minimums;
-    }
-
-    public void setMinimum (int side, Double minimum) { 
-        mMinimums[side] = minimum;
     }
 
     public int getVertexRadius () {
