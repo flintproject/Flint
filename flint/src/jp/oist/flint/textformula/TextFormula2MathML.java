@@ -326,7 +326,7 @@ public class TextFormula2MathML
         String functionName = (String)node.jjtGetValue();
         int numberOfArguments = node.numberOfArguments;
 
-        java.util.List<ReservedFunctionContent.FunctionInformation> funcInfos = 
+        java.util.List<FunctionInformation> funcInfos =
             ReservedFunctionContent.getFunctionInformationFromFunctionName(functionName);
 
 
@@ -334,10 +334,10 @@ public class TextFormula2MathML
             throw new ParseException(
                 String.format("`%s` functions are not available.", 
                 functionName));
-        ReservedFunctionContent.FunctionInformation funcInfo = null;
+        FunctionInformation funcInfo = null;
 
         String sNumOfArgs = "";
-        for (ReservedFunctionContent.FunctionInformation f : funcInfos) {
+        for (FunctionInformation f : funcInfos) {
             sNumOfArgs += String.valueOf(f.numberOfArguments) + " or ";
             if (f.numberOfArguments == numberOfArguments) {
                 funcInfo = f; break;

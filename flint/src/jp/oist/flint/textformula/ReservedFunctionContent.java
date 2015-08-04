@@ -3,22 +3,7 @@ package jp.oist.flint.textformula;
 
 public class ReservedFunctionContent {
 
-    public static class FunctionInformation {
-
-        public final String functionName;
-
-        public final String mathmlName;
-
-        public final int numberOfArguments;
-
-        public FunctionInformation(String sn, String mn, int n) {
-            this.functionName = sn;
-            this.mathmlName = mn;
-            this.numberOfArguments = n;
-        }
-    }
-
-    public final static FunctionInformation[] functions;
+    private final static FunctionInformation[] functions;
 
     static {
         /**
@@ -138,5 +123,11 @@ public class ReservedFunctionContent {
                     index++;
                 }
             return funcs;
+    }
+
+    public static void provide(IFunctionInformationCollector collector) {
+        for (FunctionInformation fi : functions) {
+            collector.addFunctionInformation(fi);
+        }
     }
 }

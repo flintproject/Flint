@@ -2,6 +2,8 @@
 
 package jp.oist.flint.form.util;
 
+import jp.oist.flint.textformula.FunctionInformation;
+import jp.oist.flint.textformula.IFunctionInformationCollector;
 import org.xml.sax.SAXException;
 import java.io.IOException;
 import java.io.StringReader;
@@ -9,12 +11,12 @@ import javax.swing.text.JTextComponent;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 import jp.oist.flint.textformula.ReservedFunctionContent;
-import jp.oist.flint.textformula.ReservedFunctionContent.FunctionInformation;
 import jp.oist.flint.textformula.TextFormula2MathML;
 import jp.oist.flint.textformula.analyzer.ParseException;
 import jp.oist.flint.textformula.mathml.MathML2TextFormula;
 
-public class FormulaAutoCompleter extends AutoCompleter {
+public class FormulaAutoCompleter extends AutoCompleter
+    implements IFunctionInformationCollector {
 
     private final TextFormula2MathML formula2mml;
 
@@ -29,12 +31,12 @@ public class FormulaAutoCompleter extends AutoCompleter {
         insertFunctionCompletions();
     }
 
-    private void insertFunctionCompletions () {
-        for (FunctionInformation funcInfo : ReservedFunctionContent.functions)
-            addFunctionInfomation(funcInfo); 
+    private void insertFunctionCompletions() {
+        ReservedFunctionContent.provide(this);
     }
 
-    private void addFunctionInfomation (FunctionInformation funcInfo) {
+    @Override
+    public void addFunctionInformation(FunctionInformation funcInfo) {
         String funcName = funcInfo.functionName;
         int argc = funcInfo.numberOfArguments;
 
