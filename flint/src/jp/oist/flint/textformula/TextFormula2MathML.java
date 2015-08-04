@@ -336,15 +336,17 @@ public class TextFormula2MathML
                 functionName));
         FunctionInformation funcInfo = null;
 
-        String sNumOfArgs = "";
+        StringBuilder sbNumOfArgs = new StringBuilder();
         for (FunctionInformation f : funcInfos) {
-            sNumOfArgs += String.valueOf(f.numberOfArguments) + " or ";
+            sbNumOfArgs.append(f.numberOfArguments);
+            sbNumOfArgs.append(" or ");
             if (f.numberOfArguments == numberOfArguments) {
                 funcInfo = f; break;
             }
         }
 
-        if (funcInfo == null) { 
+        if (funcInfo == null) {
+            String sNumOfArgs = sbNumOfArgs.toString();
             sNumOfArgs = sNumOfArgs.substring(0, sNumOfArgs.length()-4);
             throw new ParseException(
                 String.format("Missing arguments %s for `%s` function.", 

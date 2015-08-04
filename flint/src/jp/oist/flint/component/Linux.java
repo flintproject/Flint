@@ -8,26 +8,30 @@ public class Linux implements IOs {
 
     @Override
     public String getCommandString(Command command, File path) {
-        String s = command.getName();
+        StringBuilder sb = new StringBuilder(command.getName());
         for (String option : command.getOptions()) {
-            s += " " + option;
+            sb.append(' ');
+            sb.append(option);
         }
         for (Object argument : command.getArguments()) {
+            sb.append(' ');
             if (argument instanceof File) {
-                s += " " + getQuotedFilePath((File)argument);
+                sb.append(getQuotedFilePath((File)argument));
             } else {
-                s += " " + argument.toString();
+                sb.append(argument);
             }
         }
         File inputFile = command.getInputFile();
         if (inputFile != null) {
-            s += " < " + getQuotedFilePath(inputFile);
+            sb.append(" < ");
+            sb.append(getQuotedFilePath(inputFile));
         }
         File outputFile = command.getOutputFile();
         if (outputFile != null) {
-            s += " > " + getQuotedFilePath(outputFile);
+            sb.append(" > ");
+            sb.append(getQuotedFilePath(outputFile));
         }
-        return s;
+        return sb.toString();
     }
 
     @Override

@@ -515,127 +515,152 @@ public class GnuPlotter extends BasePlotter {
      * @return String
      */
     public String getPlotString() {
-        String s = "";
+        StringBuilder sb = new StringBuilder();
 
         switch (getTerminalType()) {
         case PDF:
         case PNG:
         case EPS:
-            s += "set terminal " + getTerminalType().name().toLowerCase(Locale.ENGLISH) + "\n";
+            sb.append("set terminal ");
+            sb.append(getTerminalType().name().toLowerCase(Locale.ENGLISH));
+            sb.append('\n');
             break;
         default:
             String osName = System.getProperty("os.name");
             if (osName != null && osName.startsWith("Windows")) {
-                s += "set terminal windows\n";
+                sb.append("set terminal windows\n");
             } else {
-                s += "set terminal X11\n";
+                sb.append("set terminal X11\n");
             }
             break;
         }
 
         if (!getTerminalType().equals(TerminalType.WINDOW)) {
-            s += "set output \""+ outputFile + "\" \n";
+            sb.append("set output \"");
+            sb.append(outputFile);
+            sb.append("\"\n");
         }
 
         for (int i = 0; i < getVariables().size(); i++) {
             if (getVariables().get(i).getType().equals(GPVariable.Type.GNUPLOT)) {
                 if (getVariables().get(i).isActive()) {
-                    s += ((GPGnuplotVariable) getVariables().get(i)).getPlotString() + "\n";
+                    sb.append(((GPGnuplotVariable) getVariables().get(i)).getPlotString());
+                    sb.append('\n');
                 }
             }
         }
 
         if (dataFileSeparator == DataFileSeparator.COMMA) {
-            s += "set datafile separator \",\"\n";
+            sb.append("set datafile separator \",\"\n");
         } else {
-            s += "set datafile separator \"\t\"\n";
+            sb.append("set datafile separator \"\t\"\n");
         }
 
         if (getTitle() == null) {
-            s += "unset title\n";
+            sb.append("unset title\n");
         } else {
-            s += "set title \"" + getTitle() + "\"\n";
+            sb.append("set title \"");
+            sb.append(getTitle());
+            sb.append("\"\n");
         }
 
         if (getXlabel() == null) {
-            s += "unset xlabel\n";
+            sb.append("unset xlabel\n");
         } else {
-            s += "set xlabel \"" + getXlabel() + "\"\n";
+            sb.append("set xlabel \"");
+            sb.append(getXlabel());
+            sb.append("\"\n");
         }
 
         if (getYlabel() == null) {
-            s += "unset ylabel\n";
+            sb.append("unset ylabel\n");
         } else {
-            s += "set ylabel \"" + getYlabel() + "\"\n";
+            sb.append("set ylabel \"");
+            sb.append(getYlabel());
+            sb.append("\"\n");
         }
 
         if (getY2label() == null) {
-            s += "unset y2label\n";
+            sb.append("unset y2label\n");
         } else {
-            s += "set y2label \"" + getY2label() + "\"\n";
+            sb.append("set y2label \"");
+            sb.append(getY2label());
+            sb.append("\"\n");
         }
 
         if (isLogScaleX()) {
-            s += "set logscale x\n";
+            sb.append("set logscale x\n");
         } else {
-            s += "unset logscale x\n";
+            sb.append("unset logscale x\n");
         }
 
         if (isLogScaleY()) {
-            s += "set logscale y\n";
+            sb.append("set logscale y\n");
         } else {
-            s += "unset logscale y\n";
+            sb.append("unset logscale y\n");
         }
 
         if (isLogScaleY2()) {
-            s += "set logscale y2\n";
+            sb.append("set logscale y2\n");
         } else {
-            s += "unset logscale y2\n";
+            sb.append("unset logscale y2\n");
         }
 
         if (isKeyDisplayFlg()) {
-            s += "set key box\n";
+            sb.append("set key box\n");
         } else {
-            s += "unset key\n";
+            sb.append("unset key\n");
         }
 
         for (int i = 0; i < getLabels().size(); i++) {
             if (getLabels().get(i).getDoPlot()) {
-                s += getLabels().get(i).getPlotString();
-                s += "\n";
+                sb.append(getLabels().get(i).getPlotString());
+                sb.append('\n');
             }
         }
 
         if (getXmin() != null && getXmax() != null) {
-            s += "set xrange [" + getXmin() + ":" + getXmax() + "]\n";
+            sb.append("set xrange [");
+            sb.append(getXmin());
+            sb.append(':');
+            sb.append(getXmax());
+            sb.append("]\n");
         }
 
         if (getYmin() != null && getYmax() != null) {
-            s += "set yrange [" + getYmin() + ":" + getYmax() + "]\n";
+            sb.append("set yrange [");
+            sb.append(getYmin());
+            sb.append(':');
+            sb.append(getYmax());
+            sb.append("]\n");
         }
 
         if (plotType == PlotType.TWO_DIM) {
             if (getY2min() != null && getY2max() != null) {
-                s += "set y2range [" + getY2min() + ":" + getY2max() + "]\n";
-                s += "set y2tics autofreq\n";
-                s += "set ytics nomirror\n";
+                sb.append("set y2range [");
+                sb.append(getY2min());
+                sb.append(':');
+                sb.append(getY2max());
+                sb.append("]\n");;
+                sb.append("set y2tics autofreq\n");
+                sb.append("set ytics nomirror\n");
             }
         }
 
         if (plotType == PlotType.TWO_DIM) {
-            s += "plot ";
+            sb.append("plot ");
         } else {
-            s += "splot ";
+            sb.append("splot ");
         }
 
         for (int i = 0; i < getDataSets().size(); i++) {
             if (getDataSets().get(i).getDoPlot()) {
-                s += getDataSets().get(i).getPlotString();
-                s += ", ";
+                sb.append(getDataSets().get(i).getPlotString());
+                sb.append(", ");
             }
         }
 
-        s = s.trim();
+        String s = sb.toString().trim();
         if (s.lastIndexOf(',') == s.length() - 1) {
             s = s.substring(0, s.length() - 1);
         }
