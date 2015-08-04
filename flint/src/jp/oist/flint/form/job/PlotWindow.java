@@ -1327,7 +1327,7 @@ public class PlotWindow extends javax.swing.JFrame
                 }
             });
             worker.execute();
-        } catch (ClassNotFoundException | IOException | IllegalAccessException | InstantiationException | PlotterLoadException | HeadlessException ex) {
+        } catch (PlotterLoadException | HeadlessException ex) {
             showErrorDialog(ex.getMessage(), "Error on plotting");
             setExportCsvAndPlotEnabled(true);
         }

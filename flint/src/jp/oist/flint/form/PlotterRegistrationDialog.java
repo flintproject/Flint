@@ -181,7 +181,7 @@ public class PlotterRegistrationDialog extends javax.swing.JDialog {
         try {
             PlotterLoader.load(plotterId, plotterClass, plotterPath);
             PlotterLoader.register(plotterId, plotterClass, plotterPath);
-        } catch (ClassNotFoundException | IOException | IllegalAccessException | InstantiationException | PlotterLoadException | BackingStoreException e) {
+        } catch (PlotterLoadException | BackingStoreException e) {
             showMessageDialog(e.getMessage(), JOptionPane.ERROR_MESSAGE);
             return;
         }

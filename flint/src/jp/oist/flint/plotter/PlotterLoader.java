@@ -2,9 +2,10 @@
 package jp.oist.flint.plotter;
 
 import java.io.File;
-import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLClassLoader;
+import java.security.AccessController;
+import java.security.PrivilegedActionException;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 import javax.swing.JComboBox;
@@ -34,42 +35,42 @@ public class PlotterLoader {
                     comboBox.setSelectedIndex(c);
                 }
                 c += 1;
-            } catch (ClassNotFoundException | IOException | IllegalAccessException | InstantiationException | PlotterLoadException e) {
+            } catch (PlotterLoadException ple) {
                 deregister(key);
             }
         }
     }
 
-    public IPlotter loadDefault()
-        throws ClassNotFoundException, IOException, IllegalAccessException, InstantiationException, PlotterLoadException {
+    public IPlotter loadDefault() throws PlotterLoadException {
         return load(getDefault());
     }
 
     public static IPlotter load(String key, String className, String path)
-        throws ClassNotFoundException, IOException, IllegalAccessException, InstantiationException, PlotterLoadException {
+        throws PlotterLoadException {
         File file = new File(path);
         if (!file.isFile()) {
             throw new PlotterLoadException(key + "'s file not found");
         }
-        URL url = file.toURI().toURL();
-        URL[] urls = {url};
-        // Do not forget to close a URLClassLoader. See
-        // http://docs.oracle.com/javase/7/docs/api/java/net/URLClassLoader.html#close()
-        try (URLClassLoader ucl = new URLClassLoader(urls)) {
-        Class klass = ucl.loadClass(className);
-        return (IPlotter)klass.newInstance();
+        try {
+            URL url = file.toURI().toURL();
+            return AccessController.doPrivileged(new PlotterURLClassLoader(url, className));
+        } catch (MalformedURLException | PrivilegedActionException e) {
+            throw new PlotterLoadException(e.getMessage(), e);
         }
     }
 
-    private IPlotter load(String key)
-        throws ClassNotFoundException, IOException, IllegalAccessException, InstantiationException, PlotterLoadException {
+    private IPlotter load(String key) throws PlotterLoadException {
         Preferences prefs = getPlotterPrefercences(key);
         String className = getClassName(key, prefs);
         String path = prefs.get("path", null);
         if (path == null) {
-            ClassLoader cl = ClassLoader.getSystemClassLoader();
-            Class klass = cl.loadClass(className);
-            return (IPlotter)klass.newInstance();
+            try {
+                ClassLoader cl = ClassLoader.getSystemClassLoader();
+                Class klass = cl.loadClass(className);
+                return (IPlotter)klass.newInstance();
+            } catch (ClassNotFoundException | IllegalAccessException | InstantiationException e) {
+                throw new PlotterLoadException(e.getMessage(), e);
+            }
         } else {
             return load(key, className, path);
         }
