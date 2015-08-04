@@ -111,10 +111,6 @@ public class RadarChart {
         return mValues[side];
     }
 
-    public Number[] getValues() {
-        return mValues;
-    }
-
     public void setMaximums (Number[] maximums) {
         mMaximums = maximums;
     }

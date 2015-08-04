@@ -224,10 +224,6 @@ public class JobListCell extends JPanel implements ActionListener  {
         mCombinationTitle = combinationTitle;
     }
 
-    public String[] getCombinationTitle () {
-        return mCombinationTitle;
-    }
-
     public void setTitle (String title) {
         lbl_Title.setText(title);
     }

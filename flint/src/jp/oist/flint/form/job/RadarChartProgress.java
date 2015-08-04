@@ -101,10 +101,6 @@ public class RadarChartProgress extends JPanel
         mRadarChart.setMaximums(maximums);
     }
 
-    public Number[] getValues () {
-        return mRadarChart.getValues();
-    }
-
     public Number getValue (int side) {
         return mRadarChart.getValue(side);
     }
