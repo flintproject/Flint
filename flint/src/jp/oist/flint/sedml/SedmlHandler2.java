@@ -187,13 +187,11 @@ public class SedmlHandler2 extends SedmlHandler
             Map<String, String> modelInfo = mModelInfos.get(modelId);
 
             SimulationConfiguration conf = new SimulationConfiguration();
-            conf.mUnitformTimeCourseId = simId;
             conf.mKisaoId        = (String)simInfo.get("kisaoId");
             conf.mOutputEndTime  = (String)simInfo.get("outputEndTime");
             conf.mNumberOfPoints = (String)simInfo.get("numberOfPoints");
             conf.mGranularity    = (String)simInfo.get("granularity");
 
-            conf.mModelId = modelId;
             conf.mModelPath = (String)modelInfo.get("source");
 
             conf.mKeys = (ArrayList<String>)data.get("targets");
@@ -251,9 +249,6 @@ public class SedmlHandler2 extends SedmlHandler
 
     private static class SimulationConfiguration 
         implements ISimulationConfiguration {
-
-        private String mModelId;
-        private String mUnitformTimeCourseId;
 
         private String mModelPath;
         private String mOutputEndTime;
