@@ -29,32 +29,22 @@ public class SimulatorService {
         return mPool.submit(job);
     }
 
-    public Future submit(final IJob job, final File logFile) throws IOException {
-        try (FileOutputStream fos = new FileOutputStream(logFile);
-             OutputStreamWriter osw = new OutputStreamWriter(fos, StandardCharsets.UTF_8);
-             BufferedWriter writer = new BufferedWriter(osw)) {
+    public Future submit(final IJob job, final File logFile) {
         final ProcessWorker processWorker = new ProcessWorker(job.getProcess(), mFrame) {
             @Override
             protected void process(List<String> lines) {
-                try {
+                // append lines to the log file
+                try (FileOutputStream fos = new FileOutputStream(logFile, true);
+                     OutputStreamWriter osw = new OutputStreamWriter(fos, StandardCharsets.UTF_8);
+                     BufferedWriter writer = new BufferedWriter(osw)) {
                     for (String line : lines) {
                         writer.append(line).append(System.getProperty("line.separator"));
                     }
                 } catch (IOException ex) {
                 }
             }
-
-            @Override
-            protected void done () {
-                try {
-                    writer.close();
-                } catch (IOException ex) {
-                }
-                super.done();
-            }
         };
         processWorker.execute();
         return mPool.submit(job);
-        }
     }
 }
