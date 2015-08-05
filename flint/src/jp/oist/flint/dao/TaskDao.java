@@ -68,18 +68,15 @@ public class TaskDao extends DaoObject {
         return cancelFile.exists();
     }
 
+    private static class JobDirNameFilter implements FilenameFilter {
+        @Override
+        public boolean accept(File dir, String name) {
+            return name.matches("^[1-9][0-9]*$");
+        }
+    }
+
     public boolean isStarted() {
-        File[] jobDirs = mWorkingDir.listFiles(new FilenameFilter() {
-            @Override
-            public boolean accept(File dir, String name) {
-                try {
-                    Long.parseLong(name);
-                    return true;
-                } catch (NumberFormatException ex) {
-                    return false;
-                }
-            }
-        });
+        File[] jobDirs = mWorkingDir.listFiles(new JobDirNameFilter());
         return jobDirs.length > 0;
     }
 
