@@ -198,6 +198,21 @@
 </is:extra-implementation>
 </is:implementation>
 </is:physical-quantity>
+<is:physical-quantity physical-quantity-id="5" type="variable-parameter">
+<is:name>a_degree</is:name>
+<is:dimension type="scalar"/>
+<is:value-type-set>
+<is:value-type precision="double" unit-id="0"/>
+</is:value-type-set>
+<is:implementation>
+<is:definition type="assign" sub-type="port" format="reference">
+<is:reference port-id="1"/>
+</is:definition>
+<is:extra-implementation type="multiple-input-assignment">
+<is:definition type="reduction" sub-type="degree" format=""/>
+</is:extra-implementation>
+</is:implementation>
+</is:physical-quantity>
 </is:physical-quantity-set>
 </is:module>
 
@@ -319,7 +334,7 @@
 <is:target-physical-quantity physical-quantity-id="1">
 <is:initial-value>
 <is:definition type="ae" format="mathml">
-<m:math><m:apply><m:eq/><m:ci>a</m:ci><m:cn>10</m:cn></m:apply></m:math>
+<m:math><m:apply><m:eq/><m:ci>a</m:ci><m:cn>1</m:cn></m:apply></m:math>
 </is:definition>
 </is:initial-value>
 </is:target-physical-quantity>
@@ -338,7 +353,7 @@
 <is:target-physical-quantity physical-quantity-id="1">
 <is:initial-value>
 <is:definition type="ae" format="mathml">
-<m:math><m:apply><m:eq/><m:ci>a</m:ci><m:cn>20</m:cn></m:apply></m:math>
+<m:math><m:apply><m:eq/><m:ci>a</m:ci><m:cn>2</m:cn></m:apply></m:math>
 </is:definition>
 </is:initial-value>
 </is:target-physical-quantity>
@@ -357,7 +372,7 @@
 <is:target-physical-quantity physical-quantity-id="1">
 <is:initial-value>
 <is:definition type="ae" format="mathml">
-<m:math><m:apply><m:eq/><m:ci>a</m:ci><m:cn>30</m:cn></m:apply></m:math>
+<m:math><m:apply><m:eq/><m:ci>a</m:ci><m:cn>3</m:cn></m:apply></m:math>
 </is:definition>
 </is:initial-value>
 </is:target-physical-quantity>
@@ -376,7 +391,7 @@
 <is:target-physical-quantity physical-quantity-id="1">
 <is:initial-value>
 <is:definition type="ae" format="mathml">
-<m:math><m:apply><m:eq/><m:ci>a</m:ci><m:cn>40</m:cn></m:apply></m:math>
+<m:math><m:apply><m:eq/><m:ci>a</m:ci><m:cn>4</m:cn></m:apply></m:math>
 </is:definition>
 </is:initial-value>
 </is:target-physical-quantity>
@@ -395,7 +410,7 @@
 <is:target-physical-quantity physical-quantity-id="1">
 <is:initial-value>
 <is:definition type="ae" format="mathml">
-<m:math><m:apply><m:eq/><m:ci>a</m:ci><m:cn>50</m:cn></m:apply></m:math>
+<m:math><m:apply><m:eq/><m:ci>a</m:ci><m:cn>5</m:cn></m:apply></m:math>
 </is:definition>
 </is:initial-value>
 </is:target-physical-quantity>
@@ -414,7 +429,7 @@
 <is:target-physical-quantity physical-quantity-id="1">
 <is:initial-value>
 <is:definition type="ae" format="mathml">
-<m:math><m:apply><m:eq/><m:ci>a</m:ci><m:cn>60</m:cn></m:apply></m:math>
+<m:math><m:apply><m:eq/><m:ci>a</m:ci><m:cn>6</m:cn></m:apply></m:math>
 </is:definition>
 </is:initial-value>
 </is:target-physical-quantity>
@@ -433,7 +448,7 @@
 <is:target-physical-quantity physical-quantity-id="1">
 <is:initial-value>
 <is:definition type="ae" format="mathml">
-<m:math><m:apply><m:eq/><m:ci>a</m:ci><m:cn>70</m:cn></m:apply></m:math>
+<m:math><m:apply><m:eq/><m:ci>a</m:ci><m:cn>7</m:cn></m:apply></m:math>
 </is:definition>
 </is:initial-value>
 </is:target-physical-quantity>
@@ -452,7 +467,7 @@
 <is:target-physical-quantity physical-quantity-id="1">
 <is:initial-value>
 <is:definition type="ae" format="mathml">
-<m:math><m:apply><m:eq/><m:ci>a</m:ci><m:cn>80</m:cn></m:apply></m:math>
+<m:math><m:apply><m:eq/><m:ci>a</m:ci><m:cn>8</m:cn></m:apply></m:math>
 </is:definition>
 </is:initial-value>
 </is:target-physical-quantity>
@@ -471,7 +486,7 @@
 <is:target-physical-quantity physical-quantity-id="1">
 <is:initial-value>
 <is:definition type="ae" format="mathml">
-<m:math><m:apply><m:eq/><m:ci>a</m:ci><m:cn>90</m:cn></m:apply></m:math>
+<m:math><m:apply><m:eq/><m:ci>a</m:ci><m:cn>9</m:cn></m:apply></m:math>
 </is:definition>
 </is:initial-value>
 </is:target-physical-quantity>
@@ -490,7 +505,7 @@
 <is:target-physical-quantity physical-quantity-id="1">
 <is:initial-value>
 <is:definition type="ae" format="mathml">
-<m:math><m:apply><m:eq/><m:ci>a</m:ci><m:cn>100</m:cn></m:apply></m:math>
+<m:math><m:apply><m:eq/><m:ci>a</m:ci><m:cn>10</m:cn></m:apply></m:math>
 </is:definition>
 </is:initial-value>
 </is:target-physical-quantity>
