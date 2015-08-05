@@ -154,8 +154,8 @@ public class ValueEditWindow extends JFrame
         btn_DeleteRow.addActionListener(this);
         btn_Generate.addActionListener(this);
         btn_Close.addActionListener(this);
-        OK.addActionListener(this);
-        Apply.addActionListener(this);
+        btn_OK.addActionListener(this);
+        btn_Apply.addActionListener(this);
 
         tbl_Values.getSelectionModel().addListSelectionListener(this);
         Enumeration<AbstractButton> elements = group_ParameterType.getElements();
@@ -393,7 +393,7 @@ public class ValueEditWindow extends JFrame
         ParameterSet.Parameter p = mParameterSet.get(rowIndex);
 
         updateComponents(p);
-        Apply.setEnabled(false);
+        btn_Apply.setEnabled(false);
     }
 
     @SuppressWarnings("unchecked")
@@ -458,8 +458,8 @@ public class ValueEditWindow extends JFrame
         lbl_Step = new JLabel();
         txt_Step = new JTextField();
         pnl_Foot = new JPanel();
-        OK = new JButton();
-        Apply = new JButton();
+        btn_OK = new JButton();
+        btn_Apply = new JButton();
         btn_Close = new JButton();
 
         setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
@@ -836,15 +836,15 @@ public class ValueEditWindow extends JFrame
 
         pnl_Foot.setLayout(new FlowLayout(FlowLayout.RIGHT));
 
-        OK.setText("OK");
-        OK.setActionCommand("flint.valueeditwindow.action.ok");
-        OK.setName("flint.valueeditwindow.button.ok"); // NOI18N
-        pnl_Foot.add(OK);
+        btn_OK.setText("OK");
+        btn_OK.setActionCommand("flint.valueeditwindow.action.ok");
+        btn_OK.setName("flint.valueeditwindow.button.ok"); // NOI18N
+        pnl_Foot.add(btn_OK);
 
-        Apply.setText("Apply");
-        Apply.setActionCommand("flint.valueeditwindow.action.apply");
-        Apply.setName("flint.valueeditwindow.button.apply"); // NOI18N
-        pnl_Foot.add(Apply);
+        btn_Apply.setText("Apply");
+        btn_Apply.setActionCommand("flint.valueeditwindow.action.apply");
+        btn_Apply.setName("flint.valueeditwindow.button.apply"); // NOI18N
+        pnl_Foot.add(btn_Apply);
 
         btn_Close.setText("Cancel");
         btn_Close.setActionCommand("flint.valueeditwindow.action.cancel");
@@ -919,7 +919,7 @@ public class ValueEditWindow extends JFrame
         cosmetic();
         validateForms();
         mOriginalParameterSet = mParameterSet.deepClone();
-        Apply.setEnabled(false);
+        btn_Apply.setEnabled(false);
     }
 
     private void updateDocument (DocumentEvent evt) {
@@ -935,7 +935,7 @@ public class ValueEditWindow extends JFrame
         ParameterSetTableModel tableModel = (ParameterSetTableModel)tbl_Values.getModel();
         tableModel.setParameterValue(selectedRow, key, value);
 
-        Apply.setEnabled(true);
+        btn_Apply.setEnabled(true);
     }
 
     public void addRow (ParameterSet.Parameter parameter) {
@@ -1007,12 +1007,12 @@ public class ValueEditWindow extends JFrame
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private JButton Apply;
-    private JButton OK;
     private JButton btn_AddRow;
+    private JButton btn_Apply;
     private JButton btn_Close;
     private JButton btn_DeleteRow;
     private JButton btn_Generate;
+    private JButton btn_OK;
     private JRadioButton chk_Enum;
     private JCheckBox chk_GenerateRandomValue;
     private JRadioButton chk_Interval;

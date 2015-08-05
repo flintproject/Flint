@@ -50,8 +50,8 @@ public class TimeSeriesReader extends SwingWorker<ArrayList<XYSeries>, Void> {
         try (FileInputStream ifs = new FileInputStream(mIsdFile);
              FileChannel fc = ifs.getChannel()) {
         IsdfReader reader = new IsdfReader(fc);
-        IsdfHeader header = reader.ReadHeader();
-        reader.SeekData(header);
+        IsdfHeader header = reader.readHeader();
+        reader.seekData(header);
         int numberOfColumns = header.getNumObjs();
         int numberOfBytes = numberOfColumns * 8;
         ByteBuffer bb = ByteBuffer.allocateDirect(numberOfBytes);

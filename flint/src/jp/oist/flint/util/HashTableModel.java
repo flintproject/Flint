@@ -13,17 +13,17 @@ public class HashTableModel extends AbstractTableModel {
     /** The Map object which stored the index and column name of the column. */
     private Map<Integer, String> keyOrder;
     /** The list of Map objects which stored the value of the cell. */
-    private List<Map> ArrayHash;
+    private List<Map> mList;
 
     public HashTableModel() {
     }
 
     public HashTableModel(List<Map> _data) {
-        ArrayHash = _data;
+        mList = _data;
     }
 
     public HashTableModel(List<Map> _data, Map<Integer, String> _keyOrder) {
-        ArrayHash = _data;
+        mList = _data;
         keyOrder = _keyOrder;
     }
 
@@ -43,7 +43,7 @@ public class HashTableModel extends AbstractTableModel {
      */
     @Override
     public int getColumnCount() {
-        return ArrayHash.get(0).keySet().size();
+        return mList.get(0).keySet().size();
     }
 
     /**
@@ -53,7 +53,7 @@ public class HashTableModel extends AbstractTableModel {
      */
     @Override
     public int getRowCount() {
-        return ArrayHash.size();
+        return mList.size();
     }
 
     /**
@@ -63,7 +63,7 @@ public class HashTableModel extends AbstractTableModel {
      */
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
-        return ArrayHash.get(rowIndex).get(keyOrder.get(columnIndex));
+        return mList.get(rowIndex).get(keyOrder.get(columnIndex));
 
     }
 

@@ -155,7 +155,7 @@ public class Plotter implements IPlotter {
         try (FileInputStream fis = new FileInputStream(controller.getIsdFile());
              FileChannel channel = fis.getChannel()) {
         IsdfReader reader = new IsdfReader(channel);
-        IsdfHeader header = reader.ReadHeader();
+        IsdfHeader header = reader.readHeader();
         int numberOfColumns = header.getNumObjs();
         int skip = header.getDataOffset();
 

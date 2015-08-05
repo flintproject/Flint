@@ -14,7 +14,7 @@ public class IsdfReader {
         mChannel = channel;
     }
 
-    public IsdfHeader ReadHeader() throws IOException, IsdfException {
+    public IsdfHeader readHeader() throws IOException, IsdfException {
         ByteBuffer hbb = ByteBuffer.allocateDirect(IsdfHeader.SIZE);
         int r = mChannel.read(hbb);
         if (r != IsdfHeader.SIZE) {
@@ -29,7 +29,7 @@ public class IsdfReader {
         return new IsdfHeader(le, numObjs, numBytesComment, numBytesDescs, numBytesUnits);
     }
 
-    public void SeekData(IsdfHeader header) throws IOException {
+    public void seekData(IsdfHeader header) throws IOException {
         mChannel.position(header.getDataOffset());
     }
 

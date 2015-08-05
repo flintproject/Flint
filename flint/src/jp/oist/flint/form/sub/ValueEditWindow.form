@@ -1228,14 +1228,14 @@
         <Property name="alignment" type="int" value="2"/>
       </Layout>
       <SubComponents>
-        <Component class="javax.swing.JButton" name="OK">
+        <Component class="javax.swing.JButton" name="btn_OK">
           <Properties>
             <Property name="text" type="java.lang.String" value="OK"/>
             <Property name="actionCommand" type="java.lang.String" value="flint.valueeditwindow.action.ok"/>
             <Property name="name" type="java.lang.String" value="flint.valueeditwindow.button.ok" noResource="true"/>
           </Properties>
         </Component>
-        <Component class="javax.swing.JButton" name="Apply">
+        <Component class="javax.swing.JButton" name="btn_Apply">
           <Properties>
             <Property name="text" type="java.lang.String" value="Apply"/>
             <Property name="actionCommand" type="java.lang.String" value="flint.valueeditwindow.action.apply"/>
