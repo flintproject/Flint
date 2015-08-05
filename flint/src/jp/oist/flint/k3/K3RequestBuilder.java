@@ -5,6 +5,7 @@ import jp.oist.flint.sedml.ISimulationConfiguration;
 import jp.oist.flint.sedml.SedmlException;
 import jp.oist.flint.sedml.SedmlWriter;
 import java.io.ByteArrayOutputStream;
+import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -31,8 +32,9 @@ public class K3RequestBuilder {
     private byte[] readModel() throws IOException {
         int len = (int)mModel.length();
         byte[] buf = new byte[len];
-        try (FileInputStream inputStream = new FileInputStream(mModel)) {
-        inputStream.read(buf, 0, len);
+        try (FileInputStream inputStream = new FileInputStream(mModel);
+             DataInputStream dis = new DataInputStream(inputStream)) {
+            dis.readFully(buf);
         }
         return buf;
     }
