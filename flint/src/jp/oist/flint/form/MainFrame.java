@@ -251,7 +251,7 @@ public class MainFrame extends javax.swing.JFrame
                                     sb.append(line).append(System.getProperty("line.separator"));
                                 }
                             } catch (IOException ex1) {
-                                logFile.delete();
+                                Logger.getRootLogger().error(ex1.getMessage());
                             }
                         }
                         String detail = sb.toString();
