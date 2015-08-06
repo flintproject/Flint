@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import javax.swing.SwingWorker;
 
 public class ExportWorker extends SwingWorker<Boolean, Boolean> {
@@ -36,8 +37,8 @@ public class ExportWorker extends SwingWorker<Boolean, Boolean> {
         Isd2csvJob job = new Isd2csvJob(mSource, mTarget, mMonitor.getPort());
         ProcessWorker worker = new ProcessWorker(job.getProcess(), mFrame);
         worker.execute();
-        mPool.submit(job);
-        return worker.get() == 0;
+        Future<File> future = mPool.submit(job);
+        return future.get().exists() && worker.get() == 0;
     }
 
     @Override

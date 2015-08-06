@@ -5,6 +5,9 @@ package jp.oist.flint;
 import java.awt.Component;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -178,15 +181,10 @@ public class OpenFileTest {
     }
 
     File createTestFile(String filename, String directory) throws IOException {
-            File tempDir = File.createTempFile(directory, "");
-            tempDir.delete();
-            tempDir.mkdir();
-
-            File tempFile =  new File(tempDir, filename);
-            tempFile.createNewFile();
-            Workspace.publishFile(mSampleFile, tempFile);
-
-            return tempFile;
+        Path dirPath = Files.createTempDirectory(directory);
+        Path filePath = dirPath.resolve(filename);
+        Files.copy(mSampleFile.toPath(), filePath, StandardCopyOption.REPLACE_EXISTING);
+        return filePath.toFile();
     }
 
     @Test

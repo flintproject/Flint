@@ -9,6 +9,7 @@ import jp.oist.flint.garuda.GarudaClient;
 import jp.oist.flint.job.Progress;
 import jp.oist.flint.phsp.entity.ParameterSet;
 import jp.sbi.garuda.platform.commons.net.GarudaConnectionNotInitializedException;
+import org.apache.log4j.Logger;
 import java.awt.CardLayout;
 import java.awt.Component;
 import java.awt.Cursor;
@@ -595,7 +596,10 @@ public class JobWindow extends javax.swing.JFrame
 
                 if (result == JOptionPane.NO_OPTION)
                     return;
-                selectedDir.mkdirs();
+                if (!selectedDir.mkdirs()) {
+                    showErrorDialog("failed to create directory: " + selectedDir.toString(),
+                                    "Error on exporting simulation data");
+                }
             }
 
             TaskDao taskDao = mSimulator.getSimulationDao()
@@ -721,7 +725,9 @@ public class JobWindow extends javax.swing.JFrame
                                 } finally {
                                     // spare the disk space immediately,
                                     // because the resulting CSV file can be quite large
-                                    csvFile.delete();
+                                    if (!csvFile.delete()) {
+                                        Logger.getRootLogger().error("failed to delete " + csvFile.toString());
+                                    }
                                 }
                             }
                         }
