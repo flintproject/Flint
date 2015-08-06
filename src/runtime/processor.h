@@ -522,7 +522,7 @@ public:
 					double v = executor->Store(code.store(), offset);
 					if (!IsFinite(v, offset)) {
 						boost::uuids::uuid u;
-						std::memcpy(&u, sh.id().c_str(), 16);
+						std::memcpy(&u, sh.id().c_str(), u.size());
 						std::cerr << "section: " << u << std::endl;
 						std::cerr << "block:   " << bh.name() << std::endl;
 						std::cerr << "index:   " << (ci - cib) << std::endl;

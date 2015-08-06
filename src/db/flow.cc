@@ -30,7 +30,7 @@ public:
 
 	bool Insert(boost::uuids::uuid u, const char *id) {
 		int e;
-		e = sqlite3_bind_blob(stmt(), 1, &u, 16, SQLITE_STATIC);
+		e = sqlite3_bind_blob(stmt(), 1, &u, u.size(), SQLITE_STATIC);
 		if (e != SQLITE_OK) {
 			cerr << "failed to bind uuid: " << e << endl;
 			return false;

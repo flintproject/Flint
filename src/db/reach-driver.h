@@ -25,7 +25,7 @@ public:
 			  Reduction reduction = Reduction::kUnspecified)
 	{
 		int e;
-		e = sqlite3_bind_blob(stmt(), 1, &output_uuid, 16, SQLITE_STATIC);
+		e = sqlite3_bind_blob(stmt(), 1, &output_uuid, output_uuid.size(), SQLITE_STATIC);
 		if (e != SQLITE_OK) {
 			std::cerr << "failed to bind output_uuid: " << e << std::endl;
 			return false;
@@ -35,7 +35,7 @@ public:
 			std::cerr << "failed to bind output_id: " << e << std::endl;
 			return false;
 		}
-		e = sqlite3_bind_blob(stmt(), 3, &input_uuid, 16, SQLITE_STATIC);
+		e = sqlite3_bind_blob(stmt(), 3, &input_uuid, input_uuid.size(), SQLITE_STATIC);
 		if (e != SQLITE_OK) {
 			std::cerr << "failed to bind input_uuid: " << e << std::endl;
 			return false;

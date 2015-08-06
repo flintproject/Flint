@@ -67,9 +67,9 @@ public:
 class Spec : boost::noncopyable {
 public:
 	void AddSpec(const boost::uuids::uuid &u, const char *name) {
-		char s[16];
+		char s[u.size()];
 		std::copy(u.begin(), u.end(), s);
-		string id(s, 16);
+		string id(s, u.size());
 		m_[id].insert(name);
 	}
 
@@ -100,10 +100,10 @@ public:
 	int Fill(const string &time_unit, const Spec *spec, boost::ptr_vector<lo::Column> *columns) const {
 		std::unique_ptr<lo::Column> c(new lo::Column);
 
-		char us0[16] = {0};
+		char us0[boost::uuids::uuid::static_size()] = {0};
 		c->set_position(0);
 		c->set_size(1);
-		c->set_uuid(string(us0, 16));
+		c->set_uuid(string(us0, boost::uuids::uuid::static_size()));
 		c->set_id(0); // no such value, let's use 0 as a fallback
 		c->set_name("time");
 		c->set_type(lo::T);

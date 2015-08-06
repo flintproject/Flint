@@ -742,12 +742,12 @@ bool Bcc(sqlite3 *db, std::ostream *os)
 	}
 	// write section headers
 	boost::uuids::string_generator gen;
-	std::unique_ptr<char[]> bu(new char[16]); // 16 is UUID's size
+	std::unique_ptr<char[]> bu(new char[boost::uuids::uuid::static_size()]);
 	std::unique_ptr<bc::SectionHeader> sh(new bc::SectionHeader);
 	for (NobVector::const_iterator nit=nv->begin();nit!=nv->end();++nit) {
 		boost::uuids::uuid u = gen(nit->first);
 		std::copy(u.begin(), u.end(), bu.get());
-		sh->set_id(bu.get(), 16);
+		sh->set_id(bu.get(), boost::uuids::uuid::static_size());
 		sh->set_nob(nit->second);
 		if (!PackToOstream(*sh, os)) {
 			return false;

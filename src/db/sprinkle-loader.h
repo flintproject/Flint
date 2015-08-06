@@ -31,9 +31,9 @@ public:
 			double val = sqlite3_column_double(stmt(), 3);
 
 			boost::uuids::uuid tu;
-			std::memcpy(&tu, track_id, 16);
+			std::memcpy(&tu, track_id, tu.size());
 			boost::uuids::uuid su;
-			std::memcpy(&su, sector_id, 16);
+			std::memcpy(&su, sector_id, su.size());
 			if (!handler->Handle(tu, su, pq_id, val)) return false;
 		}
 		if (e != SQLITE_DONE) {

@@ -50,7 +50,7 @@ public:
 		boost::uuids::uuid track_id;
 		boost::uuids::uuid sector_id;
 		for (TrackVector::const_iterator it=tv_.begin();it!=tv_.end();++it) {
-			memcpy(&track_id, it->id().c_str(), 16);
+			memcpy(&track_id, it->id().c_str(), track_id.size());
 
 			std::string key(it->id());
 			int nos = it->nos();
@@ -73,7 +73,7 @@ public:
 				mounter->SetOffset(i, offset);
 				const lo::Sector &s = sv_.at(si++);
 				if (som) {
-					memcpy(&sector_id, s.id().c_str(), 16);
+					memcpy(&sector_id, s.id().c_str(), sector_id.size());
 					som->insert(std::make_pair(sector_id, offset));
 				}
 				offset += sector_size;
@@ -142,7 +142,7 @@ public:
 					assert(offset < size);
 					if (!color[offset]) {
 						boost::uuids::uuid u;
-						memcpy(&u, it->id().c_str(), 16);
+						memcpy(&u, it->id().c_str(), u.size());
 						std::string us = to_string(u);
 						us += ":";
 						us += d.name();
@@ -204,7 +204,7 @@ public:
 		int di = 0;
 		for (TrackVector::const_iterator it=tv_.begin();it!=tv_.end();++it) {
 			boost::uuids::uuid u;
-			memcpy(&u, it->id().c_str(), 16);
+			memcpy(&u, it->id().c_str(), u.size());
 			cout << "T " << u << " " << it->name() << endl;
 
 			int nos = it->nos();
@@ -213,7 +213,7 @@ public:
 			int die = di + nod;
 
 			for (int i=0;i<nos;i++) {
-				memcpy(&u, sv_[si++].id().c_str(), 16);
+				memcpy(&u, sv_[si++].id().c_str(), u.size());
 				cout << "S " << u << endl;
 
 				di = dib;

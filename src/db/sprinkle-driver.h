@@ -24,12 +24,12 @@ public:
 			  int pq_id,
 			  double val) {
 		int e;
-		e = sqlite3_bind_blob(stmt(), 1, &track_id, 16, SQLITE_STATIC);
+		e = sqlite3_bind_blob(stmt(), 1, &track_id, track_id.size(), SQLITE_STATIC);
 		if (e != SQLITE_OK) {
 			std::cerr << "failed to bind track_id: " << e << std::endl;
 			return false;
 		}
-		e = sqlite3_bind_blob(stmt(), 2, &sector_id, 16, SQLITE_STATIC);
+		e = sqlite3_bind_blob(stmt(), 2, &sector_id, sector_id.size(), SQLITE_STATIC);
 		if (e != SQLITE_OK) {
 			std::cerr << "failed to bind sector_id: " << e << std::endl;
 			return false;

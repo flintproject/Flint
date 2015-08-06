@@ -49,7 +49,7 @@ public:
 
 	void ReadColumn(lo::Column *column) {
 		boost::uuids::uuid u;
-		memcpy(&u, column->uuid().c_str(), 16);
+		memcpy(&u, column->uuid().c_str(), u.size());
 		string s;
 		if (u.is_nil()) {
 			s = column->name();

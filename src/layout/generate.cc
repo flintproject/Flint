@@ -180,8 +180,8 @@ bool Generate(sqlite3 *db, const char *filename)
 	std::unique_ptr<lo::Track> track(new lo::Track);
 	std::unique_ptr<lo::Sector> sector(new lo::Sector);
 	std::unique_ptr<lo::Data> data(new lo::Data);
-	std::unique_ptr<char[]> tbu(new char[16]); // 16 is UUID's size
-	std::unique_ptr<char[]> sbu(new char[16]); // 16 is UUID's size
+	std::unique_ptr<char[]> tbu(new char[boost::uuids::uuid::static_size()]);
+	std::unique_ptr<char[]> sbu(new char[boost::uuids::uuid::static_size()]);
 	for (TMap::const_iterator it=tm.begin();it!=tm.end();++it) {
 		const boost::uuids::uuid &tu(it->first);
 		NameMap::const_iterator nmit = nm->find(tu);
@@ -191,7 +191,7 @@ bool Generate(sqlite3 *db, const char *filename)
 		}
 
 		std::copy(tu.begin(), tu.end(), tbu.get());
-		track->set_id(tbu.get(), 16);
+		track->set_id(tbu.get(), boost::uuids::uuid::static_size());
 		track->set_nos(static_cast<int>(it->second->size()));
 		track->set_nod(static_cast<int>(nmit->second->size()));
 
@@ -227,7 +227,7 @@ bool Generate(sqlite3 *db, const char *filename)
 
 		for (NodeVector::const_iterator sit=it->second->begin();sit!=it->second->end();++sit) {
 			std::copy(sit->uuid().begin(), sit->uuid().end(), sbu.get());
-			sector->set_id(sbu.get(), 16);
+			sector->set_id(sbu.get(), boost::uuids::uuid::static_size());
 			if (sit->label().empty()) {
 				sector->clear_label();
 			} else {

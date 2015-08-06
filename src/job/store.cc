@@ -148,7 +148,7 @@ public:
 				return false;
 			}
 			u = gen((const char *)sqlite3_column_text(stmt(), 0));
-			(*tvm)[string((const char *)u.data, 16)].insert(make_pair((const char *)sqlite3_column_text(stmt(), 1), data[it->second]));
+			(*tvm)[string((const char *)u.data, u.size())].insert(make_pair((const char *)sqlite3_column_text(stmt(), 1), data[it->second]));
 			sqlite3_reset(stmt());
 		}
 		return true;
