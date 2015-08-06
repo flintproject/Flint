@@ -19,105 +19,84 @@ public class Workspace {
 
     private final static String WORKSPACE_NAME;
 
-    private static File mLockFile;
     private static FileLock mFileLock; 
 
     static {
         WORKSPACE_NAME = new File(".flint", UUID.randomUUID().toString()).getPath();
 
+        File dir = getFile();
+        if (!dir.mkdirs()) {
+            Logger.getRootLogger().fatal("failed to create workspace directory: " + dir.toString());
+            System.exit(1);
+        }
+        dir.deleteOnExit();
+        File lockFile = new File(dir, LOCK_FILE_NAME);
         try {
-            File dir = getFile();
-            dir.mkdirs();
-            mLockFile = new File(dir, LOCK_FILE_NAME);
-            if (!mLockFile.exists()) mLockFile.createNewFile();
-            mLockFile.deleteOnExit();
-            FileOutputStream lockStream = new FileOutputStream(mLockFile);
+            if ( !lockFile.exists() &&
+                 !lockFile.createNewFile() ) {
+                Logger.getRootLogger().fatal("failed to create lock file: " + lockFile.toString());
+                System.exit(1);
+            }
+            lockFile.deleteOnExit();
+            FileOutputStream lockStream = new FileOutputStream(lockFile);
             FileChannel lockChannel = lockStream.getChannel();
-            mFileLock = lockChannel.tryLock();
+            mFileLock = lockChannel.lock();
 
             clear();
         } catch (IOException ioe) {
-            // ignored.
-        } finally {
-            if (mFileLock == null) {
-                Logger.getRootLogger().fatal("could not get lock: " + mLockFile.toString());
-                System.exit(1);
-            }
+            Logger.getRootLogger().fatal(ioe.getMessage());
+            System.exit(1);
         }
 
-        Runtime.getRuntime().addShutdownHook(new ShutdownHook());
+        Runtime.getRuntime().addShutdownHook(new ShutdownHook(dir, lockFile));
     }
 
     private static void clear() throws IOException {
-        File lockFile = null;
-        FileLock lock = null;
-        FileChannel lockChannel = null;
-        try {
-            File flintWorkspace = getFile().getParentFile();
-
-            lockFile = new File(flintWorkspace, "flint.lock");
-            if (!lockFile.exists())
-                lockFile.createNewFile();
-
-            FileOutputStream lockStream = new FileOutputStream(lockFile);
-            lockChannel = lockStream.getChannel();
-
-            lock = lockChannel.tryLock();
-            if (lock == null)
-                throw new IOException("could not create the lock file");
-
-            for (File child : flintWorkspace.listFiles()) {
+        File workspace = getFile().getParentFile();
+        File lockFile = new File(workspace, "flint.lock");
+        if ( !lockFile.exists() &&
+             !lockFile.createNewFile() ) {
+            Logger.getRootLogger().fatal("failed to create flint.lock");
+            System.exit(1);
+        }
+        lockFile.deleteOnExit();
+        try (FileOutputStream lockStream = new FileOutputStream(lockFile);
+             FileChannel lockChannel = lockStream.getChannel();
+             FileLock lock = lockChannel.lock()) {
+            for (File child : workspace.listFiles()) {
                 if (getFile().equals(child) || lockFile.equals(child))
-                        continue;
-
-                FileChannel instanceChannel = null;
-                try {
+                    continue;
+                if (child.isDirectory()) {
                     File instanceLockFile = new File(child, "flint.lock");
-
-                    if (instanceLockFile.exists()) {
-                        FileLock instanceLock = null;
-                        try {
-                            FileOutputStream instanceStream 
-                                    = new FileOutputStream(instanceLockFile);
-                            instanceChannel = instanceStream.getChannel();
-                            instanceLock = instanceChannel.tryLock();
-                            if (instanceLock == null)
-                                continue;
-                        } finally {
-                            if (instanceLock != null)
-                                instanceLock.release();
-
-                            if (instanceChannel != null)
-                                instanceChannel.close();
-                        }
+                    if (!instanceLockFile.exists())
+                        continue;
+                    try (FileOutputStream instanceStream = new FileOutputStream(instanceLockFile);
+                         FileChannel instanceChannel = instanceStream.getChannel();
+                         FileLock instanceLock = instanceChannel.lock()) {
+                        deleteAllBut(child, instanceLockFile);
                     }
-
-                    recursiveDelete(child);
-                } catch (IOException ex) {
-                    Logger.getRootLogger().error(ex.getMessage());
-                } finally {
+                    if (!instanceLockFile.delete()) {
+                        Logger.getRootLogger().error("failed to delete " + instanceLockFile);
+                    }
+                }
+                if (!child.delete()) {
+                    Logger.getRootLogger().error("failed to delete " + child);
                 }
             }
-        } catch (IOException ex) {
-            Logger.getRootLogger().error("could not create the lock file.");
-            return;
-        } finally {
-            if (lock != null)
-                lock.release();
-            if (lockChannel != null)
-                lockChannel.close();
-            if (lockFile != null && lockFile.exists())
-                lockFile.delete();
         }
     }
 
-    private static File getFile() throws IOException {
-        return new File(getPath());
+    private static void deleteAllBut(File dir, File file) {
+        assert dir.isDirectory();
+        for (File child : dir.listFiles()) {
+            if (file.equals(child))
+                continue;
+            recursiveDelete(child);
+        }
     }
 
-    // TODO: This method name becomes a misnomer, since Java 7 introduces java.nio.file.Path.
-    public static String getPath() throws IOException {
-        return System.getProperty("user.home") + File.separator + WORKSPACE_NAME;
+    private static File getFile() {
+        return new File(System.getProperty("user.home"), WORKSPACE_NAME);
     }
 
     public static File createTempFile(String prefix, String suffix) throws IOException {
@@ -151,21 +130,24 @@ public class Workspace {
                 recursiveDelete (f);
         }
 
-        target.delete();
+        if (!target.delete()) {
+            Logger.getRootLogger().error("failed to delete " + target);
+        }
     }
 
     private static class ShutdownHook extends Thread {
 
+        private final File mDir;
+        private final File mLockFile;
+
+        public ShutdownHook(File dir, File lockFile) {
+            mDir = dir;
+            mLockFile = lockFile;
+        }
+
         @Override
         public void run() {
-            if (mFileLock != null) {
-                try (FileChannel channel = mFileLock.channel()) {
-                    Workspace.recursiveDelete(Workspace.getFile());
-                    mFileLock.release();
-                } catch (IOException ioe) {
-                    // ignored
-                }
-            }
+            deleteAllBut(mDir, mLockFile);
         }
     }
 }
