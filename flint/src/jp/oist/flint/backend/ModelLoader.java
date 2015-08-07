@@ -5,6 +5,7 @@ import com.google.protobuf.ByteString;
 import jp.oist.flint.component.Component;
 import jp.oist.flint.filesystem.Workspace;
 import jp.oist.flint.executor.TimeUnitException;
+import jp.oist.flint.util.Uuid;
 import jp.physiome.Ipc;
 import jp.physiome.Lo;
 import jp.physiome.Phml;
@@ -229,7 +230,7 @@ public class ModelLoader extends SwingWorker<Ipc.ModelProbeResponse, Void> {
             Ipc.ModelVariable.Builder mvBuilder = Ipc.ModelVariable.newBuilder();
             String pqName = column.getName();
             String moduleName = column.hasTrackName() ? column.getTrackName() : "-";
-            mvBuilder.setKey(column.getUuid().toStringUtf8()+" "+pqName).addValue(pqName).addValue(moduleName);
+            mvBuilder.setKey(Uuid.fromByteArray(column.getUuid().toByteArray())+" "+pqName).addValue(pqName).addValue(moduleName);
             builder.addVariable(mvBuilder.build());
         }
         }
@@ -286,7 +287,7 @@ public class ModelLoader extends SwingWorker<Ipc.ModelProbeResponse, Void> {
             Ipc.ModelVariable.Builder mvBuilder = Ipc.ModelVariable.newBuilder();
             String pqName = column.getName();
             String moduleName = column.hasTrackName() ? column.getTrackName() : "-";
-            mvBuilder.setKey(column.getUuid().toStringUtf8()+" "+pqName).addValue(pqName).addValue(moduleName);
+            mvBuilder.setKey(Uuid.fromByteArray(column.getUuid().toByteArray())+" "+pqName).addValue(pqName).addValue(moduleName);
             builder.addVariable(mvBuilder.build());
         }
         }

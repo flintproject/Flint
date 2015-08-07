@@ -1,6 +1,8 @@
 /* -*- Mode: C++; tab-width: 4; indent-tabs-mode: t; c-basic-offset: 4 -*- vim:set ts=4 sw=4 sts=4 noet: */
 #include "compiler/bcc.h"
 
+#include <boost/uuid/string_generator.hpp>
+
 #define BOOST_TEST_MODULE test_bcc
 #include "test.hh"
 
@@ -13,13 +15,21 @@ struct F : test::MemoryFixture {
 		, sql(db)
 	{
 		BOOST_CHECK_EQUAL(SaveNol(1, db), 1);
-		sql.Exec("CREATE TABLE tacs (uuid TEXT, name TEXT, nod INTEGER, body TEXT)");
+		sql.Exec("CREATE TABLE tacs (uuid BLOB, name TEXT, nod INTEGER, body TEXT)");
 	}
 
 	void Setup(const char *uuid, const char *name, int nod, const char *body)
 	{
 		db::TacInserter ti(db);
-		BOOST_CHECK(ti.Insert(uuid, name, nod, body));
+		boost::uuids::string_generator gen;
+		boost::uuids::uuid u = gen(uuid);
+		BOOST_CHECK(ti.Insert(u, name, nod, body));
+	}
+
+	void Setup(const char *name, int nod, const char *body)
+	{
+		db::TacInserter ti(db);
+		BOOST_CHECK(ti.Insert(name, nod, body));
 	}
 
 	void SetupCall1(const char *f)
@@ -29,7 +39,7 @@ struct F : test::MemoryFixture {
 			<< "  $0 = (" << f << " $1)\n"
 			<< "  store %x $0\n";
 		std::string body = oss.str();
-		Setup("00000000-0000-0000-0000-000000000000", "%x", 2, body.c_str());
+		Setup("%x", 2, body.c_str());
 	}
 
 	void SetupCall2(const char *f)
@@ -40,7 +50,7 @@ struct F : test::MemoryFixture {
 			<< "  $0 = (" << f << " $1 $2)\n"
 			<< "  store %x $0\n";
 		std::string body = oss.str();
-		Setup("00000000-0000-0000-0000-000000000000", "%x", 3, body.c_str());
+		Setup("%x", 3, body.c_str());
 	}
 
 	sqlite3 *db;

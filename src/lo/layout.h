@@ -3,6 +3,7 @@
 #define FLINT_LO_LAYOUT_H_
 
 #include <algorithm>
+#include <cstring>
 #include <iomanip>
 #include <memory>
 #include <set>
@@ -50,9 +51,8 @@ public:
 		boost::uuids::uuid track_id;
 		boost::uuids::uuid sector_id;
 		for (TrackVector::const_iterator it=tv_.begin();it!=tv_.end();++it) {
-			memcpy(&track_id, it->id().c_str(), track_id.size());
+			memcpy(&track_id, it->id().data(), track_id.size());
 
-			std::string key(it->id());
 			int nos = it->nos();
 			int nod = it->nod();
 			int die = di + nod;
@@ -66,30 +66,34 @@ public:
 				if (dom) (*dom)[track_id].insert(std::make_pair(d.id(), sector_size));
 				sector_size += d.size();
 			}
-			lm_.insert(key, locater.release());
+			lm_.insert(track_id, locater.release());
 
 			std::unique_ptr<Mounter> mounter(new Mounter(nos));
 			for (int i=0;i<nos;i++) {
 				mounter->SetOffset(i, offset);
 				const lo::Sector &s = sv_.at(si++);
 				if (som) {
-					memcpy(&sector_id, s.id().c_str(), sector_id.size());
+					memcpy(&sector_id, s.id().data(), sector_id.size());
 					som->insert(std::make_pair(sector_id, offset));
 				}
 				offset += sector_size;
 			}
-			mm_.insert(key, mounter.release());
+			mm_.insert(track_id, mounter.release());
 			assert(si == sie);
 		}
 		return offset;
 	}
 
 	const Locater &GetLocater(const std::string &id) const {
-		return lm_.at(id);
+		boost::uuids::uuid u;
+		std::memcpy(&u, id.data(), u.size());
+		return lm_.at(u);
 	}
 
 	const Mounter &GetMounter(const std::string &id) const {
-		return mm_.at(id);
+		boost::uuids::uuid u;
+		std::memcpy(&u, id.data(), u.size());
+		return mm_.at(u);
 	}
 
 	template<typename THistory>
@@ -142,7 +146,7 @@ public:
 					assert(offset < size);
 					if (!color[offset]) {
 						boost::uuids::uuid u;
-						memcpy(&u, it->id().c_str(), u.size());
+						std::memcpy(&u, it->id().data(), u.size());
 						std::string us = to_string(u);
 						us += ":";
 						us += d.name();
@@ -204,7 +208,7 @@ public:
 		int di = 0;
 		for (TrackVector::const_iterator it=tv_.begin();it!=tv_.end();++it) {
 			boost::uuids::uuid u;
-			memcpy(&u, it->id().c_str(), u.size());
+			memcpy(&u, it->id().data(), u.size());
 			cout << "T " << u << " " << it->name() << endl;
 
 			int nos = it->nos();
@@ -213,7 +217,7 @@ public:
 			int die = di + nod;
 
 			for (int i=0;i<nos;i++) {
-				memcpy(&u, sv_[si++].id().c_str(), u.size());
+				memcpy(&u, sv_[si++].id().data(), u.size());
 				cout << "S " << u << endl;
 
 				di = dib;
@@ -247,8 +251,8 @@ private:
 	typedef boost::ptr_vector<lo::Track> TrackVector;
 	typedef boost::ptr_vector<lo::Sector> SectorVector;
 	typedef boost::ptr_vector<lo::Data> DataVector;
-	typedef boost::ptr_unordered_map<std::string, Locater> LocaterMap;
-	typedef boost::ptr_unordered_map<std::string, Mounter> MounterMap;
+	typedef boost::ptr_unordered_map<boost::uuids::uuid, Locater> LocaterMap;
+	typedef boost::ptr_unordered_map<boost::uuids::uuid, Mounter> MounterMap;
 
 	TrackVector tv_;
 	SectorVector sv_;

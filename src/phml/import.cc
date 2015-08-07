@@ -9,6 +9,7 @@
 #include <memory>
 #include <string>
 
+#include <boost/uuid/uuid_io.hpp>
 #include <libxml/parser.h>
 #include <libxml/xpath.h>
 #include <libxml/xpathInternals.h>
@@ -20,21 +21,17 @@ using std::endl;
 using std::fclose;
 using std::fopen;
 using std::sprintf;
-using std::string;
-
-static const size_t kUuidSize = 36;
 
 namespace {
 
 class Parser {
 public:
-	Parser(const char *uuid, xmlDocPtr doc)
+	Parser(const std::string &uuid, xmlDocPtr doc)
 		: uuid_(uuid),
 		  doc_(doc),
 		  context_(NULL),
 		  object_(NULL)
 	{
-		assert(std::strlen(uuid) == kUuidSize);
 		assert(doc);
 	}
 
@@ -51,7 +48,7 @@ public:
 			return false;
 		}
 		std::unique_ptr<char[]> pattern(new char[128]);
-		sprintf(pattern.get(), "//is:module[@module-id='%s']/is:import/*", uuid_);
+		sprintf(pattern.get(), "//is:module[@module-id='%s']/is:import/*", uuid_.c_str());
 		xmlXPathRegisterNs(context_, BAD_CAST "is", BAD_CAST "http://www.physiome.jp/ns/insilicoml");
 		object_ = xmlXPathEvalExpression(BAD_CAST pattern.get(), context_);
 		if (!object_) {
@@ -82,7 +79,7 @@ public:
 	}
 
 private:
-	const char *uuid_;
+	std::string uuid_;
 	xmlDocPtr doc_;
 	xmlXPathContextPtr context_;
 	xmlXPathObjectPtr object_;
@@ -90,7 +87,7 @@ private:
 
 } // namespace
 
-bool DumpImport(sqlite3 *db, const char *uuid)
+bool DumpImport(sqlite3 *db, const boost::uuids::uuid &uuid)
 {
 	std::unique_ptr<char[]> model_file(GetModelFilename(db));
 	xmlDocPtr doc = xmlParseFile(model_file.get());
@@ -99,7 +96,8 @@ bool DumpImport(sqlite3 *db, const char *uuid)
 		return false;
 	}
 	std::unique_ptr<char[]> dump_file(new char[64]);
-	sprintf(dump_file.get(), "%s.xml", uuid);
-	std::unique_ptr<Parser> parser(new Parser(uuid, doc));
+	std::string us = boost::uuids::to_string(uuid);
+	sprintf(dump_file.get(), "%s.xml", us.c_str());
+	std::unique_ptr<Parser> parser(new Parser(us, doc));
 	return parser->Dump(dump_file.get());
 }

@@ -4,9 +4,10 @@
 
 #include <cstdio>
 #include <cstdlib>
+#include <cstring>
 #include <iostream>
 
-#include <boost/uuid/uuid_generators.hpp>
+#include <boost/uuid/uuid.hpp>
 
 #include "reduction.hh"
 #include "statement-driver.hh"
@@ -23,15 +24,17 @@ public:
 
 	template<typename THandler>
 	bool Load(THandler *handler) {
-		boost::uuids::string_generator gen;
 		int e;
 		for (e = sqlite3_step(stmt()); e == SQLITE_ROW; e = sqlite3_step(stmt())) {
-			const unsigned char *module_id = sqlite3_column_text(stmt(), 0);
+			const void *module_id = sqlite3_column_blob(stmt(), 0);
 			int pq_id = sqlite3_column_int(stmt(), 1);
 			const unsigned char *pq_type = sqlite3_column_text(stmt(), 2);
 			int port_id = sqlite3_column_int(stmt(), 3);
 			int reduction = sqlite3_column_int(stmt(), 4);
-			if (!handler->Handle(gen((const char *)module_id), port_id, pq_id,
+			assert(module_id);
+			boost::uuids::uuid u;
+			std::memcpy(&u, module_id, u.size());
+			if (!handler->Handle(u, port_id, pq_id,
 								 *((const char *)pq_type),
 								 static_cast<Reduction>(reduction)))
 				return false;

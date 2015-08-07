@@ -5,9 +5,10 @@
 #include <cassert>
 #include <cstdio>
 #include <cstdlib>
+#include <cstring>
 #include <iostream>
 
-#include <boost/uuid/uuid_generators.hpp>
+#include <boost/uuid/uuid_io.hpp>
 
 #include "statement-driver.hh"
 
@@ -23,10 +24,9 @@ public:
 
 	template<typename THandler>
 	bool Load(THandler *handler) {
-		boost::uuids::string_generator gen;
 		int e;
 		for (e = sqlite3_step(stmt()); e == SQLITE_ROW; e = sqlite3_step(stmt())) {
-			const unsigned char *space_id = sqlite3_column_text(stmt(), 0);
+			const void *space_id = sqlite3_column_blob(stmt(), 0);
 			const unsigned char *type = sqlite3_column_text(stmt(), 1);
 			int id = sqlite3_column_int(stmt(), 2);
 			const unsigned char *name = sqlite3_column_text(stmt(), 3);
@@ -34,9 +34,11 @@ public:
 			double capacity = sqlite3_column_double(stmt(), 5);
 
 			assert(space_id);
+			boost::uuids::uuid u;
+			std::memcpy(&u, space_id, u.size());
 			if (!name) {
 				std::cerr << "name for "
-						  << space_id
+						  << u
 						  << ":"
 						  << id
 						  << " is not found"
@@ -45,14 +47,15 @@ public:
 			}
 			if (!unit) {
 				std::cerr << "unit for "
-						  << space_id
+						  << u
 						  << ":"
 						  << name
 						  << " is not found"
 						  << std::endl;
 				return false;
 			}
-			if (!handler->Handle(gen((const char *)space_id), (char)type[0], id, (const char *)name, (const char *)unit, capacity)) return false;
+			if (!handler->Handle(u, (char)type[0], id, (const char *)name, (const char *)unit, capacity))
+				return false;
 		}
 		if (e != SQLITE_DONE) {
 			std::cerr << "failed to step statement: " << e << std::endl;

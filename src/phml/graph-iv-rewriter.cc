@@ -7,9 +7,11 @@
 #include <memory>
 #include <boost/spirit/include/phoenix.hpp>
 #include <boost/spirit/include/qi.hpp>
+#include <boost/uuid/uuid_io.hpp>
 
 using std::cerr;
 using std::endl;
+using std::memcpy;
 using std::string;
 
 namespace {
@@ -65,11 +67,14 @@ bool GraphIvRewriter::Rewrite()
 	int e;
 	for (e = sqlite3_step(stmt_graph_); e == SQLITE_ROW; e = sqlite3_step(stmt_graph_)) {
 		sqlite3_int64 pq_rowid = sqlite3_column_int64(stmt_graph_, 0);
-		const unsigned char *module_id = sqlite3_column_text(stmt_graph_, 1);
+		const void *module_id = sqlite3_column_blob(stmt_graph_, 1);
 		const unsigned char *name = sqlite3_column_text(stmt_graph_, 2);
 		const unsigned char *math = sqlite3_column_text(stmt_graph_, 3);
+		assert(module_id);
+		boost::uuids::uuid u;
+		memcpy(&u, module_id, u.size());
 		if (!Process(pq_rowid,
-					 (const char *)module_id,
+					 u,
 					 (const char *)name,
 					 (const char *)math)) return false;
 	}
@@ -84,7 +89,7 @@ bool GraphIvRewriter::Rewrite()
 }
 
 bool GraphIvRewriter::Process(sqlite3_int64 pq_rowid,
-							  const char *module_id,
+							  const boost::uuids::uuid &module_id,
 							  const char *name,
 							  const char *math)
 {

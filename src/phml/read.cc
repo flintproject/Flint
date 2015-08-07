@@ -8,6 +8,7 @@
 #include <cassert>
 #include <cstdio>
 #include <cstdlib>
+#include <cstring>
 #include <iostream>
 #include <map>
 #include <memory>
@@ -17,6 +18,8 @@
 #define BOOST_FILESYSTEM_NO_DEPRECATED
 #include <boost/filesystem.hpp>
 #include <boost/noncopyable.hpp>
+#include <boost/uuid/string_generator.hpp>
+#include <boost/uuid/uuid_io.hpp>
 
 #include <libxml/xmlreader.h>
 
@@ -42,6 +45,7 @@
 using std::atoi;
 using std::cerr;
 using std::endl;
+using std::memcpy;
 using std::printf;
 using std::set;
 using std::string;
@@ -200,6 +204,17 @@ public:
 	sqlite3_int64 rowid() const {return rowid_;}
 	void set_rowid(sqlite3_int64 rowid) {rowid_ = rowid;}
 
+	boost::uuids::uuid GetUuid() const {
+		boost::uuids::string_generator gen;
+		return gen((const char *)module_id_);
+	}
+
+	boost::uuids::uuid GetCapsulatedBy() const {
+		assert(capsulated_by_);
+		boost::uuids::string_generator gen;
+		return gen((const char *)capsulated_by_);
+	}
+
 	bool IsValid() const {
 		return module_id_ && name_;
 	}
@@ -298,6 +313,16 @@ public:
 	const xmlChar *head_port_id() const {return head_port_id_;}
 	void set_head_port_id(xmlChar *head_port_id) {head_port_id_ = head_port_id;}
 
+	boost::uuids::uuid GetUuidOfTailModuleId() const {
+		boost::uuids::string_generator gen;
+		return gen((const char *)tail_module_id_);
+	}
+
+	boost::uuids::uuid GetUuidOfHeadModuleId() const {
+		boost::uuids::string_generator gen;
+		return gen((const char *)head_module_id_);
+	}
+
 private:
 	Type type_;
 	xmlChar *tail_module_id_;
@@ -364,6 +389,16 @@ public:
 
 	sqlite3_int64 rowid() const {return rowid_;}
 	void set_rowid(sqlite3_int64 rowid) {rowid_ = rowid;}
+
+	boost::uuids::uuid GetUuidOfModuleId() const {
+		boost::uuids::string_generator gen;
+		return gen((const char *)module_id_);
+	}
+
+	boost::uuids::uuid GetUuidOfTemplateId() const {
+		boost::uuids::string_generator gen;
+		return gen((const char *)template_id_);
+	}
 
 	bool IsSaved() const {
 		return rowid_ != 0;
@@ -621,6 +656,16 @@ public:
 	const xmlChar *ref_module_id() const {return ref_module_id_;}
 	void set_ref_module_id(xmlChar *ref_module_id) {ref_module_id_ = ref_module_id;}
 
+	boost::uuids::uuid GetUuidOfTemplateId() const {
+		boost::uuids::string_generator gen;
+		return gen((const char *)template_id_);
+	}
+
+	boost::uuids::uuid GetUuidOfRefModuleId() const {
+		boost::uuids::string_generator gen;
+		return gen((const char *)ref_module_id_);
+	}
+
 private:
 	xmlChar *template_id_;
 	xmlChar *ref_module_id_;
@@ -641,6 +686,11 @@ public:
 
 	sqlite3_int64 rowid() const {return rowid_;}
 	void set_rowid(sqlite3_int64 rowid) {rowid_ = rowid;}
+
+	boost::uuids::uuid GetUuid() const {
+		boost::uuids::string_generator gen;
+		return gen((const char *)module_id_);
+	}
 
 	bool IsSaved() const {
 		return rowid_ != 0;
@@ -996,8 +1046,10 @@ public:
 			cerr << "failed to bind step: " << e << endl;
 			return false;
 		}
+		boost::uuids::uuid u;
 		if (module) {
-			e = sqlite3_bind_text(td_stmt_, 3, (const char *)module->module_id(), -1, SQLITE_STATIC);
+			u = module->GetUuid();
+			e = sqlite3_bind_blob(td_stmt_, 3, &u, u.size(), SQLITE_STATIC);
 		} else {
 			e = sqlite3_bind_null(td_stmt_, 3);
 		}
@@ -1118,7 +1170,8 @@ public:
 		}
 
 		int e;
-		e = sqlite3_bind_text(module_stmt_, 1, (const char *)module->module_id(), -1, SQLITE_STATIC);
+		boost::uuids::uuid u = module->GetUuid();
+		e = sqlite3_bind_blob(module_stmt_, 1, &u, u.size(), SQLITE_STATIC);
 		if (e != SQLITE_OK) {
 			cerr << "failed to bind module_id: " << e << endl;
 			return false;
@@ -1133,7 +1186,13 @@ public:
 			cerr << "failed to bind name: " << e << endl;
 			return false;
 		}
-		e = sqlite3_bind_text(module_stmt_, 4, (const char *)module->capsulated_by(), -1, SQLITE_STATIC);
+		boost::uuids::uuid cu;
+		if (module->capsulated_by()) {
+			cu = module->GetCapsulatedBy();
+			e = sqlite3_bind_blob(module_stmt_, 4, &cu, cu.size(), SQLITE_STATIC);
+		} else {
+			e = sqlite3_bind_null(module_stmt_, 4);
+		}
 		if (e != SQLITE_OK) {
 			cerr << "failed to bind capsulated_by: " << e << endl;
 			return false;
@@ -1425,7 +1484,9 @@ public:
 
 	bool SaveEdge(const Edge *edge) {
 		int e;
-		e = sqlite3_bind_text(edge_stmt_, 1, (const char *)edge->tail_module_id(), -1, SQLITE_STATIC);
+		boost::uuids::uuid tu = edge->GetUuidOfTailModuleId();
+		boost::uuids::uuid hu = edge->GetUuidOfHeadModuleId();
+		e = sqlite3_bind_blob(edge_stmt_, 1, &tu, tu.size(), SQLITE_STATIC);
 		if (e != SQLITE_OK) {
 			cerr << "failed to bind tail_module_id: " << e << endl;
 			return false;
@@ -1435,7 +1496,7 @@ public:
 			cerr << "failed to bind tail_port_id: " << e << endl;
 			return false;
 		}
-		e = sqlite3_bind_text(edge_stmt_, 3, (const char *)edge->head_module_id(), -1, SQLITE_STATIC);
+		e = sqlite3_bind_blob(edge_stmt_, 3, &hu, hu.size(), SQLITE_STATIC);
 		if (e != SQLITE_OK) {
 			cerr << "failed to bind head_module_id: " << e << endl;
 			return false;
@@ -1535,12 +1596,14 @@ public:
 
 	bool SaveInstance(Instance *instance) {
 		int e;
-		e = sqlite3_bind_text(instance_stmt_, 1, (const char *)instance->module_id(), -1, SQLITE_STATIC);
+		boost::uuids::uuid mu = instance->GetUuidOfModuleId();
+		boost::uuids::uuid tu = instance->GetUuidOfTemplateId();
+		e = sqlite3_bind_blob(instance_stmt_, 1, &mu, mu.size(), SQLITE_STATIC);
 		if (e != SQLITE_OK) {
 			cerr << "failed to bind module_id: " << e << endl;
 			return false;
 		}
-		e = sqlite3_bind_text(instance_stmt_, 2, (const char *)instance->template_id(), -1, SQLITE_STATIC);
+		e = sqlite3_bind_blob(instance_stmt_, 2, &tu, tu.size(), SQLITE_STATIC);
 		if (e != SQLITE_OK) {
 			cerr << "failed to bind template_id: " << e << endl;
 			return false;
@@ -1577,7 +1640,8 @@ public:
 			cerr << "failed to bind instance_rowid: " << e << endl;
 			return false;
 		}
-		e = sqlite3_bind_text(tm_stmt_, 2, (const char *)tm->module_id(), -1, SQLITE_STATIC);
+		boost::uuids::uuid u = tm->GetUuid();
+		e = sqlite3_bind_blob(tm_stmt_, 2, &u, u.size(), SQLITE_STATIC);
 		if (e != SQLITE_OK) {
 			cerr << "failed to bind module_id: " << e << endl;
 			return false;
@@ -1624,12 +1688,14 @@ public:
 
 	bool SaveTemplate(const Template *t) {
 		int e;
-		e = sqlite3_bind_text(template_stmt_, 1, (const char *)t->template_id(), -1, SQLITE_STATIC);
+		boost::uuids::uuid tu = t->GetUuidOfTemplateId();
+		boost::uuids::uuid rmu = t->GetUuidOfRefModuleId();
+		e = sqlite3_bind_blob(template_stmt_, 1, &tu, tu.size(), SQLITE_STATIC);
 		if (e != SQLITE_OK) {
 			cerr << "failed to bind template_id: " << e << endl;
 			return false;
 		}
-		e = sqlite3_bind_text(template_stmt_, 2, (const char *)t->ref_module_id(), -1, SQLITE_STATIC);
+		e = sqlite3_bind_blob(template_stmt_, 2, &rmu, rmu.size(), SQLITE_STATIC);
 		if (e != SQLITE_OK) {
 			cerr << "failed to bind ref_module_id: " << e << endl;
 			return false;
@@ -1786,10 +1852,15 @@ public:
 		int e;
 		for (e = sqlite3_step(query_stmt_); e == SQLITE_ROW; e = sqlite3_step(query_stmt_)) {
 			r = false;
-			const unsigned char *module_id = sqlite3_column_text(query_stmt_, 0);
-			const unsigned char *capsulated_by = sqlite3_column_text(query_stmt_, 1);
-			cerr << "module of module-id " << module_id
-				 << " is capsulated by unknown capsule module: " << capsulated_by
+			const void *module_id = sqlite3_column_blob(query_stmt_, 0);
+			const void *capsulated_by = sqlite3_column_blob(query_stmt_, 1);
+			assert(module_id);
+			assert(capsulated_by);
+			boost::uuids::uuid mu, cu;
+			memcpy(&mu, module_id, mu.size());
+			memcpy(&cu, capsulated_by, cu.size());
+			cerr << "module of module-id " << mu
+				 << " is capsulated by unknown capsule module: " << cu
 				 << endl;
 		}
 		if (e != SQLITE_DONE) {
@@ -1844,11 +1915,16 @@ public:
 	bool Write() {
 		int e;
 		for (e = sqlite3_step(query_stmt_); e == SQLITE_ROW; e = sqlite3_step(query_stmt_)) {
-			const unsigned char *module_id = sqlite3_column_text(query_stmt_, 0);
-			const unsigned char *capsulated_by = sqlite3_column_text(query_stmt_, 1);
-			string child((const char *)module_id);
+			const void *module_id = sqlite3_column_blob(query_stmt_, 0);
+			assert(module_id);
+			assert(sqlite3_column_bytes(query_stmt_, 0) == boost::uuids::uuid::static_size());
+			const void *capsulated_by = sqlite3_column_blob(query_stmt_, 1);
+			boost::uuids::uuid child;
+			memcpy(&child, module_id, child.size());
 			if (capsulated_by) {
-				string parent((const char *)capsulated_by);
+				assert(sqlite3_column_bytes(query_stmt_, 1) == boost::uuids::uuid::static_size());
+				boost::uuids::uuid parent;
+				memcpy(&parent, capsulated_by, parent.size());
 				children_.insert(std::make_pair(parent, child));
 			} else {
 				roots_.push_back(child);
@@ -1867,20 +1943,20 @@ public:
 	}
 
 private:
-	typedef std::multimap<string, string> Multimap;
-	typedef std::vector<string> Vector;
+	typedef std::multimap<boost::uuids::uuid, boost::uuids::uuid> Multimap;
+	typedef std::vector<boost::uuids::uuid> Vector;
 
-	bool SaveDescendants(const string &parent, int level) {
+	bool SaveDescendants(const boost::uuids::uuid &parent, int level) {
 		std::pair<Multimap::const_iterator, Multimap::const_iterator> p;
 		p = children_.equal_range(parent);
 		for (Multimap::const_iterator it=p.first;it!=p.second;++it) {
 			if (!SaveDescendants(it->second, level + 1)) return false;
 		}
-		return Save(parent.c_str(), level);
+		return Save(parent, level);
 	}
 
-	bool Save(const char *module_id, int level) {
-		int e = sqlite3_bind_text(tree_stmt_, 1, module_id, -1, SQLITE_STATIC);
+	bool Save(const boost::uuids::uuid &module_id, int level) {
+		int e = sqlite3_bind_blob(tree_stmt_, 1, &module_id, module_id.size(), SQLITE_STATIC);
 		if (e != SQLITE_OK) {
 			cerr << "failed to bind module_id: " << e << endl;
 			return false;
@@ -3712,11 +3788,11 @@ struct Schema {
 };
 
 const Schema kModelTables[] = {
-	{"edges", "(tail_module_id TEXT, tail_port_id INTEGER, head_module_id TEXT, head_port_id INTEGER)"},
-	{"instances", "(module_id TEXT, template_id TEXT, label TEXT)"},
+	{"edges", "(tail_module_id BLOB, tail_port_id INTEGER, head_module_id BLOB, head_port_id INTEGER)"},
+	{"instances", "(module_id BLOB, template_id BLOB, label TEXT)"},
 	{"ncs", "(rg_name TEXT, rg_seed TEXT, integration TEXT, sts_unit_id INTEGER, sts_value TEXT)"},
-	{"tds", "(unit_id INTEGER, step TEXT, module_id TEXT)"},
-	{"modules", "(module_id TEXT, type TEXT, name TEXT, capsulated_by TEXT, template_state TEXT)"},
+	{"tds", "(unit_id INTEGER, step TEXT, module_id BLOB)"},
+	{"modules", "(module_id BLOB, type TEXT, name TEXT, capsulated_by BLOB, template_state TEXT)"},
 	{"pqs", "(module_rowid INTEGER, type TEXT, pq_id INTEGER, unit_id INTEGER, name TEXT, max_delay TEXT)"},
 	{"ivs", "(pq_rowid INTEGER, math TEXT)"},
 	{"impls", "(pq_rowid INTEGER, math TEXT)"},
@@ -3725,8 +3801,8 @@ const Schema kModelTables[] = {
 	{"refports", "(pq_rowid INTEGER, port_id INTEGER, reduction INTEGER)"},
 	{"refts", "(pq_rowid INTEGER, timeseries_id INTEGER, element_id TEXT)"},
 	{"extras", "(pq_rowid INTEGER, order_type TEXT, math TEXT)"},
-	{"templates", "(template_id TEXT, ref_module_id TEXT)"},
-	{"tms", "(instance_rowid INTEGER, module_id TEXT)"},
+	{"templates", "(template_id BLOB, ref_module_id BLOB)"},
+	{"tms", "(instance_rowid INTEGER, module_id BLOB)"},
 	{"tpqs", "(tm_rowid INTEGER, pq_id INTEGER, math TEXT)"},
 	{"units", "(unit_id INTEGER, name TEXT)"},
 	{"elements", "(unit_rowid INTEGER, unit_id INTEGER, exponent REAL, factor INTEGER, multiplier REAL, offset REAL)"},
@@ -3737,16 +3813,16 @@ const Schema kModelTables[] = {
 };
 
 const Schema kSubsequentTables[] = {
-	{"private_names", "(space_id TEXT, type TEXT, id INTEGER, name TEXT, unit TEXT, capacity REAL)"}, // the same columns as public_names
-	{"trees", "(module_id TEXT, level INTEGER)"},
-	{"scopes", "(uuid TEXT, space_id TEXT, label TEXT)"},
-	{"journals", "(indent INTEGER, uuid TEXT)"},
-	{"spans", "(tail_uuid TEXT, tail_port_id INTEGER, head_uuid TEXT, head_port_id INTEGER)"},
+	{"private_names", "(space_id BLOB, type TEXT, id INTEGER, name TEXT, unit TEXT, capacity REAL)"}, // the same columns as public_names
+	{"trees", "(module_id BLOB, level INTEGER)"},
+	{"scopes", "(uuid BLOB, space_id BLOB, label TEXT)"},
+	{"journals", "(indent INTEGER, uuid BLOB)"},
+	{"spans", "(tail_uuid BLOB, tail_port_id INTEGER, head_uuid BLOB, head_port_id INTEGER)"},
 	{"reaches", "(output_uuid BLOB, output_id INTEGER, input_uuid BLOB, input_id INTEGER, reduction INTEGER)"},
-	{"combined_values", "(uuid TEXT, math TEXT)"},
-	{"combined_functions", "(uuid TEXT, math TEXT)"},
-	{"combined_odes", "(uuid TEXT, math TEXT)"},
-	{"tscs", "(uuid TEXT, math TEXT)"}
+	{"combined_values", "(uuid BLOB, math TEXT)"},
+	{"combined_functions", "(uuid BLOB, math TEXT)"},
+	{"combined_odes", "(uuid BLOB, math TEXT)"},
+	{"tscs", "(uuid BLOB, math TEXT)"}
 };
 
 void CreateTablesOrDie(sqlite3 *db, const Schema *tables, size_t n)

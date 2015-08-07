@@ -53,7 +53,7 @@ public:
 		assert(map);
 	}
 
-	bool Handle(boost::uuids::uuid uuid, char type, int pq_id, const char *name, const char * /*unit*/, double /*capacity*/) {
+	bool Handle(const boost::uuids::uuid &uuid, char type, int pq_id, const char *name, const char * /*unit*/, double /*capacity*/) {
 		if (type != 't') return true; // skip other types
 		(*map_)[uuid].insert(make_pair(pq_id, string(name)));
 		return true;
@@ -74,7 +74,7 @@ public:
 		  tm_(tm)
 	{}
 
-	bool Handle(boost::uuids::uuid uuid, int ts_id, const char *format, const char *ref) {
+	bool Handle(const boost::uuids::uuid &uuid, int ts_id, const char *format, const char *ref) {
 		boost::filesystem::path ref_path(GetPathFromUtf8(ref));
 		if (strcmp(format, "csv") == 0) {
 			boost::system::error_code ec;
@@ -191,7 +191,7 @@ public:
 		, im_(im)
 	{}
 
-	bool Handle(boost::uuids::uuid uuid, int pq_id, int ts_id, const char *element_id) {
+	bool Handle(const boost::uuids::uuid &uuid, int pq_id, int ts_id, const char *element_id) {
 		TimeseriesMap::const_iterator it = tm_->find(uuid);
 		if (it == tm_->end()) {
 			cerr << "missing module-id in timeseries: " << uuid << endl;
@@ -240,7 +240,6 @@ public:
 		int idx0 = static_cast<int>(std::distance(ps_->begin(), mit->second));
 		int idx1 = static_cast<int>(cit->second);
 
-		std::string uuid_s = boost::uuids::to_string(uuid);
 		std::ostringstream oss;
 		oss << "(eq %"
 			<< qit->second.c_str()
@@ -250,7 +249,7 @@ public:
 			<< idx1
 			<< " %time))";
 		std::string math = oss.str();
-		return Insert(uuid_s.c_str(), math.c_str());
+		return Insert(uuid, math.c_str());
 	}
 
 private:

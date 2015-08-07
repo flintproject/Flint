@@ -14,6 +14,7 @@
 #include <boost/spirit/include/lex_lexertl.hpp>
 #include <boost/spirit/include/phoenix.hpp>
 #include <boost/spirit/include/qi.hpp>
+#include <boost/uuid/uuid_io.hpp>
 
 #include "db/driver.hh"
 #include "db/query.h"
@@ -22,6 +23,7 @@
 
 using std::cerr;
 using std::endl;
+using std::memcpy;
 
 using namespace boost::spirit;
 
@@ -70,7 +72,7 @@ public:
 	{
 	}
 
-	bool PrintAndInsert(const char *uuid,
+	bool PrintAndInsert(const boost::uuids::uuid &uuid,
 						const Expr &lhs,
 						const Expr &rhs)
 	{
@@ -89,9 +91,9 @@ public:
 	}
 
 private:
-	bool Insert(const char *uuid, const char *name, const char *math) {
+	bool Insert(const boost::uuids::uuid &uuid, const char *name, const char *math) {
 		int e;
-		e = sqlite3_bind_text(stmt(), 1, uuid, -1, SQLITE_STATIC);
+		e = sqlite3_bind_blob(stmt(), 1, &uuid, uuid.size(), SQLITE_STATIC);
 		if (e != SQLITE_OK) {
 			cerr << "failed to bind uuid: " << e << endl;
 			return false;
@@ -140,7 +142,7 @@ bool IsEquation(const Expr &x, Compound &y)
 	return IsEquation(y);
 }
 
-void ReportInvalidLeafOfCaseSet(const std::string &uuid)
+void ReportInvalidLeafOfCaseSet(const boost::uuids::uuid &uuid)
 {
 	cerr << "invalid formula found in <case-set>: " << uuid << endl;
 }
@@ -345,7 +347,7 @@ public:
 	{
 	}
 
-	int Parse(const char *uuid, const char *math) {
+	int Parse(const boost::uuids::uuid &uuid, const char *math) {
 		base_iterator_type it = math;
 		base_iterator_type eit = math + std::strlen(math);
 		Compound statement;
@@ -358,7 +360,7 @@ public:
 	}
 
 private:
-	int ProcessUuidAndStatement(const char *uuid, Compound &statement)
+	int ProcessUuidAndStatement(const boost::uuids::uuid &uuid, Compound &statement)
 	{
 		if (IsConditional(statement)) {
 			Expr lhs;
@@ -391,7 +393,10 @@ int Process(void *data, int argc, char **argv, char **names)
 	Parser *parser = static_cast<Parser *>(data);
 	(void)names;
 	assert(argc == 2);
-	return parser->Parse(argv[0], argv[1]);
+	assert(argv[0]);
+	boost::uuids::uuid u;
+	memcpy(&u, argv[0], u.size());
+	return parser->Parse(u, argv[1]);
 }
 
 }
@@ -400,7 +405,7 @@ bool Event(sqlite3 *db, const char *input, sqlite3 *output)
 {
 	if (!SaveNol(1, output))
 		return false;
-	if (!CreateTable(output, "asts", "(uuid TEXT, name TEXT, math TEXT)"))
+	if (!CreateTable(output, "asts", "(uuid BLOB, name TEXT, math TEXT)"))
 		return false;
 
 	Parser parser(output);

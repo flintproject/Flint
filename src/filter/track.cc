@@ -43,7 +43,7 @@ public:
 			st_->add_key("time");
 		} else {
 			boost::uuids::uuid u;
-			memcpy(&u, column->uuid().c_str(), u.size());
+			memcpy(&u, column->uuid().data(), u.size());
 			string us = to_string(u);
 			st_->add_key(us+":"+column->name());
 		}

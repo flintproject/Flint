@@ -2,8 +2,10 @@
 #ifndef FLINT_PHML_COMBINE_H_
 #define FLINT_PHML_COMBINE_H_
 
+#include <boost/uuid/uuid.hpp>
+
 #include "sqlite3.h"
 
-bool Combine(const char *uuid, sqlite3 *db);
+bool Combine(const boost::uuids::uuid &uuid, sqlite3 *db);
 
 #endif

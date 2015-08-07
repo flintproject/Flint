@@ -34,7 +34,7 @@ typedef map<string, string> BridgeMap;
 
 class LineWriter {
 public:
-	LineWriter(const char *uuid, const char *table, sqlite3 *db)
+	LineWriter(const boost::uuids::uuid &uuid, const char *table, sqlite3 *db)
 		: uuid_(uuid)
 		, inserter_(table, db)
 	{}
@@ -44,13 +44,13 @@ public:
 	}
 
 private:
-	const char *uuid_;
+	boost::uuids::uuid uuid_;
 	db::EqInserter inserter_;
 };
 
 class NameWriter : public db::NameInserter {
 public:
-	NameWriter(int id, const char *uuid, sqlite3 *db)
+	NameWriter(int id, const boost::uuids::uuid &uuid, sqlite3 *db)
 		: db::NameInserter("private_names", db)
 		, id_(id)
 		, uuid_(uuid)
@@ -63,12 +63,12 @@ public:
 
 private:
 	int id_;
-	const char *uuid_;
+	boost::uuids::uuid uuid_;
 };
 
 class ValueWriter : LineWriter {
 public:
-	ValueWriter(const char *uuid, sqlite3 *db)
+	ValueWriter(const boost::uuids::uuid &uuid, sqlite3 *db)
 		: LineWriter(uuid, "combined_values", db)
 	{}
 
@@ -83,7 +83,7 @@ public:
 
 class FunctionWriter : LineWriter {
 public:
-	FunctionWriter(const char *uuid, sqlite3 *db)
+	FunctionWriter(const boost::uuids::uuid &uuid, sqlite3 *db)
 		: LineWriter(uuid, "combined_functions", db)
 	{}
 
@@ -111,7 +111,7 @@ public:
 
 class OdeWriter : LineWriter {
 public:
-	OdeWriter(const char *uuid, sqlite3 *db)
+	OdeWriter(const boost::uuids::uuid &uuid, sqlite3 *db)
 		: LineWriter(uuid, "combined_odes", db)
 	{}
 
@@ -126,7 +126,7 @@ public:
 
 class Writer {
 public:
-	Writer(int pq_id, const char *uuid, sqlite3 *db)
+	Writer(int pq_id, const boost::uuids::uuid &uuid, sqlite3 *db)
 		: name_writer_(pq_id, uuid, db)
 		, value_writer_(uuid, db)
 		, function_writer_(uuid, db)
@@ -198,9 +198,11 @@ typedef map<int, string> PhysicalQuantityMap;
 
 class PhysicalQuantityHandler : boost::noncopyable {
 public:
-	PhysicalQuantityHandler(boost::uuids::uuid uuid, PhysicalQuantityMap *pqm) : uuid_(uuid), pqm_(pqm), max_pq_id_() {}
+	PhysicalQuantityHandler(const boost::uuids::uuid &uuid, PhysicalQuantityMap *pqm)
+		: uuid_(uuid), pqm_(pqm), max_pq_id_()
+	{}
 
-	bool Handle(boost::uuids::uuid u, char /*type*/, int pq_id, const char *name, const char * /*unit*/, double /*capacity*/) {
+	bool Handle(const boost::uuids::uuid &u, char /*type*/, int pq_id, const char *name, const char * /*unit*/, double /*capacity*/) {
 		if (uuid_ != u) return true; // skip this entry
 		pqm_->insert(make_pair(pq_id, string(name)));
 		max_pq_id_ = std::max(pq_id, max_pq_id_);
@@ -217,14 +219,14 @@ private:
 
 class BridgeHandler : boost::noncopyable {
 public:
-	BridgeHandler(boost::uuids::uuid uuid, PhysicalQuantityMap *pqm,
+	BridgeHandler(const boost::uuids::uuid &uuid, PhysicalQuantityMap *pqm,
 				  Writer *writer)
 		: uuid_(uuid)
 		, pqm_(pqm)
 		, writer_(writer)
 	{}
 
-	bool Handle(boost::uuids::uuid uuid, int pq_id, const char *direction, const char * /*sub_type*/, const char *connector)
+	bool Handle(const boost::uuids::uuid &uuid, int pq_id, const char *direction, const char * /*sub_type*/, const char *connector)
 	{
 		if (uuid_ != uuid) return true;
 		if (strcmp(direction, "get") == 0) {
@@ -312,16 +314,13 @@ public:
 
 } // namespace
 
-bool Combine(const char *uuid, sqlite3 *db)
+bool Combine(const boost::uuids::uuid &uuid, sqlite3 *db)
 {
-	boost::uuids::string_generator gen;
-	boost::uuids::uuid u = gen(uuid);
-
 	PhysicalQuantityMap pqm;
 	int max_pq_id = 0;
 	{
 		db::NameLoader loader(db);
-		PhysicalQuantityHandler handler(u, &pqm);
+		PhysicalQuantityHandler handler(uuid, &pqm);
 		if (!loader.Load(&handler)) {
 			return false;
 		}
@@ -332,14 +331,15 @@ bool Combine(const char *uuid, sqlite3 *db)
 
 	{
 		db::BridgeLoader loader(db);
-		BridgeHandler handler(u, &pqm, &writer);
+		BridgeHandler handler(uuid, &pqm, &writer);
 		if (!loader.Load(&handler)) {
 			return false;
 		}
 	}
 
-	std::unique_ptr<char[]> uuid_db(new char[strlen(uuid)+4]);
-	std::sprintf(uuid_db.get(), "%s.db", uuid);
-	Loader loader(uuid_db.get());
+	std::ostringstream oss;
+	oss << uuid << ".db";
+	std::string uuid_db = oss.str();
+	Loader loader(uuid_db.c_str());
 	return loader.Load(&writer);
 }

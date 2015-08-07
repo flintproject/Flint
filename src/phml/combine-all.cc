@@ -5,6 +5,7 @@
 #include "config.h"
 #endif
 
+#include <cassert>
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
@@ -15,6 +16,7 @@
 
 #define BOOST_FILESYSTEM_NO_DEPRECATED
 #include <boost/filesystem.hpp>
+#include <boost/uuid/uuid_io.hpp>
 
 #include "database.h"
 #include "db/driver.hh"
@@ -27,6 +29,7 @@
 
 using std::cerr;
 using std::endl;
+using std::memcpy;
 using std::sprintf;
 using std::strcmp;
 
@@ -34,23 +37,27 @@ namespace phml {
 
 namespace {
 
-bool SaveFile(const char *uuid, const char *xml_file)
+db::Driver *GetDriver(const boost::uuids::uuid &uuid)
 {
-	std::unique_ptr<char[]> db_file(new char[64]);
-	sprintf(db_file.get(), "%s.db", uuid);
-	db::Driver driver(db_file.get());
-	return SaveGivenFile(driver.db(), xml_file);
+	std::unique_ptr<char[]> db_file(new char[64]); // long enough
+	std::string us = boost::uuids::to_string(uuid);
+	sprintf(db_file.get(), "%s.db", us.c_str());
+	return new db::Driver(db_file.get());
 }
 
-bool ParseFile(const char *uuid)
+bool SaveFile(const boost::uuids::uuid &uuid, const char *xml_file)
 {
-	std::unique_ptr<char[]> db_file(new char[64]); // large enough
-	sprintf(db_file.get(), "%s.db", uuid);
-	db::Driver driver(db_file.get());
-	return flint::sbml::Parse(driver.db());
+	std::unique_ptr<db::Driver> driver(GetDriver(uuid));
+	return SaveGivenFile(driver->db(), xml_file);
 }
 
-typedef std::vector<std::string> UuidVector;
+bool ParseFile(const boost::uuids::uuid &uuid)
+{
+	std::unique_ptr<db::Driver> driver(GetDriver(uuid));
+	return flint::sbml::Parse(driver->db());
+}
+
+typedef std::vector<boost::uuids::uuid> UuidVector;
 
 }
 
@@ -67,21 +74,25 @@ bool CombineAll(sqlite3 *db)
 	}
 
 	for (e = sqlite3_step(stmt); e == SQLITE_ROW; e = sqlite3_step(stmt)) {
-		const unsigned char *uuid = sqlite3_column_text(stmt, 0);
+		const void *module_id = sqlite3_column_blob(stmt, 0);
+		assert(module_id);
+		boost::uuids::uuid uuid;
+		memcpy(&uuid, module_id, uuid.size());
 		const unsigned char *type = sqlite3_column_text(stmt, 1);
 		const unsigned char *ref = sqlite3_column_text(stmt, 2);
 
 		if (strcmp((const char *)type, "external") == 0) {
-			if (!SaveFile((const char *)uuid, (const char *)ref)) return false;
+			if (!SaveFile(uuid, (const char *)ref)) return false;
 		} else {
-			if (!DumpImport(db, (const char *)uuid)) return false;
+			if (!DumpImport(db, uuid)) return false;
 			std::unique_ptr<char[]> xml_file(new char[64]);
-			sprintf(xml_file.get(), "%s.xml", uuid);
+			std::string us = boost::uuids::to_string(uuid);
+			sprintf(xml_file.get(), "%s.xml", us.c_str());
 			boost::filesystem::path xml_path = boost::filesystem::absolute(xml_file.get());
 			std::unique_ptr<char[]> xml_utf8(GetUtf8FromPath(xml_path));
-			if (!SaveFile((const char *)uuid, xml_utf8.get())) return false;
+			if (!SaveFile(uuid, xml_utf8.get())) return false;
 		}
-		uv.push_back((const char *)uuid);
+		uv.push_back(uuid);
 	}
 	if (e != SQLITE_DONE) {
 		cerr << "failed to step statement: " << e << endl;
@@ -90,11 +101,11 @@ bool CombineAll(sqlite3 *db)
 	sqlite3_finalize(stmt);
 
 	for (UuidVector::const_iterator it=uv.begin();it!=uv.end();++it) {
-		if (!ParseFile(it->c_str())) return false;
+		if (!ParseFile(*it)) return false;
 	}
 
 	for (UuidVector::const_iterator it=uv.begin();it!=uv.end();++it) {
-		if (!Combine(it->c_str(), db))
+		if (!Combine(*it, db))
 			return false;
 	}
 

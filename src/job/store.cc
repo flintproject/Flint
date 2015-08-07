@@ -5,6 +5,7 @@
 
 #include "job.hh"
 
+#include <cassert>
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
@@ -16,7 +17,6 @@
 
 #include <boost/ptr_container/ptr_unordered_map.hpp>
 #include <boost/ptr_container/ptr_vector.hpp>
-#include <boost/uuid/string_generator.hpp>
 #include <boost/uuid/uuid_io.hpp>
 
 #include "lo.pb.h"
@@ -32,6 +32,7 @@ using std::fopen;
 using std::fread;
 using std::fseek;
 using std::make_pair;
+using std::memcpy;
 using std::perror;
 using std::printf;
 using std::sscanf;
@@ -124,7 +125,7 @@ private:
 	DataVector dv_;
 };
 
-typedef boost::ptr_unordered_map<string, std::unordered_map<string, double> > TargetValueMap;
+typedef boost::ptr_unordered_map<boost::uuids::uuid, std::unordered_map<string, double> > TargetValueMap;
 
 class TargetLoader : db::StatementDriver {
 public:
@@ -135,7 +136,6 @@ public:
 
 	bool Load(const TargetMap &tm, const double *data, TargetValueMap *tvm) {
 		boost::uuids::uuid u;
-		boost::uuids::string_generator gen;
 		for (TargetMap::const_iterator it=tm.begin();it!=tm.end();++it) {
 			int e = sqlite3_bind_int(stmt(), 1, it->first);
 			if (e != SQLITE_OK) {
@@ -147,8 +147,10 @@ public:
 				cerr << "missing row with rowid " << it->first << " in phsp_targets" << endl;
 				return false;
 			}
-			u = gen((const char *)sqlite3_column_text(stmt(), 0));
-			(*tvm)[string((const char *)u.data, u.size())].insert(make_pair((const char *)sqlite3_column_text(stmt(), 1), data[it->second]));
+			const void *uuid = sqlite3_column_blob(stmt(), 0);
+			assert(uuid);
+			memcpy(&u, uuid, u.size());
+			(*tvm)[u].insert(make_pair((const char *)sqlite3_column_text(stmt(), 1), data[it->second]));
 			sqlite3_reset(stmt());
 		}
 		return true;
@@ -185,6 +187,8 @@ public:
 
 			while (si < sie) {
 				const lo::Sector &s = sv_.at(si++);
+				boost::uuids::uuid su;
+				memcpy(&su, s.id().data(), su.size());
 				di = dib;
 				while (di < die) {
 					const lo::Data &d = dv_.at(di++);
@@ -192,7 +196,7 @@ public:
 					case lo::S:
 					case lo::X:
 						{
-							TargetValueMap::const_iterator it = tvm.find(s.id());
+							TargetValueMap::const_iterator it = tvm.find(su);
 							if (it == tvm.end()) {
 								if (fseek(fp, d.size()*sizeof(double), SEEK_CUR) != 0) {
 									return false;

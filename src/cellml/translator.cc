@@ -16,7 +16,7 @@
 #include <unordered_set>
 
 #include <boost/ptr_container/ptr_unordered_map.hpp>
-#include <boost/uuid/uuid_generators.hpp>
+#include <boost/uuid/uuid.hpp>
 
 #include "db/eq-inserter.h"
 #include "db/name-inserter.h"
@@ -35,8 +35,6 @@ using std::strcpy;
 using std::string;
 using std::strlen;
 
-static const size_t kUuidLength = 36;
-
 namespace {
 
 const char kTreeQuery[] = "SELECT DISTINCT component FROM variables";
@@ -49,9 +47,9 @@ public:
 		  cm_()
 	{
 		int e;
-		if (!CreateTable(db, "spaces", "(space_id TEXT, name TEXT)"))
+		if (!CreateTable(db, "spaces", "(space_id BLOB, name TEXT)"))
 			exit(EXIT_FAILURE);
-		if (!CreateTable(db, "names", "(space_id TEXT, type TEXT, id INTEGER, name TEXT, unit TEXT, capacity REAL)"))
+		if (!CreateTable(db, "names", "(space_id BLOB, type TEXT, id INTEGER, name TEXT, unit TEXT, capacity REAL)"))
 			exit(EXIT_FAILURE);
 		if (!CreateTable(db, "reaches", "(output_uuid BLOB, output_id INTEGER, input_uuid BLOB, input_id INTEGER, reduction INTEGER)"))
 			exit(EXIT_FAILURE);
@@ -85,8 +83,8 @@ public:
 				cerr << "empty component name" << endl;
 				return false;
 			}
-			string uuid = (*gen)();
-			e = sqlite3_bind_text(insert_stmt_, 1, (const char *)uuid.c_str(), -1, SQLITE_STATIC);
+			boost::uuids::uuid uuid = (*gen)();
+			e = sqlite3_bind_blob(insert_stmt_, 1, &uuid, uuid.size(), SQLITE_STATIC);
 			if (e != SQLITE_OK) {
 				cerr << "failed to bind uuid: " << e << endl;
 				return false;
@@ -111,7 +109,7 @@ public:
 		return true;
 	}
 
-	bool Find(const char *c, char *u) const {
+	bool Find(const char *c, boost::uuids::uuid *u) const {
 		ComponentMap::const_iterator it = cm_.find(string(c));
 		if (it == cm_.end()) {
 			cerr << "could not find component named "
@@ -119,12 +117,12 @@ public:
 				 << endl;
 			return false;
 		}
-		strcpy(u, it->second.c_str());
+		*u = it->second;
 		return true;
 	}
 
 private:
-	typedef std::unordered_map<string, string> ComponentMap;
+	typedef std::unordered_map<string, boost::uuids::uuid> ComponentMap;
 
 	sqlite3_stmt *query_stmt_;
 	sqlite3_stmt *insert_stmt_;
@@ -159,7 +157,7 @@ public:
 
 	bool Dump() {
 		int e;
-		char u[kUuidLength+1];
+		boost::uuids::uuid u;
 		for (e = sqlite3_step(stmt()); e == SQLITE_ROW; e = sqlite3_step(stmt())) {
 			const unsigned char *c = sqlite3_column_text(stmt(), 0);
 			size_t clen = strlen((const char *)c);
@@ -173,7 +171,7 @@ public:
 				cerr << "empty body" << endl;
 				return false;
 			}
-			if (!tree_dumper_->Find((const char *)c, u)) return false;
+			if (!tree_dumper_->Find((const char *)c, &u)) return false;
 
 			if (!ei_.Insert(u, (const char *)&body[1])) return false;
 
@@ -223,7 +221,7 @@ public:
 
 	bool Dump(const OdeDumper *ode_dumper) {
 		int e;
-		char u[kUuidLength+1];
+		boost::uuids::uuid u;
 		for (e = sqlite3_step(stmt()); e == SQLITE_ROW; e = sqlite3_step(stmt())) {
 			int id = static_cast<int>(sqlite3_column_int64(stmt(), 0));
 			const unsigned char *c = sqlite3_column_text(stmt(), 1);
@@ -239,7 +237,7 @@ public:
 				return false;
 			}
 			const unsigned char *iv = sqlite3_column_text(stmt(), 3);
-			if (!tree_dumper_->Find((const char *)c, u)) return false;
+			if (!tree_dumper_->Find((const char *)c, &u)) return false;
 			if (strcmp("time", (const char *)n) == 0) {
 				// ignore "time", because we suppose all of them are equivalent
 				// to the system "time"
@@ -277,7 +275,7 @@ public:
 
 	bool Dump() {
 		int e;
-		char u[kUuidLength+1];
+		boost::uuids::uuid u;
 		for (e = sqlite3_step(stmt()); e == SQLITE_ROW; e = sqlite3_step(stmt())) {
 			const unsigned char *c = sqlite3_column_text(stmt(), 0);
 			size_t clen = strlen((const char *)c);
@@ -292,7 +290,7 @@ public:
 				return false;
 			}
 			const unsigned char *iv = sqlite3_column_text(stmt(), 2);
-			if (!tree_dumper_->Find((const char *)c, u)) return false;
+			if (!tree_dumper_->Find((const char *)c, &u)) return false;
 
 			size_t blen = strlen((const char *)n) + strlen((const char *)iv);
 			std::unique_ptr<char[]> buf(new char[blen+8]);
@@ -325,7 +323,7 @@ public:
 
 	bool Dump() {
 		int e;
-		char u[kUuidLength+1];
+		boost::uuids::uuid u;
 		for (e = sqlite3_step(stmt()); e == SQLITE_ROW; e = sqlite3_step(stmt())) {
 			const unsigned char *c = sqlite3_column_text(stmt(), 0);
 			size_t clen = strlen((const char *)c);
@@ -339,7 +337,7 @@ public:
 				cerr << "empty body" << endl;
 				return false;
 			}
-			if (!tree_dumper_->Find((const char *)c, u)) return false;
+			if (!tree_dumper_->Find((const char *)c, &u)) return false;
 
 			const char *math = (const char *)&body[1];
 			if (!ei_.Insert(u, math)) return false;
@@ -376,9 +374,8 @@ public:
 	}
 
 	bool Dump() {
-		boost::uuids::string_generator gen;
 		int e;
-		char u1[kUuidLength+1], u2[kUuidLength+1];
+		boost::uuids::uuid u1, u2;
 		for (e = sqlite3_step(stmt()); e == SQLITE_ROW; e = sqlite3_step(stmt())) {
 			const unsigned char *c1 = sqlite3_column_text(stmt(), 0);
 			int id1 = static_cast<int>(sqlite3_column_int64(stmt(), 1));
@@ -390,20 +387,20 @@ public:
 			const unsigned char *n2 = sqlite3_column_text(stmt(), 7);
 			const unsigned char *pub2 = sqlite3_column_text(stmt(), 8);
 			const unsigned char *pri2 = sqlite3_column_text(stmt(), 9);
-			if (!tree_dumper_->Find((const char *)c1, u1)) return false;
-			if (!tree_dumper_->Find((const char *)c2, u2)) return false;
+			if (!tree_dumper_->Find((const char *)c1, &u1)) return false;
+			if (!tree_dumper_->Find((const char *)c2, &u2)) return false;
 
 			if ( ( (pub1 && strcmp((const char *)pub1, "out") == 0) ||
 				   (pri1 && strcmp((const char *)pri1, "out") == 0) ) &&
 				 ( (pub2 && strcmp((const char *)pub2, "in") == 0) ||
 				   (pri2 && strcmp((const char *)pri2, "in") == 0) ) ) {
-				if (!driver_->Save(gen(u1), id1, gen(u2), id2, Reduction::kSum))
+				if (!driver_->Save(u1, id1, u2, id2, Reduction::kSum))
 					return false;
 			} else if ( ( (pub1 && strcmp((const char *)pub1, "in") == 0) ||
 						  (pri1 && strcmp((const char *)pri1, "in") == 0) ) &&
 						( (pub2 && strcmp((const char *)pub2, "out") == 0) ||
 						  (pri2 && strcmp((const char *)pri2, "out") == 0) ) ) {
-				if (!driver_->Save(gen(u2), id2, gen(u1), id1, Reduction::kSum))
+				if (!driver_->Save(u2, id2, u1, id1, Reduction::kSum))
 					return false;
 			} else {
 				cerr << "invalid variable mapping found: "
@@ -436,9 +433,9 @@ bool TranslateCellml(sqlite3 *db)
 	if (!BeginTransaction(db))
 		return false;
 
-	if (!CreateTable(db, "input_ivs", "(uuid TEXT, math TEXT)"))
+	if (!CreateTable(db, "input_ivs", "(uuid BLOB, math TEXT)"))
 		return false;
-	if (!CreateTable(db, "input_eqs", "(uuid TEXT, math TEXT)"))
+	if (!CreateTable(db, "input_eqs", "(uuid BLOB, math TEXT)"))
 		return false;
 
 	std::unique_ptr<TreeDumper> tree_dumper(new TreeDumper(db));

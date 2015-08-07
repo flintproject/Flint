@@ -8,6 +8,7 @@
 #include <cstdlib>
 #include <cstring>
 #include <memory>
+#include <boost/uuid/uuid.hpp>
 
 #include "db/query.h"
 #include "db/eq-inserter.h"
@@ -18,8 +19,6 @@ namespace task {
 
 namespace {
 
-const char DEFAULT_UUID[] = "00000000-0000-0000-0000-000000000000";
-
 class Inserter : db::NameInserter {
 public:
 	explicit Inserter(sqlite3 *db)
@@ -28,7 +27,7 @@ public:
 	{}
 
 	bool Insert(const char *name) {
-		return InsertName(DEFAULT_UUID, 's', id_++, name);
+		return InsertName('s', id_++, name);
 	}
 
 private:
@@ -83,7 +82,7 @@ int InsertTargetEquation(void *data, int argc, char **argv, char **names)
 	const char *math = argv[1];
 	std::unique_ptr<char[]> eqn(new char[strlen(math) + 32]);
 	sprintf(eqn.get(), "(eq %%phsp:target%d%s)", rowid, math);
-	if (!inserter->Insert(DEFAULT_UUID, eqn.get())) {
+	if (!inserter->Insert(eqn.get())) {
 		return 1;
 	}
 	return 0;
@@ -111,7 +110,7 @@ bool Form(sqlite3 *db)
 		return false;
 	if (!CreateSingleton(db))
 		return false;
-	if (!CreateTable(db, "equations", "(uuid TEXT, body TEXT)"))
+	if (!CreateTable(db, "equations", "(uuid BLOB, body TEXT)"))
 		return false;
 	if (!InsertNames(db))
 		return false;

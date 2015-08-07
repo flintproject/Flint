@@ -5,12 +5,12 @@
 #include <cstdlib>
 #include <iostream>
 #include <memory>
+#include <string>
 
 #define BOOST_DATE_TIME_NO_LIB
 #include <boost/interprocess/file_mapping.hpp>
 #include <boost/interprocess/mapped_region.hpp>
 #include <boost/noncopyable.hpp>
-#include <boost/uuid/uuid_io.hpp>
 
 using std::cerr;
 using std::endl;
@@ -65,7 +65,7 @@ UuidGenerator::UuidGenerator(const boost::filesystem::path &path)
 	ran_.seed(value);
 }
 
-std::string UuidGenerator::operator()() {
-	boost::uuids::uuid u = gen_();
-	return to_string(u);
+boost::uuids::uuid UuidGenerator::operator()()
+{
+	return gen_();
 }

@@ -9,6 +9,9 @@
 #include <cstdlib>
 #include <cstring>
 #include <iostream>
+#include <string>
+
+#include <boost/uuid/uuid_io.hpp>
 
 using std::cerr;
 using std::endl;
@@ -22,7 +25,11 @@ int Print(void *data, int argc, char **argv, char **names)
 	FILE *fp = static_cast<FILE *>(data);
 	(void)names;
 	assert(argc == 2);
-	fprintf(fp, "%s %s\n", argv[0], argv[1]);
+	assert(argv[0]);
+	boost::uuids::uuid sector_id;
+	memcpy(&sector_id, argv[0], sector_id.size());
+	std::string s = boost::uuids::to_string(sector_id);
+	fprintf(fp, "%s %s\n", s.c_str(), argv[1]);
 	return 0;
 }
 

@@ -4,33 +4,32 @@
 #include <cassert>
 #include <cstdio>
 #include <cstdlib>
+#include <cstring>
 #include <iostream>
 #include <map>
 #include <memory>
-#include <string>
 #include <vector>
 
 #include <boost/noncopyable.hpp>
 #include <boost/ptr_container/ptr_map.hpp>
 #include <boost/ptr_container/ptr_set.hpp>
+#include <boost/uuid/uuid_io.hpp>
 
 using std::atoi;
 using std::cerr;
 using std::endl;
 using std::make_pair;
+using std::memcpy;
 using std::multimap;
-using std::string;
 using std::vector;
 using std::pair;
-
-static const size_t kUuidSize = 36;
 
 namespace {
 
 class Edge : boost::noncopyable {
 public:
-	Edge(const string &tail_uuid, int tail_port_id,
-		 const string &head_uuid, int head_port_id)
+	Edge(const boost::uuids::uuid &tail_uuid, int tail_port_id,
+		 const boost::uuids::uuid &head_uuid, int head_port_id)
 		: tail_uuid_(tail_uuid),
 		  tail_port_id_(tail_port_id),
 		  head_uuid_(head_uuid),
@@ -40,9 +39,9 @@ public:
 		assert(head_port_id > 0);
 	}
 
-	const string &tail_uuid() const {return tail_uuid_;}
+	const boost::uuids::uuid &tail_uuid() const {return tail_uuid_;}
 	int tail_port_id() const {return tail_port_id_;}
-	const string &head_uuid() const {return head_uuid_;}
+	const boost::uuids::uuid &head_uuid() const {return head_uuid_;}
 	int head_port_id() const {return head_port_id_;}
 
 	Edge *Clone() const {
@@ -65,9 +64,9 @@ public:
 	}
 
 private:
-	string tail_uuid_;
+	boost::uuids::uuid tail_uuid_;
 	int tail_port_id_;
-	string head_uuid_;
+	boost::uuids::uuid head_uuid_;
 	int head_port_id_;
 };
 
@@ -147,13 +146,18 @@ public:
 	{
 		int e;
 		for (e = sqlite3_step(stmt_); e == SQLITE_ROW; e = sqlite3_step(stmt_)) {
-			const unsigned char *tail_module_id = sqlite3_column_text(stmt_, 0);
+			const void *tail_module_id = sqlite3_column_blob(stmt_, 0);
 			int tail_port_id = sqlite3_column_int(stmt_, 1);
-			const unsigned char *head_module_id = sqlite3_column_text(stmt_, 2);
+			const void *head_module_id = sqlite3_column_blob(stmt_, 2);
 			int head_port_id = sqlite3_column_int(stmt_, 3);
+			assert(tail_module_id);
+			assert(head_module_id);
+			boost::uuids::uuid tmu, hmu;
+			memcpy(&tmu, tail_module_id, tmu.size());
+			memcpy(&hmu, head_module_id, hmu.size());
 			AddEdge(edge_set,
-					new Edge(string((const char *)tail_module_id, kUuidSize), tail_port_id,
-							 string((const char *)head_module_id, kUuidSize), head_port_id));
+					new Edge(tmu, tail_port_id,
+							 hmu, head_port_id));
 		}
 		if (e != SQLITE_DONE) {
 			cerr << "failed to step statement: " << e << endl;
@@ -188,12 +192,14 @@ public:
 		int e;
 		for (e = sqlite3_step(stmt_); e == SQLITE_ROW; e = sqlite3_step(stmt_)) {
 			int indent = sqlite3_column_int(stmt_, 0);
-			const unsigned char *uuid = sqlite3_column_text(stmt_, 1);
+			const void *uuid = sqlite3_column_blob(stmt_, 1);
 			if (!uuid) {
 				cerr << "uuid is null" << endl;
 				return false;
 			}
-			if (!handler->Handle(indent, (const char *)uuid)) return false;
+			boost::uuids::uuid u;
+			memcpy(&u, uuid, u.size());
+			if (!handler->Handle(indent, u)) return false;
 		}
 		if (e != SQLITE_DONE) {
 			cerr << "failed to step statement: " << e << endl;
@@ -210,50 +216,50 @@ class JournalHandler : boost::noncopyable {
 public:
 	explicit JournalHandler(boost::ptr_set<Edge> *edge_set)
 		: edge_set_(edge_set),
-		  instance_descendants_(new vector<string>),
+		  instance_descendants_(new vector<boost::uuids::uuid>),
 		  instance_map_(),
 		  template_descendants_()
 	{
 	}
 
-	bool Handle(int indent, const char *journal_uuid) {
+	bool Handle(int indent, const boost::uuids::uuid &journal_uuid) {
 		switch (indent) {
 		case 3:
-			instance_descendants_->push_back(string(journal_uuid, kUuidSize));
+			instance_descendants_->push_back(journal_uuid);
 			break;
 		case 2:
-			instance_descendants_->push_back(string(journal_uuid, kUuidSize));
+			instance_descendants_->push_back(journal_uuid);
 			{
-				string instance_id(journal_uuid, kUuidSize);
+				boost::uuids::uuid instance_id(journal_uuid);
 				bool b = instance_map_.insert(instance_id, instance_descendants_.release()).second;
 				if (!b) {
 					cerr << "duplicate instance id: " << instance_id << endl;
 					return false;
 				}
-				instance_descendants_.reset(new vector<string>);
+				instance_descendants_.reset(new vector<boost::uuids::uuid>);
 			}
 			break;
 		case 1:
-			template_descendants_.push_back(string(journal_uuid, kUuidSize));
+			template_descendants_.push_back(journal_uuid);
 			break;
 		case 0:
 			{
-				string template_module_id(journal_uuid, kUuidSize);
+				const boost::uuids::uuid &template_module_id(journal_uuid);
 
-				multimap<string, boost::ptr_set<Edge>::iterator> tail_map;
-				multimap<string, boost::ptr_set<Edge>::iterator> head_map;
+				multimap<boost::uuids::uuid, boost::ptr_set<Edge>::iterator> tail_map;
+				multimap<boost::uuids::uuid, boost::ptr_set<Edge>::iterator> head_map;
 				GenerateMaps(&tail_map, &head_map);
 				// collect all edges connecting to descendants
 				boost::ptr_set<Edge> inner_edges;
-				for (vector<string>::const_iterator it=template_descendants_.begin();it!=template_descendants_.end();++it) {
-					const string &uuid = *it;
-					multimap<string, boost::ptr_set<Edge>::iterator>::iterator tit = tail_map.find(uuid);
+				for (vector<boost::uuids::uuid>::const_iterator it=template_descendants_.begin();it!=template_descendants_.end();++it) {
+					const boost::uuids::uuid &uuid = *it;
+					multimap<boost::uuids::uuid, boost::ptr_set<Edge>::iterator>::iterator tit = tail_map.find(uuid);
 					while (tit != tail_map.end()) {
 						inner_edges.insert(tit->second->Clone());
 						tail_map.erase(tit);
 						tit = tail_map.find(uuid);
 					}
-					multimap<string, boost::ptr_set<Edge>::iterator>::iterator hit = head_map.find(uuid);
+					multimap<boost::uuids::uuid, boost::ptr_set<Edge>::iterator>::iterator hit = head_map.find(uuid);
 					while (hit != head_map.end()) {
 						inner_edges.insert(hit->second->Clone());
 						head_map.erase(hit);
@@ -264,7 +270,7 @@ public:
 				// collect all outer edges connecting to template module
 				boost::ptr_set<Edge> t_outer_edges;
 				{
-					multimap<string, boost::ptr_set<Edge>::iterator>::iterator tit = tail_map.find(template_module_id);
+					multimap<boost::uuids::uuid, boost::ptr_set<Edge>::iterator>::iterator tit = tail_map.find(template_module_id);
 					while (tit != tail_map.end()) {
 						if (inner_edges.count(*tit->second) == 0) t_outer_edges.insert(tit->second->Clone());
 						tail_map.erase(tit);
@@ -273,7 +279,7 @@ public:
 				}
 				boost::ptr_set<Edge> h_outer_edges;
 				{
-					multimap<string, boost::ptr_set<Edge>::iterator>::iterator hit = head_map.find(template_module_id);
+					multimap<boost::uuids::uuid, boost::ptr_set<Edge>::iterator>::iterator hit = head_map.find(template_module_id);
 					while (hit != head_map.end()) {
 						if (inner_edges.count(*hit->second) == 0) h_outer_edges.insert(hit->second->Clone());
 						head_map.erase(hit);
@@ -296,12 +302,12 @@ public:
 				boost::ptr_set<InstanceEdge> instance_edges;
 				for (boost::ptr_set<Edge>::const_iterator it=inner_edges.begin();it!=inner_edges.end();++it) {
 					size_t tail_index = 0;
-					for (vector<string>::const_iterator tit=template_descendants_.begin();tit!=template_descendants_.end();++tit) {
+					for (vector<boost::uuids::uuid>::const_iterator tit=template_descendants_.begin();tit!=template_descendants_.end();++tit) {
 						if (it->tail_uuid() == *tit) break;
 						tail_index++;
 					}
 					size_t head_index = 0;
-					for (vector<string>::const_iterator hit=template_descendants_.begin();hit!=template_descendants_.end();++hit) {
+					for (vector<boost::uuids::uuid>::const_iterator hit=template_descendants_.begin();hit!=template_descendants_.end();++hit) {
 						if (it->head_uuid() == *hit) break;
 						head_index++;
 					}
@@ -311,16 +317,16 @@ public:
 				}
 
 				// duplicate edges by replacing uuid of vertices
-				for (boost::ptr_map<string, vector<string> >::const_iterator it=instance_map_.begin();it!=instance_map_.end();++it) {
-					const vector<string> *iv = it->second;
+				for (boost::ptr_map<boost::uuids::uuid, vector<boost::uuids::uuid> >::const_iterator it=instance_map_.begin();it!=instance_map_.end();++it) {
+					const vector<boost::uuids::uuid> *iv = it->second;
 					if (iv->size() != template_descendants_.size() + 1) {
 						cerr << "invalid instance descendants: " << it->first << endl;
 						return false;
 					}
 					for (boost::ptr_set<InstanceEdge>::const_iterator iit=instance_edges.begin();iit!=instance_edges.end();++iit) {
 						const InstanceEdge &ie = *iit;
-						const string &tail_uuid = iv->at(ie.tail_index());
-						const string &head_uuid = iv->at(ie.head_index());
+						const boost::uuids::uuid &tail_uuid = iv->at(ie.tail_index());
+						const boost::uuids::uuid &head_uuid = iv->at(ie.head_index());
 						AddEdge(edge_set_,
 								new Edge(tail_uuid, ie.tail_port_id(),
 										 head_uuid, ie.head_port_id()));
@@ -328,8 +334,8 @@ public:
 				}
 				for (boost::ptr_set<Edge>::const_iterator it=t_outer_edges.begin();it!=t_outer_edges.end();++it) {
 					const Edge &e = *it;
-					for (boost::ptr_map<string, vector<string> >::const_iterator iit=instance_map_.begin();iit!=instance_map_.end();++iit) {
-						const string &instance_id = iit->first;
+					for (boost::ptr_map<boost::uuids::uuid, vector<boost::uuids::uuid> >::const_iterator iit=instance_map_.begin();iit!=instance_map_.end();++iit) {
+						const boost::uuids::uuid &instance_id = iit->first;
 						AddEdge(edge_set_,
 								new Edge(instance_id, e.tail_port_id(),
 										 e.head_uuid(), e.head_port_id()));
@@ -337,8 +343,8 @@ public:
 				}
 				for (boost::ptr_set<Edge>::const_iterator it=h_outer_edges.begin();it!=h_outer_edges.end();++it) {
 					const Edge &e = *it;
-					for (boost::ptr_map<string, vector<string> >::const_iterator iit=instance_map_.begin();iit!=instance_map_.end();++iit) {
-						const string &instance_id = iit->first;
+					for (boost::ptr_map<boost::uuids::uuid, vector<boost::uuids::uuid> >::const_iterator iit=instance_map_.begin();iit!=instance_map_.end();++iit) {
+						const boost::uuids::uuid &instance_id = iit->first;
 						AddEdge(edge_set_,
 								new Edge(e.tail_uuid(), e.tail_port_id(),
 										 instance_id, e.head_port_id()));
@@ -357,8 +363,8 @@ public:
 	}
 
 private:
-	void GenerateMaps(multimap<string, boost::ptr_set<Edge>::iterator> *tail_map,
-					  multimap<string, boost::ptr_set<Edge>::iterator> *head_map) const
+	void GenerateMaps(multimap<boost::uuids::uuid, boost::ptr_set<Edge>::iterator> *tail_map,
+					  multimap<boost::uuids::uuid, boost::ptr_set<Edge>::iterator> *head_map) const
 	{
 		tail_map->clear();
 		head_map->clear();
@@ -369,9 +375,9 @@ private:
 	}
 
 	boost::ptr_set<Edge> *edge_set_;
-	std::unique_ptr<vector<string> > instance_descendants_;
-	boost::ptr_map<string, vector<string> > instance_map_;
-	vector<string> template_descendants_;
+	std::unique_ptr<vector<boost::uuids::uuid> > instance_descendants_;
+	boost::ptr_map<boost::uuids::uuid, vector<boost::uuids::uuid> > instance_map_;
+	vector<boost::uuids::uuid> template_descendants_;
 };
 
 class SpanDriver : boost::noncopyable {
@@ -399,7 +405,7 @@ public:
 
 	bool Save(const Edge &edge) {
 		int e;
-		e = sqlite3_bind_text(stmt_, 1, edge.tail_uuid().c_str(), -1, SQLITE_STATIC);
+		e = sqlite3_bind_blob(stmt_, 1, &edge.tail_uuid(), edge.tail_uuid().size(), SQLITE_STATIC);
 		if (e != SQLITE_OK) {
 			cerr << "failed to bind tail_uuid: " << e << endl;
 			return false;
@@ -409,7 +415,7 @@ public:
 			cerr << "failed to bind tail_port_id: " << e << endl;
 			return false;
 		}
-		e = sqlite3_bind_text(stmt_, 3, edge.head_uuid().c_str(), -1, SQLITE_STATIC);
+		e = sqlite3_bind_blob(stmt_, 3, &edge.head_uuid(), edge.head_uuid().size(), SQLITE_STATIC);
 		if (e != SQLITE_OK) {
 			cerr << "failed to bind head_uuid: " << e << endl;
 			return false;

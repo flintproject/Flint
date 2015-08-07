@@ -8,6 +8,7 @@
 #include <cassert>
 #include <cstdio>
 #include <cstdlib>
+#include <cstring>
 #include <memory>
 #include <string>
 #include <vector>
@@ -18,7 +19,7 @@
 #include <boost/spirit/include/phoenix.hpp>
 #include <boost/spirit/include/qi.hpp>
 #include <boost/spirit/include/support_multi_pass.hpp>
-#include <boost/uuid/uuid_generators.hpp>
+#include <boost/uuid/uuid_io.hpp>
 
 #include "bc.pb.h"
 #include "bc/pack.h"
@@ -26,6 +27,7 @@
 using std::cerr;
 using std::endl;
 using std::make_pair;
+using std::memcpy;
 
 using namespace boost::spirit;
 
@@ -118,7 +120,7 @@ struct Block {
 	}
 
 	std::vector<bc::Code> code;
-	std::string uuid;
+	boost::uuids::uuid uuid;
 	std::string name;
 	int nod;
 };
@@ -628,7 +630,7 @@ struct Grammar : qi::grammar<TIterator, Body()> {
 	qi::rule<TIterator, double()> imm;
 };
 
-typedef std::vector<std::pair<std::string, int> > NobVector;
+typedef std::vector<std::pair<boost::uuids::uuid, int> > NobVector;
 
 /*
  * This class creates and keeps both tokens and grammar objects which
@@ -649,7 +651,7 @@ public:
 	{
 	}
 
-	int Parse(const char *uuid, const char *name, int nod, const char *code) {
+	int Parse(const boost::uuids::uuid &uuid, const char *name, int nod, const char *code) {
 		base_iterator_type it = code;
 		base_iterator_type eit = code + std::strlen(code);
 		Body body;
@@ -678,7 +680,9 @@ int Process(void *data, int argc, char **argv, char **names)
 	(void)names;
 	Parser *parser = static_cast<Parser *>(data);
 	assert(argc == 4);
-	const char *uuid = argv[0];
+	assert(argv[0]);
+	boost::uuids::uuid uuid;
+	memcpy(&uuid, argv[0], uuid.size());
 	const char *name = argv[1];
 	int nod = std::atoi(argv[2]);
 	const char *code = argv[3];
@@ -741,13 +745,12 @@ bool Bcc(sqlite3 *db, std::ostream *os)
 		return false;
 	}
 	// write section headers
-	boost::uuids::string_generator gen;
-	std::unique_ptr<char[]> bu(new char[boost::uuids::uuid::static_size()]);
 	std::unique_ptr<bc::SectionHeader> sh(new bc::SectionHeader);
+	std::unique_ptr<char[]> bu(new char[boost::uuids::uuid::static_size()]);
 	for (NobVector::const_iterator nit=nv->begin();nit!=nv->end();++nit) {
-		boost::uuids::uuid u = gen(nit->first);
-		std::copy(u.begin(), u.end(), bu.get());
-		sh->set_id(bu.get(), boost::uuids::uuid::static_size());
+		const boost::uuids::uuid &uuid(nit->first);
+		std::copy(uuid.begin(), uuid.end(), bu.get());
+		sh->set_id(bu.get(), uuid.size());
 		sh->set_nob(nit->second);
 		if (!PackToOstream(*sh, os)) {
 			return false;

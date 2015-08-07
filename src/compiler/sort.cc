@@ -21,6 +21,7 @@
 #include <boost/spirit/include/lex_lexertl.hpp>
 #include <boost/spirit/include/qi.hpp>
 #include <boost/spirit/include/support_multi_pass.hpp>
+#include <boost/uuid/uuid_io.hpp>
 #include <boost/variant/recursive_variant.hpp>
 
 #include "db/driver.hh"
@@ -30,6 +31,7 @@
 
 using std::cerr;
 using std::endl;
+using std::memcpy;
 using std::string;
 using std::vector;
 
@@ -222,7 +224,7 @@ public:
 		lines_.push_back(line);
 	}
 
-	bool CalculateLevels(const std::string &uuid, int *levels) {
+	bool CalculateLevels(const boost::uuids::uuid &uuid, int *levels) {
 		size_t n = lines_.size();
 		std::unordered_map<string, size_t> nm;
 		for (size_t i=0;i<n;i++) {
@@ -300,7 +302,7 @@ private:
 	int level_;
 };
 
-typedef boost::ptr_unordered_map<string, LineVector> UuidMap;
+typedef boost::ptr_unordered_map<boost::uuids::uuid, LineVector> UuidMap;
 
 /*
  * This class creates and keeps both tokens and grammar objects which
@@ -321,7 +323,7 @@ public:
 	{
 	}
 
-	int Parse(const char *uuid, const char *name, const char *math) {
+	int Parse(const boost::uuids::uuid &uuid, const char *name, const char *math) {
 		base_iterator_type it = math;
 		base_iterator_type eit = math + std::strlen(math);
 		Expr expr;
@@ -345,7 +347,10 @@ int Process(void *data, int argc, char **argv, char **names)
 	(void)names;
 	assert(argc == 3);
 	Parser *parser = static_cast<Parser *>(data);
-	return parser->Parse(argv[0], argv[1], argv[2]);
+	assert(argv[0]);
+	boost::uuids::uuid u;
+	memcpy(&u, argv[0], u.size());
+	return parser->Parse(u, argv[1], argv[2]);
 }
 
 class Inserter : db::StatementDriver {
@@ -355,9 +360,9 @@ public:
 	{
 	}
 
-	bool Insert(const char *uuid, const char *name, const char *math) {
+	bool Insert(const boost::uuids::uuid &uuid, const char *name, const char *math) {
 		int e;
-		e = sqlite3_bind_text(stmt(), 1, uuid, -1, SQLITE_STATIC);
+		e = sqlite3_bind_blob(stmt(), 1, &uuid, uuid.size(), SQLITE_STATIC);
 		if (e != SQLITE_OK) {
 			cerr << "failed to bind uuid: " << e << endl;
 			return false;
@@ -402,7 +407,7 @@ bool Sort(sqlite3 *db)
 
 	if (!BeginTransaction(db))
 		return false;
-	if (!CreateTable(db, "sorts", "(uuid TEXT, name TEXT, math TEXT)"))
+	if (!CreateTable(db, "sorts", "(uuid BLOB, name TEXT, math TEXT)"))
 		return false;
 
 	Inserter inserter(db);
@@ -421,7 +426,7 @@ bool Sort(sqlite3 *db)
 			size_t m = vit->index();
 			const Line &line(umit->second->at(m));
 			std::string math = line.GetMath();
-			if (!inserter.Insert(umit->first.c_str(),
+			if (!inserter.Insert(umit->first,
 								 line.name().c_str(),
 								 math.c_str()))
 				return false;

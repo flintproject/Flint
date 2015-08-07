@@ -2,11 +2,13 @@
 #ifndef FLINT_DB_SCOPE_LOADER_H_
 #define FLINT_DB_SCOPE_LOADER_H_
 
+#include <cassert>
 #include <cstdio>
 #include <cstdlib>
+#include <cstring>
 #include <iostream>
 
-#include <boost/uuid/uuid_generators.hpp>
+#include <boost/uuid/uuid.hpp>
 
 #include "statement-driver.hh"
 
@@ -22,13 +24,18 @@ public:
 
 	template<typename THandler>
 	bool Load(THandler *handler) {
-		boost::uuids::string_generator gen;
 		int e;
 		for (e = sqlite3_step(stmt()); e == SQLITE_ROW; e = sqlite3_step(stmt())) {
-			const unsigned char *uuid = sqlite3_column_text(stmt(), 0);
-			const unsigned char *space_id = sqlite3_column_text(stmt(), 1);
+			const void *uuid = sqlite3_column_blob(stmt(), 0);
+			const void *space_id = sqlite3_column_blob(stmt(), 1);
 			const unsigned char *label = sqlite3_column_text(stmt(), 2);
-			if (!handler->Handle(gen((const char *)uuid), gen((const char *)space_id), (const char *)label)) return false;
+			assert(uuid);
+			assert(space_id);
+			boost::uuids::uuid uu, su;
+			std::memcpy(&uu, uuid, uu.size());
+			std::memcpy(&su, space_id, su.size());
+			if (!handler->Handle(uu, su, (const char *)label))
+				return false;
 		}
 		if (e != SQLITE_DONE) {
 			std::cerr << "failed to step statement: " << e << std::endl;

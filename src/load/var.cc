@@ -14,8 +14,7 @@
 #include <memory>
 
 #include <boost/ptr_container/ptr_vector.hpp>
-#include <boost/uuid/string_generator.hpp>
-#include <boost/uuid/uuid_io.hpp>
+#include <boost/uuid/uuid.hpp>
 
 #include "lo.pb.h"
 
@@ -40,16 +39,14 @@ struct State {
 
 int AddColumn(void *data, int argc, char **argv, char **names)
 {
-	static boost::uuids::string_generator gen;
-
 	State *state = static_cast<State *>(data);
 	(void)names;
 	assert(argc == 9);
 	std::unique_ptr<lo::Column> c(new lo::Column);
 	c->set_position(state->pos);
 	c->set_size(1); // TODO: variable size
-	boost::uuids::uuid u = gen(argv[2]);
-	c->set_uuid(boost::uuids::to_string(u)); // sector_id
+	assert(argv[2]);
+	c->set_uuid(argv[2], boost::uuids::uuid::static_size()); // sector_id
 	c->set_name(argv[4]); // name
 	assert(argv[5]);
 	assert(std::strlen(argv[5]) == 1);

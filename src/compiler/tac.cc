@@ -4,6 +4,7 @@
 #include <cassert>
 #include <cstdio>
 #include <cstdlib>
+#include <cstring>
 #include <deque>
 #include <iostream>
 #include <memory>
@@ -15,6 +16,7 @@
 #include <boost/spirit/include/phoenix.hpp>
 #include <boost/spirit/include/qi.hpp>
 #include <boost/spirit/include/support_multi_pass.hpp>
+#include <boost/uuid/uuid_io.hpp>
 #include <boost/variant/recursive_variant.hpp>
 
 #include "db/query.h"
@@ -23,6 +25,7 @@
 
 using std::cerr;
 using std::endl;
+using std::memcpy;
 
 using namespace boost::spirit;
 
@@ -139,7 +142,7 @@ bool IsOutcome(const Compound &c)
 }
 
 struct Context {
-	const char *uuid;
+	boost::uuids::uuid uuid;
 	const char *id;
 	int avail_n;
 	int avail_l;
@@ -397,7 +400,7 @@ bool EmitCode(int n, Expr &sexp, Context *context)
 	return true;
 }
 
-bool EmitCode(const char *uuid, const char *id, Expr &sexp,
+bool EmitCode(const boost::uuids::uuid &uuid, const char *id, Expr &sexp,
 			  int *nod, std::ostream *os)
 {
 	std::unique_ptr<Context> context(new Context);
@@ -673,7 +676,7 @@ public:
 	{
 	}
 
-	int Parse(const char *uuid, const char *name, const char *math) {
+	int Parse(const boost::uuids::uuid &uuid, const char *name, const char *math) {
 		base_iterator_type it = math;
 		base_iterator_type eit = math + std::strlen(math);
 		Expr expr;
@@ -701,7 +704,10 @@ int Process(void *data, int argc, char **argv, char **names)
 	(void)names;
 	Parser *parser = static_cast<Parser *>(data);
 	assert(argc == 3);
-	return parser->Parse(argv[0], argv[1], argv[2]);
+	assert(argv[0]);
+	boost::uuids::uuid uuid;
+	memcpy(&uuid, argv[0], uuid.size());
+	return parser->Parse(uuid, argv[1], argv[2]);
 }
 
 }
@@ -710,7 +716,7 @@ bool Tac(sqlite3 *db)
 {
 	if (!BeginTransaction(db))
 		return false;
-	if (!CreateTable(db, "tacs", "(uuid TEXT, name TEXT, nod INTEGER, body TEXT)"))
+	if (!CreateTable(db, "tacs", "(uuid BLOB, name TEXT, nod INTEGER, body TEXT)"))
 		return false;
 
 	Parser parser(db);

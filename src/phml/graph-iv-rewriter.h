@@ -5,6 +5,7 @@
 #include <map>
 #include <string>
 #include <boost/noncopyable.hpp>
+#include <boost/uuid/uuid.hpp>
 
 #include "sqlite3.h"
 
@@ -20,7 +21,7 @@ public:
 
 private:
 	bool Process(sqlite3_int64 pq_rowid,
-				 const char *module_id,
+				 const boost::uuids::uuid &module_id,
 				 const char *name,
 				 const char *math);
 

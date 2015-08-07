@@ -3,6 +3,7 @@
 
 #include <cstdio>
 #include <cstdlib>
+#include <cstring>
 #include <ctime>
 #include <iostream>
 #include <memory>
@@ -11,12 +12,14 @@
 #include <boost/noncopyable.hpp>
 #include <boost/ptr_container/ptr_map.hpp>
 #include <boost/ptr_container/ptr_vector.hpp>
+#include <boost/uuid/uuid_io.hpp>
 
 #include "db/statement-driver.hh"
 #include "uuidgen.h"
 
 using std::cerr;
 using std::endl;
+using std::memcpy;
 using std::strcmp;
 using std::string;
 
@@ -24,35 +27,43 @@ namespace {
 
 class Node : boost::noncopyable {
 public:
-	Node(const string &uuid, const string &module_id, size_t level) : uuid_(uuid), module_id_(module_id), level_(level), label_() {}
-	Node(const string &uuid, const string &module_id, size_t level, const string &label) : uuid_(uuid), module_id_(module_id), level_(level), label_(label) {}
+	Node(const boost::uuids::uuid &uuid, const boost::uuids::uuid &module_id, size_t level)
+		: uuid_(uuid), module_id_(module_id), level_(level), label_()
+	{}
+	Node(const boost::uuids::uuid &uuid, const boost::uuids::uuid &module_id, size_t level, const string &label)
+		: uuid_(uuid), module_id_(module_id), level_(level), label_(label)
+	{}
 
-	const string &uuid() const {return uuid_;}
-	const string &module_id() const {return module_id_;}
+	const boost::uuids::uuid &uuid() const {return uuid_;}
+	const boost::uuids::uuid &module_id() const {return module_id_;}
 	size_t level() const {return level_;}
 	const string &label() const {return label_;}
 
 private:
-	string uuid_;
-	string module_id_;
+	boost::uuids::uuid uuid_;
+	boost::uuids::uuid module_id_;
 	size_t level_;
 	string label_;
 };
 
 class Instance : boost::noncopyable {
 public:
-	explicit Instance(const string &uuid) : uuid_(uuid), label_() {}
-	Instance(const string &uuid, const string &label) : uuid_(uuid), label_(label) {}
+	explicit Instance(const boost::uuids::uuid &uuid)
+		: uuid_(uuid), label_()
+	{}
+	Instance(const boost::uuids::uuid &uuid, const string &label)
+		: uuid_(uuid), label_(label)
+	{}
 
-	const string &uuid() const {return uuid_;}
+	const boost::uuids::uuid &uuid() const {return uuid_;}
 	const string &label() const {return label_;}
 
 private:
-	string uuid_;
+	boost::uuids::uuid uuid_;
 	string label_;
 };
 
-typedef boost::ptr_multimap<string, Instance> InstanceMap;
+typedef boost::ptr_multimap<boost::uuids::uuid, Instance> InstanceMap;
 
 class InstanceLoader : public db::StatementDriver {
 public:
@@ -64,24 +75,26 @@ public:
 	bool Load(InstanceMap *m) {
 		int e;
 		for (e = sqlite3_step(stmt()); e == SQLITE_ROW; e = sqlite3_step(stmt())) {
-			const unsigned char *module_id = sqlite3_column_text(stmt(), 0);
-			const unsigned char *uuid = sqlite3_column_text(stmt(), 1);
+			const void *module_id = sqlite3_column_blob(stmt(), 0);
+			const void *uuid = sqlite3_column_blob(stmt(), 1);
 			const unsigned char *label = sqlite3_column_text(stmt(), 2);
 
 			assert(uuid);
+			boost::uuids::uuid uu;
+			memcpy(&uu, uuid, uu.size());
 			if (!module_id) {
 				cerr << "template for instance "
-					 << uuid
+					 << uu
 					 << " is unknown i.e. its template-id does not equal to any in the template-set"
 					 << endl;
 				return false;
 			}
-			string key((const char *)module_id);
+			boost::uuids::uuid mu;
+			memcpy(&mu, module_id, mu.size());
 			if (label) {
-				m->insert(key, new Instance(string((const char *)uuid),
-											string((const char *)label)));
+				m->insert(mu, new Instance(uu, string((const char *)label)));
 			} else {
-				m->insert(key, new Instance(string((const char *)uuid)));
+				m->insert(mu, new Instance(uu));
 			}
 		}
 		if (e != SQLITE_DONE) {
@@ -100,14 +113,14 @@ public:
 	{
 	}
 
-	bool Save(int indent, const char *uuid) {
+	bool Save(int indent, const boost::uuids::uuid &uuid) {
 		int e;
 		e = sqlite3_bind_int(stmt(), 1, indent);
 		if (e != SQLITE_OK) {
 			cerr << "failed to bind indent: " << e << endl;
 			return false;
 		}
-		e = sqlite3_bind_text(stmt(), 2, uuid, -1, SQLITE_STATIC);
+		e = sqlite3_bind_blob(stmt(), 2, &uuid, uuid.size(), SQLITE_STATIC);
 		if (e != SQLITE_OK) {
 			cerr << "failed to bind uuid: " << e << endl;
 			return false;
@@ -131,12 +144,12 @@ public:
 
 	bool Save(const Node &node) {
 		int e;
-		e = sqlite3_bind_text(stmt(), 1, node.uuid().c_str(), -1, SQLITE_STATIC);
+		e = sqlite3_bind_blob(stmt(), 1, &node.uuid(), node.uuid().size(), SQLITE_STATIC);
 		if (e != SQLITE_OK) {
 			cerr << "failed to bind uuid: " << e << endl;
 			return false;
 		}
-		e = sqlite3_bind_text(stmt(), 2, node.module_id().c_str(), -1, SQLITE_STATIC);
+		e = sqlite3_bind_blob(stmt(), 2, &node.module_id(), node.module_id().size(), SQLITE_STATIC);
 		if (e != SQLITE_OK) {
 			cerr << "failed to bind space_id: " << e << endl;
 			return false;
@@ -192,7 +205,8 @@ bool Branch(const boost::filesystem::path &path, sqlite3 *db)
 	boost::ptr_vector<Node> result;
 	boost::ptr_vector<Node> tmp;
 	while ( (e = sqlite3_step(stmt)) == SQLITE_ROW ) {
-		string uuid((const char *)sqlite3_column_text(stmt, 0));
+		boost::uuids::uuid uuid;
+		memcpy(&uuid, sqlite3_column_blob(stmt, 0), uuid.size());
 		size_t level = static_cast<size_t>(sqlite3_column_int(stmt, 1));
 		const unsigned char *template_state = sqlite3_column_text(stmt, 2);
 
@@ -220,14 +234,14 @@ bool Branch(const boost::filesystem::path &path, sqlite3 *db)
 		}
 		// duplicate the subtree
 		do {
-			const string &instance_id = it->second->uuid();
+			const boost::uuids::uuid &instance_id = it->second->uuid();
 			for (boost::ptr_vector<Node>::const_iterator vit=v.begin();vit!=v.end();++vit) {
-				string u = (*gen)();
+				boost::uuids::uuid u = (*gen)();
 				result.push_back(new Node(u, vit->module_id(), vit->level(), it->second->label()));
-				if (!jd->Save(3, u.c_str())) return false;
+				if (!jd->Save(3, u)) return false;
 			}
 			result.push_back(new Node(instance_id, uuid, level, it->second->label()));
-			if (!jd->Save(2, instance_id.c_str())) return false;
+			if (!jd->Save(2, instance_id)) return false;
 
 			// search next instance of the same template
 			instance_map.erase(it);
@@ -235,9 +249,9 @@ bool Branch(const boost::filesystem::path &path, sqlite3 *db)
 		} while (it != instance_map.end());
 		// write original nodes into journal
 		for (boost::ptr_vector<Node>::const_iterator vit=v.begin();vit!=v.end();++vit) {
-			if (!jd->Save(1, vit->uuid().c_str())) return false;
+			if (!jd->Save(1, vit->uuid())) return false;
 		}
-		if (!jd->Save(0, uuid.c_str())) return false;
+		if (!jd->Save(0, uuid)) return false;
 	}
 	if (e != SQLITE_DONE) {
 		cerr << "failed to step statement: " << e << endl;

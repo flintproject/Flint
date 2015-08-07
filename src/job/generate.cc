@@ -3,11 +3,14 @@
 
 #include <cassert>
 #include <cstdio>
+#include <cstring>
+#include <iostream>
 #include <sstream>
 #include <string>
 
 #define BOOST_FILESYSTEM_NO_DEPRECATED
 #include <boost/filesystem.hpp>
+#include <boost/uuid/uuid.hpp>
 
 #include "db/driver.hh"
 #include "db/eq-inserter.h"
@@ -16,6 +19,7 @@
 
 using std::endl;
 using std::cerr;
+using std::memcpy;
 using std::sprintf;
 
 namespace job {
@@ -56,15 +60,15 @@ public:
 		: inserter_("parameter_eqs", db)
 	{}
 
-	bool Insert(const char *uuid, const char *name, const char *rhs)
+	bool Insert(const char *name, const char *rhs)
 	{
 		std::ostringstream oss;
 		oss << "(eq %" << name << ' ' << rhs << ')';
 		std::string math = oss.str();
-		return inserter_.Insert(uuid, math.c_str());
+		return inserter_.Insert(math.c_str());
 	}
 
-	bool Insert(const char *uuid, const char *math)
+	bool Insert(const boost::uuids::uuid &uuid, const char *math)
 	{
 		return inserter_.Insert(uuid, math);
 	}
@@ -75,11 +79,9 @@ private:
 
 int SaveParameter(void *data, int argc, char **argv, char **names)
 {
-	static const char kDefaultUuid[] = "00000000-0000-0000-0000-000000000000";
-
 	Inserter *inserter = static_cast<Inserter *>(data);
 	for (int i=0;i<argc;i++) {
-		if (!inserter->Insert(kDefaultUuid, names[i], argv[i]))
+		if (!inserter->Insert(names[i], argv[i]))
 			return 1;
 	}
 	return 0;
@@ -90,7 +92,10 @@ int SaveEquation(void *data, int argc, char **argv, char **names)
 	Inserter *inserter = static_cast<Inserter *>(data);
 	(void)names;
 	assert(argc == 2);
-	return (inserter->Insert(argv[0], argv[1])) ? 0 : 1;
+	boost::uuids::uuid uuid;
+	assert(argv[0]);
+	memcpy(&uuid, argv[0], uuid.size());
+	return (inserter->Insert(uuid, argv[1])) ? 0 : 1;
 }
 
 class Generator {
@@ -168,7 +173,7 @@ bool Generate(sqlite3 *input, const char *dir, int *job_id)
 		return false;
 	if (!BeginTransaction(output))
 		return false;
-	if (!CreateTable(output, "parameter_eqs", "(uuid TEXT, math TEXT)"))
+	if (!CreateTable(output, "parameter_eqs", "(uuid BLOB, math TEXT)"))
 		return false;
 	Generator g(input, output);
 	if (!g.Generate(rowid, enum_id))

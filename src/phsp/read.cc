@@ -17,6 +17,8 @@
 #define BOOST_FILESYSTEM_NO_DEPRECATED
 #include <boost/filesystem.hpp>
 #include <boost/noncopyable.hpp>
+#include <boost/uuid/nil_generator.hpp>
+#include <boost/uuid/string_generator.hpp>
 
 #include <libxml/xmlreader.h>
 
@@ -151,6 +153,12 @@ public:
 	void set_species_id(xmlChar *id) {species_id_ = id;}
 	void set_parameter_id(xmlChar *id) {parameter_id_ = id;}
 	void set_reaction_id(xmlChar *id) {reaction_id_ = id;}
+
+	boost::uuids::uuid GetUuid() const {
+		assert(uuid_);
+		boost::uuids::string_generator gen;
+		return gen((const char *)uuid_);
+	}
 
 private:
 	xmlChar *uuid_;
@@ -359,7 +367,7 @@ private:
 		if (!CreateTable(db_, table_name, "(name TEXT, range TEXT)"))
 			return -2;
 		sprintf(table_name, "db%d.phsp_targets", rowid);
-		if (!CreateTable(db_, table_name, "(uuid TEXT, id TEXT, math TEXT)"))
+		if (!CreateTable(db_, table_name, "(uuid BLOB, id TEXT, math TEXT)"))
 			return -2;
 
 		i = xmlTextReaderRead(text_reader_);
@@ -671,10 +679,12 @@ private:
 								 << endl;
 							return -2;
 						}
+						boost::uuids::uuid u; // to be alive until sqlite3_step()
 						if (target->uuid()) { // PHML
-							e = sqlite3_bind_text(stmt, 1, (const char *)target->uuid(), -1, SQLITE_STATIC);
+							u = target->GetUuid();
+							e = sqlite3_bind_blob(stmt, 1, &u, u.size(), SQLITE_STATIC);
 							if (e != SQLITE_OK) {
-								cerr << "failed to bind parameter: " << e << endl;
+								cerr << "failed to bind uuid: " << e << endl;
 								return -2;
 							}
 							e = sqlite3_bind_int(stmt, 2, target->physical_quantity_id());
@@ -683,9 +693,10 @@ private:
 								return -2;
 							}
 						} else { // SBML
-							e = sqlite3_bind_text(stmt, 1, "00000000-0000-0000-0000-000000000000", -1, SQLITE_STATIC);
+							u = boost::uuids::nil_uuid();
+							e = sqlite3_bind_blob(stmt, 1, &u, u.size(), SQLITE_STATIC);
 							if (e != SQLITE_OK) {
-								cerr << "failed to bind parameter: " << e << endl;
+								cerr << "failed to bind uuid: " << e << endl;
 								return -2;
 							}
 							const char *id = NULL;

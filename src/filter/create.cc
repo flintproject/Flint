@@ -31,6 +31,7 @@
 
 using std::cerr;
 using std::endl;
+using std::memcpy;
 using std::set;
 using std::string;
 
@@ -67,20 +68,17 @@ public:
 class Spec : boost::noncopyable {
 public:
 	void AddSpec(const boost::uuids::uuid &u, const char *name) {
-		char s[u.size()];
-		std::copy(u.begin(), u.end(), s);
-		string id(s, u.size());
-		m_[id].insert(name);
+		m_[u].insert(name);
 	}
 
-	bool Contains(const string &id, const string &name) const {
-		boost::ptr_unordered_map<string, std::unordered_set<string> >::const_iterator it = m_.find(id);
+	bool Contains(const boost::uuids::uuid &id, const string &name) const {
+		boost::ptr_unordered_map<boost::uuids::uuid, std::unordered_set<string> >::const_iterator it = m_.find(id);
 		if (it == m_.end()) return false;
 		return it->second->find(name) != it->second->end();
 	}
 
 private:
-	boost::ptr_unordered_map<string, std::unordered_set<string> > m_;
+	boost::ptr_unordered_map<boost::uuids::uuid, std::unordered_set<string> > m_;
 };
 
 class Layout : boost::noncopyable {
@@ -103,7 +101,7 @@ public:
 		char us0[boost::uuids::uuid::static_size()] = {0};
 		c->set_position(0);
 		c->set_size(1);
-		c->set_uuid(string(us0, boost::uuids::uuid::static_size()));
+		c->set_uuid(us0, boost::uuids::uuid::static_size());
 		c->set_id(0); // no such value, let's use 0 as a fallback
 		c->set_name("time");
 		c->set_type(lo::T);
@@ -122,14 +120,16 @@ public:
 
 			while (si < sie) {
 				const lo::Sector &s = sv_.at(si++);
+				boost::uuids::uuid su;
+				memcpy(&su, s.id().data(), su.size());
 				di = dib;
 				while (di < die) {
 					const lo::Data &d = dv_.at(di++);
-					if (spec->Contains(s.id(), d.name())) {
+					if (spec->Contains(su, d.name())) {
 						c.reset(new lo::Column);
 						c->set_position(pos);
 						c->set_size(d.size());
-						c->set_uuid(s.id());
+						c->set_uuid(s.id().data(), boost::uuids::uuid::static_size());
 						c->set_id(d.id());
 						c->set_name(d.name());
 						c->set_type(d.type());

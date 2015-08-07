@@ -20,8 +20,6 @@
 
 namespace {
 
-const char kDefaultSpaceId[] = "00000000-0000-0000-0000-000000000000";
-
 void CheckOutput(double expected)
 {
 	static const int kBufferSize = 56;
@@ -46,9 +44,9 @@ struct F : public test::MemoryFixture {
 		test::Sql sql(driver_.db());
 		sql.Exec("UPDATE config SET method = 'euler', length = '0.01', step = '0.01', granularity = '1'");
 		db::NameInserter ni("names", driver_.db());
-		BOOST_REQUIRE(ni.InsertName(kDefaultSpaceId, 'v', 1, "a"));
-		BOOST_REQUIRE(ni.InsertName(kDefaultSpaceId, 'v', 2, "b"));
-		BOOST_REQUIRE(ni.InsertName(kDefaultSpaceId, 'v', 3, "x"));
+		BOOST_REQUIRE(ni.InsertName('v', 1, "a"));
+		BOOST_REQUIRE(ni.InsertName('v', 2, "b"));
+		BOOST_REQUIRE(ni.InsertName('v', 3, "x"));
 		BOOST_REQUIRE(layout::Generate(driver_.db(), "layout"));
 		BOOST_REQUIRE_EQUAL(CreateTable(driver_.db(), "tacs", "(uuid TEXT, name TEXT, nod INTEGER, body TEXT)"), 1);
 		BOOST_REQUIRE_EQUAL(SaveNol(1, driver_.db()), 1);
@@ -66,7 +64,7 @@ struct F : public test::MemoryFixture {
 	void Insert(const char *name, int nod, const char *body)
 	{
 		db::TacInserter ti(driver_.db());
-		BOOST_REQUIRE(ti.Insert(kDefaultSpaceId, name, nod, body));
+		BOOST_REQUIRE(ti.Insert(name, nod, body));
 	}
 
 	job::Option option_;

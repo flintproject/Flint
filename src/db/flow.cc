@@ -4,9 +4,10 @@
 #include <cassert>
 #include <cstdio>
 #include <cstdlib>
+#include <cstring>
 #include <iostream>
 
-#include <boost/uuid/string_generator.hpp>
+#include <boost/uuid/uuid.hpp>
 
 #include "bc/index.h"
 #include "statement-driver.hh"
@@ -14,6 +15,7 @@
 
 using std::cerr;
 using std::endl;
+using std::memcpy;
 
 namespace db {
 
@@ -60,14 +62,14 @@ private:
 
 int InsertOffset(void *data, int argc, char **argv, char **names)
 {
-	static boost::uuids::string_generator gen;
-
 	OffsetInserter *inserter = static_cast<OffsetInserter *>(data);
 	(void)names;
 	assert(argc == 2);
 	assert(argv[0]);
 	assert(argv[1]);
-	return inserter->Insert(gen(argv[0]), argv[1]) ? 0 : 1;
+	boost::uuids::uuid u;
+	memcpy(&u, argv[0], u.size());
+	return inserter->Insert(u, argv[1]) ? 0 : 1;
 }
 
 int CreateOffsets(sqlite3 *db)

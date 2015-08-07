@@ -9,13 +9,13 @@ struct F : public test::MemoryFixture {
 		: db(driver_.db())
 		, sql(db)
 	{
-		sql.Exec("CREATE TABLE sorts (uuid TEXT, name TEXT, math TEXT)");
+		sql.Exec("CREATE TABLE sorts (uuid BLOB, name TEXT, math TEXT)");
 	}
 
 	void Setup(const char *math)
 	{
 		std::ostringstream oss;
-		oss << "INSERT INTO sorts VALUES ('00000000-0000-0000-0000-000000000000', '%x', '"
+		oss << "INSERT INTO sorts VALUES (X'00000000000000000000000000000000', '%x', '"
 			<< math
 			<< "')";
 		std::string query = oss.str();
@@ -24,16 +24,14 @@ struct F : public test::MemoryFixture {
 
 	void Check(int nod, const char *body)
 	{
-		std::vector<std::string> r;
-		sql.Table("tacs", &r);
-		BOOST_CHECK_EQUAL(r.size(), 1u);
 		std::ostringstream oss;
-		oss << "00000000-0000-0000-0000-000000000000 %x "
+		oss << "00000000000000000000000000000000 %x "
 			<< nod
 			<< ' '
 			<< body;
 		std::string expected = oss.str();
-		BOOST_CHECK_EQUAL(r[0], expected);
+		std::vector<std::string> r{expected};
+		sql.CheckRows("SELECT hex(uuid), name, nod, body FROM tacs", r);
 	}
 
 	sqlite3 *db;

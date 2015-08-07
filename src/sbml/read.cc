@@ -177,8 +177,7 @@ public:
 
 	template<typename TType>
 	bool Write(const TType &x) {
-		return InsertName("00000000-0000-0000-0000-000000000000",
-						  x.type(),
+		return InsertName(x.type(),
 						  i_++,
 						  x.name().c_str());
 	}
@@ -190,7 +189,7 @@ private:
 class ValueWriter : db::StatementDriver {
 public:
 	explicit ValueWriter(sqlite3 *db)
-		: db::StatementDriver(db, "INSERT INTO input_values VALUES ('00000000-0000-0000-0000-000000000000', ?)")
+		: db::StatementDriver(db, "INSERT INTO input_values VALUES (X'00000000000000000000000000000000', ?)")
 	{
 	}
 
@@ -218,7 +217,7 @@ public:
 class FunctionWriter : db::StatementDriver {
 public:
 	explicit FunctionWriter(sqlite3 *db)
-		: db::StatementDriver(db, "INSERT INTO input_functions VALUES ('00000000-0000-0000-0000-000000000000', ?)")
+		: db::StatementDriver(db, "INSERT INTO input_functions VALUES (X'00000000000000000000000000000000', ?)")
 	{}
 
 	bool Write(const Assignment &a) {
@@ -244,7 +243,7 @@ public:
 class OdeWriter : db::StatementDriver {
 public:
 	explicit OdeWriter(sqlite3 *db)
-		: db::StatementDriver(db, "INSERT INTO input_odes VALUES ('00000000-0000-0000-0000-000000000000', ?)")
+		: db::StatementDriver(db, "INSERT INTO input_odes VALUES (X'00000000000000000000000000000000', ?)")
 	{}
 
 	bool Write(const Ode &o) {
@@ -309,11 +308,11 @@ bool Read(sqlite3 *db)
 		}
 	}
 
-	if (!CreateTable(db, "input_values", "(space_id TEXT, math TEXT)"))
+	if (!CreateTable(db, "input_values", "(space_id BLOB, math TEXT)"))
 		return false;
-	if (!CreateTable(db, "input_functions", "(space_id TEXT, math TEXT)"))
+	if (!CreateTable(db, "input_functions", "(space_id BLOB, math TEXT)"))
 		return false;
-	if (!CreateTable(db, "input_odes", "(space_id TEXT, math TEXT)"))
+	if (!CreateTable(db, "input_odes", "(space_id BLOB, math TEXT)"))
 		return false;
 
 	{

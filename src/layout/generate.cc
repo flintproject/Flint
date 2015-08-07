@@ -19,7 +19,7 @@
 #include <boost/ptr_container/ptr_map.hpp>
 #include <boost/ptr_container/ptr_unordered_map.hpp>
 #include <boost/ptr_container/ptr_vector.hpp>
-#include <boost/uuid/uuid_generators.hpp>
+#include <boost/uuid/uuid.hpp>
 
 #include "lo.pb.h"
 
@@ -31,6 +31,7 @@
 using std::cerr;
 using std::endl;
 using std::make_pair;
+using std::memcpy;
 using std::string;
 
 namespace layout {
@@ -123,19 +124,20 @@ public:
 	}
 
 	bool Load(TMap *m) {
-		static const int kUuidSize = 36;
-
-		boost::uuids::string_generator gen;
 		int e;
 		for (e = sqlite3_step(stmt()); e == SQLITE_ROW; e = sqlite3_step(stmt())) {
-			const unsigned char *uuid = sqlite3_column_text(stmt(), 0);
-			const unsigned char *space_id = sqlite3_column_text(stmt(), 1);
+			const void *uuid = sqlite3_column_blob(stmt(), 0);
+			const void *space_id = sqlite3_column_blob(stmt(), 1);
 			const unsigned char *label = sqlite3_column_text(stmt(), 2);
-			boost::uuids::uuid key = gen((const char *)space_id);
+			assert(uuid);
+			assert(space_id);
+			boost::uuids::uuid u, key;
+			memcpy(&u, uuid, u.size());
+			memcpy(&key, space_id, key.size());
 			if (label) {
-				(*m)[key].push_back(new Node(gen(string((const char *)uuid, kUuidSize)), string((const char *)label)));
+				(*m)[key].push_back(new Node(u, string((const char *)label)));
 			} else {
-				(*m)[key].push_back(new Node(gen(string((const char *)uuid, kUuidSize))));
+				(*m)[key].push_back(new Node(u));
 			}
 		}
 		if (e != SQLITE_DONE) {

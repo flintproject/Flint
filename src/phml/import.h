@@ -2,8 +2,10 @@
 #ifndef FLINT_PHML_IMPORT_H_
 #define FLINT_PHML_IMPORT_H_
 
+#include <boost/uuid/uuid.hpp>
+
 #include "sqlite3.h"
 
-bool DumpImport(sqlite3 *db, const char *uuid);
+bool DumpImport(sqlite3 *db, const boost::uuids::uuid &uuid);
 
 #endif

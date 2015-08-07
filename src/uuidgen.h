@@ -2,8 +2,6 @@
 #ifndef FLINT_UUIDGEN_H_
 #define FLINT_UUIDGEN_H_
 
-#include <string>
-
 #define BOOST_FILESYSTEM_NO_DEPRECATED
 #include <boost/filesystem.hpp>
 #include <boost/noncopyable.hpp>
@@ -13,7 +11,7 @@ class UuidGenerator : boost::noncopyable {
 public:
 	explicit UuidGenerator(const boost::filesystem::path &);
 
-	std::string operator()();
+	boost::uuids::uuid operator()();
 
 private:
 	boost::mt19937 ran_;
