@@ -27,6 +27,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.Map;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
@@ -43,6 +45,7 @@ import jp.oist.flint.dao.JobDao;
 import jp.oist.flint.dao.TaskDao;
 import jp.oist.flint.executor.PhspSimulator;
 import jp.oist.flint.export.ExportWorker;
+import jp.oist.flint.filesystem.Filename;
 import jp.oist.flint.filesystem.Workspace;
 import jp.oist.flint.form.IFrame;
 import jp.oist.flint.form.MainFrame;
@@ -586,7 +589,7 @@ public class JobWindow extends javax.swing.JFrame
             if (result != JFileChooser.APPROVE_OPTION)
                 return;
 
-            File selectedDir = fileChooser.getSelectedFile();
+            final File selectedDir = fileChooser.getSelectedFile();
 
             if (!selectedDir.exists()) {
                 result = JOptionPane.showConfirmDialog(mParent,
@@ -597,14 +600,61 @@ public class JobWindow extends javax.swing.JFrame
                 if (result == JOptionPane.NO_OPTION)
                     return;
                 if (!selectedDir.mkdirs()) {
-                    showErrorDialog("failed to create directory: " + selectedDir.toString(),
+                    showErrorDialog("failed to create directory: " + selectedDir.toPath(),
                                     "Error on exporting simulation data");
+                    return;
                 }
             }
 
-            TaskDao taskDao = mSimulator.getSimulationDao()
-                     .obtainTask(new File(mParent.getRelativeModelPath()));
-            mExportWorker = new ExportAllWorker(this, selectedDir, taskDao);
+            ConfirmDialogForOverwritingFile confirmDialog = new ConfirmDialogForOverwritingFile(this);
+            File listFile = new File(selectedDir, "simulation.txt");
+            if (listFile.exists()) {
+                result = confirmDialog.show(listFile);
+                switch (result) {
+                case JOptionPane.YES_OPTION:
+                    if (!listFile.delete()) {
+                        showErrorDialog("failed to delete " + listFile.toPath(),
+                                        "Error on exporting simulation data");
+                        return;
+                    }
+                    break;
+                default:
+                    return; // quit
+                }
+            }
+
+            ArrayList<File> isdFiles = new ArrayList<>();
+            ArrayList<File> targetFiles = new ArrayList<>();
+            ArrayList<Map<String, Number>> parameters = new ArrayList<>();
+            TaskDao taskDao = mSimulator.getSimulationDao().obtainTask(new File(mParent.getRelativeModelPath()));
+            int numJobs = taskDao.getCount();
+            int numDigits = String.valueOf(numJobs).getBytes(StandardCharsets.UTF_8).length;
+            for (int i=1; i<=numJobs; i++) {
+                JobDao job = taskDao.obtainJob(i);
+                File isdFile = job.getIsdFile();
+                File targetFile = Filename.getVariant(taskDao.getModelFile(), selectedDir, i, numDigits, "isd");
+                if (targetFile.exists()) {
+                    result = confirmDialog.show(targetFile);
+                    switch (result) {
+                    case JOptionPane.YES_OPTION:
+                        if (!targetFile.delete()) {
+                            showErrorDialog("failed to delete " + targetFile.toPath(),
+                                            "Error on exporting simulation data");
+                            return;
+                        }
+                        break;
+                    case JOptionPane.NO_OPTION:
+                        continue; // skip this file
+                    default:
+                        return; // quit;
+                    }
+                }
+                isdFiles.add(isdFile);
+                targetFiles.add(targetFile);
+                parameters.add(job.getCombination());
+            }
+
+            mExportWorker = new ExportAllWorker(listFile, isdFiles, targetFiles, parameters);
 
             mExportWorker.addPropertyChangeListener(new PropertyChangeListener() {
                 @Override
@@ -629,15 +679,13 @@ public class JobWindow extends javax.swing.JFrame
                         ((MainFrame)window).setEditable(true);
                         try {
                             worker.get();
-                            if (!worker.isExportingCancelled()) {
-                                JOptionPane.showMessageDialog(JobWindow.this, 
-                                        "Exported simulation data to " 
-                                                + worker.getExportedDirecotry().getPath(),
-                                        "Export is completed.",
-                                        JOptionPane.INFORMATION_MESSAGE);
-                            }
+                            JOptionPane.showMessageDialog(JobWindow.this,
+                                                          "Exported simulation data to "
+                                                          + selectedDir.getPath(),
+                                                          "Export is completed.",
+                                                          JOptionPane.INFORMATION_MESSAGE);
                         } catch (CancellationException ex) {
-                            JOptionPane.showMessageDialog(JobWindow.this, 
+                            JOptionPane.showMessageDialog(JobWindow.this,
                                     "Exporting simulation data is cancelled.",
                                     "Exporting is cancelled.", JOptionPane.INFORMATION_MESSAGE);
                         } catch (InterruptedException | ExecutionException | HeadlessException ex) {
