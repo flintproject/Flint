@@ -10,6 +10,7 @@
 
 #include "mathml/math_dumper.h"
 
+namespace flint {
 namespace phml {
 
 using std::cerr;
@@ -220,6 +221,7 @@ private:
 	TReader *reader_;
 };
 
-} // namespace phml
+}
+}
 
 #endif

@@ -4,6 +4,7 @@
 
 #include "sqlite3.h"
 
+namespace flint {
 namespace load {
 
 /*
@@ -12,6 +13,7 @@ namespace load {
  */
 bool Param(sqlite3 *db, const char *output);
 
+}
 }
 
 #endif

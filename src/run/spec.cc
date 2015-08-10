@@ -16,6 +16,7 @@
 using std::cerr;
 using std::endl;
 
+namespace flint {
 namespace run {
 
 namespace {
@@ -50,4 +51,5 @@ bool Spec(sqlite3 *db, FILE *fp)
 	return true;
 }
 
+}
 }

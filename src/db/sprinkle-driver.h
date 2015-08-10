@@ -10,6 +10,7 @@
 
 #include "statement-driver.hh"
 
+namespace flint {
 namespace db {
 
 class SprinkleDriver : StatementDriver {
@@ -54,6 +55,7 @@ public:
 	}
 };
 
-} // namespace db
+}
+}
 
 #endif

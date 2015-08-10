@@ -33,6 +33,8 @@ using std::string;
 using std::stringstream;
 using std::vector;
 
+using namespace flint;
+
 void OutputHeader(ostream &ost, size_t num_objs, string &descriptions, string &units);
 
 int main(int argc, char *argv[]) {

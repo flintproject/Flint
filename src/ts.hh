@@ -5,6 +5,7 @@
 #include "runtime/timeseries.h"
 #include "sqlite3.h"
 
+namespace flint {
 namespace ts {
 
 /*
@@ -17,6 +18,7 @@ bool Tsc(sqlite3 *db);
  */
 bool LoadTimeseriesVector(sqlite3 *db, TimeseriesVector *tv);
 
+}
 }
 
 #endif

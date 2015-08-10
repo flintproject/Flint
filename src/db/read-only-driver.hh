@@ -6,6 +6,7 @@
 
 #include "sqlite3.h"
 
+namespace flint {
 namespace db {
 
 class ReadOnlyDriver : boost::noncopyable {
@@ -20,6 +21,7 @@ private:
 	sqlite3 *db_;
 };
 
+}
 }
 
 #endif

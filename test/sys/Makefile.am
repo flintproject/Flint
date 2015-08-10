@@ -1,11 +1,9 @@
 include $(top_srcdir)/common.mk
+include $(top_srcdir)/test/test.mk
 
 TESTS = \
 	test_temporary_path
 
 noinst_PROGRAMS = $(TESTS)
-AM_CPPFLAGS = -DBOOST_TEST_DYN_LINK -DBOOST_TEST_MAIN -I$(top_srcdir)/src $(BOOST_CPPFLAGS) $(PROTOBUF_CFLAGS)
-AM_LDFLAGS = $(BOOST_UNIT_TEST_FRAMEWORK_LDFLAGS) $(BOOST_FILESYSTEM_LDFLAGS) $(BOOST_SYSTEM_LDFLAGS)
-LDADD = ../../src/libflintxx.la ../../src/libflint.la ../../src/libsqlite3.la $(BOOST_UNIT_TEST_FRAMEWORK_LIBS) $(BOOST_FILESYSTEM_LIBS) $(BOOST_SYSTEM_LIBS) $(PROTOBUF_LIBS)
 
 test_temporary_path_SOURCES = test_temporary_path.cc

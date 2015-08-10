@@ -2,6 +2,8 @@
 #ifndef FLINT_REDUCTION_HH_
 #define FLINT_REDUCTION_HH_
 
+namespace flint {
+
 enum class Reduction {
 	kUnspecified,
 	kSum,
@@ -15,5 +17,7 @@ enum class Reduction {
  * Return true in case of success, false otherwise.
  */
 bool ConvertStringToReduction(const char *s, Reduction *r);
+
+}
 
 #endif

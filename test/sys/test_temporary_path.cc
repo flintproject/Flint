@@ -5,11 +5,8 @@
 
 #include "sys/temporary_path.h"
 
-#include <cstdio>
-#include <fstream>
-#include <sstream>
 #define BOOST_TEST_MODULE test_temporary_path
-#include <boost/test/unit_test.hpp>
+#include "test.hh"
 
 struct F {
 	F() : temporary_path_(new TemporaryPath) {}

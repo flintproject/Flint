@@ -21,6 +21,7 @@ using std::sprintf;
 using std::strcat;
 using std::strlen;
 
+namespace flint {
 namespace exec {
 
 namespace {
@@ -229,4 +230,5 @@ bool Enum(sqlite3 *db)
 	return CommitTransaction(db);
 }
 
+}
 }

@@ -34,6 +34,7 @@ using std::make_pair;
 using std::memcpy;
 using std::string;
 
+namespace flint {
 namespace layout {
 
 namespace {
@@ -245,4 +246,5 @@ bool Generate(sqlite3 *db, const char *filename)
 	return true;
 }
 
+}
 }

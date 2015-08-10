@@ -8,6 +8,8 @@
 
 #include "bc/pack.h"
 
+namespace flint {
+
 class FilterLoader : boost::noncopyable {
 public:
 	explicit FilterLoader(const std::string &file) : ifs_(file.c_str(), std::ios::in|std::ios::binary) {}
@@ -46,5 +48,7 @@ public:
 private:
 	std::ifstream ifs_;
 };
+
+}
 
 #endif

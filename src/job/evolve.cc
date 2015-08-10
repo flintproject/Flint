@@ -46,6 +46,7 @@ using std::fread;
 using std::fwrite;
 using std::string;
 
+namespace flint {
 namespace job {
 
 namespace {
@@ -576,4 +577,5 @@ bool Evolve(sqlite3 *db,
 	return result;
 }
 
+}
 }

@@ -25,6 +25,7 @@ using std::cerr;
 using std::endl;
 using std::fprintf;
 
+namespace flint {
 namespace phml {
 
 namespace {
@@ -81,7 +82,7 @@ public:
 		if (ifs_.is_open()) ifs_.close();
 	}
 
-	bool Load(phml::NumericalConfiguration *nc) {
+	bool Load(::phml::NumericalConfiguration *nc) {
 		if (!ifs_.is_open()) {
 			cerr << "failed to open nc file" << endl;
 			return false;
@@ -125,7 +126,7 @@ public:
 
 bool LengthAndStep(sqlite3 *db, const char *nc_file, const char *uot_file)
 {
-	phml::NumericalConfiguration nc;
+	::phml::NumericalConfiguration nc;
 	{
 		std::unique_ptr<NumericalConfigurationLoader> loader(new NumericalConfigurationLoader(nc_file));
 		if (!loader->Load(&nc)) return false;
@@ -186,4 +187,5 @@ bool LengthAndStep(sqlite3 *db, const char *nc_file, const char *uot_file)
 	return true;
 }
 
+}
 }

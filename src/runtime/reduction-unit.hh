@@ -6,6 +6,8 @@
 
 #include "reduction.hh"
 
+namespace flint {
+
 class ReductionUnit {
 public:
 	ReductionUnit(Reduction reduction, int target_addr);
@@ -23,5 +25,7 @@ private:
 	int target_addr_;
 	std::unordered_set<int> source_addrs_;
 };
+
+}
 
 #endif

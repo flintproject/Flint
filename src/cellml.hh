@@ -4,6 +4,7 @@
 
 #include "sqlite3.h"
 
+namespace flint {
 namespace cellml {
 
 /*
@@ -12,6 +13,7 @@ namespace cellml {
  */
 bool Read(sqlite3 *db);
 
+}
 }
 
 #endif

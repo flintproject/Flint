@@ -15,6 +15,7 @@ using std::cerr;
 using std::endl;
 using std::strcmp;
 
+namespace flint {
 namespace compiler {
 
 bool Compile(sqlite3 *db, const char *table, const char *method, const char *output)
@@ -51,4 +52,5 @@ bool Compile(sqlite3 *db, const char *table, const char *method, const char *out
 	return true;
 }
 
+}
 }

@@ -10,6 +10,7 @@
 using std::cerr;
 using std::endl;
 
+namespace flint {
 namespace db {
 
 TacInserter::TacInserter(sqlite3 *db)
@@ -54,4 +55,5 @@ bool TacInserter::Insert(const char *name, int nod, const char *body)
 	return Insert(nu, name, nod, body);
 }
 
+}
 }

@@ -4,10 +4,12 @@
 
 #include "sqlite3.h"
 
+namespace flint {
 namespace db {
 
 bool Flow(sqlite3 *db);
 
+}
 }
 
 #endif

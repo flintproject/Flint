@@ -12,6 +12,7 @@ using std::endl;
 using std::memcpy;
 using std::strcmp;
 
+namespace flint {
 namespace task {
 
 ConfigReader::ConfigReader(sqlite3 *db)
@@ -76,4 +77,5 @@ const char *ConfigReader::GetCanonicalMethodName()
 	return kRk4;
 }
 
+}
 }

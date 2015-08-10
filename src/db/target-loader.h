@@ -14,6 +14,7 @@
 
 #include "statement-driver.hh"
 
+namespace flint {
 namespace db {
 
 class TargetLoader : StatementDriver {
@@ -78,6 +79,7 @@ private:
 	}
 };
 
-} // namespace db
+}
+}
 
 #endif

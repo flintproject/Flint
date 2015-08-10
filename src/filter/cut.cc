@@ -25,6 +25,7 @@ using std::make_pair;
 using std::map;
 using std::string;
 
+namespace flint {
 namespace filter {
 
 namespace {
@@ -84,4 +85,5 @@ bool Cut(const char *filter_file, FILE *ifp, FILE *ofp)
 	return filter->Apply(ifp, ofp);
 }
 
+}
 }

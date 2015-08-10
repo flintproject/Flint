@@ -25,6 +25,7 @@ using std::cerr;
 using std::endl;
 using std::sprintf;
 
+namespace flint {
 namespace exec {
 
 namespace {
@@ -72,4 +73,5 @@ bool JobRunner::Run()
 	return job::Job(tr_->dir(), dir_.get(), stored_.get(), isd_.get(), tr_->reader(), tr_->GetModelDatabase());
 }
 
+}
 }

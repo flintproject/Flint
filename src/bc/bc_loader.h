@@ -12,6 +12,8 @@
 
 #include "bc.pb.h"
 
+namespace flint {
+
 typedef boost::ptr_vector<bc::SectionHeader> ShVector;
 typedef boost::ptr_vector<bc::BlockHeader> BhVector;
 typedef boost::ptr_vector<bc::Code> CVector;
@@ -75,5 +77,7 @@ private:
 	std::ifstream ifs_;
 	bc::Header header_;
 };
+
+}
 
 #endif

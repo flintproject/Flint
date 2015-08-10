@@ -5,6 +5,7 @@
 #include <cstdio>
 #include "sqlite3.h"
 
+namespace flint {
 namespace filter {
 
 /*
@@ -28,6 +29,7 @@ bool Track(const char *filter_file, const char *output_file);
  */
 bool Isdh(const char *filter_file, const char *output_file);
 
+}
 }
 
 #endif

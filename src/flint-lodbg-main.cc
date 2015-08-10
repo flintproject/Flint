@@ -16,6 +16,8 @@ using std::cerr;
 using std::cout;
 using std::endl;
 
+using namespace flint;
+
 namespace {
 
 void Usage()

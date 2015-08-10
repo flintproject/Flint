@@ -24,6 +24,7 @@ using std::cerr;
 using std::endl;
 using std::strcmp;
 
+namespace flint {
 namespace {
 
 bool IsInCellMLNamespace(const xmlChar *uri)
@@ -836,4 +837,6 @@ bool ParseCellml(sqlite3 *db)
 
 	CellMLParser parser(db);
 	return parser.Parse();
+}
+
 }

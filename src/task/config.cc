@@ -13,6 +13,7 @@ using std::cerr;
 using std::endl;
 using std::sprintf;
 
+namespace flint {
 namespace task {
 
 bool Config(int id, sqlite3 *db)
@@ -61,4 +62,5 @@ bool Config(int id, sqlite3 *db)
 	return true;
 }
 
+}
 }

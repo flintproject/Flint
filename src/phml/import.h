@@ -6,6 +6,10 @@
 
 #include "sqlite3.h"
 
+namespace flint {
+
 bool DumpImport(sqlite3 *db, const boost::uuids::uuid &uuid);
+
+}
 
 #endif

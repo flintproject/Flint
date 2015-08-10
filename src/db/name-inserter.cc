@@ -13,6 +13,7 @@ using std::endl;
 using std::exit;
 using std::printf;
 
+namespace flint {
 namespace db {
 
 NameInserter::NameInserter(const char *table, sqlite3 *db)
@@ -75,4 +76,5 @@ bool NameInserter::InsertName(char type, int id, const char *name)
 	return InsertName(nu, type, id, name);
 }
 
+}
 }

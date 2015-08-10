@@ -4,11 +4,13 @@
 
 #include "sqlite3.h"
 
+namespace flint {
 namespace compiler {
 namespace sort {
 
 bool Sort(sqlite3 *db);
 
+}
 }
 }
 

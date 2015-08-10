@@ -9,6 +9,7 @@
 using std::cerr;
 using std::endl;
 
+namespace flint {
 namespace layout {
 
 namespace {
@@ -43,4 +44,5 @@ void Copier::Copy(const double *source, double *target) const
 		std::memcpy(target + p.first, source + p.first, p.second);
 }
 
+}
 }

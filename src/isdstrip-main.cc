@@ -30,6 +30,8 @@ using std::ostream;
 using std::string;
 using std::vector;
 
+using namespace flint;
+
 namespace {
 
 bool ExtractConstantColumns(const char *input,

@@ -20,7 +20,7 @@ struct F : public test::MemoryFixture {
 					  std::vector<std::string> &input_odes)
 	{
 		BOOST_CHECK_EQUAL(SaveGivenFile(driver_.db(), file), 1);
-		BOOST_CHECK(flint::sbml::Read(driver_.db()));
+		BOOST_CHECK(sbml::Read(driver_.db()));
 
 		test::Sql sql(driver_.db());
 		sql.CheckRows("SELECT hex(space_id), type, id, name, unit, capacity FROM names", names);

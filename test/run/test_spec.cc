@@ -30,7 +30,7 @@ struct F : public test::MemoryFixture {
 
 	void Sbml(const char *file) {
 		SaveGivenFile(driver_.db(), file);
-		BOOST_REQUIRE(flint::sbml::Read(driver_.db()));
+		BOOST_REQUIRE(sbml::Read(driver_.db()));
 	}
 
 	void GenerateAndCompare(const char *output, const char *expected)

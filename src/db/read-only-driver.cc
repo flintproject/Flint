@@ -8,6 +8,7 @@
 using std::cerr;
 using std::endl;
 
+namespace flint {
 namespace db {
 
 ReadOnlyDriver::ReadOnlyDriver(const char *filename)
@@ -29,4 +30,5 @@ sqlite3 *ReadOnlyDriver::db()
 	return db_;
 }
 
+}
 }

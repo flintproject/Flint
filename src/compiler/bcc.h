@@ -5,11 +5,13 @@
 #include <iostream>
 #include "sqlite3.h"
 
+namespace flint {
 namespace compiler {
 namespace bcc {
 
 bool Bcc(sqlite3 *db, std::ostream *os);
 
+}
 }
 }
 

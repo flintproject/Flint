@@ -22,6 +22,8 @@ using std::ofstream;
 using std::ostream;
 using std::string;
 
+using namespace flint;
+
 namespace {
 
 int ReadAndCount(bool columns, istream *is, ostream *os)

@@ -26,6 +26,8 @@ using std::perror;
 using std::strcmp;
 using std::string;
 
+using namespace flint;
+
 namespace {
 
 class ColumnHandler {

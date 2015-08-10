@@ -5,6 +5,7 @@
 #include <cstdio>
 #include "sqlite3.h"
 
+namespace flint {
 namespace phsp {
 
 /*
@@ -14,6 +15,7 @@ namespace phsp {
  */
 bool Read(const char *phsp_file, sqlite3 *db);
 
+}
 }
 
 #endif

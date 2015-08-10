@@ -14,14 +14,14 @@ BOOST_FIXTURE_TEST_SUITE(test_load, test::MemoryFixture)
 
 BOOST_AUTO_TEST_CASE(BIOMD0000000114) {
 	BOOST_CHECK_EQUAL(SaveGivenFile(driver_.db(), TEST_MODELS("BIOMD0000000114.xml")), 1);
-	BOOST_CHECK(flint::sbml::Parse(driver_.db()));
-	BOOST_CHECK(flint::sbml::Load(driver_.db()));
+	BOOST_CHECK(sbml::Parse(driver_.db()));
+	BOOST_CHECK(sbml::Load(driver_.db()));
 }
 
 BOOST_AUTO_TEST_CASE(BIOMD0000000152) {
 	BOOST_CHECK_EQUAL(SaveGivenFile(driver_.db(), TEST_MODELS("BIOMD0000000152.xml")), 1);
-	BOOST_CHECK(flint::sbml::Parse(driver_.db()));
-	BOOST_CHECK(flint::sbml::Load(driver_.db()));
+	BOOST_CHECK(sbml::Parse(driver_.db()));
+	BOOST_CHECK(sbml::Load(driver_.db()));
 }
 
 BOOST_AUTO_TEST_SUITE_END()

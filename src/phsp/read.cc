@@ -37,6 +37,7 @@ using std::perror;
 using std::sprintf;
 using std::string;
 
+namespace flint {
 namespace phsp {
 
 namespace {
@@ -804,4 +805,5 @@ bool Read(const char *phsp_file, sqlite3 *db)
 	return true;
 }
 
+}
 }

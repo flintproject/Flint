@@ -4,6 +4,7 @@
 
 #include <memory>
 
+namespace flint {
 namespace exec {
 
 class TaskRunner;
@@ -24,6 +25,7 @@ private:
 	std::unique_ptr<char[]> isd_;
 };
 
+}
 }
 
 #endif

@@ -7,6 +7,8 @@
 #include <boost/noncopyable.hpp>
 #include <boost/uuid/uuid_generators.hpp>
 
+namespace flint {
+
 class UuidGenerator : boost::noncopyable {
 public:
 	explicit UuidGenerator(const boost::filesystem::path &);
@@ -17,5 +19,7 @@ private:
 	boost::mt19937 ran_;
 	boost::uuids::basic_random_generator<boost::mt19937> gen_;
 };
+
+}
 
 #endif

@@ -15,6 +15,7 @@
 #include "db/name-inserter.h"
 #include "sqlite3.h"
 
+namespace flint {
 namespace task {
 
 namespace {
@@ -119,4 +120,5 @@ bool Form(sqlite3 *db)
 	return CommitTransaction(db);
 }
 
+}
 }

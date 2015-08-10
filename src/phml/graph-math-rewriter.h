@@ -6,6 +6,7 @@
 
 #include "sqlite3.h"
 
+namespace flint {
 namespace phml {
 
 class GraphMathRewriter : boost::noncopyable {
@@ -32,6 +33,7 @@ private:
 	sqlite3_stmt *stmt_update_;
 };
 
-} // namespace phml
+}
+}
 
 #endif

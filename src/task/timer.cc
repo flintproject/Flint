@@ -14,6 +14,7 @@ using std::cerr;
 using std::endl;
 using std::fwrite;
 
+namespace flint {
 namespace task {
 
 bool Timer(double end, double dt, FILE *fp)
@@ -34,4 +35,5 @@ bool Timer(double end, double dt, FILE *fp)
 	return true;
 }
 
+}
 }

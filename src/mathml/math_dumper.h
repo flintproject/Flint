@@ -9,6 +9,7 @@
 #include <iostream>
 #include <libxml/xmlreader.h>
 
+namespace flint {
 namespace mathml {
 
 using std::cerr;
@@ -456,6 +457,7 @@ int MathDumper::ReadElement(int space) {
 	return xmlTextReaderRead(text_reader_);
 }
 
-} // namespace mathml
+}
+}
 
 #endif

@@ -12,6 +12,7 @@
 
 #include "statement-driver.hh"
 
+namespace flint {
 namespace db {
 
 class NameLoader : StatementDriver {
@@ -66,6 +67,7 @@ public:
 	}
 };
 
-} // namespace db
+}
+}
 
 #endif

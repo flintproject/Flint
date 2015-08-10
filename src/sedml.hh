@@ -4,6 +4,7 @@
 
 #include "sqlite3.h"
 
+namespace flint {
 namespace sedml {
 
 /*
@@ -13,6 +14,7 @@ namespace sedml {
  */
 bool Read(const char *sedml_file, sqlite3 *db);
 
+}
 }
 
 #endif

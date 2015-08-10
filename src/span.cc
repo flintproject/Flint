@@ -24,6 +24,7 @@ using std::multimap;
 using std::vector;
 using std::pair;
 
+namespace flint {
 namespace {
 
 class Edge : boost::noncopyable {
@@ -462,4 +463,6 @@ bool Span(sqlite3 *db)
 	}
 
 	return true;
+}
+
 }

@@ -5,6 +5,7 @@
 #include "cellml/translator.h"
 #include "db.hh"
 
+namespace flint {
 namespace cellml {
 
 bool Read(sqlite3 *db)
@@ -12,4 +13,5 @@ bool Read(sqlite3 *db)
 	return ParseCellml(db) && TranslateCellml(db) && db::Flow(db);
 }
 
+}
 }

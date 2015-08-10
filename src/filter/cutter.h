@@ -12,6 +12,7 @@
 #include "filter/filter_loader.h"
 #include "filter/writer.hh"
 
+namespace flint {
 namespace filter {
 
 class Cutter : boost::noncopyable {
@@ -46,6 +47,7 @@ private:
 	std::map<int, int> columns_;
 };
 
+}
 }
 
 #endif

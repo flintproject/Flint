@@ -14,6 +14,8 @@ using std::cerr;
 using std::endl;
 using std::strcmp;
 
+using namespace flint;
+
 namespace {
 
 void usage()

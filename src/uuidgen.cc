@@ -15,6 +15,7 @@
 using std::cerr;
 using std::endl;
 
+namespace flint {
 namespace {
 
 class Adler32Loader : boost::noncopyable {
@@ -68,4 +69,6 @@ UuidGenerator::UuidGenerator(const boost::filesystem::path &path)
 boost::uuids::uuid UuidGenerator::operator()()
 {
 	return gen_();
+}
+
 }

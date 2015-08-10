@@ -4,6 +4,8 @@
 
 #include <string>
 
+namespace flint {
+
 class TemporaryPath {
 public:
 	TemporaryPath() : name_("tmp"), directory_() {}
@@ -20,5 +22,7 @@ private:
 	std::string name_;
 	std::string directory_;
 };
+
+}
 
 #endif // SYS_TEMPORARY_PATH_H_

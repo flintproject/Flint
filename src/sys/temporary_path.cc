@@ -14,6 +14,8 @@
 using std::cerr;
 using std::endl;
 
+namespace flint {
+
 #ifdef HAVE_MKSTEMP
 
 namespace {
@@ -109,3 +111,5 @@ char *TemporaryPath::Create(const void *data, size_t size)
 }
 
 #endif
+
+}

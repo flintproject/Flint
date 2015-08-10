@@ -4,6 +4,7 @@
 
 #include "sqlite3.h"
 
+namespace flint {
 namespace phml {
 
 class TransitionForm {
@@ -20,6 +21,7 @@ private:
 	sqlite3_stmt *stmt_impls_;
 };
 
-} // namespace phml
+}
+}
 
 #endif

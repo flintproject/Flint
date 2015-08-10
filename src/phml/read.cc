@@ -50,6 +50,7 @@ using std::printf;
 using std::set;
 using std::string;
 
+namespace flint {
 namespace phml {
 
 namespace {
@@ -3988,4 +3989,5 @@ bool Read(sqlite3 *db)
 	return true;
 }
 
+}
 }

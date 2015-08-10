@@ -4,6 +4,8 @@
 
 #include "sqlite3.h"
 
+namespace flint {
+
 /*
  * Read the input file, and return an internal C string, which the client
  * code is responsible for freeing by delete [] after use.
@@ -11,5 +13,7 @@
  */
 char *GetGivenFilename(sqlite3 *db);
 char *GetModelFilename(sqlite3 *db);
+
+}
 
 #endif

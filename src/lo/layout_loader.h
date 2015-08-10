@@ -10,6 +10,8 @@
 
 #include "bc/pack.h"
 
+namespace flint {
+
 class LayoutLoader : boost::noncopyable {
 public:
 	explicit LayoutLoader(const std::string &file) : ifs_(file.c_str(), std::ios::in|std::ios::binary) {}
@@ -65,5 +67,7 @@ public:
 private:
 	std::ifstream ifs_;
 };
+
+}
 
 #endif

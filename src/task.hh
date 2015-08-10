@@ -5,6 +5,7 @@
 #include <cstdio>
 #include "sqlite3.h"
 
+namespace flint {
 namespace task {
 
 /*
@@ -30,6 +31,7 @@ bool Form(sqlite3 *db);
  */
 bool Timer(double length, double step, FILE *fp);
 
+}
 }
 
 #endif

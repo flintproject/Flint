@@ -26,6 +26,7 @@ using std::endl;
 using std::memcpy;
 using std::string;
 
+namespace flint {
 namespace filter {
 
 namespace {
@@ -82,4 +83,5 @@ bool Track(const char *filter_file, const char *output_file)
 	return true;
 }
 
+}
 }

@@ -32,6 +32,7 @@ using std::cerr;
 using std::endl;
 using std::perror;
 
+namespace flint {
 namespace run {
 
 namespace {
@@ -137,4 +138,5 @@ bool Run(const char *input, int size)
 	return job::Job(".", "0", "init", output_file.c_str(), reader, db);
 }
 
+}
 }

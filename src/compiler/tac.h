@@ -4,11 +4,13 @@
 
 #include "sqlite3.h"
 
+namespace flint {
 namespace compiler {
 namespace tac {
 
 bool Tac(sqlite3 *db);
 
+}
 }
 }
 

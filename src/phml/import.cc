@@ -22,6 +22,7 @@ using std::fclose;
 using std::fopen;
 using std::sprintf;
 
+namespace flint {
 namespace {
 
 class Parser {
@@ -100,4 +101,6 @@ bool DumpImport(sqlite3 *db, const boost::uuids::uuid &uuid)
 	sprintf(dump_file.get(), "%s.xml", us.c_str());
 	std::unique_ptr<Parser> parser(new Parser(us, doc));
 	return parser->Dump(dump_file.get());
+}
+
 }

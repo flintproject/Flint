@@ -11,6 +11,8 @@ using std::cerr;
 using std::endl;
 using std::strcmp;
 
+using namespace flint;
+
 namespace {
 
 const size_t kInputLength = 8192;

@@ -5,6 +5,7 @@
 #include <cstdio>
 #include "sqlite3.h"
 
+namespace flint {
 namespace task {
 class ConfigReader;
 }
@@ -57,6 +58,7 @@ bool Job(const char *task_dir,
 		 const task::ConfigReader &reader,
 		 sqlite3 *db);
 
+}
 }
 
 #endif

@@ -12,6 +12,7 @@
 
 #include "statement-driver.hh"
 
+namespace flint {
 namespace db {
 
 class JournalLoader : StatementDriver {
@@ -42,6 +43,7 @@ public:
 	}
 };
 
-} // namespace db
+}
+}
 
 #endif

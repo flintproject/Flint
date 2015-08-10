@@ -37,6 +37,7 @@ using std::vector;
 
 using namespace boost::spirit;
 
+namespace flint {
 namespace compiler {
 namespace sort {
 
@@ -60,15 +61,17 @@ struct Entry {
 
 }
 }
+}
 
-BOOST_FUSION_ADAPT_STRUCT(compiler::sort::Compound,
-						  (std::vector<compiler::sort::Expr>, children))
+BOOST_FUSION_ADAPT_STRUCT(flint::compiler::sort::Compound,
+						  (std::vector<flint::compiler::sort::Expr>, children))
 
-BOOST_FUSION_ADAPT_STRUCT(compiler::sort::Entry,
+BOOST_FUSION_ADAPT_STRUCT(flint::compiler::sort::Entry,
 						  (std::string, uuid)
 						  (std::string, name)
-						  (compiler::sort::Expr, expr))
+						  (flint::compiler::sort::Expr, expr))
 
+namespace flint {
 namespace compiler {
 namespace sort {
 namespace {
@@ -435,5 +438,6 @@ bool Sort(sqlite3 *db)
 	return CommitTransaction(db);
 }
 
+}
 }
 }

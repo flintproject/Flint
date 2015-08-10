@@ -22,6 +22,8 @@
 #include "bc/mounter.h"
 #include "lo.pb.h"
 
+namespace flint {
+
 typedef boost::ptr_unordered_map<boost::uuids::uuid,
 								 std::unordered_map<int, int>
 								 > DataOffsetMap;
@@ -260,5 +262,7 @@ private:
 	LocaterMap lm_;
 	MounterMap mm_;
 };
+
+}
 
 #endif

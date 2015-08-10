@@ -4,6 +4,7 @@
 
 #include "sqlite3.h"
 
+namespace flint {
 namespace layout {
 
 /*
@@ -11,6 +12,7 @@ namespace layout {
  */
 bool Generate(sqlite3 *db, const char *filename);
 
+}
 }
 
 #endif

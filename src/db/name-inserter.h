@@ -9,6 +9,7 @@
 
 #include "sqlite3.h"
 
+namespace flint {
 namespace db {
 
 class NameInserter : boost::noncopyable {
@@ -29,6 +30,7 @@ private:
 	sqlite3_stmt *stmt_;
 };
 
-} // namespace db
+}
+}
 
 #endif

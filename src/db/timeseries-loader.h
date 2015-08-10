@@ -12,6 +12,7 @@
 
 #include "statement-driver.hh"
 
+namespace flint {
 namespace db {
 
 class TimeseriesLoader : StatementDriver {
@@ -45,6 +46,7 @@ public:
 	}
 };
 
-} // namespace db
+}
+}
 
 #endif

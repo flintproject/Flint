@@ -2,6 +2,7 @@
 #ifndef FLINT_RUN_HH_
 #define FLINT_RUN_HH_
 
+namespace flint {
 namespace run {
 
 /*
@@ -9,6 +10,7 @@ namespace run {
  */
 bool Run(const char *input, int size);
 
+}
 }
 
 #endif

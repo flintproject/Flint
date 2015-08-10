@@ -35,6 +35,7 @@ using std::strcpy;
 using std::string;
 using std::strlen;
 
+namespace flint {
 namespace {
 
 const char kTreeQuery[] = "SELECT DISTINCT component FROM variables";
@@ -466,4 +467,6 @@ bool TranslateCellml(sqlite3 *db)
 		return false;
 
 	return CommitTransaction(db);
+}
+
 }

@@ -4,6 +4,7 @@
 
 #include "sqlite3.h"
 
+namespace flint {
 namespace phz {
 
 /*
@@ -12,6 +13,7 @@ namespace phz {
  */
 bool Read(sqlite3 *db, const char *dir);
 
+}
 }
 
 #endif

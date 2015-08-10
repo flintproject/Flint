@@ -36,6 +36,7 @@ using std::fclose;
 using std::fopen;
 using std::fwrite;
 
+namespace flint {
 namespace runtime {
 
 namespace {
@@ -266,4 +267,5 @@ bool Init(sqlite3 *db, const char *layout_file, const char *bc_file, const char 
 	return true;
 }
 
+}
 }

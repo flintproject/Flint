@@ -21,6 +21,8 @@
 
 #include "isdf/reader.h"
 
+namespace flint {
+
 class TimeseriesData : boost::noncopyable {
 public:
 	explicit TimeseriesData(boost::filesystem::path path)
@@ -126,5 +128,7 @@ private:
 };
 
 typedef boost::ptr_vector<TimeseriesData> TimeseriesVector;
+
+}
 
 #endif

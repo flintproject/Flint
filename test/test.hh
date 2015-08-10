@@ -16,6 +16,8 @@
 #include "db/driver.hh"
 #include "sqlite3.h"
 
+using namespace flint;
+
 #define TEST_MODELS_0(dirname, basename) (#dirname "/" basename)
 #define TEST_MODELS_1(dirname, basename) TEST_MODELS_0(dirname, basename)
 #define TEST_MODELS(basename) TEST_MODELS_1(TEST_MODELS_DIR, basename)

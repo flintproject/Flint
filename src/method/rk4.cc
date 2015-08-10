@@ -27,6 +27,7 @@ using std::memcpy;
 
 using namespace boost::spirit;
 
+namespace flint {
 namespace method {
 
 namespace {
@@ -591,4 +592,5 @@ bool Rk4(sqlite3 *db, const char *input, sqlite3 *output)
 	return true;
 }
 
+}
 }

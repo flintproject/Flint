@@ -39,6 +39,7 @@ using std::sscanf;
 using std::string;
 using std::strlen;
 
+namespace flint {
 namespace job {
 
 namespace {
@@ -310,4 +311,5 @@ bool Store(sqlite3 *db,
 	return true;
 }
 
+}
 }

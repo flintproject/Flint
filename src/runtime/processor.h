@@ -30,6 +30,7 @@
 #include "calculation-dependency.hh"
 #include "execution-unit.hh"
 
+namespace flint {
 namespace {
 
 bool IsFinite(double v, int offset)
@@ -756,5 +757,7 @@ private:
 	TimeseriesVector *tv_;
 	std::mt19937 *rng_;
 };
+
+}
 
 #endif

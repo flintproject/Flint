@@ -5,6 +5,8 @@
 #include <limits>
 #include <random>
 
+namespace flint {
+
 template<typename TReal>
 TReal FallbackValue()
 {
@@ -77,6 +79,8 @@ TReal GetWeibullVariate(TReal scale, TReal shape, TRng *rng)
 		return w(*rng);
 	}
 	return FallbackValue<TReal>();
+}
+
 }
 
 #endif // FLINT_NUMERIC_PRNG_H_

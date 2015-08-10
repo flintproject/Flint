@@ -10,6 +10,7 @@
 
 using std::fprintf;
 
+namespace flint {
 namespace task {
 
 bool Spec(int id, sqlite3 *db, FILE *fp)
@@ -47,4 +48,5 @@ bool Spec(int id, sqlite3 *db, FILE *fp)
 	return r;
 }
 
+}
 }

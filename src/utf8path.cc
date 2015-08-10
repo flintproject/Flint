@@ -15,6 +15,8 @@
 
 using std::memcpy;
 
+namespace flint {
+
 boost::filesystem::path GetPathFromUtf8(const char *utf8)
 {
 #ifdef _WIN32
@@ -103,4 +105,6 @@ char *GetUtf8FromPath(const boost::filesystem::path &path)
 	utf8[s] = '\0';
 	return utf8;
 #endif
+}
+
 }

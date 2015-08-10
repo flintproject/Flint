@@ -17,6 +17,7 @@ using std::cerr;
 using std::endl;
 using std::memcpy;
 
+namespace flint {
 namespace db {
 
 namespace {
@@ -107,4 +108,5 @@ bool Flow(sqlite3 *db)
 	return CommitTransaction(db);
 }
 
+}
 }

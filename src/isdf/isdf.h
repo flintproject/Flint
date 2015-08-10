@@ -1,11 +1,12 @@
 /* -*- Mode: C++; tab-width: 4; indent-tabs-mode: t; c-basic-offset: 4 -*- vim:set ts=4 sw=4 sts=4 noet: */
-#ifndef ISDF_HEADER_
-#define ISDF_HEADER_
+#ifndef FLINT_ISDF_ISDF_H_
+#define FLINT_ISDF_ISDF_H_
 
 #include <cstdint>
 #include <cstring>
 #include <ctime>
 
+namespace flint {
 namespace isdf {
 
 /*
@@ -57,6 +58,7 @@ typedef struct ISDFHeaderStruct{
 } ISDFHeader;
 #pragma pack()
 
-} // namespace isdf
+}
+}
 
 #endif // ISDF_HEADER_

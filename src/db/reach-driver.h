@@ -11,6 +11,7 @@
 #include "reduction.hh"
 #include "statement-driver.hh"
 
+namespace flint {
 namespace db {
 
 class ReachDriver : StatementDriver {
@@ -64,6 +65,7 @@ public:
 	}
 };
 
-} // namespace db
+}
+}
 
 #endif

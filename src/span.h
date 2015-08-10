@@ -4,6 +4,10 @@
 
 #include "sqlite3.h"
 
+namespace flint {
+
 bool Span(sqlite3 *db);
+
+}
 
 #endif

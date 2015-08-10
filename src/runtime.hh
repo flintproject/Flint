@@ -4,6 +4,7 @@
 
 #include "sqlite3.h"
 
+namespace flint {
 namespace runtime {
 
 /*
@@ -12,6 +13,7 @@ namespace runtime {
 bool Init(sqlite3 *db, const char *layout_file, const char *bc_file,
 		  const char *output_file);
 
+}
 }
 
 #endif

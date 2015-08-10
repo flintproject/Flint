@@ -12,6 +12,8 @@
 
 using std::memcpy;
 
+namespace flint {
+
 namespace {
 
 typedef int (*FindFunction)(sqlite3 *, char *);
@@ -42,4 +44,6 @@ char *GetGivenFilename(sqlite3 *db)
 char *GetModelFilename(sqlite3 *db)
 {
 	return GetInputFilename(db, FindModelFile);
+}
+
 }

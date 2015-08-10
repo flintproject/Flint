@@ -5,6 +5,8 @@
 #define BOOST_FILESYSTEM_NO_DEPRECATED
 #include <boost/filesystem.hpp>
 
+namespace flint {
+
 /*
  * Get a path from a filename encoded in UTF-8.
  */
@@ -16,5 +18,7 @@ boost::filesystem::path GetPathFromUtf8(const char *utf8);
  * responsible for freeing by delete [] after use.
  */
 char *GetUtf8FromPath(const boost::filesystem::path &path);
+
+}
 
 #endif

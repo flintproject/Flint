@@ -14,6 +14,8 @@
 #include <iostream>
 #include <memory>
 
+namespace flint {
+
 template<typename TMessage>
 bool PackToOstream(const TMessage &message, std::ostream *os)
 {
@@ -45,6 +47,8 @@ bool UnpackFromIstream(TMessage &message, std::istream *is)
 	std::unique_ptr<char[]> array(new char[byte_size]);
 	if (!is->read(array.get(), byte_size).good()) return false;
 	return message.ParseFromArray(array.get(), byte_size);
+}
+
 }
 
 #endif

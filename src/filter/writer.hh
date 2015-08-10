@@ -8,6 +8,7 @@
 
 #include <boost/noncopyable.hpp>
 
+namespace flint {
 namespace filter {
 
 class Writer : boost::noncopyable {
@@ -20,6 +21,7 @@ private:
 	std::vector<std::pair<size_t, size_t> > v_;
 };
 
+}
 }
 
 #endif

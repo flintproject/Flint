@@ -7,6 +7,7 @@
 using std::cerr;
 using std::endl;
 
+namespace flint {
 namespace filter {
 
 namespace {
@@ -46,4 +47,5 @@ bool Writer::Write(const double *data, FILE *fp) const
 	return true;
 }
 
+}
 }

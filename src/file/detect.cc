@@ -21,6 +21,7 @@ using std::fread;
 using std::perror;
 using std::strncmp;
 
+namespace flint {
 namespace file {
 
 namespace {
@@ -138,4 +139,5 @@ bool DetectFormat(const char *filename, Format *format)
 	return reader.Read();
 }
 
+}
 }

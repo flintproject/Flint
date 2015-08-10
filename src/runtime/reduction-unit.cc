@@ -9,6 +9,8 @@
 using std::cerr;
 using std::endl;
 
+namespace flint {
+
 ReductionUnit::ReductionUnit(Reduction reduction, int target_addr)
 	: reduction_(reduction)
 	, target_addr_(target_addr)
@@ -76,4 +78,6 @@ bool ReductionUnit::operator()(double *data) const
 	}
 	data[target_addr_] = d;
 	return true;
+}
+
 }

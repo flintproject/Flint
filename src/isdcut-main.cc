@@ -24,6 +24,8 @@ using std::endl;
 using std::memcpy;
 using std::string;
 
+using namespace flint;
+
 namespace {
 
 typedef std::set<int> FieldSet;

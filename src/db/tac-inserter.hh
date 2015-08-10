@@ -6,6 +6,7 @@
 
 #include "statement-driver.hh"
 
+namespace flint {
 namespace db {
 
 class TacInserter : StatementDriver {
@@ -20,6 +21,7 @@ public:
 	bool Insert(const char *name, int nod, const char *body);
 };
 
+}
 }
 
 #endif

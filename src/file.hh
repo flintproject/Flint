@@ -4,6 +4,7 @@
 
 #include <cstdio>
 
+namespace flint {
 namespace file {
 
 enum Format {
@@ -29,6 +30,7 @@ bool DetectFormat(const char *filename, Format *format);
  */
 bool Txt(const char *filename, Format *format, int dir = 0);
 
+}
 }
 
 #endif

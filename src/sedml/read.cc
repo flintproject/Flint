@@ -21,6 +21,7 @@
 using std::cerr;
 using std::endl;
 
+namespace flint {
 namespace sedml {
 
 namespace {
@@ -325,4 +326,5 @@ bool Read(const char *sedml_file, sqlite3 *db)
 	return r;
 }
 
+}
 }

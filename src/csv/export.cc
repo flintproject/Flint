@@ -21,6 +21,7 @@ using std::memcpy;
 using std::vector;
 using std::fwrite;
 
+namespace flint {
 namespace {
 
 // Returns true if it is vaild, false otherwise.
@@ -237,4 +238,6 @@ bool ExportIsdFromCsv(const boost::filesystem::path &input_path,
 	}
 	std::fclose(ofp);
 	return true;
+}
+
 }

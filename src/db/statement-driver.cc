@@ -8,6 +8,7 @@
 using std::cerr;
 using std::endl;
 
+namespace flint {
 namespace db {
 
 StatementDriver::StatementDriver(sqlite3 *db, const char *query)
@@ -27,4 +28,5 @@ StatementDriver::~StatementDriver()
 	sqlite3_finalize(stmt_);
 }
 
+}
 }

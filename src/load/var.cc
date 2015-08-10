@@ -24,6 +24,7 @@
 using std::cerr;
 using std::endl;
 
+namespace flint {
 namespace load {
 
 namespace {
@@ -119,4 +120,5 @@ bool Var(sqlite3 *db, const char *output)
 	return true;
 }
 
+}
 }

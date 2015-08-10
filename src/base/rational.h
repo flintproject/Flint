@@ -8,6 +8,7 @@
 #include <string>
 #include <boost/rational.hpp>
 
+namespace flint {
 namespace base {
 
 template <class T>
@@ -90,6 +91,7 @@ public:
 	}
 };
 
-} // namespace base
+}
+}
 
 #endif // BASE_RATIONAL_H_

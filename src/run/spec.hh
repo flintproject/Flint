@@ -5,6 +5,7 @@
 #include <cstdio>
 #include "sqlite3.h"
 
+namespace flint {
 namespace run {
 
 /*
@@ -12,6 +13,7 @@ namespace run {
  */
 bool Spec(sqlite3 *db, FILE *fp);
 
+}
 }
 
 #endif

@@ -8,6 +8,7 @@ using std::fclose;
 using std::fopen;
 using std::perror;
 
+namespace flint {
 namespace file {
 
 bool Txt(const char *filename, Format *format, int dir)
@@ -58,4 +59,5 @@ bool Txt(const char *filename, Format *format, int dir)
 	return true;
 }
 
+}
 }

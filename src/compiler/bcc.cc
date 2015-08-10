@@ -31,6 +31,7 @@ using std::memcpy;
 
 using namespace boost::spirit;
 
+namespace flint {
 namespace compiler {
 namespace bcc {
 
@@ -127,60 +128,62 @@ struct Block {
 
 }
 }
+}
 
-BOOST_FUSION_ADAPT_STRUCT(compiler::bcc::UnaryCall,
+BOOST_FUSION_ADAPT_STRUCT(flint::compiler::bcc::UnaryCall,
 						  (bc::Call1::Op, op)
 						  (int, a1))
 
-BOOST_FUSION_ADAPT_STRUCT(compiler::bcc::BinaryCall,
+BOOST_FUSION_ADAPT_STRUCT(flint::compiler::bcc::BinaryCall,
 						  (bc::Call2::Op, op)
 						  (int, a1)
 						  (int, a2))
 
-BOOST_FUSION_ADAPT_STRUCT(compiler::bcc::UnaryGen,
+BOOST_FUSION_ADAPT_STRUCT(flint::compiler::bcc::UnaryGen,
 						  (bc::Gen1::Type, type)
 						  (int, a1))
 
-BOOST_FUSION_ADAPT_STRUCT(compiler::bcc::BinaryGen,
+BOOST_FUSION_ADAPT_STRUCT(flint::compiler::bcc::BinaryGen,
 						  (bc::Gen2::Type, type)
 						  (int, a1)
 						  (int, a2))
 
-BOOST_FUSION_ADAPT_STRUCT(compiler::bcc::InstOp,
+BOOST_FUSION_ADAPT_STRUCT(flint::compiler::bcc::InstOp,
 						  (int, a)
-						  (compiler::bcc::Operation, operation))
+						  (flint::compiler::bcc::Operation, operation))
 
-BOOST_FUSION_ADAPT_STRUCT(compiler::bcc::InstBr,
+BOOST_FUSION_ADAPT_STRUCT(flint::compiler::bcc::InstBr,
 						  (int, a)
 						  (int, l))
 
-BOOST_FUSION_ADAPT_STRUCT(compiler::bcc::InstLb,
+BOOST_FUSION_ADAPT_STRUCT(flint::compiler::bcc::InstLb,
 						  (int, a)
 						  (std::string, v)
 						  (int, d))
 
-BOOST_FUSION_ADAPT_STRUCT(compiler::bcc::InstLd,
+BOOST_FUSION_ADAPT_STRUCT(flint::compiler::bcc::InstLd,
 						  (int, a)
 						  (int, i0)
 						  (int, i1)
 						  (int, d))
 
-BOOST_FUSION_ADAPT_STRUCT(compiler::bcc::InstLoad,
+BOOST_FUSION_ADAPT_STRUCT(flint::compiler::bcc::InstLoad,
 						  (int, a)
 						  (std::string, v))
 
-BOOST_FUSION_ADAPT_STRUCT(compiler::bcc::InstLoadi,
+BOOST_FUSION_ADAPT_STRUCT(flint::compiler::bcc::InstLoadi,
 						  (int, a)
 						  (double, v))
 
-BOOST_FUSION_ADAPT_STRUCT(compiler::bcc::InstStore,
+BOOST_FUSION_ADAPT_STRUCT(flint::compiler::bcc::InstStore,
 						  (std::string, v)
 						  (int, a))
 
-BOOST_FUSION_ADAPT_STRUCT(compiler::bcc::Body,
+BOOST_FUSION_ADAPT_STRUCT(flint::compiler::bcc::Body,
 						  (std::vector<bc::Code>, code)
 						  (std::vector<int>, labels))
 
+namespace flint {
 namespace compiler {
 namespace bcc {
 namespace {
@@ -774,5 +777,6 @@ bool Bcc(sqlite3 *db, std::ostream *os)
 	return true;
 }
 
+}
 }
 }

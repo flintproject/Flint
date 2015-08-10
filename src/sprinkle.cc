@@ -29,6 +29,7 @@ using std::printf;
 using std::string;
 using std::vector;
 
+namespace flint {
 namespace {
 
 typedef boost::ptr_map<pair<boost::uuids::uuid, boost::uuids::uuid>, map<int, double> > TargetMap;
@@ -148,4 +149,6 @@ bool Sprinkle(sqlite3 *db)
 	}
 
 	return true;
+}
+
 }

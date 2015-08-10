@@ -5,6 +5,8 @@
 #include <memory>
 #include <boost/noncopyable.hpp>
 
+namespace flint {
+
 class Mounter : boost::noncopyable {
 public:
 	explicit Mounter(int size) : size_(size), offsets_(new int[size]) {}
@@ -25,5 +27,7 @@ private:
 	int size_;
 	std::unique_ptr<int[]> offsets_;
 };
+
+}
 
 #endif

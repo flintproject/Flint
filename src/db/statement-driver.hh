@@ -6,6 +6,7 @@
 
 #include "sqlite3.h"
 
+namespace flint {
 namespace db {
 
 class StatementDriver : boost::noncopyable {
@@ -20,6 +21,7 @@ private:
 	sqlite3_stmt *stmt_;
 };
 
+}
 }
 
 #endif

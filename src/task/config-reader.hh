@@ -4,6 +4,7 @@
 
 #include "db/statement-driver.hh"
 
+namespace flint {
 namespace task {
 
 class ConfigReader : db::StatementDriver {
@@ -36,6 +37,7 @@ private:
 	int granularity_;
 };
 
+}
 }
 
 #endif

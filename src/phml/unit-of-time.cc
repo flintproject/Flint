@@ -24,6 +24,7 @@
 using std::cerr;
 using std::endl;
 
+namespace flint {
 namespace phml {
 
 namespace {
@@ -185,4 +186,5 @@ bool UnitOfTime(sqlite3 *db, const char *output)
 	return true;
 }
 
+}
 }

@@ -4,6 +4,7 @@
 
 #include "sqlite3.h"
 
+namespace flint {
 namespace phml {
 
 /*
@@ -26,6 +27,7 @@ bool CombineAll(sqlite3 *db);
 
 bool Read(sqlite3 *db);
 
+}
 }
 
 #endif

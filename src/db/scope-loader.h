@@ -12,6 +12,7 @@
 
 #include "statement-driver.hh"
 
+namespace flint {
 namespace db {
 
 class ScopeLoader : StatementDriver  {
@@ -46,6 +47,7 @@ public:
 	}
 };
 
-} // namespace db
+}
+}
 
 #endif

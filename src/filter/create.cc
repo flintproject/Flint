@@ -35,6 +35,7 @@ using std::memcpy;
 using std::set;
 using std::string;
 
+namespace flint {
 namespace filter {
 
 namespace {
@@ -202,4 +203,5 @@ bool Create(sqlite3 *db, const char *spec_file, const char *layout_file, const c
 	return true;
 }
 
+}
 }

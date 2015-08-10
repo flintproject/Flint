@@ -7,6 +7,10 @@
 #include "calculation-unit.hh"
 #include "reduction-unit.hh"
 
+namespace flint {
+
 typedef boost::variant<CalculationUnit, ReductionUnit> ExecutionUnit;
+
+}
 
 #endif

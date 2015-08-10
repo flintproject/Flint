@@ -32,6 +32,7 @@ using std::set;
 using std::string;
 using std::pair;
 
+namespace flint {
 namespace {
 
 class Scope : boost::noncopyable {
@@ -333,4 +334,6 @@ bool Reach(sqlite3 *db)
 		}
 	}
 	return true;
+}
+
 }

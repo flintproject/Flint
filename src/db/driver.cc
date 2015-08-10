@@ -9,6 +9,7 @@ using std::cerr;
 using std::endl;
 using std::exit;
 
+namespace flint {
 namespace db {
 
 Driver::Driver(const char *filename)
@@ -25,4 +26,5 @@ Driver::~Driver()
 	sqlite3_close(db_);
 }
 
+}
 }

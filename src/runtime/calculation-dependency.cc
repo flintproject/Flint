@@ -9,6 +9,8 @@
 using std::cerr;
 using std::endl;
 
+namespace flint {
+
 CalculationDependency::CalculationDependency(int section_index, int sector_index, int block_index)
 	: cu_(new CalculationUnit(section_index, sector_index, block_index))
 	, load_addrs_()
@@ -27,4 +29,6 @@ void CalculationDependency::SetStoreAddr(int store_addr)
 		cerr << "more than one store addr found: " << store_addr_ << endl;
 	}
 	store_addr_ = store_addr;
+}
+
 }

@@ -23,6 +23,8 @@ using std::memcpy;
 using std::strcmp;
 using std::string;
 
+namespace flint {
+
 namespace {
 
 class Node : boost::noncopyable {
@@ -273,4 +275,6 @@ bool Branch(const boost::filesystem::path &path, sqlite3 *db)
 	}
 
 	return true;
+}
+
 }

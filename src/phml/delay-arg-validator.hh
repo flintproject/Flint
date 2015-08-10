@@ -4,6 +4,7 @@
 
 #include "sqlite3.h"
 
+namespace flint {
 namespace phml {
 
 class DelayArgValidator {
@@ -16,6 +17,7 @@ private:
 	sqlite3 *db_;
 };
 
+}
 }
 
 #endif

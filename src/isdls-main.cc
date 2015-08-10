@@ -18,6 +18,8 @@ using std::ios;
 using std::memcpy;
 using std::string;
 
+using namespace flint;
+
 namespace {
 
 struct ColumnPrinter {

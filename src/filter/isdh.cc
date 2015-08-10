@@ -29,6 +29,7 @@ using std::memcpy;
 using std::string;
 using std::vector;
 
+namespace flint {
 namespace filter {
 
 namespace {
@@ -118,4 +119,5 @@ bool Isdh(const char *filter_file, const char *output_file)
 	return true;
 }
 
+}
 }

@@ -23,6 +23,8 @@ using std::cerr;
 using std::endl;
 using std::string;
 
+using namespace flint;
+
 namespace {
 
 class NumberOfRowsHandler : boost::noncopyable {

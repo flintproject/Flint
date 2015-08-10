@@ -41,6 +41,7 @@ using std::make_pair;
 using std::strcmp;
 using std::string;
 
+namespace flint {
 namespace ts {
 
 namespace {
@@ -302,4 +303,5 @@ bool Tsc(sqlite3 *db)
 	return CommitTransaction(db);
 }
 
+}
 }

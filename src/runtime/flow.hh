@@ -8,11 +8,15 @@
 #include "sqlite3.h"
 #include "reduction.hh"
 
+namespace flint {
+
 typedef boost::ptr_unordered_map<int, std::pair<Reduction, std::unordered_set<int> > > FlowInboundMap;
 
 /*
  * Note that db is for read only.
  */
 bool LoadFlows(sqlite3 *db, FlowInboundMap *im);
+
+}
 
 #endif

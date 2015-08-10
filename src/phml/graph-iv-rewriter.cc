@@ -14,6 +14,8 @@ using std::endl;
 using std::memcpy;
 using std::string;
 
+namespace flint {
+
 namespace {
 
 const char kQueryGraph[] = \
@@ -184,4 +186,5 @@ bool GraphIvRewriter::Update(sqlite3_int64 pq_rowid, const char *math)
 	return true;
 }
 
-} // namespace phml
+}
+}

@@ -1,6 +1,6 @@
 /* -*- Mode: C++; tab-width: 4; indent-tabs-mode: t; c-basic-offset: 4 -*- vim:set ts=4 sw=4 sts=4 noet: */
-#ifndef ISDF_READER_H_
-#define ISDF_READER_H_
+#ifndef FLINT_ISDF_READER_H_
+#define FLINT_ISDF_READER_H_
 
 #include <cassert>
 #include <cstring>
@@ -8,6 +8,7 @@
 #include <memory>
 #include "isdf/isdf.h"
 
+namespace flint {
 namespace isdf {
 
 class Reader {
@@ -258,6 +259,7 @@ private:
 	std::unique_ptr<char[]> units_;
 };
 
-} // namespace isdf
+}
+}
 
 #endif // ISDF_READER_H_

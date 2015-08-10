@@ -5,6 +5,8 @@
 #include <memory>
 #include <unordered_set>
 
+namespace flint {
+
 class CalculationUnit;
 
 class CalculationDependency {
@@ -24,5 +26,7 @@ private:
 	std::unordered_set<int> load_addrs_;
 	int store_addr_;
 };
+
+}
 
 #endif

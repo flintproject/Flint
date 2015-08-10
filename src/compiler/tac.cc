@@ -29,6 +29,7 @@ using std::memcpy;
 
 using namespace boost::spirit;
 
+namespace flint {
 namespace compiler {
 namespace tac {
 
@@ -54,11 +55,13 @@ struct Compound {
 
 }
 }
+}
 
-BOOST_FUSION_ADAPT_STRUCT(compiler::tac::Compound,
+BOOST_FUSION_ADAPT_STRUCT(flint::compiler::tac::Compound,
 						  (std::string, keyword)
-						  (std::deque<compiler::tac::Expr>, children))
+						  (std::deque<flint::compiler::tac::Expr>, children))
 
+namespace flint {
 namespace compiler {
 namespace tac {
 namespace {
@@ -732,5 +735,6 @@ bool Tac(sqlite3 *db)
 	return CommitTransaction(db);
 }
 
+}
 }
 }

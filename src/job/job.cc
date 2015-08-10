@@ -33,6 +33,7 @@ using std::fopen;
 using std::perror;
 using std::strcmp;
 
+namespace flint {
 namespace job {
 
 bool Job(const char *task_dir,
@@ -151,4 +152,5 @@ bool Job(const char *task_dir,
 	return r;
 }
 
+}
 }

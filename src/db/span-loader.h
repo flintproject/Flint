@@ -12,6 +12,7 @@
 
 #include "statement-driver.hh"
 
+namespace flint {
 namespace db {
 
 class SpanLoader : StatementDriver {
@@ -47,6 +48,7 @@ public:
 	}
 };
 
-} // namespace db
+}
+}
 
 #endif

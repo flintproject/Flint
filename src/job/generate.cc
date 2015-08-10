@@ -22,6 +22,7 @@ using std::cerr;
 using std::memcpy;
 using std::sprintf;
 
+namespace flint {
 namespace job {
 
 namespace {
@@ -186,4 +187,5 @@ bool Generate(sqlite3 *input, const char *dir, int *job_id)
 	return true;
 }
 
+}
 }

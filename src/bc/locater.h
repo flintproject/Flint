@@ -11,6 +11,8 @@
 
 #include "bc/index.h"
 
+namespace flint {
+
 class Locater : boost::noncopyable {
 public:
 	void SetPosition(const std::string &name, int location) {
@@ -75,5 +77,7 @@ public:
 private:
 	std::unordered_map<std::string, int> m_;
 };
+
+}
 
 #endif

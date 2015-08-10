@@ -2,6 +2,8 @@
 #ifndef FLINT_RUNTIME_CALCULATION_UNIT_HH_
 #define FLINT_RUNTIME_CALCULATION_UNIT_HH_
 
+namespace flint {
+
 class CalculationUnit {
 public:
 	CalculationUnit(int section_index, int sector_index, int block_index)
@@ -19,5 +21,7 @@ private:
 	int sector_index_;
 	int block_index_;
 };
+
+}
 
 #endif

@@ -14,6 +14,8 @@
 
 #include "bc.pb.h"
 
+namespace flint {
+
 class History : boost::noncopyable {
 public:
 	History() : capacity_(), m_() {}
@@ -201,5 +203,7 @@ public:
 private:
 	const char *file_;
 };
+
+}
 
 #endif

@@ -11,6 +11,7 @@ using std::cerr;
 using std::endl;
 using std::atoi;
 
+namespace flint {
 namespace {
 
 class Handler {
@@ -65,4 +66,6 @@ bool LoadFlows(sqlite3 *db, FlowInboundMap *im)
 		return false;
 	}
 	return true;
+}
+
 }

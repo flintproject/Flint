@@ -6,6 +6,10 @@
 
 #include "sqlite3.h"
 
+namespace flint {
+
 bool Combine(const boost::uuids::uuid &uuid, sqlite3 *db);
+
+}
 
 #endif

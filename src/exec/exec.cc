@@ -25,6 +25,7 @@ using std::cerr;
 using std::endl;
 using std::memcpy;
 
+namespace flint {
 namespace exec {
 
 namespace {
@@ -107,4 +108,5 @@ bool Exec(const char *sedml_file, const char *phsp_file)
 	return RunTasks(db);
 }
 
+}
 }

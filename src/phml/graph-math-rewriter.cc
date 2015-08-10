@@ -19,6 +19,8 @@ using std::endl;
 
 using namespace boost::spirit;
 
+namespace flint {
+
 // AST
 
 struct Sexp;
@@ -35,9 +37,12 @@ struct Gexp {
 	std::string rhs;
 };
 
-BOOST_FUSION_ADAPT_STRUCT(Sexp, (std::vector<Math>, children))
-BOOST_FUSION_ADAPT_STRUCT(Gexp, (std::string, lhs) (std::string, rhs))
+}
 
+BOOST_FUSION_ADAPT_STRUCT(flint::Sexp, (std::vector<flint::Math>, children))
+BOOST_FUSION_ADAPT_STRUCT(flint::Gexp, (std::string, lhs) (std::string, rhs))
+
+namespace flint {
 namespace {
 
 struct Detector : public boost::static_visitor<bool>
@@ -290,4 +295,5 @@ bool GraphMathRewriter::Update(sqlite3_int64 rowid, const char *math)
 	return true;
 }
 
-} // namespace phml
+}
+}

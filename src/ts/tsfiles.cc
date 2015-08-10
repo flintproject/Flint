@@ -9,6 +9,7 @@
 using std::cerr;
 using std::endl;
 
+namespace flint {
 namespace ts {
 
 namespace {
@@ -41,4 +42,5 @@ bool LoadTimeseriesVector(sqlite3 *db, TimeseriesVector *tv)
 	return true;
 }
 
+}
 }

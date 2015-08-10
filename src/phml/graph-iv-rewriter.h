@@ -9,6 +9,7 @@
 
 #include "sqlite3.h"
 
+namespace flint {
 namespace phml {
 
 class GraphIvRewriter : boost::noncopyable {
@@ -37,6 +38,7 @@ private:
 	Map m_;
 };
 
-} // namespace phml
+}
+}
 
 #endif

@@ -20,13 +20,14 @@
 using std::cerr;
 using std::endl;
 
+namespace flint {
 namespace phml {
 
 namespace {
 
 class Driver : boost::noncopyable {
 public:
-	Driver(sqlite3 *db, phml::NumericalConfiguration *nc)
+	Driver(sqlite3 *db, ::phml::NumericalConfiguration *nc)
 		: nc_(nc)
 		, nc_stmt_(NULL)
 		, td_stmt_(NULL)
@@ -73,7 +74,7 @@ private:
 		const unsigned char *sts_value = sqlite3_column_text(nc_stmt_, 4);
 
 		if (rg_name) {
-			phml::RandomGenerator *rg = nc_->mutable_rg();
+			::phml::RandomGenerator *rg = nc_->mutable_rg();
 			rg->set_name((const char *)rg_name);
 			if (rg_seed) rg->set_seed((const char *)rg_seed);
 		}
@@ -81,7 +82,7 @@ private:
 			nc_->set_integration((const char *)integration);
 		}
 		if (sts_unit_id > 0 && sts_value) {
-			phml::SimulationTimeSpan *sts = nc_->mutable_sts();
+			::phml::SimulationTimeSpan *sts = nc_->mutable_sts();
 			sts->set_unit_id(sts_unit_id);
 			sts->set_value((const char *)sts_value);
 		}
@@ -101,7 +102,7 @@ private:
 		int unit_id = sqlite3_column_int(td_stmt_, 0);
 		const unsigned char *step = sqlite3_column_text(td_stmt_, 1);
 		if (unit_id > 0 && step) {
-			phml::TimeDiscretization *td = nc_->mutable_td();
+			::phml::TimeDiscretization *td = nc_->mutable_td();
 			td->set_unit_id(unit_id);
 			td->set_step((const char *)step);
 		}
@@ -109,7 +110,7 @@ private:
 	}
 
 private:
-	phml::NumericalConfiguration *nc_;
+	::phml::NumericalConfiguration *nc_;
 	sqlite3_stmt *nc_stmt_;
 	sqlite3_stmt *td_stmt_;
 };
@@ -141,7 +142,7 @@ public:
 
 bool Nc(sqlite3 *db, const char *output)
 {
-	std::unique_ptr<phml::NumericalConfiguration> nc(new phml::NumericalConfiguration);
+	std::unique_ptr<::phml::NumericalConfiguration> nc(new ::phml::NumericalConfiguration);
 	{
 		std::unique_ptr<Driver> driver(new Driver(db, nc.get()));
 		if (!driver->Drive())
@@ -171,4 +172,5 @@ bool Nc(sqlite3 *db, const char *output)
 	return true;
 }
 
+}
 }

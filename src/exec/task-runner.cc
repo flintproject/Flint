@@ -30,6 +30,7 @@ using std::cerr;
 using std::endl;
 using std::sprintf;
 
+namespace flint {
 namespace exec {
 
 namespace {
@@ -159,4 +160,5 @@ bool TaskRunner::Run()
 	return true;
 }
 
+}
 }

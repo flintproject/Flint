@@ -28,6 +28,7 @@ using std::string;
 using std::strlen;
 using std::strcmp;
 
+namespace flint {
 namespace {
 
 typedef map<string, string> BridgeMap;
@@ -342,4 +343,6 @@ bool Combine(const boost::uuids::uuid &uuid, sqlite3 *db)
 	std::string uuid_db = oss.str();
 	Loader loader(uuid_db.c_str());
 	return loader.Load(&writer);
+}
+
 }

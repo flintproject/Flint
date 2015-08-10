@@ -11,6 +11,7 @@
 #include "lexer.hh"
 #include "sqlite3.h"
 
+namespace flint {
 namespace method {
 
 struct Compound;
@@ -34,11 +35,13 @@ struct Compound {
 };
 
 }
+}
 
-BOOST_FUSION_ADAPT_STRUCT(method::Compound,
+BOOST_FUSION_ADAPT_STRUCT(flint::method::Compound,
 						  (std::string, keyword)
-						  (std::vector<method::Expr>, children))
+						  (std::vector<flint::method::Expr>, children))
 
+namespace flint {
 namespace method {
 
 /*
@@ -69,6 +72,7 @@ bool Euler(sqlite3 *db, const char *input, sqlite3 *output);
  */
 bool Rk4(sqlite3 *db, const char *input, sqlite3 *output);
 
+}
 }
 
 #endif

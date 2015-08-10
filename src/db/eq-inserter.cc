@@ -13,6 +13,7 @@ using std::endl;
 using std::exit;
 using std::sprintf;
 
+namespace flint {
 namespace db {
 
 EqInserter::EqInserter(const char *table, sqlite3 *db)
@@ -65,4 +66,5 @@ bool EqInserter::Insert(const char *math)
 	return Insert(nu, math);
 }
 
+}
 }

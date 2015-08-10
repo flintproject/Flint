@@ -34,6 +34,7 @@ using std::fprintf;
 using std::perror;
 using std::sprintf;
 
+namespace flint {
 namespace load {
 
 namespace {
@@ -229,4 +230,5 @@ bool Load(const char *given_file, ConfigMode mode, int dir)
 	return true;
 }
 
+}
 }

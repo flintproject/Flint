@@ -33,6 +33,8 @@ using std::ostream;
 using std::string;
 using std::vector;
 
+using namespace flint;
+
 namespace {
 
 void RequestMaxNumOfDigits(std::ostream *os)

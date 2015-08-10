@@ -8,6 +8,7 @@
 #include "task/config-reader.hh"
 #include "sqlite3.h"
 
+namespace flint {
 namespace exec {
 
 class TaskRunner {
@@ -37,6 +38,7 @@ private:
 	std::unique_ptr<task::ConfigReader> reader_;
 };
 
+}
 }
 
 #endif

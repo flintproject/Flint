@@ -9,6 +9,8 @@
 
 #include <boost/uuid/string_generator.hpp>
 
+namespace flint {
+
 class SpecLoader : boost::noncopyable {
 public:
 	explicit SpecLoader(const std::string &file) : ifs_(file.c_str(), std::ios::in) {}
@@ -49,5 +51,7 @@ public:
 private:
 	std::ifstream ifs_;
 };
+
+}
 
 #endif

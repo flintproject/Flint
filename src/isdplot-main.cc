@@ -37,6 +37,8 @@ using std::ios;
 using std::ostringstream;
 using std::string;
 
+using namespace flint;
+
 namespace {
 
 bool ReadHeader(istream *is, char *header)

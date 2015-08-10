@@ -21,6 +21,7 @@ using std::putchar;
 using std::string;
 using std::strlen;
 
+namespace flint {
 namespace {
 
 bool PrintChildrenToOstream(const ASTNode_t *node, std::ostream *os);
@@ -549,7 +550,6 @@ private:
 
 } // namespace
 
-namespace flint {
 namespace sbml {
 
 bool Parse(sqlite3 *db)

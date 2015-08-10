@@ -4,6 +4,7 @@
 
 #include "sqlite3.h"
 
+namespace flint {
 namespace exec {
 
 /*
@@ -17,6 +18,7 @@ bool Enum(sqlite3 *db);
  */
 bool Exec(const char *sedml_file, const char *phsp_file);
 
+}
 }
 
 #endif

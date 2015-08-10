@@ -10,6 +10,7 @@
 
 #include "mathml/math_dumper.h"
 
+namespace flint {
 namespace phml {
 
 using std::cerr;
@@ -453,6 +454,7 @@ private:
 	TDriver *driver_;
 };
 
-} // namespace phml
+}
+}
 
 #endif

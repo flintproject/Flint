@@ -23,6 +23,7 @@ using std::endl;
 
 using namespace boost::spirit;
 
+namespace flint {
 namespace phml {
 namespace dav {
 
@@ -41,10 +42,12 @@ struct Dexp {
 
 }
 }
+}
 
-BOOST_FUSION_ADAPT_STRUCT(phml::dav::Sexp, (std::vector<phml::dav::Math>, children))
-BOOST_FUSION_ADAPT_STRUCT(phml::dav::Dexp, (std::string, arg))
+BOOST_FUSION_ADAPT_STRUCT(flint::phml::dav::Sexp, (std::vector<flint::phml::dav::Math>, children))
+BOOST_FUSION_ADAPT_STRUCT(flint::phml::dav::Dexp, (std::string, arg))
 
+namespace flint {
 namespace phml {
 
 namespace {
@@ -240,4 +243,5 @@ bool DelayArgValidator::Validate()
 	return true;
 }
 
+}
 }

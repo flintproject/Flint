@@ -6,10 +6,12 @@
 
 #include "method.hh"
 
+namespace flint {
 namespace method {
 
 void RewriteDeltaTime(Compound &x, const std::string &id);
 
+}
 }
 
 #endif

@@ -26,6 +26,7 @@ using std::endl;
 using std::string;
 using std::strtod;
 
+namespace flint {
 namespace {
 
 class Ode {
@@ -272,7 +273,6 @@ public:
 
 }
 
-namespace flint {
 namespace sbml {
 
 bool Load(sqlite3 *db)

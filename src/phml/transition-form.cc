@@ -13,6 +13,7 @@
 using std::cerr;
 using std::endl;
 
+namespace flint {
 namespace {
 
 const char kQuerySelect[] = \
@@ -182,4 +183,5 @@ bool TransitionForm::operator()()
 	return true;
 }
 
-} // namespace phml
+}
+}

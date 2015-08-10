@@ -26,6 +26,8 @@ using std::endl;
 using std::string;
 using std::strncmp;
 
+using namespace flint;
+
 namespace {
 
 const int kExitDifferent = 1;

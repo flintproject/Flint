@@ -2,6 +2,7 @@
 #ifndef FLINT_LOAD_HH_
 #define FLINT_LOAD_HH_
 
+namespace flint {
 namespace load {
 
 enum ConfigMode {
@@ -17,6 +18,7 @@ enum ConfigMode {
  */
 bool Load(const char *given_file, ConfigMode mode, int dir = 0);
 
+}
 }
 
 #endif

@@ -5,7 +5,11 @@
 #define BOOST_FILESYSTEM_NO_DEPRECATED
 #include <boost/filesystem.hpp>
 
+namespace flint {
+
 bool ExportIsdFromCsv(const boost::filesystem::path &input_path,
 					  const boost::filesystem::path &output_path);
+
+}
 
 #endif

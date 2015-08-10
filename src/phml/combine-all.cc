@@ -33,6 +33,7 @@ using std::memcpy;
 using std::sprintf;
 using std::strcmp;
 
+namespace flint {
 namespace phml {
 
 namespace {
@@ -112,4 +113,5 @@ bool CombineAll(sqlite3 *db)
 	return true;
 }
 
+}
 }

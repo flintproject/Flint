@@ -9,6 +9,8 @@ using std::cerr;
 using std::endl;
 using std::strcmp;
 
+namespace flint {
+
 bool ConvertStringToReduction(const char *s, Reduction *r)
 {
 	if (!s)	{
@@ -30,4 +32,6 @@ bool ConvertStringToReduction(const char *s, Reduction *r)
 		return false;
 	}
 	return true;
+}
+
 }
