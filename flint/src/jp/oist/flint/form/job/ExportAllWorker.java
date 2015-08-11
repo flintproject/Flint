@@ -1,6 +1,9 @@
 /* -*- Mode: Java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- vim:set ts=4 sw=4 sts=4 et: */
 package jp.oist.flint.form.job;
 
+import jp.oist.flint.export.ExportWorker;
+import jp.oist.flint.filesystem.Workspace;
+import jp.oist.flint.form.sub.JobWindow;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -9,10 +12,15 @@ import java.io.OutputStreamWriter;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
+import javax.swing.ProgressMonitor;
 import javax.swing.SwingWorker;
-import jp.oist.flint.filesystem.Workspace;
 
-public class ExportAllWorker extends SwingWorker<Void, Void> {
+public class ExportAllWorker extends SwingWorker<Boolean, Void> {
+
+    private final ProgressMonitor mMonitor;
+
+    private final String mExtension;
 
     private final File mListFile;
 
@@ -22,37 +30,67 @@ public class ExportAllWorker extends SwingWorker<Void, Void> {
 
     private final List<Map<String, Number>> mParameters;
 
-    public ExportAllWorker(File listFile,
+    public ExportAllWorker(JobWindow window,
+                           String extension,
+                           File listFile,
                            List<File> sourceFiles, List<File> targetFiles,
                            List<Map<String, Number>> parameters) {
+        int size = sourceFiles.size();
+        assert size == targetFiles.size();
+        assert size == parameters.size();
+        mMonitor = new ProgressMonitor(window,
+                                       "Exporting ...",
+                                       null,
+                                       0,
+                                       size);
+        assert extension != null;
+        mExtension = extension;
         mListFile = listFile;
-        assert sourceFiles.size() == targetFiles.size();
-        assert sourceFiles.size() == parameters.size();
         mSourceFiles = sourceFiles;
         mTargetFiles = targetFiles;
         mParameters = parameters;
     }
 
     @Override
-    protected Void doInBackground() throws IOException {
+    protected Boolean doInBackground()
+        throws ExecutionException, IOException, InterruptedException {
         int size = mSourceFiles.size();
         try (FileOutputStream fos = new FileOutputStream(mListFile);
              OutputStreamWriter osw = new OutputStreamWriter(fos, StandardCharsets.UTF_8);
              BufferedWriter writer = new BufferedWriter(osw)) {
             for (int i=0;i<size;i++) {
+                if (mMonitor.isCanceled())
+                    return true;
+
                 File sourceFile = mSourceFiles.get(i);
                 File targetFile = mTargetFiles.get(i);
-                Workspace.publishFile(sourceFile, targetFile);
+                switch (mExtension) {
+                case "csv":
+                    {
+                        ExportWorker worker = new ExportWorker(null, sourceFile, targetFile);
+                        worker.execute();
+                        if (!worker.get())
+                            return false;
+                    }
+                    break;
+                default: // isd
+                    Workspace.publishFile(sourceFile, targetFile);
+                    break;
+                }
 
                 String line = createLine(targetFile, mParameters.get(i));
                 writer.write(line);
                 writer.newLine();
 
-                int progress = (int)((double)i / (double)size * 100.0);
-                setProgress(progress);
+                mMonitor.setProgress(i+1);
             }
         }
-        return null;
+        return true;
+    }
+
+    @Override
+    protected void done() {
+        mMonitor.close();
     }
 
     private String createLine(File file, Map<String, Number> map) {
