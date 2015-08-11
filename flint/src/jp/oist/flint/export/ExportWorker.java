@@ -6,10 +6,6 @@ import jp.oist.flint.executor.ProcessWorker;
 import jp.oist.flint.form.IFrame;
 import java.io.File;
 import java.io.IOException;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 import javax.swing.SwingWorker;
 
 public class ExportWorker extends SwingWorker<Boolean, Boolean> {
@@ -19,7 +15,6 @@ public class ExportWorker extends SwingWorker<Boolean, Boolean> {
     private final File mTarget;
 
     private final ExportMonitor mMonitor = new ExportMonitor();
-    private final ExecutorService mPool = Executors.newFixedThreadPool(1);
 
     public ExportWorker(IFrame frame, File source, File target) throws IOException {
         mFrame = frame;
@@ -32,13 +27,12 @@ public class ExportWorker extends SwingWorker<Boolean, Boolean> {
     }
 
     @Override
-    protected Boolean doInBackground() throws ExecutionException, IOException, InterruptedException {
+    protected Boolean doInBackground() throws Exception {
         mMonitor.execute();
         Isd2csvJob job = new Isd2csvJob(mSource, mTarget, mMonitor.getPort());
         ProcessWorker worker = new ProcessWorker(job.getProcess(), mFrame);
         worker.execute();
-        Future<File> future = mPool.submit(job);
-        return future.get().exists() && worker.get() == 0;
+        return job.call().exists() && worker.get() == 0;
     }
 
     @Override

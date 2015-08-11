@@ -2,9 +2,6 @@
 package jp.oist.flint.headless;
 
 import java.io.File;
-import java.io.IOException;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
 import javax.swing.SwingWorker;
 import jp.oist.flint.executor.FlintRunJob;
 import jp.oist.flint.executor.SimulatorService;
@@ -24,10 +21,9 @@ public class Simulator extends SwingWorker <Boolean, Void> {
 
     @Override
     protected Boolean doInBackground()
-        throws ExecutionException, IOException, InterruptedException {
+        throws Exception {
             File executionDir = Workspace.createTempDirectory("flint-run");
             mJob = new FlintRunJob(mOption, executionDir);
-            Future<Boolean> submit = mService.submit(mJob);
-            return submit.get();
+            return mService.call(mJob);
     }
 }

@@ -10,26 +10,21 @@ import java.nio.charset.StandardCharsets;
 import java.util.List;
 import jp.oist.flint.form.IFrame;
 
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-
 public class SimulatorService {
 
     private final IFrame mFrame;
-    private final ExecutorService mPool = Executors.newFixedThreadPool(3);
 
     public SimulatorService(IFrame frame) {
         mFrame = frame;
     }
 
-    public Future submit(final IJob job) {
+    public <T> T call(final IJob<T> job) throws Exception {
         final ProcessWorker processWorker = new ProcessWorker(job.getProcess(), mFrame);
         processWorker.execute();
-        return mPool.submit(job);
+        return job.call();
     }
 
-    public Future submit(final IJob job, final File logFile) {
+    public <T> T call(final IJob<T> job, final File logFile) throws Exception {
         final ProcessWorker processWorker = new ProcessWorker(job.getProcess(), mFrame) {
             @Override
             protected void process(List<String> lines) {
@@ -45,6 +40,6 @@ public class SimulatorService {
             }
         };
         processWorker.execute();
-        return mPool.submit(job);
+        return job.call();
     }
 }

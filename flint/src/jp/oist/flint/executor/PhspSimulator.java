@@ -13,8 +13,6 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.EventListener;
 import java.util.EventObject;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
 import javax.swing.SwingWorker;
 import javax.swing.event.EventListenerList;
 import javax.xml.parsers.ParserConfigurationException;
@@ -151,15 +149,14 @@ public class PhspSimulator extends SwingWorker <Boolean, Integer>
     protected void done () {
         try {
             isSuccess = get();
-        } catch (InterruptedException | ExecutionException ex) {
+        } catch (Exception ex) {
             Logger.getRootLogger().error(ex.getMessage());
             isSuccess = false;
         }
     }
 
     @Override
-    protected Boolean doInBackground()
-        throws ExecutionException, IOException, InterruptedException, SQLException {
+    protected Boolean doInBackground() throws Exception {
         File sedmlFile = mSedmlFile;
         File phspFile = mPhspFile;
 
@@ -168,9 +165,7 @@ public class PhspSimulator extends SwingWorker <Boolean, Integer>
         mLogFile.deleteOnExit();
 
         mFlintExecJob = new FlintExecJob(sedmlFile, phspFile, mWorkingDir);
-        Future<Boolean> submit = mService.submit(mFlintExecJob, mLogFile);
-
-        return submit.get();
+        return mService.call(mFlintExecJob, mLogFile);
     }
 
     @Override
