@@ -647,16 +647,18 @@ public class MainFrame extends javax.swing.JFrame
 
         if (encryptedUserId == null  || encryptedUserId.isEmpty() 
                 || encryptedPassword == null || encryptedPassword.isEmpty()) {
-            String sep = System.getProperty("line.separator");
-            showErrorDialog("Please set up the your account. " + sep
-                    + "(Edit -> Preference -> K3)", "ERROR");
+            StringBuilder sb = new StringBuilder("Please specify your account of Flint K3.");
+            sb.append(System.getProperty("line.separator"));
+            sb.append("(Edit -> Preference -> K3)");
+            showErrorDialog(sb.toString(), "Error on preference");
             return;
         }
 
         SubFrame subFrame  = getSelectedSubFrame();
-        final Object retval = JOptionPane.showInputDialog(this, 
-                "Job Title", "Send job to Flint K3",
-                 JOptionPane.INFORMATION_MESSAGE, null, null,
+        final Object retval = JOptionPane.showInputDialog(this,
+                                                          "New job's title:",
+                                                          "New job's title",
+                 JOptionPane.QUESTION_MESSAGE, null, null,
                  subFrame.getModelFile().getName());
 
         if (retval == null)
@@ -681,12 +683,15 @@ public class MainFrame extends javax.swing.JFrame
             protected void done () {
                 try {
                     int jobId = get();
-                    JOptionPane.showMessageDialog(MainFrame.this, 
-                        String.format("Success : Send job to Flint K3 (Job ID : %d)", jobId),
-                        "Send to Flint K3", 
-                        JOptionPane.INFORMATION_MESSAGE);
+                    String message = String.format("Submitted successfully your job to Flint K3 (Job ID : %d)", jobId);
+                    String title = "Job submitted to Flint K3";
+                    JOptionPane.showMessageDialog(MainFrame.this,
+                                                  message,
+                                                  title,
+                                                  JOptionPane.INFORMATION_MESSAGE);
                 } catch (InterruptedException | ExecutionException ex) {
-                    showErrorDialog(ex.getMessage(), "ERROR");
+                    showErrorDialog(ex.getMessage(),
+                                    "Error on comminicating with Flint K3");
                 }
             }
         };
