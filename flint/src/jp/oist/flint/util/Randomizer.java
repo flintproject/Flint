@@ -5,7 +5,6 @@ import java.math.BigDecimal;
 import java.math.MathContext;
 import java.text.NumberFormat;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
 
@@ -85,41 +84,32 @@ public class Randomizer {
         return mNumberFormat;
     }
 
-    public List<String> generate (long count) {
-        HashSet<String> retval = new HashSet<>();
+    private List<BigDecimal> generate(int count) {
+        assert mMinimum.compareTo(mMaximum) <= 0;
 
+        ArrayList<BigDecimal> result = new ArrayList<>(count);
         Random random = new Random(mSeed);
-
-        if (mMinimum.compareTo(mMaximum) >= 0)
-            return new ArrayList(retval);
-
         BigDecimal range = mMaximum.subtract(mMinimum);
-
-        while (retval.size() < count) {
+        for (int i=0;i<count;i++) {
             BigDecimal next = new BigDecimal(random.nextDouble(), MathContext.DECIMAL32);
-            String value = mNumberFormat.format(next.multiply(range).add(mMinimum));
-            retval.add(value);
+            result.add(next.multiply(range).add(mMinimum));
         }
-
-        return new ArrayList(retval);
+        return result;
     }
 
-    public String generateAsString (long count) {
+    public String generateAsString(int count) {
         return generateAsString(count, ",");
     }
 
-    public String generateAsString (long count, String separator) {
-        List<String> numList = generate(count);
-        if (numList == null || numList.isEmpty()) 
+    public String generateAsString(int count, String separator) {
+        List<BigDecimal> generated = generate(count);
+        if (generated.isEmpty())
             return "";
 
-        StringBuilder sb = new StringBuilder();
-
-        for (String sNum : numList)
-            sb.append(sNum).append(separator);
-
-        String retval = sb.toString();
-        retval = retval.substring(0, retval.length()-separator.length());
-        return retval;
+        StringBuilder sb = new StringBuilder(mNumberFormat.format(generated.get(0)));
+        int size = generated.size();
+        for (int i=1; i<size; i++)
+            sb.append(separator).append(mNumberFormat.format(generated.get(i)));
+        return sb.toString();
     }
 }

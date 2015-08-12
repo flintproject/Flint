@@ -874,7 +874,7 @@ public class ValueEditWindow extends JFrame
 
         try {
             Long seed  = Long.parseLong(sSeed);
-            Long count = Long.parseLong(sCount);
+            Integer count = Integer.parseInt(sCount);
             Double minimum = Double.parseDouble(sMinimum);
             Double maximum = Double.parseDouble(sMaximum);
 
@@ -887,7 +887,7 @@ public class ValueEditWindow extends JFrame
             mRandomizer.setMinimum(minimum);
             mRandomizer.setMaximum(maximum);
             mRandomizer.setNumberFormat(numberFormat);
-            String enumValue = mRandomizer.generateAsString(count, ",");
+            String enumValue = mRandomizer.generateAsString(count);
 
             txtarea_Value.setText(enumValue);
         } catch (NumberFormatException ex) { }
