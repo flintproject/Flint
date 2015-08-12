@@ -3,6 +3,7 @@ package jp.oist.flint.form.job;
 
 import jp.oist.flint.export.ExportWorker;
 import jp.oist.flint.filesystem.Workspace;
+import jp.oist.flint.form.IFrame;
 import jp.oist.flint.form.sub.JobWindow;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -18,6 +19,8 @@ import javax.swing.SwingWorker;
 
 public class ExportAllWorker extends SwingWorker<Boolean, Void> {
 
+    private final IFrame mFrame;
+
     private final ProgressMonitor mMonitor;
 
     private final String mExtension;
@@ -30,11 +33,13 @@ public class ExportAllWorker extends SwingWorker<Boolean, Void> {
 
     private final List<Map<String, Number>> mParameters;
 
-    public ExportAllWorker(JobWindow window,
+    public ExportAllWorker(IFrame frame,
+                           JobWindow window,
                            String extension,
                            File listFile,
                            List<File> sourceFiles, List<File> targetFiles,
                            List<Map<String, Number>> parameters) {
+        mFrame = frame;
         int size = sourceFiles.size();
         assert size == targetFiles.size();
         assert size == parameters.size();
@@ -67,7 +72,7 @@ public class ExportAllWorker extends SwingWorker<Boolean, Void> {
                 switch (mExtension) {
                 case "csv":
                     {
-                        ExportWorker worker = new ExportWorker(null, sourceFile, targetFile);
+                        ExportWorker worker = new ExportWorker(mFrame, sourceFile, targetFile);
                         worker.execute();
                         if (!worker.get())
                             return false;

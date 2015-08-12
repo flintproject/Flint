@@ -658,7 +658,8 @@ public class JobWindow extends javax.swing.JFrame
             parameters.add(job.getCombination());
         }
 
-        final ExportAllWorker worker = new ExportAllWorker(this,
+        final ExportAllWorker worker = new ExportAllWorker(mParent,
+                                                           this,
                                                            extension,
                                                            listFile,
                                                            isdFiles,
