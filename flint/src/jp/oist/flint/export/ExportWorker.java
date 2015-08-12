@@ -4,39 +4,40 @@ package jp.oist.flint.export;
 import jp.oist.flint.executor.Isd2csvJob;
 import jp.oist.flint.executor.ProcessWorker;
 import jp.oist.flint.form.IFrame;
+import jp.oist.flint.udp.IReceiver;
+import jp.oist.flint.udp.Monitor;
 import java.io.File;
-import java.io.IOException;
 import javax.swing.SwingWorker;
 
 public class ExportWorker extends SwingWorker<Boolean, Boolean> {
 
     private final IFrame mFrame;
+    private final IReceiver mReceiver;
     private final File mSource;
     private final File mTarget;
 
-    private final ExportMonitor mMonitor = new ExportMonitor();
-
-    public ExportWorker(IFrame frame, File source, File target) throws IOException {
+    public ExportWorker(IFrame frame, IReceiver receiver, File source, File target) {
         mFrame = frame;
+        mReceiver = receiver;
         mSource = source;
         mTarget = target;
     }
 
-    public ExportMonitor getMonitor() {
-        return mMonitor;
+    public ExportWorker(IFrame frame, File source, File target) {
+        this(frame, null, source, target);
     }
 
     @Override
     protected Boolean doInBackground() throws Exception {
-        mMonitor.execute();
-        Isd2csvJob job = new Isd2csvJob(mSource, mTarget, mMonitor.getPort());
+        Isd2csvJob job;
+        if (mReceiver == null) {
+            job = new Isd2csvJob(mSource, mTarget);
+        } else {
+            int port = Monitor.getInstance().addReceiver(mReceiver);
+            job = new Isd2csvJob(mSource, mTarget, port);
+        }
         ProcessWorker worker = new ProcessWorker(job.getProcess(), mFrame);
         worker.execute();
         return job.call().exists() && worker.get() == 0;
-    }
-
-    @Override
-    protected void done() {
-        mMonitor.cancel(false);
     }
 }

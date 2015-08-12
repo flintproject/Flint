@@ -73,6 +73,13 @@ public class Component {
         return getCommandByName("flint-run");
     }
 
+    public static List<String> getIsd2csvCommand(File inputFile, File outputFile) {
+        Command command = new Command("isd2csv");
+        command.addArgument(inputFile);
+        command.setOutputFile(outputFile);
+        return getCommandLineString(new CommandLine(command));
+    }
+
     public static List<String> getIsd2csvCommand(File inputFile, File outputFile, int port) {
         Command command = new Command("isd2csv");
         command.addOption("progress", port);

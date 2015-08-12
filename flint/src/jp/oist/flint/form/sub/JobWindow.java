@@ -44,6 +44,7 @@ import jp.oist.flint.control.FileChooser;
 import jp.oist.flint.dao.JobDao;
 import jp.oist.flint.dao.TaskDao;
 import jp.oist.flint.executor.PhspSimulator;
+import jp.oist.flint.export.ExportReceiver;
 import jp.oist.flint.export.ExportWorker;
 import jp.oist.flint.filesystem.Filename;
 import jp.oist.flint.filesystem.Workspace;
@@ -79,8 +80,6 @@ public class JobWindow extends javax.swing.JFrame
     private CombinationModel mDataModel;
 
     private PhspSimulator mSimulator;
-
-    private ExportWorker mExportWorker;
 
     private JobViewerContextMenuHandler mContextMenuHandler;
 
@@ -220,7 +219,6 @@ public class JobWindow extends javax.swing.JFrame
         lbl_StatusBar = new javax.swing.JLabel();
         jPanel5 = new javax.swing.JPanel();
         pb_StatusBar = new javax.swing.JProgressBar();
-        btn_ExportCancel = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
 
@@ -338,18 +336,6 @@ public class JobWindow extends javax.swing.JFrame
         pb_StatusBar.setPreferredSize(new java.awt.Dimension(148, 18));
         jPanel5.add(pb_StatusBar);
 
-        btn_ExportCancel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/jp/oist/flint/image/cancel.png"))); // NOI18N
-        btn_ExportCancel.setActionCommand("jobwindow.action.exportCancel");
-        btn_ExportCancel.setMaximumSize(new java.awt.Dimension(20, 20));
-        btn_ExportCancel.setMinimumSize(new java.awt.Dimension(20, 20));
-        btn_ExportCancel.setPreferredSize(new java.awt.Dimension(20, 20));
-        btn_ExportCancel.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btn_ExportCancelActionPerformed(evt);
-            }
-        });
-        jPanel5.add(btn_ExportCancel);
-
         pnl_StatusBar.add(jPanel5, "jobwindow.statusbar.progress");
 
         getContentPane().add(pnl_StatusBar, java.awt.BorderLayout.PAGE_END);
@@ -382,24 +368,6 @@ public class JobWindow extends javax.swing.JFrame
         }
     }//GEN-LAST:event_btn_ExportAllActionPerformed
 
-    private void btn_ExportCancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_ExportCancelActionPerformed
-        if (mExportWorker != null) {
-            mExportWorker.cancel(true);
-        }
-    }//GEN-LAST:event_btn_ExportCancelActionPerformed
-
-    public void setMessageOnStatusBar (String msg) {
-        CardLayout layout = (CardLayout)pnl_StatusBar.getLayout();
-        layout.show(pnl_StatusBar, STATUSBAR_CARD_MESSAGE);
-        lbl_StatusBar.setText(msg);
-    }
-
-    public void setProgressOnStatusBar (String msg, int progress) {
-        CardLayout layout = (CardLayout)pnl_StatusBar.getLayout();
-        layout.show(pnl_StatusBar, STATUSBAR_CARD_PROGRESS);
-        pb_StatusBar.setValue(progress);
-    }
-
     public int getSelectedIndex () {
         return mJobViewer.getSelectedIndex();
     }
@@ -414,23 +382,6 @@ public class JobWindow extends javax.swing.JFrame
 
     private void showErrorDialog (String msg, String title) {
         JOptionPane.showMessageDialog(this, msg, title, JOptionPane.ERROR_MESSAGE);
-    }
-
-    public void addPropertyChangeListenerForProgress(SwingWorker worker) {
-        worker.addPropertyChangeListener(new PropertyChangeListener (){
-            @Override
-            public void propertyChange(PropertyChangeEvent evt) {
-                String propertyName = evt.getPropertyName();
-                Object newValue = evt.getNewValue();
-                if ("progress".equals(propertyName)) {
-                    int percentage = (Integer)newValue;
-                    setProgressOnStatusBar(percentage + "%", percentage);
-                } else if ("state".equals(propertyName)
-                        && SwingWorker.StateValue.DONE.equals(newValue)) {
-                    setMessageOnStatusBar("");
-                }
-            }
-        });
     }
 
     /*
@@ -752,9 +703,10 @@ public class JobWindow extends javax.swing.JFrame
                     final File csvFile = Workspace.createTempFile("export", ".csv");
                     csvFile.deleteOnExit();
 
-                    mExportWorker = new ExportWorker((IFrame)mParent, isdFile, csvFile);
-                    addPropertyChangeListenerForProgress(mExportWorker.getMonitor());
-                    mExportWorker.addPropertyChangeListener(new PropertyChangeListener(){
+                    ExportReceiver receiver = new ExportReceiver(this);
+                    final ExportWorker worker = new ExportWorker((IFrame)mParent, receiver, isdFile, csvFile);
+                    receiver.setWorker(worker); // make cancellation possible
+                    worker.addPropertyChangeListener(new PropertyChangeListener() {
                         @Override
                         public void propertyChange(PropertyChangeEvent evt) {
                             String propertyName = evt.getPropertyName();
@@ -762,7 +714,7 @@ public class JobWindow extends javax.swing.JFrame
                             if ("state".equals(propertyName)
                                 && SwingWorker.StateValue.DONE.equals(newValue)) {
                                 try {
-                                    if (mExportWorker.get()) {
+                                    if (worker.get()) {
                                         Workspace.publishFile(csvFile, file);
                                         showMessageDialog("Exported successfully to " + file.getPath(),
                                                           "CSV Exported");
@@ -780,7 +732,6 @@ public class JobWindow extends javax.swing.JFrame
                                     showErrorDialog("Could not write to " + file.getPath(),
                                                     "CSV Export aborted.");
                                 } finally {
-                                    mExportWorker = null;
                                     // spare the disk space immediately,
                                     // because the resulting CSV file can be quite large
                                     if (!csvFile.delete()) {
@@ -790,7 +741,7 @@ public class JobWindow extends javax.swing.JFrame
                             }
                         }
                     });
-                    mExportWorker.execute();
+                    worker.execute();
                 } else {
                     // export as ISD
                     Workspace.publishFile(isdFile, file);
@@ -918,7 +869,6 @@ public class JobWindow extends javax.swing.JFrame
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btn_ExportAll;
-    private javax.swing.JButton btn_ExportCancel;
     private javax.swing.JToggleButton btn_List;
     private javax.swing.JToggleButton btn_Viewer;
     private javax.swing.ButtonGroup buttonGroup1;

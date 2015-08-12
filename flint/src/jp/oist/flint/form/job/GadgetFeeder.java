@@ -4,7 +4,6 @@ package jp.oist.flint.form.job;
 import jp.oist.flint.export.ExportWorker;
 import jp.oist.flint.filesystem.Workspace;
 import jp.oist.flint.form.IFrame;
-import jp.oist.flint.form.sub.JobWindow;
 import jp.oist.flint.garuda.GarudaClient;
 import jp.sbi.garuda.platform.commons.Gadget;
 import jp.sbi.garuda.platform.commons.exception.NetworkException;
@@ -15,18 +14,15 @@ import javax.swing.SwingWorker;
 
 public class GadgetFeeder extends SwingWorker<File, Boolean> {
 
-    final JobWindow mWindow;
     final IFrame mFrame;
     final Gadget mGadget;
     final File mFile;
     final String mExtension;
 
-    public GadgetFeeder(JobWindow window,
-                        IFrame frame,
+    public GadgetFeeder(IFrame frame,
                         Gadget gadget,
                         File file,
                         String extension) {
-        mWindow = window;
         mFrame = frame;
         mGadget = gadget;
         mFile = file;
@@ -43,7 +39,6 @@ public class GadgetFeeder extends SwingWorker<File, Boolean> {
         File csvFile = Workspace.createTempFile("export", ".csv");
         csvFile.deleteOnExit();
         ExportWorker worker = new ExportWorker(mFrame, mFile, csvFile);
-        mWindow.addPropertyChangeListenerForProgress(worker.getMonitor());
         worker.execute();
         return worker.get() ? csvFile : null;
     }

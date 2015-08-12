@@ -2,7 +2,6 @@
 package jp.oist.flint.form.job;
 
 import jp.oist.flint.form.IFrame;
-import jp.oist.flint.form.sub.JobWindow;
 import jp.sbi.garuda.platform.commons.Gadget;
 import java.io.File;
 import java.util.List;
@@ -40,8 +39,7 @@ public class GadgetSelectionListener implements ListSelectionListener {
         for (int i = minIndex; i <= maxIndex; i++) {
             if (lsm.isSelectedIndex(i)) {
                 mDialog.dispose();
-                GadgetFeeder feeder = new GadgetFeeder((JobWindow)mDialog.getParent(),
-                                                       mFrame,
+                GadgetFeeder feeder = new GadgetFeeder(mFrame,
                                                        mGadgets.get(i),
                                                        mFile,
                                                        mExtension);

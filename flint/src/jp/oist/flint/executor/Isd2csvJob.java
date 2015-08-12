@@ -16,4 +16,12 @@ public class Isd2csvJob extends AbstractFileJob {
         mProcess = mProcessBuilder.start();
     }
 
+    public Isd2csvJob(final File isdFile, final File csvFile) throws IOException, InterruptedException, ExecutionException {
+        mFile = csvFile;
+        mProcessBuilder = new ProcessBuilder(Component.getIsd2csvCommand(isdFile, mFile));
+        Component.setUpEnvironment(mProcessBuilder);
+        mProcessBuilder.redirectErrorStream(true);
+        mProcess = mProcessBuilder.start();
+    }
+
 }
