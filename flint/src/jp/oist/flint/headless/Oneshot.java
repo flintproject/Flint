@@ -4,11 +4,7 @@ package jp.oist.flint.headless;
 import jp.oist.flint.executor.SimulatorService;
 import jp.physiome.Cli.RunOption;
 import java.io.File;
-
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.util.concurrent.ExecutionException;
-import javax.swing.SwingWorker;
 
 public class Oneshot implements Runnable {
 
@@ -43,23 +39,14 @@ public class Oneshot implements Runnable {
 
         SimulatorService service = new SimulatorService(logger);
         final Simulator simulator = new Simulator(service, mOption);
-
-        simulator.addPropertyChangeListener(new PropertyChangeListener() {
-            @Override
-            public void propertyChange(PropertyChangeEvent evt) {
-                String propertyName = evt.getPropertyName();
-                Object nv = evt.getNewValue();
-                if ("state".equals(propertyName) &&
-                        nv == SwingWorker.StateValue.DONE) {
-                    try {
-                        if (mQuit) System.exit(simulator.get()? 0 : 1);
-                    } catch (InterruptedException | ExecutionException ex) {
-                        logger.printError(ex.getMessage());
-                        if (mQuit) System.exit(1);
-                    }
-                }
-            }
-        });
         simulator.execute();
+        try {
+            if (mQuit)
+                System.exit(simulator.get() ? 0 : 1);
+        } catch (InterruptedException | ExecutionException ex) {
+            logger.printError(ex.getMessage());
+            if (mQuit)
+                System.exit(1);
+        }
     }
 }
