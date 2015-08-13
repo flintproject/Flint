@@ -1,6 +1,7 @@
 /* -*- Mode: Java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- vim:set ts=4 sw=4 sts=4 et: */
 package jp.oist.flint.form.sub;
 
+import jp.oist.flint.control.DirectoryChooser;
 import jp.oist.flint.form.job.CombinationModel;
 import jp.oist.flint.form.job.GadgetDialog;
 import jp.oist.flint.form.job.JobList;
@@ -34,7 +35,6 @@ import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
 import javax.swing.DefaultListSelectionModel;
 import javax.swing.ImageIcon;
-import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.ListSelectionModel;
@@ -535,19 +535,15 @@ public class JobWindow extends javax.swing.JFrame
         if (extension == null)
             return;
 
-        File defaultDir = new File(System.getProperty("user.home"));
-        JFileChooser fileChooser = new JFileChooser();
-        fileChooser.setCurrentDirectory(defaultDir);
-        fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-        int result = fileChooser.showDialog(mParent, "Export All");
-
-        if (result != JFileChooser.APPROVE_OPTION)
+        String defaultDir = System.getProperty("user.home");
+        DirectoryChooser chooser = new DirectoryChooser(this, "Choose a target directory", defaultDir);
+        if (!chooser.showDialog())
             return;
 
-        final File selectedDir = fileChooser.getSelectedFile();
+        final File selectedDir = chooser.getSelectedDirectory();
 
         if (!selectedDir.exists()) {
-            result = JOptionPane.showConfirmDialog(mParent,
+            int result = JOptionPane.showConfirmDialog(mParent,
                                                    String.format("%s does not exist; do you want to create the new directory and proceed?",
                                                                  selectedDir.getName()),
                                                    "", JOptionPane.YES_NO_OPTION);
@@ -564,7 +560,7 @@ public class JobWindow extends javax.swing.JFrame
         ConfirmDialogForOverwritingFile confirmDialog = new ConfirmDialogForOverwritingFile(this);
         File listFile = new File(selectedDir, "simulation.txt");
         if (listFile.exists()) {
-            result = confirmDialog.show(listFile);
+            int result = confirmDialog.show(listFile);
             switch (result) {
             case JOptionPane.YES_OPTION:
                 if (!listFile.delete()) {
@@ -589,7 +585,7 @@ public class JobWindow extends javax.swing.JFrame
             File isdFile = job.getIsdFile();
             File targetFile = Filename.getVariant(taskDao.getModelFile(), selectedDir, i, numDigits, extension);
             if (targetFile.exists()) {
-                result = confirmDialog.show(targetFile);
+                int result = confirmDialog.show(targetFile);
                 switch (result) {
                 case JOptionPane.YES_OPTION:
                     if (!targetFile.delete()) {
