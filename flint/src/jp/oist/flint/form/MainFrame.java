@@ -835,8 +835,9 @@ public class MainFrame extends javax.swing.JFrame
         ModelLoaderLogger logger = new ModelLoaderLogger(this);        
         try {
             setEditable(false);
-            final ModelLoader loader = new ModelLoader(file);
+            ModelLoader loader = new ModelLoader(file);
             loader.addPropertyChangeListener(new ModelFileLoaderListener(logger, file , loader));
+            loader.addPropertyChangeListener(new ModelLoaderProgressDialog(this, path));
             loader.addPropertyChangeListener(new PropertyChangeListener() {
                 @Override
                 public void propertyChange(PropertyChangeEvent evt) {
