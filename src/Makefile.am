@@ -104,7 +104,6 @@ libflintxx_la_SOURCES = \
     job/generate.cc \
     job/job.cc \
     job/store.cc \
-    layout/copier.cc \
     layout/generate.cc \
     lo/layout.cc \
     load/load.cc \

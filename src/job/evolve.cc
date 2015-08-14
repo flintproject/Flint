@@ -28,7 +28,6 @@
 #include "bc/pack.h"
 #include "db/read-only-driver.hh"
 #include "filter/cutter.h"
-#include "layout/copier.hh"
 #include "lo/layout.h"
 #include "lo/layout_loader.h"
 #include "runtime/history.h"
@@ -385,7 +384,7 @@ bool Evolve(sqlite3 *db,
 	}
 
 	// arrange previous data space
-	std::unique_ptr<double[]> prev(new double[layer_size]()); // default-initialized
+	std::unique_ptr<double[]> prev(new double[layer_size * nol]()); // default-initialized
 	if (option.input_data_file != NULL) { // fill the first layer with input
 		if (!LoadData(option.input_data_file, layer_size, prev.get())) return false;
 	}
@@ -404,8 +403,12 @@ bool Evolve(sqlite3 *db,
 		std::set<int> constants;
 		layout->CollectConstant(1, layer_size, &constants);
 		for (auto offset : constants) {
+			double val = prev[offset];
+			for (int i=1;i<nol;i++) { // except the 1st layer
+				prev[offset + i*layer_size] = val;
+			}
 			for (int i=0;i<nol;i++) {
-				data[offset + i*layer_size] = prev[offset];
+				data[offset + i*layer_size] = val;
 			}
 		}
 	}
@@ -432,13 +435,6 @@ bool Evolve(sqlite3 *db,
 	executor->set_history(history.get());
 	preexecutor->set_history(history.get());
 	postexecutor->set_history(history.get());
-
-	std::unique_ptr<layout::Copier> copier;
-	{
-		std::vector<int> vo;
-		layout->CollectVariable(layer_size, &vo);
-		copier.reset(new layout::Copier(vo));
-	}
 
 	// calculate max number of data of block
 	int max_nod = processor->GetMaxNumberOfData();
@@ -500,29 +496,12 @@ bool Evolve(sqlite3 *db,
 		}
 		// one time step forward
 		data[kIndexTime] += prev[kIndexDt];
+		double last_time = data[kIndexTime];
 		if (with_post) {
 			if (!postprocessor->Execute(postexecutor.get(), inbound.get())) {
 				result = false;
 				break;
 			}
-		}
-
-		// update prev, but keep end, dt, seed, and constant values
-		prev[kIndexTime] = data[kIndexTime];
-		copier->Copy(data.get(), prev.get());
-		if (std::memcmp(prev.get()+1, data.get()+1, (layer_size-1)*sizeof(double)) != 0) {
-			cerr << "layer_size: " << layer_size << endl;
-			cerr << "prev:" << endl;
-			for (size_t i=0;i<layer_size;i++) {
-				cerr << "[" << i << "]" << prev[i] << " ";
-			}
-			cerr << endl;
-			cerr << "data:" << endl;
-			for (size_t i=0;i<layer_size;i++) {
-				cerr << "[" << i << "]" << data[i] << " ";
-			}
-			cerr << endl;
-			return false;
 		}
 
 		if (granularity <= 1 || ++g == granularity) {
@@ -563,6 +542,13 @@ bool Evolve(sqlite3 *db,
 			}
 		}
 
+		// update prev via double buffering
+		data.swap(prev);
+		executor->set_prev(prev.get());
+		if (with_pre) preexecutor->set_prev(prev.get());
+		executor->set_data(data.get());
+		if (with_post) postexecutor->set_prev(data.get());
+		data[kIndexTime] = last_time;
 	} while (data[kIndexTime] < data[kIndexEnd]);
 	fflush(output_fp);
 

@@ -199,8 +199,6 @@ public:
 	 */
 	size_t MarkConstant(int nol, size_t size, char *arr) const;
 
-	void CollectVariable(size_t size, std::vector<int> *offsets) const;
-
 	void Debug(size_t size) const {
 		using std::cout;
 		using std::endl;
