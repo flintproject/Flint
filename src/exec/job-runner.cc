@@ -9,8 +9,6 @@
 #include <cstdlib>
 #include <cstring>
 #include <iostream>
-#include <future>
-#include <thread>
 
 #define BOOST_FILESYSTEM_NO_DEPRECATED
 #include <boost/filesystem.hpp>
