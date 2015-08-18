@@ -1,5 +1,5 @@
 /* -*- Mode: C++; tab-width: 4; indent-tabs-mode: t; c-basic-offset: 4 -*- vim:set ts=4 sw=4 sts=4 noet: */
-#include "sprinkle.h"
+#include "sprinkle.hh"
 
 #include <cassert>
 #include <cstdio>
@@ -30,6 +30,7 @@ using std::string;
 using std::vector;
 
 namespace flint {
+namespace phml {
 namespace {
 
 typedef boost::ptr_map<pair<boost::uuids::uuid, boost::uuids::uuid>, map<int, double> > TargetMap;
@@ -151,4 +152,5 @@ bool Sprinkle(sqlite3 *db)
 	return true;
 }
 
+}
 }

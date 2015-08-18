@@ -73,7 +73,6 @@ libflintxx_la_SOURCES = \
     lo.pb.cc \
     phml.pb.cc \
     unit.pb.cc \
-    branch.cc \
     cellml/parser.cc \
     cellml/read.cc \
     cellml/translator.cc \
@@ -115,6 +114,7 @@ libflintxx_la_SOURCES = \
     method/helper.cc \
     method/rk4.cc \
     modelpath.cc \
+    phml/branch.cc \
     phml/combine-all.cc \
     phml/combine.cc \
     phml/delay-arg-validator.cc \
@@ -123,12 +123,14 @@ libflintxx_la_SOURCES = \
     phml/import.cc \
     phml/lands.cc \
     phml/nc.cc \
+    phml/reach.cc \
     phml/read.cc \
+    phml/span.cc \
+    phml/sprinkle.cc \
     phml/transition-form.cc \
     phml/unit-of-time.cc \
     phsp/read.cc \
     phz/read.cc \
-    reach.cc \
     reduction.cc \
     run/run.cc \
     run/spec.cc \
@@ -140,8 +142,6 @@ libflintxx_la_SOURCES = \
     sbml/parser.cc \
     sbml/read.cc \
     sedml/read.cc \
-    span.cc \
-    sprinkle.cc \
     sys/temporary_path.cc \
     task/config.cc \
     task/config-reader.cc \

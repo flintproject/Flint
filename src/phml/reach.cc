@@ -1,5 +1,5 @@
 /* -*- Mode: C++; tab-width: 4; indent-tabs-mode: t; c-basic-offset: 4 -*- vim:set ts=4 sw=4 sts=4 noet: */
-#include "reach.h"
+#include "reach.hh"
 
 #include <cstdio>
 #include <cstdlib>
@@ -33,6 +33,7 @@ using std::string;
 using std::pair;
 
 namespace flint {
+namespace phml {
 namespace {
 
 class Scope : boost::noncopyable {
@@ -336,4 +337,5 @@ bool Reach(sqlite3 *db)
 	return true;
 }
 
+}
 }

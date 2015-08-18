@@ -1,5 +1,5 @@
 /* -*- Mode: C++; tab-width: 4; indent-tabs-mode: t; c-basic-offset: 4 -*- vim:set ts=4 sw=4 sts=4 noet: */
-#include "span.h"
+#include "span.hh"
 
 #include <cassert>
 #include <cstdio>
@@ -25,6 +25,7 @@ using std::vector;
 using std::pair;
 
 namespace flint {
+namespace phml {
 namespace {
 
 class Edge : boost::noncopyable {
@@ -465,4 +466,5 @@ bool Span(sqlite3 *db)
 	return true;
 }
 
+}
 }

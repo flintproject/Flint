@@ -23,7 +23,7 @@
 
 #include <libxml/xmlreader.h>
 
-#include "branch.h"
+#include "branch.hh"
 #include "db.hh"
 #include "db/driver.hh"
 #include "db/query.h"
@@ -34,10 +34,10 @@
 #include "phml/graph-math-rewriter.h"
 #include "phml/graph_reader.h"
 #include "phml/transition-form.h"
-#include "reach.h"
+#include "reach.hh"
 #include "reduction.hh"
-#include "span.h"
-#include "sprinkle.h"
+#include "span.hh"
+#include "sprinkle.hh"
 #include "sqlite3.h"
 #include "ts.hh"
 #include "utf8path.h"
