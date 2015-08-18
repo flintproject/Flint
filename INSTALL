@@ -8,7 +8,7 @@ You need autotools for building Flint.
 pkg-config is helpful but not required.
 
 In order to build Flint, the following libraries are required:
-- Boost 1.58.0
+- Boost 1.59.0
   http://www.boost.org/
 - Protocol buffers 2.6.1
   https://developers.google.com/protocol-buffers/

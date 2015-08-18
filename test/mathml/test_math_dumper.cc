@@ -15,7 +15,7 @@ struct GF {
 	}
 };
 
-BOOST_GLOBAL_FIXTURE(GF)
+BOOST_GLOBAL_FIXTURE(GF);
 
 class Handler {
 public:
