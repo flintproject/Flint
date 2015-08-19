@@ -123,7 +123,7 @@ public class InputValueSetTest {
         String inputUpperLimit = "100";
 
         String expectedName = inputName;
-        String expectedEnumValue = "97,95,94,41,47,46,40,11,29,76";
+        String expectedEnumValue = "76,47,29,40,97,11,97,95,95,94";
 
         mValueEditWindow.checkBox(ValueEditWindow.RANDOMIZER_CHECKBOX).click();
 
