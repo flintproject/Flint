@@ -16,6 +16,8 @@ import javax.swing.JOptionPane;
 
 public class Setup implements Runnable {
 
+    private static final String REFERENCE_PROGRAM_NAME = "flint-exec";
+
     final CommandLineArguments mCommandLineArgs;
 
     private Runnable mLauncher = null;
@@ -32,13 +34,10 @@ public class Setup implements Runnable {
         Preferences prefs = Preferences.userRoot().node("/jp/oist/flint");
         String previous = prefs.get("defaultComponentPath", "");
         File previousFile = new File(previous);
-        if (previousFile.isDirectory()) {
-            // ask user if available
-            int r = JOptionPane.showConfirmDialog(null,
-                                                  "Do you use components in " + previous + "?",
-                                                  "Default component directory found",
-                                                  JOptionPane.YES_NO_OPTION);
-            if (r == JOptionPane.YES_OPTION) return previousFile;
+        if ( previousFile.isDirectory() &&
+             new File(previousFile, REFERENCE_PROGRAM_NAME).isFile() ) {
+            // do not ask user if available
+            return previousFile;
         }
         // othewise, user has to specify its path
         fc.setDialogTitle("Specify component directory");
@@ -81,7 +80,9 @@ public class Setup implements Runnable {
 
             // try to find a command executable in order to check the component directory
             String userDir = System.getProperty("user.dir");
-            if (!new File(userDir + File.separator + "bin" + File.separator + "flint-exec").isFile()) {
+            File binDir = new File(userDir, "bin");
+            if ( !binDir.isDirectory() ||
+                 !new File(binDir, REFERENCE_PROGRAM_NAME).isFile() ) {
                 File dir = setupComponent();
                 Component.setPath(dir);
             }
