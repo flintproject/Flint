@@ -20,7 +20,7 @@ This is a Boost library package for Flint.
 
 %install
 rm -rf %{buildroot}
-./b2 -d0 --prefix=%{buildroot}/opt/flint --without-atomic --without-context --without-coroutine --without-coroutine2 --without-log --without-mpi --without-python --without-thread --without-wave --layout=tagged architecture=combined link=shared variant=release threading=single,multi install || true
+./b2 -d0 --prefix=%{buildroot}/opt/flint --without-atomic --without-context --without-coroutine --without-coroutine2 --without-iostreams --without-log --without-mpi --without-python --without-thread --without-wave --layout=tagged architecture=combined link=shared variant=release threading=single,multi install || true
 mkdir -p %{buildroot}/etc/ld.so.conf.d
 echo '/opt/flint/lib' > %{buildroot}/etc/ld.so.conf.d/%{name}.conf
 
