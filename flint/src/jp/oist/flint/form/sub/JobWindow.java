@@ -676,9 +676,14 @@ public class JobWindow extends javax.swing.JFrame
             if (isdFile == null || !isdFile.exists())
                 throw new IOException("It has not finished yet.");
 
+            InputDialogForExport inputDialog = new InputDialogForExport(this);
+            String ext = inputDialog.show();
+            if (ext == null)
+                return;
+
             String baseName = Utility.getFileName(mParent.getModelFile().getName());
             File defaultFile = new File(mParent.getModelFile().getParent(), 
-                                        baseName + "_" + jobId + ".csv");
+                                        baseName + "_" + jobId + "." + ext);
             FileChooser fileChooser = new FileChooser(mParent,
                     "Export file", FileChooser.Mode.SAVE, defaultFile);
 
@@ -692,9 +697,7 @@ public class JobWindow extends javax.swing.JFrame
                     if (ans != JOptionPane.YES_OPTION)
                         return;
                 }
-                String ext = Utility.getFileExtension(file);
-                if ("csv".equalsIgnoreCase(ext) ||
-                    "txt".equalsIgnoreCase(ext)) { // export as CSV for these extension
+                if ("csv".equalsIgnoreCase(ext)) { // export as CSV
                     // create a temporary target file
                     final File csvFile = Workspace.createTempFile("export", ".csv");
                     csvFile.deleteOnExit();
