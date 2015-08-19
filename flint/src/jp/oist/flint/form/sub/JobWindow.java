@@ -698,12 +698,8 @@ public class JobWindow extends javax.swing.JFrame
                         return;
                 }
                 if ("csv".equalsIgnoreCase(ext)) { // export as CSV
-                    // create a temporary target file
-                    final File csvFile = Workspace.createTempFile("export", ".csv");
-                    csvFile.deleteOnExit();
-
                     ExportReceiver receiver = new ExportReceiver(this);
-                    final ExportWorker worker = new ExportWorker((IFrame)mParent, receiver, isdFile, csvFile);
+                    final ExportWorker worker = new ExportWorker((IFrame)mParent, receiver, isdFile, file);
                     receiver.setWorker(worker); // make cancellation possible
                     worker.addPropertyChangeListener(new PropertyChangeListener() {
                         @Override
@@ -713,11 +709,9 @@ public class JobWindow extends javax.swing.JFrame
                             if ("state".equals(propertyName)
                                 && SwingWorker.StateValue.DONE.equals(newValue)) {
                                 try {
-                                    if (worker.get()) {
-                                        Workspace.publishFile(csvFile, file);
+                                    if (worker.get())
                                         showMessageDialog("Exported successfully to " + file.getPath(),
                                                           "CSV Exported");
-                                    }
                                 } catch (CancellationException ce) {
                                     showMessageDialog("Exporting is cancelled.",
                                                       "Export cancelled");
@@ -727,15 +721,6 @@ public class JobWindow extends javax.swing.JFrame
                                 } catch (ExecutionException ex) {
                                     showErrorDialog("Export aborted\n\n" + ex.getMessage(),
                                                     "CSV Export aborted ");
-                                } catch (IOException ex) {
-                                    showErrorDialog("Could not write to " + file.getPath(),
-                                                    "CSV Export aborted.");
-                                } finally {
-                                    // spare the disk space immediately,
-                                    // because the resulting CSV file can be quite large
-                                    if (!csvFile.delete()) {
-                                        Logger.getRootLogger().error("failed to delete " + csvFile.toString());
-                                    }
                                 }
                             }
                         }
