@@ -66,7 +66,7 @@ define flint_frameworks_boost_dylib
 $(call flint_frameworks_boost_dylib_name,$(1)): tmp/$(BOOST_UNDERSCORE).installed tmp/bundled
 	install -p -m 0644 $(PREFIX)/lib/libboost_$(1)-mt.dylib $$@
 	install_name_tool -id @executable_path/../Frameworks/libboost_$(1)-mt.dylib $$@
-	install_name_tool -change libboost_system-mt.dylib @executable_path/../Frameworks/libboost_system-mt.dylib $$@
+	install_name_tool -change @rpath/libboost_system-mt.dylib @executable_path/../Frameworks/libboost_system-mt.dylib $$@
 endef
 
 define flint_frameworks_dylib
@@ -88,7 +88,7 @@ define flint_frameworks_flint_dylib
 $(call flint_frameworks_dylib_name,$(1)): opt/lib/$(1).dylib tmp/bundled
 	install -p -m 0644 $$< $$@
 	install_name_tool -id @executable_path/../Frameworks/$(1).dylib $$@
-	for name in $(BOOST_DYLIBS); do install_name_tool -change libboost_$$$$name-mt.dylib @executable_path/../Frameworks/libboost_$$$$name-mt.dylib $$@; done
+	for name in $(BOOST_DYLIBS); do install_name_tool -change @rpath/libboost_$$$$name-mt.dylib @executable_path/../Frameworks/libboost_$$$$name-mt.dylib $$@; done
 	for name in $(DYLIBS); do install_name_tool -change $(PREFIX)/lib/$$$$name.dylib @executable_path/../Frameworks/$$$$name.dylib $$@; done
 	for name in $(SUNDIALS_DYLIBS); do install_name_tool -change $(PREFIX)/lib/libsundials_$$$$name @executable_path/../Frameworks/libsundials_$$$$name $$@; done
 	for name in $(FLINT_DYLIBS); do install_name_tool -change $(CURDIR)/opt/lib/$$$$name.dylib @executable_path/../Frameworks/$$$$name.dylib $$@; done
@@ -97,7 +97,7 @@ endef
 define flint_macos_program
 $(call flint_macos_program_name,$(1)): opt/bin/$(1) tmp/bundled
 	install -p $$< $$@
-	for name in $(BOOST_DYLIBS); do install_name_tool -change libboost_$$$$name-mt.dylib @executable_path/../Frameworks/libboost_$$$$name-mt.dylib $$@; done
+	for name in $(BOOST_DYLIBS); do install_name_tool -change @rpath/libboost_$$$$name-mt.dylib @executable_path/../Frameworks/libboost_$$$$name-mt.dylib $$@; done
 	for name in $(DYLIBS); do install_name_tool -change $(PREFIX)/lib/$$$$name.dylib @executable_path/../Frameworks/$$$$name.dylib $$@; done
 	for name in $(SUNDIALS_DYLIBS); do install_name_tool -change $(PREFIX)/lib/libsundials_$$$$name @executable_path/../Frameworks/libsundials_$$$$name $$@; done
 	for name in $(FLINT_DYLIBS); do install_name_tool -change $(CURDIR)/opt/lib/$$$$name.dylib @executable_path/../Frameworks/$$$$name.dylib $$@; done
