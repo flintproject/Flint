@@ -167,7 +167,7 @@ tmp/sundials-$(SUNDIALS_VERSION): src/sundials-$(SUNDIALS_VERSION).tar.gz | tmp
 	touch $@
 
 tmp/$(BOOST_UNDERSCORE).installed: tmp/$(BOOST_UNDERSCORE)
-	(cd var/$(BOOST_UNDERSCORE) && export MACOSX_DEPLOYMENT_TARGET=10.7 && ./bootstrap.sh --with-toolset=clang && ./b2 -d0 --prefix=$(PREFIX) --without-atomic --without-context --without-coroutine --without-log --without-mpi --without-python --without-thread --without-wave --layout=tagged toolset=clang cflags='-arch x86_64 -mmacosx-version-min=10.7' cxxflags='-std=c++11 -stdlib=libc++ -arch x86_64 -mmacosx-version-min=10.7' linkflags='-stdlib=libc++ -arch x86_64 -mmacosx-version-min=10.7' link=shared variant=release threading=multi install)
+	(cd var/$(BOOST_UNDERSCORE) && export MACOSX_DEPLOYMENT_TARGET=10.7 && ./bootstrap.sh --with-toolset=clang && ./b2 -d0 --prefix=$(PREFIX) --without-atomic --without-context --without-coroutine --without-coroutine2 --without-log --without-mpi --without-python --without-thread --without-wave --layout=tagged toolset=clang cflags='-arch x86_64 -mmacosx-version-min=10.7' cxxflags='-std=c++11 -stdlib=libc++ -arch x86_64 -mmacosx-version-min=10.7' linkflags='-stdlib=libc++ -arch x86_64 -mmacosx-version-min=10.7' link=shared variant=release threading=multi install)
 	touch $@
 
 tmp/clibsedml-$(CLIBSEDML_COMMIT).installed: tmp/clibsedml-$(CLIBSEDML_COMMIT) tmp/libxml2-$(LIBXML2_VERSION).installed

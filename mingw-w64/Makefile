@@ -113,7 +113,7 @@ tmp/$(BOOST_UNDERSCORE).installed: tmp/$(BOOST_UNDERSCORE)
 	echo "        :" >> var/$(BOOST_UNDERSCORE)/user-config.jam
 	echo "        <rc>$(HOST)-windres" >> var/$(BOOST_UNDERSCORE)/user-config.jam
 	echo ";" >> var/$(BOOST_UNDERSCORE)/user-config.jam
-	(cd var/$(BOOST_UNDERSCORE) && ./b2 -d0 --prefix=$(PREFIX) --without-atomic --without-context --without-coroutine --without-log --without-mpi --without-python --without-thread --without-wave --layout=tagged --user-config=user-config.jam -j 2 -sNO_BZIP2=1 -q toolset=gcc target-os=windows variant=release threading=multi threadapi=pthread link=shared runtime-link=shared install)
+	(cd var/$(BOOST_UNDERSCORE) && ./b2 -d0 --prefix=$(PREFIX) --without-atomic --without-context --without-coroutine --without-coroutine2 --without-log --without-mpi --without-python --without-thread --without-wave --layout=tagged --user-config=user-config.jam -j 2 -sNO_BZIP2=1 -q toolset=gcc target-os=windows variant=release threading=multi threadapi=pthread link=shared runtime-link=shared install)
 	touch $@
 
 tmp/clibsedml-$(CLIBSEDML_COMMIT).installed: tmp/clibsedml-$(CLIBSEDML_COMMIT) tmp/libxml2-$(LIBXML2_VERSION).installed
