@@ -85,7 +85,7 @@ import org.xml.sax.SAXException;
  */
 public class MainFrame extends javax.swing.JFrame 
     implements ICallee, IPhspConfiguration,
-               IFlintMenuBarDelegator, ISimulationConfigurationList, IFrame {
+               IMenuDelegator, ISimulationConfigurationList, IFrame {
 
     static {
         try {
@@ -146,7 +146,7 @@ public class MainFrame extends javax.swing.JFrame
         setPreferredSize(new Dimension(WIDTH, HEIGHT));
         setLocationRelativeTo(null);
 
-        FlintMenuBar menuBar = FlintMenuBar.getInstance();
+        MenuBar menuBar = MenuBar.getInstance();
         menuBar.setDelegator(this);
         setJMenuBar(menuBar);
         addMainFrameListener(menuBar);
@@ -195,7 +195,7 @@ public class MainFrame extends javax.swing.JFrame
     }
 
     private void loadRecentModels () {
-        FlintMenuBar.getInstance()
+        MenuBar.getInstance()
             .fireUpdateRecentModels(mSession.getRecentModels());
     }
 
@@ -265,7 +265,7 @@ public class MainFrame extends javax.swing.JFrame
             });
             for (SubFrame subFrame : getSubFrames())
                 simulator.addSimulationListener(subFrame);
-            simulator.addSimulationListener(FlintMenuBar.getInstance());
+            simulator.addSimulationListener(MenuBar.getInstance());
             simulator.addSimulationListener(mControlPane);
 
             monitor.addPropertyChangeListener(new PropertyChangeListener(){
@@ -464,7 +464,7 @@ public class MainFrame extends javax.swing.JFrame
     }
 
     /*
-     * Implements FlintMenuBar Delegater
+     * Implements MenuBar Delegater
      */
     @Override
     public void openPerformed (Object source) { 
@@ -708,7 +708,7 @@ public class MainFrame extends javax.swing.JFrame
     public void updateRecentModels(Object source, List<File>modelFiles) {
         JMenu menuRecentModels = (JMenu)source;
         menuRecentModels.removeAll();
-        FlintMenuBar menuBar = FlintMenuBar.getInstance();
+        MenuBar menuBar = MenuBar.getInstance();
         for (final File model : modelFiles) {
             menuBar.addRecentModel(model);
         }

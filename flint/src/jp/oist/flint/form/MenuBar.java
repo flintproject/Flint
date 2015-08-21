@@ -15,7 +15,7 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.KeyStroke;
 
-public class FlintMenuBar extends JMenuBar 
+public class MenuBar extends JMenuBar 
     implements MainFrame.Listener, PhspSimulator.Listener {
 
     /* Item names on Menu "File" */
@@ -39,9 +39,9 @@ public class FlintMenuBar extends JMenuBar
     /* Item names on Menu "Help" */
     public final static String ABOUT = "menu.help.about";
 
-    private final static FlintMenuBar instance = new FlintMenuBar();
+    private final static MenuBar instance = new MenuBar();
 
-    public static FlintMenuBar getInstance () {
+    public static MenuBar getInstance () {
         return instance;
     }
 
@@ -72,9 +72,9 @@ public class FlintMenuBar extends JMenuBar
     /* Items on Menu "Help */
     private JMenuItem mItemAbout;
 
-    private IFlintMenuBarDelegator mDelegator;
+    private IMenuDelegator mDelegator;
 
-    protected FlintMenuBar () {
+    protected MenuBar () {
         super();
 
         mDelegator = null;
@@ -277,11 +277,11 @@ public class FlintMenuBar extends JMenuBar
         add(menuHelp);
     }
 
-    public void setDelegator (IFlintMenuBarDelegator delegator) {
+    public void setDelegator (IMenuDelegator delegator) {
         mDelegator = delegator;
     }
 
-    public IFlintMenuBarDelegator getDelegator () {
+    public IMenuDelegator getDelegator () {
         return mDelegator;
     }
 

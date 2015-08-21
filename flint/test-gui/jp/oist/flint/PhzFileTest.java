@@ -7,7 +7,7 @@ import java.io.IOException;
 import java.util.Collection;
 import jp.oist.flint.command.Main;
 import jp.oist.flint.form.ControlPane;
-import jp.oist.flint.form.FlintMenuBar;
+import jp.oist.flint.form.MenuBar;
 import jp.oist.flint.form.MainFrame;
 import jp.oist.flint.form.sub.SubFrame;
 import org.fest.swing.core.TypeMatcher;
@@ -65,7 +65,7 @@ public class PhzFileTest {
         File rootDir = new File(System.getProperty("user.dir")).getParentFile();
         File file = new File(rootDir, modelPath);
 
-        mWindow.menuItem(FlintMenuBar.OPEN).click();
+        mWindow.menuItem(MenuBar.OPEN).click();
         JFileChooserFixture filechooser  = JFileChooserFinder.findFileChooser().using(mWindow.robot);
         filechooser.fileNameTextBox().enterText(file.getAbsolutePath());
         filechooser.approve();

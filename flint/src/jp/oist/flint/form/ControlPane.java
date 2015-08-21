@@ -60,8 +60,8 @@ public class ControlPane extends PeripheralPane
     }
 
     protected void simulationRunPerformed (ActionEvent e) {
-        FlintMenuBar menuBar = FlintMenuBar.getInstance();
-        IFlintMenuBarDelegator delegator = menuBar.getDelegator();
+        MenuBar menuBar = MenuBar.getInstance();
+        IMenuDelegator delegator = menuBar.getDelegator();
         if (delegator != null)
             delegator.simulationRunPerformed(e);
     }
@@ -77,8 +77,8 @@ public class ControlPane extends PeripheralPane
 
     public void setSimulationRunEnabled(boolean enabled) {
         mBtnSimulationRun.setEnabled(enabled);
-        FlintMenuBar.getInstance().setMenuItemEnabled(FlintMenuBar.RUN, enabled);
-        FlintMenuBar.getInstance().setMenuItemEnabled(FlintMenuBar.SEND_TO_FLINT_K3, enabled);
+        MenuBar.getInstance().setMenuItemEnabled(MenuBar.RUN, enabled);
+        MenuBar.getInstance().setMenuItemEnabled(MenuBar.SEND_TO_FLINT_K3, enabled);
     }
 
     /*

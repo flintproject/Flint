@@ -4,7 +4,7 @@ package jp.oist.flint.form;
 import java.io.File;
 import java.util.List;
 
-public interface IFlintMenuBarDelegator {
+public interface IMenuDelegator {
     void openPerformed(Object source);
 
     void recentModelPerformed (Object source, File model);
