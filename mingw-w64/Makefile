@@ -64,6 +64,7 @@ tmp: | var
 tmp/$(BOOST_UNDERSCORE): src/$(BOOST_UNDERSCORE).tar.bz2 | tmp
 	-rm -rf var/$(BOOST_UNDERSCORE)
 	tar -C var -jxf $<
+	patch -d var/$(BOOST_UNDERSCORE) -p0 < boost-$(BOOST_VERSION)-uuid.patch
 	touch $@
 
 tmp/clibsedml-$(CLIBSEDML_COMMIT): src/clibsedml-$(CLIBSEDML_COMMIT).tar.gz | tmp
