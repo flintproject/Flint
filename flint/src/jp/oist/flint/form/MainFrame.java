@@ -209,7 +209,7 @@ public class MainFrame extends javax.swing.JFrame
                 subFrame.reloadJobViewer();
 
             // TOOD
-            for (ProgressPane.ListCell cell : mProgressPane.getListCells())
+            for (ProgressCell cell : mProgressPane.getListCells())
                 cell.progressStarted();
 
             SimulatorService service = new SimulatorService(this);
@@ -294,7 +294,7 @@ public class MainFrame extends javax.swing.JFrame
                                         progressMgr.setCancelled(index, rootPaneCheckingEnabled);
 
                                     int taskProgress = taskDao.getProgress();
-                                    ProgressPane.ListCell cell = 
+                                    ProgressCell cell = 
                                             mProgressPane.getListCellOfModel(new File(modelPath));
 
                                     String status;
@@ -410,7 +410,7 @@ public class MainFrame extends javax.swing.JFrame
     public void setProgress(Object key, int progress) {
         if (key instanceof String) {
             String modelPath = (String)key;
-            ProgressPane.ListCell cell = mProgressPane.getListCellOfModel(new File(modelPath));
+            ProgressCell cell = mProgressPane.getListCellOfModel(new File(modelPath));
             String msg = progress + " %";
             cell.setProgress(msg, 0, 100, progress);
             return;
@@ -870,8 +870,8 @@ public class MainFrame extends javax.swing.JFrame
     @Override
     public Model[] getModels() throws PhspException {
         ArrayList<Model> models = new ArrayList<>();
-        ProgressPane.ListCell[] cells = mProgressPane.getListCells();
-        for (ProgressPane.ListCell cell : cells) {
+        ProgressCell[] cells = mProgressPane.getListCells();
+        for (ProgressCell cell : cells) {
             SubFrame sub = (SubFrame)cell.getValue("container");
             models.add(sub.getModel());
         }
@@ -881,8 +881,8 @@ public class MainFrame extends javax.swing.JFrame
 
     @Override
     public Model getModel(int index) throws PhspException {
-        ProgressPane.ListCell cell = 
-                (ProgressPane.ListCell) mProgressPane.getComponent(index);
+        ProgressCell cell = 
+                (ProgressCell) mProgressPane.getComponent(index);
         SubFrame sub = (SubFrame)cell.getValue("container");
         Ipc.ModelProbeResponse response = sub.getModelProbeResponse();
         Model.ModelFormat format = Model.ModelFormat.valueOf(response.getLanguage());

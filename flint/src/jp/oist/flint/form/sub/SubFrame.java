@@ -41,6 +41,7 @@ import jp.oist.flint.filesystem.IModelFileClient;
 import jp.oist.flint.form.IFrame;
 import jp.oist.flint.form.job.IProgressManager;
 import jp.oist.flint.form.MainFrame;
+import jp.oist.flint.form.ProgressCell;
 import jp.oist.flint.form.log.LogWindow;
 import jp.oist.flint.form.ProgressPane;
 import jp.oist.flint.k3.K3Loader;
@@ -214,7 +215,7 @@ public class SubFrame extends JInternalFrame
     private void progressCancelActionPerformed(ActionEvent evt) {
         if (cancelSimulation()) {
             ProgressPane progressPane = ProgressPane.getInstance();
-            ProgressPane.ListCell cell
+            ProgressCell cell
                     = progressPane.getListCellOfModel(new File(getRelativeModelPath()));
 
             int progress = cell.getStatusBarProgress();
@@ -270,7 +271,7 @@ public class SubFrame extends JInternalFrame
                 JOptionPane.ERROR_MESSAGE);
     }
 
-    public void setStatusComponent(ProgressPane.ListCell pane) {
+    public void setStatusComponent(ProgressCell pane) {
         assert pane != null;
         pane.addActionListener(this);
         pane.setGeneralButtonEnabled(false);
@@ -520,7 +521,7 @@ public class SubFrame extends JInternalFrame
 
             if (src instanceof SubFrame) {
                 SubFrame subFrame = (SubFrame)src;
-                ProgressPane.ListCell cell = (ProgressPane.ListCell)subFrame.getStatusComponent();
+                ProgressCell cell = (ProgressCell)subFrame.getStatusComponent();
                 if (cell == null)
                     return;
 
@@ -530,7 +531,6 @@ public class SubFrame extends JInternalFrame
                 progressPane.setSelectedCell(cell, isSelected);
                 mSkip = false;
             } else {
-                ProgressPane.ListCell cell = (ProgressPane.ListCell)src;
                 mSkip = true;
                 try {
                     if (mSubFrame.isIcon())
