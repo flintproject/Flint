@@ -412,7 +412,7 @@ public class MenuBar extends JMenuBar
     @Override
     public void onModelClosed(MainFrame.Event evt) {
         MainFrame mainFrame = (MainFrame)evt.getSource();
-        int length = mainFrame.getModelLength();
+        int length = mainFrame.getSubFrames().size();
 
         if (length <= 0) {
             mItemSaveAsPhsp.setEnabled(false);

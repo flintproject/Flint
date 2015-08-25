@@ -53,8 +53,7 @@ public class PhspWriter {
             sb.setLength(0);
             sw += SHIFT_WIDTH;
 
-            Model[] models = conf.getModels();
-            for (Model model : models) {
+            for (Model model : conf.getModels()) {
                 String format = model.getModelFormat().name().toLowerCase(Locale.ENGLISH);
                 File modelFile = model.getModelFile();
                 String path = escape(modelFile.getCanonicalPath());

@@ -310,15 +310,5 @@ public class PhspReader extends SwingWorker <IPhspConfiguration, Model> {
             int size = mModels.size();
             return mModels.toArray(new Model[size]);
         }
-
-        @Override
-        public Model getModel(int index) {
-            return mModels.get(index);
-        }
-
-        @Override
-        public int getModelLength() {
-            return mModels.size();
-        }
     } 
 }

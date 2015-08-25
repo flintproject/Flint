@@ -547,7 +547,7 @@ public class MainFrame extends javax.swing.JFrame
     @Override
     public void saveAsPhspPerformed (Object source) {
         try {
-            int modelCount = getModelLength();
+            int modelCount = getSubFrames().size();
             if (modelCount <= 0) {
                 showErrorDialog("Please open the phml/sbml model.", 
                                   "Error on saving phsp");
@@ -879,26 +879,6 @@ public class MainFrame extends javax.swing.JFrame
         return models.toArray(new Model[models.size()]);
     }
 
-    @Override
-    public Model getModel(int index) throws PhspException {
-        ProgressCell cell = 
-                (ProgressCell) mProgressPane.getComponent(index);
-        SubFrame sub = (SubFrame)cell.getValue("container");
-        Ipc.ModelProbeResponse response = sub.getModelProbeResponse();
-        Model.ModelFormat format = Model.ModelFormat.valueOf(response.getLanguage());
-        File modelFile = sub.getModelFile();
-
-        Model model = new Model(format, modelFile);
-        model.setParameterSet(sub.getParameterSet());
-        model.setTargetSet(sub.getTargetSet());
-        return model;
-    }
-
-    @Override
-    public int getModelLength() {
-        return getSubFrames().size();
-    }
-
     /*
      * implements ISimulationConfigurationList 
      */
@@ -931,7 +911,7 @@ public class MainFrame extends javax.swing.JFrame
 
     @Override
     public int getConfigurationCount () {
-        return getModelLength();
+        return getSubFrames().size();
     }
 
     /*

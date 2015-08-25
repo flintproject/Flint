@@ -7,7 +7,4 @@ public interface IPhspConfiguration {
 
     public Model[] getModels() throws PhspException;
 
-    public Model getModel(int index) throws PhspException;
-
-    public int getModelLength();
 }
