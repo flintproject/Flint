@@ -186,7 +186,6 @@ public class MainFrame extends javax.swing.JFrame
         mControlPane.setMaximumSize(new Dimension(Short.MAX_VALUE, 60));
         mControlPane.setMinimumSize(new Dimension(0, 60));
         mControlPane.setPreferredSize(new Dimension(150, 60));
-        addMainFrameListener(mControlPane);
 
         peripheralPane.add(mProgressPane, BorderLayout.CENTER);
         peripheralPane.add(mControlPane, BorderLayout.SOUTH);

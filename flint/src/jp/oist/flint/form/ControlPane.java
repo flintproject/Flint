@@ -15,7 +15,7 @@ import javax.swing.JButton;
 import jp.oist.flint.executor.PhspSimulator;
 
 public class ControlPane extends PeripheralPane 
-    implements FocusListener, MainFrame.Listener, PhspSimulator.Listener {
+    implements FocusListener, PhspSimulator.Listener {
 
     public final static String RUN = "controlpanel.run";
 
@@ -79,17 +79,6 @@ public class ControlPane extends PeripheralPane
         mBtnSimulationRun.setEnabled(enabled);
         MenuBar.getInstance().setMenuItemEnabled(MenuBar.RUN, enabled);
         MenuBar.getInstance().setMenuItemEnabled(MenuBar.SEND_TO_FLINT_K3, enabled);
-    }
-
-    /*
-     * Implements MainFrame.Listener
-     */
-    @Override
-    public void onModelOpened(MainFrame.Event evt) {
-    }
-
-    @Override
-    public void onModelClosed(MainFrame.Event evt) {
     }
 
     /*
