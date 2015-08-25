@@ -426,23 +426,8 @@ public class MainFrame extends javax.swing.JFrame
         mControlPane.setSimulationRunEnabled(editable);
     }
 
-    public void setSelectedFrame (SubFrame subFrame, boolean isSelected) {
-        if (subFrame.isSelected() == isSelected)
-            return;
-
-        if (isSelected) {
-            mDesktopPane.getDesktopManager().activateFrame(subFrame);
-        } else {
-            mDesktopPane.getDesktopManager().deactivateFrame(subFrame);
-        }
-    }
-
     public void addMainFrameListener (MainFrame.Listener l) {
         mEventListenerList.add(MainFrame.Listener.class, l);
-    }
-
-    public void removeMainFrameListener (MainFrame.Listener l) {
-        mEventListenerList.remove(MainFrame.Listener.class, l);
     }
 
     protected void fireMainFrameEvent (String eventName, SubFrame target) {
