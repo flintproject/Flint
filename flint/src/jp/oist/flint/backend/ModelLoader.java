@@ -1,6 +1,8 @@
 /* -*- Mode: Java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- vim:set ts=4 sw=4 sts=4 et: */
 package jp.oist.flint.backend;
 
+import jp.oist.flint.desktop.Document;
+import jp.oist.flint.desktop.DocumentException;
 import com.google.protobuf.ByteString;
 import jp.oist.flint.component.Component;
 import jp.oist.flint.filesystem.Workspace;
@@ -23,36 +25,22 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import javax.swing.SwingWorker;
 
-public class ModelLoader extends SwingWorker<Ipc.ModelProbeResponse, Void> {
-
-    private final File mDir;
+public class ModelLoader extends SwingWorker<Document, Void> {
 
     private final File mModelFile;
 
     private final Ipc.ModelProbeResponse.Builder mResponseBuilder;
 
-    public ModelLoader(File modelFile) throws IOException {
-        mDir = Workspace.createTempDirectory(modelFile.getName());
+    public ModelLoader(File modelFile) {
         mModelFile = modelFile;
         mResponseBuilder = Ipc.ModelProbeResponse.newBuilder();
     }
 
-    public File getModelFile() {
-        return mModelFile;
-    }
-
-    public File getDataFile() {
-        return new File(mDir, "init");
-    }
-
-    public File getParamFile() {
-        return new File(mDir, "param");
-    }
-
     @Override
-    protected Ipc.ModelProbeResponse doInBackground() throws IOException, InterruptedException, TimeUnitException {
+    protected Document doInBackground() throws DocumentException, IOException, InterruptedException, TimeUnitException {
+        File dir = Workspace.createTempDirectory(mModelFile.getName());
         ProcessBuilder builder = new ProcessBuilder(Component.getOpenCommand());
-        builder.directory(mDir);
+        builder.directory(dir);
         Component.setUpEnvironment(builder);
         builder.redirectErrorStream(true);
         Process process = builder.start();
@@ -63,22 +51,14 @@ public class ModelLoader extends SwingWorker<Ipc.ModelProbeResponse, Void> {
         InputStream es = process.getInputStream();
         ByteString message = ByteString.readFrom(es);
         int r = process.waitFor();
-        if (r != 0) {
-            mResponseBuilder.setStatus(Ipc.ModelProbeResponse.Status.PROCESS_ERROR);
-            mResponseBuilder.setErrorMessage(message);
-            return mResponseBuilder.build();
-        }
-        if (!readConfiguration()) {
-            mResponseBuilder.setStatus(Ipc.ModelProbeResponse.Status.PROCESS_ERROR);
-            mResponseBuilder.setErrorMessage(message);
-            return mResponseBuilder.build();
-        }
+        if (r != 0 || !readConfiguration(dir))
+            throw new DocumentException(message.toStringUtf8());
         mResponseBuilder.setStatus(Ipc.ModelProbeResponse.Status.OK);
-        return mResponseBuilder.build();
+        return new Document(mModelFile, mResponseBuilder.build(), dir);
     }
 
-    private boolean readConfiguration() throws IOException, TimeUnitException {
-        File file = new File(mDir, "file.txt");
+    private boolean readConfiguration(File dir) throws IOException, TimeUnitException {
+        File file = new File(dir, "file.txt");
         try (Scanner scanner = new Scanner(file, "UTF8")) {
             String lang = scanner.next();
             switch (lang) {
@@ -86,11 +66,11 @@ public class ModelLoader extends SwingWorker<Ipc.ModelProbeResponse, Void> {
             case "phml":
             case "phz":
                 mResponseBuilder.setLanguage(Ipc.ModelLanguage.ISML);
-                readPhmlConfiguration();
+                readPhmlConfiguration(dir);
                 break;
             case "sbml":
                 mResponseBuilder.setLanguage(Ipc.ModelLanguage.SBML);
-                readSbmlConfiguration();
+                readSbmlConfiguration(dir);
                 break;
             default:
                 mResponseBuilder.setErrorMessage(ByteString.copyFromUtf8("unknown language: " + lang));
@@ -100,8 +80,8 @@ public class ModelLoader extends SwingWorker<Ipc.ModelProbeResponse, Void> {
         return true;
     }
 
-    private void readPhmlConfiguration() throws IOException, TimeUnitException {
-        ArrayList<Ipc.TimeUnit> unitoftime = readUnitoftime();
+    private void readPhmlConfiguration(File dir) throws IOException, TimeUnitException {
+        ArrayList<Ipc.TimeUnit> unitoftime = readUnitoftime(dir);
         HashMap<Integer, Ipc.TimeUnit> tus = new HashMap<>();
         Ipc.TimeUnit u0 = null;
         for (Ipc.TimeUnit tu : unitoftime) {
@@ -110,7 +90,7 @@ public class ModelLoader extends SwingWorker<Ipc.ModelProbeResponse, Void> {
             tus.put(tu.getId(), tu);
         }
 
-        Phml.NumericalConfiguration nc = readNc();
+        Phml.NumericalConfiguration nc = readNc(dir);
         if (nc.hasTd()) {
             Phml.TimeDiscretization td = nc.getTd();
             mResponseBuilder.setStep(td.getStep());
@@ -156,12 +136,12 @@ public class ModelLoader extends SwingWorker<Ipc.ModelProbeResponse, Void> {
             }
         }
 
-        mResponseBuilder.setVariableTable(buildModelVariableTableForPhml());
+        mResponseBuilder.setVariableTable(buildModelVariableTableForPhml(dir));
     }
 
-    private ArrayList<Ipc.TimeUnit> readUnitoftime() throws IOException {
+    private ArrayList<Ipc.TimeUnit> readUnitoftime(File dir) throws IOException {
         ArrayList<Ipc.TimeUnit> result = new ArrayList<>();
-        File file = new File(mDir, "unitoftime");
+        File file = new File(dir, "unitoftime");
         try (DataInputStream dis = new DataInputStream(new FileInputStream(file))) {
         for (;;) {
             int len;
@@ -182,8 +162,8 @@ public class ModelLoader extends SwingWorker<Ipc.ModelProbeResponse, Void> {
         return result;
     }
 
-    private Phml.NumericalConfiguration readNc() throws IOException {
-        File file = new File(mDir, "nc");
+    private Phml.NumericalConfiguration readNc(File dir) throws IOException {
+        File file = new File(dir, "nc");
         try (FileInputStream in = new FileInputStream(file)) {
             return Phml.NumericalConfiguration.parseFrom(in);
         }
@@ -195,12 +175,12 @@ public class ModelLoader extends SwingWorker<Ipc.ModelProbeResponse, Void> {
         return tu;
     }
 
-    private Ipc.ModelVariableTable buildModelVariableTableForPhml() throws IOException {
+    private Ipc.ModelVariableTable buildModelVariableTableForPhml(File dir) throws IOException {
         Ipc.ModelVariableTable.Builder builder = Ipc.ModelVariableTable.newBuilder();
         builder.addColumn("Physical Quantity Name");
         builder.addColumn("Module Name");
 
-        File file = new File(mDir, "var");
+        File file = new File(dir, "var");
         try (DataInputStream dis = new DataInputStream(new FileInputStream(file))) {
         int len;
         byte[] buf;
@@ -238,7 +218,7 @@ public class ModelLoader extends SwingWorker<Ipc.ModelProbeResponse, Void> {
         return builder.build();
     }
 
-    private void readSbmlConfiguration() throws IOException {
+    private void readSbmlConfiguration(File dir) throws IOException {
         mResponseBuilder.setIntegrationMethod(Ipc.IntegrationMethod.EULER);
         mResponseBuilder.setLength("100");
         mResponseBuilder.setStep("0.01");
@@ -249,15 +229,15 @@ public class ModelLoader extends SwingWorker<Ipc.ModelProbeResponse, Void> {
         tuBuilder.setN(1);
         mResponseBuilder.addTimeUnit(tuBuilder.build());
 
-        mResponseBuilder.setVariableTable(buildModelVariableTableForSbml());
+        mResponseBuilder.setVariableTable(buildModelVariableTableForSbml(dir));
     }
 
-    private Ipc.ModelVariableTable buildModelVariableTableForSbml() throws IOException {
+    private Ipc.ModelVariableTable buildModelVariableTableForSbml(File dir) throws IOException {
         Ipc.ModelVariableTable.Builder builder = Ipc.ModelVariableTable.newBuilder();
         builder.addColumn("Variable Name");
         builder.addColumn("Module Name");
 
-        File file = new File(mDir, "var");
+        File file = new File(dir, "var");
         try (DataInputStream dis = new DataInputStream(new FileInputStream(file))) {
         int len;
         byte[] buf;

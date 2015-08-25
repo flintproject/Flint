@@ -3,33 +3,28 @@ package jp.oist.flint.form.sub;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import jp.oist.flint.backend.ModelLoader;
 import jp.oist.flint.quantity.TimeUnitConverter;
 import jp.physiome.Ipc;
 import jp.physiome.Ipc.ModelProbeResponse;
 import java.io.File;
 import java.io.IOException;
 import java.util.Vector;
-import java.util.concurrent.ExecutionException;
 
 public class GeneralSettingPane extends javax.swing.JPanel 
     implements PropertyChangeListener {
 
     private final File mFile;
     private final String mFilePath;
-    private final ModelLoader mLoader;
     private final ModelProbeResponse mModelProbeResponse;
 
-    public GeneralSettingPane(File file, ModelLoader loader) 
-            throws ExecutionException, InterruptedException, IOException {
+    public GeneralSettingPane(File file, ModelProbeResponse response) throws IOException {
         mFile = file;
         mFilePath = file.getCanonicalPath();
-        mLoader = loader;
+        mModelProbeResponse = response;
 
         initComponents();
 
         addPropertyChangeListener(this);
-        mModelProbeResponse = loader.get();
     }
 
     public void setSelectedIntegrationMethodIndex (int i) {

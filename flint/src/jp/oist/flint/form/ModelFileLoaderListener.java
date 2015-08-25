@@ -2,8 +2,8 @@
 package jp.oist.flint.form;
 
 import jp.oist.flint.backend.ModelLoader;
-import jp.oist.flint.form.sub.SubFrame;
-import jp.physiome.Ipc;
+import jp.oist.flint.desktop.Desktop;
+import jp.oist.flint.desktop.Document;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
@@ -11,7 +11,7 @@ import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 import javax.swing.SwingWorker;
 
-class ModelFileLoaderListener implements PropertyChangeListener {
+public class ModelFileLoaderListener implements PropertyChangeListener {
 
     private final ModelLoaderLogger mLogger;
     private final File mFile;
@@ -29,23 +29,18 @@ class ModelFileLoaderListener implements PropertyChangeListener {
         Object nv = evt.getNewValue();
         if ("state".equals(propertyName)
             && nv == SwingWorker.StateValue.DONE) {
-            Ipc.ModelProbeResponse response;
-            MainFrame mainJFrame = mLogger.getFrame();
+            Document document;
             try {
-                response = mLoader.get();
+                document = mLoader.get();
             } catch (ExecutionException | InterruptedException e) {
                 mLogger.showErrorDialog(e.getMessage(), "Error on opening model");
                 return;
             }
-            if (response.getStatus() != Ipc.ModelProbeResponse.Status.OK) {
-                mLogger.showErrorDialog(response.getErrorMessage(), "Error on opening model");
-                return;
-            }
+            Desktop desktop = mLogger.getDesktop();
             try {
-                SubFrame frame = new SubFrame(mainJFrame, mFile, mLoader);
-                mainJFrame.notifySubJFrameAdded(frame);
-            } catch (ExecutionException | IOException | InterruptedException e) {
-                mLogger.showErrorDialog(e.getMessage(), "Error on opening model");
+                desktop.addDocument(document);
+            } catch (IOException ioe) {
+                mLogger.showErrorDialog(ioe.getMessage(), "Error on opening model");
             }
         }
     }

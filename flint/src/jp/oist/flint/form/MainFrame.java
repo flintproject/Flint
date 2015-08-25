@@ -5,24 +5,34 @@ import jp.oist.flint.backend.ModelLoader;
 import jp.oist.flint.command.Session;
 import jp.oist.flint.control.FileChooser;
 import jp.oist.flint.control.ModelFileTransferHandler;
+import jp.oist.flint.dao.SimulationDao;
+import jp.oist.flint.dao.TaskDao;
+import jp.oist.flint.desktop.Desktop;
+import jp.oist.flint.desktop.Document;
+import jp.oist.flint.desktop.IDesktopListener;
+import jp.oist.flint.executor.PhspProgressMonitor;
+import jp.oist.flint.executor.PhspSimulator;
 import jp.oist.flint.executor.SimulatorService;
-import jp.oist.flint.filesystem.ModelFileWatcher;
-import jp.oist.flint.job.Progress;
-import jp.oist.flint.phsp.IPhspConfiguration;
-import jp.oist.flint.phsp.entity.Model;
+import jp.oist.flint.form.job.IProgressManager;
 import jp.oist.flint.form.sub.SubFrame;
+import jp.oist.flint.job.Progress;
+import jp.oist.flint.k3.K3Client;
+import jp.oist.flint.k3.K3Request;
+import jp.oist.flint.k3.K3RequestBuilder;
 import jp.oist.flint.phsp.PhspException;
 import jp.oist.flint.phsp.PhspReader;
 import jp.oist.flint.phsp.PhspReaderListener;
 import jp.oist.flint.phsp.PhspWriter;
 import jp.oist.flint.rpc.ICallee;
+import jp.oist.flint.sedml.ISimulationConfiguration;
+import jp.oist.flint.sedml.ISimulationConfigurationList;
 import jp.oist.flint.sedml.SedmlException;
 import jp.oist.flint.sedml.SedmlReader;
 import jp.oist.flint.sedml.SedmlWriter;
 import jp.oist.flint.util.Utility;
-import jp.physiome.Ipc;
 import com.google.protobuf.ByteString;
 import org.apache.log4j.Logger;
+import org.xml.sax.SAXException;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.HeadlessException;
@@ -43,8 +53,6 @@ import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.EventListener;
-import java.util.EventObject;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
@@ -52,7 +60,6 @@ import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 import javax.swing.ImageIcon;
 import javax.swing.JComponent;
-import javax.swing.JDesktopPane;
 import javax.swing.JFileChooser;
 import javax.swing.JInternalFrame;
 import javax.swing.JMenu;
@@ -63,28 +70,15 @@ import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
 import javax.swing.WindowConstants;
 import javax.swing.event.EventListenerList;
-import javax.swing.event.InternalFrameAdapter;
-import javax.swing.event.InternalFrameEvent;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
-import jp.oist.flint.dao.SimulationDao;
-import jp.oist.flint.dao.TaskDao;
-import jp.oist.flint.executor.PhspSimulator;
-import jp.oist.flint.executor.PhspProgressMonitor;
-import jp.oist.flint.form.job.IProgressManager;
-import jp.oist.flint.k3.K3Client;
-import jp.oist.flint.k3.K3Request;
-import jp.oist.flint.k3.K3RequestBuilder;
-import jp.oist.flint.sedml.ISimulationConfiguration;
-import jp.oist.flint.sedml.ISimulationConfigurationList;
-import org.xml.sax.SAXException;
 
 /**
  * This is the class of the main window.
  */
 public class MainFrame extends javax.swing.JFrame 
-    implements ICallee, IPhspConfiguration,
+    implements ICallee, IDesktopListener,
                IMenuDelegator, ISimulationConfigurationList, IFrame {
 
     static {
@@ -103,9 +97,9 @@ public class MainFrame extends javax.swing.JFrame
 
     public final static int MIN_HEIGHT = 600;
 
-    private final Session mSession;
+    private final Desktop mDesktop;
 
-    private final ModelFileWatcher mModelFileWatcher;
+    private final Session mSession;
 
     private final EventListenerList mEventListenerList;
 
@@ -113,15 +107,14 @@ public class MainFrame extends javax.swing.JFrame
 
     private PhspSimulator mSimulator = null;
 
-    private JDesktopPane mDesktopPane;
-
     private ProgressPane mProgressPane;
 
     private ControlPane mControlPane;
 
-    public MainFrame(Session session)
+    public MainFrame(Desktop desktop, Session session)
         throws IOException {
         super();
+        mDesktop = desktop;
         mSession = session;
         mEventListenerList = new EventListenerList();
         URL iconUrl = getClass().getResource("/jp/oist/flint/image/icon.png");
@@ -130,8 +123,6 @@ public class MainFrame extends javax.swing.JFrame
 
         initComponents();
         loadRecentModels();
-
-        mModelFileWatcher = new ModelFileWatcher();
     }
 
     private void initComponents () {
@@ -149,7 +140,7 @@ public class MainFrame extends javax.swing.JFrame
         MenuBar menuBar = MenuBar.getInstance();
         menuBar.setDelegator(this);
         setJMenuBar(menuBar);
-        addMainFrameListener(menuBar);
+        mDesktop.addListener(menuBar);
 
         setContentPane(createContentPane());
         pack();
@@ -161,27 +152,21 @@ public class MainFrame extends javax.swing.JFrame
         contentPane.setDividerLocation(638);
         contentPane.setOneTouchExpandable(true);
 
-        mDesktopPane = new JDesktopPane();
-        mDesktopPane.setMaximumSize(new Dimension(Short.MAX_VALUE, Short.MAX_VALUE));
-        mDesktopPane.setMinimumSize(new Dimension(0, 0));
-        mDesktopPane.setPreferredSize(new Dimension(640, 600));
-        mDesktopPane.setSize(new Dimension(640, 600));
-
         final JPanel peripheralPane = new JPanel(new BorderLayout());
         peripheralPane.setEnabled(false);
 
         peripheralPane.setMaximumSize(new Dimension(Short.MAX_VALUE, Short.MAX_VALUE));
         peripheralPane.setMinimumSize(new Dimension(150, Short.MAX_VALUE));
 
-        contentPane.setLeftComponent(mDesktopPane);
+        contentPane.setLeftComponent(mDesktop.getPane());
         contentPane.setRightComponent(peripheralPane);
 
         mProgressPane = ProgressPane.getInstance();
         mProgressPane.setMaximumSize(new Dimension(Short.MAX_VALUE, Short.MAX_VALUE));
         mProgressPane.setMinimumSize(new Dimension(0, 0));
         mProgressPane.setPreferredSize(new Dimension(150, 510));
+        mDesktop.addListener(mProgressPane);
 
-        addMainFrameListener(mProgressPane);
         mControlPane = ControlPane.getInstance();
         mControlPane.setMaximumSize(new Dimension(Short.MAX_VALUE, 60));
         mControlPane.setMinimumSize(new Dimension(0, 60));
@@ -198,11 +183,6 @@ public class MainFrame extends javax.swing.JFrame
             .fireUpdateRecentModels(mSession.getRecentModels());
     }
 
-    public void startWatching() {
-        Thread t = new Thread(mModelFileWatcher);
-        t.start();
-    }
-
     private void simulationRun () {
         try {
             for (SubFrame subFrame : getSubFrames())
@@ -214,7 +194,7 @@ public class MainFrame extends javax.swing.JFrame
 
             SimulatorService service = new SimulatorService(this);
 
-            final PhspSimulator simulator = new PhspSimulator(service, this, this);
+            final PhspSimulator simulator = new PhspSimulator(service, this, mDesktop);
             final PhspProgressMonitor monitor = new PhspProgressMonitor(simulator);
             simulator.addSimulationListener(new PhspSimulator.Listener() {
                 @Override
@@ -337,7 +317,7 @@ public class MainFrame extends javax.swing.JFrame
         mPhspFile = phspFile;
         try {
             setEditable(false);
-            ModelLoaderLogger logger = new ModelLoaderLogger(this);        
+            ModelLoaderLogger logger = new ModelLoaderLogger(mDesktop);
             PhspReader phspLoader = new PhspReader(phspFile);
             phspLoader.addPropertyChangeListener(new PhspReaderListener(logger));
             phspLoader.addPropertyChangeListener(new PropertyChangeListener() {
@@ -376,14 +356,7 @@ public class MainFrame extends javax.swing.JFrame
             return false;
 
         if (!subFrame.isClosed())
-            mDesktopPane.getDesktopManager().closeFrame(subFrame);
-
-        if (mDesktopPane.getAllFrames().length <= 0) {
-            setEditable(false);
-            requestFocus();
-        }
-
-        fireMainFrameEvent("ModelClosed", subFrame);
+            mDesktop.removeDocument(subFrame.getDocument());
         return true;
     }
 
@@ -393,18 +366,11 @@ public class MainFrame extends javax.swing.JFrame
     }
 
     public SubFrame getSelectedSubFrame () {
-        return (SubFrame) mDesktopPane.getSelectedFrame();
+        return (SubFrame) mDesktop.getPane().getSelectedFrame();
     }
 
-    public List<SubFrame> getSubFrames () {
-        JInternalFrame[] allFrames = mDesktopPane.getAllFrames();
-        ArrayList<SubFrame> frames = new ArrayList<>();
-        for (JInternalFrame frame : allFrames) {
-            if (frames.contains((SubFrame)frame))
-                continue;
-            frames.add((SubFrame)frame);
-        }
-        return frames;
+    public List<SubFrame> getSubFrames() {
+        return mDesktop.getSubFrames();
     }
 
     public void setProgress(Object key, int progress) {
@@ -423,28 +389,6 @@ public class MainFrame extends javax.swing.JFrame
         for (SubFrame subFrame : subFrames)
             subFrame.setEditable(editable);
         mControlPane.setSimulationRunEnabled(editable);
-    }
-
-    public void addMainFrameListener (MainFrame.Listener l) {
-        mEventListenerList.add(MainFrame.Listener.class, l);
-    }
-
-    protected void fireMainFrameEvent (String eventName, SubFrame target) {
-        assert eventName != null;
-
-        MainFrame.Listener[] listeners = mEventListenerList.getListeners(MainFrame.Listener.class);
-        MainFrame.Event evt = new MainFrame.Event(this, target);
-
-        switch (eventName) {
-        case "ModelOpened":
-            for (MainFrame.Listener l : listeners)
-                l.onModelOpened(evt);
-            break;
-        case "ModelClosed":
-            for (MainFrame.Listener l : listeners)
-                l.onModelClosed(evt);
-            break;
-        }
     }
 
     /*
@@ -547,8 +491,7 @@ public class MainFrame extends javax.swing.JFrame
     @Override
     public void saveAsPhspPerformed (Object source) {
         try {
-            int modelCount = getSubFrames().size();
-            if (modelCount <= 0) {
+            if (mDesktop.isEmpty()) {
                 showErrorDialog("Please open the phml/sbml model.", 
                                   "Error on saving phsp");
                 return;
@@ -582,7 +525,7 @@ public class MainFrame extends javax.swing.JFrame
 
                 try (FileOutputStream fos = new FileOutputStream(file)) {
                 PhspWriter writer = new PhspWriter();
-                writer.write(this, fos, false);
+                writer.write(mDesktop, fos, false);
                 }
                 JOptionPane.showMessageDialog(this, "Saved phsp as " + file.getPath());
            }
@@ -727,44 +670,6 @@ public class MainFrame extends javax.swing.JFrame
         }
     }
 
-    public void notifySubJFrameAdded(SubFrame subFrame) {
-        final File file = subFrame.getModelFile();
-        subFrame.setDefaultCloseOperation(JInternalFrame.DO_NOTHING_ON_CLOSE);
-        subFrame.addInternalFrameListener(new InternalFrameAdapter () {
-            @Override
-            public void internalFrameClosing(InternalFrameEvent evt) {
-                SubFrame subFrame = (SubFrame)evt.getSource();
-                if (closeModel(subFrame)) {
-                    mModelFileWatcher.unwatch(file);
-                    subFrame.dispose();
-                }
-            }
-        });
-
-        try {
-            mModelFileWatcher.watch(file, subFrame);
-        } catch (IOException ioe) {
-            Logger.getRootLogger().error(ioe.getMessage());
-        }
-
-        subFrame.setVisible(true);
-
-        mDesktopPane.add(subFrame);
-
-        Preferences prefs = Preferences.userRoot().node("/jp/oist/flint");
-        String defaultPlotter = prefs.get("defaultPlotter", "");
-        setPlotterSettingTabEnabled(defaultPlotter);
-
-        fireMainFrameEvent("ModelOpened", subFrame);
-
-        try {
-            subFrame.setSelected(true);
-            subFrame.setMaximum(true);
-        } catch (PropertyVetoException ex) {
-            // ignored
-        }
-    }
-
     public boolean openModel (final File file) {
         if (file == null) {
             // just ignore it
@@ -816,33 +721,25 @@ public class MainFrame extends javax.swing.JFrame
             return false;
         }
 
-        ModelLoaderLogger logger = new ModelLoaderLogger(this);        
-        try {
-            setEditable(false);
-            ModelLoader loader = new ModelLoader(file);
-            loader.addPropertyChangeListener(new ModelFileLoaderListener(logger, file , loader));
-            loader.addPropertyChangeListener(new ModelLoaderProgressDialog(this, path));
-            loader.addPropertyChangeListener(new PropertyChangeListener() {
-                @Override
-                public void propertyChange(PropertyChangeEvent evt) {
-                    String propertyName = evt.getPropertyName();
-                    Object newValue = evt.getNewValue();
-                    if ("state".equals(propertyName) 
-                            && SwingWorker.StateValue.DONE.equals(newValue)) {
-                        mSession.updateRecentModels(file);
-                        loadRecentModels();
-                        setEditable(true);
-                    }
+        ModelLoaderLogger logger = new ModelLoaderLogger(mDesktop);
+        setEditable(false);
+        ModelLoader loader = new ModelLoader(file);
+        loader.addPropertyChangeListener(new ModelFileLoaderListener(logger, file , loader));
+        loader.addPropertyChangeListener(new ModelLoaderProgressDialog(this, path));
+        loader.addPropertyChangeListener(new PropertyChangeListener() {
+            @Override
+            public void propertyChange(PropertyChangeEvent evt) {
+                String propertyName = evt.getPropertyName();
+                Object newValue = evt.getNewValue();
+                if ("state".equals(propertyName) 
+                    && SwingWorker.StateValue.DONE.equals(newValue)) {
+                    mSession.updateRecentModels(file);
+                    loadRecentModels();
+                    setEditable(true);
                 }
-            });
-            loader.execute();
-
-        } catch (IOException ioe) {
-            showErrorDialog(ioe.getMessage(), "Error on opening model");
-            setEditable(true);
-            return false;
-        }
-
+            }
+        });
+        loader.execute();
         return true;
     }
 
@@ -862,21 +759,6 @@ public class MainFrame extends javax.swing.JFrame
         if (subFrame != null) {
             subFrame.setPlotterSettingTabEnabled("gnuplot".equals(defaultPlotter));
         }
-    }
-
-    /*
-     * Implements IPhspConfiguration 
-     */
-    @Override
-    public Model[] getModels() throws PhspException {
-        ArrayList<Model> models = new ArrayList<>();
-        ProgressCell[] cells = mProgressPane.getListCells();
-        for (ProgressCell cell : cells) {
-            SubFrame sub = (SubFrame)cell.getValue("container");
-            models.add(sub.getModel());
-        }
-
-        return models.toArray(new Model[models.size()]);
     }
 
     /*
@@ -911,30 +793,23 @@ public class MainFrame extends javax.swing.JFrame
 
     @Override
     public int getConfigurationCount () {
-        return getSubFrames().size();
+        return mDesktop.getSize();
     }
 
-    /*
-     *  Inner classes and interfaces
-     */
-    public static class Event extends EventObject {
+    /* IDesktopListener */
 
-        private final SubFrame mTarget;
-
-        public Event(Object source, SubFrame target) {
-            super(source);
-            mTarget = target;
-        }
-
-        public SubFrame getTarget () {
-            return mTarget;
-        }
-
+    @Override
+    public void documentAdded(Document doc) {
+        Preferences prefs = Preferences.userRoot().node("/jp/oist/flint");
+        String defaultPlotter = prefs.get("defaultPlotter", "");
+        setPlotterSettingTabEnabled(defaultPlotter);
     }
 
-    public static interface Listener extends EventListener {
-        void onModelOpened (MainFrame.Event evt);
-
-        void onModelClosed (MainFrame.Event evt);
+    @Override
+    public void documentRemoved(Document doc, boolean empty) {
+        if (empty) {
+            setEditable(false);
+            requestFocus();
+        }
     }
 }

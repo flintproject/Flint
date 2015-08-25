@@ -2,11 +2,11 @@
 package jp.oist.flint.phsp;
 
 import jp.oist.flint.backend.ModelLoader;
-import jp.oist.flint.form.MainFrame;
+import jp.oist.flint.desktop.Desktop;
+import jp.oist.flint.desktop.Document;
 import jp.oist.flint.form.ModelLoaderLogger;
 import jp.oist.flint.form.sub.SubFrame;
 import jp.oist.flint.phsp.entity.Model;
-import jp.physiome.Ipc;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
@@ -30,26 +30,18 @@ public class PhspReaderListener implements PropertyChangeListener {
         Model model = (Model)evt.getNewValue();
 
         File file = model.getModelFile();
-
-        try {
-            ModelLoader loader = new ModelLoader(file);
-            loader.addPropertyChangeListener(new PhspModelFileLoaderListener(mLogger, model, loader));
-            loader.execute();
-        } catch (IOException ioe) {
-            mLogger.showErrorDialog(ioe.getMessage(), "Error on opening model");
-        }
+        ModelLoader loader = new ModelLoader(file);
+        loader.addPropertyChangeListener(new PhspModelFileLoaderListener(mLogger, loader));
+        loader.execute();
     }
 
     private static class PhspModelFileLoaderListener implements PropertyChangeListener {
 
         private final ModelLoaderLogger mLogger;
-        private final Model mModel;
         private final ModelLoader mFileLoader;
 
-
-        private PhspModelFileLoaderListener(ModelLoaderLogger logger, Model model, ModelLoader fileLoader) {
+        private PhspModelFileLoaderListener(ModelLoaderLogger logger, ModelLoader fileLoader) {
             mLogger = logger;
-            mModel = model;
             mFileLoader = fileLoader;
         }
 
@@ -60,29 +52,20 @@ public class PhspReaderListener implements PropertyChangeListener {
 
             if ("state".equals(propertyName)
                     && SwingWorker.StateValue.DONE == stateValue) {
-
-                Ipc.ModelProbeResponse response;
-                MainFrame mainJFrame = mLogger.getFrame();
+                Document document;
                 try {
-                    response = mFileLoader.get();
+                    document = mFileLoader.get();
                 } catch (ExecutionException | InterruptedException ee) {
                     mLogger.showErrorDialog(ee.getMessage(), "Error on opening model");
                     return;
                 }
-                if (response.getStatus() != Ipc.ModelProbeResponse.Status.OK) {
-                    mLogger.showErrorDialog(response.getErrorMessage(), "Error on opening model");
-                    return;
-                }
+                Desktop desktop = mLogger.getDesktop();
                 try {
-                    SubFrame frame = new SubFrame(mainJFrame, mModel, mFileLoader);
-                    mainJFrame.notifySubJFrameAdded(frame);
-                } catch (ExecutionException | IOException | InterruptedException ee) {
-                    mLogger.showErrorDialog(ee.getMessage(), "Error on opening model");
+                    desktop.addDocument(document);
+                } catch (IOException ioe) {
+                    mLogger.showErrorDialog(ioe.getMessage(), "Error on opening model");
                 }
             }
         }
     }
 }
-
-
-

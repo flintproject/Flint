@@ -2,6 +2,8 @@
 package jp.oist.flint.form.sub;
 
 import jp.oist.flint.executor.ModelReloader;
+import jp.oist.flint.desktop.Desktop;
+import jp.oist.flint.desktop.Document;
 import jp.oist.flint.phsp.PhspException;
 import jp.oist.flint.util.IntegrationMethodFormat;
 import java.awt.Component;
@@ -39,9 +41,8 @@ import jp.oist.flint.backend.ModelLoader;
 import jp.oist.flint.executor.PhspSimulator;
 import jp.oist.flint.filesystem.IModelFileClient;
 import jp.oist.flint.form.IFrame;
-import jp.oist.flint.form.job.IProgressManager;
-import jp.oist.flint.form.MainFrame;
 import jp.oist.flint.form.ProgressCell;
+import jp.oist.flint.form.job.IProgressManager;
 import jp.oist.flint.form.log.LogWindow;
 import jp.oist.flint.form.ProgressPane;
 import jp.oist.flint.k3.K3Loader;
@@ -60,12 +61,10 @@ public class SubFrame extends JInternalFrame
 
     private final static String LABEL_SEPARATOR = "@";
 
-    private final MainFrame mMainFrame;
+    private final Desktop mDesktop;
+    private final Document mDocument;
     private final File mOriginalFile;
     private final String mOriginalPath;
-    private Ipc.ModelProbeResponse mModelProbeResponse;
-
-    private jp.oist.flint.backend.ModelLoader mLoader;
     private final K3Loader mK3Loader;
 
     /**
@@ -94,38 +93,34 @@ public class SubFrame extends JInternalFrame
 
     private SelectionHandler mSelectionHandler;
 
-    public SubFrame(MainFrame mainFrame, Model model, ModelLoader loader)
+    public SubFrame(Desktop desktop, Model model, ModelLoader loader)
             throws IOException, ExecutionException, InterruptedException {
-        this(mainFrame, model.getModelFile(), loader);
+        this(desktop, loader.get());
 
         loadParameterAndTarget(model);
     }
 
     static int mAutoIncrement = 0;
 
-    public SubFrame(MainFrame mainFrame, File file, ModelLoader loader)
-            throws IOException, ExecutionException, InterruptedException {
-        super(file.getAbsolutePath(), true, true, true, true);
+    public SubFrame(Desktop desktop, Document document) throws IOException {
+        super(document.getFile().getAbsolutePath(), true, true, true, true);
 
-        mMainFrame = mainFrame;
+        mDesktop = desktop;
+        mDocument = document;
+        File file = document.getFile();
         mOriginalFile = file;
         mOriginalPath = file.getCanonicalPath();
         mRelativePath = file.getPath();
-        mLoader = loader;
         mK3Loader = new K3Loader();
 
-        init(file, loader);
+        init(document);
 
         mSelectionHandler = new SelectionHandler(this);
         addPropertyChangeListener(mSelectionHandler);
     }
 
-    private void init(File file, ModelLoader loader)
-            throws IOException, ExecutionException, InterruptedException {
-
-        mLoader = loader;
-        mModelProbeResponse = loader.get();
-        Ipc.ModelProbeResponse response = loader.get();
+    private void init(Document document) throws IOException {
+        Ipc.ModelProbeResponse response = document.getResponse();
 
         initComponents();
 
@@ -155,9 +150,7 @@ public class SubFrame extends JInternalFrame
         setVisible(true);
     }
 
-    private void initComponents()
-            throws ExecutionException, InterruptedException, IOException {
-
+    private void initComponents() throws IOException {
         Dimension dim = new Dimension(600, 400);
 
         setMaximumSize(new Dimension(Short.MAX_VALUE, Short.MAX_VALUE));
@@ -169,13 +162,13 @@ public class SubFrame extends JInternalFrame
         pnl_Content.setOpaque(true);
         setContentPane(pnl_Content);
 
-        pnl_GeneralSetting = new GeneralSettingPane(mOriginalFile, mLoader);
+        pnl_GeneralSetting = new GeneralSettingPane(mOriginalFile, mDocument.getResponse());
         pnl_Content.addTab("General Settings", pnl_GeneralSetting);
 
-        pnl_VariableSelection = new VariableSelectionPane(mLoader);
+        pnl_VariableSelection = new VariableSelectionPane(mDocument.getResponse());
         pnl_Content.addTab("Output Variables", pnl_VariableSelection);
 
-        pnl_ParameterValue = new ParameterValuePane(mOriginalFile, mLoader);
+        pnl_ParameterValue = new ParameterValuePane(mOriginalFile, mDocument);
         pnl_Content.addTab("Parameters", pnl_ParameterValue);
 
         mStatusComponent = null;
@@ -221,6 +214,10 @@ public class SubFrame extends JInternalFrame
             int progress = cell.getStatusBarProgress();
             cell.progressFinished("finished", 0, 100, progress);
         }
+    }
+
+    public Document getDocument() {
+        return mDocument;
     }
 
     public boolean cancelSimulation() {
@@ -340,11 +337,11 @@ public class SubFrame extends JInternalFrame
 
         // length in the step unit
         pnl_GeneralSetting.setSimulationLegnth(conf.getLength());
-        pnl_GeneralSetting.setSelectedStepUnit(mModelProbeResponse.getStepUnit().getName());
+        pnl_GeneralSetting.setSelectedStepUnit(mDocument.getResponse().getStepUnit().getName());
 
         // step in the step unit
         pnl_GeneralSetting.setSimulationStep(conf.getStep());
-        pnl_GeneralSetting.setSelectedStepUnit(mModelProbeResponse.getStepUnit().getName());
+        pnl_GeneralSetting.setSelectedStepUnit(mDocument.getResponse().getStepUnit().getName());
         // granularity
         pnl_GeneralSetting.setGranularity(Integer.valueOf(conf.getGranularity()));
 
@@ -355,7 +352,7 @@ public class SubFrame extends JInternalFrame
     }
 
     public Ipc.ModelProbeResponse getModelProbeResponse() {
-        return mModelProbeResponse;
+        return mDocument.getResponse();
     }
 
     public ParameterSet getParameterSet () {
@@ -399,7 +396,7 @@ public class SubFrame extends JInternalFrame
     }
 
     public Model getModel() throws PhspException {
-        Ipc.ModelProbeResponse response = mModelProbeResponse;
+        Ipc.ModelProbeResponse response = mDocument.getResponse();
         Model.ModelFormat format = Model.ModelFormat.valueOf(response.getLanguage());
 
         Model model = new Model(format, mOriginalFile, mRelativePath);
@@ -426,7 +423,7 @@ public class SubFrame extends JInternalFrame
 
     @Override
     public void notifyModelFileModified() {
-        ModelReloader reloader = new ModelReloader(mMainFrame, this);
+        ModelReloader reloader = new ModelReloader(mDesktop, this);
         reloader.execute();
     }
 

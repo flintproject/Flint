@@ -3,7 +3,6 @@ package jp.oist.flint.form.sub;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import jp.oist.flint.backend.ModelLoader;
 import jp.oist.flint.util.HashTableModel;
 import jp.oist.flint.util.Utility;
 import jp.physiome.Ipc;
@@ -14,7 +13,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Vector;
-import java.util.concurrent.ExecutionException;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 import javax.swing.RowFilter;
@@ -28,13 +26,11 @@ public class VariableSelectionPane extends javax.swing.JPanel
     private final HashTableModel mVariableModel;
     private TableRowSorter<HashTableModel> mEnabledSorter;
 
-    public VariableSelectionPane(ModelLoader loader)
-            throws ExecutionException, InterruptedException {
+    public VariableSelectionPane(Ipc.ModelProbeResponse response) {
         initComponents();
 
         addPropertyChangeListener(this);
 
-        Ipc.ModelProbeResponse response = loader.get();
         Ipc.ModelVariableTable variableTable = response.getVariableTable();
 
         Vector<String> columnVector = new Vector<>(variableTable.getColumnList());

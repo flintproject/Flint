@@ -2,8 +2,9 @@
 
 package jp.oist.flint.form;
 
+import jp.oist.flint.desktop.Document;
+import jp.oist.flint.desktop.IDesktopListener;
 import jp.oist.flint.executor.PhspSimulator;
-
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -15,8 +16,8 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.KeyStroke;
 
-public class MenuBar extends JMenuBar 
-    implements MainFrame.Listener, PhspSimulator.Listener {
+public class MenuBar extends JMenuBar
+    implements IDesktopListener, PhspSimulator.Listener {
 
     /* Item names on Menu "File" */
     public final static String OPEN = "menu.file.open";
@@ -394,11 +395,8 @@ public class MenuBar extends JMenuBar
         mItemSendToFlintK3.setEnabled(true);
     }
 
-    /*
-     * Implements MainFrame.Listener
-     */
     @Override
-    public void onModelOpened(MainFrame.Event evt) {
+    public void documentAdded(Document doc) {
         mItemSaveAsPhsp.setEnabled(true);
         mItemLoadConfiguration.setEnabled(true);
         mItemSaveConfiguration.setEnabled(true);
@@ -410,11 +408,8 @@ public class MenuBar extends JMenuBar
     }
 
     @Override
-    public void onModelClosed(MainFrame.Event evt) {
-        MainFrame mainFrame = (MainFrame)evt.getSource();
-        int length = mainFrame.getSubFrames().size();
-
-        if (length <= 0) {
+    public void documentRemoved(Document doc, boolean empty) {
+        if (empty) {
             mItemSaveAsPhsp.setEnabled(false);
             mItemLoadConfiguration.setEnabled(false);
             mItemSaveConfiguration.setEnabled(false);

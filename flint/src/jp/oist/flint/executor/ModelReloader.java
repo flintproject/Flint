@@ -1,26 +1,26 @@
 /* -*- Mode: Java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- vim:set ts=4 sw=4 sts=4 et: */
 package jp.oist.flint.executor;
 
-import jp.oist.flint.form.MainFrame;
-import java.io.File;
+import jp.oist.flint.desktop.Desktop;
+import jp.oist.flint.desktop.Document;
+import jp.oist.flint.form.sub.SubFrame;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.FutureTask;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
-import jp.oist.flint.form.sub.SubFrame;
 
 public class ModelReloader extends SwingWorker<Boolean, Void> {
 
-    private final MainFrame mParentFrame;
+    private final Desktop mDesktop;
     private final SubFrame mTargetFrame;
-    private final File mModelFile;
+    private final Document mDocument;
 
-    public ModelReloader(MainFrame parentFrame, SubFrame targetFrame) {
-        mParentFrame = parentFrame;
-        mTargetFrame = targetFrame;
-        mModelFile = targetFrame.getModelFile();
+    public ModelReloader(Desktop desktop, SubFrame frame) {
+        mDesktop = desktop;
+        mTargetFrame = frame;
+        mDocument = frame.getDocument();
     }
 
     @Override
@@ -30,8 +30,8 @@ public class ModelReloader extends SwingWorker<Boolean, Void> {
             final Callable<Boolean> callable = new Callable<Boolean>() {
                 @Override
                 public Boolean call() {
-                    int a = JOptionPane.showConfirmDialog((java.awt.Container)mTargetFrame,
-                                                          "The model file " + mModelFile.getPath() + " seems changed.\n" + "Would you like to reload the model file?",
+                    int a = JOptionPane.showConfirmDialog(null,
+                                                          "The model file " + mDocument.getFile() + " seems changed.\n" + "Would you like to reload the model file?",
                                                           "Reload the model file?",
                                                           JOptionPane.YES_NO_OPTION);
                     return a == JOptionPane.YES_OPTION;
@@ -55,8 +55,8 @@ public class ModelReloader extends SwingWorker<Boolean, Void> {
             return;
         }
         if (r) {
-            mParentFrame.closeModel(mTargetFrame);
-            mParentFrame.openModel(mModelFile);
+            mDesktop.removeDocument(mDocument);
+            mDesktop.openFile(mDocument.getFile());
         }
     }
 }

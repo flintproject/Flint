@@ -5,7 +5,6 @@ package jp.oist.flint.parameter;
 import jp.physiome.Lo.Type;
 import java.io.File;
 import java.io.IOException;
-import java.util.concurrent.ExecutionException;
 
 public class PhmlParameterModel extends ParameterModel {
 
@@ -21,8 +20,7 @@ public class PhmlParameterModel extends ParameterModel {
 
     public final static int INDEX_PQ_ID       = 5;
 
-    PhmlParameterModel (File paramFile, File dataFile) 
-            throws IOException, InterruptedException, ExecutionException {
+    PhmlParameterModel(File paramFile, File dataFile) throws IOException {
         super(paramFile, dataFile);
 
         mColumns = new Object[] { "Module Name",  "PQ Name", "PQ Type", "Expression", "Module ID", "PQ ID" };

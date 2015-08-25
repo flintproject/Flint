@@ -1,6 +1,8 @@
 /* -*- Mode: Java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- vim:set ts=4 sw=4 sts=4 et: */
 package jp.oist.flint.command;
 
+import jp.oist.flint.desktop.Desktop;
+import jp.oist.flint.desktop.SessionListener;
 import jp.oist.flint.form.MainFrame;
 import jp.oist.flint.garuda.GarudaClient;
 import jp.oist.flint.rpc.Server;
@@ -16,13 +18,11 @@ import javax.swing.UnsupportedLookAndFeelException;
 public class Launch implements Runnable {
 
     private final CommandLineArguments mCommandLineArgs;
-    private final Session mSession;
 
     private MainFrame mMainFrame;
 
     public Launch(final CommandLineArguments commandLineArgs) {
         mCommandLineArgs = commandLineArgs;
-        mSession = new Session();
         mMainFrame = null;
     }
 
@@ -35,16 +35,20 @@ public class Launch implements Runnable {
         }
         UIManager.put("Desktop.background", Color.WHITE);
 
+        Session session = new Session();
         try {
-            mMainFrame = new MainFrame(mSession);
-            mMainFrame.startWatching();
+            Desktop desktop = new Desktop();
+            desktop.addListener(new SessionListener(session));
+            mMainFrame = new MainFrame(desktop, session);
+            desktop.addListener(mMainFrame);
+            desktop.startWatching();
         } catch (IOException ex) {
             Logger.getRootLogger().fatal("could not launch " + MainFrame.class.getName() + ": " + ex.getMessage());
             System.exit(1);
             return;
         }
 
-        Runtime.getRuntime().addShutdownHook(new Rescue(mSession));
+        Runtime.getRuntime().addShutdownHook(new Rescue(session));
 
         try {
             Server server = new Server(mMainFrame);

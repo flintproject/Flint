@@ -1,6 +1,8 @@
 /* -*- Mode: Java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- vim:set ts=4 sw=4 sts=4 et: */
 package jp.oist.flint.form;
 
+import jp.oist.flint.desktop.Document;
+import jp.oist.flint.desktop.IDesktopListener;
 import jp.oist.flint.form.sub.SubFrame;
 import java.awt.Container;
 import java.io.File;
@@ -8,7 +10,7 @@ import javax.swing.DefaultListModel;
 import javax.swing.JScrollPane;
 
 public class ProgressPane extends PeripheralPane
-    implements MainFrame.Listener {
+    implements IDesktopListener {
 
     public final static String TITLE = "Progresses";
 
@@ -50,9 +52,10 @@ public class ProgressPane extends PeripheralPane
     }
 
     public ProgressCell createListCell(SubFrame container) {
-        String title = container.getModelFile().getName();
+        File file = container.getModelFile();
+        String title = file.getName();
         ProgressCell retval =  new ProgressCell(mProgressList, title);
-        retval.setToolTipText(container.getModelFile().getPath());
+        retval.setToolTipText(String.format("%s [%s]", file.getName(), file.getPath()));
         retval.setValue("container", container);
         return retval;
     }
@@ -121,22 +124,18 @@ public class ProgressPane extends PeripheralPane
         return null;
     }
 
-    /*
-     * Implements MainFrame.Listener 
-     */
     @Override
-    public void onModelOpened(MainFrame.Event evt) {
-        final SubFrame subFrame = evt.getTarget();
+    public void documentAdded(Document doc) {
+        final SubFrame subFrame = doc.getSubFrame();
         File file = subFrame.getModelFile();
         ProgressCell plcp = createListCell(subFrame);
         addRow(plcp);
         subFrame.setStatusComponent(plcp);
-        plcp.setToolTipText(String.format("%s [%s]", file.getName(), file.getPath()));
     }
 
     @Override
-    public void onModelClosed(MainFrame.Event evt) {
-        final SubFrame subFrame = evt.getTarget();
+    public void documentRemoved(Document doc, boolean empty) {
+        final SubFrame subFrame = doc.getSubFrame();
 
         if (subFrame == null)
             return;

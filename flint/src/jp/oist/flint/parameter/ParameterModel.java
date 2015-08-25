@@ -14,15 +14,14 @@ import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 import javax.swing.table.AbstractTableModel;
 import jp.physiome.Lo;
 import jp.physiome.Ipc;
 
 public abstract class ParameterModel extends AbstractTableModel {
 
-    public static ParameterModel factory (Ipc.ModelLanguage lang, File paramFile, File dataFile) 
-            throws IOException, InterruptedException, ExecutionException {
+    public static ParameterModel factory (Ipc.ModelLanguage lang, File paramFile, File dataFile)
+        throws IOException {
         switch (lang) {
             case ISML:
                 return new PhmlParameterModel(paramFile, dataFile);
@@ -39,8 +38,7 @@ public abstract class ParameterModel extends AbstractTableModel {
 
     protected List<Parameter> mParameterList = null;
 
-    public ParameterModel (File paramFile, File dataFile)
-            throws IOException, InterruptedException, ExecutionException {
+    public ParameterModel (File paramFile, File dataFile) throws IOException {
 
         try (DataInputStream dis = new DataInputStream(new FileInputStream(paramFile))) {
 

@@ -7,7 +7,7 @@ import javax.swing.JDialog;
 import javax.swing.JProgressBar;
 import javax.swing.SwingWorker;
 
-class ModelLoaderProgressDialog implements PropertyChangeListener {
+public class ModelLoaderProgressDialog implements PropertyChangeListener {
 
     private final JDialog mDialog;
 

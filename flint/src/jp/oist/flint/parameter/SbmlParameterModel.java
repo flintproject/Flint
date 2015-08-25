@@ -3,8 +3,6 @@ package jp.oist.flint.parameter;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.concurrent.ExecutionException;
-
 
 public class SbmlParameterModel extends ParameterModel {
 
@@ -12,8 +10,7 @@ public class SbmlParameterModel extends ParameterModel {
 
     public final static int INDEX_EXPRESSION = 1;
 
-    SbmlParameterModel (File paramFile, File dataFile) 
-            throws IOException, InterruptedException, ExecutionException {
+    SbmlParameterModel(File paramFile, File dataFile) throws IOException {
         super(paramFile, dataFile);
 mColumns = new Object[] {"Species Id", "Expression"};
     }

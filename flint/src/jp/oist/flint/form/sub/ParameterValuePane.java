@@ -1,6 +1,7 @@
 /* -*- Mode: Java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- vim:set ts=4 sw=4 sts=4 et: */
 package jp.oist.flint.form.sub;
 
+import jp.oist.flint.desktop.Document;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
@@ -22,7 +23,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 import javax.swing.AbstractAction;
 import javax.swing.BoxLayout;
 import javax.swing.DefaultCellEditor;
@@ -38,7 +38,6 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
-import jp.oist.flint.backend.ModelLoader;
 import jp.oist.flint.form.util.FormulaAutoCompleter;
 import jp.oist.flint.parameter.ParameterModel;
 import jp.oist.flint.parameter.PhmlParameterModel;
@@ -71,17 +70,16 @@ public class ParameterValuePane extends JPanel
 
     private final FormulaAutoCompleter mAutoCompleter;
 
-    public ParameterValuePane(File file, ModelLoader loader) 
-            throws IOException, InterruptedException, ExecutionException {
+    public ParameterValuePane(File file, Document document) throws IOException {
         super();
-        Ipc.ModelProbeResponse response = loader.get();
+        Ipc.ModelProbeResponse response = document.getResponse();
         mLanguage = response.getLanguage();
         addPropertyChangeListener(this);
 
         initComponents();
 
-        File paramFile = loader.getParamFile();
-        File dataFile  = loader.getDataFile();
+        File paramFile = new File(document.getDirectory(), "param");
+        File dataFile  = new File(document.getDirectory(), "init");
 
         ParameterModel model = ParameterModel.factory(mLanguage, paramFile, dataFile);
         tbl_Parameter = new JTable(model);
