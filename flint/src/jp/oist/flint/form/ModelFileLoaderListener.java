@@ -6,7 +6,6 @@ import jp.oist.flint.desktop.Desktop;
 import jp.oist.flint.desktop.Document;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.io.File;
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 import javax.swing.SwingWorker;
@@ -14,12 +13,10 @@ import javax.swing.SwingWorker;
 public class ModelFileLoaderListener implements PropertyChangeListener {
 
     private final ModelLoaderLogger mLogger;
-    private final File mFile;
     private final ModelLoader mLoader;
 
-    public ModelFileLoaderListener(ModelLoaderLogger logger, File file, ModelLoader loader) {
+    public ModelFileLoaderListener(ModelLoaderLogger logger, ModelLoader loader) {
         mLogger = logger;
-        mFile = file;
         mLoader = loader;
     }
 

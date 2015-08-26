@@ -102,7 +102,7 @@ public class Desktop implements IPhspConfiguration {
 
         ModelLoaderLogger logger = new ModelLoaderLogger(this);
         ModelLoader loader = new ModelLoader(file);
-        loader.addPropertyChangeListener(new ModelFileLoaderListener(logger, file , loader));
+        loader.addPropertyChangeListener(new ModelFileLoaderListener(logger, loader));
         loader.addPropertyChangeListener(new ModelLoaderProgressDialog(null, path));
         loader.execute();
         return true;
