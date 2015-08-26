@@ -11,7 +11,7 @@ public class Progress {
 
     private long mLastUpdated;
 
-    private int mPercent;
+    private final int mPercent;
 
     public Progress(File start, File file) {
         mStarted = start.lastModified();
@@ -23,10 +23,13 @@ public class Progress {
             mPercent = 0;
             return;
         }
+        int p = 0;
         try (FileInputStream fis = new FileInputStream(file)) {
-            mPercent = fis.read();
+            p = fis.read();
         } catch (IOException ioe) {
-            mPercent = 0;
+            // ignored
+        } finally {
+            mPercent = p;
         }
     }
 
