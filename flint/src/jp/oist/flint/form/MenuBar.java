@@ -2,6 +2,7 @@
 
 package jp.oist.flint.form;
 
+import jp.oist.flint.command.ISessionListener;
 import jp.oist.flint.desktop.Document;
 import jp.oist.flint.desktop.IDesktopListener;
 import jp.oist.flint.executor.PhspSimulator;
@@ -10,14 +11,14 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.io.File;
-import java.util.List;
+import java.util.ArrayList;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.KeyStroke;
 
 public class MenuBar extends JMenuBar
-    implements IDesktopListener, PhspSimulator.Listener {
+    implements IDesktopListener, ISessionListener, PhspSimulator.Listener {
 
     /* Item names on Menu "File" */
     public final static String OPEN = "menu.file.open";
@@ -311,7 +312,7 @@ public class MenuBar extends JMenuBar
         return null;
     }
 
-    private JMenuItem obtainRecentModelModelItem (final File model) {
+    private JMenuItem obtainRecentModelMenuItem(final File model) {
         JMenuItem m = new JMenuItem(model.getName());
         m.setToolTipText(model.getPath());
         m.addActionListener(new ActionListener() {
@@ -324,38 +325,11 @@ public class MenuBar extends JMenuBar
         return m;
     }
 
-    public void addRecentModel (File model) {
-        mMenuRecentModels.add(obtainRecentModelModelItem(model));
-    }
-
-    public void removeRecentModel (File model) {
-        JMenu menu = mMenuRecentModels;
-        int itemCount = menu.getItemCount();
-        JMenuItem target = null;
-        for (int i=0; i<itemCount; i++) {
-            JMenuItem item = menu.getItem(i);
-            if (item == null)
-                continue;
-
-            if (item.getToolTipText().equals(model.getPath())) {
-                target = item;
-                break;
-            }
-        }
-
-        if (target != null)
-            menu.remove(target);
-    } 
-
-    public void removeAllRecentModels () {
-        JMenu menu = mMenuRecentModels;
-        menu.removeAll();
-    }
-
-    public void fireUpdateRecentModels (List<File> modelFiles) {
-        if (mDelegator != null) {
-            JMenuItem item = mMenuRecentModels;
-            mDelegator.updateRecentModels(item, modelFiles);
+    @Override
+    public void recentModelsUpdated(final ArrayList<File> recentModels) {
+        mMenuRecentModels.removeAll();
+        for (File model : recentModels) {
+            mMenuRecentModels.add(obtainRecentModelMenuItem(model));
         }
     }
 

@@ -9,12 +9,16 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
+import javax.swing.SwingUtilities;
+import javax.swing.event.EventListenerList;
 
 public class Session {
 
     private static final int MAX_RECENT_MODELS = 8;
 
-    private ArrayList<File> mRecentModels = new ArrayList<>();
+    private final ArrayList<File> mRecentModels = new ArrayList<>();
+
+    private final EventListenerList mListeners = new EventListenerList();
 
     public Session() {
         try {
@@ -39,13 +43,25 @@ public class Session {
         }
     }
 
-    public ArrayList<File> getRecentModels() {
-        return mRecentModels;
+    public void addListener(ISessionListener listener) {
+        mListeners.add(ISessionListener.class, listener);
+        notifyRecentModels();
     }
 
     public String getLastPath() {
         if (mRecentModels.isEmpty()) return "";
         return mRecentModels.get(0).getParent();
+    }
+
+    private void notifyRecentModels() {
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                for (ISessionListener listener : mListeners.getListeners(ISessionListener.class)) {
+                    listener.recentModelsUpdated(mRecentModels);
+                }
+            }
+        });
     }
 
     public void updateRecentModels(final File file) {
@@ -58,6 +74,7 @@ public class Session {
             mRecentModels.remove(MAX_RECENT_MODELS - 1);
             mRecentModels.add(0, file);
         }
+        notifyRecentModels();
     }
 
     public void saveRecentModels() throws BackingStoreException {

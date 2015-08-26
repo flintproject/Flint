@@ -2,7 +2,6 @@
 package jp.oist.flint.form;
 
 import java.io.File;
-import java.util.List;
 
 public interface IMenuDelegator {
     void openPerformed(Object source);
@@ -26,8 +25,6 @@ public interface IMenuDelegator {
     void preferencePerformed (Object source);
 
     void aboutPerformed (Object source);
-
-    void updateRecentModels (Object source, List<File>modelFiles);
 
     void simulationRunPerformed (Object source);
 

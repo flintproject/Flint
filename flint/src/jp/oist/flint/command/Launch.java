@@ -4,6 +4,7 @@ package jp.oist.flint.command;
 import jp.oist.flint.desktop.Desktop;
 import jp.oist.flint.desktop.SessionListener;
 import jp.oist.flint.form.MainFrame;
+import jp.oist.flint.form.MenuBar;
 import jp.oist.flint.garuda.GarudaClient;
 import jp.oist.flint.rpc.Server;
 import jp.sbi.garuda.platform.commons.exception.NetworkException;
@@ -36,6 +37,7 @@ public class Launch implements Runnable {
         UIManager.put("Desktop.background", Color.WHITE);
 
         Session session = new Session();
+        session.addListener(MenuBar.getInstance());
         try {
             Desktop desktop = new Desktop();
             desktop.addListener(new SessionListener(session));

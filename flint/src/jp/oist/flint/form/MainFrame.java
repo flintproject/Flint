@@ -61,7 +61,6 @@ import java.util.prefs.Preferences;
 import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import javax.swing.JFileChooser;
-import javax.swing.JMenu;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JSplitPane;
@@ -121,7 +120,6 @@ public class MainFrame extends javax.swing.JFrame
         setTransferHandler(new ModelFileTransferHandler(this));
 
         initComponents();
-        loadRecentModels();
     }
 
     private void initComponents () {
@@ -175,11 +173,6 @@ public class MainFrame extends javax.swing.JFrame
         peripheralPane.add(mControlPane, BorderLayout.SOUTH);
 
         return contentPane;
-    }
-
-    private void loadRecentModels () {
-        MenuBar.getInstance()
-            .fireUpdateRecentModels(mSession.getRecentModels());
     }
 
     private void simulationRun () {
@@ -327,7 +320,6 @@ public class MainFrame extends javax.swing.JFrame
                     if ("state".equals(propertyName) 
                             && SwingWorker.StateValue.DONE.equals(newValue)) {
                         mSession.updateRecentModels(phspFile);
-                        loadRecentModels();
                         setEditable(true);
                     }
                 }
@@ -630,16 +622,6 @@ public class MainFrame extends javax.swing.JFrame
         ad.setVisible(true);
     }
 
-    @Override
-    public void updateRecentModels(Object source, List<File>modelFiles) {
-        JMenu menuRecentModels = (JMenu)source;
-        menuRecentModels.removeAll();
-        MenuBar menuBar = MenuBar.getInstance();
-        for (final File model : modelFiles) {
-            menuBar.addRecentModel(model);
-        }
-    }
-
     /*
      * Implements IFrame 
      */
@@ -733,7 +715,6 @@ public class MainFrame extends javax.swing.JFrame
                 if ("state".equals(propertyName) 
                     && SwingWorker.StateValue.DONE.equals(newValue)) {
                     mSession.updateRecentModels(file);
-                    loadRecentModels();
                     setEditable(true);
                 }
             }
