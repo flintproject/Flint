@@ -41,7 +41,7 @@ public class Launch implements Runnable {
         try {
             Desktop desktop = new Desktop();
             desktop.addListener(new SessionHandler(session));
-            mMainFrame = new MainFrame(desktop, session);
+            mMainFrame = new MainFrame(desktop);
             desktop.addListener(mMainFrame);
             desktop.startWatching();
         } catch (IOException ex) {

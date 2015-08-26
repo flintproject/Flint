@@ -2,7 +2,6 @@
 package jp.oist.flint.form;
 
 import jp.oist.flint.backend.ModelLoader;
-import jp.oist.flint.command.Session;
 import jp.oist.flint.control.FileChooser;
 import jp.oist.flint.control.ModelFileTransferHandler;
 import jp.oist.flint.dao.SimulationDao;
@@ -96,8 +95,6 @@ public class MainFrame extends javax.swing.JFrame
 
     private final Desktop mDesktop;
 
-    private final Session mSession;
-
     private File mPhspFile = null;
 
     private PhspSimulator mSimulator = null;
@@ -106,11 +103,10 @@ public class MainFrame extends javax.swing.JFrame
 
     private ControlPane mControlPane;
 
-    public MainFrame(Desktop desktop, Session session)
+    public MainFrame(Desktop desktop)
         throws IOException {
         super();
         mDesktop = desktop;
-        mSession = session;
         URL iconUrl = getClass().getResource("/jp/oist/flint/image/icon.png");
         setIconImage(new ImageIcon(iconUrl).getImage());
         setTransferHandler(new ModelFileTransferHandler(this));
@@ -315,7 +311,6 @@ public class MainFrame extends javax.swing.JFrame
                     Object newValue = evt.getNewValue();
                     if ("state".equals(propertyName) 
                             && SwingWorker.StateValue.DONE.equals(newValue)) {
-                        mSession.updateRecentModels(phspFile);
                         setEditable(true);
                     }
                 }
@@ -382,8 +377,8 @@ public class MainFrame extends javax.swing.JFrame
      * Implements MenuBar Delegater
      */
     @Override
-    public void openPerformed (Object source) { 
-        FileChooser fc = new FileChooser(this, "Open model", FileChooser.Mode.LOAD, mSession.getLastPath());
+    public void openPerformed(String lastPath) {
+        FileChooser fc = new FileChooser(this, "Open model", FileChooser.Mode.LOAD, lastPath);
         JFileChooser jfc = fc.getJFileChooser();
         if (jfc != null) {
             jfc.setAcceptAllFileFilterUsed(false);
@@ -710,7 +705,6 @@ public class MainFrame extends javax.swing.JFrame
                 Object newValue = evt.getNewValue();
                 if ("state".equals(propertyName) 
                     && SwingWorker.StateValue.DONE.equals(newValue)) {
-                    mSession.updateRecentModels(file);
                     setEditable(true);
                 }
             }

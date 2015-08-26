@@ -76,6 +76,8 @@ public class MenuBar extends JMenuBar
 
     private IMenuDelegator mDelegator;
 
+    private String mLastPath = null;
+
     protected MenuBar () {
         super();
 
@@ -97,7 +99,7 @@ public class MenuBar extends JMenuBar
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (mDelegator != null) 
-                    mDelegator.openPerformed(e.getSource());
+                    mDelegator.openPerformed(mLastPath);
             }
         });
 
@@ -331,6 +333,10 @@ public class MenuBar extends JMenuBar
         for (File model : recentModels) {
             mMenuRecentModels.add(obtainRecentModelMenuItem(model));
         }
+
+        // remember the parent directory of the last
+        if (!recentModels.isEmpty())
+            mLastPath = recentModels.get(0).getParent();
     }
 
     public void setMenuItemEnabled (String name, boolean enabled) {

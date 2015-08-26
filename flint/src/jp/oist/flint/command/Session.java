@@ -48,11 +48,6 @@ public class Session {
         notifyRecentModels();
     }
 
-    public String getLastPath() {
-        if (mRecentModels.isEmpty()) return "";
-        return mRecentModels.get(0).getParent();
-    }
-
     private void notifyRecentModels() {
         SwingUtilities.invokeLater(new Runnable() {
             @Override

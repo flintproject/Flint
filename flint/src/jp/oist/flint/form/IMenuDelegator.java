@@ -4,7 +4,7 @@ package jp.oist.flint.form;
 import java.io.File;
 
 public interface IMenuDelegator {
-    void openPerformed(Object source);
+    void openPerformed(String lastPath);
 
     void recentModelPerformed (Object source, File model);
 
