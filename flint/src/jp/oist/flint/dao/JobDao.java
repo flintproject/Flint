@@ -3,7 +3,6 @@ package jp.oist.flint.dao;
 
 import jp.oist.flint.job.Progress;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.util.Collections;

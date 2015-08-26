@@ -10,7 +10,6 @@ import jp.oist.flint.garuda.GarudaClient;
 import jp.oist.flint.job.Progress;
 import jp.oist.flint.phsp.entity.ParameterSet;
 import jp.sbi.garuda.platform.commons.net.GarudaConnectionNotInitializedException;
-import org.apache.log4j.Logger;
 import java.awt.CardLayout;
 import java.awt.Component;
 import java.awt.Cursor;

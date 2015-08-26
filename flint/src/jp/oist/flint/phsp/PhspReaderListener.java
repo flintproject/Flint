@@ -5,7 +5,6 @@ import jp.oist.flint.backend.ModelLoader;
 import jp.oist.flint.desktop.Desktop;
 import jp.oist.flint.desktop.Document;
 import jp.oist.flint.form.ModelLoaderLogger;
-import jp.oist.flint.form.sub.SubFrame;
 import jp.oist.flint.phsp.entity.Model;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;

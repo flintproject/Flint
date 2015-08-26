@@ -7,7 +7,6 @@ import jp.oist.flint.dao.SimulationDao;
 import jp.oist.flint.dao.TaskDao;
 import jp.oist.flint.job.Progress;
 import jp.oist.flint.sedml.ISimulationConfiguration;
-import jp.oist.flint.sedml.ISimulationConfigurationList;
 import org.apache.log4j.Logger;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
