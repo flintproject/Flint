@@ -67,7 +67,6 @@ import javax.swing.JSplitPane;
 import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
 import javax.swing.WindowConstants;
-import javax.swing.event.EventListenerList;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
@@ -99,8 +98,6 @@ public class MainFrame extends javax.swing.JFrame
 
     private final Session mSession;
 
-    private final EventListenerList mEventListenerList;
-
     private File mPhspFile = null;
 
     private PhspSimulator mSimulator = null;
@@ -114,7 +111,6 @@ public class MainFrame extends javax.swing.JFrame
         super();
         mDesktop = desktop;
         mSession = session;
-        mEventListenerList = new EventListenerList();
         URL iconUrl = getClass().getResource("/jp/oist/flint/image/icon.png");
         setIconImage(new ImageIcon(iconUrl).getImage());
         setTransferHandler(new ModelFileTransferHandler(this));
