@@ -2,7 +2,7 @@
 package jp.oist.flint.command;
 
 import jp.oist.flint.desktop.Desktop;
-import jp.oist.flint.desktop.SessionListener;
+import jp.oist.flint.desktop.SessionHandler;
 import jp.oist.flint.form.MainFrame;
 import jp.oist.flint.form.MenuBar;
 import jp.oist.flint.garuda.GarudaClient;
@@ -40,7 +40,7 @@ public class Launch implements Runnable {
         session.addListener(MenuBar.getInstance());
         try {
             Desktop desktop = new Desktop();
-            desktop.addListener(new SessionListener(session));
+            desktop.addListener(new SessionHandler(session));
             mMainFrame = new MainFrame(desktop, session);
             desktop.addListener(mMainFrame);
             desktop.startWatching();

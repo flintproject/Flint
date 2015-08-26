@@ -3,11 +3,11 @@ package jp.oist.flint.desktop;
 
 import jp.oist.flint.command.Session;
 
-public class SessionListener implements IDesktopListener {
+public class SessionHandler implements IDesktopListener {
 
     private final Session mSession;
 
-    public SessionListener(Session session) {
+    public SessionHandler(Session session) {
         mSession = session;
     }
 
