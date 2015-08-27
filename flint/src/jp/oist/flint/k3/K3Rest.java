@@ -125,9 +125,6 @@ public class K3Rest {
                MalformedURLException,
                NoSuchAlgorithmException {
 
-        // 戻り値のインスタンスを初期化します。
-        K3JobModel jobModel = new K3JobModel();
-
         // サブミット用URL
         Logger.getRootLogger().debug("## getJobSubmit URL:" + URL_JOB_SUBMIT);
 
@@ -155,13 +152,8 @@ public class K3Rest {
 
         if (xmlTitle != null && xmlTitle.equals("error")) {
             throw new K3Exception(doc.getRootElement().element("entry").elementText("content"));
-        } else {
-            // モデルに設定する
-            jobModel = modelFromXML(doc);
         }
-
-        // モデルを戻します。
-        return jobModel;
+        return modelFromXML(doc);
     }
 
     /**

@@ -253,12 +253,10 @@ public class SubFrame extends JInternalFrame
     }
 
     private void progressLogActionPerformed(ActionEvent evt) {
-        JButton logButton = (JButton) evt.getSource();
         mLogWindow.setVisible(true);
     }
 
     private void progressJobViewActionPerformed(ActionEvent evt) {
-        JButton plotButton = (JButton) evt.getSource();
         mJobWindow.setVisible(true);
     }
 

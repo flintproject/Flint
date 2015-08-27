@@ -203,7 +203,6 @@ public class ProgressCell extends JPanel implements ActionListener {
     }
 
     public void setProgress(String msg, int minimum, int maximum, int value) {
-        int oldValue = mProgressBar.getValue();
         mProgressBar.setString(msg);
         mProgressBar.setValue(value);
 

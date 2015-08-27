@@ -295,7 +295,6 @@ public class ParameterSet {
         }
 
         public boolean isEmpty () {
-            ParameterType type = getType();
             String values = toString();
             return ((values == null) || values.isEmpty())
                     && (getName() == null || getName().isEmpty());

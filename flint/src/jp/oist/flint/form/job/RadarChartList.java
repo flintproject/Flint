@@ -397,7 +397,6 @@ public class RadarChartList extends JobViewerComponent
                     selectionModel.setSelectionInterval(index, index);
                 }
             }
-            Component dest   = RadarChartList.this;
         }
 
         @Override

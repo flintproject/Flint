@@ -162,7 +162,6 @@ public class ParameterValuePane extends JPanel
         KeyStroke enter = KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0);
         KeyStroke up    = KeyStroke.getKeyStroke(KeyEvent.VK_UP,    0);
         KeyStroke down  = KeyStroke.getKeyStroke(KeyEvent.VK_DOWN,  0);
-        KeyStroke space = KeyStroke.getKeyStroke(KeyEvent.VK_SPACE, 0);
 
         Object enterActionName = tbl_Parameter
                 .getInputMap(JTable.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).get(enter);

@@ -127,7 +127,6 @@ public class ProgressPane extends PeripheralPane
     @Override
     public void documentAdded(Document doc) {
         final SubFrame subFrame = doc.getSubFrame();
-        File file = subFrame.getModelFile();
         ProgressCell plcp = createListCell(subFrame);
         addRow(plcp);
         subFrame.setStatusComponent(plcp);
