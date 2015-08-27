@@ -21,7 +21,7 @@ public class GarudaClient {
     private static GarudaListener mGarudaListener;
 
     public static boolean isRunning() {
-        return mGarudaClientBackend instanceof GarudaClientBackend && mGarudaClientBackend.isInitialized();
+        return mGarudaClientBackend != null && mGarudaClientBackend.isInitialized();
     }
 
     public static void start(MainFrame frame)

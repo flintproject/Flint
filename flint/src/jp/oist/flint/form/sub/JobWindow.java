@@ -518,7 +518,7 @@ public class JobWindow extends javax.swing.JFrame
              plotWindow.processSimulationTrack(st);
              plotWindow.renderPlot();
         } catch (IOException ex) {
-            if (mParent instanceof IFrame) {
+            if (mParent != null) {
                 IFrame frame = (IFrame)mParent;
                 frame.showErrorDialog("It has not finished yet.", "ERROR");
             }
