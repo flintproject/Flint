@@ -30,6 +30,8 @@ public class Desktop implements IPhspConfiguration {
 
     private final EventListenerList mListeners;
 
+    private final EventListenerList mLoadingListeners;
+
     private final JDesktopPane mPane;
 
     private final ModelFileWatcher mModelFileWatcher;
@@ -37,6 +39,7 @@ public class Desktop implements IPhspConfiguration {
     public Desktop() throws IOException {
         mDocuments = new ArrayList<>();
         mListeners = new EventListenerList();
+        mLoadingListeners = new EventListenerList();
         mPane = new JDesktopPane();
         mModelFileWatcher = new ModelFileWatcher();
     }
@@ -104,6 +107,9 @@ public class Desktop implements IPhspConfiguration {
         ModelLoader loader = new ModelLoader(file);
         loader.addPropertyChangeListener(new ModelFileLoaderListener(logger, loader));
         loader.addPropertyChangeListener(new ModelLoaderProgressDialog(null, path));
+        for (ILoadingListener listener : mLoadingListeners.getListeners(ILoadingListener.class)) {
+            loader.addPropertyChangeListener(new LoadingPropertyChangeListener(listener));
+        }
         loader.execute();
         return true;
     }
@@ -149,6 +155,10 @@ public class Desktop implements IPhspConfiguration {
 
     public void addListener(IDesktopListener listener) {
         mListeners.add(IDesktopListener.class, listener);
+    }
+
+    public void addLoadingListener(ILoadingListener listener) {
+        mLoadingListeners.add(ILoadingListener.class, listener);
     }
 
     public void startWatching() {

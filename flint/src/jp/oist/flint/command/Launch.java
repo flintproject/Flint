@@ -3,6 +3,7 @@ package jp.oist.flint.command;
 
 import jp.oist.flint.desktop.Desktop;
 import jp.oist.flint.desktop.SessionHandler;
+import jp.oist.flint.form.ControlPane;
 import jp.oist.flint.form.MainFrame;
 import jp.oist.flint.form.MenuBar;
 import jp.oist.flint.garuda.GarudaClient;
@@ -43,6 +44,7 @@ public class Launch implements Runnable {
             desktop.addListener(new SessionHandler(session));
             mMainFrame = new MainFrame(desktop);
             desktop.addListener(mMainFrame);
+            desktop.addLoadingListener(ControlPane.getInstance());
             desktop.startWatching();
         } catch (IOException ex) {
             Logger.getRootLogger().fatal("could not launch " + MainFrame.class.getName() + ": " + ex.getMessage());

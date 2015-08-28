@@ -2,6 +2,8 @@
 
 package jp.oist.flint.form;
 
+import jp.oist.flint.desktop.ILoadingListener;
+import jp.oist.flint.executor.PhspSimulator;
 import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.Dimension;
@@ -12,10 +14,9 @@ import java.awt.event.FocusListener;
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 import javax.swing.JButton;
-import jp.oist.flint.executor.PhspSimulator;
 
 public class ControlPane extends PeripheralPane 
-    implements FocusListener, PhspSimulator.Listener {
+    implements FocusListener, ILoadingListener, PhspSimulator.Listener {
 
     public final static String RUN = "controlpanel.run";
 
@@ -79,6 +80,18 @@ public class ControlPane extends PeripheralPane
         mBtnSimulationRun.setEnabled(enabled);
         MenuBar.getInstance().setMenuItemEnabled(MenuBar.RUN, enabled);
         MenuBar.getInstance().setMenuItemEnabled(MenuBar.SEND_TO_FLINT_K3, enabled);
+    }
+
+    /* ILoadingListener */
+
+    @Override
+    public void loadingStarted() {
+        setSimulationRunEnabled(false);
+    }
+
+    @Override
+    public void loadingDone() {
+        setSimulationRunEnabled(true);
     }
 
     /*
