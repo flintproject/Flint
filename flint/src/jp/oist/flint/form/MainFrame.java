@@ -222,7 +222,7 @@ public class MainFrame extends javax.swing.JFrame
                                 "The following error occurred during simulation:",
                                 detail, 
                                 "Error on simulation",
-                                JOptionPane.ERROR_MESSAGE, null, new Object[]{" OK "});
+                                JOptionPane.ERROR_MESSAGE, null, new Object[]{"OK"});
                     }
                 }
             });
