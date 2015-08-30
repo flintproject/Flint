@@ -4,7 +4,6 @@ package jp.oist.flint.executor;
 
 import jp.oist.flint.phsp.PhspException;
 import jp.oist.flint.sedml.SedmlException;
-import org.apache.log4j.Logger;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -39,8 +38,6 @@ public class PhspSimulator extends SwingWorker <Boolean, Integer> {
     private File mLogFile = null;
 
     private FlintExecJob mFlintExecJob = null;
-
-    private boolean isSuccess = false;
 
     public PhspSimulator (SimulatorService service, 
                             ISimulationConfigurationList sedml, 
@@ -104,22 +101,8 @@ public class PhspSimulator extends SwingWorker <Boolean, Integer> {
         return mSimulationDao;
     }
 
-    public boolean isSuccess () {
-        return isSuccess;
-    }
-
     public boolean isStarted () {
         return StateValue.STARTED.equals(getState());
-    }
-
-    @Override
-    protected void done () {
-        try {
-            isSuccess = get();
-        } catch (Exception ex) {
-            Logger.getRootLogger().error(ex.getMessage());
-            isSuccess = false;
-        }
     }
 
     @Override
