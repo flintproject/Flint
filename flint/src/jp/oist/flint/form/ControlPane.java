@@ -3,6 +3,7 @@
 package jp.oist.flint.form;
 
 import jp.oist.flint.desktop.ILoadingListener;
+import jp.oist.flint.desktop.ISimulationListener;
 import jp.oist.flint.executor.PhspSimulator;
 import java.awt.BorderLayout;
 import java.awt.Container;
@@ -16,7 +17,7 @@ import javax.swing.JPanel;
 import javax.swing.JButton;
 
 public class ControlPane extends PeripheralPane 
-    implements FocusListener, ILoadingListener, PhspSimulator.Listener {
+    implements FocusListener, ILoadingListener, ISimulationListener {
 
     public final static String RUN = "controlpanel.run";
 
@@ -94,16 +95,15 @@ public class ControlPane extends PeripheralPane
         setSimulationRunEnabled(true);
     }
 
-    /*
-     * Implements PhspSimulator.Listener 
-     */
+    /* ISimulationListener */
+
     @Override
-    public void onSimulationStarted (PhspSimulator.Event evt) {
+    public void simulationStarted(PhspSimulator simulator) {
         setSimulationRunEnabled(false);
     }
 
     @Override
-    public void onSimulationExited (PhspSimulator.Event evt) {
+    public void simulationDone() {
         setSimulationRunEnabled(true);
     }
 }

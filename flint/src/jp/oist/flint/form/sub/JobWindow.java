@@ -2,6 +2,7 @@
 package jp.oist.flint.form.sub;
 
 import jp.oist.flint.control.DirectoryChooser;
+import jp.oist.flint.desktop.ISimulationListener;
 import jp.oist.flint.form.job.CombinationModel;
 import jp.oist.flint.form.job.GadgetDialog;
 import jp.oist.flint.form.job.JobList;
@@ -58,7 +59,7 @@ import jp.oist.flint.util.Utility;
 import jp.physiome.Ipc;
 
 public class JobWindow extends javax.swing.JFrame
-    implements MouseListener, MouseMotionListener, IProgressManager {
+    implements MouseListener, MouseMotionListener, IProgressManager, ISimulationListener {
 
     private final static String PANELKEY_LIST  = "jobwindow.cardlayout.joblist";
 
@@ -813,11 +814,13 @@ public class JobWindow extends javax.swing.JFrame
         }
     }
 
-    public void onSimulationStarted(PhspSimulator.Event evt) {
+    /* ISimulationListener */
+
+    public void simulationStarted(PhspSimulator simulator) {
     }
 
 
-    public void onSimulationExited(PhspSimulator.Event evt) {
+    public void simulationDone() {
         btn_ExportAll.setEnabled(true);
     }
 

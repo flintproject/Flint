@@ -2,23 +2,48 @@
 package jp.oist.flint.desktop;
 
 import jp.oist.flint.backend.ModelLoader;
+import jp.oist.flint.dao.SimulationDao;
+import jp.oist.flint.dao.TaskDao;
+import jp.oist.flint.executor.PhspProgressMonitor;
+import jp.oist.flint.executor.PhspSimulator;
+import jp.oist.flint.executor.SimulatorService;
 import jp.oist.flint.filesystem.ModelFileWatcher;
+import jp.oist.flint.form.MainFrame;
+import jp.oist.flint.form.MessageDialog;
 import jp.oist.flint.form.ModelFileLoaderListener;
 import jp.oist.flint.form.ModelLoaderLogger;
 import jp.oist.flint.form.ModelLoaderProgressDialog;
+import jp.oist.flint.form.ProgressCell;
+import jp.oist.flint.form.ProgressPane;
+import jp.oist.flint.form.job.IProgressManager;
 import jp.oist.flint.form.sub.SubFrame;
+import jp.oist.flint.job.Progress;
 import jp.oist.flint.phsp.IPhspConfiguration;
 import jp.oist.flint.phsp.PhspException;
 import jp.oist.flint.phsp.entity.Model;
+import jp.oist.flint.sedml.SedmlException;
 import org.apache.log4j.Logger;
+import java.awt.HeadlessException;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.beans.PropertyVetoException;
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
+import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Map;
+import java.util.concurrent.ExecutionException;
 import javax.swing.JDesktopPane;
 import javax.swing.JInternalFrame;
 import javax.swing.JOptionPane;
+import javax.swing.SwingWorker;
 import javax.swing.event.EventListenerList;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.TransformerException;
 
 /**
  * A desktop holds multiple documents; each of them corresponds to a model
@@ -32,6 +57,8 @@ public class Desktop implements IPhspConfiguration {
 
     private final EventListenerList mLoadingListeners;
 
+    private final EventListenerList mSimulationListeners;
+
     private final JDesktopPane mPane;
 
     private final ModelFileWatcher mModelFileWatcher;
@@ -40,6 +67,7 @@ public class Desktop implements IPhspConfiguration {
         mDocuments = new ArrayList<>();
         mListeners = new EventListenerList();
         mLoadingListeners = new EventListenerList();
+        mSimulationListeners = new EventListenerList();
         mPane = new JDesktopPane();
         mModelFileWatcher = new ModelFileWatcher();
     }
@@ -153,12 +181,118 @@ public class Desktop implements IPhspConfiguration {
         }
     }
 
+    public PhspSimulator runSimulation(final MainFrame mainFrame)
+        throws IOException, ParserConfigurationException, PhspException,
+               SQLException, SedmlException, TransformerException {
+        for (SubFrame subFrame : getSubFrames())
+            subFrame.reloadJobViewer();
+
+        SimulatorService service = new SimulatorService(mainFrame);
+        final PhspSimulator simulator = new PhspSimulator(service, mainFrame, this);
+        final PhspProgressMonitor monitor = new PhspProgressMonitor(simulator);
+        simulator.addPropertyChangeListener(new PropertyChangeListener() {
+            @Override
+            public void propertyChange(PropertyChangeEvent e) {
+                String propertyName = e.getPropertyName();
+                Object nv = e.getNewValue();
+                if ("state".equals(propertyName)) {
+                    if (SwingWorker.StateValue.DONE.equals(nv)) {
+                        try {
+                            monitor.stop();
+                            //TODO
+                            Boolean result = simulator.get();
+                            if (result) {
+                                JOptionPane.showMessageDialog(mainFrame,
+                                                              "Simulation completed", "Simulation completed",
+                                                              JOptionPane.PLAIN_MESSAGE);
+                            }
+                        } catch (InterruptedException | ExecutionException | HeadlessException ex) {
+                            File logFile = simulator.getLogFile();
+                            StringBuilder sb = new StringBuilder();
+                            if (logFile != null) {
+                                try (FileInputStream fis = new FileInputStream(logFile);
+                                     InputStreamReader isr = new InputStreamReader(fis, StandardCharsets.UTF_8);
+                                     BufferedReader reader = new BufferedReader(isr)) {
+                                    String line;
+                                    while ((line = reader.readLine()) != null) {
+                                        sb.append(line).append(System.getProperty("line.separator"));
+                                    }
+                                } catch (IOException ex1) {
+                                    Logger.getRootLogger().error(ex1.getMessage());
+                                }
+                            }
+                            String detail = sb.toString();
+                            MessageDialog.showMessageDialog(mainFrame,
+                                                            "The following error occurred during simulation:",
+                                                            detail,
+                                                            "Error on simulation",
+                                                            JOptionPane.ERROR_MESSAGE, null, new Object[]{"OK"});
+                        }
+                    }
+                }
+            }
+        });
+        for (SubFrame subFrame : getSubFrames())
+            simulator.addPropertyChangeListener(new SimulationPropertyChangeListener(subFrame));
+        for (ISimulationListener listener : mSimulationListeners.getListeners(ISimulationListener.class)) {
+            simulator.addPropertyChangeListener(new SimulationPropertyChangeListener(listener));
+        }
+
+        monitor.addPropertyChangeListener(new PropertyChangeListener() {
+            @Override
+            public void propertyChange(PropertyChangeEvent e) {
+                String propertyName = e.getPropertyName();
+                if ("progress".equals(propertyName)) {
+                    if (e instanceof PhspProgressMonitor.Event) {
+                        final PhspProgressMonitor.Event evt = (PhspProgressMonitor.Event)e;
+                        String modelPath = (String)evt.getClientProperty("modelPath");
+                        SubFrame subFrame = mainFrame.findSubFrame(modelPath);
+
+                        SimulationDao simulationDao = simulator.getSimulationDao();
+                        TaskDao taskDao = simulationDao.obtainTask(new File(subFrame.getRelativeModelPath()));
+
+                        Progress progress = (Progress)evt.getNewValue();
+                        Map<String, Number> target = (Map<String, Number>)evt.getClientProperty("target");
+                        IProgressManager progressMgr = subFrame.getProgressManager();
+                        int index = progressMgr.indexOf(target);
+
+                        progressMgr.setProgress(index, progress);
+
+                        if (taskDao.isCancelled())
+                            progressMgr.setCancelled(index, true);
+
+                        int taskProgress = taskDao.getProgress();
+                        ProgressCell cell =
+                            ProgressPane.getInstance().getListCellOfModel(new File(modelPath));
+
+                        String status;
+                        if (taskDao.isFinished()) {
+                            status = (taskDao.isCancelled())? "finished" : "completed";
+                            cell.progressFinished(status, 0, 100, taskProgress);
+                        } else if (taskDao.isStarted()) {
+                            status = (taskDao.isCancelled())? "cancelling..." : taskProgress + " %";
+                            cell.setProgress(status, 0, 100, taskProgress);
+                        }
+                    }
+                }
+            }
+        });
+
+        simulator.execute();
+        monitor.start();
+        return simulator;
+    }
+
     public void addListener(IDesktopListener listener) {
         mListeners.add(IDesktopListener.class, listener);
     }
 
     public void addLoadingListener(ILoadingListener listener) {
         mLoadingListeners.add(ILoadingListener.class, listener);
+    }
+
+    public void addSimulationListener(ISimulationListener listener) {
+        mSimulationListeners.add(ISimulationListener.class, listener);
     }
 
     public void startWatching() {

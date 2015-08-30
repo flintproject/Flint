@@ -5,6 +5,7 @@ package jp.oist.flint.form;
 import jp.oist.flint.command.ISessionListener;
 import jp.oist.flint.desktop.Document;
 import jp.oist.flint.desktop.IDesktopListener;
+import jp.oist.flint.desktop.ISimulationListener;
 import jp.oist.flint.executor.PhspSimulator;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
@@ -18,7 +19,7 @@ import javax.swing.JMenuItem;
 import javax.swing.KeyStroke;
 
 public class MenuBar extends JMenuBar
-    implements IDesktopListener, ISessionListener, PhspSimulator.Listener {
+    implements IDesktopListener, ISessionListener, ISimulationListener {
 
     /* Item names on Menu "File" */
     public final static String OPEN = "menu.file.open";
@@ -348,11 +349,10 @@ public class MenuBar extends JMenuBar
             item.setEnabled(enabled);
     }
 
-    /*
-     * Implements PhspSimulator.Listener
-     */
+    /* ISimulationListener */
+
     @Override
-    public void onSimulationStarted (PhspSimulator.Event evt) {
+    public void simulationStarted(PhspSimulator simulator) {
         mItemOpen.setEnabled(false);
         mMenuRecentModels.setEnabled(false);
         mItemClose.setEnabled(false);
@@ -364,7 +364,7 @@ public class MenuBar extends JMenuBar
     }
 
     @Override
-    public void onSimulationExited (PhspSimulator.Event evt) {
+    public void simulationDone() {
         mItemOpen.setEnabled(true);
         mMenuRecentModels.setEnabled(true);
         mItemClose.setEnabled(true);
@@ -374,6 +374,8 @@ public class MenuBar extends JMenuBar
         mItemRun.setEnabled(true);
         mItemSendToFlintK3.setEnabled(true);
     }
+
+    /* IDesktopListener */
 
     @Override
     public void documentAdded(Document doc) {

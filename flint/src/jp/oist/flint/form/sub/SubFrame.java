@@ -4,6 +4,7 @@ package jp.oist.flint.form.sub;
 import jp.oist.flint.executor.ModelReloader;
 import jp.oist.flint.desktop.Desktop;
 import jp.oist.flint.desktop.Document;
+import jp.oist.flint.desktop.ISimulationListener;
 import jp.oist.flint.phsp.PhspException;
 import jp.oist.flint.util.IntegrationMethodFormat;
 import java.awt.Component;
@@ -22,7 +23,6 @@ import java.util.Vector;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
-import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JTabbedPane;
@@ -54,8 +54,7 @@ import jp.physiome.Ipc;
 
 public class SubFrame extends JInternalFrame
     implements ActionListener, IModelFileClient,
-        ISimulationConfiguration, IFrame,
-        PhspSimulator.Listener {
+               ISimulationConfiguration, ISimulationListener, IFrame {
 
     public final static String ID = "flint.view.sub";
 
@@ -278,17 +277,19 @@ public class SubFrame extends JInternalFrame
         return mStatusComponent;
     }
 
+    /* ISimulationListener */
+
     @Override
-    public void onSimulationStarted(PhspSimulator.Event evt) {
-        mSimulator = (PhspSimulator) evt.getSource();
+    public void simulationStarted(PhspSimulator simulator) {
+        mSimulator = simulator;
         mJobWindow.setSimulator(mSimulator);
-        mJobWindow.onSimulationStarted(evt);
+        mJobWindow.simulationStarted(simulator);
         setEditable(false);
     }
 
     @Override
-    public void onSimulationExited(PhspSimulator.Event evt) {
-        mJobWindow.onSimulationExited(evt);
+    public void simulationDone() {
+        mJobWindow.simulationDone();
         setEditable(true);
     }
 

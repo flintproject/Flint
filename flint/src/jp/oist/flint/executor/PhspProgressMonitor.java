@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
+import javax.swing.SwingUtilities;
 import org.apache.commons.vfs2.FileChangeEvent;
 import org.apache.commons.vfs2.FileListener;
 import org.apache.commons.vfs2.FileObject;
@@ -117,7 +118,12 @@ public class PhspProgressMonitor implements FileListener, Runnable {
         evt.setClientProperty("modelPath", modelPath);
         evt.setClientProperty("target", combination);
 
-        getPropertyChangeSupport().firePropertyChange(evt);
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                getPropertyChangeSupport().firePropertyChange(evt);
+            }
+        });
     }
 
     @Override

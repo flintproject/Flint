@@ -4,17 +4,11 @@ package jp.oist.flint.form;
 import jp.oist.flint.backend.ModelLoader;
 import jp.oist.flint.control.FileChooser;
 import jp.oist.flint.control.ModelFileTransferHandler;
-import jp.oist.flint.dao.SimulationDao;
-import jp.oist.flint.dao.TaskDao;
 import jp.oist.flint.desktop.Desktop;
 import jp.oist.flint.desktop.Document;
 import jp.oist.flint.desktop.IDesktopListener;
-import jp.oist.flint.executor.PhspProgressMonitor;
 import jp.oist.flint.executor.PhspSimulator;
-import jp.oist.flint.executor.SimulatorService;
-import jp.oist.flint.form.job.IProgressManager;
 import jp.oist.flint.form.sub.SubFrame;
-import jp.oist.flint.job.Progress;
 import jp.oist.flint.k3.K3Client;
 import jp.oist.flint.k3.K3Request;
 import jp.oist.flint.k3.K3RequestBuilder;
@@ -38,14 +32,10 @@ import java.awt.HeadlessException;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyVetoException;
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.net.URL;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.SQLException;
@@ -53,7 +43,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
@@ -165,124 +154,6 @@ public class MainFrame extends javax.swing.JFrame
         peripheralPane.add(mControlPane, BorderLayout.SOUTH);
 
         return contentPane;
-    }
-
-    private void simulationRun () {
-        try {
-            for (SubFrame subFrame : getSubFrames())
-                subFrame.reloadJobViewer();
-
-            // TOOD
-            for (ProgressCell cell : mProgressPane.getListCells())
-                cell.progressStarted();
-
-            SimulatorService service = new SimulatorService(this);
-
-            final PhspSimulator simulator = new PhspSimulator(service, this, mDesktop);
-            final PhspProgressMonitor monitor = new PhspProgressMonitor(simulator);
-            simulator.addSimulationListener(new PhspSimulator.Listener() {
-                @Override
-                public void onSimulationStarted(PhspSimulator.Event evt) { 
-                    mProgressPane.repaint();
-                }
-
-                @Override
-                public void onSimulationExited(PhspSimulator.Event evt) {
-                    mProgressPane.repaint();
-                    PhspSimulator simulator = (PhspSimulator)evt.getSource();
-                    try {
-                        monitor.stop();
-                        //TODO 
-                        ProgressPane progressView;
-                        Boolean result = simulator.get();
-                        if (result) {
-                            JOptionPane.showMessageDialog(MainFrame.this,
-                                    "Simulation completed", "Simulation completed",
-                                    JOptionPane.PLAIN_MESSAGE);
-                        } else {
-
-                        }
-                    } catch (InterruptedException | ExecutionException | HeadlessException ex) {
-                        File logFile = simulator.getLogFile();
-                        StringBuilder sb = new StringBuilder();
-                        if (logFile != null) {
-                            try (FileInputStream fis = new FileInputStream(logFile);
-                                 InputStreamReader isr = new InputStreamReader(fis, StandardCharsets.UTF_8);
-                                 BufferedReader reader = new BufferedReader(isr)) {
-                                String line;
-                                while ((line = reader.readLine()) != null) {
-                                    sb.append(line).append(System.getProperty("line.separator"));
-                                }
-                            } catch (IOException ex1) {
-                                Logger.getRootLogger().error(ex1.getMessage());
-                            }
-                        }
-                        String detail = sb.toString();
-                        MessageDialog.showMessageDialog(MainFrame.this, 
-                                "The following error occurred during simulation:",
-                                detail, 
-                                "Error on simulation",
-                                JOptionPane.ERROR_MESSAGE, null, new Object[]{"OK"});
-                    }
-                }
-            });
-            for (SubFrame subFrame : getSubFrames())
-                simulator.addSimulationListener(subFrame);
-            simulator.addSimulationListener(MenuBar.getInstance());
-            simulator.addSimulationListener(mControlPane);
-
-            monitor.addPropertyChangeListener(new PropertyChangeListener(){
-                @Override
-                public void propertyChange(PropertyChangeEvent e) {
-                    String propertyName = e.getPropertyName();
-                    if ("progress".equals(propertyName)) {
-                        if (e instanceof PhspProgressMonitor.Event) {
-                            final PhspProgressMonitor.Event evt = (PhspProgressMonitor.Event)e;
-                            SwingUtilities.invokeLater(new Runnable() {
-                                @Override
-                                public void run() {
-                                    String modelPath = (String)evt.getClientProperty("modelPath");
-                                    SubFrame subFrame = findSubFrame(modelPath);
-
-                                    SimulationDao simulationDao = simulator.getSimulationDao();
-                                    TaskDao taskDao = simulationDao.obtainTask(new File(subFrame.getRelativeModelPath()));
-
-                                    Progress progress = (Progress)evt.getNewValue();
-                                    Map<String, Number> target = (Map<String, Number>)evt.getClientProperty("target");
-                                    IProgressManager progressMgr = subFrame.getProgressManager();
-                                    int index = progressMgr.indexOf(target);
-
-                                    progressMgr.setProgress(index, progress);
-
-                                    if (taskDao.isCancelled())
-                                        progressMgr.setCancelled(index, rootPaneCheckingEnabled);
-
-                                    int taskProgress = taskDao.getProgress();
-                                    ProgressCell cell = 
-                                            mProgressPane.getListCellOfModel(new File(modelPath));
-
-                                    String status;
-                                    if (taskDao.isFinished()) {
-                                        status = (taskDao.isCancelled())? "finished" : "completed";
-                                        cell.progressFinished(status, 0, 100, taskProgress);
-                                    } else if (taskDao.isStarted()) { 
-                                        status = (taskDao.isCancelled())? "cancelling..." : taskProgress + " %";
-                                        cell.setProgress(status, 0, 100, taskProgress);
-                                    }
-                                }
-                            });
-                        }
-                    }
-                }
-            });
-
-            simulator.execute();
-            mSimulator = simulator;
-            monitor.start();
-        } catch (IOException | ParserConfigurationException | PhspException |
-                 SQLException | SedmlException | TransformerException ex) {
-            showErrorDialog(ex.getMessage(), "ERROR");
-        }
     }
 
     public boolean openPhsp(final File phspFile) {
@@ -545,7 +416,15 @@ public class MainFrame extends javax.swing.JFrame
 
     @Override
     public void simulationRunPerformed(Object source) {
-        simulationRun();
+        // TODO
+        for (ProgressCell cell : mProgressPane.getListCells())
+            cell.progressStarted();
+        try {
+            mSimulator = mDesktop.runSimulation(this);
+        } catch (IOException | ParserConfigurationException | PhspException |
+                 SQLException | SedmlException | TransformerException ex) {
+            showErrorDialog(ex.getMessage(), "ERROR");
+        }
     }
 
     @Override

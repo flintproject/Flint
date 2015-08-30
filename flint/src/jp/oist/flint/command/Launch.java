@@ -6,6 +6,7 @@ import jp.oist.flint.desktop.SessionHandler;
 import jp.oist.flint.form.ControlPane;
 import jp.oist.flint.form.MainFrame;
 import jp.oist.flint.form.MenuBar;
+import jp.oist.flint.form.ProgressPane;
 import jp.oist.flint.garuda.GarudaClient;
 import jp.oist.flint.rpc.Server;
 import jp.sbi.garuda.platform.commons.exception.NetworkException;
@@ -45,6 +46,9 @@ public class Launch implements Runnable {
             mMainFrame = new MainFrame(desktop);
             desktop.addListener(mMainFrame);
             desktop.addLoadingListener(ControlPane.getInstance());
+            desktop.addSimulationListener(ControlPane.getInstance());
+            desktop.addSimulationListener(MenuBar.getInstance());
+            desktop.addSimulationListener(ProgressPane.getInstance());
             desktop.startWatching();
         } catch (IOException ex) {
             Logger.getRootLogger().fatal("could not launch " + MainFrame.class.getName() + ": " + ex.getMessage());

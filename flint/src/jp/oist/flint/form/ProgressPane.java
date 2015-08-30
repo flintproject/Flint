@@ -3,6 +3,8 @@ package jp.oist.flint.form;
 
 import jp.oist.flint.desktop.Document;
 import jp.oist.flint.desktop.IDesktopListener;
+import jp.oist.flint.desktop.ISimulationListener;
+import jp.oist.flint.executor.PhspSimulator;
 import jp.oist.flint.form.sub.SubFrame;
 import java.awt.Container;
 import java.io.File;
@@ -10,7 +12,7 @@ import javax.swing.DefaultListModel;
 import javax.swing.JScrollPane;
 
 public class ProgressPane extends PeripheralPane
-    implements IDesktopListener {
+    implements IDesktopListener, ISimulationListener {
 
     public final static String TITLE = "Progresses";
 
@@ -124,6 +126,8 @@ public class ProgressPane extends PeripheralPane
         return null;
     }
 
+    /* IDesktopListener */
+
     @Override
     public void documentAdded(Document doc) {
         final SubFrame subFrame = doc.getSubFrame();
@@ -146,5 +150,17 @@ public class ProgressPane extends PeripheralPane
                 break;
             }
         }
+    }
+
+    /* ISimulationListener */
+
+    @Override
+    public void simulationStarted(PhspSimulator simulator) {
+        repaint();
+    }
+
+    @Override
+    public void simulationDone() {
+        repaint();
     }
 }
