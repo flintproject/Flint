@@ -25,17 +25,17 @@ public class PhspSimulator extends SwingWorker <Boolean, Integer> {
 
     private final File mWorkingDir;
 
-    private SimulationDao mSimulationDao;
+    private final SimulationDao mSimulationDao;
 
     private final ISimulationConfigurationList mSedmlConfig;
 
-    private IPhspConfiguration mPhspConfig = null;
+    private final IPhspConfiguration mPhspConfig;
 
-    private File mSedmlFile = null;
+    private final File mSedmlFile;
 
-    private File mPhspFile = null;
+    private final File mPhspFile;
 
-    private File mLogFile = null;
+    private final File mLogFile;
 
     public PhspSimulator (SimulatorService service, 
                             ISimulationConfigurationList sedml, 
@@ -68,7 +68,10 @@ public class PhspSimulator extends SwingWorker <Boolean, Integer> {
             SedmlWriter sedmlWriter = new SedmlWriter(true);
             sedmlWriter.writeSimulationConfiguration(mSedmlConfig, sedmlStream);
         }
-            mWorkingDir = Workspace.createTempDirectory("flint-exec");
+        mWorkingDir = Workspace.createTempDirectory("flint-exec");
+        mSimulationDao = new SimulationDao(mWorkingDir);
+        mLogFile = new File(mWorkingDir, "flint.log");
+        mLogFile.deleteOnExit();
     }
 
     public File getSedmlFile () {
@@ -105,10 +108,6 @@ public class PhspSimulator extends SwingWorker <Boolean, Integer> {
 
     @Override
     protected Boolean doInBackground() throws Exception {
-        mSimulationDao = new SimulationDao(mWorkingDir);
-        mLogFile = new File(mWorkingDir, "flint.log");
-        mLogFile.deleteOnExit();
-
         FlintExecJob job = new FlintExecJob(mSedmlFile, mPhspFile, mWorkingDir);
         return mService.call(job, mLogFile);
     }
