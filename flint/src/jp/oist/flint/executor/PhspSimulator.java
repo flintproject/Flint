@@ -37,8 +37,6 @@ public class PhspSimulator extends SwingWorker <Boolean, Integer> {
 
     private File mLogFile = null;
 
-    private FlintExecJob mFlintExecJob = null;
-
     public PhspSimulator (SimulatorService service, 
                             ISimulationConfigurationList sedml, 
                             IPhspConfiguration phsp) 
@@ -107,15 +105,12 @@ public class PhspSimulator extends SwingWorker <Boolean, Integer> {
 
     @Override
     protected Boolean doInBackground() throws Exception {
-        File sedmlFile = mSedmlFile;
-        File phspFile = mPhspFile;
-
         mSimulationDao = new SimulationDao(mWorkingDir);
         mLogFile = new File(mWorkingDir, "flint.log");
         mLogFile.deleteOnExit();
 
-        mFlintExecJob = new FlintExecJob(sedmlFile, phspFile, mWorkingDir);
-        return mService.call(mFlintExecJob, mLogFile);
+        FlintExecJob job = new FlintExecJob(mSedmlFile, mPhspFile, mWorkingDir);
+        return mService.call(job, mLogFile);
     }
 
 }
