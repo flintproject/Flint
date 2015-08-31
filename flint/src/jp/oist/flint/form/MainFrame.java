@@ -161,8 +161,8 @@ public class MainFrame extends javax.swing.JFrame
         int numberOfSubView = subFrames.size();
         if (numberOfSubView > 0) {
             int ans = JOptionPane.showConfirmDialog(this,
-                            "Is it ok to close editing files?",
-                            "Close a file",
+                            "Is it OK to close existing windows?",
+                            "Close windows",
                             JOptionPane.YES_NO_OPTION);
 
             if (ans != JOptionPane.YES_OPTION) return false;
@@ -190,7 +190,7 @@ public class MainFrame extends javax.swing.JFrame
             return true;
         } catch (IOException ex) {
             setEditable(true);
-            showErrorDialog(ex.getMessage(), "Error on load file of phsp");
+            showErrorDialog(ex.getMessage(), "Error on loading PHSP");
             return false;
         }
     }
@@ -198,9 +198,8 @@ public class MainFrame extends javax.swing.JFrame
     public boolean closeModel (SubFrame subFrame) {
         if (mSimulator != null && mSimulator.isStarted()) {
             JOptionPane.showMessageDialog(this, 
-                    "Could not close the model. \n"
-                        + "It's running the simulation yet.", 
-                    "Error on close the model", 
+                                          "Could not close the model due to running simulation.",
+                                          "Error on closing model",
                     JOptionPane.INFORMATION_MESSAGE);
             return false;
         }
@@ -311,7 +310,7 @@ public class MainFrame extends javax.swing.JFrame
                 }
             }
         } catch (IOException | ParserConfigurationException | SAXException e) {
-            showErrorDialog(e.getMessage(), "Error on load configuration");
+            showErrorDialog(e.getMessage(), "Error on loading configuration");
         }
     }
 
@@ -345,8 +344,8 @@ public class MainFrame extends javax.swing.JFrame
     public void saveAsPhspPerformed (Object source) {
         try {
             if (mDesktop.isEmpty()) {
-                showErrorDialog("Please open the phml/sbml model.", 
-                                  "Error on saving phsp");
+                showErrorDialog("Please open some models.",
+                                "Error on saving PHSP");
                 return;
             }
 
@@ -479,7 +478,7 @@ public class MainFrame extends javax.swing.JFrame
                                                   JOptionPane.INFORMATION_MESSAGE);
                 } catch (InterruptedException | ExecutionException ex) {
                     showErrorDialog(ex.getMessage(),
-                                    "Error on comminicating with Flint K3");
+                                    "Error on communicating with Flint K3");
                 }
             }
         };
