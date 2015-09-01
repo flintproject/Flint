@@ -51,9 +51,8 @@ public class PhspProgressMonitor implements FileListener, Runnable {
         mFileMonitor = new DefaultFileMonitor(this) {
             @Override
             protected void queueAddFile (FileObject fileObj) {
-                if (isTaskDirecotry(fileObj) || isJobDirecotry(fileObj)
-                        || "status".equals(fileObj.getName().getBaseName())
-                        || "control".equals(fileObj.getName().getBaseName()))
+                if (isTaskDirecotry(fileObj) ||
+                    isJobDirecotry(fileObj))
                     super.queueAddFile(fileObj);
             }
         };
@@ -149,9 +148,6 @@ public class PhspProgressMonitor implements FileListener, Runnable {
                 synchronized (mLock) {
                     mQueue.addFirst(job);
                 }
-        } else if ("status".equals(fileObj.getName().getBaseName())) {
-            // nothing to do...
-
         }
     }
 
