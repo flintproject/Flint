@@ -35,7 +35,10 @@ public class TaskDao extends DaoObject {
 
     private final File mModelFile;
 
-    private int mCount = -1;
+    /**
+     * 0 means that the number of jobs has not been counted.
+     */
+    private int mCount = 0;
 
     public TaskDao(int taskId, File dir, File modelFile)
             throws SQLException, IOException {
@@ -204,38 +207,24 @@ public class TaskDao extends DaoObject {
         return Status.UNKNOWN;
     }
 
-    private int getCount(Condition where) {
-
+    public synchronized int getCount() {
         if (mCount > 0)
             return mCount;
 
-        String sql = "SELECT count(js.rowid) AS count FROM jobs AS js "
-            + "LEFT JOIN enum AS e "
-            + "ON js.enum_id = e.rowid ";
-        if (where != null)
-            sql += "WHERE " + where.toString();
-
+        String sql = "SELECT count(*) FROM jobs";
         try (PreparedStatement stmt = getConnection().prepareStatement(sql);
              ResultSet result = stmt.executeQuery()) {
             if (!result.next())
-                return -1;
-
-            return result.getInt("count");
-
+                return 0;
+            mCount = result.getInt(1);
+            return mCount;
         } catch (SQLException ex) {
             printError(ex.getErrorCode(), ex.getMessage());
-            return -1;
+            return 0;
         } catch (IOException ex) {
             printError(ex.getMessage());
-            return -1;
+            return 0;
         }
-    }
-
-    public int getCount() {
-        if (mCount <= 0)
-            mCount = getCount(null);
-
-        return mCount;
     }
 
     public int getProgress() {
