@@ -9,10 +9,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -258,34 +255,6 @@ public class TaskDao extends DaoObject {
             total += p;
         }
         return (int)((double)total / (double)jobCount);
-    }
-
-    private List<Integer> getIndices(Condition where) {
-        String sql = "SELECT js.rowid AS rowid FROM jobs AS js "
-            + "LEFT JOIN enum AS e "
-            + "ON js.enum_id = e.rowid ";
-
-        if (where != null)
-            sql += "WHERE " + where.toString();
-
-        try (PreparedStatement stmt = getConnection().prepareStatement(sql);
-             ResultSet result = stmt.executeQuery()) {
-            List<Integer> retval = new ArrayList<>();
-            while (result.next())
-                retval.add(result.getInt("rowid"));
-
-            return Collections.unmodifiableList(retval);
-        } catch (SQLException ex) {
-            printError(ex.getErrorCode(), ex.getMessage());
-            return Collections.unmodifiableList(new ArrayList());
-        } catch (IOException ex) {
-            printError(ex.getMessage());
-            return Collections.unmodifiableList(new ArrayList());
-        }
-    }
-
-    public List<Integer> getIndices() {
-        return getIndices(null);
     }
 
     private Map<String, Number> getCombination(int jobId)
