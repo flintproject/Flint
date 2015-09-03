@@ -164,20 +164,6 @@ public class TaskDaoTest {
     }
 
     @Test
-    public void testGetPendingCount() {
-        int taskId = 1;
-        TaskDao task = mSimulationDao.obtainTask(taskId);
-        Assert.assertEquals(10, task.getPendingCount());
-    }
-
-    @Test
-    public void testGetGeneratedCount() {
-        int taskId = 1;
-        TaskDao task = mSimulationDao.obtainTask(taskId);
-        Assert.assertEquals(10, task.getGeneratedCount());
-    }
-
-    @Test
     public void testGetIndices() {
         int taskId = 1;
         TaskDao task = mSimulationDao.obtainTask(taskId);
@@ -186,24 +172,6 @@ public class TaskDaoTest {
                 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20
             });
         List<Integer> indices = task.getIndices();
-        Assert.assertEquals(indices, actuals);
-    }
-
-    @Test
-    public void testGetIndicesOf() {
-        int taskId = 1;
-        TaskDao task = mSimulationDao.obtainTask(taskId);
-
-        List<Integer> indices = task.getIndicesOf(TaskDao.Status.GENERATED);
-        List<Integer> actuals = Arrays.asList(new Integer[] {
-                1,2,3,4,5,6,7,8,9,10
-            });
-        Assert.assertEquals(indices, actuals);
-
-        indices = task.getIndicesOf(TaskDao.Status.PENDING);
-        actuals = Arrays.asList(new Integer[] {
-                11,12,13,14,15,16,17,18,19,20
-            });
         Assert.assertEquals(indices, actuals);
     }
 }

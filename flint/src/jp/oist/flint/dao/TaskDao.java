@@ -240,14 +240,6 @@ public class TaskDao extends DaoObject {
         return mCount;
     }
 
-    public int getPendingCount() {
-        return getCount(new Condition("status = 'pending'"));
-    }
-
-    public int getGeneratedCount() {
-        return getCount(new Condition("status = 'generated'"));
-    }
-
     public int getProgress() {
         int jobCount = getCount();
         if (jobCount <= 0)
@@ -293,17 +285,6 @@ public class TaskDao extends DaoObject {
 
     public List<Integer> getIndices() {
         return getIndices(null);
-    }
-
-    public List<Integer> getIndicesOf(Status status) {
-        switch (status) {
-            case PENDING:
-                return getIndices(new Condition("status = 'pending'"));
-            case GENERATED:
-                return getIndices(new Condition("status = 'generated'"));
-            default:
-                return Collections.unmodifiableList(new ArrayList());
-        }
     }
 
     public Map<String, Number> getCombination(int jobId) {
