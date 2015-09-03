@@ -9,7 +9,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -34,8 +33,6 @@ public class TaskDao extends DaoObject {
             return UNKNOWN;
         }
     }
-
-    private List<Map<String, Number>> mCombinations;
 
     private final int mTaskId;
 
@@ -117,15 +114,19 @@ public class TaskDao extends DaoObject {
     }
 
     public JobDao obtainJob(int jobId) {
-        getCombinationList();
+        assert jobId > 0;
 
-        if (jobId < 1 || mCombinations == null || jobId >= mCombinations.size())
-            return null;
-
-        Map<String, Number> combination = mCombinations.get(jobId);
         File workingDir = new File(mWorkingDir, String.valueOf(jobId));
-
-        return new JobDao(this, workingDir, combination, jobId);
+        try {
+            Map<String, Number> combination = getCombination(jobId);
+            return new JobDao(this, workingDir, combination, jobId);
+        } catch (DaoException | IOException ex) {
+            printError(ex.getMessage());
+            return null;
+        } catch (SQLException se) {
+            printError(se.getErrorCode(), se.getMessage());
+            return null;
+        }
     }
 
     public int indexOf(Number[] combination, String[] titles)
@@ -287,52 +288,24 @@ public class TaskDao extends DaoObject {
         return getIndices(null);
     }
 
-    public Map<String, Number> getCombination(int jobId) {
-        return getCombinationList().get(jobId);
-    }
+    private Map<String, Number> getCombination(int jobId)
+        throws DaoException, IOException, SQLException {
+        String sql = "SELECT e.* FROM jobs AS j LEFT JOIN enum AS e ON j.enum_id = e.rowid WHERE j.rowid = ?";
+        try (PreparedStatement stmt = getConnection().prepareStatement(sql)) {
+            stmt.setInt(1, jobId); // base 1
+            try (ResultSet result = stmt.executeQuery()) {
+                if (!result.next())
+                    throw new DaoException("no job of job-id " + jobId);
 
-    public List<Map<String, Number>> getCombinationList() {
-        int count = getCount();
-        if (mCombinations != null && mCombinations.size() == count+1)
-            return mCombinations;
-
-        String sql = "SELECT js.rowid AS rowid, e.* FROM jobs AS js "
-            + "LEFT JOIN enum AS e "
-            + "ON js.enum_id = e.rowid ";
-
-        try (Statement stmt = getConnection().createStatement();
-             ResultSet result = stmt.executeQuery(sql)) {
-            List<Map<String, Number>> retval =
-                    new ArrayList<>();
-
-             // SQLite indexing is based 1.
-            retval.add(0, new HashMap<String, Number>());
-
-            ResultSetMetaData metaData = result.getMetaData();
-            int columnCount = metaData.getColumnCount();
-            while (result.next()) {
-                int id = -1;
-                Map<String, Number> data = new HashMap<>();
-                for (int index=1; index<=columnCount; index++) {
+                ResultSetMetaData metaData = result.getMetaData();
+                int columnCount = metaData.getColumnCount();
+                HashMap<String, Number> map = new HashMap<>();
+                for (int index=1; index<=columnCount; index++) { // base 1
                     String column = metaData.getColumnName(index);
-                    if ("rowid".equals(column)) {
-                        id = result.getInt(column);
-                    } else { // parameter name
-                        data.put(column, result.getDouble(column));
-                    }
+                    map.put(column, result.getDouble(index));
                 }
-                if (id > 0 && data.size() > 0)
-                    retval.add(id, data);
+                return map;
             }
-
-            mCombinations = retval;
-            return retval;
-        } catch (SQLException ex) {
-            printError(ex.getErrorCode(), ex.getMessage());
-            return null;
-        } catch (IOException ex) {
-            printError(ex.getMessage());
-            return null;
         }
     }
 }
