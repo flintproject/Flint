@@ -112,7 +112,7 @@ public class TaskDao extends DaoObject {
         File workingDir = new File(mWorkingDir, String.valueOf(jobId));
         try {
             Map<String, Number> combination = getCombination(jobId);
-            return new JobDao(this, workingDir, combination, jobId);
+            return new JobDao(mTaskId, workingDir, combination, jobId);
         } catch (DaoException | IOException ex) {
             printError(ex.getMessage());
             return null;

@@ -20,10 +20,10 @@ public class JobDao {
 
     private final int mJobId;
 
-    private final TaskDao mParent;
+    private final int mTaskId;
 
-    public JobDao(TaskDao parent, File workingDir, Map<String, Number> combination, int jobId) {
-        mParent = parent;
+    public JobDao(int taskId, File workingDir, Map<String, Number> combination, int jobId) {
+        mTaskId = taskId;
         mWorkingDir = workingDir;
         mStatusFile = new File(mWorkingDir, "status");
         mJobId = jobId;
@@ -31,8 +31,8 @@ public class JobDao {
         mCombination = combination;
     }
 
-    public TaskDao getParentTask() {
-        return mParent;
+    public int getTaskId() {
+        return mTaskId;
     }
 
     /*

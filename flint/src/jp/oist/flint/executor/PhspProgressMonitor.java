@@ -169,7 +169,7 @@ public class PhspProgressMonitor implements FileListener, Runnable {
                     JobDao job = mQueue.get(i);
 
                     Progress progress = job.getProgress();
-                    int taskId = job.getParentTask().getTaskId();
+                    int taskId = job.getTaskId();
                     int jobId  = job.getJobId();
                     setProgress(taskId, jobId, progress);
 
