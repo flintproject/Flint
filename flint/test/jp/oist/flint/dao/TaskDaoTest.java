@@ -50,17 +50,6 @@ public class TaskDaoTest {
         int taskId = 1;
         TaskDao task = mSimulationDao.obtainTask(taskId);
         Assert.assertEquals(taskId, task.getTaskId());
-        Assert.assertEquals(new File("DBID560_EJN_2012_Pavlides_STN_GP_network_Normal.isml"), 
-                            task.getModelFile());
-    }
-
-    @Test
-    public void testGetModelFile() {
-        int taskId = 1;
-        TaskDao task = mSimulationDao.obtainTask(taskId);
-        Assert.assertEquals(taskId, task.getTaskId());
-        Assert.assertEquals(new File("DBID560_EJN_2012_Pavlides_STN_GP_network_Normal.isml"), 
-                            task.getModelFile());
     }
 
     @Test

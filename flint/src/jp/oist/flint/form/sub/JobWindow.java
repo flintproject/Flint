@@ -583,7 +583,7 @@ public class JobWindow extends javax.swing.JFrame
         for (int i=1; i<=numJobs; i++) {
             JobDao job = taskDao.obtainJob(i);
             File isdFile = job.getIsdFile();
-            File targetFile = Filename.getVariant(taskDao.getModelFile(), selectedDir, i, numDigits, extension);
+            File targetFile = Filename.getVariant(mParent.getModelFile(), selectedDir, i, numDigits, extension);
             if (targetFile.exists()) {
                 int result = confirmDialog.show(targetFile);
                 switch (result) {

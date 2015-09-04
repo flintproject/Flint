@@ -33,27 +33,20 @@ public class TaskDao extends DaoObject {
 
     private final int mTaskId;
 
-    private final File mModelFile;
-
     /**
      * 0 means that the number of jobs has not been counted.
      */
     private int mCount = 0;
 
-    public TaskDao(int taskId, File dir, File modelFile)
+    public TaskDao(int taskId, File dir)
             throws SQLException, IOException {
         super("db", new File(dir, String.valueOf(taskId)));
 
         mTaskId = taskId;
-        mModelFile = modelFile;
     }
 
     public int getTaskId() {
         return mTaskId;
-    }
-
-    public File getModelFile() {
-        return mModelFile;
     }
 
     public File getTrackFile() {

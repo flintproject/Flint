@@ -138,7 +138,7 @@ public class SimulationDao extends DaoObject {
         return obtainTask(lastIndex);
     }
 
-    public TaskDao obtainTask(int taskId) {
+    public synchronized TaskDao obtainTask(int taskId) {
         try {
             if (mTaskList.keySet().contains(taskId))
                 return mTaskList.get(taskId);
@@ -149,12 +149,7 @@ public class SimulationDao extends DaoObject {
                     || !modelPathList.containsKey(taskId))
                 return null;
 
-            String modelPath = modelPathList.get(taskId);
-
-            File modelFile = new File(modelPath);
-            TaskDao retval = new TaskDao(taskId, mWorkingDir, modelFile);
-
-
+            TaskDao retval = new TaskDao(taskId, mWorkingDir);
             mTaskList.put(taskId, retval);
             return retval;
         } catch (SQLException | IOException ex) {
