@@ -51,8 +51,8 @@ public class PhspProgressMonitor implements FileListener, Runnable {
         mFileMonitor = new DefaultFileMonitor(this) {
             @Override
             protected void queueAddFile (FileObject fileObj) {
-                if (isTaskDirecotry(fileObj) ||
-                    isJobDirecotry(fileObj))
+                if (isTaskDirectory(fileObj) ||
+                    isJobDirectory(fileObj))
                     super.queueAddFile(fileObj);
             }
         };
@@ -128,7 +128,7 @@ public class PhspProgressMonitor implements FileListener, Runnable {
     @Override
     public final void fileCreated(FileChangeEvent evt) throws IOException {
         FileObject fileObj = evt.getFile();
-        if (this.isJobDirecotry(fileObj)) {
+        if (isJobDirectory(fileObj)) {
                 String baseName = fileObj.getParent().getName().getBaseName();
                 int taskId = Integer.parseInt(baseName);
 
@@ -195,7 +195,7 @@ public class PhspProgressMonitor implements FileListener, Runnable {
         }
     }
 
-    public boolean isTaskDirecotry (FileObject fileObj) {
+    public boolean isTaskDirectory(FileObject fileObj) {
         try {
             return isNaturalNumber(fileObj.getName().getBaseName())
                     && !isNaturalNumber(fileObj.getParent().getName().getBaseName());
@@ -204,7 +204,7 @@ public class PhspProgressMonitor implements FileListener, Runnable {
         }
     }
 
-    public boolean isJobDirecotry (FileObject fileObj) {
+    public boolean isJobDirectory(FileObject fileObj) {
         try {
             return isNaturalNumber(fileObj.getName().getBaseName())
                     && isNaturalNumber(fileObj.getParent().getName().getBaseName());
