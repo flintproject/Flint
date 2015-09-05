@@ -56,7 +56,7 @@ public class PhspProgressMonitor implements FileListener, Runnable {
                     super.queueAddFile(fileObj);
             }
         };
-        mFileMonitor.setDelay(50);
+        mFileMonitor.setDelay(200);
         mFileMonitor.addFile(mgr.toFileObject(simulator.getWorkingDirectory()));
     }
 
