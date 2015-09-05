@@ -1,14 +1,13 @@
 /* -*- Mode: Java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- vim:set ts=4 sw=4 sts=4 et: */
-package jp.oist.flint.dao;
+package jp.oist.flint.job;
 
-import jp.oist.flint.job.Progress;
 import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.util.Collections;
 import java.util.Map;
 
-public class JobDao {
+public class Job {
 
     private final File mWorkingDir;
 
@@ -22,7 +21,7 @@ public class JobDao {
 
     private final int mTaskId;
 
-    public JobDao(int taskId, File workingDir, Map<String, Number> combination, int jobId) {
+    public Job(int taskId, File workingDir, Map<String, Number> combination, int jobId) {
         mTaskId = taskId;
         mWorkingDir = workingDir;
         mStatusFile = new File(mWorkingDir, "status");

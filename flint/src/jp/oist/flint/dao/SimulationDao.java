@@ -1,6 +1,7 @@
 /* -*- Mode: Java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- vim:set ts=4 sw=4 sts=4 et: */
 package jp.oist.flint.dao;
 
+import jp.oist.flint.job.Job;
 import java.io.File;
 import java.io.IOException;
 import java.sql.PreparedStatement;
@@ -157,7 +158,7 @@ public class SimulationDao extends DaoObject {
         }
     }
 
-    public JobDao obtainJob(int taskId, int jobId) {
+    public Job obtainJob(int taskId, int jobId) {
         if (mTaskList.containsKey(taskId))
             return mTaskList.get(taskId).obtainJob(jobId);
 

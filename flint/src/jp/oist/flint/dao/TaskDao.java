@@ -1,6 +1,7 @@
 /* -*- Mode: Java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- vim:set ts=4 sw=4 sts=4 et: */
 package jp.oist.flint.dao;
 
+import jp.oist.flint.job.Job;
 import jp.oist.flint.job.Progress;
 import java.io.File;
 import java.io.FilenameFilter;
@@ -77,7 +78,7 @@ public class TaskDao extends DaoObject {
         int jobCount = getCount();
         if (jobCount <= 0) return false;
         for (int i=1; i<=jobCount; i++) {
-            JobDao job = obtainJob(i);
+            Job job = obtainJob(i);
             if (job == null) return false;
             if (job.isFinished()) continue;
             return false;
@@ -99,20 +100,20 @@ public class TaskDao extends DaoObject {
         boolean result = true;
         int jobCount = getCount();
         for (int i=1; i<=jobCount; i++) {
-            JobDao job = obtainJob(i);
+            Job job = obtainJob(i);
             if (job == null || !job.cancel())
                 result = false;
         }
         return result;
     }
 
-    public JobDao obtainJob(int jobId) {
+    public Job obtainJob(int jobId) {
         assert jobId > 0;
 
         File workingDir = new File(mWorkingDir, String.valueOf(jobId));
         try {
             Map<String, Number> combination = getCombination(jobId);
-            return new JobDao(mTaskId, workingDir, combination, jobId);
+            return new Job(mTaskId, workingDir, combination, jobId);
         } catch (DaoException | IOException ex) {
             printError(ex.getMessage());
             return null;
@@ -227,7 +228,7 @@ public class TaskDao extends DaoObject {
 
         int total = 0;
         for (int i=1; i<=jobCount; i++) {
-            JobDao job = obtainJob(i);
+            Job job = obtainJob(i);
             if (job == null)
                 continue;
             Progress progress = job.getProgress();

@@ -1,6 +1,7 @@
 /* -*- Mode: Java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- vim:set ts=4 sw=4 sts=4 et: */
 package jp.oist.flint.dao;
 
+import jp.oist.flint.job.Job;
 import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
@@ -68,7 +69,7 @@ public class TaskDaoTest {
         int taskId = 1;
         int jobId = 1;
         TaskDao task = mSimulationDao.obtainTask(taskId);
-        JobDao job = task.obtainJob(jobId);
+        Job job = task.obtainJob(jobId);
         Assert.assertNotNull(job);
 
         jobId = 21;

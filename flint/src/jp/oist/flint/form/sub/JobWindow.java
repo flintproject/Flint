@@ -8,6 +8,7 @@ import jp.oist.flint.form.job.GadgetDialog;
 import jp.oist.flint.form.job.JobList;
 import jp.oist.flint.form.job.ParameterFilter;
 import jp.oist.flint.garuda.GarudaClient;
+import jp.oist.flint.job.Job;
 import jp.oist.flint.job.Progress;
 import jp.oist.flint.phsp.entity.ParameterSet;
 import jp.sbi.garuda.platform.commons.net.GarudaConnectionNotInitializedException;
@@ -41,7 +42,6 @@ import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
 import jp.oist.flint.control.FileChooser;
-import jp.oist.flint.dao.JobDao;
 import jp.oist.flint.dao.TaskDao;
 import jp.oist.flint.executor.PhspSimulator;
 import jp.oist.flint.export.ExportReceiver;
@@ -581,7 +581,7 @@ public class JobWindow extends javax.swing.JFrame
         int numJobs = taskDao.getCount();
         int numDigits = String.valueOf(numJobs).getBytes(StandardCharsets.UTF_8).length;
         for (int i=1; i<=numJobs; i++) {
-            JobDao job = taskDao.obtainJob(i);
+            Job job = taskDao.obtainJob(i);
             File isdFile = job.getIsdFile();
             File targetFile = Filename.getVariant(mParent.getModelFile(), selectedDir, i, numDigits, extension);
             if (targetFile.exists()) {
@@ -802,7 +802,7 @@ public class JobWindow extends javax.swing.JFrame
             int rowId = taskDao.indexOf(mDataModel.getValues(
                     evt.getIndex()), mDataModel.getTitles());
 
-            JobDao job = taskDao.obtainJob(rowId);
+            Job job = taskDao.obtainJob(rowId);
             if (job.cancel()) {
                 mJobViewer.setCancelled(evt.getIndex(), true);
                 mJobList.setCancelled(evt.getIndex(), true);

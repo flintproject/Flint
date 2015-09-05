@@ -2,9 +2,9 @@
 
 package jp.oist.flint.executor;
 
-import jp.oist.flint.dao.JobDao;
 import jp.oist.flint.dao.SimulationDao;
 import jp.oist.flint.dao.TaskDao;
+import jp.oist.flint.job.Job;
 import jp.oist.flint.job.Progress;
 import jp.oist.flint.sedml.ISimulationConfiguration;
 import org.apache.log4j.Logger;
@@ -39,7 +39,7 @@ public class PhspProgressMonitor implements FileListener, Runnable {
 
     private volatile boolean mDone = false;
 
-    private final LinkedList<JobDao> mQueue = new LinkedList<>();
+    private final LinkedList<Job> mQueue = new LinkedList<>();
 
     public PhspProgressMonitor (PhspSimulator simulator)
             throws FileSystemException {
@@ -105,7 +105,7 @@ public class PhspProgressMonitor implements FileListener, Runnable {
             return;
 
         SimulationDao simulationDao = mSimulator.getSimulationDao();
-        JobDao job = simulationDao.obtainJob(taskId, jobId);
+        Job job = simulationDao.obtainJob(taskId, jobId);
 
         ISimulationConfiguration config = mSimulator.getSimulationConfigurationList().getConfiguration(taskId-1);
         Map<String, Number> combination = job.getCombination();
@@ -138,7 +138,7 @@ public class PhspProgressMonitor implements FileListener, Runnable {
                 if (mSimulator == null || mSimulator.getSimulationDao() == null)
                     return;
                 TaskDao task = mSimulator.getSimulationDao().obtainTask(taskId);
-                JobDao job = task.obtainJob(jobId);
+                Job job = task.obtainJob(jobId);
 
                 if (task.isCancelled())
                     job.cancel();
@@ -166,7 +166,7 @@ public class PhspProgressMonitor implements FileListener, Runnable {
         while (!mDone) {
             synchronized (mLock) {
                 for (int i=0; i<mQueue.size(); i++) {
-                    JobDao job = mQueue.get(i);
+                    Job job = mQueue.get(i);
 
                     Progress progress = job.getProgress();
                     int taskId = job.getTaskId();
@@ -189,7 +189,7 @@ public class PhspProgressMonitor implements FileListener, Runnable {
             TaskDao task = mSimulator.getSimulationDao().obtainTask(i);
             int jobCount = task.getCount();
             for (int j=1; j<=jobCount; j++) {
-                JobDao job = task.obtainJob(j);
+                Job job = task.obtainJob(j);
                 setProgress(i, j, job.getProgress());
             }
         }
