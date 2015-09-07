@@ -19,12 +19,11 @@ public class SimulationDao extends DaoObject {
 
     private Map<Integer, String> mModelPathList;
 
-    public SimulationDao(File dir) throws SQLException, IOException {
+    public SimulationDao(File dir) throws SQLException {
         this("x.db", dir);
     }
 
-    public SimulationDao(String dbName, File dir)
-            throws SQLException, IOException {
+    public SimulationDao(String dbName, File dir) throws SQLException {
         super(dbName, dir);
 
         mTaskList = new HashMap<>();
@@ -153,7 +152,7 @@ public class SimulationDao extends DaoObject {
             TaskDao retval = new TaskDao(taskId, mWorkingDir);
             mTaskList.put(taskId, retval);
             return retval;
-        } catch (SQLException | IOException ex) {
+        } catch (SQLException ex) {
             return null;
         }
     }

@@ -22,8 +22,7 @@ public class TaskDao extends DaoObject {
      */
     private int mCount = 0;
 
-    public TaskDao(int taskId, File dir)
-            throws SQLException, IOException {
+    public TaskDao(int taskId, File dir) throws SQLException {
         super("db", new File(dir, String.valueOf(taskId)));
 
         mTaskId = taskId;
