@@ -11,26 +11,9 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.Map;
 
 public class TaskDao extends DaoObject {
-
-    public enum Status {
-        PENDING, GENERATED, UNKNOWN;
-
-        public static Status fromString (String s) {
-            if (s == null || s.isEmpty())
-                return UNKNOWN;
-            switch (s.toLowerCase(Locale.ENGLISH)) {
-            case "pending":
-                return PENDING;
-            case "generated":
-                return GENERATED;
-            }
-            return UNKNOWN;
-        }
-    }
 
     private final int mTaskId;
 
@@ -178,27 +161,6 @@ public class TaskDao extends DaoObject {
             printError(ex.getMessage());
             return -1;
         }
-    }
-
-    public Status getStatus(int index) {
-        String sql = "SELECT js.status AS status FROM jobs AS js "
-            + "LEFT JOIN enum AS e "
-            + "ON js.enum_id = e.rowid "
-            + "WHERE js.rowid = ? LIMIT 1";
-        try (PreparedStatement stmt = getConnection().prepareStatement(sql)) {
-            stmt.setInt(1, index);
-            try (ResultSet result = stmt.executeQuery()) {
-                if (!result.next())
-                    return Status.UNKNOWN;
-
-                return Status.fromString(result.getString("status"));
-            }
-        } catch (SQLException ex) {
-            printError(ex.getErrorCode(), ex.getMessage());
-        } catch (IOException ex) {
-            printError(ex.getMessage());
-        }
-        return Status.UNKNOWN;
     }
 
     public synchronized int getCount() {

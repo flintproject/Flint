@@ -136,17 +136,6 @@ public class TaskDaoTest {
     }
 
     @Test
-    public void testGetStatus() {
-        int taskId = 1;
-        int jobId = 1;
-        TaskDao task = mSimulationDao.obtainTask(taskId);
-        Assert.assertEquals(TaskDao.Status.GENERATED, task.getStatus(jobId));
-
-        jobId = 11;
-        Assert.assertEquals(TaskDao.Status.PENDING, task.getStatus(jobId));
-    }
-
-    @Test
     public void testGetCount() {
         int taskId = 1;
         TaskDao task = mSimulationDao.obtainTask(taskId);
