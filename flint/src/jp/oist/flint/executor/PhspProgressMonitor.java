@@ -1,5 +1,4 @@
 /* -*- Mode: Java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- vim:set ts=4 sw=4 sts=4 et: */
-
 package jp.oist.flint.executor;
 
 import jp.oist.flint.dao.SimulationDao;
@@ -8,6 +7,7 @@ import jp.oist.flint.dao.TaskDao;
 import jp.oist.flint.job.Job;
 import jp.oist.flint.job.Progress;
 import jp.oist.flint.sedml.ISimulationConfiguration;
+import jp.oist.flint.sedml.ISimulationConfigurationList;
 import org.apache.log4j.Logger;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -29,9 +29,11 @@ import org.apache.commons.vfs2.impl.DefaultFileMonitor;
 
 public class PhspProgressMonitor implements FileListener, Runnable {
 
-    private final DefaultFileMonitor mFileMonitor;
+    private final SimulationDao mSimulationDao;
 
-    private final PhspSimulator mSimulator;
+    private final ISimulationConfigurationList mSimulationConfigurationList;
+
+    private final DefaultFileMonitor mFileMonitor;
 
     private final PropertyChangeSupport mPropetyChangeSupport;
 
@@ -43,10 +45,11 @@ public class PhspProgressMonitor implements FileListener, Runnable {
 
     private final LinkedList<Job> mQueue = new LinkedList<>();
 
-    public PhspProgressMonitor (PhspSimulator simulator)
+    public PhspProgressMonitor(PhspSimulator simulator)
             throws FileSystemException {
+        mSimulationDao = simulator.getSimulationDao();
+        mSimulationConfigurationList = simulator.getSimulationConfigurationList();
         mObserver = new Thread(this);
-        mSimulator = simulator;
         mPropetyChangeSupport = new PropertyChangeSupport(this);
 
         FileSystemManager mgr = VFS.getManager();
@@ -106,11 +109,10 @@ public class PhspProgressMonitor implements FileListener, Runnable {
         if (!getPropertyChangeSupport().hasListeners("progress"))
             return;
 
-        SimulationDao simulationDao = mSimulator.getSimulationDao();
         try {
-            Job job = simulationDao.obtainJob(taskId, jobId);
+            Job job = mSimulationDao.obtainJob(taskId, jobId);
 
-            ISimulationConfiguration config = mSimulator.getSimulationConfigurationList().getConfiguration(taskId-1);
+            ISimulationConfiguration config = mSimulationConfigurationList.getConfiguration(taskId-1);
             Map<String, Number> combination = job.getCombination();
             String modelPath = config.getModelCanonicalPath();
 
@@ -141,10 +143,8 @@ public class PhspProgressMonitor implements FileListener, Runnable {
             baseName = fileObj.getName().getBaseName();
             int jobId = Integer.parseInt(baseName);
 
-            if (mSimulator == null || mSimulator.getSimulationDao() == null)
-                return;
             try {
-                TaskDao task = mSimulator.getSimulationDao().obtainTask(taskId);
+                TaskDao task = mSimulationDao.obtainTask(taskId);
                 Job job = task.obtainJob(jobId);
 
                 if (task.isCancelled())
@@ -195,9 +195,9 @@ public class PhspProgressMonitor implements FileListener, Runnable {
         }
 
         try {
-            int taskCount = mSimulator.getSimulationDao().getCount();
+            int taskCount = mSimulationDao.getCount();
             for (int i=1; i<=taskCount; i++) {
-                TaskDao task = mSimulator.getSimulationDao().obtainTask(i);
+                TaskDao task = mSimulationDao.obtainTask(i);
                 int jobCount = task.getCount();
                 for (int j=1; j<=jobCount; j++) {
                     Job job = task.obtainJob(j);
