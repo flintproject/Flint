@@ -5,12 +5,12 @@ import jp.oist.flint.job.Job;
 import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
-import junit.framework.Assert;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import static org.junit.Assert.*;
 
 public class SimulationDaoTest {
 
@@ -42,7 +42,7 @@ public class SimulationDaoTest {
             File modelFile = new File("DBID560_EJN_2012_Pavlides_STN_GP_network_Normal.isml");
             int expResult = 1;
             int result = simulationDao.indexOf(modelFile);
-            Assert.assertEquals(expResult, result);
+            assertEquals(expResult, result);
 
         }
     }
@@ -57,7 +57,7 @@ public class SimulationDaoTest {
             int fromIndex = 1;
             int expResult = 1;
             int result = simulationDao.indexOf(modelFile, fromIndex);
-            Assert.assertEquals(expResult, result);
+            assertEquals(expResult, result);
         }
     }
 
@@ -70,7 +70,7 @@ public class SimulationDaoTest {
             File modelFile = new File("DBID560_EJN_2012_Pavlides_STN_GP_network_Normal.isml");
             int expResult = 1;
             int result = simulationDao.lastIndexOf(modelFile);
-            Assert.assertEquals(expResult, result);
+            assertEquals(expResult, result);
         }
     }
 
@@ -82,7 +82,7 @@ public class SimulationDaoTest {
         try (SimulationDao simulationDao = new SimulationDao(resourceDir)) {
             int expResult = 1;
             int result = simulationDao.getCount();
-            Assert.assertEquals(expResult, result);
+            assertEquals(expResult, result);
         }
     }
 
@@ -94,13 +94,13 @@ public class SimulationDaoTest {
         try (SimulationDao simulationDao = new SimulationDao(resourceDir)) {
             File modelFile = new File("DBID560_EJN_2012_Pavlides_STN_GP_network_Normal.isml");
             TaskDao result = simulationDao.obtainTask(modelFile);
-            Assert.assertNotNull(result);
+            assertNotNull(result);
 
-            Assert.assertEquals(1, result.getTaskId());
+            assertEquals(1, result.getTaskId());
 
             modelFile = new File("file_not_exist");
             result = simulationDao.obtainTask(modelFile);
-            Assert.assertNull(result);
+            assertNull(result);
         }
     }
 
@@ -112,11 +112,11 @@ public class SimulationDaoTest {
         try (SimulationDao simulationDao = new SimulationDao(resourceDir)) {
             int taskId = 1;
             TaskDao result = simulationDao.obtainTask(taskId);
-            Assert.assertNotNull(result);
+            assertNotNull(result);
 
             taskId = 21;
             result = simulationDao.obtainTask(taskId);
-            Assert.assertNull(result);
+            assertNull(result);
         }
     }
 
@@ -129,7 +129,7 @@ public class SimulationDaoTest {
             int taskId = 1;
             int jobId = 1;
             Job result = simulationDao.obtainJob(taskId, jobId);
-            Assert.assertNotNull(result);
+            assertNotNull(result);
         }
     }
 }

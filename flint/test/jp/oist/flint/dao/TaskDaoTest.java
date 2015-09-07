@@ -14,7 +14,7 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.junit.Assert;
+import static org.junit.Assert.*;
 
 public class TaskDaoTest {
 
@@ -50,7 +50,7 @@ public class TaskDaoTest {
     public void testGetTaskId() {
         int taskId = 1;
         TaskDao task = mSimulationDao.obtainTask(taskId);
-        Assert.assertEquals(taskId, task.getTaskId());
+        assertEquals(taskId, task.getTaskId());
     }
 
     @Test
@@ -59,9 +59,9 @@ public class TaskDaoTest {
         TaskDao task = mSimulationDao.obtainTask(taskId);
         File trackFile = task.getTrackFile();
 
-        Assert.assertNotNull(trackFile);
+        assertNotNull(trackFile);
         String separator = File.separator;
-        Assert.assertEquals(new File(mWorkingDir + separator + taskId, "track"), trackFile);
+        assertEquals(new File(mWorkingDir + separator + taskId, "track"), trackFile);
     }
 
     @Test
@@ -70,7 +70,7 @@ public class TaskDaoTest {
         int jobId = 1;
         TaskDao task = mSimulationDao.obtainTask(taskId);
         Job job = task.obtainJob(jobId);
-        Assert.assertNotNull(job);
+        assertNotNull(job);
     }
 
     @Test
@@ -78,9 +78,9 @@ public class TaskDaoTest {
         TaskDao task = mSimulationDao.obtainTask(1);
         try {
             task.obtainJob(21);
-            Assert.fail("exception expected");
+            fail("exception expected");
         } catch (DaoException de) {
-            Assert.assertEquals("no job of job-id 21", de.getMessage());
+            assertEquals("no job of job-id 21", de.getMessage());
         }
     }
 
@@ -92,25 +92,25 @@ public class TaskDaoTest {
         String[] titles      = new String[] {"Fs_Ms_Values"};
 
         TaskDao task = mSimulationDao.obtainTask(taskId);
-        Assert.assertEquals(11, task.indexOf(combination, titles));
+        assertEquals(11, task.indexOf(combination, titles));
 
         combination = new Number[] { 0 };
         titles = new String[] {"Fs_Ms_Values"};
 
         task = mSimulationDao.obtainTask(taskId);
-        Assert.assertEquals(-1, task.indexOf(combination, titles));
+        assertEquals(-1, task.indexOf(combination, titles));
 
         combination = new Number[] { 299.1 };
         titles = new String[] {"Nothing"};
 
         task = mSimulationDao.obtainTask(taskId);
-        Assert.assertEquals(-1, task.indexOf(combination, titles));
+        assertEquals(-1, task.indexOf(combination, titles));
 
         combination = new Number[] { 0 };
         titles = new String[] {"Nothing"};
 
         task = mSimulationDao.obtainTask(taskId);
-        Assert.assertEquals(-1, task.indexOf(combination, titles));
+        assertEquals(-1, task.indexOf(combination, titles));
     }
 
     @Test
@@ -121,31 +121,31 @@ public class TaskDaoTest {
         combination.put("Fs_Ms_Values", 299.1);
 
         TaskDao task = mSimulationDao.obtainTask(taskId);
-        Assert.assertEquals(11, task.indexOf(combination));
+        assertEquals(11, task.indexOf(combination));
 
         combination.clear();
         combination.put("Fs_Ms_Values", 0);
 
         task = mSimulationDao.obtainTask(taskId);
-        Assert.assertEquals(-1, task.indexOf(combination));
+        assertEquals(-1, task.indexOf(combination));
 
         combination.clear();
         combination.put("Nothing", 299.1);
 
         task = mSimulationDao.obtainTask(taskId);
-        Assert.assertEquals(-1, task.indexOf(combination));
+        assertEquals(-1, task.indexOf(combination));
 
         combination.clear();
         combination.put("Nothing", 0);
 
         task = mSimulationDao.obtainTask(taskId);
-        Assert.assertEquals(-1, task.indexOf(combination));
+        assertEquals(-1, task.indexOf(combination));
     }
 
     @Test
     public void testGetCount() throws DaoException, IOException, SQLException {
         int taskId = 1;
         TaskDao task = mSimulationDao.obtainTask(taskId);
-        Assert.assertEquals(20, task.getCount());
+        assertEquals(20, task.getCount());
     }
 }
