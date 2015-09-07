@@ -34,7 +34,7 @@ public abstract class DaoObject implements AutoCloseable {
      */
     private Connection mConnection;
 
-    public DaoObject(String dbName, File workingDir)
+    protected DaoObject(String dbName, File workingDir)
             throws SQLException {
         if (dbName == null || dbName.isEmpty())
             throw new IllegalArgumentException("dbName must be non null.");
@@ -44,7 +44,7 @@ public abstract class DaoObject implements AutoCloseable {
         mConnection = null;
     }
 
-    public void connect() throws SQLException, IOException {
+    private void connect() throws SQLException, IOException {
         String dsn = String.format("jdbc:sqlite:%s", mDatabaseFile.getCanonicalPath());
 
         if (mConnection != null)
