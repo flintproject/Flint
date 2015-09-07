@@ -3,6 +3,7 @@
 package jp.oist.flint.executor;
 
 import jp.oist.flint.dao.SimulationDao;
+import jp.oist.flint.dao.DaoException;
 import jp.oist.flint.dao.TaskDao;
 import jp.oist.flint.job.Job;
 import jp.oist.flint.job.Progress;
@@ -12,6 +13,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
@@ -187,10 +189,14 @@ public class PhspProgressMonitor implements FileListener, Runnable {
         int taskCount = mSimulator.getSimulationDao().getCount();
         for (int i=1; i<=taskCount; i++) {
             TaskDao task = mSimulator.getSimulationDao().obtainTask(i);
-            int jobCount = task.getCount();
-            for (int j=1; j<=jobCount; j++) {
-                Job job = task.obtainJob(j);
-                setProgress(i, j, job.getProgress());
+            try {
+                int jobCount = task.getCount();
+                for (int j=1; j<=jobCount; j++) {
+                    Job job = task.obtainJob(j);
+                    setProgress(i, j, job.getProgress());
+                }
+            } catch (DaoException | IOException | SQLException ex) {
+                // continue
             }
         }
     }

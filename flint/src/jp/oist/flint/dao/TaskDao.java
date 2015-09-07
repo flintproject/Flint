@@ -57,21 +57,25 @@ public class TaskDao extends DaoObject {
         if (!isStarted()) return false;
         if (isCancelled()) return true;
 
-        int jobCount = getCount();
-        if (jobCount <= 0) return false;
-        for (int i=1; i<=jobCount; i++) {
-            Job job = obtainJob(i);
-            if (job == null) return false;
-            if (job.isFinished()) continue;
+        try {
+            int jobCount = getCount();
+            if (jobCount <= 0) return false;
+            for (int i=1; i<=jobCount; i++) {
+                Job job = obtainJob(i);
+                if (job == null) return false;
+                if (job.isFinished()) continue;
+                return false;
+            }
+            return true;
+        } catch (DaoException | IOException | SQLException ex) {
             return false;
         }
-        return true;
     }
 
     /*
      * Return true if cancellation succeeded, otherwise false.
      */
-    public boolean cancel() throws IOException {
+    public boolean cancel() throws DaoException, IOException, SQLException {
         if (!mWorkingDir.exists())
             return false;
         File cancelFile = new File(mWorkingDir, "canceled");
@@ -162,7 +166,7 @@ public class TaskDao extends DaoObject {
         }
     }
 
-    public synchronized int getCount() {
+    public synchronized int getCount() throws DaoException, IOException, SQLException {
         if (mCount > 0)
             return mCount;
 
@@ -170,35 +174,30 @@ public class TaskDao extends DaoObject {
         try (PreparedStatement stmt = getConnection().prepareStatement(sql);
              ResultSet result = stmt.executeQuery()) {
             if (!result.next())
-                return 0;
+                throw new DaoException("failed to query: " + sql);
             mCount = result.getInt(1);
             return mCount;
-        } catch (SQLException ex) {
-            printError(ex.getErrorCode(), ex.getMessage());
-            return 0;
-        } catch (IOException ex) {
-            printError(ex.getMessage());
-            return 0;
         }
     }
 
     public int getProgress() {
-        int jobCount = getCount();
-        if (jobCount <= 0)
+        try {
+            int jobCount = getCount();
+            int total = 0;
+            for (int i=1; i<=jobCount; i++) {
+                Job job = obtainJob(i);
+                if (job == null)
+                    continue;
+                Progress progress = job.getProgress();
+                int p = progress.getPercent();
+                if (p <= 0)
+                    continue;
+                total += p;
+            }
+            return (int)((double)total / (double)jobCount);
+        } catch (DaoException | IOException | SQLException ex) {
             return 0;
-
-        int total = 0;
-        for (int i=1; i<=jobCount; i++) {
-            Job job = obtainJob(i);
-            if (job == null)
-                continue;
-            Progress progress = job.getProgress();
-            int p = progress.getPercent();
-            if (p <= 0)
-                continue;
-            total += p;
         }
-        return (int)((double)total / (double)jobCount);
     }
 
     private Map<String, Number> getCombination(int jobId)

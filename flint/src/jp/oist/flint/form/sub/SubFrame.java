@@ -2,6 +2,7 @@
 package jp.oist.flint.form.sub;
 
 import jp.oist.flint.executor.ModelReloader;
+import jp.oist.flint.dao.DaoException;
 import jp.oist.flint.desktop.Desktop;
 import jp.oist.flint.desktop.Document;
 import jp.oist.flint.desktop.ISimulationListener;
@@ -31,6 +32,7 @@ import com.google.protobuf.ByteString;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyVetoException;
+import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -244,7 +246,7 @@ public class SubFrame extends JInternalFrame
             taskDao.cancel();
 
             return true;
-        } catch (IOException ex) {
+        } catch (DaoException | IOException | SQLException ex) {
             showErrorDialog("Cancellation failed\n\n" + ex.getMessage(),
                     "Cancellation failed");
             return false;

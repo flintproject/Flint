@@ -2,6 +2,7 @@
 package jp.oist.flint.form.sub;
 
 import jp.oist.flint.control.DirectoryChooser;
+import jp.oist.flint.dao.DaoException;
 import jp.oist.flint.desktop.ISimulationListener;
 import jp.oist.flint.form.job.CombinationModel;
 import jp.oist.flint.form.job.GadgetDialog;
@@ -30,6 +31,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.concurrent.CancellationException;
@@ -362,8 +364,8 @@ public class JobWindow extends javax.swing.JFrame
     private void btn_ExportAllActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_ExportAllActionPerformed
         try {
             exportAll();
-        } catch (IOException ioe) {
-            showErrorDialog(ioe.getMessage(),
+        } catch (DaoException | IOException | SQLException ex) {
+            showErrorDialog(ex.getMessage(),
                             "Error on exporting simulation data");
         }
     }//GEN-LAST:event_btn_ExportAllActionPerformed
@@ -526,7 +528,7 @@ public class JobWindow extends javax.swing.JFrame
         }
     }
 
-    private void exportAll() throws IOException {
+    private void exportAll() throws DaoException, IOException, SQLException {
         if (mSimulator == null || mSimulator.getSimulationDao() == null)
             return; // nothing to do
 

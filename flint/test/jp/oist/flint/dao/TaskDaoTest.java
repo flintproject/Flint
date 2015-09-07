@@ -136,7 +136,7 @@ public class TaskDaoTest {
     }
 
     @Test
-    public void testGetCount() {
+    public void testGetCount() throws DaoException, IOException, SQLException {
         int taskId = 1;
         TaskDao task = mSimulationDao.obtainTask(taskId);
         Assert.assertEquals(20, task.getCount());
