@@ -47,14 +47,14 @@ public class TaskDaoTest {
     }
 
     @Test
-    public void testGetTaskId() {
+    public void testGetTaskId() throws DaoException, IOException, SQLException {
         int taskId = 1;
         TaskDao task = mSimulationDao.obtainTask(taskId);
         assertEquals(taskId, task.getTaskId());
     }
 
     @Test
-    public void testGetTrackFile() {
+    public void testGetTrackFile() throws DaoException, IOException, SQLException {
         int taskId = 1;
         TaskDao task = mSimulationDao.obtainTask(taskId);
         File trackFile = task.getTrackFile();
@@ -74,7 +74,7 @@ public class TaskDaoTest {
     }
 
     @Test
-    public void testObtainJob__no_such_job_id() throws IOException, SQLException {
+    public void testObtainJob__no_such_job_id() throws DaoException, IOException, SQLException {
         TaskDao task = mSimulationDao.obtainTask(1);
         try {
             task.obtainJob(21);
@@ -85,7 +85,7 @@ public class TaskDaoTest {
     }
 
     @Test
-    public void testIndexOf_NumberArr_StringArr() throws IOException {
+    public void testIndexOf_NumberArr_StringArr() throws DaoException, IOException, SQLException {
         int taskId = 1;
 
         Number[] combination = new Number[] { 299.1 };
@@ -114,7 +114,7 @@ public class TaskDaoTest {
     }
 
     @Test
-    public void testIndexOf_Map() {
+    public void testIndexOf_Map() throws DaoException, IOException, SQLException {
         int taskId = 1;
 
         Map<String, Number> combination = new HashMap<>();

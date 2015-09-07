@@ -143,8 +143,8 @@ public class PhspProgressMonitor implements FileListener, Runnable {
 
             if (mSimulator == null || mSimulator.getSimulationDao() == null)
                 return;
-            TaskDao task = mSimulator.getSimulationDao().obtainTask(taskId);
             try {
+                TaskDao task = mSimulator.getSimulationDao().obtainTask(taskId);
                 Job job = task.obtainJob(jobId);
 
                 if (task.isCancelled())
@@ -194,18 +194,18 @@ public class PhspProgressMonitor implements FileListener, Runnable {
             }
         }
 
-        int taskCount = mSimulator.getSimulationDao().getCount();
-        for (int i=1; i<=taskCount; i++) {
-            TaskDao task = mSimulator.getSimulationDao().obtainTask(i);
-            try {
+        try {
+            int taskCount = mSimulator.getSimulationDao().getCount();
+            for (int i=1; i<=taskCount; i++) {
+                TaskDao task = mSimulator.getSimulationDao().obtainTask(i);
                 int jobCount = task.getCount();
                 for (int j=1; j<=jobCount; j++) {
                     Job job = task.obtainJob(j);
                     setProgress(i, j, job.getProgress());
                 }
-            } catch (DaoException | IOException | SQLException ex) {
-                // continue
             }
+        } catch (DaoException | IOException | SQLException ex) {
+            // give up
         }
     }
 

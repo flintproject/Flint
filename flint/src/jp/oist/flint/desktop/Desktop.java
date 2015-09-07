@@ -2,6 +2,7 @@
 package jp.oist.flint.desktop;
 
 import jp.oist.flint.backend.ModelLoader;
+import jp.oist.flint.dao.DaoException;
 import jp.oist.flint.dao.SimulationDao;
 import jp.oist.flint.dao.TaskDao;
 import jp.oist.flint.executor.PhspProgressMonitor;
@@ -249,29 +250,33 @@ public class Desktop implements IPhspConfiguration {
                         SubFrame subFrame = mainFrame.findSubFrame(modelPath);
 
                         SimulationDao simulationDao = simulator.getSimulationDao();
-                        TaskDao taskDao = simulationDao.obtainTask(new File(subFrame.getRelativeModelPath()));
+                        try {
+                            TaskDao taskDao = simulationDao.obtainTask(new File(subFrame.getRelativeModelPath()));
 
-                        Progress progress = (Progress)evt.getNewValue();
-                        Map<String, Number> target = (Map<String, Number>)evt.getClientProperty("target");
-                        IProgressManager progressMgr = subFrame.getProgressManager();
-                        int index = progressMgr.indexOf(target);
+                            Progress progress = (Progress)evt.getNewValue();
+                            Map<String, Number> target = (Map<String, Number>)evt.getClientProperty("target");
+                            IProgressManager progressMgr = subFrame.getProgressManager();
+                            int index = progressMgr.indexOf(target);
 
-                        progressMgr.setProgress(index, progress);
+                            progressMgr.setProgress(index, progress);
 
-                        if (taskDao.isCancelled())
-                            progressMgr.setCancelled(index, true);
+                            if (taskDao.isCancelled())
+                                progressMgr.setCancelled(index, true);
 
-                        int taskProgress = taskDao.getProgress();
-                        ProgressCell cell =
-                            ProgressPane.getInstance().getListCellOfModel(new File(modelPath));
+                            int taskProgress = taskDao.getProgress();
+                            ProgressCell cell =
+                                ProgressPane.getInstance().getListCellOfModel(new File(modelPath));
 
-                        String status;
-                        if (taskDao.isFinished()) {
-                            status = (taskDao.isCancelled())? "finished" : "completed";
-                            cell.progressFinished(status, 0, 100, taskProgress);
-                        } else if (taskDao.isStarted()) {
-                            status = (taskDao.isCancelled())? "cancelling..." : taskProgress + " %";
-                            cell.setProgress(status, 0, 100, taskProgress);
+                            String status;
+                            if (taskDao.isFinished()) {
+                                status = (taskDao.isCancelled())? "finished" : "completed";
+                                cell.progressFinished(status, 0, 100, taskProgress);
+                            } else if (taskDao.isStarted()) {
+                                status = (taskDao.isCancelled())? "cancelling..." : taskProgress + " %";
+                                cell.setProgress(status, 0, 100, taskProgress);
+                            }
+                        } catch (DaoException | IOException | SQLException ex) {
+                            // ignore the error
                         }
                     }
                 }

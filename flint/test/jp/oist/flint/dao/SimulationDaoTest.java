@@ -34,7 +34,7 @@ public class SimulationDaoTest {
     }
 
     @Test
-    public void testIndexOf_File() throws IOException, SQLException {
+    public void testIndexOf_File() throws DaoException, IOException, SQLException {
             String separator = File.separator;
             File resourceDir = new File(System.getProperty("user.dir"), 
                     "test" + separator + "resources" + separator + "testDao");
@@ -48,7 +48,7 @@ public class SimulationDaoTest {
     }
 
     @Test
-    public void testIndexOf_File_int() throws IOException, SQLException {
+    public void testIndexOf_File_int() throws DaoException, IOException, SQLException {
             String separator = File.separator;
             File resourceDir = new File(System.getProperty("user.dir"), 
                     "test" + separator + "resources" + separator + "testDao");
@@ -62,7 +62,7 @@ public class SimulationDaoTest {
     }
 
     @Test
-    public void testLastIndexOf() throws IOException, SQLException {
+    public void testLastIndexOf() throws DaoException, IOException, SQLException {
             String separator = File.separator;
             File resourceDir = new File(System.getProperty("user.dir"), 
                     "test" + separator + "resources" + separator + "testDao");
@@ -75,7 +75,7 @@ public class SimulationDaoTest {
     }
 
     @Test
-    public void testGetCount() throws IOException, SQLException {
+    public void testGetCount() throws DaoException, IOException, SQLException {
             String separator = File.separator;
             File resourceDir = new File(System.getProperty("user.dir"), 
                     "test" + separator + "resources" + separator + "testDao");
@@ -87,7 +87,7 @@ public class SimulationDaoTest {
     }
 
     @Test
-    public void testObtainTask_File() throws IOException, SQLException {
+    public void testObtainTask_File() throws DaoException, IOException, SQLException {
             String separator = File.separator;
             File resourceDir = new File(System.getProperty("user.dir"), 
                     "test" + separator + "resources" + separator + "testDao");
@@ -97,15 +97,24 @@ public class SimulationDaoTest {
             assertNotNull(result);
 
             assertEquals(1, result.getTaskId());
-
-            modelFile = new File("file_not_exist");
-            result = simulationDao.obtainTask(modelFile);
-            assertNull(result);
         }
     }
 
     @Test
-    public void testObtainTask_int() throws IOException, SQLException {
+    public void testObtainTask_File__failure() throws IOException, SQLException {
+        String separator = File.separator;
+        File resourceDir = new File(System.getProperty("user.dir"),
+                                    "test" + separator + "resources" + separator + "testDao");
+        try (SimulationDao simulationDao = new SimulationDao(resourceDir)) {
+            simulationDao.obtainTask(new File("file_not_exist"));
+            fail("exception expected");
+        } catch (DaoException de) {
+            assertEquals("result is empty", de.getMessage());
+        }
+    }
+
+    @Test
+    public void testObtainTask_int() throws DaoException, IOException, SQLException {
             String separator = File.separator;
             File resourceDir = new File(System.getProperty("user.dir"), 
                     "test" + separator + "resources" + separator + "testDao");
@@ -113,10 +122,19 @@ public class SimulationDaoTest {
             int taskId = 1;
             TaskDao result = simulationDao.obtainTask(taskId);
             assertNotNull(result);
+        }
+    }
 
-            taskId = 21;
-            result = simulationDao.obtainTask(taskId);
-            assertNull(result);
+    @Test
+    public void testObtainTask_int__failure() throws IOException, SQLException {
+        String separator = File.separator;
+        File resourceDir = new File(System.getProperty("user.dir"),
+                                    "test" + separator + "resources" + separator + "testDao");
+        try (SimulationDao simulationDao = new SimulationDao(resourceDir)) {
+            simulationDao.obtainTask(21);
+            fail("exception expected");
+        } catch (DaoException de) {
+            assertEquals("no task of task id 21", de.getMessage());
         }
     }
 

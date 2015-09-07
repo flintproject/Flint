@@ -31,7 +31,8 @@ public class SimulationDao extends DaoObject {
         mTaskList.put(0, null);  // SQLite indexing is based 1.
     }
 
-    private int indexOf(File modelFile, int startIndex, String order) {
+    private int indexOf(File modelFile, int startIndex, String order)
+        throws DaoException, IOException, SQLException {
         String sql = "SELECT ts.rowid AS rowid FROM tasks AS ts "
             + "LEFT JOIN models AS ml "
             + "ON ts.model_id = ml.rowid "
@@ -46,50 +47,42 @@ public class SimulationDao extends DaoObject {
 
             try (ResultSet result = stmt.executeQuery()) {
                 if (!result.next())
-                    return -1;
+                    throw new DaoException("result is empty");
                 return result.getInt("rowid");
             }
-        } catch (SQLException ex) {
-            printError(ex.getErrorCode(), ex.getMessage());
-            return -1;
-        } catch (IOException ex) {
-            printError(ex.getMessage());
-            return -1;
         }
     }
 
-    public int indexOf(File modelFile) {
+    public int indexOf(File modelFile)
+        throws DaoException, IOException, SQLException {
         return indexOf(modelFile, 0, "ASC");
     }
 
-    public int indexOf(File modelFile, int fromIndex) {
+    public int indexOf(File modelFile, int fromIndex)
+        throws DaoException, IOException, SQLException {
         return indexOf(modelFile, fromIndex, "ASC");
     }
 
-    public int lastIndexOf(File modelFile) {
+    public int lastIndexOf(File modelFile)
+        throws DaoException, IOException, SQLException {
         return indexOf(modelFile, 0, "DESC");
     }
 
-    public int getCount() {
+    public int getCount()
+        throws DaoException, IOException, SQLException {
         String sql = "SELECT count(ts.rowid) AS count FROM tasks AS ts "
             + "LEFT JOIN models AS ml "
             + "ON ts.model_id = ml.rowid ";
         try (Statement stmt = getConnection().createStatement();
              ResultSet result = stmt.executeQuery(sql)) {
             if (!result.next())
-                return -1;
-
+                throw new DaoException("failed to query: " + sql);
             return result.getInt("count");
-        } catch (SQLException ex) {
-            printError(ex.getErrorCode(), ex.getMessage());
-            return -1;
-        } catch (IOException ex) {
-            printError(ex.getMessage());
-            return -1;
         }
     }
 
-    private Map<Integer, String> getModelPathList() {
+    private Map<Integer, String> getModelPathList()
+        throws DaoException, IOException, SQLException {
         if (mModelPathList != null && mModelPathList.size() > 1)
             return mModelPathList;
 
@@ -105,7 +98,7 @@ public class SimulationDao extends DaoObject {
             ResultSetMetaData metaData = result.getMetaData();
             int columnCount = metaData.getColumnCount();
             while (result.next()) {
-                int taskId = -1;
+                int taskId = 0;
                 String modelPath = null;
                 for (int i=1; i<=columnCount; i++) {
                     String column = metaData.getColumnName(i);
@@ -113,48 +106,40 @@ public class SimulationDao extends DaoObject {
                         taskId = result.getInt(column);
                     } else if ("model_path".equals(column)) {
                         modelPath = result.getString(column);
+                        if (modelPath == null)
+                            throw new DaoException("model_path is NULL");
                     }
                 }
-
-                if (taskId > 0 && modelPath != null)
-                    retvals.put(taskId, modelPath);
+                if (taskId <= 0)
+                    throw new DaoException("task id is non-positive: " + taskId);
+                retvals.put(taskId, modelPath);
             }
 
             mModelPathList = retvals;
             return retvals;
-        } catch (SQLException ex) {
-            printError(ex.getErrorCode(), ex.getMessage());
-            return null;
-        } catch (IOException ex) {
-            printError(ex.getMessage());
-            return null;
         }
     }
 
 
-    public TaskDao obtainTask(File file) {
+    public TaskDao obtainTask(File file)
+        throws DaoException, IOException, SQLException {
         int lastIndex = lastIndexOf(file);
 
         return obtainTask(lastIndex);
     }
 
-    public synchronized TaskDao obtainTask(int taskId) {
-        try {
-            if (mTaskList.keySet().contains(taskId))
-                return mTaskList.get(taskId);
+    public synchronized TaskDao obtainTask(int taskId)
+        throws DaoException, IOException, SQLException {
+        if (mTaskList.keySet().contains(taskId))
+            return mTaskList.get(taskId);
 
-            Map<Integer, String> modelPathList = getModelPathList();
+        Map<Integer, String> modelPathList = getModelPathList();
+        if (!modelPathList.containsKey(taskId))
+            throw new DaoException("no task of task id " + taskId);
 
-            if (modelPathList == null || modelPathList.size() <= 1
-                    || !modelPathList.containsKey(taskId))
-                return null;
-
-            TaskDao retval = new TaskDao(taskId, mWorkingDir);
-            mTaskList.put(taskId, retval);
-            return retval;
-        } catch (SQLException ex) {
-            return null;
-        }
+        TaskDao retval = new TaskDao(taskId, mWorkingDir);
+        mTaskList.put(taskId, retval);
+        return retval;
     }
 
     public Job obtainJob(int taskId, int jobId) throws DaoException, IOException, SQLException {
