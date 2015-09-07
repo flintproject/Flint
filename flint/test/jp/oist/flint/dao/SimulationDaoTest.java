@@ -14,9 +14,13 @@ import static org.junit.Assert.*;
 
 public class SimulationDaoTest {
 
+    private final File mDir;
+
     public SimulationDaoTest() {
+        String sep = File.separator;
+        mDir = new File(System.getProperty("user.dir"), "test" + sep + "resources" + sep + "testDao");
     }
-    
+
     @BeforeClass
     public static void setUpClass() {
     }
@@ -35,10 +39,7 @@ public class SimulationDaoTest {
 
     @Test
     public void testIndexOf_File() throws DaoException, IOException, SQLException {
-            String separator = File.separator;
-            File resourceDir = new File(System.getProperty("user.dir"), 
-                    "test" + separator + "resources" + separator + "testDao");
-        try (SimulationDao simulationDao = new SimulationDao(resourceDir)) {
+        try (SimulationDao simulationDao = new SimulationDao(mDir)) {
             File modelFile = new File("DBID560_EJN_2012_Pavlides_STN_GP_network_Normal.isml");
             int expResult = 1;
             int result = simulationDao.indexOf(modelFile);
@@ -49,10 +50,7 @@ public class SimulationDaoTest {
 
     @Test
     public void testIndexOf_File_int() throws DaoException, IOException, SQLException {
-            String separator = File.separator;
-            File resourceDir = new File(System.getProperty("user.dir"), 
-                    "test" + separator + "resources" + separator + "testDao");
-        try (SimulationDao simulationDao = new SimulationDao(resourceDir)) {
+        try (SimulationDao simulationDao = new SimulationDao(mDir)) {
             File modelFile = new File("DBID560_EJN_2012_Pavlides_STN_GP_network_Normal.isml");
             int fromIndex = 1;
             int expResult = 1;
@@ -63,10 +61,7 @@ public class SimulationDaoTest {
 
     @Test
     public void testLastIndexOf() throws DaoException, IOException, SQLException {
-            String separator = File.separator;
-            File resourceDir = new File(System.getProperty("user.dir"), 
-                    "test" + separator + "resources" + separator + "testDao");
-        try (SimulationDao simulationDao = new SimulationDao(resourceDir)) {
+        try (SimulationDao simulationDao = new SimulationDao(mDir)) {
             File modelFile = new File("DBID560_EJN_2012_Pavlides_STN_GP_network_Normal.isml");
             int expResult = 1;
             int result = simulationDao.lastIndexOf(modelFile);
@@ -76,10 +71,7 @@ public class SimulationDaoTest {
 
     @Test
     public void testGetCount() throws DaoException, IOException, SQLException {
-            String separator = File.separator;
-            File resourceDir = new File(System.getProperty("user.dir"), 
-                    "test" + separator + "resources" + separator + "testDao");
-        try (SimulationDao simulationDao = new SimulationDao(resourceDir)) {
+        try (SimulationDao simulationDao = new SimulationDao(mDir)) {
             int expResult = 1;
             int result = simulationDao.getCount();
             assertEquals(expResult, result);
@@ -88,10 +80,7 @@ public class SimulationDaoTest {
 
     @Test
     public void testObtainTask_File() throws DaoException, IOException, SQLException {
-            String separator = File.separator;
-            File resourceDir = new File(System.getProperty("user.dir"), 
-                    "test" + separator + "resources" + separator + "testDao");
-        try (SimulationDao simulationDao = new SimulationDao(resourceDir)) {
+        try (SimulationDao simulationDao = new SimulationDao(mDir)) {
             File modelFile = new File("DBID560_EJN_2012_Pavlides_STN_GP_network_Normal.isml");
             TaskDao result = simulationDao.obtainTask(modelFile);
             assertNotNull(result);
@@ -102,10 +91,7 @@ public class SimulationDaoTest {
 
     @Test
     public void testObtainTask_File__failure() throws IOException, SQLException {
-        String separator = File.separator;
-        File resourceDir = new File(System.getProperty("user.dir"),
-                                    "test" + separator + "resources" + separator + "testDao");
-        try (SimulationDao simulationDao = new SimulationDao(resourceDir)) {
+        try (SimulationDao simulationDao = new SimulationDao(mDir)) {
             simulationDao.obtainTask(new File("file_not_exist"));
             fail("exception expected");
         } catch (DaoException de) {
@@ -115,10 +101,7 @@ public class SimulationDaoTest {
 
     @Test
     public void testObtainTask_int() throws DaoException, IOException, SQLException {
-            String separator = File.separator;
-            File resourceDir = new File(System.getProperty("user.dir"), 
-                    "test" + separator + "resources" + separator + "testDao");
-        try (SimulationDao simulationDao = new SimulationDao(resourceDir)) {
+        try (SimulationDao simulationDao = new SimulationDao(mDir)) {
             int taskId = 1;
             TaskDao result = simulationDao.obtainTask(taskId);
             assertNotNull(result);
@@ -127,10 +110,7 @@ public class SimulationDaoTest {
 
     @Test
     public void testObtainTask_int__failure() throws IOException, SQLException {
-        String separator = File.separator;
-        File resourceDir = new File(System.getProperty("user.dir"),
-                                    "test" + separator + "resources" + separator + "testDao");
-        try (SimulationDao simulationDao = new SimulationDao(resourceDir)) {
+        try (SimulationDao simulationDao = new SimulationDao(mDir)) {
             simulationDao.obtainTask(21);
             fail("exception expected");
         } catch (DaoException de) {
@@ -140,10 +120,7 @@ public class SimulationDaoTest {
 
     @Test
     public void testObtainJob() throws DaoException, IOException, SQLException {
-            String separator = File.separator;
-            File resourceDir = new File(System.getProperty("user.dir"), 
-                    "test" + separator + "resources" + separator + "testDao");
-        try (SimulationDao simulationDao = new SimulationDao(resourceDir)) {
+        try (SimulationDao simulationDao = new SimulationDao(mDir)) {
             int taskId = 1;
             int jobId = 1;
             Job result = simulationDao.obtainJob(taskId, jobId);
