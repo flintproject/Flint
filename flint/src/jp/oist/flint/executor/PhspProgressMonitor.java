@@ -107,39 +107,44 @@ public class PhspProgressMonitor implements FileListener, Runnable {
             return;
 
         SimulationDao simulationDao = mSimulator.getSimulationDao();
-        Job job = simulationDao.obtainJob(taskId, jobId);
+        try {
+            Job job = simulationDao.obtainJob(taskId, jobId);
 
-        ISimulationConfiguration config = mSimulator.getSimulationConfigurationList().getConfiguration(taskId-1);
-        Map<String, Number> combination = job.getCombination();
-        String modelPath = config.getModelCanonicalPath();
+            ISimulationConfiguration config = mSimulator.getSimulationConfigurationList().getConfiguration(taskId-1);
+            Map<String, Number> combination = job.getCombination();
+            String modelPath = config.getModelCanonicalPath();
 
-        final PhspProgressMonitor.Event evt = new PhspProgressMonitor.Event(
-        PhspProgressMonitor.this, "progress", null, progress);
+            final PhspProgressMonitor.Event evt = new PhspProgressMonitor.Event(
+                                                                                PhspProgressMonitor.this, "progress", null, progress);
 
-        evt.setClientProperty("modelPath", modelPath);
-        evt.setClientProperty("target", combination);
+            evt.setClientProperty("modelPath", modelPath);
+            evt.setClientProperty("target", combination);
 
-        SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                getPropertyChangeSupport().firePropertyChange(evt);
-            }
-        });
+            SwingUtilities.invokeLater(new Runnable() {
+                @Override
+                public void run() {
+                    getPropertyChangeSupport().firePropertyChange(evt);
+                }
+            });
+        } catch (DaoException | IOException | SQLException ex) {
+            // give up
+        }
     }
 
     @Override
     public final void fileCreated(FileChangeEvent evt) throws IOException {
         FileObject fileObj = evt.getFile();
         if (isJobDirectory(fileObj)) {
-                String baseName = fileObj.getParent().getName().getBaseName();
-                int taskId = Integer.parseInt(baseName);
+            String baseName = fileObj.getParent().getName().getBaseName();
+            int taskId = Integer.parseInt(baseName);
 
-                baseName = fileObj.getName().getBaseName();
-                int jobId = Integer.parseInt(baseName);
+            baseName = fileObj.getName().getBaseName();
+            int jobId = Integer.parseInt(baseName);
 
-                if (mSimulator == null || mSimulator.getSimulationDao() == null)
-                    return;
-                TaskDao task = mSimulator.getSimulationDao().obtainTask(taskId);
+            if (mSimulator == null || mSimulator.getSimulationDao() == null)
+                return;
+            TaskDao task = mSimulator.getSimulationDao().obtainTask(taskId);
+            try {
                 Job job = task.obtainJob(jobId);
 
                 if (task.isCancelled())
@@ -150,6 +155,9 @@ public class PhspProgressMonitor implements FileListener, Runnable {
                 synchronized (mLock) {
                     mQueue.addFirst(job);
                 }
+            } catch (DaoException | IOException | SQLException ex) {
+                // give up
+            }
         }
     }
 

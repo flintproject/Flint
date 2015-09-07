@@ -520,7 +520,7 @@ public class JobWindow extends javax.swing.JFrame
              plotWindow.setVisible(true);
              plotWindow.processSimulationTrack(st);
              plotWindow.renderPlot();
-        } catch (IOException ex) {
+        } catch (DaoException | IOException | SQLException ex) {
             if (mParent != null) {
                 IFrame frame = (IFrame)mParent;
                 frame.showErrorDialog("It has not finished yet.", "ERROR");
@@ -735,7 +735,7 @@ public class JobWindow extends javax.swing.JFrame
                                       "ISD Exported");
                 }
             }
-        } catch (IOException ex) {
+        } catch (DaoException | IOException | SQLException ex) {
             showErrorDialog("Export failed\n\n" + ex.getMessage(),
                             "Export failed");
         }
@@ -769,8 +769,8 @@ public class JobWindow extends javax.swing.JFrame
             GarudaClient.requestForLoadableGadgets(dialog, "csv");
         } catch (GarudaConnectionNotInitializedException gcnie) {
             showErrorDialog(gcnie.getMessage(), "Error with Garuda");
-        } catch (IOException ioe) {
-            showErrorDialog("Sending file failed\n\n" + ioe.getMessage(),
+        } catch (DaoException | IOException | SQLException ex) {
+            showErrorDialog("Sending file failed\n\n" + ex.getMessage(),
                             "Sending file failed");
         }
     }
@@ -809,7 +809,7 @@ public class JobWindow extends javax.swing.JFrame
                 mJobViewer.setCancelled(evt.getIndex(), true);
                 mJobList.setCancelled(evt.getIndex(), true);
             }
-        } catch (IOException ex) {
+        } catch (DaoException | IOException | SQLException ex) {
             showErrorDialog("Cancellation failed\n\n" + ex.getMessage(),
             "Cancellation failed");
             return;

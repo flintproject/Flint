@@ -65,16 +65,23 @@ public class TaskDaoTest {
     }
 
     @Test
-    public void testObtainJob() {
+    public void testObtainJob() throws DaoException, IOException, SQLException {
         int taskId = 1;
         int jobId = 1;
         TaskDao task = mSimulationDao.obtainTask(taskId);
         Job job = task.obtainJob(jobId);
         Assert.assertNotNull(job);
+    }
 
-        jobId = 21;
-        job = task.obtainJob(jobId);
-        Assert.assertNull(job);
+    @Test
+    public void testObtainJob__no_such_job_id() throws IOException, SQLException {
+        TaskDao task = mSimulationDao.obtainTask(1);
+        try {
+            task.obtainJob(21);
+            Assert.fail("exception expected");
+        } catch (DaoException de) {
+            Assert.assertEquals("no job of job-id 21", de.getMessage());
+        }
     }
 
     @Test

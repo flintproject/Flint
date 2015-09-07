@@ -1,6 +1,8 @@
 /* -*- Mode: Java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- vim:set ts=4 sw=4 sts=4 et: */
 package jp.oist.flint.form.job;
 
+import jp.oist.flint.dao.DaoException;
+import jp.oist.flint.job.Job;
 import jp.oist.flint.job.Progress;
 import java.awt.BorderLayout;
 import java.awt.HeadlessException;
@@ -10,6 +12,7 @@ import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.net.URL;
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Locale;
@@ -53,9 +56,7 @@ public class PlotWindow extends javax.swing.JFrame
     private VariableList mYVariables;
     private VariableList mY2Variables;
 
-    private final int mJobId;
-
-    private final TaskDao mTaskDao;
+    private final Job mJob;
 
     private final File mIsdFile;
     private final File mCsvFile;
@@ -63,7 +64,7 @@ public class PlotWindow extends javax.swing.JFrame
     private final SubFrame mParent;
 
     public PlotWindow(SubFrame container, String title, TaskDao taskDao, int jobId)
-            throws IOException {
+        throws DaoException, IOException, SQLException {
         super(title);
 
         URL iconUrl = getClass().getResource("/jp/oist/flint/image/icon.png");
@@ -71,9 +72,8 @@ public class PlotWindow extends javax.swing.JFrame
 
         mParent = container;
 
-        mJobId   = jobId;
-        mTaskDao  = taskDao;
-        mIsdFile = mTaskDao.obtainJob(jobId).getIsdFile();
+        mJob = taskDao.obtainJob(jobId);
+        mIsdFile = mJob.getIsdFile();
         mCsvFile = new File(mIsdFile.getParent(), "csv");
 
         if (!mIsdFile.exists() || !mIsdFile.canRead())
@@ -315,7 +315,7 @@ public class PlotWindow extends javax.swing.JFrame
 
     @Override
     public void displaySummary(Summary summary) {
-        Progress progress = mTaskDao.obtainJob(mJobId).getProgress();
+        Progress progress = mJob.getProgress();
         lbl_trackInfo.setText(summary.getName() + " "
                               + " max:" + Utility.getEfficientRound(new BigDecimal(summary.getMax()), 3)
                               + " min:" + Utility.getEfficientRound(new BigDecimal(summary.getMin()), 3)
@@ -1347,7 +1347,7 @@ public class PlotWindow extends javax.swing.JFrame
 
         File defaultFile;
         if (filePath == null || filePath.isEmpty()) {
-            defaultFile = new File(homePath, fileName + "_" + mJobId + extension);
+            defaultFile = new File(homePath, fileName + "_" + mJob.getJobId() + extension);
         } else {
             defaultFile = new File(filePath);
         }

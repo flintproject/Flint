@@ -93,20 +93,12 @@ public class TaskDao extends DaoObject {
         return result;
     }
 
-    public Job obtainJob(int jobId) {
+    public Job obtainJob(int jobId) throws DaoException, IOException, SQLException {
         assert jobId > 0;
 
         File workingDir = new File(mWorkingDir, String.valueOf(jobId));
-        try {
-            Map<String, Number> combination = getCombination(jobId);
-            return new Job(mTaskId, workingDir, combination, jobId);
-        } catch (DaoException | IOException ex) {
-            printError(ex.getMessage());
-            return null;
-        } catch (SQLException se) {
-            printError(se.getErrorCode(), se.getMessage());
-            return null;
-        }
+        Map<String, Number> combination = getCombination(jobId);
+        return new Job(mTaskId, workingDir, combination, jobId);
     }
 
     public int indexOf(Number[] combination, String[] titles)

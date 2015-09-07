@@ -157,7 +157,7 @@ public class SimulationDao extends DaoObject {
         }
     }
 
-    public Job obtainJob(int taskId, int jobId) {
+    public Job obtainJob(int taskId, int jobId) throws DaoException, IOException, SQLException {
         if (mTaskList.containsKey(taskId))
             return mTaskList.get(taskId).obtainJob(jobId);
 

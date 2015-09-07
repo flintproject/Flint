@@ -121,7 +121,7 @@ public class SimulationDaoTest {
     }
 
     @Test
-    public void testObtainJob() throws IOException, SQLException {
+    public void testObtainJob() throws DaoException, IOException, SQLException {
             String separator = File.separator;
             File resourceDir = new File(System.getProperty("user.dir"), 
                     "test" + separator + "resources" + separator + "testDao");
