@@ -145,9 +145,6 @@ public class SimulationDao extends DaoObject {
             return mTaskList.get(taskId).obtainJob(jobId);
 
         TaskDao taskDao = obtainTask(taskId);
-        if (taskDao == null)
-            return null;
-
         return taskDao.obtainJob(jobId);
     }
 }
