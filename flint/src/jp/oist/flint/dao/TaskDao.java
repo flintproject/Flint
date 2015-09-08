@@ -100,11 +100,8 @@ public class TaskDao extends DaoObject {
         return new Job(mTaskId, workingDir, combination, jobId);
     }
 
-    public int indexOf(Number[] combination, String[] titles)
-            throws IOException {
-
-        if (combination.length != titles.length)
-            throw new IOException("");
+    public int indexOf(Number[] combination, String[] titles) {
+        assert combination.length == titles.length;
 
         int length = combination.length;
 
