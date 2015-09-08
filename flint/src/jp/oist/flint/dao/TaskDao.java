@@ -50,6 +50,8 @@ public class TaskDao extends DaoObject {
 
     public boolean isStarted() {
         File[] jobDirs = mWorkingDir.listFiles(new JobDirNameFilter());
+        if (jobDirs == null) // e.g. if an I/O error happens
+            return false;
         return jobDirs.length > 0;
     }
 
