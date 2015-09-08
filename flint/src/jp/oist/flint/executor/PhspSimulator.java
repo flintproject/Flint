@@ -7,7 +7,8 @@ import jp.oist.flint.sedml.SedmlException;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.sql.SQLException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import javax.swing.SwingWorker;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
@@ -52,11 +53,14 @@ public class PhspSimulator extends SwingWorker <Boolean, Integer> {
         for (Model model : models)
             model.validate();
 
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss-");
+        String prefix = sdf.format(new Date());
+        mWorkingDir = Workspace.createTempDirectory(prefix);
 
-        mPhspFile = Workspace.createTempFile("phsp", ".phsp");
+        mPhspFile = new File(mWorkingDir, "input.phsp");
         mPhspFile.deleteOnExit();
 
-        mSedmlFile = Workspace.createTempFile("xml", ".xml");
+        mSedmlFile = new File(mWorkingDir, "input.xml");
         mSedmlFile.deleteOnExit();
 
         try (FileOutputStream phspStream = new FileOutputStream(mPhspFile)) {
@@ -68,7 +72,6 @@ public class PhspSimulator extends SwingWorker <Boolean, Integer> {
             SedmlWriter sedmlWriter = new SedmlWriter(true);
             sedmlWriter.writeSimulationConfiguration(mSedmlConfig, sedmlStream);
         }
-        mWorkingDir = Workspace.createTempDirectory("flint-exec");
         mSimulationDao = new SimulationDao(mWorkingDir);
         mLogFile = new File(mWorkingDir, "flint.log");
         mLogFile.deleteOnExit();
