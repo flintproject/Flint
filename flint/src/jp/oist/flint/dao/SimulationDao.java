@@ -28,7 +28,6 @@ public class SimulationDao extends DaoObject {
 
         mTaskList = new HashMap<>();
         mModelPathList = new HashMap<>();
-        mTaskList.put(0, null);  // SQLite indexing is based 1.
     }
 
     private int indexOf(File modelFile, int startIndex, String order)
@@ -94,7 +93,6 @@ public class SimulationDao extends DaoObject {
              ResultSet result = stmt.executeQuery(sql)) {
 
             Map<Integer, String> retvals = new HashMap<>();
-            retvals.put(0, null);  // SQLite indexing is based 1.
             ResultSetMetaData metaData = result.getMetaData();
             int columnCount = metaData.getColumnCount();
             while (result.next()) {
