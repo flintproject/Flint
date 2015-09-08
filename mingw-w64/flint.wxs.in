@@ -44,9 +44,6 @@
             <Component Id='commons_logging' Guid='97ddc5e4-3552-11e3-b56b-efd74f2f8d34'>
               <File Id='commons_logging.jar' Name='commons-logging-1.2.jar' DiskId='1' Source='lib/commons-logging-1.2.jar' />
             </Component>
-            <Component Id='commons_vfs2' Guid='97dde22c-3552-11e3-9c08-eba2ad8ccf70'>
-              <File Id='commons_vfs2.jar' Name='commons-vfs2-2.0.jar' DiskId='1' Source='lib/commons-vfs2-2.0.jar' />
-            </Component>
             <Component Id='dom4j' Guid='d6f40772-848e-11e2-be41-672554022a02'>
               <File Id='dom4j.jar' Name='dom4j-1.6.1.jar' DiskId='1' Source='lib/dom4j-1.6.1.jar' />
             </Component>
@@ -199,7 +196,6 @@
       <ComponentRef Id='GarudaBackend' />
       <ComponentRef Id='commons_cli' />
       <ComponentRef Id='commons_logging' />
-      <ComponentRef Id='commons_vfs2' />
       <ComponentRef Id='dom4j' />
       <ComponentRef Id='garuda_csr' />
       <ComponentRef Id='jcommon' />
