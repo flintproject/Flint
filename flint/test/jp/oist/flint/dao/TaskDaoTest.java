@@ -22,7 +22,7 @@ public class TaskDaoTest {
 
     String mWorkingDir;
 
-    public TaskDaoTest() throws SQLException, IOException {
+    public TaskDaoTest() throws IOException {
         String separator = File.separator;
         File resourceDir = new File(System.getProperty("user.dir"), 
                 "test" + separator + "resources" + separator + "testDao");

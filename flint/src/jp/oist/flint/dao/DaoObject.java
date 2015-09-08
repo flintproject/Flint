@@ -34,10 +34,9 @@ public abstract class DaoObject implements AutoCloseable {
      */
     private Connection mConnection;
 
-    protected DaoObject(String dbName, File workingDir)
-            throws SQLException {
-        if (dbName == null || dbName.isEmpty())
-            throw new IllegalArgumentException("dbName must be non null.");
+    protected DaoObject(String dbName, File workingDir) {
+        assert dbName != null;
+        assert !dbName.isEmpty();
 
         mWorkingDir = workingDir;
         mDatabaseFile = new File(workingDir, dbName);

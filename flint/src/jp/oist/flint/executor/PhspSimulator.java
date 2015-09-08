@@ -41,7 +41,7 @@ public class PhspSimulator extends SwingWorker <Boolean, Integer> {
                             ISimulationConfigurationList sedml, 
                             IPhspConfiguration phsp) 
         throws IOException, ParserConfigurationException, PhspException,
-               SQLException, SedmlException, TransformerException {
+               SedmlException, TransformerException {
 
         mService = service;
         mSedmlConfig = sedml;
