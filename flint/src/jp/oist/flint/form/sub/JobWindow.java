@@ -675,7 +675,7 @@ public class JobWindow extends javax.swing.JFrame
 
             File isdFile = taskDao.obtainJob(jobId).getIsdFile();
 
-            if (isdFile == null || !isdFile.exists())
+            if (!isdFile.exists())
                 throw new IOException("It has not finished yet.");
 
             InputDialogForExport inputDialog = new InputDialogForExport(this);
@@ -761,7 +761,7 @@ public class JobWindow extends javax.swing.JFrame
 
             File isdFile = taskDao.obtainJob(jobId).getIsdFile();
 
-            if (isdFile == null || !isdFile.exists())
+            if (!isdFile.exists())
                 throw new IOException("It has not finished yet.");
 
             GadgetDialog dialog = new GadgetDialog(this, mParent, isdFile);

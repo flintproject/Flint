@@ -62,7 +62,6 @@ public class TaskDao extends DaoObject {
             if (jobCount <= 0) return false;
             for (int i=1; i<=jobCount; i++) {
                 Job job = obtainJob(i);
-                if (job == null) return false;
                 if (job.isFinished()) continue;
                 return false;
             }
@@ -87,7 +86,7 @@ public class TaskDao extends DaoObject {
         int jobCount = getCount();
         for (int i=1; i<=jobCount; i++) {
             Job job = obtainJob(i);
-            if (job == null || !job.cancel())
+            if (!job.cancel())
                 result = false;
         }
         return result;
@@ -178,8 +177,6 @@ public class TaskDao extends DaoObject {
             int total = 0;
             for (int i=1; i<=jobCount; i++) {
                 Job job = obtainJob(i);
-                if (job == null)
-                    continue;
                 Progress progress = job.getProgress();
                 int p = progress.getPercent();
                 if (p <= 0)

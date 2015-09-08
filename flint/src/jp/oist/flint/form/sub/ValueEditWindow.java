@@ -250,8 +250,6 @@ public class ValueEditWindow extends JFrame
             tableModel.setParameterValue(rowIndex, 
                     ParameterSet.Parameter.TYPE, ParameterSet.ParameterType.ENUM);
         }
-        if (cardName == null)
-            return;
         CardLayout layout =(CardLayout)pnl_EditorPane.getLayout();
         layout.show(pnl_EditorPane, cardName);
     }
