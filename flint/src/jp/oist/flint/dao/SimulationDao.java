@@ -20,11 +20,7 @@ public class SimulationDao extends DaoObject {
     private Map<Integer, String> mModelPathList;
 
     public SimulationDao(File dir) {
-        this("x.db", dir);
-    }
-
-    public SimulationDao(String dbName, File dir) {
-        super(dbName, dir);
+        super("x.db", dir);
 
         mTaskList = new HashMap<>();
         mModelPathList = new HashMap<>();
