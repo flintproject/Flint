@@ -1,103 +1,85 @@
 /* -*- Mode: Java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- vim:set ts=4 sw=4 sts=4 et: */
 package jp.oist.flint.executor;
 
-import jp.oist.flint.dao.SimulationDao;
 import jp.oist.flint.dao.DaoException;
+import jp.oist.flint.dao.SimulationDao;
 import jp.oist.flint.dao.TaskDao;
+import jp.oist.flint.form.MainFrame;
+import jp.oist.flint.form.ProgressCell;
+import jp.oist.flint.form.ProgressPane;
+import jp.oist.flint.form.job.IProgressManager;
+import jp.oist.flint.form.sub.SubFrame;
 import jp.oist.flint.job.Job;
 import jp.oist.flint.job.Progress;
 import jp.oist.flint.sedml.ISimulationConfiguration;
 import jp.oist.flint.sedml.ISimulationConfigurationList;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-import java.beans.PropertyChangeSupport;
+import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-import javax.swing.SwingUtilities;
+import javax.swing.SwingWorker;
 
-public class PhspProgressMonitor implements Runnable {
+public class PhspProgressMonitor extends SwingWorker<Void, Job> {
 
     private final SimulationDao mSimulationDao;
 
     private final ISimulationConfigurationList mSimulationConfigurationList;
 
-    private final PropertyChangeSupport mPropetyChangeSupport;
-
-    private final Thread mObserver;
+    private final MainFrame mMainFrame;
 
     private volatile boolean mDone = false;
 
-    public PhspProgressMonitor(PhspSimulator simulator) {
+    public PhspProgressMonitor(PhspSimulator simulator, MainFrame mainFrame) {
         mSimulationDao = simulator.getSimulationDao();
         mSimulationConfigurationList = simulator.getSimulationConfigurationList();
-        mObserver = new Thread(this);
-        mPropetyChangeSupport = new PropertyChangeSupport(this);
+        mMainFrame = mainFrame;
     }
 
-    public void start () {
-        mObserver.start();
-    }
-
-    public void stop () {
+    public void stop() {
         mDone = true;
     }
 
-    public PropertyChangeSupport getPropertyChangeSupport () {
-        return mPropetyChangeSupport;
-    }
-
-    public void addPropertyChangeListener (PropertyChangeListener l) {
-        mPropetyChangeSupport.addPropertyChangeListener(l);
-    }
-
-    public void addPropertyChangeListener (String proeprtyName, PropertyChangeListener l) {
-        mPropetyChangeSupport.addPropertyChangeListener(proeprtyName, l);
-    }
-
-    public void removePropertyChangeListener (PropertyChangeListener l) {
-        mPropetyChangeSupport.removePropertyChangeListener(l);
-    }
-
-    public void removePropertyChangeListener (String proeprtyName, PropertyChangeListener l) {
-        mPropetyChangeSupport.removePropertyChangeListener(proeprtyName, l);
-    }
-
-    protected void firePropertyChange (String propertyName, Object oldValue, Object newValue) {
-        mPropetyChangeSupport.firePropertyChange(propertyName, oldValue, newValue);
-    }
-
-    private void setProgress(int taskId, int jobId, final Progress progress) {
-        if (!getPropertyChangeSupport().hasListeners("progress"))
-            return;
-
+    /*
+     * Note that this method should be called in EDT.
+     */
+    private void displayProgress(Job job) {
+        int taskId = job.getTaskId();
+        ISimulationConfiguration config = mSimulationConfigurationList.getConfiguration(taskId-1);
+        String modelPath = config.getModelCanonicalPath();
+        Map<String, Number> combination = job.getCombination();
+        SubFrame subFrame = mMainFrame.findSubFrame(modelPath);
         try {
-            Job job = mSimulationDao.obtainJob(taskId, jobId);
+            TaskDao taskDao = mSimulationDao.obtainTask(new File(subFrame.getRelativeModelPath()));
 
-            ISimulationConfiguration config = mSimulationConfigurationList.getConfiguration(taskId-1);
-            Map<String, Number> combination = job.getCombination();
-            String modelPath = config.getModelCanonicalPath();
+            Progress progress = job.getProgress();
+            IProgressManager progressMgr = subFrame.getProgressManager();
+            int index = progressMgr.indexOf(combination);
 
-            final PhspProgressMonitor.Event evt = new PhspProgressMonitor.Event(
-                                                                                PhspProgressMonitor.this, "progress", null, progress);
+            progressMgr.setProgress(index, progress);
 
-            evt.setClientProperty("modelPath", modelPath);
-            evt.setClientProperty("target", combination);
+            if (taskDao.isCancelled())
+                progressMgr.setCancelled(index, true);
 
-            SwingUtilities.invokeLater(new Runnable() {
-                @Override
-                public void run() {
-                    getPropertyChangeSupport().firePropertyChange(evt);
-                }
-            });
+            int taskProgress = taskDao.getProgress();
+            ProgressCell cell =
+                ProgressPane.getInstance().getListCellOfModel(new File(modelPath));
+
+            String status;
+            if (taskDao.isFinished()) {
+                status = (taskDao.isCancelled())? "finished" : "completed";
+                cell.progressFinished(status, 0, 100, taskProgress);
+            } else if (taskDao.isStarted()) {
+                status = (taskDao.isCancelled())? "cancelling..." : taskProgress + " %";
+                cell.setProgress(status, 0, 100, taskProgress);
+            }
         } catch (DaoException | IOException | SQLException ex) {
             // give up
         }
     }
 
     @Override
-    public void run() {
+    protected Void doInBackground() {
         while (!mDone) {
             try {
                 Thread.sleep(100);
@@ -106,39 +88,45 @@ public class PhspProgressMonitor implements Runnable {
 
             try {
                 int taskCount = mSimulationDao.getCount();
-                for (int i=1; i<=taskCount; i++) {
+                for (int i=1; i<=taskCount; i++) { // base 1
                     TaskDao task = mSimulationDao.obtainTask(i);
                     if (!task.isStarted())
                         continue;
                     int jobCount = task.getCount();
-                    for (int j=1; j<=jobCount; j++) {
+                    for (int j=1; j<=jobCount; j++) { // base 1
                         Job job = task.obtainJob(j);
-                        setProgress(i, j, job.getProgress());
+                        publish(job);
                     }
                 }
             } catch (DaoException | IOException | SQLException ex) {
                 // give up
             }
         }
-
+        return null;
     }
 
-    public static class Event extends PropertyChangeEvent {
-
-        private final Map<Object, Object> mClientProperty;
-
-        public Event(Object source, String propertyName, Object oldValue, Object newValue) {
-            super(source, propertyName, oldValue, newValue);
-
-            mClientProperty = new HashMap<>();
+    @Override
+    protected void done() {
+        try {
+            int taskCount = mSimulationDao.getCount();
+            for (int i=1; i<=taskCount; i++) { // base 1
+                TaskDao task = mSimulationDao.obtainTask(i);
+                if (!task.isStarted())
+                    continue;
+                int jobCount = task.getCount();
+                for (int j=1; j<=jobCount; j++) { // base 1
+                    Job job = task.obtainJob(j);
+                    displayProgress(job);
+                }
+            }
+        } catch (DaoException | IOException | SQLException ex) {
+            // give up
         }
+    }
 
-        public Object getClientProperty (Object key) {
-            return mClientProperty.get(key);
-        }
-
-        public void setClientProperty(Object key, Object value) {
-            mClientProperty.put(key, value);
-        }
+    @Override
+    protected void process(List<Job> jobs) {
+        for (Job job : jobs)
+            displayProgress(job);
     }
 }

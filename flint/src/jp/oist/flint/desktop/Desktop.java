@@ -2,9 +2,6 @@
 package jp.oist.flint.desktop;
 
 import jp.oist.flint.backend.ModelLoader;
-import jp.oist.flint.dao.DaoException;
-import jp.oist.flint.dao.SimulationDao;
-import jp.oist.flint.dao.TaskDao;
 import jp.oist.flint.executor.PhspProgressMonitor;
 import jp.oist.flint.executor.PhspSimulator;
 import jp.oist.flint.executor.SimulatorService;
@@ -14,11 +11,7 @@ import jp.oist.flint.form.MessageDialog;
 import jp.oist.flint.form.ModelFileLoaderListener;
 import jp.oist.flint.form.ModelLoaderLogger;
 import jp.oist.flint.form.ModelLoaderProgressDialog;
-import jp.oist.flint.form.ProgressCell;
-import jp.oist.flint.form.ProgressPane;
-import jp.oist.flint.form.job.IProgressManager;
 import jp.oist.flint.form.sub.SubFrame;
-import jp.oist.flint.job.Progress;
 import jp.oist.flint.phsp.IPhspConfiguration;
 import jp.oist.flint.phsp.PhspException;
 import jp.oist.flint.phsp.entity.Model;
@@ -36,7 +29,6 @@ import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import javax.swing.JDesktopPane;
 import javax.swing.JInternalFrame;
@@ -190,7 +182,7 @@ public class Desktop implements IPhspConfiguration {
 
         SimulatorService service = new SimulatorService(mainFrame);
         final PhspSimulator simulator = new PhspSimulator(service, mainFrame, this);
-        final PhspProgressMonitor monitor = new PhspProgressMonitor(simulator);
+        final PhspProgressMonitor monitor = new PhspProgressMonitor(simulator, mainFrame);
         simulator.addPropertyChangeListener(new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent e) {
@@ -239,52 +231,8 @@ public class Desktop implements IPhspConfiguration {
             simulator.addPropertyChangeListener(new SimulationPropertyChangeListener(listener));
         }
 
-        monitor.addPropertyChangeListener(new PropertyChangeListener() {
-            @Override
-            public void propertyChange(PropertyChangeEvent e) {
-                String propertyName = e.getPropertyName();
-                if ("progress".equals(propertyName)) {
-                    if (e instanceof PhspProgressMonitor.Event) {
-                        final PhspProgressMonitor.Event evt = (PhspProgressMonitor.Event)e;
-                        String modelPath = (String)evt.getClientProperty("modelPath");
-                        SubFrame subFrame = mainFrame.findSubFrame(modelPath);
-
-                        SimulationDao simulationDao = simulator.getSimulationDao();
-                        try {
-                            TaskDao taskDao = simulationDao.obtainTask(new File(subFrame.getRelativeModelPath()));
-
-                            Progress progress = (Progress)evt.getNewValue();
-                            Map<String, Number> target = (Map<String, Number>)evt.getClientProperty("target");
-                            IProgressManager progressMgr = subFrame.getProgressManager();
-                            int index = progressMgr.indexOf(target);
-
-                            progressMgr.setProgress(index, progress);
-
-                            if (taskDao.isCancelled())
-                                progressMgr.setCancelled(index, true);
-
-                            int taskProgress = taskDao.getProgress();
-                            ProgressCell cell =
-                                ProgressPane.getInstance().getListCellOfModel(new File(modelPath));
-
-                            String status;
-                            if (taskDao.isFinished()) {
-                                status = (taskDao.isCancelled())? "finished" : "completed";
-                                cell.progressFinished(status, 0, 100, taskProgress);
-                            } else if (taskDao.isStarted()) {
-                                status = (taskDao.isCancelled())? "cancelling..." : taskProgress + " %";
-                                cell.setProgress(status, 0, 100, taskProgress);
-                            }
-                        } catch (DaoException | IOException | SQLException ex) {
-                            // ignore the error
-                        }
-                    }
-                }
-            }
-        });
-
         simulator.execute();
-        monitor.start();
+        monitor.execute();
         return simulator;
     }
 
