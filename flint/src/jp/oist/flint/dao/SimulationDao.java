@@ -14,16 +14,15 @@ import java.util.Map;
 
 public class SimulationDao extends DaoObject {
 
-    // TOOD caching the parameters using the cache-key.
-    private Map<Integer, TaskDao> mTaskList ;
+    private final Map<Integer, TaskDao> mTaskMap;
 
-    private Map<Integer, String> mModelPathList;
+    private Map<Integer, String> mModelPathMap;
 
     public SimulationDao(File dir) {
         super("x.db", dir);
 
-        mTaskList = new HashMap<>();
-        mModelPathList = new HashMap<>();
+        mTaskMap = new HashMap<>();
+        mModelPathMap = new HashMap<>();
     }
 
     private int indexOf(File modelFile, int startIndex, String order)
@@ -78,8 +77,8 @@ public class SimulationDao extends DaoObject {
 
     private Map<Integer, String> getModelPathList()
         throws DaoException, IOException, SQLException {
-        if (mModelPathList != null && mModelPathList.size() > 1)
-            return mModelPathList;
+        if (mModelPathMap != null && mModelPathMap.size() > 1)
+            return mModelPathMap;
 
         String sql = "SELECT ts.sim_id AS sim_id, ml.model_path AS model_path "
             + "FROM tasks AS ts "
@@ -109,7 +108,7 @@ public class SimulationDao extends DaoObject {
                 retvals.put(taskId, modelPath);
             }
 
-            mModelPathList = retvals;
+            mModelPathMap = retvals;
             return retvals;
         }
     }
@@ -124,21 +123,21 @@ public class SimulationDao extends DaoObject {
 
     public synchronized TaskDao obtainTask(int taskId)
         throws DaoException, IOException, SQLException {
-        if (mTaskList.keySet().contains(taskId))
-            return mTaskList.get(taskId);
+        if (mTaskMap.keySet().contains(taskId))
+            return mTaskMap.get(taskId);
 
         Map<Integer, String> modelPathList = getModelPathList();
         if (!modelPathList.containsKey(taskId))
             throw new DaoException("no task of task id " + taskId);
 
         TaskDao retval = new TaskDao(taskId, mWorkingDir);
-        mTaskList.put(taskId, retval);
+        mTaskMap.put(taskId, retval);
         return retval;
     }
 
     public Job obtainJob(int taskId, int jobId) throws DaoException, IOException, SQLException {
-        if (mTaskList.containsKey(taskId))
-            return mTaskList.get(taskId).obtainJob(jobId);
+        if (mTaskMap.containsKey(taskId))
+            return mTaskMap.get(taskId).obtainJob(jobId);
 
         TaskDao taskDao = obtainTask(taskId);
         return taskDao.obtainJob(jobId);
