@@ -11,8 +11,6 @@ import jp.oist.flint.form.job.IProgressManager;
 import jp.oist.flint.form.sub.SubFrame;
 import jp.oist.flint.job.Job;
 import jp.oist.flint.job.Progress;
-import jp.oist.flint.sedml.ISimulationConfiguration;
-import jp.oist.flint.sedml.ISimulationConfigurationList;
 import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
@@ -24,15 +22,12 @@ public class PhspProgressMonitor extends SwingWorker<Void, Job> {
 
     private final SimulationDao mSimulationDao;
 
-    private final ISimulationConfigurationList mSimulationConfigurationList;
-
     private final MainFrame mMainFrame;
 
     private volatile boolean mDone = false;
 
-    public PhspProgressMonitor(PhspSimulator simulator, MainFrame mainFrame) {
-        mSimulationDao = simulator.getSimulationDao();
-        mSimulationConfigurationList = simulator.getSimulationConfigurationList();
+    public PhspProgressMonitor(SimulationDao simulationDao, MainFrame mainFrame) {
+        mSimulationDao = simulationDao;
         mMainFrame = mainFrame;
     }
 
@@ -45,12 +40,11 @@ public class PhspProgressMonitor extends SwingWorker<Void, Job> {
      */
     private void displayProgress(Job job) {
         int taskId = job.getTaskId();
-        ISimulationConfiguration config = mSimulationConfigurationList.getConfiguration(taskId-1);
-        String modelPath = config.getModelCanonicalPath();
         Map<String, Number> combination = job.getCombination();
-        SubFrame subFrame = mMainFrame.findSubFrame(modelPath);
         try {
             TaskDao taskDao = mSimulationDao.obtainTask(taskId);
+            String modelPath = taskDao.getModelPath();
+            SubFrame subFrame = mMainFrame.findSubFrame(modelPath);
 
             Progress progress = job.getProgress();
             IProgressManager progressMgr = subFrame.getProgressManager();

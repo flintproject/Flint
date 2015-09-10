@@ -17,19 +17,26 @@ public class TaskDao extends DaoObject {
 
     private final int mTaskId;
 
+    private final String mModelPath;
+
     /**
      * 0 means that the number of jobs has not been counted.
      */
     private int mCount = 0;
 
-    public TaskDao(int taskId, File dir) {
+    public TaskDao(int taskId, String modelPath, File dir) {
         super("db", new File(dir, String.valueOf(taskId)));
 
         mTaskId = taskId;
+        mModelPath = modelPath;
     }
 
     public int getTaskId() {
         return mTaskId;
+    }
+
+    public String getModelPath() {
+        return mModelPath;
     }
 
     public File getTrackFile() {

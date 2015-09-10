@@ -33,7 +33,7 @@ public class SimulationDao extends DaoObject {
             while (result.next()) {
                 int taskId = result.getInt(1);
                 String modelPath = result.getString(2);
-                TaskDao task = new TaskDao(taskId, mWorkingDir);
+                TaskDao task = new TaskDao(taskId, modelPath, mWorkingDir);
                 mapA.put(taskId, task);
                 if (mapB.containsKey(modelPath))
                     throw new DaoException("duplicate tasks with the same model path: " + modelPath);
