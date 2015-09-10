@@ -50,7 +50,7 @@ public class PhspProgressMonitor extends SwingWorker<Void, Job> {
         Map<String, Number> combination = job.getCombination();
         SubFrame subFrame = mMainFrame.findSubFrame(modelPath);
         try {
-            TaskDao taskDao = mSimulationDao.obtainTask(new File(subFrame.getRelativeModelPath()));
+            TaskDao taskDao = mSimulationDao.obtainTask(taskId);
 
             Progress progress = job.getProgress();
             IProgressManager progressMgr = subFrame.getProgressManager();

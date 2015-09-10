@@ -499,7 +499,7 @@ public class JobWindow extends javax.swing.JFrame
                 throw new IOException("Don't run the simulation.");
 
              TaskDao taskDao = mSimulator.getSimulationDao()
-                     .obtainTask(new File(mParent.getRelativeModelPath()));
+                     .obtainTask(mParent.getRelativeModelPath());
 
              if (taskDao == null)
                 throw new IOException("Job Directory does not exist.");
@@ -579,7 +579,7 @@ public class JobWindow extends javax.swing.JFrame
         ArrayList<File> isdFiles = new ArrayList<>();
         ArrayList<File> targetFiles = new ArrayList<>();
         ArrayList<Map<String, Number>> parameters = new ArrayList<>();
-        TaskDao taskDao = mSimulator.getSimulationDao().obtainTask(new File(mParent.getRelativeModelPath()));
+        TaskDao taskDao = mSimulator.getSimulationDao().obtainTask(mParent.getRelativeModelPath());
         int numJobs = taskDao.getCount();
         int numDigits = String.valueOf(numJobs).getBytes(StandardCharsets.UTF_8).length;
         for (int i=1; i<=numJobs; i++) {
@@ -663,7 +663,7 @@ public class JobWindow extends javax.swing.JFrame
             if (mSimulator == null || mSimulator.getSimulationDao() == null) 
                 throw new IOException("It has not finished yet.");
 
-            TaskDao taskDao = mSimulator.getSimulationDao().obtainTask(new File(mParent.getRelativeModelPath()));
+            TaskDao taskDao = mSimulator.getSimulationDao().obtainTask(mParent.getRelativeModelPath());
             if (taskDao == null)
                 throw new IOException("It has not finished yet.");
 
@@ -749,7 +749,7 @@ public class JobWindow extends javax.swing.JFrame
             if (mSimulator == null || mSimulator.getSimulationDao() == null) 
                 throw new IOException("It has not finished yet.");
 
-            TaskDao taskDao = mSimulator.getSimulationDao().obtainTask(new File(mParent.getRelativeModelPath()));
+            TaskDao taskDao = mSimulator.getSimulationDao().obtainTask(mParent.getRelativeModelPath());
             if (taskDao == null)
                 throw new IOException("It has not finished yet.");
 
@@ -789,7 +789,7 @@ public class JobWindow extends javax.swing.JFrame
             if (mSimulator == null || mSimulator.getSimulationDao() == null) 
                 throw new IOException("It has not yet started");
 
-            taskDao = mSimulator.getSimulationDao().obtainTask(new File(mParent.getRelativeModelPath()));
+            taskDao = mSimulator.getSimulationDao().obtainTask(mParent.getRelativeModelPath());
             if (taskDao == null)
                 throw new IOException("It has not yet started");
 

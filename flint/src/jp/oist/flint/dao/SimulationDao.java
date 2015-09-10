@@ -6,139 +6,72 @@ import java.io.File;
 import java.io.IOException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.HashMap;
 import java.util.Map;
 
 public class SimulationDao extends DaoObject {
 
-    private final Map<Integer, TaskDao> mTaskMap;
+    private Map<Integer, TaskDao> mTaskIdMap;
 
-    private Map<Integer, String> mModelPathMap;
+    private Map<String, TaskDao> mModelPathMap;
 
     public SimulationDao(File dir) {
         super("x.db", dir);
 
-        mTaskMap = new HashMap<>();
-        mModelPathMap = new HashMap<>();
+        mTaskIdMap = null;
+        mModelPathMap = null;
     }
 
-    private int indexOf(File modelFile, int startIndex, String order)
+    private void fetch()
         throws DaoException, IOException, SQLException {
-        String sql = "SELECT ts.rowid AS rowid FROM tasks AS ts "
-            + "LEFT JOIN models AS ml "
-            + "ON ts.model_id = ml.rowid "
-            + "WHERE ml.model_path = ? AND ts.model_id >= ? "
-            + "ORDER BY ts.model_id " + order + " "
-            + "LIMIT 1";
-        try (PreparedStatement stmt = getConnection().prepareStatement(sql)) {
-            String modelPath = modelFile.getPath();
-
-            stmt.setString(1, modelPath);
-            stmt.setInt(2, startIndex);
-
-            try (ResultSet result = stmt.executeQuery()) {
-                if (!result.next())
-                    throw new DaoException("result is empty");
-                return result.getInt("rowid");
-            }
-        }
-    }
-
-    public int indexOf(File modelFile)
-        throws DaoException, IOException, SQLException {
-        return indexOf(modelFile, 0, "ASC");
-    }
-
-    public int indexOf(File modelFile, int fromIndex)
-        throws DaoException, IOException, SQLException {
-        return indexOf(modelFile, fromIndex, "ASC");
-    }
-
-    public int lastIndexOf(File modelFile)
-        throws DaoException, IOException, SQLException {
-        return indexOf(modelFile, 0, "DESC");
-    }
-
-    public int getCount()
-        throws DaoException, IOException, SQLException {
-        String sql = "SELECT count(ts.rowid) AS count FROM tasks AS ts "
-            + "LEFT JOIN models AS ml "
-            + "ON ts.model_id = ml.rowid ";
-        try (Statement stmt = getConnection().createStatement();
-             ResultSet result = stmt.executeQuery(sql)) {
-            if (!result.next())
-                throw new DaoException("failed to query: " + sql);
-            return result.getInt("count");
-        }
-    }
-
-    private Map<Integer, String> getModelPathList()
-        throws DaoException, IOException, SQLException {
-        if (mModelPathMap != null && mModelPathMap.size() > 1)
-            return mModelPathMap;
-
-        String sql = "SELECT ts.sim_id AS sim_id, ml.model_path AS model_path "
-            + "FROM tasks AS ts "
-            + "LEFT JOIN models AS ml "
-            + "ON ts.model_id = ml.rowid";
-        try (Statement stmt = getConnection().createStatement();
-             ResultSet result = stmt.executeQuery(sql)) {
-
-            Map<Integer, String> retvals = new HashMap<>();
-            ResultSetMetaData metaData = result.getMetaData();
-            int columnCount = metaData.getColumnCount();
+        String sql = "SELECT t.rowid, m.model_path FROM tasks AS t LEFT JOIN models AS m ON t.model_id = m.rowid";
+        try (PreparedStatement stmt = getConnection().prepareStatement(sql);
+             ResultSet result = stmt.executeQuery()) {
+            HashMap<Integer, TaskDao> mapA = new HashMap<>();
+            HashMap<String, TaskDao> mapB = new HashMap<>();
             while (result.next()) {
-                int taskId = 0;
-                String modelPath = null;
-                for (int i=1; i<=columnCount; i++) {
-                    String column = metaData.getColumnName(i);
-                    if ("sim_id".equals(column)) {
-                        taskId = result.getInt(column);
-                    } else if ("model_path".equals(column)) {
-                        modelPath = result.getString(column);
-                        if (modelPath == null)
-                            throw new DaoException("model_path is NULL");
-                    }
-                }
-                if (taskId <= 0)
-                    throw new DaoException("task id is non-positive: " + taskId);
-                retvals.put(taskId, modelPath);
+                int taskId = result.getInt(1);
+                String modelPath = result.getString(2);
+                TaskDao task = new TaskDao(taskId, mWorkingDir);
+                mapA.put(taskId, task);
+                if (mapB.containsKey(modelPath))
+                    throw new DaoException("duplicate tasks with the same model path: " + modelPath);
+                mapB.put(modelPath, task);
             }
-
-            mModelPathMap = retvals;
-            return retvals;
+            mTaskIdMap = mapA;
+            mModelPathMap = mapB;
         }
     }
 
-
-    public TaskDao obtainTask(File file)
+    public synchronized int getCount()
         throws DaoException, IOException, SQLException {
-        int lastIndex = lastIndexOf(file);
+        if (mTaskIdMap == null)
+            fetch();
+        return mTaskIdMap.size();
+    }
 
-        return obtainTask(lastIndex);
+    public synchronized TaskDao obtainTask(String modelPath)
+        throws DaoException, IOException, SQLException {
+        if (mModelPathMap == null)
+            fetch();
+        TaskDao task = mModelPathMap.get(modelPath);
+        if (task == null)
+            throw new DaoException("no task of model path " + modelPath);
+        return task;
     }
 
     public synchronized TaskDao obtainTask(int taskId)
         throws DaoException, IOException, SQLException {
-        if (mTaskMap.keySet().contains(taskId))
-            return mTaskMap.get(taskId);
-
-        Map<Integer, String> modelPathList = getModelPathList();
-        if (!modelPathList.containsKey(taskId))
+        if (mTaskIdMap == null)
+            fetch();
+        TaskDao task = mTaskIdMap.get(taskId);
+        if (task == null)
             throw new DaoException("no task of task id " + taskId);
-
-        TaskDao retval = new TaskDao(taskId, mWorkingDir);
-        mTaskMap.put(taskId, retval);
-        return retval;
+        return task;
     }
 
     public Job obtainJob(int taskId, int jobId) throws DaoException, IOException, SQLException {
-        if (mTaskMap.containsKey(taskId))
-            return mTaskMap.get(taskId).obtainJob(jobId);
-
         TaskDao taskDao = obtainTask(taskId);
         return taskDao.obtainJob(jobId);
     }

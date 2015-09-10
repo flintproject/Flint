@@ -229,7 +229,7 @@ public class SubFrame extends JInternalFrame
                 throw new IOException("It has not yet started");
             }
 
-            TaskDao taskDao = mSimulator.getSimulationDao().obtainTask(modelFile);
+            TaskDao taskDao = mSimulator.getSimulationDao().obtainTask(modelFile.getPath());
             if (taskDao == null) {
                 throw new IOException("It has not yet started");
             }

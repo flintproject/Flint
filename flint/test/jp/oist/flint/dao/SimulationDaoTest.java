@@ -38,38 +38,6 @@ public class SimulationDaoTest {
     }
 
     @Test
-    public void testIndexOf_File() throws DaoException, IOException, SQLException {
-        try (SimulationDao simulationDao = new SimulationDao(mDir)) {
-            File modelFile = new File("DBID560_EJN_2012_Pavlides_STN_GP_network_Normal.isml");
-            int expResult = 1;
-            int result = simulationDao.indexOf(modelFile);
-            assertEquals(expResult, result);
-
-        }
-    }
-
-    @Test
-    public void testIndexOf_File_int() throws DaoException, IOException, SQLException {
-        try (SimulationDao simulationDao = new SimulationDao(mDir)) {
-            File modelFile = new File("DBID560_EJN_2012_Pavlides_STN_GP_network_Normal.isml");
-            int fromIndex = 1;
-            int expResult = 1;
-            int result = simulationDao.indexOf(modelFile, fromIndex);
-            assertEquals(expResult, result);
-        }
-    }
-
-    @Test
-    public void testLastIndexOf() throws DaoException, IOException, SQLException {
-        try (SimulationDao simulationDao = new SimulationDao(mDir)) {
-            File modelFile = new File("DBID560_EJN_2012_Pavlides_STN_GP_network_Normal.isml");
-            int expResult = 1;
-            int result = simulationDao.lastIndexOf(modelFile);
-            assertEquals(expResult, result);
-        }
-    }
-
-    @Test
     public void testGetCount() throws DaoException, IOException, SQLException {
         try (SimulationDao simulationDao = new SimulationDao(mDir)) {
             int expResult = 1;
@@ -81,8 +49,7 @@ public class SimulationDaoTest {
     @Test
     public void testObtainTask_File() throws DaoException, IOException, SQLException {
         try (SimulationDao simulationDao = new SimulationDao(mDir)) {
-            File modelFile = new File("DBID560_EJN_2012_Pavlides_STN_GP_network_Normal.isml");
-            TaskDao result = simulationDao.obtainTask(modelFile);
+            TaskDao result = simulationDao.obtainTask("DBID560_EJN_2012_Pavlides_STN_GP_network_Normal.isml");
             assertNotNull(result);
 
             assertEquals(1, result.getTaskId());
@@ -92,10 +59,10 @@ public class SimulationDaoTest {
     @Test
     public void testObtainTask_File__failure() throws IOException, SQLException {
         try (SimulationDao simulationDao = new SimulationDao(mDir)) {
-            simulationDao.obtainTask(new File("file_not_exist"));
+            simulationDao.obtainTask("file_not_exist");
             fail("exception expected");
         } catch (DaoException de) {
-            assertEquals("result is empty", de.getMessage());
+            assertEquals("no task of model path file_not_exist", de.getMessage());
         }
     }
 
