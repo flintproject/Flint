@@ -81,8 +81,7 @@ public class PhspProgressMonitor extends SwingWorker<Void, Job> {
             }
 
             try {
-                int taskCount = mSimulationDao.getCount();
-                for (int i=1; i<=taskCount; i++) { // base 1
+                for (int i : mSimulationDao.getTaskIdSet()) {
                     TaskDao task = mSimulationDao.obtainTask(i);
                     if (!task.isStarted())
                         continue;
@@ -102,8 +101,7 @@ public class PhspProgressMonitor extends SwingWorker<Void, Job> {
     @Override
     protected void done() {
         try {
-            int taskCount = mSimulationDao.getCount();
-            for (int i=1; i<=taskCount; i++) { // base 1
+            for (int i : mSimulationDao.getTaskIdSet()) {
                 TaskDao task = mSimulationDao.obtainTask(i);
                 if (!task.isStarted())
                     continue;

@@ -9,6 +9,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 public class SimulationDao extends DaoObject {
 
@@ -44,11 +45,11 @@ public class SimulationDao extends DaoObject {
         }
     }
 
-    public synchronized int getCount()
+    public synchronized Set<Integer> getTaskIdSet()
         throws DaoException, IOException, SQLException {
         if (mTaskIdMap == null)
             fetch();
-        return mTaskIdMap.size();
+        return mTaskIdMap.keySet();
     }
 
     public synchronized TaskDao obtainTask(String modelPath)

@@ -5,6 +5,7 @@ import jp.oist.flint.job.Job;
 import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.Set;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -38,11 +39,11 @@ public class SimulationDaoTest {
     }
 
     @Test
-    public void testGetCount() throws DaoException, IOException, SQLException {
+    public void testGetTaskIdSet() throws DaoException, IOException, SQLException {
         try (SimulationDao simulationDao = new SimulationDao(mDir)) {
-            int expResult = 1;
-            int result = simulationDao.getCount();
-            assertEquals(expResult, result);
+            Set<Integer> result = simulationDao.getTaskIdSet();
+            assertEquals(1, result.size());
+            assertTrue(result.contains(1));
         }
     }
 
