@@ -7,7 +7,6 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -226,11 +225,6 @@ public class SedmlHandler2 extends SedmlHandler
         if (lastIndex < 0)
             return null;
         return mConfigurationList.get(lastIndex).getModelCanonicalPath();
-    }
-
-    @Override
-    public List<ISimulationConfiguration> toList() {
-        return Collections.unmodifiableList(mConfigurationList);
     }
 
     private static abstract class Matcher<T> {

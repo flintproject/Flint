@@ -40,7 +40,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -628,15 +627,6 @@ public class MainFrame extends javax.swing.JFrame
                 return subFrame;
         }
         return null;
-    }
-
-    @Override
-    public List<ISimulationConfiguration> toList() {
-        List<ISimulationConfiguration> configs = new ArrayList<>();
-        for (SubFrame subFrame : getSubFrames())
-            configs.add(subFrame);
-
-        return configs;
     }
 
     @Override
