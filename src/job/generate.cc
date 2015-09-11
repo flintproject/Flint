@@ -17,9 +17,13 @@
 #include "db/query.h"
 #include "db/statement-driver.hh"
 
-using std::endl;
 using std::cerr;
+using std::endl;
+using std::fclose;
+using std::fopen;
+using std::fprintf;
 using std::memcpy;
+using std::perror;
 using std::sprintf;
 
 namespace flint {
@@ -57,12 +61,15 @@ public:
 
 class Inserter {
 public:
-	explicit Inserter(sqlite3 *db)
+	Inserter(sqlite3 *db, FILE *fp)
 		: inserter_("parameter_eqs", db)
+		, fp_(fp)
 	{}
 
 	bool Insert(const char *name, const char *rhs)
 	{
+		fprintf(fp_, "%s=%s\n", name, rhs);
+
 		std::ostringstream oss;
 		oss << "(eq %" << name << ' ' << rhs << ')';
 		std::string math = oss.str();
@@ -76,6 +83,7 @@ public:
 
 private:
 	db::EqInserter inserter_;
+	FILE *fp_;
 };
 
 int SaveParameter(void *data, int argc, char **argv, char **names)
@@ -101,9 +109,9 @@ int SaveEquation(void *data, int argc, char **argv, char **names)
 
 class Generator {
 public:
-	Generator(sqlite3 *input, sqlite3 *output)
+	Generator(sqlite3 *input, sqlite3 *output, FILE *fp)
 		: input_(input)
-		, inserter_(output)
+		, inserter_(output, fp)
 	{}
 
 	bool Generate(int rowid, int enum_id) {
@@ -176,9 +184,18 @@ bool Generate(sqlite3 *input, const char *dir, int *job_id)
 		return false;
 	if (!CreateTable(output, "parameter_eqs", "(uuid BLOB, math TEXT)"))
 		return false;
-	Generator g(input, output);
-	if (!g.Generate(rowid, enum_id))
+	sprintf(path, "%s/%d/parameters.txt", dir, rowid);
+	FILE *fp = fopen(path, "w");
+	if (!fp) {
+		perror(path);
 		return false;
+	}
+	Generator g(input, output, fp);
+	if (!g.Generate(rowid, enum_id)) {
+		fclose(fp);
+		return false;
+	}
+	fclose(fp);
 	if (!CommitTransaction(output))
 		return false;
 	if (!CommitTransaction(input))
