@@ -153,11 +153,13 @@ bool TaskRunner::Run()
 		};
 		v.emplace_back(std::async(std::launch::async, lmbd, this, job_id));
 	}
+	bool result = true;
+	// wait for all threads finishing regardless of their results
 	for (auto &f : v) {
 		if (!f.get())
-			return false;
+			result = false;
 	}
-	return true;
+	return result;
 }
 
 }

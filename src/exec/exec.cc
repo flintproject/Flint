@@ -46,11 +46,13 @@ public:
 	}
 
 	bool Wait() {
+		bool result = true;
+		// wait for all threads finishing regardless of their results
 		for (auto &f : tasks_) {
 			if (!f.get())
-				return false;
+				result = false;
 		}
-		return true;
+		return result;
 	}
 
 private:
