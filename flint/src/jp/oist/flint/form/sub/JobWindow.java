@@ -818,17 +818,20 @@ public class JobWindow extends javax.swing.JFrame
 
     /* ISimulationListener */
 
+    @Override
     public void simulationStarted(PhspSimulator simulator) {
     }
 
-
+    @Override
     public void simulationDone() {
         btn_ExportAll.setEnabled(true);
     }
 
+    @Override
     public void simulationPaused() {
     }
 
+    @Override
     public void simulationResumed() {
     }
 
