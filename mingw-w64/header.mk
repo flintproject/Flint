@@ -35,6 +35,8 @@ EXES := \
     csv2isd \
     flint-exec \
     flint-open \
+    flint-pause \
+    flint-resume \
     flint-run \
     isd2csv \
     isddiff \
