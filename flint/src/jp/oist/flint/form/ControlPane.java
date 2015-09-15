@@ -106,4 +106,12 @@ public class ControlPane extends PeripheralPane
     public void simulationDone() {
         setSimulationRunEnabled(true);
     }
+
+    @Override
+    public void simulationPaused() {
+    }
+
+    @Override
+    public void simulationResumed() {
+    }
 }

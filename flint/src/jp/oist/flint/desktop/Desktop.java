@@ -236,6 +236,22 @@ public class Desktop implements IPhspConfiguration {
         return simulator;
     }
 
+    public void pauseSimulation(File pidFile) {
+        PauseWorker worker = new PauseWorker(pidFile);
+        for (ISimulationListener listener : mSimulationListeners.getListeners(ISimulationListener.class)) {
+            worker.addPropertyChangeListener(new PauseWorkerListener(worker, listener));
+        }
+        worker.execute();
+    }
+
+    public void resumeSimulation(File pidFile) {
+        ResumeWorker worker = new ResumeWorker(pidFile);
+        for (ISimulationListener listener : mSimulationListeners.getListeners(ISimulationListener.class)) {
+            worker.addPropertyChangeListener(new ResumeWorkerListener(worker, listener));
+        }
+        worker.execute();
+    }
+
     public void addListener(IDesktopListener listener) {
         mListeners.add(IDesktopListener.class, listener);
     }

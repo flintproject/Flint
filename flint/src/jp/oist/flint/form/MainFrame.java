@@ -426,6 +426,20 @@ public class MainFrame extends javax.swing.JFrame
     }
 
     @Override
+    public void simulationPausePerformed(Object source) {
+        if (mSimulator != null) {
+            mDesktop.pauseSimulation(new File(mSimulator.getWorkingDirectory(), "pid.txt"));
+        }
+    }
+
+    @Override
+    public void simulationResumePerformed(Object source) {
+        if (mSimulator != null) {
+            mDesktop.resumeSimulation(new File(mSimulator.getWorkingDirectory(), "pid.txt"));
+        }
+    }
+
+    @Override
     public void sendToK3Performed(Object source) {
         Preferences prefs = Preferences.userRoot().node("/jp/oist/flint/session/k3");
         final String encryptedUserId = prefs.get("encryptedUserId", null); 

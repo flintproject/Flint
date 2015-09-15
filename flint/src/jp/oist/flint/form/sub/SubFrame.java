@@ -295,6 +295,14 @@ public class SubFrame extends JInternalFrame
         setEditable(true);
     }
 
+    @Override
+    public void simulationPaused() {
+    }
+
+    @Override
+    public void simulationResumed() {
+    }
+
     public void reloadJobViewer() throws IOException, ParserConfigurationException {
         mJobWindow.setVisible(false);
         mJobWindow.dispose();

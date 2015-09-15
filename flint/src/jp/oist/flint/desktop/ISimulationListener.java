@@ -17,4 +17,14 @@ public interface ISimulationListener extends EventListener {
      */
     void simulationDone();
 
+    /**
+     * This method is called once simulation pauses.
+     */
+    void simulationPaused();
+
+    /**
+     * This method is called once simulation resumes.
+     */
+    void simulationResumed();
+
 }

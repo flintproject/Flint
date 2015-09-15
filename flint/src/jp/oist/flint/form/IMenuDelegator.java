@@ -28,5 +28,9 @@ public interface IMenuDelegator {
 
     void simulationRunPerformed (Object source);
 
+    void simulationPausePerformed(Object source);
+
+    void simulationResumePerformed(Object source);
+
     void sendToK3Performed (Object source);
 }

@@ -37,6 +37,8 @@ public class MenuBar extends JMenuBar
 
     /* Item names on Menu "Control" */
     public final static String RUN = "menu.control.run";
+    public final static String PAUSE = "menu.control.pause";
+    public final static String RESUME = "menu.control.resume";
     public final static String SEND_TO_FLINT_K3 = "menu.control.sendToK3";
 
     /* Item names on Menu "Help" */
@@ -64,6 +66,8 @@ public class MenuBar extends JMenuBar
 
     /* Items on Menu "Control" */
     private JMenuItem mItemRun;
+    private JMenuItem mItemPause;
+    private JMenuItem mItemResume;
     private JMenuItem mItemSendToFlintK3;
 
     /* Items on Menu "Window" */
@@ -245,6 +249,32 @@ public class MenuBar extends JMenuBar
             }
         });
 
+        mItemPause = new JMenuItem("Pause");
+        mItemPause.setName(PAUSE);
+        mItemPause.setEnabled(false);
+        mItemPause.setAccelerator(KeyStroke.getKeyStroke(
+                KeyEvent.VK_P, KeyEvent.ALT_DOWN_MASK));
+        mItemPause.addActionListener(new ActionListener () {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (mDelegator != null)
+                    mDelegator.simulationPausePerformed(e.getSource());
+            }
+        });
+
+        mItemResume = new JMenuItem("Resume");
+        mItemResume.setName(RESUME);
+        mItemResume.setEnabled(false);
+        mItemResume.setAccelerator(KeyStroke.getKeyStroke(
+                KeyEvent.VK_S, KeyEvent.ALT_DOWN_MASK));
+        mItemResume.addActionListener(new ActionListener () {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (mDelegator != null)
+                    mDelegator.simulationResumePerformed(e.getSource());
+            }
+        });
+
         mItemSendToFlintK3 = new JMenuItem("Send to Flint K3");
         mItemSendToFlintK3.setName(SEND_TO_FLINT_K3);
         mItemSendToFlintK3.addActionListener(new ActionListener(){
@@ -257,6 +287,8 @@ public class MenuBar extends JMenuBar
         mItemSendToFlintK3.setEnabled(false);
 
         menuControl.add(mItemRun);
+        menuControl.add(mItemPause);
+        menuControl.add(mItemResume);
         menuControl.add(mItemSendToFlintK3);
 
         // create Menu "Help"
@@ -360,6 +392,8 @@ public class MenuBar extends JMenuBar
         mItemSaveConfiguration.setEnabled(false);
         mItemSaveAsPhsp.setEnabled(false);
         mItemRun.setEnabled(false);
+        mItemPause.setEnabled(true);
+        mItemResume.setEnabled(false);
         mItemSendToFlintK3.setEnabled(false);
     }
 
@@ -372,7 +406,21 @@ public class MenuBar extends JMenuBar
         mItemSaveConfiguration.setEnabled(true);
         mItemSaveAsPhsp.setEnabled(true);
         mItemRun.setEnabled(true);
+        mItemPause.setEnabled(false);
+        mItemResume.setEnabled(false);
         mItemSendToFlintK3.setEnabled(true);
+    }
+
+    @Override
+    public void simulationPaused() {
+        mItemPause.setEnabled(false);
+        mItemResume.setEnabled(true);
+    }
+
+    @Override
+    public void simulationResumed() {
+        mItemPause.setEnabled(true);
+        mItemResume.setEnabled(false);
     }
 
     /* IDesktopListener */

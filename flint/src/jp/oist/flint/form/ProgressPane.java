@@ -163,4 +163,12 @@ public class ProgressPane extends PeripheralPane
     public void simulationDone() {
         repaint();
     }
+
+    @Override
+    public void simulationPaused() {
+    }
+
+    @Override
+    public void simulationResumed() {
+    }
 }

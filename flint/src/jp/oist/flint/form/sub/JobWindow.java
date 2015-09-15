@@ -826,6 +826,12 @@ public class JobWindow extends javax.swing.JFrame
         btn_ExportAll.setEnabled(true);
     }
 
+    public void simulationPaused() {
+    }
+
+    public void simulationResumed() {
+    }
+
     /*
      * Inner classes
      */
