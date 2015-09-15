@@ -1,13 +1,13 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; flint-suspend -- suspend a simulation
+;; flint-pause -- suspend a simulation
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 This program suspends a simulation with a given pid.
 
 = Synopsis
 
-flint-suspend pid
-flint-suspend -h
+flint-pause pid
+flint-pause -h
 
 
 = Description

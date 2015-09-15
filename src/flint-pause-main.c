@@ -53,7 +53,7 @@ static int Notify(int pid)
 
 static void Usage(void)
 {
-	fprintf(stderr, "usage: flint-suspend pid\n");
+	fprintf(stderr, "usage: flint-pause pid\n");
 }
 
 int main(int argc, char *argv[])

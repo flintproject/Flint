@@ -35,9 +35,9 @@ bin_PROGRAMS = \
 	flint-exec \
 	flint-lodbg \
 	flint-open \
+	flint-pause \
 	flint-resume \
 	flint-run \
-	flint-suspend \
 	isd2csv \
 	isdbswap \
 	isdcut \
@@ -183,14 +183,14 @@ flint_open_CPPFLAGS = $(BOOST_CPPFLAGS)
 flint_open_LDADD = libflintxx.la libflint.la libsqlite3.la
 flint_open_SOURCES = flint-open-main.cc
 
+flint_pause_SOURCES = flint-pause-main.c
+
 flint_resume_SOURCES = flint-resume-main.c
 
 flint_run_CPPFLAGS = $(PROTOBUF_CFLAGS) $(BOOST_CPPFLAGS)
 flint_run_LDFLAGS = $(BOOST_FILESYSTEM_LDFLAGS) $(BOOST_SYSTEM_LDFLAGS)
 flint_run_LDADD = libflintxx.la libflint.la libsqlite3.la $(PROTOBUF_LIBS) $(BOOST_FILESYSTEM_LIBS) $(BOOST_SYSTEM_LIBS)
 flint_run_SOURCES = flint-run-main.cc
-
-flint_suspend_SOURCES = flint-suspend-main.c
 
 isd2csv_CPPFLAGS = $(BOOST_CPPFLAGS)
 isd2csv_LDFLAGS = $(BOOST_PROGRAM_OPTIONS_LDFLAGS)
