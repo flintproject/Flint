@@ -74,15 +74,11 @@ public class Component {
     }
 
     public static List<String> getFlintPauseCommand(int pid) {
-        Command command = new Command("flint-pause");
-        command.addArgument(pid);
-        return getCommandLineString(new CommandLine(command));
+        return getCommandByName("flint-pause " + pid);
     }
 
     public static List<String> getFlintResumeCommand(int pid) {
-        Command command = new Command("flint-resume");
-        command.addArgument(pid);
-        return getCommandLineString(new CommandLine(command));
+        return getCommandByName("flint-resume " + pid);
     }
 
     public static List<String> getIsd2csvCommand(File inputFile, File outputFile) {
