@@ -73,8 +73,8 @@ public class Component {
         return getCommandByName("flint-run");
     }
 
-    public static List<String> getFlintSuspendCommand(int pid) {
-        Command command = new Command("flint-suspend");
+    public static List<String> getFlintPauseCommand(int pid) {
+        Command command = new Command("flint-pause");
         command.addArgument(pid);
         return getCommandLineString(new CommandLine(command));
     }

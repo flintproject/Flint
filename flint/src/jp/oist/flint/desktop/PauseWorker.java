@@ -21,7 +21,7 @@ public class PauseWorker extends SwingWorker<Boolean, Void> {
             int pid = s.nextInt();
             if (pid <= 0)
                 return false;
-            ProcessBuilder builder = new ProcessBuilder(Component.getFlintSuspendCommand(pid));
+            ProcessBuilder builder = new ProcessBuilder(Component.getFlintPauseCommand(pid));
             Component.setUpEnvironment(builder);
             Process process = builder.start();
             return process.waitFor() == 0;
