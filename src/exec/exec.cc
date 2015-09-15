@@ -19,6 +19,7 @@
 #include "db/driver.hh"
 #include "exec/task-runner.hh"
 #include "phsp.hh"
+#include "process.h"
 #include "sedml.hh"
 
 using std::cerr;
@@ -29,6 +30,18 @@ namespace flint {
 namespace exec {
 
 namespace {
+
+bool CreatePidTxt()
+{
+	FILE *fp = std::fopen("pid.txt", "w");
+	if (!fp) {
+		std::perror("pid.txt");
+		return false;
+	}
+	WriteCurrentProcessId(fp);
+	std::fclose(fp);
+	return true;
+}
 
 class FutureTaskPool {
 public:
@@ -101,6 +114,8 @@ bool RunTasks(sqlite3 *db)
 
 bool Exec(const char *sedml_file, const char *phsp_file)
 {
+	if (!CreatePidTxt())
+		return false;
 	db::Driver driver("x.db");
 	sqlite3 *db = driver.db();
 	if (!sedml::Read(sedml_file, db))

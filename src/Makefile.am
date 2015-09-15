@@ -63,6 +63,7 @@ libflint_la_LDFLAGS = -no-undefined
 libflint_la_SOURCES = \
     database.c \
     db/query.c \
+    process.c \
     system.c
 
 libflintxx_la_CPPFLAGS = $(BOOST_CPPFLAGS) $(PROTOBUF_CFLAGS) $(SOSLIB_CFLAGS) $(SUNDIALS_CFLAGS) $(LIBSBML_CFLAGS) $(CLIBSEDML_CFLAGS) $(XML_CPPFLAGS) $(LIBZIP_CFLAGS)
