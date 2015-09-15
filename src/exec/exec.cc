@@ -18,8 +18,8 @@
 
 #include "db/driver.hh"
 #include "exec/task-runner.hh"
+#include "flint/process.h"
 #include "phsp.hh"
-#include "process.h"
 #include "sedml.hh"
 
 using std::cerr;
