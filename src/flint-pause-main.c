@@ -15,6 +15,7 @@
 static int Notify(int pid)
 {
 #ifdef _WIN32
+	/* Cf. <http://blogs.msdn.com/b/oldnewthing/archive/2006/02/23/537856.aspx> */
 	int r = 0;
 	HANDLE hSnapshot = CreateToolhelp32Snapshot(TH32CS_SNAPTHREAD, 0);
 	if (hSnapshot == INVALID_HANDLE_VALUE) {
@@ -25,7 +26,7 @@ static int Notify(int pid)
 	te.dwSize = sizeof(te);
 	if (Thread32First(hSnapshot, &te)) {
 		do {
-			if (te.dwSize == FIELD_OFFSET(THREADENTRY32, th32OwnerProcessID) + sizeof(te.th32OwnerProcessID) &&
+			if (te.dwSize >= FIELD_OFFSET(THREADENTRY32, th32OwnerProcessID) + sizeof(te.th32OwnerProcessID) &&
 				te.th32OwnerProcessID == (DWORD)pid) {
 				HANDLE hThread = OpenThread(THREAD_SUSPEND_RESUME, FALSE, te.th32ThreadID);
 				if (!hThread) {
@@ -39,6 +40,7 @@ static int Notify(int pid)
 					goto bail;
 				}
 			}
+			te.dwSize = sizeof(te);
 		} while (Thread32Next(hSnapshot, &te));
 	}
 	r = 1;
