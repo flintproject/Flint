@@ -27,7 +27,7 @@ BOOST_AUTO_TEST_CASE(Izhikevich_2003) {
 	std::vector<std::string> sims;
 	sql.Table("sims", &sims);
 	BOOST_CHECK_EQUAL(sims.size(), 1u);
-	BOOST_CHECK_EQUAL(sims[0], "euler 300.0 0.01 1");
+	BOOST_CHECK_EQUAL(sims[0], "euler 300.0 0.01 1 100.0");
 
 	std::vector<std::string> dgs;
 	sql.Table("dgs", &dgs);

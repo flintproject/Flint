@@ -91,6 +91,13 @@ bool Job(const char *task_dir,
 	sprintf(status_file, "%s/status", job_dir);
 
 	job::Option option;
+	{
+		task::ConfigReader reader(db);
+		if (!reader.Read())
+			return false;
+		option.granularity = reader.granularity();
+		option.output_start_time = reader.output_start_time();
+	}
 	char before_bc_file[kShort];
 	sprintf(before_bc_file, "%s/before-bc", task_dir);
 	if (boost::filesystem::exists(before_bc_file)) {
@@ -126,23 +133,26 @@ bool Job(const char *task_dir,
 			 << ": " << ec << endl;
 		return false;
 	}
-	FILE *ifp = fopen(start_file, "rb");
-	if (!ifp) {
-		perror(start_file);
-		return false;
-	}
 	FILE *ofp = fopen(output_file, "ab");
 	if (!ofp) {
 		perror(output_file);
-		fclose(ifp);
 		return false;
 	}
-	if (!filter::Cut(filter_file, ifp, ofp)) {
-		fclose(ofp);
+	// write initial values only when output_start_time is 0.
+	if (option.output_start_time == 0) {
+		FILE *ifp = fopen(start_file, "rb");
+		if (!ifp) {
+			perror(start_file);
+			fclose(ofp);
+			return false;
+		}
+		if (!filter::Cut(filter_file, ifp, ofp)) {
+			fclose(ofp);
+			fclose(ifp);
+			return false;
+		}
 		fclose(ifp);
-		return false;
 	}
-	fclose(ifp);
 	char layout_file[kShort];
 	sprintf(layout_file, "%s/layout", task_dir);
 	char bc_file[kShort];

@@ -26,6 +26,8 @@ bool Store(sqlite3 *db,
 		   const char *target_layout_file, const char *target_data_file);
 
 struct Option {
+	size_t granularity;
+	double output_start_time;
 	const char *pre_file;
 	const char *post_file;
 	const char *filter_file;

@@ -94,6 +94,17 @@ int BindGranularity(const struct sedml_uniformtimecourse *utc,
 	return e == SQLITE_OK;
 }
 
+bool BindOutputStartTime(const struct sedml_uniformtimecourse *utc,
+						 sqlite3_stmt *stmt)
+{
+	int e = sqlite3_bind_double(stmt, 5, utc->outputStartTime);
+	if (e != SQLITE_OK) {
+		cerr << "failed to bind output_start_time: " << e << endl;
+		return false;
+	}
+	return true;
+}
+
 }
 
 bool Read(const char *sedml_file, sqlite3 *db)
@@ -136,7 +147,7 @@ bool Read(const char *sedml_file, sqlite3 *db)
 		goto bail;
 	if (!CreateTable(db, "models", "(model_path TEXT, absolute_path TEXT)"))
 		goto bail;
-	if (!CreateTable(db, "sims", "(algorithm TEXT, length REAL, step REAL, granularity INTEGER)"))
+	if (!CreateTable(db, "sims", "(algorithm TEXT, length REAL, step REAL, granularity INTEGER, output_start_time REAL)"))
 		goto bail;
 	if (!CreateTable(db, "dgs", "(task_id INTEGER, variable TEXT)"))
 		goto bail;
@@ -211,7 +222,7 @@ bool Read(const char *sedml_file, sqlite3 *db)
 		const struct sedml_uniformtimecourse *utc;
 		utc = (const struct sedml_uniformtimecourse *)simulation;
 
-		e = sqlite3_prepare_v2(db, "INSERT INTO sims VALUES (?, ?, ?, ?)",
+		e = sqlite3_prepare_v2(db, "INSERT INTO sims VALUES (?, ?, ?, ?, ?)",
 							   -1, &stmt, NULL);
 		if (e != SQLITE_OK) {
 			fprintf(stderr, "failed to prepare statement: %d\n", e);
@@ -237,6 +248,8 @@ bool Read(const char *sedml_file, sqlite3 *db)
 			sqlite3_finalize(stmt);
 			goto bail;
 		}
+		if (!BindOutputStartTime(utc, stmt))
+			goto bail;
 		e = sqlite3_step(stmt);
 		if (e != SQLITE_DONE) {
 			fprintf(stderr, "failed to step statement: %d\n", e);

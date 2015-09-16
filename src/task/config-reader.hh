@@ -16,6 +16,7 @@ public:
 	double length() const {return length_;}
 	double step() const {return step_;}
 	int granularity() const {return granularity_;}
+	double output_start_time() const {return output_start_time_;}
 
 	bool Read();
 
@@ -35,6 +36,7 @@ private:
 	double length_;
 	double step_;
 	int granularity_;
+	double output_start_time_;
 };
 
 }

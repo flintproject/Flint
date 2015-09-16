@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <sedML xmlns='http://sed-ml.org/' xmlns:math='http://www.w3.org/1998/Math/MathML' xmlns:flint='http://flintk3.org/namespace/flint' version='1' level='1'>
   <listOfSimulations>
-    <uniformTimeCourse id='sim0' name='Simulation 0' initialTime='0' outputStartTime='0' outputEndTime='300' numberOfPoints='30000' flint:granularity='1'>
+    <uniformTimeCourse id='sim0' name='Simulation 0' initialTime='0' outputStartTime='100' outputEndTime='300' numberOfPoints='30000' flint:granularity='1'>
       <algorithm kisaoID='KISAO:0000030'/>
     </uniformTimeCourse>
   </listOfSimulations>

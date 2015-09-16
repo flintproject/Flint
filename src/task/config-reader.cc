@@ -16,11 +16,12 @@ namespace flint {
 namespace task {
 
 ConfigReader::ConfigReader(sqlite3 *db)
-	: db::StatementDriver(db, "SELECT method, length, step, granularity FROM config")
+	: db::StatementDriver(db, "SELECT method, length, step, granularity, output_start_time FROM config")
 	, method_(NULL)
 	, length_(0)
 	, step_(0)
 	, granularity_(0)
+	, output_start_time_(0)
 {}
 
 ConfigReader::~ConfigReader()
@@ -63,6 +64,14 @@ bool ConfigReader::Read()
 	granularity_ = sqlite3_column_int(stmt(), 3);
 	if (granularity_ <= 0) {
 		cerr << "granularity is non-positive" << endl;
+		return false;
+	}
+
+	output_start_time_ = sqlite3_column_double(stmt(), 4);
+	if (output_start_time_ < 0) {
+		cerr << "output_start_time is negative: "
+			 << output_start_time_
+			 << endl;
 		return false;
 	}
 

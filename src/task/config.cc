@@ -40,7 +40,7 @@ bool Config(int id, sqlite3 *db)
 
 	sprintf(query,
 			"INSERT INTO m%d.config"
-			" SELECT sims.algorithm, sims.length, sims.step, sims.granularity"
+			" SELECT sims.algorithm, sims.length, sims.step, sims.granularity, sims.output_start_time"
 			" FROM tasks LEFT JOIN sims ON tasks.sim_id = sims.rowid"
 			" WHERE tasks.rowid = '%d'",
 			id, id);

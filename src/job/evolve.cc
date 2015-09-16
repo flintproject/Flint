@@ -33,7 +33,6 @@
 #include "runtime/history.h"
 #include "runtime/processor.h"
 #include "runtime/timeseries.h"
-#include "task/config-reader.hh"
 #include "ts.hh"
 
 using std::cerr;
@@ -290,13 +289,8 @@ bool Evolve(sqlite3 *db,
 			FILE *output_fp,
 			const Option &option)
 {
-	size_t granularity = 1;
-	{
-		task::ConfigReader reader(db);
-		if (!reader.Read())
-			return false;
-		granularity = reader.granularity();
-	}
+	size_t granularity = option.granularity;
+	double output_start_time = option.output_start_time;
 
 	bool with_filter = option.filter_file != NULL;
 	bool with_pre = option.pre_file != NULL;
@@ -473,7 +467,7 @@ bool Evolve(sqlite3 *db,
 	}
 	char p, q = 0;
 
-	size_t g = 0;
+	size_t g = (output_start_time == 0) ? 0 : granularity-1;
 
 	bool result = true;
 	// execute bytecode
@@ -504,19 +498,21 @@ bool Evolve(sqlite3 *db,
 			}
 		}
 
-		if (granularity <= 1 || ++g == granularity) {
-			if (with_filter) {
-				if (!writer->Write(data.get(), output_fp)) {
-					return false;
+		if (output_start_time <= data[kIndexTime]) {
+			if (granularity <= 1 || ++g == granularity) {
+				if (with_filter) {
+					if (!writer->Write(data.get(), output_fp)) {
+						return false;
+					}
+				} else {
+					// output the first layer of data
+					if (fwrite(data.get(), sizeof(double), layer_size, output_fp) != layer_size) {
+						cerr << "failed to write output" << endl;
+						return false;
+					}
 				}
-			} else {
-				// output the first layer of data
-				if (fwrite(data.get(), sizeof(double), layer_size, output_fp) != layer_size) {
-					cerr << "failed to write output" << endl;
-					return false;
-				}
+				g = 0;
 			}
-			g = 0;
 		}
 
 		if (with_status) {

@@ -163,11 +163,11 @@ int CreateTsfiles(sqlite3 *db)
 
 int CreateConfig(sqlite3 *db)
 {
-	if (!CreateTable(db, "config", "(method TEXT, length REAL, step REAL, granularity INTEGER)"))
+	if (!CreateTable(db, "config", "(method TEXT, length REAL, step REAL, granularity INTEGER, output_start_time REAL)"))
 		return 0;
 	char *em;
 	int e;
-	e = sqlite3_exec(db, "INSERT INTO config VALUES (NULL, NULL, NULL, 1)",
+	e = sqlite3_exec(db, "INSERT INTO config VALUES (NULL, NULL, NULL, 1, 0)",
 					 NULL, NULL, &em);
 	if (e != SQLITE_OK) {
 		fprintf(stderr, "failed to insert config: %d: %s\n", e, em);
