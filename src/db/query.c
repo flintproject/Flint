@@ -167,7 +167,7 @@ int CreateConfig(sqlite3 *db)
 		return 0;
 	char *em;
 	int e;
-	e = sqlite3_exec(db, "INSERT INTO config VALUES (NULL, NULL, NULL, NULL)",
+	e = sqlite3_exec(db, "INSERT INTO config VALUES (NULL, NULL, NULL, 1)",
 					 NULL, NULL, &em);
 	if (e != SQLITE_OK) {
 		fprintf(stderr, "failed to insert config: %d: %s\n", e, em);

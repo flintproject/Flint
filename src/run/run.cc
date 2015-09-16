@@ -119,9 +119,6 @@ bool Run(const char *input, int size)
 		if (option.has_granularity()) {
 			if (!writer.Write(option.granularity()))
 				return false;
-		} else {
-			if (!writer.Write(1))
-				return false;
 		}
 	}
 	task::ConfigReader reader(db);
