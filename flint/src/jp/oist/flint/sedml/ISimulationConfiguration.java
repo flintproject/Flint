@@ -17,6 +17,8 @@ public interface ISimulationConfiguration {
 
     int getGranularity();
 
+    String getOutputStartTime();
+
     ArrayList<String> getKeys();
 
     int getFilterSyntax();

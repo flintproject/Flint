@@ -140,11 +140,10 @@ public class SubFrame extends JInternalFrame
             options.addElement(response.getTimeUnit(i).getName());
         }
 
-        pnl_GeneralSetting.setInitializedLengthUnitItems(options);
+        pnl_GeneralSetting.initializeUnitItems(options);
         pnl_GeneralSetting.setSelectedLengthUnit(response.getLengthUnit().getName());
-
-        pnl_GeneralSetting.setInitializedStepUnitItems(options);
         pnl_GeneralSetting.setSelectedStepUnit(response.getStepUnit().getName());
+        pnl_GeneralSetting.setSelectedOutputStartTimeUnit(response.getLengthUnit().getName());
 
         pnl_VariableSelection.setSelectedFilterSyntax(1);
 
@@ -466,6 +465,11 @@ public class SubFrame extends JInternalFrame
     @Override
     public int getGranularity() {
         return pnl_GeneralSetting.getGranularity();
+    }
+
+    @Override
+    public String getOutputStartTime() {
+        return pnl_GeneralSetting.getOutputStartTime();
     }
 
     @Override

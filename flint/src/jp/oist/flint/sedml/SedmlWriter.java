@@ -42,8 +42,8 @@ public class SedmlWriter {
             BigDecimal nop = new BigDecimal(config.getLength()).divide(new BigDecimal(config.getStep()));
             int numberOfPoints = nop.intValueExact();
 
-            writer.append(String.format("    <uniformTimeCourse id='sim%s' name='Simulation %s' initialTime='0' outputStartTime='0' outputEndTime='%s' numberOfPoints='%s' flint:granularity='%s'>\n", 
-                    i, i, config.getLength(), numberOfPoints, config.getGranularity()));
+            writer.append(String.format("    <uniformTimeCourse id='sim%s' name='Simulation %s' initialTime='0' outputStartTime='%s' outputEndTime='%s' numberOfPoints='%s' flint:granularity='%s'>\n", 
+                                        i, i, config.getOutputStartTime(), config.getLength(), numberOfPoints, config.getGranularity()));
             writer.append("      <algorithm kisaoID='KISAO:");
             String kisaoId = IntegrationMethodFormat.kisaoId(config.getIntegrationMethod());
             if (kisaoId == null)
@@ -111,7 +111,9 @@ public class SedmlWriter {
             writer.append("  </annotation>\n");
         }
         writer.append("  <listOfSimulations>\n");
-        writer.append("    <uniformTimeCourse id='sim0' name='Simulation 0' initialTime='0' outputStartTime='0' outputEndTime='" + config.getLength() + "' numberOfPoints='" + numberOfPoints + "' flint:granularity='" + config.getGranularity() + "'>\n");
+        writer.append("    <uniformTimeCourse id='sim0' name='Simulation 0' initialTime='0' outputStartTime='");
+        writer.append(config.getOutputStartTime());
+        writer.append("' outputEndTime='" + config.getLength() + "' numberOfPoints='" + numberOfPoints + "' flint:granularity='" + config.getGranularity() + "'>\n");
         writer.append("      <algorithm kisaoID='KISAO:");
         String kisaoId = IntegrationMethodFormat.kisaoId(config.getIntegrationMethod());
         if (kisaoId == null)

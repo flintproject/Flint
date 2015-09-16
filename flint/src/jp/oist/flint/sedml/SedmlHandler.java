@@ -12,6 +12,7 @@ public class SedmlHandler extends DefaultHandler implements ISimulationConfigura
 
     protected boolean mDone;
 
+    protected String mOutputStartTime;
     protected String mOutputEndTime;
     protected String mNumberOfPoints;
     protected String mGranularity;
@@ -59,6 +60,11 @@ public class SedmlHandler extends DefaultHandler implements ISimulationConfigura
     @Override
     public int getGranularity() {
         return Integer.parseInt(mGranularity);
+    }
+
+    @Override
+    public String getOutputStartTime() {
+        return mOutputStartTime;
     }
 
     @Override
@@ -125,6 +131,9 @@ public class SedmlHandler extends DefaultHandler implements ISimulationConfigura
                 while (i < attributes.getLength()) {
                     String aName = attributes.getLocalName(i);
                     switch (aName) {
+                    case "outputStartTime":
+                        mOutputStartTime = attributes.getValue(i);
+                        break;
                     case "outputEndTime":
                         mOutputEndTime = attributes.getValue(i);
                         break;

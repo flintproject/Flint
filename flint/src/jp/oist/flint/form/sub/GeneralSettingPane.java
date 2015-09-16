@@ -39,54 +39,39 @@ public class GeneralSettingPane extends javax.swing.JPanel
         return cmb_Integration_Method.getSelectedIndex();
     }
 
-    public void setInitializedLengthUnitItems (Vector v) {
+    public void initializeUnitItems(Vector<String> v) {
         cmb_Length_Unit.removeAllItems();
-        int length = v.size();
-        for (int i=0; i<length; i++) 
-            cmb_Length_Unit.addItem(v.get(i));
+        cmb_Step_Unit.removeAllItems();
+        cmb_outputStartTime_Unit.removeAllItems();
+        for (String u : v) {
+            cmb_Length_Unit.addItem(u);
+            cmb_Step_Unit.addItem(u);
+            cmb_outputStartTime_Unit.addItem(u);
+        }
     }
 
     public void setSelectedLengthUnit (Object v) {
         cmb_Length_Unit.setSelectedItem(v);
     }
 
-    public int getSelectedLengthUnitIndex () {
-        return cmb_Length_Unit.getSelectedIndex();
-    }
-
     public void setSelectedStepUnit(Object v) {
         cmb_Step_Unit.setSelectedItem(v);
-    }
-
-    public void setInitializedStepUnitItems (Vector v) {
-        cmb_Step_Unit.removeAllItems();
-        int length = v.size();
-        for (int i=0; i<length; i++) 
-            cmb_Step_Unit.addItem(v.get(i));
-    }
-
-    public int getSelectedStepUnitIndex () {
-        return cmb_Step_Unit.getSelectedIndex();
     }
 
     public void setGranularity (Object v) {
         list_Granularity.setValue(v);
     }
 
-    public String getSimulationLength () {
-        return txt_Simulation_Length.getText();
-    }
-
     public void setSimulationLegnth (String v) {
         txt_Simulation_Length.setText(v);
     }
 
-    public String getSimulationStep () {
-        return txt_Simulation_Step.getText();
-    }
-
     public void setSimulationStep (String v) {
         txt_Simulation_Step.setText(v);
+    }
+
+    public void setSelectedOutputStartTimeUnit(Object v) {
+        cmb_outputStartTime_Unit.setSelectedItem(v);
     }
 
     public Ipc.IntegrationMethod getIntegrationMethod() {
@@ -109,12 +94,22 @@ public class GeneralSettingPane extends javax.swing.JPanel
         return Integer.parseInt(list_Granularity.getValue().toString());
     }
 
+    public String getOutputStartTime() {
+        return TimeUnitConverter.convert(txt_outputStartTime.getText(),
+                                         getSelectedOutputStartTimeUnit(),
+                                         mModelProbeResponse.getStepUnit());
+    }
+
     private Ipc.TimeUnit getSelectedLengthUnit() {
         return mModelProbeResponse.getTimeUnit(cmb_Length_Unit.getSelectedIndex());
     }
 
     private Ipc.TimeUnit getSelectedStepUnit() {
         return mModelProbeResponse.getTimeUnit(cmb_Step_Unit.getSelectedIndex());
+    }
+
+    private Ipc.TimeUnit getSelectedOutputStartTimeUnit() {
+        return mModelProbeResponse.getTimeUnit(cmb_outputStartTime_Unit.getSelectedIndex());
     }
 
     @Override
@@ -125,11 +120,13 @@ public class GeneralSettingPane extends javax.swing.JPanel
             cmb_Integration_Method.setEnabled(enabled);
             cmb_Length_Unit.setEnabled(enabled);
             cmb_Step_Unit.setEnabled(enabled);
+            cmb_outputStartTime_Unit.setEnabled(enabled);
 
             lbl_Data_Sampling.setEnabled(enabled);
             lbl_Integration_Method.setEnabled(enabled);
             lbl_Simulation_Length.setEnabled(enabled);
             lbl_Simulation_Step.setEnabled(enabled);
+            lbl_Starting_from.setEnabled(enabled);
             lbl_data_per.setEnabled(enabled);
             lbl_steps.setEnabled(enabled);
 
@@ -137,6 +134,7 @@ public class GeneralSettingPane extends javax.swing.JPanel
 
             txt_Simulation_Length.setEnabled(enabled);
             txt_Simulation_Step.setEnabled(enabled);
+            txt_outputStartTime.setEnabled(enabled);
         }
     }
 
@@ -169,7 +167,11 @@ public class GeneralSettingPane extends javax.swing.JPanel
         lbl_data_per = new javax.swing.JLabel();
         list_Granularity = new javax.swing.JSpinner();
         lbl_steps = new javax.swing.JLabel();
-        pnl_Enable_Labeled_Format = new javax.swing.JPanel();
+        pnl_outputStartTime = new javax.swing.JPanel();
+        lbl_Starting_from = new javax.swing.JLabel();
+        txt_outputStartTime = new javax.swing.JTextField();
+        spacer2 = new javax.swing.JPanel();
+        cmb_outputStartTime_Unit = new javax.swing.JComboBox();
 
         setAlignmentX(0.0F);
         setAlignmentY(0.0F);
@@ -262,7 +264,6 @@ public class GeneralSettingPane extends javax.swing.JPanel
         txt_Simulation_Step.setMinimumSize(new java.awt.Dimension(130, 19));
         txt_Simulation_Step.setPreferredSize(new java.awt.Dimension(130, 19));
         txt_Simulation_Step.addActionListener(new java.awt.event.ActionListener() {
-            @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 txt_Simulation_StepActionPerformed(evt);
             }
@@ -328,14 +329,46 @@ public class GeneralSettingPane extends javax.swing.JPanel
 
         pnl_Data_Output_Forms.add(pnl_Data_Sampling);
 
-        pnl_Enable_Labeled_Format.setAlignmentY(0.0F);
-        pnl_Enable_Labeled_Format.setAutoscrolls(true);
-        pnl_Enable_Labeled_Format.setMaximumSize(new java.awt.Dimension(32767, 26));
-        pnl_Enable_Labeled_Format.setMinimumSize(new java.awt.Dimension(248, 26));
-        java.awt.FlowLayout flowLayout4 = new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 0, 5);
-        flowLayout4.setAlignOnBaseline(true);
-        pnl_Enable_Labeled_Format.setLayout(flowLayout4);
-        pnl_Data_Output_Forms.add(pnl_Enable_Labeled_Format);
+        pnl_outputStartTime.setMaximumSize(new java.awt.Dimension(32767, 32));
+        pnl_outputStartTime.setMinimumSize(new java.awt.Dimension(0, 32));
+        pnl_outputStartTime.setPreferredSize(new java.awt.Dimension(713, 32));
+        java.awt.FlowLayout flowLayout5 = new java.awt.FlowLayout(java.awt.FlowLayout.LEFT);
+        flowLayout5.setAlignOnBaseline(true);
+        pnl_outputStartTime.setLayout(flowLayout5);
+
+        lbl_Starting_from.setText("Starting from");
+        lbl_Starting_from.setMaximumSize(new java.awt.Dimension(180, 15));
+        lbl_Starting_from.setMinimumSize(new java.awt.Dimension(180, 15));
+        lbl_Starting_from.setPreferredSize(new java.awt.Dimension(180, 15));
+        pnl_outputStartTime.add(lbl_Starting_from);
+
+        txt_outputStartTime.setText("0");
+        txt_outputStartTime.setMinimumSize(new java.awt.Dimension(130, 19));
+        txt_outputStartTime.setPreferredSize(new java.awt.Dimension(130, 19));
+        pnl_outputStartTime.add(txt_outputStartTime);
+
+        spacer2.setMaximumSize(new java.awt.Dimension(8, 16));
+        spacer2.setMinimumSize(new java.awt.Dimension(8, 16));
+
+        javax.swing.GroupLayout spacer2Layout = new javax.swing.GroupLayout(spacer2);
+        spacer2.setLayout(spacer2Layout);
+        spacer2Layout.setHorizontalGroup(
+            spacer2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 8, Short.MAX_VALUE)
+        );
+        spacer2Layout.setVerticalGroup(
+            spacer2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 16, Short.MAX_VALUE)
+        );
+
+        pnl_outputStartTime.add(spacer2);
+
+        cmb_outputStartTime_Unit.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "milli_second", "second" }));
+        cmb_outputStartTime_Unit.setMinimumSize(new java.awt.Dimension(120, 24));
+        cmb_outputStartTime_Unit.setPreferredSize(new java.awt.Dimension(180, 24));
+        pnl_outputStartTime.add(cmb_outputStartTime_Unit);
+
+        pnl_Data_Output_Forms.add(pnl_outputStartTime);
 
         add(pnl_Data_Output_Forms);
     }// </editor-fold>//GEN-END:initComponents
@@ -349,23 +382,27 @@ public class GeneralSettingPane extends javax.swing.JPanel
     private javax.swing.JComboBox cmb_Integration_Method;
     private javax.swing.JComboBox cmb_Length_Unit;
     private javax.swing.JComboBox cmb_Step_Unit;
+    private javax.swing.JComboBox cmb_outputStartTime_Unit;
     private javax.swing.JLabel lbl_Data_Sampling;
     private javax.swing.JLabel lbl_Integration_Method;
     private javax.swing.JLabel lbl_Simulation_Length;
     private javax.swing.JLabel lbl_Simulation_Step;
+    private javax.swing.JLabel lbl_Starting_from;
     private javax.swing.JLabel lbl_data_per;
     private javax.swing.JLabel lbl_steps;
     private javax.swing.JSpinner list_Granularity;
     private javax.swing.JPanel pnl_Data_Output_Forms;
     private javax.swing.JPanel pnl_Data_Sampling;
-    private javax.swing.JPanel pnl_Enable_Labeled_Format;
     private javax.swing.JPanel pnl_Numerial_Integration_Method;
     private javax.swing.JPanel pnl_Numerical_Integration_Method_Forms;
     private javax.swing.JPanel pnl_Simulation_Length;
     private javax.swing.JPanel pnl_Simulation_Time_Step;
+    private javax.swing.JPanel pnl_outputStartTime;
     private javax.swing.JPanel spacer0;
     private javax.swing.JPanel spacer1;
+    private javax.swing.JPanel spacer2;
     private javax.swing.JTextField txt_Simulation_Length;
     private javax.swing.JTextField txt_Simulation_Step;
+    private javax.swing.JTextField txt_outputStartTime;
     // End of variables declaration//GEN-END:variables
 }

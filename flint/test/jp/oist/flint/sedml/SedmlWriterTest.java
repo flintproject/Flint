@@ -45,6 +45,11 @@ public class SedmlWriterTest {
         }
 
         @Override
+        public String getOutputStartTime() {
+            return "3.14";
+        }
+
+        @Override
         public ArrayList<String> getKeys() {
             ArrayList<String> keys = new ArrayList<>();
             keys.add("028dc220-92ad-11e2-ad45-af668ae8fba2:x");
@@ -98,7 +103,7 @@ public class SedmlWriterTest {
                      "    <flint:filter syntax='2' pattern='e2' column='1' />\n" +
                      "  </annotation>\n" +
                      "  <listOfSimulations>\n" +
-                     "    <uniformTimeCourse id='sim0' name='Simulation 0' initialTime='0' outputStartTime='0' outputEndTime='10' numberOfPoints='2000' flint:granularity='50'>\n" +
+                     "    <uniformTimeCourse id='sim0' name='Simulation 0' initialTime='0' outputStartTime='3.14' outputEndTime='10' numberOfPoints='2000' flint:granularity='50'>\n" +
                      "      <algorithm kisaoID='KISAO:0000032'/>\n" +
                      "    </uniformTimeCourse>\n" +
                      "  </listOfSimulations>\n" +

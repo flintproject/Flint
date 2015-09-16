@@ -69,6 +69,7 @@ public class SedmlHandler2 extends SedmlHandler
                 }
                 if (id != null) {
                     Map<String, String> data = new HashMap<>();
+                    data.put("outputStartTime", mOutputStartTime);
                     data.put("outputEndTime", mOutputEndTime);
                     data.put("numberOfPoints", mNumberOfPoints);
                     data.put("granularity", mGranularity);
@@ -187,6 +188,7 @@ public class SedmlHandler2 extends SedmlHandler
 
             SimulationConfiguration conf = new SimulationConfiguration();
             conf.mKisaoId        = (String)simInfo.get("kisaoId");
+            conf.mOutputStartTime  = (String)simInfo.get("outputStartTime");
             conf.mOutputEndTime  = (String)simInfo.get("outputEndTime");
             conf.mNumberOfPoints = (String)simInfo.get("numberOfPoints");
             conf.mGranularity    = (String)simInfo.get("granularity");
@@ -245,6 +247,7 @@ public class SedmlHandler2 extends SedmlHandler
         implements ISimulationConfiguration {
 
         private String mModelPath;
+        private String mOutputStartTime;
         private String mOutputEndTime;
         private String mNumberOfPoints;
         private String mGranularity;
@@ -305,6 +308,11 @@ public class SedmlHandler2 extends SedmlHandler
 
         void setGranularity (String granularity) {
             mGranularity = granularity;
+        }
+
+        @Override
+        public String getOutputStartTime() {
+            return mOutputStartTime;
         }
 
         @Override
