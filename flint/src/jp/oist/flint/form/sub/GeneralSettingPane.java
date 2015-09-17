@@ -162,16 +162,16 @@ public class GeneralSettingPane extends javax.swing.JPanel
         spacer1 = new javax.swing.JPanel();
         cmb_Step_Unit = new javax.swing.JComboBox();
         pnl_Data_Output_Forms = new javax.swing.JPanel();
-        pnl_Data_Sampling = new javax.swing.JPanel();
-        lbl_Data_Sampling = new javax.swing.JLabel();
-        lbl_data_per = new javax.swing.JLabel();
-        list_Granularity = new javax.swing.JSpinner();
-        lbl_steps = new javax.swing.JLabel();
         pnl_outputStartTime = new javax.swing.JPanel();
         lbl_Starting_from = new javax.swing.JLabel();
         txt_outputStartTime = new javax.swing.JTextField();
         spacer2 = new javax.swing.JPanel();
         cmb_outputStartTime_Unit = new javax.swing.JComboBox();
+        pnl_Data_Sampling = new javax.swing.JPanel();
+        lbl_Data_Sampling = new javax.swing.JLabel();
+        lbl_data_per = new javax.swing.JLabel();
+        list_Granularity = new javax.swing.JSpinner();
+        lbl_steps = new javax.swing.JLabel();
 
         setAlignmentX(0.0F);
         setAlignmentY(0.0F);
@@ -299,36 +299,6 @@ public class GeneralSettingPane extends javax.swing.JPanel
         pnl_Data_Output_Forms.setMaximumSize(new java.awt.Dimension(32768, 32768));
         pnl_Data_Output_Forms.setLayout(new javax.swing.BoxLayout(pnl_Data_Output_Forms, javax.swing.BoxLayout.Y_AXIS));
 
-        pnl_Data_Sampling.setAlignmentY(0.0F);
-        pnl_Data_Sampling.setMaximumSize(new java.awt.Dimension(32767, 26));
-        pnl_Data_Sampling.setMinimumSize(new java.awt.Dimension(318, 26));
-        java.awt.FlowLayout flowLayout3 = new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 4, 5);
-        flowLayout3.setAlignOnBaseline(true);
-        pnl_Data_Sampling.setLayout(flowLayout3);
-
-        lbl_Data_Sampling.setLabelFor(list_Granularity);
-        lbl_Data_Sampling.setText("Data Sampling");
-        lbl_Data_Sampling.setMaximumSize(new java.awt.Dimension(180, 15));
-        lbl_Data_Sampling.setMinimumSize(new java.awt.Dimension(180, 15));
-        lbl_Data_Sampling.setPreferredSize(new java.awt.Dimension(180, 15));
-        pnl_Data_Sampling.add(lbl_Data_Sampling);
-
-        lbl_data_per.setText("1 data per ");
-        pnl_Data_Sampling.add(lbl_data_per);
-
-        list_Granularity.setModel(new javax.swing.SpinnerNumberModel(Integer.valueOf(1), Integer.valueOf(1), null, Integer.valueOf(1)));
-        list_Granularity.setAutoscrolls(true);
-        list_Granularity.setMaximumSize(new java.awt.Dimension(32767, 20));
-        list_Granularity.setMinimumSize(new java.awt.Dimension(35, 20));
-        list_Granularity.setPreferredSize(new java.awt.Dimension(60, 20));
-        list_Granularity.setValue(1);
-        pnl_Data_Sampling.add(list_Granularity);
-
-        lbl_steps.setText("step(s)");
-        pnl_Data_Sampling.add(lbl_steps);
-
-        pnl_Data_Output_Forms.add(pnl_Data_Sampling);
-
         pnl_outputStartTime.setMaximumSize(new java.awt.Dimension(32767, 32));
         pnl_outputStartTime.setMinimumSize(new java.awt.Dimension(0, 32));
         pnl_outputStartTime.setPreferredSize(new java.awt.Dimension(713, 32));
@@ -369,6 +339,36 @@ public class GeneralSettingPane extends javax.swing.JPanel
         pnl_outputStartTime.add(cmb_outputStartTime_Unit);
 
         pnl_Data_Output_Forms.add(pnl_outputStartTime);
+
+        pnl_Data_Sampling.setAlignmentY(0.0F);
+        pnl_Data_Sampling.setMaximumSize(new java.awt.Dimension(32767, 26));
+        pnl_Data_Sampling.setMinimumSize(new java.awt.Dimension(318, 26));
+        java.awt.FlowLayout flowLayout3 = new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 4, 5);
+        flowLayout3.setAlignOnBaseline(true);
+        pnl_Data_Sampling.setLayout(flowLayout3);
+
+        lbl_Data_Sampling.setLabelFor(list_Granularity);
+        lbl_Data_Sampling.setText("Data Sampling");
+        lbl_Data_Sampling.setMaximumSize(new java.awt.Dimension(180, 15));
+        lbl_Data_Sampling.setMinimumSize(new java.awt.Dimension(180, 15));
+        lbl_Data_Sampling.setPreferredSize(new java.awt.Dimension(180, 15));
+        pnl_Data_Sampling.add(lbl_Data_Sampling);
+
+        lbl_data_per.setText("1 data per ");
+        pnl_Data_Sampling.add(lbl_data_per);
+
+        list_Granularity.setModel(new javax.swing.SpinnerNumberModel(Integer.valueOf(1), Integer.valueOf(1), null, Integer.valueOf(1)));
+        list_Granularity.setAutoscrolls(true);
+        list_Granularity.setMaximumSize(new java.awt.Dimension(32767, 20));
+        list_Granularity.setMinimumSize(new java.awt.Dimension(35, 20));
+        list_Granularity.setPreferredSize(new java.awt.Dimension(60, 20));
+        list_Granularity.setValue(1);
+        pnl_Data_Sampling.add(list_Granularity);
+
+        lbl_steps.setText("step(s)");
+        pnl_Data_Sampling.add(lbl_steps);
+
+        pnl_Data_Output_Forms.add(pnl_Data_Sampling);
 
         add(pnl_Data_Output_Forms);
     }// </editor-fold>//GEN-END:initComponents
