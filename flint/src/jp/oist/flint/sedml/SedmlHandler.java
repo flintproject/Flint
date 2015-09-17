@@ -92,16 +92,6 @@ public class SedmlHandler extends DefaultHandler implements ISimulationConfigura
     // extends DefaultHandler
 
     @Override
-    public void characters(char[] ch, int start, int end) throws SAXException {
-        if (mDone) return;
-    }
-
-    @Override
-    public void endElement(String uri, String localName, String qName) throws SAXException {
-        if (mDone) return;
-    }
-
-    @Override
     public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
         if (mDone) return;
         switch (localName) {
