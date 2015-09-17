@@ -253,11 +253,6 @@ public class GeneralSettingPane extends javax.swing.JPanel
         txt_Simulation_Step.setText("0.01");
         txt_Simulation_Step.setMinimumSize(new java.awt.Dimension(130, 19));
         txt_Simulation_Step.setPreferredSize(new java.awt.Dimension(130, 19));
-        txt_Simulation_Step.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txt_Simulation_StepActionPerformed(evt);
-            }
-        });
         pnl_Simulation_Time_Step.add(txt_Simulation_Step);
 
         spacer1.setMaximumSize(new java.awt.Dimension(8, 16));
@@ -362,10 +357,6 @@ public class GeneralSettingPane extends javax.swing.JPanel
 
         add(pnl_Data_Output_Forms);
     }// </editor-fold>//GEN-END:initComponents
-
-    private void txt_Simulation_StepActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txt_Simulation_StepActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txt_Simulation_StepActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

@@ -418,9 +418,6 @@
                   <Dimension value="[130, 19]"/>
                 </Property>
               </Properties>
-              <Events>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="txt_Simulation_StepActionPerformed"/>
-              </Events>
             </Component>
             <Container class="javax.swing.JPanel" name="spacer1">
               <Properties>
