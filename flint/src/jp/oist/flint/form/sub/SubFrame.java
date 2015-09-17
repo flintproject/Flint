@@ -20,7 +20,6 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Vector;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -134,10 +133,10 @@ public class SubFrame extends JInternalFrame
         pnl_GeneralSetting.setSimulationStep(response.getStep());
 
         int timeUnitCount = response.getTimeUnitCount();
-        Vector<String> options = new Vector<>(timeUnitCount);
+        ArrayList<String> options = new ArrayList<>(timeUnitCount);
 
         for (int i = 0; i < timeUnitCount; i++) {
-            options.addElement(response.getTimeUnit(i).getName());
+            options.add(response.getTimeUnit(i).getName());
         }
 
         pnl_GeneralSetting.initializeUnitItems(options);

@@ -6,7 +6,7 @@ import java.beans.PropertyChangeListener;
 import jp.oist.flint.quantity.TimeUnitConverter;
 import jp.physiome.Ipc;
 import jp.physiome.Ipc.ModelProbeResponse;
-import java.util.Vector;
+import java.util.List;
 
 public class GeneralSettingPane extends javax.swing.JPanel 
     implements PropertyChangeListener {
@@ -29,7 +29,7 @@ public class GeneralSettingPane extends javax.swing.JPanel
         cmb_Integration_Method.setSelectedItem(v);
     }
 
-    public void initializeUnitItems(Vector<String> v) {
+    public void initializeUnitItems(List<String> v) {
         cmb_Length_Unit.removeAllItems();
         cmb_Step_Unit.removeAllItems();
         cmb_outputStartTime_Unit.removeAllItems();
