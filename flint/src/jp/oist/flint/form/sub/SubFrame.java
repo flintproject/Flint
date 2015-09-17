@@ -162,13 +162,13 @@ public class SubFrame extends JInternalFrame
         pnl_Content.setOpaque(true);
         setContentPane(pnl_Content);
 
-        pnl_GeneralSetting = new GeneralSettingPane(mOriginalFile, mDocument.getResponse());
+        pnl_GeneralSetting = new GeneralSettingPane(mDocument.getResponse());
         pnl_Content.addTab("General Settings", pnl_GeneralSetting);
 
         pnl_VariableSelection = new VariableSelectionPane(mDocument.getResponse());
         pnl_Content.addTab("Output Variables", pnl_VariableSelection);
 
-        pnl_ParameterValue = new ParameterValuePane(mOriginalFile, mDocument);
+        pnl_ParameterValue = new ParameterValuePane(mDocument);
         pnl_Content.addTab("Parameters", pnl_ParameterValue);
 
         mStatusComponent = null;

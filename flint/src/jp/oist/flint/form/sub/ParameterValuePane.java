@@ -70,7 +70,7 @@ public class ParameterValuePane extends JPanel
 
     private final FormulaAutoCompleter mAutoCompleter;
 
-    public ParameterValuePane(File file, Document document) throws IOException {
+    public ParameterValuePane(Document document) throws IOException {
         super();
         Ipc.ModelProbeResponse response = document.getResponse();
         mLanguage = response.getLanguage();

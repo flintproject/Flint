@@ -6,20 +6,14 @@ import java.beans.PropertyChangeListener;
 import jp.oist.flint.quantity.TimeUnitConverter;
 import jp.physiome.Ipc;
 import jp.physiome.Ipc.ModelProbeResponse;
-import java.io.File;
-import java.io.IOException;
 import java.util.Vector;
 
 public class GeneralSettingPane extends javax.swing.JPanel 
     implements PropertyChangeListener {
 
-    private final File mFile;
-    private final String mFilePath;
     private final ModelProbeResponse mModelProbeResponse;
 
-    public GeneralSettingPane(File file, ModelProbeResponse response) throws IOException {
-        mFile = file;
-        mFilePath = file.getCanonicalPath();
+    public GeneralSettingPane(ModelProbeResponse response) {
         mModelProbeResponse = response;
 
         initComponents();
@@ -33,10 +27,6 @@ public class GeneralSettingPane extends javax.swing.JPanel
 
     public void setSelectedIntegrationMethod (Object v) {
         cmb_Integration_Method.setSelectedItem(v);
-    }
-
-    public int getSelectedIntegrationMethodIndex () {
-        return cmb_Integration_Method.getSelectedIndex();
     }
 
     public void initializeUnitItems(Vector<String> v) {
