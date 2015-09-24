@@ -7,6 +7,7 @@
 
 #include <cstdio>
 #include <cstring>
+#include <ctime>
 #include <iostream>
 #include <memory>
 #include <string>
@@ -124,14 +125,15 @@ public:
 			return false;
 		if (!compiler::Compile(db, "input_ivs", "assign", const_bc_.get()))
 			return false;
-		return runtime::Init(db, layout_.get(), const_bc_.get(), init_.get());
+		return runtime::Init(db, 0, layout_.get(), const_bc_.get(), init_.get());
 	}
 
 	bool LoadPhml(sqlite3 *db)
 	{
 		if (!phml::Read(db))
 			return false;
-		if (!phml::Nc(db, nc_.get()))
+		int seed = static_cast<int>(std::clock());
+		if (!phml::Nc(db, nc_.get(), &seed))
 			return false;
 		if (!phml::UnitOfTime(db, unitoftime_.get()))
 			return false;
@@ -145,7 +147,7 @@ public:
 			return false;
 		if (!compiler::Compile(db, "before_eqs", "event", before_bc_.get()))
 			return false;
-		return runtime::Init(db, layout_.get(), const_bc_.get(), init_.get());
+		return runtime::Init(db, seed, layout_.get(), const_bc_.get(), init_.get());
 	}
 
 	bool LoadSbml(sqlite3 *db)
@@ -156,7 +158,7 @@ public:
 			return false;
 		if (!compiler::Compile(db, "input_ivs", "assign", const_bc_.get()))
 			return false;
-		return runtime::Init(db, layout_.get(), const_bc_.get(), init_.get());
+		return runtime::Init(db, 0, layout_.get(), const_bc_.get(), init_.get());
 	}
 
 private:

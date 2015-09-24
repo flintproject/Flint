@@ -54,7 +54,8 @@ bool JobRunner::Run()
 		if (!compiler::Compile(g.db(), "parameter_eqs", "assign", generated_bc_.get()))
 			return false;
 	}
-	if (!runtime::Init(tr_->GetDatabase(), tr_->generated_layout(), generated_bc_.get(), generated_init_.get()))
+	// TODO: give a proper seed if desired
+	if (!runtime::Init(tr_->GetDatabase(), 0, tr_->generated_layout(), generated_bc_.get(), generated_init_.get()))
 		return false;
 	{
 		boost::system::error_code ec;

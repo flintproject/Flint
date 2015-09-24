@@ -5,8 +5,6 @@
 
 #include "runtime.hh"
 
-#define BOOST_FILESYSTEM_NO_DEPRECATED
-#include <boost/filesystem.hpp>
 #include "compiler/bcc.h"
 #include "database.h"
 #include "db/name-inserter.h"
@@ -84,7 +82,7 @@ struct F : public test::MemoryFixture {
 		std::ofstream ofs("bc", std::ios::out|std::ios::binary);		\
 		BOOST_REQUIRE(compiler::bcc::Bcc(driver_.db(), &ofs));			\
 		ofs.close();													\
-		BOOST_CHECK(runtime::Init(driver_.db(), "layout", "bc", "output"));	\
+		BOOST_CHECK(runtime::Init(driver_.db(), 0, "layout", "bc", "output")); \
 		CheckOutput(expected);											\
 	} while (0)
 
@@ -98,12 +96,51 @@ struct F : public test::MemoryFixture {
 		std::ofstream ofs("bc", std::ios::out|std::ios::binary);		\
 		BOOST_REQUIRE(compiler::bcc::Bcc(driver_.db(), &ofs));			\
 		ofs.close();													\
-		BOOST_CHECK(runtime::Init(driver_.db(), "layout", "bc", "output"));	\
+		BOOST_CHECK(runtime::Init(driver_.db(), 0, "layout", "bc", "output")); \
 		CheckOutput(expected);											\
 	} while (0)
 
 BOOST_FIXTURE_TEST_SUITE(test_init, F)
 
 #include "common/runtime/call-testcases.hh"
+
+BOOST_AUTO_TEST_CASE(same_seed)
+{
+	SETUP(1, 0);
+	Insert("%x#0", 2,
+		   "  load $1 %a#0\n"
+		   "  $0 = ($exponential_variate $1)\n"
+		   "  store %x#0 $0\n");
+	std::ofstream ofs("bc", std::ios::out|std::ios::binary);
+	BOOST_REQUIRE(compiler::bcc::Bcc(driver_.db(), &ofs));
+	ofs.close();
+	BOOST_CHECK(runtime::Init(driver_.db(), 42, "layout", "bc", "output0"));
+	BOOST_CHECK(runtime::Init(driver_.db(), 42, "layout", "bc", "output1"));
+	boost::filesystem::path output0("output0");
+	boost::filesystem::path output1("output1");
+	test::CheckSame(output0, output1);
+	boost::filesystem::remove(output0);
+	boost::filesystem::remove(output1);
+}
+
+BOOST_AUTO_TEST_CASE(different_seed)
+{
+	SETUP(-1, 1);
+	Insert("%x#0", 3,
+		   "  load $1 %a#0\n"
+		   "  load $2 %b#0\n"
+		   "  $0 = ($uniform_variate $1 $2)\n"
+		   "  store %x#0 $0\n");
+	std::ofstream ofs("bc", std::ios::out|std::ios::binary);
+	BOOST_REQUIRE(compiler::bcc::Bcc(driver_.db(), &ofs));
+	ofs.close();
+	BOOST_CHECK(runtime::Init(driver_.db(), 0, "layout", "bc", "output0"));
+	BOOST_CHECK(runtime::Init(driver_.db(), 1, "layout", "bc", "output1"));
+	boost::filesystem::path output0("output0");
+	boost::filesystem::path output1("output1");
+	test::CheckDifference(output0, output1);
+	boost::filesystem::remove(output0);
+	boost::filesystem::remove(output1);
+}
 
 BOOST_AUTO_TEST_SUITE_END()

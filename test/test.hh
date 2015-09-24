@@ -7,10 +7,14 @@
 #include <cstring>
 #include <fstream>
 #include <iostream>
+#include <iterator>
 #include <sstream>
 #include <string>
 #include <vector>
 
+#define BOOST_FILESYSTEM_NO_DEPRECATED
+#include <boost/filesystem.hpp>
+#include <boost/filesystem/fstream.hpp>
 #include <boost/test/unit_test.hpp>
 
 #include "db/driver.hh"
@@ -114,6 +118,49 @@ private:
 	std::ostringstream oss_;
 	std::streambuf *orig_;
 };
+
+inline void CheckSame(boost::filesystem::path p0,
+					  boost::filesystem::path p1)
+{
+	boost::filesystem::ifstream ifs0(p0, std::ios::binary);
+	boost::filesystem::ifstream ifs1(p1, std::ios::binary);
+	BOOST_REQUIRE(ifs0);
+	BOOST_REQUIRE(ifs1);
+	ifs0.unsetf(std::ios::skipws);
+	ifs1.unsetf(std::ios::skipws);
+	std::istream_iterator<char> b0(ifs0), e0;
+	std::istream_iterator<char> b1(ifs1), e1;
+	BOOST_CHECK_EQUAL_COLLECTIONS(b0, e0, b1, e1);
+	ifs0.close();
+	ifs1.close();
+}
+
+inline void CheckDifference(boost::filesystem::path p0,
+							boost::filesystem::path p1)
+{
+	boost::filesystem::ifstream ifs0(p0, std::ios::binary);
+	boost::filesystem::ifstream ifs1(p1, std::ios::binary);
+	BOOST_REQUIRE(ifs0);
+	BOOST_REQUIRE(ifs1);
+	ifs0.unsetf(std::ios::skipws);
+	ifs1.unsetf(std::ios::skipws);
+	std::istream_iterator<char> b0(ifs0), e0;
+	std::istream_iterator<char> b1(ifs1), e1;
+	std::istream_iterator<char> it0, it1;
+	bool different = false;
+	for (it0=b0,it1=b1;it0!=e0&&it1!=e1;++it0,++it1) {
+		if (*it0 != *it1) {
+			different = true;
+			break;
+		}
+	}
+	if (it0 != e0 || it1 != e1) {
+		different = true;
+	}
+	BOOST_CHECK(different);
+	ifs0.close();
+	ifs1.close();
+}
 
 }
 

@@ -160,7 +160,9 @@ bool IsAllGreen(size_t *color, size_t size)
 
 } // namespace
 
-bool Init(sqlite3 *db, const char *layout_file, const char *bc_file, const char *output_file)
+bool Init(sqlite3 *db,
+		  int seed,
+		  const char *layout_file, const char *bc_file, const char *output_file)
 {
 	// load layout at first
 	std::unique_ptr<Layout> layout(new Layout);
@@ -236,11 +238,11 @@ bool Init(sqlite3 *db, const char *layout_file, const char *bc_file, const char 
 	std::unique_ptr<size_t[]> color(new size_t[layer_size]()); // default-initialized
 	executor->set_color(color.get());
 
-	// initialize pseudo random number generator
-	// FIXME: specify the seed given by user
-	int seed = static_cast<int>(time(NULL));
-	data[kIndexSeed] = seed;
+	// initialize pseudo random number generator with given seed
 	std::unique_ptr<std::mt19937> rng(new std::mt19937(seed));
+	// generate the future seed by the generator
+	int future_seed = static_cast<int>((*rng)());
+	data[kIndexSeed] = static_cast<double>(future_seed);
 	processor->set_rng(rng.get());
 
 	if (!processor->Process(executor.get())) return false;

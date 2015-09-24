@@ -140,7 +140,7 @@ public:
 
 }
 
-bool Nc(sqlite3 *db, const char *output)
+bool Nc(sqlite3 *db, const char *output, int *seed)
 {
 	std::unique_ptr<::phml::NumericalConfiguration> nc(new ::phml::NumericalConfiguration);
 	{
@@ -160,6 +160,8 @@ bool Nc(sqlite3 *db, const char *output)
 		}
 		ofs.close();
 	}
+	if (seed && nc->has_rg() && nc->rg().has_seed())
+		*seed = std::atoi(nc->rg().seed().c_str());
 	MethodWriter writer(db);
 	if (nc->has_integration()) {
 		if (!writer.Write(nc->integration().c_str()))

@@ -9,8 +9,9 @@ namespace phml {
 
 /*
  * Return true in case of success, false otherwise.
+ * Also, return given integer-valued seed as `seed' if requested.
  */
-bool Nc(sqlite3 *db, const char *output);
+bool Nc(sqlite3 *db, const char *output, int *seed = nullptr);
 
 /*
  * Note that db is for read only.
