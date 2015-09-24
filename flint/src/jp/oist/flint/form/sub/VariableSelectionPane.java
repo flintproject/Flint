@@ -12,7 +12,6 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Vector;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 import javax.swing.RowFilter;
@@ -32,9 +31,7 @@ public class VariableSelectionPane extends javax.swing.JPanel
         addPropertyChangeListener(this);
 
         Ipc.ModelVariableTable variableTable = response.getVariableTable();
-
-        Vector<String> columnVector = new Vector<>(variableTable.getColumnList());
-        cmb_Filter_Column.setModel(new javax.swing.DefaultComboBoxModel(columnVector));
+        cmb_Filter_Column.setModel(new javax.swing.DefaultComboBoxModel(variableTable.getColumnList().toArray()));
         mVariableModel = Utility.convertVariableTableToTableModel(variableTable);
 
         if (mVariableModel.getRowCount() > 0) {
