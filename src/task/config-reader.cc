@@ -17,7 +17,6 @@ namespace task {
 
 ConfigReader::ConfigReader(sqlite3 *db)
 	: db::StatementDriver(db, "SELECT method, length, step, granularity, output_start_time FROM config")
-	, method_(NULL)
 	, length_(0)
 	, step_(0)
 	, granularity_(0)
@@ -26,7 +25,6 @@ ConfigReader::ConfigReader(sqlite3 *db)
 
 ConfigReader::~ConfigReader()
 {
-	delete [] method_;
 }
 
 bool ConfigReader::Read()
@@ -44,9 +42,9 @@ bool ConfigReader::Read()
 		return false;
 	}
 	int len_m = sqlite3_column_bytes(stmt(), 0);
-	method_ = new char[len_m+1];
+	method_.reset(new char[len_m+1]);
 	if (len_m > 0)
-		memcpy(method_, method, len_m);
+		memcpy(method_.get(), method, len_m);
 	method_[len_m] = '\0';
 
 	length_ = sqlite3_column_double(stmt(), 1);
@@ -82,7 +80,7 @@ const char *ConfigReader::GetCanonicalMethodName()
 {
 	static const char kRk4[] = "rk4";
 	if (!method_) return kRk4;
-	if (strcmp(method_, "euler") == 0) return method_;
+	if (strcmp(method_.get(), "euler") == 0) return method_.get();
 	return kRk4;
 }
 

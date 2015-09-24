@@ -4,6 +4,8 @@
 
 #include "db/statement-driver.hh"
 
+#include <memory>
+
 namespace flint {
 namespace task {
 
@@ -32,7 +34,7 @@ private:
 	 * "euler"
 	 * "rk4"
 	 */
-	char *method_;
+	std::unique_ptr<char[]> method_;
 	double length_;
 	double step_;
 	int granularity_;
