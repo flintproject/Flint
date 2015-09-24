@@ -1,8 +1,8 @@
 /* -*- Mode: Java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- vim:set ts=4 sw=4 sts=4 et: */
 package jp.oist.flint.util;
 
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
-import java.util.Vector;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -97,7 +97,7 @@ public class ListItemModelTest {
 
     @Test
     public void testKeys() {
-        Vector<String> keys = new Vector<>();
+        ArrayList<String> keys = new ArrayList<>();
         keys.add("x");
         keys.add("y");
         keys.add("z");

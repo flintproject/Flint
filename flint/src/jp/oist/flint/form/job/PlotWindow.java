@@ -15,8 +15,8 @@ import java.net.URL;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Locale;
-import java.util.Vector;
 import java.util.concurrent.ExecutionException;
 import javax.swing.ImageIcon;
 import javax.swing.JDialog;
@@ -327,9 +327,9 @@ public class PlotWindow extends javax.swing.JFrame
         int numTracks = simTrack.getKeyCount();
         if (numTracks == 0) return false;
 
-        Vector<String> xKeys = null;
-        Vector<String> yKeys = null;
-        Vector<String> y2Keys = null;
+        List<String> xKeys = null;
+        List<String> yKeys = null;
+        List<String> y2Keys = null;
         if (!mMap.isEmpty()) { // if rerunning simulation
             ListItemModel xModel = (ListItemModel)mXVariables.getModel();
             if (xModel != null) xKeys = xModel.keys();

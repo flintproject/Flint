@@ -1,11 +1,11 @@
 /* -*- Mode: Java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- vim:set ts=4 sw=4 sts=4 et: */
 package jp.oist.flint.util;
 
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.SortedSet;
 import java.util.TreeSet;
-import java.util.Vector;
 import javax.swing.AbstractListModel;
 
 /**
@@ -13,7 +13,7 @@ import javax.swing.AbstractListModel;
  */
 public class ListItemModel extends AbstractListModel {
 
-    private final Vector<ListItem> mItems = new Vector<>();
+    private final ArrayList<ListItem> mItems = new ArrayList<>();
     /** Multiple selection flag. */
     private boolean multipleFlg = true;
 
@@ -54,12 +54,12 @@ public class ListItemModel extends AbstractListModel {
     }
 
     public Object firstElement() {
-        return mItems.firstElement();
+        return mItems.get(0);
     }
 
     public void add(String key, String name) {
         int s = getSize();
-        mItems.addElement(new ListItem(key, name));
+        mItems.add(new ListItem(key, name));
         fireIntervalAdded(this, s, s);
     }
 
@@ -84,12 +84,12 @@ public class ListItemModel extends AbstractListModel {
         return ((ListItem)firstElement()).getName();
     }
 
-    public Vector<String> keys() {
-        Vector<String> v = new Vector<>();
+    public ArrayList<String> keys() {
+        ArrayList<String> list = new ArrayList<>();
         for (ListItem item : mItems) {
-            v.add(item.getKey());
+            list.add(item.getKey());
         }
-        return v;
+        return list;
     }
 
     /**
