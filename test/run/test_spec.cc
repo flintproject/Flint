@@ -5,9 +5,6 @@
 
 #include "run/spec.hh"
 
-#define BOOST_FILESYSTEM_NO_DEPRECATED
-#include <boost/filesystem.hpp>
-#include <boost/filesystem/fstream.hpp>
 #include "cellml.hh"
 #include "database.h"
 #include "phml.hh"
@@ -40,19 +37,13 @@ struct F : public test::MemoryFixture {
 		BOOST_REQUIRE(run::Spec(driver_.db(), ofp));
 		std::fclose(ofp);
 
+		boost::filesystem::path op(output);
 		boost::filesystem::path fp(__FILE__);
 		boost::filesystem::path ep = fp.parent_path();
 		ep /= "spec";
 		ep /= expected;
-		boost::filesystem::ifstream ifs_o(output, std::ios::binary);
-		boost::filesystem::ifstream ifs_e(ep, std::ios::binary);
-		BOOST_REQUIRE(ifs_o);
-		BOOST_REQUIRE(ifs_e);
-		std::istream_iterator<char> b_o(ifs_o), e_o;
-		std::istream_iterator<char> b_e(ifs_e), e_e;
-		BOOST_CHECK_EQUAL_COLLECTIONS(b_o, e_o, b_e, e_e);
-
-		boost::filesystem::remove(output);
+		test::CheckSame(op, ep);
+		boost::filesystem::remove(op);
 	}
 };
 
