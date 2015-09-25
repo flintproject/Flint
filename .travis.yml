@@ -10,6 +10,7 @@ addons:
     - llvm-toolchain-precise-3.6
     packages:
     - libtool
+    - gcc-4.8
     - g++-4.8
     - clang-3.6
 
