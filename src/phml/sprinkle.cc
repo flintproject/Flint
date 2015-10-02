@@ -11,7 +11,6 @@
 #include <string>
 #include <vector>
 
-#include <boost/noncopyable.hpp>
 #include <boost/ptr_container/ptr_map.hpp>
 #include <boost/uuid/uuid_io.hpp>
 
@@ -35,8 +34,11 @@ namespace {
 
 typedef boost::ptr_map<pair<boost::uuids::uuid, boost::uuids::uuid>, map<int, double> > TargetMap;
 
-class TargetHandler : boost::noncopyable {
+class TargetHandler {
 public:
+	TargetHandler(const TargetHandler &) = delete;
+	TargetHandler &operator=(const TargetHandler &) = delete;
+
 	explicit TargetHandler(TargetMap *tm) : tm_(tm) {}
 
 	bool Handle(boost::uuids::uuid u0, boost::uuids::uuid u1, int pq_id, double value) {
@@ -50,8 +52,11 @@ private:
 
 typedef map<pair<boost::uuids::uuid, boost::uuids::uuid>, boost::uuids::uuid> JournalMap;
 
-class JournalHandler : boost::noncopyable {
+class JournalHandler {
 public:
+	JournalHandler(const JournalHandler &) = delete;
+	JournalHandler &operator=(const JournalHandler &) = delete;
+
 	explicit JournalHandler(JournalMap *jm) : jm_(jm), instances_(new vector<boost::uuids::uuid>) {}
 
 	bool Handle(int n, boost::uuids::uuid u) {

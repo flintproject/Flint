@@ -12,8 +12,6 @@
 #include <iostream>
 #include <memory>
 
-#include <boost/noncopyable.hpp>
-
 #include "db/statement-driver.hh"
 #include "phml.pb.h"
 
@@ -25,8 +23,11 @@ namespace phml {
 
 namespace {
 
-class Driver : boost::noncopyable {
+class Driver {
 public:
+	Driver(const Driver &) = delete;
+	Driver &operator=(const Driver &) = delete;
+
 	Driver(sqlite3 *db, ::phml::NumericalConfiguration *nc)
 		: nc_(nc)
 		, nc_stmt_(NULL)

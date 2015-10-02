@@ -12,7 +12,6 @@
 #include <iostream>
 #include <memory>
 
-#include <boost/noncopyable.hpp>
 #include <boost/ptr_container/ptr_unordered_map.hpp>
 #include <boost/rational.hpp>
 
@@ -30,8 +29,11 @@ namespace phml {
 
 namespace {
 
-class UnitOfTimeLoader : boost::noncopyable {
+class UnitOfTimeLoader {
 public:
+	UnitOfTimeLoader(const UnitOfTimeLoader &) = delete;
+	UnitOfTimeLoader &operator=(const UnitOfTimeLoader &) = delete;
+
 	explicit UnitOfTimeLoader(const char *file) : ifs_(file, std::ios::in|std::ios::binary) {}
 
 	~UnitOfTimeLoader() {
@@ -61,8 +63,11 @@ private:
 
 typedef boost::ptr_unordered_map<int, ipc::TimeUnit> TimeUnitMap;
 
-class UnitOfTimeHandler : boost::noncopyable {
+class UnitOfTimeHandler {
 public:
+	UnitOfTimeHandler(const UnitOfTimeHandler &) = delete;
+	UnitOfTimeHandler &operator=(const UnitOfTimeHandler &) = delete;
+
 	explicit UnitOfTimeHandler(TimeUnitMap *tum) : tum_(tum) {}
 
 	void AddTimeUnit(ipc::TimeUnit *tu) {
@@ -74,8 +79,11 @@ private:
 	TimeUnitMap *tum_;
 };
 
-class NumericalConfigurationLoader : boost::noncopyable {
+class NumericalConfigurationLoader {
 public:
+	NumericalConfigurationLoader(const NumericalConfigurationLoader &) = delete;
+	NumericalConfigurationLoader &operator=(const NumericalConfigurationLoader &) = delete;
+
 	explicit NumericalConfigurationLoader(const char *file) : ifs_(file, std::ios::in|std::ios::binary) {}
 
 	~NumericalConfigurationLoader() {

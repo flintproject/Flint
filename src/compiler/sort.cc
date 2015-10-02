@@ -15,7 +15,6 @@
 #include <unordered_set>
 
 #include <boost/fusion/include/adapt_struct.hpp>
-#include <boost/noncopyable.hpp>
 #include <boost/ptr_container/ptr_unordered_map.hpp>
 #include <boost/ptr_container/ptr_vector.hpp>
 #include <boost/spirit/include/lex_lexertl.hpp>
@@ -191,8 +190,11 @@ struct Grammar : qi::grammar<TIterator, Expr()> {
 	qi::rule<TIterator, Compound()> compound;
 };
 
-class Line : boost::noncopyable {
+class Line {
 public:
+	Line(const Line &) = delete;
+	Line &operator=(const Line &) = delete;
+
 	Line(const std::string &name, const Expr &expr)
 		: name_(name),
 		  expr_(expr)
@@ -217,8 +219,13 @@ private:
 	Expr expr_;
 };
 
-class LineVector : boost::noncopyable {
+class LineVector {
 public:
+	LineVector(const LineVector &) = delete;
+	LineVector &operator=(const LineVector &) = delete;
+
+	LineVector() {}
+
 	size_t GetSize() const {
 		return lines_.size();
 	}

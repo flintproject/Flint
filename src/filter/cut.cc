@@ -13,8 +13,6 @@
 #include <memory>
 #include <string>
 
-#include <boost/noncopyable.hpp>
-
 #include "lo.pb.h"
 
 #include "filter/filter_loader.h"
@@ -30,8 +28,11 @@ namespace filter {
 
 namespace {
 
-class Filter : boost::noncopyable {
+class Filter {
 public:
+	Filter(const Filter &) = delete;
+	Filter &operator=(const Filter &) = delete;
+
 	Filter() : size_(), columns_() {}
 
 	void ReadHeader(int size) {

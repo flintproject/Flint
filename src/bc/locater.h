@@ -7,14 +7,17 @@
 #include <string>
 #include <unordered_map>
 
-#include <boost/noncopyable.hpp>
-
 #include "bc/index.h"
 
 namespace flint {
 
-class Locater : boost::noncopyable {
+class Locater {
 public:
+	Locater(const Locater &) = delete;
+	Locater &operator=(const Locater &) = delete;
+
+	Locater() {}
+
 	void SetPosition(const std::string &name, int location) {
 		m_.insert(std::make_pair(name, location));
 	}

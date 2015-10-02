@@ -16,7 +16,6 @@
 
 #define BOOST_FILESYSTEM_NO_DEPRECATED
 #include <boost/filesystem.hpp>
-#include <boost/noncopyable.hpp>
 #include <boost/uuid/nil_generator.hpp>
 #include <boost/uuid/string_generator.hpp>
 
@@ -42,8 +41,11 @@ namespace phsp {
 
 namespace {
 
-class Model : boost::noncopyable {
+class Model {
 public:
+	Model(const Model &) = delete;
+	Model &operator=(const Model &) = delete;
+
 	Model() : format_(NULL), iref_(NULL) {}
 
 	~Model() {
@@ -62,8 +64,11 @@ private:
 	xmlChar *iref_;
 };
 
-class Parameter : boost::noncopyable {
+class Parameter {
 public:
+	Parameter(const Parameter &) = delete;
+	Parameter &operator=(const Parameter &) = delete;
+
 	explicit Parameter(xmlChar *name) : name_(name) {}
 
 	~Parameter() {
@@ -76,13 +81,16 @@ private:
 	xmlChar *name_;
 };
 
-class Range : boost::noncopyable {
+class Range {
 public:
 	enum Type {
 		kUnspecified,
 		kInterval,
 		kEnum
 	};
+
+	Range(const Range &) = delete;
+	Range &operator=(const Range &) = delete;
 
 	Range() : type_(kUnspecified) {}
 
@@ -126,8 +134,11 @@ private:
 	boost::rational<long> step_;
 };
 
-class Target : boost::noncopyable {
+class Target {
 public:
+	Target(const Target &) = delete;
+	Target &operator=(const Target &) = delete;
+
 	Target()
 		: uuid_(NULL),
 		  physical_quantity_id_(),

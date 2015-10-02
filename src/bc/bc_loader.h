@@ -5,7 +5,6 @@
 #include <fstream>
 #include <string>
 
-#include <boost/noncopyable.hpp>
 #include <boost/ptr_container/ptr_vector.hpp>
 
 #include "bc/pack.h"
@@ -18,8 +17,11 @@ typedef boost::ptr_vector<bc::SectionHeader> ShVector;
 typedef boost::ptr_vector<bc::BlockHeader> BhVector;
 typedef boost::ptr_vector<bc::Code> CVector;
 
-class BcLoader : boost::noncopyable {
+class BcLoader {
 public:
+	BcLoader(const BcLoader &) = delete;
+	BcLoader &operator=(const BcLoader &) = delete;
+
 	explicit BcLoader(const std::string &file) : ifs_(file.c_str(), std::ios::in|std::ios::binary) {}
 
 	~BcLoader() {

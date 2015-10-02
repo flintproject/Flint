@@ -10,8 +10,11 @@
 
 namespace flint {
 
-class FilterLoader : boost::noncopyable {
+class FilterLoader {
 public:
+	FilterLoader(const FilterLoader &) = delete;
+	FilterLoader &operator=(const FilterLoader &) = delete;
+
 	explicit FilterLoader(const std::string &file) : ifs_(file.c_str(), std::ios::in|std::ios::binary) {}
 
 	~FilterLoader() {

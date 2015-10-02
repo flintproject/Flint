@@ -8,7 +8,6 @@
 #include <memory>
 #include <string>
 
-#include <boost/noncopyable.hpp>
 #include <boost/ptr_container/ptr_map.hpp>
 #include <boost/ptr_container/ptr_vector.hpp>
 #include <boost/uuid/uuid_io.hpp>
@@ -26,8 +25,11 @@ namespace flint {
 namespace phml {
 namespace {
 
-class Node : boost::noncopyable {
+class Node {
 public:
+	Node(const Node &) = delete;
+	Node &operator=(const Node &) = delete;
+
 	Node(const boost::uuids::uuid &uuid, const boost::uuids::uuid &module_id, size_t level)
 		: uuid_(uuid), module_id_(module_id), level_(level), label_()
 	{}
@@ -47,8 +49,11 @@ private:
 	string label_;
 };
 
-class Instance : boost::noncopyable {
+class Instance {
 public:
+	Instance(const Instance &) = delete;
+	Instance &operator=(const Instance &) = delete;
+
 	explicit Instance(const boost::uuids::uuid &uuid)
 		: uuid_(uuid), label_()
 	{}

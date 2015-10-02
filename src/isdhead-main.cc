@@ -9,7 +9,6 @@
 #include <fstream>
 #include <memory>
 #include <string>
-#include <boost/noncopyable.hpp>
 #include <boost/program_options.hpp>
 
 #include "bc/binary.h"
@@ -27,8 +26,11 @@ using namespace flint;
 
 namespace {
 
-class NumberOfRowsHandler : boost::noncopyable {
+class NumberOfRowsHandler {
 public:
+	NumberOfRowsHandler(const NumberOfRowsHandler &) = delete;
+	NumberOfRowsHandler &operator=(const NumberOfRowsHandler &) = delete;
+
 	NumberOfRowsHandler(std::uint32_t num_rows, std::ostream *os) : n_(), num_rows_(num_rows), os_(os) {}
 
 	int GetStep(std::uint32_t buf_size, const char *buf) {
@@ -50,8 +52,11 @@ private:
 	std::ostream *os_;
 };
 
-class EndOfTimeHandler : boost::noncopyable {
+class EndOfTimeHandler {
 public:
+	EndOfTimeHandler(const EndOfTimeHandler &) = delete;
+	EndOfTimeHandler &operator=(const EndOfTimeHandler &) = delete;
+
 	EndOfTimeHandler(double eot, std::ostream *os) : eot_(eot), os_(os) {}
 
 	int GetStep(std::uint32_t buf_size, const char *buf) {
@@ -75,8 +80,11 @@ private:
 	std::ostream *os_;
 };
 
-class Dam : boost::noncopyable {
+class Dam {
 public:
+	Dam(const Dam &) = delete;
+	Dam &operator=(const Dam &) = delete;
+
 	explicit Dam(std::uint32_t num_rows) : num_rows_(num_rows), eot_(), reader_() {}
 	explicit Dam(double eot) : num_rows_(), eot_(eot), reader_() {}
 

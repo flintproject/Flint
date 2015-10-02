@@ -15,7 +15,6 @@
 #include <string>
 #include <unordered_map>
 
-#include <boost/noncopyable.hpp>
 #include <boost/ptr_container/ptr_map.hpp>
 #include <boost/ptr_container/ptr_unordered_map.hpp>
 #include <boost/ptr_container/ptr_vector.hpp>
@@ -44,8 +43,11 @@ typedef std::unordered_map<boost::uuids::uuid,
 						   boost::hash<boost::uuids::uuid>
 						   > ModuleMap;
 
-class ModuleHandler : boost::noncopyable {
+class ModuleHandler {
 public:
+	ModuleHandler(const ModuleHandler &) = delete;
+	ModuleHandler &operator=(const ModuleHandler &) = delete;
+
 	explicit ModuleHandler(ModuleMap *mm) : mm_(mm) {}
 
 	bool Handle(boost::uuids::uuid u, const char *name) {
@@ -57,8 +59,11 @@ private:
 	ModuleMap *mm_;
 };
 
-class Name : boost::noncopyable {
+class Name {
 public:
+	Name(const Name &) = delete;
+	Name &operator=(const Name &) = delete;
+
 	Name(char type, int id, const char *name, const char *unit, double capacity)
 		: type_(type),
 		  id_(id),
@@ -84,8 +89,11 @@ private:
 
 typedef boost::ptr_unordered_map<boost::uuids::uuid, boost::ptr_vector<Name> > NameMap;
 
-class NameHandler : boost::noncopyable {
+class NameHandler {
 public:
+	NameHandler(const NameHandler &) = delete;
+	NameHandler &operator=(const NameHandler &) = delete;
+
 	explicit NameHandler(NameMap *nm)
 	: nm_(nm)
 	{}
@@ -99,8 +107,11 @@ private:
 	NameMap *nm_;
 };
 
-class Node : boost::noncopyable {
+class Node {
 public:
+	Node(const Node &) = delete;
+	Node &operator=(const Node &) = delete;
+
 	explicit Node(boost::uuids::uuid uuid) : uuid_(uuid), label_() {}
 	Node(boost::uuids::uuid uuid, const string &label) : uuid_(uuid), label_(label) {}
 

@@ -13,7 +13,6 @@
 #include <memory>
 #include <random>
 
-#include <boost/noncopyable.hpp>
 #include <boost/uuid/uuid_io.hpp>
 
 #include "bc.pb.h"
@@ -41,8 +40,11 @@ namespace runtime {
 
 namespace {
 
-class TargetHandler : boost::noncopyable {
+class TargetHandler {
 public:
+	TargetHandler(const TargetHandler &) = delete;
+	TargetHandler &operator=(const TargetHandler &) = delete;
+
 	TargetHandler(DataOffsetMap *dom, SectorOffsetMap *som, double *data, bool *target)
 		: dom_(dom),
 		  som_(som),
@@ -82,8 +84,11 @@ private:
 	bool *target_;
 };
 
-class Executor : boost::noncopyable {
+class Executor {
 public:
+	Executor(const Executor &) = delete;
+	Executor &operator=(const Executor &) = delete;
+
 	explicit Executor(size_t layer_size)
 	: layer_size_(layer_size),
 	  data_(NULL),

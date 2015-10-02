@@ -2,15 +2,16 @@
 #ifndef FLINT_DB_DRIVER_HH_
 #define FLINT_DB_DRIVER_HH_
 
-#include <boost/noncopyable.hpp>
-
 #include "sqlite3.h"
 
 namespace flint {
 namespace db {
 
-class Driver : boost::noncopyable {
+class Driver {
 public:
+	Driver(const Driver &) = delete;
+	Driver &operator=(const Driver &) = delete;
+
 	explicit Driver(const char *filename);
 
 	~Driver();

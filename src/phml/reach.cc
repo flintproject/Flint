@@ -11,7 +11,6 @@
 #include <unordered_map>
 
 #include <boost/functional/hash.hpp>
-#include <boost/noncopyable.hpp>
 #include <boost/ptr_container/ptr_map.hpp>
 #include <boost/ptr_container/ptr_set.hpp>
 #include <boost/uuid/uuid.hpp>
@@ -36,8 +35,11 @@ namespace flint {
 namespace phml {
 namespace {
 
-class Scope : boost::noncopyable {
+class Scope {
 public:
+	Scope(const Scope &) = delete;
+	Scope &operator=(const Scope &) = delete;
+
 	Scope(boost::uuids::uuid uuid, boost::uuids::uuid module_id)
 		: uuid_(uuid),
 		  module_id_(module_id),
@@ -70,8 +72,11 @@ private:
 	string label_;
 };
 
-class Port : boost::noncopyable {
+class Port {
 public:
+	Port(const Port &) = delete;
+	Port &operator=(const Port &) = delete;
+
 	Port(boost::uuids::uuid module_id, int port_id, int physical_quantity_id,
 		 char pq_type, Reduction reduction)
 		: module_id_(module_id),
@@ -115,8 +120,11 @@ private:
 	int port_id_;
 };
 
-class InputPortHandler : boost::noncopyable {
+class InputPortHandler {
 public:
+	InputPortHandler(const InputPortHandler &) = delete;
+	InputPortHandler &operator=(const InputPortHandler &) = delete;
+
 	explicit InputPortHandler(boost::ptr_multimap<boost::uuids::uuid, Port> *ports)
 		: ports_(ports)
 	{
@@ -140,8 +148,11 @@ bool LoadInputPorts(sqlite3 *db, boost::ptr_multimap<boost::uuids::uuid, Port> *
 	return loader->Load(handler.get());
 }
 
-class OutputPortHandler : boost::noncopyable {
+class OutputPortHandler {
 public:
+	OutputPortHandler(const OutputPortHandler &) = delete;
+	OutputPortHandler &operator=(const OutputPortHandler &) = delete;
+
 	explicit OutputPortHandler(boost::ptr_map<Node, Port> *ports)
 		: ports_(ports)
 	{
@@ -172,8 +183,11 @@ typedef std::unordered_map<boost::uuids::uuid,
 						   boost::hash<boost::uuids::uuid>
 						   > Umap;
 
-class ScopeHandler : boost::noncopyable {
+class ScopeHandler {
 public:
+	ScopeHandler(const ScopeHandler &) = delete;
+	ScopeHandler &operator=(const ScopeHandler &) = delete;
+
 	ScopeHandler(ScopeSet *scopes, Mmap *mmap, Umap *umap)
 		: scopes_(scopes),
 		  mmap_(mmap),
@@ -209,8 +223,11 @@ bool LoadScopes(sqlite3 *db, ScopeSet *scopes, Mmap *mmap, Umap *umap)
 	return loader->Load(handler.get());
 }
 
-class SpanHandler : boost::noncopyable {
+class SpanHandler {
 public:
+	SpanHandler(const SpanHandler &) = delete;
+	SpanHandler &operator=(const SpanHandler &) = delete;
+
 	explicit SpanHandler(multimap<Node, Node> *spans) : spans_(spans) {}
 
 	bool Handle(boost::uuids::uuid tail_uuid, int tail_port_id,

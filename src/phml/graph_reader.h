@@ -5,7 +5,6 @@
 #include <cassert>
 #include <cctype>
 #include <memory>
-#include <boost/noncopyable.hpp>
 #include <libxml/xmlreader.h>
 
 #include "mathml/math_dumper.h"
@@ -17,8 +16,11 @@ using std::cerr;
 using std::endl;
 using mathml::MathDumper;
 
-class Node : boost::noncopyable {
+class Node {
 public:
+	Node(const Node &) = delete;
+	Node &operator=(const Node &) = delete;
+
 	explicit Node(int node_id)
 		: node_id_(node_id),
 		  name_(NULL)

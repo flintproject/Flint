@@ -2,15 +2,16 @@
 #ifndef FLINT_DB_STATEMENT_DRIVER_HH_
 #define FLINT_DB_STATEMENT_DRIVER_HH_
 
-#include <boost/noncopyable.hpp>
-
 #include "sqlite3.h"
 
 namespace flint {
 namespace db {
 
-class StatementDriver : boost::noncopyable {
+class StatementDriver {
 public:
+	StatementDriver(const StatementDriver &) = delete;
+	StatementDriver &operator=(const StatementDriver &) = delete;
+
 	StatementDriver(sqlite3 *db, const char *query);
 
 	~StatementDriver();

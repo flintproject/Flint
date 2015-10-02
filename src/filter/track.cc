@@ -13,7 +13,6 @@
 #include <memory>
 #include <string>
 
-#include <boost/noncopyable.hpp>
 #include <boost/uuid/uuid_io.hpp>
 
 #include "lo.pb.h"
@@ -31,8 +30,11 @@ namespace filter {
 
 namespace {
 
-class Filter : boost::noncopyable {
+class Filter {
 public:
+	Filter(const Filter &) = delete;
+	Filter &operator=(const Filter &) = delete;
+
 	explicit Filter(ipc::SimulationTrack *st) : st_(st) {}
 
 	void ReadHeader(int /*size*/) const {

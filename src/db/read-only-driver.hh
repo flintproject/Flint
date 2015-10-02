@@ -2,15 +2,16 @@
 #ifndef FLINT_DB_READ_ONLY_DRIVER_HH_
 #define FLINT_DB_READ_ONLY_DRIVER_HH_
 
-#include <boost/noncopyable.hpp>
-
 #include "sqlite3.h"
 
 namespace flint {
 namespace db {
 
-class ReadOnlyDriver : boost::noncopyable {
+class ReadOnlyDriver {
 public:
+	ReadOnlyDriver(const ReadOnlyDriver &) = delete;
+	ReadOnlyDriver &operator=(const ReadOnlyDriver &) = delete;
+
 	explicit ReadOnlyDriver(const char *filename);
 
 	~ReadOnlyDriver();

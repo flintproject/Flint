@@ -4,13 +4,15 @@
 
 #define BOOST_FILESYSTEM_NO_DEPRECATED
 #include <boost/filesystem.hpp>
-#include <boost/noncopyable.hpp>
 #include <boost/uuid/uuid_generators.hpp>
 
 namespace flint {
 
-class UuidGenerator : boost::noncopyable {
+class UuidGenerator {
 public:
+	UuidGenerator(const UuidGenerator &) = delete;
+	UuidGenerator &operator=(const UuidGenerator &) = delete;
+
 	explicit UuidGenerator(const boost::filesystem::path &);
 
 	boost::uuids::uuid operator()();

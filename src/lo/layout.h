@@ -12,7 +12,6 @@
 #include <unordered_set>
 #include <vector>
 
-#include <boost/noncopyable.hpp>
 #include <boost/ptr_container/ptr_unordered_map.hpp>
 #include <boost/ptr_container/ptr_vector.hpp>
 #include <boost/uuid/uuid_io.hpp>
@@ -32,8 +31,13 @@ typedef std::unordered_map<boost::uuids::uuid,
 						   boost::hash<boost::uuids::uuid>
 						   > SectorOffsetMap;
 
-class Layout : boost::noncopyable {
+class Layout {
 public:
+	Layout(const Layout &) = delete;
+	Layout &operator=(const Layout &) = delete;
+
+	Layout() {}
+
 	void AddTrack(lo::Track *track) {
 		tv_.push_back(track);
 	}

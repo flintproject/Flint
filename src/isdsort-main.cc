@@ -13,8 +13,6 @@
 #include <string>
 #include <vector>
 
-#include <boost/noncopyable.hpp>
-
 #include "isdf/reader.h"
 
 using std::cerr;
@@ -136,8 +134,11 @@ bool CopyFile(const char *source, const char *target)
 	return false;
 }
 
-class Writer : boost::noncopyable {
+class Writer {
 public:
+	Writer(const Writer &) = delete;
+	Writer &operator=(const Writer &) = delete;
+
 	explicit Writer(FILE *fp)
 		: fp_(fp)
 	{

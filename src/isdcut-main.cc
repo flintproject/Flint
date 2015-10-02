@@ -9,7 +9,6 @@
 #include <memory>
 #include <string>
 #include <set>
-#include <boost/noncopyable.hpp>
 #include <boost/program_options.hpp>
 
 #include "bc/binary.h"
@@ -30,8 +29,11 @@ namespace {
 
 typedef std::set<int> FieldSet;
 
-class Handler : boost::noncopyable {
+class Handler {
 public:
+	Handler(const Handler &) = delete;
+	Handler &operator=(const Handler &) = delete;
+
 	Handler(const FieldSet &fields, std::ostream *os) : fields_(fields), os_(os) {}
 
 	int GetStep(size_t /*buf_size*/, const char *buf) {
@@ -51,8 +53,11 @@ private:
 	std::ostream *os_;
 };
 
-class Dam : boost::noncopyable {
+class Dam {
 public:
+	Dam(const Dam &) = delete;
+	Dam &operator=(const Dam &) = delete;
+
 	Dam() : fields_(), reader_() {}
 
 	void AddField(int d) {

@@ -16,7 +16,6 @@
 #include <string>
 #include <unordered_set>
 
-#include <boost/noncopyable.hpp>
 #include <boost/ptr_container/ptr_unordered_map.hpp>
 #include <boost/ptr_container/ptr_vector.hpp>
 #include <boost/uuid/uuid_io.hpp>
@@ -66,8 +65,13 @@ public:
 	}
 };
 
-class Spec : boost::noncopyable {
+class Spec {
 public:
+	Spec(const Spec &) = delete;
+	Spec &operator=(const Spec &) = delete;
+
+	Spec() {}
+
 	void AddSpec(const boost::uuids::uuid &u, const char *name) {
 		m_[u].insert(name);
 	}
@@ -82,8 +86,13 @@ private:
 	boost::ptr_unordered_map<boost::uuids::uuid, std::unordered_set<string> > m_;
 };
 
-class Layout : boost::noncopyable {
+class Layout {
 public:
+	Layout(const Layout &) = delete;
+	Layout &operator=(const Layout &) = delete;
+
+	Layout() {}
+
 	void AddTrack(lo::Track *track) {
 		tv_.push_back(track);
 	}

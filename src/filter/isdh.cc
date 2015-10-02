@@ -14,7 +14,6 @@
 #include <string>
 #include <vector>
 
-#include <boost/noncopyable.hpp>
 #include <boost/uuid/uuid_io.hpp>
 
 #include "lo.pb.h"
@@ -34,8 +33,11 @@ namespace filter {
 
 namespace {
 
-class Filter : boost::noncopyable {
+class Filter {
 public:
+	Filter(const Filter &) = delete;
+	Filter &operator=(const Filter &) = delete;
+
 	Filter()
 		: num_objs_(),
 		  num_bytes_descs_(),

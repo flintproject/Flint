@@ -17,7 +17,6 @@
 #define BOOST_DATE_TIME_NO_LIB
 #include <boost/interprocess/file_mapping.hpp>
 #include <boost/interprocess/mapped_region.hpp>
-#include <boost/noncopyable.hpp>
 
 #include "bc.pb.h"
 
@@ -49,8 +48,11 @@ namespace job {
 
 namespace {
 
-class Executor : boost::noncopyable {
+class Executor {
 public:
+	Executor(const Executor &) = delete;
+	Executor &operator=(const Executor &) = delete;
+
 	explicit Executor(size_t layer_size)
 	: layer_size_(layer_size),
 	  data_(NULL),
@@ -106,8 +108,11 @@ private:
 	History *history_;
 };
 
-class PExecutor : boost::noncopyable {
+class PExecutor {
 public:
+	PExecutor(const PExecutor &) = delete;
+	PExecutor &operator=(const PExecutor &) = delete;
+
 	explicit PExecutor(size_t layer_size)
 	: layer_size_(layer_size),
 	  data_(NULL),

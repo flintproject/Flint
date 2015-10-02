@@ -10,7 +10,6 @@
 #include <memory>
 #include <vector>
 
-#include <boost/noncopyable.hpp>
 #include <boost/ptr_container/ptr_map.hpp>
 #include <boost/ptr_container/ptr_set.hpp>
 #include <boost/uuid/uuid_io.hpp>
@@ -28,8 +27,11 @@ namespace flint {
 namespace phml {
 namespace {
 
-class Edge : boost::noncopyable {
+class Edge {
 public:
+	Edge(const Edge &) = delete;
+	Edge &operator=(const Edge &) = delete;
+
 	Edge(const boost::uuids::uuid &tail_uuid, int tail_port_id,
 		 const boost::uuids::uuid &head_uuid, int head_port_id)
 		: tail_uuid_(tail_uuid),
@@ -72,8 +74,11 @@ private:
 	int head_port_id_;
 };
 
-class InstanceEdge : boost::noncopyable {
+class InstanceEdge {
 public:
+	InstanceEdge(const InstanceEdge &) = delete;
+	InstanceEdge &operator=(const InstanceEdge &) = delete;
+
 	InstanceEdge(size_t tail_index, int tail_port_id,
 				 size_t head_index, int head_port_id)
 		: tail_index_(tail_index),
@@ -127,8 +132,11 @@ void AddEdge(boost::ptr_set<Edge> *edge_set, Edge *edge)
 	}
 }
 
-class EdgeLoader : boost::noncopyable {
+class EdgeLoader {
 public:
+	EdgeLoader(const EdgeLoader &) = delete;
+	EdgeLoader &operator=(const EdgeLoader &) = delete;
+
 	explicit EdgeLoader(sqlite3 *db)
 		: stmt_(NULL)
 	{
@@ -172,8 +180,11 @@ private:
 	sqlite3_stmt *stmt_;
 };
 
-class JournalLoader : boost::noncopyable {
+class JournalLoader {
 public:
+	JournalLoader(const JournalLoader &) = delete;
+	JournalLoader &operator=(const JournalLoader &) = delete;
+
 	explicit JournalLoader(sqlite3 *db)
 		: stmt_(NULL)
 	{
@@ -214,8 +225,11 @@ private:
 	sqlite3_stmt *stmt_;
 };
 
-class JournalHandler : boost::noncopyable {
+class JournalHandler {
 public:
+	JournalHandler(const JournalHandler &) = delete;
+	JournalHandler &operator=(const JournalHandler &) = delete;
+
 	explicit JournalHandler(boost::ptr_set<Edge> *edge_set)
 		: edge_set_(edge_set),
 		  instance_descendants_(new vector<boost::uuids::uuid>),
@@ -382,8 +396,11 @@ private:
 	vector<boost::uuids::uuid> template_descendants_;
 };
 
-class SpanDriver : boost::noncopyable {
+class SpanDriver {
 public:
+	SpanDriver(const SpanDriver &) = delete;
+	SpanDriver &operator=(const SpanDriver &) = delete;
+
 	explicit SpanDriver(sqlite3 *db)
 		: stmt_(NULL)
 	{

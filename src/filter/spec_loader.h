@@ -11,8 +11,11 @@
 
 namespace flint {
 
-class SpecLoader : boost::noncopyable {
+class SpecLoader {
 public:
+	SpecLoader(const SpecLoader &) = delete;
+	SpecLoader &operator=(const SpecLoader &) = delete;
+
 	explicit SpecLoader(const std::string &file) : ifs_(file.c_str(), std::ios::in) {}
 
 	~SpecLoader() {

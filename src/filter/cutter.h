@@ -5,7 +5,6 @@
 #include <cstdio>
 #include <map>
 #include <memory>
-#include <boost/noncopyable.hpp>
 
 #include "lo.pb.h"
 
@@ -15,8 +14,11 @@
 namespace flint {
 namespace filter {
 
-class Cutter : boost::noncopyable {
+class Cutter {
 public:
+	Cutter(const Cutter &) = delete;
+	Cutter &operator=(const Cutter &) = delete;
+
 	Cutter() : size_(), columns_() {}
 
 	bool Load(const char *filter_file, size_t layer_size) {

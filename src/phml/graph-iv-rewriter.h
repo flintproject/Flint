@@ -4,7 +4,6 @@
 
 #include <map>
 #include <string>
-#include <boost/noncopyable.hpp>
 #include <boost/uuid/uuid.hpp>
 
 #include "sqlite3.h"
@@ -12,8 +11,11 @@
 namespace flint {
 namespace phml {
 
-class GraphIvRewriter : boost::noncopyable {
+class GraphIvRewriter {
 public:
+	GraphIvRewriter(const GraphIvRewriter &) = delete;
+	GraphIvRewriter &operator=(const GraphIvRewriter &) = delete;
+
 	explicit GraphIvRewriter(sqlite3 *db);
 
 	~GraphIvRewriter();

@@ -10,7 +10,6 @@
 #define BOOST_DATE_TIME_NO_LIB
 #include <boost/interprocess/file_mapping.hpp>
 #include <boost/interprocess/mapped_region.hpp>
-#include <boost/noncopyable.hpp>
 
 using std::cerr;
 using std::endl;
@@ -18,8 +17,11 @@ using std::endl;
 namespace flint {
 namespace {
 
-class Adler32Loader : boost::noncopyable {
+class Adler32Loader {
 public:
+	Adler32Loader(const Adler32Loader &) = delete;
+	Adler32Loader &operator=(const Adler32Loader &) = delete;
+
 	explicit Adler32Loader(const char *file)
   	: fm_(file, boost::interprocess::read_only),
 	  mr_(fm_, boost::interprocess::read_only)

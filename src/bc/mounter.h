@@ -3,12 +3,14 @@
 #define FLINT_BC_MOUNTER_H_
 
 #include <memory>
-#include <boost/noncopyable.hpp>
 
 namespace flint {
 
-class Mounter : boost::noncopyable {
+class Mounter {
 public:
+	Mounter(const Mounter &) = delete;
+	Mounter &operator=(const Mounter &) = delete;
+
 	explicit Mounter(int size) : size_(size), offsets_(new int[size]) {}
 
 	int size() const {return size_;}

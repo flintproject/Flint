@@ -2,15 +2,16 @@
 #ifndef FLINT_PHML_GRAPH_MATH_REWRITER_H_
 #define FLINT_PHML_GRAPH_MATH_REWRITER_H_
 
-#include <boost/noncopyable.hpp>
-
 #include "sqlite3.h"
 
 namespace flint {
 namespace phml {
 
-class GraphMathRewriter : boost::noncopyable {
+class GraphMathRewriter {
 public:
+	GraphMathRewriter(const GraphMathRewriter &) = delete;
+	GraphMathRewriter &operator=(const GraphMathRewriter &) = delete;
+
 	GraphMathRewriter(sqlite3 *db,
 					  const char *query_select,
 					  const char *query_update);

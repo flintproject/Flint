@@ -6,13 +6,14 @@
 #include <map>
 #include <vector>
 
-#include <boost/noncopyable.hpp>
-
 namespace flint {
 namespace filter {
 
-class Writer : boost::noncopyable {
+class Writer {
 public:
+	Writer(const Writer &) = delete;
+	Writer &operator=(const Writer &) = delete;
+
 	explicit Writer(const std::map<int, int> &m);
 
 	bool Write(const double *data, FILE *fp) const;

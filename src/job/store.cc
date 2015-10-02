@@ -70,8 +70,13 @@ public:
 
 typedef std::unordered_map<int, int> TargetMap;
 
-class SourceLayout : boost::noncopyable {
+class SourceLayout {
 public:
+	SourceLayout(const SourceLayout &) = delete;
+	SourceLayout &operator=(const SourceLayout &) = delete;
+
+	SourceLayout() {}
+
 	void AddTrack(lo::Track *track) {
 		tv_.push_back(track);
 	}
@@ -158,8 +163,13 @@ public:
 	}
 };
 
-class TargetLayout : boost::noncopyable {
+class TargetLayout {
 public:
+	TargetLayout(const TargetLayout &) = delete;
+	TargetLayout &operator=(const TargetLayout &) = delete;
+
+	TargetLayout() {}
+
 	void AddTrack(lo::Track *track) {
 		tv_.push_back(track);
 	}

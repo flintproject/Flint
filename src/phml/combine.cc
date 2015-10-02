@@ -9,7 +9,6 @@
 #include <sstream>
 #include <string>
 
-#include <boost/noncopyable.hpp>
 #include <boost/uuid/uuid_generators.hpp>
 #include <boost/uuid/uuid_io.hpp>
 
@@ -197,8 +196,11 @@ private:
 
 typedef map<int, string> PhysicalQuantityMap;
 
-class PhysicalQuantityHandler : boost::noncopyable {
+class PhysicalQuantityHandler {
 public:
+	PhysicalQuantityHandler(const PhysicalQuantityHandler &) = delete;
+	PhysicalQuantityHandler &operator=(const PhysicalQuantityHandler &) = delete;
+
 	PhysicalQuantityHandler(const boost::uuids::uuid &uuid, PhysicalQuantityMap *pqm)
 		: uuid_(uuid), pqm_(pqm), max_pq_id_()
 	{}
@@ -218,8 +220,11 @@ private:
 	int max_pq_id_;
 };
 
-class BridgeHandler : boost::noncopyable {
+class BridgeHandler {
 public:
+	BridgeHandler(const BridgeHandler &) = delete;
+	BridgeHandler &operator=(const BridgeHandler &) = delete;
+
 	BridgeHandler(const boost::uuids::uuid &uuid, PhysicalQuantityMap *pqm,
 				  Writer *writer)
 		: uuid_(uuid)

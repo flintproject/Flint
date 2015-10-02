@@ -14,7 +14,6 @@
 #include <unordered_set>
 #include <vector>
 
-#include <boost/noncopyable.hpp>
 #include <boost/ptr_container/ptr_vector.hpp>
 #include <boost/uuid/uuid.hpp>
 #include <boost/uuid/uuid_io.hpp>
@@ -259,8 +258,11 @@ typedef boost::ptr_vector<ReductionUnit> ReductionUnitVector;
 
 typedef boost::ptr_vector<CalculationDependency> CalculationDependencyVector;
 
-class Processor : boost::noncopyable {
+class Processor {
 public:
+	Processor(const Processor &) = delete;
+	Processor &operator=(const Processor &) = delete;
+
 	Processor(const Layout *layout, int layer_size)
 		: layout_(layout), layer_size_(layer_size),
 		  shv_(new ShVector), bhv_(new BhVector), cv_(new CVector),

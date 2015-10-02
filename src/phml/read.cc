@@ -17,7 +17,6 @@
 
 #define BOOST_FILESYSTEM_NO_DEPRECATED
 #include <boost/filesystem.hpp>
-#include <boost/noncopyable.hpp>
 #include <boost/uuid/string_generator.hpp>
 #include <boost/uuid/uuid_io.hpp>
 
@@ -55,8 +54,11 @@ namespace phml {
 
 namespace {
 
-class NumericalConfiguration : boost::noncopyable {
+class NumericalConfiguration {
 public:
+	NumericalConfiguration(const NumericalConfiguration &) = delete;
+	NumericalConfiguration &operator=(const NumericalConfiguration &) = delete;
+
 	NumericalConfiguration()
 		: rg_name_(NULL),
 		  rg_seed_(NULL),
@@ -91,8 +93,11 @@ private:
 	xmlChar *sts_value_;
 };
 
-class TimeDiscretization : boost::noncopyable {
+class TimeDiscretization {
 public:
+	TimeDiscretization(const TimeDiscretization &) = delete;
+	TimeDiscretization &operator=(const TimeDiscretization &) = delete;
+
 	TimeDiscretization()
 		: unit_id_(),
 		  step_(NULL),
@@ -119,8 +124,11 @@ private:
 	xmlChar *module_id_;
 };
 
-class Unit : boost::noncopyable {
+class Unit {
 public:
+	Unit(const Unit &) = delete;
+	Unit &operator=(const Unit &) = delete;
+
 	explicit Unit(int unit_id)
 	: unit_id_(unit_id),
 	  name_(NULL),
@@ -143,8 +151,11 @@ private:
 	sqlite3_int64 rowid_;
 };
 
-class Element : boost::noncopyable {
+class Element {
 public:
+	Element(const Element &) = delete;
+	Element &operator=(const Element &) = delete;
+
 	Element()
 	: unit_id_(),
 	  exponent_(),
@@ -172,8 +183,11 @@ private:
 	double offset_;
 };
 
-class Module : boost::noncopyable {
+class Module {
 public:
+	Module(const Module &) = delete;
+	Module &operator=(const Module &) = delete;
+
 	Module()
 	: module_id_(NULL),
 	  type_(NULL),
@@ -233,8 +247,11 @@ private:
 	sqlite3_int64 rowid_;
 };
 
-class Bridge : boost::noncopyable {
+class Bridge {
 public:
+	Bridge(const Bridge &) = delete;
+	Bridge &operator=(const Bridge &) = delete;
+
 	Bridge() : sub_type_(NULL), direction_(NULL), connector_(NULL) {}
 
 	~Bridge() {
@@ -256,8 +273,11 @@ private:
 	xmlChar *connector_;
 };
 
-class Port : boost::noncopyable {
+class Port {
 public:
+	Port(const Port &) = delete;
+	Port &operator=(const Port &) = delete;
+
 	Port() : port_id_(NULL), direction_(NULL), ref_pq_id_(NULL), multiple_(NULL) {}
 
 	~Port() {
@@ -283,12 +303,15 @@ private:
 	xmlChar *multiple_;
 };
 
-class Edge : boost::noncopyable {
+class Edge {
 public:
 	enum Type {
 		kFunctional,
 		kForwarding,
 	};
+
+	Edge(const Edge &) = delete;
+	Edge &operator=(const Edge &) = delete;
 
 	explicit Edge(Type type)
 	: type_(type ),
@@ -332,12 +355,15 @@ private:
 	xmlChar *head_port_id_;
 };
 
-class Import : boost::noncopyable {
+class Import {
 public:
 	enum Format {
 		kUnspecifiedFormat,
 		kSbml
 	};
+
+	Import(const Import &) = delete;
+	Import &operator=(const Import &) = delete;
 
 	Import() : type_(NULL), format_(kUnspecifiedFormat), iref_(NULL), xref_(NULL), zref_(NULL) {}
 	~Import() {
@@ -366,8 +392,11 @@ private:
 	xmlChar *zref_;
 };
 
-class Instance : boost::noncopyable {
+class Instance {
 public:
+	Instance(const Instance &) = delete;
+	Instance &operator=(const Instance &) = delete;
+
 	Instance()
 		: module_id_(NULL),
 		  template_id_(NULL),
@@ -412,7 +441,7 @@ private:
 	sqlite3_int64 rowid_;
 };
 
-class PQ : boost::noncopyable {
+class PQ {
 public:
 	enum Type {
 		kUnknown,
@@ -421,6 +450,9 @@ public:
 		kStaticParameter,
 		kTimeseries
 	};
+
+	PQ(const PQ &) = delete;
+	PQ &operator=(const PQ &) = delete;
 
 	PQ()
 		: type_(kUnknown),
@@ -479,9 +511,14 @@ private:
 	sqlite3_int64 rowid_;
 };
 
-class InitialValue : boost::noncopyable {
+class InitialValue {
 public:
 	static const char *kName;
+
+	InitialValue(const InitialValue &) = delete;
+	InitialValue &operator=(const InitialValue &) = delete;
+
+	InitialValue() {}
 
 	void OpenDefinition(int /*level*/) const {}
 
@@ -509,9 +546,14 @@ private:
 
 const char *InitialValue::kName = "initial-value";
 
-class Implementation : boost::noncopyable {
+class Implementation {
 public:
 	static const char *kName;
+
+	Implementation(const Implementation &) = delete;
+	Implementation &operator=(const Implementation &) = delete;
+
+	Implementation() {}
 
 	void OpenDefinition(int /*level*/) const {}
 
@@ -539,8 +581,11 @@ private:
 
 const char *Implementation::kName = "implementation";
 
-class Definition : boost::noncopyable {
+class Definition {
 public:
+	Definition(const Definition &) = delete;
+	Definition &operator=(const Definition &) = delete;
+
 	Definition()
 		: type_(NULL),
 		  sub_type_(NULL),
@@ -566,8 +611,11 @@ private:
 	xmlChar *format_;
 };
 
-class Reference : boost::noncopyable {
+class Reference {
 public:
+	Reference(const Reference &) = delete;
+	Reference &operator=(const Reference &) = delete;
+
 	Reference()
 		: port_id_(),
 		  timeseries_id_(),
@@ -592,8 +640,11 @@ private:
 	xmlChar *element_id_;
 };
 
-class ExtraImplementation : boost::noncopyable {
+class ExtraImplementation {
 public:
+	ExtraImplementation(const ExtraImplementation &) = delete;
+	ExtraImplementation &operator=(const ExtraImplementation &) = delete;
+
 	static const char *kName;
 
 	ExtraImplementation()
@@ -643,8 +694,11 @@ private:
 
 const char *ExtraImplementation::kName = "extra-implementation";
 
-class Template : boost::noncopyable {
+class Template {
 public:
+	Template(const Template &) = delete;
+	Template &operator=(const Template &) = delete;
+
 	Template() : template_id_(NULL), ref_module_id_(NULL) {}
 
 	~Template() {
@@ -672,8 +726,11 @@ private:
 	xmlChar *ref_module_id_;
 };
 
-class TargetModule : boost::noncopyable {
+class TargetModule {
 public:
+	TargetModule(const TargetModule &) = delete;
+	TargetModule &operator=(const TargetModule &) = delete;
+
 	explicit TargetModule(xmlChar *module_id)
 	: module_id_(module_id),
 	  rowid_()
@@ -702,9 +759,12 @@ private:
 	sqlite3_int64 rowid_;
 };
 
-class TargetPq : boost::noncopyable {
+class TargetPq {
 public:
 	static const char *kName;
+
+	TargetPq(const TargetPq &) = delete;
+	TargetPq &operator=(const TargetPq &) = delete;
 
 	explicit TargetPq(int pq_id)
 	: pq_id_(pq_id),
@@ -740,8 +800,11 @@ private:
 
 const char *TargetPq::kName = "target-physical-quantity";
 
-class Timeseries : boost::noncopyable {
+class Timeseries {
 public:
+	Timeseries(const Timeseries &) = delete;
+	Timeseries &operator=(const Timeseries &) = delete;
+
 	Timeseries()
 		: timeseries_id_(NULL),
 		  format_(NULL),
@@ -803,8 +866,11 @@ bool GetAbsolutePathFromReference(const TElement *element,
 	return false;
 }
 
-class DatabaseDriver : boost::noncopyable {
+class DatabaseDriver {
 public:
+	DatabaseDriver(const DatabaseDriver &) = delete;
+	DatabaseDriver &operator=(const DatabaseDriver &) = delete;
+
 	explicit DatabaseDriver(sqlite3 *db)
 		: db_(db)
 	{
@@ -1882,8 +1948,11 @@ const char CapsulatedByValidator::kQuery[] = "SELECT m0.module_id, m0.capsulated
 											 " m0.capsulated_by IS NOT NULL AND"
 											 " NOT EXISTS (SELECT * FROM modules AS m1 WHERE m1.module_id = m0.capsulated_by)";
 
-class TreeWriter : boost::noncopyable {
+class TreeWriter {
 public:
+	TreeWriter(const TreeWriter &) = delete;
+	TreeWriter &operator=(const TreeWriter &) = delete;
+
 	explicit TreeWriter(sqlite3 *db)
 		: db_(db),
 		  query_stmt_(NULL),
@@ -1983,8 +2052,11 @@ private:
 	Multimap children_;
 };
 
-class Reader : boost::noncopyable {
+class Reader {
 public:
+	Reader(const Reader &) = delete;
+	Reader &operator=(const Reader &) = delete;
+
 	Reader(const boost::filesystem::path &given_path,
 		   const boost::filesystem::path &model_path,
 		   xmlTextReaderPtr &text_reader,

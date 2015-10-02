@@ -16,15 +16,17 @@
 #define BOOST_DATE_TIME_NO_LIB
 #include <boost/interprocess/file_mapping.hpp>
 #include <boost/interprocess/mapped_region.hpp>
-#include <boost/noncopyable.hpp>
 #include <boost/ptr_container/ptr_vector.hpp>
 
 #include "isdf/reader.h"
 
 namespace flint {
 
-class TimeseriesData : boost::noncopyable {
+class TimeseriesData {
 public:
+	TimeseriesData(const TimeseriesData &) = delete;
+	TimeseriesData &operator=(const TimeseriesData &) = delete;
+
 	explicit TimeseriesData(boost::filesystem::path path)
 		: path_(path)
 	{

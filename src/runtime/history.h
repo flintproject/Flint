@@ -10,14 +10,16 @@
 #define BOOST_DATE_TIME_NO_LIB
 #include <boost/interprocess/file_mapping.hpp>
 #include <boost/interprocess/mapped_region.hpp>
-#include <boost/noncopyable.hpp>
 
 #include "bc.pb.h"
 
 namespace flint {
 
-class History : boost::noncopyable {
+class History {
 public:
+	History(const History &) = delete;
+	History &operator=(const History &) = delete;
+
 	History() : capacity_(), m_() {}
 
 	void set_capacity(double capacity) {capacity_ = capacity;}
@@ -128,8 +130,11 @@ private:
 	HistoryMap m_;
 };
 
-class HistoryDumper : boost::noncopyable {
+class HistoryDumper {
 public:
+	HistoryDumper(const HistoryDumper &) = delete;
+	HistoryDumper &operator=(const HistoryDumper &) = delete;
+
 	explicit HistoryDumper(const char *file) : file_(file) {}
 
 	bool Dump(size_t size, const History *history) {
@@ -156,8 +161,11 @@ private:
 	const char *file_;
 };
 
-class HistoryLoader : boost::noncopyable {
+class HistoryLoader {
 public:
+	HistoryLoader(const HistoryLoader &) = delete;
+	HistoryLoader &operator=(const HistoryLoader &) = delete;
+
 	explicit HistoryLoader(const char *file) : file_(file) {}
 
 	bool Load(size_t size, History *history) {

@@ -20,7 +20,6 @@
 #define BOOST_FILESYSTEM_NO_DEPRECATED
 #include <boost/filesystem.hpp>
 #include <boost/filesystem/fstream.hpp>
-#include <boost/noncopyable.hpp>
 #include <boost/ptr_container/ptr_unordered_map.hpp>
 #include <boost/uuid/uuid.hpp>
 #include <boost/uuid/uuid_io.hpp>
@@ -48,8 +47,11 @@ namespace {
 
 typedef boost::ptr_unordered_map<boost::uuids::uuid, std::unordered_map<int, string> > PqMap;
 
-class PqHandler : boost::noncopyable {
+class PqHandler {
 public:
+	PqHandler(const PqHandler &) = delete;
+	PqHandler &operator=(const PqHandler &) = delete;
+
 	explicit PqHandler(PqMap *map) : map_(map) {
 		assert(map);
 	}
@@ -68,8 +70,11 @@ typedef std::set<boost::filesystem::path> PathSet;
 typedef boost::ptr_unordered_map<boost::uuids::uuid,
 								 std::unordered_map<int, PathSet::iterator> > TimeseriesMap;
 
-class TimeseriesHandler : boost::noncopyable {
+class TimeseriesHandler {
 public:
+	TimeseriesHandler(const TimeseriesHandler &) = delete;
+	TimeseriesHandler &operator=(const TimeseriesHandler &) = delete;
+
 	TimeseriesHandler(PathSet *ps, TimeseriesMap *tm)
 		: ps_(ps),
 		  tm_(tm)
@@ -136,8 +141,11 @@ public:
 
 typedef std::unordered_map<string, std::uint32_t> ColumnMap;
 
-class DescriptionHandler : boost::noncopyable {
+class DescriptionHandler {
 public:
+	DescriptionHandler(const DescriptionHandler &) = delete;
+	DescriptionHandler &operator=(const DescriptionHandler &) = delete;
+
 	explicit DescriptionHandler(ColumnMap *cm) : cm_(cm) {}
 
 	void GetDescription(std::uint32_t i, std::uint32_t bytes, const char *d) {
@@ -150,8 +158,11 @@ private:
 	ColumnMap *cm_;
 };
 
-class IsdfLoader : boost::noncopyable {
+class IsdfLoader {
 public:
+	IsdfLoader(const IsdfLoader &) = delete;
+	IsdfLoader &operator=(const IsdfLoader &) = delete;
+
 	explicit IsdfLoader(const boost::filesystem::path &path)
 		: path_(path)
 		, ifs_(path, std::ios::in|std::ios::binary)

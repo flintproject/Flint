@@ -6,14 +6,15 @@
 #include <string>
 #include <fstream>
 
-#include <boost/noncopyable.hpp>
-
 #include "bc/pack.h"
 
 namespace flint {
 
-class LayoutLoader : boost::noncopyable {
+class LayoutLoader {
 public:
+	LayoutLoader(const LayoutLoader &) = delete;
+	LayoutLoader &operator=(const LayoutLoader &) = delete;
+
 	explicit LayoutLoader(const std::string &file) : ifs_(file.c_str(), std::ios::in|std::ios::binary) {}
 
 	~LayoutLoader() {

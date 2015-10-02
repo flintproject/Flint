@@ -4,7 +4,6 @@
 
 #include <memory>
 
-#include <boost/noncopyable.hpp>
 #include <boost/uuid/uuid.hpp>
 
 #include "sqlite3.h"
@@ -12,8 +11,11 @@
 namespace flint {
 namespace db {
 
-class EqInserter : boost::noncopyable {
+class EqInserter {
 public:
+	EqInserter(const EqInserter &) = delete;
+	EqInserter &operator=(const EqInserter &) = delete;
+
 	EqInserter(const char *table, sqlite3 *db);
 
 	~EqInserter();
