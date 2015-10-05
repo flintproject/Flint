@@ -38,8 +38,6 @@ public class RadarChartList extends JobViewerComponent
         return activeParameterCount > 2;
     }
 
-    private int[] mIgnoreIdexes;
-
     private int mAnchorIndex = -1;
 
     private final Dimension mCellSize = new Dimension(64, 64);

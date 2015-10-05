@@ -37,8 +37,6 @@ import jp.oist.flint.util.Utility;
  */
 public class PreferenceDialog extends javax.swing.JDialog {
 
-    final private static String KEY = "";
-
     final private K3Loader mK3Loader = new K3Loader();
 
     final private PlotterLoader mPlotterLoader = new PlotterLoader();

@@ -59,8 +59,6 @@ public class SubFrame extends JInternalFrame
 
     public final static String ID = "flint.view.sub";
 
-    private final static String LABEL_SEPARATOR = "@";
-
     private final Desktop mDesktop;
     private final Document mDocument;
     private final File mOriginalFile;
