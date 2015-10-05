@@ -17,7 +17,7 @@ public class ResumeWorker extends SwingWorker<Boolean, Void> {
 
     @Override
     protected Boolean doInBackground() throws IOException, InterruptedException {
-        try (Scanner s = new Scanner(mPidFile)) {
+        try (Scanner s = new Scanner(mPidFile, "UTF8")) {
             int pid = s.nextInt();
             if (pid <= 0)
                 return false;
