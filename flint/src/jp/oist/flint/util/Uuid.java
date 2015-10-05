@@ -8,7 +8,7 @@ public class Uuid {
         StringBuilder sb = new StringBuilder();
         for (int i=0;i<16;i++) {
             sb.append(String.format("%02x", bytes[i]));
-            if (i == 3 | i == 5 | i == 7 | i == 9)
+            if (i == 3 || i == 5 || i == 7 || i == 9)
                 sb.append('-');
         }
         return sb.toString();
