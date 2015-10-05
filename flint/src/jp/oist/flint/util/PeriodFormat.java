@@ -13,7 +13,7 @@ public class PeriodFormat {
 		SimpleDateFormat hms = new SimpleDateFormat("HH:mm:ss");
 		String fromTime = hms.format(from);
 		String toTime = hms.format(to);
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         if (fromDate.equals(toDate)) {
 			sb.append(fromTime);
 			sb.append(" - ");

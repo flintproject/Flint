@@ -11,7 +11,7 @@ public class DurationFormat {
         long m = TimeUnit.MILLISECONDS.toMinutes(millis);
         millis -= TimeUnit.MINUTES.toMillis(m);
         long s = TimeUnit.MILLISECONDS.toSeconds(millis);
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         if (h > 0) {
             sb.append(h);
             sb.append('h');
