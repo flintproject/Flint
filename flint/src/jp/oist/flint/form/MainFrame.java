@@ -216,17 +216,6 @@ public class MainFrame extends javax.swing.JFrame
         return mDesktop.getSubFrames();
     }
 
-    public void setProgress(Object key, int progress) {
-        if (key instanceof String) {
-            String modelPath = (String)key;
-            ProgressCell cell = mProgressPane.getListCellOfModel(new File(modelPath));
-            String msg = progress + " %";
-            cell.setProgress(msg, 0, 100, progress);
-            return;
-        }
-        throw new IllegalArgumentException("key must be set model file path.");
-    }
-
     public void setEditable (boolean editable) {
         List<SubFrame> subFrames = getSubFrames();
         for (SubFrame subFrame : subFrames)
