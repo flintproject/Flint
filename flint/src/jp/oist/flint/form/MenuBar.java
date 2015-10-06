@@ -1,10 +1,10 @@
 /* -*- Mode: Java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- vim:set ts=4 sw=4 sts=4 et: */
-
 package jp.oist.flint.form;
 
 import jp.oist.flint.command.ISessionListener;
 import jp.oist.flint.desktop.Document;
 import jp.oist.flint.desktop.IDesktopListener;
+import jp.oist.flint.desktop.ILoadingListener;
 import jp.oist.flint.desktop.ISimulationListener;
 import jp.oist.flint.executor.PhspSimulator;
 import java.awt.Toolkit;
@@ -19,7 +19,8 @@ import javax.swing.JMenuItem;
 import javax.swing.KeyStroke;
 
 public class MenuBar extends JMenuBar
-    implements IDesktopListener, ISessionListener, ISimulationListener {
+    implements IDesktopListener, ILoadingListener,
+               ISessionListener, ISimulationListener {
 
     /* Item names on Menu "File" */
     public final static String OPEN = "menu.file.open";
@@ -43,12 +44,6 @@ public class MenuBar extends JMenuBar
 
     /* Item names on Menu "Help" */
     public final static String ABOUT = "menu.help.about";
-
-    private final static MenuBar instance = new MenuBar();
-
-    public static MenuBar getInstance () {
-        return instance;
-    }
 
     /* Items on Menu "File" */
     private JMenuItem mItemOpen;
@@ -83,7 +78,7 @@ public class MenuBar extends JMenuBar
 
     private String mLastPath = null;
 
-    protected MenuBar () {
+    public MenuBar() {
         super();
 
         mDelegator = null;
@@ -379,6 +374,20 @@ public class MenuBar extends JMenuBar
         JMenuItem item = findJMenuItemByName(name);
         if (item != null)
             item.setEnabled(enabled);
+    }
+
+    /* ILoadingListener */
+
+    @Override
+    public void loadingStarted() {
+        mItemRun.setEnabled(false);
+        mItemSendToFlintK3.setEnabled(false);
+    }
+
+    @Override
+    public void loadingDone() {
+        mItemRun.setEnabled(true);
+        mItemSendToFlintK3.setEnabled(true);
     }
 
     /* ISimulationListener */

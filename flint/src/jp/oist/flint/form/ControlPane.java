@@ -1,7 +1,8 @@
 /* -*- Mode: Java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- vim:set ts=4 sw=4 sts=4 et: */
-
 package jp.oist.flint.form;
 
+import jp.oist.flint.desktop.Document;
+import jp.oist.flint.desktop.IDesktopListener;
 import jp.oist.flint.desktop.ILoadingListener;
 import jp.oist.flint.desktop.ISimulationListener;
 import jp.oist.flint.executor.PhspSimulator;
@@ -16,24 +17,22 @@ import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 import javax.swing.JButton;
 
-public class ControlPane extends PeripheralPane 
-    implements FocusListener, ILoadingListener, ISimulationListener {
+public class ControlPane extends PeripheralPane
+    implements FocusListener, IDesktopListener,
+               ILoadingListener, ISimulationListener {
 
     public final static String RUN = "controlpanel.run";
 
     public final static String TITLE  = "Control Panel";
 
-    private final static ControlPane mInstance = new ControlPane();
-
-    public static ControlPane getInstance () {
-        return mInstance;
-    }
-
     private JButton mBtnSimulationRun;
 
-    private ControlPane () {
+    private IMenuDelegator mDelegator;
+
+    public ControlPane() {
         super(TITLE);
 
+        mDelegator = null;
         initComponents();
         addFocusListener(this);
     }
@@ -53,19 +52,13 @@ public class ControlPane extends PeripheralPane
         mBtnSimulationRun.addActionListener(new ActionListener () {
             @Override
             public void actionPerformed(ActionEvent e) {
-                simulationRunPerformed(e);
+                if (mDelegator != null)
+                    mDelegator.simulationRunPerformed(e);
             }
         });
         contentPane.add(mBtnSimulationRun, BorderLayout.CENTER);
 
         return contentPane;
-    }
-
-    protected void simulationRunPerformed (ActionEvent e) {
-        MenuBar menuBar = MenuBar.getInstance();
-        IMenuDelegator delegator = menuBar.getDelegator();
-        if (delegator != null)
-            delegator.simulationRunPerformed(e);
     }
 
     @Override
@@ -77,34 +70,32 @@ public class ControlPane extends PeripheralPane
     public void focusLost(FocusEvent e) {
     }
 
-    public void setSimulationRunEnabled(boolean enabled) {
-        mBtnSimulationRun.setEnabled(enabled);
-        MenuBar.getInstance().setMenuItemEnabled(MenuBar.RUN, enabled);
-        MenuBar.getInstance().setMenuItemEnabled(MenuBar.SEND_TO_FLINT_K3, enabled);
+    public void setDelegator(IMenuDelegator delegator) {
+        mDelegator = delegator;
     }
 
     /* ILoadingListener */
 
     @Override
     public void loadingStarted() {
-        setSimulationRunEnabled(false);
+        mBtnSimulationRun.setEnabled(false);
     }
 
     @Override
     public void loadingDone() {
-        setSimulationRunEnabled(true);
+        mBtnSimulationRun.setEnabled(true);
     }
 
     /* ISimulationListener */
 
     @Override
     public void simulationStarted(PhspSimulator simulator) {
-        setSimulationRunEnabled(false);
+        mBtnSimulationRun.setEnabled(false);
     }
 
     @Override
     public void simulationDone() {
-        setSimulationRunEnabled(true);
+        mBtnSimulationRun.setEnabled(true);
     }
 
     @Override
@@ -113,5 +104,18 @@ public class ControlPane extends PeripheralPane
 
     @Override
     public void simulationResumed() {
+    }
+
+    /* IDesktopListener */
+
+    @Override
+    public void documentAdded(Document doc) {
+        mBtnSimulationRun.setEnabled(true);
+    }
+
+    @Override
+    public void documentRemoved(Document doc, boolean empty) {
+        if (empty)
+            mBtnSimulationRun.setEnabled(false);
     }
 }

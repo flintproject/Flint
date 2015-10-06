@@ -89,9 +89,7 @@ public class MainFrame extends javax.swing.JFrame
 
     private ProgressPane mProgressPane;
 
-    private ControlPane mControlPane;
-
-    public MainFrame(Desktop desktop)
+    public MainFrame(Desktop desktop, ControlPane controlPane)
         throws IOException {
         super();
         mDesktop = desktop;
@@ -99,10 +97,10 @@ public class MainFrame extends javax.swing.JFrame
         setIconImage(new ImageIcon(iconUrl).getImage());
         setTransferHandler(new ModelFileTransferHandler(this));
 
-        initComponents();
+        initComponents(controlPane);
     }
 
-    private void initComponents () {
+    private void initComponents(ControlPane controlPane) {
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setTitle("Flint");
 
@@ -114,16 +112,11 @@ public class MainFrame extends javax.swing.JFrame
         setPreferredSize(new Dimension(WIDTH, HEIGHT));
         setLocationRelativeTo(null);
 
-        MenuBar menuBar = MenuBar.getInstance();
-        menuBar.setDelegator(this);
-        setJMenuBar(menuBar);
-        mDesktop.addListener(menuBar);
-
-        setContentPane(createContentPane());
+        setContentPane(createContentPane(controlPane));
         pack();
     }
 
-    private JComponent createContentPane () {
+    private JComponent createContentPane(ControlPane controlPane) {
         final JSplitPane contentPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
         contentPane.setDividerSize(10);
         contentPane.setDividerLocation(638);
@@ -144,13 +137,12 @@ public class MainFrame extends javax.swing.JFrame
         mProgressPane.setPreferredSize(new Dimension(150, 510));
         mDesktop.addListener(mProgressPane);
 
-        mControlPane = ControlPane.getInstance();
-        mControlPane.setMaximumSize(new Dimension(Short.MAX_VALUE, 60));
-        mControlPane.setMinimumSize(new Dimension(0, 60));
-        mControlPane.setPreferredSize(new Dimension(150, 60));
+        controlPane.setMaximumSize(new Dimension(Short.MAX_VALUE, 60));
+        controlPane.setMinimumSize(new Dimension(0, 60));
+        controlPane.setPreferredSize(new Dimension(150, 60));
 
         peripheralPane.add(mProgressPane, BorderLayout.CENTER);
-        peripheralPane.add(mControlPane, BorderLayout.SOUTH);
+        peripheralPane.add(controlPane, BorderLayout.SOUTH);
 
         return contentPane;
     }
@@ -239,7 +231,6 @@ public class MainFrame extends javax.swing.JFrame
         List<SubFrame> subFrames = getSubFrames();
         for (SubFrame subFrame : subFrames)
             subFrame.setEditable(editable);
-        mControlPane.setSimulationRunEnabled(editable);
     }
 
     /*
