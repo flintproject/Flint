@@ -775,10 +775,6 @@ public class JobWindow extends javax.swing.JFrame
         }
     }
 
-    public void cancelTaskPerformed (JobViewerComponent.Event evt) {
-        ((SubFrame)mParent).cancelSimulation();
-    }
-
     public void cancelJobPerformed (JobViewerComponent.Event evt) {
         File tmp;
         TaskDao taskDao;
@@ -853,9 +849,6 @@ public class JobWindow extends javax.swing.JFrame
                 break;
             case "sendViaGaruda":
                 sendViaGarudaPerformed(evt);
-                break;
-            case "cancelTask":
-                cancelTaskPerformed(evt);
                 break;
             case "cancelJob":
                 cancelJobPerformed(evt);

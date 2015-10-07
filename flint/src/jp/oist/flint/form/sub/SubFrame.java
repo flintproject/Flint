@@ -210,7 +210,7 @@ public class SubFrame extends JInternalFrame
         return mDocument;
     }
 
-    public boolean cancelSimulation() {
+    private boolean cancelSimulation() {
         File modelFile = getModelFile();
 
         try {
