@@ -2936,9 +2936,12 @@ private:
 		xmlChar *s = xmlTextReaderReadString(text_reader_);
 		assert(s);
 
-		// validate max-delay
-		int len = xmlStrlen(s);
-		if (len == 0) {
+		xmlChar *max_delay;
+		if (!Trim(s, &max_delay)) {
+			xmlFree(s);
+			return -2;
+		}
+		if (xmlStrlen(max_delay) == 0) {
 			cerr << "empty max-delay of a physical-quantity in module "
 				 << module_->module_id()
 				 << endl;
@@ -2946,20 +2949,19 @@ private:
 			// We do not want to raise the error for old models, so just skip it
 			return xmlTextReaderNext(text_reader_);
 		}
-		for (int i=0;i<len;i++) {
-			if (!isprint(s[i])) {
-				cerr << "max-delay in "
-					 << module_->module_id()
-					 << " contains invalid character: \""
-					 << s
-					 << "\""
-					 << endl;
-				xmlFree(s);
-				return -2;
-			}
+		if (ContainNonGraphic(max_delay)) {
+			cerr << "max-delay in "
+				 << module_->module_id()
+				 << " contains invalid character: \""
+				 << max_delay
+				 << "\""
+				 << endl;
+			xmlFree(s);
+			return -2;
 		}
 
-		pq_->set_max_delay(s);
+		pq_->set_max_delay(xmlStrdup(max_delay));
+		xmlFree(s);
 		return xmlTextReaderNext(text_reader_);
 	}
 
