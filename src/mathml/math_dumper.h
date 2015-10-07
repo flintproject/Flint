@@ -9,6 +9,8 @@
 #include <iostream>
 #include <libxml/xmlreader.h>
 
+#include "flint/trim.h"
+
 namespace flint {
 namespace mathml {
 
@@ -114,7 +116,7 @@ public:
 		}
 		xmlChar *name;
 		int i = Trim(s, &name);
-		if (i <= 0) return i;
+		if (i == 0) return -2;
 		// check if it is the name
 		if (name_ && !found_ && xmlStrEqual(name, name_)) {
 			found_ = true;
@@ -170,7 +172,7 @@ public:
 				}
 				xmlChar *t;
 				i = Trim(s, &t);
-				if (i <= 0) return i;
+				if (i == 0) return -2;
 				*os_ << (const char *)t;
 				xmlFree(s);
 			} else if (type == XML_READER_TYPE_ELEMENT) {
@@ -207,7 +209,7 @@ public:
 		}
 		xmlChar *name;
 		int i = Trim(s, &name);
-		if (i <= 0) return i;
+		if (i == 0) return -2;
 		*os_ << "$" << (const char *)name;
 		xmlFree(s);
 		return xmlTextReaderRead(text_reader_);
@@ -368,45 +370,6 @@ public:
 	}
 
 private:
-	int Trim(xmlChar *s, xmlChar **tp) {
-		int w = static_cast<int>(strlen((const char *)s));
-		if (w == 0) {
-			*tp = s;
-			return 1;
-		}
-		do {
-			int k = w;
-			int c = xmlGetUTF8Char(s, &k);
-			if (c < 0) {
-				cerr << "invalid UTF-8 string: " << s << endl;
-				return -2;
-			}
-			if (!std::isspace(c)) break;
-			s += k;
-			w -= k;
-		} while (*s);
-
-		*tp = s;
-
-		w = static_cast<int>(strlen((const char *)s));
-		if (w == 0) return 1;
-		do {
-			int k = w;
-			int c = xmlGetUTF8Char(s, &k);
-			if (c < 0) {
-				cerr << "invalid UTF-8 string:" << s << endl;
-				return -2;
-			}
-			if (std::isspace(c)) {
-				*s = '\0';
-				break;
-			}
-			s += k;
-			w -= k;
-		} while (*s);
-		return 1;
-	}
-
 	xmlTextReaderPtr &text_reader_;
 	const xmlChar *name_;
 	bool found_;
