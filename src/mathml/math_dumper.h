@@ -9,7 +9,7 @@
 #include <iostream>
 #include <libxml/xmlreader.h>
 
-#include "flint/trim.h"
+#include "flint/utf8string.h"
 
 namespace flint {
 namespace mathml {

@@ -151,10 +151,10 @@ libflintxx_la_SOURCES = \
     task/form.cc \
     task/spec.cc \
     task/timer.cc \
-    trim.c \
     ts/tsc.cc \
     ts/tsfiles.cc \
     utf8path.cc \
+    utf8string.c \
     uuidgen.cc
 
 libsqlite3_la_CPPFLAGS = -DSQLITE_THREADSAFE=1 -DSQLITE_OMIT_LOAD_EXTENSION

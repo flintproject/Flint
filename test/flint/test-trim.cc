@@ -3,7 +3,7 @@
 #include "config.h"
 #endif
 
-#include "flint/trim.h"
+#include "flint/utf8string.h"
 
 #include <libxml/xmlmemory.h>
 
