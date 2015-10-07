@@ -3,6 +3,7 @@ SUBDIRS = \
 	cellml \
 	compiler \
 	file \
+	flint \
 	job \
 	layout \
 	load \

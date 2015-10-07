@@ -151,6 +151,7 @@ libflintxx_la_SOURCES = \
     task/form.cc \
     task/spec.cc \
     task/timer.cc \
+    trim.c \
     ts/tsc.cc \
     ts/tsfiles.cc \
     utf8path.cc \

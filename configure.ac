@@ -122,6 +122,7 @@ AC_CONFIG_FILES([Makefile
                  test/cellml/Makefile
                  test/compiler/Makefile
                  test/file/Makefile
+                 test/flint/Makefile
                  test/job/Makefile
                  test/layout/Makefile
                  test/load/Makefile
