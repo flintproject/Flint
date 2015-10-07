@@ -26,6 +26,7 @@
 #include "db.hh"
 #include "db/driver.hh"
 #include "db/query.h"
+#include "flint/utf8string.h"
 #include "modelpath.h"
 #include "phml/definition_dumper.h"
 #include "phml/delay-arg-validator.hh"
@@ -2239,18 +2240,28 @@ private:
 			cerr << "missing body of <step>" << endl;
 			return xmlTextReaderNext(text_reader_);
 		}
-
-		// validate step
-		int len = xmlStrlen(s);
-		for (int i=0;i<len;i++) {
-			if (!isprint(s[i])) {
-				cerr << "<step> contains invalid character: \"" << s << "\"" << endl;
-				xmlFree(s);
-				return -2;
-			}
+		xmlChar *step;
+		if (!Trim(s, &step)) {
+			xmlFree(s);
+			return -2;
+		}
+		int len = xmlStrlen(step);
+		if (len == 0) {
+			// generously ignore empty step
+			cerr << "empty body of <step>" << endl;
+			xmlFree(s);
+			return xmlTextReaderNext(text_reader_);
 		}
 
-		td->set_step(s);
+		// validate step
+		if (ContainNonGraphic(step)) {
+			cerr << "<step> contains invalid character: \"" << step << "\"" << endl;
+			xmlFree(s);
+			return -2;
+		}
+
+		td->set_step(xmlStrdup(step));
+		xmlFree(s);
 		return xmlTextReaderNext(text_reader_);
 	}
 
