@@ -6,10 +6,10 @@ import jp.oist.flint.dao.DaoException;
 import jp.oist.flint.desktop.Desktop;
 import jp.oist.flint.desktop.Document;
 import jp.oist.flint.desktop.ISimulationListener;
+import jp.oist.flint.form.ProgressCellSelectionListener;
 import jp.oist.flint.form.SubFrameSelectionListener;
 import jp.oist.flint.phsp.PhspException;
 import jp.oist.flint.util.IntegrationMethodFormat;
-import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.KeyboardFocusManager;
 import java.awt.event.ActionEvent;
@@ -29,13 +29,8 @@ import javax.swing.JOptionPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JInternalFrame;
 import com.google.protobuf.ByteString;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-import java.beans.PropertyVetoException;
 import java.sql.SQLException;
 import java.util.Arrays;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JComponent;
 import javax.xml.parsers.ParserConfigurationException;
 import jp.oist.flint.dao.TaskDao;
@@ -266,7 +261,7 @@ public class SubFrame extends JInternalFrame
         pane.addActionListener(this);
         pane.setGeneralButtonEnabled(false);
         mStatusComponent = pane;
-        mStatusComponent.addPropertyChangeListener(new SelectionHandler(this));
+        mStatusComponent.addPropertyChangeListener(new ProgressCellSelectionListener(this));
     }
 
     public JComponent  getStatusComponent () {
@@ -501,30 +496,4 @@ public class SubFrame extends JInternalFrame
                 JOptionPane.ERROR_MESSAGE);
     }
 
-    public static class SelectionHandler implements PropertyChangeListener {
-
-        private final SubFrame mSubFrame;
-
-        private SelectionHandler(SubFrame subFrame) {
-            mSubFrame = subFrame;
-        }
-
-        @Override
-        public void propertyChange(PropertyChangeEvent evt) {
-            Component source = (Component)evt.getSource();
-            String propertyName = evt.getPropertyName();
-            if ("selected".equals(propertyName)) {
-                boolean isSelected = (Boolean)evt.getNewValue();
-                if (!isSelected) return;
-                try {
-                    if (mSubFrame.isIcon())
-                        mSubFrame.setIcon(false);
-                    mSubFrame.setSelected(isSelected);
-                } catch (PropertyVetoException ex) {
-                    Logger.getLogger(SubFrame.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
-        }
-
-    }
 }
