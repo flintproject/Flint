@@ -6,6 +6,7 @@ import jp.oist.flint.dao.DaoException;
 import jp.oist.flint.desktop.Desktop;
 import jp.oist.flint.desktop.Document;
 import jp.oist.flint.desktop.ISimulationListener;
+import jp.oist.flint.form.SubFrameSelectionListener;
 import jp.oist.flint.phsp.PhspException;
 import jp.oist.flint.util.IntegrationMethodFormat;
 import java.awt.Component;
@@ -89,8 +90,6 @@ public class SubFrame extends JInternalFrame
 
     private PhspSimulator mSimulator = null;
 
-    private SelectionHandler mSelectionHandler;
-
     public SubFrame(Desktop desktop, Model model, ModelLoader loader)
             throws IOException, ExecutionException, InterruptedException {
         this(desktop, loader.get());
@@ -113,8 +112,7 @@ public class SubFrame extends JInternalFrame
 
         init(document);
 
-        mSelectionHandler = new SelectionHandler(this);
-        addPropertyChangeListener(mSelectionHandler);
+        addPropertyChangeListener(new SubFrameSelectionListener(ProgressPane.getInstance()));
     }
 
     private void init(Document document) throws IOException {
@@ -268,7 +266,7 @@ public class SubFrame extends JInternalFrame
         pane.addActionListener(this);
         pane.setGeneralButtonEnabled(false);
         mStatusComponent = pane;
-        mStatusComponent.addPropertyChangeListener(mSelectionHandler);
+        mStatusComponent.addPropertyChangeListener(new SelectionHandler(this));
     }
 
     public JComponent  getStatusComponent () {
@@ -516,29 +514,8 @@ public class SubFrame extends JInternalFrame
             Component source = (Component)evt.getSource();
             String propertyName = evt.getPropertyName();
             if ("selected".equals(propertyName)) {
-                boolean isSelected = (Boolean) evt.getNewValue();
-                handleSelection(source, isSelected);
-            }
-        }
-
-        boolean mSkip = false;
-
-        private void handleSelection(Component src, boolean isSelected) {
-            if (mSkip || !isSelected) return;
-
-            if (src instanceof SubFrame) {
-                SubFrame subFrame = (SubFrame)src;
-                ProgressCell cell = (ProgressCell)subFrame.getStatusComponent();
-                if (cell == null)
-                    return;
-
-                ProgressPane progressPane = ProgressPane.getInstance();
-
-                mSkip = true;
-                progressPane.setSelectedCell(cell, isSelected);
-                mSkip = false;
-            } else {
-                mSkip = true;
+                boolean isSelected = (Boolean)evt.getNewValue();
+                if (!isSelected) return;
                 try {
                     if (mSubFrame.isIcon())
                         mSubFrame.setIcon(false);
@@ -546,7 +523,6 @@ public class SubFrame extends JInternalFrame
                 } catch (PropertyVetoException ex) {
                     Logger.getLogger(SubFrame.class.getName()).log(Level.SEVERE, null, ex);
                 }
-                mSkip = false;
             }
         }
 
