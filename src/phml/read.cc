@@ -2904,29 +2904,31 @@ private:
 		xmlChar *s = xmlTextReaderReadString(text_reader_);
 		assert(s);
 
-		// validate name
-		int len = xmlStrlen(s);
-		if (len == 0) {
+		xmlChar *name;
+		if (!Trim(s, &name)) {
+			xmlFree(s);
+			return -2;
+		}
+		if (xmlStrlen(name) == 0) {
 			cerr << "empty name of a physical-quantity in module "
 				 << module_->module_id()
 				 << endl;
 			xmlFree(s);
 			return -2;
 		}
-		for (int i=0;i<len;i++) {
-			if (!isprint(s[i])) {
-				cerr << "a physical-quantity's name in "
-					 << module_->module_id()
-					 << " contains invalid character: \""
-					 << s
-					 << "\""
-					 << endl;
-				xmlFree(s);
-				return -2;
-			}
+		if (ContainNonGraphic(name)) {
+			cerr << "a physical-quantity's name in "
+				 << module_->module_id()
+				 << " contains invalid character: \""
+				 << s
+				 << "\""
+				 << endl;
+			xmlFree(s);
+			return -2;
 		}
 
-		pq_->set_name(s);
+		pq_->set_name(xmlStrdup(name));
+		xmlFree(s);
 		return xmlTextReaderNext(text_reader_);
 	}
 
