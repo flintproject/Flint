@@ -3,10 +3,10 @@
 #define FLINT_PHML_GRAPH_READER_H_
 
 #include <cassert>
-#include <cctype>
 #include <memory>
 #include <libxml/xmlreader.h>
 
+#include "flint/utf8string.h"
 #include "mathml/math_dumper.h"
 
 namespace flint {
@@ -234,17 +234,24 @@ private:
 		xmlChar *s = xmlTextReaderReadString(text_reader_);
 		assert(s);
 
-		// validate name
-		int len = xmlStrlen(s);
-		for (int i=0;i<len;i++) {
-			if (!isprint(s[i])) {
-				cerr << "node name contains invalid character: \"" << s << "\"" << endl;
-				xmlFree(s);
-				return -2;
-			}
+		xmlChar *name;
+		if (!Trim(s, &name)) {
+			xmlFree(s);
+			return -2;
+		}
+		if (xmlStrlen(name) == 0) {
+			cerr << "node name is empty" << endl;
+			xmlFree(s);
+			return -2;
+		}
+		if (ContainNonGraphic(name)) {
+			cerr << "node name contains invalid character: \"" << name << "\"" << endl;
+			xmlFree(s);
+			return -2;
 		}
 
-		node->set_name(s);
+		node->set_name(xmlStrdup(name));
+		xmlFree(s);
 		return xmlTextReaderNext(text_reader_);
 	}
 
