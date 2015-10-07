@@ -18,21 +18,13 @@ public class ProgressPane extends PeripheralPane
 
     public final static String STOP_ACTION_COMMAND      = "progress.stop";
 
-    public final static String CANCEL_ACTION_COMMAND    = "progress.cancel";
-
     public final static String LOG_ACTION_COMMAND       = "progress.log";
 
     public final static String JOB_ACTION_COMMAND      = "progress.job";
 
-    private final static ProgressPane mInstance = new ProgressPane();
-
-    public static ProgressPane getInstance () {
-        return mInstance;
-    }
-
     private ProgressList mProgressList;
 
-    private ProgressPane () {
+    public ProgressPane() {
         super(TITLE);
         initComponents();
     }
@@ -53,15 +45,6 @@ public class ProgressPane extends PeripheralPane
         model.addElement(row);
     }
 
-    public ProgressCell createListCell(SubFrame container) {
-        File file = container.getModelFile();
-        String title = file.getName();
-        ProgressCell retval =  new ProgressCell(mProgressList, title);
-        retval.setToolTipText(String.format("%s [%s]", file.getName(), file.getPath()));
-        retval.setValue("container", container);
-        return retval;
-    }
-
     public int getSelectedIndex () {
         return mProgressList.getSelectedIndex();
     }
@@ -78,7 +61,7 @@ public class ProgressPane extends PeripheralPane
         mProgressList.setSelectedValue(plcp, selected);
     }
 
-    public ProgressCell[]  getListCells () {
+    private ProgressCell[]  getListCells () {
         DefaultListModel model = (DefaultListModel)mProgressList.getModel();
         int size = model.getSize();
         ProgressCell[] retvals = new ProgressCell[size];
@@ -118,8 +101,7 @@ public class ProgressPane extends PeripheralPane
 
         for (int i=0; i<size; i++) {
             ProgressCell cell = (ProgressCell)model.getElementAt(i);
-            SubFrame container = (SubFrame)cell.getValue("container");
-            if (container.getModelFile().equals(modelFile))
+            if (cell.getDocument().getFile().equals(modelFile))
                 return cell;
         }
 
@@ -131,21 +113,16 @@ public class ProgressPane extends PeripheralPane
     @Override
     public void documentAdded(Document doc) {
         final SubFrame subFrame = doc.getSubFrame();
-        ProgressCell plcp = createListCell(subFrame);
+        ProgressCell plcp = new ProgressCell(doc, mProgressList);
         addRow(plcp);
         subFrame.setStatusComponent(plcp);
     }
 
     @Override
     public void documentRemoved(Document doc, boolean empty) {
-        final SubFrame subFrame = doc.getSubFrame();
-
-        if (subFrame == null)
-            return;
-
         ProgressCell[] cells = getListCells();
         for (ProgressCell cell : cells) {
-            if (subFrame.equals(cell.getValue("container"))) {
+            if (doc.equals(cell.getDocument())) {
                 removeListCell(cell);
                 break;
             }
@@ -156,6 +133,8 @@ public class ProgressPane extends PeripheralPane
 
     @Override
     public void simulationStarted(PhspSimulator simulator) {
+        for (ProgressCell cell : getListCells())
+            cell.progressStarted();
         repaint();
     }
 

@@ -24,11 +24,14 @@ public class PhspProgressMonitor extends SwingWorker<Void, Job> {
 
     private final MainFrame mMainFrame;
 
+    private final ProgressPane mProgressPane;
+
     private volatile boolean mDone = false;
 
-    public PhspProgressMonitor(SimulationDao simulationDao, MainFrame mainFrame) {
+    public PhspProgressMonitor(SimulationDao simulationDao, MainFrame mainFrame, ProgressPane progressPane) {
         mSimulationDao = simulationDao;
         mMainFrame = mainFrame;
+        mProgressPane = progressPane;
     }
 
     public void stop() {
@@ -56,8 +59,7 @@ public class PhspProgressMonitor extends SwingWorker<Void, Job> {
                 progressMgr.setCancelled(index, true);
 
             int taskProgress = taskDao.getProgress();
-            ProgressCell cell =
-                ProgressPane.getInstance().getListCellOfModel(new File(modelPath));
+            ProgressCell cell = mProgressPane.getListCellOfModel(new File(modelPath));
 
             String status;
             if (taskDao.isFinished()) {

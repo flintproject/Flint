@@ -42,12 +42,14 @@ public class Launch implements Runnable {
         MenuBar menuBar = new MenuBar();
         session.addListener(menuBar);
         ControlPane controlPane = new ControlPane();
+        ProgressPane progressPane = new ProgressPane();
         try {
-            Desktop desktop = new Desktop();
+            Desktop desktop = new Desktop(progressPane);
             desktop.addListener(new SessionHandler(session));
             desktop.addListener(menuBar);
             desktop.addListener(controlPane);
-            mMainFrame = new MainFrame(desktop, controlPane);
+            desktop.addListener(progressPane);
+            mMainFrame = new MainFrame(desktop, controlPane, progressPane);
             mMainFrame.setJMenuBar(menuBar);
             menuBar.setDelegator(mMainFrame);
             controlPane.setDelegator(mMainFrame);
@@ -56,7 +58,7 @@ public class Launch implements Runnable {
             desktop.addLoadingListener(menuBar);
             desktop.addSimulationListener(controlPane);
             desktop.addSimulationListener(menuBar);
-            desktop.addSimulationListener(ProgressPane.getInstance());
+            desktop.addSimulationListener(progressPane);
             desktop.startWatching();
         } catch (IOException ex) {
             Logger.getRootLogger().fatal("could not launch " + MainFrame.class.getName() + ": " + ex.getMessage());

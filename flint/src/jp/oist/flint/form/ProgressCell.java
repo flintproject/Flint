@@ -1,7 +1,8 @@
 /* -*- Mode: Java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- vim:set ts=4 sw=4 sts=4 et: */
 package jp.oist.flint.form;
 
-import static jp.oist.flint.form.ProgressPane.CANCEL_ACTION_COMMAND;
+import jp.oist.flint.desktop.CancelSimulationActionListener;
+import jp.oist.flint.desktop.Document;
 import static jp.oist.flint.form.ProgressPane.JOB_ACTION_COMMAND;
 import static jp.oist.flint.form.ProgressPane.LOG_ACTION_COMMAND;
 import static jp.oist.flint.form.ProgressPane.STOP_ACTION_COMMAND;
@@ -12,6 +13,7 @@ import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeListener;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import javax.swing.Box;
@@ -28,6 +30,8 @@ import javax.swing.border.TitledBorder;
 public class ProgressCell extends JPanel implements ActionListener {
 
     public final static String IS_SELECTED_PROPERTY = "selected";
+
+    private final Document mDocument;
 
     private final JList mParent;
 
@@ -50,12 +54,15 @@ public class ProgressCell extends JPanel implements ActionListener {
 
     private final ArrayList<PropertyChangeListener> mPropertyChangeListeners;
 
-    public ProgressCell(JList parent, String title) {
+    public ProgressCell(Document document, JList parent) {
+        mDocument = document;
         mParent = parent;
         mPropertyChangeListeners = new ArrayList<>();
         mActionListeners = new ArrayList<>();
+        File file = document.getFile();
+        String title = file.getName();
+        setToolTipText(String.format("%s [%s]", title, file.getPath()));
         initComponents(title);
-
     }
 
     private void initComponents(String title) {
@@ -108,8 +115,7 @@ public class ProgressCell extends JPanel implements ActionListener {
         upperPane.add(createSpacePanel(new Dimension(spaceW, spaceH)));
 
         mCancelBtn  = new JButton();
-        mCancelBtn.setActionCommand(CANCEL_ACTION_COMMAND);
-        mCancelBtn.addActionListener(this);
+        mCancelBtn.addActionListener(new CancelSimulationActionListener(this));
         mCancelBtn.setIcon(new ImageIcon(getClass().getResource("/jp/oist/flint/image/cancel.png")));
         Dimension btnSize = new Dimension(20,20);
         mCancelBtn.setSize(btnSize);
@@ -198,6 +204,10 @@ public class ProgressCell extends JPanel implements ActionListener {
         return mIsSelected;
     }
 
+    public Document getDocument() {
+        return mDocument;
+    }
+
     public int getStatusBarProgress () {
         return mProgressBar.getValue();
     }
@@ -225,14 +235,6 @@ public class ProgressCell extends JPanel implements ActionListener {
     public void progressFinished(String msg, int minimum, int maximum, int value) {
         setProgress(msg, minimum, maximum, value);
         mCancelBtn.setEnabled(false);
-    }
-
-    public void setValue (String key, Object var) {
-        mVars.put(key, var);
-    }
-
-    public Object getValue (String key) {
-        return mVars.get(key);
     }
 
     public void addActionListener (ActionListener l) {

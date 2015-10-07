@@ -11,6 +11,8 @@ import jp.oist.flint.form.MessageDialog;
 import jp.oist.flint.form.ModelFileLoaderListener;
 import jp.oist.flint.form.ModelLoaderLogger;
 import jp.oist.flint.form.ModelLoaderProgressDialog;
+import jp.oist.flint.form.ProgressPane;
+import jp.oist.flint.form.SubFrameSelectionListener;
 import jp.oist.flint.form.sub.SubFrame;
 import jp.oist.flint.phsp.IPhspConfiguration;
 import jp.oist.flint.phsp.PhspException;
@@ -56,13 +58,16 @@ public class Desktop implements IPhspConfiguration {
 
     private final ModelFileWatcher mModelFileWatcher;
 
-    public Desktop() throws IOException {
+    private final ProgressPane mProgressPane;
+
+    public Desktop(ProgressPane progressPane) throws IOException {
         mDocuments = new ArrayList<>();
         mListeners = new EventListenerList();
         mLoadingListeners = new EventListenerList();
         mSimulationListeners = new EventListenerList();
         mPane = new JDesktopPane();
         mModelFileWatcher = new ModelFileWatcher();
+        mProgressPane = progressPane;
     }
 
     public JDesktopPane getPane() {
@@ -139,6 +144,7 @@ public class Desktop implements IPhspConfiguration {
         SubFrame subFrame = new SubFrame(this, document);
         subFrame.setDefaultCloseOperation(JInternalFrame.DO_NOTHING_ON_CLOSE);
         subFrame.addInternalFrameListener(new SubFrameAdapter(this));
+        subFrame.addPropertyChangeListener(new SubFrameSelectionListener(mProgressPane));
 
         try {
             mModelFileWatcher.watch(document.getFile(), subFrame);
@@ -182,7 +188,9 @@ public class Desktop implements IPhspConfiguration {
 
         SimulatorService service = new SimulatorService(mainFrame);
         final PhspSimulator simulator = new PhspSimulator(service, mainFrame, this);
-        final PhspProgressMonitor monitor = new PhspProgressMonitor(simulator.getSimulationDao(), mainFrame);
+        final PhspProgressMonitor monitor = new PhspProgressMonitor(simulator.getSimulationDao(),
+                                                                    mainFrame,
+                                                                    mProgressPane);
         simulator.addPropertyChangeListener(new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent e) {

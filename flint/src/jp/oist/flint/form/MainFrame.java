@@ -87,9 +87,7 @@ public class MainFrame extends javax.swing.JFrame
 
     private PhspSimulator mSimulator = null;
 
-    private ProgressPane mProgressPane;
-
-    public MainFrame(Desktop desktop, ControlPane controlPane)
+    public MainFrame(Desktop desktop, ControlPane controlPane, ProgressPane progressPane)
         throws IOException {
         super();
         mDesktop = desktop;
@@ -97,10 +95,10 @@ public class MainFrame extends javax.swing.JFrame
         setIconImage(new ImageIcon(iconUrl).getImage());
         setTransferHandler(new ModelFileTransferHandler(this));
 
-        initComponents(controlPane);
+        initComponents(controlPane, progressPane);
     }
 
-    private void initComponents(ControlPane controlPane) {
+    private void initComponents(ControlPane controlPane, ProgressPane progressPane) {
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setTitle("Flint");
 
@@ -112,11 +110,11 @@ public class MainFrame extends javax.swing.JFrame
         setPreferredSize(new Dimension(WIDTH, HEIGHT));
         setLocationRelativeTo(null);
 
-        setContentPane(createContentPane(controlPane));
+        setContentPane(createContentPane(controlPane, progressPane));
         pack();
     }
 
-    private JComponent createContentPane(ControlPane controlPane) {
+    private JComponent createContentPane(ControlPane controlPane, ProgressPane progressPane) {
         final JSplitPane contentPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
         contentPane.setDividerSize(10);
         contentPane.setDividerLocation(638);
@@ -131,17 +129,15 @@ public class MainFrame extends javax.swing.JFrame
         contentPane.setLeftComponent(mDesktop.getPane());
         contentPane.setRightComponent(peripheralPane);
 
-        mProgressPane = ProgressPane.getInstance();
-        mProgressPane.setMaximumSize(new Dimension(Short.MAX_VALUE, Short.MAX_VALUE));
-        mProgressPane.setMinimumSize(new Dimension(0, 0));
-        mProgressPane.setPreferredSize(new Dimension(150, 510));
-        mDesktop.addListener(mProgressPane);
+        progressPane.setMaximumSize(new Dimension(Short.MAX_VALUE, Short.MAX_VALUE));
+        progressPane.setMinimumSize(new Dimension(0, 0));
+        progressPane.setPreferredSize(new Dimension(150, 510));
 
         controlPane.setMaximumSize(new Dimension(Short.MAX_VALUE, 60));
         controlPane.setMinimumSize(new Dimension(0, 60));
         controlPane.setPreferredSize(new Dimension(150, 60));
 
-        peripheralPane.add(mProgressPane, BorderLayout.CENTER);
+        peripheralPane.add(progressPane, BorderLayout.CENTER);
         peripheralPane.add(controlPane, BorderLayout.SOUTH);
 
         return contentPane;
@@ -394,9 +390,6 @@ public class MainFrame extends javax.swing.JFrame
 
     @Override
     public void simulationRunPerformed(Object source) {
-        // TODO
-        for (ProgressCell cell : mProgressPane.getListCells())
-            cell.progressStarted();
         try {
             mSimulator = mDesktop.runSimulation(this);
         } catch (IOException | ParserConfigurationException | PhspException |

@@ -7,7 +7,6 @@ import jp.oist.flint.desktop.Desktop;
 import jp.oist.flint.desktop.Document;
 import jp.oist.flint.desktop.ISimulationListener;
 import jp.oist.flint.form.ProgressCellSelectionListener;
-import jp.oist.flint.form.SubFrameSelectionListener;
 import jp.oist.flint.phsp.PhspException;
 import jp.oist.flint.util.IntegrationMethodFormat;
 import java.awt.Dimension;
@@ -106,8 +105,6 @@ public class SubFrame extends JInternalFrame
         mK3Loader = new K3Loader();
 
         init(document);
-
-        addPropertyChangeListener(new SubFrameSelectionListener(ProgressPane.getInstance()));
     }
 
     private void init(Document document) throws IOException {
@@ -195,22 +192,11 @@ public class SubFrame extends JInternalFrame
     private void progressStopActionPerformed(ActionEvent evt) {
     }
 
-    private void progressCancelActionPerformed(ActionEvent evt) {
-        if (cancelSimulation()) {
-            ProgressPane progressPane = ProgressPane.getInstance();
-            ProgressCell cell
-                    = progressPane.getListCellOfModel(new File(getRelativeModelPath()));
-
-            int progress = cell.getStatusBarProgress();
-            cell.progressFinished("finished", 0, 100, progress);
-        }
-    }
-
     public Document getDocument() {
         return mDocument;
     }
 
-    private boolean cancelSimulation() {
+    public boolean cancelSimulation() {
         File modelFile = getModelFile();
 
         try {
@@ -380,9 +366,6 @@ public class SubFrame extends JInternalFrame
         switch (actionCommand) {
         case ProgressPane.STOP_ACTION_COMMAND:
             progressStopActionPerformed(evt);
-            break;
-        case ProgressPane.CANCEL_ACTION_COMMAND:
-            progressCancelActionPerformed(evt);
             break;
         case ProgressPane.LOG_ACTION_COMMAND:
             progressLogActionPerformed(evt);
