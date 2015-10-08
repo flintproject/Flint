@@ -310,6 +310,7 @@ bool Evolve(sqlite3 *db,
 		if (!loader->Load(layout.get())) return false;
 	}
 	size_t layer_size = layout->Calculate();
+	assert(layer_size > kOffsetBase);
 
 	// load filter next
 	std::unique_ptr<filter::Writer> writer;
@@ -347,10 +348,6 @@ bool Evolve(sqlite3 *db,
 		if (!loader->Load(NULL, postprocessor.get())) return false;
 	}
 
-	processor->CalculateCodeOffset();
-	if (with_pre) preprocessor->CalculateCodeOffset();
-	if (with_post) postprocessor->CalculateCodeOffset();
-
 	// replace nominal location in bytecode
 	if (!processor->SolveLocation()) {
 		return false;
@@ -361,6 +358,10 @@ bool Evolve(sqlite3 *db,
 	if (with_post && !postprocessor->SolveLocation()) {
 		return false;
 	}
+
+	processor->CalculateCodeOffset();
+	if (with_pre) preprocessor->CalculateCodeOffset();
+	if (with_post) postprocessor->CalculateCodeOffset();
 
 	// arrange input timeseries data
 	std::unique_ptr<TimeseriesVector> tv;

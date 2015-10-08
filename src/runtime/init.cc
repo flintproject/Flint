@@ -178,6 +178,10 @@ bool Init(sqlite3 *db,
 	std::unique_ptr<DataOffsetMap> dom(new DataOffsetMap);
 	std::unique_ptr<SectorOffsetMap> som(new SectorOffsetMap);
 	size_t layer_size = layout->Calculate(dom.get(), som.get());
+	if (layer_size == kOffsetBase) {
+		cerr << "no variables found, possibly due to empty model or no instances" << endl;
+		return false;
+	}
 
 	std::unique_ptr<Executor> executor(new Executor(layer_size));
 	std::unique_ptr<Processor> processor(new Processor(layout.get(), layer_size));
@@ -222,12 +226,12 @@ bool Init(sqlite3 *db,
 		return false;
 	}
 
-	processor->CalculateCodeOffset();
-
 	// replace nominal location in bytecode
 	if (!processor->SolveLocation()) {
 		return false;
 	}
+
+	processor->CalculateCodeOffset();
 
 	if (!processor->SolveDependencies(nol, inbound.get(), false)) return false;
 

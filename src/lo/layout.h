@@ -90,15 +90,18 @@ public:
 		return offset;
 	}
 
-	const Locater &GetLocater(const std::string &id) const {
+	const Locater *GetLocater(const std::string &id) const {
 		boost::uuids::uuid u;
 		std::memcpy(&u, id.data(), u.size());
-		return lm_.at(u);
+		LocaterMap::const_iterator it = lm_.find(u);
+		if (it == lm_.end()) return nullptr;
+		return it->second;
 	}
 
 	const Mounter &GetMounter(const std::string &id) const {
 		boost::uuids::uuid u;
 		std::memcpy(&u, id.data(), u.size());
+		assert(mm_.find(u) != mm_.end());
 		return mm_.at(u);
 	}
 

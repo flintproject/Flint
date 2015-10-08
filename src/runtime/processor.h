@@ -287,23 +287,40 @@ public:
 		}
 	}
 
+	/*
+	 * This function drops some elements of shv_, bhv_, and cv_ not associated
+	 * with any existing sector, thus should be called first.
+	 */
 	bool SolveLocation() {
-		int bi = 0;
-		int ci = 0;
-		for (ShVector::const_iterator it=shv_->begin();it!=shv_->end();++it) {
-			const Locater &locater(layout_->GetLocater(it->id()));
-			int bie = bi + it->nob();
-			while (bi < bie) {
-				const bc::BlockHeader &bh(bhv_->at(bi++));
-				int cie = ci + bh.noc();
-				while (ci < cie) {
-					bc::Code &code(cv_->at(ci++));
+		ShVector::iterator sit = shv_->begin();
+		BhVector::iterator bit = bhv_->begin();
+		CVector::iterator cit = cv_->begin();
+		while (sit != shv_->end()) {
+			int nob = sit->nob();
+			const Locater *locater = layout_->GetLocater(sit->id());
+			if (!locater) {
+				// no such sector, so let's remove the section
+				for (int i=0;i<nob;i++) {
+					CVector::iterator cend = cit + bit->noc();
+					cit = cv_->erase(cit, cend);
+					bit = bhv_->erase(bit);
+				}
+				sit = shv_->erase(sit);
+				continue;
+			}
+			sit++;
+			BhVector::iterator bend = bit + nob;
+			while (bit != bend) {
+				const bc::BlockHeader &bh = *bit++;
+				CVector::iterator cend = cit + bh.noc();
+				while (cit != cend) {
+					bc::Code &code = *cit++;
 					switch (code.type()) {
 					case bc::Code::kLb:
 						{
 							bc::Lb *lb = code.mutable_lb();
 							int so;
-							if (!locater.Find(lb->v(), &so)) {
+							if (!locater->Find(lb->v(), &so)) {
 								return false;
 							}
 							lb->set_so(so);
@@ -314,7 +331,7 @@ public:
 						{
 							bc::Load *load = code.mutable_load();
 							int so, lo;
-							if (!locater.Find(load->v(), &so, &lo)) {
+							if (!locater->Find(load->v(), &so, &lo)) {
 								return false;
 							}
 							load->set_so(so);
@@ -326,7 +343,7 @@ public:
 						{
 							bc::Store *store = code.mutable_store();
 							int so, lo;
-							if (!locater.Find(store->v(), &so, &lo)) {
+							if (!locater->Find(store->v(), &so, &lo)) {
 								return false;
 							}
 							store->set_so(so);
@@ -341,6 +358,8 @@ public:
 				}
 			}
 		}
+		assert(bit == bhv_->end());
+		assert(cit == cv_->end());
 		return true;
 	}
 
