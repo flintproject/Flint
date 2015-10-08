@@ -225,10 +225,6 @@ public class SubFrame extends JInternalFrame
         }
     }
 
-    private void progressJobViewActionPerformed(ActionEvent evt) {
-        mJobWindow.setVisible(true);
-    }
-
     @Override
     public void showErrorDialog(ByteString message, String title) {
         JOptionPane.showMessageDialog(this, message.toStringUtf8(), title,
@@ -353,14 +349,7 @@ public class SubFrame extends JInternalFrame
 
     @Override
     public void actionPerformed(ActionEvent evt) {
-        String actionCommand = evt.getActionCommand();
-        if (actionCommand == null)
-            return;
-        switch (actionCommand) {
-        case ProgressPane.JOB_ACTION_COMMAND:
-            progressJobViewActionPerformed(evt);
-            break;
-        }
+        mJobWindow.setVisible(true);
     }
 
     public Model getModel() throws PhspException {

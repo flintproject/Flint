@@ -3,7 +3,6 @@ package jp.oist.flint.form;
 
 import jp.oist.flint.desktop.CancelSimulationActionListener;
 import jp.oist.flint.desktop.Document;
-import static jp.oist.flint.form.ProgressPane.JOB_ACTION_COMMAND;
 import jp.oist.flint.form.util.ComponentFactory;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
@@ -68,7 +67,6 @@ public class ProgressCell extends JPanel implements ActionListener {
 
         mProgressBar = new JProgressBar();
         mJobBtn = ComponentFactory.createSquareButton("Detail", "progress.plot", new Dimension(48,20));
-        mJobBtn.setActionCommand(JOB_ACTION_COMMAND);
         mJobBtn.addActionListener(this);
         mJobBtn.putClientProperty("owner", this);
 
