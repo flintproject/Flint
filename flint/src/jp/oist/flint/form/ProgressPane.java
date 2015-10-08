@@ -8,6 +8,9 @@ import jp.oist.flint.executor.PhspSimulator;
 import jp.oist.flint.form.sub.SubFrame;
 import java.awt.Container;
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Enumeration;
 import javax.swing.DefaultListModel;
 import javax.swing.JScrollPane;
 
@@ -22,58 +25,33 @@ public class ProgressPane extends PeripheralPane
 
     public final static String JOB_ACTION_COMMAND      = "progress.job";
 
-    private ProgressList mProgressList;
+    private final ProgressList mProgressList;
 
     public ProgressPane() {
         super(TITLE);
-        initComponents();
-    }
-
-    protected Container createContentPane () {
         mProgressList = new ProgressList();
-        JScrollPane scrollPane = new JScrollPane(mProgressList);
-
-        return scrollPane;
-    }
-
-    private void initComponents () {
-        setContentPane(createContentPane());
-    }
-
-    public void addRow (ProgressCell row) {
-        DefaultListModel model = (DefaultListModel)mProgressList.getModel();
-        model.addElement(row);
+        setContentPane(new JScrollPane(mProgressList));
     }
 
     public void setSelectedCell (ProgressCell plcp, boolean selected) {
         mProgressList.setSelectedValue(plcp, selected);
     }
 
-    private ProgressCell[]  getListCells () {
+    private ArrayList<ProgressCell> getListCells() {
         DefaultListModel model = (DefaultListModel)mProgressList.getModel();
-        int size = model.getSize();
-        ProgressCell[] retvals = new ProgressCell[size];
-        for (int i=0; i<size; i++) 
-            retvals[i] = (ProgressCell)model.getElementAt(i);
-
-        return  retvals;
+        return Collections.list(model.elements());
     }
 
-    public void removeListCell (ProgressCell cell) {
+    private void removeListCell(ProgressCell cell) {
         DefaultListModel model = (DefaultListModel)mProgressList.getModel();
         model.removeElement(cell);
     }
 
     public ProgressCell getListCellOfModel (File modelFile) {
-        DefaultListModel model = (DefaultListModel)mProgressList.getModel();
-        int size = model.getSize();
-
-        for (int i=0; i<size; i++) {
-            ProgressCell cell = (ProgressCell)model.getElementAt(i);
+        for (ProgressCell cell : getListCells()) {
             if (cell.getDocument().getFile().equals(modelFile))
                 return cell;
         }
-
         return null;
     }
 
@@ -83,14 +61,14 @@ public class ProgressPane extends PeripheralPane
     public void documentAdded(Document doc) {
         final SubFrame subFrame = doc.getSubFrame();
         ProgressCell plcp = new ProgressCell(doc, mProgressList);
-        addRow(plcp);
+        DefaultListModel model = (DefaultListModel)mProgressList.getModel();
+        model.addElement(plcp);
         subFrame.setStatusComponent(plcp);
     }
 
     @Override
     public void documentRemoved(Document doc, boolean empty) {
-        ProgressCell[] cells = getListCells();
-        for (ProgressCell cell : cells) {
+        for (ProgressCell cell : getListCells()) {
             if (doc.equals(cell.getDocument())) {
                 removeListCell(cell);
                 break;
