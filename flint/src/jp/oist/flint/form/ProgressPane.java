@@ -45,18 +45,6 @@ public class ProgressPane extends PeripheralPane
         model.addElement(row);
     }
 
-    public int getSelectedIndex () {
-        return mProgressList.getSelectedIndex();
-    }
-
-    public ProgressCell getSelectedItem () {
-        return (ProgressCell)mProgressList.getSelectedValue();
-    }
-
-    public void setSelectedIndex (int index) {
-        mProgressList.setSelectedIndex(index);
-    }
-
     public void setSelectedCell (ProgressCell plcp, boolean selected) {
         mProgressList.setSelectedValue(plcp, selected);
     }
@@ -69,25 +57,6 @@ public class ProgressPane extends PeripheralPane
             retvals[i] = (ProgressCell)model.getElementAt(i);
 
         return  retvals;
-    }
-
-    public ProgressCell getListCell (int index) {
-        DefaultListModel model = (DefaultListModel)mProgressList.getModel();
-        return (ProgressCell)model.getElementAt(index);
-    }
-
-    public int getListCellCount () {
-        return mProgressList.getModel().getSize();
-    }
-
-    public void removeAllListCell () {
-        DefaultListModel model = (DefaultListModel)mProgressList.getModel();
-        model.removeAllElements();
-    }
-
-    public void removeListCell (int index)  {
-        DefaultListModel model = (DefaultListModel)mProgressList.getModel();
-        model.remove(index);
     }
 
     public void removeListCell (ProgressCell cell) {
