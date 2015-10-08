@@ -4,7 +4,6 @@ package jp.oist.flint.form;
 import jp.oist.flint.desktop.CancelSimulationActionListener;
 import jp.oist.flint.desktop.Document;
 import static jp.oist.flint.form.ProgressPane.JOB_ACTION_COMMAND;
-import static jp.oist.flint.form.ProgressPane.LOG_ACTION_COMMAND;
 import jp.oist.flint.form.util.ComponentFactory;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
@@ -35,8 +34,6 @@ public class ProgressCell extends JPanel implements ActionListener {
     private final JList mParent;
 
     private JButton mJobBtn = null;
-
-    private JButton mLogBtn = null;
 
     private JButton mCancelBtn = null;
 
@@ -74,13 +71,6 @@ public class ProgressCell extends JPanel implements ActionListener {
         mJobBtn.setActionCommand(JOB_ACTION_COMMAND);
         mJobBtn.addActionListener(this);
         mJobBtn.putClientProperty("owner", this);
-
-        mLogBtn = ComponentFactory
-            .createSquareButton("Log", "progress.details", new Dimension(48,20));
-        mLogBtn.setActionCommand(LOG_ACTION_COMMAND);
-        mLogBtn.addActionListener(this);
-        mLogBtn.putClientProperty("owner", this);
-        mLogBtn.setVisible(false); // TODO
 
         JPanel upperPane = new JPanel();
         upperPane.setLayout(new BoxLayout(upperPane, BoxLayout.LINE_AXIS));
@@ -134,7 +124,6 @@ public class ProgressCell extends JPanel implements ActionListener {
         buttonLayout.setHgap(1);
         buttonLayout.setVgap(3);
         buttonPane.add(mJobBtn);
-        buttonPane.add(mLogBtn);
 
         // plot button
         bottomPane.setPreferredSize(new Dimension(120, 25));
@@ -158,7 +147,6 @@ public class ProgressCell extends JPanel implements ActionListener {
 
     public void setGeneralButtonEnabled (boolean b) {
         mJobBtn.setEnabled(b);
-        mLogBtn.setEnabled(b);
         repaint();
     }
 

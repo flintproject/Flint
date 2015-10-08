@@ -225,10 +225,6 @@ public class SubFrame extends JInternalFrame
         }
     }
 
-    private void progressLogActionPerformed(ActionEvent evt) {
-        mLogWindow.setVisible(true);
-    }
-
     private void progressJobViewActionPerformed(ActionEvent evt) {
         mJobWindow.setVisible(true);
     }
@@ -361,9 +357,6 @@ public class SubFrame extends JInternalFrame
         if (actionCommand == null)
             return;
         switch (actionCommand) {
-        case ProgressPane.LOG_ACTION_COMMAND:
-            progressLogActionPerformed(evt);
-            break;
         case ProgressPane.JOB_ACTION_COMMAND:
             progressJobViewActionPerformed(evt);
             break;
