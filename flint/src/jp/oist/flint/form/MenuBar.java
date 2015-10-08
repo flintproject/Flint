@@ -313,35 +313,6 @@ public class MenuBar extends JMenuBar
         mDelegator = delegator;
     }
 
-    public IMenuDelegator getDelegator () {
-        return mDelegator;
-    }
-
-    private JMenuItem findJMenuItemByName (String name) {
-        int menuCount = getMenuCount();
-        for (int i=0; i<menuCount; i++) {
-            JMenu menu = getMenu(i);
-            JMenuItem item = findJMenuItemByName(menu, name);
-            if (item != null) return item;
-        }
-        return null;
-    }
-
-    private JMenuItem findJMenuItemByName (JMenu parent, String name) {
-        int itemCount = parent.getItemCount();
-        for (int i=0; i<itemCount; i++) {
-            JMenuItem item = parent.getItem(i);
-            if (item == null) continue;
-
-            if (name.equals(item.getName()))
-                return item;
-
-            if (item instanceof JMenu)
-                findJMenuItemByName((JMenu)item, name);
-        }
-        return null;
-    }
-
     private JMenuItem obtainRecentModelMenuItem(final File model) {
         JMenuItem m = new JMenuItem(model.getName());
         m.setToolTipText(model.getPath());
@@ -365,15 +336,6 @@ public class MenuBar extends JMenuBar
         // remember the parent directory of the last
         if (!recentModels.isEmpty())
             mLastPath = recentModels.get(0).getParent();
-    }
-
-    public void setMenuItemEnabled (String name, boolean enabled) {
-        if (name == null || name.isEmpty())
-            return;
-
-        JMenuItem item = findJMenuItemByName(name);
-        if (item != null)
-            item.setEnabled(enabled);
     }
 
     /* ILoadingListener */
