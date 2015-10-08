@@ -5,7 +5,6 @@ import jp.oist.flint.desktop.CancelSimulationActionListener;
 import jp.oist.flint.desktop.Document;
 import static jp.oist.flint.form.ProgressPane.JOB_ACTION_COMMAND;
 import static jp.oist.flint.form.ProgressPane.LOG_ACTION_COMMAND;
-import static jp.oist.flint.form.ProgressPane.STOP_ACTION_COMMAND;
 import jp.oist.flint.form.util.ComponentFactory;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
@@ -40,8 +39,6 @@ public class ProgressCell extends JPanel implements ActionListener {
     private JButton mLogBtn = null;
 
     private JButton mCancelBtn = null;
-
-    private JButton mStopBtn = null;
 
     private JProgressBar mProgressBar = null;
 
@@ -126,18 +123,6 @@ public class ProgressCell extends JPanel implements ActionListener {
         mCancelBtn.setEnabled(false);
         mCancelBtn.putClientProperty("owner", this);
         upperPane.add(mCancelBtn);
-
-        mStopBtn  = new JButton();
-        mStopBtn.setActionCommand(STOP_ACTION_COMMAND);
-        mStopBtn.addActionListener(this);
-        mStopBtn.setIcon(new ImageIcon(getClass().getResource("/jp/oist/flint/image/stop.png")));
-        mStopBtn.setSize(btnSize);
-        mStopBtn.setPreferredSize(btnSize);
-        mStopBtn.setMaximumSize(btnSize);
-        mStopBtn.setMinimumSize(btnSize);
-        mStopBtn.setOpaque(false);
-        mStopBtn.setEnabled(false);
-        mStopBtn.putClientProperty("owner", this);
 
         upperPane.add(createSpacePanel(new Dimension(spaceW, spaceH)));
 

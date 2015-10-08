@@ -19,8 +19,6 @@ public class ProgressPane extends PeripheralPane
 
     public final static String TITLE = "Progresses";
 
-    public final static String STOP_ACTION_COMMAND      = "progress.stop";
-
     public final static String LOG_ACTION_COMMAND       = "progress.log";
 
     public final static String JOB_ACTION_COMMAND      = "progress.job";

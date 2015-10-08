@@ -189,9 +189,6 @@ public class SubFrame extends JInternalFrame
         pnl_ParameterValue.loadParameterAndTarget(model);
     }
 
-    private void progressStopActionPerformed(ActionEvent evt) {
-    }
-
     public Document getDocument() {
         return mDocument;
     }
@@ -364,9 +361,6 @@ public class SubFrame extends JInternalFrame
         if (actionCommand == null)
             return;
         switch (actionCommand) {
-        case ProgressPane.STOP_ACTION_COMMAND:
-            progressStopActionPerformed(evt);
-            break;
         case ProgressPane.LOG_ACTION_COMMAND:
             progressLogActionPerformed(evt);
             break;
