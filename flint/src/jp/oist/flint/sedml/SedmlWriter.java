@@ -69,7 +69,6 @@ public class SedmlWriter {
 
         writer.append("  <listOfTasks>\n");
         for (int i=0; i<modelCount; i++) {
-            ISimulationConfiguration config = configs.getConfiguration(i);
             writer.append(String.format("    <task id='task%s' name='Task %s' modelReference='model%s' simulationReference='sim%s'/>\n", i, i, i, i));
         }
         writer.append("  </listOfTasks>\n");
