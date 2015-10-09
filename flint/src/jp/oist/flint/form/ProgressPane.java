@@ -16,12 +16,9 @@ import javax.xml.parsers.ParserConfigurationException;
 public class ProgressPane extends PeripheralPane
     implements IDesktopListener, ISimulationListener {
 
-    public final static String TITLE = "Progresses";
-
     private final ProgressList mProgressList;
 
     public ProgressPane() {
-        super(TITLE);
         mProgressList = new ProgressList();
         setContentPane(mProgressList.createPane());
     }

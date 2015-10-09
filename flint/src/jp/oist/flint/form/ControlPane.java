@@ -23,15 +23,11 @@ public class ControlPane extends PeripheralPane
 
     public final static String RUN = "controlpanel.run";
 
-    public final static String TITLE  = "Control Panel";
-
     private JButton mBtnSimulationRun;
 
     private IMenuDelegator mDelegator;
 
     public ControlPane() {
-        super(TITLE);
-
         mDelegator = null;
         initComponents();
         addFocusListener(this);

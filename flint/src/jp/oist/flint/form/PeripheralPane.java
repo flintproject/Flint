@@ -10,12 +10,8 @@ public abstract class PeripheralPane extends JPanel {
 
     private Container mContentPane;
 
-    private String mTitle;
-
-    public PeripheralPane (String title) {
+    public PeripheralPane() {
         super(new BorderLayout());
-
-        mTitle = title;
 
         initComponents();
     }
@@ -34,13 +30,5 @@ public abstract class PeripheralPane extends JPanel {
 
     public Container getContentPane () {
         return mContentPane;
-    }
-
-    public void setTitle (String title) {
-        mTitle = title;
-    }
-
-    public String getTitle () {
-        return mTitle;
     }
 }
