@@ -11,7 +11,7 @@ import jp.oist.flint.phsp.entity.ParameterSet;
 public class CombinationModel extends AbstractListModel
                                 implements IParameterInfo {
 
-    private ArrayList<Number[]> mCombination = null;
+    private final ArrayList<Number[]> mCombination;
 
     private Number[] mMaximumValues = null;
 
@@ -23,23 +23,15 @@ public class CombinationModel extends AbstractListModel
 
     private boolean mIsDummy = false;
 
-    private List<Integer> mIgnoreIndexes;
+    private final List<Integer> mIgnoreIndexes;
 
     private int mCombinationSize = 0; 
 
     public CombinationModel () {
-        this(null, null);
-    }
-
-    public CombinationModel (ParameterSet pset) {
-        this(pset, null);
-    }
-
-    public CombinationModel (ParameterSet pset, ParameterFilter filter) {
         mCombination = new ArrayList<>();
         mIgnoreIndexes = new ArrayList<>();
 
-        parseParameterSet(pset, filter);
+        parseParameterSet(null, null);
     }
 
     private void parseParameterSet (ParameterSet pset, ParameterFilter filter) {
