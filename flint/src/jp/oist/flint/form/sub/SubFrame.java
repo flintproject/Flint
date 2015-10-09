@@ -47,8 +47,6 @@ public class SubFrame extends JInternalFrame
     implements IModelFileClient,
                ISimulationConfiguration, ISimulationListener, IFrame {
 
-    public final static String ID = "flint.view.sub";
-
     private final Desktop mDesktop;
     private final Document mDocument;
     private final File mOriginalFile;
@@ -85,8 +83,6 @@ public class SubFrame extends JInternalFrame
 
         loadParameterAndTarget(model);
     }
-
-    static int mAutoIncrement = 0;
 
     public SubFrame(Desktop desktop, Document document) throws IOException {
         super(document.getFile().getAbsolutePath(), true, true, true, true);
