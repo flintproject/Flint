@@ -12,13 +12,12 @@ import javax.swing.DefaultListSelectionModel;
 import javax.swing.JButton;
 import javax.swing.JList;
 import javax.swing.JScrollPane;
-import javax.swing.ListCellRenderer;
 import javax.swing.ListModel;
 import javax.swing.ListSelectionModel;
 import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
 
-class ProgressList implements ListDataListener, MouseListener, ListCellRenderer {
+class ProgressList implements ListDataListener, MouseListener {
 
     private final JList mList;
 
@@ -49,7 +48,7 @@ class ProgressList implements ListDataListener, MouseListener, ListCellRenderer 
         mList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         mList.setDragEnabled(false);
 
-        mList.setCellRenderer(this);
+        mList.setCellRenderer(new ProgressListCellRenderer());
         mList.addMouseListener(this);
         mList.setOpaque(true);
     }
@@ -107,27 +106,6 @@ class ProgressList implements ListDataListener, MouseListener, ListCellRenderer 
         int selectedIndex = deletedIndex-1;
         if(selectedIndex < 1) selectedIndex = 0;
         mList.setSelectedIndex(selectedIndex);
-    }
-
-    @Override
-    public Component getListCellRendererComponent(JList list, Object value,
-                                                  int index, boolean isSelected, boolean hasFocus) {
-        ProgressCell cellPane = (ProgressCell)value;
-
-        cellPane.setEnabled(list.isEnabled());
-        cellPane.setFont(list.getFont());
-
-        if (isSelected) {
-            cellPane.setBackground(list.getSelectionBackground());
-            cellPane.setForeground(list.getSelectionForeground());
-        } else {
-            cellPane.setBackground(list.getBackground());
-            cellPane.setForeground(list.getForeground());
-        }
-
-        cellPane.setOpaque(true);
-        cellPane.setSelected(isSelected);
-        return cellPane;
     }
 
     @Override
