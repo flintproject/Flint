@@ -80,14 +80,15 @@ public class JobWindow extends javax.swing.JFrame
 
     private CombinationModel mDataModel;
 
-    private PhspSimulator mSimulator;
+    private final PhspSimulator mSimulator;
 
     private JobViewerContextMenuHandler mContextMenuHandler;
 
-    public JobWindow(SubFrame parent, String title) 
+    public JobWindow(SubFrame parent, PhspSimulator simulator, String title) 
             throws IOException {
         super(title);
         mParent = parent;
+        mSimulator = simulator;
 
         URL iconUrl = getClass().getResource("/jp/oist/flint/image/icon.png");
         setIconImage(new ImageIcon(iconUrl).getImage());
@@ -191,14 +192,6 @@ public class JobWindow extends javax.swing.JFrame
 
         btn_Viewer.setVisible(!mDataModel.getParameterIsDummy());
         btn_Viewer.repaint();
-    }
-
-    public void setSimulator (PhspSimulator simulator) {
-        mSimulator = simulator;
-    }
-
-    PhspSimulator getSimulator () {
-        return mSimulator;
     }
 
     @SuppressWarnings("unchecked")
@@ -494,7 +487,7 @@ public class JobWindow extends javax.swing.JFrame
 
             int index = evt.getIndex();
 
-            if (mSimulator == null || mSimulator.getSimulationDao() == null)
+            if (mSimulator.getSimulationDao() == null)
                 throw new IOException("Don't run the simulation.");
 
              TaskDao taskDao = mSimulator.getSimulationDao()
@@ -528,7 +521,7 @@ public class JobWindow extends javax.swing.JFrame
     }
 
     private void exportAll() throws DaoException, IOException, SQLException {
-        if (mSimulator == null || mSimulator.getSimulationDao() == null)
+        if (mSimulator.getSimulationDao() == null)
             return; // nothing to do
 
         InputDialogForExport inputDialog = new InputDialogForExport(this);
@@ -659,7 +652,7 @@ public class JobWindow extends javax.swing.JFrame
             if (evt == null || evt.getIndex() < 0)
                 throw new IOException("Please choose the job.");
 
-            if (mSimulator == null || mSimulator.getSimulationDao() == null) 
+            if (mSimulator.getSimulationDao() == null)
                 throw new IOException("It has not finished yet.");
 
             TaskDao taskDao = mSimulator.getSimulationDao().obtainTask(mParent.getRelativeModelPath());
@@ -745,7 +738,7 @@ public class JobWindow extends javax.swing.JFrame
             if (evt == null || evt.getIndex() < 0)
                 throw new IOException("Please choose the job.");
 
-            if (mSimulator == null || mSimulator.getSimulationDao() == null) 
+            if (mSimulator.getSimulationDao() == null)
                 throw new IOException("It has not finished yet.");
 
             TaskDao taskDao = mSimulator.getSimulationDao().obtainTask(mParent.getRelativeModelPath());
@@ -781,7 +774,7 @@ public class JobWindow extends javax.swing.JFrame
             if (evt == null || evt.getIndex() < 0)
                 throw new IOException("Please choose the job.");
 
-            if (mSimulator == null || mSimulator.getSimulationDao() == null) 
+            if (mSimulator.getSimulationDao() == null)
                 throw new IOException("It has not yet started");
 
             taskDao = mSimulator.getSimulationDao().obtainTask(mParent.getRelativeModelPath());
