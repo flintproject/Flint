@@ -30,11 +30,11 @@ public class ProgressCell extends JPanel {
 
     private final ProgressList mProgressList;
 
-    private JButton mJobBtn = null;
+    private final JButton mJobBtn;
 
-    private JButton mCancelBtn = null;
+    private final JButton mCancelBtn;
 
-    private JProgressBar mProgressBar = null;
+    private final JProgressBar mProgressBar;
 
     private boolean mIsSelected = false;
 
@@ -44,10 +44,7 @@ public class ProgressCell extends JPanel {
         File file = document.getFile();
         String title = file.getName();
         setToolTipText(String.format("%s [%s]", title, file.getPath()));
-        initComponents(title);
-    }
 
-    private void initComponents(String title) {
         setLayout(new GridLayout(2,1));
         setOpaque(true);
         setBorder(new TitledBorder(new EtchedBorder(), title));
@@ -156,10 +153,6 @@ public class ProgressCell extends JPanel {
         mIsSelected = isSelected;
 
         repaint();
-    }
-
-    public boolean isSelected () {
-        return mIsSelected;
     }
 
     public Document getDocument() {
