@@ -11,8 +11,6 @@ import jp.oist.flint.phsp.PhspException;
 import jp.oist.flint.util.IntegrationMethodFormat;
 import java.awt.Dimension;
 import java.awt.KeyboardFocusManager;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
@@ -29,9 +27,7 @@ import javax.swing.JTabbedPane;
 import javax.swing.JInternalFrame;
 import com.google.protobuf.ByteString;
 import java.sql.SQLException;
-import java.util.Arrays;
 import javax.swing.JComponent;
-import javax.xml.parsers.ParserConfigurationException;
 import jp.oist.flint.dao.TaskDao;
 import jp.oist.flint.backend.ModelLoader;
 import jp.oist.flint.executor.PhspSimulator;
@@ -40,7 +36,6 @@ import jp.oist.flint.form.IFrame;
 import jp.oist.flint.form.ProgressCell;
 import jp.oist.flint.form.job.IProgressManager;
 import jp.oist.flint.form.log.LogWindow;
-import jp.oist.flint.form.ProgressPane;
 import jp.oist.flint.k3.K3Loader;
 import jp.oist.flint.phsp.entity.Model;
 import jp.oist.flint.phsp.entity.ParameterSet;
@@ -49,7 +44,7 @@ import jp.oist.flint.sedml.ISimulationConfiguration;
 import jp.physiome.Ipc;
 
 public class SubFrame extends JInternalFrame
-    implements ActionListener, IModelFileClient,
+    implements IModelFileClient,
                ISimulationConfiguration, ISimulationListener, IFrame {
 
     public final static String ID = "flint.view.sub";
@@ -179,9 +174,6 @@ public class SubFrame extends JInternalFrame
         });
         mLogWindow.pack();
         mLogWindow.setVisible(false);
-
-        mJobWindow = new JobWindow(this, String.format("Progress [%s]", mOriginalPath));
-        mJobWindow.setLocationRelativeTo(this);
     }
 
     private void loadParameterAndTarget(Model model) {
@@ -233,7 +225,6 @@ public class SubFrame extends JInternalFrame
 
     public void setStatusComponent(ProgressCell pane) {
         assert pane != null;
-        pane.addActionListener(this);
         pane.setGeneralButtonEnabled(false);
         mStatusComponent = pane;
         mStatusComponent.addPropertyChangeListener(new ProgressCellSelectionListener(this));
@@ -248,14 +239,11 @@ public class SubFrame extends JInternalFrame
     @Override
     public void simulationStarted(PhspSimulator simulator) {
         mSimulator = simulator;
-        mJobWindow.setSimulator(mSimulator);
-        mJobWindow.simulationStarted(simulator);
         setEditable(false);
     }
 
     @Override
     public void simulationDone() {
-        mJobWindow.simulationDone();
         setEditable(true);
     }
 
@@ -265,19 +253,6 @@ public class SubFrame extends JInternalFrame
 
     @Override
     public void simulationResumed() {
-    }
-
-    public void reloadJobViewer() throws IOException, ParserConfigurationException {
-        mJobWindow.setVisible(false);
-        mJobWindow.dispose();
-        mJobWindow = new JobWindow(this, String.format("Progress [%s]", mOriginalPath));
-        mJobWindow.setLocationRelativeTo(this);
-
-
-        TargetSet ts = getTargetSet();
-        ParameterSet ps = getParameterSet();
-        ParameterSet newPs = ps.filterByNames(Arrays.asList(ts.getUsingParameterNames()));
-        mJobWindow.load(newPs);
     }
 
     public void setEditable(boolean editable) {
@@ -298,6 +273,10 @@ public class SubFrame extends JInternalFrame
 
     public IProgressManager getProgressManager() {
         return mJobWindow;
+    }
+
+    public void setJobWindow(JobWindow jobWindow) {
+        mJobWindow = jobWindow;
     }
 
     public void load(ISimulationConfiguration conf) {
@@ -345,11 +324,6 @@ public class SubFrame extends JInternalFrame
 
     public void copy() {
         mLogWindow.copy();
-    }
-
-    @Override
-    public void actionPerformed(ActionEvent evt) {
-        mJobWindow.setVisible(true);
     }
 
     public Model getModel() throws PhspException {

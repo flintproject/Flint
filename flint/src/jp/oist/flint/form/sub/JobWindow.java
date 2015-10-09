@@ -3,7 +3,6 @@ package jp.oist.flint.form.sub;
 
 import jp.oist.flint.control.DirectoryChooser;
 import jp.oist.flint.dao.DaoException;
-import jp.oist.flint.desktop.ISimulationListener;
 import jp.oist.flint.form.job.CombinationModel;
 import jp.oist.flint.form.job.GadgetDialog;
 import jp.oist.flint.form.job.JobList;
@@ -61,7 +60,7 @@ import jp.oist.flint.util.Utility;
 import jp.physiome.Ipc;
 
 public class JobWindow extends javax.swing.JFrame
-    implements MouseListener, MouseMotionListener, IProgressManager, ISimulationListener {
+    implements MouseListener, MouseMotionListener, IProgressManager, PropertyChangeListener {
 
     private final static String PANELKEY_LIST  = "jobwindow.cardlayout.joblist";
 
@@ -812,23 +811,17 @@ public class JobWindow extends javax.swing.JFrame
         }
     }
 
-    /* ISimulationListener */
+    /* PropertyChangeListener */
 
     @Override
-    public void simulationStarted(PhspSimulator simulator) {
-    }
-
-    @Override
-    public void simulationDone() {
-        btn_ExportAll.setEnabled(true);
-    }
-
-    @Override
-    public void simulationPaused() {
-    }
-
-    @Override
-    public void simulationResumed() {
+    public void propertyChange(PropertyChangeEvent evt) {
+        String propertyName = evt.getPropertyName();
+        Object nv = evt.getNewValue();
+        if ("state".equals(propertyName)) {
+            if (SwingWorker.StateValue.DONE.equals(nv)) {
+                btn_ExportAll.setEnabled(true);
+            }
+        }
     }
 
     /*

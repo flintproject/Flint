@@ -6,13 +6,12 @@ import jp.oist.flint.desktop.IDesktopListener;
 import jp.oist.flint.desktop.ISimulationListener;
 import jp.oist.flint.executor.PhspSimulator;
 import jp.oist.flint.form.sub.SubFrame;
-import java.awt.Container;
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Enumeration;
 import javax.swing.DefaultListModel;
-import javax.swing.JScrollPane;
+import javax.xml.parsers.ParserConfigurationException;
 
 public class ProgressPane extends PeripheralPane
     implements IDesktopListener, ISimulationListener {
@@ -47,6 +46,11 @@ public class ProgressPane extends PeripheralPane
                 return cell;
         }
         return null;
+    }
+
+    public void prepareJobWindows(PhspSimulator simulator) throws IOException, ParserConfigurationException {
+        for (ProgressCell cell : getListCells())
+            cell.prepareJobWindow(simulator);
     }
 
     /* IDesktopListener */

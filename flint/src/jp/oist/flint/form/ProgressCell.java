@@ -3,28 +3,26 @@ package jp.oist.flint.form;
 
 import jp.oist.flint.desktop.CancelSimulationActionListener;
 import jp.oist.flint.desktop.Document;
+import jp.oist.flint.executor.PhspSimulator;
 import jp.oist.flint.form.util.ComponentFactory;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.beans.PropertyChangeListener;
 import java.io.File;
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.io.IOException;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
+import javax.xml.parsers.ParserConfigurationException;
 
-public class ProgressCell extends JPanel implements ActionListener {
+public class ProgressCell extends JPanel {
 
     public final static String IS_SELECTED_PROPERTY = "selected";
 
@@ -40,18 +38,9 @@ public class ProgressCell extends JPanel implements ActionListener {
 
     private boolean mIsSelected = false;
 
-    private final HashMap<String, Object> mVars =
-        new HashMap<>();
-
-    private final ArrayList<ActionListener> mActionListeners;
-
-    private final ArrayList<PropertyChangeListener> mPropertyChangeListeners;
-
     public ProgressCell(Document document, ProgressList progressList) {
         mDocument = document;
         mProgressList = progressList;
-        mPropertyChangeListeners = new ArrayList<>();
-        mActionListeners = new ArrayList<>();
         File file = document.getFile();
         String title = file.getName();
         setToolTipText(String.format("%s [%s]", title, file.getPath()));
@@ -67,8 +56,6 @@ public class ProgressCell extends JPanel implements ActionListener {
 
         mProgressBar = new JProgressBar();
         mJobBtn = ComponentFactory.createSquareButton("Detail", "progress.plot", new Dimension(48,20));
-        mJobBtn.addActionListener(this);
-        mJobBtn.putClientProperty("owner", this);
 
         JPanel upperPane = new JPanel();
         upperPane.setLayout(new BoxLayout(upperPane, BoxLayout.LINE_AXIS));
@@ -208,21 +195,10 @@ public class ProgressCell extends JPanel implements ActionListener {
         mCancelBtn.setEnabled(false);
     }
 
-    public void addActionListener (ActionListener l) {
-        mActionListeners.add(l);
-    }
-
-    public void removeActionListener (ActionListener l) {
-        mActionListeners.remove(l);
-    }
-
-    @Override
-    public void actionPerformed(ActionEvent evt) {
-        fireActionPerformed(evt);
-    }
-
-    protected void fireActionPerformed (ActionEvent evt) {
-        for (ActionListener l : mActionListeners)
-            l.actionPerformed(evt);
+    public void prepareJobWindow(PhspSimulator simulator) throws IOException, ParserConfigurationException {
+        for (ActionListener al : mJobBtn.getActionListeners()) {
+            mJobBtn.removeActionListener(al);
+        }
+        mJobBtn.addActionListener(new ProgressDetailActionListener(simulator, mDocument.getSubFrame()));
     }
 }
