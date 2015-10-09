@@ -24,20 +24,20 @@ public class ProgressPane extends PeripheralPane
     public ProgressPane() {
         super(TITLE);
         mProgressList = new ProgressList();
-        setContentPane(new JScrollPane(mProgressList));
+        setContentPane(mProgressList.createPane());
     }
 
     public void setSelectedCell (ProgressCell plcp, boolean selected) {
-        mProgressList.setSelectedValue(plcp, selected);
+        mProgressList.setSelectedCell(plcp, selected);
     }
 
     private ArrayList<ProgressCell> getListCells() {
-        DefaultListModel model = (DefaultListModel)mProgressList.getModel();
+        DefaultListModel model = mProgressList.getModel();
         return Collections.list(model.elements());
     }
 
     private void removeListCell(ProgressCell cell) {
-        DefaultListModel model = (DefaultListModel)mProgressList.getModel();
+        DefaultListModel model = mProgressList.getModel();
         model.removeElement(cell);
     }
 
@@ -55,7 +55,7 @@ public class ProgressPane extends PeripheralPane
     public void documentAdded(Document doc) {
         final SubFrame subFrame = doc.getSubFrame();
         ProgressCell plcp = new ProgressCell(doc, mProgressList);
-        DefaultListModel model = (DefaultListModel)mProgressList.getModel();
+        DefaultListModel model = mProgressList.getModel();
         model.addElement(plcp);
         subFrame.setStatusComponent(plcp);
     }

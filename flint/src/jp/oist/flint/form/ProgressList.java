@@ -11,21 +11,23 @@ import javax.swing.DefaultListModel;
 import javax.swing.DefaultListSelectionModel;
 import javax.swing.JButton;
 import javax.swing.JList;
+import javax.swing.JScrollPane;
 import javax.swing.ListCellRenderer;
 import javax.swing.ListModel;
 import javax.swing.ListSelectionModel;
 import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
 
-class ProgressList extends JList
-    implements ListDataListener, MouseListener, ListCellRenderer {
+class ProgressList implements ListDataListener, MouseListener, ListCellRenderer {
+
+    private final JList mList;
 
     private JButton mPressedBtn;
 
     public ProgressList () {
-        super();
-        super.setModel(createListDataModel());
-        super.setSelectionModel(createListSelectionModel());
+        mList = new JList();
+        mList.setModel(createListDataModel());
+        mList.setSelectionModel(createListSelectionModel());
         initComponents();
     }
 
@@ -44,22 +46,22 @@ class ProgressList extends JList
 
 
     private void initComponents () {
-        super.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        super.setDragEnabled(false);
+        mList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        mList.setDragEnabled(false);
 
-        setCellRenderer(this);
-        addMouseListener(this);
-        setOpaque(true);
+        mList.setCellRenderer(this);
+        mList.addMouseListener(this);
+        mList.setOpaque(true);
     }
 
     private JButton getButtonAt(Point point) {
-        int index = locationToIndex(point);
+        int index = mList.locationToIndex(point);
         if (index == -1) return null;
 
         ProgressCell cellPane =
             (ProgressCell)getModel().getElementAt(index);
 
-        Point location = indexToLocation(index);
+        Point location = mList.indexToLocation(index);
         cellPane.setLocation(location);
         Component c = findComponentAt(cellPane, point);
         if (c instanceof JButton) {
@@ -92,29 +94,6 @@ class ProgressList extends JList
         return null;
     }
 
-    @Override
-    public void setDragEnabled(boolean b) {
-        String msg = "Cannnot use the drag/drop feature.";
-        throw new UnsupportedOperationException(msg);
-    }
-
-    @Override
-    public void setSelectionMode (int mode) {
-        String msg = "SelectionMode be able to use only SingleSelection.";
-        throw new UnsupportedOperationException(msg);
-    }
-
-    @Override
-    public void setModel (ListModel model) {
-        String msg = "Cannnot set the ListModel.";
-        throw new UnsupportedOperationException(msg);
-    }
-
-    @Override
-    public void setSelectionModel (ListSelectionModel model) {
-        String msg = "Cannnot set the ListSelectionModel.";
-        throw new UnsupportedOperationException(msg);
-    }
 
     @Override
     public void intervalAdded(ListDataEvent evt) { }
@@ -127,7 +106,7 @@ class ProgressList extends JList
         int deletedIndex = evt.getIndex0();
         int selectedIndex = deletedIndex-1;
         if(selectedIndex < 1) selectedIndex = 0;
-        setSelectedIndex(selectedIndex);
+        mList.setSelectedIndex(selectedIndex);
     }
 
     @Override
@@ -166,7 +145,7 @@ class ProgressList extends JList
             bm.setPressed(true);
             bm.setSelected(true);
             bm.setRollover(true);
-            repaint();
+            mList.repaint();
         }
     }
 
@@ -178,7 +157,7 @@ class ProgressList extends JList
             bm.setPressed(false);
             bm.setSelected(false);
             bm.setRollover(false);
-            repaint();
+            mList.repaint();
         }
     }
 
@@ -187,4 +166,20 @@ class ProgressList extends JList
 
     @Override
     public void mouseExited(MouseEvent e) { }
+
+    public JScrollPane createPane() {
+        return new JScrollPane(mList);
+    }
+
+    public DefaultListModel getModel() {
+        return (DefaultListModel)mList.getModel();
+    }
+
+    public void setSelectedCell(ProgressCell cell, boolean selected) {
+        mList.setSelectedValue(cell, selected);
+    }
+
+    public void repaint(int index) {
+        mList.repaint(mList.getCellBounds(index, index));
+    }
 }

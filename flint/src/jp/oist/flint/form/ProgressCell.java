@@ -30,7 +30,7 @@ public class ProgressCell extends JPanel implements ActionListener {
 
     private final Document mDocument;
 
-    private final JList mParent;
+    private final ProgressList mProgressList;
 
     private JButton mJobBtn = null;
 
@@ -47,9 +47,9 @@ public class ProgressCell extends JPanel implements ActionListener {
 
     private final ArrayList<PropertyChangeListener> mPropertyChangeListeners;
 
-    public ProgressCell(Document document, JList parent) {
+    public ProgressCell(Document document, ProgressList progressList) {
         mDocument = document;
-        mParent = parent;
+        mProgressList = progressList;
         mPropertyChangeListeners = new ArrayList<>();
         mActionListeners = new ArrayList<>();
         File file = document.getFile();
@@ -187,11 +187,11 @@ public class ProgressCell extends JPanel implements ActionListener {
         mProgressBar.setString(msg);
         mProgressBar.setValue(value);
 
-        DefaultListModel model = (DefaultListModel)mParent.getModel();
+        DefaultListModel model = mProgressList.getModel();
         int myIndex = model.indexOf(this);
 
         // trigger to repaint the ProgressCell
-        mParent.repaint(mParent.getCellBounds(myIndex, myIndex));
+        mProgressList.repaint(myIndex);
     }
 
     public void progressStarted () {
