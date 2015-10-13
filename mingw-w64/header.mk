@@ -16,7 +16,7 @@ BIN_DLLS := \
     libsbml \
     libsedml-0 \
     libxml2-2 \
-    libzip-2 \
+    libzip-4 \
     zlib1
 BOOST_DLLS := \
     libboost_filesystem-mt \

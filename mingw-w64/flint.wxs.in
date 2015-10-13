@@ -153,7 +153,7 @@
             <File Id='libxml2' Name='libxml2-2.dll' DiskId='1' Source='libxml2-2.dll' />
           </Component>
           <Component Id='zip' Guid='80567758-6491-11e4-9265-8740267a2adb'>
-            <File Id='libzip' Name='libzip-2.dll' DiskId='1' Source='libzip-2.dll' />
+            <File Id='libzip' Name='libzip-4.dll' DiskId='1' Source='libzip-4.dll' />
           </Component>
           <Component Id='zlib' Guid='82944adc-649f-11e4-a994-f79c5de7eacb'>
             <File Id='zlib1' Name='zlib1.dll' DiskId='1' Source='zlib1.dll' />

@@ -23,7 +23,7 @@ In order to build Flint, the following libraries are required:
   http://sbml.org/Software/libSBML
 - Git master version of clibsedml
   http://clibsedml.sourceforge.net/
-- libzip 0.11.2 or later
+- libzip 1.0.1 or later
   http://www.nih.at/libzip/
 
 Also, please read PORTABILITY for platform-specific details.

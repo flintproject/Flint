@@ -192,7 +192,7 @@ opt/bin/libsbml.all: tmp/libsbml-$(LIBSBML_VERSION).installed
 
 opt/bin/libxml2-2.dll: tmp/libxml2-$(LIBXML2_VERSION).installed
 
-opt/bin/libzip-2.dll: tmp/libzip-$(LIBZIP_VERSION).installed
+opt/bin/libzip-4.dll: tmp/libzip-$(LIBZIP_VERSION).installed
 
 opt/bin/zlib1.dll: tmp/zlib-$(ZLIB_VERSION).installed
 

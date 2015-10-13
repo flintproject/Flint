@@ -47,8 +47,8 @@ rm -rf %{buildroot}
 /opt/flint/lib/libzip.a
 /opt/flint/lib/libzip.la
 /opt/flint/lib/libzip.so
-/opt/flint/lib/libzip.so.2
-/opt/flint/lib/libzip.so.2.1.0
+/opt/flint/lib/libzip.so.4
+/opt/flint/lib/libzip.so.4.0.0
 /opt/flint/lib/libzip/include/zipconf.h
 /opt/flint/share/man/man1/zipcmp.1
 /opt/flint/share/man/man1/zipmerge.1

@@ -28,7 +28,7 @@ DYLIBS := \
     libsedml.0 \
     libxml2.2 \
     libprotobuf.9 \
-    libzip.2
+    libzip.4
 SUNDIALS_DYLIBS := \
     cvode.0 \
     cvodes.1 \
