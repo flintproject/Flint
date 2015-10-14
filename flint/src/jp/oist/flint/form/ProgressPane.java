@@ -8,8 +8,7 @@ import jp.oist.flint.executor.PhspSimulator;
 import jp.oist.flint.form.sub.SubFrame;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
+import java.util.List;
 import javax.swing.DefaultListModel;
 import javax.xml.parsers.ParserConfigurationException;
 
@@ -27,14 +26,12 @@ public class ProgressPane extends PeripheralPane
         mProgressList.setSelectedCell(plcp, selected);
     }
 
-    private ArrayList<ProgressCell> getListCells() {
-        DefaultListModel model = mProgressList.getModel();
-        return Collections.list(model.elements());
+    private List<ProgressCell> getListCells() {
+        return mProgressList.getCells();
     }
 
     private void removeListCell(ProgressCell cell) {
-        DefaultListModel model = mProgressList.getModel();
-        model.removeElement(cell);
+        mProgressList.remove(cell);
     }
 
     public ProgressCell getListCellOfModel (File modelFile) {
@@ -55,9 +52,10 @@ public class ProgressPane extends PeripheralPane
     @Override
     public void documentAdded(Document doc) {
         final SubFrame subFrame = doc.getSubFrame();
-        ProgressCell plcp = new ProgressCell(doc, mProgressList);
-        DefaultListModel model = mProgressList.getModel();
-        model.addElement(plcp);
+        ProgressCell plcp = new ProgressCell(doc);
+        plcp.addMouseListener(new ProgressCellMouseListener(subFrame));
+        mProgressList.add(plcp);
+        mProgressList.setSelectedCell(plcp, true);
         subFrame.setStatusComponent(plcp);
     }
 

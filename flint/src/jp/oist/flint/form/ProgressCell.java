@@ -5,6 +5,7 @@ import jp.oist.flint.desktop.CancelSimulationActionListener;
 import jp.oist.flint.desktop.Document;
 import jp.oist.flint.executor.PhspSimulator;
 import jp.oist.flint.form.util.ComponentFactory;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
@@ -13,22 +14,19 @@ import java.io.File;
 import java.io.IOException;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
-import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
+import javax.swing.UIDefaults;
+import javax.swing.UIManager;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
 import javax.xml.parsers.ParserConfigurationException;
 
 public class ProgressCell extends JPanel {
 
-    public final static String IS_SELECTED_PROPERTY = "selected";
-
     private final Document mDocument;
-
-    private final ProgressList mProgressList;
 
     private final JButton mJobBtn;
 
@@ -36,19 +34,18 @@ public class ProgressCell extends JPanel {
 
     private final JProgressBar mProgressBar;
 
-    private boolean mIsSelected = false;
-
-    public ProgressCell(Document document, ProgressList progressList) {
+    public ProgressCell(Document document) {
         mDocument = document;
-        mProgressList = progressList;
         File file = document.getFile();
         String title = file.getName();
         setToolTipText(String.format("%s [%s]", title, file.getPath()));
 
         setLayout(new GridLayout(2,1));
-        setOpaque(true);
         setBorder(new TitledBorder(new EtchedBorder(), title));
 
+        // fixed dimension
+        setMinimumSize(new Dimension(140, 75));
+        setMaximumSize(new Dimension(140, 75));
         setPreferredSize(new Dimension(140, 75));
 
         mProgressBar = new JProgressBar();
@@ -114,6 +111,25 @@ public class ProgressCell extends JPanel {
         add(bottomPane);
     }
 
+    /*
+     * Change the foreground/background colors like JList components.
+     */
+    public void setSelected(boolean selected) {
+        UIDefaults d = UIManager.getDefaults();
+        Color bc;
+        Color fc;
+        if (selected) {
+            bc = d.getColor("List.selectionBackground");
+            fc = d.getColor("List.selectionForeground");
+        } else {
+            bc = d.getColor("List.background");
+            fc = d.getColor("List.foreground");
+        }
+        setBackground(bc);
+        setForeground(fc);
+        repaint();
+    }
+
     private JPanel createSpacePanel (Dimension fixedSize) {
         JPanel panel = new JPanel();
         panel.setSize(fixedSize);
@@ -142,19 +158,6 @@ public class ProgressCell extends JPanel {
         return titledBorder.getTitle();
     }
 
-    public void setSelected (boolean isSelected) {
-        if (mIsSelected == isSelected)
-            return;
-
-        Boolean oldValue = mIsSelected;
-        Boolean newValue = isSelected;
-        firePropertyChange(IS_SELECTED_PROPERTY, oldValue, newValue);
-
-        mIsSelected = isSelected;
-
-        repaint();
-    }
-
     public Document getDocument() {
         return mDocument;
     }
@@ -166,12 +169,7 @@ public class ProgressCell extends JPanel {
     public void setProgress(String msg, int minimum, int maximum, int value) {
         mProgressBar.setString(msg);
         mProgressBar.setValue(value);
-
-        DefaultListModel model = mProgressList.getModel();
-        int myIndex = model.indexOf(this);
-
-        // trigger to repaint the ProgressCell
-        mProgressList.repaint(myIndex);
+        mProgressBar.repaint();
     }
 
     public void progressStarted () {

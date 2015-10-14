@@ -6,7 +6,6 @@ import jp.oist.flint.dao.DaoException;
 import jp.oist.flint.desktop.Desktop;
 import jp.oist.flint.desktop.Document;
 import jp.oist.flint.desktop.ISimulationListener;
-import jp.oist.flint.form.ProgressCellSelectionListener;
 import jp.oist.flint.phsp.PhspException;
 import jp.oist.flint.util.IntegrationMethodFormat;
 import java.awt.Dimension;
@@ -223,7 +222,6 @@ public class SubFrame extends JInternalFrame
         assert pane != null;
         pane.setGeneralButtonEnabled(false);
         mStatusComponent = pane;
-        mStatusComponent.addPropertyChangeListener(new ProgressCellSelectionListener(this));
     }
 
     public JComponent  getStatusComponent () {

@@ -1,163 +1,61 @@
 /* -*- Mode: Java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- vim:set ts=4 sw=4 sts=4 et: */
 package jp.oist.flint.form;
 
-import java.awt.Component;
-import java.awt.Container;
-import java.awt.Point;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import javax.swing.ButtonModel;
-import javax.swing.DefaultListModel;
-import javax.swing.DefaultListSelectionModel;
-import javax.swing.JButton;
-import javax.swing.JList;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import javax.swing.BoxLayout;
+import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.ListModel;
-import javax.swing.ListSelectionModel;
-import javax.swing.event.ListDataEvent;
-import javax.swing.event.ListDataListener;
 
-class ProgressList implements ListDataListener, MouseListener {
+class ProgressList {
 
-    private final JList mList;
+    private final ArrayList<ProgressCell> mCells;
 
-    private JButton mPressedBtn;
+    private final JPanel mPanel;
 
-    public ProgressList () {
-        mList = new JList();
-        mList.setModel(createListDataModel());
-        mList.setSelectionModel(createListSelectionModel());
-        initComponents();
+    private final JScrollPane mScrollPane;
+
+    public ProgressList() {
+        mCells = new ArrayList<>();
+
+        mPanel = new JPanel();
+        mPanel.setLayout(new BoxLayout(mPanel, BoxLayout.PAGE_AXIS));
+
+        mScrollPane = new JScrollPane(mPanel);
     }
 
-    private ListModel createListDataModel () {
-        DefaultListModel model = new DefaultListModel();
-        model.addListDataListener(this);
-        return model;
+    public List<ProgressCell> getCells() {
+        return Collections.unmodifiableList(mCells);
     }
 
-    private ListSelectionModel createListSelectionModel () {
-        ListSelectionModel model = new DefaultListSelectionModel();
-        model.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-
-        return model;
+    public void add(ProgressCell cell) {
+        mCells.add(cell);
+        mPanel.add(cell);
+        mPanel.repaint();
     }
 
-
-    private void initComponents () {
-        mList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        mList.setDragEnabled(false);
-
-        mList.setCellRenderer(new ProgressListCellRenderer());
-        mList.addMouseListener(this);
-        mList.setOpaque(true);
+    public void remove(ProgressCell cell) {
+        mCells.remove(cell);
+        mPanel.remove(cell);
+        mPanel.repaint();
     }
-
-    private JButton getButtonAt(Point point) {
-        int index = mList.locationToIndex(point);
-        if (index == -1) return null;
-
-        ProgressCell cellPane =
-            (ProgressCell)getModel().getElementAt(index);
-
-        Point location = mList.indexToLocation(index);
-        cellPane.setLocation(location);
-        Component c = findComponentAt(cellPane, point);
-        if (c instanceof JButton) {
-            JButton btn = (JButton)c;
-            return btn;
-        }
-        return null;
-    }
-
-    private Component findComponentAt (Component c, Point point) {
-        Point location = c.getLocation();
-        Point rpoint = new Point(
-                                 point.x - location.x,
-                                 point.y - location.y
-                                 );
-        if (c instanceof Container) {
-            Component[] children  = ((Container)c).getComponents();
-            for (Component child : children) {
-                if (child.getBounds().contains(rpoint)){
-                    if (child instanceof Container) {
-                        if (((Container)child).getComponents().length > 0) {
-                            return findComponentAt(child, rpoint);
-                        } else {
-                            return child;
-                        }
-                    }
-                }
-            }
-        }
-        return null;
-    }
-
-
-    @Override
-    public void intervalAdded(ListDataEvent evt) { }
-
-    @Override
-    public void contentsChanged(ListDataEvent e) { }
-
-    @Override
-    public void intervalRemoved(ListDataEvent evt) {
-        int deletedIndex = evt.getIndex0();
-        int selectedIndex = deletedIndex-1;
-        if(selectedIndex < 1) selectedIndex = 0;
-        mList.setSelectedIndex(selectedIndex);
-    }
-
-    @Override
-    public void mouseClicked(MouseEvent e) {
-        JButton btn = getButtonAt(e.getPoint());
-        if (btn != null) btn.doClick();
-    }
-
-    @Override
-    public void mousePressed(MouseEvent e) {
-        mPressedBtn = getButtonAt(e.getPoint());
-        if (mPressedBtn != null) {
-            ButtonModel bm = mPressedBtn.getModel();
-            bm.setArmed(true);
-            bm.setPressed(true);
-            bm.setSelected(true);
-            bm.setRollover(true);
-            mList.repaint();
-        }
-    }
-
-    @Override
-    public void mouseReleased(MouseEvent e) {
-        if (mPressedBtn != null) {
-            ButtonModel bm = mPressedBtn.getModel();
-            bm.setArmed(false);
-            bm.setPressed(false);
-            bm.setSelected(false);
-            bm.setRollover(false);
-            mList.repaint();
-        }
-    }
-
-    @Override
-    public void mouseEntered(MouseEvent e) { }
-
-    @Override
-    public void mouseExited(MouseEvent e) { }
 
     public JScrollPane createPane() {
-        return new JScrollPane(mList);
-    }
-
-    public DefaultListModel getModel() {
-        return (DefaultListModel)mList.getModel();
+        return mScrollPane;
     }
 
     public void setSelectedCell(ProgressCell cell, boolean selected) {
-        mList.setSelectedValue(cell, selected);
-    }
-
-    public void repaint(int index) {
-        mList.repaint(mList.getCellBounds(index, index));
+        if (!selected) {
+            cell.setSelected(false);
+            return;
+        }
+        for (ProgressCell other : mCells) {
+            if (cell == other) {
+                other.setSelected(true);
+            } else {
+                other.setSelected(false);
+            }
+        }
     }
 }
