@@ -1,8 +1,4 @@
 /* -*- Mode: Java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- vim:set ts=4 sw=4 sts=4 et: */
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package jp.oist.flint.form;
 
 import java.awt.Desktop;
