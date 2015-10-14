@@ -73,10 +73,6 @@ public class MainFrame extends javax.swing.JFrame
         }
     }
 
-    public final static int WIDTH = 800;
-
-    public final static int HEIGHT = 600;
-
     public final static int MIN_WIDTH = 800;
 
     public final static int MIN_HEIGHT = 600;
@@ -106,8 +102,8 @@ public class MainFrame extends javax.swing.JFrame
         setMaximumSize(new Dimension(
             Short.MAX_VALUE, Short.MAX_VALUE
         ));
-        setSize(new Dimension (WIDTH, HEIGHT));
-        setPreferredSize(new Dimension(WIDTH, HEIGHT));
+        setSize(new Dimension(MIN_WIDTH, MIN_HEIGHT));
+        setPreferredSize(new Dimension(MIN_WIDTH, MIN_HEIGHT));
         setLocationRelativeTo(null);
 
         setContentPane(createContentPane(controlPane, progressPane));
