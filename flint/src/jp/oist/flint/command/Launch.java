@@ -39,19 +39,18 @@ public class Launch implements Runnable {
         UIManager.put("Desktop.background", Color.WHITE);
 
         Session session = new Session();
-        MenuBar menuBar = new MenuBar();
-        session.addListener(menuBar);
         ControlPane controlPane = new ControlPane();
         ProgressPane progressPane = new ProgressPane();
         try {
             Desktop desktop = new Desktop(progressPane);
             desktop.addListener(new SessionHandler(session));
-            desktop.addListener(menuBar);
             desktop.addListener(controlPane);
             desktop.addListener(progressPane);
             mMainFrame = new MainFrame(desktop, controlPane, progressPane);
+            MenuBar menuBar = new MenuBar(mMainFrame);
+            session.addListener(menuBar);
+            desktop.addListener(menuBar);
             mMainFrame.setJMenuBar(menuBar);
-            menuBar.setDelegator(mMainFrame);
             controlPane.setDelegator(mMainFrame);
             desktop.addListener(mMainFrame);
             desktop.addLoadingListener(controlPane);

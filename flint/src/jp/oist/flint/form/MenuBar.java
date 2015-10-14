@@ -74,14 +74,15 @@ public class MenuBar extends JMenuBar
     /* Items on Menu "Help */
     private JMenuItem mItemAbout;
 
-    private IMenuDelegator mDelegator;
+    private final IMenuDelegator mDelegator;
 
     private String mLastPath = null;
 
-    public MenuBar() {
+    public MenuBar(IMenuDelegator delegator) {
         super();
 
-        mDelegator = null;
+        assert delegator != null;
+        mDelegator = delegator;
         initComponents();
     }
 
@@ -98,8 +99,7 @@ public class MenuBar extends JMenuBar
         mItemOpen.addActionListener(new ActionListener () {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (mDelegator != null) 
-                    mDelegator.openPerformed(mLastPath);
+                mDelegator.openPerformed(mLastPath);
             }
         });
 
@@ -115,9 +115,7 @@ public class MenuBar extends JMenuBar
         mItemClose.addActionListener(new ActionListener () {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (mDelegator != null)  {
-                    mDelegator.closePerformed(e.getSource());
-                }
+                mDelegator.closePerformed(e.getSource());
             }
         });
 
@@ -127,8 +125,7 @@ public class MenuBar extends JMenuBar
         mItemLoadConfiguration.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (mDelegator != null) 
-                    mDelegator.loadConfigurationPerformed(e.getSource());
+                mDelegator.loadConfigurationPerformed(e.getSource());
             }
         });
 
@@ -138,8 +135,7 @@ public class MenuBar extends JMenuBar
         mItemSaveConfiguration.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (mDelegator != null)                 
-                    mDelegator.saveConfigurationPerformed(e.getSource());
+                mDelegator.saveConfigurationPerformed(e.getSource());
             }
         });
 
@@ -149,8 +145,7 @@ public class MenuBar extends JMenuBar
         mItemSaveAsPhsp.addActionListener(new ActionListener(){
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (mDelegator != null)
-                    mDelegator.saveAsPhspPerformed(e.getSource());
+                mDelegator.saveAsPhspPerformed(e.getSource());
             }
         });
 
@@ -162,8 +157,7 @@ public class MenuBar extends JMenuBar
         mItemExit.addActionListener(new ActionListener () {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (mDelegator != null)
-                    mDelegator.exitPerformed(e.getSource());
+                mDelegator.exitPerformed(e.getSource());
             }
         });
 
@@ -191,8 +185,7 @@ public class MenuBar extends JMenuBar
         mItemCopy.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (mDelegator != null)
-                    mDelegator.copyPerformed(e.getSource());
+                mDelegator.copyPerformed(e.getSource());
             }
         });
 
@@ -205,8 +198,7 @@ public class MenuBar extends JMenuBar
         mItemCut.addActionListener(new ActionListener(){
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (mDelegator != null)
-                    mDelegator.cutPerformed(e.getSource());
+                mDelegator.cutPerformed(e.getSource());
             }
         });
 
@@ -217,8 +209,7 @@ public class MenuBar extends JMenuBar
         mItemPreference.addActionListener(new ActionListener (){
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (mDelegator != null)
-                    mDelegator.preferencePerformed(e.getSource());
+                mDelegator.preferencePerformed(e.getSource());
             }
         });
 
@@ -239,8 +230,7 @@ public class MenuBar extends JMenuBar
         mItemRun.addActionListener(new ActionListener () {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (mDelegator != null)
-                    mDelegator.simulationRunPerformed(e.getSource());
+                mDelegator.simulationRunPerformed(e.getSource());
             }
         });
 
@@ -252,8 +242,7 @@ public class MenuBar extends JMenuBar
         mItemPause.addActionListener(new ActionListener () {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (mDelegator != null)
-                    mDelegator.simulationPausePerformed(e.getSource());
+                mDelegator.simulationPausePerformed(e.getSource());
             }
         });
 
@@ -265,8 +254,7 @@ public class MenuBar extends JMenuBar
         mItemResume.addActionListener(new ActionListener () {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (mDelegator != null)
-                    mDelegator.simulationResumePerformed(e.getSource());
+                mDelegator.simulationResumePerformed(e.getSource());
             }
         });
 
@@ -275,8 +263,7 @@ public class MenuBar extends JMenuBar
         mItemSendToFlintK3.addActionListener(new ActionListener(){
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (mDelegator != null)
-                    mDelegator.sendToK3Performed(e.getSource());
+                mDelegator.sendToK3Performed(e.getSource());
             }
         });
         mItemSendToFlintK3.setEnabled(false);
@@ -296,8 +283,7 @@ public class MenuBar extends JMenuBar
         mItemAbout.addActionListener(new ActionListener () {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (mDelegator != null)
-                    mDelegator.aboutPerformed(e.getSource());
+                mDelegator.aboutPerformed(e.getSource());
             }
         });
 
@@ -309,18 +295,13 @@ public class MenuBar extends JMenuBar
         add(menuHelp);
     }
 
-    public void setDelegator (IMenuDelegator delegator) {
-        mDelegator = delegator;
-    }
-
     private JMenuItem obtainRecentModelMenuItem(final File model) {
         JMenuItem m = new JMenuItem(model.getName());
         m.setToolTipText(model.getPath());
         m.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (mDelegator != null)
-                    mDelegator.recentModelPerformed(e.getSource(), model);
+                mDelegator.recentModelPerformed(e.getSource(), model);
             }
         });
         return m;
