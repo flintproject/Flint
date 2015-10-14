@@ -65,12 +65,6 @@ public class MenuBar extends JMenuBar
     private JMenuItem mItemResume;
     private JMenuItem mItemSendToFlintK3;
 
-    /* Items on Menu "Window" */
-    private JMenuItem mItemProgresses;
-    private JMenuItem mItemControlPanel;
-    private JMenuItem mItemNextTab;
-    private JMenuItem mItemPreviousTab;
-
     /* Items on Menu "Help */
     private JMenuItem mItemAbout;
 
