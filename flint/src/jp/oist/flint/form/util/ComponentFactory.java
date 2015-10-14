@@ -7,29 +7,14 @@ import javax.swing.JButton;
 
 public class ComponentFactory {
 
-    public static JButton createButton (String s, String actionCmd) {
-        JButton btn = new JButton(s);
-        btn.setActionCommand(actionCmd);
-
-        return btn;
-    }
-
     public static JButton createButton (String s, String actionCmd, 
             Dimension fixedSize) {
-        JButton btn = createButton(s, actionCmd);
+        JButton btn = new JButton(s);
+        btn.setActionCommand(actionCmd);
         btn.setSize(fixedSize);
         btn.setPreferredSize(fixedSize);
         btn.setMaximumSize(fixedSize);
         btn.setMinimumSize(fixedSize);
-        return btn;
-    }
-
-    public static JButton createSquareButton (String s, String actionCmd) {
-        JButton btn = createButton(s, actionCmd);
-        btn.setMargin(new Insets(0, 0, 0, 0));
-        btn.setPreferredSize(new Dimension(
-                70,
-                btn.getPreferredSize().height));
         return btn;
     }
 

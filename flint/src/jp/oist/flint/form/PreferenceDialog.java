@@ -3,7 +3,6 @@ package jp.oist.flint.form;
 
 import java.awt.Desktop;
 import jp.oist.flint.garuda.GarudaClient;
-import jp.oist.flint.k3.K3Loader;
 import jp.oist.flint.plotter.IPlotter;
 import jp.oist.flint.plotter.PlotterLoadException;
 import jp.oist.flint.plotter.PlotterLoader;
@@ -32,8 +31,6 @@ import jp.oist.flint.util.Utility;
  * This is the class of the Preference dialog.
  */
 public class PreferenceDialog extends javax.swing.JDialog {
-
-    final private K3Loader mK3Loader = new K3Loader();
 
     final private PlotterLoader mPlotterLoader = new PlotterLoader();
 
@@ -116,9 +113,6 @@ public class PreferenceDialog extends javax.swing.JDialog {
         } catch (BackingStoreException bse) {
             // ignored
         }
-
-        // K3
-//        checkBoxK3Enabled.setSelected(mK3Loader.isEnabled());
 
         setLocationRelativeTo((java.awt.Frame)parent);
     }
