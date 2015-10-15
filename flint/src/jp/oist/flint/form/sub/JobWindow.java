@@ -827,7 +827,7 @@ public class JobWindow extends javax.swing.JFrame
             if (action == null)
                 return;
             switch (action) {
-            case "plot":
+            case "view":
                 plotPerformed(evt);
                 break;
             case "export":

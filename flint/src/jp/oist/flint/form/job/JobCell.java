@@ -27,7 +27,7 @@ public class JobCell extends JPanel implements ActionListener  {
 
     public final static String ACTION_SENDVIAGARUDA = "jobcell.action.sendviagaruda";
 
-    public final static String ACTION_PLOT   = "jobcell.action.plot";
+    public final static String ACTION_VIEW   = "jobcell.action.view";
 
     public final static String ACTION_CANCEL = "jobcell.action.cancel";
 
@@ -69,7 +69,7 @@ public class JobCell extends JPanel implements ActionListener  {
     }
 
     private void initEvents () {
-        btn_Plot.addActionListener(this);
+        btn_View.addActionListener(this);
         btn_Cancel.addActionListener(this);
         btn_Export.addActionListener(this);
         btn_SendViaGaruda.addActionListener(this);
@@ -90,7 +90,7 @@ public class JobCell extends JPanel implements ActionListener  {
         jPanel4 = new JPanel();
         btn_Export = new JButton();
         btn_SendViaGaruda = new JButton();
-        btn_Plot = new JButton();
+        btn_View = new JButton();
 
         setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 10));
         setMinimumSize(new Dimension(0, 70));
@@ -169,27 +169,26 @@ public class JobCell extends JPanel implements ActionListener  {
         btn_SendViaGaruda.setPreferredSize(new Dimension(110, 20));
         jPanel4.add(btn_SendViaGaruda);
 
-        btn_Plot.setText("View");
-        btn_Plot.setActionCommand("jobcell.action.plot");
-        btn_Plot.setMaximumSize(new Dimension(75, 20));
-        btn_Plot.setMinimumSize(new Dimension(75, 20));
-        btn_Plot.setPreferredSize(new Dimension(75, 20));
-        btn_Plot.addActionListener(new ActionListener() {
-            @Override
+        btn_View.setText("View");
+        btn_View.setActionCommand("jobcell.action.view");
+        btn_View.setMaximumSize(new Dimension(75, 20));
+        btn_View.setMinimumSize(new Dimension(75, 20));
+        btn_View.setPreferredSize(new Dimension(75, 20));
+        btn_View.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
-                btn_PlotActionPerformed(evt);
+                btn_ViewActionPerformed(evt);
             }
         });
-        jPanel4.add(btn_Plot);
+        jPanel4.add(btn_View);
 
         pnl_Bottom.add(jPanel4);
 
         add(pnl_Bottom);
     }// </editor-fold>//GEN-END:initComponents
 
-    private void btn_PlotActionPerformed(ActionEvent evt) {//GEN-FIRST:event_btn_PlotActionPerformed
+    private void btn_ViewActionPerformed(ActionEvent evt) {//GEN-FIRST:event_btn_ViewActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_btn_PlotActionPerformed
+    }//GEN-LAST:event_btn_ViewActionPerformed
 
     @Override
     public void actionPerformed(ActionEvent evt) {
@@ -197,8 +196,8 @@ public class JobCell extends JPanel implements ActionListener  {
         if (actionCommand == null)
             return;
         switch (actionCommand) {
-        case ACTION_PLOT:
-            mParent.handleContextMenuEvent(new JobViewerComponent.Event(mParent, "plot", mIndex));
+        case ACTION_VIEW:
+            mParent.handleContextMenuEvent(new JobViewerComponent.Event(mParent, "view", mIndex));
             break;
         case ACTION_EXPORT:
             mParent.handleContextMenuEvent(new JobViewerComponent.Event(mParent, "export", mIndex));
@@ -293,8 +292,8 @@ public class JobCell extends JPanel implements ActionListener  {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private JButton btn_Cancel;
     private JButton btn_Export;
-    private JButton btn_Plot;
     private JButton btn_SendViaGaruda;
+    private JButton btn_View;
     private JPanel jPanel2;
     private JPanel jPanel4;
     private JLabel lbl_Detail;

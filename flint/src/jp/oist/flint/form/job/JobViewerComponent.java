@@ -275,7 +275,7 @@ public abstract class JobViewerComponent extends JPanel
 
         int index = locationToIndex(evt.getPoint());
         if (evt.getClickCount() == 2 && index >= 0) {
-            JobViewerComponent.Event e = new JobViewerComponent.Event(this, "plot", index);
+            JobViewerComponent.Event e = new JobViewerComponent.Event(this, "view", index);
             mContextMenuHandler.handleEvent(e);
         }
     }
@@ -398,12 +398,12 @@ public abstract class JobViewerComponent extends JPanel
     public class ContextMenu extends JPopupMenu 
         implements ActionListener {
 
-        public final static String ACTION_PLOT = "jobviewer.contextmenu.action.plot";
+        public final static String ACTION_VIEW = "jobviewer.contextmenu.action.view";
         public final static String ACTION_EXPORT = "jobviewer.contextmenu.action.export";
         public final static String ACTION_SENDVIAGARUDA = "jobviewer.contextmenu.action.sendviagaruda";
         public final static String ACTION_CANCEL = "jobviewer.contextmenu.action.cancel";
 
-        private JMenuItem btn_Plot;
+        private JMenuItem btn_View;
         private JMenuItem btn_Export;
         private JMenuItem btn_SendViaGaruda;
         private JMenuItem btn_Cancel;
@@ -415,7 +415,7 @@ public abstract class JobViewerComponent extends JPanel
         }
 
         private void initComponents () {
-            btn_Plot        = new JMenuItem("Plot");
+            btn_View        = new JMenuItem("View");
             btn_Export      = new JMenuItem("Export");
             btn_SendViaGaruda = new JMenuItem("Send via Garuda");
             btn_Cancel      = new JMenuItem("Cancel");
@@ -425,9 +425,9 @@ public abstract class JobViewerComponent extends JPanel
             setPreferredSize(dim);
             setSize(dim);
 
-            add(btn_Plot);
-            btn_Plot.addActionListener(this);
-            btn_Plot.setActionCommand(ACTION_PLOT);
+            add(btn_View);
+            btn_View.addActionListener(this);
+            btn_View.setActionCommand(ACTION_VIEW);
 
             add(btn_Export);
             btn_Export.addActionListener(this);
@@ -448,9 +448,9 @@ public abstract class JobViewerComponent extends JPanel
         public void actionPerformed(ActionEvent evt) {
             String actionCommand = evt.getActionCommand();
             int selectedIndex = getSelectedIndex();
-            if (ACTION_PLOT.equals(actionCommand)) {
+            if (ACTION_VIEW.equals(actionCommand)) {
                 handleContextMenuEvent(new JobViewerComponent.Event(JobViewerComponent.this, 
-                        "plot", selectedIndex));
+                        "view", selectedIndex));
             } else if (ACTION_EXPORT.equals(actionCommand)) {
                 handleContextMenuEvent(new JobViewerComponent.Event(JobViewerComponent.this, 
                         "export", selectedIndex));

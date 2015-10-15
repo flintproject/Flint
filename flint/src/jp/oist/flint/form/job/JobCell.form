@@ -197,10 +197,10 @@
                 </Property>
               </Properties>
             </Component>
-            <Component class="javax.swing.JButton" name="btn_Plot">
+            <Component class="javax.swing.JButton" name="btn_View">
               <Properties>
                 <Property name="text" type="java.lang.String" value="View"/>
-                <Property name="actionCommand" type="java.lang.String" value="jobcell.action.plot"/>
+                <Property name="actionCommand" type="java.lang.String" value="jobcell.action.view"/>
                 <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                   <Dimension value="[75, 20]"/>
                 </Property>
@@ -212,7 +212,7 @@
                 </Property>
               </Properties>
               <Events>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btn_PlotActionPerformed"/>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btn_ViewActionPerformed"/>
               </Events>
             </Component>
           </SubComponents>
@@ -319,11 +319,11 @@
                 <CodeMethod name="add" class="java.awt.Container" parameterTypes="java.awt.Component"/>
               </StatementProvider>
               <Parameters>
-                <CodeExpression id="9_btn_Plot">
-                  <CodeVariable name="btn_Plot" type="8194" declaredType="javax.swing.JButton"/>
+                <CodeExpression id="9_btn_View">
+                  <CodeVariable name="btn_View" type="8194" declaredType="javax.swing.JButton"/>
                   <ExpressionOrigin>
                     <ExpressionProvider type="ComponentRef">
-                      <ComponentRef name="btn_Plot"/>
+                      <ComponentRef name="btn_View"/>
                     </ExpressionProvider>
                   </ExpressionOrigin>
                 </CodeExpression>
