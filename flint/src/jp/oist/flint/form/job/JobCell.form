@@ -102,7 +102,7 @@
             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
               <Image iconType="3" name="/jp/oist/flint/image/cancel.png"/>
             </Property>
-            <Property name="actionCommand" type="java.lang.String" value="progresslistcell.action.cancel"/>
+            <Property name="actionCommand" type="java.lang.String" value="jobcell.action.cancel"/>
             <Property name="iconTextGap" type="int" value="0"/>
             <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
               <Dimension value="[20, 20]"/>
@@ -170,7 +170,7 @@
             <Component class="javax.swing.JButton" name="btn_Export">
               <Properties>
                 <Property name="text" type="java.lang.String" value="Export"/>
-                <Property name="actionCommand" type="java.lang.String" value="progresslistcell.action.export"/>
+                <Property name="actionCommand" type="java.lang.String" value="jobcell.action.export"/>
                 <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                   <Dimension value="[110, 20]"/>
                 </Property>
@@ -185,7 +185,7 @@
             <Component class="javax.swing.JButton" name="btn_SendViaGaruda">
               <Properties>
                 <Property name="text" type="java.lang.String" value="Send via Garuda"/>
-                <Property name="actionCommand" type="java.lang.String" value="progresslistcell.action.sendviagaruda"/>
+                <Property name="actionCommand" type="java.lang.String" value="jobcell.action.sendviagaruda"/>
                 <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                   <Dimension value="[110, 20]"/>
                 </Property>
@@ -200,7 +200,7 @@
             <Component class="javax.swing.JButton" name="btn_Plot">
               <Properties>
                 <Property name="text" type="java.lang.String" value="View"/>
-                <Property name="actionCommand" type="java.lang.String" value="progresslistcell.action.plot"/>
+                <Property name="actionCommand" type="java.lang.String" value="jobcell.action.plot"/>
                 <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                   <Dimension value="[75, 20]"/>
                 </Property>

@@ -23,13 +23,13 @@ import javax.swing.SwingConstants;
 
 public class JobCell extends JPanel implements ActionListener  {
 
-    public final static String ACTION_EXPORT = "progresslistcell.action.export";
+    public final static String ACTION_EXPORT = "jobcell.action.export";
 
-    public final static String ACTION_SENDVIAGARUDA = "progresslistcell.action.sendviagaruda";
+    public final static String ACTION_SENDVIAGARUDA = "jobcell.action.sendviagaruda";
 
-    public final static String ACTION_PLOT   = "progresslistcell.action.plot";
+    public final static String ACTION_PLOT   = "jobcell.action.plot";
 
-    public final static String ACTION_CANCEL = "progresslistcell.action.cancel";
+    public final static String ACTION_CANCEL = "jobcell.action.cancel";
 
     protected final JobList mParent;
 
@@ -124,7 +124,7 @@ public class JobCell extends JPanel implements ActionListener  {
         pnl_Middle.add(jPanel2);
 
         btn_Cancel.setIcon(new ImageIcon(getClass().getResource("/jp/oist/flint/image/cancel.png"))); // NOI18N
-        btn_Cancel.setActionCommand("progresslistcell.action.cancel");
+        btn_Cancel.setActionCommand("jobcell.action.cancel");
         btn_Cancel.setIconTextGap(0);
         btn_Cancel.setMaximumSize(new Dimension(20, 20));
         btn_Cancel.setMinimumSize(new Dimension(20, 20));
@@ -156,21 +156,21 @@ public class JobCell extends JPanel implements ActionListener  {
         jPanel4.setLayout(flowLayout1);
 
         btn_Export.setText("Export");
-        btn_Export.setActionCommand("progresslistcell.action.export");
+        btn_Export.setActionCommand("jobcell.action.export");
         btn_Export.setMaximumSize(new Dimension(110, 20));
         btn_Export.setMinimumSize(new Dimension(110, 20));
         btn_Export.setPreferredSize(new Dimension(110, 20));
         jPanel4.add(btn_Export);
 
         btn_SendViaGaruda.setText("Send via Garuda");
-        btn_SendViaGaruda.setActionCommand("progresslistcell.action.sendviagaruda");
+        btn_SendViaGaruda.setActionCommand("jobcell.action.sendviagaruda");
         btn_SendViaGaruda.setMaximumSize(new Dimension(110, 20));
         btn_SendViaGaruda.setMinimumSize(new Dimension(110, 20));
         btn_SendViaGaruda.setPreferredSize(new Dimension(110, 20));
         jPanel4.add(btn_SendViaGaruda);
 
         btn_Plot.setText("View");
-        btn_Plot.setActionCommand("progresslistcell.action.plot");
+        btn_Plot.setActionCommand("jobcell.action.plot");
         btn_Plot.setMaximumSize(new Dimension(75, 20));
         btn_Plot.setMinimumSize(new Dimension(75, 20));
         btn_Plot.setPreferredSize(new Dimension(75, 20));
