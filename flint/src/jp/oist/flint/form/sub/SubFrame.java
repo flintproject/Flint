@@ -26,7 +26,6 @@ import javax.swing.JTabbedPane;
 import javax.swing.JInternalFrame;
 import com.google.protobuf.ByteString;
 import java.sql.SQLException;
-import javax.swing.JComponent;
 import jp.oist.flint.dao.TaskDao;
 import jp.oist.flint.backend.ModelLoader;
 import jp.oist.flint.executor.PhspSimulator;
@@ -53,9 +52,9 @@ public class SubFrame extends JInternalFrame
     private final K3Loader mK3Loader;
 
     /**
-     * The status bar of a form.
+     * The corresponding cell in the ProgressPane
      */
-    private JComponent mStatusComponent;
+    private ProgressCell mProgressCell;
 
     private boolean mIsEditable = true;
 
@@ -148,7 +147,7 @@ public class SubFrame extends JInternalFrame
         pnl_ParameterValue = new ParameterValuePane(mDocument);
         pnl_Content.addTab("Parameters", pnl_ParameterValue);
 
-        mStatusComponent = null;
+        mProgressCell = null;
     }
 
     private void initSubWindow()
@@ -218,14 +217,13 @@ public class SubFrame extends JInternalFrame
                 JOptionPane.ERROR_MESSAGE);
     }
 
-    public void setStatusComponent(ProgressCell pane) {
-        assert pane != null;
-        pane.setGeneralButtonEnabled(false);
-        mStatusComponent = pane;
+    public void setProgressCell(ProgressCell cell) {
+        assert cell != null;
+        mProgressCell = cell;
     }
 
-    public JComponent  getStatusComponent () {
-        return mStatusComponent;
+    public ProgressCell getProgressCell() {
+        return mProgressCell;
     }
 
     /* ISimulationListener */

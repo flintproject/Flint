@@ -71,7 +71,7 @@ public class ProgressPane extends PeripheralPane
         mPanel.add(cell);
         mPanel.repaint();
         setSelectedCell(cell, true);
-        subFrame.setStatusComponent(cell);
+        subFrame.setProgressCell(cell);
     }
 
     @Override

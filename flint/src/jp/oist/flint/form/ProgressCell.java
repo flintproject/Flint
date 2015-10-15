@@ -50,6 +50,7 @@ public class ProgressCell extends JPanel {
 
         mProgressBar = new JProgressBar();
         mJobBtn = ComponentFactory.createSquareButton("Detail", "progress.plot", new Dimension(48,20));
+        mJobBtn.setEnabled(false);
 
         JPanel upperPane = new JPanel();
         upperPane.setLayout(new BoxLayout(upperPane, BoxLayout.LINE_AXIS));

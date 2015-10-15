@@ -21,7 +21,7 @@ public class SubFrameSelectionListener implements PropertyChangeListener {
             if (!isSelected)
                 return;
             SubFrame subFrame = (SubFrame)evt.getSource();
-            ProgressCell cell = (ProgressCell)subFrame.getStatusComponent();
+            ProgressCell cell = subFrame.getProgressCell();
             if (cell == null)
                 return;
             mProgressPane.setSelectedCell(cell, true);
