@@ -21,7 +21,7 @@ import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.SwingConstants;
 
-public class JobListCell extends JPanel implements ActionListener  {
+public class JobCell extends JPanel implements ActionListener  {
 
     public final static String ACTION_EXPORT = "progresslistcell.action.export";
 
@@ -41,7 +41,7 @@ public class JobListCell extends JPanel implements ActionListener  {
 
     private boolean mIsCancelled = false;
 
-    public JobListCell(JobList parent, int index) {
+    public JobCell(JobList parent, int index) {
         mParent = parent;
         mIndex = index;
 
@@ -54,14 +54,14 @@ public class JobListCell extends JPanel implements ActionListener  {
         }
     }
 
-    public JobListCell(JobList parent, int index, String title) {
+    public JobCell(JobList parent, int index, String title) {
         this(parent, index);
 
         lbl_Title.setText(title);
         lbl_Detail.setText("");
     }
 
-    public JobListCell(JobList parent, int index, String title, String detail) {
+    public JobCell(JobList parent, int index, String title, String detail) {
         this(parent, index);
 
         lbl_Title.setText(title);
@@ -293,8 +293,8 @@ public class JobListCell extends JPanel implements ActionListener  {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private JButton btn_Cancel;
     private JButton btn_Export;
-    private JButton btn_SendViaGaruda;
     private JButton btn_Plot;
+    private JButton btn_SendViaGaruda;
     private JPanel jPanel2;
     private JPanel jPanel4;
     private JLabel lbl_Detail;

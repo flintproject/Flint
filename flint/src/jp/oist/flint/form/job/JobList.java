@@ -33,7 +33,7 @@ public class JobList extends JobViewerComponent
 
     private JList mJobList;
 
-    public List<JobListCell> mCells;
+    public List<JobCell> mCells;
 
     public JobList () {
         super(new BorderLayout());
@@ -94,7 +94,7 @@ public class JobList extends JobViewerComponent
         if (index >= mCells.size()) 
             return null;
 
-        JobListCell c = mCells.get(index);
+        JobCell c = mCells.get(index);
         CombinationModel model = (CombinationModel)getModel();
         Number[] values = model.getValues(index);
         String[] titles = getParameterInfo().getTitles();
@@ -152,7 +152,7 @@ public class JobList extends JobViewerComponent
         int start = evt.getIndex0();
         int end   = evt.getIndex1();
         for (int i=start; i<=end; i++)
-            mCells.add(new JobListCell(this, i));
+            mCells.add(new JobCell(this, i));
     }
 
     @Override
@@ -215,7 +215,7 @@ public class JobList extends JobViewerComponent
     public Map<Integer, Number> getValuesAt (Point p) {
         JPanel pane = getPanelOnList(mJobList, p);
 
-        if (pane instanceof JobListCell) {
+        if (pane instanceof JobCell) {
             int index = mCells.indexOf(pane);
 
             if (index == -1)
@@ -244,7 +244,7 @@ public class JobList extends JobViewerComponent
     public void mouseClicked (MouseEvent evt) {
         JList list = (JList)evt.getSource();
         JPanel pane = getPanelOnList(list, evt.getPoint());
-        if (pane instanceof JobListCell) {
+        if (pane instanceof JobCell) {
             JButton btn = getButtonOnContainer(pane, evt.getPoint());
             if (btn == null)
               return;
@@ -256,7 +256,7 @@ public class JobList extends JobViewerComponent
     public void mousePressed (MouseEvent evt) {
         JList list = (JList)evt.getSource();
         JPanel pane = getPanelOnList(list, evt.getPoint());
-        if (pane instanceof JobListCell) {
+        if (pane instanceof JobCell) {
             JButton btn = getButtonOnContainer(pane, evt.getPoint());
             if (btn == null)
               return;
@@ -273,7 +273,7 @@ public class JobList extends JobViewerComponent
     public void mouseReleased (MouseEvent evt) {
         JList list = (JList)evt.getSource();
         JPanel pane = getPanelOnList(list, evt.getPoint());
-        if (pane instanceof JobListCell) {
+        if (pane instanceof JobCell) {
             JButton btn = getButtonOnContainer(pane, evt.getPoint());
             if (btn == null)
               return;

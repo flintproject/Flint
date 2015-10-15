@@ -170,7 +170,7 @@
             <Component class="javax.swing.JButton" name="btn_Export">
               <Properties>
                 <Property name="text" type="java.lang.String" value="Export"/>
-                <Property name="actionCommand" type="java.lang.String" value="progresslistcell.action.exportIsd"/>
+                <Property name="actionCommand" type="java.lang.String" value="progresslistcell.action.export"/>
                 <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                   <Dimension value="[110, 20]"/>
                 </Property>
@@ -185,7 +185,7 @@
             <Component class="javax.swing.JButton" name="btn_SendViaGaruda">
               <Properties>
                 <Property name="text" type="java.lang.String" value="Send via Garuda"/>
-                <Property name="actionCommand" type="java.lang.String" value="progresslistcell.action.exportCsv"/>
+                <Property name="actionCommand" type="java.lang.String" value="progresslistcell.action.sendviagaruda"/>
                 <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                   <Dimension value="[110, 20]"/>
                 </Property>
