@@ -184,7 +184,7 @@ bool Generate(sqlite3 *input, const char *dir, int *job_id)
 		return false;
 	if (!CreateTable(output, "parameter_eqs", "(uuid BLOB, math TEXT)"))
 		return false;
-	sprintf(path, "%s/%d/parameters.txt", dir, rowid);
+	sprintf(path, "%s/%d/values.txt", dir, rowid);
 	FILE *fp = fopen(path, "w");
 	if (!fp) {
 		perror(path);
