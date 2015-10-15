@@ -8,8 +8,6 @@ public interface IProgressManager {
 
     int getProgress (int index);
 
-    int getProgressCount ();
-
     boolean isCancelled(int i);
 
     void setCancelled (int i, boolean cancelled);

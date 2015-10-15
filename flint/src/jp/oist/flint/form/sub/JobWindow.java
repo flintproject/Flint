@@ -381,10 +381,6 @@ public class JobWindow extends javax.swing.JFrame
     /*
      * Implements IProgressManager
      */
-    @Override
-    public int getProgressCount () {
-        return mDataModel.getSize();
-    }
 
     @Override
     public void setProgress(int index, Progress progress) {
