@@ -18,7 +18,6 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
-import javax.swing.UIDefaults;
 import javax.swing.UIManager;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
@@ -116,15 +115,14 @@ public class ProgressCell extends JPanel {
      * Change the foreground/background colors like JList components.
      */
     public void setSelected(boolean selected) {
-        UIDefaults d = UIManager.getDefaults();
         Color bc;
         Color fc;
         if (selected) {
-            bc = d.getColor("List.selectionBackground");
-            fc = d.getColor("List.selectionForeground");
+            bc = UIManager.getColor("List.selectionBackground");
+            fc = UIManager.getColor("List.selectionForeground");
         } else {
-            bc = d.getColor("List.background");
-            fc = d.getColor("List.foreground");
+            bc = UIManager.getColor("List.background");
+            fc = UIManager.getColor("List.foreground");
         }
         setBackground(bc);
         setForeground(fc);
