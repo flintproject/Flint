@@ -165,7 +165,7 @@ public class ProgressCell extends JPanel {
         return mProgressBar.getValue();
     }
 
-    public void setProgress(String msg, int minimum, int maximum, int value) {
+    public void setProgress(String msg, int value) {
         mProgressBar.setString(msg);
         mProgressBar.setValue(value);
         mProgressBar.repaint();
@@ -180,8 +180,8 @@ public class ProgressCell extends JPanel {
         mCancelBtn.setEnabled(true);
     }
 
-    public void progressFinished(String msg, int minimum, int maximum, int value) {
-        setProgress(msg, minimum, maximum, value);
+    public void progressFinished(String msg, int value) {
+        setProgress(msg, value);
         mCancelBtn.setEnabled(false);
     }
 

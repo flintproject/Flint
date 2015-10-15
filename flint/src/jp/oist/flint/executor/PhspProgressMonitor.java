@@ -64,10 +64,10 @@ public class PhspProgressMonitor extends SwingWorker<Void, Job> {
             String status;
             if (taskDao.isFinished()) {
                 status = (taskDao.isCancelled())? "finished" : "completed";
-                cell.progressFinished(status, 0, 100, taskProgress);
+                cell.progressFinished(status, taskProgress);
             } else if (taskDao.isStarted()) {
                 status = (taskDao.isCancelled())? "cancelling..." : taskProgress + " %";
-                cell.setProgress(status, 0, 100, taskProgress);
+                cell.setProgress(status, taskProgress);
             }
         } catch (DaoException | IOException | SQLException ex) {
             // give up

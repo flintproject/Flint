@@ -19,7 +19,7 @@ public class CancelSimulationActionListener implements ActionListener {
         SubFrame subFrame = mCell.getDocument().getSubFrame();
         if (subFrame.cancelSimulation()) {
             int progress = mCell.getStatusBarProgress();
-            mCell.progressFinished("finished", 0, 100, progress);
+            mCell.progressFinished("finished", progress);
         }
     }
 
