@@ -17,6 +17,7 @@ public:
 
 private:
 	TaskRunner *tr_;
+	void *progress_address_;
 	std::unique_ptr<char[]> dir_;
 	std::unique_ptr<char[]> generated_bc_;
 	std::unique_ptr<char[]> generated_db_;

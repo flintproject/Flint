@@ -3,6 +3,10 @@
 #define FLINT_EXEC_TASK_RUNNER_HH_
 
 #include <memory>
+
+#define BOOST_DATE_TIME_NO_LIB
+#include <boost/interprocess/mapped_region.hpp>
+
 #include "db/driver.hh"
 #include "db/read-only-driver.hh"
 #include "task/config-reader.hh"
@@ -24,6 +28,8 @@ public:
 	sqlite3 *GetDatabase();
 	sqlite3 *GetModelDatabase();
 
+	void *GetProgressAddress(int job_id);
+
 	bool Run();
 
 private:
@@ -35,6 +41,7 @@ private:
 	std::unique_ptr<char[]> init_;
 	std::unique_ptr<db::Driver> db_driver_;
 	std::unique_ptr<db::ReadOnlyDriver> modeldb_driver_;
+	std::unique_ptr<boost::interprocess::mapped_region> progress_region_;
 	std::unique_ptr<task::ConfigReader> reader_;
 };
 

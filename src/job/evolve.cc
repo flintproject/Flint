@@ -537,6 +537,15 @@ bool Evolve(sqlite3 *db,
 			}
 		}
 
+		if (option.progress_address) {
+			if (data[kIndexEnd] <= 0) {
+				cerr << "non-positive end time: " << data[kIndexEnd] << endl;
+				return false;
+			}
+			char c = static_cast<char>(100 * (data[kIndexTime] / data[kIndexEnd]));
+			memcpy(option.progress_address, &c, 1);
+		}
+
 		if (with_control) {
 			memcpy(&control, control_region->get_address(), 1);
 			if (control == 1) {

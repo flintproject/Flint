@@ -94,6 +94,7 @@ libflintxx_la_SOURCES = \
     exec/enum.cc \
     exec/exec.cc \
     exec/job-runner.cc \
+    exec/progress.cc \
     exec/task-runner.cc \
     file/detect.cc \
     file/txt.cc \

@@ -37,6 +37,7 @@ struct Option {
 	const char *output_data_file;
 	const char *output_history_file;
 	const char *status_file;
+	void *progress_address;
 };
 
 /*
@@ -55,6 +56,7 @@ bool Evolve(sqlite3 *db,
  */
 bool Job(const char *task_dir,
 		 const char *job_dir,
+		 void *progress_address,
 		 const char *data_file,
 		 const char *output_file,
 		 const task::ConfigReader &reader,

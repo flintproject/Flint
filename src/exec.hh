@@ -8,9 +8,10 @@ namespace flint {
 namespace exec {
 
 /*
- * Return true in case of success, false otherwise.
+ * Return the number of possible combination of parameter values
+ * in case of success, 0 otherwise.
  */
-bool Enum(sqlite3 *db);
+int Enum(sqlite3 *db);
 
 /*
  * Both sedml_file and phsp_file are encoded in UTF-8.

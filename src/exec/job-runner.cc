@@ -32,6 +32,7 @@ const int kFilenameLength = 96;
 
 JobRunner::JobRunner(TaskRunner *tr, int id)
 	: tr_(tr)
+	, progress_address_(tr->GetProgressAddress(id))
 	, dir_(new char[kFilenameLength])
 	, generated_bc_(new char[kFilenameLength])
 	, generated_db_(new char[kFilenameLength])
@@ -69,7 +70,8 @@ bool JobRunner::Run()
 	}
 	if (!job::Store(tr_->GetDatabase(), tr_->generated_layout(), generated_init_.get(), tr_->layout(), stored_.get()))
 		return false;
-	return job::Job(tr_->dir(), dir_.get(), stored_.get(), isd_.get(), tr_->reader(), tr_->GetModelDatabase());
+	return job::Job(tr_->dir(), dir_.get(), progress_address_,
+					stored_.get(), isd_.get(), tr_->reader(), tr_->GetModelDatabase());
 }
 
 }

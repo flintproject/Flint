@@ -31,7 +31,7 @@ struct Range {
 	double *values;
 };
 
-bool Enumerate(sqlite3 *db)
+int Enumerate(sqlite3 *db)
 {
 	static char SQL[] = "SELECT name, range FROM phsp_parameters";
 
@@ -42,14 +42,14 @@ bool Enumerate(sqlite3 *db)
 	e = sqlite3_prepare_v2(db, SQL, -1, &stmt, NULL);
 	if (e != SQLITE_OK) {
 		fprintf(stderr, "failed to parepare statement: %s\n", SQL);
-		return false;
+		return 0;
 	}
 
 	size_t qlen = 1024;
 	char *q = static_cast<char *>(malloc(qlen));
 	if (!q) {
 		perror(NULL);
-		return false;
+		return 0;
 	}
 	sprintf(q, "CREATE TABLE enum (");
 	char *p = q;
@@ -60,7 +60,7 @@ bool Enumerate(sqlite3 *db)
 	size_t size_ranges = 0;
 
 	while ( (e = sqlite3_step(stmt)) != SQLITE_DONE) {
-		if (e != SQLITE_ROW) return false; /* TODO */
+		if (e != SQLITE_ROW) return 0; /* TODO */
 
 		const unsigned char *n, *r;
 		n = sqlite3_column_text(stmt, 0);
@@ -68,20 +68,20 @@ bool Enumerate(sqlite3 *db)
 		if (nlen == 0) {
 			fprintf(stderr, "empty parameter name\n");
 			/* TODO */
-			return false;
+			return 0;
 		}
 		r = sqlite3_column_text(stmt, 1);
 		size_t rlen = strlen((const char *)r);
 		if (rlen == 0) {
 			fprintf(stderr, "empty value\n");
 			/* TODO */
-			return false;
+			return 0;
 		}
 
 		if ( (p - q) + nlen + 10 >= qlen) {
 			qlen *= 2;
 			char *qq = static_cast<char *>(realloc(q, qlen));
-			if (!qq) return false; /* TODO */
+			if (!qq) return 0; /* TODO */
 			p = qq + (p - q);
 			q = qq;
 		}
@@ -99,14 +99,14 @@ bool Enumerate(sqlite3 *db)
 		void *rr = realloc(ranges, size_ranges);
 		if (!rr) {
 			/* TODO */
-			return false;
+			return 0;
 		}
 		ranges = static_cast<Range *>(rr);
 		ranges[num_params].num_values = num_values;
 		void *vv = calloc(num_values, sizeof(double));
 		if (!vv) {
 			/* TODO */
-			return false;
+			return 0;
 		}
 		ranges[num_params].values = static_cast<double *>(vv);
 		const char *s = (const char *)r;
@@ -117,7 +117,7 @@ bool Enumerate(sqlite3 *db)
 			if (t == s) {
 				fprintf(stderr, "failed to read a double value: %s\n", s);
 				/* TODO */
-				return false;
+				return 0;
 			} else if (errno == ERANGE) {
 				if (d == HUGE_VAL || d == -HUGE_VAL) {
 					fprintf(stderr, "invalid range: overflow: %s\n", s);
@@ -125,7 +125,7 @@ bool Enumerate(sqlite3 *db)
 					fprintf(stderr, "invalid range: underflow: %s\n", s);
 				}
 				/* TODO */
-				return false;
+				return 0;
 			}
 			ranges[num_params].values[i] = d;
 			s = t+1;
@@ -135,7 +135,7 @@ bool Enumerate(sqlite3 *db)
 
 	if (num_params == 0) {
 		/* TODO */
-		return true;
+		return 1;
 	}
 
 	*(p-2) = ')';
@@ -145,7 +145,7 @@ bool Enumerate(sqlite3 *db)
 	if (e != SQLITE_OK) {
 		fprintf(stderr, "failed to create table: %d: %s\n", e, em);
 		sqlite3_free(em);
-		return false;
+		return 0;
 	}
 	sqlite3_reset(stmt);
 	sqlite3_finalize(stmt);
@@ -160,7 +160,7 @@ bool Enumerate(sqlite3 *db)
 	if (e != SQLITE_OK) {
 		fprintf(stderr, "failed to parepare statement: %s\n", q);
 		/* TODO */
-		return false;
+		return 0;
 	}
 
 	/* prepare to insert corresponding entries in jobs */
@@ -170,7 +170,7 @@ bool Enumerate(sqlite3 *db)
 	if (e != SQLITE_OK) {
 		fprintf(stderr, "failed to prepare statement: %s\n", q);
 		/* TODO */
-		return false;
+		return 0;
 	}
 
 	int num_rows = 1;
@@ -186,7 +186,7 @@ bool Enumerate(sqlite3 *db)
 			if (e != SQLITE_OK) {
 				fprintf(stderr, "failed to bind parameter: %d\n", e);
 				/* TODO */
-				return false;
+				return 0;
 			}
 			d1 *= ranges[k].num_values;
 		}
@@ -194,40 +194,41 @@ bool Enumerate(sqlite3 *db)
 		if (e != SQLITE_DONE) {
 			fprintf(stderr, "failed to insert row: %d\n", e);
 			/* TODO */
-			return false;
+			return 0;
 		}
 		sqlite3_int64 rowid = sqlite3_last_insert_rowid(db);
 		e = sqlite3_bind_int64(job_stmt, 1, rowid);
 		if (e != SQLITE_OK) {
 			fprintf(stderr, "failed to bind parameter: %d\n", e);
 			/* TODO */
-			return false;
+			return 0;
 		}
 		e = sqlite3_step(job_stmt);
 		if (e != SQLITE_DONE) {
 			fprintf(stderr, "failed to insert row: %d\n", e);
 			/* TODO */
-			return false;
+			return 0;
 		}
 		sqlite3_reset(stmt);
 		sqlite3_reset(job_stmt);
 	}
 	sqlite3_finalize(stmt);
 	sqlite3_finalize(job_stmt);
-	return true;
+	return num_rows;
 }
 
 }
 
-bool Enum(sqlite3 *db)
+int Enum(sqlite3 *db)
 {
 	if (!CreateTable(db, "jobs", "(enum_id INTEGER, status TEXT)"))
 		return false;
 	if (!BeginTransaction(db))
 		return false;
-	if (!Enumerate(db))
+	int n = Enumerate(db);
+	if (n == 0)
 		return false;
-	return CommitTransaction(db);
+	return CommitTransaction(db) ? n : 0;
 }
 
 }

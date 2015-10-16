@@ -5,6 +5,7 @@
 
 #include "exec/task-runner.hh"
 
+#include <cassert>
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
@@ -20,6 +21,7 @@
 #include "db/read-only-driver.hh"
 #include "exec.hh"
 #include "exec/job-runner.hh"
+#include "exec/progress.hh"
 #include "filter.hh"
 #include "job.hh"
 #include "layout.hh"
@@ -90,6 +92,14 @@ sqlite3 *TaskRunner::GetModelDatabase()
 	return modeldb_driver_->db();
 }
 
+void *TaskRunner::GetProgressAddress(int job_id)
+{
+	assert(progress_region_);
+	assert(static_cast<size_t>(job_id) < progress_region_->get_size());
+	char *addr = (char *)progress_region_->get_address();
+	return addr + job_id;
+}
+
 bool TaskRunner::Run()
 {
 	if (!Setup(id_, path_.get()))
@@ -133,8 +143,13 @@ bool TaskRunner::Run()
 	char db_file[kFilenameLength];
 	sprintf(db_file, "%s/db", dir_.get());
 	db_driver_.reset(new db::Driver(db_file));
-	if (!exec::Enum(db_driver_->db()))
+	int n = exec::Enum(db_driver_->db());
+	if (n == 0)
 		return false;
+	std::unique_ptr<boost::interprocess::file_mapping> fm(exec::CreateProgressFile(n, dir_.get()));
+	if (!fm)
+		return false;
+	progress_region_.reset(new boost::interprocess::mapped_region(*fm, boost::interprocess::read_write));
 	if (!task::Form(db_driver_->db()))
 		return false;
 	if (!layout::Generate(db_driver_->db(), generated_layout_.get()))

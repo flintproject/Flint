@@ -132,7 +132,7 @@ bool Run(const char *input, int size)
 		return false;
 	boost::filesystem::path output_path = GetPathFromUtf8(option.output_filename().c_str());
 	std::string output_file = output_path.string();
-	return job::Job(".", "0", "init", output_file.c_str(), reader, db);
+	return job::Job(".", "0", nullptr, "init", output_file.c_str(), reader, db);
 }
 
 }

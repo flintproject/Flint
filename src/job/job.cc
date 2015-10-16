@@ -38,6 +38,7 @@ namespace job {
 
 bool Job(const char *task_dir,
 		 const char *job_dir,
+		 void *progress_address,
 		 const char *data_file,
 		 const char *output_file,
 		 const task::ConfigReader &reader,
@@ -121,6 +122,7 @@ bool Job(const char *task_dir,
 	option.output_data_file = output_data_file;
 	option.output_history_file = output_history_file;
 	option.status_file = status_file;
+	option.progress_address = progress_address;
 
 	char isdh_file[kShort];
 	sprintf(isdh_file, "%s/isdh", task_dir);
