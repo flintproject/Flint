@@ -5,6 +5,8 @@
 
 #include "exec/progress.hh"
 
+#include <chrono>
+#include <cstdint>
 #include <cstdio>
 #include <cstring>
 #include <iostream>
@@ -16,6 +18,7 @@ using std::fclose;
 using std::fopen;
 using std::fputc;
 using std::fseek;
+using std::memcpy;
 using std::perror;
 using std::sprintf;
 using std::strlen;
@@ -47,6 +50,39 @@ boost::interprocess::file_mapping *CreateProgressFile(int n, const char *dir)
 	fclose(fp);
 	return new boost::interprocess::file_mapping(filename.get(),
 												 boost::interprocess::read_write);
+}
+
+namespace {
+
+void NotifyTaskProgress(size_t n,
+						boost::interprocess::mapped_region *mr,
+						std::atomic<size_t> *done)
+{
+	while (n != *done) {
+		std::this_thread::sleep_for(std::chrono::milliseconds(250));
+
+		int64_t sum = 0;
+		char *addr = static_cast<char *>(mr->get_address());
+		for (size_t i=1;i<=n;i++) { // 1-based
+			sum += addr[i];
+		}
+		sum /= n;
+		if (0 <= sum && sum <= 100) {
+			char c = static_cast<char>(sum);
+			memcpy(addr, &c, 1);
+			if (sum == 100)
+				return;
+		}
+	}
+}
+
+}
+
+std::thread *CreateTaskProgressThread(size_t n,
+									  boost::interprocess::mapped_region *mr,
+									  std::atomic<size_t> *done)
+{
+	return new std::thread(NotifyTaskProgress, n, mr, done);
 }
 
 }

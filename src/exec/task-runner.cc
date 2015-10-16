@@ -5,6 +5,7 @@
 
 #include "exec/task-runner.hh"
 
+#include <atomic>
 #include <cassert>
 #include <cstdio>
 #include <cstdlib>
@@ -96,7 +97,7 @@ void *TaskRunner::GetProgressAddress(int job_id)
 {
 	assert(progress_region_);
 	assert(static_cast<size_t>(job_id) < progress_region_->get_size());
-	char *addr = (char *)progress_region_->get_address();
+	char *addr = static_cast<char *>(progress_region_->get_address());
 	return addr + job_id;
 }
 
@@ -168,12 +169,19 @@ bool TaskRunner::Run()
 		};
 		v.emplace_back(std::async(std::launch::async, lmbd, this, job_id));
 	}
+	assert(static_cast<size_t>(n) == v.size());
+	std::atomic<size_t> done(0);
+	std::unique_ptr<std::thread> th(exec::CreateTaskProgressThread(n,
+																   progress_region_.get(),
+																   &done));
 	bool result = true;
 	// wait for all threads finishing regardless of their results
 	for (auto &f : v) {
 		if (!f.get())
 			result = false;
+		done++;
 	}
+	th->join();
 	return result;
 }
 
