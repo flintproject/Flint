@@ -184,7 +184,7 @@ bool Generate(sqlite3 *input, const char *dir, int *job_id)
 		return false;
 	if (!CreateTable(output, "parameter_eqs", "(uuid BLOB, math TEXT)"))
 		return false;
-	sprintf(path, "%s/%d/values.txt", dir, rowid);
+	sprintf(path, "%s/%d/values.txt.tmp", dir, rowid);
 	FILE *fp = fopen(path, "w");
 	if (!fp) {
 		perror(path);
@@ -196,6 +196,16 @@ bool Generate(sqlite3 *input, const char *dir, int *job_id)
 		return false;
 	}
 	fclose(fp);
+	char values_file[96]; // large enough
+	sprintf(values_file, "%s/%d/values.txt", dir, rowid);
+	if (std::rename(path, values_file) != 0) {
+		cerr << "failed to rename " << path
+			 << " to " << values_file
+			 << endl;
+		std::remove(path);
+		return false;
+	}
+
 	if (!CommitTransaction(output))
 		return false;
 	if (!CommitTransaction(input))
