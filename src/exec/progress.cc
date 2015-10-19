@@ -20,6 +20,8 @@ using std::fputc;
 using std::fseek;
 using std::memcpy;
 using std::perror;
+using std::remove;
+using std::rename;
 using std::sprintf;
 using std::strlen;
 
@@ -30,7 +32,7 @@ boost::interprocess::file_mapping *CreateProgressFile(int n, const char *dir)
 {
 	size_t len = strlen(dir);
 	std::unique_ptr<char[]> filename(new char[len + 32]); // large enough
-	sprintf(filename.get(), "%s/progress", dir);
+	sprintf(filename.get(), "%s/progress.tmp", dir);
 	FILE *fp = fopen(filename.get(), "wb");
 	if (!fp) {
 		perror(filename.get());
@@ -48,7 +50,18 @@ boost::interprocess::file_mapping *CreateProgressFile(int n, const char *dir)
 		return nullptr;
 	}
 	fclose(fp);
-	return new boost::interprocess::file_mapping(filename.get(),
+
+	// rename progress.tmp to progress
+	std::unique_ptr<char[]> progress(new char[len + 32]); // large enough
+	sprintf(progress.get(), "%s/progress", dir);
+	if (rename(filename.get(), progress.get()) != 0) {
+		cerr << "failed to rename " << filename.get()
+			 << " to " << progress.get()
+			 << endl;
+		remove(filename.get());
+		return nullptr;
+	}
+	return new boost::interprocess::file_mapping(progress.get(),
 												 boost::interprocess::read_write);
 }
 
