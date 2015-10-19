@@ -2,8 +2,8 @@
 package jp.oist.flint.dao;
 
 import jp.oist.flint.job.Job;
-import jp.oist.flint.job.Progress;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.sql.PreparedStatement;
@@ -19,6 +19,8 @@ public class TaskDao extends DaoObject {
 
     private final String mModelPath;
 
+    private final File mProgressFile;
+
     /**
      * 0 means that the number of jobs has not been counted.
      */
@@ -29,6 +31,7 @@ public class TaskDao extends DaoObject {
 
         mTaskId = taskId;
         mModelPath = modelPath;
+        mProgressFile = new File(new File(dir, String.valueOf(taskId)), "progress");
     }
 
     public int getTaskId() {
@@ -48,18 +51,8 @@ public class TaskDao extends DaoObject {
         return cancelFile.exists();
     }
 
-    private static class JobDirNameFilter implements FilenameFilter {
-        @Override
-        public boolean accept(File dir, String name) {
-            return name.matches("^[1-9][0-9]*$");
-        }
-    }
-
     public boolean isStarted() {
-        File[] jobDirs = mWorkingDir.listFiles(new JobDirNameFilter());
-        if (jobDirs == null) // e.g. if an I/O error happens
-            return false;
-        return jobDirs.length > 0;
+        return mProgressFile.exists();
     }
 
     public boolean isFinished() {
@@ -178,21 +171,13 @@ public class TaskDao extends DaoObject {
     }
 
     public int getProgress() {
-        try {
-            int jobCount = getCount();
-            int total = 0;
-            for (int i=1; i<=jobCount; i++) {
-                Job job = obtainJob(i);
-                Progress progress = job.getProgress();
-                int p = progress.getPercent();
-                if (p <= 0)
-                    continue;
-                total += p;
-            }
-            return (int)((double)total / (double)jobCount);
-        } catch (DaoException | IOException | SQLException ex) {
-            return 0;
+        int p = 0;
+        try (FileInputStream fis = new FileInputStream(mProgressFile)) {
+            p = fis.read();
+        } catch (IOException ioe) {
+            // ignored
         }
+        return p;
     }
 
     private Map<String, Number> getCombination(int jobId)
