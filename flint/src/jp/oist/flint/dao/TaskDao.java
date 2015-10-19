@@ -156,18 +156,15 @@ public class TaskDao extends DaoObject {
         }
     }
 
-    public synchronized int getCount() throws DaoException, IOException, SQLException {
+    public synchronized int getCount() throws DaoException {
         if (mCount > 0)
             return mCount;
 
-        String sql = "SELECT count(*) FROM jobs";
-        try (PreparedStatement stmt = getConnection().prepareStatement(sql);
-             ResultSet result = stmt.executeQuery()) {
-            if (!result.next())
-                throw new DaoException("failed to query: " + sql);
-            mCount = result.getInt(1);
-            return mCount;
-        }
+        mCount = (int)mProgressFile.length();
+        if (mCount <= 1)
+            throw new DaoException("The progress file is not found");
+        mCount -= 1;
+        return mCount;
     }
 
     public int getProgress() {
