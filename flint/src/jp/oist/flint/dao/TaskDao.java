@@ -56,8 +56,8 @@ public class TaskDao extends DaoObject {
     }
 
     public boolean isFinished() {
-        if (!isStarted()) return false;
         if (isCancelled()) return true;
+        if (!isStarted()) return false;
 
         try {
             int jobCount = getCount();
