@@ -22,6 +22,7 @@
 #include "db/read-only-driver.hh"
 #include "exec.hh"
 #include "exec/job-runner.hh"
+#include "exec/parameter.hh"
 #include "exec/progress.hh"
 #include "filter.hh"
 #include "job.hh"
@@ -144,6 +145,8 @@ bool TaskRunner::Run()
 	char db_file[kFilenameLength];
 	sprintf(db_file, "%s/db", dir_.get());
 	db_driver_.reset(new db::Driver(db_file));
+	if (!exec::SaveParameters(id_, db_driver_->db()))
+		return false;
 	int n = exec::Enum(db_driver_->db());
 	if (n == 0)
 		return false;
