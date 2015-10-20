@@ -3194,6 +3194,14 @@ private:
 			cerr << "missing type of <extra-implementation>" << endl;
 			return -2;
 		}
+		if ( !xmlStrEqual(extra_->type(), BAD_CAST "instantaneous") &&
+			 !xmlStrEqual(extra_->type(), BAD_CAST "multiple-input-assignment") ) {
+			// TODO: other types of <extra-implementation>
+			cerr << "unsupported type of <extra-implementation>: "
+				 << extra_->type()
+				 << endl;
+			return -2;
+		}
 
 		i = xmlTextReaderRead(text_reader_);
 		while (i > 0) {
@@ -3234,22 +3242,20 @@ private:
 				def->set_format(xmlTextReaderValue(text_reader_));
 			}
 		}
-		if (ref_ && ref_->port_id() > 0) {
-			if (xmlStrEqual(extra_->type(), BAD_CAST "multiple-input-assignment")) {
-				if (xmlStrEqual(def->type(), BAD_CAST "loop")) {
-					cerr << "multiple-input-assignment's definition of type loop is not supported yet" << endl;
-					return -2;
-				}
-				if (!xmlStrEqual(def->type(), BAD_CAST "reduction")) {
-					cerr << "found <extra-implementation> of type multiple-input-assignment, but its definition's type is not reduction: "
-						 << def->type() << endl;
-					return -2;
-				}
-				extra_->set_definition(def.release());
+		if (xmlStrEqual(extra_->type(), BAD_CAST "multiple-input-assignment")) {
+			if (xmlStrEqual(def->type(), BAD_CAST "loop")) {
+				cerr << "multiple-input-assignment's definition of type loop is not supported yet" << endl;
+				return -2;
 			}
-			// TODO: other types of <extra-implementation>
+			if (!xmlStrEqual(def->type(), BAD_CAST "reduction")) {
+				cerr << "found <extra-implementation> of type multiple-input-assignment, but its definition's type is not reduction: "
+					 << def->type() << endl;
+				return -2;
+			}
+			extra_->set_definition(def.release());
 			return xmlTextReaderNext(text_reader_);
 		}
+		assert(xmlStrEqual(extra_->type(), BAD_CAST "instantaneous"));
 		if (!extra_->order()) {
 			cerr << "missing order of <extra-implementation>" << endl;
 			return -2;

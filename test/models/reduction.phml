@@ -145,12 +145,13 @@
 <is:value-type precision="double" unit-id="0"/>
 </is:value-type-set>
 <is:implementation>
-<is:definition type="assign" sub-type="port" format="reference">
-<is:reference port-id="1"/>
-</is:definition>
+<!-- <extra-implementation> followed by <definition> -->
 <is:extra-implementation type="multiple-input-assignment">
 <is:definition type="reduction" sub-type="sum" format=""/>
 </is:extra-implementation>
+<is:definition type="assign" sub-type="port" format="reference">
+<is:reference port-id="1"/>
+</is:definition>
 </is:implementation>
 </is:physical-quantity>
 <is:physical-quantity physical-quantity-id="2" type="variable-parameter">
