@@ -5,6 +5,7 @@
 #include <cstdio>
 #include <cstring>
 #include <iostream>
+#include <memory>
 #include <sstream>
 #include <string>
 
@@ -166,17 +167,17 @@ bool Generate(sqlite3 *input, const char *dir, int *job_id)
 		}
 		if (r < 0) return false;
 	}
-	char path[96];
-	sprintf(path, "%s/%d", dir, rowid);
+	std::unique_ptr<char[]> path(BuildPath(dir, rowid));
 	boost::system::error_code ec;
-	boost::filesystem::create_directory(path, ec);
+	boost::filesystem::create_directories(path.get(), ec);
 	if (ec) {
-		cerr << "failed to create directory: " << path
+		cerr << "failed to create directories: " << path.get()
 			 << ": " << ec << endl;
 		return false;
 	}
-	sprintf(path, "%s/%d/generated.db", dir, rowid);
-	db::Driver driver(path);
+	char filename[96];
+	sprintf(filename, "%s/generated.db", path.get());
+	db::Driver driver(filename);
 	sqlite3 *output = driver.db();
 	if (!BeginTransaction(input))
 		return false;
@@ -184,10 +185,10 @@ bool Generate(sqlite3 *input, const char *dir, int *job_id)
 		return false;
 	if (!CreateTable(output, "parameter_eqs", "(uuid BLOB, math TEXT)"))
 		return false;
-	sprintf(path, "%s/%d/values.txt.tmp", dir, rowid);
-	FILE *fp = fopen(path, "w");
+	sprintf(filename, "%s/values.txt.tmp", path.get());
+	FILE *fp = fopen(filename, "w");
 	if (!fp) {
-		perror(path);
+		perror(filename);
 		return false;
 	}
 	Generator g(input, output, fp);
@@ -197,12 +198,12 @@ bool Generate(sqlite3 *input, const char *dir, int *job_id)
 	}
 	fclose(fp);
 	char values_file[96]; // large enough
-	sprintf(values_file, "%s/%d/values.txt", dir, rowid);
-	if (std::rename(path, values_file) != 0) {
-		cerr << "failed to rename " << path
+	sprintf(values_file, "%s/values.txt", path.get());
+	if (std::rename(filename, values_file) != 0) {
+		cerr << "failed to rename " << filename
 			 << " to " << values_file
 			 << endl;
-		std::remove(path);
+		std::remove(filename);
 		return false;
 	}
 

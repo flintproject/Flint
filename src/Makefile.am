@@ -107,6 +107,7 @@ libflintxx_la_SOURCES = \
     job/evolve.cc \
     job/generate.cc \
     job/job.cc \
+    job/path.cc \
     job/store.cc \
     layout/generate.cc \
     lo/layout.cc \

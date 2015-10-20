@@ -4,7 +4,6 @@ package jp.oist.flint.dao;
 import jp.oist.flint.job.Job;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FilenameFilter;
 import java.io.IOException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -97,7 +96,7 @@ public class TaskDao extends DaoObject {
     public Job obtainJob(int jobId) throws DaoException, IOException, SQLException {
         assert jobId > 0;
 
-        File workingDir = new File(mWorkingDir, String.valueOf(jobId));
+        File workingDir = Job.buildPath(mWorkingDir, jobId);
         Map<String, Number> combination = getCombination(jobId);
         return new Job(mTaskId, workingDir, combination, jobId);
     }

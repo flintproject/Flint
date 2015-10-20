@@ -13,6 +13,12 @@ class ConfigReader;
 namespace job {
 
 /*
+ * Return newly-allocated char[] the client code should be responsible
+ * for freeing.
+ */
+char *BuildPath(const char *dir, int id);
+
+/*
  * Return true in case of success, false otherwise.
  */
 bool Generate(sqlite3 *input, const char *dir, int *job_id);

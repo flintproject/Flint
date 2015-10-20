@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.util.Collections;
+import java.util.Locale;
 import java.util.Map;
 
 public class Job {
@@ -96,5 +97,18 @@ public class Job {
     public boolean isFinished() {
         Progress progress = getProgress();
         return progress.isCompleted() || isCancelled();
+    }
+
+    public static File buildPath(File dir, int id) {
+        assert id >= 0;
+
+        int a = (id>>24)&0xFF;
+        int b = (id>>16)&0xFF;
+        int c = (id>> 8)&0xFF;
+        int d = (id    )&0xFF;
+        File dirA = new File(dir, String.format(Locale.ENGLISH, "%02x", a));
+        File dirB = new File(dirA, String.format(Locale.ENGLISH, "%02x", b));
+        File dirC = new File(dirB, String.format(Locale.ENGLISH, "%02x", c));
+        return new File(dirC, String.format(Locale.ENGLISH, "%02x", d));
     }
 }

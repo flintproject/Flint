@@ -49,7 +49,7 @@ bool Job(const char *task_dir,
 
 	boost::system::error_code ec;
 	// ensure the job directory
-	boost::filesystem::create_directory(job_dir, ec);
+	boost::filesystem::create_directories(job_dir, ec);
 	if (ec) {
 		cerr << "failed to create directory: " << ec << endl;
 		return false;
