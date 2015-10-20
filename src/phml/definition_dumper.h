@@ -23,18 +23,15 @@ public:
 	DefinitionDumper(xmlTextReaderPtr &text_reader,
 					 TReader *reader)
 		: text_reader_(text_reader),
-		  context_(NULL),
 		  name_(NULL),
 		  math_dumper_(text_reader, reader->GetOutputStream()),
 		  reader_(reader)
 	{}
 
 	DefinitionDumper(xmlTextReaderPtr &text_reader,
-					 const xmlChar *context,
 					 const xmlChar *name,
 					 TReader *reader)
 		: text_reader_(text_reader),
-		  context_(context),
 		  name_(name),
 		  math_dumper_(text_reader, name, reader->GetOutputStream()),
 		  reader_(reader)
@@ -77,10 +74,7 @@ public:
 					if (name_ && !math_dumper_.TargetIsFound()) {
 						cerr << "invalid definition of <"
 							 << TReader::kName
-							 << "> for "
-							 << name_
-							 << " in "
-							 << context_
+							 << '>'
 							 << endl;
 						return -2;
 					}
@@ -215,7 +209,6 @@ private:
 	}
 
 	xmlTextReaderPtr &text_reader_;
-	const xmlChar *context_;
 	const xmlChar *name_;
 	MathDumper math_dumper_;
 	TReader *reader_;

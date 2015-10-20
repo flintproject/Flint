@@ -2129,6 +2129,19 @@ public:
 	}
 
 private:
+	void ReportHint() {
+		if (module_ && module_->module_id() && module_->name()) {
+			cerr << " at";
+			if (pq_ && pq_->pq_id() > 0 && pq_->name()) {
+				cerr << " physical-quantity \"" << pq_->name()
+					 << "\" (" << pq_->pq_id() << ") of";
+			}
+			cerr << " module \"" << module_->name()
+				 << "\" (" << module_->module_id()
+				 << ')' << endl;
+		}
+	}
+
 	int ReadHeader() {
 		int i = xmlTextReaderRead(text_reader_);
 		while (i > 0) {
@@ -2571,7 +2584,10 @@ private:
 				const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
 				if (xmlStrEqual(local_name, BAD_CAST "module")) {
 					i = ReadModule();
-					if (i <= 0) return i;
+					if (i <= 0) {
+						ReportHint();
+						return i;
+					}
 					continue;
 				} else {
 					cerr << "unknown child of <module-set>: " << local_name << endl;
@@ -2638,6 +2654,7 @@ private:
 			} else if (type == XML_READER_TYPE_END_ELEMENT) {
 				const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
 				if (xmlStrEqual(local_name, BAD_CAST "module")) {
+					module_.reset();
 					return xmlTextReaderRead(text_reader_);
 				}
 			}
@@ -2781,7 +2798,7 @@ private:
 			}
 		}
 		if (!port->port_id()) {
-			cerr << "missing port-id of <port>: " << module_->module_id() << endl;
+			cerr << "missing port-id of <port>" << endl;
 			return -2;
 		}
 		if (!dd_->SavePort(module_.get(), port.get())) return -2;
@@ -2833,7 +2850,7 @@ private:
 			return -2;
 		}
 		if (pq_->type() == PQ::kUnknown) {
-			cerr << "missing type of <physical-quantity>: " << module_->module_id() << ":" << pq_->pq_id() << endl;
+			cerr << "missing type of <physical-quantity>: " << pq_->pq_id() << endl;
 			return -2;
 		}
 		if (!dd_->SavePq(module_.get(), pq_.get())) return -2;
@@ -2867,7 +2884,7 @@ private:
 				const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
 				if (xmlStrEqual(local_name, BAD_CAST "physical-quantity")) {
 					if (!pq_->name()) {
-						cerr << "missing <name> of <physical-quantity>: " << module_->module_id() << ":" << pq_->pq_id() << endl;
+						cerr << "missing <name> of <physical-quantity>: " << pq_->pq_id() << endl;
 						return -2;
 					}
 					if (!dd_->UpdatePq(pq_.get())) return -2;
@@ -2892,6 +2909,7 @@ private:
 						if (!dd_->SaveBridge(pq_.get(), bridge_.get())) return -2;
 						bridge_.reset();
 					}
+					pq_.reset();
 					return xmlTextReaderRead(text_reader_);
 				}
 			}
@@ -2910,16 +2928,12 @@ private:
 			return -2;
 		}
 		if (xmlStrlen(name) == 0) {
-			cerr << "empty name of a physical-quantity in module "
-				 << module_->module_id()
-				 << endl;
+			cerr << "empty name of <physical-quantity>" << endl;
 			xmlFree(s);
 			return -2;
 		}
 		if (ContainNonGraphic(name)) {
-			cerr << "a physical-quantity's name in "
-				 << module_->module_id()
-				 << " contains invalid character: \""
+			cerr << "<physical-quantity>'s name contains invalid character: \""
 				 << s
 				 << "\""
 				 << endl;
@@ -2942,7 +2956,7 @@ private:
 			return -2;
 		}
 		if (xmlStrlen(max_delay) == 0) {
-			cerr << "empty max-delay of a physical-quantity in module "
+			cerr << "empty <max-delay> of <physical-quantity> in module "
 				 << module_->module_id()
 				 << endl;
 			xmlFree(s);
@@ -2950,9 +2964,7 @@ private:
 			return xmlTextReaderNext(text_reader_);
 		}
 		if (ContainNonGraphic(max_delay)) {
-			cerr << "max-delay in "
-				 << module_->module_id()
-				 << " contains invalid character: \""
+			cerr << "<max-delay> contains invalid character: \""
 				 << max_delay
 				 << "\""
 				 << endl;
@@ -3018,7 +3030,6 @@ private:
 				const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
 				if (xmlStrEqual(local_name, BAD_CAST "definition")) {
 					iv_dumper_.reset(new phml::DefinitionDumper<InitialValue>(text_reader_,
-																			  module_->module_id(),
 																			  pq_->name(),
 																			  iv_.get()));
 					i = iv_dumper_->Read(0);
@@ -3118,7 +3129,6 @@ private:
 		}
 		// expect definition in MathML
 		impl_dumper_.reset(new phml::DefinitionDumper<Implementation>(text_reader_,
-																	  module_->module_id(),
 																	  pq_->name(),
 																	  impl_.get()));
 		return impl_dumper_->Read(0);
@@ -3262,7 +3272,6 @@ private:
 		}
 		// expect definition in MathML
 		extra_dumper_.reset(new phml::DefinitionDumper<ExtraImplementation>(text_reader_,
-																			module_->module_id(),
 																			pq_->name(),
 																			extra_.get()));
 		return extra_dumper_->Read(0);

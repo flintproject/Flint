@@ -20676,7 +20676,8 @@ BOOST_AUTO_TEST_CASE(static_to_static)
 
 BOOST_AUTO_TEST_CASE(swapped_definitions) {
 	ReadAndError(TEST_MODELS("swapped-definitions.phml"),
-				 "invalid definition of <implementation> for y in 22ddc4e8-c6ff-11e4-a78c-576e48c58a72\n");
+				 "invalid definition of <implementation>\n"
+				 " at physical-quantity \"y\" (2) of module \"M\" (22ddc4e8-c6ff-11e4-a78c-576e48c58a72)\n");
 }
 
 BOOST_AUTO_TEST_CASE(variable_to_static) {
