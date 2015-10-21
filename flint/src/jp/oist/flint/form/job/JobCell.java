@@ -54,20 +54,6 @@ public class JobCell extends JPanel implements ActionListener  {
         }
     }
 
-    public JobCell(JobList parent, int index, String title) {
-        this(parent, index);
-
-        lbl_Title.setText(title);
-        lbl_Detail.setText("");
-    }
-
-    public JobCell(JobList parent, int index, String title, String detail) {
-        this(parent, index);
-
-        lbl_Title.setText(title);
-        lbl_Detail.setText(detail);
-    }
-
     private void initEvents () {
         btn_View.addActionListener(this);
         btn_Cancel.addActionListener(this);
