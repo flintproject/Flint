@@ -88,8 +88,6 @@ bool Job(const char *task_dir,
 	sprintf(output_data_file, "%s/output-data", job_dir);
 	char output_history_file[kLong];
 	sprintf(output_history_file, "%s/output-history", job_dir);
-	char status_file[kLong];
-	sprintf(status_file, "%s/status", job_dir);
 
 	job::Option option;
 	{
@@ -121,7 +119,6 @@ bool Job(const char *task_dir,
 	option.control_file = control_file;
 	option.output_data_file = output_data_file;
 	option.output_history_file = output_history_file;
-	option.status_file = status_file;
 	option.progress_address = progress_address;
 
 	char isdh_file[kShort];

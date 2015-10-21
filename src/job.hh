@@ -42,7 +42,6 @@ struct Option {
 	const char *control_file;
 	const char *output_data_file;
 	const char *output_history_file;
-	const char *status_file;
 	void *progress_address;
 };
 

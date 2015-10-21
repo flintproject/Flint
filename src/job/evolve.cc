@@ -238,22 +238,6 @@ private:
 	History *history_;
 };
 
-bool CreateStatusFile(const char *status_file)
-{
-	FILE *fp = fopen(status_file, "wb");
-	if (!fp) {
-		cerr << "could not open " << status_file << endl;
-		return false;
-	}
-	if (fputc('\0', fp) == EOF) {
-		fclose(fp);
-		cerr << "failed to write byte to " << status_file << endl;
-		return false;
-	}
-	fclose(fp);
-	return true;
-}
-
 bool LoadData(const char *input_data_file, size_t layer_size, double *data)
 {
 	FILE *fp = fopen(input_data_file, "rb");
@@ -301,7 +285,6 @@ bool Evolve(sqlite3 *db,
 	bool with_pre = option.pre_file != NULL;
 	bool with_post = option.post_file != NULL;
 	bool with_control = option.control_file != NULL;
-	bool with_status = option.status_file != NULL;
 
 	// load layout at first
 	std::unique_ptr<Layout> layout(new Layout);
@@ -468,11 +451,6 @@ bool Evolve(sqlite3 *db,
 	}
 	char control;
 
-	if (with_status) {
-		if (!CreateStatusFile(option.status_file)) return false;
-	}
-	char p, q = 0;
-
 	size_t g = (output_start_time == 0) ? 0 : granularity-1;
 
 	bool result = true;
@@ -518,22 +496,6 @@ bool Evolve(sqlite3 *db,
 					}
 				}
 				g = 0;
-			}
-		}
-
-		if (with_status) {
-			if (data[kIndexEnd] <= 0) {
-				cerr << "non-positive end time: " << data[kIndexEnd] << endl;
-				return false;
-			}
-			p = static_cast<char>(100 * (data[kIndexTime] / data[kIndexEnd]));
-			if (p != q) {
-				FILE *fp = fopen(option.status_file, "r+b");
-				if (fp) {
-					fwrite(&p, 1, 1, fp);
-					fclose(fp);
-				}
-				q = p;
 			}
 		}
 
