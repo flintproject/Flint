@@ -13,24 +13,13 @@ public class Progress {
 
     private final int mPercent;
 
-    public Progress(File start, File file) {
+    public Progress(File start, File file, int percent) {
         mStarted = start.lastModified();
         mLastUpdated = file.lastModified();
         if (mLastUpdated < mStarted) {
             mLastUpdated = mStarted;
         }
-        if (!file.exists() || !file.canRead()) {
-            mPercent = 0;
-            return;
-        }
-        int p = 0;
-        try (FileInputStream fis = new FileInputStream(file)) {
-            p = fis.read();
-        } catch (IOException ioe) {
-            // ignored
-        } finally {
-            mPercent = p;
-        }
+        mPercent = percent;
     }
 
     public long getStarted() {

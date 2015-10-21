@@ -4,6 +4,7 @@ package jp.oist.flint.job;
 import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
+import java.nio.MappedByteBuffer;
 import java.util.Collections;
 import java.util.Locale;
 import java.util.Map;
@@ -12,23 +13,23 @@ public class Job {
 
     private final File mWorkingDir;
 
-    private final File mStatusFile;
-
     private final static int CANCEL_OPEARTION = 0x01;
 
     private final Map<String, Number> mCombination;
+
+    private final MappedByteBuffer mProgressBuffer;
 
     private final int mJobId;
 
     private final int mTaskId;
 
-    public Job(int taskId, File workingDir, Map<String, Number> combination, int jobId) {
+    public Job(int taskId, File workingDir, Map<String, Number> combination, MappedByteBuffer mbb, int jobId) {
         mTaskId = taskId;
         mWorkingDir = workingDir;
-        mStatusFile = new File(mWorkingDir, "status");
         mJobId = jobId;
 
         mCombination = combination;
+        mProgressBuffer = mbb;
     }
 
     public int getTaskId() {
@@ -46,9 +47,6 @@ public class Job {
         if ( !controlFile.exists() &&
              !controlFile.createNewFile() )
             return false;
-        if ( !mStatusFile.exists() &&
-             !mStatusFile.createNewFile() )
-            return false;
         if (getProgress().isCompleted())
             return false;
         try (RandomAccessFile raf = new RandomAccessFile(controlFile, "rws")) {
@@ -62,7 +60,9 @@ public class Job {
     }
 
     public Progress getProgress() {
-        return new Progress(new File(mWorkingDir, "start"), mStatusFile);
+        return new Progress(new File(mWorkingDir, "start"),
+                            getIsdFile(),
+                            mProgressBuffer.get(mJobId));
     }
 
     public int getJobId() {

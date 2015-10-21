@@ -5,6 +5,8 @@ import jp.oist.flint.job.Job;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.nio.MappedByteBuffer;
+import java.nio.channels.FileChannel;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
@@ -24,6 +26,12 @@ public class TaskDao extends DaoObject {
      * 0 means that the number of jobs has not been counted.
      */
     private int mCount = 0;
+
+    private FileInputStream mProgressStream;
+
+    private FileChannel mProgressChannel;
+
+    private MappedByteBuffer mProgressBuffer;
 
     public TaskDao(int taskId, String modelPath, File dir) {
         super("db", new File(dir, String.valueOf(taskId)));
@@ -96,9 +104,10 @@ public class TaskDao extends DaoObject {
     public Job obtainJob(int jobId) throws DaoException, IOException, SQLException {
         assert jobId > 0;
 
+        fetch();
         File workingDir = Job.buildPath(mWorkingDir, jobId);
         Map<String, Number> combination = getCombination(jobId);
-        return new Job(mTaskId, workingDir, combination, jobId);
+        return new Job(mTaskId, workingDir, combination, mProgressBuffer, jobId);
     }
 
     public int indexOf(Number[] combination, String[] titles) {
@@ -155,25 +164,27 @@ public class TaskDao extends DaoObject {
         }
     }
 
-    public synchronized int getCount() throws DaoException {
+    private synchronized void fetch() throws DaoException, IOException {
         if (mCount > 0)
-            return mCount;
+            return;
 
-        mCount = (int)mProgressFile.length();
-        if (mCount <= 1)
-            throw new DaoException("The progress file is not found");
-        mCount -= 1;
+        int len = (int)mProgressFile.length();
+        if (len <= 1)
+            throw new DaoException("The progress file is invalid");
+        mCount = len-1;
+        mProgressStream = new FileInputStream(mProgressFile);
+        mProgressChannel = mProgressStream.getChannel();
+        mProgressBuffer = mProgressChannel.map(FileChannel.MapMode.READ_ONLY, 0, len);
+    }
+
+    public int getCount() throws DaoException, IOException {
+        fetch();
         return mCount;
     }
 
-    public int getProgress() {
-        int p = 0;
-        try (FileInputStream fis = new FileInputStream(mProgressFile)) {
-            p = fis.read();
-        } catch (IOException ioe) {
-            // ignored
-        }
-        return p;
+    public int getProgress() throws DaoException, IOException {
+        fetch();
+        return mProgressBuffer.get(0);
     }
 
     private Map<String, Number> getCombination(int jobId)
