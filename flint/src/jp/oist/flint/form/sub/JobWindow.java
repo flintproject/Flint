@@ -29,7 +29,6 @@ import jp.oist.flint.util.Utility;
 import jp.physiome.Ipc;
 import jp.sbi.garuda.platform.commons.net.GarudaConnectionNotInitializedException;
 import java.awt.CardLayout;
-import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.HeadlessException;
@@ -129,12 +128,6 @@ public class JobWindow extends javax.swing.JFrame
     }
 
     private void setJobList (JobList newComponent) {
-        for (Component c : pnl_Body.getComponents()) {
-            if (PANELKEY_LIST.equals(c.getName())) {
-                pnl_Body.remove(c);
-                break;
-            }
-        }
         pnl_Body.add(newComponent, PANELKEY_LIST);
         mJobList = newComponent;
     }
@@ -149,14 +142,6 @@ public class JobWindow extends javax.swing.JFrame
     }
 
     private void setJobViewer (JobViewerComponent newComponent) {
-        for (Component c : pnl_Body.getComponents()) {
-            if (PANELKEY_VIEWER.equals(c.getName())) {
-                c.removeMouseListener(this);
-                c.removeMouseMotionListener(this);
-                pnl_Body.remove(c);
-                break;
-            }
-        }
         newComponent.addMouseListener(this);
         newComponent.addMouseMotionListener(this);
         JScrollPane scrollPane = new JScrollPane(newComponent);
@@ -178,7 +163,6 @@ public class JobWindow extends javax.swing.JFrame
         if (mSelectionModel != null)
             mSelectionModel.clearSelection();
 
-        mDataModel.removeAll();
         mDataModel.load(parameterSet, new ParameterFilter () {
             @Override
             public boolean accept (Number[] values) {
