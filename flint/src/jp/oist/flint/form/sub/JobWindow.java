@@ -64,10 +64,6 @@ public class JobWindow extends javax.swing.JFrame
 
     private final static String PANELKEY_VIEWER = "jobwindow.cardlayout.jobviewer";
 
-    private final static String STATUSBAR_CARD_MESSAGE  = "jobwindow.statusbar.message";
-
-    private final static String STATUSBAR_CARD_PROGRESS = "jobwindow.statusbar.progress";
-
     private JobViewerComponent mJobViewer;
 
     private final SubFrame mParent;
@@ -136,10 +132,6 @@ public class JobWindow extends javax.swing.JFrame
         pnl_Body.add(scrollPane, PANELKEY_VIEWER);
 
         mJobViewer = newComponent;
-    }
-
-    public JobViewerComponent getJobViewer () {
-        return mJobViewer;
     }
 
     public void load (ParameterSet parameterSet) {
@@ -326,14 +318,6 @@ public class JobWindow extends javax.swing.JFrame
         }
     }//GEN-LAST:event_btn_ExportAllActionPerformed
 
-    public int getSelectedIndex () {
-        return mJobViewer.getSelectedIndex();
-    }
-
-    public int[] getSelectedIndices () {
-        return mJobViewer.getSelectedIndices();
-    }
-
     private void showMessageDialog (String msg, String title) {
         JOptionPane.showMessageDialog(this, msg, title, JOptionPane.INFORMATION_MESSAGE);
     }
@@ -352,17 +336,6 @@ public class JobWindow extends javax.swing.JFrame
         mJobPane.setProgress(this, index, job);
 
         repaint();
-    }
-
-    @Override
-    public int getProgress (int index) {
-        return mJobPane.getProgress(index);
-    }
-
-
-    @Override
-    public boolean isCancelled (int index) {
-        return mJobPane.isCancelled(index);
     }
 
     @Override

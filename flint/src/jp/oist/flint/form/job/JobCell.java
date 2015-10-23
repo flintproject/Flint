@@ -31,8 +31,6 @@ public class JobCell extends JPanel {
 
     private final int mIndex;
 
-    private Number[] mCombination;
-
     private boolean mIsCancelled = false;
 
     public JobCell(JobWindow jobWindow, int index) {
@@ -189,33 +187,13 @@ public class JobCell extends JPanel {
         mJobWindow.plotPerformed(mIndex);
     }//GEN-LAST:event_btn_ViewActionPerformed
 
-    public void setCombination (Number[] combination) {
-        mCombination = combination;
-    }
-
-    public Number[] getCombination () {
-        return mCombination;
-    }
-
-    public void setDetail (String detail) {
-        lbl_Detail.setText(detail);
-    }
-
-    public void setValueIsAdjusting (boolean isAdjusting) {
-        mProgressBar.getModel().setValueIsAdjusting(isAdjusting);
-    }
-
-    public boolean getValueIsAdjusting () {
-        return mProgressBar.getModel().getValueIsAdjusting();
-    }
-
     public void setProgress(Job job) {
         Progress progress = job.getProgress();
         int percent = progress.getPercent();
         mProgressBar.setValue(percent);
 
         StringBuilder sb = new StringBuilder();
-        if (isCancelled()) {
+        if (mIsCancelled) {
             sb.append("cancelled | ");
         }
         sb.append(String.format("%1$3d", percent));
@@ -242,21 +220,13 @@ public class JobCell extends JPanel {
         }
     }
 
-    public int getProgress () {
-        return mProgressBar.getValue();
-    }
-
-    public boolean isCancelled() {
-        return mIsCancelled;
-    }
-
     public void setCancelled(boolean cancelled) {
         mIsCancelled = cancelled;
         btn_Cancel.setEnabled(!cancelled);
     }
 
     private boolean isFinished () {
-        return isCancelled() || isCompleted();
+        return mIsCancelled || isCompleted();
     }
 
     private boolean isCompleted () {

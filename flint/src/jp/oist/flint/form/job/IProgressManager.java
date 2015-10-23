@@ -6,10 +6,6 @@ import jp.oist.flint.job.Job;
 public interface IProgressManager {
     void setProgress(int index, Job job);
 
-    int getProgress (int index);
-
-    boolean isCancelled(int i);
-
     void setCancelled (int i, boolean cancelled);
 
     int indexOf (Object key);

@@ -49,20 +49,6 @@ public class JobPane extends JPanel {
         repaint();
     }
 
-    public synchronized int getProgress(int index) {
-        if (index < mCells.size()) {
-            return mCells.get(index).getProgress();
-        }
-        return 0;
-    }
-
-    public synchronized boolean isCancelled(int index) {
-        if (index < mCells.size()) {
-            return mCells.get(index).isCancelled();
-        }
-        return false;
-    }
-
     public synchronized void setCancelled(int index, boolean cancelled) {
         if (index < mCells.size()) {
             mCells.get(index).setCancelled(cancelled);
