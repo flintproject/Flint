@@ -27,14 +27,6 @@ import javax.swing.UIManager;
 
 public class JobCell extends JPanel {
 
-    public final static String ACTION_EXPORT = "jobcell.action.export";
-
-    public final static String ACTION_SENDVIAGARUDA = "jobcell.action.sendviagaruda";
-
-    public final static String ACTION_VIEW   = "jobcell.action.view";
-
-    public final static String ACTION_CANCEL = "jobcell.action.cancel";
-
     private final JobWindow mJobWindow;
 
     private final int mIndex;
