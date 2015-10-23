@@ -75,9 +75,9 @@ public class JobWindow extends javax.swing.JFrame
 
     private final JobPane mJobPane;
 
-    public JobWindow(SubFrame parent, PhspSimulator simulator, String title, ParameterSet parameterSet)
+    public JobWindow(SubFrame parent, PhspSimulator simulator, ParameterSet parameterSet)
             throws IOException {
-        super(title);
+        super(String.format("Progress [%s]", parent.getModelCanonicalPath()));
         mParent = parent;
         mSimulator = simulator;
 
