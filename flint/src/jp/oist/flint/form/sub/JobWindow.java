@@ -16,7 +16,6 @@ import jp.oist.flint.form.MainFrame;
 import jp.oist.flint.form.job.CombinationModel;
 import jp.oist.flint.form.job.ExportAllWorker;
 import jp.oist.flint.form.job.GadgetDialog;
-import jp.oist.flint.form.job.IParameterInfo;
 import jp.oist.flint.form.job.IProgressManager;
 import jp.oist.flint.form.job.JobViewerComponent;
 import jp.oist.flint.form.job.ParameterFilter;
@@ -64,21 +63,19 @@ public class JobWindow extends javax.swing.JFrame
 
     private final static String PANELKEY_VIEWER = "jobwindow.cardlayout.jobviewer";
 
-    private JobViewerComponent mJobViewer;
+    private final JobViewerComponent mJobViewer;
 
     private final SubFrame mParent;
 
-    private ListSelectionModel mSelectionModel;
+    private final ListSelectionModel mSelectionModel;
 
-    private CombinationModel mDataModel;
+    private final CombinationModel mDataModel;
 
     private final PhspSimulator mSimulator;
 
-    private JobViewerContextMenuHandler mContextMenuHandler;
-
     private final JobPane mJobPane;
 
-    public JobWindow(SubFrame parent, PhspSimulator simulator, String title) 
+    public JobWindow(SubFrame parent, PhspSimulator simulator, String title, ParameterSet parameterSet)
             throws IOException {
         super(title);
         mParent = parent;
@@ -90,18 +87,8 @@ public class JobWindow extends javax.swing.JFrame
         initComponents();
         mJobPane = new JobPane();
         pnl_Body.add(mJobPane, PANELKEY_LIST);
-        initEvents();
-    }
-
-    private void initEvents () {
         mSelectionModel = new DefaultListSelectionModel();
         mDataModel = new CombinationModel();
-        mContextMenuHandler = new JobViewerContextMenuHandler();
-
-        JobViewerComponent viewer = newJobViewer(null);
-        setJobViewer(viewer);
-
-        pack();
 
         addWindowListener(new WindowAdapter() {
             @Override
@@ -109,34 +96,6 @@ public class JobWindow extends javax.swing.JFrame
                 setVisible(false);
             }
         }); 
-    }
-
-    private JobViewerComponent newJobViewer (IParameterInfo pInfo) {
-        JobViewerComponent viewer = JobViewerComponent.factory(pInfo);
-        viewer.setModel(mDataModel);
-        viewer.setSelectionModel(mSelectionModel);
-        viewer.setContextMenuHandler(mContextMenuHandler);
-
-        return viewer;
-    }
-
-    private void setJobViewer (JobViewerComponent newComponent) {
-        newComponent.addMouseListener(this);
-        newComponent.addMouseMotionListener(this);
-        JScrollPane scrollPane = new JScrollPane(newComponent);
-        scrollPane.setName(PANELKEY_VIEWER);
-        scrollPane.setPreferredSize(new Dimension(640, 480));
-        scrollPane.setOpaque(false);
-        scrollPane.getVerticalScrollBar().setUnitIncrement(16);
-
-        pnl_Body.add(scrollPane, PANELKEY_VIEWER);
-
-        mJobViewer = newComponent;
-    }
-
-    public void load (ParameterSet parameterSet) {
-        if (mSelectionModel != null)
-            mSelectionModel.clearSelection();
 
         mDataModel.load(parameterSet, new ParameterFilter () {
             @Override
@@ -146,11 +105,24 @@ public class JobWindow extends javax.swing.JFrame
         });
         mDataModel.setParameterIsDummy(parameterSet instanceof ParameterSet.Dummy);
 
-        JobViewerComponent viewer = newJobViewer(mDataModel);
-        setJobViewer(viewer);
-
         btn_Viewer.setVisible(!mDataModel.getParameterIsDummy());
-        btn_Viewer.repaint();
+
+        mJobViewer = JobViewerComponent.factory(mDataModel);
+        mJobViewer.setModel(mDataModel);
+        mJobViewer.setSelectionModel(mSelectionModel);
+        mJobViewer.setContextMenuHandler(new JobViewerContextMenuHandler());
+        mJobViewer.addMouseListener(this);
+        mJobViewer.addMouseMotionListener(this);
+
+        JScrollPane scrollPane = new JScrollPane(mJobViewer);
+        scrollPane.setName(PANELKEY_VIEWER);
+        scrollPane.setPreferredSize(new Dimension(640, 480));
+        scrollPane.setOpaque(false);
+        scrollPane.getVerticalScrollBar().setUnitIncrement(16);
+
+        pnl_Body.add(scrollPane, PANELKEY_VIEWER);
+
+        pack();
     }
 
     @SuppressWarnings("unchecked")
