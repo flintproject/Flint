@@ -10,7 +10,6 @@ import jp.oist.flint.form.ProgressPane;
 import jp.oist.flint.form.job.IProgressManager;
 import jp.oist.flint.form.sub.SubFrame;
 import jp.oist.flint.job.Job;
-import jp.oist.flint.job.Progress;
 import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
@@ -49,11 +48,10 @@ public class PhspProgressMonitor extends SwingWorker<Void, Job> {
             String modelPath = taskDao.getModelPath();
             SubFrame subFrame = mMainFrame.findSubFrame(modelPath);
 
-            Progress progress = job.getProgress();
             IProgressManager progressMgr = subFrame.getProgressManager();
             int index = progressMgr.indexOf(combination);
 
-            progressMgr.setProgress(index, progress);
+            progressMgr.setProgress(index, job);
 
             if (taskDao.isCancelled())
                 progressMgr.setCancelled(index, true);

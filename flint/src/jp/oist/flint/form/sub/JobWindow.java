@@ -11,19 +11,18 @@ import jp.oist.flint.export.ExportWorker;
 import jp.oist.flint.filesystem.Filename;
 import jp.oist.flint.filesystem.Workspace;
 import jp.oist.flint.form.IFrame;
+import jp.oist.flint.form.JobPane;
 import jp.oist.flint.form.MainFrame;
 import jp.oist.flint.form.job.CombinationModel;
 import jp.oist.flint.form.job.ExportAllWorker;
 import jp.oist.flint.form.job.GadgetDialog;
 import jp.oist.flint.form.job.IParameterInfo;
 import jp.oist.flint.form.job.IProgressManager;
-import jp.oist.flint.form.job.JobList;
 import jp.oist.flint.form.job.JobViewerComponent;
 import jp.oist.flint.form.job.ParameterFilter;
 import jp.oist.flint.form.job.PlotWindow;
 import jp.oist.flint.garuda.GarudaClient;
 import jp.oist.flint.job.Job;
-import jp.oist.flint.job.Progress;
 import jp.oist.flint.phsp.entity.ParameterSet;
 import jp.oist.flint.util.Utility;
 import jp.physiome.Ipc;
@@ -69,8 +68,6 @@ public class JobWindow extends javax.swing.JFrame
 
     private final static String STATUSBAR_CARD_PROGRESS = "jobwindow.statusbar.progress";
 
-    private JobList mJobList;
-
     private JobViewerComponent mJobViewer;
 
     private final SubFrame mParent;
@@ -83,6 +80,8 @@ public class JobWindow extends javax.swing.JFrame
 
     private JobViewerContextMenuHandler mContextMenuHandler;
 
+    private final JobPane mJobPane;
+
     public JobWindow(SubFrame parent, PhspSimulator simulator, String title) 
             throws IOException {
         super(title);
@@ -93,6 +92,8 @@ public class JobWindow extends javax.swing.JFrame
         setIconImage(new ImageIcon(iconUrl).getImage());
 
         initComponents();
+        mJobPane = new JobPane();
+        pnl_Body.add(mJobPane, PANELKEY_LIST);
         initEvents();
     }
 
@@ -101,8 +102,6 @@ public class JobWindow extends javax.swing.JFrame
         mDataModel = new CombinationModel();
         mContextMenuHandler = new JobViewerContextMenuHandler();
 
-        JobList list = newJobList();
-        setJobList(list);
         JobViewerComponent viewer = newJobViewer(null);
         setJobViewer(viewer);
 
@@ -114,22 +113,6 @@ public class JobWindow extends javax.swing.JFrame
                 setVisible(false);
             }
         }); 
-    }
-
-    private JobList newJobList () {
-        JobList jobList = new JobList();
-        jobList.setName(PANELKEY_LIST);
-        jobList.setParameterInfo(mDataModel);
-        jobList.setModel(mDataModel);
-        jobList.setSelectionModel(mSelectionModel);
-        jobList.setContextMenuHandler(mContextMenuHandler);
-
-        return jobList;
-    }
-
-    private void setJobList (JobList newComponent) {
-        pnl_Body.add(newComponent, PANELKEY_LIST);
-        mJobList = newComponent;
     }
 
     private JobViewerComponent newJobViewer (IParameterInfo pInfo) {
@@ -331,10 +314,7 @@ public class JobWindow extends javax.swing.JFrame
 
     private void btn_ListActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_ListActionPerformed
         CardLayout cardLayout = (CardLayout)pnl_Body.getLayout();
-        int selectedIndex = mSelectionModel.getMinSelectionIndex();
         cardLayout.show(pnl_Body, PANELKEY_LIST);
-        if (selectedIndex >= 0)
-            mJobList.ensureIndexIsVisible(selectedIndex);
     }//GEN-LAST:event_btn_ListActionPerformed
 
     private void btn_ExportAllActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_ExportAllActionPerformed
@@ -367,27 +347,27 @@ public class JobWindow extends javax.swing.JFrame
      */
 
     @Override
-    public void setProgress(int index, Progress progress) {
-        mJobViewer.setProgress(index, progress);
-        mJobList.setProgress(index, progress);
+    public void setProgress(int index, Job job) {
+        mJobViewer.setProgress(index, job.getProgress());
+        mJobPane.setProgress(this, index, job);
 
         repaint();
     }
 
     @Override
     public int getProgress (int index) {
-        return mJobList.getProgress(index);
+        return mJobPane.getProgress(index);
     }
 
 
     @Override
     public boolean isCancelled (int index) {
-        return mJobList.isCancelled(index);
+        return mJobPane.isCancelled(index);
     }
 
     @Override
     public void setCancelled (int index, boolean cancelled) {
-        mJobList.setCancelled(index, cancelled);
+        mJobPane.setCancelled(index, cancelled);
         mJobViewer.setCancelled(index, cancelled);
     }
 
@@ -456,17 +436,9 @@ public class JobWindow extends javax.swing.JFrame
     public void mouseDragged(MouseEvent evt) {
     }
 
-    /*
-     * Implements JobViewComponent.Handler
-     */
-    public void plotPerformed (JobViewerComponent.Event evt) {
+    public void plotPerformed(int index) {
         Ipc.SimulationTrack st;
         try {
-            if (evt == null || evt.getIndex() < 0)
-                throw new IOException("Please choose the job.");
-
-            int index = evt.getIndex();
-
             if (mSimulator.getSimulationDao() == null)
                 throw new IOException("Don't run the simulation.");
 
@@ -627,11 +599,8 @@ public class JobWindow extends javax.swing.JFrame
         worker.execute();
     }
 
-    public void exportPerformed(JobViewerComponent.Event evt) {
+    public void exportPerformed(int index) {
         try {
-            if (evt == null || evt.getIndex() < 0)
-                throw new IOException("Please choose the job.");
-
             if (mSimulator.getSimulationDao() == null)
                 throw new IOException("It has not finished yet.");
 
@@ -640,7 +609,7 @@ public class JobWindow extends javax.swing.JFrame
                 throw new IOException("It has not finished yet.");
 
             int jobId = taskDao.indexOf(mDataModel.getValues(
-                    evt.getIndex()), mDataModel.getTitles());
+                    index), mDataModel.getTitles());
 
             if (jobId < 0)
                 throw new IOException("It has not finished yet.");
@@ -713,11 +682,8 @@ public class JobWindow extends javax.swing.JFrame
         }
     }
 
-    public void sendViaGarudaPerformed(JobViewerComponent.Event evt) {
+    public void sendViaGarudaPerformed(int index) {
         try {
-            if (evt == null || evt.getIndex() < 0)
-                throw new IOException("Please choose the job.");
-
             if (mSimulator.getSimulationDao() == null)
                 throw new IOException("It has not finished yet.");
 
@@ -726,7 +692,7 @@ public class JobWindow extends javax.swing.JFrame
                 throw new IOException("It has not finished yet.");
 
             int jobId = taskDao.indexOf(mDataModel.getValues(
-                    evt.getIndex()), mDataModel.getTitles());
+                    index), mDataModel.getTitles());
 
             if (jobId < 0)
                 throw new IOException("It has not finished yet.");
@@ -747,13 +713,10 @@ public class JobWindow extends javax.swing.JFrame
         }
     }
 
-    public void cancelJobPerformed (JobViewerComponent.Event evt) {
+    public void cancelJobPerformed(int index) {
         File tmp;
         TaskDao taskDao;
         try {
-            if (evt == null || evt.getIndex() < 0)
-                throw new IOException("Please choose the job.");
-
             if (mSimulator.getSimulationDao() == null)
                 throw new IOException("It has not yet started");
 
@@ -770,12 +733,12 @@ public class JobWindow extends javax.swing.JFrame
                 return;
 
             int rowId = taskDao.indexOf(mDataModel.getValues(
-                    evt.getIndex()), mDataModel.getTitles());
+                    index), mDataModel.getTitles());
 
             Job job = taskDao.obtainJob(rowId);
             if (job.cancel()) {
-                mJobViewer.setCancelled(evt.getIndex(), true);
-                mJobList.setCancelled(evt.getIndex(), true);
+                mJobViewer.setCancelled(index, true);
+                mJobPane.setCancelled(index, true);
             }
         } catch (DaoException | IOException | SQLException ex) {
             showErrorDialog("Cancellation failed\n\n" + ex.getMessage(),
@@ -806,18 +769,20 @@ public class JobWindow extends javax.swing.JFrame
             String action = evt.getAction();
             if (action == null)
                 return;
+            assert evt != null;
+            assert evt.getIndex() >= 0;
             switch (action) {
             case "view":
-                plotPerformed(evt);
+                plotPerformed(evt.getIndex());
                 break;
             case "export":
-                exportPerformed(evt);
+                exportPerformed(evt.getIndex());
                 break;
             case "sendViaGaruda":
-                sendViaGarudaPerformed(evt);
+                sendViaGarudaPerformed(evt.getIndex());
                 break;
             case "cancelJob":
-                cancelJobPerformed(evt);
+                cancelJobPerformed(evt.getIndex());
                 break;
             }
         }

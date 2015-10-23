@@ -1,10 +1,10 @@
 /* -*- Mode: Java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- vim:set ts=4 sw=4 sts=4 et: */
 package jp.oist.flint.form.job;
 
-import jp.oist.flint.job.Progress;
+import jp.oist.flint.job.Job;
 
 public interface IProgressManager {
-    void setProgress(int index, Progress progress);
+    void setProgress(int index, Job job);
 
     int getProgress (int index);
 

@@ -99,6 +99,11 @@ public class Job {
         return progress.isCompleted() || isCancelled();
     }
 
+    public String getParameterDescription() throws IOException {
+        ParameterArray pa = new ParameterArray(new File(mWorkingDir, "values.txt"));
+        return pa.toString();
+    }
+
     public static File buildPath(File dir, int id) {
         assert id >= 0;
 

@@ -1,7 +1,9 @@
 /* -*- Mode: Java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- vim:set ts=4 sw=4 sts=4 et: */
 package jp.oist.flint.form.job;
 
+import jp.oist.flint.form.sub.JobWindow;
 import jp.oist.flint.garuda.GarudaClient;
+import jp.oist.flint.job.Job;
 import jp.oist.flint.job.Progress;
 import jp.oist.flint.util.DurationFormat;
 import jp.oist.flint.util.PeriodFormat;
@@ -12,6 +14,7 @@ import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
@@ -20,8 +23,9 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.SwingConstants;
+import javax.swing.UIManager;
 
-public class JobCell extends JPanel implements ActionListener  {
+public class JobCell extends JPanel {
 
     public final static String ACTION_EXPORT = "jobcell.action.export";
 
@@ -31,34 +35,24 @@ public class JobCell extends JPanel implements ActionListener  {
 
     public final static String ACTION_CANCEL = "jobcell.action.cancel";
 
-    protected final JobList mParent;
+    private final JobWindow mJobWindow;
 
-    protected final int mIndex;
+    private final int mIndex;
 
     private Number[] mCombination;
 
-    private String[] mCombinationTitle;
-
     private boolean mIsCancelled = false;
 
-    public JobCell(JobList parent, int index) {
-        mParent = parent;
+    public JobCell(JobWindow jobWindow, int index) {
+        mJobWindow = jobWindow;
         mIndex = index;
 
         initComponents();
-
-        initEvents();
+        setBackground(UIManager.getColor("List.background"));
 
         if (!GarudaClient.isRunning()) {
             btn_SendViaGaruda.setEnabled(false);
         }
-    }
-
-    private void initEvents () {
-        btn_View.addActionListener(this);
-        btn_Cancel.addActionListener(this);
-        btn_Export.addActionListener(this);
-        btn_SendViaGaruda.addActionListener(this);
     }
 
     @SuppressWarnings("unchecked")
@@ -74,8 +68,8 @@ public class JobCell extends JPanel implements ActionListener  {
         pnl_Bottom = new JPanel();
         lbl_Detail = new JLabel();
         jPanel4 = new JPanel();
-        btn_Export = new JButton();
         btn_SendViaGaruda = new JButton();
+        btn_Export = new JButton();
         btn_View = new JButton();
 
         setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 10));
@@ -115,6 +109,11 @@ public class JobCell extends JPanel implements ActionListener  {
         btn_Cancel.setMaximumSize(new Dimension(20, 20));
         btn_Cancel.setMinimumSize(new Dimension(20, 20));
         btn_Cancel.setPreferredSize(new Dimension(20, 20));
+        btn_Cancel.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
+                btn_CancelActionPerformed(evt);
+            }
+        });
         pnl_Middle.add(btn_Cancel);
 
         add(pnl_Middle);
@@ -141,19 +140,29 @@ public class JobCell extends JPanel implements ActionListener  {
         flowLayout1.setAlignOnBaseline(true);
         jPanel4.setLayout(flowLayout1);
 
-        btn_Export.setText("Export");
-        btn_Export.setActionCommand("jobcell.action.export");
-        btn_Export.setMaximumSize(new Dimension(110, 20));
-        btn_Export.setMinimumSize(new Dimension(110, 20));
-        btn_Export.setPreferredSize(new Dimension(110, 20));
-        jPanel4.add(btn_Export);
-
         btn_SendViaGaruda.setText("Send via Garuda");
         btn_SendViaGaruda.setActionCommand("jobcell.action.sendviagaruda");
         btn_SendViaGaruda.setMaximumSize(new Dimension(110, 20));
         btn_SendViaGaruda.setMinimumSize(new Dimension(110, 20));
-        btn_SendViaGaruda.setPreferredSize(new Dimension(110, 20));
+        btn_SendViaGaruda.setPreferredSize(new Dimension(130, 20));
+        btn_SendViaGaruda.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
+                btn_SendViaGarudaActionPerformed(evt);
+            }
+        });
         jPanel4.add(btn_SendViaGaruda);
+
+        btn_Export.setText("Export");
+        btn_Export.setActionCommand("jobcell.action.export");
+        btn_Export.setMaximumSize(new Dimension(75, 20));
+        btn_Export.setMinimumSize(new Dimension(75, 20));
+        btn_Export.setPreferredSize(new Dimension(75, 20));
+        btn_Export.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
+                btn_ExportActionPerformed(evt);
+            }
+        });
+        jPanel4.add(btn_Export);
 
         btn_View.setText("View");
         btn_View.setActionCommand("jobcell.action.view");
@@ -172,30 +181,21 @@ public class JobCell extends JPanel implements ActionListener  {
         add(pnl_Bottom);
     }// </editor-fold>//GEN-END:initComponents
 
-    private void btn_ViewActionPerformed(ActionEvent evt) {//GEN-FIRST:event_btn_ViewActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_btn_ViewActionPerformed
+    private void btn_CancelActionPerformed(ActionEvent evt) {//GEN-FIRST:event_btn_CancelActionPerformed
+        mJobWindow.cancelJobPerformed(mIndex);
+    }//GEN-LAST:event_btn_CancelActionPerformed
 
-    @Override
-    public void actionPerformed(ActionEvent evt) {
-        String actionCommand = evt.getActionCommand();
-        if (actionCommand == null)
-            return;
-        switch (actionCommand) {
-        case ACTION_VIEW:
-            mParent.handleContextMenuEvent(new JobViewerComponent.Event(mParent, "view", mIndex));
-            break;
-        case ACTION_EXPORT:
-            mParent.handleContextMenuEvent(new JobViewerComponent.Event(mParent, "export", mIndex));
-            break;
-        case ACTION_SENDVIAGARUDA:
-            mParent.handleContextMenuEvent(new JobViewerComponent.Event(mParent, "sendViaGaruda", mIndex));
-            break;
-        case ACTION_CANCEL:
-            mParent.handleContextMenuEvent(new JobViewerComponent.Event(mParent, "cancelJob", mIndex));
-            break;
-        }
-    }
+    private void btn_ExportActionPerformed(ActionEvent evt) {//GEN-FIRST:event_btn_ExportActionPerformed
+        mJobWindow.exportPerformed(mIndex);
+    }//GEN-LAST:event_btn_ExportActionPerformed
+
+    private void btn_SendViaGarudaActionPerformed(ActionEvent evt) {//GEN-FIRST:event_btn_SendViaGarudaActionPerformed
+        mJobWindow.sendViaGarudaPerformed(mIndex);
+    }//GEN-LAST:event_btn_SendViaGarudaActionPerformed
+
+    private void btn_ViewActionPerformed(ActionEvent evt) {//GEN-FIRST:event_btn_ViewActionPerformed
+        mJobWindow.plotPerformed(mIndex);
+    }//GEN-LAST:event_btn_ViewActionPerformed
 
     public void setCombination (Number[] combination) {
         mCombination = combination;
@@ -203,14 +203,6 @@ public class JobCell extends JPanel implements ActionListener  {
 
     public Number[] getCombination () {
         return mCombination;
-    }
-
-    public void setCombinationTitle (String[] combinationTitle) {
-        mCombinationTitle = combinationTitle;
-    }
-
-    public void setTitle (String title) {
-        lbl_Title.setText(title);
     }
 
     public void setDetail (String detail) {
@@ -225,7 +217,8 @@ public class JobCell extends JPanel implements ActionListener  {
         return mProgressBar.getModel().getValueIsAdjusting();
     }
 
-    public void setProgress(Progress progress) {
+    public void setProgress(Job job) {
+        Progress progress = job.getProgress();
         int percent = progress.getPercent();
         mProgressBar.setValue(percent);
 
@@ -247,15 +240,18 @@ public class JobCell extends JPanel implements ActionListener  {
 
         mProgressBar.setString(sb.toString());
         mProgressBar.repaint();
+
+        if (lbl_Detail.getText().isEmpty()) {
+            try {
+                lbl_Detail.setText(job.getParameterDescription());
+            } catch (IOException ex) {
+                // give up
+            }
+        }
     }
 
     public int getProgress () {
         return mProgressBar.getValue();
-    }
-
-    public void onCancelled () {
-        mIsCancelled = true;
-        btn_Cancel.setEnabled(false);
     }
 
     public boolean isCancelled() {

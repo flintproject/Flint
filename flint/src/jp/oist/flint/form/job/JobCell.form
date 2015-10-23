@@ -114,6 +114,9 @@
               <Dimension value="[20, 20]"/>
             </Property>
           </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btn_CancelActionPerformed"/>
+          </Events>
         </Component>
       </SubComponents>
     </Container>
@@ -167,21 +170,6 @@
             </Property>
           </Properties>
           <SubComponents>
-            <Component class="javax.swing.JButton" name="btn_Export">
-              <Properties>
-                <Property name="text" type="java.lang.String" value="Export"/>
-                <Property name="actionCommand" type="java.lang.String" value="jobcell.action.export"/>
-                <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                  <Dimension value="[110, 20]"/>
-                </Property>
-                <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                  <Dimension value="[110, 20]"/>
-                </Property>
-                <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                  <Dimension value="[110, 20]"/>
-                </Property>
-              </Properties>
-            </Component>
             <Component class="javax.swing.JButton" name="btn_SendViaGaruda">
               <Properties>
                 <Property name="text" type="java.lang.String" value="Send via Garuda"/>
@@ -193,9 +181,30 @@
                   <Dimension value="[110, 20]"/>
                 </Property>
                 <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                  <Dimension value="[110, 20]"/>
+                  <Dimension value="[130, 20]"/>
                 </Property>
               </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btn_SendViaGarudaActionPerformed"/>
+              </Events>
+            </Component>
+            <Component class="javax.swing.JButton" name="btn_Export">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Export"/>
+                <Property name="actionCommand" type="java.lang.String" value="jobcell.action.export"/>
+                <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                  <Dimension value="[75, 20]"/>
+                </Property>
+                <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                  <Dimension value="[75, 20]"/>
+                </Property>
+                <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                  <Dimension value="[75, 20]"/>
+                </Property>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btn_ExportActionPerformed"/>
+              </Events>
             </Component>
             <Component class="javax.swing.JButton" name="btn_View">
               <Properties>
@@ -287,11 +296,11 @@
                 <CodeMethod name="add" class="java.awt.Container" parameterTypes="java.awt.Component"/>
               </StatementProvider>
               <Parameters>
-                <CodeExpression id="7_btn_Export">
-                  <CodeVariable name="btn_Export" type="8194" declaredType="javax.swing.JButton"/>
+                <CodeExpression id="7_btn_SendViaGaruda">
+                  <CodeVariable name="btn_SendViaGaruda" type="8194" declaredType="javax.swing.JButton"/>
                   <ExpressionOrigin>
                     <ExpressionProvider type="ComponentRef">
-                      <ComponentRef name="btn_Export"/>
+                      <ComponentRef name="btn_SendViaGaruda"/>
                     </ExpressionProvider>
                   </ExpressionOrigin>
                 </CodeExpression>
@@ -303,11 +312,11 @@
                 <CodeMethod name="add" class="java.awt.Container" parameterTypes="java.awt.Component"/>
               </StatementProvider>
               <Parameters>
-                <CodeExpression id="8_btn_SendViaGaruda">
-                  <CodeVariable name="btn_SendViaGaruda" type="8194" declaredType="javax.swing.JButton"/>
+                <CodeExpression id="8_btn_Export">
+                  <CodeVariable name="btn_Export" type="8194" declaredType="javax.swing.JButton"/>
                   <ExpressionOrigin>
                     <ExpressionProvider type="ComponentRef">
-                      <ComponentRef name="btn_SendViaGaruda"/>
+                      <ComponentRef name="btn_Export"/>
                     </ExpressionProvider>
                   </ExpressionOrigin>
                 </CodeExpression>
