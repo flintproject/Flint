@@ -21,7 +21,7 @@ class ProgressDetailActionListener implements ActionListener {
         TargetSet ts = subFrame.getTargetSet();
         ParameterSet ps = subFrame.getParameterSet();
         ParameterSet newPs = ps.filterByNames(Arrays.asList(ts.getUsingParameterNames()));
-        mWindow = new JobWindow(subFrame, simulator, newPs);
+        mWindow = new JobWindow(subFrame, simulator.getSimulationDao(), newPs);
         mWindow.setLocationRelativeTo(subFrame);
         simulator.addPropertyChangeListener(mWindow);
         subFrame.setJobWindow(mWindow);

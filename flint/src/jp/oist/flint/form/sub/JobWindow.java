@@ -4,8 +4,8 @@ package jp.oist.flint.form.sub;
 import jp.oist.flint.control.DirectoryChooser;
 import jp.oist.flint.control.FileChooser;
 import jp.oist.flint.dao.DaoException;
+import jp.oist.flint.dao.SimulationDao;
 import jp.oist.flint.dao.TaskDao;
-import jp.oist.flint.executor.PhspSimulator;
 import jp.oist.flint.export.ExportReceiver;
 import jp.oist.flint.export.ExportWorker;
 import jp.oist.flint.filesystem.Filename;
@@ -71,15 +71,15 @@ public class JobWindow extends javax.swing.JFrame
 
     private final CombinationModel mDataModel;
 
-    private final PhspSimulator mSimulator;
+    private final SimulationDao mSimulationDao;
 
     private final JobPane mJobPane;
 
-    public JobWindow(SubFrame parent, PhspSimulator simulator, ParameterSet parameterSet)
+    public JobWindow(SubFrame parent, SimulationDao simulationDao, ParameterSet parameterSet)
             throws IOException {
         super(String.format("Progress [%s]", parent.getModelCanonicalPath()));
         mParent = parent;
-        mSimulator = simulator;
+        mSimulationDao = simulationDao;
 
         URL iconUrl = getClass().getResource("/jp/oist/flint/image/icon.png");
         setIconImage(new ImageIcon(iconUrl).getImage());
@@ -384,12 +384,7 @@ public class JobWindow extends javax.swing.JFrame
     public void plotPerformed(int index) {
         Ipc.SimulationTrack st;
         try {
-             TaskDao taskDao = mSimulator.getSimulationDao()
-                     .obtainTask(mParent.getRelativeModelPath());
-
-             if (taskDao == null)
-                throw new IOException("Job Directory does not exist.");
-
+             TaskDao taskDao = mSimulationDao.obtainTask(mParent.getRelativeModelPath());
              File trackFile = taskDao.getTrackFile();
              st = Ipc.SimulationTrack.parseFrom((new FileInputStream(trackFile)));
 
@@ -462,7 +457,7 @@ public class JobWindow extends javax.swing.JFrame
         ArrayList<File> isdFiles = new ArrayList<>();
         ArrayList<File> targetFiles = new ArrayList<>();
         ArrayList<Map<String, Number>> parameters = new ArrayList<>();
-        TaskDao taskDao = mSimulator.getSimulationDao().obtainTask(mParent.getRelativeModelPath());
+        TaskDao taskDao = mSimulationDao.obtainTask(mParent.getRelativeModelPath());
         int numJobs = taskDao.getCount();
         int numDigits = String.valueOf(numJobs).getBytes(StandardCharsets.UTF_8).length;
         for (int i=1; i<=numJobs; i++) {
@@ -540,10 +535,7 @@ public class JobWindow extends javax.swing.JFrame
 
     public void exportPerformed(int index) {
         try {
-            TaskDao taskDao = mSimulator.getSimulationDao().obtainTask(mParent.getRelativeModelPath());
-            if (taskDao == null)
-                throw new IOException("It has not finished yet.");
-
+            TaskDao taskDao = mSimulationDao.obtainTask(mParent.getRelativeModelPath());
             int jobId = taskDao.indexOf(mDataModel.getValues(
                     index), mDataModel.getTitles());
 
@@ -620,10 +612,7 @@ public class JobWindow extends javax.swing.JFrame
 
     public void sendViaGarudaPerformed(int index) {
         try {
-            TaskDao taskDao = mSimulator.getSimulationDao().obtainTask(mParent.getRelativeModelPath());
-            if (taskDao == null)
-                throw new IOException("It has not finished yet.");
-
+            TaskDao taskDao = mSimulationDao.obtainTask(mParent.getRelativeModelPath());
             int jobId = taskDao.indexOf(mDataModel.getValues(
                     index), mDataModel.getTitles());
 
@@ -650,10 +639,7 @@ public class JobWindow extends javax.swing.JFrame
         File tmp;
         TaskDao taskDao;
         try {
-            taskDao = mSimulator.getSimulationDao().obtainTask(mParent.getRelativeModelPath());
-            if (taskDao == null)
-                throw new IOException("It has not yet started");
-
+            taskDao = mSimulationDao.obtainTask(mParent.getRelativeModelPath());
             int ans = JOptionPane.showConfirmDialog(this, 
                     "Would you like to cancel simulation job?", 
                     "Cancel simulation?", 
