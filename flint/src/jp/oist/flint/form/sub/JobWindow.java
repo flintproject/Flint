@@ -636,7 +636,6 @@ public class JobWindow extends javax.swing.JFrame
     }
 
     public void cancelJobPerformed(int index) {
-        File tmp;
         TaskDao taskDao;
         try {
             taskDao = mSimulationDao.obtainTask(mParent.getRelativeModelPath());
