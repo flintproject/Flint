@@ -7,7 +7,7 @@ import jp.oist.flint.dao.TaskDao;
 import jp.oist.flint.form.MainFrame;
 import jp.oist.flint.form.ProgressCell;
 import jp.oist.flint.form.ProgressPane;
-import jp.oist.flint.form.job.IProgressManager;
+import jp.oist.flint.form.sub.JobWindow;
 import jp.oist.flint.form.sub.SubFrame;
 import jp.oist.flint.job.Job;
 import java.io.File;
@@ -48,13 +48,13 @@ public class PhspProgressMonitor extends SwingWorker<Void, Job> {
             String modelPath = taskDao.getModelPath();
             SubFrame subFrame = mMainFrame.findSubFrame(modelPath);
 
-            IProgressManager progressMgr = subFrame.getProgressManager();
-            int index = progressMgr.indexOf(combination);
+            JobWindow jobWindow = subFrame.getJobWindow();
+            int index = jobWindow.indexOf(combination);
 
-            progressMgr.setProgress(index, job);
+            jobWindow.setProgress(index, job);
 
             if (taskDao.isCancelled())
-                progressMgr.setCancelled(index, true);
+                jobWindow.setCancelled(index, true);
 
             int taskProgress = taskDao.getProgress();
             ProgressCell cell = mProgressPane.getListCellOfModel(new File(modelPath));

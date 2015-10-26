@@ -29,7 +29,6 @@ import jp.oist.flint.executor.PhspSimulator;
 import jp.oist.flint.filesystem.IModelFileClient;
 import jp.oist.flint.form.IFrame;
 import jp.oist.flint.form.ProgressCell;
-import jp.oist.flint.form.job.IProgressManager;
 import jp.oist.flint.form.log.LogWindow;
 import jp.oist.flint.k3.K3Loader;
 import jp.oist.flint.phsp.entity.Model;
@@ -225,7 +224,7 @@ public class SubFrame extends JInternalFrame
         return mIsEditable;
     }
 
-    public IProgressManager getProgressManager() {
+    public JobWindow getJobWindow() {
         return mJobWindow;
     }
 

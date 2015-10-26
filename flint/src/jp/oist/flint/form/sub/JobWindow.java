@@ -16,7 +16,6 @@ import jp.oist.flint.form.MainFrame;
 import jp.oist.flint.form.job.CombinationModel;
 import jp.oist.flint.form.job.ExportAllWorker;
 import jp.oist.flint.form.job.GadgetDialog;
-import jp.oist.flint.form.job.IProgressManager;
 import jp.oist.flint.form.job.JobViewerComponent;
 import jp.oist.flint.form.job.ParameterFilter;
 import jp.oist.flint.form.job.PlotWindow;
@@ -57,7 +56,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
 
 public class JobWindow extends javax.swing.JFrame
-    implements MouseListener, MouseMotionListener, IProgressManager, PropertyChangeListener {
+    implements MouseListener, MouseMotionListener, PropertyChangeListener {
 
     private final static String PANELKEY_LIST  = "jobwindow.cardlayout.joblist";
 
@@ -298,11 +297,6 @@ public class JobWindow extends javax.swing.JFrame
         JOptionPane.showMessageDialog(this, msg, title, JOptionPane.ERROR_MESSAGE);
     }
 
-    /*
-     * Implements IProgressManager
-     */
-
-    @Override
     public void setProgress(int index, Job job) {
         mJobViewer.setProgress(index, job.getProgress());
         mJobPane.setProgress(this, index, job);
@@ -310,15 +304,12 @@ public class JobWindow extends javax.swing.JFrame
         repaint();
     }
 
-    @Override
     public void setCancelled (int index, boolean cancelled) {
         mJobPane.setCancelled(index, cancelled);
         mJobViewer.setCancelled(index, cancelled);
     }
 
-    @Override
-    public int indexOf (Object key) {
-        Map<String, Number> combination = (Map<String, Number>)key;
+    public int indexOf(Map<String, Number> combination) {
         Number[] target = new Number[combination.size()];
         String[] titles = mDataModel.getTitles();
         for (int i=0; i<titles.length; i++)
