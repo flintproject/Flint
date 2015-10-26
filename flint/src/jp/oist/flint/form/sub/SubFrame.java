@@ -183,7 +183,7 @@ public class SubFrame extends JInternalFrame
         File modelFile = getModelFile();
 
         try {
-            if (mSimulator == null || mSimulator.getSimulationDao() == null) {
+            if (mSimulator == null) {
                 throw new IOException("It has not yet started");
             }
 

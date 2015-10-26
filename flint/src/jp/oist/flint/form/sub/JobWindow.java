@@ -384,9 +384,6 @@ public class JobWindow extends javax.swing.JFrame
     public void plotPerformed(int index) {
         Ipc.SimulationTrack st;
         try {
-            if (mSimulator.getSimulationDao() == null)
-                throw new IOException("Don't run the simulation.");
-
              TaskDao taskDao = mSimulator.getSimulationDao()
                      .obtainTask(mParent.getRelativeModelPath());
 
@@ -418,9 +415,6 @@ public class JobWindow extends javax.swing.JFrame
     }
 
     private void exportAll() throws DaoException, IOException, SQLException {
-        if (mSimulator.getSimulationDao() == null)
-            return; // nothing to do
-
         InputDialogForExport inputDialog = new InputDialogForExport(this);
         String extension = inputDialog.show();
         if (extension == null)
@@ -546,9 +540,6 @@ public class JobWindow extends javax.swing.JFrame
 
     public void exportPerformed(int index) {
         try {
-            if (mSimulator.getSimulationDao() == null)
-                throw new IOException("It has not finished yet.");
-
             TaskDao taskDao = mSimulator.getSimulationDao().obtainTask(mParent.getRelativeModelPath());
             if (taskDao == null)
                 throw new IOException("It has not finished yet.");
@@ -629,9 +620,6 @@ public class JobWindow extends javax.swing.JFrame
 
     public void sendViaGarudaPerformed(int index) {
         try {
-            if (mSimulator.getSimulationDao() == null)
-                throw new IOException("It has not finished yet.");
-
             TaskDao taskDao = mSimulator.getSimulationDao().obtainTask(mParent.getRelativeModelPath());
             if (taskDao == null)
                 throw new IOException("It has not finished yet.");
@@ -662,9 +650,6 @@ public class JobWindow extends javax.swing.JFrame
         File tmp;
         TaskDao taskDao;
         try {
-            if (mSimulator.getSimulationDao() == null)
-                throw new IOException("It has not yet started");
-
             taskDao = mSimulator.getSimulationDao().obtainTask(mParent.getRelativeModelPath());
             if (taskDao == null)
                 throw new IOException("It has not yet started");
