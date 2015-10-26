@@ -628,9 +628,7 @@ public class MainFrame extends javax.swing.JFrame
 
     @Override
     public void documentRemoved(Document doc, boolean empty) {
-        if (empty) {
-            setEditable(false);
+        if (empty)
             requestFocus();
-        }
     }
 }
