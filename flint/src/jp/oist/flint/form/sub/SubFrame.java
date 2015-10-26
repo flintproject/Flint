@@ -2,7 +2,6 @@
 package jp.oist.flint.form.sub;
 
 import jp.oist.flint.executor.ModelReloader;
-import jp.oist.flint.dao.DaoException;
 import jp.oist.flint.desktop.Desktop;
 import jp.oist.flint.desktop.Document;
 import jp.oist.flint.desktop.ISimulationListener;
@@ -25,8 +24,6 @@ import javax.swing.JOptionPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JInternalFrame;
 import com.google.protobuf.ByteString;
-import java.sql.SQLException;
-import jp.oist.flint.dao.TaskDao;
 import jp.oist.flint.backend.ModelLoader;
 import jp.oist.flint.executor.PhspSimulator;
 import jp.oist.flint.filesystem.IModelFileClient;
@@ -72,8 +69,6 @@ public class SubFrame extends JInternalFrame
 
     private ParameterValuePane pnl_ParameterValue;
     private String mRelativePath;
-
-    private PhspSimulator mSimulator = null;
 
     public SubFrame(Desktop desktop, Model model, ModelLoader loader)
             throws IOException, ExecutionException, InterruptedException {
@@ -179,38 +174,6 @@ public class SubFrame extends JInternalFrame
         return mDocument;
     }
 
-    public boolean cancelSimulation() {
-        File modelFile = getModelFile();
-
-        try {
-            if (mSimulator == null) {
-                throw new IOException("It has not yet started");
-            }
-
-            TaskDao taskDao = mSimulator.getSimulationDao().obtainTask(modelFile.getPath());
-            if (taskDao == null) {
-                throw new IOException("It has not yet started");
-            }
-
-            int ans = JOptionPane.showConfirmDialog(this,
-                    "Would you like to cancel simulation?",
-                    "Cancel simulation?",
-                    JOptionPane.YES_NO_OPTION);
-
-            if (ans != JOptionPane.YES_OPTION) {
-                return false;
-            }
-
-            taskDao.cancel();
-
-            return true;
-        } catch (DaoException | IOException | SQLException ex) {
-            showErrorDialog("Cancellation failed\n\n" + ex.getMessage(),
-                    "Cancellation failed");
-            return false;
-        }
-    }
-
     @Override
     public void showErrorDialog(ByteString message, String title) {
         JOptionPane.showMessageDialog(this, message.toStringUtf8(), title,
@@ -230,7 +193,6 @@ public class SubFrame extends JInternalFrame
 
     @Override
     public void simulationStarted(PhspSimulator simulator) {
-        mSimulator = simulator;
         setEditable(false);
     }
 

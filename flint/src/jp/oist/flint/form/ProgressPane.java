@@ -91,7 +91,7 @@ public class ProgressPane extends PeripheralPane
     @Override
     public void simulationStarted(PhspSimulator simulator) {
         for (ProgressCell cell : mCells)
-            cell.progressStarted();
+            cell.progressStarted(simulator.getSimulationDao());
         repaint();
     }
 

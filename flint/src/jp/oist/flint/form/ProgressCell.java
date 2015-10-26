@@ -22,6 +22,7 @@ import javax.swing.UIManager;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
 import javax.xml.parsers.ParserConfigurationException;
+import jp.oist.flint.dao.SimulationDao;
 
 public class ProgressCell extends JPanel {
 
@@ -32,6 +33,8 @@ public class ProgressCell extends JPanel {
     private final JButton mCancelBtn;
 
     private final JProgressBar mProgressBar;
+
+    private CancelSimulationActionListener mCancelActionListener = null;
 
     public ProgressCell(Document document) {
         mDocument = document;
@@ -81,7 +84,6 @@ public class ProgressCell extends JPanel {
         upperPane.add(createSpacePanel(new Dimension(spaceW, spaceH)));
 
         mCancelBtn  = new JButton();
-        mCancelBtn.addActionListener(new CancelSimulationActionListener(this));
         mCancelBtn.setIcon(new ImageIcon(getClass().getResource("/jp/oist/flint/image/cancel.png")));
         Dimension btnSize = new Dimension(20,20);
         mCancelBtn.setSize(btnSize);
@@ -171,18 +173,24 @@ public class ProgressCell extends JPanel {
         mProgressBar.repaint();
     }
 
-    public void progressStarted () {
+    public void progressStarted(SimulationDao simulationDao) {
         String msg = "preparing...";
 
         mProgressBar.setValue(0);
         mProgressBar.setString(msg);
         setGeneralButtonEnabled(true);
+
+        mCancelActionListener = new CancelSimulationActionListener(simulationDao, this);
+        mCancelBtn.addActionListener(mCancelActionListener);
         mCancelBtn.setEnabled(true);
     }
 
     public void progressFinished(String msg, int value) {
         setProgress(msg, value);
+
         mCancelBtn.setEnabled(false);
+        mCancelBtn.removeActionListener(mCancelActionListener);
+        mCancelActionListener = null;
     }
 
     public void prepareJobWindow(PhspSimulator simulator) throws IOException, ParserConfigurationException {
