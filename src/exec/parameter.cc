@@ -31,9 +31,10 @@ int WriteParameter(void *data, int argc, char **argv, char **names)
 	boost::filesystem::ofstream *ofs = static_cast<boost::filesystem::ofstream *>(data);
 	assert(ofs != nullptr);
 	(void)names;
-	assert(argc == 1);
+	assert(argc == 2);
 	assert(argv[0] != nullptr);
-	*ofs << argv[0] << endl;
+	assert(argv[1] != nullptr);
+	*ofs << argv[0] << '|' << argv[1] << endl;
 	return 0;
 }
 
@@ -51,7 +52,7 @@ bool SaveParameters(int id, sqlite3 *db)
 		return false;
 	}
 	char *em;
-	int e = sqlite3_exec(db, "SELECT name FROM phsp_parameters", &WriteParameter,
+	int e = sqlite3_exec(db, "SELECT name, range FROM phsp_parameters", &WriteParameter,
 						 &ofs, &em);
 	if (e != SQLITE_OK) {
 		cerr << "failed to exec: " << e
