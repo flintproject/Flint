@@ -3,8 +3,8 @@ package jp.oist.flint.export;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import jp.oist.flint.form.sub.JobWindow;
 import jp.oist.flint.udp.IReceiver;
+import java.awt.Component;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.DatagramChannel;
@@ -17,8 +17,8 @@ public class ExportReceiver implements IReceiver {
 
     private ExportWorker mWorker;
 
-    public ExportReceiver(JobWindow window) {
-        mProgressMonitor = new ProgressMonitor(window,
+    public ExportReceiver(Component component) {
+        mProgressMonitor = new ProgressMonitor(component,
                                                "Exporting ...",
                                                null,
                                                0,
