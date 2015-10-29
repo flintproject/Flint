@@ -387,7 +387,7 @@ public class JobWindow extends javax.swing.JFrame
              for (int i=0; i<titles.length; i++) 
                 sb.append(String.format("%s=%s ", titles[i], values[i]));
 
-             PlotWindow plotWindow = new PlotWindow(mParent, sb.toString(), taskDao, jobId);
+             PlotWindow plotWindow = new PlotWindow(mParent.getModelFile(), sb.toString(), taskDao, jobId);
              plotWindow.setLocationRelativeTo(mParent);
              plotWindow.setVisible(true);
              plotWindow.processSimulationTrack(st);

@@ -28,7 +28,6 @@ import jp.oist.flint.dao.TaskDao;
 import jp.oist.flint.executor.ISimulationTrackProcessor;
 import jp.oist.flint.form.sub.IChartController;
 import jp.oist.flint.form.sub.IChartSetting;
-import jp.oist.flint.form.sub.SubFrame;
 import jp.oist.flint.plot.gnuplot.GnuPlotter;
 import jp.oist.flint.plotter.IPlotter;
 import jp.oist.flint.plotter.PlotterLoadException;
@@ -58,21 +57,19 @@ public class PlotWindow extends javax.swing.JFrame
 
     private final Job mJob;
 
+    private final File mModelFile;
     private final File mIsdFile;
     private final File mCsvFile;
 
-    private final SubFrame mParent;
-
-    public PlotWindow(SubFrame container, String title, TaskDao taskDao, int jobId)
+    public PlotWindow(File modelFile, String title, TaskDao taskDao, int jobId)
         throws DaoException, IOException, SQLException {
         super(title);
 
         URL iconUrl = getClass().getResource("/jp/oist/flint/image/icon.png");
         setIconImage(new ImageIcon(iconUrl).getImage());
 
-        mParent = container;
-
         mJob = taskDao.obtainJob(jobId);
+        mModelFile = modelFile;
         mIsdFile = mJob.getIsdFile();
         mCsvFile = new File(mIsdFile.getParent(), "csv");
 
@@ -278,7 +275,7 @@ public class PlotWindow extends javax.swing.JFrame
 
     @Override
     public File getModelFile () {
-        return mParent.getModelFile();
+        return mModelFile;
     }
 
     @Override
@@ -1335,7 +1332,7 @@ public class PlotWindow extends javax.swing.JFrame
 
     private void btn_OutputFilePathActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_OutputFilePathActionPerformed
         String homePath = System.getProperty("user.home");
-        String fileName = Utility.getFileName(mParent.getModelCanonicalPath());
+        String fileName = Utility.getFileName(mModelFile.getPath());
 
         String extension = "";
         GnuPlotter.TerminalType terminalType = GnuPlotter.TerminalType.valueOf(getTerminalType());
