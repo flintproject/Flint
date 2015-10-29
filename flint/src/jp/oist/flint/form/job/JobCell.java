@@ -187,7 +187,10 @@ public class JobCell extends JPanel {
         mJobWindow.plotPerformed(mIndex);
     }//GEN-LAST:event_btn_ViewActionPerformed
 
-    public void setProgress(Job job) {
+    /*
+     * Return true if finished, false otherwise.
+     */
+    public boolean setProgress(Job job) {
         Progress progress = job.getProgress();
         int percent = progress.getPercent();
         mProgressBar.setValue(percent);
@@ -203,11 +206,6 @@ public class JobCell extends JPanel {
         sb.append(" (");
         sb.append(DurationFormat.fromMillis(progress.getElapsedMillis()));
         sb.append(")");
-
-        if (isFinished()) {
-            btn_Cancel.setEnabled(false);
-        }
-
         mProgressBar.setString(sb.toString());
         mProgressBar.repaint();
 
@@ -218,6 +216,12 @@ public class JobCell extends JPanel {
                 // give up
             }
         }
+
+        boolean b = isFinished();
+        if (b) {
+            btn_Cancel.setEnabled(false);
+        }
+        return b;
     }
 
     public void setCancelled(boolean cancelled) {
