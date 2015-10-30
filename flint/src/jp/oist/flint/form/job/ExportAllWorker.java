@@ -4,7 +4,7 @@ package jp.oist.flint.form.job;
 import jp.oist.flint.export.ExportWorker;
 import jp.oist.flint.filesystem.Workspace;
 import jp.oist.flint.form.IFrame;
-import jp.oist.flint.form.sub.JobWindow;
+import java.awt.Component;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -34,7 +34,7 @@ public class ExportAllWorker extends SwingWorker<Boolean, Void> {
     private final List<Map<String, Number>> mParameters;
 
     public ExportAllWorker(IFrame frame,
-                           JobWindow window,
+                           Component component,
                            String extension,
                            File listFile,
                            List<File> sourceFiles, List<File> targetFiles,
@@ -43,7 +43,7 @@ public class ExportAllWorker extends SwingWorker<Boolean, Void> {
         int size = sourceFiles.size();
         assert size == targetFiles.size();
         assert size == parameters.size();
-        mMonitor = new ProgressMonitor(window,
+        mMonitor = new ProgressMonitor(component,
                                        "Exporting ...",
                                        null,
                                        0,
