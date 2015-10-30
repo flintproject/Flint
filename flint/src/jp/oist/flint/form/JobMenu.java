@@ -95,7 +95,7 @@ public class JobMenu implements IFrame {
             }
             if ("csv".equalsIgnoreCase(ext)) { // export as CSV
                 ExportReceiver receiver = new ExportReceiver(mFrame);
-                final ExportWorker worker = new ExportWorker((IFrame)mFrame, receiver, isdFile, file);
+                final ExportWorker worker = new ExportWorker(this, receiver, isdFile, file);
                 receiver.setWorker(worker); // make cancellation possible
                 worker.addPropertyChangeListener(new PropertyChangeListener() {
                     @Override
