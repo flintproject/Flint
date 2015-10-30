@@ -1,12 +1,14 @@
 /* -*- Mode: Java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- vim:set ts=4 sw=4 sts=4 et: */
 package jp.oist.flint.form.job;
 
-import jp.oist.flint.form.sub.JobWindow;
+import jp.oist.flint.dao.DaoException;
+import jp.oist.flint.form.IJobMenuProvider;
 import jp.oist.flint.garuda.GarudaClient;
 import jp.oist.flint.job.Job;
 import jp.oist.flint.job.Progress;
 import jp.oist.flint.util.DurationFormat;
 import jp.oist.flint.util.PeriodFormat;
+import jp.sbi.garuda.platform.commons.net.GarudaConnectionNotInitializedException;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -15,11 +17,13 @@ import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
+import java.sql.SQLException;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.SwingConstants;
@@ -27,14 +31,14 @@ import javax.swing.UIManager;
 
 public class JobCell extends JPanel {
 
-    private final JobWindow mJobWindow;
+    private final IJobMenuProvider mProvider;
 
     private final int mIndex;
 
     private boolean mIsCancelled = false;
 
-    public JobCell(JobWindow jobWindow, int index) {
-        mJobWindow = jobWindow;
+    public JobCell(IJobMenuProvider provider, int index) {
+        mProvider = provider;
         mIndex = index;
 
         initComponents();
@@ -172,20 +176,47 @@ public class JobCell extends JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btn_CancelActionPerformed(ActionEvent evt) {//GEN-FIRST:event_btn_CancelActionPerformed
-        mJobWindow.cancelJobPerformed(mIndex);
+        try {
+            if (mProvider.getJobMenu(mIndex).cancel())
+                setCancelled(true);
+        } catch (DaoException | IOException | SQLException ex) {
+            showErrorDialog("Cancellation failed\n\n" + ex.getMessage(),
+                            "Cancellation failed");
+        }
     }//GEN-LAST:event_btn_CancelActionPerformed
 
     private void btn_ExportActionPerformed(ActionEvent evt) {//GEN-FIRST:event_btn_ExportActionPerformed
-        mJobWindow.exportPerformed(mIndex);
+        try {
+            mProvider.getJobMenu(mIndex).export();
+        } catch (DaoException | IOException | SQLException ex) {
+            showErrorDialog("Export failed\n\n" + ex.getMessage(),
+                            "Export failed");
+        }
     }//GEN-LAST:event_btn_ExportActionPerformed
 
     private void btn_SendViaGarudaActionPerformed(ActionEvent evt) {//GEN-FIRST:event_btn_SendViaGarudaActionPerformed
-        mJobWindow.sendViaGarudaPerformed(mIndex);
+        try {
+            mProvider.getJobMenu(mIndex).sendViaGaruda();
+        } catch (GarudaConnectionNotInitializedException gcnie) {
+            showErrorDialog(gcnie.getMessage(), "Error with Garuda");
+        } catch (DaoException | IOException | SQLException ex) {
+            showErrorDialog("Sending file failed\n\n" + ex.getMessage(),
+                            "Sending file failed");
+        }
     }//GEN-LAST:event_btn_SendViaGarudaActionPerformed
 
     private void btn_ViewActionPerformed(ActionEvent evt) {//GEN-FIRST:event_btn_ViewActionPerformed
-        mJobWindow.plotPerformed(mIndex);
+        try {
+            mProvider.getJobMenu(mIndex).view();
+        } catch (DaoException | IOException | SQLException ex) {
+            showErrorDialog("Viewing failed\n\n" + ex.getMessage(),
+                            "Viewing failed");
+        }
     }//GEN-LAST:event_btn_ViewActionPerformed
+
+    private void showErrorDialog(String message, String title) {
+        JOptionPane.showMessageDialog(this, message, title, JOptionPane.ERROR_MESSAGE);
+    }
 
     /*
      * Return true if finished, false otherwise.

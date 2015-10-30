@@ -2,28 +2,20 @@
 package jp.oist.flint.form.sub;
 
 import jp.oist.flint.control.DirectoryChooser;
-import jp.oist.flint.control.FileChooser;
 import jp.oist.flint.dao.DaoException;
 import jp.oist.flint.dao.SimulationDao;
 import jp.oist.flint.dao.TaskDao;
-import jp.oist.flint.export.ExportReceiver;
-import jp.oist.flint.export.ExportWorker;
 import jp.oist.flint.filesystem.Filename;
-import jp.oist.flint.filesystem.Workspace;
-import jp.oist.flint.form.IFrame;
+import jp.oist.flint.form.IJobMenuProvider;
+import jp.oist.flint.form.JobMenu;
 import jp.oist.flint.form.JobPane;
 import jp.oist.flint.form.MainFrame;
 import jp.oist.flint.form.job.CombinationModel;
 import jp.oist.flint.form.job.ExportAllWorker;
-import jp.oist.flint.form.job.GadgetDialog;
 import jp.oist.flint.form.job.JobViewerComponent;
 import jp.oist.flint.form.job.ParameterFilter;
-import jp.oist.flint.form.job.PlotWindow;
-import jp.oist.flint.garuda.GarudaClient;
 import jp.oist.flint.job.Job;
 import jp.oist.flint.phsp.entity.ParameterSet;
-import jp.oist.flint.util.Utility;
-import jp.physiome.Ipc;
 import jp.sbi.garuda.platform.commons.net.GarudaConnectionNotInitializedException;
 import java.awt.CardLayout;
 import java.awt.Cursor;
@@ -38,7 +30,6 @@ import java.awt.event.WindowEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
@@ -56,7 +47,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
 
 public class JobWindow extends javax.swing.JFrame
-    implements MouseListener, MouseMotionListener, PropertyChangeListener {
+    implements IJobMenuProvider, MouseListener, MouseMotionListener, PropertyChangeListener {
 
     private final static String PANELKEY_LIST  = "jobwindow.cardlayout.joblist";
 
@@ -318,6 +309,13 @@ public class JobWindow extends javax.swing.JFrame
         return mDataModel.indexOf(target);
     }
 
+    @Override
+    public JobMenu getJobMenu(int index) throws DaoException, IOException, SQLException {
+        TaskDao taskDao = mSimulationDao.obtainTask(mParent.getRelativeModelPath());
+        int jobId = taskDao.indexOf(mDataModel.getValues(index), mDataModel.getTitles());
+        return new JobMenu(this, mSimulationDao, taskDao.getTaskId(), jobId);
+    }
+
     /*
      * Implements MouseListener, ouse
      */
@@ -370,34 +368,6 @@ public class JobWindow extends javax.swing.JFrame
 
     @Override
     public void mouseDragged(MouseEvent evt) {
-    }
-
-    public void plotPerformed(int index) {
-        Ipc.SimulationTrack st;
-        try {
-             TaskDao taskDao = mSimulationDao.obtainTask(mParent.getRelativeModelPath());
-             File trackFile = taskDao.getTrackFile();
-             st = Ipc.SimulationTrack.parseFrom((new FileInputStream(trackFile)));
-
-             Number[] values = mDataModel.getValues(index);
-             String[] titles = mDataModel.getTitles();
-             int jobId = taskDao.indexOf(values, titles);
-
-             StringBuilder sb = new StringBuilder();
-             for (int i=0; i<titles.length; i++) 
-                sb.append(String.format("%s=%s ", titles[i], values[i]));
-
-             PlotWindow plotWindow = new PlotWindow(mParent.getModelFile(), sb.toString(), taskDao, jobId);
-             plotWindow.setLocationRelativeTo(mParent);
-             plotWindow.setVisible(true);
-             plotWindow.processSimulationTrack(st);
-             plotWindow.renderPlot();
-        } catch (DaoException | IOException | SQLException ex) {
-            if (mParent != null) {
-                IFrame frame = (IFrame)mParent;
-                frame.showErrorDialog("It has not finished yet.", "ERROR");
-            }
-        }
     }
 
     private void exportAll() throws DaoException, IOException, SQLException {
@@ -524,135 +494,6 @@ public class JobWindow extends javax.swing.JFrame
         worker.execute();
     }
 
-    public void exportPerformed(int index) {
-        try {
-            TaskDao taskDao = mSimulationDao.obtainTask(mParent.getRelativeModelPath());
-            int jobId = taskDao.indexOf(mDataModel.getValues(
-                    index), mDataModel.getTitles());
-
-            if (jobId < 0)
-                throw new IOException("It has not finished yet.");
-
-            File isdFile = taskDao.obtainJob(jobId).getIsdFile();
-
-            if (!isdFile.exists())
-                throw new IOException("It has not finished yet.");
-
-            InputDialogForExport inputDialog = new InputDialogForExport(this);
-            String ext = inputDialog.show();
-            if (ext == null)
-                return;
-
-            String baseName = Utility.getFileName(mParent.getModelFile().getName());
-            File defaultFile = new File(mParent.getModelFile().getParent(), 
-                                        baseName + "_" + jobId + "." + ext);
-            FileChooser fileChooser = new FileChooser(mParent,
-                    "Export file", FileChooser.Mode.SAVE, defaultFile);
-
-            if (fileChooser.showDialog()) { 
-                final File file = fileChooser.getSelectedFile(); 
-                if (file.exists()) {
-                    int ans = JOptionPane.showConfirmDialog(this,
-                                "Is it OK to replace the existing file?",
-                                "Replace the existing file?",
-                                JOptionPane.YES_NO_OPTION);
-                    if (ans != JOptionPane.YES_OPTION)
-                        return;
-                }
-                if ("csv".equalsIgnoreCase(ext)) { // export as CSV
-                    ExportReceiver receiver = new ExportReceiver(this);
-                    final ExportWorker worker = new ExportWorker((IFrame)mParent, receiver, isdFile, file);
-                    receiver.setWorker(worker); // make cancellation possible
-                    worker.addPropertyChangeListener(new PropertyChangeListener() {
-                        @Override
-                        public void propertyChange(PropertyChangeEvent evt) {
-                            String propertyName = evt.getPropertyName();
-                            Object newValue = evt.getNewValue();
-                            if ("state".equals(propertyName)
-                                && SwingWorker.StateValue.DONE.equals(newValue)) {
-                                try {
-                                    if (worker.get())
-                                        showMessageDialog("Exported successfully to " + file.getPath(),
-                                                          "CSV Exported");
-                                } catch (CancellationException ce) {
-                                    showMessageDialog("Exporting is cancelled.",
-                                                      "Export cancelled");
-                                } catch (InterruptedException ex) {
-                                    showErrorDialog("Export interrupted\n\n" + ex.getMessage(),
-                                                    "CSV Export interrupted");
-                                } catch (ExecutionException ex) {
-                                    showErrorDialog("Export aborted\n\n" + ex.getMessage(),
-                                                    "CSV Export aborted ");
-                                }
-                            }
-                        }
-                    });
-                    worker.execute();
-                } else {
-                    // export as ISD
-                    Workspace.publishFile(isdFile, file);
-                    showMessageDialog("Exported successfully to " + file.getPath(),
-                                      "ISD Exported");
-                }
-            }
-        } catch (DaoException | IOException | SQLException ex) {
-            showErrorDialog("Export failed\n\n" + ex.getMessage(),
-                            "Export failed");
-        }
-    }
-
-    public void sendViaGarudaPerformed(int index) {
-        try {
-            TaskDao taskDao = mSimulationDao.obtainTask(mParent.getRelativeModelPath());
-            int jobId = taskDao.indexOf(mDataModel.getValues(
-                    index), mDataModel.getTitles());
-
-            if (jobId < 0)
-                throw new IOException("It has not finished yet.");
-
-            File isdFile = taskDao.obtainJob(jobId).getIsdFile();
-
-            if (!isdFile.exists())
-                throw new IOException("It has not finished yet.");
-
-            GadgetDialog dialog = new GadgetDialog(this, mParent, isdFile);
-            dialog.setLocationRelativeTo(this);
-            GarudaClient.requestForLoadableGadgets(dialog, "csv");
-        } catch (GarudaConnectionNotInitializedException gcnie) {
-            showErrorDialog(gcnie.getMessage(), "Error with Garuda");
-        } catch (DaoException | IOException | SQLException ex) {
-            showErrorDialog("Sending file failed\n\n" + ex.getMessage(),
-                            "Sending file failed");
-        }
-    }
-
-    public void cancelJobPerformed(int index) {
-        TaskDao taskDao;
-        try {
-            taskDao = mSimulationDao.obtainTask(mParent.getRelativeModelPath());
-            int ans = JOptionPane.showConfirmDialog(this, 
-                    "Would you like to cancel simulation job?", 
-                    "Cancel simulation?", 
-                    JOptionPane.YES_NO_OPTION);
-
-            if (ans != JOptionPane.YES_OPTION) 
-                return;
-
-            int rowId = taskDao.indexOf(mDataModel.getValues(
-                    index), mDataModel.getTitles());
-
-            Job job = taskDao.obtainJob(rowId);
-            if (job.cancel()) {
-                mJobViewer.setCancelled(index, true);
-                mJobPane.setCancelled(index, true);
-            }
-        } catch (DaoException | IOException | SQLException ex) {
-            showErrorDialog("Cancellation failed\n\n" + ex.getMessage(),
-            "Cancellation failed");
-            return;
-        }
-    }
-
     /* PropertyChangeListener */
 
     @Override
@@ -677,19 +518,28 @@ public class JobWindow extends javax.swing.JFrame
                 return;
             assert evt != null;
             assert evt.getIndex() >= 0;
-            switch (action) {
-            case "view":
-                plotPerformed(evt.getIndex());
-                break;
-            case "export":
-                exportPerformed(evt.getIndex());
-                break;
-            case "sendViaGaruda":
-                sendViaGarudaPerformed(evt.getIndex());
-                break;
-            case "cancelJob":
-                cancelJobPerformed(evt.getIndex());
-                break;
+            try {
+                JobMenu menu = getJobMenu(evt.getIndex());
+                switch (action) {
+                case "view":
+                    menu.view();
+                    break;
+                case "export":
+                    menu.export();
+                    break;
+                case "sendViaGaruda":
+                    menu.sendViaGaruda();
+                    break;
+                case "cancelJob":
+                    menu.cancel();
+                    break;
+                }
+            } catch (DaoException |
+                     GarudaConnectionNotInitializedException |
+                     IOException |
+                     SQLException ex) {
+                showErrorDialog(ex.getMessage(),
+                                action + " failed");
             }
         }
     }
