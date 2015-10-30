@@ -7,6 +7,11 @@ import java.util.EventListener;
 public interface ISimulationListener extends EventListener {
 
     /**
+     * This method is called once simulation is requested.
+     */
+    void simulationRequested();
+
+    /**
      * This method may or may not be called once simulation is started.
      * @param simulator
      */

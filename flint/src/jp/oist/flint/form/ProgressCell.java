@@ -1,6 +1,7 @@
 /* -*- Mode: Java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- vim:set ts=4 sw=4 sts=4 et: */
 package jp.oist.flint.form;
 
+import jp.oist.flint.dao.SimulationDao;
 import jp.oist.flint.desktop.CancelSimulationActionListener;
 import jp.oist.flint.desktop.Document;
 import jp.oist.flint.executor.PhspSimulator;
@@ -22,7 +23,6 @@ import javax.swing.UIManager;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
 import javax.xml.parsers.ParserConfigurationException;
-import jp.oist.flint.dao.SimulationDao;
 
 public class ProgressCell extends JPanel {
 
@@ -35,6 +35,8 @@ public class ProgressCell extends JPanel {
     private final JProgressBar mProgressBar;
 
     private CancelSimulationActionListener mCancelActionListener = null;
+
+    private ActionListener mDetailActionListener = null;
 
     public ProgressCell(Document document) {
         mDocument = document;
@@ -144,11 +146,6 @@ public class ProgressCell extends JPanel {
         return panel;
     }
 
-    public void setGeneralButtonEnabled (boolean b) {
-        mJobBtn.setEnabled(b);
-        repaint();
-    }
-
     public synchronized void setText (String txt) {
         TitledBorder titledBorder = (TitledBorder)getBorder();
         titledBorder.setTitle(txt);
@@ -167,6 +164,11 @@ public class ProgressCell extends JPanel {
         return mProgressBar.getValue();
     }
 
+    public void clear() {
+        mCancelBtn.setEnabled(false);
+        mJobBtn.setEnabled(false);
+    }
+
     public void setProgress(String msg, int value) {
         mProgressBar.setString(msg);
         mProgressBar.setValue(value);
@@ -178,7 +180,6 @@ public class ProgressCell extends JPanel {
 
         mProgressBar.setValue(0);
         mProgressBar.setString(msg);
-        setGeneralButtonEnabled(true);
 
         mCancelActionListener = new CancelSimulationActionListener(simulationDao, this);
         mCancelBtn.addActionListener(mCancelActionListener);
@@ -193,10 +194,22 @@ public class ProgressCell extends JPanel {
         mCancelActionListener = null;
     }
 
-    public void prepareJobWindow(PhspSimulator simulator) throws IOException, ParserConfigurationException {
-        for (ActionListener al : mJobBtn.getActionListeners()) {
-            mJobBtn.removeActionListener(al);
+    /*
+     * Supposed to be called in EDT.
+     */
+    public boolean prepareWindow(PhspSimulator simulator, String path, int n)
+        throws IOException, ParserConfigurationException {
+        if (!mDocument.getFile().getPath().equals(path))
+            return false;
+        if (mDetailActionListener != null)
+            mJobBtn.removeActionListener(mDetailActionListener);
+        if (n < 10) {
+            mDetailActionListener = new ProgressDetailActionListener(simulator, mDocument.getSubFrame());
+        } else {
+            mDetailActionListener = new TaskDetailActionListener(simulator, mDocument.getSubFrame());
         }
-        mJobBtn.addActionListener(new ProgressDetailActionListener(simulator, mDocument.getSubFrame()));
+        mJobBtn.addActionListener(mDetailActionListener);
+        mJobBtn.setEnabled(true);
+        return true;
     }
 }

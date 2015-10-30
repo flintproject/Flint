@@ -191,8 +191,12 @@ public class SubFrame extends JInternalFrame
     /* ISimulationListener */
 
     @Override
-    public void simulationStarted(PhspSimulator simulator) {
+    public void simulationRequested() {
         setEditable(false);
+    }
+
+    @Override
+    public void simulationStarted(PhspSimulator simulator) {
     }
 
     @Override

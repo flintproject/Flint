@@ -85,8 +85,12 @@ public class ControlPane extends PeripheralPane
     /* ISimulationListener */
 
     @Override
-    public void simulationStarted(PhspSimulator simulator) {
+    public void simulationRequested() {
         mBtnSimulationRun.setEnabled(false);
+    }
+
+    @Override
+    public void simulationStarted(PhspSimulator simulator) {
     }
 
     @Override

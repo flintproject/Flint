@@ -55,9 +55,14 @@ public class ProgressPane extends PeripheralPane
         return null;
     }
 
-    public void prepareJobWindows(PhspSimulator simulator) throws IOException, ParserConfigurationException {
+    /*
+     * Supposed to be called in EDT.
+     */
+    public void prepareWindow(PhspSimulator simulator, String path, int n)
+            throws IOException, ParserConfigurationException {
         for (ProgressCell cell : mCells)
-            cell.prepareJobWindow(simulator);
+            if (cell.prepareWindow(simulator, path, n))
+                return;
     }
 
     /* IDesktopListener */
@@ -87,6 +92,12 @@ public class ProgressPane extends PeripheralPane
     }
 
     /* ISimulationListener */
+
+    @Override
+    public void simulationRequested() {
+        for (ProgressCell cell : mCells)
+            cell.clear();
+    }
 
     @Override
     public void simulationStarted(PhspSimulator simulator) {

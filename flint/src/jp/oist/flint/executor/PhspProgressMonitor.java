@@ -49,12 +49,14 @@ public class PhspProgressMonitor extends SwingWorker<Void, Job> {
             SubFrame subFrame = mMainFrame.findSubFrame(modelPath);
 
             JobWindow jobWindow = subFrame.getJobWindow();
-            int index = jobWindow.indexOf(combination);
+            if (jobWindow != null) {
+                int index = jobWindow.indexOf(combination);
 
-            jobWindow.setProgress(index, job);
+                jobWindow.setProgress(index, job);
 
-            if (taskDao.isCancelled())
-                jobWindow.setCancelled(index, true);
+                if (taskDao.isCancelled())
+                    jobWindow.setCancelled(index, true);
+            }
 
             int taskProgress = taskDao.getProgress();
             ProgressCell cell = mProgressPane.getListCellOfModel(new File(modelPath));

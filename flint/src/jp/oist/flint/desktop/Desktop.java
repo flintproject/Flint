@@ -183,9 +183,14 @@ public class Desktop implements IPhspConfiguration {
     public PhspSimulator runSimulation(final MainFrame mainFrame)
         throws IOException, ParserConfigurationException, PhspException,
                SQLException, SedmlException, TransformerException {
+        // First of all, notify that simulation is requested
+        for (ISimulationListener listener : mSimulationListeners.getListeners(ISimulationListener.class)) {
+            listener.simulationRequested();
+        }
+
         SimulatorService service = new SimulatorService(mainFrame);
         final PhspSimulator simulator = new PhspSimulator(service, mainFrame, this);
-        mProgressPane.prepareJobWindows(simulator);
+        ParametrizationMonitor pm = new ParametrizationMonitor(simulator, mProgressPane);
         final PhspProgressMonitor monitor = new PhspProgressMonitor(simulator.getSimulationDao(),
                                                                     mainFrame,
                                                                     mProgressPane);
@@ -238,6 +243,7 @@ public class Desktop implements IPhspConfiguration {
         }
 
         simulator.execute();
+        pm.execute();
         monitor.execute();
         return simulator;
     }

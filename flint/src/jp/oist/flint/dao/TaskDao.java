@@ -207,4 +207,8 @@ public class TaskDao extends DaoObject {
             }
         }
     }
+
+    public File getWorkingDir() {
+        return mWorkingDir;
+    }
 }

@@ -330,7 +330,7 @@ public class MenuBar extends JMenuBar
     /* ISimulationListener */
 
     @Override
-    public void simulationStarted(PhspSimulator simulator) {
+    public void simulationRequested() {
         mItemOpen.setEnabled(false);
         mMenuRecentModels.setEnabled(false);
         mItemClose.setEnabled(false);
@@ -341,6 +341,10 @@ public class MenuBar extends JMenuBar
         mItemPause.setEnabled(true);
         mItemResume.setEnabled(false);
         mItemSendToFlintK3.setEnabled(false);
+    }
+
+    @Override
+    public void simulationStarted(PhspSimulator simulator) {
     }
 
     @Override
