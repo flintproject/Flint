@@ -179,8 +179,6 @@ bool Generate(sqlite3 *input, const char *dir, int *job_id)
 	sprintf(filename, "%s/generated.db", path.get());
 	db::Driver driver(filename);
 	sqlite3 *output = driver.db();
-	if (!BeginTransaction(input))
-		return false;
 	if (!BeginTransaction(output))
 		return false;
 	if (!CreateTable(output, "parameter_eqs", "(uuid BLOB, math TEXT)"))
@@ -191,9 +189,17 @@ bool Generate(sqlite3 *input, const char *dir, int *job_id)
 		perror(filename);
 		return false;
 	}
+	if (!BeginTransaction(input)) {
+		fclose(fp);
+		return false;
+	}
 	Generator g(input, output, fp);
 	if (!g.Generate(rowid, enum_id)) {
 		fclose(fp);
+		return false;
+	}
+	if (!CommitTransaction(input)) {
+		fclose(fp)
 		return false;
 	}
 	fclose(fp);
@@ -208,8 +214,6 @@ bool Generate(sqlite3 *input, const char *dir, int *job_id)
 	}
 
 	if (!CommitTransaction(output))
-		return false;
-	if (!CommitTransaction(input))
 		return false;
 	*job_id = rowid;
 	return true;
