@@ -23,7 +23,6 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JInternalFrame;
-import com.google.protobuf.ByteString;
 import jp.oist.flint.backend.ModelLoader;
 import jp.oist.flint.executor.PhspSimulator;
 import jp.oist.flint.filesystem.IModelFileClient;
@@ -171,12 +170,6 @@ public class SubFrame extends JInternalFrame
 
     public Document getDocument() {
         return mDocument;
-    }
-
-    @Override
-    public void showErrorDialog(ByteString message, String title) {
-        JOptionPane.showMessageDialog(this, message.toStringUtf8(), title,
-                JOptionPane.ERROR_MESSAGE);
     }
 
     public void setProgressCell(ProgressCell cell) {

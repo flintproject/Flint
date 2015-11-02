@@ -23,7 +23,6 @@ import jp.oist.flint.sedml.SedmlException;
 import jp.oist.flint.sedml.SedmlReader;
 import jp.oist.flint.sedml.SedmlWriter;
 import jp.oist.flint.util.Utility;
-import com.google.protobuf.ByteString;
 import org.apache.log4j.Logger;
 import org.xml.sax.SAXException;
 import java.awt.BorderLayout;
@@ -479,11 +478,6 @@ public class MainFrame extends javax.swing.JFrame
     @Override
     public void showErrorDialog(String message, String title) {
         JOptionPane.showMessageDialog(this, message, title, JOptionPane.ERROR_MESSAGE);
-    }
-
-    @Override
-    public void showErrorDialog(ByteString message, String title) {
-        JOptionPane.showMessageDialog(this, message.toStringUtf8(), title, JOptionPane.ERROR_MESSAGE);
     }
 
     @Override

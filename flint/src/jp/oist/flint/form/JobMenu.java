@@ -16,7 +16,6 @@ import jp.oist.flint.job.Job;
 import jp.oist.flint.util.Utility;
 import jp.physiome.Ipc;
 import jp.sbi.garuda.platform.commons.net.GarudaConnectionNotInitializedException;
-import com.google.protobuf.ByteString;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
@@ -157,11 +156,6 @@ public class JobMenu implements IFrame {
                                       message,
                                       title,
                                       JOptionPane.ERROR_MESSAGE);
-    }
-
-    @Override
-    public void showErrorDialog(ByteString message, String title) {
-        showErrorDialog(message.toStringUtf8(), title);
     }
 
     private void showMessageDialog(String message, String title) {

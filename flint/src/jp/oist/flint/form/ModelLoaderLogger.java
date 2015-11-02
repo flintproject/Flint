@@ -2,7 +2,6 @@
 package jp.oist.flint.form;
 
 import jp.oist.flint.desktop.Desktop;
-import com.google.protobuf.ByteString;
 import java.awt.Dimension;
 import java.util.ArrayList;
 import javax.swing.JOptionPane;
@@ -40,10 +39,5 @@ public class ModelLoaderLogger implements IFrame {
         JScrollPane scrollPane = new JScrollPane(textArea);
         scrollPane.setPreferredSize(new Dimension(400, 100));
         JOptionPane.showMessageDialog(null, scrollPane, title, JOptionPane.ERROR_MESSAGE);
-    }
-
-    @Override
-    public void showErrorDialog(ByteString message, String title) {
-        showErrorDialog(message.toStringUtf8(), title);
     }
 }

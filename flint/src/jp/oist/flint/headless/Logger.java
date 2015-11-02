@@ -1,7 +1,6 @@
 /* -*- Mode: Java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- vim:set ts=4 sw=4 sts=4 et: */
 package jp.oist.flint.headless;
 
-import com.google.protobuf.ByteString;
 import jp.oist.flint.form.IFrame;
 
 class Logger implements IFrame {
@@ -20,10 +19,5 @@ class Logger implements IFrame {
     @Override
     public void showErrorDialog(String message, String title) {
         printError(title + " | " + message);
-    }
-
-    @Override
-    public void showErrorDialog(ByteString message, String title) {
-        printError(title + " | " + message.toStringUtf8());
     }
 }

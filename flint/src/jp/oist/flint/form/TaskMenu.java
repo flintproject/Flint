@@ -3,14 +3,12 @@ package jp.oist.flint.form;
 
 import jp.oist.flint.control.DirectoryChooser;
 import jp.oist.flint.dao.DaoException;
-import jp.oist.flint.dao.SimulationDao;
 import jp.oist.flint.dao.TaskDao;
 import jp.oist.flint.filesystem.Filename;
 import jp.oist.flint.form.job.ExportAllWorker;
 import jp.oist.flint.form.sub.ConfirmDialogForOverwritingFile;
 import jp.oist.flint.form.sub.InputDialogForExport;
 import jp.oist.flint.job.Job;
-import com.google.protobuf.ByteString;
 import java.awt.HeadlessException;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -169,11 +167,6 @@ public class TaskMenu implements IFrame {
                                       message,
                                       title,
                                       JOptionPane.ERROR_MESSAGE);
-    }
-
-    @Override
-    public void showErrorDialog(ByteString message, String title) {
-        showErrorDialog(message.toStringUtf8(), title);
     }
 
     private void showMessageDialog(String message, String title) {
