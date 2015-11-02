@@ -100,11 +100,13 @@ public class TaskWindow extends JFrame
             p *= cb.getItemCount();
         }
 
+        mTimer.cancel();
         remove(mCell);
+
         mCell = new JobCell(this, index);
         add(mCell, BorderLayout.CENTER);
+        repaint();
 
-        mTimer.cancel();
         mTimer = new Timer(TIMER_NAME, true);
         mTimer.scheduleAtFixedRate(new JobCellTimerTask(mTimer, mCell, mSimulationDao, mTask.getId(), index+1), 0, DELAY);
     }
