@@ -5,6 +5,13 @@
 #include <stdlib.h>
 #include <string.h>
 
+static void ReportFilename(sqlite3 *db)
+{
+	const char *name = sqlite3_db_filename(db, "main");
+	if (name)
+		fprintf(stderr, " with database %s\n", name);
+}
+
 int BeginTransaction(sqlite3 *db)
 {
 	char *em;
@@ -12,6 +19,7 @@ int BeginTransaction(sqlite3 *db)
 	if (e != SQLITE_OK) {
 		fprintf(stderr, "failed to begin transaction: %d: %s\n", e, em);
 		sqlite3_free(em);
+		ReportFilename(db);
 		return 0;
 	}
 	return 1;
@@ -24,6 +32,7 @@ int CommitTransaction(sqlite3 *db)
 	if (e != SQLITE_OK) {
 		fprintf(stderr, "failed to commit transaction: %d: %s\n", e, em);
 		sqlite3_free(em);
+		ReportFilename(db);
 		return 0;
 	}
 	return 1;
@@ -45,6 +54,7 @@ int CreateTable(sqlite3 *db, const char *name, const char *columns)
 		fprintf(stderr, "failed to create table %s: %d: %s\n",
 				name, e, em);
 		sqlite3_free(em);
+		ReportFilename(db);
 		return 0;
 	}
 	return 1;
@@ -70,6 +80,7 @@ int CreateView(sqlite3 *db, const char *name, const char *query)
 		fprintf(stderr, "failed to create view: %s: %d: %s\n",
 				name, e, em);
 		sqlite3_free(em);
+		ReportFilename(db);
 		return 0;
 	}
 	return 1;
@@ -84,6 +95,7 @@ int CreateSingleton(sqlite3 *db)
 	if (e != SQLITE_OK) {
 		fprintf(stderr, "failed to create spaces: %d: %s\n", e, em);
 		sqlite3_free(em);
+		ReportFilename(db);
 		return 0;
 	}
 	e = sqlite3_exec(db, "CREATE VIEW IF NOT EXISTS scopes AS SELECT X'00000000000000000000000000000000' AS uuid, X'00000000000000000000000000000000' AS space_id, NULL AS label",
@@ -91,6 +103,7 @@ int CreateSingleton(sqlite3 *db)
 	if (e != SQLITE_OK) {
 		fprintf(stderr, "failed to create scopes: %d: %s\n", e, em);
 		sqlite3_free(em);
+		ReportFilename(db);
 		return 0;
 	}
 	if (!CreateTable(db, "names", "(space_id BLOB, type TEXT, id INTEGER, name TEXT, unit TEXT, capacity REAL)"))
@@ -121,16 +134,19 @@ int SaveNol(int nol, sqlite3 *db)
 	e = sqlite3_prepare_v2(db, kQuery, -1, &stmt, NULL);
 	if (e != SQLITE_OK) {
 		fprintf(stderr, "failed to prepare statement: %d\n", e);
+		ReportFilename(db);
 		return 0;
 	}
 	e = sqlite3_bind_int(stmt, 1, nol);
 	if (e != SQLITE_OK) {
 		fprintf(stderr, "failed to bind nol: %d\n", e);
+		ReportFilename(db);
 		goto bail;
 	}
 	e = sqlite3_step(stmt);
 	if (e != SQLITE_DONE) {
 		fprintf(stderr, "failed to step: %d\n", e);
+		ReportFilename(db);
 		goto bail;
 	}
 	r = 1;
@@ -172,6 +188,7 @@ int CreateConfig(sqlite3 *db)
 	if (e != SQLITE_OK) {
 		fprintf(stderr, "failed to insert config: %d: %s\n", e, em);
 		sqlite3_free(em);
+		ReportFilename(db);
 		return 0;
 	}
 	return 1;
