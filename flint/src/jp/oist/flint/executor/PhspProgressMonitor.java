@@ -51,11 +51,11 @@ public class PhspProgressMonitor extends SwingWorker<Void, Job> {
             JobWindow jobWindow = subFrame.getJobWindow();
             if (jobWindow != null) {
                 int index = jobWindow.indexOf(combination);
-
-                jobWindow.setProgress(index, job);
-
-                if (taskDao.isCancelled())
-                    jobWindow.setCancelled(index, true);
+                if (index >= 0) {
+                    jobWindow.setProgress(index, job);
+                    if (taskDao.isCancelled())
+                        jobWindow.setCancelled(index, true);
+                }
             }
 
             int taskProgress = taskDao.getProgress();
