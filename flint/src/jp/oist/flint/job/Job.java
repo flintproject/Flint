@@ -5,7 +5,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.nio.MappedByteBuffer;
-import java.util.Collections;
 import java.util.Locale;
 import java.util.Map;
 
@@ -15,21 +14,20 @@ public class Job {
 
     private final static int CANCEL_OPEARTION = 0x01;
 
-    private final Map<String, Number> mCombination;
-
     private final MappedByteBuffer mProgressBuffer;
 
     private final int mJobId;
 
     private final int mTaskId;
 
-    public Job(int taskId, File workingDir, Map<String, Number> combination, MappedByteBuffer mbb, int jobId) {
+    private Map<String, Number> mCombination;
+
+    public Job(int taskId, File workingDir, MappedByteBuffer mbb, int jobId) {
         mTaskId = taskId;
         mWorkingDir = workingDir;
         mJobId = jobId;
-
-        mCombination = combination;
         mProgressBuffer = mbb;
+        mCombination = null;
     }
 
     public int getTaskId() {
@@ -55,8 +53,13 @@ public class Job {
         return true;
     }
 
-    public Map<String, Number> getCombination() {
-        return Collections.unmodifiableMap(mCombination);
+    public synchronized Map<String, Number> getCombination() throws IOException {
+        if (mCombination != null)
+            return mCombination;
+
+        ParameterArray pa = new ParameterArray(new File(mWorkingDir, "values.txt"));
+        mCombination = pa.toMap();
+        return mCombination;
     }
 
     public Progress getProgress() {

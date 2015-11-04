@@ -2,6 +2,7 @@
 package jp.oist.flint.job;
 
 import java.util.ArrayList;
+import java.util.Map;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -25,6 +26,32 @@ public class ParameterArrayTest {
 
     @After
     public void tearDown() {
+    }
+
+    @Test
+    public void testToMap() {
+        ArrayList<String> pa;
+        Map<String, Number> map;
+
+        pa = new ArrayList<>();
+        map = new ParameterArray(pa).toMap();
+        assertTrue(map.isEmpty());
+
+        pa = new ArrayList<>();
+        pa.add("defaultValue=0.0");
+        map = new ParameterArray(pa).toMap();
+        assertEquals(1, map.size());
+        assertEquals(0.0, map.get("defaultValue"));
+
+        pa = new ArrayList<>();
+        pa.add("a=1.0");
+        pa.add("b=-2.5");
+        pa.add("c=3.14");
+        map = new ParameterArray(pa).toMap();
+        assertEquals(3, map.size());
+        assertEquals(1.0, map.get("a"));
+        assertEquals(-2.5, map.get("b"));
+        assertEquals(3.14, map.get("c"));
     }
 
     @Test

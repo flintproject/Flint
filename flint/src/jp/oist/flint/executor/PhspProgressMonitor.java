@@ -14,7 +14,6 @@ import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
-import java.util.Map;
 import javax.swing.SwingWorker;
 
 public class PhspProgressMonitor extends SwingWorker<Void, Job> {
@@ -42,7 +41,6 @@ public class PhspProgressMonitor extends SwingWorker<Void, Job> {
      */
     private void displayProgress(Job job) {
         int taskId = job.getTaskId();
-        Map<String, Number> combination = job.getCombination();
         try {
             TaskDao taskDao = mSimulationDao.obtainTask(taskId);
             String modelPath = taskDao.getModelPath();
@@ -50,7 +48,7 @@ public class PhspProgressMonitor extends SwingWorker<Void, Job> {
 
             JobWindow jobWindow = subFrame.getJobWindow();
             if (jobWindow != null) {
-                int index = jobWindow.indexOf(combination);
+                int index = jobWindow.indexOf(job.getCombination());
                 if (index >= 0) {
                     jobWindow.setProgress(index, job);
                     if (taskDao.isCancelled())

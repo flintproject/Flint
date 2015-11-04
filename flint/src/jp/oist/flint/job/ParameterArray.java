@@ -4,6 +4,8 @@ package jp.oist.flint.job;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Scanner;
 
 /*
@@ -25,6 +27,17 @@ public class ParameterArray {
 
     public ParameterArray(ArrayList<String> list) {
         mList = list;
+    }
+
+    public Map<String, Number> toMap() {
+        HashMap<String, Number> m = new HashMap<>();
+        for (String line : mList) {
+            String[] s = line.split("=");
+            if (s.length != 2)
+                continue; // TODO
+            m.put(s[0], Double.parseDouble(s[1]));
+        }
+        return m;
     }
 
     @Override

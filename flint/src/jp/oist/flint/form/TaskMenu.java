@@ -17,7 +17,6 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Map;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
 import javax.swing.JFrame;
@@ -82,7 +81,6 @@ public class TaskMenu implements IFrame {
 
         ArrayList<File> isdFiles = new ArrayList<>();
         ArrayList<File> targetFiles = new ArrayList<>();
-        ArrayList<Map<String, Number>> parameters = new ArrayList<>();
         int numJobs = mTaskDao.getCount();
         int numDigits = String.valueOf(numJobs).getBytes(StandardCharsets.UTF_8).length;
         for (int i=1; i<=numJobs; i++) {
@@ -107,7 +105,6 @@ public class TaskMenu implements IFrame {
             }
             isdFiles.add(isdFile);
             targetFiles.add(targetFile);
-            parameters.add(job.getCombination());
         }
 
         final ExportAllWorker worker = new ExportAllWorker(this,
@@ -115,8 +112,7 @@ public class TaskMenu implements IFrame {
                                                            extension,
                                                            listFile,
                                                            isdFiles,
-                                                           targetFiles,
-                                                           parameters);
+                                                           targetFiles);
 
         worker.addPropertyChangeListener(new PropertyChangeListener() {
             @Override

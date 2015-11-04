@@ -9,7 +9,6 @@ import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
@@ -75,7 +74,7 @@ public class TaskDao extends DaoObject {
                 return false;
             }
             return true;
-        } catch (DaoException | IOException | SQLException ex) {
+        } catch (DaoException | IOException ex) {
             return false;
         }
     }
@@ -101,13 +100,14 @@ public class TaskDao extends DaoObject {
         return result;
     }
 
-    public Job obtainJob(int jobId) throws DaoException, IOException, SQLException {
+    public Job obtainJob(int jobId) throws DaoException, IOException {
         assert jobId > 0;
 
         fetch();
         File workingDir = Job.buildPath(mWorkingDir, jobId);
-        Map<String, Number> combination = getCombination(jobId);
-        return new Job(mTaskId, workingDir, combination, mProgressBuffer, jobId);
+        if (!workingDir.isDirectory())
+            throw new DaoException("no directory for job " + jobId);
+        return new Job(mTaskId, workingDir, mProgressBuffer, jobId);
     }
 
     public int indexOf(Number[] combination, String[] titles)
@@ -181,27 +181,6 @@ public class TaskDao extends DaoObject {
     public int getProgress() throws DaoException, IOException {
         fetch();
         return mProgressBuffer.get(0);
-    }
-
-    private Map<String, Number> getCombination(int jobId)
-        throws DaoException, IOException, SQLException {
-        String sql = "SELECT e.* FROM jobs AS j LEFT JOIN enum AS e ON j.enum_id = e.rowid WHERE j.rowid = ?";
-        try (PreparedStatement stmt = getConnection().prepareStatement(sql)) {
-            stmt.setInt(1, jobId); // base 1
-            try (ResultSet result = stmt.executeQuery()) {
-                if (!result.next())
-                    throw new DaoException("no job of job-id " + jobId);
-
-                ResultSetMetaData metaData = result.getMetaData();
-                int columnCount = metaData.getColumnCount();
-                HashMap<String, Number> map = new HashMap<>();
-                for (int index=1; index<=columnCount; index++) { // base 1
-                    String column = metaData.getColumnName(index);
-                    map.put(column, result.getDouble(index));
-                }
-                return map;
-            }
-        }
     }
 
     public File getWorkingDir() {

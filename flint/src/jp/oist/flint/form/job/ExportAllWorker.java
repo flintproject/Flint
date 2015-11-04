@@ -4,6 +4,7 @@ package jp.oist.flint.form.job;
 import jp.oist.flint.export.ExportWorker;
 import jp.oist.flint.filesystem.Workspace;
 import jp.oist.flint.form.IFrame;
+import jp.oist.flint.job.ParameterArray;
 import java.awt.Component;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -12,7 +13,6 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import javax.swing.ProgressMonitor;
 import javax.swing.SwingWorker;
@@ -31,18 +31,15 @@ public class ExportAllWorker extends SwingWorker<Boolean, Void> {
 
     private final List<File> mTargetFiles;
 
-    private final List<Map<String, Number>> mParameters;
-
     public ExportAllWorker(IFrame frame,
                            Component component,
                            String extension,
                            File listFile,
-                           List<File> sourceFiles, List<File> targetFiles,
-                           List<Map<String, Number>> parameters) {
+                           List<File> sourceFiles,
+                           List<File> targetFiles) {
         mFrame = frame;
         int size = sourceFiles.size();
         assert size == targetFiles.size();
-        assert size == parameters.size();
         mMonitor = new ProgressMonitor(component,
                                        "Exporting ...",
                                        null,
@@ -53,7 +50,6 @@ public class ExportAllWorker extends SwingWorker<Boolean, Void> {
         mListFile = listFile;
         mSourceFiles = sourceFiles;
         mTargetFiles = targetFiles;
-        mParameters = parameters;
     }
 
     @Override
@@ -83,7 +79,7 @@ public class ExportAllWorker extends SwingWorker<Boolean, Void> {
                     break;
                 }
 
-                String line = createLine(targetFile, mParameters.get(i));
+                String line = createLine(targetFile, new File(sourceFile.getParent(), "values.txt"));
                 writer.write(line);
                 writer.newLine();
 
@@ -98,13 +94,14 @@ public class ExportAllWorker extends SwingWorker<Boolean, Void> {
         mMonitor.close();
     }
 
-    private String createLine(File file, Map<String, Number> map) {
+    private String createLine(File file, File values_file)
+        throws IOException {
         StringBuilder sb = new StringBuilder(file.getName());
-        for (Map.Entry<String, Number> entry : map.entrySet()) {
+        ParameterArray pa = new ParameterArray(values_file);
+        String s = pa.toString();
+        if (!s.isEmpty()) {
             sb.append(",");
-            sb.append(entry.getKey());
-            sb.append("=");
-            sb.append(entry.getValue());
+            sb.append(s);
         }
         return sb.toString();
     }
