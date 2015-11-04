@@ -17,7 +17,7 @@ JARS := \
     jsonic-1.2.10 \
     log4j-1.2.17 \
     protobuf-java-$(PROTOBUF_VERSION) \
-    sqlite-jdbc-3.8.6
+    sqlite-jdbc-3.8.11.2
 BOOST_DYLIBS := \
     filesystem \
     program_options \

@@ -9,7 +9,7 @@ JARS := \
     jsonic-1.2.10 \
     log4j-1.2.17 \
     protobuf-java-2.6.1 \
-    sqlite-jdbc-3.8.6
+    sqlite-jdbc-3.8.11.2
 BIN_DLLS := \
     libODES-0 \
     libprotobuf-9 \
