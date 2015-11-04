@@ -199,7 +199,7 @@ bool Generate(sqlite3 *input, const char *dir, int *job_id)
 		return false;
 	}
 	if (!CommitTransaction(input)) {
-		fclose(fp)
+		fclose(fp);
 		return false;
 	}
 	fclose(fp);
