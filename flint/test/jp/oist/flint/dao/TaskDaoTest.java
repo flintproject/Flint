@@ -102,13 +102,25 @@ public class TaskDaoTest {
         titles = new String[] {"Nothing"};
 
         task = mSimulationDao.obtainTask(taskId);
-        assertEquals(-1, task.indexOf(combination, titles));
+        try {
+            int i = task.indexOf(combination, titles);
+            fail("exception expected: " + i);
+        } catch (SQLException e) {
+            assertEquals("[SQLITE_ERROR] SQL error or missing database (no such column: e.Nothing)",
+                         e.getMessage());
+        }
 
         combination = new Number[] { 0 };
         titles = new String[] {"Nothing"};
 
         task = mSimulationDao.obtainTask(taskId);
-        assertEquals(-1, task.indexOf(combination, titles));
+        try {
+            int i = task.indexOf(combination, titles);
+            fail("exception expected: " + i);
+        } catch (SQLException e) {
+            assertEquals("[SQLITE_ERROR] SQL error or missing database (no such column: e.Nothing)",
+                         e.getMessage());
+        }
     }
 
     @Test
@@ -131,13 +143,25 @@ public class TaskDaoTest {
         combination.put("Nothing", 299.1);
 
         task = mSimulationDao.obtainTask(taskId);
-        assertEquals(-1, task.indexOf(combination));
+        try {
+            int i = task.indexOf(combination);
+            fail("exception expected: " + i);
+        } catch (SQLException e) {
+            assertEquals("[SQLITE_ERROR] SQL error or missing database (no such column: e.Nothing)",
+                         e.getMessage());
+        }
 
         combination.clear();
         combination.put("Nothing", 0);
 
         task = mSimulationDao.obtainTask(taskId);
-        assertEquals(-1, task.indexOf(combination));
+        try {
+            int i = task.indexOf(combination);
+            fail("exception expected: " + i);
+        } catch (SQLException e) {
+            assertEquals("[SQLITE_ERROR] SQL error or missing database (no such column: e.Nothing)",
+                         e.getMessage());
+        }
     }
 
     @Test

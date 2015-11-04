@@ -110,7 +110,8 @@ public class TaskDao extends DaoObject {
         return new Job(mTaskId, workingDir, combination, mProgressBuffer, jobId);
     }
 
-    public int indexOf(Number[] combination, String[] titles) {
+    public int indexOf(Number[] combination, String[] titles)
+        throws IOException, SQLException {
         assert combination.length == titles.length;
 
         int length = combination.length;
@@ -122,7 +123,8 @@ public class TaskDao extends DaoObject {
         return indexOf(map);
     }
 
-    public int indexOf(Map<String, Number> combination) {
+    public int indexOf(Map<String, Number> combination)
+        throws IOException, SQLException {
         String sql = "SELECT js.rowid AS rowid FROM jobs AS js "
             + "LEFT JOIN enum AS e "
             + "ON js.enum_id = e.rowid ";
@@ -155,12 +157,6 @@ public class TaskDao extends DaoObject {
 
                 return result.getInt("rowid");
             }
-        } catch (SQLException ex) {
-            printError(ex.getErrorCode(), ex.getMessage());
-            return -1;
-        } catch (IOException ex) {
-            printError(ex.getMessage());
-            return -1;
         }
     }
 

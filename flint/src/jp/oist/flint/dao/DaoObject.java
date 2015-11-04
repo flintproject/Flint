@@ -1,7 +1,6 @@
 /* -*- Mode: Java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- vim:set ts=4 sw=4 sts=4 et: */
 package jp.oist.flint.dao;
 
-import org.apache.log4j.Logger;
 import org.sqlite.SQLiteConfig;
 import java.io.File;
 import java.io.IOException;
@@ -67,14 +66,4 @@ public abstract class DaoObject implements AutoCloseable {
             mConnection.close();
 
     }
-
-    void printError (int errCode, String msg) {
-        Logger.getRootLogger().error(String.format("ERROR [%s] : %s", 
-                errCode, msg));
-    }
-
-    void printError (String msg) {
-        Logger.getRootLogger().error(String.format("ERROR : %s", msg));
-    }
-
 }
