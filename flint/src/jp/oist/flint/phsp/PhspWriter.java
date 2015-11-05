@@ -43,18 +43,11 @@ public class PhspWriter {
                TransformerException {
         try (OutputStreamWriter osw = new OutputStreamWriter(os, StandardCharsets.UTF_8);
              BufferedWriter writer = new BufferedWriter(osw)) {
-            StringBuilder sb = new StringBuilder();
-
             int sw = 0;
-
             writeLine("<?xml version='1.0' encoding='UTF-8'?>", sw, writer);
-            sb.append("<phsp")
-                    .append(String.format(" xmlns='%s'", "http://www.physiodesigner.org/2013/ns/phsp/1.0"))
-                    .append(String.format(" xmlns:m='%s'", "http://www.w3.org/1998/Math/MathML"))
-                    .append(" version='1.0'")
-                    .append(">");
-            writeLine(sb.toString(), sw, writer);
-            sb.setLength(0);
+            writeLine("<phsp xmlns='http://www.physiodesigner.org/2013/ns/phsp/1.0' xmlns:m='http://www.w3.org/1998/Math/MathML' version='1.0'>", sw, writer);
+
+            StringBuilder sb = new StringBuilder();
             sw += SHIFT_WIDTH;
 
             for (Model model : conf.getModels()) {
