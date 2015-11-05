@@ -18,6 +18,7 @@ import jp.oist.flint.phsp.IPhspConfiguration;
 import jp.oist.flint.phsp.PhspException;
 import jp.oist.flint.phsp.entity.Model;
 import jp.oist.flint.sedml.SedmlException;
+import jp.oist.flint.textformula.analyzer.ParseException;
 import org.apache.log4j.Logger;
 import java.awt.HeadlessException;
 import java.beans.PropertyChangeEvent;
@@ -181,8 +182,13 @@ public class Desktop implements IPhspConfiguration {
     }
 
     public PhspSimulator runSimulation(final MainFrame mainFrame)
-        throws IOException, ParserConfigurationException, PhspException,
-               SQLException, SedmlException, TransformerException {
+        throws IOException,
+               ParseException,
+               ParserConfigurationException,
+               PhspException,
+               SQLException,
+               SedmlException,
+               TransformerException {
         // First of all, notify that simulation is requested
         for (ISimulationListener listener : mSimulationListeners.getListeners(ISimulationListener.class)) {
             listener.simulationRequested();

@@ -36,7 +36,11 @@ public class PhspWriter {
     }
 
     public void write (IPhspConfiguration conf, OutputStream os, boolean removeParameterIfNotUsed) 
-        throws IOException, ParserConfigurationException, PhspException, TransformerException {
+        throws IOException,
+               ParseException,
+               ParserConfigurationException,
+               PhspException,
+               TransformerException {
         try (OutputStreamWriter osw = new OutputStreamWriter(os, StandardCharsets.UTF_8);
              BufferedWriter writer = new BufferedWriter(osw)) {
             StringBuilder sb = new StringBuilder();
@@ -87,20 +91,17 @@ public class PhspWriter {
                     writeLine(sb.toString(), sw, writer);
                     sb.setLength(0);
                     sw += SHIFT_WIDTH;
-                    try {
-                        TextFormula2MathML s2mathml = new TextFormula2MathML();
-                        s2mathml.parse(new StringReader(t.getValue()));
-                        String mathml = s2mathml.getMathML();
 
-                        sb.append("<value>");
-                        sb.append(mathml);
-                        sb.append("</value>");
-                        writeLine(sb.toString(), sw, writer);
-                        sb.setLength(0);
+                    TextFormula2MathML s2mathml = new TextFormula2MathML();
+                    s2mathml.parse(new StringReader(t.getValue()));
+                    String mathml = s2mathml.getMathML();
 
-                    } catch (ParseException ex) {
-                        throw new IOException("Invalid parameter in expressior", ex);
-                    }
+                    sb.append("<value>");
+                    sb.append(mathml);
+                    sb.append("</value>");
+                    writeLine(sb.toString(), sw, writer);
+                    sb.setLength(0);
+
                     sw -= SHIFT_WIDTH;
                     writeLine("</target>", sw, writer);
                 }

@@ -1,9 +1,16 @@
 /* -*- Mode: Java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- vim:set ts=4 sw=4 sts=4 et: */
-
 package jp.oist.flint.executor;
 
+import jp.oist.flint.dao.SimulationDao;
+import jp.oist.flint.filesystem.Workspace;
+import jp.oist.flint.phsp.IPhspConfiguration;
 import jp.oist.flint.phsp.PhspException;
+import jp.oist.flint.phsp.PhspWriter;
+import jp.oist.flint.phsp.entity.Model;
+import jp.oist.flint.sedml.ISimulationConfigurationList;
 import jp.oist.flint.sedml.SedmlException;
+import jp.oist.flint.sedml.SedmlWriter;
+import jp.oist.flint.textformula.analyzer.ParseException;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -12,13 +19,6 @@ import java.util.Date;
 import javax.swing.SwingWorker;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
-import jp.oist.flint.dao.SimulationDao;
-import jp.oist.flint.filesystem.Workspace;
-import jp.oist.flint.phsp.IPhspConfiguration;
-import jp.oist.flint.phsp.PhspWriter;
-import jp.oist.flint.phsp.entity.Model;
-import jp.oist.flint.sedml.ISimulationConfigurationList;
-import jp.oist.flint.sedml.SedmlWriter;
 
 public class PhspSimulator extends SwingWorker <Boolean, Integer> {
 
@@ -41,8 +41,12 @@ public class PhspSimulator extends SwingWorker <Boolean, Integer> {
     public PhspSimulator (SimulatorService service, 
                             ISimulationConfigurationList sedml, 
                             IPhspConfiguration phsp) 
-        throws IOException, ParserConfigurationException, PhspException,
-               SedmlException, TransformerException {
+        throws IOException,
+               ParseException,
+               ParserConfigurationException,
+               PhspException,
+               SedmlException,
+               TransformerException {
 
         mService = service;
         mSedmlConfig = sedml;

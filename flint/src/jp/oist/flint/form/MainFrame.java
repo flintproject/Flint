@@ -22,6 +22,7 @@ import jp.oist.flint.sedml.ISimulationConfigurationList;
 import jp.oist.flint.sedml.SedmlException;
 import jp.oist.flint.sedml.SedmlReader;
 import jp.oist.flint.sedml.SedmlWriter;
+import jp.oist.flint.textformula.analyzer.ParseException;
 import jp.oist.flint.util.Utility;
 import org.apache.log4j.Logger;
 import org.xml.sax.SAXException;
@@ -351,7 +352,11 @@ public class MainFrame extends javax.swing.JFrame
                 }
                 JOptionPane.showMessageDialog(this, "Saved phsp as " + file.getPath());
            }
-        } catch (IOException | ParserConfigurationException | PhspException | TransformerException ex) {
+        } catch (IOException |
+                 ParseException |
+                 ParserConfigurationException |
+                 PhspException |
+                 TransformerException ex) {
             showErrorDialog(ex.getMessage(), "Saving as PHSP failed");
         } finally {
             setEnabled(true);
@@ -387,8 +392,13 @@ public class MainFrame extends javax.swing.JFrame
     public void simulationRunPerformed(Object source) {
         try {
             mSimulator = mDesktop.runSimulation(this);
-        } catch (IOException | ParserConfigurationException | PhspException |
-                 SQLException | SedmlException | TransformerException ex) {
+        } catch (IOException |
+                 ParseException |
+                 ParserConfigurationException |
+                 PhspException |
+                 SQLException |
+                 SedmlException |
+                 TransformerException ex) {
             showErrorDialog(ex.getMessage(), "ERROR");
         }
     }
