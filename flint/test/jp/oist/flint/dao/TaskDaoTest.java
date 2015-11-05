@@ -63,7 +63,7 @@ public class TaskDaoTest {
     }
 
     @Test
-    public void testObtainJob() throws DaoException, IOException {
+    public void testObtainJob() throws DaoException, IOException, SQLException {
         int taskId = 1;
         int jobId = 1;
         TaskDao task = mSimulationDao.obtainTask(taskId);
@@ -72,7 +72,7 @@ public class TaskDaoTest {
     }
 
     @Test
-    public void testObtainJob__no_such_job_id() throws DaoException, IOException {
+    public void testObtainJob__no_such_job_id() throws DaoException, IOException, SQLException {
         TaskDao task = mSimulationDao.obtainTask(1);
         try {
             task.obtainJob(21);
