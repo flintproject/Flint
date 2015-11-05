@@ -17,6 +17,7 @@ import java.util.Arrays;
 import java.util.Locale;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
+import jp.oist.flint.phsp.entity.Parameter;
 
 public class PhspWriter {
 
@@ -109,11 +110,11 @@ public class PhspWriter {
                 writeLine("<parameter-set>", sw, writer);
                 sw += SHIFT_WIDTH;
 
-                ParameterSet.Parameter[] parameters = ps.getParameters();
+                Parameter[] parameters = ps.getParameters();
                 if (parameters.length == 0)
                     parameters = new ParameterSet.Dummy().getParameters();
 
-                for (ParameterSet.Parameter p : parameters) {
+                for (Parameter p : parameters) {
                     String name = p.getName();
                     writeLine(String.format("<parameter name='%s'>", name), sw, writer);
                     sw += SHIFT_WIDTH;

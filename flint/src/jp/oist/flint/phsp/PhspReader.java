@@ -31,6 +31,7 @@ import javax.xml.validation.Validator;
 
 import jp.oist.flint.phsp.entity.Model;
 import jp.oist.flint.phsp.entity.Model.ModelFormat;
+import jp.oist.flint.phsp.entity.Parameter;
 import jp.oist.flint.phsp.entity.ParameterSet;
 import jp.oist.flint.phsp.entity.TargetSet;
 import jp.oist.flint.textformula.mathml.MathML2TextFormula;
@@ -178,7 +179,7 @@ public class PhspReader extends SwingWorker <IPhspConfiguration, Model> {
             Element child = (Element)item;
             String localName = child.getLocalName();
             if ("parameter".equals(localName)) {
-                ParameterSet.Parameter pp = visitParameter(child);
+                Parameter pp = visitParameter(child);
                 pp.setName(child.getAttribute("name"));
                     parameterSet.add(pp);
             }
@@ -186,10 +187,10 @@ public class PhspReader extends SwingWorker <IPhspConfiguration, Model> {
         return parameterSet;
     }
 
-    private ParameterSet.Parameter visitParameter(Element element)
+    private Parameter visitParameter(Element element)
         throws PhspException {
         int length = element.getChildNodes().getLength();
-        ParameterSet.Parameter pp = new ParameterSet.Parameter();
+        Parameter pp = new Parameter();
 
         for (int i=0; i<length; i++) {
             Node item = element.getChildNodes().item(i);
@@ -201,9 +202,9 @@ public class PhspReader extends SwingWorker <IPhspConfiguration, Model> {
                 String type = child.getAttribute("type");
                 if (type == null)
                     throw new PhspException("range without type");
-                ParameterSet.ParameterType eType;
+                Parameter.Type eType;
                 try {
-                    eType = ParameterSet.ParameterType.valueOf(type.trim().toUpperCase(Locale.ENGLISH));
+                    eType = Parameter.Type.valueOf(type.trim().toUpperCase(Locale.ENGLISH));
                 } catch (IllegalArgumentException iae) {
                     throw new PhspException("unknown type of range: " + type, iae);
                 }

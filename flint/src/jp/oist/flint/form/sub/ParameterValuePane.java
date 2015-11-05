@@ -2,6 +2,15 @@
 package jp.oist.flint.form.sub;
 
 import jp.oist.flint.desktop.Document;
+import jp.oist.flint.form.util.FormulaAutoCompleter;
+import jp.oist.flint.parameter.ParameterModel;
+import jp.oist.flint.parameter.PhmlParameterModel;
+import jp.oist.flint.parameter.SbmlParameterModel;
+import jp.oist.flint.phsp.entity.Model;
+import jp.oist.flint.phsp.entity.Parameter;
+import jp.oist.flint.phsp.entity.ParameterSet;
+import jp.oist.flint.phsp.entity.TargetSet;
+import jp.physiome.Ipc;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
@@ -38,14 +47,6 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
-import jp.oist.flint.form.util.FormulaAutoCompleter;
-import jp.oist.flint.parameter.ParameterModel;
-import jp.oist.flint.parameter.PhmlParameterModel;
-import jp.oist.flint.parameter.SbmlParameterModel;
-import jp.oist.flint.phsp.entity.Model;
-import jp.oist.flint.phsp.entity.ParameterSet;
-import jp.oist.flint.phsp.entity.TargetSet;
-import jp.physiome.Ipc;
 
 public class ParameterValuePane extends JPanel 
     implements PropertyChangeListener {
@@ -341,7 +342,7 @@ public class ParameterValuePane extends JPanel
     public void fireUpdateAutoCompeleter () {
         mAutoCompleter.clear();
         ParameterSet ps = mValueEditWindow.getParameterSet();
-        for (ParameterSet.Parameter p : ps.getParameters()) {
+        for (Parameter p : ps.getParameters()) {
             if (p.isEmpty())
                 continue;
 

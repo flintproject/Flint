@@ -32,7 +32,7 @@ public class ParameterTest {
     @Test
     public void testValidateName() {
         String name = "value";
-        ParameterSet.Parameter p = new ParameterSet.Parameter();
+        Parameter p = new Parameter();
 
         boolean result = true;
         try {
@@ -86,7 +86,7 @@ public class ParameterTest {
 
     @Test
     public void testValidateValue() {
-        ParameterSet.Parameter p = new ParameterSet.Parameter();
+        Parameter p = new Parameter();
 
 
         String enumValue;
@@ -94,7 +94,7 @@ public class ParameterTest {
 
 
         /* Test for Enum value */
-        p.setType(ParameterSet.ParameterType.ENUM);
+        p.setType(Parameter.Type.ENUM);
         enumValue = "1";
         result = true;
         try {

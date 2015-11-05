@@ -64,7 +64,7 @@ public class Model {
 
         for (String name : usingParameterNames) {
             boolean exists = false;
-            for (ParameterSet.Parameter p : ps.getParameters()) {
+            for (Parameter p : ps.getParameters()) {
                 if (p.getName().equals(name)) {
                     exists = true;
                     break;

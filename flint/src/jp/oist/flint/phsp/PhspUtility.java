@@ -7,6 +7,7 @@ import java.math.BigDecimal;
 import java.math.MathContext;
 import java.util.ArrayList;
 import java.util.List;
+import jp.oist.flint.phsp.entity.Parameter;
 import jp.oist.flint.phsp.entity.ParameterSet;
 
 public class PhspUtility {
@@ -14,7 +15,7 @@ public class PhspUtility {
     public static int calculateCombinationCount (ParameterSet pset) {
         int combinationCount = -1;
 
-        for (ParameterSet.Parameter p : pset.getParameters()) {
+        for (Parameter p : pset.getParameters()) {
             int size = 1;
             switch(p.getType()) {
             case ENUM:

@@ -1,6 +1,10 @@
 /* -*- Mode: Java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- vim:set ts=4 sw=4 sts=4 et: */
 package jp.oist.flint.form.sub;
 
+import jp.oist.flint.phsp.entity.Parameter;
+import jp.oist.flint.phsp.entity.ParameterSet;
+import jp.oist.flint.util.Randomizer;
+import jp.oist.flint.util.Utility;
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Color;
@@ -46,9 +50,6 @@ import javax.swing.table.AbstractTableModel;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.text.JTextComponent;
-import jp.oist.flint.phsp.entity.ParameterSet;
-import jp.oist.flint.util.Randomizer;
-import jp.oist.flint.util.Utility;
 
 public class ValueEditWindow extends JFrame
     implements ItemListener, ListSelectionListener, ActionListener,
@@ -168,7 +169,7 @@ public class ValueEditWindow extends JFrame
             @Override
             public void itemStateChanged(ItemEvent evt) {
                 int rowIndex = getSelectedRow();
-                String name = ParameterSet.Parameter.USE_RANDOMIZER;
+                String name = Parameter.USE_RANDOMIZER;
 
                 JCheckBox checkbox = (JCheckBox)evt.getSource();
                 boolean isSelected  = checkbox.isSelected();
@@ -202,7 +203,7 @@ public class ValueEditWindow extends JFrame
         txt_Count.setActionCommand(ACTION_GENERATE);
         txt_Count.addActionListener(this);
 
-        addRow(new ParameterSet.Parameter());
+        addRow(new Parameter());
     }
 
     @Override
@@ -244,11 +245,11 @@ public class ValueEditWindow extends JFrame
         if (chk_Interval.equals(radioBtn)) {
             cardName = CARD_INTERVAL;
             tableModel.setParameterValue(rowIndex, 
-                    ParameterSet.Parameter.TYPE, ParameterSet.ParameterType.INTERVAL);
+                    Parameter.TYPE, Parameter.Type.INTERVAL);
         } else {
             cardName = CARD_ENUM;
             tableModel.setParameterValue(rowIndex, 
-                    ParameterSet.Parameter.TYPE, ParameterSet.ParameterType.ENUM);
+                    Parameter.TYPE, Parameter.Type.ENUM);
         }
         CardLayout layout =(CardLayout)pnl_EditorPane.getLayout();
         layout.show(pnl_EditorPane, cardName);
@@ -261,7 +262,7 @@ public class ValueEditWindow extends JFrame
             return;
 
         ParameterSetTableModel tableModel = (ParameterSetTableModel)tbl_Values.getModel();
-        ParameterSet.Parameter p = tableModel.getRow(selectedRow);
+        Parameter p = tableModel.getRow(selectedRow);
 
         updateComponents(p);
     }
@@ -271,28 +272,28 @@ public class ValueEditWindow extends JFrame
             return null;
         switch (name) {
         case NAME_TEXT:
-            return ParameterSet.Parameter.NAME;
+            return Parameter.NAME;
         case ENUM_VALUE_TEXT:
-            return ParameterSet.Parameter.ENUM_VALUE;
+            return Parameter.ENUM_VALUE;
         case RM_COUNT_TEXT:
-            return ParameterSet.Parameter.RANDOMIZER_COUNT;
+            return Parameter.RANDOMIZER_COUNT;
         case RM_SEED_TEXT:
-            return ParameterSet.Parameter.RANDOMIZER_SEED;
+            return Parameter.RANDOMIZER_SEED;
         case RM_LOWER_LIMIT_TEXT:
-            return ParameterSet.Parameter.RANDOMIZER_LOWER_LIMIT;
+            return Parameter.RANDOMIZER_LOWER_LIMIT;
         case RM_UPPER_LIMIT_TEXT:
-            return ParameterSet.Parameter.RANDOMIZER_UPPER_LIMIT;
+            return Parameter.RANDOMIZER_UPPER_LIMIT;
         case RANGE_LOWER_TEXT:
-            return ParameterSet.Parameter.RANGE_LOWER;
+            return Parameter.RANGE_LOWER;
         case RANGE_UPPER_TEXT:
-            return ParameterSet.Parameter.RANGE_UPPER;
+            return Parameter.RANGE_UPPER;
         case RANGE_STEP_TEXT:
-            return ParameterSet.Parameter.RANGE_STEP;
+            return Parameter.RANGE_STEP;
         }
         return null;
     }
 
-    private void updateComponents (ParameterSet.Parameter p) {
+    private void updateComponents (Parameter p) {
 
         for (JTextComponent textComponent : mTextComponents) {
             String key = getParameterKey(textComponent.getName());
@@ -300,8 +301,8 @@ public class ValueEditWindow extends JFrame
             textComponent.setText((value == null)? "" : value.toString());
         }
 
-        ParameterSet.ParameterType type = p.getType();
-        Boolean useRandomizer = (Boolean)p.get(ParameterSet.Parameter.USE_RANDOMIZER);
+        Parameter.Type type = p.getType();
+        Boolean useRandomizer = (Boolean)p.get(Parameter.USE_RANDOMIZER);
         if (useRandomizer == null)
             useRandomizer = Boolean.FALSE;
         chk_GenerateRandomValue.setSelected(useRandomizer);
@@ -324,10 +325,10 @@ public class ValueEditWindow extends JFrame
         tbl_Values.getSelectionModel().clearSelection();
         mParameterSet.removeAll();
         if (length > 0) {
-            for (ParameterSet.Parameter pp : pset.getParameters())
+            for (Parameter pp : pset.getParameters())
                 mParameterSet.add(pp);
         } else {
-            mParameterSet.add(new ParameterSet.Parameter());
+            mParameterSet.add(new Parameter());
         }
 
         mOriginalParameterSet = mParameterSet.deepClone();
@@ -353,7 +354,7 @@ public class ValueEditWindow extends JFrame
                     && (expression == null || expression.trim().isEmpty()))
                 continue;
 
-            ParameterSet.Parameter p = model.getParameterByName(name);
+            Parameter p = model.getParameterByName(name);
             try {
                 p.validateName();
             } catch (Exception ex) {
@@ -383,12 +384,12 @@ public class ValueEditWindow extends JFrame
 
         setVisible(false);
         if (mParameterSet.isEmpty())
-            mParameterSet.add(new ParameterSet.Parameter());
+            mParameterSet.add(new Parameter());
 
         int rowIndex = 0;
         tbl_Values.getSelectionModel().setSelectionInterval(rowIndex, rowIndex);
 
-        ParameterSet.Parameter p = mParameterSet.get(rowIndex);
+        Parameter p = mParameterSet.get(rowIndex);
 
         updateComponents(p);
         btn_Apply.setEnabled(false);
@@ -853,7 +854,7 @@ public class ValueEditWindow extends JFrame
     }// </editor-fold>//GEN-END:initComponents
 
     private void addRowActionPerformed (ActionEvent evt) {
-        addRow(new ParameterSet.Parameter());
+        addRow(new Parameter());
     }
 
     private void deleteRowActionPerformed (ActionEvent evt) {
@@ -936,7 +937,7 @@ public class ValueEditWindow extends JFrame
         btn_Apply.setEnabled(true);
     }
 
-    public void addRow (ParameterSet.Parameter parameter) {
+    public void addRow (Parameter parameter) {
         int lastIndex = mParameterSet.size();
         ParameterSetTableModel tableModel = (ParameterSetTableModel)tbl_Values.getModel();
         tableModel.addRow(parameter);
@@ -949,7 +950,7 @@ public class ValueEditWindow extends JFrame
         tableModel.removeRow(rowIndex);
 
         if (tableModel.getRowCount() == 0)
-            tableModel.addRow(new ParameterSet.Parameter("", ""));
+            tableModel.addRow(new Parameter("", ""));
 
         int selectedRow = Math.max(0, rowIndex-1);
         tbl_Values.getSelectionModel().setSelectionInterval(selectedRow, selectedRow);
@@ -1080,7 +1081,7 @@ public class ValueEditWindow extends JFrame
             this.fireTableStructureChanged();
         }
 
-        public ParameterSet.Parameter getRow (int rowIndex) {
+        public Parameter getRow (int rowIndex) {
             return mParameterSet.get(rowIndex);
         }
 
@@ -1089,7 +1090,7 @@ public class ValueEditWindow extends JFrame
             this.fireTableRowsUpdated(rowIndex, rowIndex);
         }
 
-        public ParameterSet.Parameter getParameterByName (String name) {
+        public Parameter getParameterByName (String name) {
             return mParameterSet.getParameterByName(name);
         }
 
@@ -1097,7 +1098,7 @@ public class ValueEditWindow extends JFrame
             return mParameterSet.get(rowIndex).get(key);
         }
 
-        private void addRow (ParameterSet.Parameter parameter) {
+        private void addRow (Parameter parameter) {
             int lastIndex  = getRowCount();
             mParameterSet.add(parameter);
             fireTableRowsInserted(lastIndex, lastIndex);
@@ -1142,7 +1143,7 @@ public class ValueEditWindow extends JFrame
             switch (columnIndex) {
             case 0: return mParameterSet.get(rowIndex).getName();
             case 1:
-                ParameterSet.Parameter p = mParameterSet.get(rowIndex);
+                Parameter p = mParameterSet.get(rowIndex);
                 if (p != null)
                     return p.toString();
             }

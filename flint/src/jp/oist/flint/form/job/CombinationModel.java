@@ -1,12 +1,13 @@
 /* -*- Mode: Java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- vim:set ts=4 sw=4 sts=4 et: */
 package jp.oist.flint.form.job;
 
+import jp.oist.flint.phsp.PhspUtility;
+import jp.oist.flint.phsp.entity.Parameter;
+import jp.oist.flint.phsp.entity.ParameterSet;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import javax.swing.AbstractListModel;
-import jp.oist.flint.phsp.PhspUtility;
-import jp.oist.flint.phsp.entity.ParameterSet;
 
 public class CombinationModel extends AbstractListModel
                                 implements IParameterInfo {
@@ -47,7 +48,7 @@ public class CombinationModel extends AbstractListModel
 
         Number[][] parameters = new Number[pset.size()][];
         for(int i=0; i<columnCount; i++) {
-            ParameterSet.Parameter p = pset.get(i);
+            Parameter p = pset.get(i);
 
             switch (p.getType()) {
                 case ENUM:
@@ -143,7 +144,7 @@ public class CombinationModel extends AbstractListModel
         mTitles = new String[pset.size()];
         int combinationSize = -1;
         for (int i=0; i<pset.size(); i++) { 
-            ParameterSet.Parameter p = pset.get(i);
+            Parameter p = pset.get(i);
             mTitles[i] = p.getName();
         }
 
