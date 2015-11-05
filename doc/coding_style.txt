@@ -5,7 +5,7 @@ A leading discussion will and should be needed to change this file's content.
 == General
 
 We employ
-http://google-styleguide.googlecode.com/svn/trunk/cppguide.xml
+http://google.github.io/styleguide/cppguide.html
 as a guide. This does neither mean that our code base follows all of items
 in the document, nor that it will do. Rather, it means that we can refer
 the document as a rationale.
