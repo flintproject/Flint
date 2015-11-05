@@ -6,13 +6,14 @@ import jp.oist.flint.desktop.IDesktopListener;
 import jp.oist.flint.desktop.ISimulationListener;
 import jp.oist.flint.executor.PhspSimulator;
 import jp.oist.flint.form.sub.SubFrame;
+import jp.oist.flint.textformula.analyzer.ParseException;
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.TransformerException;
 
 public class ProgressPane extends PeripheralPane
     implements IDesktopListener, ISimulationListener {
@@ -59,7 +60,7 @@ public class ProgressPane extends PeripheralPane
      * Supposed to be called in EDT.
      */
     public void prepareWindow(PhspSimulator simulator, String path, int n)
-            throws IOException, ParserConfigurationException {
+        throws ParseException, ParserConfigurationException, TransformerException {
         for (ProgressCell cell : mCells)
             if (cell.prepareWindow(simulator, path, n))
                 return;

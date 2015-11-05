@@ -2,10 +2,12 @@
 package jp.oist.flint.phsp.entity;
 
 import jp.oist.flint.phsp.PhspException;
+import jp.oist.flint.textformula.analyzer.ParseException;
 import jp.physiome.Ipc.ModelLanguage;
 import java.io.File;
 import java.io.IOException;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.TransformerException;
 
 public class Model {
     public static enum ModelFormat {
@@ -52,7 +54,11 @@ public class Model {
         mTargetSet  = targetSet;
     }
 
-    public void validate() throws IOException, ParserConfigurationException {
+    public void validate()
+        throws IOException,
+               ParseException,
+               ParserConfigurationException,
+               TransformerException {
         ParameterSet ps = getParameterSet();
         TargetSet ts = getTargetSet();
 

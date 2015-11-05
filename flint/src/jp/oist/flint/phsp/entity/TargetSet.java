@@ -1,14 +1,13 @@
 /* -*- Mode: Java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- vim:set ts=4 sw=4 sts=4 et: */
 package jp.oist.flint.phsp.entity;
 
-import java.io.IOException;
+import jp.oist.flint.textformula.TextFormula2MathML;
+import jp.oist.flint.textformula.analyzer.ParseException;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
-import jp.oist.flint.textformula.TextFormula2MathML;
-import jp.oist.flint.textformula.analyzer.ParseException;
 
 public class TargetSet {
 
@@ -26,18 +25,15 @@ public class TargetSet {
         return mTargets.size();
     }
 
-    public String[] getUsingParameterNames() throws IOException, ParserConfigurationException {
+    public String[] getUsingParameterNames()
+        throws ParseException,
+               ParserConfigurationException,
+               TransformerException {
         LinkedHashSet<String> usingParameterNames = new LinkedHashSet<>();
         TextFormula2MathML s2mathml = new TextFormula2MathML();
         for (Target t : mTargets) {
-            try {
-                s2mathml.parse(new StringReader(t.getValue()));
-                usingParameterNames.addAll(s2mathml.getUsingParameterNames());
-            } catch (ParseException ex) {
-                throw new IOException("Invalid parameter in expression", ex);
-            } catch (TransformerException ex) {
-                throw new IOException("Could not generate the phsp file ", ex);
-            }
+            s2mathml.parse(new StringReader(t.getValue()));
+            usingParameterNames.addAll(s2mathml.getUsingParameterNames());
         }
         return usingParameterNames.toArray(new String[usingParameterNames.size()]);
     }

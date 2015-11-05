@@ -6,13 +6,13 @@ import jp.oist.flint.desktop.CancelSimulationActionListener;
 import jp.oist.flint.desktop.Document;
 import jp.oist.flint.executor.PhspSimulator;
 import jp.oist.flint.form.util.ComponentFactory;
+import jp.oist.flint.textformula.analyzer.ParseException;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionListener;
 import java.io.File;
-import java.io.IOException;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
@@ -23,6 +23,7 @@ import javax.swing.UIManager;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.TransformerException;
 
 public class ProgressCell extends JPanel {
 
@@ -198,7 +199,7 @@ public class ProgressCell extends JPanel {
      * Supposed to be called in EDT.
      */
     public boolean prepareWindow(PhspSimulator simulator, String path, int n)
-        throws IOException, ParserConfigurationException {
+        throws ParseException, ParserConfigurationException, TransformerException {
         if (!mDocument.getFile().getPath().equals(path))
             return false;
         if (mDetailActionListener != null)

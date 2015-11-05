@@ -5,11 +5,13 @@ import jp.oist.flint.dao.DaoException;
 import jp.oist.flint.dao.TaskDao;
 import jp.oist.flint.executor.PhspSimulator;
 import jp.oist.flint.form.ProgressPane;
+import jp.oist.flint.textformula.analyzer.ParseException;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
 import javax.swing.SwingWorker;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.TransformerException;
 
 class ParametrizationMonitor extends SwingWorker<Void, TaskDao> {
 
@@ -53,7 +55,11 @@ class ParametrizationMonitor extends SwingWorker<Void, TaskDao> {
         for (TaskDao task : tasks) {
             try {
                 mProgressPane.prepareWindow(mSimulator, task.getModelPath(), task.getCount());
-            } catch (DaoException | IOException | ParserConfigurationException ex) {
+            } catch (DaoException |
+                     IOException |
+                     ParseException |
+                     ParserConfigurationException |
+                     TransformerException ex) {
                 // skip
             }
         }

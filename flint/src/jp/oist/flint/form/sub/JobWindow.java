@@ -54,8 +54,7 @@ public class JobWindow extends javax.swing.JFrame
 
     private final JobPane mJobPane;
 
-    public JobWindow(SubFrame parent, SimulationDao simulationDao, ParameterSet parameterSet)
-            throws IOException {
+    public JobWindow(SubFrame parent, SimulationDao simulationDao, ParameterSet parameterSet) {
         super(String.format("Progress [%s]", parent.getModelCanonicalPath()));
         mParent = parent;
         mSimulationDao = simulationDao;

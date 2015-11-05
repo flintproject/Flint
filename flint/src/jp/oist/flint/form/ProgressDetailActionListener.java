@@ -6,18 +6,19 @@ import jp.oist.flint.form.sub.JobWindow;
 import jp.oist.flint.form.sub.SubFrame;
 import jp.oist.flint.phsp.entity.ParameterSet;
 import jp.oist.flint.phsp.entity.TargetSet;
+import jp.oist.flint.textformula.analyzer.ParseException;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.IOException;
 import java.util.Arrays;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.TransformerException;
 
 class ProgressDetailActionListener implements ActionListener {
 
     private final JobWindow mWindow;
 
     public ProgressDetailActionListener(PhspSimulator simulator, SubFrame subFrame)
-        throws IOException, ParserConfigurationException {
+        throws ParseException, ParserConfigurationException, TransformerException {
         TargetSet ts = subFrame.getTargetSet();
         ParameterSet ps = subFrame.getParameterSet();
         ParameterSet newPs = ps.filterByNames(Arrays.asList(ts.getUsingParameterNames()));
