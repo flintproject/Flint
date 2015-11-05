@@ -45,8 +45,7 @@ public class ParameterSet {
     }
 
     public Parameter[] getParameters () {
-        return (Parameter[])mParameters
-                .toArray(new Parameter[mParameters.size()]); 
+        return mParameters.toArray(new Parameter[mParameters.size()]);
     }
 
     public ParameterSet.Parameter getParameterByName (String name) {
