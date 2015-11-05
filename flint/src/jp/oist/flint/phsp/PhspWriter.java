@@ -1,9 +1,13 @@
 /* -*- Mode: Java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- vim:set ts=4 sw=4 sts=4 et: */
 package jp.oist.flint.phsp;
 
+import jp.oist.flint.phsp.entity.Model;
+import jp.oist.flint.phsp.entity.ParameterSet;
+import jp.oist.flint.phsp.entity.TargetSet;
+import jp.oist.flint.textformula.TextFormula2MathML;
+import jp.oist.flint.textformula.analyzer.ParseException;
 import java.io.BufferedWriter;
 import java.io.File;
-import jp.oist.flint.phsp.entity.Model;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
@@ -13,10 +17,6 @@ import java.util.Arrays;
 import java.util.Locale;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
-import jp.oist.flint.phsp.entity.ParameterSet;
-import jp.oist.flint.phsp.entity.TargetSet;
-import jp.oist.flint.textformula.TextFormula2MathML;
-import jp.oist.flint.textformula.analyzer.ParseException;
 
 public class PhspWriter {
 
