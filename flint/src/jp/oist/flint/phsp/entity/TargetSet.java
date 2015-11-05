@@ -5,7 +5,8 @@ import jp.oist.flint.textformula.TextFormula2MathML;
 import jp.oist.flint.textformula.analyzer.ParseException;
 import java.io.StringReader;
 import java.util.ArrayList;
-import java.util.LinkedHashSet;
+import java.util.HashSet;
+import java.util.Set;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 
@@ -25,17 +26,17 @@ public class TargetSet {
         return mTargets.size();
     }
 
-    public String[] getUsingParameterNames()
+    public Set<String> findNames()
         throws ParseException,
                ParserConfigurationException,
                TransformerException {
-        LinkedHashSet<String> usingParameterNames = new LinkedHashSet<>();
+        HashSet<String> names = new HashSet<>();
         TextFormula2MathML s2mathml = new TextFormula2MathML();
         for (Target t : mTargets) {
             s2mathml.parse(new StringReader(t.getValue()));
-            usingParameterNames.addAll(s2mathml.getUsingParameterNames());
+            names.addAll(s2mathml.findNames());
         }
-        return usingParameterNames.toArray(new String[usingParameterNames.size()]);
+        return names;
     }
 
     public static class Target {

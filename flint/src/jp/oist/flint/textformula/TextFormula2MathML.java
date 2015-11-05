@@ -15,8 +15,8 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.DOMImplementation;
 import java.io.StringWriter;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 import javax.xml.transform.TransformerException;
 
 public class TextFormula2MathML
@@ -28,13 +28,13 @@ public class TextFormula2MathML
 
     private boolean mUsingNamespaceURI = false;
 
-    private final ArrayList<String> mUsingParameterNames; 
+    private final HashSet<String> mFoundNames;
 
     public TextFormula2MathML () {
         mAnalyzer = new TextFormulaAnalyzer();
         mAnalyzer.setVisitor(this);
 
-        mUsingParameterNames = new ArrayList();
+        mFoundNames = new HashSet<>();
     }
 
     public void setUsingNamespaceURI (boolean b) {
@@ -70,10 +70,9 @@ public class TextFormula2MathML
         return value2mathml();
     }
 
-    public List getUsingParameterNames () 
-            throws TransformerException {
+    public Set<String> findNames() throws TransformerException {
         value2mathml();
-        return mUsingParameterNames;
+        return mFoundNames;
     }
 
 
@@ -409,7 +408,7 @@ public class TextFormula2MathML
         Element parent = (Element)data;
         Element variable = mDocument.createElement("m:ci");
 
-        mUsingParameterNames.add((String)node.jjtGetValue());
+        mFoundNames.add((String)node.jjtGetValue());
         variable.setTextContent((String)node.jjtGetValue());
         parent.appendChild(variable);
         defaultVisit(node, data);

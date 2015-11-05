@@ -6,6 +6,7 @@ import jp.oist.flint.textformula.analyzer.ParseException;
 import jp.physiome.Ipc.ModelLanguage;
 import java.io.File;
 import java.io.IOException;
+import java.util.Set;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 
@@ -62,13 +63,13 @@ public class Model {
         ParameterSet ps = getParameterSet();
         TargetSet ts = getTargetSet();
 
-        String[] usingParameterNames = ts.getUsingParameterNames();
+        Set<String> foundNames = ts.findNames();
 
         boolean hasError = false;
 
         StringBuilder errors = new StringBuilder();
 
-        for (String name : usingParameterNames) {
+        for (String name : foundNames) {
             boolean exists = false;
             for (Parameter p : ps.getParameters()) {
                 if (p.getName().equals(name)) {

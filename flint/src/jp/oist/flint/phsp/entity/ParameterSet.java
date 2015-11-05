@@ -3,6 +3,7 @@ package jp.oist.flint.phsp.entity;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 public class ParameterSet {
 
@@ -46,17 +47,12 @@ public class ParameterSet {
         return null;
     }
 
-    public ParameterSet filterByNames (List<String> filterNames) {
+    public ParameterSet filterByNames(Set<String> names) {
         ArrayList<Parameter> params = new ArrayList<>();
-        for (String filterName : filterNames) {
-            for (Parameter p : mParameters) {
-                if (filterName.equals(p.getName())) {
-                    params.add(p);
-                    break;
-                }
-            }
+        for (Parameter p : mParameters) {
+            if (names.contains(p.getName()))
+                params.add(p);
         }
-
         return (params.size()>0)? new ParameterSet(params) : new Dummy();
     }
 

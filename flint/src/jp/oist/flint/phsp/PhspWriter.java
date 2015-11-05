@@ -2,6 +2,7 @@
 package jp.oist.flint.phsp;
 
 import jp.oist.flint.phsp.entity.Model;
+import jp.oist.flint.phsp.entity.Parameter;
 import jp.oist.flint.phsp.entity.ParameterSet;
 import jp.oist.flint.phsp.entity.TargetSet;
 import jp.oist.flint.textformula.TextFormula2MathML;
@@ -13,11 +14,9 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.StringReader;
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
 import java.util.Locale;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
-import jp.oist.flint.phsp.entity.Parameter;
 
 public class PhspWriter {
 
@@ -105,7 +104,7 @@ public class PhspWriter {
                 /* write parameter-set*/
                 ParameterSet ps = model.getParameterSet(); 
                 if (removeParameterIfNotUsed)
-                    ps = ps.filterByNames(Arrays.asList(ts.getUsingParameterNames()));
+                    ps = ps.filterByNames(ts.findNames());
 
                 writeLine("<parameter-set>", sw, writer);
                 sw += SHIFT_WIDTH;

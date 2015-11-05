@@ -9,7 +9,6 @@ import jp.oist.flint.phsp.entity.TargetSet;
 import jp.oist.flint.textformula.analyzer.ParseException;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Arrays;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 
@@ -21,7 +20,7 @@ class ProgressDetailActionListener implements ActionListener {
         throws ParseException, ParserConfigurationException, TransformerException {
         TargetSet ts = subFrame.getTargetSet();
         ParameterSet ps = subFrame.getParameterSet();
-        ParameterSet newPs = ps.filterByNames(Arrays.asList(ts.getUsingParameterNames()));
+        ParameterSet newPs = ps.filterByNames(ts.findNames());
         mWindow = new JobWindow(subFrame, simulator.getSimulationDao(), newPs);
         mWindow.setLocationRelativeTo(subFrame);
         simulator.addPropertyChangeListener(mWindow);
