@@ -12,8 +12,8 @@
 #include <fstream>
 #include <iostream>
 #include <memory>
+#include <vector>
 
-#include <boost/ptr_container/ptr_vector.hpp>
 #include <boost/uuid/uuid.hpp>
 
 #include "lo.pb.h"
@@ -35,7 +35,7 @@ struct State {
 	{}
 
 	int pos;
-	boost::ptr_vector<lo::Column> columns;
+	std::vector<std::unique_ptr<lo::Column> > columns;
 };
 
 int AddColumn(void *data, int argc, char **argv, char **names)
@@ -70,7 +70,7 @@ int AddColumn(void *data, int argc, char **argv, char **names)
 	if (argv[3]) { // label
 		c->set_label(argv[3]);
 	}
-	state->columns.push_back(c.release());
+	state->columns.push_back(std::move(c));
 	state->pos += 1; // TODO: variable size
 	return 0;
 }
@@ -109,8 +109,8 @@ bool Var(sqlite3 *db, const char *output)
 		cerr << "failed to pack Header" << endl;
 		return false;
 	}
-	for (boost::ptr_vector<lo::Column>::const_iterator it=state.columns.begin();it!=state.columns.end();++it) {
-		if (!PackToOstream(*it, &ofs)) {
+	for (auto it=state.columns.cbegin();it!=state.columns.cend();++it) {
+		if (!PackToOstream(**it, &ofs)) {
 			cerr << "failed to pack Column" << endl;
 			return false;
 		}
