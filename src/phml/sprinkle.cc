@@ -11,7 +11,6 @@
 #include <string>
 #include <vector>
 
-#include <boost/ptr_container/ptr_map.hpp>
 #include <boost/uuid/uuid_io.hpp>
 
 #include "db/journal-loader.h"
@@ -32,7 +31,7 @@ namespace flint {
 namespace phml {
 namespace {
 
-typedef boost::ptr_map<pair<boost::uuids::uuid, boost::uuids::uuid>, map<int, double> > TargetMap;
+typedef std::map<pair<boost::uuids::uuid, boost::uuids::uuid>, std::map<int, double> > TargetMap;
 
 class TargetHandler {
 public:
@@ -66,7 +65,7 @@ public:
 			break;
 		case 2:
 			{
-				bool b = im_.insert(u, instances_.release()).second;
+				bool b = im_.insert(make_pair(u, std::move(instances_))).second;
 				if (!b) {
 					cerr << "duplicate instance id: " << u << endl;
 					return false;
@@ -80,8 +79,7 @@ public:
 		case 0:
 			{
 				size_t s = templates_.size();
-				boost::ptr_map<boost::uuids::uuid, vector<boost::uuids::uuid> >::const_iterator imit;
-				for (imit=im_.begin();imit!=im_.end();++imit) {
+				for (auto imit=im_.cbegin();imit!=im_.cend();++imit) {
 					if (imit->second->size() != s) {
 						cerr << "mismatch of numbers of template/instance: " << u << endl;
 						return false;
@@ -111,7 +109,7 @@ public:
 private:
 	JournalMap *jm_;
 	std::unique_ptr<vector<boost::uuids::uuid> > instances_;
-	boost::ptr_map<boost::uuids::uuid, vector<boost::uuids::uuid> > im_;
+	std::map<boost::uuids::uuid, std::unique_ptr<vector<boost::uuids::uuid> > > im_;
 	vector<boost::uuids::uuid> templates_;
 };
 
@@ -140,7 +138,7 @@ bool Sprinkle(sqlite3 *db)
 	}
 
 	std::unique_ptr<db::SprinkleDriver> driver(new db::SprinkleDriver(db));
-	for (TargetMap::const_iterator it=tm->begin();it!=tm->end();++it) {
+	for (auto it=tm->cbegin();it!=tm->cend();++it) {
 		JournalMap::const_iterator jmit = jm->find(it->first);
 		if (jmit == jm->end()) {
 			cerr << "unknown template/instance: " << it->first.first
@@ -149,7 +147,7 @@ bool Sprinkle(sqlite3 *db)
 		}
 		boost::uuids::uuid track_id = it->first.first;
 		boost::uuids::uuid sector_id = jmit->second;
-		for (map<int, double>::const_iterator dit=it->second->begin();dit!=it->second->end();++dit) {
+		for (auto dit=it->second.cbegin();dit!=it->second.cend();++dit) {
 			if (!driver->Save(track_id, sector_id, dit->first, dit->second)) return false;
 		}
 	}
