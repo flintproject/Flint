@@ -11,10 +11,9 @@
 #include <cstring>
 #include <fstream>
 #include <iostream>
+#include <map>
 #include <memory>
 #include <string>
-
-#include <boost/ptr_container/ptr_map.hpp>
 
 #include "ipc.pb.h"
 #include "unit.pb.h"
@@ -66,7 +65,7 @@ public:
 	}
 };
 
-typedef boost::ptr_map<int, unit::Unit> UnitMap;
+typedef std::map<int, std::unique_ptr<unit::Unit> > UnitMap;
 
 class UnitMapLoader : db::StatementDriver {
 public:
@@ -88,7 +87,7 @@ public:
 			unit->set_name(std::string((const char *)name));
 			if (!loader_.Load(rowid, unit.get()))
 				return false;
-			units->insert(unit_id, unit.release());
+			units->insert(std::make_pair(unit_id, std::move(unit)));
 		}
 		if (e != SQLITE_DONE) {
 			cerr << "failed to step statement: " << e << endl;
@@ -108,7 +107,7 @@ bool IsOfTime(const UnitMap &units, int id, long *denominator, long *numerator)
 		cerr << "missing unit with unit-id " << id << endl;
 		return false;
 	}
-	const unit::Unit *unit = it->second;
+	const std::unique_ptr<unit::Unit> &unit = it->second;
 	if (unit->name() == "second") {
 		*denominator = 1;
 		*numerator = 1;
