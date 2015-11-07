@@ -162,9 +162,9 @@ public:
 	void Communicate(const FlowInboundMap *inbound) {
 		for (auto it=inbound->cbegin();it!=inbound->cend();++it) {
 			int dst = it->first;
-			auto &sources = it->second->second;
+			auto &sources = it->second.second;
 			double d;
-			switch (it->second->first) {
+			switch (it->second.first) {
 			case Reduction::kUnspecified:
 				assert(false);
 				break;

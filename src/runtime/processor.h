@@ -745,12 +745,12 @@ private:
 		assert(inbound);
 		assert(ruv);
 
-		for (FlowInboundMap::const_iterator it=inbound->begin();it!=inbound->end();++it) {
+		for (auto it=inbound->cbegin();it!=inbound->cend();++it) {
 			for (int i=0;i<nol;i++) {
 				if (i%2 == 0) { // only on an even layer
-					std::unique_ptr<ReductionUnit> rd(new ReductionUnit(it->second->first,
+					std::unique_ptr<ReductionUnit> rd(new ReductionUnit(it->second.first,
 																		it->first + (i * layer_size_)));
-					for (int src : it->second->second) {
+					for (int src : it->second.second) {
 						rd->AddSourceAddr(src + (i * layer_size_));
 					}
 					ruv->push_back(rd.release());
