@@ -15,7 +15,6 @@
 #include <unordered_map>
 #include <unordered_set>
 
-#include <boost/ptr_container/ptr_unordered_map.hpp>
 #include <boost/uuid/uuid.hpp>
 
 #include "db/eq-inserter.h"
@@ -197,12 +196,12 @@ public:
 	bool IsDependentVariable(const char *component, const char *name) const {
 		DependentVariableMap::const_iterator it = dvm_.find(component);
 		if (it == dvm_.end()) return false;
-		return it->second->find(name) != it->second->end();
+		return it->second.find(name) != it->second.end();
 	}
 
 private:
 	static const size_t kPrefixLength = 25; // length of " (eq (diff (bvar %time) %"
-	typedef boost::ptr_unordered_map<string, std::unordered_set<string> > DependentVariableMap;
+	typedef std::unordered_map<string, std::unordered_set<string> > DependentVariableMap;
 
 	EqInserter ei_;
 	const TreeDumper *tree_dumper_;
