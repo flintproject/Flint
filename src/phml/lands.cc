@@ -11,8 +11,8 @@
 #include <fstream>
 #include <iostream>
 #include <memory>
+#include <unordered_map>
 
-#include <boost/ptr_container/ptr_unordered_map.hpp>
 #include <boost/rational.hpp>
 
 #include "db/statement-driver.hh"
@@ -52,7 +52,7 @@ public:
 				cerr << "failed to read TimeUnit" << endl;
 				return false;
 			}
-			handler->AddTimeUnit(tu.release());
+			handler->AddTimeUnit(std::move(tu));
 		}
 		return true;
 	}
@@ -61,7 +61,7 @@ private:
 	std::ifstream ifs_;
 };
 
-typedef boost::ptr_unordered_map<int, ipc::TimeUnit> TimeUnitMap;
+typedef std::unordered_map<int, std::unique_ptr<ipc::TimeUnit> > TimeUnitMap;
 
 class UnitOfTimeHandler {
 public:
@@ -70,9 +70,9 @@ public:
 
 	explicit UnitOfTimeHandler(TimeUnitMap *tum) : tum_(tum) {}
 
-	void AddTimeUnit(ipc::TimeUnit *tu) {
+	void AddTimeUnit(std::unique_ptr<ipc::TimeUnit> &&tu) {
 		int id = tu->id();
-		tum_->insert(id, tu);
+		tum_->insert(std::make_pair(id, std::move(tu)));
 	}
 
 private:
@@ -157,7 +157,7 @@ bool LengthAndStep(sqlite3 *db, const char *nc_file, const char *uot_file)
 				cerr << "unknown unit-id of simulation-time-span: " << sts_unit_id << endl;
 				return false;
 			}
-			const ipc::TimeUnit *sts_unit = it->second;
+			const std::unique_ptr<ipc::TimeUnit> &sts_unit = it->second;
 			boost::rational<long> r_sts(sts_unit->n(), sts_unit->d());
 
 			int td_unit_id = nc.td().unit_id();
@@ -166,7 +166,7 @@ bool LengthAndStep(sqlite3 *db, const char *nc_file, const char *uot_file)
 				cerr << "unknown unit-id of time-discretization: " << td_unit_id << endl;
 				return false;
 			}
-			const ipc::TimeUnit *td_unit = it->second;
+			const std::unique_ptr<ipc::TimeUnit> &td_unit = it->second;
 			boost::rational<long> r_td(td_unit->n(), td_unit->d());
 
 			r_sts /= r_td;
