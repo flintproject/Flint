@@ -16,7 +16,6 @@
 
 #include <boost/fusion/include/adapt_struct.hpp>
 #include <boost/ptr_container/ptr_unordered_map.hpp>
-#include <boost/ptr_container/ptr_vector.hpp>
 #include <boost/spirit/include/lex_lexertl.hpp>
 #include <boost/spirit/include/qi.hpp>
 #include <boost/spirit/include/support_multi_pass.hpp>
@@ -230,15 +229,16 @@ public:
 		return lines_.size();
 	}
 
-	void Add(Line *line) {
-		lines_.push_back(line);
+	void Add(const std::string &name, const Expr &expr) {
+		std::unique_ptr<Line> line(new Line(name, expr));
+		lines_.push_back(std::move(line));
 	}
 
 	bool CalculateLevels(const boost::uuids::uuid &uuid, int *levels) {
 		size_t n = lines_.size();
 		std::unordered_map<string, size_t> nm;
 		for (size_t i=0;i<n;i++) {
-			auto p = nm.insert(std::make_pair(lines_[i].name(), i));
+			auto p = nm.insert(std::make_pair(lines_[i]->name(), i));
 			if (!p.second) {
 				cerr << "more than one entries for " << p.first->first << endl;
 				return false;
@@ -248,8 +248,8 @@ public:
 		std::unique_ptr<std::unordered_set<size_t>[]> dependencies(new std::unordered_set<size_t>[n]);
 		size_t total = 0;
 		for (size_t i=0;i<n;i++) {
-			Line &line = lines_[i];
-			if (line.CollectDependencies(nm, dependencies.get()+i) == 0) {
+			auto &line = lines_[i];
+			if (line->CollectDependencies(nm, dependencies.get()+i) == 0) {
 				levels[i] = 0;
 				total++;
 			}
@@ -277,9 +277,9 @@ public:
 					 << endl;
 				for (size_t i=0;i<n;i++) {
 					if (levels[i] < 0)
-						cerr << ' ' << lines_[i].name()
+						cerr << ' ' << lines_[i]->name()
 							 << ": "
-							 << lines_[i].GetMath()
+							 << lines_[i]->GetMath()
 							 << endl;
 				}
 				return false;
@@ -290,11 +290,11 @@ public:
 	}
 
 	const Line &at(size_t m) const {
-		return lines_.at(m);
+		return *lines_.at(m);
 	}
 
 private:
-	boost::ptr_vector<Line> lines_;
+	std::vector<std::unique_ptr<Line> > lines_;
 };
 
 class IndexAndLevel {
@@ -342,7 +342,7 @@ public:
 			cerr << "failed to parse: " << *it << endl;
 			return 1;
 		}
-		(*um_)[uuid].Add(new Line(name, expr));
+		(*um_)[uuid].Add(name, expr);
 		return 0;
 	}
 
