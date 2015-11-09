@@ -14,8 +14,8 @@
 #include <unordered_map>
 #include <unordered_set>
 
+#include <boost/functional/hash.hpp>
 #include <boost/fusion/include/adapt_struct.hpp>
-#include <boost/ptr_container/ptr_unordered_map.hpp>
 #include <boost/spirit/include/lex_lexertl.hpp>
 #include <boost/spirit/include/qi.hpp>
 #include <boost/spirit/include/support_multi_pass.hpp>
@@ -312,7 +312,9 @@ private:
 	int level_;
 };
 
-typedef boost::ptr_unordered_map<boost::uuids::uuid, LineVector> UuidMap;
+typedef std::unordered_map<boost::uuids::uuid,
+						   LineVector,
+						   boost::hash<boost::uuids::uuid> > UuidMap;
 
 /*
  * This class creates and keeps both tokens and grammar objects which
@@ -422,9 +424,9 @@ bool Sort(sqlite3 *db)
 
 	Inserter inserter(db);
 	for (UuidMap::iterator umit=um.begin();umit!=um.end();++umit) {
-		size_t n = umit->second->GetSize();
+		size_t n = umit->second.GetSize();
 		std::unique_ptr<int[]> arr(new int[n]);
-		if (!umit->second->CalculateLevels(umit->first, arr.get())) {
+		if (!umit->second.CalculateLevels(umit->first, arr.get())) {
 			return false;
 		}
 		vector<IndexAndLevel> v;
@@ -434,7 +436,7 @@ bool Sort(sqlite3 *db)
 		std::stable_sort(v.begin(), v.end());
 		for (vector<IndexAndLevel>::const_iterator vit=v.begin();vit!=v.end();++vit) {
 			size_t m = vit->index();
-			const Line &line(umit->second->at(m));
+			const Line &line(umit->second.at(m));
 			std::string math = line.GetMath();
 			if (!inserter.Insert(umit->first,
 								 line.name().c_str(),
