@@ -10,7 +10,6 @@
 #include <memory>
 #include <vector>
 
-#include <boost/ptr_container/ptr_map.hpp>
 #include <boost/ptr_container/ptr_set.hpp>
 #include <boost/uuid/uuid_io.hpp>
 
@@ -232,7 +231,7 @@ public:
 
 	explicit JournalHandler(boost::ptr_set<Edge> *edge_set)
 		: edge_set_(edge_set),
-		  instance_descendants_(new vector<boost::uuids::uuid>),
+		  instance_descendants_(),
 		  instance_map_(),
 		  template_descendants_()
 	{
@@ -241,18 +240,18 @@ public:
 	bool Handle(int indent, const boost::uuids::uuid &journal_uuid) {
 		switch (indent) {
 		case 3:
-			instance_descendants_->push_back(journal_uuid);
+			instance_descendants_.push_back(journal_uuid);
 			break;
 		case 2:
-			instance_descendants_->push_back(journal_uuid);
+			instance_descendants_.push_back(journal_uuid);
 			{
 				boost::uuids::uuid instance_id(journal_uuid);
-				bool b = instance_map_.insert(instance_id, instance_descendants_.release()).second;
+				bool b = instance_map_.insert(std::make_pair(instance_id, std::move(instance_descendants_))).second;
 				if (!b) {
 					cerr << "duplicate instance id: " << instance_id << endl;
 					return false;
 				}
-				instance_descendants_.reset(new vector<boost::uuids::uuid>);
+				instance_descendants_.clear();
 			}
 			break;
 		case 1:
@@ -333,16 +332,16 @@ public:
 				}
 
 				// duplicate edges by replacing uuid of vertices
-				for (boost::ptr_map<boost::uuids::uuid, vector<boost::uuids::uuid> >::const_iterator it=instance_map_.begin();it!=instance_map_.end();++it) {
-					const vector<boost::uuids::uuid> *iv = it->second;
-					if (iv->size() != template_descendants_.size() + 1) {
+				for (auto it=instance_map_.cbegin();it!=instance_map_.cend();++it) {
+					const auto &iv = it->second;
+					if (iv.size() != template_descendants_.size() + 1) {
 						cerr << "invalid instance descendants: " << it->first << endl;
 						return false;
 					}
 					for (boost::ptr_set<InstanceEdge>::const_iterator iit=instance_edges.begin();iit!=instance_edges.end();++iit) {
 						const InstanceEdge &ie = *iit;
-						const boost::uuids::uuid &tail_uuid = iv->at(ie.tail_index());
-						const boost::uuids::uuid &head_uuid = iv->at(ie.head_index());
+						const boost::uuids::uuid &tail_uuid = iv.at(ie.tail_index());
+						const boost::uuids::uuid &head_uuid = iv.at(ie.head_index());
 						AddEdge(edge_set_,
 								new Edge(tail_uuid, ie.tail_port_id(),
 										 head_uuid, ie.head_port_id()));
@@ -350,7 +349,7 @@ public:
 				}
 				for (boost::ptr_set<Edge>::const_iterator it=t_outer_edges.begin();it!=t_outer_edges.end();++it) {
 					const Edge &e = *it;
-					for (boost::ptr_map<boost::uuids::uuid, vector<boost::uuids::uuid> >::const_iterator iit=instance_map_.begin();iit!=instance_map_.end();++iit) {
+					for (auto iit=instance_map_.cbegin();iit!=instance_map_.cend();++iit) {
 						const boost::uuids::uuid &instance_id = iit->first;
 						AddEdge(edge_set_,
 								new Edge(instance_id, e.tail_port_id(),
@@ -359,7 +358,7 @@ public:
 				}
 				for (boost::ptr_set<Edge>::const_iterator it=h_outer_edges.begin();it!=h_outer_edges.end();++it) {
 					const Edge &e = *it;
-					for (boost::ptr_map<boost::uuids::uuid, vector<boost::uuids::uuid> >::const_iterator iit=instance_map_.begin();iit!=instance_map_.end();++iit) {
+					for (auto iit=instance_map_.cbegin();iit!=instance_map_.cend();++iit) {
 						const boost::uuids::uuid &instance_id = iit->first;
 						AddEdge(edge_set_,
 								new Edge(e.tail_uuid(), e.tail_port_id(),
@@ -391,8 +390,8 @@ private:
 	}
 
 	boost::ptr_set<Edge> *edge_set_;
-	std::unique_ptr<vector<boost::uuids::uuid> > instance_descendants_;
-	boost::ptr_map<boost::uuids::uuid, vector<boost::uuids::uuid> > instance_map_;
+	std::vector<boost::uuids::uuid> instance_descendants_;
+	std::map<boost::uuids::uuid, std::vector<boost::uuids::uuid> > instance_map_;
 	vector<boost::uuids::uuid> template_descendants_;
 };
 
