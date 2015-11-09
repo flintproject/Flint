@@ -100,7 +100,7 @@ private:
 };
 
 typedef std::vector<Ode> OdeVector;
-typedef boost::ptr_vector<Assignment> AssignmentVector;
+typedef std::vector<Assignment> AssignmentVector;
 typedef boost::ptr_vector<Compartment> CompartmentVector;
 
 int HandleOde(void *data, int argc, char **argv, char **names);
@@ -156,7 +156,7 @@ int HandleAssignment(void *data, int argc, char **argv, char **names)
 	(void)names;
 	AssignmentVector *av = (AssignmentVector *)data;
 	assert(argc == 2);
-	av->push_back(new Assignment(argv[0], argv[1]));
+	av->emplace_back(argv[0], argv[1]);
 	return 0;
 }
 
@@ -298,8 +298,8 @@ bool Load(sqlite3 *db)
 		for (const auto &ode : *ov) {
 			writer->Write(ode);
 		}
-		for (AssignmentVector::const_iterator it=av->begin();it!=av->end();++it) {
-			writer->Write(*it);
+		for (const auto &a : *av) {
+			writer->Write(a);
 		}
 		for (CompartmentVector::const_iterator it=cv->begin();it!=cv->end();++it) {
 			writer->Write(*it);
@@ -325,8 +325,8 @@ bool Load(sqlite3 *db)
 
 	{
 		std::unique_ptr<FunctionWriter> writer(new FunctionWriter(db));
-		for (AssignmentVector::const_iterator it=av->begin();it!=av->end();++it) {
-			if (!writer->Write(*it)) return false;
+		for (const auto &a : *av) {
+			if (!writer->Write(a)) return false;
 		}
 	}
 
