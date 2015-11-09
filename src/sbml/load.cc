@@ -16,8 +16,6 @@
 #include <string>
 #include <vector>
 
-#include <boost/ptr_container/ptr_vector.hpp>
-
 #include "db/name-inserter.h"
 #include "db/query.h"
 #include "db/statement-driver.hh"
@@ -101,7 +99,7 @@ private:
 
 typedef std::vector<Ode> OdeVector;
 typedef std::vector<Assignment> AssignmentVector;
-typedef boost::ptr_vector<Compartment> CompartmentVector;
+typedef std::vector<Compartment> CompartmentVector;
 
 int HandleOde(void *data, int argc, char **argv, char **names);
 int HandleAssignment(void *data, int argc, char **argv, char **names);
@@ -165,7 +163,7 @@ int HandleConstant(void *data, int argc, char **argv, char **names)
 	(void)names;
 	CompartmentVector *cv = (CompartmentVector *)data;
 	assert(argc == 2);
-	cv->push_back(new Compartment(argv[0], argv[1]));
+	cv->emplace_back(argv[0], argv[1]);
 	return 0;
 }
 
@@ -301,8 +299,8 @@ bool Load(sqlite3 *db)
 		for (const auto &a : *av) {
 			writer->Write(a);
 		}
-		for (CompartmentVector::const_iterator it=cv->begin();it!=cv->end();++it) {
-			writer->Write(*it);
+		for (const auto &c : *cv) {
+			writer->Write(c);
 		}
 	}
 
@@ -318,8 +316,8 @@ bool Load(sqlite3 *db)
 		for (const auto &ode : *ov) {
 			if (!writer->Write(ode)) return false;
 		}
-		for (CompartmentVector::const_iterator it=cv->begin();it!=cv->end();++it) {
-			if (!writer->Write(*it)) return false;
+		for (const auto &c : *cv) {
+			if (!writer->Write(c)) return false;
 		}
 	}
 
