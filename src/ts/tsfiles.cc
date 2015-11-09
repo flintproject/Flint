@@ -19,7 +19,8 @@ int Process(void *data, int argc, char **argv, char **names)
 	(void)names;
 	assert(argc == 1);
 	TimeseriesVector *tv = static_cast<TimeseriesVector *>(data);
-	tv->push_back(new TimeseriesData(GetPathFromUtf8(argv[0])));
+	std::unique_ptr<TimeseriesData> td(new TimeseriesData(GetPathFromUtf8(argv[0])));
+	tv->push_back(std::move(td));
 	return 0;
 }
 
@@ -36,8 +37,8 @@ bool LoadTimeseriesVector(sqlite3 *db, TimeseriesVector *tv)
 		sqlite3_free(em);
 		return false;
 	}
-	for (TimeseriesVector::iterator it=tv->begin();it!=tv->end();++it) {
-		if (!it->Load()) return false;
+	for (auto &td : *tv) {
+		if (!td->Load()) return false;
 	}
 	return true;
 }

@@ -9,6 +9,7 @@
 #include <fstream>
 #include <memory>
 #include <set>
+#include <vector>
 
 #define BOOST_FILESYSTEM_NO_DEPRECATED
 #include <boost/filesystem.hpp>
@@ -16,7 +17,6 @@
 #define BOOST_DATE_TIME_NO_LIB
 #include <boost/interprocess/file_mapping.hpp>
 #include <boost/interprocess/mapped_region.hpp>
-#include <boost/ptr_container/ptr_vector.hpp>
 
 #include "isdf/reader.h"
 
@@ -129,7 +129,7 @@ private:
 	TimestampSet ts_;
 };
 
-typedef boost::ptr_vector<TimeseriesData> TimeseriesVector;
+typedef std::vector<std::unique_ptr<TimeseriesData> > TimeseriesVector;
 
 }
 

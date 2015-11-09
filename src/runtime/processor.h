@@ -761,7 +761,7 @@ private:
 
 	bool DoLd(const bc::Ld &ld) {
 		assert(tv_);
-		return tv_->at(ld.i0()).Lookup(ld.i1(), tmp_[ld.d()], tmp_+ld.a());
+		return tv_->at(ld.i0())->Lookup(ld.i1(), tmp_[ld.d()], tmp_+ld.a());
 	}
 
 	const Layout *layout_;
