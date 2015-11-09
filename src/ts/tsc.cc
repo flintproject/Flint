@@ -20,7 +20,7 @@
 #define BOOST_FILESYSTEM_NO_DEPRECATED
 #include <boost/filesystem.hpp>
 #include <boost/filesystem/fstream.hpp>
-#include <boost/ptr_container/ptr_unordered_map.hpp>
+#include <boost/functional/hash.hpp>
 #include <boost/uuid/uuid.hpp>
 #include <boost/uuid/uuid_io.hpp>
 
@@ -194,7 +194,8 @@ private:
 	boost::filesystem::ifstream ifs_;
 };
 
-typedef boost::ptr_unordered_map<boost::filesystem::path, ColumnMap> IsdfMap;
+typedef std::unordered_map<boost::filesystem::path, std::unique_ptr<ColumnMap>,
+						   boost::hash<boost::filesystem::path> > IsdfMap;
 
 class TsrefHandler : db::EqInserter {
 public:
@@ -304,7 +305,7 @@ bool Tsc(sqlite3 *db)
 			IsdfLoader loader(p);
 			if (!loader.Load(cm.get()))
 				return false;
-			im->insert(p, cm.release());
+			im->insert(std::make_pair(p, std::move(cm)));
 		}
 	}
 	{
