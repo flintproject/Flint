@@ -69,8 +69,9 @@ private:
 };
 
 typedef std::set<boost::filesystem::path> PathSet;
-typedef boost::ptr_unordered_map<boost::uuids::uuid,
-								 std::unordered_map<int, PathSet::iterator> > TimeseriesMap;
+typedef std::unordered_map<boost::uuids::uuid,
+						   std::unordered_map<int, PathSet::iterator>,
+						   boost::hash<boost::uuids::uuid> > TimeseriesMap;
 
 class TimeseriesHandler {
 public:
@@ -211,8 +212,8 @@ public:
 			cerr << "missing module-id in timeseries: " << uuid << endl;
 			return false;
 		}
-		std::unordered_map<int, PathSet::iterator>::const_iterator mit = it->second->find(ts_id);
-		if (mit == it->second->end()) {
+		std::unordered_map<int, PathSet::iterator>::const_iterator mit = it->second.find(ts_id);
+		if (mit == it->second.end()) {
 			cerr << "missing timeseries: "
 				 << uuid
 				 << " "
