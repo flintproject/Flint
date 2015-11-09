@@ -45,7 +45,9 @@ namespace ts {
 
 namespace {
 
-typedef boost::ptr_unordered_map<boost::uuids::uuid, std::unordered_map<int, string> > PqMap;
+typedef std::unordered_map<boost::uuids::uuid,
+						   std::unordered_map<int, string>,
+						   boost::hash<boost::uuids::uuid> > PqMap;
 
 class PqHandler {
 public:
@@ -225,8 +227,8 @@ public:
 				 << endl;
 			return false;
 		}
-		std::unordered_map<int, string>::const_iterator qit = pit->second->find(pq_id);
-		if (qit == pit->second->end()) {
+		std::unordered_map<int, string>::const_iterator qit = pit->second.find(pq_id);
+		if (qit == pit->second.end()) {
 			cerr << "missing physical-quantity-id: "
 				 << uuid
 				 << " "
