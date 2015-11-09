@@ -14,6 +14,7 @@
 #include <memory>
 #include <sstream>
 #include <string>
+#include <vector>
 
 #include <boost/ptr_container/ptr_vector.hpp>
 
@@ -98,7 +99,7 @@ private:
 	double value_;
 };
 
-typedef boost::ptr_vector<Ode> OdeVector;
+typedef std::vector<Ode> OdeVector;
 typedef boost::ptr_vector<Assignment> AssignmentVector;
 typedef boost::ptr_vector<Compartment> CompartmentVector;
 
@@ -146,7 +147,7 @@ int HandleOde(void *data, int argc, char **argv, char **names)
 	(void)names;
 	OdeVector *ov = (OdeVector *)data;
 	assert(argc == 3);
-	ov->push_back(new Ode(argv[0], argv[1], argv[2]));
+	ov->emplace_back(argv[0], argv[1], argv[2]);
 	return 0;
 }
 
@@ -294,8 +295,8 @@ bool Load(sqlite3 *db)
 
 	{
 		std::unique_ptr<NameWriter> writer(new NameWriter(db));
-		for (OdeVector::const_iterator it=ov->begin();it!=ov->end();++it) {
-			writer->Write(*it);
+		for (const auto &ode : *ov) {
+			writer->Write(ode);
 		}
 		for (AssignmentVector::const_iterator it=av->begin();it!=av->end();++it) {
 			writer->Write(*it);
@@ -314,8 +315,8 @@ bool Load(sqlite3 *db)
 
 	{
 		std::unique_ptr<ValueWriter> writer(new ValueWriter(db));
-		for (OdeVector::const_iterator it=ov->begin();it!=ov->end();++it) {
-			if (!writer->Write(*it)) return false;
+		for (const auto &ode : *ov) {
+			if (!writer->Write(ode)) return false;
 		}
 		for (CompartmentVector::const_iterator it=cv->begin();it!=cv->end();++it) {
 			if (!writer->Write(*it)) return false;
@@ -331,8 +332,8 @@ bool Load(sqlite3 *db)
 
 	{
 		std::unique_ptr<OdeWriter> writer(new OdeWriter(db));
-		for (OdeVector::const_iterator it=ov->begin();it!=ov->end();++it) {
-			if (!writer->Write(*it)) return false;
+		for (const auto &ode : *ov) {
+			if (!writer->Write(ode)) return false;
 		}
 	}
 
