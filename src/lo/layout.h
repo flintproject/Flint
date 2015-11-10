@@ -13,7 +13,6 @@
 #include <vector>
 
 #include <boost/ptr_container/ptr_unordered_map.hpp>
-#include <boost/ptr_container/ptr_vector.hpp>
 #include <boost/uuid/uuid_io.hpp>
 
 #include "bc/index.h"
@@ -38,16 +37,16 @@ public:
 
 	Layout() {}
 
-	void AddTrack(lo::Track *track) {
-		tv_.push_back(track);
+	void AddTrack(std::unique_ptr<lo::Track> &&track) {
+		tv_.push_back(std::move(track));
 	}
 
-	void AddSector(lo::Sector *sector) {
-		sv_.push_back(sector);
+	void AddSector(std::unique_ptr<lo::Sector> &&sector) {
+		sv_.push_back(std::move(sector));
 	}
 
-	void AddData(lo::Data *data) {
-		dv_.push_back(data);
+	void AddData(std::unique_ptr<lo::Data> &&data) {
+		dv_.push_back(std::move(data));
 	}
 
 	int Calculate(DataOffsetMap *dom = NULL, SectorOffsetMap *som = NULL) {
@@ -56,30 +55,30 @@ public:
 		int si = 0;
 		boost::uuids::uuid track_id;
 		boost::uuids::uuid sector_id;
-		for (TrackVector::const_iterator it=tv_.begin();it!=tv_.end();++it) {
-			memcpy(&track_id, it->id().data(), track_id.size());
+		for (const auto &tp : tv_) {
+			memcpy(&track_id, tp->id().data(), track_id.size());
 
-			int nos = it->nos();
-			int nod = it->nod();
+			int nos = tp->nos();
+			int nod = tp->nod();
 			int die = di + nod;
 			int sie = si + nos;
 			int sector_size = 0;
 
 			std::unique_ptr<Locater> locater(new Locater);
 			while (di < die) {
-				const lo::Data &d = dv_.at(di++);
-				locater->SetPosition(d.name(), sector_size);
-				if (dom) (*dom)[track_id].insert(std::make_pair(d.id(), sector_size));
-				sector_size += d.size();
+				const auto &dp = dv_.at(di++);
+				locater->SetPosition(dp->name(), sector_size);
+				if (dom) (*dom)[track_id].insert(std::make_pair(dp->id(), sector_size));
+				sector_size += dp->size();
 			}
 			lm_.insert(track_id, locater.release());
 
 			std::unique_ptr<Mounter> mounter(new Mounter(nos));
 			for (int i=0;i<nos;i++) {
 				mounter->SetOffset(i, offset);
-				const lo::Sector &s = sv_.at(si++);
+				const auto &sp = sv_.at(si++);
 				if (som) {
-					memcpy(&sector_id, s.id().data(), sector_id.size());
+					memcpy(&sector_id, sp->id().data(), sector_id.size());
 					som->insert(std::make_pair(sector_id, offset));
 				}
 				offset += sector_size;
@@ -109,24 +108,24 @@ public:
 	bool SpecifyCapacity(size_t size, THistory *history) const {
 		size_t offset = kOffsetBase;
 		int di = 0;
-		for (TrackVector::const_iterator it=tv_.begin();it!=tv_.end();++it) {
-			int nos = it->nos();
-			int nod = it->nod();
+		for (const auto &tp : tv_) {
+			int nos = tp->nos();
+			int nod = tp->nod();
 			int dib = di;
 			int die = di + nod;
 
 			for (int i=0;i<nos;i++) {
 				di = dib;
 				while (di < die) {
-					const lo::Data &d = dv_.at(di++);
+					const auto &dp = dv_.at(di++);
 					if (offset >= size) {
 						std::cerr << "exceed history size: " << size << std::endl;
 						return false;
 					}
-					if (d.has_capacity()) {
-						history[offset].set_capacity(d.capacity());
+					if (dp->has_capacity()) {
+						history[offset].set_capacity(dp->capacity());
 					}
-					offset += d.size();
+					offset += dp->size();
 				}
 			}
 		}
@@ -142,28 +141,28 @@ public:
 
 		size_t offset = kOffsetBase;
 		int di = 0;
-		for (TrackVector::const_iterator it=tv_.begin();it!=tv_.end();++it) {
-			int nos = it->nos();
-			int nod = it->nod();
+		for (const auto &tp : tv_) {
+			int nos = tp->nos();
+			int nod = tp->nod();
 			int dib = di;
 			int die = di + nod;
 
 			for (int i=0;i<nos;i++) {
 				di = dib;
 				while (di < die) {
-					const lo::Data &d = dv_.at(di++);
+					const auto &dp = dv_.at(di++);
 					assert(offset < size);
 					if (!color[offset]) {
 						boost::uuids::uuid u;
-						std::memcpy(&u, it->id().data(), u.size());
+						std::memcpy(&u, tp->id().data(), u.size());
 						std::string us = to_string(u);
 						us += ":";
-						us += d.name();
+						us += dp->name();
 						if (red.insert(us).second) {
 							std::cerr << us << std::endl;
 						}
 					}
-					offset += d.size();
+					offset += dp->size();
 				}
 			}
 		}
@@ -173,18 +172,18 @@ public:
 	void CollectConstant(int nol, size_t size, std::set<int> *addrs) const {
 		size_t offset = kOffsetBase;
 		int di = 0;
-		for (TrackVector::const_iterator it=tv_.begin();it!=tv_.end();++it) {
-			int nos = it->nos();
-			int nod = it->nod();
+		for (const auto &tp : tv_) {
+			int nos = tp->nos();
+			int nod = tp->nod();
 			int dib = di;
 			int die = di + nod;
 
 			for (int i=0;i<nos;i++) {
 				di = dib;
 				while (di < die) {
-					const lo::Data &d = dv_.at(di++);
+					const auto &dp = dv_.at(di++);
 					assert(offset < size);
-					switch (d.type()) {
+					switch (dp->type()) {
 					case lo::S:
 						for (int j=0;j<nol;j++) {
 							addrs->insert(offset + (j * size));
@@ -194,7 +193,7 @@ public:
 						// nothing to do
 						break;
 					}
-					offset += d.size();
+					offset += dp->size();
 				}
 			}
 		}
@@ -213,26 +212,26 @@ public:
 		size_t offset = kOffsetBase;
 		int si = 0;
 		int di = 0;
-		for (TrackVector::const_iterator it=tv_.begin();it!=tv_.end();++it) {
+		for (const auto &tp : tv_) {
 			boost::uuids::uuid u;
-			memcpy(&u, it->id().data(), u.size());
-			cout << "T " << u << " " << it->name() << endl;
+			memcpy(&u, tp->id().data(), u.size());
+			cout << "T " << u << " " << tp->name() << endl;
 
-			int nos = it->nos();
-			int nod = it->nod();
+			int nos = tp->nos();
+			int nod = tp->nod();
 			int dib = di;
 			int die = di + nod;
 
 			for (int i=0;i<nos;i++) {
-				memcpy(&u, sv_[si++].id().data(), u.size());
+				memcpy(&u, sv_[si++]->id().data(), u.size());
 				cout << "S " << u << endl;
 
 				di = dib;
 				while (di < die) {
-					const lo::Data &d = dv_.at(di++);
+					const auto &dp = dv_.at(di++);
 					assert(offset < size);
 					cout << "|" << std::setw(4) << offset;
-					switch (d.type()) {
+					switch (dp->type()) {
 					case lo::S:
 						cout << "|S|";
 						break;
@@ -246,8 +245,8 @@ public:
 						cout << "|X|";
 						break;
 					}
-					cout << d.name() << endl;
-					offset += d.size();
+					cout << dp->name() << endl;
+					offset += dp->size();
 				}
 			}
 		}
@@ -255,9 +254,9 @@ public:
 	}
 
 private:
-	typedef boost::ptr_vector<lo::Track> TrackVector;
-	typedef boost::ptr_vector<lo::Sector> SectorVector;
-	typedef boost::ptr_vector<lo::Data> DataVector;
+	typedef std::vector<std::unique_ptr<lo::Track> > TrackVector;
+	typedef std::vector<std::unique_ptr<lo::Sector> > SectorVector;
+	typedef std::vector<std::unique_ptr<lo::Data> > DataVector;
 	typedef boost::ptr_unordered_map<boost::uuids::uuid, Locater> LocaterMap;
 	typedef boost::ptr_unordered_map<boost::uuids::uuid, Mounter> MounterMap;
 

@@ -42,7 +42,7 @@ public:
 				}
 				nos = track->nos();
 				nod = track->nod();
-				layout->AddTrack(track.release());
+				layout->AddTrack(std::move(track));
 			}
 
 			for (int di=0;di<nod;di++) {
@@ -51,7 +51,7 @@ public:
 					cerr << "could not read Data" << endl;
 					return false;
 				}
-				layout->AddData(data.release());
+				layout->AddData(std::move(data));
 			}
 			for (int si=0;si<nos;si++) {
 				std::unique_ptr<lo::Sector> sector(new lo::Sector);
@@ -59,7 +59,7 @@ public:
 					cerr << "could not read Sector" << endl;
 					return false;
 				}
-				layout->AddSector(sector.release());
+				layout->AddSector(std::move(sector));
 			}
 		}
 		return true;

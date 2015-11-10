@@ -14,9 +14,9 @@
 #include <memory>
 #include <string>
 #include <unordered_map>
+#include <vector>
 
 #include <boost/ptr_container/ptr_unordered_map.hpp>
-#include <boost/ptr_container/ptr_vector.hpp>
 #include <boost/uuid/uuid_io.hpp>
 
 #include "lo.pb.h"
@@ -77,25 +77,25 @@ public:
 
 	SourceLayout() {}
 
-	void AddTrack(lo::Track *track) {
-		tv_.push_back(track);
+	void AddTrack(std::unique_ptr<lo::Track> &&track) {
+		tv_.push_back(std::move(track));
 	}
 
-	void AddSector(lo::Sector *sector) {
+	void AddSector(std::unique_ptr<lo::Sector> &&sector) {
 		(void)sector; // nothing to do
 	}
 
-	void AddData(lo::Data *data) {
-		dv_.push_back(data);
+	void AddData(std::unique_ptr<lo::Data> &&data) {
+		dv_.push_back(std::move(data));
 	}
 
 	int CollectTargets(TargetMap *tm) const {
 		int si = 0;
 		int di = 0;
 		int pos = kOffsetBase;
-		for (TrackVector::const_iterator it=tv_.begin();it!=tv_.end();++it) {
-			int nos = it->nos();
-			int nod = it->nod();
+		for (const auto &tp : tv_) {
+			int nos = tp->nos();
+			int nod = tp->nod();
 			int sie = si + nos;
 			int dib = di;
 			int die = di + nod;
@@ -103,20 +103,20 @@ public:
 			while (si++ < sie) {
 				di = dib;
 				while (di < die) {
-					const lo::Data &d = dv_.at(di++);
-					switch (d.type()) {
+					const auto &dp = dv_.at(di++);
+					switch (dp->type()) {
 					case lo::S:
-						if (std::strncmp(d.name().c_str(), "phsp:target", 11) == 0) {
-							const char *nstr = d.name().c_str();
+						if (std::strncmp(dp->name().c_str(), "phsp:target", 11) == 0) {
+							const char *nstr = dp->name().c_str();
 							int target_id = std::atoi(&nstr[11]);
 							tm->insert(make_pair(target_id, pos));
 						}
 						break;
 					default:
-						cerr << "unexpected data type: " << d.type() << endl;
+						cerr << "unexpected data type: " << dp->type() << endl;
 						return -1;
 					}
-					pos += d.size();
+					pos += dp->size();
 				}
 			}
 		}
@@ -124,8 +124,8 @@ public:
 	}
 
 private:
-	typedef boost::ptr_vector<lo::Track> TrackVector;
-	typedef boost::ptr_vector<lo::Data> DataVector;
+	typedef std::vector<std::unique_ptr<lo::Track> > TrackVector;
+	typedef std::vector<std::unique_ptr<lo::Data> > DataVector;
 
 	TrackVector tv_;
 	DataVector dv_;
@@ -170,16 +170,16 @@ public:
 
 	TargetLayout() {}
 
-	void AddTrack(lo::Track *track) {
-		tv_.push_back(track);
+	void AddTrack(std::unique_ptr<lo::Track> &&track) {
+		tv_.push_back(std::move(track));
 	}
 
-	void AddSector(lo::Sector *sector) {
-		sv_.push_back(sector);
+	void AddSector(std::unique_ptr<lo::Sector> &&sector) {
+		sv_.push_back(std::move(sector));
 	}
 
-	void AddData(lo::Data *data) {
-		dv_.push_back(data);
+	void AddData(std::unique_ptr<lo::Data> &&data) {
+		dv_.push_back(std::move(data));
 	}
 
 	bool Rewrite(const char *format, const TargetValueMap &tvm, FILE *fp) const {
@@ -189,44 +189,44 @@ public:
 		if (fseek(fp, kOffsetBase*sizeof(double), SEEK_SET) != 0) {
 			return false;
 		}
-		for (TrackVector::const_iterator it=tv_.begin();it!=tv_.end();++it) {
-			int nos = it->nos();
-			int nod = it->nod();
+		for (const auto &tp : tv_) {
+			int nos = tp->nos();
+			int nod = tp->nod();
 			int sie = si + nos;
 			int dib = di;
 			int die = di + nod;
 
 			while (si < sie) {
-				const lo::Sector &s = sv_.at(si++);
+				const auto &sp = sv_.at(si++);
 				boost::uuids::uuid su;
-				memcpy(&su, s.id().data(), su.size());
+				memcpy(&su, sp->id().data(), su.size());
 				di = dib;
 				while (di < die) {
-					const lo::Data &d = dv_.at(di++);
-					switch (d.type()) {
+					const auto &dp = dv_.at(di++);
+					switch (dp->type()) {
 					case lo::S:
 					case lo::X:
 						{
 							TargetValueMap::const_iterator it = tvm.find(su);
 							if (it == tvm.end()) {
-								if (fseek(fp, d.size()*sizeof(double), SEEK_CUR) != 0) {
+								if (fseek(fp, dp->size()*sizeof(double), SEEK_CUR) != 0) {
 									return false;
 								}
 							} else {
 								std::unordered_map<string, double>::const_iterator mit;
 								if (strcmp("phml", format) == 0) {
-									sprintf(buf.get(), "%d", d.id());
+									sprintf(buf.get(), "%d", dp->id());
 									mit = it->second->find(buf.get());
 								} else {
-									mit = it->second->find(d.name());
+									mit = it->second->find(dp->name());
 								}
 								if (mit == it->second->end()) {
-									if (fseek(fp, d.size()*sizeof(double), SEEK_CUR) != 0) {
+									if (fseek(fp, dp->size()*sizeof(double), SEEK_CUR) != 0) {
 										return false;
 									}
 								} else {
 									double value = mit->second;
-									if (std::fwrite(&value, sizeof(double), d.size(), fp) != static_cast<size_t>(d.size())) {
+									if (std::fwrite(&value, sizeof(double), dp->size(), fp) != static_cast<size_t>(dp->size())) {
 										// TODO
 										return false;
 									}
@@ -235,7 +235,7 @@ public:
 						}
 						break;
 					default:
-						if (fseek(fp, d.size()*sizeof(double), SEEK_CUR) != 0) {
+						if (fseek(fp, dp->size()*sizeof(double), SEEK_CUR) != 0) {
 							return false;
 						}
 						break;
@@ -247,9 +247,9 @@ public:
 	}
 
 private:
-	typedef boost::ptr_vector<lo::Track> TrackVector;
-	typedef boost::ptr_vector<lo::Sector> SectorVector;
-	typedef boost::ptr_vector<lo::Data> DataVector;
+	typedef std::vector<std::unique_ptr<lo::Track> > TrackVector;
+	typedef std::vector<std::unique_ptr<lo::Sector> > SectorVector;
+	typedef std::vector<std::unique_ptr<lo::Data> > DataVector;
 
 	TrackVector tv_;
 	SectorVector sv_;

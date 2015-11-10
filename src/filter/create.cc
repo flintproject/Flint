@@ -15,6 +15,7 @@
 #include <memory>
 #include <string>
 #include <unordered_set>
+#include <vector>
 
 #include <boost/ptr_container/ptr_unordered_map.hpp>
 #include <boost/ptr_container/ptr_vector.hpp>
@@ -93,16 +94,16 @@ public:
 
 	Layout() {}
 
-	void AddTrack(lo::Track *track) {
-		tv_.push_back(track);
+	void AddTrack(std::unique_ptr<lo::Track> &&track) {
+		tv_.push_back(std::move(track));
 	}
 
-	void AddSector(lo::Sector *sector) {
-		sv_.push_back(sector);
+	void AddSector(std::unique_ptr<lo::Sector> &&sector) {
+		sv_.push_back(std::move(sector));
 	}
 
-	void AddData(lo::Data *data) {
-		dv_.push_back(data);
+	void AddData(std::unique_ptr<lo::Data> &&data) {
+		dv_.push_back(std::move(data));
 	}
 
 	int Fill(const string &time_unit, const Spec *spec, boost::ptr_vector<lo::Column> *columns) const {
@@ -121,33 +122,33 @@ public:
 		int si = 0;
 		int di = 0;
 		int pos = kOffsetBase;
-		for (TrackVector::const_iterator it=tv_.begin();it!=tv_.end();++it) {
-			int nos = it->nos();
-			int nod = it->nod();
+		for (const auto &tp : tv_) {
+			int nos = tp->nos();
+			int nod = tp->nod();
 			int sie = si + nos;
 			int dib = di;
 			int die = di + nod;
 
 			while (si < sie) {
-				const lo::Sector &s = sv_.at(si++);
+				const auto &sp = sv_.at(si++);
 				boost::uuids::uuid su;
-				memcpy(&su, s.id().data(), su.size());
+				memcpy(&su, sp->id().data(), su.size());
 				di = dib;
 				while (di < die) {
-					const lo::Data &d = dv_.at(di++);
-					if (spec->Contains(su, d.name())) {
+					const auto &dp = dv_.at(di++);
+					if (spec->Contains(su, dp->name())) {
 						c.reset(new lo::Column);
 						c->set_position(pos);
-						c->set_size(d.size());
-						c->set_uuid(s.id().data(), boost::uuids::uuid::static_size());
-						c->set_id(d.id());
-						c->set_name(d.name());
-						c->set_type(d.type());
-						c->set_unit(d.unit());
-						if (s.has_label()) c->set_label(s.label());
+						c->set_size(dp->size());
+						c->set_uuid(sp->id().data(), boost::uuids::uuid::static_size());
+						c->set_id(dp->id());
+						c->set_name(dp->name());
+						c->set_type(dp->type());
+						c->set_unit(dp->unit());
+						if (sp->has_label()) c->set_label(sp->label());
 						columns->push_back(c.release());
 					}
-					pos += d.size();
+					pos += dp->size();
 				}
 			}
 		}
@@ -155,9 +156,9 @@ public:
 	}
 
 private:
-	typedef boost::ptr_vector<lo::Track> TrackVector;
-	typedef boost::ptr_vector<lo::Sector> SectorVector;
-	typedef boost::ptr_vector<lo::Data> DataVector;
+	typedef std::vector<std::unique_ptr<lo::Track> > TrackVector;
+	typedef std::vector<std::unique_ptr<lo::Sector> > SectorVector;
+	typedef std::vector<std::unique_ptr<lo::Data> > DataVector;
 
 	TrackVector tv_;
 	SectorVector sv_;
