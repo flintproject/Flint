@@ -74,9 +74,6 @@ private:
 
 class Port {
 public:
-	Port(const Port &) = delete;
-	Port &operator=(const Port &) = delete;
-
 	Port(boost::uuids::uuid module_id, int port_id, int physical_quantity_id,
 		 char pq_type, Reduction reduction)
 		: module_id_(module_id),
@@ -153,7 +150,7 @@ public:
 	OutputPortHandler(const OutputPortHandler &) = delete;
 	OutputPortHandler &operator=(const OutputPortHandler &) = delete;
 
-	explicit OutputPortHandler(boost::ptr_map<Node, Port> *ports)
+	explicit OutputPortHandler(std::map<Node, Port> *ports)
 		: ports_(ports)
 	{
 	}
@@ -161,15 +158,15 @@ public:
 	bool Handle(boost::uuids::uuid uuid, int port_id, int pq_id, char pq_type) {
 		Node node(uuid, port_id);
 		// reduction makes little sense for output port, so just call it unspecified
-		ports_->insert(node, new Port(uuid, port_id, pq_id, pq_type, Reduction::kUnspecified));
+		ports_->emplace(std::make_pair(node, Port(uuid, port_id, pq_id, pq_type, Reduction::kUnspecified)));
 		return true;
 	}
 
 private:
-	boost::ptr_map<Node, Port> *ports_;
+	std::map<Node, Port> *ports_;
 };
 
-bool LoadOutputPorts(sqlite3 *db, boost::ptr_map<Node, Port> *ports)
+bool LoadOutputPorts(sqlite3 *db, std::map<Node, Port> *ports)
 {
 	std::unique_ptr<db::OutputPortLoader> loader(new db::OutputPortLoader(db));
 	std::unique_ptr<OutputPortHandler> handler(new OutputPortHandler(ports));
@@ -267,14 +264,14 @@ void Lookup(const Node &p, multimap<Node, Node> &edges, set<Node> *q)
 	}
 }
 
-void PrintIncompatiblePorts(const Port *from, const Port *to)
+void PrintIncompatiblePorts(const Port *from, const Port &to)
 {
 	cerr << "  from" << endl
 		 << "    port-id: " << from->port_id() << endl
 		 << "    module-id: " << from->module_id() << endl
 		 << "  to" << endl
-		 << "    port-id: " << to->port_id() << endl
-		 << "    module-id: " << to->module_id() << endl;
+		 << "    port-id: " << to.port_id() << endl
+		 << "    module-id: " << to.module_id() << endl;
 }
 
 } // namespace
@@ -284,7 +281,7 @@ bool Reach(sqlite3 *db)
 	boost::ptr_multimap<boost::uuids::uuid, Port> inports;
 	if (!LoadInputPorts(db, &inports)) return false;
 
-	boost::ptr_map<Node, Port> outports;
+	std::map<Node, Port> outports;
 	if (!LoadOutputPorts(db, &outports)) return false;
 
 	ScopeSet scopes;
@@ -322,7 +319,7 @@ bool Reach(sqlite3 *db)
 				}
 				const boost::uuids::uuid &om = uit->second->module_id();
 				Node ok(om, o.port_id());
-				boost::ptr_map<Node, Port>::const_iterator oit = outports.find(ok);
+				std::map<Node, Port>::const_iterator oit = outports.find(ok);
 				if (oit == outports.end()) {
 					cerr << "lost without corresponding edge or output-port" << endl;
 					cerr << "  port-id: " << o.port_id() << endl;
@@ -333,7 +330,7 @@ bool Reach(sqlite3 *db)
 				}
 				// check if PQ types of both sides are compatible
 				if (inport->pq_type() == 's') {
-					switch (oit->second->pq_type()) {
+					switch (oit->second.pq_type()) {
 					case 'x':
 						cerr << "found invalid edge from a state to a static-parameter" << endl;
 						PrintIncompatiblePorts(inport, oit->second);
@@ -344,7 +341,7 @@ bool Reach(sqlite3 *db)
 						return false;
 					}
 				}
-				if (!driver->Save(tit->uuid(), oit->second->physical_quantity_id(),
+				if (!driver->Save(tit->uuid(), oit->second.physical_quantity_id(),
 								  uuid, inport->physical_quantity_id(),
 								  inport->reduction()))
 					return false;
