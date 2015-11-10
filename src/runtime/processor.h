@@ -254,7 +254,7 @@ void DoGen2(const bc::Gen2 &c2, double *tmp, TRng *rng)
 
 } // namespace
 
-typedef boost::ptr_vector<ReductionUnit> ReductionUnitVector;
+typedef std::vector<std::unique_ptr<ReductionUnit> > ReductionUnitVector;
 
 typedef boost::ptr_vector<CalculationDependency> CalculationDependencyVector;
 
@@ -404,11 +404,11 @@ public:
 			// Level 2N+1
 			ReductionUnitVector::iterator rit = ruv->begin();
 			while (rit != ruv->end()) {
-				const std::unordered_set<int> &sa = rit->source_addrs();
+				const std::unordered_set<int> &sa = (*rit)->source_addrs();
 				if (std::all_of(sa.begin(), sa.end(),
 								[&ready_addresses](int i){return ready_addresses[i] == 1;})) {
-					euv_.push_back(*rit);
-					ready_addresses[rit->target_addr()] = 1;
+					euv_.push_back(**rit);
+					ready_addresses[(*rit)->target_addr()] = 1;
 					n++;
 					rit = ruv->erase(rit);
 				} else {
@@ -437,11 +437,11 @@ public:
 					}
 					std::cerr << " -> " << cit->store_addr() << std::endl;
 				}
-				for (auto rit=ruv->cbegin();rit!=ruv->cend();++rit) {
-					std::cerr << "target_addr: " << rit->target_addr()
+				for (const auto &rup : *ruv) {
+					std::cerr << "target_addr: " << rup->target_addr()
 							  << " <- ";
-					for (auto sit=rit->source_addrs().cbegin();sit!=rit->source_addrs().cend();++sit) {
-						if (sit == rit->source_addrs().cbegin()) {
+					for (auto sit=rup->source_addrs().cbegin();sit!=rup->source_addrs().cend();++sit) {
+						if (sit == rup->source_addrs().cbegin()) {
 							std::cerr << *sit;
 						} else {
 							std::cerr << ", " << *sit;
@@ -753,7 +753,7 @@ private:
 					for (int src : it->second.second) {
 						rd->AddSourceAddr(src + (i * layer_size_));
 					}
-					ruv->push_back(rd.release());
+					ruv->push_back(std::move(rd));
 				}
 			}
 		}
