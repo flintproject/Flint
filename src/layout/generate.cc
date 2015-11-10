@@ -11,13 +11,13 @@
 #include <cstring>
 #include <fstream>
 #include <iostream>
+#include <map>
 #include <memory>
 #include <string>
 #include <unordered_map>
 #include <vector>
 
 #include <boost/functional/hash.hpp>
-#include <boost/ptr_container/ptr_map.hpp>
 #include <boost/uuid/uuid.hpp>
 
 #include "lo.pb.h"
@@ -128,7 +128,7 @@ private:
 
 typedef std::vector<std::unique_ptr<Node> > NodeVector;
 
-typedef boost::ptr_map<boost::uuids::uuid, NodeVector> TMap;
+typedef std::map<boost::uuids::uuid, NodeVector> TMap;
 
 class TreeLoader : db::StatementDriver {
 public:
@@ -209,7 +209,7 @@ bool Generate(sqlite3 *db, const char *filename)
 
 		std::copy(tu.begin(), tu.end(), tbu.get());
 		track->set_id(tbu.get(), boost::uuids::uuid::static_size());
-		track->set_nos(static_cast<int>(it->second->size()));
+		track->set_nos(static_cast<int>(it->second.size()));
 		track->set_nod(static_cast<int>(nmit->second.size()));
 
 		ModuleMap::const_iterator mmit = mm->find(tu);
@@ -242,7 +242,7 @@ bool Generate(sqlite3 *db, const char *filename)
 			}
 		}
 
-		for (const auto &np : *it->second) {
+		for (const auto &np : it->second) {
 			std::copy(np->uuid().begin(), np->uuid().end(), sbu.get());
 			sector->set_id(sbu.get(), boost::uuids::uuid::static_size());
 			if (np->label().empty()) {
