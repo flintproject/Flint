@@ -18,7 +18,6 @@
 #include <vector>
 
 #include <boost/ptr_container/ptr_unordered_map.hpp>
-#include <boost/ptr_container/ptr_vector.hpp>
 #include <boost/uuid/uuid_io.hpp>
 
 #include "lo.pb.h"
@@ -106,7 +105,7 @@ public:
 		dv_.push_back(std::move(data));
 	}
 
-	int Fill(const string &time_unit, const Spec *spec, boost::ptr_vector<lo::Column> *columns) const {
+	int Fill(const string &time_unit, const Spec *spec, std::vector<std::unique_ptr<lo::Column> > *columns) const {
 		std::unique_ptr<lo::Column> c(new lo::Column);
 
 		char us0[boost::uuids::uuid::static_size()] = {0};
@@ -117,7 +116,7 @@ public:
 		c->set_name("time");
 		c->set_type(lo::T);
 		c->set_unit(time_unit);
-		columns->push_back(c.release());
+		columns->push_back(std::move(c));
 
 		int si = 0;
 		int di = 0;
@@ -146,7 +145,7 @@ public:
 						c->set_type(dp->type());
 						c->set_unit(dp->unit());
 						if (sp->has_label()) c->set_label(sp->label());
-						columns->push_back(c.release());
+						columns->push_back(std::move(c));
 					}
 					pos += dp->size();
 				}
@@ -189,8 +188,8 @@ bool Create(sqlite3 *db, const char *spec_file, const char *layout_file, const c
 		if (!loader->Load(layout.get())) return false;
 	}
 
-	std::unique_ptr<boost::ptr_vector<lo::Column> > columns(new boost::ptr_vector<lo::Column>);
-	int size = layout->Fill(time_unit, spec.get(), columns.get());
+	std::vector<std::unique_ptr<lo::Column> > columns;
+	int size = layout->Fill(time_unit, spec.get(), &columns);
 	std::unique_ptr<lo::Header> header(new lo::Header);
 	header->set_size(size);
 
@@ -203,8 +202,8 @@ bool Create(sqlite3 *db, const char *spec_file, const char *layout_file, const c
 		cerr << "failed to pack Header" << endl;
 		return false;
 	}
-	for (boost::ptr_vector<lo::Column>::const_iterator it=columns->begin();it!=columns->end();++it) {
-		if (!PackToOstream(*it, &ofs)) {
+	for (const auto &cp : columns) {
+		if (!PackToOstream(*cp, &ofs)) {
 			cerr << "failed to pack Column" << endl;
 			return false;
 		}
