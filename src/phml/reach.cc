@@ -11,7 +11,6 @@
 #include <unordered_map>
 
 #include <boost/functional/hash.hpp>
-#include <boost/ptr_container/ptr_set.hpp>
 #include <boost/uuid/uuid.hpp>
 #include <boost/uuid/uuid_io.hpp>
 
@@ -172,7 +171,7 @@ bool LoadOutputPorts(sqlite3 *db, std::map<Node, Port> *ports)
 	return loader->Load(handler.get());
 }
 
-typedef boost::ptr_set<Scope> ScopeSet;
+typedef std::set<Scope> ScopeSet;
 typedef multimap<boost::uuids::uuid, ScopeSet::iterator> Mmap;
 typedef std::unordered_map<boost::uuids::uuid,
 						   ScopeSet::iterator,
@@ -193,9 +192,9 @@ public:
 	bool Handle(boost::uuids::uuid uuid, boost::uuids::uuid space_id, const char *label) {
 		pair<ScopeSet::iterator, bool> p;
 		if (label) {
-			p = scopes_->insert(new Scope(uuid, space_id, string(label)));
+			p = scopes_->emplace(uuid, space_id, string(label));
 		} else {
-			p = scopes_->insert(new Scope(uuid, space_id));
+			p = scopes_->emplace(uuid, space_id);
 		}
 		if (!p.second) {
 			cerr << "duplicate entry of scope: " << uuid << endl;
