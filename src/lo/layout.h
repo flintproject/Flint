@@ -12,7 +12,7 @@
 #include <unordered_set>
 #include <vector>
 
-#include <boost/ptr_container/ptr_unordered_map.hpp>
+#include <boost/functional/hash.hpp>
 #include <boost/uuid/uuid_io.hpp>
 
 #include "bc/index.h"
@@ -72,7 +72,7 @@ public:
 				if (dom) (*dom)[track_id].insert(std::make_pair(dp->id(), sector_size));
 				sector_size += dp->size();
 			}
-			lm_.insert(track_id, locater.release());
+			lm_.insert(std::make_pair(track_id, std::move(locater)));
 
 			std::unique_ptr<Mounter> mounter(new Mounter(nos));
 			for (int i=0;i<nos;i++) {
@@ -84,7 +84,7 @@ public:
 				}
 				offset += sector_size;
 			}
-			mm_.insert(track_id, mounter.release());
+			mm_.insert(std::make_pair(track_id, std::move(mounter)));
 			assert(si == sie);
 		}
 		return offset;
@@ -95,14 +95,14 @@ public:
 		std::memcpy(&u, id.data(), u.size());
 		LocaterMap::const_iterator it = lm_.find(u);
 		if (it == lm_.end()) return nullptr;
-		return it->second;
+		return it->second.get();
 	}
 
 	const Mounter &GetMounter(const std::string &id) const {
 		boost::uuids::uuid u;
 		std::memcpy(&u, id.data(), u.size());
 		assert(mm_.find(u) != mm_.end());
-		return mm_.at(u);
+		return *mm_.at(u);
 	}
 
 	template<typename THistory>
@@ -258,8 +258,14 @@ private:
 	typedef std::vector<std::unique_ptr<lo::Track> > TrackVector;
 	typedef std::vector<std::unique_ptr<lo::Sector> > SectorVector;
 	typedef std::vector<std::unique_ptr<lo::Data> > DataVector;
-	typedef boost::ptr_unordered_map<boost::uuids::uuid, Locater> LocaterMap;
-	typedef boost::ptr_unordered_map<boost::uuids::uuid, Mounter> MounterMap;
+	typedef std::unordered_map<boost::uuids::uuid,
+							   std::unique_ptr<Locater>,
+							   boost::hash<boost::uuids::uuid>
+							   > LocaterMap;
+	typedef std::unordered_map<boost::uuids::uuid,
+							   std::unique_ptr<Mounter>,
+							   boost::hash<boost::uuids::uuid>
+							   > MounterMap;
 
 	TrackVector tv_;
 	SectorVector sv_;
