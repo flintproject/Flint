@@ -5,11 +5,11 @@
 #include <cstdlib>
 #include <cstring>
 #include <iostream>
+#include <map>
 #include <memory>
 #include <string>
 #include <vector>
 
-#include <boost/ptr_container/ptr_map.hpp>
 #include <boost/uuid/uuid_io.hpp>
 
 #include "db/statement-driver.hh"
@@ -61,6 +61,9 @@ public:
 		: uuid_(uuid), label_(label)
 	{}
 
+	Instance(Instance &&other) = default;
+	Instance &operator=(Instance &&other) = default;
+
 	const boost::uuids::uuid &uuid() const {return uuid_;}
 	const string &label() const {return label_;}
 
@@ -69,7 +72,7 @@ private:
 	string label_;
 };
 
-typedef boost::ptr_multimap<boost::uuids::uuid, Instance> InstanceMap;
+typedef std::multimap<boost::uuids::uuid, Instance> InstanceMap;
 
 class InstanceLoader : public db::StatementDriver {
 public:
@@ -98,9 +101,9 @@ public:
 			boost::uuids::uuid mu;
 			memcpy(&mu, module_id, mu.size());
 			if (label) {
-				m->insert(mu, new Instance(uu, string((const char *)label)));
+				m->emplace(mu, Instance(uu, string((const char *)label)));
 			} else {
-				m->insert(mu, new Instance(uu));
+				m->emplace(mu, Instance(uu));
 			}
 		}
 		if (e != SQLITE_DONE) {
@@ -241,13 +244,13 @@ bool Branch(const boost::filesystem::path &path, sqlite3 *db)
 		}
 		// duplicate the subtree
 		do {
-			const boost::uuids::uuid &instance_id = it->second->uuid();
+			const boost::uuids::uuid &instance_id = it->second.uuid();
 			for (const auto &np : v) {
 				boost::uuids::uuid u = (*gen)();
-				result.emplace_back(new Node(u, np->module_id(), np->level(), it->second->label()));
+				result.emplace_back(new Node(u, np->module_id(), np->level(), it->second.label()));
 				if (!jd->Save(3, u)) return false;
 			}
-			result.emplace_back(new Node(instance_id, uuid, level, it->second->label()));
+			result.emplace_back(new Node(instance_id, uuid, level, it->second.label()));
 			if (!jd->Save(2, instance_id)) return false;
 
 			// search next instance of the same template
@@ -268,8 +271,8 @@ bool Branch(const boost::filesystem::path &path, sqlite3 *db)
 
 	if (!instance_map.empty()) {
 		cerr << "the following instances miss their templates:" << endl;
-		for (InstanceMap::const_iterator it=instance_map.begin();it!=instance_map.end();++it) {
-			cerr << it->first << " " << it->second->uuid() << endl;
+		for (auto it=instance_map.cbegin();it!=instance_map.cend();++it) {
+			cerr << it->first << " " << it->second.uuid() << endl;
 		}
 		return false;
 	}
