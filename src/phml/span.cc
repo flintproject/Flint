@@ -8,9 +8,9 @@
 #include <iostream>
 #include <map>
 #include <memory>
+#include <set>
 #include <vector>
 
-#include <boost/ptr_container/ptr_set.hpp>
 #include <boost/uuid/uuid_io.hpp>
 
 using std::atoi;
@@ -28,9 +28,6 @@ namespace {
 
 class Edge {
 public:
-	Edge(const Edge &) = delete;
-	Edge &operator=(const Edge &) = delete;
-
 	Edge(const boost::uuids::uuid &tail_uuid, int tail_port_id,
 		 const boost::uuids::uuid &head_uuid, int head_port_id)
 		: tail_uuid_(tail_uuid),
@@ -42,15 +39,15 @@ public:
 		assert(head_port_id > 0);
 	}
 
+	Edge(const Edge &) = default;
+	Edge &operator=(const Edge &) = default;
+	Edge(Edge &&other) = default;
+	Edge &operator=(Edge &&other) = default;
+
 	const boost::uuids::uuid &tail_uuid() const {return tail_uuid_;}
 	int tail_port_id() const {return tail_port_id_;}
 	const boost::uuids::uuid &head_uuid() const {return head_uuid_;}
 	int head_port_id() const {return head_port_id_;}
-
-	Edge *Clone() const {
-		return new Edge(tail_uuid_, tail_port_id_,
-						head_uuid_, head_port_id_);
-	}
 
 	bool operator<(const Edge &other) const {
 		if (tail_uuid_ < other.tail_uuid_) return true;
@@ -75,9 +72,6 @@ private:
 
 class InstanceEdge {
 public:
-	InstanceEdge(const InstanceEdge &) = delete;
-	InstanceEdge &operator=(const InstanceEdge &) = delete;
-
 	InstanceEdge(size_t tail_index, int tail_port_id,
 				 size_t head_index, int head_port_id)
 		: tail_index_(tail_index),
@@ -88,6 +82,11 @@ public:
 		assert(tail_port_id > 0);
 		assert(head_port_id > 0);
 	}
+
+	InstanceEdge(const InstanceEdge &) = default;
+	InstanceEdge &operator=(const InstanceEdge &) = default;
+	InstanceEdge(InstanceEdge &&other) = default;
+	InstanceEdge &operator=(InstanceEdge &&other) = default;
 
 	size_t tail_index() const {return tail_index_;}
 	int tail_port_id() const {return tail_port_id_;}
@@ -115,9 +114,12 @@ private:
 	int head_port_id_;
 };
 
-void AddEdge(boost::ptr_set<Edge> *edge_set, Edge *edge)
+void AddEdge(std::set<Edge> *edge_set,
+			 const boost::uuids::uuid &tail_uuid, int tail_port_id,
+			 const boost::uuids::uuid &head_uuid, int head_port_id)
 {
-	pair<boost::ptr_set<Edge>::iterator, bool> p = edge_set->insert(edge);
+	auto p = edge_set->emplace(tail_uuid, tail_port_id,
+							   head_uuid, head_port_id);
 	if (!p.second) {
 		cerr << "warning: duplicate edge entry: "
 			 << p.first->tail_uuid()
@@ -151,7 +153,7 @@ public:
 		sqlite3_finalize(stmt_);
 	}
 
-	bool Load(boost::ptr_set<Edge> *edge_set)
+	bool Load(std::set<Edge> *edge_set)
 	{
 		int e;
 		for (e = sqlite3_step(stmt_); e == SQLITE_ROW; e = sqlite3_step(stmt_)) {
@@ -165,8 +167,8 @@ public:
 			memcpy(&tmu, tail_module_id, tmu.size());
 			memcpy(&hmu, head_module_id, hmu.size());
 			AddEdge(edge_set,
-					new Edge(tmu, tail_port_id,
-							 hmu, head_port_id));
+					tmu, tail_port_id,
+					hmu, head_port_id);
 		}
 		if (e != SQLITE_DONE) {
 			cerr << "failed to step statement: " << e << endl;
@@ -229,7 +231,7 @@ public:
 	JournalHandler(const JournalHandler &) = delete;
 	JournalHandler &operator=(const JournalHandler &) = delete;
 
-	explicit JournalHandler(boost::ptr_set<Edge> *edge_set)
+	explicit JournalHandler(std::set<Edge> *edge_set)
 		: edge_set_(edge_set),
 		  instance_descendants_(),
 		  instance_map_(),
@@ -261,61 +263,61 @@ public:
 			{
 				const boost::uuids::uuid &template_module_id(journal_uuid);
 
-				multimap<boost::uuids::uuid, boost::ptr_set<Edge>::iterator> tail_map;
-				multimap<boost::uuids::uuid, boost::ptr_set<Edge>::iterator> head_map;
+				multimap<boost::uuids::uuid, std::set<Edge>::iterator> tail_map;
+				multimap<boost::uuids::uuid, std::set<Edge>::iterator> head_map;
 				GenerateMaps(&tail_map, &head_map);
 				// collect all edges connecting to descendants
-				boost::ptr_set<Edge> inner_edges;
+				std::set<Edge> inner_edges;
 				for (vector<boost::uuids::uuid>::const_iterator it=template_descendants_.begin();it!=template_descendants_.end();++it) {
 					const boost::uuids::uuid &uuid = *it;
-					multimap<boost::uuids::uuid, boost::ptr_set<Edge>::iterator>::iterator tit = tail_map.find(uuid);
+					multimap<boost::uuids::uuid, std::set<Edge>::iterator>::iterator tit = tail_map.find(uuid);
 					while (tit != tail_map.end()) {
-						inner_edges.insert(tit->second->Clone());
+						inner_edges.insert(*tit->second);
 						tail_map.erase(tit);
 						tit = tail_map.find(uuid);
 					}
-					multimap<boost::uuids::uuid, boost::ptr_set<Edge>::iterator>::iterator hit = head_map.find(uuid);
+					multimap<boost::uuids::uuid, std::set<Edge>::iterator>::iterator hit = head_map.find(uuid);
 					while (hit != head_map.end()) {
-						inner_edges.insert(hit->second->Clone());
+						inner_edges.insert(*hit->second);
 						head_map.erase(hit);
 						hit = head_map.find(uuid);
 					}
 				}
 
 				// collect all outer edges connecting to template module
-				boost::ptr_set<Edge> t_outer_edges;
+				std::set<Edge> t_outer_edges;
 				{
-					multimap<boost::uuids::uuid, boost::ptr_set<Edge>::iterator>::iterator tit = tail_map.find(template_module_id);
+					multimap<boost::uuids::uuid, std::set<Edge>::iterator>::iterator tit = tail_map.find(template_module_id);
 					while (tit != tail_map.end()) {
-						if (inner_edges.count(*tit->second) == 0) t_outer_edges.insert(tit->second->Clone());
+						if (inner_edges.count(*tit->second) == 0) t_outer_edges.insert(*tit->second);
 						tail_map.erase(tit);
 						tit = tail_map.find(template_module_id);
 					}
 				}
-				boost::ptr_set<Edge> h_outer_edges;
+				std::set<Edge> h_outer_edges;
 				{
-					multimap<boost::uuids::uuid, boost::ptr_set<Edge>::iterator>::iterator hit = head_map.find(template_module_id);
+					multimap<boost::uuids::uuid, std::set<Edge>::iterator>::iterator hit = head_map.find(template_module_id);
 					while (hit != head_map.end()) {
-						if (inner_edges.count(*hit->second) == 0) h_outer_edges.insert(hit->second->Clone());
+						if (inner_edges.count(*hit->second) == 0) h_outer_edges.insert(*hit->second);
 						head_map.erase(hit);
 						hit = head_map.find(template_module_id);
 					}
 				}
 
 				// remove original edges
-				for (boost::ptr_set<Edge>::const_iterator it=inner_edges.begin();it!=inner_edges.end();++it) {
+				for (std::set<Edge>::const_iterator it=inner_edges.begin();it!=inner_edges.end();++it) {
 					edge_set_->erase(*it);
 				}
-				for (boost::ptr_set<Edge>::const_iterator it=t_outer_edges.begin();it!=t_outer_edges.end();++it) {
+				for (std::set<Edge>::const_iterator it=t_outer_edges.begin();it!=t_outer_edges.end();++it) {
 					edge_set_->erase(*it);
 				}
-				for (boost::ptr_set<Edge>::const_iterator it=h_outer_edges.begin();it!=h_outer_edges.end();++it) {
+				for (std::set<Edge>::const_iterator it=h_outer_edges.begin();it!=h_outer_edges.end();++it) {
 					edge_set_->erase(*it);
 				}
 
 				// convert inner edges to instance ones
-				boost::ptr_set<InstanceEdge> instance_edges;
-				for (boost::ptr_set<Edge>::const_iterator it=inner_edges.begin();it!=inner_edges.end();++it) {
+				std::set<InstanceEdge> instance_edges;
+				for (std::set<Edge>::const_iterator it=inner_edges.begin();it!=inner_edges.end();++it) {
 					size_t tail_index = 0;
 					for (vector<boost::uuids::uuid>::const_iterator tit=template_descendants_.begin();tit!=template_descendants_.end();++tit) {
 						if (it->tail_uuid() == *tit) break;
@@ -326,8 +328,8 @@ public:
 						if (it->head_uuid() == *hit) break;
 						head_index++;
 					}
-					bool b = instance_edges.insert(new InstanceEdge(tail_index, it->tail_port_id(),
-																	head_index, it->head_port_id())).second;
+					bool b = instance_edges.emplace(tail_index, it->tail_port_id(),
+													head_index, it->head_port_id()).second;
 					assert(b);
 				}
 
@@ -338,31 +340,31 @@ public:
 						cerr << "invalid instance descendants: " << it->first << endl;
 						return false;
 					}
-					for (boost::ptr_set<InstanceEdge>::const_iterator iit=instance_edges.begin();iit!=instance_edges.end();++iit) {
+					for (std::set<InstanceEdge>::const_iterator iit=instance_edges.begin();iit!=instance_edges.end();++iit) {
 						const InstanceEdge &ie = *iit;
 						const boost::uuids::uuid &tail_uuid = iv.at(ie.tail_index());
 						const boost::uuids::uuid &head_uuid = iv.at(ie.head_index());
 						AddEdge(edge_set_,
-								new Edge(tail_uuid, ie.tail_port_id(),
-										 head_uuid, ie.head_port_id()));
+								tail_uuid, ie.tail_port_id(),
+								head_uuid, ie.head_port_id());
 					}
 				}
-				for (boost::ptr_set<Edge>::const_iterator it=t_outer_edges.begin();it!=t_outer_edges.end();++it) {
+				for (std::set<Edge>::const_iterator it=t_outer_edges.begin();it!=t_outer_edges.end();++it) {
 					const Edge &e = *it;
 					for (auto iit=instance_map_.cbegin();iit!=instance_map_.cend();++iit) {
 						const boost::uuids::uuid &instance_id = iit->first;
 						AddEdge(edge_set_,
-								new Edge(instance_id, e.tail_port_id(),
-										 e.head_uuid(), e.head_port_id()));
+								instance_id, e.tail_port_id(),
+								e.head_uuid(), e.head_port_id());
 					}
 				}
-				for (boost::ptr_set<Edge>::const_iterator it=h_outer_edges.begin();it!=h_outer_edges.end();++it) {
+				for (std::set<Edge>::const_iterator it=h_outer_edges.begin();it!=h_outer_edges.end();++it) {
 					const Edge &e = *it;
 					for (auto iit=instance_map_.cbegin();iit!=instance_map_.cend();++iit) {
 						const boost::uuids::uuid &instance_id = iit->first;
 						AddEdge(edge_set_,
-								new Edge(e.tail_uuid(), e.tail_port_id(),
-										 instance_id, e.head_port_id()));
+								e.tail_uuid(), e.tail_port_id(),
+								instance_id, e.head_port_id());
 					}
 				}
 
@@ -378,18 +380,18 @@ public:
 	}
 
 private:
-	void GenerateMaps(multimap<boost::uuids::uuid, boost::ptr_set<Edge>::iterator> *tail_map,
-					  multimap<boost::uuids::uuid, boost::ptr_set<Edge>::iterator> *head_map) const
+	void GenerateMaps(multimap<boost::uuids::uuid, std::set<Edge>::iterator> *tail_map,
+					  multimap<boost::uuids::uuid, std::set<Edge>::iterator> *head_map) const
 	{
 		tail_map->clear();
 		head_map->clear();
-		for (boost::ptr_set<Edge>::const_iterator it=edge_set_->begin();it!=edge_set_->end();++it) {
+		for (std::set<Edge>::const_iterator it=edge_set_->begin();it!=edge_set_->end();++it) {
 			tail_map->insert(make_pair(it->tail_uuid(), it));
 			head_map->insert(make_pair(it->head_uuid(), it));
 		}
 	}
 
-	boost::ptr_set<Edge> *edge_set_;
+	std::set<Edge> *edge_set_;
 	std::vector<boost::uuids::uuid> instance_descendants_;
 	std::map<boost::uuids::uuid, std::vector<boost::uuids::uuid> > instance_map_;
 	vector<boost::uuids::uuid> template_descendants_;
@@ -460,7 +462,7 @@ private:
 
 bool Span(sqlite3 *db)
 {
-	boost::ptr_set<Edge> edge_set;
+	std::set<Edge> edge_set;
 	{
 		std::unique_ptr<EdgeLoader> loader(new EdgeLoader(db));
 		if (!loader->Load(&edge_set)) return false;
@@ -475,7 +477,7 @@ bool Span(sqlite3 *db)
 
 	// write into spans
 	std::unique_ptr<SpanDriver> driver(new SpanDriver(db));
-	for (boost::ptr_set<Edge>::const_iterator it=edge_set.begin();it!=edge_set.end();++it) {
+	for (std::set<Edge>::const_iterator it=edge_set.begin();it!=edge_set.end();++it) {
 		if (!driver->Save(*it)) return false;
 	}
 
