@@ -14,10 +14,10 @@
 #include <memory>
 #include <string>
 #include <unordered_map>
+#include <vector>
 
 #include <boost/ptr_container/ptr_map.hpp>
 #include <boost/ptr_container/ptr_unordered_map.hpp>
-#include <boost/ptr_container/ptr_vector.hpp>
 #include <boost/uuid/uuid.hpp>
 
 #include "lo.pb.h"
@@ -87,7 +87,9 @@ private:
 	double capacity_;
 };
 
-typedef boost::ptr_unordered_map<boost::uuids::uuid, boost::ptr_vector<Name> > NameMap;
+typedef boost::ptr_unordered_map<boost::uuids::uuid,
+								 std::vector<std::unique_ptr<Name> >
+								 > NameMap;
 
 class NameHandler {
 public:
@@ -99,7 +101,7 @@ public:
 	{}
 
 	bool Handle(boost::uuids::uuid u, char type, int id, const char *name, const char *unit, double capacity) {
-		(*nm_)[u].push_back(new Name(type, id, name, unit, capacity));
+		(*nm_)[u].emplace_back(new Name(type, id, name, unit, capacity));
 		return true;
 	}
 
@@ -123,7 +125,7 @@ private:
 	string label_;
 };
 
-typedef boost::ptr_vector<Node> NodeVector;
+typedef std::vector<std::unique_ptr<Node> > NodeVector;
 
 typedef boost::ptr_map<boost::uuids::uuid, NodeVector> TMap;
 
@@ -147,9 +149,9 @@ public:
 			memcpy(&u, uuid, u.size());
 			memcpy(&key, space_id, key.size());
 			if (label) {
-				(*m)[key].push_back(new Node(u, string((const char *)label)));
+				(*m)[key].emplace_back(new Node(u, string((const char *)label)));
 			} else {
-				(*m)[key].push_back(new Node(u));
+				(*m)[key].emplace_back(new Node(u));
 			}
 		}
 		if (e != SQLITE_DONE) {
@@ -220,32 +222,32 @@ bool Generate(sqlite3 *db, const char *filename)
 			return false;
 		}
 
-		for (boost::ptr_vector<Name>::const_iterator nit=nmit->second->begin();nit!=nmit->second->end();++nit) {
-			data->set_id(nit->id());
-			data->set_name(nit->name());
+		for (const auto &np : *nmit->second) {
+			data->set_id(np->id());
+			data->set_name(np->name());
 			// TODO
 			data->set_size(1);
-			switch (nit->type()) {
+			switch (np->type()) {
 			case 's': data->set_type(lo::S); break;
 			case 't': data->set_type(lo::T); break;
 			case 'v': data->set_type(lo::V); break;
 			case 'x': data->set_type(lo::X); break;
 			default: assert(false); break;
 			}
-			data->set_unit(nit->unit());
-			if (nit->capacity() > 0) data->set_capacity(nit->capacity());
+			data->set_unit(np->unit());
+			if (np->capacity() > 0) data->set_capacity(np->capacity());
 			if (!PackToOstream(*data, &ofs)) {
 				return false;
 			}
 		}
 
-		for (NodeVector::const_iterator sit=it->second->begin();sit!=it->second->end();++sit) {
-			std::copy(sit->uuid().begin(), sit->uuid().end(), sbu.get());
+		for (const auto &np : *it->second) {
+			std::copy(np->uuid().begin(), np->uuid().end(), sbu.get());
 			sector->set_id(sbu.get(), boost::uuids::uuid::static_size());
-			if (sit->label().empty()) {
+			if (np->label().empty()) {
 				sector->clear_label();
 			} else {
-				sector->set_label(sit->label());
+				sector->set_label(np->label());
 			}
 			if (!PackToOstream(*sector, &ofs)) {
 				return false;
