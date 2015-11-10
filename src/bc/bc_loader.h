@@ -3,9 +3,9 @@
 #define FLINT_BC_BC_LOADER_H_
 
 #include <fstream>
+#include <memory>
 #include <string>
-
-#include <boost/ptr_container/ptr_vector.hpp>
+#include <vector>
 
 #include "bc/pack.h"
 
@@ -13,9 +13,9 @@
 
 namespace flint {
 
-typedef boost::ptr_vector<bc::SectionHeader> ShVector;
-typedef boost::ptr_vector<bc::BlockHeader> BhVector;
-typedef boost::ptr_vector<bc::Code> CVector;
+typedef std::vector<bc::SectionHeader> ShVector;
+typedef std::vector<bc::BlockHeader> BhVector;
+typedef std::vector<bc::Code> CVector;
 
 class BcLoader {
 public:
@@ -52,8 +52,8 @@ public:
 		}
 
 		int nob = 0;
-		for (ShVector::const_iterator it=shv->begin();it!=shv->end();++it) {
-			nob += it->nob();
+		for (const auto &sh : *shv) {
+			nob += sh.nob();
 		}
 		bhv->resize(nob);
 		for (int i=0;i<nob;i++) {
@@ -63,8 +63,8 @@ public:
 		}
 
 		int noc = 0;
-		for (BhVector::const_iterator it=bhv->begin();it!=bhv->end();++it) {
-			noc += it->noc();
+		for (const auto &bh : *bhv) {
+			noc += bh.noc();
 		}
 		cv->resize(noc);
 		for (int i=0;i<noc;i++) {

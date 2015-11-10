@@ -280,9 +280,9 @@ public:
 		code_offset_.reset(new int[bhv_->size()]);
 		int bi = 0;
 		int ci = 0;
-		for (BhVector::const_iterator it=bhv_->begin();it!=bhv_->end();++it) {
+		for (const auto &bh : *bhv_) {
 			code_offset_[bi++] = ci;
-			ci += it->noc();
+			ci += bh.noc();
 		}
 	}
 
@@ -364,8 +364,8 @@ public:
 
 	int GetMaxNumberOfData() {
 		int max_nod = 0;
-		for (BhVector::const_iterator it=bhv_->begin();it!=bhv_->end();++it) {
-			max_nod = std::max(max_nod, it->nod());
+		for (const auto &bh : *bhv_) {
+			max_nod = std::max(max_nod, bh.nod());
 		}
 		return max_nod;
 	}
