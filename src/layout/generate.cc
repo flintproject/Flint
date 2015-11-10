@@ -16,8 +16,8 @@
 #include <unordered_map>
 #include <vector>
 
+#include <boost/functional/hash.hpp>
 #include <boost/ptr_container/ptr_map.hpp>
-#include <boost/ptr_container/ptr_unordered_map.hpp>
 #include <boost/uuid/uuid.hpp>
 
 #include "lo.pb.h"
@@ -87,9 +87,10 @@ private:
 	double capacity_;
 };
 
-typedef boost::ptr_unordered_map<boost::uuids::uuid,
-								 std::vector<std::unique_ptr<Name> >
-								 > NameMap;
+typedef std::unordered_map<boost::uuids::uuid,
+						   std::vector<std::unique_ptr<Name> >,
+						   boost::hash<boost::uuids::uuid>
+						   > NameMap;
 
 class NameHandler {
 public:
@@ -209,7 +210,7 @@ bool Generate(sqlite3 *db, const char *filename)
 		std::copy(tu.begin(), tu.end(), tbu.get());
 		track->set_id(tbu.get(), boost::uuids::uuid::static_size());
 		track->set_nos(static_cast<int>(it->second->size()));
-		track->set_nod(static_cast<int>(nmit->second->size()));
+		track->set_nod(static_cast<int>(nmit->second.size()));
 
 		ModuleMap::const_iterator mmit = mm->find(tu);
 		if (mmit == mm->end()) {
@@ -222,7 +223,7 @@ bool Generate(sqlite3 *db, const char *filename)
 			return false;
 		}
 
-		for (const auto &np : *nmit->second) {
+		for (const auto &np : nmit->second) {
 			data->set_id(np->id());
 			data->set_name(np->name());
 			// TODO
