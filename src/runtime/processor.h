@@ -14,7 +14,6 @@
 #include <unordered_set>
 #include <vector>
 
-#include <boost/ptr_container/ptr_vector.hpp>
 #include <boost/uuid/uuid.hpp>
 #include <boost/uuid/uuid_io.hpp>
 
@@ -256,7 +255,7 @@ void DoGen2(const bc::Gen2 &c2, double *tmp, TRng *rng)
 
 typedef std::vector<std::unique_ptr<ReductionUnit> > ReductionUnitVector;
 
-typedef boost::ptr_vector<CalculationDependency> CalculationDependencyVector;
+typedef std::vector<std::unique_ptr<CalculationDependency> > CalculationDependencyVector;
 
 class Processor {
 public:
@@ -389,11 +388,11 @@ public:
 			// Level 2N
 			CalculationDependencyVector::iterator cit = cdv->begin();
 			while (cit != cdv->end()) {
-				const std::unordered_set<int> &la = cit->load_addrs();
+				const std::unordered_set<int> &la = (*cit)->load_addrs();
 				if (std::all_of(la.begin(), la.end(),
 								[&ready_addresses](int i){return ready_addresses[i] == 1;})) {
-					euv_.push_back(cit->cu());
-					ready_addresses[cit->store_addr()] = 1;
+					euv_.push_back((*cit)->cu());
+					ready_addresses[(*cit)->store_addr()] = 1;
 					n++;
 					cit = cdv->erase(cit);
 				} else {
@@ -422,8 +421,8 @@ public:
 					 << "/"
 					 << ruv->size()
 					 << std::endl;
-				for (auto cit=cdv->cbegin();cit!=cdv->cend();++cit) {
-					const std::unordered_set<int> &la = cit->load_addrs();
+				for (const auto &cdp : *cdv) {
+					const std::unordered_set<int> &la = cdp->load_addrs();
 					for (auto lait=la.cbegin();lait!=la.cend();++lait) {
 						if (lait == la.cbegin()) {
 							std::cerr << *lait;
@@ -435,7 +434,7 @@ public:
 							std::cerr << "?";
 						}
 					}
-					std::cerr << " -> " << cit->store_addr() << std::endl;
+					std::cerr << " -> " << cdp->store_addr() << std::endl;
 				}
 				for (const auto &rup : *ruv) {
 					std::cerr << "target_addr: " << rup->target_addr()
@@ -733,7 +732,7 @@ private:
 							}
 						}
 
-						cdv->push_back(cd.release());
+						cdv->push_back(std::move(cd));
 					}
 				}
 			}
