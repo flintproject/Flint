@@ -11,7 +11,6 @@
 #include <unordered_map>
 
 #include <boost/functional/hash.hpp>
-#include <boost/ptr_container/ptr_map.hpp>
 #include <boost/ptr_container/ptr_set.hpp>
 #include <boost/uuid/uuid.hpp>
 #include <boost/uuid/uuid_io.hpp>
@@ -122,7 +121,7 @@ public:
 	InputPortHandler(const InputPortHandler &) = delete;
 	InputPortHandler &operator=(const InputPortHandler &) = delete;
 
-	explicit InputPortHandler(boost::ptr_multimap<boost::uuids::uuid, Port> *ports)
+	explicit InputPortHandler(std::multimap<boost::uuids::uuid, Port> *ports)
 		: ports_(ports)
 	{
 	}
@@ -130,15 +129,15 @@ public:
 	bool Handle(boost::uuids::uuid uuid, int port_id, int pq_id,
 				char pq_type, Reduction reduction)
 	{
-		ports_->insert(uuid, new Port(uuid, port_id, pq_id, pq_type, reduction));
+		ports_->emplace(std::make_pair(uuid, Port(uuid, port_id, pq_id, pq_type, reduction)));
 		return true;
 	}
 
 private:
-	boost::ptr_multimap<boost::uuids::uuid, Port> *ports_;
+	std::multimap<boost::uuids::uuid, Port> *ports_;
 };
 
-bool LoadInputPorts(sqlite3 *db, boost::ptr_multimap<boost::uuids::uuid, Port> *ports)
+bool LoadInputPorts(sqlite3 *db, std::multimap<boost::uuids::uuid, Port> *ports)
 {
 	std::unique_ptr<db::InputPortLoader> loader(new db::InputPortLoader(db));
 	std::unique_ptr<InputPortHandler> handler(new InputPortHandler(ports));
@@ -264,11 +263,11 @@ void Lookup(const Node &p, multimap<Node, Node> &edges, set<Node> *q)
 	}
 }
 
-void PrintIncompatiblePorts(const Port *from, const Port &to)
+void PrintIncompatiblePorts(const Port &from, const Port &to)
 {
 	cerr << "  from" << endl
-		 << "    port-id: " << from->port_id() << endl
-		 << "    module-id: " << from->module_id() << endl
+		 << "    port-id: " << from.port_id() << endl
+		 << "    module-id: " << from.module_id() << endl
 		 << "  to" << endl
 		 << "    port-id: " << to.port_id() << endl
 		 << "    module-id: " << to.module_id() << endl;
@@ -278,7 +277,7 @@ void PrintIncompatiblePorts(const Port *from, const Port &to)
 
 bool Reach(sqlite3 *db)
 {
-	boost::ptr_multimap<boost::uuids::uuid, Port> inports;
+	std::multimap<boost::uuids::uuid, Port> inports;
 	if (!LoadInputPorts(db, &inports)) return false;
 
 	std::map<Node, Port> outports;
@@ -294,15 +293,15 @@ bool Reach(sqlite3 *db)
 
 	std::unique_ptr<db::ReachDriver> driver(new db::ReachDriver(db));
 	// trace from each input-port
-	for (boost::ptr_multimap<boost::uuids::uuid, Port>::const_iterator it=inports.begin();it!=inports.end();++it) {
+	for (auto it=inports.cbegin();it!=inports.cend();++it) {
 		const boost::uuids::uuid &module_id = it->first;
-		const Port *inport = it->second;
+		const Port &inport = it->second;
 
 		pair<Mmap::iterator, Mmap::iterator> r;
 		r = mmap.equal_range(module_id);
 		for (Mmap::iterator rit=r.first;rit!=r.second;++rit) {
 			const boost::uuids::uuid &uuid = rit->second->uuid();
-			Node p(uuid, inport->port_id());
+			Node p(uuid, inport.port_id());
 			set<Node> t;
 			Lookup(p, edges, &t);
 			for (set<Node>::const_iterator tit=t.begin();tit!=t.end();++tit) {
@@ -329,7 +328,7 @@ bool Reach(sqlite3 *db)
 					return false;
 				}
 				// check if PQ types of both sides are compatible
-				if (inport->pq_type() == 's') {
+				if (inport.pq_type() == 's') {
 					switch (oit->second.pq_type()) {
 					case 'x':
 						cerr << "found invalid edge from a state to a static-parameter" << endl;
@@ -342,8 +341,8 @@ bool Reach(sqlite3 *db)
 					}
 				}
 				if (!driver->Save(tit->uuid(), oit->second.physical_quantity_id(),
-								  uuid, inport->physical_quantity_id(),
-								  inport->reduction()))
+								  uuid, inport.physical_quantity_id(),
+								  inport.reduction()))
 					return false;
 			}
 		}
