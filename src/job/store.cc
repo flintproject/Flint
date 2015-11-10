@@ -16,7 +16,7 @@
 #include <unordered_map>
 #include <vector>
 
-#include <boost/ptr_container/ptr_unordered_map.hpp>
+#include <boost/functional/hash.hpp>
 #include <boost/uuid/uuid_io.hpp>
 
 #include "lo.pb.h"
@@ -131,7 +131,9 @@ private:
 	DataVector dv_;
 };
 
-typedef boost::ptr_unordered_map<boost::uuids::uuid, std::unordered_map<string, double> > TargetValueMap;
+typedef std::unordered_map<boost::uuids::uuid,
+						   std::unordered_map<string, double>,
+						   boost::hash<boost::uuids::uuid> > TargetValueMap;
 
 class TargetLoader : db::StatementDriver {
 public:
@@ -216,11 +218,11 @@ public:
 								std::unordered_map<string, double>::const_iterator mit;
 								if (strcmp("phml", format) == 0) {
 									sprintf(buf.get(), "%d", dp->id());
-									mit = it->second->find(buf.get());
+									mit = it->second.find(buf.get());
 								} else {
-									mit = it->second->find(dp->name());
+									mit = it->second.find(dp->name());
 								}
-								if (mit == it->second->end()) {
+								if (mit == it->second.end()) {
 									if (fseek(fp, dp->size()*sizeof(double), SEEK_CUR) != 0) {
 										return false;
 									}
