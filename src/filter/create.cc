@@ -14,10 +14,11 @@
 #include <iostream>
 #include <memory>
 #include <string>
+#include <unordered_map>
 #include <unordered_set>
 #include <vector>
 
-#include <boost/ptr_container/ptr_unordered_map.hpp>
+#include <boost/functional/hash.hpp>
 #include <boost/uuid/uuid_io.hpp>
 
 #include "lo.pb.h"
@@ -77,13 +78,15 @@ public:
 	}
 
 	bool Contains(const boost::uuids::uuid &id, const string &name) const {
-		boost::ptr_unordered_map<boost::uuids::uuid, std::unordered_set<string> >::const_iterator it = m_.find(id);
+		auto it = m_.find(id);
 		if (it == m_.end()) return false;
-		return it->second->find(name) != it->second->end();
+		return it->second.find(name) != it->second.end();
 	}
 
 private:
-	boost::ptr_unordered_map<boost::uuids::uuid, std::unordered_set<string> > m_;
+	std::unordered_map<boost::uuids::uuid,
+					   std::unordered_set<string>,
+					   boost::hash<boost::uuids::uuid> > m_;
 };
 
 class Layout {
