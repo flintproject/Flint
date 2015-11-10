@@ -7,9 +7,9 @@
 #include <iostream>
 #include <memory>
 #include <string>
+#include <vector>
 
 #include <boost/ptr_container/ptr_map.hpp>
-#include <boost/ptr_container/ptr_vector.hpp>
 #include <boost/uuid/uuid_io.hpp>
 
 #include "db/statement-driver.hh"
@@ -208,8 +208,8 @@ bool Branch(const boost::filesystem::path &path, sqlite3 *db)
 		return false;
 	}
 
-	boost::ptr_vector<Node> result;
-	boost::ptr_vector<Node> tmp;
+	std::vector<std::unique_ptr<Node> > result;
+	std::vector<std::unique_ptr<Node> > tmp;
 	while ( (e = sqlite3_step(stmt)) == SQLITE_ROW ) {
 		boost::uuids::uuid uuid;
 		memcpy(&uuid, sqlite3_column_blob(stmt, 0), uuid.size());
@@ -218,35 +218,36 @@ bool Branch(const boost::filesystem::path &path, sqlite3 *db)
 
 		// include the module if it is a non-template module
 		if (!template_state || strcmp((const char *)template_state, "true") != 0) {
-			result.push_back(new Node(uuid, uuid, level));
+			result.emplace_back(new Node(uuid, uuid, level));
 			continue;
 		}
 		// search top module of the template
 		InstanceMap::iterator it = instance_map.find(uuid);
 		if (it == instance_map.end()) {
-			tmp.push_back(new Node(uuid, uuid, level));
+			tmp.emplace_back(new Node(uuid, uuid, level));
 			continue;
 		}
 		// rollback and collect the module and its descendants from tree
-		boost::ptr_vector<Node> v;
+		std::vector<std::unique_ptr<Node> > v;
 		while (!tmp.empty()) {
-			boost::ptr_vector<Node>::auto_type node = tmp.pop_back();
+			std::unique_ptr<Node> node = std::move(tmp.back());
+			tmp.pop_back();
 			if (node->level() <= level) {
 				// restore one which is not a descendant
-				tmp.push_back(node.release());
+				tmp.push_back(std::move(node));
 				break;
 			}
-			v.insert(v.begin(), node.release());
+			v.insert(v.begin(), std::move(node));
 		}
 		// duplicate the subtree
 		do {
 			const boost::uuids::uuid &instance_id = it->second->uuid();
-			for (boost::ptr_vector<Node>::const_iterator vit=v.begin();vit!=v.end();++vit) {
+			for (const auto &np : v) {
 				boost::uuids::uuid u = (*gen)();
-				result.push_back(new Node(u, vit->module_id(), vit->level(), it->second->label()));
+				result.emplace_back(new Node(u, np->module_id(), np->level(), it->second->label()));
 				if (!jd->Save(3, u)) return false;
 			}
-			result.push_back(new Node(instance_id, uuid, level, it->second->label()));
+			result.emplace_back(new Node(instance_id, uuid, level, it->second->label()));
 			if (!jd->Save(2, instance_id)) return false;
 
 			// search next instance of the same template
@@ -254,8 +255,8 @@ bool Branch(const boost::filesystem::path &path, sqlite3 *db)
 			it = instance_map.find(uuid);
 		} while (it != instance_map.end());
 		// write original nodes into journal
-		for (boost::ptr_vector<Node>::const_iterator vit=v.begin();vit!=v.end();++vit) {
-			if (!jd->Save(1, vit->uuid())) return false;
+		for (const auto &np : v) {
+			if (!jd->Save(1, np->uuid())) return false;
 		}
 		if (!jd->Save(0, uuid)) return false;
 	}
@@ -274,8 +275,8 @@ bool Branch(const boost::filesystem::path &path, sqlite3 *db)
 	}
 
 	std::unique_ptr<NodeDriver> nd(new NodeDriver(db));
-	for (boost::ptr_vector<Node>::const_iterator it=result.begin();it!=result.end();++it) {
-		if (!nd->Save(*it)) return false;
+	for (const auto &np : result) {
+		if (!nd->Save(*np)) return false;
 	}
 
 	return true;
