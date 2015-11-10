@@ -22,9 +22,10 @@
 
 namespace flint {
 
-typedef boost::ptr_unordered_map<boost::uuids::uuid,
-								 std::unordered_map<int, int>
-								 > DataOffsetMap;
+typedef std::unordered_map<boost::uuids::uuid,
+						   std::unordered_map<int, int>,
+						   boost::hash<boost::uuids::uuid>
+						   > DataOffsetMap;
 typedef std::unordered_map<boost::uuids::uuid,
 						   int,
 						   boost::hash<boost::uuids::uuid>

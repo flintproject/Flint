@@ -61,8 +61,8 @@ public:
 			cerr << "unknown track: " << track_id << endl;
 			return false;
 		}
-		std::unordered_map<int, int>::const_iterator pqit = domit->second->find(pq_id);
-		if (pqit == domit->second->end()) {
+		std::unordered_map<int, int>::const_iterator pqit = domit->second.find(pq_id);
+		if (pqit == domit->second.end()) {
 			cerr << "unknow physical-quantity-id: " << pq_id << endl;
 			return false;
 		}
