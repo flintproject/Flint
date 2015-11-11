@@ -65,8 +65,8 @@ tmp/SBML_odeSolver-$(SOSLIB_COMMIT): src/SBML_odeSolver-$(SOSLIB_COMMIT).tar.gz 
 	touch $@
 
 tmp/sundials-$(SUNDIALS_VERSION): src/sundials-$(SUNDIALS_VERSION).tar.gz | tmp
-	-rm -rf var/sundials-$(SUNDIALS_VERSION)
-	tar -C var -zxf $<
+	-rm -rf src/sundials-$(SUNDIALS_VERSION)
+	tar -C src -zxf $<
 	touch $@
 
 tmp/$(BOOST_UNDERSCORE).installed: tmp/$(BOOST_UNDERSCORE)
@@ -90,8 +90,9 @@ tmp/libzip-$(LIBZIP_VERSION).installed: tmp/libzip-$(LIBZIP_VERSION)
 	touch $@
 
 tmp/sundials-$(SUNDIALS_VERSION).installed: tmp/sundials-$(SUNDIALS_VERSION)
-	(cd var/sundials-$(SUNDIALS_VERSION) && ./configure --prefix=$(PREFIX)/sundials-$(SUNDIALS_VERSION) --enable-shared --disable-static && $(MAKE) all install)
-	(cd $(PREFIX)/sundials-$(SUNDIALS_VERSION)/lib && for x in cvode cvodes ida kinsol nvecserial; do ln -s libsundials_$$x libsundials_$$x.so; done)
+	-rm -rf var/sundials-$(SUNDIALS_VERSION)
+	install -d var/sundials-$(SUNDIALS_VERSION)
+	(cd var/sundials-$(SUNDIALS_VERSION) && cmake -DCMAKE_INSTALL_PREFIX=$(PREFIX)/sundials-$(SUNDIALS_VERSION) -DBUILD_STATIC_LIBS=OFF -DBUILD_SHARED_LIBS=ON ../../src/sundials-$(SUNDIALS_VERSION) && $(MAKE) all install)
 	touch $@
 
 tmp/libsbml-$(LIBSBML_VERSION).installed: tmp/libsbml-$(LIBSBML_VERSION) tmp/libxml2-$(LIBXML2_VERSION).installed
@@ -105,7 +106,7 @@ tmp/SBML_odeSolver-$(SOSLIB_COMMIT).installed: tmp/SBML_odeSolver-$(SOSLIB_COMMI
 tmp/sequential-version.installed: tmp/$(BOOST_UNDERSCORE).installed tmp/clibsedml-$(CLIBSEDML_COMMIT).installed tmp/libzip-$(LIBZIP_VERSION).installed tmp/protobuf-$(PROTOBUF_VERSION).installed tmp/SBML_odeSolver-$(SOSLIB_COMMIT).installed
 	(cd .. && autoreconf -i -f)
 	install -d var/sequential-version
-	(cd var/sequential-version && env LDFLAGS='-Wl,-rpath -Wl,$(PREFIX)/libsbml-$(LIBSBML_VERSION)/lib' PKG_CONFIG_PATH=$(PKG_CONFIG_PATH) ../../../configure --prefix=$(PREFIX)/sequential-version --with-boost=$(PREFIX)/$(BOOST_UNDERSCORE) --with-xml-prefix=$(PREFIX)/libxml2-$(LIBXML2_VERSION) --with-protoc=$(PREFIX)/protobuf-$(PROTOBUF_VERSION)/bin/protoc --with-sundials=$(PREFIX)/sundials-$(SUNDIALS_VERSION) && $(MAKE) all install)
+	(cd var/sequential-version && env LDFLAGS='-Wl,-rpath -Wl,$(PREFIX)/libsbml-$(LIBSBML_VERSION)/lib -Wl,-rpath -Wl,$(PREFIX)/sundials-$(SUNDIALS_VERSION)/lib' PKG_CONFIG_PATH=$(PKG_CONFIG_PATH) ../../../configure --prefix=$(PREFIX)/sequential-version --with-boost=$(PREFIX)/$(BOOST_UNDERSCORE) --with-xml-prefix=$(PREFIX)/libxml2-$(LIBXML2_VERSION) --with-protoc=$(PREFIX)/protobuf-$(PROTOBUF_VERSION)/bin/protoc --with-sundials=$(PREFIX)/sundials-$(SUNDIALS_VERSION) && $(MAKE) all install)
 	touch $@
 
 .DEFAULT_GOAL := all

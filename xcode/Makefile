@@ -30,10 +30,10 @@ DYLIBS := \
     libprotobuf.9 \
     libzip.4
 SUNDIALS_DYLIBS := \
-    cvode.0 \
-    cvodes.1 \
-    ida.1 \
-    kinsol.0 \
+    cvode.1 \
+    cvodes.2 \
+    ida.2 \
+    kinsol.1 \
     nvecserial.0
 FLINT_DYLIBS := \
     libflint.0 \
@@ -60,7 +60,7 @@ APP = root/Applications/Flint.app
 flint_java_jar_name = $(APP)/Contents/Java/$(1).jar
 flint_frameworks_boost_dylib_name = $(APP)/Contents/Frameworks/libboost_$(1)-mt.dylib
 flint_frameworks_dylib_name = $(APP)/Contents/Frameworks/$(1).dylib
-flint_frameworks_sundials_dylib_name = $(APP)/Contents/Frameworks/libsundials_$(1)
+flint_frameworks_sundials_dylib_name = $(APP)/Contents/Frameworks/libsundials_$(1).dylib
 flint_macos_program_name = $(APP)/Contents/MacOS/$(1)
 
 define flint_frameworks_boost_dylib
@@ -76,13 +76,13 @@ $(call flint_frameworks_dylib_name,$(1)): $(PREFIX)/lib/$(1).dylib tmp/bundled
 	install_name_tool -id @executable_path/../Frameworks/$(1).dylib $$@
 	install_name_tool -change $(PREFIX)/lib/libxml2.2.dylib @executable_path/../Frameworks/libxml2.2.dylib $$@
 	install_name_tool -change $(PREFIX)/lib/libsbml.$(LIBSBML_VERSION).dylib @executable_path/../Frameworks/libsbml.$(LIBSBML_VERSION).dylib $$@
-	for name in $(SUNDIALS_DYLIBS); do install_name_tool -change $(PREFIX)/lib/libsundials_$$$$name @executable_path/../Frameworks/libsundials_$$$$name $$@; done
+	for name in $(SUNDIALS_DYLIBS); do install_name_tool -change libsundials_$$$$name.dylib @executable_path/../Frameworks/libsundials_$$$$name.dylib $$@; done
 endef
 
 define flint_frameworks_sundials_dylib
 $(call flint_frameworks_sundials_dylib_name,$(1)): tmp/sundials-$(SUNDIALS_VERSION).installed tmp/bundled
-	install -p -m 0644 $(PREFIX)/lib/libsundials_$(1) $$@
-	install_name_tool -id @executable_path/../Frameworks/libsundials_$(1) $$@
+	install -p -m 0644 $(PREFIX)/lib/libsundials_$(1).dylib $$@
+	install_name_tool -id @executable_path/../Frameworks/libsundials_$(1).dylib $$@
 endef
 
 define flint_frameworks_flint_dylib
@@ -91,7 +91,7 @@ $(call flint_frameworks_dylib_name,$(1)): opt/lib/$(1).dylib tmp/bundled
 	install_name_tool -id @executable_path/../Frameworks/$(1).dylib $$@
 	for name in $(BOOST_DYLIBS); do install_name_tool -change @rpath/libboost_$$$$name-mt.dylib @executable_path/../Frameworks/libboost_$$$$name-mt.dylib $$@; done
 	for name in $(DYLIBS); do install_name_tool -change $(PREFIX)/lib/$$$$name.dylib @executable_path/../Frameworks/$$$$name.dylib $$@; done
-	for name in $(SUNDIALS_DYLIBS); do install_name_tool -change $(PREFIX)/lib/libsundials_$$$$name @executable_path/../Frameworks/libsundials_$$$$name $$@; done
+	for name in $(SUNDIALS_DYLIBS); do install_name_tool -change libsundials_$$$$name.dylib @executable_path/../Frameworks/libsundials_$$$$name.dylib $$@; done
 	for name in $(FLINT_DYLIBS); do install_name_tool -change $(CURDIR)/opt/lib/$$$$name.dylib @executable_path/../Frameworks/$$$$name.dylib $$@; done
 endef
 
@@ -100,7 +100,7 @@ $(call flint_macos_program_name,$(1)): opt/bin/$(1) tmp/bundled
 	install -p $$< $$@
 	for name in $(BOOST_DYLIBS); do install_name_tool -change @rpath/libboost_$$$$name-mt.dylib @executable_path/../Frameworks/libboost_$$$$name-mt.dylib $$@; done
 	for name in $(DYLIBS); do install_name_tool -change $(PREFIX)/lib/$$$$name.dylib @executable_path/../Frameworks/$$$$name.dylib $$@; done
-	for name in $(SUNDIALS_DYLIBS); do install_name_tool -change $(PREFIX)/lib/libsundials_$$$$name @executable_path/../Frameworks/libsundials_$$$$name $$@; done
+	for name in $(SUNDIALS_DYLIBS); do install_name_tool -change libsundials_$$$$name.dylib @executable_path/../Frameworks/libsundials_$$$$name.dylib $$@; done
 	for name in $(FLINT_DYLIBS); do install_name_tool -change $(CURDIR)/opt/lib/$$$$name.dylib @executable_path/../Frameworks/$$$$name.dylib $$@; done
 endef
 
@@ -188,7 +188,8 @@ tmp/libzip-$(LIBZIP_VERSION).installed: tmp/libzip-$(LIBZIP_VERSION)
 	touch $@
 
 tmp/sundials-$(SUNDIALS_VERSION).installed: tmp/sundials-$(SUNDIALS_VERSION)
-	(cd var/sundials-$(SUNDIALS_VERSION) && export MACOSX_DEPLOYMENT_TARGET=10.7 && ./configure --prefix=$(PREFIX) --enable-shared CC='clang' CXX='clang++' CFLAGS='-arch x86_64 -mmacosx-version-min=10.7' CXXFLAGS='-std=c++11 -stdlib=libc++ -arch x86_64 -mmacosx-version-min=10.7' LDFLAGS='-stdlib=libc++ -arch x86_64 -mmacosx-version-min=10.7' && $(MAKE) all install)
+	install -d var/sundials-$(SUNDIALS_VERSION)/build
+	(cd var/sundials-$(SUNDIALS_VERSION)/build && export MACOSX_DEPLOYMENT_TARGET=10.7 && CC='clang' CXX='clang++' CFLAGS='-arch x86_64 -mmacosx-version-min=10.7' CXXFLAGS='-std=c++11 -stdlib=libc++ -arch x86_64 -mmacosx-version-min=10.7' LDFLAGS='-stdlib=libc++ -arch x86_64 -mmacosx-version-min=10.7' cmake -DCMAKE_INSTALL_PREFIX=$(PREFIX) -DBUILD_STATIC_LIBS=OFF -DBUILD_SHARED_LIBS=ON .. && $(MAKE) all install)
 	touch $@
 
 tmp/libsbml-$(LIBSBML_VERSION).installed: tmp/libsbml-$(LIBSBML_VERSION) tmp/libxml2-$(LIBXML2_VERSION).installed
@@ -197,7 +198,7 @@ tmp/libsbml-$(LIBSBML_VERSION).installed: tmp/libsbml-$(LIBSBML_VERSION) tmp/lib
 	touch $@
 
 tmp/SBML_odeSolver-$(SOSLIB_COMMIT).installed: tmp/SBML_odeSolver-$(SOSLIB_COMMIT) tmp/sundials-$(SUNDIALS_VERSION).installed tmp/libsbml-$(LIBSBML_VERSION).installed
-	(cd var/SBML_odeSolver-$(SOSLIB_COMMIT) && autoreconf -i && export MACOSX_DEPLOYMENT_TARGET=10.7 && ./configure --prefix=$(PREFIX) --with-libsbml=$(PREFIX) --with-libxml2=$(PREFIX) --with-sundials=$(PREFIX) --without-grace --without-graphviz CC='clang' CXX='clang++' CFLAGS='-arch x86_64 -mmacosx-version-min=10.7' CXXFLAGS='-std=c++11 -stdlib=libc++ -arch x86_64 -mmacosx-version-min=10.7' LDFLAGS='-stdlib=libc++ -arch x86_64 -mmacosx-version-min=10.7' && $(MAKE) all install)
+	(cd var/SBML_odeSolver-$(SOSLIB_COMMIT) && autoreconf -i && export MACOSX_DEPLOYMENT_TARGET=10.7 && ./configure --prefix=$(PREFIX) --with-libsbml=$(PREFIX) --with-libxml2=$(PREFIX) --with-sundials=$(PREFIX) --without-grace --without-graphviz CC='clang' CFLAGS='-arch x86_64 -mmacosx-version-min=10.7 -Wl,-headerpad_max_install_names' LDFLAGS='-arch x86_64 -mmacosx-version-min=10.7' && $(MAKE) all install)
 	touch $@
 
 # for Flint

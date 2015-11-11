@@ -117,16 +117,16 @@
             <File Id='libboost_system' Name='libboost_system-mt.dll' DiskId='1' Source='libboost_system-mt.dll' />
           </Component>
           <Component Id='sundials.cvodes' Guid='3076eb1a-ff63-11e4-bdb9-6b3b5e708c9b'>
-            <File Id='libsundials_cvodes' Name='libsundials_cvodes-1.dll' DiskId='1' Source='libsundials_cvodes-1.dll' />
+            <File Id='libsundials_cvodes' Name='libsundials_cvodes.dll' DiskId='1' Source='libsundials_cvodes.dll' />
           </Component>
           <Component Id='sundials.ida' Guid='3077328c-ff63-11e4-bd07-ef14b7d588b2'>
-            <File Id='libsundials_ida' Name='libsundials_ida-1.dll' DiskId='1' Source='libsundials_ida-1.dll' />
+            <File Id='libsundials_ida' Name='libsundials_ida.dll' DiskId='1' Source='libsundials_ida.dll' />
           </Component>
           <Component Id='sundials.kinsol' Guid='30779150-ff63-11e4-9e3e-f30fef28e749'>
-            <File Id='libsundials_kinsol' Name='libsundials_kinsol-0.dll' DiskId='1' Source='libsundials_kinsol-0.dll' />
+            <File Id='libsundials_kinsol' Name='libsundials_kinsol.dll' DiskId='1' Source='libsundials_kinsol.dll' />
           </Component>
           <Component Id='sundials.nvecserial' Guid='3077d142-ff63-11e4-a856-4ff3f7384135'>
-            <File Id='libsundials_nvecserial' Name='libsundials_nvecserial-0.dll' DiskId='1' Source='libsundials_nvecserial-0.dll' />
+            <File Id='libsundials_nvecserial' Name='libsundials_nvecserial.dll' DiskId='1' Source='libsundials_nvecserial.dll' />
           </Component>
           <Component Id='clibsedml' Guid='72d89bf4-8921-11e1-8be9-8ffa90143fcb'>
             <File Id='libsedml' Name='libsedml-0.dll' DiskId='1' Source='libsedml-0.dll' />

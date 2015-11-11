@@ -23,10 +23,10 @@ BOOST_DLLS := \
     libboost_program_options-mt \
     libboost_system-mt
 SUNDIALS_DLLS := \
-    libsundials_cvodes-1 \
-    libsundials_ida-1 \
-    libsundials_kinsol-0 \
-    libsundials_nvecserial-0
+    libsundials_cvodes \
+    libsundials_ida \
+    libsundials_kinsol \
+    libsundials_nvecserial
 FLINT_DLLS := \
     libflint-0 \
     libflintxx-0 \

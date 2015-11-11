@@ -21,13 +21,8 @@ $(call flint_dll_name,$(1)): opt/bin/$(1).dll | flint
 	install -p $$< $$@
 endef
 
-define flint_boost_dll
+define flint_lib_dll
 $(call flint_dll_name,$(1)): opt/lib/$(1).dll | flint
-	install -p $$< $$@
-endef
-
-define flint_sundials_dll
-$(call flint_dll_name,$(1)): opt/lib/$(1) | flint
 	install -p $$< $$@
 endef
 
@@ -102,10 +97,9 @@ tmp/SBML_odeSolver-$(SOSLIB_COMMIT): src/SBML_odeSolver-$(SOSLIB_COMMIT).tar.gz 
 	tar -C var -zxf $<
 	touch $@
 
-tmp/sundials-$(SUNDIALS_VERSION): src/sundials-$(SUNDIALS_VERSION).tar.gz sundials-$(SUNDIALS_VERSION).patch | tmp
+tmp/sundials-$(SUNDIALS_VERSION): src/sundials-$(SUNDIALS_VERSION).tar.gz | tmp
 	-rm -rf var/sundials-$(SUNDIALS_VERSION)
 	tar -C var -zxf $<
-	patch -d var/sundials-$(SUNDIALS_VERSION) < sundials-$(SUNDIALS_VERSION).patch
 	touch $@
 
 tmp/$(BOOST_UNDERSCORE).installed: tmp/$(BOOST_UNDERSCORE)
@@ -140,8 +134,9 @@ tmp/libzip-$(LIBZIP_VERSION).installed: tmp/libzip-$(LIBZIP_VERSION) tmp/zlib-$(
 	touch $@
 
 tmp/sundials-$(SUNDIALS_VERSION).installed: tmp/sundials-$(SUNDIALS_VERSION)
-	(cd var/sundials-$(SUNDIALS_VERSION) && ./configure --host=$(HOST) --prefix=$(PREFIX) --enable-shared --disable-static --disable-mpi)
-	$(MAKE) -C var/sundials-$(SUNDIALS_VERSION) all install LDFLAGS='-no-undefined' LIBS='' # to drop -lm
+	install -d var/sundials-$(SUNDIALS_VERSION)/build
+	(cd var/sundials-$(SUNDIALS_VERSION)/build && cmake --host=$(HOST) -DCMAKE_INSTALL_PREFIX=$(PREFIX) -DCMAKE_TOOLCHAIN_FILE=$(CURDIR)/var/toolchain.cmake -DBUILD_STATIC_LIBS=OFF -DBUILD_SHARED_LIBS=ON ..)
+	$(MAKE) -C var/sundials-$(SUNDIALS_VERSION)/build all install
 	touch $@
 
 tmp/libsbml-$(LIBSBML_VERSION).installed: var/toolchain.cmake tmp/libsbml-$(LIBSBML_VERSION) tmp/libxml2-$(LIBXML2_VERSION).installed
@@ -151,8 +146,8 @@ tmp/libsbml-$(LIBSBML_VERSION).installed: var/toolchain.cmake tmp/libsbml-$(LIBS
 	touch $@
 
 tmp/SBML_odeSolver-$(SOSLIB_COMMIT).installed: tmp/SBML_odeSolver-$(SOSLIB_COMMIT) tmp/sundials-$(SUNDIALS_VERSION).installed tmp/libsbml-$(LIBSBML_VERSION).installed
-	(cd var/SBML_odeSolver-$(SOSLIB_COMMIT) && autoreconf -i -f && ./configure --host=$(HOST) --prefix=$(PREFIX) --enable-shared --disable-static --with-libsbml=$(PREFIX) --with-libxml2=$(PREFIX) --without-xerces --with-sundials=$(PREFIX) --without-grace --without-graphviz CPPFLAGS='-DSBML_ODESOLVER_EXPORTS=1 -DWIN32')
-	-$(MAKE) -C var/SBML_odeSolver-$(SOSLIB_COMMIT) install LDFLAGS='-no-undefined'
+	(cd var/SBML_odeSolver-$(SOSLIB_COMMIT) && autoreconf -i -f && ./configure --host=$(HOST) --prefix=$(PREFIX) --enable-shared --disable-static --with-libsbml=$(PREFIX) --with-libxml2=$(PREFIX) --without-xerces --with-sundials=$(PREFIX) --without-grace --without-graphviz CPPFLAGS='-DSBML_ODESOLVER_EXPORTS=1')
+	-$(MAKE) -C var/SBML_odeSolver-$(SOSLIB_COMMIT) install
 	touch $@
 
 tmp/zlib-$(ZLIB_VERSION).installed: tmp/zlib-$(ZLIB_VERSION)
@@ -200,9 +195,7 @@ $(foreach d,$(BIN_DLLS) $(FLINT_DLLS),$(eval $(call flint_bin_dll,$(d))))
 
 $(foreach d,$(BOOST_DLLS),opt/lib/$(d).dll): tmp/$(BOOST_UNDERSCORE).installed
 
-$(foreach d,$(BOOST_DLLS),$(eval $(call flint_boost_dll,$(d))))
-
-$(foreach d,$(SUNDIALS_DLLS),$(eval $(call flint_sundials_dll,$(d))))
+$(foreach d,$(BOOST_DLLS) $(SUNDIALS_DLLS),$(eval $(call flint_lib_dll,$(d))))
 
 $(foreach d,$(SUNDIALS_DLLS),opt/lib/$(d)): tmp/sundials-$(SUNDIALS_VERSION).installed
 

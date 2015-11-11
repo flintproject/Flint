@@ -12,10 +12,10 @@ In order to build Flint, the following libraries are required:
   http://www.boost.org/
 - Protocol buffers 2.6.1
   https://developers.google.com/protocol-buffers/
-- Git master version of The SBML ODE Solver Library (SOSlib)
+- Git sundials-2.4.0 branch version of The SBML ODE Solver Library (SOSlib)
   http://mescalin.tbi.univie.ac.at/~raim/odeSolver/
   https://github.com/raim/SBML_odeSolver
-- SUNDIALS 2.3.0
+- SUNDIALS 2.6.2
   https://computation.llnl.gov/casc/sundials/main.html
 - libxml 2.7.8 or higher
   http://xmlsoft.org/
