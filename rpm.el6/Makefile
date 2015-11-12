@@ -29,7 +29,7 @@ clibsedml_RELEASE = 1
 libsbml_RELEASE = 1
 libzip_RELEASE = 1
 protobuf_RELEASE = 1
-soslib_RELEASE = 1
+soslib_RELEASE = 2
 sundials_RELEASE = 1
 
 boost_DEPENDS =
