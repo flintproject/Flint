@@ -71,7 +71,6 @@ rm -rf %{buildroot}
 /opt/flint/include/sbmlsolver/solverError.h
 /opt/flint/include/sbmlsolver/util.h
 /opt/flint/include/sbmlsolver/variableIndex.h
-/opt/flint/lib/libODES.a
 /opt/flint/lib/libODES.la
 /opt/flint/lib/libODES.so
 /opt/flint/lib/libODES.so.0
