@@ -20710,4 +20710,10 @@ BOOST_AUTO_TEST_CASE(x_delay_without_max_delay) {
 				 "a is given as 1st argument of Delay(), but it lacks <max-delay>\n");
 }
 
+BOOST_AUTO_TEST_CASE(x_empty_definition_of_instantaneous_extra_impl) {
+	ReadAndError(TEST_MODELS("x-empty-definition-of-instantaneous-extra-impl.phml"),
+				 "empty <definition> in <extra-implementation> of type instantaneous\n"
+				 " at physical-quantity \"x\" (1) of module \"X\" (2563a638-89dc-11e5-b0ba-1bdda966072b)\n");
+}
+
 BOOST_AUTO_TEST_SUITE_END()

@@ -3239,6 +3239,7 @@ private:
 
 	int ReadDefinitionOfExtraImplementation() {
 		std::unique_ptr<Definition> def(new Definition);
+		int isEmpty = xmlTextReaderIsEmptyElement(text_reader_);
 		int i;
 		while ( (i = xmlTextReaderMoveToNextAttribute(text_reader_)) > 0) {
 			if (xmlTextReaderIsNamespaceDecl(text_reader_)) continue;
@@ -3266,6 +3267,10 @@ private:
 			return xmlTextReaderNext(text_reader_);
 		}
 		assert(xmlStrEqual(extra_->type(), BAD_CAST "instantaneous"));
+		if (isEmpty != 0) {
+			cerr << "empty <definition> in <extra-implementation> of type instantaneous" << endl;
+			return -2;
+		}
 		if (!extra_->order()) {
 			cerr << "missing order of <extra-implementation>" << endl;
 			return -2;
