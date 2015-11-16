@@ -47,10 +47,9 @@ bool Compile(sqlite3 *db, const char *table, Method method, const char *output)
 		cerr << "failed to open " << output << endl;
 		return false;
 	}
-	if (!compiler::bcc::Bcc(tmp.db(), &ofs))
-		return false;
+	bool r = compiler::bcc::Bcc(tmp.db(), &ofs);
 	ofs.close();
-	return true;
+	return r;
 }
 
 }
