@@ -20,6 +20,7 @@
 #include "db/query.h"
 #include "db/statement-driver.hh"
 #include "method/helper.hh"
+#include "method/printer.h"
 
 using std::cerr;
 using std::endl;
@@ -31,40 +32,6 @@ namespace flint {
 namespace method {
 
 namespace {
-
-class Printer : public boost::static_visitor<> {
-public:
-	explicit Printer(std::ostream *os)
-		: os_(os)
-	{}
-
-	void operator()(const Compound &c) const {
-		os_->put('(');
-		*os_ << c.keyword;
-		std::vector<Expr>::const_iterator bit = c.children.begin();
-		std::vector<Expr>::const_iterator eit = c.children.end();
-		for (std::vector<Expr>::const_iterator it=bit;it!=eit;++it) {
-			os_->put(' ');
-			boost::apply_visitor(*this, *it);
-		}
-		os_->put(')');
-	}
-
-	void operator()(const std::string &s) const {
-		*os_ << s;
-	}
-
-	void operator()(int i) const {
-		*os_ << i;
-	}
-
-	void operator()(const flint::lexer::Real &r) const {
-		*os_ << r.lexeme;
-	}
-
-private:
-	std::ostream *os_;
-};
 
 class VariantPrinter : public boost::static_visitor<> {
 public:

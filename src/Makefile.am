@@ -118,6 +118,7 @@ libflintxx_la_SOURCES = \
     method/euler.cc \
     method/event.cc \
     method/helper.cc \
+    method/printer.cc \
     method/rk4.cc \
     modelpath.cc \
     phml/branch.cc \
