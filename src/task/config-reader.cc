@@ -76,12 +76,13 @@ bool ConfigReader::Read()
 	return true;
 }
 
-const char *ConfigReader::GetCanonicalMethodName()
+compiler::Method ConfigReader::GetMethod() const
 {
-	static const char kRk4[] = "rk4";
-	if (!method_) return kRk4;
-	if (strcmp(method_.get(), "euler") == 0) return method_.get();
-	return kRk4;
+	if (!method_)
+		return compiler::Method::kRk4;
+	if (strcmp(method_.get(), "euler") == 0)
+		return compiler::Method::kEuler;
+	return compiler::Method::kRk4;
 }
 
 }

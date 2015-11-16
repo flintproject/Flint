@@ -139,7 +139,7 @@ bool TaskRunner::Run()
 		return false;
 	char bc_file[kFilenameLength];
 	sprintf(bc_file, "%s/bc", dir_.get());
-	if (!compiler::Compile(modeldb_driver_->db(), "input_eqs", reader_->GetCanonicalMethodName(), bc_file))
+	if (!compiler::Compile(modeldb_driver_->db(), "input_eqs", reader_->GetMethod(), bc_file))
 		return false;
 
 	char db_file[kFilenameLength];

@@ -128,7 +128,7 @@ bool Run(const char *input, int size)
 		return false;
 	if (!filter::Isdh("filter", "isdh"))
 		return false;
-	if (!compiler::Compile(db, "input_eqs", reader.GetCanonicalMethodName(), "bc"))
+	if (!compiler::Compile(db, "input_eqs", reader.GetMethod(), "bc"))
 		return false;
 	boost::filesystem::path output_path = GetPathFromUtf8(option.output_filename().c_str());
 	std::string output_file = output_path.string();

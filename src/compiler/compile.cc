@@ -13,29 +13,30 @@
 
 using std::cerr;
 using std::endl;
-using std::strcmp;
 
 namespace flint {
 namespace compiler {
 
-bool Compile(sqlite3 *db, const char *table, const char *method, const char *output)
+bool Compile(sqlite3 *db, const char *table, Method method, const char *output)
 {
 	db::Driver tmp("");
-	if (strcmp("assign", method) == 0) {
+	switch (method) {
+	case Method::kAssign:
 		if (!method::Assign(db, table, tmp.db()))
 			return false;
-	} else if (strcmp("euler", method) == 0) {
+		break;
+	case Method::kEuler:
 		if (!method::Euler(db, table, tmp.db()))
 			return false;
-	} else if (strcmp("event", method) == 0) {
+		break;
+	case Method::kEvent:
 		if (!method::Event(db, table, tmp.db()))
 			return false;
-	} else if (strcmp("rk4", method) == 0) {
+		break;
+	case Method::kRk4:
 		if (!method::Rk4(db, table, tmp.db()))
 			return false;
-	} else {
-		cerr << "unknown method: " << method << endl;
-		return false;
+		break;
 	}
 	if (!compiler::sort::Sort(tmp.db()))
 		return false;

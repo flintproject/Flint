@@ -7,10 +7,17 @@
 namespace flint {
 namespace compiler {
 
+enum class Method {
+	kAssign,
+	kEuler,
+	kEvent,
+	kRk4
+};
+
 /*
  * Note that db is for read only.
  */
-bool Compile(sqlite3 *db, const char *table, const char *method, const char *output);
+bool Compile(sqlite3 *db, const char *table, Method method, const char *output);
 
 }
 }

@@ -51,7 +51,7 @@ bool JobRunner::Run()
 {
 	{
 		db::ReadOnlyDriver g(generated_db_.get());
-		if (!compiler::Compile(g.db(), "parameter_eqs", "assign", generated_bc_.get()))
+		if (!compiler::Compile(g.db(), "parameter_eqs", compiler::Method::kAssign, generated_bc_.get()))
 			return false;
 	}
 	// TODO: give a proper seed if desired

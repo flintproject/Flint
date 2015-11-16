@@ -2,6 +2,7 @@
 #ifndef FLINT_TASK_CONFIG_READER_HH_
 #define FLINT_TASK_CONFIG_READER_HH_
 
+#include "compiler.hh"
 #include "db/statement-driver.hh"
 
 #include <memory>
@@ -23,9 +24,9 @@ public:
 	bool Read();
 
 	/*
-	 * Return "euler" or "rk4".
+	 * Return kEuler or kRk4.
 	 */
-	const char *GetCanonicalMethodName();
+	compiler::Method GetMethod() const;
 
 private:
 	/*
