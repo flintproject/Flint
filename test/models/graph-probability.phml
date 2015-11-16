@@ -76,6 +76,7 @@
       <is:physical-quantity-set>
         <is:physical-quantity physical-quantity-id="1" type="state">
           <is:name>x</is:name>
+          <is:dimension type="scalar" />
           <is:initial-value>
             <is:definition type="ae" format="mathml">
               <m:math><m:apply><m:csymbol>is</m:csymbol><m:ci>x</m:ci><m:ci>a</m:ci></m:apply></m:math>

@@ -460,6 +460,8 @@ public:
 		  pq_id_(),
 		  unit_id_(NULL),
 		  name_(NULL),
+		  col_(0),
+		  row_(0),
 		  max_delay_(NULL),
 		  rowid_()
 	{}
@@ -478,6 +480,10 @@ public:
 	void set_unit_id(xmlChar *unit_id) {unit_id_ = unit_id;}
 	const xmlChar *name() const {return name_;}
 	void set_name(xmlChar *name) {name_ = name;}
+	int col() const {return col_;}
+	void set_col(int col) {col_ = col;}
+	int row() const {return row_;}
+	void set_row(int row) {row_ = row;}
 	const xmlChar *max_delay() const {return max_delay_;}
 	void set_max_delay(xmlChar *max_delay) {max_delay_ = max_delay;}
 	sqlite3_int64 rowid() const {return rowid_;}
@@ -508,6 +514,8 @@ private:
 	int pq_id_;
 	xmlChar *unit_id_;
 	xmlChar *name_;
+	int col_;
+	int row_;
 	xmlChar *max_delay_;
 	sqlite3_int64 rowid_;
 };
@@ -2863,6 +2871,10 @@ private:
 					i = ReadPqName();
 					if (i <= 0) return i;
 					continue;
+				} else if (xmlStrEqual(local_name, BAD_CAST "dimension")) {
+					i = ReadDimension();
+					if (i <= 0) return i;
+					continue;
 				} else if (xmlStrEqual(local_name, BAD_CAST "max-delay")) {
 					i = ReadMaxDelay();
 					if (i <= 0) return i;
@@ -2885,6 +2897,10 @@ private:
 				if (xmlStrEqual(local_name, BAD_CAST "physical-quantity")) {
 					if (!pq_->name()) {
 						cerr << "missing <name> of <physical-quantity>: " << pq_->pq_id() << endl;
+						return -2;
+					}
+					if (pq_->col() == 0 && pq_->row() == 0) {
+						cerr << "missing <dimension> of <physical-quantity>" << endl;
 						return -2;
 					}
 					if (!dd_->UpdatePq(pq_.get())) return -2;
@@ -2942,6 +2958,155 @@ private:
 		}
 
 		pq_->set_name(xmlStrdup(name));
+		xmlFree(s);
+		return xmlTextReaderNext(text_reader_);
+	}
+
+	int ReadDimension() {
+		bool isEmpty = xmlTextReaderIsEmptyElement(text_reader_);
+		char dimension_type[7];
+		std::memset(dimension_type, 0, 7);
+		int i;
+		while ( (i = xmlTextReaderMoveToNextAttribute(text_reader_)) > 0) {
+			if (xmlTextReaderIsNamespaceDecl(text_reader_)) continue;
+
+			const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
+			if (xmlStrEqual(local_name, BAD_CAST "type")) {
+				const xmlChar *value = xmlTextReaderConstValue(text_reader_);
+				if (xmlStrEqual(value, BAD_CAST "scalar")) {
+					pq_->set_col(1);
+					pq_->set_row(1);
+					snprintf(dimension_type, 7, "%s", (const char *)value);
+				} else if (xmlStrEqual(value, BAD_CAST "vector")) {
+					if (isEmpty) {
+						cerr << "empty <dimension> of type vector" << endl;
+						return -2;
+					}
+					snprintf(dimension_type, 7, "%s", (const char *)value);
+				} else if (xmlStrEqual(value, BAD_CAST "matrix")) {
+					if (isEmpty) {
+						cerr << "empty <dimension> of type matrix" << endl;
+						return -2;
+					}
+					snprintf(dimension_type, 7, "%s", (const char *)value);
+				} else {
+					cerr << "invalid type of <dimension>: " << value << endl;
+					return -2;
+				}
+			}
+		}
+		if (dimension_type[0] == '\0') {
+			cerr << "missing type of <dimension>" << endl;
+			return -2;
+		}
+		i = xmlTextReaderRead(text_reader_);
+		if (isEmpty)
+			return i;
+		while (i > 0) {
+			int type = xmlTextReaderNodeType(text_reader_);
+			if (type == XML_READER_TYPE_ELEMENT) {
+				const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
+				if (xmlStrEqual(local_name, BAD_CAST "col")) {
+					i = ReadCol();
+					if (i <= 0) return i;
+					continue;
+				} else if (xmlStrEqual(local_name, BAD_CAST "row")) {
+					i = ReadRow();
+					if (i <= 0) return i;
+					continue;
+				}
+			} else if (type == XML_READER_TYPE_END_ELEMENT) {
+				const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
+				if (xmlStrEqual(local_name, BAD_CAST "dimension")) {
+					if (strcmp(dimension_type, "scalar") == 0) {
+						if (pq_->col() * pq_->row() != 1) {
+							cerr << "<dimension> of type scalar with col*row: "
+								 << pq_->col() << '*' << pq_->row()
+								 << endl;
+							return -2;
+						}
+					} else {
+						if (pq_->col() == 0) {
+							cerr << "missing <col> in <dimension> of type " << dimension_type << endl;
+							return -2;
+						}
+						if (pq_->row() == 0) {
+							cerr << "missing <row> in <dimension> of type " << dimension_type << endl;
+							return -2;
+						}
+						if (std::strcmp(dimension_type, "vector") == 0) {
+							if (pq_->col() * pq_->row() != std::max(pq_->col(), pq_->row())) {
+								cerr << "either <col> or <row> of <dimension> of type vector must be 1" << endl;
+								return -2;
+							}
+						}
+					}
+					return xmlTextReaderRead(text_reader_);
+				}
+			}
+			i = xmlTextReaderRead(text_reader_);
+		}
+		return i;
+	}
+
+	int ReadCol() {
+		xmlChar *s = xmlTextReaderReadString(text_reader_);
+		assert(s);
+
+		xmlChar *col;
+		if (!Trim(s, &col)) {
+			xmlFree(s);
+			return -2;
+		}
+		if (xmlStrlen(col) == 0) {
+			cerr << "empty <col>" << endl;
+			xmlFree(s);
+			return -2;
+		}
+		if (xmlStrEqual(col, BAD_CAST "discretization-dependent")) {
+			cerr << "unsupported discretization-dependent <col>" << endl;
+			xmlFree(s);
+			return -2;
+		}
+
+		int n = std::atoi((const char *)col);
+		if (n <= 0) {
+			cerr << "invalid value of <col>: " << col << endl;
+			xmlFree(s);
+			return -2;
+		}
+		pq_->set_col(n);
+		xmlFree(s);
+		return xmlTextReaderNext(text_reader_);
+	}
+
+	int ReadRow() {
+		xmlChar *s = xmlTextReaderReadString(text_reader_);
+		assert(s);
+
+		xmlChar *row;
+		if (!Trim(s, &row)) {
+			xmlFree(s);
+			return -2;
+		}
+		if (xmlStrlen(row) == 0) {
+			cerr << "empty <row>" << endl;
+			xmlFree(s);
+			return -2;
+		}
+		if (xmlStrEqual(row, BAD_CAST "discretization-dependent")) {
+			cerr << "unsupported discretization-dependent <row>" << endl;
+			xmlFree(s);
+			return -2;
+		}
+
+		int n = std::atoi((const char *)row);
+		if (n <= 0) {
+			cerr << "invalid value of <row>: " << row << endl;
+			xmlFree(s);
+			return -2;
+		}
+		pq_->set_row(n);
 		xmlFree(s);
 		return xmlTextReaderNext(text_reader_);
 	}
