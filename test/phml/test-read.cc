@@ -20716,4 +20716,10 @@ BOOST_AUTO_TEST_CASE(x_empty_definition_of_instantaneous_extra_impl) {
 				 " at physical-quantity \"x\" (1) of module \"X\" (2563a638-89dc-11e5-b0ba-1bdda966072b)\n");
 }
 
+BOOST_AUTO_TEST_CASE(x_variable_with_initial_value) {
+	ReadAndError(TEST_MODELS("x-variable-with-initial-value.phml"),
+				 "unexpected <initial-value> for <physical-quantity> of type variable-parameter\n"
+				 " at physical-quantity \"v\" (1) of module \"X\" (1b432bab-9798-4c6e-ae72-9dfebae97bc1)\n");
+}
+
 BOOST_AUTO_TEST_SUITE_END()

@@ -505,6 +505,18 @@ public:
 		}
 	}
 
+	const char *GetTypeName() const {
+		switch (type_) {
+		case kState:             return "state";
+		case kVariableParameter: return "variable-parameter";
+		case kStaticParameter:   return "static-parameter";
+		case kTimeseries:        return "timeseries";
+		default:
+			assert(false);
+			return NULL;
+		}
+	}
+
 	bool IsSaved() const {
 		return rowid_ != 0;
 	}
@@ -2905,6 +2917,12 @@ private:
 					}
 					if (!dd_->UpdatePq(pq_.get())) return -2;
 					if (iv_dumper_) {
+						if (pq_->type() != PQ::kState) {
+							cerr << "unexpected <initial-value> for <physical-quantity> of type "
+								 << pq_->GetTypeName()
+								 << endl;
+							return -2;
+						}
 						if (iv_->IsProper() && !dd_->SaveInitialValue(pq_.get(), iv_.get())) return -2;
 						iv_dumper_.reset();
 					}
