@@ -142,6 +142,8 @@ libflintxx_la_SOURCES = \
     run/run.cc \
     run/spec.cc \
     runtime/calculation-dependency.cc \
+    runtime/eval.cc \
+    runtime/evaluator.cc \
     runtime/init.cc \
     runtime/flow.cc \
     runtime/reduction-unit.cc \

@@ -5,30 +5,19 @@
 
 #include "runtime.hh"
 
-#include <cstdio>
-#include <iostream>
 #include <memory>
 
 #include "runtime/evaluator.h"
 
-using std::cerr;
-using std::endl;
-
 namespace flint {
 namespace runtime {
 
-bool Init(sqlite3 *db,
+bool Eval(sqlite3 *db,
 		  int seed,
 		  const char *layout_file, const char *bc_file, const char *output_file)
 {
 	std::unique_ptr<Evaluator> e(new Evaluator);
-	if (!e->Load(layout_file))
-		return false;
-	if (!e->layout().ContainsDependentVariable()) {
-		cerr << "no dependent variables found" << endl;
-		return false;
-	}
-	return e->Evaluate(db, seed, bc_file, output_file);
+	return e->Load(layout_file) && e->Evaluate(db, seed, bc_file, output_file);
 }
 
 }

@@ -55,7 +55,7 @@ bool JobRunner::Run()
 			return false;
 	}
 	// TODO: give a proper seed if desired
-	if (!runtime::Init(tr_->GetDatabase(), 0, tr_->generated_layout(), generated_bc_.get(), generated_init_.get()))
+	if (!runtime::Eval(tr_->GetDatabase(), 0, tr_->generated_layout(), generated_bc_.get(), generated_init_.get()))
 		return false;
 	{
 		boost::system::error_code ec;
