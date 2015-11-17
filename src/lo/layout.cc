@@ -3,6 +3,20 @@
 
 namespace flint {
 
+bool Layout::ContainsDependentVariable() const
+{
+	for (const auto &dp : dv_) {
+		switch (dp->type()) {
+		case lo::S:
+		case lo::T:
+			break;
+		default:
+			return true;
+		}
+	}
+	return false;
+}
+
 size_t Layout::MarkConstant(int nol, size_t size, char *arr) const
 {
 	size_t num_of_on = 0;

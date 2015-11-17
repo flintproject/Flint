@@ -50,6 +50,11 @@ public:
 		dv_.push_back(std::move(data));
 	}
 
+	/*
+	 * Return true if the layout has any dependent variable, false otherwise.
+	 */
+	bool ContainsDependentVariable() const;
+
 	int Calculate(DataOffsetMap *dom = NULL, SectorOffsetMap *som = NULL) {
 		int offset = kOffsetBase;
 		int di = 0;

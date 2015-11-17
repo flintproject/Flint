@@ -84,4 +84,17 @@ BOOST_AUTO_TEST_CASE(fsk) {
 	boost::filesystem::remove_all(p1);
 }
 
+BOOST_AUTO_TEST_CASE(x_static_only) {
+	boost::filesystem::path p(path_);
+	p /= "x-static-only";
+	if (boost::filesystem::exists(p))
+		boost::filesystem::remove_all(p);
+	BOOST_CHECK(boost::filesystem::create_directory(p));
+	boost::filesystem::current_path(p);
+	test::StderrCapture capture;
+	BOOST_CHECK(!load::Load(TEST_MODELS("x-static-only.phml"), load::kExec));
+	boost::filesystem::remove_all(p);
+	BOOST_CHECK_EQUAL(capture.Get(), "no dependent variables found\n");
+}
+
 BOOST_AUTO_TEST_SUITE_END()

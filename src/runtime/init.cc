@@ -182,6 +182,10 @@ bool Init(sqlite3 *db,
 		cerr << "no variables found, possibly due to empty model or no instances" << endl;
 		return false;
 	}
+	if (!layout->ContainsDependentVariable()) {
+		cerr << "no dependent variables found" << endl;
+		return false;
+	}
 
 	std::unique_ptr<Executor> executor(new Executor(layer_size));
 	std::unique_ptr<Processor> processor(new Processor(layout.get(), layer_size));

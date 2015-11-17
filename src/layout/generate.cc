@@ -209,8 +209,12 @@ bool Generate(sqlite3 *db, const char *filename)
 
 		std::copy(tu.begin(), tu.end(), tbu.get());
 		track->set_id(tbu.get(), boost::uuids::uuid::static_size());
-		track->set_nos(static_cast<int>(it->second.size()));
-		track->set_nod(static_cast<int>(nmit->second.size()));
+		size_t nos = it->second.size();
+		assert(nos > 0);
+		track->set_nos(static_cast<int>(nos));
+		size_t nod = nmit->second.size();
+		assert(nod > 0);
+		track->set_nod(static_cast<int>(nod));
 
 		ModuleMap::const_iterator mmit = mm->find(tu);
 		if (mmit == mm->end()) {
