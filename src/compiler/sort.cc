@@ -240,7 +240,9 @@ public:
 		for (size_t i=0;i<n;i++) {
 			auto p = nm.insert(std::make_pair(lines_[i]->name(), i));
 			if (!p.second) {
-				cerr << "more than one entries for " << p.first->first << endl;
+				cerr << "more than one entries for " << p.first->first
+					 << " in " << uuid
+					 << endl;
 				return false;
 			}
 			levels[i] = -1;
