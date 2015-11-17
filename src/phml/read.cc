@@ -933,7 +933,7 @@ public:
 			exit(EXIT_FAILURE);
 		}
 
-		e = sqlite3_prepare_v2(db, "INSERT INTO pqs VALUES (?, ?, ?, NULL, NULL, NULL)",
+		e = sqlite3_prepare_v2(db, "INSERT INTO pqs (module_rowid, type, pq_id) VALUES (?, ?, ?)",
 							   -1, &pq_stmt_, NULL);
 		if (e != SQLITE_OK) {
 			cerr << "failed to prepare statement: " << e << endl;
@@ -1052,7 +1052,7 @@ public:
 			exit(EXIT_FAILURE);
 		}
 
-		e = sqlite3_prepare_v2(db, "UPDATE pqs SET unit_id = ?, name = ?, max_delay = ? WHERE rowid = ?",
+		e = sqlite3_prepare_v2(db, "UPDATE pqs SET unit_id = ?, name = ?, ncols = ?, nrows = ?, max_delay = ? WHERE rowid = ?",
 							   -1, &update_stmt_[kPq], NULL);
 		if (e != SQLITE_OK) {
 			cerr << "failed to prepare statement: " << e << endl;
@@ -1346,33 +1346,44 @@ public:
 
 	bool UpdatePq(const PQ *pq) {
 		assert(pq->IsSaved());
+		sqlite3_stmt *stmt = update_stmt_[kPq];
 		int e;
-		e = sqlite3_bind_text(update_stmt_[kPq], 1, (const char *)pq->unit_id(), -1, SQLITE_STATIC);
+		e = sqlite3_bind_text(stmt, 1, (const char *)pq->unit_id(), -1, SQLITE_STATIC);
 		if (e != SQLITE_OK) {
 			cerr << "failed to bind unit_id: " << e << endl;
 			return false;
 		}
-		e = sqlite3_bind_text(update_stmt_[kPq], 2, (const char *)pq->name(), -1, SQLITE_STATIC);
+		e = sqlite3_bind_text(stmt, 2, (const char *)pq->name(), -1, SQLITE_STATIC);
 		if (e != SQLITE_OK) {
 			cerr << "failed to bind name: " << e << endl;
 			return false;
 		}
-		e = sqlite3_bind_text(update_stmt_[kPq], 3, (const char *)pq->max_delay(), -1, SQLITE_STATIC);
+		e = sqlite3_bind_int(stmt, 3, pq->col());
+		if (e != SQLITE_OK) {
+			cerr << "failed to bind ncols: " << e << endl;
+			return false;
+		}
+		e = sqlite3_bind_int(stmt, 4, pq->row());
+		if (e != SQLITE_OK) {
+			cerr << "failed to bind nrows: " << e << endl;
+			return false;
+		}
+		e = sqlite3_bind_text(stmt, 5, (const char *)pq->max_delay(), -1, SQLITE_STATIC);
 		if (e != SQLITE_OK) {
 			cerr << "failed to bind max_delay: " << e << endl;
 			return false;
 		}
-		e = sqlite3_bind_int64(update_stmt_[kPq], 4, pq->rowid());
+		e = sqlite3_bind_int64(stmt, 6, pq->rowid());
 		if (e != SQLITE_OK) {
 			cerr << "failed to bind rowid: " << e << endl;
 			return false;
 		}
-		e = sqlite3_step(update_stmt_[kPq]);
+		e = sqlite3_step(stmt);
 		if (e != SQLITE_DONE) {
 			cerr << "failed to step statement: " << e << endl;
 			return false;
 		}
-		sqlite3_reset(update_stmt_[kPq]);
+		sqlite3_reset(stmt);
 		return true;
 	}
 
@@ -4084,7 +4095,7 @@ const Schema kModelTables[] = {
 	{"ncs", "(rg_name TEXT, rg_seed TEXT, integration TEXT, sts_unit_id INTEGER, sts_value TEXT)"},
 	{"tds", "(unit_id INTEGER, step TEXT, module_id BLOB)"},
 	{"modules", "(module_id BLOB, type TEXT, name TEXT, capsulated_by BLOB, template_state TEXT)"},
-	{"pqs", "(module_rowid INTEGER, type TEXT, pq_id INTEGER, unit_id INTEGER, name TEXT, max_delay TEXT)"},
+	{"pqs", "(module_rowid INTEGER, type TEXT, pq_id INTEGER, unit_id INTEGER, name TEXT, ncols INTEGER, nrows INTEGER, max_delay TEXT)"},
 	{"ivs", "(pq_rowid INTEGER, math TEXT)"},
 	{"impls", "(pq_rowid INTEGER, math TEXT)"},
 	{"nodes", "(pq_rowid INTEGER, node_id INTEGER, name TEXT)"},
