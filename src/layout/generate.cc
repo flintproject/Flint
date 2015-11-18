@@ -26,6 +26,7 @@
 #include "db/name_loader.h"
 #include "db/space_loader.h"
 #include "db/statement-driver.hh"
+#include "name.h"
 
 using std::cerr;
 using std::endl;
@@ -59,34 +60,6 @@ private:
 	ModuleMap *mm_;
 };
 
-class Name {
-public:
-	Name(const Name &) = delete;
-	Name &operator=(const Name &) = delete;
-
-	Name(char type, int id, const char *name, const char *unit, double capacity)
-		: type_(type),
-		  id_(id),
-		  name_(name),
-		  unit_(unit),
-		  capacity_(capacity) {
-		assert(unit);
-	}
-
-	char type() const {return type_;}
-	int id() const {return id_;}
-	const string &name() const {return name_;}
-	const string &unit() const {return unit_;}
-	double capacity() const {return capacity_;}
-
-private:
-	char type_;
-	int id_;
-	string name_;
-	string unit_;
-	double capacity_;
-};
-
 typedef std::unordered_map<boost::uuids::uuid,
 						   std::vector<std::unique_ptr<Name> >,
 						   boost::hash<boost::uuids::uuid>
@@ -101,8 +74,8 @@ public:
 	: nm_(nm)
 	{}
 
-	bool Handle(boost::uuids::uuid u, char type, int id, const char *name, const char *unit, double capacity) {
-		(*nm_)[u].emplace_back(new Name(type, id, name, unit, capacity));
+	bool Handle(boost::uuids::uuid u, std::unique_ptr<Name> &&name) {
+		(*nm_)[u].emplace_back(std::move(name));
 		return true;
 	}
 

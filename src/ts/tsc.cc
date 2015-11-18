@@ -32,6 +32,7 @@
 #include "db/timeseries-loader.h"
 #include "db/tsref-loader.h"
 #include "isdf/reader.h"
+#include "name.h"
 #include "utf8path.h"
 
 using std::cerr;
@@ -58,9 +59,9 @@ public:
 		assert(map);
 	}
 
-	bool Handle(const boost::uuids::uuid &uuid, char type, int pq_id, const char *name, const char * /*unit*/, double /*capacity*/) {
-		if (type != 't') return true; // skip other types
-		(*map_)[uuid].insert(make_pair(pq_id, string(name)));
+	bool Handle(const boost::uuids::uuid &uuid, std::unique_ptr<Name> &&name) {
+		if (name->type() != 't') return true; // skip other types
+		(*map_)[uuid].insert(std::make_pair(name->id(), name->name()));
 		return true;
 	}
 

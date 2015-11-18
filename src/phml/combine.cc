@@ -18,6 +18,7 @@
 #include "db/name-inserter.h"
 #include "db/query.h"
 #include "db/name_loader.h"
+#include "name.h"
 
 using std::cerr;
 using std::endl;
@@ -205,10 +206,10 @@ public:
 		: uuid_(uuid), pqm_(pqm), max_pq_id_()
 	{}
 
-	bool Handle(const boost::uuids::uuid &u, char /*type*/, int pq_id, const char *name, const char * /*unit*/, double /*capacity*/) {
+	bool Handle(const boost::uuids::uuid &u, std::unique_ptr<Name> &&name) {
 		if (uuid_ != u) return true; // skip this entry
-		pqm_->insert(make_pair(pq_id, string(name)));
-		max_pq_id_ = std::max(pq_id, max_pq_id_);
+		pqm_->insert(std::make_pair(name->id(), name->name()));
+		max_pq_id_ = std::max(name->id(), max_pq_id_);
 		return true;
 	}
 

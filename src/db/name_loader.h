@@ -7,9 +7,11 @@
 #include <cstdlib>
 #include <cstring>
 #include <iostream>
+#include <memory>
 
 #include <boost/uuid/uuid_io.hpp>
 
+#include "name.h"
 #include "statement-driver.hh"
 
 namespace flint {
@@ -55,7 +57,12 @@ public:
 						  << std::endl;
 				return false;
 			}
-			if (!handler->Handle(u, (char)type[0], id, (const char *)name, (const char *)unit, capacity))
+			std::unique_ptr<Name> n(new Name((char)type[0],
+											 id,
+											 (const char *)name,
+											 (const char *)unit,
+											 capacity));
+			if (!handler->Handle(u, std::move(n)))
 				return false;
 		}
 		if (e != SQLITE_DONE) {

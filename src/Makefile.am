@@ -121,6 +121,7 @@ libflintxx_la_SOURCES = \
     method/printer.cc \
     method/rk4.cc \
     modelpath.cc \
+    name.cc \
     phml/branch.cc \
     phml/combine-all.cc \
     phml/combine.cc \
