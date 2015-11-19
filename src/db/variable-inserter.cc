@@ -1,5 +1,5 @@
 /* -*- Mode: C++; tab-width: 4; indent-tabs-mode: t; c-basic-offset: 4 -*- vim:set ts=4 sw=4 sts=4 noet: */
-#include "name-inserter.h"
+#include "variable-inserter.h"
 
 #include <cstdio>
 #include <cstdlib>
@@ -16,7 +16,7 @@ using std::printf;
 namespace flint {
 namespace db {
 
-NameInserter::NameInserter(const char *table, sqlite3 *db)
+VariableInserter::VariableInserter(const char *table, sqlite3 *db)
 	: query_(new char[128]) // long enough
 	, stmt_(nullptr)
 {
@@ -33,12 +33,12 @@ NameInserter::NameInserter(const char *table, sqlite3 *db)
 	}
 }
 
-NameInserter::~NameInserter()
+VariableInserter::~VariableInserter()
 {
 	sqlite3_finalize(stmt_);
 }
 
-bool NameInserter::InsertName(const boost::uuids::uuid &space_id, char type, int id, const char *name)
+bool VariableInserter::Insert(const boost::uuids::uuid &space_id, char type, int id, const char *name)
 {
 	int e;
 	e = sqlite3_bind_blob(stmt_, 1, &space_id, space_id.size(), SQLITE_STATIC);
@@ -70,10 +70,10 @@ bool NameInserter::InsertName(const boost::uuids::uuid &space_id, char type, int
 	return true;
 }
 
-bool NameInserter::InsertName(char type, int id, const char *name)
+bool VariableInserter::Insert(char type, int id, const char *name)
 {
 	boost::uuids::uuid nu = boost::uuids::nil_uuid();
-	return InsertName(nu, type, id, name);
+	return Insert(nu, type, id, name);
 }
 
 }

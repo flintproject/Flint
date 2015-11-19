@@ -12,7 +12,7 @@
 
 #include "db/query.h"
 #include "db/eq-inserter.h"
-#include "db/name-inserter.h"
+#include "db/variable-inserter.h"
 #include "sqlite3.h"
 
 namespace flint {
@@ -20,15 +20,15 @@ namespace task {
 
 namespace {
 
-class Inserter : db::NameInserter {
+class Inserter : db::VariableInserter {
 public:
 	explicit Inserter(sqlite3 *db)
-		: db::NameInserter("variables", db)
+		: db::VariableInserter("variables", db)
 		, id_(1)
 	{}
 
 	bool Insert(const char *name) {
-		return InsertName('s', id_++, name);
+		return db::VariableInserter::Insert('s', id_++, name);
 	}
 
 private:

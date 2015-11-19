@@ -23,9 +23,9 @@
 #include "lo.pb.h"
 
 #include "bc/pack.h"
-#include "db/name_loader.h"
 #include "db/space_loader.h"
 #include "db/statement-driver.hh"
+#include "db/variable-loader.h"
 #include "variable.h"
 
 using std::cerr;
@@ -150,7 +150,7 @@ bool Generate(sqlite3 *db, const char *filename)
 
 	std::unique_ptr<NameMap> nm(new NameMap);
 	{
-		db::NameLoader loader(db);
+		db::VariableLoader loader(db);
 		std::unique_ptr<NameHandler> handler(new NameHandler(nm.get()));
 		if (!loader.Load(handler.get())) return false;
 	}

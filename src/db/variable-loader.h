@@ -1,6 +1,6 @@
 /* -*- Mode: C++; tab-width: 4; indent-tabs-mode: t; c-basic-offset: 4 -*- vim:set ts=4 sw=4 sts=4 noet: */
-#ifndef FLINT_DB_NAME_LOADER_H_
-#define FLINT_DB_NAME_LOADER_H_
+#ifndef FLINT_DB_VARIABLE_LOADER_H_
+#define FLINT_DB_VARIABLE_LOADER_H_
 
 #include <cassert>
 #include <cstdio>
@@ -17,10 +17,10 @@
 namespace flint {
 namespace db {
 
-class NameLoader : StatementDriver {
+class VariableLoader : StatementDriver {
 public:
 	// Note that db is for read only.
-	explicit NameLoader(sqlite3 *db)
+	explicit VariableLoader(sqlite3 *db)
 		: StatementDriver(db, "SELECT * FROM variables")
 	{
 	}

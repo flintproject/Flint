@@ -27,10 +27,10 @@
 #include "csv/export.h"
 #include "db/driver.hh"
 #include "db/eq-inserter.h"
-#include "db/name_loader.h"
 #include "db/query.h"
 #include "db/timeseries-loader.h"
 #include "db/tsref-loader.h"
+#include "db/variable-loader.h"
 #include "isdf/reader.h"
 #include "utf8path.h"
 #include "variable.h"
@@ -282,7 +282,7 @@ bool Tsc(sqlite3 *db)
 {
 	std::unique_ptr<PqMap> pqm(new PqMap);
 	{
-		std::unique_ptr<db::NameLoader> loader(new db::NameLoader(db));
+		std::unique_ptr<db::VariableLoader> loader(new db::VariableLoader(db));
 		std::unique_ptr<PqHandler> handler(new PqHandler(pqm.get()));
 		if (!loader->Load(handler.get())) return false;
 	}

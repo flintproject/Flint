@@ -15,9 +15,9 @@
 #include "db/bridge-loader.h"
 #include "db/driver.hh"
 #include "db/eq-inserter.h"
-#include "db/name-inserter.h"
 #include "db/query.h"
-#include "db/name_loader.h"
+#include "db/variable-inserter.h"
+#include "db/variable-loader.h"
 #include "variable.h"
 
 using std::cerr;
@@ -49,17 +49,17 @@ private:
 	db::EqInserter inserter_;
 };
 
-class NameWriter : public db::NameInserter {
+class VariableWriter : public db::VariableInserter {
 public:
-	NameWriter(int id, const boost::uuids::uuid &uuid, sqlite3 *db)
-		: db::NameInserter("private_variables", db)
+	VariableWriter(int id, const boost::uuids::uuid &uuid, sqlite3 *db)
+		: db::VariableInserter("private_variables", db)
 		, id_(id)
 		, uuid_(uuid)
 	{
 	}
 
 	bool Write(char c, const char *name) {
-		return InsertName(uuid_, c, ++id_, name);
+		return Insert(uuid_, c, ++id_, name);
 	}
 
 private:
@@ -128,7 +128,7 @@ public:
 class Writer {
 public:
 	Writer(int pq_id, const boost::uuids::uuid &uuid, sqlite3 *db)
-		: name_writer_(pq_id, uuid, db)
+		: variable_writer_(pq_id, uuid, db)
 		, value_writer_(uuid, db)
 		, function_writer_(uuid, db)
 		, ode_writer_(uuid, db)
@@ -143,13 +143,13 @@ public:
 	{
 		BridgeMap::const_iterator it = bm_.find(name);
 		if (it == bm_.end()) {
-			if (!name_writer_.Write('x', name)) return false;
+			if (!variable_writer_.Write('x', name)) return false;
 			if (!value_writer_.Write(name, x))
 				return false;
 			if (!ode_writer_.WriteOde(name, sexp))
 				return false;
 		} else {
-			if (!name_writer_.Write('v', name)) return false;
+			if (!variable_writer_.Write('v', name)) return false;
 			if (!function_writer_.WriteSet(name, it->second))
 				return false;
 		}
@@ -160,11 +160,11 @@ public:
 	{
 		BridgeMap::const_iterator it = bm_.find(name);
 		if (it == bm_.end()) {
-			if (!name_writer_.Write('v', name)) return false;
+			if (!variable_writer_.Write('v', name)) return false;
 			if (!function_writer_.WriteFunction(name, sexp))
 				return false;
 		} else {
-			if (!name_writer_.Write('v', name)) return false;
+			if (!variable_writer_.Write('v', name)) return false;
 			if (!function_writer_.WriteSet(name, it->second))
 				return false;
 		}
@@ -176,11 +176,11 @@ public:
 	{
 		BridgeMap::const_iterator it = bm_.find(name);
 		if (it == bm_.end()) {
-			if (!name_writer_.Write('s', name)) return false;
+			if (!variable_writer_.Write('s', name)) return false;
 			if (!value_writer_.Write(name, x))
 				return false;
 		} else {
-			if (!name_writer_.Write('v', name)) return false;
+			if (!variable_writer_.Write('v', name)) return false;
 			if (!function_writer_.WriteSet(name, it->second))
 				return false;
 		}
@@ -189,7 +189,7 @@ public:
 
 private:
 	BridgeMap bm_;
-	NameWriter name_writer_;
+	VariableWriter variable_writer_;
 	ValueWriter value_writer_;
 	FunctionWriter function_writer_;
 	OdeWriter ode_writer_;
@@ -326,7 +326,7 @@ bool Combine(const boost::uuids::uuid &uuid, sqlite3 *db)
 	PhysicalQuantityMap pqm;
 	int max_pq_id = 0;
 	{
-		db::NameLoader loader(db);
+		db::VariableLoader loader(db);
 		PhysicalQuantityHandler handler(uuid, &pqm);
 		if (!loader.Load(&handler)) {
 			return false;

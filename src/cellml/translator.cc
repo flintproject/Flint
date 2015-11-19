@@ -18,10 +18,10 @@
 #include <boost/uuid/uuid.hpp>
 
 #include "db/eq-inserter.h"
-#include "db/name-inserter.h"
 #include "db/query.h"
 #include "db/reach-driver.h"
 #include "db/statement-driver.hh"
+#include "db/variable-inserter.h"
 #include "modelpath.h"
 #include "sqlite3.h"
 #include "uuidgen.h"
@@ -208,13 +208,11 @@ private:
 	DependentVariableMap dvm_;
 };
 
-const char kNameQuery[] = "SELECT rowid, component, name, initial_value FROM cellml_variables";
-
-class NameDumper : public db::NameInserter, public db::StatementDriver {
+class VariableDumper : public db::VariableInserter, public db::StatementDriver {
 public:
-	NameDumper(sqlite3 *db, const TreeDumper *tree_dumper)
-		: db::NameInserter("variables", db)
-		, db::StatementDriver(db, kNameQuery)
+	VariableDumper(sqlite3 *db, const TreeDumper *tree_dumper)
+		: db::VariableInserter("variables", db)
+		, db::StatementDriver(db, "SELECT rowid, component, name, initial_value FROM cellml_variables")
 		, tree_dumper_(tree_dumper)
 	{
 	}
@@ -243,12 +241,12 @@ public:
 				// to the system "time"
 			} else if (iv) {
 				if (ode_dumper->IsDependentVariable((const char *)c, (const char *)n)) {
-					if (!InsertName(u, 'x', id, (const char *)n)) return false;
+					if (!Insert(u, 'x', id, (const char *)n)) return false;
 				} else {
-					if (!InsertName(u, 's', id, (const char *)n)) return false;
+					if (!Insert(u, 's', id, (const char *)n)) return false;
 				}
 			} else {
-				if (!InsertName(u, 'v', id, (const char *)n)) return false;
+				if (!Insert(u, 'v', id, (const char *)n)) return false;
 			}
 		}
 		if (e != SQLITE_DONE) {
@@ -444,8 +442,10 @@ bool TranslateCellml(sqlite3 *db)
 	std::unique_ptr<OdeDumper> ode_dumper(new OdeDumper(db, tree_dumper.get()));
 	if (!ode_dumper->Dump()) return false;
 
-	std::unique_ptr<NameDumper> name_dumper(new NameDumper(db, tree_dumper.get()));
-	if (!name_dumper->Dump(ode_dumper.get())) return false;
+	{
+		std::unique_ptr<VariableDumper> dumper(new VariableDumper(db, tree_dumper.get()));
+		if (!dumper->Dump(ode_dumper.get())) return false;
+	}
 
 	std::unique_ptr<IvDumper> iv_dumper(new IvDumper(db, tree_dumper.get()));
 	if (!iv_dumper->Dump()) return false;

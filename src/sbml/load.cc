@@ -16,9 +16,9 @@
 #include <string>
 #include <vector>
 
-#include "db/name-inserter.h"
 #include "db/query.h"
 #include "db/statement-driver.hh"
+#include "db/variable-inserter.h"
 
 using std::cerr;
 using std::endl;
@@ -167,19 +167,17 @@ int HandleConstant(void *data, int argc, char **argv, char **names)
 	return 0;
 }
 
-class NameWriter : public db::NameInserter {
+class VariableWriter : public db::VariableInserter {
 public:
-	explicit NameWriter(sqlite3 *db)
-		: db::NameInserter("variables", db)
+	explicit VariableWriter(sqlite3 *db)
+		: db::VariableInserter("variables", db)
 		, i_(1)
 	{
 	}
 
 	template<typename TType>
 	bool Write(const TType &x) {
-		return InsertName(x.type(),
-						  i_++,
-						  x.name().c_str());
+		return Insert(x.type(), i_++, x.name().c_str());
 	}
 
 private:
@@ -292,7 +290,7 @@ bool Load(sqlite3 *db)
 	}
 
 	{
-		std::unique_ptr<NameWriter> writer(new NameWriter(db));
+		std::unique_ptr<VariableWriter> writer(new VariableWriter(db));
 		for (const auto &ode : *ov) {
 			writer->Write(ode);
 		}

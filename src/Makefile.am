@@ -87,10 +87,10 @@ libflintxx_la_SOURCES = \
     db/driver.cc \
     db/eq-inserter.cc \
     db/flow.cc \
-    db/name-inserter.cc \
     db/read-only-driver.cc \
     db/statement-driver.cc \
     db/tac-inserter.cc \
+    db/variable-inserter.cc \
     exec/enum.cc \
     exec/exec.cc \
     exec/job-runner.cc \

@@ -9,9 +9,9 @@
 #include <boost/filesystem.hpp>
 #include "compiler/bcc.h"
 #include "database.h"
-#include "db/name-inserter.h"
 #include "db/query.h"
 #include "db/tac-inserter.hh"
+#include "db/variable-inserter.h"
 #include "layout.hh"
 
 #define BOOST_TEST_MODULE test_evolve
@@ -43,10 +43,10 @@ struct F : public test::MemoryFixture {
 		BOOST_REQUIRE_EQUAL(CreateSingleton(driver_.db()), 1);
 		test::Sql sql(driver_.db());
 		sql.Exec("UPDATE config SET method = 'euler', length = '0.01', step = '0.01', granularity = '1'");
-		db::NameInserter ni("variables", driver_.db());
-		BOOST_REQUIRE(ni.InsertName('v', 1, "a"));
-		BOOST_REQUIRE(ni.InsertName('v', 2, "b"));
-		BOOST_REQUIRE(ni.InsertName('v', 3, "x"));
+		db::VariableInserter vi("variables", driver_.db());
+		BOOST_REQUIRE(vi.Insert('v', 1, "a"));
+		BOOST_REQUIRE(vi.Insert('v', 2, "b"));
+		BOOST_REQUIRE(vi.Insert('v', 3, "x"));
 		BOOST_REQUIRE(layout::Generate(driver_.db(), "layout"));
 		BOOST_REQUIRE_EQUAL(CreateTable(driver_.db(), "tacs", "(uuid TEXT, name TEXT, nod INTEGER, body TEXT)"), 1);
 		BOOST_REQUIRE_EQUAL(SaveNol(1, driver_.db()), 1);
