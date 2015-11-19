@@ -49,7 +49,7 @@ public:
 		int e;
 		if (!CreateTable(db, "spaces", "(space_id BLOB, name TEXT)"))
 			exit(EXIT_FAILURE);
-		if (!CreateTable(db, "names", "(space_id BLOB, type TEXT, id INTEGER, name TEXT, unit TEXT, capacity REAL)"))
+		if (!CreateTable(db, "variables", "(space_id BLOB, type TEXT, id INTEGER, name TEXT, unit TEXT, capacity REAL)"))
 			exit(EXIT_FAILURE);
 		if (!CreateTable(db, "reaches", "(output_uuid BLOB, output_id INTEGER, input_uuid BLOB, input_id INTEGER, reduction INTEGER)"))
 			exit(EXIT_FAILURE);
@@ -213,7 +213,7 @@ const char kNameQuery[] = "SELECT rowid, component, name, initial_value FROM cel
 class NameDumper : public db::NameInserter, public db::StatementDriver {
 public:
 	NameDumper(sqlite3 *db, const TreeDumper *tree_dumper)
-		: db::NameInserter("names", db)
+		: db::NameInserter("variables", db)
 		, db::StatementDriver(db, kNameQuery)
 		, tree_dumper_(tree_dumper)
 	{

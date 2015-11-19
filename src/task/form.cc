@@ -23,7 +23,7 @@ namespace {
 class Inserter : db::NameInserter {
 public:
 	explicit Inserter(sqlite3 *db)
-		: db::NameInserter("names", db)
+		: db::NameInserter("variables", db)
 		, id_(1)
 	{}
 

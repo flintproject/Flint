@@ -170,7 +170,7 @@ int HandleConstant(void *data, int argc, char **argv, char **names)
 class NameWriter : public db::NameInserter {
 public:
 	explicit NameWriter(sqlite3 *db)
-		: db::NameInserter("names", db)
+		: db::NameInserter("variables", db)
 		, i_(1)
 	{
 	}

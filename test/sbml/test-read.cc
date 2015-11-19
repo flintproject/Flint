@@ -14,7 +14,7 @@
 struct F : public test::MemoryFixture {
 
 	void ReadAndCheck(const char *file,
-					  std::vector<std::string> &names,
+					  std::vector<std::string> &variables,
 					  std::vector<std::string> &input_values,
 					  std::vector<std::string> &input_functions,
 					  std::vector<std::string> &input_odes)
@@ -23,7 +23,7 @@ struct F : public test::MemoryFixture {
 		BOOST_CHECK(sbml::Read(driver_.db()));
 
 		test::Sql sql(driver_.db());
-		sql.CheckRows("SELECT hex(space_id), type, id, name, unit, capacity FROM names", names);
+		sql.CheckRows("SELECT hex(space_id), type, id, name, unit, capacity FROM variables", variables);
 		sql.CheckRows("SELECT hex(space_id), math FROM input_values", input_values);
 		sql.CheckRows("SELECT hex(space_id), math FROM input_functions", input_functions);
 		sql.CheckRows("SELECT hex(space_id), math FROM input_odes", input_odes);
@@ -33,7 +33,7 @@ struct F : public test::MemoryFixture {
 BOOST_FIXTURE_TEST_SUITE(test_read, F)
 
 BOOST_AUTO_TEST_CASE(BIOMD0000000114) {
-	std::vector<std::string> names{
+	std::vector<std::string> variables{
 		"00000000000000000000000000000000 x 1 sbml:x dimensionless ",
 		"00000000000000000000000000000000 x 2 sbml:y dimensionless ",
 		"00000000000000000000000000000000 v 3 sbml:fy dimensionless ",
@@ -82,14 +82,14 @@ BOOST_AUTO_TEST_CASE(BIOMD0000000114) {
 	};
 
 	ReadAndCheck(TEST_MODELS("BIOMD0000000114.xml"),
-				 names,
+				 variables,
 				 input_values,
 				 input_functions,
 				 input_odes);
 }
 
 BOOST_AUTO_TEST_CASE(BIOMD0000000152) {
-	std::vector<std::string> names{
+	std::vector<std::string> variables{
 		"00000000000000000000000000000000 x 1 sbml:D dimensionless ",
 		"00000000000000000000000000000000 x 2 sbml:CDK5 dimensionless ",
 		"00000000000000000000000000000000 x 3 sbml:D_CDK5 dimensionless ",
@@ -549,7 +549,7 @@ BOOST_AUTO_TEST_CASE(BIOMD0000000152) {
 	};
 
 	ReadAndCheck(TEST_MODELS("BIOMD0000000152.xml"),
-				 names,
+				 variables,
 				 input_values,
 				 input_functions,
 				 input_odes);

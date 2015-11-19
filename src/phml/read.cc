@@ -4115,7 +4115,7 @@ const Schema kModelTables[] = {
 };
 
 const Schema kSubsequentTables[] = {
-	{"private_names", "(space_id BLOB, type TEXT, id INTEGER, name TEXT, unit TEXT, capacity REAL)"}, // the same columns as public_names
+	{"private_variables", "(space_id BLOB, type TEXT, id INTEGER, name TEXT, unit TEXT, capacity REAL)"}, // the same columns as public_variables
 	{"trees", "(module_id BLOB, level INTEGER)"},
 	{"scopes", "(uuid BLOB, space_id BLOB, label TEXT)"},
 	{"journals", "(indent INTEGER, uuid BLOB)"},
@@ -4147,8 +4147,8 @@ struct View {
 const View kViews[] = {
 	{"joins", "m.module_id AS module_id, i.module_id AS uuid, i.label AS label FROM instances AS i LEFT JOIN templates As t ON i.template_id = t.template_id LEFT JOIN modules AS m ON m.module_id = t.ref_module_id"},
 	{"spaces", "module_id AS space_id, name FROM modules WHERE type = 'functional-unit'"},
-	{"public_names", "m.module_id AS space_id, p.type, p.pq_id AS id, p.name, u.name AS unit, p.max_delay AS capacity FROM pqs AS p LEFT JOIN modules AS m ON p.module_rowid = m.rowid LEFT JOIN units AS u ON p.unit_id = u.unit_id"},
-	{"names", "* FROM public_names UNION ALL SELECT * FROM private_names"},
+	{"public_variables", "m.module_id AS space_id, p.type, p.pq_id AS id, p.name, u.name AS unit, p.max_delay AS capacity FROM pqs AS p LEFT JOIN modules AS m ON p.module_rowid = m.rowid LEFT JOIN units AS u ON p.unit_id = u.unit_id"},
+	{"variables", "* FROM public_variables UNION ALL SELECT * FROM private_variables"},
 	{"time_unit", "u.name FROM tds AS t JOIN units AS u ON t.unit_id = u.unit_id WHERE t.module_id IS NULL"},
 	{"sv_eqs", "m.module_id, ltrim(i.math) FROM impls AS i LEFT JOIN pqs AS p ON i.pq_rowid = p.rowid LEFT JOIN modules AS m ON p.module_rowid = m.rowid WHERE p.type = 's' OR p.type = 'v'"},
 	{"vx_eqs", "m.module_id, ltrim(i.math) FROM impls AS i LEFT JOIN pqs AS p ON i.pq_rowid = p.rowid LEFT JOIN modules AS m ON p.module_rowid = m.rowid WHERE p.type = 'v' OR p.type = 'x'"},

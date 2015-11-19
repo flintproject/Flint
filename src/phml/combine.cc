@@ -52,7 +52,7 @@ private:
 class NameWriter : public db::NameInserter {
 public:
 	NameWriter(int id, const boost::uuids::uuid &uuid, sqlite3 *db)
-		: db::NameInserter("private_names", db)
+		: db::NameInserter("private_variables", db)
 		, id_(id)
 		, uuid_(uuid)
 	{

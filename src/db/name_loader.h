@@ -21,7 +21,7 @@ class NameLoader : StatementDriver {
 public:
 	// Note that db is for read only.
 	explicit NameLoader(sqlite3 *db)
-		: StatementDriver(db, "SELECT * FROM names")
+		: StatementDriver(db, "SELECT * FROM variables")
 	{
 	}
 

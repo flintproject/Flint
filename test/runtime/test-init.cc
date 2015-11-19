@@ -39,7 +39,7 @@ struct F : public test::MemoryFixture {
 	F()
 	{
 		BOOST_REQUIRE_EQUAL(CreateSingleton(driver_.db()), 1);
-		db::NameInserter ni("names", driver_.db());
+		db::NameInserter ni("variables", driver_.db());
 		BOOST_REQUIRE(ni.InsertName('v', 1, "a"));
 		BOOST_REQUIRE(ni.InsertName('v', 2, "b"));
 		BOOST_REQUIRE(ni.InsertName('v', 3, "x"));
