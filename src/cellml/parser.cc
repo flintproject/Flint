@@ -753,15 +753,15 @@ public:
 
 private:
 	bool CreateTables() {
-		if (!CreateTable(db_, "units", "(name TEXT, units TEXT, prefix TEXT, exponent TEXT, multiplier TEXT, component TEXT)"))
+		if (!CreateTable(db_, "cellml_units", "(name TEXT, units TEXT, prefix TEXT, exponent TEXT, multiplier TEXT, component TEXT)"))
 			return false;
-		if (!CreateTable(db_, "variables", "(component TEXT, name TEXT, units TEXT, public_interface TEXT, private_interface TEXT, initial_value TEXT)"))
+		if (!CreateTable(db_, "cellml_variables", "(component TEXT, name TEXT, units TEXT, public_interface TEXT, private_interface TEXT, initial_value TEXT)"))
 			return false;
-		if (!CreateTable(db_, "maths", "(component TEXT, body TEXT)"))
+		if (!CreateTable(db_, "cellml_maths", "(component TEXT, body TEXT)"))
 			return false;
-		if (!CreateTable(db_, "connections", "(component_1 TEXT, component_2 TEXT)"))
+		if (!CreateTable(db_, "cellml_connections", "(component_1 TEXT, component_2 TEXT)"))
 			return false;
-		if (!CreateTable(db_, "map_variables", "(connection_id INTEGER, variable_1 TEXT, variable_2 TEXT)"))
+		if (!CreateTable(db_, "cellml_map_variables", "(connection_id INTEGER, variable_1 TEXT, variable_2 TEXT)"))
 			return false;
 		// subsequent tables
 		if (!CreateTable(db_, "time_unit", "(name TEXT)"))
@@ -774,7 +774,7 @@ private:
 		sqlite3_stmt *stmt;
 
 		e = sqlite3_prepare_v2(db_,
-							   "INSERT INTO units VALUES (?, ?, ?, ?, ?, ?)",
+							   "INSERT INTO cellml_units VALUES (?, ?, ?, ?, ?, ?)",
 							   -1, &stmt, NULL);
 		if (e != SQLITE_OK) {
 			cerr << "failed to prepare statement: " << e << endl;
@@ -783,7 +783,7 @@ private:
 		stmt_units_ = stmt;
 
 		e = sqlite3_prepare_v2(db_,
-							   "INSERT INTO variables VALUES (?, ?, ?, ?, ?, ?)",
+							   "INSERT INTO cellml_variables VALUES (?, ?, ?, ?, ?, ?)",
 							   -1, &stmt, NULL);
 		if (e != SQLITE_OK) {
 			cerr << "failed to prepare statement: " << e << endl;
@@ -792,7 +792,7 @@ private:
 		stmt_variables_ = stmt;
 
 		e = sqlite3_prepare_v2(db_,
-							   "INSERT INTO maths VALUES (?, ?)",
+							   "INSERT INTO cellml_maths VALUES (?, ?)",
 							   -1, &stmt, NULL);
 		if (e != SQLITE_OK) {
 			cerr << "failed to prepare statement: " << e << endl;
@@ -801,7 +801,7 @@ private:
 		stmt_maths_ = stmt;
 
 		e = sqlite3_prepare_v2(db_,
-							   "INSERT INTO connections VALUES (?, ?)",
+							   "INSERT INTO cellml_connections VALUES (?, ?)",
 							   -1, &stmt, NULL);
 		if (e != SQLITE_OK) {
 			cerr << "failed to prepare statement: " << e << endl;
@@ -810,7 +810,7 @@ private:
 		stmt_connections_ = stmt;
 
 		e = sqlite3_prepare_v2(db_,
-							   "INSERT INTO map_variables VALUES (?, ?, ?)",
+							   "INSERT INTO cellml_map_variables VALUES (?, ?, ?)",
 							   -1, &stmt, NULL);
 		if (e != SQLITE_OK) {
 			cerr << "failed to prepare statement: " << e << endl;

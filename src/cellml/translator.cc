@@ -37,7 +37,7 @@ using std::strlen;
 namespace flint {
 namespace {
 
-const char kTreeQuery[] = "SELECT DISTINCT component FROM variables";
+const char kTreeQuery[] = "SELECT DISTINCT component FROM cellml_variables";
 
 class TreeDumper {
 public:
@@ -143,7 +143,7 @@ public:
 	{}
 };
 
-const char kOdeQuery[] = "SELECT component, body FROM maths WHERE body LIKE ' (eq (diff (bvar ~%time) ~%%' ESCAPE '~'";
+const char kOdeQuery[] = "SELECT component, body FROM cellml_maths WHERE body LIKE ' (eq (diff (bvar ~%time) ~%%' ESCAPE '~'";
 
 class OdeDumper : public db::StatementDriver {
 public:
@@ -208,7 +208,7 @@ private:
 	DependentVariableMap dvm_;
 };
 
-const char kNameQuery[] = "SELECT rowid, component, name, initial_value FROM variables";
+const char kNameQuery[] = "SELECT rowid, component, name, initial_value FROM cellml_variables";
 
 class NameDumper : public db::NameInserter, public db::StatementDriver {
 public:
@@ -262,7 +262,7 @@ private:
 	const TreeDumper *tree_dumper_;
 };
 
-const char kIvQuery[] = "SELECT component, name, initial_value FROM variables WHERE initial_value IS NOT NULL";
+const char kIvQuery[] = "SELECT component, name, initial_value FROM cellml_variables WHERE initial_value IS NOT NULL";
 
 class IvDumper : public db::StatementDriver {
 public:
@@ -309,7 +309,7 @@ private:
 	const TreeDumper *tree_dumper_;
 };
 
-const char kFunctionQuery[] = "SELECT component, body FROM maths WHERE body LIKE ' (eq ~%%' ESCAPE '~'";
+const char kFunctionQuery[] = "SELECT component, body FROM cellml_maths WHERE body LIKE ' (eq ~%%' ESCAPE '~'";
 
 class FunctionDumper : public db::StatementDriver {
 public:
@@ -358,10 +358,10 @@ private:
 
 const char kReachQuery[] = "SELECT "
  "v1.component, v1.rowid, v1.name, v1.public_interface, v1.private_interface, "
- "v2.component, v2.rowid, v2.name, v2.public_interface, v2.private_interface FROM connections AS c "
- "LEFT JOIN map_variables AS mv ON c.rowid = mv.connection_id "
- "LEFT JOIN variables AS v1 ON c.component_1 = v1.component AND mv.variable_1 = v1.name "
- "LEFT JOIN variables AS v2 ON c.component_2 = v2.component AND mv.variable_2 = v2.name "
+ "v2.component, v2.rowid, v2.name, v2.public_interface, v2.private_interface FROM cellml_connections AS c "
+ "LEFT JOIN cellml_map_variables AS mv ON c.rowid = mv.connection_id "
+ "LEFT JOIN cellml_variables AS v1 ON c.component_1 = v1.component AND mv.variable_1 = v1.name "
+ "LEFT JOIN cellml_variables AS v2 ON c.component_2 = v2.component AND mv.variable_2 = v2.name "
  "WHERE v1.name != 'time' AND v2.name != 'time'"; // ignore any mapping from "time" to "time"
 
 class ReachDumper : public db::StatementDriver {
