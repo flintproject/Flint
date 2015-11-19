@@ -9,11 +9,15 @@ Variable::Variable(char type,
 				   int id,
 				   const char *name,
 				   const char *unit,
+				   int col,
+				   int row,
 				   double capacity)
 	: type_(type)
 	, id_(id)
 	, name_(name)
 	, unit_(unit)
+	, col_(col)
+	, row_(row)
 	, capacity_(capacity)
 {
 	assert(unit);

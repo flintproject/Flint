@@ -34,7 +34,9 @@ public:
 			int id = sqlite3_column_int(stmt(), 2);
 			const unsigned char *name = sqlite3_column_text(stmt(), 3);
 			const unsigned char *unit = sqlite3_column_text(stmt(), 4);
-			double capacity = sqlite3_column_double(stmt(), 5);
+			int col = sqlite3_column_int(stmt(), 5);
+			int row = sqlite3_column_int(stmt(), 6);
+			double capacity = sqlite3_column_double(stmt(), 7);
 
 			assert(space_id);
 			boost::uuids::uuid u;
@@ -61,6 +63,8 @@ public:
 													   id,
 													   (const char *)name,
 													   (const char *)unit,
+													   col,
+													   row,
 													   capacity));
 			if (!handler->Handle(u, std::move(var)))
 				return false;

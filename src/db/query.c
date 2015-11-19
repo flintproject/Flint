@@ -1,6 +1,8 @@
 /* -*- Mode: C; tab-width: 4; indent-tabs-mode: t; c-basic-offset: 4 -*- vim:set ts=4 sw=4 sts=4 noet: */
 #include "query.h"
 
+#include "db/helper.h"
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -106,7 +108,7 @@ int CreateSingleton(sqlite3 *db)
 		ReportFilename(db);
 		return 0;
 	}
-	if (!CreateTable(db, "variables", "(space_id BLOB, type TEXT, id INTEGER, name TEXT, unit TEXT, capacity REAL)"))
+	if (!CreateTable(db, "variables", VARIABLES_SCHEMA))
 		return 0;
 	if (!CreateTable(db, "time_unit", "(name TEXT)"))
 		return 0;

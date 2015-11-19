@@ -20,12 +20,14 @@ public:
 
 	~VariableInserter();
 
-	bool Insert(const boost::uuids::uuid &space_id, char type, int id, const char *name);
+	bool Insert(const boost::uuids::uuid &space_id, char type, int id, const char *name,
+				int col = 1, int row = 1);
 
 	/*
 	 * Call Insert() with the default nil UUID.
 	 */
-	bool Insert(char type, int id, const char *name);
+	bool Insert(char type, int id, const char *name,
+				int col = 1, int row = 1);
 
 private:
 	std::unique_ptr<char[]> query_;

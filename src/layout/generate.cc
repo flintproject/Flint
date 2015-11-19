@@ -203,8 +203,9 @@ bool Generate(sqlite3 *db, const char *filename)
 		for (const auto &np : nmit->second) {
 			data->set_id(np->id());
 			data->set_name(np->name());
-			// TODO
-			data->set_size(1);
+			int size = np->col() * np->row();
+			assert(size > 0);
+			data->set_size(size);
 			switch (np->type()) {
 			case 's': data->set_type(lo::S); break;
 			case 't': data->set_type(lo::T); break;

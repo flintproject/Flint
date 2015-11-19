@@ -18,6 +18,7 @@
 #include <boost/uuid/uuid.hpp>
 
 #include "db/eq-inserter.h"
+#include "db/helper.h"
 #include "db/query.h"
 #include "db/reach-driver.h"
 #include "db/statement-driver.hh"
@@ -49,7 +50,7 @@ public:
 		int e;
 		if (!CreateTable(db, "spaces", "(space_id BLOB, name TEXT)"))
 			exit(EXIT_FAILURE);
-		if (!CreateTable(db, "variables", "(space_id BLOB, type TEXT, id INTEGER, name TEXT, unit TEXT, capacity REAL)"))
+		if (!CreateTable(db, "variables", VARIABLES_SCHEMA))
 			exit(EXIT_FAILURE);
 		if (!CreateTable(db, "reaches", "(output_uuid BLOB, output_id INTEGER, input_uuid BLOB, input_id INTEGER, reduction INTEGER)"))
 			exit(EXIT_FAILURE);

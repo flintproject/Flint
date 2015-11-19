@@ -21,7 +21,7 @@ VariableInserter::VariableInserter(const char *table, sqlite3 *db)
 	, stmt_(nullptr)
 {
 	sprintf(query_.get(),
-			"INSERT INTO %s VALUES (?, ?, ?, ?, 'dimensionless', NULL)",
+			"INSERT INTO %s VALUES (?, ?, ?, ?, 'dimensionless', ?, ?, NULL)",
 			table);
 	int e;
 	e = sqlite3_prepare_v2(db, query_.get(), -1, &stmt_, NULL);
@@ -38,7 +38,12 @@ VariableInserter::~VariableInserter()
 	sqlite3_finalize(stmt_);
 }
 
-bool VariableInserter::Insert(const boost::uuids::uuid &space_id, char type, int id, const char *name)
+bool VariableInserter::Insert(const boost::uuids::uuid &space_id,
+							  char type,
+							  int id,
+							  const char *name,
+							  int col,
+							  int row)
 {
 	int e;
 	e = sqlite3_bind_blob(stmt_, 1, &space_id, space_id.size(), SQLITE_STATIC);
@@ -61,6 +66,16 @@ bool VariableInserter::Insert(const boost::uuids::uuid &space_id, char type, int
 		cerr << "failed to bind name: " << e << endl;
 		return false;
 	}
+	e = sqlite3_bind_int(stmt_, 5, col);
+	if (e != SQLITE_OK) {
+		cerr << "failed to bind ncols: " << e << endl;
+		return false;
+	}
+	e = sqlite3_bind_int(stmt_, 6, row);
+	if (e != SQLITE_OK) {
+		cerr << "failed to bind nrows: " << e << endl;
+		return false;
+	}
 	e = sqlite3_step(stmt_);
 	if (e != SQLITE_DONE) {
 		cerr << "failed to step statement: " << e << endl;
@@ -70,10 +85,14 @@ bool VariableInserter::Insert(const boost::uuids::uuid &space_id, char type, int
 	return true;
 }
 
-bool VariableInserter::Insert(char type, int id, const char *name)
+bool VariableInserter::Insert(char type,
+							  int id,
+							  const char *name,
+							  int col,
+							  int row)
 {
 	boost::uuids::uuid nu = boost::uuids::nil_uuid();
-	return Insert(nu, type, id, name);
+	return Insert(nu, type, id, name, col, row);
 }
 
 }
