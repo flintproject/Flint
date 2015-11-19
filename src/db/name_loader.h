@@ -11,8 +11,8 @@
 
 #include <boost/uuid/uuid_io.hpp>
 
-#include "name.h"
 #include "statement-driver.hh"
+#include "variable.h"
 
 namespace flint {
 namespace db {
@@ -57,12 +57,12 @@ public:
 						  << std::endl;
 				return false;
 			}
-			std::unique_ptr<Name> n(new Name((char)type[0],
-											 id,
-											 (const char *)name,
-											 (const char *)unit,
-											 capacity));
-			if (!handler->Handle(u, std::move(n)))
+			std::unique_ptr<Variable> var(new Variable((char)type[0],
+													   id,
+													   (const char *)name,
+													   (const char *)unit,
+													   capacity));
+			if (!handler->Handle(u, std::move(var)))
 				return false;
 		}
 		if (e != SQLITE_DONE) {

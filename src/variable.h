@@ -6,12 +6,12 @@
 
 namespace flint {
 
-class Name {
+class Variable {
 public:
-	Name(const Name &) = delete;
-	Name &operator=(const Name &) = delete;
+	Variable(const Variable &) = delete;
+	Variable &operator=(const Variable &) = delete;
 
-	Name(char type, int id, const char *name, const char *unit, double capacity);
+	Variable(char type, int id, const char *name, const char *unit, double capacity);
 
 	char type() const {return type_;}
 	int id() const {return id_;}

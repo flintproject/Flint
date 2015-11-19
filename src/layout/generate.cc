@@ -26,7 +26,7 @@
 #include "db/name_loader.h"
 #include "db/space_loader.h"
 #include "db/statement-driver.hh"
-#include "name.h"
+#include "variable.h"
 
 using std::cerr;
 using std::endl;
@@ -61,7 +61,7 @@ private:
 };
 
 typedef std::unordered_map<boost::uuids::uuid,
-						   std::vector<std::unique_ptr<Name> >,
+						   std::vector<std::unique_ptr<Variable> >,
 						   boost::hash<boost::uuids::uuid>
 						   > NameMap;
 
@@ -74,8 +74,8 @@ public:
 	: nm_(nm)
 	{}
 
-	bool Handle(boost::uuids::uuid u, std::unique_ptr<Name> &&name) {
-		(*nm_)[u].emplace_back(std::move(name));
+	bool Handle(boost::uuids::uuid u, std::unique_ptr<Variable> &&var) {
+		(*nm_)[u].emplace_back(std::move(var));
 		return true;
 	}
 

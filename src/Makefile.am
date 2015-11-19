@@ -121,7 +121,6 @@ libflintxx_la_SOURCES = \
     method/printer.cc \
     method/rk4.cc \
     modelpath.cc \
-    name.cc \
     phml/branch.cc \
     phml/combine-all.cc \
     phml/combine.cc \
@@ -162,7 +161,8 @@ libflintxx_la_SOURCES = \
     ts/tsfiles.cc \
     utf8path.cc \
     utf8string.c \
-    uuidgen.cc
+    uuidgen.cc \
+    variable.cc
 
 libsqlite3_la_CPPFLAGS = -DSQLITE_THREADSAFE=1 -DSQLITE_OMIT_LOAD_EXTENSION
 libsqlite3_la_LDFLAGS = -no-undefined
