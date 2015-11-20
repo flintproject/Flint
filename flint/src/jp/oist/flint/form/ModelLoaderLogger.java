@@ -38,6 +38,6 @@ public class ModelLoaderLogger implements IFrame {
         }
         JScrollPane scrollPane = new JScrollPane(textArea);
         scrollPane.setPreferredSize(new Dimension(400, 100));
-        JOptionPane.showMessageDialog(null, scrollPane, title, JOptionPane.ERROR_MESSAGE);
+        JOptionPane.showMessageDialog(mDesktop.getPane(), scrollPane, title, JOptionPane.ERROR_MESSAGE);
     }
 }

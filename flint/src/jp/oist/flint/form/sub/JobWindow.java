@@ -13,6 +13,7 @@ import jp.oist.flint.form.job.JobViewerComponent;
 import jp.oist.flint.form.job.ParameterFilter;
 import jp.oist.flint.job.Job;
 import jp.oist.flint.phsp.entity.ParameterSet;
+import jp.oist.flint.theme.Icon;
 import jp.sbi.garuda.platform.commons.net.GarudaConnectionNotInitializedException;
 import java.awt.CardLayout;
 import java.awt.Cursor;
@@ -25,11 +26,9 @@ import java.awt.event.WindowEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.IOException;
-import java.net.URL;
 import java.sql.SQLException;
 import java.util.Map;
 import javax.swing.DefaultListSelectionModel;
-import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.ListSelectionModel;
@@ -59,8 +58,7 @@ public class JobWindow extends javax.swing.JFrame
         mParent = parent;
         mSimulationDao = simulationDao;
 
-        URL iconUrl = getClass().getResource("/jp/oist/flint/image/icon.png");
-        setIconImage(new ImageIcon(iconUrl).getImage());
+        setIconImage(Icon.getImage());
 
         initComponents();
         mJobPane = new JobPane();

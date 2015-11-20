@@ -3,6 +3,7 @@ package jp.oist.flint.form.sub;
 
 import jp.oist.flint.phsp.entity.Parameter;
 import jp.oist.flint.phsp.entity.ParameterSet;
+import jp.oist.flint.theme.Icon;
 import jp.oist.flint.util.Randomizer;
 import jp.oist.flint.util.Utility;
 import java.awt.BorderLayout;
@@ -17,7 +18,6 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
-import java.net.URL;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Enumeration;
@@ -26,7 +26,6 @@ import javax.swing.AbstractButton;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JFrame;
@@ -131,8 +130,7 @@ public class ValueEditWindow extends JFrame
     public ValueEditWindow() {
         super();
 
-        URL iconUrl = getClass().getResource("/jp/oist/flint/image/icon.png");
-        setIconImage(new ImageIcon(iconUrl).getImage());
+        setIconImage(Icon.getImage());
         setLocationRelativeTo(getParent());
 
         addWindowListener(this);

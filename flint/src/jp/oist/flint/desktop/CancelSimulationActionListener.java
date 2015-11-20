@@ -38,7 +38,7 @@ public class CancelSimulationActionListener implements ActionListener {
         File file = mCell.getDocument().getFile();
         try {
             TaskDao taskDao = mSimulationDao.obtainTask(file.getPath());
-            int ans = JOptionPane.showConfirmDialog(null,
+            int ans = JOptionPane.showConfirmDialog(mCell,
                     "Would you like to cancel simulation?",
                     "Cancel simulation?",
                     JOptionPane.YES_NO_OPTION);
@@ -47,7 +47,7 @@ public class CancelSimulationActionListener implements ActionListener {
             taskDao.cancel();
             return true;
         } catch (DaoException | IOException | SQLException ex) {
-            JOptionPane.showMessageDialog(null,
+            JOptionPane.showMessageDialog(mCell,
                                           "Cancellation failed\n\n" + ex.getMessage(),
                                           "Cancellation failed",
                                           JOptionPane.ERROR_MESSAGE);

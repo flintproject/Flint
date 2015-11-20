@@ -23,6 +23,7 @@ import jp.oist.flint.sedml.SedmlException;
 import jp.oist.flint.sedml.SedmlReader;
 import jp.oist.flint.sedml.SedmlWriter;
 import jp.oist.flint.textformula.analyzer.ParseException;
+import jp.oist.flint.theme.Icon;
 import jp.oist.flint.util.Utility;
 import org.apache.log4j.Logger;
 import org.xml.sax.SAXException;
@@ -35,7 +36,6 @@ import java.beans.PropertyVetoException;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.SQLException;
@@ -45,7 +45,6 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
-import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
@@ -87,8 +86,7 @@ public class MainFrame extends javax.swing.JFrame
         throws IOException {
         super();
         mDesktop = desktop;
-        URL iconUrl = getClass().getResource("/jp/oist/flint/image/icon.png");
-        setIconImage(new ImageIcon(iconUrl).getImage());
+        setIconImage(Icon.getImage());
         setTransferHandler(new ModelFileTransferHandler(this));
 
         initComponents(controlPane, progressPane);

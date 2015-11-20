@@ -4,6 +4,7 @@ package jp.oist.flint.form.job;
 import jp.oist.flint.dao.DaoException;
 import jp.oist.flint.job.Job;
 import jp.oist.flint.job.Progress;
+import jp.oist.flint.theme.Icon;
 import java.awt.BorderLayout;
 import java.awt.HeadlessException;
 import java.beans.PropertyChangeEvent;
@@ -11,14 +12,12 @@ import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.net.URL;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.ExecutionException;
-import javax.swing.ImageIcon;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import javax.swing.SwingWorker;
@@ -65,8 +64,7 @@ public class PlotWindow extends javax.swing.JFrame
         throws DaoException, IOException, SQLException {
         super(title);
 
-        URL iconUrl = getClass().getResource("/jp/oist/flint/image/icon.png");
-        setIconImage(new ImageIcon(iconUrl).getImage());
+        setIconImage(Icon.getImage());
 
         mJob = taskDao.obtainJob(jobId);
         mModelFile = modelFile;

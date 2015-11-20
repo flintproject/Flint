@@ -30,7 +30,7 @@ public class ModelReloader extends SwingWorker<Boolean, Void> {
             final Callable<Boolean> callable = new Callable<Boolean>() {
                 @Override
                 public Boolean call() {
-                    int a = JOptionPane.showConfirmDialog(null,
+                    int a = JOptionPane.showConfirmDialog(mDesktop.getPane(),
                                                           "The model file " + mDocument.getFile() + " seems changed.\n" + "Would you like to reload the model file?",
                                                           "Reload the model file?",
                                                           JOptionPane.YES_NO_OPTION);

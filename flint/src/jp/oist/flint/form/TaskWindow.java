@@ -5,14 +5,13 @@ import jp.oist.flint.dao.SimulationDao;
 import jp.oist.flint.form.job.JobCell;
 import jp.oist.flint.task.ParameterDefinition;
 import jp.oist.flint.task.Task;
+import jp.oist.flint.theme.Icon;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Timer;
 import javax.swing.BorderFactory;
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
@@ -45,8 +44,7 @@ public class TaskWindow extends JFrame
         mTask = task;
         mSimulationDao = simulationDao;
 
-        URL url = getClass().getResource("/jp/oist/flint/image/icon.png");
-        setIconImage(new ImageIcon(url).getImage());
+        setIconImage(Icon.getImage());
 
         /* north */
         JPanel northPanel = new JPanel();
