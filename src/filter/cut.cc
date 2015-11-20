@@ -39,9 +39,8 @@ public:
 		size_ = size;
 	}
 
-	void ReadColumn(lo::Column *column) {
+	void ReadColumn(std::unique_ptr<lo::Column> &&column) {
 		columns_.insert(make_pair(column->position(), column->size()));
-		delete column;
 	}
 
 	bool Apply(FILE *ifp, FILE *ofp) const {

@@ -50,7 +50,7 @@ public:
 		// ignore header
 	}
 
-	void ReadColumn(lo::Column *column) {
+	void ReadColumn(std::unique_ptr<lo::Column> &&column) {
 		boost::uuids::uuid u;
 		memcpy(&u, column->uuid().data(), u.size());
 		string s;

@@ -35,9 +35,8 @@ public:
 		size_ = size;
 	}
 
-	void ReadColumn(lo::Column *column) {
+	void ReadColumn(std::unique_ptr<lo::Column> &&column) {
 		columns_.insert(std::make_pair(column->position(), column->size()));
-		delete column;
 	}
 
 	Writer *CreateWriter() const {

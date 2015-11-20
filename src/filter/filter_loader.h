@@ -43,7 +43,7 @@ public:
 				cerr << "could not read Column" << endl;
 				return false;
 			}
-			filter->ReadColumn(column.release());
+			filter->ReadColumn(std::move(column));
 		}
 		return true;
 	}

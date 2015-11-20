@@ -41,7 +41,7 @@ public:
 		// ignore header
 	}
 
-	void ReadColumn(lo::Column *column) {
+	void ReadColumn(std::unique_ptr<lo::Column> &&column) {
 		if (column->position() == 0) {
 			st_->add_key("time");
 		} else {
@@ -53,7 +53,6 @@ public:
 		st_->add_name(column->name());
 		st_->add_scope_name(column->track_name());
 		st_->add_label(column->label());
-		delete column;
 	}
 
 private:
