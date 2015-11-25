@@ -1,0 +1,57 @@
+This document describes the directory structure in which Flint organizes
+output.
+
+Given a pair of a PHSP and an SED-ML files by user, Flint runs bunch of
+simulations according to all combinations of values assigned to parameters.
+First of all Flint generates a unique non-negative integer for each <task>
+in the SED-ML, called task-id. Then Flint makes a dedicated directory for
+the task, named by the decimal representation of its task-id.
+Depending on the PHSP input, a task can consist of a lot of jobs.
+In principle a job corresponds to the simulation with a specific combination
+of parameter values.
+Flint gives every job a non-negative integer, called job-id, unique modulo
+the task. Based on the job-ids, Flint also creates a number of fixed-depth
+subdirectories in the task directory.
+
+Let's say a task with task-id '7' for example. Assume tht the task has
+3,000 jobs with job-id '1' to '3000'.
+Then, in the simulation, Flint makes the following directories eventually:
+
+7/00/00/00/01/
+7/00/00/00/02/
+...
+7/00/00/00/ff/
+7/00/00/01/00/
+7/00/00/01/01/
+...
+7/00/00/0b/b7/
+7/00/00/0b/b8/
+
+Note that the "bb8" is the hexadecimal notation of 3000.
+The above way of the directory hierarchy allows a task to have as many
+jobs as with job-id between '0' and '4294967295' (= 2^32-1).
+
+
+Flint produces the simulation result in the deepest subdirectories i.e.
+the ones of form "(job-id)/xx/xx/xx/xx/". Supposed the above example again,
+the output files for the job with job-id '2999' of the task are found in
+7/00/00/0b/b7/.
+
+A non-exhaustive summary of output files for each job:
+
+* isd
+  The main output, timeseries data in ISDF.
+
+* values.txt
+  The list of parameters with their values specified in the job.
+
+
+Flint also generates some of files for informational purposes in the task
+directory, as follows:
+
+* parameters.txt
+  The list of parameter names used for the task.
+
+* progress
+  A binary file of length (max job-id)+1; the byte at index (job-id)
+  represents the current progress (0 to 100) of the job.
