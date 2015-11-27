@@ -381,7 +381,9 @@ namespace {
 struct ElementEntry {
 	const char *local_name;
 	int (MathDumper::*reader)();
-} kElementTable[] = {
+};
+
+const ElementEntry kElementTable[] = {
 	// The following entries MUST be in bibliography order
 	{"apply", &MathDumper::ReadApply},
 	{"bvar", &MathDumper::ReadBvar},
