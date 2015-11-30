@@ -52,4 +52,34 @@ size_t Layout::MarkConstant(int nol, size_t size, char *arr) const
 	return num_of_on;
 }
 
+long Layout::SelectStates(std::vector<std::pair<int, int> > *states) const
+{
+	long total = 0;
+	size_t offset = kOffsetBase;
+	int di = 0;
+	for (const auto &tp : tv_) {
+		int nos = tp->nos();
+		int nod = tp->nod();
+		int dib = di;
+		int die = di + nod;
+		for (int i=0;i<nos;i++) {
+			di = dib;
+			while (di < die) {
+				const auto &dp = dv_.at(di++);
+				int data_size = dp->size();
+				switch (dp->type()) {
+				case lo::X:
+					states->push_back(std::make_pair(offset, data_size));
+					total += data_size;
+					break;
+				default:
+					break;
+				}
+				offset += data_size;
+			}
+		}
+	}
+	return total;
+}
+
 }

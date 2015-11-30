@@ -211,6 +211,13 @@ public:
 	 */
 	size_t MarkConstant(int nol, size_t size, char *arr) const;
 
+	/*
+	 * Select the locations occupied as a variable of type 'X'.
+	 * A location consists of its offset and size.
+	 * Return its total size i.e. the number of scalar states.
+	 */
+	long SelectStates(std::vector<std::pair<int, int> > *states) const;
+
 	void Debug(size_t size) const {
 		using std::cout;
 		using std::endl;
