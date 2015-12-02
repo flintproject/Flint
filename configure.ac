@@ -80,7 +80,7 @@ AC_ARG_WITH([sundials],
         [AS_HELP_STRING([--with-sundials],
                 [Specify prefix of SUNDIALS])])
 SUNDIALS_CFLAGS=
-SUNDIALS_LIBS="-lsundials_cvode -lsundials_cvodes -lsundials_ida -lsundials_kinsol -lsundials_nvecserial"
+SUNDIALS_LIBS="-lsundials_arkode -lsundials_cvode -lsundials_cvodes -lsundials_ida -lsundials_kinsol -lsundials_nvecserial"
 if test -d "$with_sundials"; then
     SUNDIALS_CFLAGS="-I$with_sundials/include"
     SUNDIALS_LIBS="-L$with_sundials/lib $SUNDIALS_LIBS"
@@ -117,6 +117,7 @@ AC_CONFIG_FILES([Makefile
                  src/Makefile
                  test/Makefile
                  test/base/Makefile
+                 test/cas/Makefile
                  test/cellml/Makefile
                  test/compiler/Makefile
                  test/file/Makefile

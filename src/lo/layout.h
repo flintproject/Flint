@@ -218,6 +218,85 @@ public:
 	 */
 	long SelectStates(std::vector<std::pair<int, int> > *states = nullptr) const;
 
+	/*
+	 * Generate mass-matrix data map.
+	 */
+	template<typename TSystem, typename TMmdm>
+	bool GenerateMmdm(const TSystem &system, TMmdm *mmdm) const {
+		long index = 0; // in global mass matrix
+		size_t offset = kOffsetBase;
+		int di = 0;
+		boost::uuids::uuid track_id;
+		for (const auto &tp : tv_) {
+			memcpy(&track_id, tp->id().data(), track_id.size());
+
+			int nos = tp->nos();
+			int nod = tp->nod();
+			int dib = di;
+			int die = di + nod;
+
+			int pos = 0;
+			std::unordered_map<std::string, int> am;
+			std::unordered_map<std::string, std::string> xm;
+			for (int i=0;i<nod;i++) {
+				const auto &dp = dv_.at(di++);
+				int data_size = dp->size();
+				switch (dp->type()) {
+				case lo::X:
+					{
+						std::string m;
+						if (!system.FindMass(track_id, dp->name(), &m))
+							return false;
+						xm.insert(std::make_pair(dp->name(), m));
+					}
+					break;
+				default:
+					break;
+				}
+				am.insert(std::make_pair(dp->name(), pos));
+				pos += data_size;
+			}
+			assert(di == die);
+
+			int bot = offset; // begin of track
+			for (int i=0;i<nos;i++) {
+				di = dib;
+				while (di < die) {
+					const auto &dp = dv_.at(di++);
+					int data_size = dp->size();
+					switch (dp->type()) {
+					case lo::X:
+						{
+							const std::string &name = xm.at(dp->name());
+							if (name.empty()) { // identity
+								for (int row=0;row<data_size;row++) {
+									for (int col=0;col<data_size;col++) {
+										if (row == col)
+											mmdm->Add(index + row, index + col, 1);
+									}
+								}
+							} else {
+								int m = am.at(name);
+								for (int row=0;row<data_size;row++) {
+									for (int col=0;col<data_size;col++) {
+										mmdm->Add(index + row, index + col,
+												  bot + (pos * i) + m + (row * data_size) + col);
+									}
+								}
+							}
+						}
+						index += data_size;
+						break;
+					default:
+						break;
+					}
+					offset += data_size;
+				}
+			}
+		}
+		return true;
+	}
+
 	void Debug(size_t size) const {
 		using std::cout;
 		using std::endl;

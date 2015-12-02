@@ -1,5 +1,6 @@
 SUBDIRS = \
 	base \
+	cas \
 	cellml \
 	compiler \
 	file \

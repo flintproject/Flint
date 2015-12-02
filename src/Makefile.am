@@ -31,6 +31,7 @@ BUILT_SOURCES = \
 
 bin_PROGRAMS = \
 	csv2isd \
+	flint-ark \
 	flint-cli \
 	flint-exec \
 	flint-lodbg \
@@ -76,6 +77,15 @@ libflintxx_la_SOURCES = \
     lo.pb.cc \
     phml.pb.cc \
     unit.pb.cc \
+    cas/dimension.cc \
+    cas/eq.cc \
+    cas/equation.cc \
+    cas/helper.cc \
+    cas/icg/aux-var.cc \
+    cas/icg/ode-mass.cc \
+    cas/icg/ode-rhs.cc \
+    cas/printer.cc \
+    cas/system.cc \
     cellml/parser.cc \
     cellml/read.cc \
     cellml/translator.cc \
@@ -159,6 +169,14 @@ libflintxx_la_SOURCES = \
     sbml/parser.cc \
     sbml/read.cc \
     sedml/read.cc \
+    solver/ark/ark.cc \
+    solver/ark/auxv.cc \
+    solver/ark/mass.cc \
+    solver/ark/mmdm.cc \
+    solver/ark/rhs.cc \
+    solver/ark/solve.cc \
+    solver/ark/user-supplied.cc \
+    solver/solve.cc \
     sys/temporary_path.cc \
     task/config.cc \
     task/config-reader.cc \
@@ -170,7 +188,8 @@ libflintxx_la_SOURCES = \
     utf8path.cc \
     utf8string.c \
     uuidgen.cc \
-    variable.cc
+    variable.cc \
+    variable-map.cc
 
 libsqlite3_la_CPPFLAGS = -DSQLITE_THREADSAFE=1 -DSQLITE_OMIT_LOAD_EXTENSION
 libsqlite3_la_LDFLAGS = -no-undefined
@@ -180,6 +199,11 @@ csv2isd_CPPFLAGS = $(BOOST_CPPFLAGS)
 csv2isd_LDFLAGS = $(BOOST_FILESYSTEM_LDFLAGS) $(BOOST_SYSTEM_LDFLAGS)
 csv2isd_LDADD = libflintxx.la libflint.la libsqlite3.la $(BOOST_FILESYSTEM_LIBS) $(BOOST_SYSTEM_LIBS)
 csv2isd_SOURCES = csv2isd-main.cc
+
+flint_ark_CPPFLAGS = $(PROTOBUF_CFLAGS) $(BOOST_CPPFLAGS)
+flint_ark_LDFLAGS = $(BOOST_FILESYSTEM_LDFLAGS) $(BOOST_SYSTEM_LDFLAGS)
+flint_ark_LDADD = libflintxx.la libflint.la libsqlite3.la $(PROTOBUF_LIBS) $(BOOST_FILESYSTEM_LIBS) $(BOOST_SYSTEM_LIBS)
+flint_ark_SOURCES = flint-ark-main.cc
 
 flint_cli_CPPFLAGS = $(PROTOBUF_CFLAGS) $(BOOST_CPPFLAGS)
 flint_cli_LDFLAGS = $(BOOST_PROGRAM_OPTIONS_LDFLAGS)

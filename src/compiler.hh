@@ -19,6 +19,11 @@ enum class Method {
  */
 bool Compile(sqlite3 *db, const char *table, Method method, const char *output);
 
+/*
+ * Note that db is for read only.
+ */
+bool GenerateBytecode(sqlite3 *db, const char *output);
+
 }
 }
 
