@@ -16,9 +16,8 @@
 #include <boost/spirit/include/qi.hpp>
 #include <boost/uuid/uuid_io.hpp>
 
-#include "db/driver.hh"
+#include "db/ast-inserter.h"
 #include "db/query.h"
-#include "db/statement-driver.hh"
 #include "method/helper.hh"
 #include "method/printer.h"
 
@@ -85,10 +84,10 @@ private:
 	std::ostream *os_;
 };
 
-class Inserter : db::StatementDriver {
+class Inserter : db::AstInserter {
 public:
 	explicit Inserter(sqlite3 *db)
-		: db::StatementDriver(db, "INSERT INTO asts VALUES (?, ?, ?)")
+		: db::AstInserter(db)
 	{
 	}
 
@@ -216,32 +215,6 @@ private:
 		boost::apply_visitor(VariantPrinter(k, n, &oss), rhs);
 		std::string math = oss.str();
 		return Insert(uuid, name.c_str(), math.c_str());
-	}
-
-	bool Insert(const boost::uuids::uuid &uuid, const char *name, const char *math) {
-		int e;
-		e = sqlite3_bind_blob(stmt(), 1, &uuid, uuid.size(), SQLITE_STATIC);
-		if (e != SQLITE_OK) {
-			cerr << "failed to bind uuid: " << e << endl;
-			return false;
-		}
-		e = sqlite3_bind_text(stmt(), 2, name, -1, SQLITE_STATIC);
-		if (e != SQLITE_OK) {
-			cerr << "failed to bind name: " << e << endl;
-			return false;
-		}
-		e = sqlite3_bind_text(stmt(), 3, math, -1, SQLITE_STATIC);
-		if (e != SQLITE_OK) {
-			cerr << "failed to bind math: " << e << endl;
-			return false;
-		}
-		e = sqlite3_step(stmt());
-		if (e != SQLITE_DONE) {
-			cerr << "failed to step: " << e << endl;
-			return false;
-		}
-		sqlite3_reset(stmt());
-		return true;
 	}
 };
 

@@ -84,6 +84,7 @@ libflintxx_la_SOURCES = \
     compiler/sort.cc \
     compiler/tac.cc \
     csv/export.cc \
+    db/ast-inserter.cc \
     db/driver.cc \
     db/eq-inserter.cc \
     db/flow.cc \
