@@ -165,9 +165,20 @@ public class ProgressCell extends JPanel {
         return mProgressBar.getValue();
     }
 
+    /*
+     * Supposed to be called in EDT.
+     */
     public void clear() {
         mCancelBtn.setEnabled(false);
+        if (mCancelActionListener != null) {
+            mCancelBtn.removeActionListener(mCancelActionListener);
+            mCancelActionListener = null;
+        }
         mJobBtn.setEnabled(false);
+        if (mDetailActionListener != null) {
+            mJobBtn.removeActionListener(mDetailActionListener);
+            mDetailActionListener = null;
+        }
     }
 
     public void setProgress(String msg, int value) {
