@@ -47,18 +47,16 @@ public:
 		kProbability
 	};
 
-	explicit Arc(int arc_id)
+	Arc(int arc_id, int tail_node_id, int head_node_id)
 		: arc_id_(arc_id),
-		  tail_node_id_(),
-		  head_node_id_(),
+		  tail_node_id_(tail_node_id),
+		  head_node_id_(head_node_id),
 		  type_(kUnspecified)
 	{}
 
 	int arc_id() const {return arc_id_;}
 	int tail_node_id() const {return tail_node_id_;}
-	void set_tail_node_id(int tail_node_id) {tail_node_id_ = tail_node_id;}
 	int head_node_id() const {return head_node_id_;}
-	void set_head_node_id(int head_node_id) {head_node_id_ = head_node_id;}
 	Type type() const {return type_;}
 	void set_type(Type type) {type_ = type;}
 
@@ -284,6 +282,8 @@ private:
 	int ReadArc()
 	{
 		int arc_id = 0;
+		int head_node_id = 0;
+		int tail_node_id = 0;
 		int i;
 		while ( (i = xmlTextReaderMoveToNextAttribute(text_reader_)) > 0) {
 			if (xmlTextReaderIsNamespaceDecl(text_reader_)) continue;
@@ -296,6 +296,20 @@ private:
 					cerr << "invalid value of arc-id of <arc>: " << value << endl;
 					return -2;
 				}
+			} else if (xmlStrEqual(local_name, BAD_CAST "head-node-id")) {
+				const xmlChar *value = xmlTextReaderConstValue(text_reader_);
+				head_node_id = std::atoi(reinterpret_cast<const char *>(value));
+				if (arc_id <= 0) {
+					cerr << "invalid value of head-node-id of <arc>: " << value << endl;
+					return -2;
+				}
+			} else if (xmlStrEqual(local_name, BAD_CAST "tail-node-id")) {
+				const xmlChar *value = xmlTextReaderConstValue(text_reader_);
+				tail_node_id = std::atoi(reinterpret_cast<const char *>(value));
+				if (arc_id <= 0) {
+					cerr << "invalid value of tail-node-id of <arc>: " << value << endl;
+					return -2;
+				}
 			} else {
 				cerr << "unknown attribute of <arc>: " << local_name << endl;
 				return -2;
@@ -305,21 +319,21 @@ private:
 			cerr << "missing arc-id of <arc>" << endl;
 			return -2;
 		}
-		std::unique_ptr<Arc> arc(new Arc(arc_id));
+		if (head_node_id == 0) {
+			cerr << "missing head-node-id of <arc>" << endl;
+			return -2;
+		}
+		if (tail_node_id == 0) {
+			cerr << "missing tail-node-id of <arc>" << endl;
+			return -2;
+		}
+		std::unique_ptr<Arc> arc(new Arc(arc_id, tail_node_id, head_node_id));
 		i = xmlTextReaderRead(text_reader_);
 		while (i > 0) {
 			int type = xmlTextReaderNodeType(text_reader_);
 			if (type == XML_READER_TYPE_ELEMENT) {
 				const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
-				if (xmlStrEqual(local_name, BAD_CAST "tail")) {
-					i = ReadTail(arc.get());
-					if (i <= 0) return i;
-					continue;
-				} else if (xmlStrEqual(local_name, BAD_CAST "head")) {
-					i = ReadHead(arc.get());
-					if (i <= 0) return i;
-					continue;
-				} else if (xmlStrEqual(local_name, BAD_CAST "transition")) {
+				if (xmlStrEqual(local_name, BAD_CAST "transition")) {
 					i = ReadTransition(arc.get());
 					if (i <= 0) return i;
 					continue;
@@ -330,14 +344,6 @@ private:
 			} else if (type == XML_READER_TYPE_END_ELEMENT) {
 				const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
 				if (xmlStrEqual(local_name, BAD_CAST "arc")) {
-					if (arc->tail_node_id() == 0) {
-						cerr << "missing <tail> of <arc>: " << arc_id << endl;
-						return -2;
-					}
-					if (arc->head_node_id() == 0) {
-						cerr << "missing <head> of <arc>: " << arc_id << endl;
-						return -2;
-					}
 					if (arc->type() == Arc::kUnspecified) {
 						cerr << "missing transition of <arc>: " << arc_id << endl;
 						return -2;
@@ -349,62 +355,6 @@ private:
 			i = xmlTextReaderRead(text_reader_);
 		}
 		return i;
-	}
-
-	int ReadTail(Arc *arc)
-	{
-		int node_id = 0;
-		int i;
-		while ( (i = xmlTextReaderMoveToNextAttribute(text_reader_)) > 0) {
-			if (xmlTextReaderIsNamespaceDecl(text_reader_)) continue;
-
-			const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
-			if (xmlStrEqual(local_name, BAD_CAST "node-id")) {
-				const xmlChar *value = xmlTextReaderConstValue(text_reader_);
-				node_id = atoi((const char *)value);
-				if (node_id <= 0) {
-					cerr << "invalid value of node-id of <tail>: " << value << endl;
-					return -2;
-				}
-			} else {
-				cerr << "unknown attribute of <tail>: " << local_name << endl;
-				return -2;
-			}
-		}
-		if (node_id == 0) {
-			cerr << "missing node-id of <tail>" << endl;
-			return -2;
-		}
-		arc->set_tail_node_id(node_id);
-		return xmlTextReaderNext(text_reader_);
-	}
-
-	int ReadHead(Arc *arc)
-	{
-		int node_id = 0;
-		int i;
-		while ( (i = xmlTextReaderMoveToNextAttribute(text_reader_)) > 0) {
-			if (xmlTextReaderIsNamespaceDecl(text_reader_)) continue;
-
-			const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
-			if (xmlStrEqual(local_name, BAD_CAST "node-id")) {
-				const xmlChar *value = xmlTextReaderConstValue(text_reader_);
-				node_id = atoi((const char *)value);
-				if (node_id <= 0) {
-					cerr << "invalid value of node-id of <head>: " << value << endl;
-					return -2;
-				}
-			} else {
-				cerr << "unknown attribute of <head>: " << local_name << endl;
-				return -2;
-			}
-		}
-		if (node_id == 0) {
-			cerr << "missing node-id of <head>" << endl;
-			return -2;
-		}
-		arc->set_head_node_id(node_id);
-		return xmlTextReaderNext(text_reader_);
 	}
 
 	int ReadTransition(Arc *arc)

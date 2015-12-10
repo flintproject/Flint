@@ -103,30 +103,22 @@
                   </is:node>
                 </is:node-set>
                 <is:arc-set>
-                  <is:arc arc-id="1">
-                    <is:tail node-id="1"/>
-                    <is:head node-id="2"/>
+                  <is:arc arc-id="1" tail-node-id="1" head-node-id="2">
                     <is:transition type="probability">
                       <m:math><m:cn>0.5</m:cn></m:math>
                     </is:transition>
                   </is:arc>
-                  <is:arc arc-id="2">
-                    <is:tail node-id="2"/>
-                    <is:head node-id="3"/>
+                  <is:arc arc-id="2" tail-node-id="2" head-node-id="3">
                     <is:transition type="probability">
                       <m:math><m:cn>0.50</m:cn></m:math>
                     </is:transition>
                   </is:arc>
-                  <is:arc arc-id="3">
-                    <is:tail node-id="3"/>
-                    <is:head node-id="2"/>
+                  <is:arc arc-id="3" tail-node-id="3" head-node-id="2">
                     <is:transition type="probability">
                       <m:math><m:cn>0.49</m:cn></m:math>
                     </is:transition>
                   </is:arc>
-                  <is:arc arc-id="4">
-                    <is:tail node-id="3"/>
-                    <is:head node-id="4"/>
+                  <is:arc arc-id="4" tail-node-id="3" head-node-id="4">
                     <is:transition type="probability">
                       <m:math><m:cn>0.01</m:cn></m:math>
                     </is:transition>
