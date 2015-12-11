@@ -69,7 +69,8 @@ long Layout::SelectStates(std::vector<std::pair<int, int> > *states) const
 				int data_size = dp->size();
 				switch (dp->type()) {
 				case lo::X:
-					states->push_back(std::make_pair(offset, data_size));
+					if (states)
+						states->push_back(std::make_pair(offset, data_size));
 					total += data_size;
 					break;
 				default:

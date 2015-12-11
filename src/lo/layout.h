@@ -216,7 +216,7 @@ public:
 	 * A location consists of its offset and size.
 	 * Return its total size i.e. the number of scalar states.
 	 */
-	long SelectStates(std::vector<std::pair<int, int> > *states) const;
+	long SelectStates(std::vector<std::pair<int, int> > *states = nullptr) const;
 
 	void Debug(size_t size) const {
 		using std::cout;
