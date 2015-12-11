@@ -41,6 +41,11 @@ int SaveNol(int nol, sqlite3 *db);
 /*
  * Return 1 in case of success, 0 otherwise.
  */
+int CreateAsts(sqlite3 *db);
+
+/*
+ * Return 1 in case of success, 0 otherwise.
+ */
 int CreateLayout(sqlite3 *db);
 
 /*

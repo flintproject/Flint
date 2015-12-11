@@ -158,6 +158,11 @@ int SaveNol(int nol, sqlite3 *db)
 	return r;
 }
 
+int CreateAsts(sqlite3 *db)
+{
+	return CreateTable(db, "asts", "(uuid BLOB, name TEXT, math TEXT)");
+}
+
 int CreateLayout(sqlite3 *db)
 {
 	return CreateView(db, "layout",

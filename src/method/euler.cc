@@ -406,7 +406,7 @@ bool Euler(sqlite3 *db, const char *input, sqlite3 *output)
 {
 	if (!SaveNol(1, output))
 		return false;
-	if (!CreateTable(output, "asts", "(uuid BLOB, name TEXT, math TEXT)"))
+	if (!CreateAsts(output))
 		return false;
 
 	Parser parser(output);
