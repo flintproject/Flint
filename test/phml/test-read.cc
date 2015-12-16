@@ -481,6 +481,18 @@ BOOST_AUTO_TEST_CASE(reduction)
 	CheckReaches(reaches);
 }
 
+BOOST_AUTO_TEST_CASE(rigidode)
+{
+	ReadAndCheck(TEST_MODELS("rigidode.phml"));
+	std::vector<std::string> impls{
+		"20439f740c34436d9d414cd2bc18e613 y1 (eq (diff (bvar %time) %y1) (times %y2 %y3))",
+		"20439f740c34436d9d414cd2bc18e613 y2 (eq (diff (bvar %time) %y2) (minus (times %y1 %y3)))",
+		"20439f740c34436d9d414cd2bc18e613 y3 (eq (diff (bvar %time) %y3) (times (minus %a) %y1 %y2))",
+		"20439f740c34436d9d414cd2bc18e613 a (eq %a 0.51)"
+	};
+	CheckImpls(impls);
+}
+
 BOOST_AUTO_TEST_CASE(ringed_Beeler_Reuter_1977_model_with_static_instance)
 {
 	ReadAndCheck(TEST_MODELS("ringed_Beeler_Reuter_1977_model_with_static_instance.isml"));
