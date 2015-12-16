@@ -20703,6 +20703,17 @@ BOOST_AUTO_TEST_CASE(variable_to_static) {
 				 "    module-id: 57a14bc8-75f6-11e4-aa25-37030d28703a\n");
 }
 
+BOOST_AUTO_TEST_CASE(vdpode)
+{
+	ReadAndCheck(TEST_MODELS("vdpode.phml"));
+	std::vector<std::string> impls{
+		"a3148ad1c5004447a26b418c482e2589 y1 (eq (diff (bvar %time) %y1) %y2)",
+		"a3148ad1c5004447a26b418c482e2589 y2 (eq (diff (bvar %time) %y2) (minus (times %mu (minus 1 (power %y1 2)) %y2) %y1))",
+		"a3148ad1c5004447a26b418c482e2589 mu (eq %mu 1000)"
+	};
+	CheckImpls(impls);
+}
+
 BOOST_AUTO_TEST_CASE(weibull)
 {
 	ReadAndCheck(TEST_MODELS("weibull.phml"));
