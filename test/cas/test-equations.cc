@@ -93,7 +93,7 @@ struct F : public test::MemoryFixture {
 		AddInput("(eq (diff (bvar %time) %y) (divide (plus %v %w) pi))");
 		AddInput("(eq %w (power exponentiale %v))");
 		AddInput("(eq (diff (bvar %time) %x) (minus %y))");
-		AddInput("(eq %v (plus %x %y))");
+		AddInput("(eq %v (piecewise (piece (plus %x %y) (or (leq %time 1) (and (geq %x 0) (gt %y 0)))) (piece %x (lt %y 0)) (otherwise %y)))");
 		AddInput("(eq (times (matrix (matrixrow 2 0 0) (matrixrow 0 -1.5 0) (matrixrow 0 0.5 0)) (diff (bvar %time) %z)) (vector %v %w %x))");
 
 		char math[128];

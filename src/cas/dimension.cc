@@ -253,6 +253,67 @@ public:
 		return true;
 	}
 
+	bool NaryScalar(Compound *c)
+	{
+		for (auto &child : c->children) {
+			if (!Scalar(&child))
+				return false;
+		}
+		c->col = c->row = 1;
+		return true;
+	}
+
+	bool Piecewise(Compound *c)
+	{
+		if (c->children.size() == 0) {
+			cerr << "empty <piecewise>" << endl;
+			return false;
+		}
+		int col, row;
+		if (!HaveSameDimension(&c->children, &col, &row))
+			return false;
+		c->col = col;
+		c->row = row;
+		return true;
+	}
+
+	bool Piece(Compound *c)
+	{
+		if (!IsBinary(*c))
+			return false;
+		int col0, row0;
+		if (!Analyse(&c->children[0], &col0, &row0))
+			return false;
+		int col1, row1;
+		if (!Analyse(&c->children[1], &col1, &row1))
+			return false;
+		if (col1 != 1) {
+			cerr << "condition part of <piece> must be scalar, but given " << col1
+				 << " as the number of columns" << endl;
+			return false;
+		}
+		if (row1 != 1) {
+			cerr << "condition part of <piece> must be scalar, but given " << row1
+				 << " as the number of rows" << endl;
+			return false;
+		}
+		c->col = col0;
+		c->row = row0;
+		return true;
+	}
+
+	bool Otherwise(Compound *c)
+	{
+		if (!IsUnary(*c))
+			return false;
+		int col, row;
+		if (!Analyse(&c->children[0], &col, &row))
+			return false;
+		c->col = col;
+		c->row = row;
+		return true;
+	}
+
 private:
 	bool HaveSameDimension(std::vector<Expr> *children, int *col, int *row)
 	{
@@ -374,6 +435,7 @@ struct KeyFun {
 const KeyFun kKeyFun[] = {
 	// Keep the following entries in bibliographical order.
 	{"abs", &Context::UnaryScalar},
+	{"and", &Context::NaryScalar},
 	{"arccos", &Context::UnaryScalar},
 	{"arccosh", &Context::UnaryScalar},
 	{"arccot", &Context::UnaryScalar},
@@ -409,6 +471,11 @@ const KeyFun kKeyFun[] = {
 	{"min", &Context::BinaryScalar},
 	{"minus", &Context::Minus},
 	{"neq", &Context::BinaryEquality},
+	{"not", &Context::UnaryScalar},
+	{"or", &Context::NaryScalar},
+	{"otherwise", &Context::Otherwise},
+	{"piece", &Context::Piece},
+	{"piecewise", &Context::Piecewise},
 	{"plus", &Context::Plus},
 	{"power", &Context::Power},
 	{"rem", &Context::BinaryScalar},
@@ -420,7 +487,8 @@ const KeyFun kKeyFun[] = {
 	{"tan", &Context::UnaryScalar},
 	{"tanh", &Context::UnaryScalar},
 	{"times", &Context::Times},
-	{"vector", &Context::Vector}
+	{"vector", &Context::Vector},
+	{"xor", &Context::NaryScalar}
 };
 
 bool Context::Analyse(Expr *expr, int *col, int *row)
@@ -444,9 +512,14 @@ bool Context::Analyse(Expr *expr, int *col, int *row)
 		std::string name = boost::get<std::string>(*expr);
 		assert(!name.empty());
 		if (name[0] == '%') {
-			const Variable *v = vm_->Find(uuid_, name.substr(1));
+			std::string name1 = name.substr(1);
+			if (name1 == "time") { // the global variable "time"
+				*col = *row = 1;
+				return true;
+			}
+			const Variable *v = vm_->Find(uuid_, name1);
 			if (!v) {
-				cerr << "failed to find variable: " << name.substr(1) << endl;
+				cerr << "failed to find variable: " << name1 << endl;
 				return false;
 			}
 			*col = v->col();
