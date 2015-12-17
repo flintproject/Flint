@@ -61,8 +61,13 @@ const char *kBinaryFunctions[] = {
 	"times",
 };
 
+const char *kNaryFunctions[] = {
+	"mean"
+};
+
 const int kNumUnaryFunctions = static_cast<int>(sizeof(kUnaryFunctions)/sizeof(kUnaryFunctions[0]));
 const int kNumBinaryFunctions = static_cast<int>(sizeof(kBinaryFunctions)/sizeof(kBinaryFunctions[0]));
+const int kNumNaryFunctions = static_cast<int>(sizeof(kNaryFunctions)/sizeof(kNaryFunctions[0]));
 
 struct F : public test::MemoryFixture {
 	F()
@@ -78,12 +83,12 @@ struct F : public test::MemoryFixture {
 		AddVariable('x', 5, "z", 1, 3);
 
 		char name[8];
-		for (int i=0;i<kNumUnaryFunctions;i++) {
+		for (int i=0;i<kNumUnaryFunctions+kNumNaryFunctions;i++) {
 			int id = i+1000;
 			std::sprintf(name, "x%d", id);
 			AddVariable('v', id, name, 1, 1);
 		}
-		for (int i=0;i<kNumBinaryFunctions;i++) {
+		for (int i=0;i<kNumBinaryFunctions+kNumNaryFunctions;i++) {
 			int id = i+2000;
 			std::sprintf(name, "xy%d", id);
 			AddVariable('v', id, name, 1, 1);
@@ -103,6 +108,12 @@ struct F : public test::MemoryFixture {
 		}
 		for (int i=0;i<kNumBinaryFunctions;i++) {
 			std::sprintf(math, "(eq %%xy%d (%s %%x %%y))", i+2000, kBinaryFunctions[i]);
+			AddInput(math);
+		}
+		for (int i=0;i<kNumNaryFunctions;i++) {
+			std::sprintf(math, "(eq %%x%d (%s %%x))", i+1000+kNumUnaryFunctions, kNaryFunctions[i]);
+			AddInput(math);
+			std::sprintf(math, "(eq %%xy%d (%s %%x %%y))", i+2000+kNumBinaryFunctions, kNaryFunctions[i]);
 			AddInput(math);
 		}
 

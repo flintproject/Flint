@@ -468,6 +468,7 @@ const KeyFun kKeyFun[] = {
 	{"lt", &Context::BinaryScalar},
 	{"matrix", &Context::Matrix},
 	{"max", &Context::BinaryScalar},
+	{"mean", &Context::NaryScalar},
 	{"min", &Context::BinaryScalar},
 	{"minus", &Context::Minus},
 	{"neq", &Context::BinaryEquality},
