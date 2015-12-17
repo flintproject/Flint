@@ -224,7 +224,7 @@ bool EmitAt(int n, std::deque<Expr> &children, Context *context)
 bool EmitLookback(int n, std::deque<Expr> &children, Context *context)
 {
 	size_t len = children.size();
-	if (len > 3) {
+	if (len > 2) {
 		cerr << "error: more than 2 arguments: " << context->uuid << ' ' << context->id << endl;
 		return false;
 	}
