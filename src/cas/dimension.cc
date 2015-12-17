@@ -7,6 +7,7 @@
 #include <memory>
 #include <string>
 
+#include "mathml.h"
 #include "variable.h"
 #include "variable-map.h"
 
@@ -527,8 +528,10 @@ bool Context::Analyse(Expr *expr, int *col, int *row)
 			*row = v->row();
 		} else if (name == "@dt") {
 			*col = *row = 1;
-		} else { // TODO
+		} else if (mathml::IsScalarConstantElement(name)) {
 			*col = *row = 1;
+		} else { // TODO
+			assert(false);
 		}
 	} else if (type == static_cast<int>(ExprType::kInteger)) {
 		*col = *row = 1;
