@@ -299,6 +299,31 @@ public:
 		return true;
 	}
 
+	bool Outerproduct(Compound *c)
+	{
+		if (!IsBinary(*c))
+			return false;
+		int col0, row0;
+		if (!Analyse(&c->children[0], &col0, &row0))
+			return false;
+		int col1, row1;
+		if (!Analyse(&c->children[1], &col1, &row1))
+			return false;
+		if (col0 != 1) {
+			cerr << "1st argument of <outerproduct> must be a column vector, but it had "
+				 << col0 << " columns" << endl;
+			return false;
+		}
+		if (row1 != 1) {
+			cerr << "2nd argument of <outerproduct> must be a row vector, but it had "
+				 << row1 << " rows" << endl;
+			return false;
+		}
+		c->col = col1;
+		c->row = row0;
+		return true;
+	}
+
 	bool Scalarproduct(Compound *c)
 	{
 		if (!IsBinary(*c))
@@ -582,6 +607,7 @@ const KeyFun kKeyFun[] = {
 	{"not", &Context::UnaryScalar},
 	{"or", &Context::NaryScalar},
 	{"otherwise", &Context::Otherwise},
+	{"outerproduct", &Context::Outerproduct},
 	{"piece", &Context::Piece},
 	{"piecewise", &Context::Piecewise},
 	{"plus", &Context::Plus},
