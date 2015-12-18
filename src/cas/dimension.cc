@@ -299,6 +299,41 @@ public:
 		return true;
 	}
 
+	bool Vectorproduct(Compound *c)
+	{
+		if (!IsBinary(*c))
+			return false;
+		int col0, row0;
+		if (!Analyse(&c->children[0], &col0, &row0))
+			return false;
+		int col1, row1;
+		if (!Analyse(&c->children[1], &col1, &row1))
+			return false;
+		if (col0 != col1) {
+			cerr << "col mismatch between two arguments of <vectorproduct>: "
+				 << col0 << " vs " << col1 << endl;
+			return false;
+		}
+		if (row0 != row1) {
+			cerr << "row mismatch between two arguments of <vectorproduct>: "
+				 << row0 << " vs " << row1 << endl;
+			return false;
+		}
+		if (col0 == 3 && row0 == 1) {
+			c->col = 3;
+			c->row = 1;
+			return true;
+		}
+		if (col0 == 1 && row0 == 3) {
+			c->col = 1;
+			c->row = 3;
+			return true;
+		}
+		cerr << "<vectorproduct> got a non-3-dimensional vector: "
+			 << col0 << '/' << row0 << endl;
+		return false;
+	}
+
 	bool UnaryScalar(Compound *c)
 	{
 		if (!IsUnary(*c))
@@ -560,6 +595,7 @@ const KeyFun kKeyFun[] = {
 	{"times", &Context::Times},
 	{"transpose", &Context::Transpose},
 	{"vector", &Context::Vector},
+	{"vectorproduct", &Context::Vectorproduct},
 	{"xor", &Context::NaryScalar}
 };
 
