@@ -217,6 +217,23 @@ public:
 		return true;
 	}
 
+	bool Determinant(Compound *c)
+	{
+		if (!IsUnary(*c))
+			return false;
+		int col0, row0;
+		if (!Analyse(&c->children[0], &col0, &row0))
+			return false;
+		if (col0 != row0) {
+			cerr << "col/row mismatch for <determinant>: "
+				 << col0 << '/' << row0
+				 << endl;
+			return false;
+		}
+		c->col = c->row = 1;
+		return true;
+	}
+
 	bool Vector(Compound *c)
 	{
 		if (c->children.empty()) {
@@ -458,6 +475,7 @@ const KeyFun kKeyFun[] = {
 	{"csch", &Context::UnaryScalar},
 	{"diff", &Context::Diff},
 	{"divide", &Context::BinaryScalar},
+	{"determinant", &Context::Determinant},
 	{"eq", &Context::BinaryEquality},
 	{"exp", &Context::UnaryScalar},
 	{"floor", &Context::UnaryScalar},
