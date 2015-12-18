@@ -299,6 +299,22 @@ public:
 		return true;
 	}
 
+	bool Scalarproduct(Compound *c)
+	{
+		if (!IsBinary(*c))
+			return false;
+		int col, row;
+		if (!HaveSameDimension(&c->children, &col, &row))
+			return false;
+		if (col != 1 && row != 1) {
+			cerr << "<scalarproduct> got a non-vector: "
+				 << col << '/' << row << endl;
+			return false;
+		}
+		c->col = c->row = 1;
+		return true;
+	}
+
 	bool Vectorproduct(Compound *c)
 	{
 		if (!IsBinary(*c))
@@ -585,6 +601,7 @@ const KeyFun kKeyFun[] = {
 	{"power", &Context::Power},
 	{"rem", &Context::BinaryScalar},
 	{"root", &Context::Root},
+	{"scalarproduct", &Context::Scalarproduct},
 	{"sec", &Context::UnaryScalar},
 	{"sech", &Context::UnaryScalar},
 	{"selector", &Context::Selector},
