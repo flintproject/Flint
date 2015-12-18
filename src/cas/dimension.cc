@@ -249,6 +249,44 @@ public:
 		return true;
 	}
 
+	bool Selector(Compound *c)
+	{
+		int col0, row0;
+		switch (c->children.size()) {
+		case 0:
+			cerr << "empty <selector> found" << endl;
+			return false;
+		case 1:
+			// TODO
+			cerr << "unary <selector> is not supported yet" << endl;
+			return false;
+		case 2:
+			if (!Analyse(&c->children[0], &col0, &row0))
+				return false;
+			if (!Scalar(&c->children[1]))
+				return false;
+			if (col0 > 1 && row0 > 1) { // matrix
+				c->col = col0;
+				c->row = 1;
+			} else {
+				c->col = c->row = 1;
+			}
+			return true;
+		case 3:
+			if (!Analyse(&c->children[0], &col0, &row0))
+				return false;
+			if (!Scalar(&c->children[1]))
+				return false;
+			if (!Scalar(&c->children[2]))
+				return false;
+			c->col = c->row = 1;
+			return true;
+		default:
+			cerr << "more than 3 arguments for <selector>" << endl;
+			return false;
+		}
+	}
+
 	bool Transpose(Compound *c)
 	{
 		if (!IsUnary(*c))
@@ -514,6 +552,7 @@ const KeyFun kKeyFun[] = {
 	{"root", &Context::Root},
 	{"sec", &Context::UnaryScalar},
 	{"sech", &Context::UnaryScalar},
+	{"selector", &Context::Selector},
 	{"sin", &Context::UnaryScalar},
 	{"sinh", &Context::UnaryScalar},
 	{"tan", &Context::UnaryScalar},
