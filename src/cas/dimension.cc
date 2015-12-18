@@ -249,6 +249,18 @@ public:
 		return true;
 	}
 
+	bool Transpose(Compound *c)
+	{
+		if (!IsUnary(*c))
+			return false;
+		int col0, row0;
+		if (!Analyse(&c->children[0], &col0, &row0))
+			return false;
+		c->col = row0;
+		c->row = col0;
+		return true;
+	}
+
 	bool UnaryScalar(Compound *c)
 	{
 		if (!IsUnary(*c))
@@ -507,6 +519,7 @@ const KeyFun kKeyFun[] = {
 	{"tan", &Context::UnaryScalar},
 	{"tanh", &Context::UnaryScalar},
 	{"times", &Context::Times},
+	{"transpose", &Context::Transpose},
 	{"vector", &Context::Vector},
 	{"xor", &Context::NaryScalar}
 };
