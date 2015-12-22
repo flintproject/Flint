@@ -125,16 +125,21 @@ libflintxx_la_SOURCES = \
     phml/branch.cc \
     phml/combine-all.cc \
     phml/combine.cc \
+    phml/database-driver.cc \
     phml/delay-arg-validator.cc \
+    phml/extra-implementation.cc \
     phml/graph-iv-rewriter.cc \
     phml/graph-math-rewriter.cc \
+    phml/implementation.cc \
     phml/import.cc \
+    phml/initial-value.cc \
     phml/lands.cc \
     phml/nc.cc \
     phml/reach.cc \
     phml/read.cc \
     phml/span.cc \
     phml/sprinkle.cc \
+    phml/target-pq.cc \
     phml/transition-form.cc \
     phml/unit-of-time.cc \
     phsp/read.cc \
