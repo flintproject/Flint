@@ -28,9 +28,9 @@ int ArkRhs(realtype t, N_Vector y, N_Vector ydot, void *user_data)
 	return 0;
 }
 
-int ArkDlsDenseMass(long int N, realtype t,
+int ArkDlsDenseMass(long int /*N*/, realtype t,
 					/*N_Vector y,*/ DlsMat M, void *user_data,
-					N_Vector tmp1, N_Vector tmp2, N_Vector tmp3)
+					N_Vector /*tmp1*/, N_Vector /*tmp2*/, N_Vector /*tmp3*/)
 {
 	try {
 		Ark *ark = static_cast<Ark *>(user_data);
