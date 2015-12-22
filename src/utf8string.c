@@ -52,7 +52,7 @@ int Trim(xmlChar *s, xmlChar **tp)
 	xmlChar *e = s;
 	while (*e++) ; // go to the end
 	for (;;) {
-		xmlChar *p = xmlUTF8Strpos(s, pos);
+		const xmlChar *p = xmlUTF8Strpos(s, pos);
 		if (p == NULL)
 			goto error;
 		int k = e - p;
@@ -61,8 +61,8 @@ int Trim(xmlChar *s, xmlChar **tp)
 			goto error;
 		if (!isspace(c))
 			goto success;
-		*p = '\0';
-		e = p;
+		e = (xmlChar *)p;
+		*e = '\0';
 		--pos;
 	}
 
