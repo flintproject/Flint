@@ -130,6 +130,7 @@ libflintxx_la_SOURCES = \
     phml/extra-implementation.cc \
     phml/graph-iv-rewriter.cc \
     phml/graph-math-rewriter.cc \
+    phml/graph-reader.cc \
     phml/implementation.cc \
     phml/import.cc \
     phml/initial-value.cc \

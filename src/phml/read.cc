@@ -36,7 +36,7 @@
 #include "phml/extra-implementation.h"
 #include "phml/graph-iv-rewriter.h"
 #include "phml/graph-math-rewriter.h"
-#include "phml/graph_reader.h"
+#include "phml/graph-reader.h"
 #include "phml/implementation.h"
 #include "phml/import.h"
 #include "phml/initial-value.h"
@@ -1457,7 +1457,7 @@ private:
 			}
 		} else if (xmlStrEqual(definition->type(), BAD_CAST "graph")) {
 			pq_->set_unit_id(xmlCharStrdup("0")); // unit: dimensionless
-			phml::GraphReader<PQ, DatabaseDriver> graph_reader(pq_.get(), text_reader_, dd_.get());
+			phml::GraphReader graph_reader(pq_.get(), text_reader_, dd_.get());
 			return graph_reader.Read();
 		}
 		// expect definition in MathML
