@@ -102,6 +102,9 @@
                     <is:name>d</is:name>
                   </is:node>
                 </is:node-set>
+                <is:event-condition>
+                  <m:math><m:apply><m:geq/><m:ci>y</m:ci><m:cn>-1</m:cn></m:apply></m:math>
+                </is:event-condition>
                 <is:arc-set>
                   <is:arc arc-id="1" tail-node-id="1" head-node-id="2">
                     <is:transition type="probability">

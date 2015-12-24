@@ -14,6 +14,7 @@ class Arc;
 class Bridge;
 class Edge;
 class Element;
+class EventCondition;
 class ExtraImplementation;
 class Implementation;
 class Import;
@@ -57,6 +58,8 @@ public:
 	bool SaveInitialValue(const PQ *pq, const InitialValue *iv);
 
 	bool SaveImplementation(const PQ *pq, const Implementation *impl);
+
+	bool SaveEventCondition(const PQ *pq, const EventCondition &ec);
 
 	bool SaveNode(const PQ *pq, const Node *node);
 
@@ -103,6 +106,7 @@ private:
 	sqlite3_stmt *pq_stmt_;
 	sqlite3_stmt *iv_stmt_;
 	sqlite3_stmt *impl_stmt_;
+	sqlite3_stmt *event_condition_stmt_;
 	sqlite3_stmt *node_stmt_;
 	sqlite3_stmt *arc_stmt_;
 	sqlite3_stmt *refport_stmt_;

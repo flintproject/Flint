@@ -21,6 +21,7 @@
 #include "phml/definition.h"
 #include "phml/edge.h"
 #include "phml/element.h"
+#include "phml/event-condition.h"
 #include "phml/extra-implementation.h"
 #include "phml/implementation.h"
 #include "phml/import.h"
@@ -143,6 +144,13 @@ DatabaseDriver::DatabaseDriver(sqlite3 *db)
 		exit(EXIT_FAILURE);
 	}
 
+	e = sqlite3_prepare_v2(db, "INSERT INTO ecs VALUES (?, ?)",
+						   -1, &event_condition_stmt_, NULL);
+	if (e != SQLITE_OK) {
+		cerr << "failed to prepare statement: " << e << endl;
+		exit(EXIT_FAILURE);
+	}
+
 	e = sqlite3_prepare_v2(db, "INSERT INTO nodes VALUES (?, ?, ?)",
 						   -1, &node_stmt_, NULL);
 	if (e != SQLITE_OK) {
@@ -259,6 +267,7 @@ DatabaseDriver::~DatabaseDriver()
 	sqlite3_finalize(pq_stmt_);
 	sqlite3_finalize(iv_stmt_);
 	sqlite3_finalize(impl_stmt_);
+	sqlite3_finalize(event_condition_stmt_);
 	sqlite3_finalize(node_stmt_);
 	sqlite3_finalize(arc_stmt_);
 	sqlite3_finalize(refport_stmt_);
@@ -627,6 +636,29 @@ bool DatabaseDriver::SaveImplementation(const PQ *pq, const Implementation *impl
 		return false;
 	}
 	sqlite3_reset(impl_stmt_);
+	return true;
+}
+
+bool DatabaseDriver::SaveEventCondition(const PQ *pq, const EventCondition &ec)
+{
+	int e;
+	e = sqlite3_bind_int64(event_condition_stmt_, 1, pq->rowid());
+	if (e != SQLITE_OK) {
+		cerr << "failed to bind pq_rowid: " << e << endl;
+		return false;
+	}
+	std::string math = ec.GetMath();
+	e = sqlite3_bind_text(event_condition_stmt_, 2, math.c_str(), -1, SQLITE_STATIC);
+	if (e != SQLITE_OK) {
+		cerr << "failed to bind math: " << e << endl;
+		return false;
+	}
+	e = sqlite3_step(event_condition_stmt_);
+	if (e != SQLITE_DONE) {
+		cerr << "failed to step statement: " << e << endl;
+		return false;
+	}
+	sqlite3_reset(event_condition_stmt_);
 	return true;
 }
 

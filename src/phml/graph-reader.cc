@@ -10,6 +10,7 @@
 #include "mathml/math_dumper.h"
 #include "phml/arc.h"
 #include "phml/database-driver.h"
+#include "phml/event-condition.h"
 #include "phml/node.h"
 #include "phml/pq.h"
 
@@ -64,7 +65,12 @@ int GraphReader::ReadGraph()
 		int type = xmlTextReaderNodeType(text_reader_);
 		if (type == XML_READER_TYPE_ELEMENT) {
 			const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
-			if (xmlStrEqual(local_name, BAD_CAST "node-set")) {
+			if (xmlStrEqual(local_name, BAD_CAST "event-condition")) {
+				i = ReadEventCondition();
+				if (i <= 0)
+					return i;
+				continue;
+			} else if (xmlStrEqual(local_name, BAD_CAST "node-set")) {
 				i = ReadNodeSet();
 				if (i <= 0) return i;
 				continue;
@@ -79,6 +85,37 @@ int GraphReader::ReadGraph()
 		} else if (type == XML_READER_TYPE_END_ELEMENT) {
 			const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
 			if (xmlStrEqual(local_name, BAD_CAST "graph")) {
+				return xmlTextReaderRead(text_reader_);
+			}
+		}
+		i = xmlTextReaderRead(text_reader_);
+	}
+	return i;
+}
+
+int GraphReader::ReadEventCondition()
+{
+	EventCondition ec;
+	int i = xmlTextReaderRead(text_reader_);
+	while (i > 0) {
+		int type = xmlTextReaderNodeType(text_reader_);
+		if (type == XML_READER_TYPE_ELEMENT) {
+			const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
+			if (xmlStrEqual(local_name, BAD_CAST "math")) {
+				mathml::MathDumper math_dumper(text_reader_, &ec.stream());
+				i = math_dumper.Read(&ec);
+				if (i <= 0)
+					return i;
+				continue;
+			} else {
+				cerr << "unknown child of <event-condition>: " << local_name << endl;
+				return -2;
+			}
+		} else if (type == XML_READER_TYPE_END_ELEMENT) {
+			const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
+			if (xmlStrEqual(local_name, BAD_CAST "event-condition")) {
+				if (!driver_->SaveEventCondition(pq_, ec))
+					return -2;
 				return xmlTextReaderRead(text_reader_);
 			}
 		}

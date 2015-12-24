@@ -27,6 +27,8 @@ public:
 private:
 	int ReadGraph();
 
+	int ReadEventCondition();
+
 	int ReadNodeSet();
 
 	int ReadNode();
