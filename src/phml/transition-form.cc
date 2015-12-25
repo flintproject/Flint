@@ -17,7 +17,8 @@ namespace flint {
 namespace {
 
 const char kQuerySelect[] = \
-	"SELECT a.*, p.name FROM arcs AS a"
+	"SELECT a.*, e.math, p.name FROM arcs AS a"
+	" LEFT JOIN ecs AS e ON a.pq_rowid = e.pq_rowid"
 	" LEFT JOIN pqs AS p ON a.pq_rowid = p.rowid";
 
 const char kQueryExtras[] = "INSERT INTO extras VALUES (?, 'before', ?)";
@@ -44,6 +45,7 @@ private:
 };
 
 typedef std::map<sqlite3_int64, std::string> NameMap;
+typedef std::unordered_map<sqlite3_int64, std::string> ConditionMap;
 typedef std::multimap<int, Arc> ArcMultimap;
 typedef std::unordered_map<sqlite3_int64, ArcMultimap> PqArcMap;
 
@@ -106,6 +108,7 @@ TransitionForm::~TransitionForm()
 bool TransitionForm::operator()()
 {
 	NameMap nm;
+	ConditionMap cm;
 	PqArcMap pam;
 	int e;
 	for (e = sqlite3_step(stmt_select_); e == SQLITE_ROW; e = sqlite3_step(stmt_select_)) {
@@ -114,8 +117,11 @@ bool TransitionForm::operator()()
 		int head_node_id = sqlite3_column_int(stmt_select_, 2);
 		const unsigned char *type = sqlite3_column_text(stmt_select_, 3);
 		const unsigned char *math = sqlite3_column_text(stmt_select_, 4);
-		const unsigned char *pq_name = sqlite3_column_text(stmt_select_, 5);
+		const unsigned char *cmath = sqlite3_column_text(stmt_select_, 5);
+		const unsigned char *pq_name = sqlite3_column_text(stmt_select_, 6);
 		nm.insert(std::make_pair(pq_rowid, std::string((const char *)pq_name)));
+		if (cmath)
+			cm.insert(std::make_pair(pq_rowid, std::string(reinterpret_cast<const char *>(cmath))));
 		pam[pq_rowid].insert(std::make_pair(tail_node_id, Arc(head_node_id,
 															  (const char *)type,
 															  (const char *)math)));
@@ -128,11 +134,17 @@ bool TransitionForm::operator()()
 		sqlite3_int64 pq_rowid(nit->first);
 		const std::string &pq_name(nit->second);
 		const ArcMultimap &am(pam.at(pq_rowid));
+		auto cmit = cm.find(pq_rowid);
+		bool has_condition = cmit != cm.end();
 
 		std::ostringstream se;
 		se << " (eq %"
 		   << pq_name
 		   << " (piecewise";
+
+		if (has_condition) {
+			se << " (piece (piecewise";
+		}
 
 		ArcMultimap::const_iterator ait = am.begin();
 		ArcMultimap::const_iterator bit;
@@ -173,7 +185,13 @@ bool TransitionForm::operator()()
 			   << tail_node_id
 			   << "))";
 		} while (bit != am.end());
-		se << "))";
+		se << ')';
+		if (has_condition) {
+			se << cmit->second
+			   << "))";
+		}
+		se << ')';
+
 		if (!Insert(stmt_extras_, pq_rowid, se.str())) return false;
 
 		std::ostringstream si;

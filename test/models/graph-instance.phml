@@ -127,6 +127,9 @@
           </is:transition>
         </is:arc>
       </is:arc-set>
+      <is:event-condition>
+        <m:math><m:apply><m:eq/><m:apply><m:rem/><m:ci>time</m:ci><m:cn>2</m:cn></m:apply><m:cn>0</m:cn></m:apply></m:math>
+      </is:event-condition>
     </is:graph>
   </is:definition>
   <is:extra-implementation order="after" type="instantaneous">
