@@ -7,6 +7,7 @@
 #include <cmath>
 #include <iostream>
 #include <iterator>
+#include <limits>
 #include <memory>
 #include <random>
 #include <set>
@@ -163,7 +164,23 @@ void DoCall2(const bc::Call2 &c2, double *tmp)
 		tmp[a] = tmp[a1] / tmp[a2];
 		break;
 	case bc::Call2::kEq:
-		tmp[a] = tmp[a1] == tmp[a2];
+		{
+			double diff = std::fabs(tmp[a1] - tmp[a2]);
+			if (diff == 0) {
+				tmp[a] = 1;
+				return;
+			}
+			double aa1 = std::fabs(tmp[a1]);
+			double aa2 = std::fabs(tmp[a2]);
+			if (aa1 == 0) {
+				tmp[a] = aa2 < std::numeric_limits<double>::epsilon();
+			} else if (aa2 == 0) {
+				tmp[a] = aa1 < std::numeric_limits<double>::epsilon();
+			} else {
+				double ma = std::fmax(aa1, aa2);
+				tmp[a] = diff < std::numeric_limits<double>::epsilon() * ma;
+			}
+		}
 		break;
 	case bc::Call2::kGeq:
 		tmp[a] = tmp[a1] >= tmp[a2];
