@@ -153,36 +153,36 @@ public class Plotter implements IPlotter {
 
         try (FileInputStream fis = new FileInputStream(controller.getIsdFile());
              FileChannel channel = fis.getChannel()) {
-        IsdfReader reader = new IsdfReader(channel);
-        IsdfHeader header = reader.readHeader();
-        int numberOfColumns = header.getNumObjs();
-        int skip = header.getDataOffset();
+            IsdfReader reader = new IsdfReader(channel);
+            IsdfHeader header = reader.readHeader();
+            int numberOfColumns = header.getNumObjs();
+            int skip = header.getDataOffset();
 
-        for (int i = 0; i < yListModel.getSize(); i++) {
-            int idx = setting.getTrackIndex(yListModel.keyAt(i)) + 1;
-            Gnuplot data = new Gnuplot(arrData.isEmpty() ? isdPath : "",
-                                       "1:" + idx,
-                                       numberOfColumns,
-                                       skip,
-                                       yListModel.nameAt(i),
-                                       "x1y1",
-                                       Gnuplot.GPStyle.lines);
-            arrData.add(data);
-        }
+            for (int i = 0; i < yListModel.getSize(); i++) {
+                int idx = setting.getTrackIndex(yListModel.keyAt(i)) + 1;
+                Gnuplot data = new Gnuplot(arrData.isEmpty() ? isdPath : "",
+                                           "1:" + idx,
+                                           numberOfColumns,
+                                           skip,
+                                           yListModel.nameAt(i),
+                                           "x1y1",
+                                           Gnuplot.GPStyle.lines);
+                arrData.add(data);
+            }
 
-        ListItemModel y2ListModel = setting.getY2ListItemModel();
+            ListItemModel y2ListModel = setting.getY2ListItemModel();
 
-        for (int i = 0; i < y2ListModel.getSize(); i++) {
-            int idx = setting.getTrackIndex(y2ListModel.keyAt(i)) + 1;
-            Gnuplot data = new Gnuplot(arrData.isEmpty() ? isdPath : "",
-                                       "1:" + idx,
-                                       numberOfColumns,
-                                       skip,
-                                       y2ListModel.nameAt(i),
-                                       "x1y2",
-                                       Gnuplot.GPStyle.lines);
-            arrData.add(data);
-        }
+            for (int i = 0; i < y2ListModel.getSize(); i++) {
+                int idx = setting.getTrackIndex(y2ListModel.keyAt(i)) + 1;
+                Gnuplot data = new Gnuplot(arrData.isEmpty() ? isdPath : "",
+                                           "1:" + idx,
+                                           numberOfColumns,
+                                           skip,
+                                           y2ListModel.nameAt(i),
+                                           "x1y2",
+                                           Gnuplot.GPStyle.lines);
+                arrData.add(data);
+            }
         }
 
         gp.setDataSets(arrData);

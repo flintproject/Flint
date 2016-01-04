@@ -610,17 +610,17 @@ public class GnuPlotter extends BasePlotter {
             sb.append("]\n");
         }
 
-            if (getY2min() != null && getY2max() != null) {
-                sb.append("set y2range [");
-                sb.append(getY2min());
-                sb.append(':');
-                sb.append(getY2max());
-                sb.append("]\n");;
-                sb.append("set y2tics autofreq\n");
-                sb.append("set ytics nomirror\n");
-            }
+        if (getY2min() != null && getY2max() != null) {
+            sb.append("set y2range [");
+            sb.append(getY2min());
+            sb.append(':');
+            sb.append(getY2max());
+            sb.append("]\n");;
+            sb.append("set y2tics autofreq\n");
+            sb.append("set ytics nomirror\n");
+        }
 
-            sb.append("plot ");
+        sb.append("plot ");
 
         for (int i = 0; i < getDataSets().size(); i++) {
             if (getDataSets().get(i).getDoPlot()) {
