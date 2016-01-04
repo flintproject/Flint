@@ -53,6 +53,15 @@ struct F : test::MemoryFixture {
 		Setup("%x", 3, body.c_str());
 	}
 
+	void SetupConstant(const char *f)
+	{
+		std::ostringstream oss;
+		oss << "  loadi $0 " << f << "\n"
+			<< "  store %c $0\n";
+		std::string body = oss.str();
+		Setup("%c", 1, body.c_str());
+	}
+
 	sqlite3 *db;
 	test::Sql sql;
 };
@@ -301,6 +310,21 @@ BOOST_AUTO_TEST_CASE(UniformVariate) {
 
 BOOST_AUTO_TEST_CASE(WeibullVariate) {
 	SetupCall2("$weibull_variate");
+	BOOST_CHECK(compiler::bcc::Bcc(db, &std::cout));
+}
+
+BOOST_AUTO_TEST_CASE(Eulergamma) {
+	SetupConstant("eulergamma");
+	BOOST_CHECK(compiler::bcc::Bcc(db, &std::cout));
+}
+
+BOOST_AUTO_TEST_CASE(Exponentiale) {
+	SetupConstant("exponentiale");
+	BOOST_CHECK(compiler::bcc::Bcc(db, &std::cout));
+}
+
+BOOST_AUTO_TEST_CASE(Pi) {
+	SetupConstant("pi");
 	BOOST_CHECK(compiler::bcc::Bcc(db, &std::cout));
 }
 
