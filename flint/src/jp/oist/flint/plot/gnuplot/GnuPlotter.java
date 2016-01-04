@@ -74,6 +74,9 @@ public class GnuPlotter extends BasePlotter {
 
     private String mConfigFilePath;
 
+    /** The flag to tell whether y2-axis is enabled or not */
+    private boolean mY2Enabled = false;
+
     /**
      * Default Constructor.
      */
@@ -453,6 +456,10 @@ public class GnuPlotter extends BasePlotter {
         }
     }
 
+    public void setY2Enabled(boolean y2Enabled) {
+        mY2Enabled = y2Enabled;
+    }
+
     /**
      * Execution of Exterior Plotter.
      */
@@ -555,14 +562,6 @@ public class GnuPlotter extends BasePlotter {
             sb.append("\"\n");
         }
 
-        if (getY2label() == null) {
-            sb.append("unset y2label\n");
-        } else {
-            sb.append("set y2label \"");
-            sb.append(getY2label());
-            sb.append("\"\n");
-        }
-
         if (isLogScaleX()) {
             sb.append("set logscale x\n");
         } else {
@@ -573,12 +572,6 @@ public class GnuPlotter extends BasePlotter {
             sb.append("set logscale y\n");
         } else {
             sb.append("unset logscale y\n");
-        }
-
-        if (isLogScaleY2()) {
-            sb.append("set logscale y2\n");
-        } else {
-            sb.append("unset logscale y2\n");
         }
 
         if (isKeyDisplayFlg()) {
@@ -610,14 +603,31 @@ public class GnuPlotter extends BasePlotter {
             sb.append("]\n");
         }
 
-        if (getY2min() != null && getY2max() != null) {
-            sb.append("set y2range [");
-            sb.append(getY2min());
-            sb.append(':');
-            sb.append(getY2max());
-            sb.append("]\n");;
-            sb.append("set y2tics autofreq\n");
+        if (mY2Enabled) {
             sb.append("set ytics nomirror\n");
+            sb.append("set y2tics nomirror\n");
+
+            if (getY2label() == null) {
+                sb.append("unset y2label\n");
+            } else {
+                sb.append("set y2label \"");
+                sb.append(getY2label());
+                sb.append("\"\n");
+            }
+
+            if (isLogScaleY2()) {
+                sb.append("set logscale y2\n");
+            } else {
+                sb.append("unset logscale y2\n");
+            }
+
+            if (getY2min() != null && getY2max() != null) {
+                sb.append("set y2range [");
+                sb.append(getY2min());
+                sb.append(':');
+                sb.append(getY2max());
+                sb.append("]\n");;
+            }
         }
 
         sb.append("plot ");

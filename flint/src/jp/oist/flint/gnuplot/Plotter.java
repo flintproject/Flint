@@ -171,6 +171,8 @@ public class Plotter implements IPlotter {
             }
 
             ListItemModel y2ListModel = setting.getY2ListItemModel();
+            if (y2ListModel.getSize() > 0)
+                gp.setY2Enabled(true);
 
             for (int i = 0; i < y2ListModel.getSize(); i++) {
                 int idx = setting.getTrackIndex(y2ListModel.keyAt(i)) + 1;
