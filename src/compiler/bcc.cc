@@ -269,6 +269,9 @@ struct Lexer : lex::lexer<TLexer> {
 		exponentiale_ = "exponentiale";
 		pi_ = "pi";
 
+		true_ = "true";
+		false_ = "false";
+
 		real = "{FLOAT}";
 		integer = "{SIGN}?{DIGIT}+";
 		address = "\"$\"{DIGIT}+";
@@ -290,6 +293,7 @@ struct Lexer : lex::lexer<TLexer> {
 		this->self += lognormal_variate_ | poisson_variate_ | uniform_variate_;
 		this->self += weibull_variate_;
 		this->self += eulergamma_ | exponentiale_ | pi_;
+		this->self += true_ | false_;
 		this->self += real | integer | address | label | id;
 	}
 
@@ -307,6 +311,7 @@ struct Lexer : lex::lexer<TLexer> {
 	lex::token_def<> lognormal_variate_, poisson_variate_, uniform_variate_;
 	lex::token_def<> weibull_variate_;
 	lex::token_def<> eulergamma_, exponentiale_, pi_;
+	lex::token_def<> true_, false_;
 	lex::token_def<std::string> id;
 	lex::token_def<int> integer;
 	lex::token_def<std::string> address, label;
@@ -605,6 +610,8 @@ struct Grammar : qi::grammar<TIterator, Body()> {
 		imm = ' ' >> (td.eulergamma_ [_val = val(boost::math::constants::euler<double>())]
 					  | td.exponentiale_ [_val = val(boost::math::constants::e<double>())]
 					  | td.pi_ [_val = val(boost::math::constants::pi<double>())]
+					  | td.true_ [_val = val(1)]
+					  | td.false_ [_val = val(0)]
 					  | td.real [_val = _1]
 					  | td.integer [_val = _1]
 					  );

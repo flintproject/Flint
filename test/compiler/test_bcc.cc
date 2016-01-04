@@ -328,6 +328,16 @@ BOOST_AUTO_TEST_CASE(Pi) {
 	BOOST_CHECK(compiler::bcc::Bcc(db, &std::cout));
 }
 
+BOOST_AUTO_TEST_CASE(True) {
+	SetupConstant("true");
+	BOOST_CHECK(compiler::bcc::Bcc(db, &std::cout));
+}
+
+BOOST_AUTO_TEST_CASE(False) {
+	SetupConstant("false");
+	BOOST_CHECK(compiler::bcc::Bcc(db, &std::cout));
+}
+
 BOOST_AUTO_TEST_CASE(DuplicateLabels) {
 	Setup("72b52587-043b-4950-98bb-b29c97237140",
 		  "%boolin",

@@ -33,6 +33,7 @@ eq
 eulergamma
 exp
 exponentiale
+false
 floor
 geq
 gt
@@ -65,6 +66,7 @@ sinh
 tan
 tanh
 times
+true
 xor
 
 [1] http://www.w3.org/TR/MathML2/
