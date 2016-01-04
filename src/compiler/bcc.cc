@@ -233,6 +233,7 @@ struct Lexer : lex::lexer<TLexer> {
 		divide_ = "divide";
 		eq_ = "eq";
 		exp_ = "exp";
+		factorial_ = "factorial";
 		floor_ = "floor";
 		geq_ = "geq";
 		gt_ = "gt";
@@ -284,7 +285,7 @@ struct Lexer : lex::lexer<TLexer> {
 		this->self += arccsc_ | arccsch_ | arcsec_ | arcsech_;
 		this->self += arcsin_ | arcsinh_ | arctan_ | arctanh_;
 		this->self += ceiling_ | cos_ | cosh_ | cot_ | coth_;
-		this->self += csc_ | csch_ | divide_ | eq_ | exp_ | floor_;
+		this->self += csc_ | csch_ | divide_ | eq_ | exp_ | factorial_ | floor_;
 		this->self += geq_ | gt_ | leq_ | ln_ | log_ | log10_;
 		this->self += lt_ | max_ | min_ | minus_ | neq_ | plus_;
 		this->self += power_ | rem_ | root_ | sec_ | sech_ | sin_ | sinh_;
@@ -302,7 +303,7 @@ struct Lexer : lex::lexer<TLexer> {
 	lex::token_def<> arccsc_, arccsch_, arcsec_, arcsech_;
 	lex::token_def<> arcsin_, arcsinh_, arctan_, arctanh_;
 	lex::token_def<> ceiling_, cos_, cosh_, cot_, coth_;
-	lex::token_def<> csc_, csch_, divide_, eq_, exp_, floor_;
+	lex::token_def<> csc_, csch_, divide_, eq_, exp_, factorial_, floor_;
 	lex::token_def<> geq_, gt_, leq_, ln_, log_, log10_;
 	lex::token_def<> lt_, max_, min_, minus_, neq_, plus_;
 	lex::token_def<> power_, rem_, root_, sec_, sech_, sin_, sinh_;
@@ -562,6 +563,7 @@ struct Grammar : qi::grammar<TIterator, Body()> {
 			| td.csch_ [_val = val(bc::Call1::kCsch)]
 			| td.exp_ [_val = val(bc::Call1::kExp)]
 			| td.floor_ [_val = val(bc::Call1::kFloor)]
+			| td.factorial_ [_val = val(bc::Call1::kFactorial)]
 			| td.ln_ [_val = val(bc::Call1::kLn)]
 			| td.log10_ [_val = val(bc::Call1::kLog10)]
 			| td.minus_ [_val = val(bc::Call1::kMinus1)]

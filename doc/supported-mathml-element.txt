@@ -33,6 +33,7 @@ eq
 eulergamma
 exp
 exponentiale
+factorial
 false
 floor
 geq

@@ -15,6 +15,7 @@
 #include <unordered_set>
 #include <vector>
 
+#include <boost/math/special_functions/factorials.hpp>
 #include <boost/uuid/uuid.hpp>
 #include <boost/uuid/uuid_io.hpp>
 
@@ -117,6 +118,9 @@ void DoCall1(const bc::Call1 &c1, double *tmp)
 		break;
 	case bc::Call1::kExp:
 		tmp[a] = std::exp(tmp[a1]);
+		break;
+	case bc::Call1::kFactorial:
+		tmp[a] = boost::math::factorial<double>(static_cast<int>(tmp[a1]));
 		break;
 	case bc::Call1::kFloor:
 		tmp[a] = std::floor(tmp[a1]);

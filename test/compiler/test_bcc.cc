@@ -173,6 +173,11 @@ BOOST_AUTO_TEST_CASE(Exp) {
 	BOOST_CHECK(compiler::bcc::Bcc(db, &std::cout));
 }
 
+BOOST_AUTO_TEST_CASE(Factorial) {
+	SetupCall1("factorial");
+	BOOST_CHECK(compiler::bcc::Bcc(db, &std::cout));
+}
+
 BOOST_AUTO_TEST_CASE(Floor) {
 	SetupCall1("floor");
 	BOOST_CHECK(compiler::bcc::Bcc(db, &std::cout));

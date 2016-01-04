@@ -61,6 +61,7 @@ message Call1 {
     kCsc = 19;
     kCsch = 20;
     kExp = 21;
+    kFactorial = 33;
     kFloor = 22;
     kLn = 23;
     kLog10 = 32;

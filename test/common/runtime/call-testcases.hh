@@ -130,6 +130,13 @@ BOOST_AUTO_TEST_CASE(exp)
 	TESTCASE1(exp, 0, 1);
 }
 
+BOOST_AUTO_TEST_CASE(factorial)
+{
+	TESTCASE1(factorial, 1, 1);
+	TESTCASE1(factorial, 3, 6);
+	TESTCASE1(factorial, 10, 3628800);
+}
+
 BOOST_AUTO_TEST_CASE(floor)
 {
 	TESTCASE1(floor, 0, 0);
