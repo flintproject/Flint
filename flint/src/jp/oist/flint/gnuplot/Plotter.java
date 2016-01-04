@@ -114,7 +114,6 @@ public class Plotter implements IPlotter {
         gp.setPlotterPath(path);
         gp.setDataFilePath(csvPath);
         gp.setTitle(Utility.getFileName(modelPath));
-        gp.setPlotType(GnuPlotter.PlotType.TWO_DIM);
 
         gp.setTerminalType(GnuPlotter.TerminalType.valueOf(setting.getTerminalType()));
         gp.setOutputFile(controller.getOutputFilePath());

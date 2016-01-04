@@ -19,11 +19,6 @@ import java.util.Locale;
  */
 public class GnuPlotter extends BasePlotter {
 
-    /** The enum for the plot type of a graph. */
-    public static enum PlotType {
-
-        TWO_DIM, THREE_DIM
-    }
     /** The enum for the Terminal type of a graph. */
     public static enum TerminalType {
 
@@ -70,8 +65,6 @@ public class GnuPlotter extends BasePlotter {
     private boolean logScaleY = false;
     /** The display flag of logscale of an y2-axis. */
     private boolean logScaleY2 = false;
-    /** The plot type of a graph. */
-    private PlotType plotType;
     /** The terminal type of a graph. */
     private TerminalType terminalType;
     /** The separator classification of a data file. */
@@ -398,24 +391,6 @@ public class GnuPlotter extends BasePlotter {
     }
 
     /**
-     * The plot type of a graph is returned.
-     *
-     * @return PlotType
-     */
-    public PlotType getPlotType() {
-        return plotType;
-    }
-
-    /**
-     * The plot type of a graph is set.
-     *
-     * @param plotType
-     */
-    public void setPlotType(PlotType plotType) {
-        this.plotType = plotType;
-    }
-
-    /**
      * The Terminal type of a graph is returned.
      *
      * @return TerminalType
@@ -635,7 +610,6 @@ public class GnuPlotter extends BasePlotter {
             sb.append("]\n");
         }
 
-        if (plotType == PlotType.TWO_DIM) {
             if (getY2min() != null && getY2max() != null) {
                 sb.append("set y2range [");
                 sb.append(getY2min());
@@ -645,13 +619,8 @@ public class GnuPlotter extends BasePlotter {
                 sb.append("set y2tics autofreq\n");
                 sb.append("set ytics nomirror\n");
             }
-        }
 
-        if (plotType == PlotType.TWO_DIM) {
             sb.append("plot ");
-        } else {
-            sb.append("splot ");
-        }
 
         for (int i = 0; i < getDataSets().size(); i++) {
             if (getDataSets().get(i).getDoPlot()) {
