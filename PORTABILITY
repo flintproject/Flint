@@ -1,7 +1,7 @@
 We design Flint to be portable.
 
 
-== RHEL/CentOS 6.6
+== RHEL/CentOS 6.7
 
 The default g++ package is too old to build Flint.
 A workaround for the issue is using devtoolset-3's g++.
@@ -24,14 +24,14 @@ $ sudo apt-get install gcc g++ autoconf automake libtool openjdk-7-jdk \
     pkgconf zlib1g-dev
 
 
-== Fedora 21
+== Fedora 23
 
 Install necessary tools for building and installing Flint with:
 $ sudo yum install gcc gcc-c++ autoconf automake libtool java-1.7.0-openjdk \
     wget zlib-devel
 
 
-== Ubuntu 14.04.1 LTS (Trusty Tahr)
+== Ubuntu 14.04.3 LTS (Trusty Tahr)
 
 All you have to do for installing necessary tools is:
 $ sudo apt-get install g++ autoconf automake libtool openjdk-7-jdk
