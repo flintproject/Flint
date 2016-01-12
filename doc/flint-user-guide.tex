@@ -179,6 +179,10 @@ field; the given number is interpreted in terms of the selected time unit.
 Similarly to ``Simulation Length'', users can specify the time step at the
 ``Simulation Time Step'' field.
 
+\subsection{Starting from}
+Users can specify when (in the sense of simulation time) output starts from
+at this field. By default, simulation process produces output from time 0.
+
 \subsection{Data Sampling}
 This setting is for determining how often the result data are written in.
 Note that the sampling rate does not affect the calculation for simulation.
@@ -253,10 +257,18 @@ for them finishing.
 
 \subsection{Cancel jobs}
 There are two ways to cancel running jobs; one is pushing the cross mark on
-the control panel, which cancels all of related jobs. The other is pushing 
-the cross mark at the detail window, which cancels the corresponding job only.
+the control panel (see Fig.~\ref{fig:lr-progress}), which cancels all of related
+jobs. The other is pushing the cross mark at the detail window, which cancels the
+corresponding job only.
 \FigureOfImage{lr-progress}{The progress bar / cross mark / ``Detail'' button on
-the control panel.}
+ the control panel.}
+
+\subsection{Pause and resume jobs}
+As in Fig.~\ref{fig:control}, users can pause jobs at any time during simulation
+by using the menu ``Control''$\rightarrow$``Pause''. Resumeing paused jobs can
+be done with the menu ``Control''$\rightarrow$``Resume''.
+Note that these operation affects all of alive jobs simultaneously.
+\FigureOfImage{control}{The Control Menu.}
 
 \section{Visualizing simulation results}
 Flint has a feature to show a line graph for the result of a simulation on the
@@ -398,15 +410,9 @@ There are useful shortcut keys as follows:
   File $\rightarrow$ Cut  & {\tt Cmd}+X & {\tt Ctrl}+X \\
   Edit $\rightarrow$ Preference & {\tt Cmd}+, & {\tt Ctrl}+, \\
   Control $\rightarrow$ Run & {\tt Option}+R & {\tt Alt}+R \\
+  Control $\rightarrow$ Pause & {\tt Option}+P & {\tt Alt}+P \\
+  Control $\rightarrow$ Resume & {\tt Option}+S & {\tt Alt}+S \\
 \end{tabular}
-
-\subsection{At the plot window}
-\begin{tabular}{l||c|c}
-  Command & Shortcut keys on Mac OS X & Shortcut keys on Windows \\
-  \hline
-  Plot & {\tt Option}+P & {\tt Alt}+P \\
-\end{tabular}
-
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
