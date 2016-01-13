@@ -547,17 +547,25 @@ private:
 		xmlChar *s = xmlTextReaderReadString(text_reader_);
 		assert(s);
 
-		// validate value
-		int len = xmlStrlen(s);
-		for (int i=0;i<len;i++) {
-			if (!isprint(s[i])) {
-				cerr << "<simulation-time-span> contains invalid character: \"" << s << "\"" << endl;
-				xmlFree(s);
-				return -2;
-			}
+		xmlChar *sts_value;
+		if (!Trim(s, &sts_value)) {
+			xmlFree(s);
+			return -2;
 		}
-
-		nc->set_sts_value(s);
+		int len = xmlStrlen(sts_value);
+		if (len == 0) {
+			// generously ignore empty simulation-time-span
+			cerr << "empty body of <simulation-time-span>" << endl;
+			xmlFree(s);
+			return xmlTextReaderNext(text_reader_);
+		}
+		if (ContainNonGraphic(sts_value)) {
+			cerr << "<simulation-time-span> contains invalid character: \"" << sts_value << "\"" << endl;
+			xmlFree(s);
+			return -2;
+		}
+		nc->set_sts_value(xmlStrdup(sts_value));
+		xmlFree(s);
 		return xmlTextReaderNext(text_reader_);
 	}
 

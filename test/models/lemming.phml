@@ -11,13 +11,17 @@
 <is:last-modified>2014-10-24T01:48:18+09:00</is:last-modified>
 </is:date>
 <is:numerical-configuration>
-<is:simulation-time-span unit-id="14">40</is:simulation-time-span>
+<is:simulation-time-span unit-id="14">
+40
+</is:simulation-time-span>
 <is:algorithm>
 <is:random-generator type="built-in" name="c-rand"/>
 <is:integration name="euler"/>
 </is:algorithm>
 <is:time-discretization unit-id="14" evolution="true">
-<is:step>0.01</is:step>
+<is:step>
+0.01
+</is:step>
 </is:time-discretization>
 </is:numerical-configuration>
 <is:description>From "Solving Delay Differential Equations with dde23" by L. F. Shampine and S. Thompson.</is:description>

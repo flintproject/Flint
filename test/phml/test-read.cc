@@ -275,6 +275,11 @@ BOOST_AUTO_TEST_CASE(Izhikevich_2003_model)
 	CheckTrees(trees);
 }
 
+BOOST_AUTO_TEST_CASE(lemming)
+{
+	ReadAndCheck(TEST_MODELS("lemming.phml"));
+}
+
 BOOST_AUTO_TEST_CASE(LR_pulse_189_164)
 {
 	ReadAndCheck(TEST_MODELS("LR-pulse-189-164.isml"));
