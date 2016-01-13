@@ -8,37 +8,19 @@
 #define BOOST_TEST_MODULE test_load
 #include "test.hh"
 
-struct F : public test::MemoryFixture {
-
-	F()
-		: path_(boost::filesystem::current_path())
-	{}
-
-	~F() {
-		boost::filesystem::current_path(path_);
-	}
-
-	boost::filesystem::path path_;
-};
-
-BOOST_FIXTURE_TEST_SUITE(test_load, F)
+BOOST_FIXTURE_TEST_SUITE(test_load, test::TemporaryWorkingDirectory)
 
 BOOST_AUTO_TEST_CASE(empty) {
-	boost::filesystem::path p(path_);
-	p /= "empty";
-	if (boost::filesystem::exists(p))
-		boost::filesystem::remove_all(p);
-	BOOST_CHECK(boost::filesystem::create_directory(p));
-	boost::filesystem::current_path(p);
+	PushWorkingDirectory("empty");
 	test::StderrCapture capture;
 	BOOST_CHECK(!load::Load(TEST_MODELS("empty.phml"), load::kExec));
-	boost::filesystem::remove_all(p);
 	BOOST_CHECK_EQUAL(capture.Get(), "no variables found, possibly due to empty model or no instances\n");
+	PopWorkingDirectory();
 }
 
 BOOST_AUTO_TEST_CASE(exponential) {
-	boost::filesystem::path p0(path_);
-	boost::filesystem::path p1(path_);
+	boost::filesystem::path p0(original_path_);
+	boost::filesystem::path p1(original_path_);
 	p0 /= "exponential";
 	p1 /= "exponential_with_seed";
 	if (boost::filesystem::exists(p0))
@@ -61,8 +43,8 @@ BOOST_AUTO_TEST_CASE(exponential) {
 }
 
 BOOST_AUTO_TEST_CASE(fsk) {
-	boost::filesystem::path p0(path_);
-	boost::filesystem::path p1(path_);
+	boost::filesystem::path p0(original_path_);
+	boost::filesystem::path p1(original_path_);
 	p0 /= "fsk";
 	p1 /= "fsk-plus-no-instance";
 	if (boost::filesystem::exists(p0))
@@ -85,16 +67,11 @@ BOOST_AUTO_TEST_CASE(fsk) {
 }
 
 BOOST_AUTO_TEST_CASE(x_static_only) {
-	boost::filesystem::path p(path_);
-	p /= "x-static-only";
-	if (boost::filesystem::exists(p))
-		boost::filesystem::remove_all(p);
-	BOOST_CHECK(boost::filesystem::create_directory(p));
-	boost::filesystem::current_path(p);
+	PushWorkingDirectory("x-static-only");
 	test::StderrCapture capture;
 	BOOST_CHECK(!load::Load(TEST_MODELS("x-static-only.phml"), load::kExec));
-	boost::filesystem::remove_all(p);
 	BOOST_CHECK_EQUAL(capture.Get(), "no dependent variables found\n");
+	PopWorkingDirectory();
 }
 
 BOOST_AUTO_TEST_SUITE_END()

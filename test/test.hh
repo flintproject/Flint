@@ -120,6 +120,35 @@ private:
 	std::streambuf *orig_;
 };
 
+struct TemporaryWorkingDirectory {
+
+	TemporaryWorkingDirectory()
+		: original_path_(boost::filesystem::current_path())
+	{}
+
+	~TemporaryWorkingDirectory() {
+		boost::filesystem::current_path(original_path_);
+	}
+
+	void PushWorkingDirectory(const char *name) {
+		boost::filesystem::path p(original_path_);
+		p /= name;
+		if (boost::filesystem::exists(p))
+			boost::filesystem::remove_all(p);
+		BOOST_CHECK(boost::filesystem::create_directory(p));
+		boost::filesystem::current_path(p);
+		current_path_ = p;
+	}
+
+	void PopWorkingDirectory() {
+		boost::filesystem::current_path(original_path_);
+		boost::filesystem::remove_all(current_path_);
+	}
+
+	boost::filesystem::path original_path_;
+	boost::filesystem::path current_path_;
+};
+
 inline void CheckSame(boost::filesystem::path p0,
 					  boost::filesystem::path p1)
 {
