@@ -25,6 +25,7 @@
 #include "lo/layout.h"
 #include "numeric/prng.h"
 #include "runtime/flow.hh"
+#include "runtime/section-context.h"
 #include "runtime/timeseries.h"
 
 #include "calculation-dependency.hh"
@@ -328,7 +329,6 @@ public:
 				sit = shv_->erase(sit);
 				continue;
 			}
-			sit++;
 			BhVector::iterator bend = bit + nob;
 			while (bit != bend) {
 				const bc::BlockHeader &bh = *bit++;
@@ -341,6 +341,7 @@ public:
 							bc::Lb *lb = code.mutable_lb();
 							int so;
 							if (!locater->Find(lb->v(), &so)) {
+								runtime::ReportSectionContext(*sit);
 								return false;
 							}
 							lb->set_so(so);
@@ -352,6 +353,7 @@ public:
 							bc::Load *load = code.mutable_load();
 							int so, lo;
 							if (!locater->Find(load->v(), &so, &lo)) {
+								runtime::ReportSectionContext(*sit);
 								return false;
 							}
 							load->set_so(so);
@@ -364,6 +366,7 @@ public:
 							bc::Store *store = code.mutable_store();
 							int so, lo;
 							if (!locater->Find(store->v(), &so, &lo)) {
+								runtime::ReportSectionContext(*sit);
 								return false;
 							}
 							store->set_so(so);
@@ -377,6 +380,7 @@ public:
 					}
 				}
 			}
+			sit++;
 		}
 		assert(bit == bhv_->end());
 		assert(cit == cv_->end());

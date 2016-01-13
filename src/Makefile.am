@@ -154,6 +154,7 @@ libflintxx_la_SOURCES = \
     runtime/init.cc \
     runtime/flow.cc \
     runtime/reduction-unit.cc \
+    runtime/section-context.cc \
     sbml/load.cc \
     sbml/parser.cc \
     sbml/read.cc \
