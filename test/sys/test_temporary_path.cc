@@ -10,9 +10,9 @@
 
 struct F {
 	F() : temporary_path_(new TemporaryPath) {}
-	~F() {delete temporary_path_;}
+	~F() {}
 
-	TemporaryPath *temporary_path_;
+	std::unique_ptr<TemporaryPath> temporary_path_;
 };
 
 BOOST_FIXTURE_TEST_SUITE(test_temporary_path, F)
