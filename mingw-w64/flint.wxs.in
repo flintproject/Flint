@@ -76,6 +76,9 @@
           <Component Id='flint_exec' Guid='86688738-5d69-11e3-9595-f317fcf3e8c5'>
             <File Id='flint_exec.exe' Name='flint-exec.exe' DiskId='1' Source='flint-exec.exe' />
           </Component>
+          <Component Id='flint_lodbg' Guid='a4b2f908-bd93-11e5-b1e0-0f2dd21ca26a'>
+            <File Id='flint_lodbg.exe' Name='flint-lodbg.exe' DiskId='1' Source='flint-lodbg.exe' />
+          </Component>
           <Component Id='flint_open' Guid='33c60296-e7f0-11e3-9c8e-efa5bd532490'>
             <File Id='flint_open.exe' Name='flint-open.exe' DiskId='1' Source='flint-open.exe' />
           </Component>
@@ -91,8 +94,20 @@
           <Component Id='isd2csv' Guid='b87afd3a-a54d-11e1-bac1-b759ca208b40'>
             <File Id='isd2csv.exe' Name='isd2csv.exe' DiskId='1' Source='isd2csv.exe' />
           </Component>
+          <Component Id='isdcut' Guid='618f435c-bd93-11e5-b3d0-43d21c517313'>
+            <File Id='isdcut.exe' Name='isdcut.exe' DiskId='1' Source='isdcut.exe' />
+          </Component>
           <Component Id='isddiff' Guid='deae862e-6013-11e4-8154-07aaccd8efa4'>
             <File Id='isddiff.exe' Name='isddiff.exe' DiskId='1' Source='isddiff.exe' />
+          </Component>
+          <Component Id='isdhead' Guid='6f9b2830-bd93-11e5-b075-7f0ee60abc93'>
+            <File Id='isdhead.exe' Name='isdhead.exe' DiskId='1' Source='isdhead.exe' />
+          </Component>
+          <Component Id='isdls' Guid='8e0f3b62-bd93-11e5-9295-bb028661720b'>
+            <File Id='isdls.exe' Name='isdls.exe' DiskId='1' Source='isdls.exe' />
+          </Component>
+          <Component Id='isdmerge' Guid='98ce50f6-bd93-11e5-b382-97170bc292fa'>
+            <File Id='isdmerge.exe' Name='isdmerge.exe' DiskId='1' Source='isdmerge.exe' />
           </Component>
           <Component Id='isdplot' Guid='0e95f618-aef2-11e1-9c41-8b88a5bed1b9'>
             <File Id='isdplot.exe' Name='isdplot.exe' DiskId='1' Source='isdplot.exe' />
@@ -216,12 +231,17 @@
       <ComponentRef Id='Environment' />
       <ComponentRef Id='csv2isd' />
       <ComponentRef Id='flint_exec' />
+      <ComponentRef Id='flint_lodbg' />
       <ComponentRef Id='flint_open' />
       <ComponentRef Id='flint_pause' />
       <ComponentRef Id='flint_resume' />
       <ComponentRef Id='flint_run' />
       <ComponentRef Id='isd2csv' />
+      <ComponentRef Id='isdcut' />
       <ComponentRef Id='isddiff' />
+      <ComponentRef Id='isdhead' />
+      <ComponentRef Id='isdls' />
+      <ComponentRef Id='isdmerge' />
       <ComponentRef Id='isdplot' />
       <ComponentRef Id='isdsort' />
       <ComponentRef Id='isdstrip' />

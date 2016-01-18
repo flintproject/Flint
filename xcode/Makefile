@@ -42,12 +42,17 @@ FLINT_DYLIBS := \
 PROGRAMS := \
     csv2isd \
     flint-exec \
+    flint-lodbg \
     flint-open \
     flint-pause \
     flint-resume \
     flint-run \
     isd2csv \
+    isdcut \
     isddiff \
+    isdhead \
+    isdls \
+    isdmerge \
     isdplot \
     isdsort \
     isdstrip \
