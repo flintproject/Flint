@@ -1988,7 +1988,7 @@ private:
 		int i = ReadAttributeValue(BAD_CAST "module-id", &module_id);
 		if (i <= 0) {
 			cerr << "missing module-id of <target-module>: " << instance_->module_id() << endl;
-			return i;
+			return -2;
 		}
 		std::unique_ptr<TargetModule> tm(new TargetModule(module_id));
 		if (!dd_->SaveTargetModule(instance_.get(), tm.get())) return -2;
