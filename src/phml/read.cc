@@ -387,7 +387,7 @@ private:
 					td->set_unit_id(unit_id);
 				} else {
 					// generously ignore invalid unit-id
-					cerr << "invalid unit-id of <time-discretization>: "
+					cerr << "warning: invalid unit-id of <time-discretization>: "
 						 << unit_id << endl;
 				}
 			}
@@ -420,7 +420,7 @@ private:
 		xmlChar *s = xmlTextReaderReadString(text_reader_);
 		if (!s) {
 			// generously ignore empty step
-			cerr << "missing body of <step>" << endl;
+			cerr << "warning: missing body of <step>" << endl;
 			return xmlTextReaderNext(text_reader_);
 		}
 		xmlChar *step;
@@ -431,7 +431,7 @@ private:
 		int len = xmlStrlen(step);
 		if (len == 0) {
 			// generously ignore empty step
-			cerr << "empty body of <step>" << endl;
+			cerr << "warning: empty body of <step>" << endl;
 			xmlFree(s);
 			return xmlTextReaderNext(text_reader_);
 		}
@@ -555,7 +555,7 @@ private:
 		int len = xmlStrlen(sts_value);
 		if (len == 0) {
 			// generously ignore empty simulation-time-span
-			cerr << "empty body of <simulation-time-span>" << endl;
+			cerr << "warning: empty body of <simulation-time-span>" << endl;
 			xmlFree(s);
 			return xmlTextReaderNext(text_reader_);
 		}
@@ -1297,7 +1297,7 @@ private:
 			return -2;
 		}
 		if (xmlStrlen(max_delay) == 0) {
-			cerr << "empty <max-delay> of <physical-quantity> in module "
+			cerr << "warning: empty <max-delay> of <physical-quantity> in module "
 				 << module_->module_id()
 				 << endl;
 			xmlFree(s);
@@ -1526,7 +1526,7 @@ private:
 				} else if (xmlStrlen(value) == 0) {
 					xmlFree(value);
 					/* ignore this with warning */
-					cerr << "empty value of order of <extra-implementation> of "
+					cerr << "warning: empty value of order of <extra-implementation> of "
 						 << pq_->name()
 						 << " in "
 						 << module_->module_id()
