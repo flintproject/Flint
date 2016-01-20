@@ -1,0 +1,15 @@
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; flint-ark -- run a simulation via SUNDIALS's ARKode
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+This program runs a simulation with a given model.
+
+= Synopsis
+
+flint-ark
+flint-ark -h
+
+
+= Description
+
+Note that flint-cli can produces input for flint-ark.
