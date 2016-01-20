@@ -1,7 +1,7 @@
 #                                               -*- Autoconf -*-
 # Process this file with autoconf to produce a configure script.
 
-AC_PREREQ([2.61])
+AC_PREREQ([2.63])
 AC_INIT([Flint], [1.4], [flint@oist.jp])
 AC_CONFIG_SRCDIR([src/isd2csv-main.cc])
 AC_CONFIG_AUX_DIR([build-aux])
