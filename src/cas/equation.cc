@@ -36,7 +36,7 @@ bool IsConditional(const Compound &x)
 
 bool IsConditional(const Expr &x, Compound &y)
 {
-	if (x.which() != static_cast<int>(ExprType::kCompound)) return false;
+	if (x.which() != kExprIsCompound) return false;
 	y = boost::get<Compound>(x);
 	return IsConditional(y);
 }
@@ -48,19 +48,19 @@ bool IsEquation(const Compound &x)
 
 bool IsEquation(const Expr &x, Compound &y)
 {
-	if (x.which() != static_cast<int>(ExprType::kCompound)) return false;
+	if (x.which() != kExprIsCompound) return false;
 	y = boost::get<Compound>(x);
 	return IsEquation(y);
 }
 
 bool IsBoundVariable(const Expr &expr)
 {
-	if (expr.which() == static_cast<int>(ExprType::kCompound)) {
+	if (expr.which() == kExprIsCompound) {
 		const Compound &c = boost::get<Compound>(expr);
 		if (c.keyword == "bvar") {
 			if (c.children.size() == 1) {
 				const Expr &e0 = c.children[0];
-				if (e0.which() == static_cast<int>(ExprType::kString)) {
+				if (e0.which() == kExprIsString) {
 					const std::string &s0 = boost::get<std::string>(e0);
 					if (s0 == "%time")
 						return true;
@@ -85,7 +85,7 @@ bool TransformConditional(const Compound &c, Expr &lhs, Compound &rhs)
 	rhs.children.clear();
 
 	for (const auto &child : c.children) {
-		assert(child.which() == static_cast<int>(ExprType::kCompound));
+		assert(child.which() == kExprIsCompound);
 		const Compound &cs = boost::get<Compound>(child);
 		assert(cs.keyword == "case");
 		Compound r;
@@ -324,10 +324,10 @@ private:
 			cerr << "row mismatch between RHS and LHS" << endl;
 			return 1;
 		}
-		if (lhs.which() == static_cast<int>(ExprType::kCompound)) {
+		if (lhs.which() == kExprIsCompound) {
 			const Compound &c = boost::get<Compound>(lhs);
 			return AcceptCompound(uuid, c, lhs_col, lhs_row, rhs) ? 0 : 1;
-		} else if (lhs.which() == static_cast<int>(ExprType::kString)) {
+		} else if (lhs.which() == kExprIsString) {
 			output_->Add(uuid, Def(boost::get<std::string>(lhs), lhs_col, lhs_row, rhs));
 		} else {
 			cerr << "unsupported form of equation" << endl; // TODO
@@ -345,7 +345,7 @@ private:
 			if (!IsBoundVariable(c.children[0]))
 				return false;
 			const Expr &e1 = c.children[1];
-			if (e1.which() == static_cast<int>(ExprType::kString)) {
+			if (e1.which() == kExprIsString) {
 				output_->Add(uuid, Ode(boost::get<std::string>(e1),
 									   col, row, rhs, mass));
 				return true;
@@ -353,7 +353,7 @@ private:
 		} else if (c.keyword == "times") {
 			if (c.children.size() == 2) {
 				const Expr &e1 = c.children[1];
-				if (e1.which() == static_cast<int>(ExprType::kCompound))
+				if (e1.which() == kExprIsCompound)
 					return AcceptCompound(uuid, boost::get<Compound>(e1),
 										  col, row, rhs, c.children[0]);
 			}

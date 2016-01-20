@@ -531,7 +531,7 @@ private:
 
 	bool Matrixrow(Expr *expr, int *col)
 	{
-		if (expr->which() != static_cast<int>(ExprType::kCompound)) {
+		if (expr->which() != kExprIsCompound) {
 			cerr << "expected <matrixrow>, but got something else" << endl; // TODO
 			return false;
 		}
@@ -633,7 +633,7 @@ bool Context::Analyse(Expr *expr, int *col, int *row)
 {
 	assert(expr);
 	int type = expr->which();
-	if (type == static_cast<int>(ExprType::kCompound)) {
+	if (type == kExprIsCompound) {
 		Compound &c = boost::get<Compound>(*expr);
 		for (const auto &kf : kKeyFun) { // TODO: faster search e.g. via bsearch?
 			if (c.keyword == kf.keyword) {
@@ -646,7 +646,7 @@ bool Context::Analyse(Expr *expr, int *col, int *row)
 		}
 		cerr << "unsupported function: " << c.keyword << endl;
 		return false;
-	} else if (type == static_cast<int>(ExprType::kString)) {
+	} else if (type == kExprIsString) {
 		std::string name = boost::get<std::string>(*expr);
 		assert(!name.empty());
 		if (name[0] == '%') {
@@ -669,10 +669,10 @@ bool Context::Analyse(Expr *expr, int *col, int *row)
 		} else { // TODO
 			assert(false);
 		}
-	} else if (type == static_cast<int>(ExprType::kInteger)) {
+	} else if (type == kExprIsInteger) {
 		*col = *row = 1;
 	} else {
-		assert(type == static_cast<int>(ExprType::kReal));
+		assert(type == kExprIsReal);
 		*col = *row = 1;
 	}
 	return true;

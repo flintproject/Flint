@@ -20,11 +20,11 @@ namespace cas {
 
 struct Compound;
 
-enum class ExprType {
-	kCompound,
-	kString,
-	kInteger,
-	kReal
+enum {
+	kExprIsCompound,
+	kExprIsString,
+	kExprIsInteger,
+	kExprIsReal
 };
 
 typedef boost::variant<boost::recursive_wrapper<Compound>,

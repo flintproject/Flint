@@ -157,11 +157,11 @@ bool System::FindMass(const boost::uuids::uuid &uuid, const std::string &name,
 		assert(ode.name().at(0) == '%');
 		if (ode.name().substr(1) == name) {
 			int w = ode.mass().which();
-			if (w == static_cast<int>(ExprType::kInteger)) {
+			if (w == kExprIsInteger) {
 				assert(boost::get<int>(ode.mass()) == 1);
 				*found = "";
 				return true;
-			} else if (w == static_cast<int>(ExprType::kString)) {
+			} else if (w == kExprIsString) {
 				*found = boost::get<std::string>(ode.mass());
 				return true;
 			}
