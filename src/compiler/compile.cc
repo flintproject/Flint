@@ -38,18 +38,7 @@ bool Compile(sqlite3 *db, const char *table, Method method, const char *output)
 			return false;
 		break;
 	}
-	if (!compiler::sort::Sort(tmp.db()))
-		return false;
-	if (!compiler::tac::Tac(tmp.db()))
-		return false;
-	std::ofstream ofs(output, std::ios::binary);
-	if (!ofs) {
-		cerr << "failed to open " << output << endl;
-		return false;
-	}
-	bool r = compiler::bcc::Bcc(tmp.db(), &ofs);
-	ofs.close();
-	return r;
+	return GenerateBytecode(tmp.db(), output);
 }
 
 bool GenerateBytecode(sqlite3 *db, const char *output)
