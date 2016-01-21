@@ -19,7 +19,7 @@ namespace compiler {
 
 bool Compile(sqlite3 *db, const char *table, Method method, const char *output)
 {
-	db::Driver tmp("");
+	db::Driver tmp(":memory:");
 	switch (method) {
 	case Method::kAssign:
 		if (!method::Assign(db, table, tmp.db()))
