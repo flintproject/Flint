@@ -28,24 +28,11 @@ public:
 	Driver(const Driver &) = delete;
 	Driver &operator=(const Driver &) = delete;
 
-	Driver(sqlite3 *db, ::phml::NumericalConfiguration *nc)
+	explicit Driver(::phml::NumericalConfiguration *nc)
 		: nc_(nc)
-		, nc_stmt_(NULL)
-		, td_stmt_(NULL)
+		, nc_stmt_(nullptr)
+		, td_stmt_(nullptr)
 	{
-		int e;
-		e = sqlite3_prepare_v2(db, "SELECT * FROM ncs",
-							   -1, &nc_stmt_, NULL);
-		if (e != SQLITE_OK) {
-			cerr << "failed to prepare statement: " << e << endl;
-			exit(EXIT_FAILURE);
-		}
-		e = sqlite3_prepare_v2(db, "SELECT unit_id, step FROM tds WHERE module_id IS NULL",
-							   -1, &td_stmt_, NULL);
-		if (e != SQLITE_OK) {
-			cerr << "failed to prepare statement: " << e << endl;
-			exit(EXIT_FAILURE);
-		}
 	}
 
 	~Driver() {
@@ -53,7 +40,20 @@ public:
 		sqlite3_finalize(td_stmt_);
 	}
 
-	bool Drive() {
+	bool Drive(sqlite3 *db) {
+		int e;
+		e = sqlite3_prepare_v2(db, "SELECT * FROM ncs",
+							   -1, &nc_stmt_, NULL);
+		if (e != SQLITE_OK) {
+			cerr << "failed to prepare statement: " << e << endl;
+			return false;
+		}
+		e = sqlite3_prepare_v2(db, "SELECT unit_id, step FROM tds WHERE module_id IS NULL",
+							   -1, &td_stmt_, NULL);
+		if (e != SQLITE_OK) {
+			cerr << "failed to prepare statement: " << e << endl;
+			return false;
+		}
 		return SetPartOfNumericalConfiguration() && SetTimeDiscretization();
 	}
 
@@ -145,8 +145,8 @@ bool Nc(sqlite3 *db, const char *output, int *seed)
 {
 	std::unique_ptr<::phml::NumericalConfiguration> nc(new ::phml::NumericalConfiguration);
 	{
-		std::unique_ptr<Driver> driver(new Driver(db, nc.get()));
-		if (!driver->Drive())
+		std::unique_ptr<Driver> driver(new Driver(nc.get()));
+		if (!driver->Drive(db))
 			return false;
 	}
 	{
