@@ -84,176 +84,32 @@ bool GetAbsolutePathFromReference(const TElement *element,
 
 DatabaseDriver::DatabaseDriver(sqlite3 *db)
 	: db_(db)
+	, nc_stmt_(nullptr)
+	, td_stmt_(nullptr)
+	, unit_stmt_(nullptr)
+	, element_stmt_(nullptr)
+	, module_stmt_(nullptr)
+	, pq_stmt_(nullptr)
+	, iv_stmt_(nullptr)
+	, impl_stmt_(nullptr)
+	, event_condition_stmt_(nullptr)
+	, node_stmt_(nullptr)
+	, arc_stmt_(nullptr)
+	, refport_stmt_(nullptr)
+	, refts_stmt_(nullptr)
+	, extra_stmt_(nullptr)
+	, edge_stmt_(nullptr)
+	, bridge_stmt_(nullptr)
+	, import_stmt_(nullptr)
+	, instance_stmt_(nullptr)
+	, tm_stmt_(nullptr)
+	, tpq_stmt_(nullptr)
+	, template_stmt_(nullptr)
+	, port_stmt_(nullptr)
+	, timeseries_stmt_(nullptr)
 {
-	int e;
-
-	// prepare statements
-	e = sqlite3_prepare_v2(db, "INSERT INTO ncs VALUES (?, ?, ?, ?, ?)",
-						   -1, &nc_stmt_, NULL);
-	if (e != SQLITE_OK) {
-		cerr << "failed to prepare statement: " << e << endl;
-		exit(EXIT_FAILURE);
-	}
-
-	e = sqlite3_prepare_v2(db, "INSERT INTO tds VALUES (?, ?, ?)",
-						   -1, &td_stmt_, NULL);
-	if (e != SQLITE_OK) {
-		cerr << "failed to prepare statement: " << e << endl;
-		exit(EXIT_FAILURE);
-	}
-
-	e = sqlite3_prepare_v2(db, "INSERT INTO units VALUES (?, ?)",
-						   -1, &unit_stmt_, NULL);
-	if (e != SQLITE_OK) {
-		cerr << "failed to prepare statement: " << e << endl;
-		exit(EXIT_FAILURE);
-	}
-
-	e = sqlite3_prepare_v2(db, "INSERT INTO elements VALUES (?, ?, ?, ?, ?, ?)",
-						   -1, &element_stmt_, NULL);
-	if (e != SQLITE_OK) {
-		cerr << "failed to prepare statement: " << e << endl;
-		exit(EXIT_FAILURE);
-	}
-
-	e = sqlite3_prepare_v2(db, "INSERT INTO modules VALUES (?, ?, ?, ?, ?)",
-						   -1, &module_stmt_, NULL);
-	if (e != SQLITE_OK) {
-		cerr << "failed to prepare statement: " << e << endl;
-		exit(EXIT_FAILURE);
-	}
-
-	e = sqlite3_prepare_v2(db, "INSERT INTO pqs (module_rowid, type, pq_id) VALUES (?, ?, ?)",
-						   -1, &pq_stmt_, NULL);
-	if (e != SQLITE_OK) {
-		cerr << "failed to prepare statement: " << e << endl;
-		exit(EXIT_FAILURE);
-	}
-
-	e = sqlite3_prepare_v2(db, "INSERT INTO ivs VALUES (?, ?)",
-						   -1, &iv_stmt_, NULL);
-	if (e != SQLITE_OK) {
-		cerr << "failed to prepare statement: " << e << endl;
-		exit(EXIT_FAILURE);
-	}
-
-	e = sqlite3_prepare_v2(db, "INSERT INTO impls VALUES (?, ?)",
-						   -1, &impl_stmt_, NULL);
-	if (e != SQLITE_OK) {
-		cerr << "failed to prepare statement: " << e << endl;
-		exit(EXIT_FAILURE);
-	}
-
-	e = sqlite3_prepare_v2(db, "INSERT INTO ecs VALUES (?, ?)",
-						   -1, &event_condition_stmt_, NULL);
-	if (e != SQLITE_OK) {
-		cerr << "failed to prepare statement: " << e << endl;
-		exit(EXIT_FAILURE);
-	}
-
-	e = sqlite3_prepare_v2(db, "INSERT INTO nodes VALUES (?, ?, ?)",
-						   -1, &node_stmt_, NULL);
-	if (e != SQLITE_OK) {
-		cerr << "failed to prepare statement: " << e << endl;
-		exit(EXIT_FAILURE);
-	}
-
-	e = sqlite3_prepare_v2(db, "INSERT INTO arcs VALUES (?, ?, ?, ?, ?)",
-						   -1, &arc_stmt_, NULL);
-	if (e != SQLITE_OK) {
-		cerr << "failed to prepare statement: " << e << endl;
-		exit(EXIT_FAILURE);
-	}
-
-	e = sqlite3_prepare_v2(db, "INSERT INTO refports VALUES (?, ?, ?)",
-						   -1, &refport_stmt_, NULL);
-	if (e != SQLITE_OK) {
-		cerr << "failed to prepare statement: " << e << endl;
-		exit(EXIT_FAILURE);
-	}
-
-	e = sqlite3_prepare_v2(db, "INSERT INTO refts VALUES (?, ?, ?)",
-						   -1, &refts_stmt_, NULL);
-	if (e != SQLITE_OK) {
-		cerr << "failed to prepare statement: " << e << endl;
-		exit(EXIT_FAILURE);
-	}
-
-	e = sqlite3_prepare_v2(db, "INSERT INTO extras VALUES (?, ?, ?)",
-						   -1, &extra_stmt_, NULL);
-	if (e != SQLITE_OK) {
-		cerr << "failed to prepare statement: " << e << endl;
-		exit(EXIT_FAILURE);
-	}
-
-	e = sqlite3_prepare_v2(db, "INSERT INTO edges VALUES (?, ?, ?, ?)",
-						   -1, &edge_stmt_, NULL);
-	if (e != SQLITE_OK) {
-		cerr << "failed to prepare statement: " << e << endl;
-		exit(EXIT_FAILURE);
-	}
-
-	e = sqlite3_prepare_v2(db, "INSERT INTO bridges VALUES (?, ?, ?, ?)",
-						   -1, &bridge_stmt_, NULL);
-	if (e != SQLITE_OK) {
-		cerr << "failed to prepare statement: " << e << endl;
-		exit(EXIT_FAILURE);
-	}
-
-	e = sqlite3_prepare_v2(db, "INSERT INTO imports VALUES (?, ?, ?)",
-						   -1, &import_stmt_, NULL);
-	if (e != SQLITE_OK) {
-		cerr << "failed to prepare statement: " << e << endl;
-		exit(EXIT_FAILURE);
-	}
-
-	e = sqlite3_prepare_v2(db, "INSERT INTO instances VALUES (?, ?, ?)",
-						   -1, &instance_stmt_, NULL);
-	if (e != SQLITE_OK) {
-		cerr << "failed to prepare statement: " << e << endl;
-		exit(EXIT_FAILURE);
-	}
-
-	e = sqlite3_prepare_v2(db, "INSERT INTO tms VALUES (?, ?)",
-						   -1, &tm_stmt_, NULL);
-	if (e != SQLITE_OK) {
-		cerr << "failed to prepare statement: " << e << endl;
-		exit(EXIT_FAILURE);
-	}
-
-	e = sqlite3_prepare_v2(db, "INSERT INTO tpqs VALUES (?, ?, ?)",
-						   -1, &tpq_stmt_, NULL);
-	if (e != SQLITE_OK) {
-		cerr << "failed to prepare statement: " << e << endl;
-		exit(EXIT_FAILURE);
-	}
-
-	e = sqlite3_prepare_v2(db, "INSERT INTO templates VALUES (?, ?)",
-						   -1, &template_stmt_, NULL);
-	if (e != SQLITE_OK) {
-		cerr << "failed to prepare statement: " << e << endl;
-		exit(EXIT_FAILURE);
-	}
-
-	e = sqlite3_prepare_v2(db, "INSERT INTO ports VALUES (?, ?, ?, ?, ?)",
-						   -1, &port_stmt_, NULL);
-	if (e != SQLITE_OK) {
-		cerr << "failed to prepare statement: " << e << endl;
-		exit(EXIT_FAILURE);
-	}
-
-	e = sqlite3_prepare_v2(db, "INSERT INTO timeseries VALUES (?, ?, ?, ?)",
-						   -1, &timeseries_stmt_, NULL);
-	if (e != SQLITE_OK) {
-		cerr << "failed to prepare statement: " << e << endl;
-		exit(EXIT_FAILURE);
-	}
-
-	e = sqlite3_prepare_v2(db, "UPDATE pqs SET unit_id = ?, name = ?, ncols = ?, nrows = ?, max_delay = ? WHERE rowid = ?",
-						   -1, &update_stmt_[kPq], NULL);
-	if (e != SQLITE_OK) {
-		cerr << "failed to prepare statement: " << e << endl;
-		exit(EXIT_FAILURE);
+	for (int i=0;i<kNumOfUpdateStatements;i++) {
+		update_stmt_[i] = nullptr;
 	}
 }
 
@@ -283,6 +139,181 @@ DatabaseDriver::~DatabaseDriver()
 	sqlite3_finalize(port_stmt_);
 	sqlite3_finalize(timeseries_stmt_);
 	sqlite3_finalize(update_stmt_[kPq]);
+}
+
+bool DatabaseDriver::Initialize()
+{
+	int e;
+
+	// prepare statements
+	e = sqlite3_prepare_v2(db_, "INSERT INTO ncs VALUES (?, ?, ?, ?, ?)",
+						   -1, &nc_stmt_, NULL);
+	if (e != SQLITE_OK) {
+		cerr << "failed to prepare statement: " << e << endl;
+		return false;
+	}
+
+	e = sqlite3_prepare_v2(db_, "INSERT INTO tds VALUES (?, ?, ?)",
+						   -1, &td_stmt_, NULL);
+	if (e != SQLITE_OK) {
+		cerr << "failed to prepare statement: " << e << endl;
+		return false;
+	}
+
+	e = sqlite3_prepare_v2(db_, "INSERT INTO units VALUES (?, ?)",
+						   -1, &unit_stmt_, NULL);
+	if (e != SQLITE_OK) {
+		cerr << "failed to prepare statement: " << e << endl;
+		return false;
+	}
+
+	e = sqlite3_prepare_v2(db_, "INSERT INTO elements VALUES (?, ?, ?, ?, ?, ?)",
+						   -1, &element_stmt_, NULL);
+	if (e != SQLITE_OK) {
+		cerr << "failed to prepare statement: " << e << endl;
+		return false;
+	}
+
+	e = sqlite3_prepare_v2(db_, "INSERT INTO modules VALUES (?, ?, ?, ?, ?)",
+						   -1, &module_stmt_, NULL);
+	if (e != SQLITE_OK) {
+		cerr << "failed to prepare statement: " << e << endl;
+		return false;
+	}
+
+	e = sqlite3_prepare_v2(db_, "INSERT INTO pqs (module_rowid, type, pq_id) VALUES (?, ?, ?)",
+						   -1, &pq_stmt_, NULL);
+	if (e != SQLITE_OK) {
+		cerr << "failed to prepare statement: " << e << endl;
+		return false;
+	}
+
+	e = sqlite3_prepare_v2(db_, "INSERT INTO ivs VALUES (?, ?)",
+						   -1, &iv_stmt_, NULL);
+	if (e != SQLITE_OK) {
+		cerr << "failed to prepare statement: " << e << endl;
+		return false;
+	}
+
+	e = sqlite3_prepare_v2(db_, "INSERT INTO impls VALUES (?, ?)",
+						   -1, &impl_stmt_, NULL);
+	if (e != SQLITE_OK) {
+		cerr << "failed to prepare statement: " << e << endl;
+		return false;
+	}
+
+	e = sqlite3_prepare_v2(db_, "INSERT INTO ecs VALUES (?, ?)",
+						   -1, &event_condition_stmt_, NULL);
+	if (e != SQLITE_OK) {
+		cerr << "failed to prepare statement: " << e << endl;
+		return false;
+	}
+
+	e = sqlite3_prepare_v2(db_, "INSERT INTO nodes VALUES (?, ?, ?)",
+						   -1, &node_stmt_, NULL);
+	if (e != SQLITE_OK) {
+		cerr << "failed to prepare statement: " << e << endl;
+		return false;
+	}
+
+	e = sqlite3_prepare_v2(db_, "INSERT INTO arcs VALUES (?, ?, ?, ?, ?)",
+						   -1, &arc_stmt_, NULL);
+	if (e != SQLITE_OK) {
+		cerr << "failed to prepare statement: " << e << endl;
+		return false;
+	}
+
+	e = sqlite3_prepare_v2(db_, "INSERT INTO refports VALUES (?, ?, ?)",
+						   -1, &refport_stmt_, NULL);
+	if (e != SQLITE_OK) {
+		cerr << "failed to prepare statement: " << e << endl;
+		return false;
+	}
+
+	e = sqlite3_prepare_v2(db_, "INSERT INTO refts VALUES (?, ?, ?)",
+						   -1, &refts_stmt_, NULL);
+	if (e != SQLITE_OK) {
+		cerr << "failed to prepare statement: " << e << endl;
+		return false;
+	}
+
+	e = sqlite3_prepare_v2(db_, "INSERT INTO extras VALUES (?, ?, ?)",
+						   -1, &extra_stmt_, NULL);
+	if (e != SQLITE_OK) {
+		cerr << "failed to prepare statement: " << e << endl;
+		return false;
+	}
+
+	e = sqlite3_prepare_v2(db_, "INSERT INTO edges VALUES (?, ?, ?, ?)",
+						   -1, &edge_stmt_, NULL);
+	if (e != SQLITE_OK) {
+		cerr << "failed to prepare statement: " << e << endl;
+		return false;
+	}
+
+	e = sqlite3_prepare_v2(db_, "INSERT INTO bridges VALUES (?, ?, ?, ?)",
+						   -1, &bridge_stmt_, NULL);
+	if (e != SQLITE_OK) {
+		cerr << "failed to prepare statement: " << e << endl;
+		return false;
+	}
+
+	e = sqlite3_prepare_v2(db_, "INSERT INTO imports VALUES (?, ?, ?)",
+						   -1, &import_stmt_, NULL);
+	if (e != SQLITE_OK) {
+		cerr << "failed to prepare statement: " << e << endl;
+		return false;
+	}
+
+	e = sqlite3_prepare_v2(db_, "INSERT INTO instances VALUES (?, ?, ?)",
+						   -1, &instance_stmt_, NULL);
+	if (e != SQLITE_OK) {
+		cerr << "failed to prepare statement: " << e << endl;
+		return false;
+	}
+
+	e = sqlite3_prepare_v2(db_, "INSERT INTO tms VALUES (?, ?)",
+						   -1, &tm_stmt_, NULL);
+	if (e != SQLITE_OK) {
+		cerr << "failed to prepare statement: " << e << endl;
+		return false;
+	}
+
+	e = sqlite3_prepare_v2(db_, "INSERT INTO tpqs VALUES (?, ?, ?)",
+						   -1, &tpq_stmt_, NULL);
+	if (e != SQLITE_OK) {
+		cerr << "failed to prepare statement: " << e << endl;
+		return false;
+	}
+
+	e = sqlite3_prepare_v2(db_, "INSERT INTO templates VALUES (?, ?)",
+						   -1, &template_stmt_, NULL);
+	if (e != SQLITE_OK) {
+		cerr << "failed to prepare statement: " << e << endl;
+		return false;
+	}
+
+	e = sqlite3_prepare_v2(db_, "INSERT INTO ports VALUES (?, ?, ?, ?, ?)",
+						   -1, &port_stmt_, NULL);
+	if (e != SQLITE_OK) {
+		cerr << "failed to prepare statement: " << e << endl;
+		return false;
+	}
+
+	e = sqlite3_prepare_v2(db_, "INSERT INTO timeseries VALUES (?, ?, ?, ?)",
+						   -1, &timeseries_stmt_, NULL);
+	if (e != SQLITE_OK) {
+		cerr << "failed to prepare statement: " << e << endl;
+		return false;
+	}
+
+	e = sqlite3_prepare_v2(db_, "UPDATE pqs SET unit_id = ?, name = ?, ncols = ?, nrows = ?, max_delay = ? WHERE rowid = ?",
+						   -1, &update_stmt_[kPq], NULL);
+	if (e != SQLITE_OK) {
+		cerr << "failed to prepare statement: " << e << endl;
+		return false;
+	}
+	return true;
 }
 
 bool DatabaseDriver::SaveNumericalConfiguration(const NumericalConfiguration *nc)

@@ -41,6 +41,8 @@ public:
 	explicit DatabaseDriver(sqlite3 *db);
 	~DatabaseDriver();
 
+	bool Initialize();
+
 	bool SaveNumericalConfiguration(const NumericalConfiguration *nc);
 
 	bool SaveTimeDiscretization(const TimeDiscretization *td, const Module *module = nullptr);

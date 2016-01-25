@@ -257,6 +257,9 @@ public:
 	}
 
 	int Read() {
+		if (!dd_->Initialize())
+			return -2;
+
 		int i = xmlTextReaderRead(text_reader_);
 		while (i > 0) {
 			int type = xmlTextReaderNodeType(text_reader_);
