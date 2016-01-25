@@ -2388,8 +2388,9 @@ bool Read(sqlite3 *db)
 	}
 
 	{
-		std::unique_ptr<phml::GraphIvRewriter> rewriter(new phml::GraphIvRewriter(db));
-		if (!rewriter->Rewrite()) return false;
+		std::unique_ptr<phml::GraphIvRewriter> rewriter(new phml::GraphIvRewriter);
+		if (!rewriter->Rewrite(db))
+			return false;
 	}
 	{
 		static const char kImplSelectQuery[] = "SELECT rowid, pq_rowid, math FROM impls";

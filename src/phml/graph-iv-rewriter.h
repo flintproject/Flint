@@ -16,11 +16,11 @@ public:
 	GraphIvRewriter(const GraphIvRewriter &) = delete;
 	GraphIvRewriter &operator=(const GraphIvRewriter &) = delete;
 
-	explicit GraphIvRewriter(sqlite3 *db);
+	GraphIvRewriter();
 
 	~GraphIvRewriter();
 
-	bool Rewrite();
+	bool Rewrite(sqlite3 *db);
 
 private:
 	bool Process(sqlite3_int64 pq_rowid,

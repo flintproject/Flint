@@ -16,6 +16,22 @@ using std::string;
 
 namespace flint {
 
+namespace phml {
+
+GraphIvRewriter::GraphIvRewriter()
+	: stmt_graph_(nullptr)
+	, stmt_node_(nullptr)
+	, stmt_update_(nullptr)
+{
+}
+
+GraphIvRewriter::~GraphIvRewriter()
+{
+	sqlite3_finalize(stmt_graph_);
+	sqlite3_finalize(stmt_node_);
+	sqlite3_finalize(stmt_update_);
+}
+
 namespace {
 
 const char kQueryGraph[] = \
@@ -30,43 +46,27 @@ const char kQueryUpdate[] = "UPDATE ivs SET math = ? WHERE pq_rowid = ?";
 
 } // namespace
 
-namespace phml {
-
-GraphIvRewriter::GraphIvRewriter(sqlite3 *db)
-	: stmt_graph_(NULL),
-	  stmt_node_(NULL),
-	  stmt_update_(NULL)
+bool GraphIvRewriter::Rewrite(sqlite3 *db)
 {
 	int e = sqlite3_prepare_v2(db, kQueryGraph, -1, &stmt_graph_, NULL);
 	if (e != SQLITE_OK) {
 		cerr << "failed to prepare statement: " << kQueryGraph
 			 << ": " << e << endl;
-		exit(EXIT_FAILURE);
+		return false;
 	}
 	e = sqlite3_prepare_v2(db, kQueryNode, -1, &stmt_node_, NULL);
 	if (e != SQLITE_OK) {
 		cerr << "failed to prepare statement: " << kQueryNode
 			 << ": " << e << endl;
-		exit(EXIT_FAILURE);
+		return false;
 	}
 	e = sqlite3_prepare_v2(db, kQueryUpdate, -1, &stmt_update_, NULL);
 	if (e != SQLITE_OK) {
 		cerr << "failed to prepare statement: " << kQueryUpdate
 			 << ": " << e << endl;
-		exit(EXIT_FAILURE);
+		return false;
 	}
-}
 
-GraphIvRewriter::~GraphIvRewriter()
-{
-	sqlite3_finalize(stmt_graph_);
-	sqlite3_finalize(stmt_node_);
-	sqlite3_finalize(stmt_update_);
-}
-
-bool GraphIvRewriter::Rewrite()
-{
-	int e;
 	for (e = sqlite3_step(stmt_graph_); e == SQLITE_ROW; e = sqlite3_step(stmt_graph_)) {
 		sqlite3_int64 pq_rowid = sqlite3_column_int64(stmt_graph_, 0);
 		const void *module_id = sqlite3_column_blob(stmt_graph_, 1);
