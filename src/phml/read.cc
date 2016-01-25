@@ -123,28 +123,12 @@ public:
 	TreeWriter(const TreeWriter &) = delete;
 	TreeWriter &operator=(const TreeWriter &) = delete;
 
-	explicit TreeWriter(sqlite3 *db)
-		: db_(db),
-		  query_stmt_(NULL),
-		  tree_stmt_(NULL),
-		  roots_(),
-		  children_()
+	TreeWriter()
+		: query_stmt_(nullptr)
+		, tree_stmt_(nullptr)
+		, roots_()
+		, children_()
 	{
-		int e;
-
-		e = sqlite3_prepare_v2(db_, "SELECT module_id, capsulated_by FROM modules WHERE type = 'capsule' OR type = 'functional-unit'",
-							   -1, &query_stmt_, NULL);
-		if (e != SQLITE_OK) {
-			cerr << "failed to prepare statement: " << e << endl;
-			exit(EXIT_FAILURE);
-		}
-
-		e = sqlite3_prepare_v2(db_, "INSERT INTO trees VALUES (?, ?)",
-							   -1, &tree_stmt_, NULL);
-		if (e != SQLITE_OK) {
-			cerr << "failed to prepare statement: " << e << endl;
-			exit(EXIT_FAILURE);
-		}
 	}
 
 	~TreeWriter() {
@@ -152,8 +136,20 @@ public:
 		sqlite3_finalize(tree_stmt_);
 	}
 
-	bool Write() {
+	bool Write(sqlite3 *db) {
 		int e;
+		e = sqlite3_prepare_v2(db, "SELECT module_id, capsulated_by FROM modules WHERE type = 'capsule' OR type = 'functional-unit'",
+							   -1, &query_stmt_, NULL);
+		if (e != SQLITE_OK) {
+			cerr << "failed to prepare statement: " << e << endl;
+			return false;
+		}
+		e = sqlite3_prepare_v2(db, "INSERT INTO trees VALUES (?, ?)",
+							   -1, &tree_stmt_, NULL);
+		if (e != SQLITE_OK) {
+			cerr << "failed to prepare statement: " << e << endl;
+			return false;
+		}
 		for (e = sqlite3_step(query_stmt_); e == SQLITE_ROW; e = sqlite3_step(query_stmt_)) {
 			const void *module_id = sqlite3_column_blob(query_stmt_, 0);
 			assert(module_id);
@@ -215,7 +211,6 @@ private:
 		return true;
 	}
 
-	sqlite3 *db_;
 	sqlite3_stmt *query_stmt_;
 	sqlite3_stmt *tree_stmt_;
 	Vector roots_;
@@ -2424,8 +2419,9 @@ bool Read(sqlite3 *db)
 	}
 
 	{
-		std::unique_ptr<TreeWriter> tw(new TreeWriter(db));
-		if (!tw->Write()) return false;
+		std::unique_ptr<TreeWriter> tw(new TreeWriter);
+		if (!tw->Write(db))
+			return false;
 	}
 
 	if (!Branch(model_path, db)) return false;
