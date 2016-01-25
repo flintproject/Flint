@@ -71,23 +71,22 @@ namespace {
 
 class CapsulatedByValidator {
 public:
-	explicit CapsulatedByValidator(sqlite3 *db)
-		: query_stmt_(NULL)
+	CapsulatedByValidator()
+		: query_stmt_(nullptr)
 	{
-		int e = sqlite3_prepare_v2(db, kQuery, -1, &query_stmt_, NULL);
-		if (e != SQLITE_OK) {
-			cerr << "failed to prepare statement: " << kQuery << ": " << e << endl;
-			exit(EXIT_FAILURE);
-		}
 	}
 
 	~CapsulatedByValidator() {
 		sqlite3_finalize(query_stmt_);
 	}
 
-	bool Validate() {
+	bool Validate(sqlite3 *db) {
 		bool r = true;
-		int e;
+		int e = sqlite3_prepare_v2(db, kQuery, -1, &query_stmt_, NULL);
+		if (e != SQLITE_OK) {
+			cerr << "failed to prepare statement: " << kQuery << ": " << e << endl;
+			return false;
+		}
 		for (e = sqlite3_step(query_stmt_); e == SQLITE_ROW; e = sqlite3_step(query_stmt_)) {
 			r = false;
 			const void *module_id = sqlite3_column_blob(query_stmt_, 0);
@@ -2379,8 +2378,9 @@ bool Read(sqlite3 *db)
 	}
 
 	{
-		std::unique_ptr<CapsulatedByValidator> validator(new CapsulatedByValidator(db));
-		if (!validator->Validate()) return false;
+		std::unique_ptr<CapsulatedByValidator> validator(new CapsulatedByValidator);
+		if (!validator->Validate(db))
+			return false;
 	}
 	{
 		DelayArgValidator dav(db);
