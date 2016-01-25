@@ -270,14 +270,16 @@ public:
 	typedef Lexer<lexer_type> RealLexer;
 	typedef Grammar<RealLexer::iterator_type> RealGrammar;
 
-	Parser(sqlite3 *db, System *output)
+	explicit Parser(System *output)
 		: tokens_()
 		, grammar_(tokens_)
 		, da_()
 		, output_(output)
 	{
-		if (!da_.Load(db))
-			std::exit(EXIT_FAILURE);
+	}
+
+	bool Load(sqlite3 *db) {
+		return da_.Load(db);
 	}
 
 	int Parse(const boost::uuids::uuid &uuid, const char *math) {
@@ -383,7 +385,9 @@ int Process(void *data, int argc, char **argv, char **names)
 
 bool AnnotateEquations(sqlite3 *db, const char *input, System *output)
 {
-	std::unique_ptr<Parser> parser(new Parser(db, output));
+	std::unique_ptr<Parser> parser(new Parser(output));
+	if (!parser->Load(db))
+		return false;
 
 	std::ostringstream oss;
 	oss << "SELECT * FROM " << input;
