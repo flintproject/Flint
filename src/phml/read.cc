@@ -2272,17 +2272,18 @@ const Schema kSubsequentTables[] = {
 	{"tscs", "(uuid BLOB, math TEXT)"}
 };
 
-void CreateTablesOrDie(sqlite3 *db, const Schema *tables, size_t n)
+bool CreateTables(sqlite3 *db, const Schema *tables, size_t n)
 {
 	for (size_t i=0;i<n;i++) {
 		const Schema &table = tables[i];
 		if (!CreateTable(db, table.name, table.columns))
-			exit(EXIT_FAILURE);
+			return false;
 	}
+	return true;
 }
 
-#define CREATE_TABLES_OR_DIE(db, tables) \
-	CreateTablesOrDie(db, tables, sizeof(tables)/sizeof(tables[0]))
+#define CREATE_TABLES(db, tables) \
+	CreateTables(db, tables, sizeof(tables)/sizeof(tables[0]))
 
 struct View {
 	const char *name;
@@ -2304,7 +2305,7 @@ const View kViews[] = {
 	{"after_eqs", "m.module_id, ltrim(e.math) FROM extras AS e LEFT JOIN pqs AS p ON e.pq_rowid = p.rowid LEFT JOIN modules AS m ON p.module_rowid = m.rowid WHERE e.order_type = 'after'"}
 };
 
-void CreateViewsOrDie(sqlite3 *db, const View *views, size_t n)
+bool CreateViews(sqlite3 *db, const View *views, size_t n)
 {
 	char buf[1024]; // long enough
 	char *em;
@@ -2321,13 +2322,14 @@ void CreateViewsOrDie(sqlite3 *db, const View *views, size_t n)
 				 << ": " << e
 				 << ": " << em << endl;
 			sqlite3_free(em);
-			exit(EXIT_FAILURE);
+			return false;
 		}
 	}
+	return true;
 }
 
-#define CREATE_VIEWS_OR_DIE(db, views) \
-	CreateViewsOrDie(db, views, sizeof(views)/sizeof(views[0]))
+#define CREATE_VIEWS(db, views) \
+	CreateViews(db, views, sizeof(views)/sizeof(views[0]))
 
 }
 
@@ -2341,10 +2343,12 @@ bool Read(sqlite3 *db)
 	// prepare database; create tables
 	if (!BeginTransaction(db))
 		return false;
-	CREATE_TABLES_OR_DIE(db, kModelTables);
+	if (!CREATE_TABLES(db, kModelTables))
+		return false;
 
 	// subsequent tables
-	CREATE_TABLES_OR_DIE(db, kSubsequentTables);
+	if (!CREATE_TABLES(db, kSubsequentTables))
+		return false;
 	if (!CreateSprinkles(db))
 		return false;
 	if (!CreateTsfiles(db))
@@ -2353,7 +2357,8 @@ bool Read(sqlite3 *db)
 		return false;
 
 	// views
-	CREATE_VIEWS_OR_DIE(db, kViews);
+	if (!CREATE_VIEWS(db, kViews))
+		return false;
 	if (!CreateLayout(db))
 		return false;
 
@@ -2414,8 +2419,9 @@ bool Read(sqlite3 *db)
 			return false;
 	}
 	{
-		phml::TransitionForm form(db);
-		if (!form()) return false;
+		phml::TransitionForm form;
+		if (!form(db))
+			return false;
 	}
 
 	{

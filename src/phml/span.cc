@@ -138,24 +138,23 @@ public:
 	EdgeLoader(const EdgeLoader &) = delete;
 	EdgeLoader &operator=(const EdgeLoader &) = delete;
 
-	explicit EdgeLoader(sqlite3 *db)
-		: stmt_(NULL)
+	EdgeLoader()
+		: stmt_(nullptr)
 	{
-		int e = sqlite3_prepare_v2(db, "SELECT * FROM edges",
-								   -1, &stmt_, NULL);
-		if (e != SQLITE_OK) {
-			cerr << "failed to prepare statement: " << e << endl;
-			exit(EXIT_FAILURE);
-		}
 	}
 
 	~EdgeLoader() {
 		sqlite3_finalize(stmt_);
 	}
 
-	bool Load(std::set<Edge> *edge_set)
+	bool Load(sqlite3 *db, std::set<Edge> *edge_set)
 	{
-		int e;
+		int e = sqlite3_prepare_v2(db, "SELECT * FROM edges",
+								   -1, &stmt_, NULL);
+		if (e != SQLITE_OK) {
+			cerr << "failed to prepare statement: " << e << endl;
+			return false;
+		}
 		for (e = sqlite3_step(stmt_); e == SQLITE_ROW; e = sqlite3_step(stmt_)) {
 			const void *tail_module_id = sqlite3_column_blob(stmt_, 0);
 			int tail_port_id = sqlite3_column_int(stmt_, 1);
@@ -186,15 +185,9 @@ public:
 	JournalLoader(const JournalLoader &) = delete;
 	JournalLoader &operator=(const JournalLoader &) = delete;
 
-	explicit JournalLoader(sqlite3 *db)
-		: stmt_(NULL)
+	JournalLoader()
+		: stmt_(nullptr)
 	{
-		int e = sqlite3_prepare_v2(db, "SELECT * FROM journals",
-								   -1, &stmt_, NULL);
-		if (e != SQLITE_OK) {
-			cerr << "failed to prepare statement: " << e << endl;
-			exit(EXIT_FAILURE);
-		}
 	}
 
 	~JournalLoader() {
@@ -202,8 +195,13 @@ public:
 	}
 
 	template<typename THandler>
-	bool Load(THandler *handler) {
-		int e;
+	bool Load(sqlite3 *db, THandler *handler) {
+		int e = sqlite3_prepare_v2(db, "SELECT * FROM journals",
+								   -1, &stmt_, NULL);
+		if (e != SQLITE_OK) {
+			cerr << "failed to prepare statement: " << e << endl;
+			return false;
+		}
 		for (e = sqlite3_step(stmt_); e == SQLITE_ROW; e = sqlite3_step(stmt_)) {
 			int indent = sqlite3_column_int(stmt_, 0);
 			const void *uuid = sqlite3_column_blob(stmt_, 1);
@@ -402,9 +400,16 @@ public:
 	SpanDriver(const SpanDriver &) = delete;
 	SpanDriver &operator=(const SpanDriver &) = delete;
 
-	explicit SpanDriver(sqlite3 *db)
-		: stmt_(NULL)
+	SpanDriver()
+		: stmt_(nullptr)
 	{
+	}
+
+	~SpanDriver() {
+		sqlite3_finalize(stmt_);
+	}
+
+	bool Initialize(sqlite3 *db) {
 		int e = sqlite3_prepare_v2(db, "INSERT INTO spans VALUES (?, ?, ?, ?)",
 								   -1, &stmt_, NULL);
 		if (e != SQLITE_OK) {
@@ -415,12 +420,9 @@ public:
 				 << ":"
 				 << __LINE__
 				 << endl;
-			exit(EXIT_FAILURE);
+			return false;
 		}
-	}
-
-	~SpanDriver() {
-		sqlite3_finalize(stmt_);
+		return true;
 	}
 
 	bool Save(const Edge &edge) {
@@ -464,19 +466,23 @@ bool Span(sqlite3 *db)
 {
 	std::set<Edge> edge_set;
 	{
-		std::unique_ptr<EdgeLoader> loader(new EdgeLoader(db));
-		if (!loader->Load(&edge_set)) return false;
+		std::unique_ptr<EdgeLoader> loader(new EdgeLoader);
+		if (!loader->Load(db, &edge_set))
+			return false;
 	}
 
 	// do spanning with journals
 	{
-		std::unique_ptr<JournalLoader> loader(new JournalLoader(db));
+		std::unique_ptr<JournalLoader> loader(new JournalLoader);
 		std::unique_ptr<JournalHandler> handler(new JournalHandler(&edge_set));
-		if (!loader->Load(handler.get())) return false;
+		if (!loader->Load(db, handler.get()))
+			return false;
 	}
 
 	// write into spans
-	std::unique_ptr<SpanDriver> driver(new SpanDriver(db));
+	std::unique_ptr<SpanDriver> driver(new SpanDriver);
+	if (!driver->Initialize(db))
+		return false;
 	for (std::set<Edge>::const_iterator it=edge_set.begin();it!=edge_set.end();++it) {
 		if (!driver->Save(*it)) return false;
 	}

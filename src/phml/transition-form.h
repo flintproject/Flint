@@ -9,11 +9,11 @@ namespace phml {
 
 class TransitionForm {
 public:
-	explicit TransitionForm(sqlite3 *db);
+	TransitionForm();
 
 	~TransitionForm();
 
-	bool operator()();
+	bool operator()(sqlite3 *db);
 
 private:
 	sqlite3_stmt *stmt_select_;

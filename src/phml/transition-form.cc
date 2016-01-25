@@ -75,27 +75,11 @@ bool Insert(sqlite3_stmt *stmt, sqlite3_int64 pq_rowid, const std::string &math)
 
 namespace phml {
 
-TransitionForm::TransitionForm(sqlite3 *db)
-	: stmt_select_(NULL),
-	  stmt_extras_(NULL),
-	  stmt_impls_(NULL)
+TransitionForm::TransitionForm()
+	: stmt_select_(nullptr)
+	, stmt_extras_(nullptr)
+	, stmt_impls_(nullptr)
 {
-	int e;
-	e = sqlite3_prepare_v2(db, kQuerySelect, -1, &stmt_select_, NULL);
-	if (e != SQLITE_OK) {
-		cerr << "failed to prepare statement: " << kQuerySelect << ": " << e << endl;
-		exit(EXIT_FAILURE);
-	}
-	e = sqlite3_prepare_v2(db, kQueryExtras, -1, &stmt_extras_, NULL);
-	if (e != SQLITE_OK) {
-		cerr << "failed to prepare statement: " << kQueryExtras << ": " << e << endl;
-		exit(EXIT_FAILURE);
-	}
-	e = sqlite3_prepare_v2(db, kQueryImpls, -1, &stmt_impls_, NULL);
-	if (e != SQLITE_OK) {
-		cerr << "failed to prepare statement: " << kQueryImpls << ": " << e << endl;
-		exit(EXIT_FAILURE);
-	}
 }
 
 TransitionForm::~TransitionForm()
@@ -105,12 +89,28 @@ TransitionForm::~TransitionForm()
 	sqlite3_finalize(stmt_impls_);
 }
 
-bool TransitionForm::operator()()
+bool TransitionForm::operator()(sqlite3 *db)
 {
 	NameMap nm;
 	ConditionMap cm;
 	PqArcMap pam;
 	int e;
+	e = sqlite3_prepare_v2(db, kQuerySelect, -1, &stmt_select_, NULL);
+	if (e != SQLITE_OK) {
+		cerr << "failed to prepare statement: " << kQuerySelect << ": " << e << endl;
+		return false;
+	}
+	e = sqlite3_prepare_v2(db, kQueryExtras, -1, &stmt_extras_, NULL);
+	if (e != SQLITE_OK) {
+		cerr << "failed to prepare statement: " << kQueryExtras << ": " << e << endl;
+		return false;
+	}
+	e = sqlite3_prepare_v2(db, kQueryImpls, -1, &stmt_impls_, NULL);
+	if (e != SQLITE_OK) {
+		cerr << "failed to prepare statement: " << kQueryImpls << ": " << e << endl;
+		return false;
+	}
+
 	for (e = sqlite3_step(stmt_select_); e == SQLITE_ROW; e = sqlite3_step(stmt_select_)) {
 		sqlite3_int64 pq_rowid = sqlite3_column_int64(stmt_select_, 0);
 		int tail_node_id = sqlite3_column_int(stmt_select_, 1);
