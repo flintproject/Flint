@@ -12,13 +12,12 @@ public:
 	GraphMathRewriter(const GraphMathRewriter &) = delete;
 	GraphMathRewriter &operator=(const GraphMathRewriter &) = delete;
 
-	GraphMathRewriter(sqlite3 *db,
-					  const char *query_select,
+	GraphMathRewriter(const char *query_select,
 					  const char *query_update);
 
 	~GraphMathRewriter();
 
-	bool Rewrite();
+	bool Rewrite(sqlite3 *db);
 
 	bool FindNode(sqlite3_int64 pq_rowid, const char *node_name, int *node_id);
 

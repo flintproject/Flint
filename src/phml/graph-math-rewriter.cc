@@ -163,30 +163,14 @@ const char kQueryNode[] = \
 
 namespace phml {
 
-GraphMathRewriter::GraphMathRewriter(sqlite3 *db,
-									 const char *query_select,
+GraphMathRewriter::GraphMathRewriter(const char *query_select,
 									 const char *query_update)
-	: query_select_(query_select),
-	  query_update_(query_update),
-	  stmt_select_(NULL),
-	  stmt_node_(NULL),
-	  stmt_update_(NULL)
+	: query_select_(query_select)
+	, query_update_(query_update)
+	, stmt_select_(nullptr)
+	, stmt_node_(nullptr)
+	, stmt_update_(nullptr)
 {
-	int e = sqlite3_prepare_v2(db, query_select_, -1, &stmt_select_, NULL);
-	if (e != SQLITE_OK) {
-		cerr << "failed to prepare statement: " << query_select_ << ": " << e << endl;
-		exit(EXIT_FAILURE);
-	}
-	e = sqlite3_prepare_v2(db, kQueryNode, -1, &stmt_node_, NULL);
-	if (e != SQLITE_OK) {
-		cerr << "failed to prepare statement: " << kQueryNode << ": " << e << endl;
-		exit(EXIT_FAILURE);
-	}
-	e = sqlite3_prepare_v2(db, query_update_, -1, &stmt_update_, NULL);
-	if (e != SQLITE_OK) {
-		cerr << "failed to prepare statement: " << query_update_ << ": " << e << endl;
-		exit(EXIT_FAILURE);
-	}
 }
 
 GraphMathRewriter::~GraphMathRewriter()
@@ -196,9 +180,24 @@ GraphMathRewriter::~GraphMathRewriter()
 	sqlite3_finalize(stmt_update_);
 }
 
-bool GraphMathRewriter::Rewrite()
+bool GraphMathRewriter::Rewrite(sqlite3 *db)
 {
-	int e;
+	int e = sqlite3_prepare_v2(db, query_select_, -1, &stmt_select_, NULL);
+	if (e != SQLITE_OK) {
+		cerr << "failed to prepare statement: " << query_select_ << ": " << e << endl;
+		return false;
+	}
+	e = sqlite3_prepare_v2(db, kQueryNode, -1, &stmt_node_, NULL);
+	if (e != SQLITE_OK) {
+		cerr << "failed to prepare statement: " << kQueryNode << ": " << e << endl;
+		return false;
+	}
+	e = sqlite3_prepare_v2(db, query_update_, -1, &stmt_update_, NULL);
+	if (e != SQLITE_OK) {
+		cerr << "failed to prepare statement: " << query_update_ << ": " << e << endl;
+		return false;
+	}
+
 	for (e = sqlite3_step(stmt_select_); e == SQLITE_ROW; e = sqlite3_step(stmt_select_)) {
 		sqlite3_int64 rowid = sqlite3_column_int64(stmt_select_, 0);
 		sqlite3_int64 pq_rowid = sqlite3_column_int64(stmt_select_, 1);
