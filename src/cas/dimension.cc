@@ -446,7 +446,7 @@ public:
 	}
 
 private:
-	bool HaveSameDimension(std::vector<Expr> *children, int *col, int *row)
+	bool HaveSameDimension(std::deque<Expr> *children, int *col, int *row)
 	{
 		assert(!children->empty());
 		int c0, r0;
@@ -505,8 +505,8 @@ private:
 		return true;
 	}
 
-	bool Multiplication(std::vector<Expr>::iterator bit,
-						std::vector<Expr>::iterator eit,
+	bool Multiplication(std::deque<Expr>::iterator bit,
+						std::deque<Expr>::iterator eit,
 						int *col, int *row)
 	{
 		int c0, r0;

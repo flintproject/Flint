@@ -2,6 +2,7 @@
 #ifndef FLINT_CAS_H_
 #define FLINT_CAS_H_
 
+#include <deque>
 #include <map>
 #include <memory>
 #include <set>
@@ -35,7 +36,7 @@ typedef boost::variant<boost::recursive_wrapper<Compound>,
 
 struct Compound {
 	std::string keyword;
-	std::vector<Expr> children;
+	std::deque<Expr> children;
 	int col;
 	int row;
 };
@@ -45,7 +46,7 @@ struct Compound {
 
 BOOST_FUSION_ADAPT_STRUCT(flint::cas::Compound,
 						  (std::string, keyword)
-						  (std::vector<flint::cas::Expr>, children)
+						  (std::deque<flint::cas::Expr>, children)
 						  (int, col)
 						  (int, row)
 						  )

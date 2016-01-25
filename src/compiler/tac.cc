@@ -19,6 +19,7 @@
 #include <boost/uuid/uuid_io.hpp>
 #include <boost/variant/recursive_variant.hpp>
 
+#include "cas.h"
 #include "db/query.h"
 #include "db/tac-inserter.hh"
 #include "lexer.hh"
@@ -32,38 +33,6 @@ using namespace boost::spirit;
 namespace flint {
 namespace compiler {
 namespace tac {
-
-struct Compound;
-
-enum {
-	kExprIsCompound,
-	kExprIsString,
-	kExprIsInteger,
-	kExprIsReal
-};
-
-typedef boost::variant<boost::recursive_wrapper<Compound>,
-					   std::string,
-					   int,
-					   flint::lexer::Real
-					   > Expr;
-
-struct Compound {
-	std::string keyword;
-	std::deque<Expr> children;
-};
-
-}
-}
-}
-
-BOOST_FUSION_ADAPT_STRUCT(flint::compiler::tac::Compound,
-						  (std::string, keyword)
-						  (std::deque<flint::compiler::tac::Expr>, children))
-
-namespace flint {
-namespace compiler {
-namespace tac {
 namespace {
 
 class Printer : public boost::static_visitor<> {
@@ -72,11 +41,11 @@ public:
 		: os_(os)
 	{}
 
-	void operator()(const Compound &c) const {
+	void operator()(const cas::Compound &c) const {
 		*os_ << '(' << c.keyword.c_str();
-		std::deque<Expr>::const_iterator bit = c.children.begin();
-		std::deque<Expr>::const_iterator eit = c.children.end();
-		for (std::deque<Expr>::const_iterator it=bit;it!=eit;++it) {
+		std::deque<cas::Expr>::const_iterator bit = c.children.begin();
+		std::deque<cas::Expr>::const_iterator eit = c.children.end();
+		for (std::deque<cas::Expr>::const_iterator it=bit;it!=eit;++it) {
 			os_->put(' ');
 			boost::apply_visitor(*this, *it);
 		}
@@ -99,47 +68,47 @@ private:
 	std::ostream *os_;
 };
 
-bool IsAnd(const Compound &c)
+bool IsAnd(const cas::Compound &c)
 {
 	return c.keyword == "and";
 }
 
-bool IsOr(const Compound &c)
+bool IsOr(const cas::Compound &c)
 {
 	return c.keyword == "or";
 }
 
-bool IsAt(const Compound &c)
+bool IsAt(const cas::Compound &c)
 {
 	return c.keyword == "$At";
 }
 
-bool IsLookback(const Compound &c)
+bool IsLookback(const cas::Compound &c)
 {
 	return c.keyword == "$lookback";
 }
 
-bool IsPiecewise(const Compound &c)
+bool IsPiecewise(const cas::Compound &c)
 {
 	return c.keyword == "piecewise";
 }
 
-bool IsPiece(const Compound &c)
+bool IsPiece(const cas::Compound &c)
 {
 	return c.keyword == "piece";
 }
 
-bool IsOtherwise(const Compound &c)
+bool IsOtherwise(const cas::Compound &c)
 {
 	return c.keyword == "otherwise";
 }
 
-bool IsTrial(const Compound &c)
+bool IsTrial(const cas::Compound &c)
 {
 	return c.keyword == "$trial";
 }
 
-bool IsOutcome(const Compound &c)
+bool IsOutcome(const cas::Compound &c)
 {
 	return c.keyword == "$outcome";
 }
@@ -152,7 +121,7 @@ struct Context {
 	std::ostream *os;
 };
 
-bool EmitCode(int n, Expr &sexp, Context *context);
+bool EmitCode(int n, cas::Expr &sexp, Context *context);
 
 /*
  * The control should reach the end when the sexp is evaluated to be false.
@@ -160,10 +129,10 @@ bool EmitCode(int n, Expr &sexp, Context *context);
  * @param n the variable for the resulting boolean value
  * @param l the label to go when the sexp is evaluated to be true
  */
-bool EmitCondition(int n, int l, Expr &sexp, Context *context)
+bool EmitCondition(int n, int l, cas::Expr &sexp, Context *context)
 {
-	if (sexp.which() == kExprIsCompound) {
-		Compound &comp(boost::get<Compound>(sexp));
+	if (sexp.which() == cas::kExprIsCompound) {
+		cas::Compound &comp(boost::get<cas::Compound>(sexp));
 		if (IsAnd(comp)) {
 			int l1 = context->avail_l++;
 			int l2 = context->avail_l++;
@@ -187,7 +156,7 @@ bool EmitCondition(int n, int l, Expr &sexp, Context *context)
 	return bool(*context->os);
 }
 
-bool EmitAt(int n, std::deque<Expr> &children, Context *context)
+bool EmitAt(int n, std::deque<cas::Expr> &children, Context *context)
 {
 	size_t len = children.size();
 	if (len > 3) {
@@ -198,11 +167,11 @@ bool EmitAt(int n, std::deque<Expr> &children, Context *context)
 		cerr << "error: EmitAt: missing arguments: " << context->uuid << ' ' << context->id << endl;
 		return false;
 	}
-	if (children.at(0).which() != kExprIsInteger) {
+	if (children.at(0).which() != cas::kExprIsInteger) {
 		cerr << "error: invalid 1st argument of At: " << context->uuid << ' ' << context->id << endl;
 		return false;
 	}
-	if (children.at(1).which() != kExprIsInteger) {
+	if (children.at(1).which() != cas::kExprIsInteger) {
 		cerr << "error: invalid 2nd argument of At: " << context->uuid << ' ' << context->id << endl;
 		return false;
 	}
@@ -221,7 +190,7 @@ bool EmitAt(int n, std::deque<Expr> &children, Context *context)
 	return bool(*context->os);
 }
 
-bool EmitLookback(int n, std::deque<Expr> &children, Context *context)
+bool EmitLookback(int n, std::deque<cas::Expr> &children, Context *context)
 {
 	size_t len = children.size();
 	if (len > 2) {
@@ -232,7 +201,7 @@ bool EmitLookback(int n, std::deque<Expr> &children, Context *context)
 		cerr << "error: EmitLookback: missing arguments: " << context->uuid << ' ' << context->id << endl;
 		return false;
 	}
-	if (children.at(0).which() != kExprIsString) {
+	if (children.at(0).which() != cas::kExprIsString) {
 		cerr << "error: invalid 1st argument of Delay/DeltaTime: " << context->uuid << ' ' << context->id << endl;
 		return false;
 	}
@@ -249,14 +218,14 @@ bool EmitLookback(int n, std::deque<Expr> &children, Context *context)
 	return bool(*context->os);
 }
 
-bool EmitPiecewise(int n, std::deque<Expr> &children, Context *context)
+bool EmitPiecewise(int n, std::deque<cas::Expr> &children, Context *context)
 {
 	int l = context->avail_l++;
 	std::vector<int> v1;
 	bool otherwise = false;
-	for (std::deque<Expr>::iterator it=children.begin();it!=children.end();++it) {
-		assert(it->which() == kExprIsCompound);
-		Compound &comp(boost::get<Compound>(*it));
+	for (std::deque<cas::Expr>::iterator it=children.begin();it!=children.end();++it) {
+		assert(it->which() == cas::kExprIsCompound);
+		cas::Compound &comp(boost::get<cas::Compound>(*it));
 		if (IsPiece(comp)) {
 			int l1 = context->avail_l++;
 			int m = context->avail_n++;
@@ -273,9 +242,9 @@ bool EmitPiecewise(int n, std::deque<Expr> &children, Context *context)
 	if (!otherwise)
 		*context->os << "  ret" << endl;
 	std::vector<int>::const_iterator v1it = v1.begin();
-	for (std::deque<Expr>::iterator it=children.begin();it!=children.end();++it) {
-		assert(it->which() == kExprIsCompound);
-		Compound &comp(boost::get<Compound>(*it));
+	for (std::deque<cas::Expr>::iterator it=children.begin();it!=children.end();++it) {
+		assert(it->which() == cas::kExprIsCompound);
+		cas::Compound &comp(boost::get<cas::Compound>(*it));
 		if (IsPiece(comp)) {
 			*context->os << " L" << *v1it++ << ':' << endl;
 			if (!EmitCode(n, comp.children.at(0), context))
@@ -291,7 +260,7 @@ bool EmitPiecewise(int n, std::deque<Expr> &children, Context *context)
 	return bool(*context->os);
 }
 
-bool EmitTrial(int n, std::deque<Expr> &children, Context *context)
+bool EmitTrial(int n, std::deque<cas::Expr> &children, Context *context)
 {
 	int l = context->avail_l++;
 	int p0 = context->avail_n++;
@@ -301,9 +270,9 @@ bool EmitTrial(int n, std::deque<Expr> &children, Context *context)
 				 << "  loadi $" << p1 << " 1" << endl
 				 << "  $" << p << " = ($uniform_variate $" << p0 << " $" << p1 << ')' << endl;
 	std::vector<int> v1;
-	for (std::deque<Expr>::iterator it=children.begin();it!=children.end();++it) {
-		assert(it->which() == kExprIsCompound);
-		Compound &comp(boost::get<Compound>(*it));
+	for (std::deque<cas::Expr>::iterator it=children.begin();it!=children.end();++it) {
+		assert(it->which() == cas::kExprIsCompound);
+		cas::Compound &comp(boost::get<cas::Compound>(*it));
 		if (IsOutcome(comp)) {
 			int l1 = context->avail_l++;
 			int m0 = context->avail_n++;
@@ -321,9 +290,9 @@ bool EmitTrial(int n, std::deque<Expr> &children, Context *context)
 	}
 	*context->os << "  ret" << endl;
 	std::vector<int>::const_iterator v1it = v1.begin();
-	for (std::deque<Expr>::iterator it=children.begin();it!=children.end();++it) {
-		assert(it->which() == kExprIsCompound);
-		Compound &comp(boost::get<Compound>(*it));
+	for (std::deque<cas::Expr>::iterator it=children.begin();it!=children.end();++it) {
+		assert(it->which() == cas::kExprIsCompound);
+		cas::Compound &comp(boost::get<cas::Compound>(*it));
 		if (IsOutcome(comp)) {
 			*context->os << " L" << *v1it++ << ':' << endl;
 			if (!EmitCode(n, comp.children.at(0), context))
@@ -337,11 +306,11 @@ bool EmitTrial(int n, std::deque<Expr> &children, Context *context)
 	return bool(*context->os);
 }
 
-bool EmitCode(int n, Expr &sexp, Context *context)
+bool EmitCode(int n, cas::Expr &sexp, Context *context)
 {
 	int w = sexp.which();
 	switch (w) {
-	case kExprIsString:
+	case cas::kExprIsString:
 		{
 			const std::string &s(boost::get<std::string>(sexp));
 			if ( (s[0] == '%' || s[0] == '@') && isalpha(s[1]) ) {
@@ -351,9 +320,9 @@ bool EmitCode(int n, Expr &sexp, Context *context)
 			}
 		}
 		break;
-	case kExprIsCompound:
+	case cas::kExprIsCompound:
 		{
-			Compound &comp(boost::get<Compound>(sexp));
+			cas::Compound &comp(boost::get<cas::Compound>(sexp));
 			if (IsAt(comp)) {
 				return EmitAt(n, comp.children, context);
 			}
@@ -378,7 +347,7 @@ bool EmitCode(int n, Expr &sexp, Context *context)
 					 << context->uuid << ' ' << context->id << endl;
 				return false;
 			}
-			for (std::deque<Expr>::iterator it=comp.children.begin();it!=comp.children.end();++it) {
+			for (std::deque<cas::Expr>::iterator it=comp.children.begin();it!=comp.children.end();++it) {
 				int m = context->avail_n++;
 				if (!EmitCode(m, *it, context))
 					return false;
@@ -391,8 +360,8 @@ bool EmitCode(int n, Expr &sexp, Context *context)
 			*context->os << endl;
 		}
 		break;
-	case kExprIsInteger:
-	case kExprIsReal:
+	case cas::kExprIsInteger:
+	case cas::kExprIsReal:
 		{
 			*context->os << "  loadi $" << n << ' ';
 			boost::apply_visitor(Printer(context->os), sexp);
@@ -403,7 +372,7 @@ bool EmitCode(int n, Expr &sexp, Context *context)
 	return true;
 }
 
-bool EmitCode(const boost::uuids::uuid &uuid, const char *id, Expr &sexp,
+bool EmitCode(const boost::uuids::uuid &uuid, const char *id, cas::Expr &sexp,
 			  int *nod, std::ostream *os)
 {
 	std::unique_ptr<Context> context(new Context);
@@ -422,7 +391,7 @@ bool EmitCode(const boost::uuids::uuid &uuid, const char *id, Expr &sexp,
 /*
  * Precondition: given c's keyword is already set
  */
-void ReduceL(Compound &c, std::deque<Expr> &children)
+void ReduceL(cas::Compound &c, std::deque<cas::Expr> &children)
 {
 	size_t len = children.size();
 	assert(len >= 2);
@@ -432,7 +401,7 @@ void ReduceL(Compound &c, std::deque<Expr> &children)
 	}
 	c.children.push_back(children.back());
 	children.pop_back();
-	Compound c0;
+	cas::Compound c0;
 	c0.keyword = c.keyword;
 	ReduceL(c0, children);
 	c.children.push_front(c0);
@@ -441,7 +410,7 @@ void ReduceL(Compound &c, std::deque<Expr> &children)
 /*
  * Precondition: given c's keyword is already set
  */
-void ReduceR(Compound &c, std::deque<Expr> &children)
+void ReduceR(cas::Compound &c, std::deque<cas::Expr> &children)
 {
 	size_t len = children.size();
 	assert(len >= 2);
@@ -451,23 +420,23 @@ void ReduceR(Compound &c, std::deque<Expr> &children)
 	}
 	c.children.push_front(children.front());
 	children.pop_front();
-	Compound c1;
+	cas::Compound c1;
 	c1.keyword = c.keyword;
 	ReduceR(c1, children);
 	c.children.push_back(c1);
 }
 
-void Negate(Compound &c, Expr &lexp)
+void Negate(cas::Compound &c, cas::Expr &lexp)
 {
-	assert(lexp.which() == kExprIsCompound);
-	Compound &lcomp(boost::get<Compound>(lexp));
+	assert(lexp.which() == cas::kExprIsCompound);
+	cas::Compound &lcomp(boost::get<cas::Compound>(lexp));
 	const std::string &s(lcomp.keyword);
 
 	// in case of compound expression
 	if (s == "and") {
 		assert(lcomp.children.size() == 2);
-		Compound c0;
-		Compound c1;
+		cas::Compound c0;
+		cas::Compound c1;
 		Negate(c0, lcomp.children.at(0));
 		Negate(c1, lcomp.children.at(1));
 		c.keyword = "or";
@@ -477,8 +446,8 @@ void Negate(Compound &c, Expr &lexp)
 	}
 	if (s == "or") {
 		assert(lcomp.children.size() == 2);
-		Compound c0;
-		Compound c1;
+		cas::Compound c0;
+		cas::Compound c1;
 		Negate(c0, lcomp.children.at(0));
 		Negate(c1, lcomp.children.at(1));
 		c.keyword = "and";
@@ -526,12 +495,12 @@ void Negate(Compound &c, Expr &lexp)
 	assert(false); // FIXME
 }
 
-void Mean(Compound &c, std::deque<Expr> &children)
+void Mean(cas::Compound &c, std::deque<cas::Expr> &children)
 {
 	size_t len = children.size();
 	assert(len >= 2);
 	c.keyword = "divide";
-	Compound c1;
+	cas::Compound c1;
 	c1.keyword = "plus";
 	ReduceR(c1, children);
 	c.children.push_back(c1);
@@ -594,7 +563,7 @@ struct Lexer : lex::lexer<TLexer> {
 };
 
 template<typename TIterator>
-struct Grammar : qi::grammar<TIterator, Expr()> {
+struct Grammar : qi::grammar<TIterator, cas::Expr()> {
 
 	template<typename TTokenDef>
 	Grammar(TTokenDef const &td)
@@ -655,9 +624,9 @@ struct Grammar : qi::grammar<TIterator, Expr()> {
 		rest = ' ' >> expr [_val = _1];
 	}
 
-	qi::rule<TIterator, Expr()> expr, pexp, lexp, rest, prest, lrest;
-	qi::rule<TIterator, Compound()> compound, pcomp, lcomp;
-	qi::rule<TIterator, std::deque<Expr>()> seq0, seq1, pseq1, lseq1;
+	qi::rule<TIterator, cas::Expr()> expr, pexp, lexp, rest, prest, lrest;
+	qi::rule<TIterator, cas::Compound()> compound, pcomp, lcomp;
+	qi::rule<TIterator, std::deque<cas::Expr>()> seq0, seq1, pseq1, lseq1;
 };
 
 /*
@@ -682,7 +651,7 @@ public:
 	int Parse(const boost::uuids::uuid &uuid, const char *name, const char *math) {
 		base_iterator_type it = math;
 		base_iterator_type eit = math + std::strlen(math);
-		Expr expr;
+		cas::Expr expr;
 		bool r = lex::tokenize_and_parse(it, eit, tokens_, grammar_, expr);
 		if (!r || it != eit) {
 			cerr << "failed to parse: " << it << endl;

@@ -5,11 +5,11 @@
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
+#include <deque>
 #include <iostream>
 #include <iterator>
 #include <sstream>
 #include <string>
-#include <vector>
 
 #include <boost/spirit/include/lex_lexertl.hpp>
 #include <boost/spirit/include/phoenix.hpp>
@@ -255,7 +255,7 @@ struct Grammar : qi::grammar<TIterator, Compound()> {
 
 	qi::rule<TIterator, Expr()> expr, rest;
 	qi::rule<TIterator, Compound()> statement, equation, conditional, cexp, delay_expr, delta_time_expr, eq_expr, general_expr;
-	qi::rule<TIterator, std::vector<Expr>()> cseq, seq0, seq1;
+	qi::rule<TIterator, std::deque<Expr>()> cseq, seq0, seq1;
 };
 
 /*
