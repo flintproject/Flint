@@ -38,35 +38,34 @@ using std::strlen;
 namespace flint {
 namespace {
 
-const char kTreeQuery[] = "SELECT DISTINCT component FROM cellml_variables";
+class ComponentMap {
+public:
+	void Insert(const unsigned char *name, const boost::uuids::uuid &uuid) {
+		map_.insert(std::make_pair(std::string(reinterpret_cast<const char *>(name)), uuid));
+	}
+
+	bool Find(const char *c, boost::uuids::uuid *u) const {
+		auto it = map_.find(std::string(c));
+		if (it == map_.end()) {
+			cerr << "could not find component named "
+				 << c
+				 << endl;
+			return false;
+		}
+		*u = it->second;
+		return true;
+	}
+
+private:
+	std::unordered_map<std::string, boost::uuids::uuid> map_;
+};
 
 class TreeDumper {
 public:
-	explicit TreeDumper(sqlite3 *db)
-		: query_stmt_(NULL),
-		  insert_stmt_(NULL),
-		  cm_()
+	TreeDumper()
+		: query_stmt_(nullptr),
+		  insert_stmt_(nullptr)
 	{
-		int e;
-		if (!CreateTable(db, "spaces", "(space_id BLOB, name TEXT)"))
-			exit(EXIT_FAILURE);
-		if (!CreateTable(db, "variables", VARIABLES_SCHEMA))
-			exit(EXIT_FAILURE);
-		if (!CreateTable(db, "reaches", "(output_uuid BLOB, output_id INTEGER, input_uuid BLOB, input_id INTEGER, reduction INTEGER)"))
-			exit(EXIT_FAILURE);
-		if (!CreateView(db, "scopes", "SELECT space_id AS uuid, space_id, NULL AS label FROM spaces"))
-			exit(EXIT_FAILURE);
-		e = sqlite3_prepare_v2(db, kTreeQuery, -1, &query_stmt_, NULL);
-		if (e != SQLITE_OK) {
-			cerr << "failed to prepare statement: " << kTreeQuery << endl;
-			exit(EXIT_FAILURE);
-		}
-		e = sqlite3_prepare_v2(db, "INSERT INTO spaces VALUES (?, ?)",
-							   -1, &insert_stmt_, NULL);
-		if (e != SQLITE_OK) {
-			cerr << "failed to prepare statement: " << e << endl;
-			exit(EXIT_FAILURE);
-		}
 	}
 
 	~TreeDumper() {
@@ -74,9 +73,31 @@ public:
 		sqlite3_finalize(insert_stmt_);
 	}
 
-	bool Dump(const boost::filesystem::path &path) {
-		std::unique_ptr<UuidGenerator> gen(new UuidGenerator(path));
+	bool Dump(sqlite3 *db, const boost::filesystem::path &path, ComponentMap *cm) {
+		static const char kTreeQuery[] = "SELECT DISTINCT component FROM cellml_variables";
+
 		int e;
+		if (!CreateTable(db, "spaces", "(space_id BLOB, name TEXT)"))
+			return false;
+		if (!CreateTable(db, "variables", VARIABLES_SCHEMA))
+			return false;
+		if (!CreateTable(db, "reaches", "(output_uuid BLOB, output_id INTEGER, input_uuid BLOB, input_id INTEGER, reduction INTEGER)"))
+			return false;
+		if (!CreateView(db, "scopes", "SELECT space_id AS uuid, space_id, NULL AS label FROM spaces"))
+			return false;
+		e = sqlite3_prepare_v2(db, kTreeQuery, -1, &query_stmt_, NULL);
+		if (e != SQLITE_OK) {
+			cerr << "failed to prepare statement: " << kTreeQuery << endl;
+			return false;
+		}
+		e = sqlite3_prepare_v2(db, "INSERT INTO spaces VALUES (?, ?)",
+							   -1, &insert_stmt_, NULL);
+		if (e != SQLITE_OK) {
+			cerr << "failed to prepare statement: " << e << endl;
+			return false;
+		}
+
+		std::unique_ptr<UuidGenerator> gen(new UuidGenerator(path));
 		for (e = sqlite3_step(query_stmt_); e == SQLITE_ROW; e = sqlite3_step(query_stmt_)) {
 			const unsigned char *c = sqlite3_column_text(query_stmt_, 0);
 			size_t clen = strlen((const char *)c);
@@ -101,7 +122,7 @@ public:
 				return false;
 			}
 			sqlite3_reset(insert_stmt_);
-			cm_.insert(std::make_pair(string((const char *)c), uuid));
+			cm->Insert(c, uuid);
 		}
 		if (e != SQLITE_DONE) {
 			cerr << "failed to step statement: " << e << endl;
@@ -110,24 +131,9 @@ public:
 		return true;
 	}
 
-	bool Find(const char *c, boost::uuids::uuid *u) const {
-		ComponentMap::const_iterator it = cm_.find(string(c));
-		if (it == cm_.end()) {
-			cerr << "could not find component named "
-				 << c
-				 << endl;
-			return false;
-		}
-		*u = it->second;
-		return true;
-	}
-
 private:
-	typedef std::unordered_map<string, boost::uuids::uuid> ComponentMap;
-
 	sqlite3_stmt *query_stmt_;
 	sqlite3_stmt *insert_stmt_;
-	ComponentMap cm_;
 };
 
 class IvInserter : public db::EqInserter {
@@ -148,10 +154,10 @@ const char kOdeQuery[] = "SELECT component, body FROM cellml_maths WHERE body LI
 
 class OdeDumper : public db::StatementDriver {
 public:
-	OdeDumper(sqlite3 *db, const TreeDumper *tree_dumper)
+	OdeDumper(sqlite3 *db, const ComponentMap *cm)
 		: db::StatementDriver(db, kOdeQuery)
 		, ei_(db)
-		, tree_dumper_(tree_dumper)
+		, cm_(cm)
 		, dvm_()
 	{
 	}
@@ -172,7 +178,7 @@ public:
 				cerr << "empty body" << endl;
 				return false;
 			}
-			if (!tree_dumper_->Find((const char *)c, &u)) return false;
+			if (!cm_->Find((const char *)c, &u)) return false;
 
 			if (!ei_.Insert(u, (const char *)&body[1])) return false;
 
@@ -205,16 +211,16 @@ private:
 	typedef std::unordered_map<string, std::unordered_set<string> > DependentVariableMap;
 
 	EqInserter ei_;
-	const TreeDumper *tree_dumper_;
+	const ComponentMap *cm_;
 	DependentVariableMap dvm_;
 };
 
 class VariableDumper : public db::VariableInserter, public db::StatementDriver {
 public:
-	VariableDumper(sqlite3 *db, const TreeDumper *tree_dumper)
+	VariableDumper(sqlite3 *db, const ComponentMap *cm)
 		: db::VariableInserter("variables", db)
 		, db::StatementDriver(db, "SELECT rowid, component, name, initial_value FROM cellml_variables")
-		, tree_dumper_(tree_dumper)
+		, cm_(cm)
 	{
 	}
 
@@ -236,7 +242,7 @@ public:
 				return false;
 			}
 			const unsigned char *iv = sqlite3_column_text(stmt(), 3);
-			if (!tree_dumper_->Find((const char *)c, &u)) return false;
+			if (!cm_->Find((const char *)c, &u)) return false;
 			if (strcmp("time", (const char *)n) == 0) {
 				// ignore "time", because we suppose all of them are equivalent
 				// to the system "time"
@@ -258,17 +264,17 @@ public:
 	}
 
 private:
-	const TreeDumper *tree_dumper_;
+	const ComponentMap *cm_;
 };
 
 const char kIvQuery[] = "SELECT component, name, initial_value FROM cellml_variables WHERE initial_value IS NOT NULL";
 
 class IvDumper : public db::StatementDriver {
 public:
-	IvDumper(sqlite3 *db, const TreeDumper *tree_dumper)
+	IvDumper(sqlite3 *db, const ComponentMap *cm)
 		: db::StatementDriver(db, kIvQuery)
 		, ii_(db)
-		, tree_dumper_(tree_dumper)
+		, cm_(cm)
 	{
 	}
 
@@ -289,7 +295,7 @@ public:
 				return false;
 			}
 			const unsigned char *iv = sqlite3_column_text(stmt(), 2);
-			if (!tree_dumper_->Find((const char *)c, &u)) return false;
+			if (!cm_->Find((const char *)c, &u)) return false;
 
 			size_t blen = strlen((const char *)n) + strlen((const char *)iv);
 			std::unique_ptr<char[]> buf(new char[blen+8]);
@@ -305,18 +311,18 @@ public:
 
 private:
 	IvInserter ii_;
-	const TreeDumper *tree_dumper_;
+	const ComponentMap *cm_;
 };
 
 const char kFunctionQuery[] = "SELECT component, body FROM cellml_maths WHERE body LIKE ' (eq ~%%' ESCAPE '~'";
 
 class FunctionDumper : public db::StatementDriver {
 public:
-	FunctionDumper(sqlite3 *db, const TreeDumper *tree_dumper)
+	FunctionDumper(sqlite3 *db, const ComponentMap *cm)
 		: db::StatementDriver(db, kFunctionQuery)
 		, ei_(db)
 		, ii_(db)
-		, tree_dumper_(tree_dumper)
+		, cm_(cm)
 	{
 	}
 
@@ -336,7 +342,7 @@ public:
 				cerr << "empty body" << endl;
 				return false;
 			}
-			if (!tree_dumper_->Find((const char *)c, &u)) return false;
+			if (!cm_->Find((const char *)c, &u)) return false;
 
 			const char *math = (const char *)&body[1];
 			if (!ei_.Insert(u, math)) return false;
@@ -352,7 +358,7 @@ public:
 private:
 	EqInserter ei_;
 	IvInserter ii_;
-	const TreeDumper *tree_dumper_;
+	const ComponentMap *cm_;
 };
 
 const char kReachQuery[] = "SELECT "
@@ -365,10 +371,10 @@ const char kReachQuery[] = "SELECT "
 
 class ReachDumper : public db::StatementDriver {
 public:
-	ReachDumper(sqlite3 *db, const TreeDumper *tree_dumper)
+	ReachDumper(sqlite3 *db, const ComponentMap *cm)
 		: db::StatementDriver(db, kReachQuery)
 		, driver_(new db::ReachDriver(db))
-		, tree_dumper_(tree_dumper)
+		, cm_(cm)
 	{
 	}
 
@@ -386,8 +392,8 @@ public:
 			const unsigned char *n2 = sqlite3_column_text(stmt(), 7);
 			const unsigned char *pub2 = sqlite3_column_text(stmt(), 8);
 			const unsigned char *pri2 = sqlite3_column_text(stmt(), 9);
-			if (!tree_dumper_->Find((const char *)c1, &u1)) return false;
-			if (!tree_dumper_->Find((const char *)c2, &u2)) return false;
+			if (!cm_->Find((const char *)c1, &u1)) return false;
+			if (!cm_->Find((const char *)c2, &u2)) return false;
 
 			if ( ( (pub1 && strcmp((const char *)pub1, "out") == 0) ||
 				   (pri1 && strcmp((const char *)pri1, "out") == 0) ) &&
@@ -419,7 +425,7 @@ public:
 
 private:
 	std::unique_ptr<db::ReachDriver> driver_;
-	const TreeDumper *tree_dumper_;
+	const ComponentMap *cm_;
 };
 
 } // namespace
@@ -437,24 +443,28 @@ bool TranslateCellml(sqlite3 *db)
 	if (!CreateTable(db, "input_eqs", "(uuid BLOB, math TEXT)"))
 		return false;
 
-	std::unique_ptr<TreeDumper> tree_dumper(new TreeDumper(db));
-	if (!tree_dumper->Dump(path)) return false;
+	std::unique_ptr<ComponentMap> cm(new ComponentMap);
+	{
+		TreeDumper dumper;
+		if (!dumper.Dump(db, path, cm.get()))
+			return false;
+	}
 
-	std::unique_ptr<OdeDumper> ode_dumper(new OdeDumper(db, tree_dumper.get()));
+	std::unique_ptr<OdeDumper> ode_dumper(new OdeDumper(db, cm.get()));
 	if (!ode_dumper->Dump()) return false;
 
 	{
-		std::unique_ptr<VariableDumper> dumper(new VariableDumper(db, tree_dumper.get()));
+		std::unique_ptr<VariableDumper> dumper(new VariableDumper(db, cm.get()));
 		if (!dumper->Dump(ode_dumper.get())) return false;
 	}
 
-	std::unique_ptr<IvDumper> iv_dumper(new IvDumper(db, tree_dumper.get()));
+	std::unique_ptr<IvDumper> iv_dumper(new IvDumper(db, cm.get()));
 	if (!iv_dumper->Dump()) return false;
 
-	std::unique_ptr<FunctionDumper> function_dumper(new FunctionDumper(db, tree_dumper.get()));
+	std::unique_ptr<FunctionDumper> function_dumper(new FunctionDumper(db, cm.get()));
 	if (!function_dumper->Dump()) return false;
 
-	std::unique_ptr<ReachDumper> reach_dumper(new ReachDumper(db, tree_dumper.get()));
+	std::unique_ptr<ReachDumper> reach_dumper(new ReachDumper(db, cm.get()));
 	if (!reach_dumper->Dump()) return false;
 
 	if (!CreateLayout(db))
