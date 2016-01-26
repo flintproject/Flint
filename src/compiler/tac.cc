@@ -43,9 +43,9 @@ public:
 
 	void operator()(const cas::Compound &c) const {
 		*os_ << '(' << c.keyword.c_str();
-		std::deque<cas::Expr>::const_iterator bit = c.children.begin();
-		std::deque<cas::Expr>::const_iterator eit = c.children.end();
-		for (std::deque<cas::Expr>::const_iterator it=bit;it!=eit;++it) {
+		auto bit = c.children.cbegin();
+		auto eit = c.children.cend();
+		for (auto it=bit;it!=eit;++it) {
 			os_->put(' ');
 			boost::apply_visitor(*this, *it);
 		}
@@ -241,8 +241,8 @@ bool EmitPiecewise(int n, std::deque<cas::Expr> &children, Context *context)
 	}
 	if (!otherwise)
 		*context->os << "  ret" << endl;
-	std::vector<int>::const_iterator v1it = v1.begin();
-	for (std::deque<cas::Expr>::iterator it=children.begin();it!=children.end();++it) {
+	auto v1it = v1.cbegin();
+	for (auto it=children.begin();it!=children.end();++it) {
 		assert(it->which() == cas::kExprIsCompound);
 		cas::Compound &comp(boost::get<cas::Compound>(*it));
 		if (IsPiece(comp)) {
@@ -270,7 +270,7 @@ bool EmitTrial(int n, std::deque<cas::Expr> &children, Context *context)
 				 << "  loadi $" << p1 << " 1" << endl
 				 << "  $" << p << " = ($uniform_variate $" << p0 << " $" << p1 << ')' << endl;
 	std::vector<int> v1;
-	for (std::deque<cas::Expr>::iterator it=children.begin();it!=children.end();++it) {
+	for (auto it=children.begin();it!=children.end();++it) {
 		assert(it->which() == cas::kExprIsCompound);
 		cas::Compound &comp(boost::get<cas::Compound>(*it));
 		if (IsOutcome(comp)) {
@@ -289,8 +289,8 @@ bool EmitTrial(int n, std::deque<cas::Expr> &children, Context *context)
 		}
 	}
 	*context->os << "  ret" << endl;
-	std::vector<int>::const_iterator v1it = v1.begin();
-	for (std::deque<cas::Expr>::iterator it=children.begin();it!=children.end();++it) {
+	auto v1it = v1.cbegin();
+	for (auto it=children.begin();it!=children.end();++it) {
 		assert(it->which() == cas::kExprIsCompound);
 		cas::Compound &comp(boost::get<cas::Compound>(*it));
 		if (IsOutcome(comp)) {
@@ -347,7 +347,7 @@ bool EmitCode(int n, cas::Expr &sexp, Context *context)
 					 << context->uuid << ' ' << context->id << endl;
 				return false;
 			}
-			for (std::deque<cas::Expr>::iterator it=comp.children.begin();it!=comp.children.end();++it) {
+			for (auto it=comp.children.begin();it!=comp.children.end();++it) {
 				int m = context->avail_n++;
 				if (!EmitCode(m, *it, context))
 					return false;
