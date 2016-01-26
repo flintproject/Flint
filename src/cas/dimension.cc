@@ -53,7 +53,7 @@ bool IsBinary(const Compound &c)
 
 class Context {
 public:
-	Context(VariableMap *vm, const boost::uuids::uuid &uuid)
+	Context(const VariableMap *vm, const boost::uuids::uuid &uuid)
 		: vm_(vm)
 		, uuid_(uuid)
 	{
@@ -554,7 +554,7 @@ private:
 		return true;
 	}
 
-	VariableMap *vm_;
+	const VariableMap *vm_;
 	boost::uuids::uuid uuid_;
 };
 
@@ -681,7 +681,7 @@ bool Context::Analyse(Expr *expr, int *col, int *row)
 }
 
 bool DimensionAnalyzer::Analyse(const boost::uuids::uuid &uuid, Expr *expr,
-								int *col, int *row)
+								int *col, int *row) const
 {
 	assert(expr);
 	std::unique_ptr<Context> context(new Context(vm_.get(), uuid));

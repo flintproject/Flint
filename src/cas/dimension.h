@@ -24,7 +24,7 @@ public:
 	 * Return true in case of success, false otherwise.
 	 */
 	bool Analyse(const boost::uuids::uuid &uuid, Expr *expr,
-				 int *col, int *row);
+				 int *col, int *row) const;
 
 	bool Load(sqlite3 *db);
 
