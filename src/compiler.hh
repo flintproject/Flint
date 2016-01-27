@@ -5,6 +5,11 @@
 #include "sqlite3.h"
 
 namespace flint {
+
+namespace cas {
+class DimensionAnalyzer;
+}
+
 namespace compiler {
 
 enum class Method {
@@ -14,15 +19,25 @@ enum class Method {
 	kRk4
 };
 
-/*
- * Note that db is for read only.
- */
-bool Compile(sqlite3 *db, const char *table, Method method, const char *output);
+class Compiler {
+public:
+	explicit Compiler(const cas::DimensionAnalyzer *da);
 
-/*
- * Note that db is for read only.
- */
-bool GenerateBytecode(sqlite3 *db, const char *output);
+	~Compiler();
+
+	/*
+	 * Note that db is for read only.
+	 */
+	bool Compile(sqlite3 *db, const char *table, Method method, const char *output);
+
+	/*
+	 * Note that db is for read only.
+	 */
+	bool GenerateBytecode(sqlite3 *db, const char *output);
+
+private:
+	const cas::DimensionAnalyzer *da_;
+};
 
 }
 }

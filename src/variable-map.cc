@@ -51,7 +51,14 @@ const Variable *VariableMap::Find(const boost::uuids::uuid &u,
 	auto it = m_.find(u);
 	if (it == m_.end())
 		return nullptr;
-	auto vit = it->second.find(name);
+	std::string key; // store name's stem only
+	size_t pos = name.find('#', 1);
+	if (pos == std::string::npos) {
+		key = name;
+	} else {
+		key = name.substr(0, pos);
+	}
+	auto vit = it->second.find(key);
 	if (vit == it->second.end())
 		return nullptr;
 	return vit->second.get();

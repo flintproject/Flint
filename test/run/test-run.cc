@@ -33,7 +33,7 @@ BOOST_AUTO_TEST_CASE(x_missing_name) {
 	test::StderrCapture sc;
 	BOOST_CHECK(!run::Run(input_.get(), s));
 	BOOST_CHECK_EQUAL(sc.Get(),
-					  "missing name: y\n"
+					  "failed to find variable: y\n"
 					  " in c5e5c13e-34c9-4e2b-b8fd-b5fe98807134\n");
 	PopWorkingDirectory();
 }

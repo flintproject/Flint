@@ -13,6 +13,7 @@
 #include <string>
 #include <vector>
 
+#include "cas/dimension.h"
 #include "cellml.hh"
 #include "compiler.hh"
 #include "database.h"
@@ -123,8 +124,14 @@ public:
 			return false;
 		if (!layout::Generate(db, layout_.get()))
 			return false;
-		if (!compiler::Compile(db, "input_ivs", compiler::Method::kAssign, const_bc_.get()))
-			return false;
+		{
+			cas::DimensionAnalyzer da;
+			if (!da.Load(db))
+				return false;
+			compiler::Compiler c(&da);
+			if (!c.Compile(db, "input_ivs", compiler::Method::kAssign, const_bc_.get()))
+				return false;
+		}
 		return runtime::Init(db, 0, layout_.get(), const_bc_.get(), init_.get());
 	}
 
@@ -141,12 +148,18 @@ public:
 			return false;
 		if (!layout::Generate(db, layout_.get()))
 			return false;
-		if (!compiler::Compile(db, "input_ivs", compiler::Method::kAssign, const_bc_.get()))
-			return false;
-		if (!compiler::Compile(db, "after_eqs", compiler::Method::kEvent, after_bc_.get()))
-			return false;
-		if (!compiler::Compile(db, "before_eqs", compiler::Method::kEvent, before_bc_.get()))
-			return false;
+		{
+			cas::DimensionAnalyzer da;
+			if (!da.Load(db))
+				return false;
+			compiler::Compiler c(&da);
+			if (!c.Compile(db, "input_ivs", compiler::Method::kAssign, const_bc_.get()))
+				return false;
+			if (!c.Compile(db, "after_eqs", compiler::Method::kEvent, after_bc_.get()))
+				return false;
+			if (!c.Compile(db, "before_eqs", compiler::Method::kEvent, before_bc_.get()))
+				return false;
+		}
 		return runtime::Init(db, seed, layout_.get(), const_bc_.get(), init_.get());
 	}
 
@@ -156,8 +169,14 @@ public:
 			return false;
 		if (!layout::Generate(db, layout_.get()))
 			return false;
-		if (!compiler::Compile(db, "input_ivs", compiler::Method::kAssign, const_bc_.get()))
-			return false;
+		{
+			cas::DimensionAnalyzer da;
+			if (!da.Load(db))
+				return false;
+			compiler::Compiler c(&da);
+			if (!c.Compile(db, "input_ivs", compiler::Method::kAssign, const_bc_.get()))
+				return false;
+		}
 		return runtime::Init(db, 0, layout_.get(), const_bc_.get(), init_.get());
 	}
 

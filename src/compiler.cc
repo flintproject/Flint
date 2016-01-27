@@ -5,6 +5,7 @@
 #include <cstdio>
 #include <fstream>
 
+#include "cas/dimension.h"
 #include "compiler/bcc.h"
 #include "compiler/sort.h"
 #include "compiler/tac.h"
@@ -17,7 +18,13 @@ using std::endl;
 namespace flint {
 namespace compiler {
 
-bool Compile(sqlite3 *db, const char *table, Method method, const char *output)
+Compiler::Compiler(const cas::DimensionAnalyzer *da)
+	: da_(da)
+{}
+
+Compiler::~Compiler() = default;
+
+bool Compiler::Compile(sqlite3 *db, const char *table, Method method, const char *output)
 {
 	db::Driver tmp(":memory:");
 	switch (method) {
@@ -41,11 +48,11 @@ bool Compile(sqlite3 *db, const char *table, Method method, const char *output)
 	return GenerateBytecode(tmp.db(), output);
 }
 
-bool GenerateBytecode(sqlite3 *db, const char *output)
+bool Compiler::GenerateBytecode(sqlite3 *db, const char *output)
 {
 	if (!compiler::sort::Sort(db))
 		return false;
-	if (!compiler::tac::Tac(db))
+	if (!compiler::tac::Tac(da_, db))
 		return false;
 	std::ofstream ofs(output, std::ios::binary);
 	if (!ofs) {

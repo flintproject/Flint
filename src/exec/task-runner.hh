@@ -13,11 +13,18 @@
 #include "sqlite3.h"
 
 namespace flint {
+
+namespace cas {
+class DimensionAnalyzer;
+}
+
 namespace exec {
 
 class TaskRunner {
 public:
 	TaskRunner(int id, char *path);
+
+	~TaskRunner();
 
 	const char *dir() const {return dir_.get();}
 	const char *layout() const {return layout_.get();}
@@ -27,6 +34,8 @@ public:
 
 	sqlite3 *GetDatabase();
 	sqlite3 *GetModelDatabase();
+
+	const cas::DimensionAnalyzer *GetDimensionAnalyzer() const;
 
 	void *GetProgressAddress(int job_id);
 
@@ -43,6 +52,7 @@ private:
 	std::unique_ptr<db::ReadOnlyDriver> modeldb_driver_;
 	std::unique_ptr<boost::interprocess::mapped_region> progress_region_;
 	std::unique_ptr<task::ConfigReader> reader_;
+	std::unique_ptr<cas::DimensionAnalyzer> dimension_analyzer_;
 };
 
 }

@@ -5,10 +5,15 @@
 #include "sqlite3.h"
 
 namespace flint {
+
+namespace cas {
+class DimensionAnalyzer;
+}
+
 namespace compiler {
 namespace tac {
 
-bool Tac(sqlite3 *db);
+bool Tac(const cas::DimensionAnalyzer *da, sqlite3 *db);
 
 }
 }

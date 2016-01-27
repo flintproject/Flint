@@ -1,6 +1,10 @@
 /* -*- Mode: C++; tab-width: 4; indent-tabs-mode: t; c-basic-offset: 4 -*- vim:set ts=4 sw=4 sts=4 noet: */
 #include "compiler/tac.h"
 
+#include "cas/dimension.h"
+#include "db/helper.h"
+#include "db/variable-inserter.h"
+
 #define BOOST_TEST_MODULE test_tac
 #include "test.hh"
 
@@ -8,12 +12,30 @@ struct F : public test::MemoryFixture {
 	F()
 		: db(driver_.db())
 		, sql(db)
+		, id(0)
+		, vi()
+		, da(new cas::DimensionAnalyzer)
 	{
+		sql.Exec("CREATE TABLE variables " VARIABLES_SCHEMA);
+		vi.reset(new db::VariableInserter("variables", db));
 		sql.Exec("CREATE TABLE sorts (uuid BLOB, name TEXT, math TEXT)");
+	}
+
+	void AddVariable(const char *name)
+	{
+		BOOST_CHECK(vi->Insert('v', ++id, name));
 	}
 
 	void Setup(const char *math)
 	{
+		AddVariable("a");
+		AddVariable("b");
+		AddVariable("c");
+		AddVariable("x");
+		AddVariable("y");
+		AddVariable("z");
+		BOOST_CHECK(da->Load(db));
+
 		std::ostringstream oss;
 		oss << "INSERT INTO sorts VALUES (X'00000000000000000000000000000000', '%x', '"
 			<< math
@@ -36,13 +58,16 @@ struct F : public test::MemoryFixture {
 
 	sqlite3 *db;
 	test::Sql sql;
+	int id;
+	std::unique_ptr<db::VariableInserter> vi;
+	std::unique_ptr<cas::DimensionAnalyzer> da;
 };
 
 BOOST_FIXTURE_TEST_SUITE(test_tac, F)
 
 BOOST_AUTO_TEST_CASE(Literal) {
 	Setup("2.71828182845904523536028747135266249775724709369995");
-	BOOST_CHECK(compiler::tac::Tac(db));
+	BOOST_CHECK(compiler::tac::Tac(da.get(), db));
 	Check(1,
 		  "  loadi $0 2.71828182845904523536028747135266249775724709369995\n"
 		  "  store %x $0\n"
@@ -51,7 +76,7 @@ BOOST_AUTO_TEST_CASE(Literal) {
 
 BOOST_AUTO_TEST_CASE(Delay) {
 	Setup("($lookback %y (minus %time %z))");
-	BOOST_CHECK(compiler::tac::Tac(db));
+	BOOST_CHECK(compiler::tac::Tac(da.get(), db));
 	Check(4,
 		  "  load $2 %time\n"
 		  "  load $3 %z\n"
@@ -63,7 +88,7 @@ BOOST_AUTO_TEST_CASE(Delay) {
 
 BOOST_AUTO_TEST_CASE(DeltaTime) {
 	Setup("($lookback %y (minus %time @dt))");
-	BOOST_CHECK(compiler::tac::Tac(db));
+	BOOST_CHECK(compiler::tac::Tac(da.get(), db));
 	Check(4,
 		  "  load $2 %time\n"
 		  "  load $3 @dt\n"
@@ -75,7 +100,7 @@ BOOST_AUTO_TEST_CASE(DeltaTime) {
 
 BOOST_AUTO_TEST_CASE(ExponentialVariate) {
 	Setup("($exponential_variate %y)");
-	BOOST_CHECK(compiler::tac::Tac(db));
+	BOOST_CHECK(compiler::tac::Tac(da.get(), db));
 	Check(2,
 		  "  load $1 %y\n"
 		  "  $0 = ($exponential_variate $1)\n"
@@ -85,7 +110,7 @@ BOOST_AUTO_TEST_CASE(ExponentialVariate) {
 
 BOOST_AUTO_TEST_CASE(GammaVariate) {
 	Setup("($gamma_variate %y %z)");
-	BOOST_CHECK(compiler::tac::Tac(db));
+	BOOST_CHECK(compiler::tac::Tac(da.get(), db));
 	Check(3,
 		  "  load $1 %y\n"
 		  "  load $2 %z\n"
@@ -96,7 +121,7 @@ BOOST_AUTO_TEST_CASE(GammaVariate) {
 
 BOOST_AUTO_TEST_CASE(GaussVariate) {
 	Setup("($gauss_variate %y %z)");
-	BOOST_CHECK(compiler::tac::Tac(db));
+	BOOST_CHECK(compiler::tac::Tac(da.get(), db));
 	Check(3,
 		  "  load $1 %y\n"
 		  "  load $2 %z\n"
@@ -107,7 +132,7 @@ BOOST_AUTO_TEST_CASE(GaussVariate) {
 
 BOOST_AUTO_TEST_CASE(LognormalVariate) {
 	Setup("($lognormal_variate %y %z)");
-	BOOST_CHECK(compiler::tac::Tac(db));
+	BOOST_CHECK(compiler::tac::Tac(da.get(), db));
 	Check(3,
 		  "  load $1 %y\n"
 		  "  load $2 %z\n"
@@ -118,7 +143,7 @@ BOOST_AUTO_TEST_CASE(LognormalVariate) {
 
 BOOST_AUTO_TEST_CASE(UniformVariate) {
 	Setup("($uniform_variate %y %z %a %b)");
-	BOOST_CHECK(compiler::tac::Tac(db));
+	BOOST_CHECK(compiler::tac::Tac(da.get(), db));
 	Check(3,
 		  "  load $1 %y\n"
 		  "  load $2 %z\n"
@@ -129,7 +154,7 @@ BOOST_AUTO_TEST_CASE(UniformVariate) {
 
 BOOST_AUTO_TEST_CASE(WeibullVariate) {
 	Setup("($weibull_variate %a %b)");
-	BOOST_CHECK(compiler::tac::Tac(db));
+	BOOST_CHECK(compiler::tac::Tac(da.get(), db));
 	Check(3,
 		  "  load $1 %a\n"
 		  "  load $2 %b\n"
@@ -140,7 +165,7 @@ BOOST_AUTO_TEST_CASE(WeibullVariate) {
 
 BOOST_AUTO_TEST_CASE(PoissonVariate) {
 	Setup("($poisson_variate %y)");
-	BOOST_CHECK(compiler::tac::Tac(db));
+	BOOST_CHECK(compiler::tac::Tac(da.get(), db));
 	Check(2,
 		  "  load $1 %y\n"
 		  "  $0 = ($poisson_variate $1)\n"
@@ -151,7 +176,7 @@ BOOST_AUTO_TEST_CASE(PoissonVariate) {
 
 BOOST_AUTO_TEST_CASE(Log1) {
 	Setup("(log (plus %z 1))");
-	BOOST_CHECK(compiler::tac::Tac(db));
+	BOOST_CHECK(compiler::tac::Tac(da.get(), db));
 	Check(4,
 		  "  load $2 %z\n"
 		  "  loadi $3 1\n"
@@ -163,7 +188,7 @@ BOOST_AUTO_TEST_CASE(Log1) {
 
 BOOST_AUTO_TEST_CASE(Log2) {
 	Setup("(log (logbase 2) %y)");
-	BOOST_CHECK(compiler::tac::Tac(db));
+	BOOST_CHECK(compiler::tac::Tac(da.get(), db));
 	Check(3,
 		  "  loadi $1 2\n"
 		  "  load $2 %y\n"
@@ -174,7 +199,7 @@ BOOST_AUTO_TEST_CASE(Log2) {
 
 BOOST_AUTO_TEST_CASE(Neq) {
 	Setup("(piecewise (piece %y (neq %a %b)) (otherwise %z))");
-	BOOST_CHECK(compiler::tac::Tac(db));
+	BOOST_CHECK(compiler::tac::Tac(da.get(), db));
 	Check(4,
 		  "  load $2 %a\n"
 		  "  load $3 %b\n"
@@ -192,7 +217,7 @@ BOOST_AUTO_TEST_CASE(Neq) {
 
 BOOST_AUTO_TEST_CASE(And) {
 	Setup("(piecewise (piece %y (and (leq %a %b) (leq %b %c))) (otherwise %z))");
-	BOOST_CHECK(compiler::tac::Tac(db));
+	BOOST_CHECK(compiler::tac::Tac(da.get(), db));
 	Check(6,
 		  "  load $2 %a\n"
 		  "  load $3 %b\n"
@@ -217,7 +242,7 @@ BOOST_AUTO_TEST_CASE(And) {
 
 BOOST_AUTO_TEST_CASE(Or) {
 	Setup("(piecewise (piece %y (or (leq %a %b) (leq %b %c))) (otherwise %z))");
-	BOOST_CHECK(compiler::tac::Tac(db));
+	BOOST_CHECK(compiler::tac::Tac(da.get(), db));
 	Check(6,
 		  "  load $2 %a\n"
 		  "  load $3 %b\n"
@@ -239,7 +264,7 @@ BOOST_AUTO_TEST_CASE(Or) {
 
 BOOST_AUTO_TEST_CASE(Xor) {
 	Setup("(piecewise (piece %y (xor (leq %a %b) (leq %b %c))) (otherwise %z))");
-	BOOST_CHECK(compiler::tac::Tac(db));
+	BOOST_CHECK(compiler::tac::Tac(da.get(), db));
 	Check(8,
 		  "  load $3 %a\n"
 		  "  load $4 %b\n"
@@ -261,7 +286,7 @@ BOOST_AUTO_TEST_CASE(Xor) {
 
 BOOST_AUTO_TEST_CASE(NotAnd) {
 	Setup("(piecewise (piece %y (not (and (leq %a %b) (leq %b %c)))) (otherwise %z))");
-	BOOST_CHECK(compiler::tac::Tac(db));
+	BOOST_CHECK(compiler::tac::Tac(da.get(), db));
 	Check(6,
 		  "  load $2 %a\n"
 		  "  load $3 %b\n"
@@ -283,7 +308,7 @@ BOOST_AUTO_TEST_CASE(NotAnd) {
 
 BOOST_AUTO_TEST_CASE(NotEq) {
 	Setup("(piecewise (piece %y (not (eq %a %b))) (otherwise %z))");
-	BOOST_CHECK(compiler::tac::Tac(db));
+	BOOST_CHECK(compiler::tac::Tac(da.get(), db));
 	Check(4,
 		  "  load $2 %a\n"
 		  "  load $3 %b\n"
@@ -301,7 +326,7 @@ BOOST_AUTO_TEST_CASE(NotEq) {
 
 BOOST_AUTO_TEST_CASE(NotGeq) {
 	Setup("(piecewise (piece %y (not (geq %a %b))) (otherwise %z))");
-	BOOST_CHECK(compiler::tac::Tac(db));
+	BOOST_CHECK(compiler::tac::Tac(da.get(), db));
 	Check(4,
 		  "  load $2 %a\n"
 		  "  load $3 %b\n"
@@ -319,7 +344,7 @@ BOOST_AUTO_TEST_CASE(NotGeq) {
 
 BOOST_AUTO_TEST_CASE(NotGt) {
 	Setup("(piecewise (piece %y (not (gt %a %b))) (otherwise %z))");
-	BOOST_CHECK(compiler::tac::Tac(db));
+	BOOST_CHECK(compiler::tac::Tac(da.get(), db));
 	Check(4,
 		  "  load $2 %a\n"
 		  "  load $3 %b\n"
@@ -337,7 +362,7 @@ BOOST_AUTO_TEST_CASE(NotGt) {
 
 BOOST_AUTO_TEST_CASE(NotLeq) {
 	Setup("(piecewise (piece %y (not (leq %a %b))) (otherwise %z))");
-	BOOST_CHECK(compiler::tac::Tac(db));
+	BOOST_CHECK(compiler::tac::Tac(da.get(), db));
 	Check(4,
 		  "  load $2 %a\n"
 		  "  load $3 %b\n"
@@ -355,7 +380,7 @@ BOOST_AUTO_TEST_CASE(NotLeq) {
 
 BOOST_AUTO_TEST_CASE(NotLt) {
 	Setup("(piecewise (piece %y (not (lt %a %b))) (otherwise %z))");
-	BOOST_CHECK(compiler::tac::Tac(db));
+	BOOST_CHECK(compiler::tac::Tac(da.get(), db));
 	Check(4,
 		  "  load $2 %a\n"
 		  "  load $3 %b\n"
@@ -373,7 +398,7 @@ BOOST_AUTO_TEST_CASE(NotLt) {
 
 BOOST_AUTO_TEST_CASE(NotNeq) {
 	Setup("(piecewise (piece %y (not (neq %a %b))) (otherwise %z))");
-	BOOST_CHECK(compiler::tac::Tac(db));
+	BOOST_CHECK(compiler::tac::Tac(da.get(), db));
 	Check(4,
 		  "  load $2 %a\n"
 		  "  load $3 %b\n"
@@ -391,7 +416,7 @@ BOOST_AUTO_TEST_CASE(NotNeq) {
 
 BOOST_AUTO_TEST_CASE(NotNot) {
 	Setup("(piecewise (piece %y (not (not (leq %a %b)))) (otherwise %z))");
-	BOOST_CHECK(compiler::tac::Tac(db));
+	BOOST_CHECK(compiler::tac::Tac(da.get(), db));
 	Check(4,
 		  "  load $2 %a\n"
 		  "  load $3 %b\n"
@@ -409,7 +434,7 @@ BOOST_AUTO_TEST_CASE(NotNot) {
 
 BOOST_AUTO_TEST_CASE(NotOr) {
 	Setup("(piecewise (piece %y (not (or (leq %a %b) (leq %b %c)))) (otherwise %z))");
-	BOOST_CHECK(compiler::tac::Tac(db));
+	BOOST_CHECK(compiler::tac::Tac(da.get(), db));
 	Check(6,
 		  "  load $2 %a\n"
 		  "  load $3 %b\n"
@@ -434,7 +459,7 @@ BOOST_AUTO_TEST_CASE(NotOr) {
 
 BOOST_AUTO_TEST_CASE(NotXor) {
 	Setup("(piecewise (piece %y (not (xor (leq %a %b) (leq %b %c)))) (otherwise %z))");
-	BOOST_CHECK(compiler::tac::Tac(db));
+	BOOST_CHECK(compiler::tac::Tac(da.get(), db));
 	Check(8,
 		  "  load $3 %a\n"
 		  "  load $4 %b\n"
@@ -456,7 +481,7 @@ BOOST_AUTO_TEST_CASE(NotXor) {
 
 BOOST_AUTO_TEST_CASE(Trial) {
 	Setup("($trial ($outcome 1 0.1) ($outcome 2 0.3) ($outcome (plus %y 1) 0.9))");
-	BOOST_CHECK(compiler::tac::Tac(db));
+	BOOST_CHECK(compiler::tac::Tac(da.get(), db));
 	Check(12,
 		  "  loadi $1 0\n"
 		  "  loadi $2 1\n"

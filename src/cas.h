@@ -90,6 +90,7 @@ public:
 private:
 };
 
+class DimensionAnalyzer;
 class Printer;
 
 class System {
@@ -130,6 +131,7 @@ private:
 	typedef std::map<boost::uuids::uuid, std::vector<Ode> > OdeMap;
 	typedef std::map<boost::uuids::uuid, std::vector<Def> > DefMap;
 
+	std::unique_ptr<DimensionAnalyzer> da_;
 	std::unique_ptr<Printer> printer_;
 	std::set<boost::uuids::uuid> uuids_;
 	OdeMap odes_;

@@ -8,6 +8,7 @@
 
 #include <boost/uuid/uuid_io.hpp>
 
+#include "cas/dimension.h"
 #include "cas/icg.h"
 #include "cas/printer.h"
 #include "compiler.hh"
@@ -26,8 +27,9 @@ System::~System() = default;
 
 bool System::Load(sqlite3 *db)
 {
+	da_.reset(new DimensionAnalyzer);
 	printer_.reset(new Printer);
-	return printer_->Load(db);
+	return da_->Load(db) && printer_->Load(db);
 }
 
 void System::Add(const boost::uuids::uuid &uuid, Ode ode)
@@ -73,7 +75,8 @@ bool System::SaveAuxVarBc(const char *file)
 	db::Driver driver(":memory:");
 	if (!GenerateAuxVarAst(driver.db()))
 		return false;
-	return compiler::GenerateBytecode(driver.db(), file);
+	compiler::Compiler c(da_.get());
+	return c.GenerateBytecode(driver.db(), file);
 }
 
 bool System::GenerateOdeMassAst(sqlite3 *db)
@@ -107,7 +110,8 @@ bool System::SaveOdeMassBc(const char *file)
 	db::Driver driver(":memory:");
 	if (!GenerateOdeMassAst(driver.db()))
 		return false;
-	return compiler::GenerateBytecode(driver.db(), file);
+	compiler::Compiler c(da_.get());
+	return c.GenerateBytecode(driver.db(), file);
 }
 
 bool System::GenerateOdeRhsAst(sqlite3 *db)
@@ -141,7 +145,8 @@ bool System::SaveOdeRhsBc(const char *file)
 	db::Driver driver(":memory:");
 	if (!GenerateOdeRhsAst(driver.db()))
 		return false;
-	return compiler::GenerateBytecode(driver.db(), file);
+	compiler::Compiler c(da_.get());
+	return c.GenerateBytecode(driver.db(), file);
 }
 
 bool System::FindMass(const boost::uuids::uuid &uuid, const std::string &name,

@@ -13,6 +13,7 @@
 #define BOOST_FILESYSTEM_NO_DEPRECATED
 #include <boost/filesystem.hpp>
 
+#include "cas/dimension.h"
 #include "compiler.hh"
 #include "db/driver.hh"
 #include "db/statement-driver.hh"
@@ -128,8 +129,14 @@ bool Run(const char *input, int size)
 		return false;
 	if (!filter::Isdh("filter", "isdh"))
 		return false;
-	if (!compiler::Compile(db, "input_eqs", reader.GetMethod(), "bc"))
-		return false;
+	{
+		cas::DimensionAnalyzer da;
+		if (!da.Load(db))
+			return false;
+		compiler::Compiler c(&da);
+		if (!c.Compile(db, "input_eqs", reader.GetMethod(), "bc"))
+			return false;
+	}
 	boost::filesystem::path output_path = GetPathFromUtf8(option.output_filename().c_str());
 	std::string output_file = output_path.string();
 	return job::Job(".", "0", nullptr, "init", output_file.c_str(), reader, db);

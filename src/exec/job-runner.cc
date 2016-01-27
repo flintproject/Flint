@@ -50,8 +50,9 @@ JobRunner::JobRunner(TaskRunner *tr, int id)
 bool JobRunner::Run()
 {
 	{
+		compiler::Compiler c(tr_->GetDimensionAnalyzer());
 		db::ReadOnlyDriver g(generated_db_.get());
-		if (!compiler::Compile(g.db(), "parameter_eqs", compiler::Method::kAssign, generated_bc_.get()))
+		if (!c.Compile(g.db(), "parameter_eqs", compiler::Method::kAssign, generated_bc_.get()))
 			return false;
 	}
 	// TODO: give a proper seed if desired

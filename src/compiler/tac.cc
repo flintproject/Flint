@@ -20,6 +20,7 @@
 #include <boost/variant/recursive_variant.hpp>
 
 #include "cas.h"
+#include "cas/dimension.h"
 #include "db/query.h"
 #include "db/tac-inserter.hh"
 #include "lexer.hh"
@@ -641,9 +642,10 @@ public:
 	typedef Lexer<lexer_type> RealLexer;
 	typedef Grammar<RealLexer::iterator_type> RealGrammar;
 
-	explicit Parser(sqlite3 *db)
+	Parser(const cas::DimensionAnalyzer *da, sqlite3 *db)
 		: tokens_()
 		, grammar_(tokens_)
+		, da_(da)
 		, inserter_(db)
 	{
 	}
@@ -657,6 +659,9 @@ public:
 			cerr << "failed to parse: " << it << endl;
 			return 1;
 		}
+		int col, row;
+		if (!da_->Analyse(uuid, &expr, &col, &row))
+			return 1;
 		std::ostringstream oss;
 		int nod;
 		if (!EmitCode(uuid, name, expr, &nod, &oss))
@@ -668,6 +673,7 @@ public:
 private:
 	RealLexer tokens_;
 	RealGrammar grammar_;
+	const cas::DimensionAnalyzer *da_;
 	db::TacInserter inserter_;
 };
 
@@ -679,25 +685,29 @@ int Process(void *data, int argc, char **argv, char **names)
 	assert(argv[0]);
 	boost::uuids::uuid uuid;
 	memcpy(&uuid, argv[0], uuid.size());
-	return parser->Parse(uuid, argv[1], argv[2]);
+	int r = parser->Parse(uuid, argv[1], argv[2]);
+	if (r) // aborting ...
+		cerr << " in " << uuid << endl;
+	return r;
 }
 
 }
 
-bool Tac(sqlite3 *db)
+bool Tac(const cas::DimensionAnalyzer *da, sqlite3 *db)
 {
 	if (!BeginTransaction(db))
 		return false;
 	if (!CreateTable(db, "tacs", "(uuid BLOB, name TEXT, nod INTEGER, body TEXT)"))
 		return false;
 
-	Parser parser(db);
+	std::unique_ptr<Parser> parser(new Parser(da, db));
 	char *em;
 	int e;
-	e = sqlite3_exec(db, "SELECT * FROM sorts", Process, &parser, &em);
+	e = sqlite3_exec(db, "SELECT * FROM sorts", Process, parser.get(), &em);
 	if (e != SQLITE_OK) {
-		cerr << "failed to enumerate sorts: " << e
-			 << ": " << em << endl;
+		if (e != SQLITE_ABORT)
+			cerr << "failed to enumerate sorts: " << e
+				 << ": " << em << endl;
 		sqlite3_free(em);
 		return false;
 	}

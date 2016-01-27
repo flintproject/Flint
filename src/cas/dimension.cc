@@ -159,6 +159,20 @@ public:
 		}
 	}
 
+	bool Lookback(Compound *c)
+	{
+		if (!IsBinary(*c))
+			return false;
+		if (!Scalar(&c->children[1]))
+			return false;
+		int col0, row0;
+		if (!Analyse(&c->children[0], &col0, &row0))
+			return false;
+		c->col = col0;
+		c->row = row0;
+		return true;
+	}
+
 	bool Power(Compound *c)
 	{
 		if (!IsBinary(*c))
@@ -445,6 +459,20 @@ public:
 		return true;
 	}
 
+	bool Trial(Compound *c)
+	{
+		if (c->children.size() == 0) {
+			cerr << "empty $trial" << endl;
+			return false;
+		}
+		int col, row;
+		if (!HaveSameDimension(&c->children, &col, &row))
+			return false;
+		c->col = col;
+		c->row = row;
+		return true;
+	}
+
 private:
 	bool HaveSameDimension(std::deque<Expr> *children, int *col, int *row)
 	{
@@ -565,6 +593,16 @@ struct KeyFun {
 
 const KeyFun kKeyFun[] = {
 	// Keep the following entries in bibliographical order.
+	{"$exponential_variate", &Context::UnaryScalar},
+	{"$gamma_variate", &Context::BinaryScalar},
+	{"$gauss_variate", &Context::BinaryScalar},
+	{"$lognormal_variate", &Context::BinaryScalar},
+	{"$lookback", &Context::Lookback},
+	{"$outcome", &Context::BinaryScalar},
+	{"$poisson_variate", &Context::UnaryScalar},
+	{"$trial", &Context::Trial},
+	{"$uniform_variate", &Context::BinaryScalar},
+	{"$weibull_variate", &Context::BinaryScalar},
 	{"abs", &Context::UnaryScalar},
 	{"and", &Context::NaryScalar},
 	{"arccos", &Context::UnaryScalar},
@@ -597,6 +635,7 @@ const KeyFun kKeyFun[] = {
 	{"leq", &Context::BinaryScalar},
 	{"ln", &Context::UnaryScalar},
 	{"log", &Context::Log},
+	{"log10", &Context::UnaryScalar},
 	{"lt", &Context::BinaryScalar},
 	{"matrix", &Context::Matrix},
 	{"max", &Context::BinaryScalar},

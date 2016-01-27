@@ -17,6 +17,7 @@
 #define BOOST_FILESYSTEM_NO_DEPRECATED
 #include <boost/filesystem.hpp>
 
+#include "cas/dimension.h"
 #include "compiler.hh"
 #include "db/driver.hh"
 #include "db/read-only-driver.hh"
@@ -84,6 +85,8 @@ TaskRunner::TaskRunner(int id, char *path)
 	sprintf(init_.get(), "%d/init", id);
 }
 
+TaskRunner::~TaskRunner() = default;
+
 sqlite3 *TaskRunner::GetDatabase()
 {
 	return db_driver_->db();
@@ -92,6 +95,11 @@ sqlite3 *TaskRunner::GetDatabase()
 sqlite3 *TaskRunner::GetModelDatabase()
 {
 	return modeldb_driver_->db();
+}
+
+const cas::DimensionAnalyzer *TaskRunner::GetDimensionAnalyzer() const
+{
+	return dimension_analyzer_.get();
 }
 
 void *TaskRunner::GetProgressAddress(int job_id)
@@ -139,8 +147,14 @@ bool TaskRunner::Run()
 		return false;
 	char bc_file[kFilenameLength];
 	sprintf(bc_file, "%s/bc", dir_.get());
-	if (!compiler::Compile(modeldb_driver_->db(), "input_eqs", reader_->GetMethod(), bc_file))
-		return false;
+	{
+		cas::DimensionAnalyzer da;
+		if (!da.Load(modeldb_driver_->db()))
+			return false;
+		compiler::Compiler c(&da);
+		if (!c.Compile(modeldb_driver_->db(), "input_eqs", reader_->GetMethod(), bc_file))
+			return false;
+	}
 
 	char db_file[kFilenameLength];
 	sprintf(db_file, "%s/db", dir_.get());
@@ -155,6 +169,9 @@ bool TaskRunner::Run()
 		return false;
 	progress_region_.reset(new boost::interprocess::mapped_region(*fm, boost::interprocess::read_write));
 	if (!task::Form(db_driver_->db()))
+		return false;
+	dimension_analyzer_.reset(new cas::DimensionAnalyzer);
+	if (!dimension_analyzer_->Load(db_driver_->db()))
 		return false;
 	if (!layout::Generate(db_driver_->db(), generated_layout_.get()))
 		return false;

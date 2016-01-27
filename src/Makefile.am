@@ -89,8 +89,8 @@ libflintxx_la_SOURCES = \
     cellml/parser.cc \
     cellml/read.cc \
     cellml/translator.cc \
+    compiler.cc \
     compiler/bcc.cc \
-    compiler/compile.cc \
     compiler/sort.cc \
     compiler/tac.cc \
     csv/export.cc \
