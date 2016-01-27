@@ -93,6 +93,7 @@ libflintxx_la_SOURCES = \
     compiler/bcc.cc \
     compiler/sort.cc \
     compiler/tac.cc \
+    compiler/tac/context.cc \
     csv/export.cc \
     db/ast-inserter.cc \
     db/driver.cc \
