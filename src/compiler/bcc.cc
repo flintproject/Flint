@@ -722,8 +722,8 @@ bool Bcc(sqlite3 *db, std::ostream *os)
 		int e;
 		e = sqlite3_exec(db, "SELECT * FROM tacs", Process, &parser, &em);
 		if (e != SQLITE_OK) {
-			cerr << "failed to enumerate tacs: " << e
-				 << ": " << em << endl;
+			if (e != SQLITE_ABORT)
+				cerr << "failed to enumerate tacs: " << e << ": " << em << endl;
 			sqlite3_free(em);
 			return false;
 		}
@@ -746,8 +746,8 @@ bool Bcc(sqlite3 *db, std::ostream *os)
 		int e;
 		e = sqlite3_exec(db, "SELECT * FROM nol", SetNol, header.get(), &em);
 		if (e != SQLITE_OK) {
-			cerr << "failed to select nol: " << e
-				 << ": " << em << endl;
+			if (e != SQLITE_ABORT)
+				cerr << "failed to select nol: " << e << ": " << em << endl;
 			sqlite3_free(em);
 			return false;
 		}

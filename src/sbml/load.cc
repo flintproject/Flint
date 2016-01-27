@@ -117,19 +117,22 @@ public:
 		char *em;
 		e = sqlite3_exec(db_, "SELECT * FROM odes", HandleOde, ov, &em);
 		if (e != SQLITE_OK) {
-			cerr << e << ": " << em << endl;
+			if (e != SQLITE_ABORT)
+				cerr << "failed to select odes: " << e << ": " << em << endl;
 			sqlite3_free(em);
 			return false;
 		}
 		e = sqlite3_exec(db_, "SELECT * FROM assignments", HandleAssignment, av, &em);
 		if (e != SQLITE_OK) {
-			cerr << e << ": " << em << endl;
+			if (e != SQLITE_ABORT)
+				cerr << "failed to select assignments: " << e << ": " << em << endl;
 			sqlite3_free(em);
 			return false;
 		}
 		e = sqlite3_exec(db_, "SELECT * FROM constants", HandleConstant, cv, &em);
 		if (e != SQLITE_OK) {
-			cerr << e << ": " << em << endl;
+			if (e != SQLITE_ABORT)
+				cerr << "failed to select constants: " << e << ": " << em << endl;
 			sqlite3_free(em);
 			return false;
 		}

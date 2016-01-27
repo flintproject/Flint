@@ -299,19 +299,22 @@ public:
 		char *em;
 		e = sqlite3_exec(db(), "SELECT * FROM assignments", ProcessAssignment, writer, &em);
 		if (e != SQLITE_OK) {
-			cerr << e << ": " << em << endl;
+			if (e != SQLITE_ABORT)
+				cerr << "failed to select assignments: " << e << ": " << em << endl;
 			sqlite3_free(em);
 			return false;
 		}
 		e = sqlite3_exec(db(), "SELECT * FROM constants", ProcessConstant, writer, &em);
 		if (e != SQLITE_OK) {
-			cerr << e << ": " << em << endl;
+			if (e != SQLITE_ABORT)
+				cerr << "failed to select constants: " << e << ": " << em << endl;
 			sqlite3_free(em);
 			return false;
 		}
 		e = sqlite3_exec(db(), "SELECT * FROM odes", ProcessOde, writer, &em);
 		if (e != SQLITE_OK) {
-			cerr << e << ": " << em << endl;
+			if (e != SQLITE_ABORT)
+				cerr << "failed to select odes: " << e << ": " << em << endl;
 			sqlite3_free(em);
 			return false;
 		}

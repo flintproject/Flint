@@ -84,8 +84,8 @@ int CreateOffsets(sqlite3 *db)
 	e = sqlite3_exec(db, "SELECT sector_id, id FROM layout",
 					 &InsertOffset, &inserter, &em);
 	if (e != SQLITE_OK) {
-		cerr << "failed to select layout: " << e
-			 << ": " << em << endl;
+		if (e != SQLITE_ABORT)
+			cerr << "failed to select layout: " << e << ": " << em << endl;
 		sqlite3_free(em);
 		return 0;
 	}

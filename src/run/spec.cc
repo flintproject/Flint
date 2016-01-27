@@ -42,13 +42,13 @@ bool Spec(sqlite3 *db, FILE *fp)
 	int e;
 	e = sqlite3_exec(db, "SELECT sector_id, name FROM layout WHERE type = 'v' OR type = 'x'",
 					 &Print, fp, &em);
-	if (e != SQLITE_OK) {
+	if (e == SQLITE_OK)
+		return true;
+	if (e != SQLITE_ABORT)
 		cerr << "failed to select layout: " << e
 			 << ": " << em << endl;
-		sqlite3_free(em);
-		return false;
-	}
-	return true;
+	sqlite3_free(em);
+	return false;
 }
 
 }

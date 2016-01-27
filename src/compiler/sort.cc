@@ -412,8 +412,8 @@ bool Sort(sqlite3 *db)
 		int e;
 		e = sqlite3_exec(db, "SELECT * FROM asts", Process, &parser, &em);
 		if (e != SQLITE_OK) {
-			cerr << "failed to exec: " << e
-				 << ": " << em << endl;
+			if (e != SQLITE_ABORT)
+				cerr << "failed to select asts: " << e << ": " << em << endl;
 			sqlite3_free(em);
 			return false;
 		}

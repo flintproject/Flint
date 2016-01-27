@@ -358,8 +358,9 @@ bool Event(sqlite3 *db, const char *input, sqlite3 *output)
 	int e;
 	e = sqlite3_exec(db, query_i.c_str(), Process, &parser, &em);
 	if (e != SQLITE_OK) {
-		cerr << "failed to exec: " << e
-			 << ": " << em << endl;
+		if (e != SQLITE_ABORT)
+			cerr << "failed to select " << input
+				 << ": " << e << ": " << em << endl;
 		sqlite3_free(em);
 		return false;
 	}

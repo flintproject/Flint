@@ -124,13 +124,15 @@ public:
 		sprintf(query, "SELECT * FROM enum WHERE rowid = '%d'", enum_id);
 		e = sqlite3_exec(input_, query, SaveParameter, &inserter_, &em);
 		if (e != SQLITE_OK) {
-			fprintf(stderr, "failed to select enum: %d: %s\n", e, em);
+			if (e != SQLITE_ABORT)
+				cerr << "failed to select enum: " << e << ": " << em << endl;
 			sqlite3_free(em);
 			return false;
 		}
 		e = sqlite3_exec(input_, "SELECT uuid, body FROM equations", SaveEquation, &inserter_, &em);
 		if (e != SQLITE_OK) {
-			fprintf(stderr, "failed to select equations: %d: %s\n", e, em);
+			if (e != SQLITE_ABORT)
+				cerr << "failed to select equations: " << e << ": " << em << endl;
 			sqlite3_free(em);
 			return false;
 		}

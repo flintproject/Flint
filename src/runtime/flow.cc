@@ -60,13 +60,13 @@ bool LoadFlows(sqlite3 *db, FlowInboundMap *im)
 	char *em;
 	int e;
 	e = sqlite3_exec(db, "SELECT * FROM flows", &Process, &h, &em);
-	if (e != SQLITE_OK) {
+	if (e == SQLITE_OK)
+		return true;
+	if (e != SQLITE_ABORT)
 		cerr << "failed to select flows: " << e
 			 << ": " << em << endl;
-		sqlite3_free(em);
-		return false;
-	}
-	return true;
+	sqlite3_free(em);
+	return false;
 }
 
 }

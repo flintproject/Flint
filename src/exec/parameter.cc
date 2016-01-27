@@ -54,13 +54,13 @@ bool SaveParameters(int id, sqlite3 *db)
 	char *em;
 	int e = sqlite3_exec(db, "SELECT name, range FROM phsp_parameters", &WriteParameter,
 						 &ofs, &em);
+	ofs.close();
 	if (e != SQLITE_OK) {
-		cerr << "failed to exec: " << e
-			 << ": " << em << endl;
-		ofs.close();
+		if (e != SQLITE_ABORT)
+			cerr << "failed to select phsp_parameters: " << e << ": " << em << endl;
+		sqlite3_free(em);
 		return false;
 	}
-	ofs.close();
 
 	// rename the file to parameters.txt
 	sprintf(filename, "%d/parameters.txt", id);

@@ -396,8 +396,9 @@ bool AnnotateEquations(sqlite3 *db, const char *input, System *output)
 	char *em;
 	int e = sqlite3_exec(db, query.c_str(), Process, parser.get(), &em);
 	if (e != SQLITE_OK) {
-		cerr << "failed to exec: " << e
-			 << ": " << em << endl;
+		if (e != SQLITE_ABORT)
+			cerr << "failed to select " << input
+				 << ": " << e << ": " << em << endl;
 		sqlite3_free(em);
 		return false;
 	}
