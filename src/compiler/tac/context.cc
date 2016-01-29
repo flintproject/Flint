@@ -1,6 +1,7 @@
 /* -*- Mode: C++; tab-width: 4; indent-tabs-mode: t; c-basic-offset: 4 -*- vim:set ts=4 sw=4 sts=4 noet: */
 #include "compiler/tac/context.h"
 
+#include <algorithm>
 #include <cassert>
 #include <cstdio>
 #include <iostream>
@@ -39,8 +40,8 @@ public:
 		os_->put(')');
 	}
 
-	void operator()(const std::string &s) const {
-		*os_ << s;
+	void operator()(const cas::Identifier &s) const {
+		*os_ << s.name;
 	}
 
 	void operator()(int i) const {
@@ -100,6 +101,82 @@ bool IsOutcome(const cas::Compound &c)
 	return c.keyword == "$outcome";
 }
 
+struct KeyFun {
+	std::string keyword;
+	bool (Context::*function)(RegisterType rt, int n, cas::Compound &c);
+};
+
+
+const KeyFun kKeyFun[] = {
+	// Keep the following entries in bibliographical order.
+	{"$exponential_variate", &Context::NaryScalarToScalar},
+	{"$gamma_variate", &Context::NaryScalarToScalar},
+	{"$gauss_variate", &Context::NaryScalarToScalar},
+	{"$lognormal_variate", &Context::NaryScalarToScalar},
+	{"$poisson_variate", &Context::NaryScalarToScalar},
+	{"$uniform_variate", &Context::NaryScalarToScalar},
+	{"$weibull_variate", &Context::NaryScalarToScalar},
+	{"abs", &Context::NaryScalarToScalar},
+	{"and", &Context::NaryScalarToScalar},
+	{"arccos", &Context::NaryScalarToScalar},
+	{"arccosh", &Context::NaryScalarToScalar},
+	{"arccot", &Context::NaryScalarToScalar},
+	{"arccoth", &Context::NaryScalarToScalar},
+	{"arccsc", &Context::NaryScalarToScalar},
+	{"arccsch", &Context::NaryScalarToScalar},
+	{"arcsec", &Context::NaryScalarToScalar},
+	{"arcsech", &Context::NaryScalarToScalar},
+	{"arcsin", &Context::NaryScalarToScalar},
+	{"arcsinh", &Context::NaryScalarToScalar},
+	{"arctan", &Context::NaryScalarToScalar},
+	{"arctanh", &Context::NaryScalarToScalar},
+	{"ceiling", &Context::NaryScalarToScalar},
+	{"cos", &Context::NaryScalarToScalar},
+	{"cosh", &Context::NaryScalarToScalar},
+	{"cot", &Context::NaryScalarToScalar},
+	{"coth", &Context::NaryScalarToScalar},
+	{"csc", &Context::NaryScalarToScalar},
+	{"csch", &Context::NaryScalarToScalar},
+	{"determinant", &Context::Determinant},
+	{"divide", &Context::NaryScalarToScalar},
+	{"eq", &Context::Componentwise},
+	{"exp", &Context::NaryScalarToScalar},
+	{"floor", &Context::NaryScalarToScalar},
+	{"geq", &Context::NaryScalarToScalar},
+	{"gt", &Context::NaryScalarToScalar},
+	{"leq", &Context::NaryScalarToScalar},
+	{"ln", &Context::NaryScalarToScalar},
+	{"log", &Context::NaryScalarToScalar},
+	{"log10", &Context::NaryScalarToScalar},
+	{"lt", &Context::NaryScalarToScalar},
+	{"matrix", &Context::Matrix},
+	{"max", &Context::NaryScalarToScalar},
+	{"mean", &Context::NaryScalarToScalar},
+	{"min", &Context::NaryScalarToScalar},
+	{"minus", &Context::Componentwise},
+	{"neq", &Context::Componentwise},
+	{"not", &Context::NaryScalarToScalar},
+	{"or", &Context::NaryScalarToScalar},
+	{"outerproduct", &Context::Outerproduct},
+	{"plus", &Context::Componentwise},
+	{"power", &Context::NaryScalarToScalar}, // TODO: matrix
+	{"rem", &Context::NaryScalarToScalar},
+	{"root", &Context::NaryScalarToScalar},
+	{"scalarproduct", &Context::Scalarproduct},
+	{"sec", &Context::NaryScalarToScalar},
+	{"sech", &Context::NaryScalarToScalar},
+	{"selector", &Context::Selector},
+	{"sin", &Context::NaryScalarToScalar},
+	{"sinh", &Context::NaryScalarToScalar},
+	{"tan", &Context::NaryScalarToScalar},
+	{"tanh", &Context::NaryScalarToScalar},
+	{"times", &Context::Times},
+	{"transpose", &Context::Transpose},
+	{"vector", &Context::Vector},
+	{"vectorproduct", &Context::Vectorproduct},
+	{"xor", &Context::NaryScalarToScalar}
+};
+
 }
 
 Context::Context(const boost::uuids::uuid &uuid,
@@ -107,8 +184,9 @@ Context::Context(const boost::uuids::uuid &uuid,
 				 std::ostream *os)
 	: uuid_(uuid)
 	, id_(id)
-	, avail_n_(1)
-	, avail_l_(0)
+	, ir_(0)
+	, fr_(0)
+	, l_(0)
 	, os_(os)
 {}
 
@@ -116,25 +194,265 @@ Context::~Context() = default;
 
 bool Context::EmitCode(cas::Expr &expr)
 {
-	if (!EmitCode(0, expr))
+	int w, col, row;
+	GetType(expr, &w, &col, &row);
+	if (col == 1 && row == 1) {
+		fr_++;
+		if (!Assign(RegisterType::kFloat, 0, expr))
+			return false;
+		*os_ << "  store " << id_ << " $0" << endl;
+	} else {
+		ir_++;
+		if (!Assign(RegisterType::kInteger, 0, expr))
+			return false;
+		*os_ << "  save " << id_ << " $i0 " << (col * row) << endl;
+	}
+	return true;
+}
+
+bool Context::Componentwise(RegisterType rt, int n, cas::Compound &c)
+{
+	if (rt == RegisterType::kFloat)
+		return NaryScalarToScalar(rt, n, c);
+
+	int size = c.col * c.row;
+	std::vector<int> args;
+	for (auto &e : c.children) {
+		int p = ir_++;
+		if (!Assign(RegisterType::kInteger, p, e))
+			return false;
+		args.push_back(p);
+	}
+	*os_ << "  alloca $i" << n << ' ' << size << endl;
+	for (int i=0;i<size;i++) {
+		std::vector<int> params;
+		for (auto k : args) {
+			int m = fr_++;
+			*os_ << "  deref $" << m << " $i" << k << ' ' << i << endl;
+			params.push_back(m);
+		}
+		int m = fr_++;
+		*os_ << "  $" << m << " = (" << c.keyword;
+		for (auto k : params)
+			*os_ << " $" << k;
+		*os_ << ')' << endl;
+		int n1 = ir_++;
+		*os_ << "  addi $i" << n1 << " $i" << n << ' ' << i << endl;
+		*os_ << "  move $i" << n1 << " $" << m << endl;
+	}
+	return true;
+}
+
+bool Context::NaryScalarToScalar(RegisterType /*rt*/, int n, cas::Compound &c)
+{
+	std::vector<int> args;
+	for (auto &e : c.children) {
+		int m = fr_++;
+		if (!Assign(RegisterType::kFloat, m, e))
+			return false;
+		args.push_back(m);
+	}
+	*os_ << "  $" << n << " = (" << c.keyword;
+	for (auto i : args)
+		*os_ << " $" << i;
+	*os_ << ')' << endl;
+	return true;
+}
+
+bool Context::Determinant(RegisterType rt, int n, cas::Compound &c)
+{
+	assert(rt == RegisterType::kFloat);
+	assert(c.children.size() == 1);
+	int col, row;
+	GetType(c.children[0], nullptr, &col, &row);
+	assert(col == row);
+	int n1 = ir_++;
+	if (!Assign(RegisterType::kInteger, n1, c.children[0]))
 		return false;
-	*os_ << "  store " << id_ << " $0" << endl;
+	*os_ << "  determinant $" << n << ' ' << col << " $i" << n1 << endl;
+	return true;
+}
+
+bool Context::Matrix(RegisterType rt, int n, cas::Compound &c)
+{
+	assert(rt == RegisterType::kInteger);
+	*os_ << "  alloca $i" << n << ' ' << (c.col * c.row) << endl;
+	int i=0;
+	for (auto &e : c.children) {
+		assert(e.which() == cas::kExprIsCompound);
+		cas::Compound &rc(boost::get<cas::Compound>(e));
+		assert(rc.keyword == "matrixrow");
+		for (auto &rcc : rc.children) {
+			int m = fr_++;
+			if (!Assign(RegisterType::kFloat, m, rcc))
+				return false;
+			int p = ir_++;
+			*os_ << "  addi $i" << p << " $i" << n << ' ' << i++ << endl;
+			*os_ << "  move $i" << p << " $" << m << endl;
+		}
+	}
+	return true;
+}
+
+bool Context::Outerproduct(RegisterType rt, int n, cas::Compound &c)
+{
+	assert(rt == RegisterType::kInteger);
+	int n1 = ir_++;
+	if (!Assign(RegisterType::kInteger, n1, c.children[0]))
+		return false;
+	int n2 = ir_++;
+	if (!Assign(RegisterType::kInteger, n2, c.children[1]))
+		return false;
+	*os_ << "  outerproduct $i" << n
+		 << ' ' << c.row << " $i" << n1
+		 << ' ' << c.col << " $i" << n2
+		 << endl;
+	return true;
+}
+
+bool Context::Scalarproduct(RegisterType rt, int n, cas::Compound &c)
+{
+	assert(rt == RegisterType::kFloat);
+	int col, row;
+	GetType(c.children[0], nullptr, &col, &row);
+	int n1 = ir_++;
+	if (!Assign(RegisterType::kInteger, n1, c.children[0]))
+		return false;
+	int n2 = ir_++;
+	if (!Assign(RegisterType::kInteger, n2, c.children[1]))
+		return false;
+	int size = std::max(col, row);
+	*os_ << "  scalarproduct $" << n << ' ' << size << " $i" << n1 << " $i" << n2 << endl;
+	return true;
+}
+
+bool Context::Selector(RegisterType rt, int n, cas::Compound &c)
+{
+	size_t size = c.children.size();
+	assert(size >= 2);
+	int n0 = ir_++;
+	if (!Assign(RegisterType::kInteger, n0, c.children[0]))
+		return false;
+	int m1 = fr_++;
+	if (!Assign(RegisterType::kFloat, m1, c.children[1]))
+		return false;
+	if (rt == RegisterType::kInteger) {
+		assert(size == 2);
+		int col0;
+		GetType(c.children[0], nullptr, &col0, nullptr);
+		*os_ << "  selrow $i" << n << " $i" << n0 << ' ' << col0 << " $" << m1 << endl;
+	} else if (size == 2) {
+		*os_ << "  select2 $" << n << " $i" << n0 << " $" << m1 << endl;
+	} else {
+		assert(size == 3);
+		int m2 = fr_++;
+		if (!Assign(RegisterType::kFloat, m2, c.children[2]))
+			return false;
+		*os_ << "  select3 $" << n << " $i" << n0 << " $" << m1 << " $" << m2 << endl;
+	}
+	return true;
+}
+
+bool Context::Times(RegisterType rt, int n, cas::Compound &c)
+{
+	if (rt == RegisterType::kFloat)
+		return NaryScalarToScalar(rt, n, c);
+	assert(c.children.size() == 2);
+	cas::Expr &e0(c.children.at(0));
+	cas::Expr &e1(c.children.at(1));
+	int w0, w1;
+	int col0, col1;
+	int row0, row1;
+	GetType(e0, &w0, &col0, &row0);
+	GetType(e1, &w1, &col1, &row1);
+	if (col0 == 1 && row0 == 1) { // when the 1st operand is scalar
+		int m0 = fr_++;
+		if (!Assign(RegisterType::kFloat, m0, e0))
+			return false;
+		int n1 = ir_++;
+		if (!Assign(RegisterType::kInteger, n1, e1))
+			return false;
+		int size = col1 * row1;
+		*os_ << "  mult $i" << n << ' ' << size << " $" << m0 << " $i" << n1 << endl;
+	} else if (col1 == 1 && row1 == 1) { // when the 2nd operand is scalar
+		int n0 = ir_++;
+		if (!Assign(RegisterType::kInteger, n0, e0))
+			return false;
+		int m1 = fr_++;
+		if (!Assign(RegisterType::kFloat, m1, e1))
+			return false;
+		int size = col0 * row0;
+		*os_ << "  mult $i" << n << ' ' << size << " $" << m1 << " $i" << n0 << endl;
+	} else { // both are matrices
+		int n0 = ir_++;
+		if (!Assign(RegisterType::kInteger, n0, e0))
+			return false;
+		int n1 = ir_++;
+		if (!Assign(RegisterType::kInteger, n1, e1))
+			return false;
+		*os_ << "  mmul $i" << n
+			 << ' ' << row0
+			 << ' ' << col0 // = row1
+			 << ' ' << col1
+			 << " $i" << n0
+			 << " $i" << n1
+			 << endl;
+	}
+	return true;
+}
+
+bool Context::Transpose(RegisterType rt, int n, cas::Compound &c)
+{
+	assert(rt == RegisterType::kInteger);
+	int n1 = ir_++;
+	if (!Assign(RegisterType::kInteger, n1, c.children[0]))
+		return false;
+	*os_ << "  transpose $i" << n << " $i" << n1 << ' ' << c.col << ' ' << c.row << endl;
+	return true;
+}
+
+bool Context::Vector(RegisterType rt, int n, cas::Compound &c)
+{
+	assert(rt == RegisterType::kInteger);
+	int size = c.col * c.row;
+	*os_ << "  alloca $i" << n << ' ' << size << endl;
+	for (int i=0;i<size;i++) {
+		int m = fr_++;
+		if (!Assign(RegisterType::kFloat, m, c.children[i]))
+			return false;
+		int p = ir_++;
+		*os_ << "  addi $i" << p << " $i" << n << ' ' << i << endl;
+		*os_ << "  move $i" << p << " $" << m << endl;
+	}
+	return true;
+}
+
+bool Context::Vectorproduct(RegisterType rt, int n, cas::Compound &c)
+{
+	assert(rt == RegisterType::kInteger);
+	int n1 = ir_++;
+	if (!Assign(RegisterType::kInteger, n1, c.children[0]))
+		return false;
+	int n2 = ir_++;
+	if (!Assign(RegisterType::kInteger, n2, c.children[1]))
+		return false;
+	*os_ << "  vectorproduct $i" << n << " $i" << n1 << " $i" << n2 << endl;
 	return true;
 }
 
 /*
- * The control should reach the end when the sexp is evaluated to be false.
+ * The control should reach the end when the expr is evaluated to be false.
  *
  * @param n the variable for the resulting boolean value
- * @param l the label to go when the sexp is evaluated to be true
+ * @param l the label to go when the expr is evaluated to be true
  */
-bool Context::EmitCondition(int n, int l, cas::Expr &sexp)
+bool Context::EmitCondition(int n, int l, cas::Expr &expr)
 {
-	if (sexp.which() == cas::kExprIsCompound) {
-		cas::Compound &comp(boost::get<cas::Compound>(sexp));
+	if (expr.which() == cas::kExprIsCompound) {
+		cas::Compound &comp(boost::get<cas::Compound>(expr));
 		if (IsAnd(comp)) {
-			int l1 = avail_l_++;
-			int l2 = avail_l_++;
+			int l1 = l_++;
+			int l2 = l_++;
 			if (!EmitCondition(n, l2, comp.children.at(0)))
 				return false;
 			*os_ << "  jmp L" << l1 << endl;
@@ -149,7 +467,7 @@ bool Context::EmitCondition(int n, int l, cas::Expr &sexp)
 		}
 	}
 
-	if (!EmitCode(n, sexp))
+	if (!Assign(RegisterType::kFloat, n, expr))
 		return false;
 	*os_ << "  br $" << n << " L" << l << endl;
 	return bool(*os_);
@@ -174,8 +492,8 @@ bool Context::EmitAt(int n, std::deque<cas::Expr> &children)
 		cerr << "error: invalid 2nd argument of At: " << uuid_ << ' ' << id_ << endl;
 		return false;
 	}
-	int m = avail_n_++;
-	if (!EmitCode(m, children.at(2)))
+	int m = fr_++;
+	if (!Assign(RegisterType::kFloat, m, children.at(2))) // TODO: RegisterType::kInteger
 		return false;
 	*os_ << "  ld $"
 		 << n
@@ -200,42 +518,44 @@ bool Context::EmitLookback(int n, std::deque<cas::Expr> &children)
 		cerr << "error: EmitLookback: missing arguments: " << uuid_ << ' ' << id_ << endl;
 		return false;
 	}
-	if (children.at(0).which() != cas::kExprIsString) {
+	if (children.at(0).which() != cas::kExprIsIdentifier) {
 		cerr << "error: invalid 1st argument of Delay/DeltaTime: " << uuid_ << ' ' << id_ << endl;
 		return false;
 	}
-	int m = avail_n_++;
-	if (!EmitCode(m, children.at(1)))
+	int m = fr_++;
+	if (!Assign(RegisterType::kFloat, m, children.at(1))) // TODO: vector/matrix
 		return false;
 	*os_ << "  lb $"
 		 << n
 		 << ' '
-		 << boost::get<std::string>(children.at(0)).c_str()
+		 << boost::get<cas::Identifier>(children.at(0)).name.c_str()
 		 << " $"
 		 << m
 		 << endl;
 	return bool(*os_);
 }
 
-bool Context::EmitPiecewise(int n, std::deque<cas::Expr> &children)
+bool Context::Piecewise(RegisterType rt, int n, std::deque<cas::Expr> &children)
 {
-	int l = avail_l_++;
+	int l = l_++;
 	std::vector<int> v1;
 	bool otherwise = false;
-	for (std::deque<cas::Expr>::iterator it=children.begin();it!=children.end();++it) {
+	for (auto it=children.begin();it!=children.end();++it) {
 		assert(it->which() == cas::kExprIsCompound);
 		cas::Compound &comp(boost::get<cas::Compound>(*it));
 		if (IsPiece(comp)) {
-			int l1 = avail_l_++;
-			int m = avail_n_++;
+			int l1 = l_++;
+			int m = fr_++;
 			if (!EmitCondition(m, l1, comp.children.at(1)))
 				return false;
 			v1.push_back(l1);
 		} else if (IsOtherwise(comp)) {
 			otherwise = true;
-			if (!EmitCode(n, comp.children.at(0)))
+			if (!Assign(rt, n, comp.children.at(0)))
 				return false;
 			*os_ << "  jmp L" << l << endl;
+		} else {
+			assert(false);
 		}
 	}
 	if (!otherwise)
@@ -246,7 +566,7 @@ bool Context::EmitPiecewise(int n, std::deque<cas::Expr> &children)
 		cas::Compound &comp(boost::get<cas::Compound>(*it));
 		if (IsPiece(comp)) {
 			*os_ << " L" << *v1it++ << ':' << endl;
-			if (!EmitCode(n, comp.children.at(0)))
+			if (!Assign(rt, n, comp.children.at(0)))
 				return false;
 			*os_ << "  jmp L" << l << endl;
 		} else if (IsOtherwise(comp)) {
@@ -261,24 +581,24 @@ bool Context::EmitPiecewise(int n, std::deque<cas::Expr> &children)
 
 bool Context::EmitTrial(int n, std::deque<cas::Expr> &children)
 {
-	int l = avail_l_++;
-	int p0 = avail_n_++;
-	int p1 = avail_n_++;
-	int p = avail_n_++;
+	int l = l_++;
+	int p0 = fr_++;
+	int p1 = fr_++;
+	int p = fr_++;
 	*os_ << "  loadi $" << p0 << " 0" << endl
-				 << "  loadi $" << p1 << " 1" << endl
-				 << "  $" << p << " = ($uniform_variate $" << p0 << " $" << p1 << ')' << endl;
+		 << "  loadi $" << p1 << " 1" << endl
+		 << "  $" << p << " = ($uniform_variate $" << p0 << " $" << p1 << ')' << endl;
 	std::vector<int> v1;
 	for (auto it=children.begin();it!=children.end();++it) {
 		assert(it->which() == cas::kExprIsCompound);
 		cas::Compound &comp(boost::get<cas::Compound>(*it));
 		if (IsOutcome(comp)) {
-			int l1 = avail_l_++;
-			int m0 = avail_n_++;
+			int l1 = l_++;
+			int m0 = fr_++;
 			*os_ << "  loadi $" << m0 << ' ';
 			boost::apply_visitor(Printer(os_), comp.children.at(1));
 			*os_ << endl;
-			int m1 = avail_n_++;
+			int m1 = fr_++;
 			*os_ << "  $" << m1 << " = (leq $" << p << " $" << m0 << ')' << endl
 				 << "  br $" << m1 << " L" << l1 << endl;
 			v1.push_back(l1);
@@ -294,7 +614,7 @@ bool Context::EmitTrial(int n, std::deque<cas::Expr> &children)
 		cas::Compound &comp(boost::get<cas::Compound>(*it));
 		if (IsOutcome(comp)) {
 			*os_ << " L" << *v1it++ << ':' << endl;
-			if (!EmitCode(n, comp.children.at(0)))
+			if (!Assign(RegisterType::kFloat, n, comp.children.at(0)))
 				return false;
 			*os_ << "  jmp L" << l << endl;
 		} else {
@@ -305,70 +625,108 @@ bool Context::EmitTrial(int n, std::deque<cas::Expr> &children)
 	return bool(*os_);
 }
 
-bool Context::EmitCode(int n, cas::Expr &sexp)
+bool Context::Assign(RegisterType rt, int n, cas::Expr &expr)
 {
-	int w = sexp.which();
-	switch (w) {
-	case cas::kExprIsString:
-		{
-			const std::string &s(boost::get<std::string>(sexp));
-			if ( (s[0] == '%' || s[0] == '@') && isalpha(s[1]) ) {
-				*os_ << "  load $" << n << ' ' << s.c_str() << endl;
-			} else {
-				*os_ << "  loadi $" << n << ' ' << s.c_str() << endl;
-			}
-		}
-		break;
+	switch (expr.which()) {
 	case cas::kExprIsCompound:
-		{
-			cas::Compound &comp(boost::get<cas::Compound>(sexp));
-			if (IsAt(comp)) {
-				return EmitAt(n, comp.children);
-			}
-			if (IsLookback(comp)) {
-				return EmitLookback(n, comp.children);
-			}
-			if (IsPiecewise(comp)) {
-				return EmitPiecewise(n, comp.children);
-			}
-			if (IsTrial(comp)) {
-				return EmitTrial(n, comp.children);
-			}
-
-			size_t len = comp.children.size();
-			if (len > 2) {
-				cerr << "error: more than 2 arguments for " << comp.keyword << ": "
-					 << uuid_ << ' ' << id_ << endl;
-				return false;
-			}
-			if (len < 1) {
-				cerr << "error: missing arguments for " << comp.keyword << ": "
-					 << uuid_ << ' ' << id_ << endl;
-				return false;
-			}
-			for (auto it=comp.children.begin();it!=comp.children.end();++it) {
-				int m = avail_n_++;
-				if (!EmitCode(m, *it))
-					return false;
-				std::unique_ptr<char[]> buf(new char[20]);
-				sprintf(buf.get(), "$%d", m);
-				*it = buf.get();
-			}
-			*os_ << "  $" << n << " = ";
-			boost::apply_visitor(Printer(os_), sexp);
-			*os_ << endl;
-		}
-		break;
+		return Assign(rt, n, boost::get<cas::Compound>(expr));
+	case cas::kExprIsIdentifier:
+		return Assign(rt, n, boost::get<cas::Identifier>(expr));
 	case cas::kExprIsInteger:
+		assert(rt == RegisterType::kFloat);
+		return Assign(n, boost::get<int>(expr));
 	case cas::kExprIsReal:
-		{
-			*os_ << "  loadi $" << n << ' ';
-			boost::apply_visitor(Printer(os_), sexp);
-			*os_ << endl;
+		assert(rt == RegisterType::kFloat);
+		return Assign(n, boost::get<lexer::Real>(expr));
+	default:
+		assert(false);
+		return false;
+	}
+}
+
+bool Context::Assign(RegisterType rt, int n, cas::Compound &c)
+{
+	if (IsAt(c))
+		return EmitAt(n, c.children);
+	if (IsLookback(c))
+		return EmitLookback(n, c.children);
+	if (IsPiecewise(c))
+		return Piecewise(rt, n, c.children);
+	if (IsTrial(c))
+		return EmitTrial(n, c.children);
+
+	size_t len = c.children.size();
+	if (len < 1) {
+		cerr << "error: missing arguments for " << c.keyword << ": "
+			 << uuid_ << ' ' << id_ << endl;
+		return false;
+	}
+	for (const auto &kf : kKeyFun) { // TODO: faster search e.g. via bsearch?
+		if (c.keyword == kf.keyword)
+			return (this->*(kf.function))(rt, n, c);
+	}
+	cerr << "unsupported function: " << c.keyword << endl;
+	return false;
+}
+
+bool Context::Assign(RegisterType rt, int n, const cas::Identifier &id)
+{
+	const std::string &s(id.name);
+	if (rt == RegisterType::kInteger) {
+		*os_ << "  refer $i" << n << " " << id.name << endl;
+	} else {
+		if ( (s[0] == '%' || s[0] == '@') && isalpha(s[1]) ) {
+			*os_ << "  load $" << n << ' ' << s << endl;
+		} else {
+			*os_ << "  loadi $" << n << ' ' << s << endl;
 		}
-		break;
 	}
 	return true;
+}
+
+bool Context::Assign(int n, int i)
+{
+	*os_ << "  loadi $" << n << ' ' << i << endl;
+	return true;
+}
+
+bool Context::Assign(int n, const lexer::Real &r)
+{
+	*os_ << "  loadi $" << n << ' ' << r.lexeme << endl;
+	return true;
+}
+
+void Context::GetType(cas::Expr &expr, int *w, int *col, int *row)
+{
+	int which = expr.which();
+	switch (which) {
+	case cas::kExprIsCompound:
+		{
+			cas::Compound &c(boost::get<cas::Compound>(expr));
+			if (col)
+				*col = c.col;
+			if (row)
+				*row = c.row;
+		}
+		break;
+	case cas::kExprIsIdentifier:
+		{
+			const cas::Identifier &id(boost::get<const cas::Identifier>(expr));
+			if (col)
+				*col = id.col;
+			if (row)
+				*row = id.row;
+		}
+		break;
+	default:
+		if (col)
+			*col = 1;
+		if (row)
+			*row = 1;
+		break;
+	}
+	if (w)
+		*w = which;
 }
 
 }

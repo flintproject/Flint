@@ -6,6 +6,7 @@
 #include <map>
 #include <memory>
 #include <set>
+#include <string>
 #include <utility>
 #include <vector>
 
@@ -23,13 +24,28 @@ struct Compound;
 
 enum {
 	kExprIsCompound,
-	kExprIsString,
+	kExprIsIdentifier,
 	kExprIsInteger,
 	kExprIsReal
 };
 
+struct Identifier {
+	std::string name;
+	int col;
+	int row;
+
+	/*
+	 * This copy constructor is for a Qi parser.
+	 */
+	Identifier(const std::string &given)
+		: name(given)
+		, col(0)
+		, row(0)
+	{}
+};
+
 typedef boost::variant<boost::recursive_wrapper<Compound>,
-					   std::string,
+					   Identifier,
 					   int,
 					   lexer::Real
 					   > Expr;
@@ -43,6 +59,12 @@ struct Compound {
 
 }
 }
+
+BOOST_FUSION_ADAPT_STRUCT(flint::cas::Identifier,
+						  (std::string, name)
+						  (int, col)
+						  (int, row)
+						  )
 
 BOOST_FUSION_ADAPT_STRUCT(flint::cas::Compound,
 						  (std::string, keyword)

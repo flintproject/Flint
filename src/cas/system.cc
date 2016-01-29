@@ -166,8 +166,8 @@ bool System::FindMass(const boost::uuids::uuid &uuid, const std::string &name,
 				assert(boost::get<int>(ode.mass()) == 1);
 				*found = "";
 				return true;
-			} else if (w == kExprIsString) {
-				*found = boost::get<std::string>(ode.mass());
+			} else if (w == kExprIsIdentifier) {
+				*found = boost::get<Identifier>(ode.mass()).name;
 				return true;
 			}
 			cerr << "found unsupported form of mass matrix: "

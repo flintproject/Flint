@@ -35,22 +35,23 @@ void Printer::operator()(const Compound &c)
 	os_.put(')');
 }
 
-void Printer::operator()(const std::string &s)
+void Printer::operator()(const Identifier &s)
 {
-	if (s.at(0) != '%' || s == "%time") {
-		os_ << s;
+	const std::string &n(s.name);
+	if (n.at(0) != '%' || n == "%time") {
+		os_ << n;
 		return;
 	}
-	std::string name = s.substr(1);
+	std::string name = n.substr(1);
 	const Variable *v = vm_->Find(uuid_, name);
 	assert(v != nullptr);
 	switch (v->type()) {
 	case 's':
 	case 'x':
-		os_ << s;
+		os_ << n;
 		break;
 	case 'v':
-		os_ << s << "#0";
+		os_ << n << "#0";
 		break;
 	default:
 		assert(false);

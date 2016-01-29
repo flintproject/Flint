@@ -60,8 +60,8 @@ bool IsBoundVariable(const Expr &expr)
 		if (c.keyword == "bvar") {
 			if (c.children.size() == 1) {
 				const Expr &e0 = c.children[0];
-				if (e0.which() == kExprIsString) {
-					const std::string &s0 = boost::get<std::string>(e0);
+				if (e0.which() == kExprIsIdentifier) {
+					const std::string &s0 = boost::get<Identifier>(e0).name;
 					if (s0 == "%time")
 						return true;
 				}
@@ -179,7 +179,7 @@ void RewriteDelayParam(Compound &x, const Expr &expr)
 {
 	Compound c;
 	c.keyword = "minus";
-	c.children.push_back("%time");
+	c.children.push_back(Identifier("%time"));
 	c.children.push_back(expr);
 	x.children.push_back(c);
 }
@@ -329,8 +329,8 @@ private:
 		if (lhs.which() == kExprIsCompound) {
 			const Compound &c = boost::get<Compound>(lhs);
 			return AcceptCompound(uuid, c, lhs_col, lhs_row, rhs) ? 0 : 1;
-		} else if (lhs.which() == kExprIsString) {
-			output_->Add(uuid, Def(boost::get<std::string>(lhs), lhs_col, lhs_row, rhs));
+		} else if (lhs.which() == kExprIsIdentifier) {
+			output_->Add(uuid, Def(boost::get<Identifier>(lhs).name, lhs_col, lhs_row, rhs));
 		} else {
 			cerr << "unsupported form of equation" << endl; // TODO
 			return 1;
@@ -347,8 +347,8 @@ private:
 			if (!IsBoundVariable(c.children[0]))
 				return false;
 			const Expr &e1 = c.children[1];
-			if (e1.which() == kExprIsString) {
-				output_->Add(uuid, Ode(boost::get<std::string>(e1),
+			if (e1.which() == kExprIsIdentifier) {
+				output_->Add(uuid, Ode(boost::get<Identifier>(e1).name,
 									   col, row, rhs, mass));
 				return true;
 			}

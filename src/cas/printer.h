@@ -29,7 +29,7 @@ public:
 
 	void operator()(const Compound &c);
 
-	void operator()(const std::string &s);
+	void operator()(const Identifier &s);
 
 	void operator()(int i);
 

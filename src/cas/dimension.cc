@@ -548,6 +548,16 @@ private:
 		int c1, r1;
 		if (!Multiplication(bit, eit, &c1, &r1))
 			return false;
+		if (c0 == 1 && r0 == 1) { // Multiplication with scalar is always OK
+			*col = c1;
+			*row = r1;
+			return true;
+		}
+		if (c1 == 1 && r1 == 1) { // Another multiplication with scalar
+			*col = c0;
+			*row = r0;
+			return true;
+		}
 		if (c0 != r1) {
 			cerr << "col/row mismatch for multiplication" << endl; // TODO
 			return false;
@@ -685,8 +695,9 @@ bool Context::Analyse(Expr *expr, int *col, int *row)
 		}
 		cerr << "unsupported function: " << c.keyword << endl;
 		return false;
-	} else if (type == kExprIsString) {
-		std::string name = boost::get<std::string>(*expr);
+	} else if (type == kExprIsIdentifier) {
+		Identifier &id = boost::get<Identifier>(*expr);
+		const std::string &name = id.name;
 		assert(!name.empty());
 		if (name[0] == '%') {
 			std::string name1 = name.substr(1);
@@ -699,12 +710,12 @@ bool Context::Analyse(Expr *expr, int *col, int *row)
 				cerr << "failed to find variable: " << name1 << endl;
 				return false;
 			}
-			*col = v->col();
-			*row = v->row();
+			*col = id.col = v->col();
+			*row = id.row = v->row();
 		} else if (name == "@dt") {
-			*col = *row = 1;
+			*col = *row = id.col = id.row = 1;
 		} else if (mathml::IsScalarConstantElement(name)) {
-			*col = *row = 1;
+			*col = *row = id.col = id.row = 1;
 		} else { // TODO
 			assert(false);
 		}

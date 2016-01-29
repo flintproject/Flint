@@ -8,16 +8,16 @@ void RewriteDeltaTime(Compound &x, const std::string &id)
 {
 	if (id == "%time") {
 		x.keyword = "minus";
-		x.children.push_back("%time");
-		x.children.push_back("@dt");
+		x.children.push_back(Identifier("%time"));
+		x.children.push_back(Identifier("@dt"));
 	} else {
 		x.keyword = "$lookback";
-		x.children.push_back(id);
+		x.children.push_back(Identifier(id));
 
 		Compound c;
 		c.keyword = "minus";
-		c.children.push_back("%time");
-		c.children.push_back("@dt");
+		c.children.push_back(Identifier("%time"));
+		c.children.push_back(Identifier("@dt"));
 		x.children.push_back(c);
 	}
 }

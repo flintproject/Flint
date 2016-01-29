@@ -312,7 +312,7 @@ public:
 		std::unique_ptr<Context> context(new Context(uuid, name, &oss));
 		if (!context->EmitCode(expr))
 			return 1;
-		int nod = context->get_avail_n();
+		int nod = context->get_fr();
 		std::string body = oss.str();
 		return (inserter_.Insert(uuid, name, nod, body.c_str())) ? 0 : 1;
 	}
