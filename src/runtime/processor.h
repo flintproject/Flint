@@ -565,6 +565,7 @@ public:
 					ci = cie;
 					break;
 				case bc::Code::kStore:
+					{
 					double v = executor->Store(code.store(), offset);
 					if (!IsFinite(v, offset)) {
 						boost::uuids::uuid u;
@@ -579,6 +580,7 @@ public:
 						return false;
 					}
 					ci++;
+					}
 					break;
 				}
 			}
@@ -680,9 +682,11 @@ public:
 								ci = cie;
 								break;
 							case bc::Code::kStore:
+								{
 								double v = executor->Store(code.store(), offset);
 								if (!IsFinite(v, offset)) return false;
 								ci++;
+								}
 								break;
 							}
 						}
