@@ -269,18 +269,20 @@ public:
 						{
 							const std::string &name = xm.at(dp->name());
 							if (name.empty()) { // identity
-								for (int row=0;row<data_size;row++) {
-									for (int col=0;col<data_size;col++) {
+								// column-major
+								for (int col=0;col<data_size;col++) {
+									for (int row=0;row<data_size;row++) {
 										if (row == col)
 											mmdm->Add(index + row, index + col, 1);
 									}
 								}
 							} else {
 								int m = am.at(name);
-								for (int row=0;row<data_size;row++) {
-									for (int col=0;col<data_size;col++) {
+								// column-major
+								for (int col=0;col<data_size;col++) {
+									for (int row=0;row<data_size;row++) {
 										mmdm->Add(index + row, index + col,
-												  bot + (pos * i) + m + (row * data_size) + col);
+												  bot + (pos * i) + m + (col * data_size) + row);
 									}
 								}
 							}

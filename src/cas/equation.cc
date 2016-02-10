@@ -288,7 +288,7 @@ public:
 		Compound statement;
 		bool r = lex::tokenize_and_parse(it, eit, tokens_, grammar_, statement);
 		if (!r || it != eit) {
-			cerr << "failed to parse: " << it << endl;
+			cerr << "failed to parse equation: " << it << endl;
 			return 1;
 		}
 		return ProcessUuidAndStatement(uuid, statement);

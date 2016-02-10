@@ -7,6 +7,7 @@
 
 #include <cassert>
 #include <cstdio>
+#include <cstring>
 #include <iostream>
 #include <memory>
 
@@ -27,10 +28,12 @@ public:
 
 	MassExecutor()
 		: data_(nullptr)
+		, ir_(nullptr)
 		, tmp_(nullptr)
 	{}
 
 	void set_data(double *data) {data_ = data;}
+	void set_ir(intptr_t *ir) {ir_ = ir;}
 	void set_tmp(double *tmp) {tmp_ = tmp;}
 
 	bool Lb(const bc::Lb &/*lb*/, int /*offset*/) {
@@ -67,12 +70,39 @@ public:
 		return v;
 	}
 
+	double *Refer(const bc::Refer &refer, int offset) {
+		switch (refer.lo()) {
+		case -1:
+			{
+				int k = offset + refer.so();
+				return &data_[k];
+			}
+		case -2:
+			return &data_[refer.so()];
+		default:
+			{
+				assert(refer.lo() == 0);
+				int k = offset + refer.so();
+				return &data_[k];
+			}
+		}
+	}
+
+	void Save(const bc::Save &save, int offset) {
+		assert(save.lo() == 0);
+		int k = offset + save.so();
+		std::memmove(&data_[k],
+					 reinterpret_cast<double *>(ir_[save.i1()]),
+					 sizeof(double)*save.k());
+	}
+
 	bool Reduce(const ReductionUnit &ru) {
 		return ru(data_);
 	}
 
 private:
 	double *data_;
+	intptr_t *ir_;
 	double *tmp_;
 };
 
@@ -80,8 +110,13 @@ Mass::Mass(Processor *processor, Mmdm *mmdm)
 	: processor_(processor)
 	, mmdm_(mmdm)
 	, executor_(new MassExecutor)
+	, ir_()
 	, tmp_()
 {
+	int max_noir = processor_->GetMaxNoir();
+	ir_.reset(new intptr_t[max_noir]);
+	executor_->set_ir(ir_.get());
+	processor_->set_ir(ir_.get());
 	int max_nod = processor_->GetMaxNumberOfData();
 	tmp_.reset(new double[max_nod]);
 	executor_->set_tmp(tmp_.get());
@@ -98,9 +133,10 @@ bool Mass::Evaluate(double *data)
 
 void Mass::Write(const double *data, DlsMat M)
 {
-	SetToZero(M);
-	for (long row=0;row<mmdm_->size();row++) {
-		for (long col=0;col<mmdm_->size();col++) {
+	// Suppose that M is initialized to the zero matrix
+	// column-major
+	for (long col=0;col<mmdm_->size();col++) {
+		for (long row=0;row<mmdm_->size();row++) {
 			long i = mmdm_->Find(row, col);
 			switch (i) {
 			case 0:

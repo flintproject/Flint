@@ -32,6 +32,7 @@ int ArkDlsDenseMass(long int /*N*/, realtype t,
 					/*N_Vector y,*/ DlsMat M, void *user_data,
 					N_Vector /*tmp1*/, N_Vector /*tmp2*/, N_Vector /*tmp3*/)
 {
+	// Note that M is initialized to the zero matrix
 	try {
 		Ark *ark = static_cast<Ark *>(user_data);
 		ark->ReadTime(t);

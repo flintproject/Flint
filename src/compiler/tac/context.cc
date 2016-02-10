@@ -236,9 +236,7 @@ bool Context::Componentwise(RegisterType rt, int n, cas::Compound &c)
 		for (auto k : params)
 			*os_ << " $" << k;
 		*os_ << ')' << endl;
-		int n1 = ir_++;
-		*os_ << "  addi $i" << n1 << " $i" << n << ' ' << i << endl;
-		*os_ << "  move $i" << n1 << " $" << m << endl;
+		*os_ << "  move $i" << n << " $" << m << ' ' << i << endl;
 	}
 	return true;
 }
@@ -286,9 +284,7 @@ bool Context::Matrix(RegisterType rt, int n, cas::Compound &c)
 			int m = fr_++;
 			if (!Assign(RegisterType::kFloat, m, rcc))
 				return false;
-			int p = ir_++;
-			*os_ << "  addi $i" << p << " $i" << n << ' ' << i++ << endl;
-			*os_ << "  move $i" << p << " $" << m << endl;
+			*os_ << "  move $i" << n << " $" << m << ' ' << i++ << endl;
 		}
 	}
 	return true;
@@ -338,17 +334,29 @@ bool Context::Selector(RegisterType rt, int n, cas::Compound &c)
 		return false;
 	if (rt == RegisterType::kInteger) {
 		assert(size == 2);
-		int col0;
-		GetType(c.children[0], nullptr, &col0, nullptr);
-		*os_ << "  selrow $i" << n << " $i" << n0 << ' ' << col0 << " $" << m1 << endl;
+		int col0, row0;
+		GetType(c.children[0], nullptr, &col0, &row0);
+		*os_ << "  selrow $i" << n
+			 << ' ' << row0
+			 << ' ' << col0
+			 << " $i" << n0
+			 << " $" << m1 << endl;
 	} else if (size == 2) {
 		*os_ << "  select2 $" << n << " $i" << n0 << " $" << m1 << endl;
 	} else {
 		assert(size == 3);
+		int col0, row0;
+		GetType(c.children[0], nullptr, &col0, &row0);
 		int m2 = fr_++;
 		if (!Assign(RegisterType::kFloat, m2, c.children[2]))
 			return false;
-		*os_ << "  select3 $" << n << " $i" << n0 << " $" << m1 << " $" << m2 << endl;
+		*os_ << "  select3 $" << n
+			 << ' ' << row0
+			 << ' ' << col0
+			 << " $i" << n0
+			 << " $" << m1
+			 << " $" << m2
+			 << endl;
 	}
 	return true;
 }
@@ -407,7 +415,11 @@ bool Context::Transpose(RegisterType rt, int n, cas::Compound &c)
 	int n1 = ir_++;
 	if (!Assign(RegisterType::kInteger, n1, c.children[0]))
 		return false;
-	*os_ << "  transpose $i" << n << " $i" << n1 << ' ' << c.col << ' ' << c.row << endl;
+	*os_ << "  transpose $i" << n
+		 << " $i" << n1
+		 << ' ' << c.row
+		 << ' ' << c.col
+		 << endl;
 	return true;
 }
 
@@ -420,9 +432,7 @@ bool Context::Vector(RegisterType rt, int n, cas::Compound &c)
 		int m = fr_++;
 		if (!Assign(RegisterType::kFloat, m, c.children[i]))
 			return false;
-		int p = ir_++;
-		*os_ << "  addi $i" << p << " $i" << n << ' ' << i << endl;
-		*os_ << "  move $i" << p << " $" << m << endl;
+		*os_ << "  move $i" << n << " $" << m << ' ' << i << endl;
 	}
 	return true;
 }

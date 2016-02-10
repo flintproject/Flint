@@ -8,6 +8,7 @@
 #include <cassert>
 #include <cstdio>
 #include <cstdlib>
+#include <cstring>
 #include <iostream>
 #include <map>
 #include <memory>
@@ -92,12 +93,14 @@ public:
 	explicit Executor(size_t layer_size)
 	: layer_size_(layer_size),
 	  data_(NULL),
+	  ir_(nullptr),
 	  tmp_(NULL),
 	  target_(NULL),
 	  color_(NULL)
 	{}
 
 	void set_data(double *data) {data_ = data;}
+	void set_ir(intptr_t *ir) {ir_ = ir;}
 	void set_tmp(double *tmp) {tmp_ = tmp;}
 	void set_target(bool *target) {target_ = target;}
 	void set_color(size_t *color) {color_ = color;}
@@ -139,6 +142,34 @@ public:
 		return v;
 	}
 
+	double *Refer(const bc::Refer &refer, int offset) {
+		switch (refer.lo()) {
+		case -1:
+			assert(false);
+			return nullptr;
+		case -2:
+			return &data_[refer.so()];
+		default:
+			{
+				assert(refer.lo() == 0);
+				int k = offset + refer.so();
+				return &data_[k];
+			}
+		}
+	}
+
+	void Save(const bc::Save &save, int offset) {
+		assert(save.lo() == 0);
+		int k = offset + save.so();
+		if (!target_[k]) { // unless the location is targeted as overwritten
+			std::memmove(&data_[k],
+						 reinterpret_cast<double *>(ir_[save.i1()]),
+						 sizeof(double)*save.k());
+		}
+		for (int i=0;i<save.k();i++)
+			color_[k+i] = 1;
+	}
+
 	bool Reduce(const ReductionUnit &ru) {
 		if (!ru(data_))
 			return false;
@@ -150,6 +181,7 @@ public:
 private:
 	size_t layer_size_;
 	double *data_;
+	intptr_t *ir_;
 	double *tmp_;
 	bool *target_;
 	size_t *color_;
@@ -234,6 +266,11 @@ bool Evaluator::Evaluate(sqlite3 *db,
 	processor->CalculateCodeOffset();
 
 	if (!processor->SolveDependencies(nol, inbound.get(), false)) return false;
+
+	int max_noir = processor->GetMaxNoir();
+	std::unique_ptr<intptr_t[]> ir(new intptr_t[max_noir]);
+	executor->set_ir(ir.get());
+	processor->set_ir(ir.get());
 
 	// calculate max number of data of block
 	int max_nod = processor->GetMaxNumberOfData();

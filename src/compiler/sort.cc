@@ -343,7 +343,7 @@ public:
 		Expr expr;
 		bool r = lex::tokenize_and_parse(it, eit, tokens_, grammar_, expr);
 		if (!r || it != eit) {
-			cerr << "failed to parse: " << *it << endl;
+			cerr << "failed to parse expression: " << *it << endl;
 			return 1;
 		}
 		(*um_)[uuid].Add(name, expr);

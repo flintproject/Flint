@@ -35,6 +35,7 @@ private:
 	Processor *processor_;
 	Mmdm *mmdm_;
 	std::unique_ptr<MassExecutor> executor_;
+	std::unique_ptr<intptr_t[]> ir_;
 	std::unique_ptr<double[]> tmp_;
 };
 

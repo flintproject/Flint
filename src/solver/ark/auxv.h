@@ -29,6 +29,7 @@ public:
 private:
 	Processor *processor_;
 	std::unique_ptr<AuxvExecutor> executor_;
+	std::unique_ptr<intptr_t[]> ir_;
 	std::unique_ptr<double[]> tmp_;
 };
 

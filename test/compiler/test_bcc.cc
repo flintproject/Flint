@@ -6,6 +6,7 @@
 #define BOOST_TEST_MODULE test_bcc
 #include "test.hh"
 
+#include "db/helper.h"
 #include "db/query.h"
 #include "db/tac-inserter.hh"
 
@@ -15,21 +16,27 @@ struct F : test::MemoryFixture {
 		, sql(db)
 	{
 		BOOST_CHECK_EQUAL(SaveNol(1, db), 1);
-		sql.Exec("CREATE TABLE tacs (uuid BLOB, name TEXT, nod INTEGER, body TEXT)");
+		sql.Exec("CREATE TABLE tacs " TACS_SCHEMA);
 	}
 
-	void Setup(const char *uuid, const char *name, int nod, const char *body)
+	void Setup(const char *uuid, const char *name, int noir, int nod, const char *body)
 	{
 		db::TacInserter ti(db);
 		boost::uuids::string_generator gen;
 		boost::uuids::uuid u = gen(uuid);
-		BOOST_CHECK(ti.Insert(u, name, nod, body));
+		BOOST_CHECK(ti.Insert(u, name, noir, nod, body));
+	}
+
+	void Setup(const char *name, int noir, int nod, const char *body)
+	{
+		db::TacInserter ti(db);
+		BOOST_CHECK(ti.Insert(name, noir, nod, body));
 	}
 
 	void Setup(const char *name, int nod, const char *body)
 	{
 		db::TacInserter ti(db);
-		BOOST_CHECK(ti.Insert(name, nod, body));
+		BOOST_CHECK(ti.Insert(name, 0, nod, body));
 	}
 
 	void SetupCall1(const char *f)
@@ -346,6 +353,7 @@ BOOST_AUTO_TEST_CASE(False) {
 BOOST_AUTO_TEST_CASE(DuplicateLabels) {
 	Setup("72b52587-043b-4950-98bb-b29c97237140",
 		  "%boolin",
+		  0,
 		  52,
 		  "  load $2 %dvdt\n"
 		  "  loadi $3 150\n"
@@ -449,6 +457,81 @@ BOOST_AUTO_TEST_CASE(DuplicateLabels) {
 		  " L0:\n"
 		  "  store %boolin $0\n"
 		  );
+	BOOST_CHECK(compiler::bcc::Bcc(db, &std::cout));
+}
+
+BOOST_AUTO_TEST_CASE(Refer) {
+	Setup("%c", 1, 0, "  refer $i0 %foo\n");
+	BOOST_CHECK(compiler::bcc::Bcc(db, &std::cout));
+}
+
+BOOST_AUTO_TEST_CASE(Deref) {
+	Setup("%c", 101, 1, "  deref $0 $i100 777\n");
+	BOOST_CHECK(compiler::bcc::Bcc(db, &std::cout));
+}
+
+BOOST_AUTO_TEST_CASE(Alloca) {
+	Setup("%c", 6, 0, "  alloca $i5 24\n");
+	BOOST_CHECK(compiler::bcc::Bcc(db, &std::cout));
+}
+
+BOOST_AUTO_TEST_CASE(Save) {
+	Setup("%c", 1, 0, "  save %you $i0 10\n");
+	BOOST_CHECK(compiler::bcc::Bcc(db, &std::cout));
+}
+
+BOOST_AUTO_TEST_CASE(Move) {
+	Setup("%c", 8, 5, "  move $i7 $4 2\n");
+	BOOST_CHECK(compiler::bcc::Bcc(db, &std::cout));
+}
+
+BOOST_AUTO_TEST_CASE(Transpose) {
+	Setup("%c", 2, 0, "  transpose $i0 $i1 2 3\n");
+	BOOST_CHECK(compiler::bcc::Bcc(db, &std::cout));
+}
+
+BOOST_AUTO_TEST_CASE(Outerproduct) {
+	Setup("%c", 21, 0, "  outerproduct $i0 10 $i10 20 $i20\n");
+	BOOST_CHECK(compiler::bcc::Bcc(db, &std::cout));
+}
+
+BOOST_AUTO_TEST_CASE(Scalarproduct) {
+	Setup("%c", 9, 1, "  scalarproduct $0 6 $i7 $i8\n");
+	BOOST_CHECK(compiler::bcc::Bcc(db, &std::cout));
+}
+
+BOOST_AUTO_TEST_CASE(Vectorproduct) {
+	Setup("%c", 3, 0, "  vectorproduct $i0 $i1 $i2\n");
+	BOOST_CHECK(compiler::bcc::Bcc(db, &std::cout));
+}
+
+BOOST_AUTO_TEST_CASE(Determinant) {
+	Setup("%c", 1, 1, "  determinant $0 3 $i0\n");
+	BOOST_CHECK(compiler::bcc::Bcc(db, &std::cout));
+}
+
+BOOST_AUTO_TEST_CASE(Select2) {
+	Setup("%c", 1, 2, "  select2 $0 $i0 $1\n");
+	BOOST_CHECK(compiler::bcc::Bcc(db, &std::cout));
+}
+
+BOOST_AUTO_TEST_CASE(Select3) {
+	Setup("%c", 2, 4, "  select3 $0 2 3 $i1 $2 $3\n");
+	BOOST_CHECK(compiler::bcc::Bcc(db, &std::cout));
+}
+
+BOOST_AUTO_TEST_CASE(Selrow) {
+	Setup("%c", 2, 1, "  selrow $i0 2 3 $i1 $0\n");
+	BOOST_CHECK(compiler::bcc::Bcc(db, &std::cout));
+}
+
+BOOST_AUTO_TEST_CASE(Mult) {
+	Setup("%c", 3, 1, "  mult $i0 5 $0 $i2\n");
+	BOOST_CHECK(compiler::bcc::Bcc(db, &std::cout));
+}
+
+BOOST_AUTO_TEST_CASE(Mmul) {
+	Setup("%c", 3, 0, "  mmul $i0 1 2 3 $i1 $i2\n");
 	BOOST_CHECK(compiler::bcc::Bcc(db, &std::cout));
 }
 

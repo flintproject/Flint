@@ -67,7 +67,7 @@ libflint_la_SOURCES = \
     process.c \
     system.c
 
-libflintxx_la_CPPFLAGS = $(BOOST_CPPFLAGS) $(PROTOBUF_CFLAGS) $(SOSLIB_CFLAGS) $(SUNDIALS_CFLAGS) $(LIBSBML_CFLAGS) $(CLIBSEDML_CFLAGS) $(XML_CPPFLAGS) $(LIBZIP_CFLAGS)
+libflintxx_la_CPPFLAGS = -I$(top_srcdir)/include $(BOOST_CPPFLAGS) $(PROTOBUF_CFLAGS) $(SOSLIB_CFLAGS) $(SUNDIALS_CFLAGS) $(LIBSBML_CFLAGS) $(CLIBSEDML_CFLAGS) $(XML_CPPFLAGS) $(LIBZIP_CFLAGS)
 libflintxx_la_LIBADD = libflint.la libsqlite3.la $(BOOST_FILESYSTEM_LIBS) $(BOOST_SYSTEM_LIBS) $(PROTOBUF_LIBS) $(SOSLIB_LIBS) $(SUNDIALS_LIBS) $(LIBSBML_LIBS) $(CLIBSEDML_LIBS) $(XML_LIBS) $(LIBZIP_LIBS)
 libflintxx_la_LDFLAGS = -no-undefined $(BOOST_FILESYSTEM_LDFLAGS) $(BOOST_SYSTEM_LDFLAGS)
 libflintxx_la_SOURCES = \
@@ -165,6 +165,7 @@ libflintxx_la_SOURCES = \
     runtime/evaluator.cc \
     runtime/init.cc \
     runtime/flow.cc \
+    runtime/matrix.cc \
     runtime/reduction-unit.cc \
     runtime/section-context.cc \
     sbml/load.cc \

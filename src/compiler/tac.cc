@@ -20,6 +20,7 @@
 #include "cas.h"
 #include "cas/dimension.h"
 #include "compiler/tac/context.h"
+#include "db/helper.h"
 #include "db/query.h"
 #include "db/tac-inserter.hh"
 #include "lexer.hh"
@@ -302,7 +303,7 @@ public:
 		cas::Expr expr;
 		bool r = lex::tokenize_and_parse(it, eit, tokens_, grammar_, expr);
 		if (!r || it != eit) {
-			cerr << "failed to parse: " << it << endl;
+			cerr << "failed to parse expression: " << it << endl;
 			return 1;
 		}
 		int col, row;
@@ -312,9 +313,10 @@ public:
 		std::unique_ptr<Context> context(new Context(uuid, name, &oss));
 		if (!context->EmitCode(expr))
 			return 1;
+		int noir = context->get_ir();
 		int nod = context->get_fr();
 		std::string body = oss.str();
-		return (inserter_.Insert(uuid, name, nod, body.c_str())) ? 0 : 1;
+		return (inserter_.Insert(uuid, name, noir, nod, body.c_str())) ? 0 : 1;
 	}
 
 private:
@@ -344,7 +346,7 @@ bool Tac(const cas::DimensionAnalyzer *da, sqlite3 *db)
 {
 	if (!BeginTransaction(db))
 		return false;
-	if (!CreateTable(db, "tacs", "(uuid BLOB, name TEXT, nod INTEGER, body TEXT)"))
+	if (!CreateTable(db, "tacs", TACS_SCHEMA))
 		return false;
 
 	std::unique_ptr<Parser> parser(new Parser(da, db));

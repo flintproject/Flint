@@ -9,6 +9,7 @@
 #include <cassert>
 #include <cstdio>
 #include <cstdlib>
+#include <cstring>
 #include <iostream>
 #include <memory>
 #include <random>
@@ -57,11 +58,13 @@ public:
 	: layer_size_(layer_size),
 	  data_(NULL),
 	  prev_(NULL),
+	  ir_(nullptr),
 	  tmp_(NULL),
 	  history_(NULL) {}
 
 	void set_data(double *data) {data_ = data;}
 	void set_prev(double *prev) {prev_ = prev;}
+	void set_ir(intptr_t *ir) {ir_ = ir;}
 	void set_tmp(double *tmp) {tmp_ = tmp;}
 	void set_history(History *history) {history_ = history;}
 
@@ -96,6 +99,28 @@ public:
 		return v;
 	}
 
+	double *Refer(const bc::Refer &refer, int offset) {
+		switch (refer.lo()) {
+		case -1:
+			return &prev_[offset + refer.so()];
+		case -2:
+			return &data_[refer.so()];
+		default:
+			{
+				int k = offset + refer.so() + (layer_size_ * refer.lo());
+				return &data_[k];
+			}
+		}
+	}
+
+	void Save(const bc::Save &save, int offset) {
+		assert(save.lo() >= 0);
+		int k = offset + save.so() + (layer_size_ * save.lo());
+		std::memmove(&data_[k],
+					 reinterpret_cast<double *>(ir_[save.i1()]),
+					 sizeof(double)*save.k());
+	}
+
 	bool Reduce(const ReductionUnit &ru) {
 		return ru(data_);
 	}
@@ -104,6 +129,7 @@ private:
 	size_t layer_size_;
 	double *data_;
 	double *prev_;
+	intptr_t *ir_;
 	double *tmp_;
 	History *history_;
 };
@@ -118,12 +144,14 @@ public:
 	  data_(NULL),
 	  prev_(NULL),
 	  color_(NULL),
+	  ir_(nullptr),
 	  tmp_(NULL),
 	  history_(NULL) {}
 
 	void set_data(double *data) {data_ = data;}
 	void set_prev(double *prev) {prev_ = prev;}
 	void set_color(int *color) {color_ = color;}
+	void set_ir(intptr_t *ir) {ir_ = ir;}
 	void set_tmp(double *tmp) {tmp_ = tmp;}
 	void set_history(History *history) {history_ = history;}
 
@@ -158,6 +186,27 @@ public:
 		return v;
 	}
 
+	double *Refer(const bc::Refer &refer, int offset) {
+		switch (refer.lo()) {
+		case -1:
+			return &prev_[offset + refer.so()];
+		case -2:
+			return &prev_[refer.so()];
+		default:
+			assert(false);
+			return nullptr;
+		}
+	}
+
+	void Save(const bc::Save &save, int offset) {
+		assert(save.lo() == 0);
+		int k = offset + save.so();
+		std::memmove(&data_[k],
+					 reinterpret_cast<double *>(ir_[save.i1()]),
+					 sizeof(double)*save.k());
+		for (int i=0;i<save.k();i++)
+			color_[k+i] = 1;
+	}
 
 	void Communicate(const FlowInboundMap *inbound) {
 		for (auto it=inbound->cbegin();it!=inbound->cend();++it) {
@@ -234,6 +283,7 @@ private:
 	double *data_;
 	double *prev_;
 	int *color_;
+	intptr_t *ir_;
 	double *tmp_;
 	History *history_;
 };
@@ -418,6 +468,23 @@ bool Evolve(sqlite3 *db,
 	executor->set_history(history.get());
 	preexecutor->set_history(history.get());
 	postexecutor->set_history(history.get());
+
+	int max_noir = processor->GetMaxNoir();
+	if (with_pre)
+		max_noir = std::max(max_noir, preprocessor->GetMaxNoir());
+	if (with_post)
+		max_noir = std::max(max_noir, postprocessor->GetMaxNoir());
+	std::unique_ptr<intptr_t[]> ir(new intptr_t[max_noir]);
+	executor->set_ir(ir.get());
+	processor->set_ir(ir.get());
+	if (with_pre) {
+		preexecutor->set_ir(ir.get());
+		preprocessor->set_ir(ir.get());
+	}
+	if (with_post) {
+		postexecutor->set_ir(ir.get());
+		postprocessor->set_ir(ir.get());
+	}
 
 	// calculate max number of data of block
 	int max_nod = processor->GetMaxNumberOfData();

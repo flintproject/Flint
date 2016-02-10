@@ -11,6 +11,7 @@
 #include <memory>
 #include <random>
 #include <set>
+#include <stack>
 #include <string>
 #include <unordered_set>
 #include <vector>
@@ -25,6 +26,7 @@
 #include "lo/layout.h"
 #include "numeric/prng.h"
 #include "runtime/flow.hh"
+#include "runtime/matrix.h"
 #include "runtime/section-context.h"
 #include "runtime/timeseries.h"
 
@@ -285,15 +287,24 @@ public:
 	Processor &operator=(const Processor &) = delete;
 
 	Processor(const Layout *layout, int layer_size)
-		: layout_(layout), layer_size_(layer_size),
-		  shv_(new ShVector), bhv_(new BhVector), cv_(new CVector),
-		  euv_(),
-		  code_offset_(), tmp_(NULL), tv_(NULL), rng_(NULL) {}
+		: layout_(layout)
+		, layer_size_(layer_size)
+		, shv_(new ShVector)
+		, bhv_(new BhVector)
+		, cv_(new CVector)
+		, euv_()
+		, code_offset_()
+		, ir_(nullptr)
+		, tmp_(NULL)
+		, tv_(NULL)
+		, rng_(NULL)
+	{}
 
 	ShVector *GetShv() const {return shv_.get();}
 	BhVector *GetBhv() const {return bhv_.get();}
 	CVector *GetCv() const {return cv_.get();}
 
+	void set_ir(intptr_t *ir) {ir_ = ir;}
 	void set_tmp(double *tmp) {tmp_ = tmp;}
 	void set_tv(TimeseriesVector *tv) {tv_ = tv;}
 	void set_rng(std::mt19937 *rng) {rng_ = rng;}
@@ -374,6 +385,32 @@ public:
 							store->clear_v();
 						}
 						break;
+					case bc::Code::kRefer:
+						{
+							bc::Refer *refer = code.mutable_refer();
+							int so, lo;
+							if (!locater->Find(refer->v(), &so, &lo)) {
+								runtime::ReportSectionContext(*sit);
+								return false;
+							}
+							refer->set_so(so);
+							refer->set_lo(lo);
+							refer->clear_v();
+						}
+						break;
+					case bc::Code::kSave:
+						{
+							bc::Save *save = code.mutable_save();
+							int so, lo;
+							if (!locater->Find(save->v(), &so, &lo)) {
+								runtime::ReportSectionContext(*sit);
+								return false;
+							}
+							save->set_so(so);
+							save->set_lo(lo);
+							save->clear_v();
+						}
+						break;
 					default:
 						// skip
 						break;
@@ -385,6 +422,14 @@ public:
 		assert(bit == bhv_->end());
 		assert(cit == cv_->end());
 		return true;
+	}
+
+	int GetMaxNoir() {
+		int max_noir = 0;
+		for (const auto &bh : *bhv_) {
+			max_noir = std::max(max_noir, bh.noir());
+		}
+		return max_noir;
 	}
 
 	int GetMaxNumberOfData() {
@@ -498,6 +543,7 @@ public:
 			int ci = code_offset_[bi];
 			int cib = ci;
 			int cie = cib + bh.noc();
+			std::stack<std::unique_ptr<double[]> > stack;
 			while (ci < cie) {
 				const bc::Code &code(cv_->at(ci));
 				switch (code.type()) {
@@ -582,6 +628,148 @@ public:
 					ci++;
 					}
 					break;
+				case bc::Code::kRefer:
+					{
+						const bc::Refer &refer(code.refer());
+						ir_[refer.i0()] = reinterpret_cast<intptr_t>(executor->Refer(refer, offset));
+						ci++;
+					}
+					break;
+				case bc::Code::kDeref:
+					{
+						const bc::Deref &deref(code.deref());
+						tmp_[deref.f0()] = *(reinterpret_cast<double *>(ir_[deref.i1()]) + deref.k());
+						ci++;
+					}
+					break;
+				case bc::Code::kAlloca:
+					{
+						const bc::Alloca &a(code.alloca());
+						stack.emplace(new double[a.k()]);
+						ir_[a.i0()] = reinterpret_cast<intptr_t>(stack.top().get());
+						ci++;
+					}
+					break;
+				case bc::Code::kSave:
+					{
+						const bc::Save &save(code.save());
+						executor->Save(save, offset);
+						ci++;
+					}
+					break;
+				case bc::Code::kMove:
+					{
+						const bc::Move &move(code.move());
+						*(reinterpret_cast<double *>(ir_[move.i0()]) + move.k()) = tmp_[move.f1()];
+						ci++;
+					}
+					break;
+				case bc::Code::kTranspose:
+					{
+						const bc::Transpose &transpose(code.transpose());
+						stack.emplace(new double[transpose.kc() * transpose.kr()]);
+						double *d0 = stack.top().get();
+						ir_[transpose.i0()] = reinterpret_cast<intptr_t>(d0);
+						const double *d1 = reinterpret_cast<const double *>(ir_[transpose.i1()]);
+						runtime::Transpose(d0, d1, transpose.kr(), transpose.kc());
+						ci++;
+					}
+					break;
+				case bc::Code::kOuterproduct:
+					{
+						const bc::Outerproduct &outerproduct(code.outerproduct());
+						stack.emplace(new double[outerproduct.k1() * outerproduct.k2()]);
+						double *d0 = stack.top().get();
+						ir_[outerproduct.i0()] = reinterpret_cast<intptr_t>(d0);
+						const double *d1 = reinterpret_cast<const double *>(ir_[outerproduct.i1()]);
+						const double *d2 = reinterpret_cast<const double *>(ir_[outerproduct.i2()]);
+						runtime::Outerproduct(d0, outerproduct.k1(), d1, outerproduct.k2(), d2);
+						ci++;
+					}
+					break;
+				case bc::Code::kScalarproduct:
+					{
+						const bc::Scalarproduct &scalarproduct(code.scalarproduct());
+						const double *d1 = reinterpret_cast<const double *>(ir_[scalarproduct.i1()]);
+						const double *d2 = reinterpret_cast<const double *>(ir_[scalarproduct.i2()]);
+						tmp_[scalarproduct.f0()] = runtime::Scalarproduct(scalarproduct.k(), d1, d2);
+						ci++;
+					}
+					break;
+				case bc::Code::kVectorproduct:
+					{
+						const bc::Vectorproduct &vectorproduct(code.vectorproduct());
+						stack.emplace(new double[3]);
+						double *d0 = stack.top().get();
+						ir_[vectorproduct.i0()] = reinterpret_cast<intptr_t>(d0);
+						const double *d1 = reinterpret_cast<const double *>(ir_[vectorproduct.i1()]);
+						const double *d2 = reinterpret_cast<const double *>(ir_[vectorproduct.i2()]);
+						runtime::Vectorproduct(d0, d1, d2);
+						ci++;
+					}
+					break;
+				case bc::Code::kDeterminant:
+					{
+						const bc::Determinant &determinant(code.determinant());
+						const double *d1 = reinterpret_cast<const double *>(ir_[determinant.i1()]);
+						tmp_[determinant.f0()] = runtime::Determinant(determinant.k(), d1);
+						ci++;
+					}
+					break;
+				case bc::Code::kSelect2:
+					{
+						const bc::Select2 &select2(code.select2());
+						const double *d1 = reinterpret_cast<const double *>(ir_[select2.i1()]);
+						tmp_[select2.f0()] = runtime::Select2(d1, static_cast<int>(tmp_[select2.f2()]));
+						ci++;
+					}
+					break;
+				case bc::Code::kSelect3:
+					{
+						const bc::Select3 &select3(code.select3());
+						const double *d1 = reinterpret_cast<const double *>(ir_[select3.i1()]);
+						tmp_[select3.f0()] = runtime::Select3(select3.kr(), select3.kc(), d1,
+															  static_cast<int>(tmp_[select3.f2()]),
+															  static_cast<int>(tmp_[select3.f3()]));
+						ci++;
+					}
+					break;
+				case bc::Code::kSelrow:
+					{
+						const bc::Selrow &selrow(code.selrow());
+						stack.emplace(new double[selrow.kr()]);
+						double *d0 = stack.top().get();
+						const double *d1 = reinterpret_cast<const double *>(ir_[selrow.i1()]);
+						runtime::Selrow(d0, selrow.kr(), selrow.kc(), d1, static_cast<int>(tmp_[selrow.f2()]));
+						ci++;
+					}
+					break;
+				case bc::Code::kMult:
+					{
+						const bc::Mult &mult(code.mult());
+						stack.emplace(new double[mult.k()]);
+						double *d0 = stack.top().get();
+						ir_[mult.i0()] = reinterpret_cast<intptr_t>(d0);
+						const double *d2 = reinterpret_cast<const double *>(ir_[mult.i2()]);
+						runtime::Mult(d0, mult.k(), tmp_[mult.f1()], d2);
+						ci++;
+					}
+					break;
+				case bc::Code::kMmul:
+					{
+						const bc::Mmul &mmul(code.mmul());
+						stack.emplace(new double[mmul.kc() * mmul.kr()]);
+						double *d0 = stack.top().get();
+						ir_[mmul.i0()] = reinterpret_cast<intptr_t>(d0);
+						const double *d1 = reinterpret_cast<const double *>(ir_[mmul.i1()]);
+						const double *d2 = reinterpret_cast<const double *>(ir_[mmul.i2()]);
+						runtime::Mmul(d0, mmul.kr(), mmul.kx(), mmul.kc(), d1, d2);
+						ci++;
+					}
+					break;
+				default:
+					assert(false);
+					break;
 				}
 			}
 			} else {
@@ -615,6 +803,7 @@ public:
 						ci = code_offset_[bi++];
 						int cib = ci;
 						int cie = cib + bh.noc();
+						std::stack<std::unique_ptr<double[]> > stack;
 						while (ci < cie) {
 							const bc::Code &code(cv_->at(ci));
 							switch (code.type()) {
@@ -688,6 +877,148 @@ public:
 								ci++;
 								}
 								break;
+							case bc::Code::kRefer:
+								{
+									const bc::Refer &refer(code.refer());
+									ir_[refer.i0()] = reinterpret_cast<intptr_t>(executor->Refer(refer, offset));
+									ci++;
+								}
+								break;
+							case bc::Code::kDeref:
+								{
+									const bc::Deref &deref(code.deref());
+									tmp_[deref.f0()] = *(reinterpret_cast<double *>(ir_[deref.i1()]) + deref.k());
+									ci++;
+								}
+								break;
+							case bc::Code::kAlloca:
+								{
+									const bc::Alloca &a(code.alloca());
+									stack.emplace(new double[a.k()]);
+									ir_[a.i0()] = reinterpret_cast<intptr_t>(stack.top().get());
+									ci++;
+								}
+								break;
+							case bc::Code::kSave:
+								{
+									const bc::Save &save(code.save());
+									executor->Save(save, offset);
+									ci++;
+								}
+								break;
+							case bc::Code::kMove:
+								{
+									const bc::Move &move(code.move());
+									*(reinterpret_cast<double *>(ir_[move.i0()]) + move.k()) = tmp_[move.f1()];
+									ci++;
+								}
+								break;
+							case bc::Code::kTranspose:
+								{
+									const bc::Transpose &transpose(code.transpose());
+									stack.emplace(new double[transpose.kc() * transpose.kr()]);
+									double *d0 = stack.top().get();
+									ir_[transpose.i0()] = reinterpret_cast<intptr_t>(d0);
+									const double *d1 = reinterpret_cast<const double *>(ir_[transpose.i1()]);
+									runtime::Transpose(d0, d1, transpose.kr(), transpose.kc());
+									ci++;
+								}
+								break;
+							case bc::Code::kOuterproduct:
+								{
+									const bc::Outerproduct &outerproduct(code.outerproduct());
+									stack.emplace(new double[outerproduct.k1() * outerproduct.k2()]);
+									double *d0 = stack.top().get();
+									ir_[outerproduct.i0()] = reinterpret_cast<intptr_t>(d0);
+									const double *d1 = reinterpret_cast<const double *>(ir_[outerproduct.i1()]);
+									const double *d2 = reinterpret_cast<const double *>(ir_[outerproduct.i2()]);
+									runtime::Outerproduct(d0, outerproduct.k1(), d1, outerproduct.k2(), d2);
+									ci++;
+								}
+								break;
+							case bc::Code::kScalarproduct:
+								{
+									const bc::Scalarproduct &scalarproduct(code.scalarproduct());
+									const double *d1 = reinterpret_cast<const double *>(ir_[scalarproduct.i1()]);
+									const double *d2 = reinterpret_cast<const double *>(ir_[scalarproduct.i2()]);
+									tmp_[scalarproduct.f0()] = runtime::Scalarproduct(scalarproduct.k(), d1, d2);
+									ci++;
+								}
+								break;
+							case bc::Code::kVectorproduct:
+								{
+									const bc::Vectorproduct &vectorproduct(code.vectorproduct());
+									stack.emplace(new double[3]);
+									double *d0 = stack.top().get();
+									ir_[vectorproduct.i0()] = reinterpret_cast<intptr_t>(d0);
+									const double *d1 = reinterpret_cast<const double *>(ir_[vectorproduct.i1()]);
+									const double *d2 = reinterpret_cast<const double *>(ir_[vectorproduct.i2()]);
+									runtime::Vectorproduct(d0, d1, d2);
+									ci++;
+								}
+								break;
+							case bc::Code::kDeterminant:
+								{
+									const bc::Determinant &determinant(code.determinant());
+									const double *d1 = reinterpret_cast<const double *>(ir_[determinant.i1()]);
+									tmp_[determinant.f0()] = runtime::Determinant(determinant.k(), d1);
+									ci++;
+								}
+								break;
+							case bc::Code::kSelect2:
+								{
+									const bc::Select2 &select2(code.select2());
+									const double *d1 = reinterpret_cast<const double *>(ir_[select2.i1()]);
+									tmp_[select2.f0()] = runtime::Select2(d1, static_cast<int>(tmp_[select2.f2()]));
+									ci++;
+								}
+								break;
+							case bc::Code::kSelect3:
+								{
+									const bc::Select3 &select3(code.select3());
+									const double *d1 = reinterpret_cast<const double *>(ir_[select3.i1()]);
+									tmp_[select3.f0()] = runtime::Select3(select3.kr(), select3.kc(), d1,
+																		  static_cast<int>(tmp_[select3.f2()]),
+																		  static_cast<int>(tmp_[select3.f3()]));
+									ci++;
+								}
+								break;
+							case bc::Code::kSelrow:
+								{
+									const bc::Selrow &selrow(code.selrow());
+									stack.emplace(new double[selrow.kr()]);
+									double *d0 = stack.top().get();
+									const double *d1 = reinterpret_cast<const double *>(ir_[selrow.i1()]);
+									runtime::Selrow(d0, selrow.kr(), selrow.kc(), d1, static_cast<int>(tmp_[selrow.f2()]));
+									ci++;
+								}
+								break;
+							case bc::Code::kMult:
+								{
+									const bc::Mult &mult(code.mult());
+									stack.emplace(new double[mult.k()]);
+									double *d0 = stack.top().get();
+									ir_[mult.i0()] = reinterpret_cast<intptr_t>(d0);
+									const double *d2 = reinterpret_cast<const double *>(ir_[mult.i2()]);
+									runtime::Mult(d0, mult.k(), tmp_[mult.f1()], d2);
+									ci++;
+								}
+								break;
+							case bc::Code::kMmul:
+								{
+									const bc::Mmul &mmul(code.mmul());
+									stack.emplace(new double[mmul.kc() * mmul.kr()]);
+									double *d0 = stack.top().get();
+									ir_[mmul.i0()] = reinterpret_cast<intptr_t>(d0);
+									const double *d1 = reinterpret_cast<const double *>(ir_[mmul.i1()]);
+									const double *d2 = reinterpret_cast<const double *>(ir_[mmul.i2()]);
+									runtime::Mmul(d0, mmul.kr(), mmul.kx(), mmul.kc(), d1, d2);
+									ci++;
+								}
+								break;
+							default:
+								assert(false);
+								break;
 							}
 						}
 					}
@@ -756,6 +1087,30 @@ private:
 									cd->SetStoreAddr(addr);
 								}
 								break;
+							case bc::Code::kRefer:
+								{
+									const bc::Refer &refer = code.refer();
+									switch (refer.lo()) {
+									case -1:
+									case -2:
+										// nothing to do
+										break;
+									default:
+										{
+											int addr = offset + refer.so() + (layer_size_ * refer.lo());
+											cd->AddLoadAddress(addr); // TODO: fix misnomer
+										}
+										break;
+									}
+								}
+								break;
+							case bc::Code::kSave:
+								{
+									const bc::Save &save = code.save();
+									int addr = offset + save.so() + (layer_size_ * save.lo());
+									cd->SetStoreAddr(addr); // TODO: fix misnomer
+								}
+								break;
 							default:
 								break;
 							}
@@ -802,6 +1157,7 @@ private:
 	std::vector<ExecutionUnit> euv_;
 
 	std::unique_ptr<int[]> code_offset_;
+	intptr_t *ir_;
 	double *tmp_;
 	TimeseriesVector *tv_;
 	std::mt19937 *rng_;

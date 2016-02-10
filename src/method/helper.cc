@@ -4,6 +4,15 @@
 namespace flint {
 namespace method {
 
+void RewriteDelayParam(Compound &x, const Expr &expr)
+{
+	Compound c;
+	c.keyword = "minus";
+	c.children.push_back("%time");
+	c.children.push_back(expr);
+	x.children.push_back(c);
+}
+
 void RewriteDeltaTime(Compound &x, const std::string &id)
 {
 	if (id == "%time") {

@@ -14,10 +14,11 @@ namespace flint {
 namespace db {
 
 TacInserter::TacInserter(sqlite3 *db)
-	: StatementDriver(db, "INSERT INTO tacs VALUES (?, ?, ?, ?)")
+	: StatementDriver(db, "INSERT INTO tacs VALUES (?, ?, ?, ?, ?)")
 {}
 
-bool TacInserter::Insert(const boost::uuids::uuid &uuid, const char *name, int nod, const char *body)
+bool TacInserter::Insert(const boost::uuids::uuid &uuid, const char *name,
+						 int noir, int nod, const char *body)
 {
 	int e;
 	e = sqlite3_bind_blob(stmt(), 1, &uuid, uuid.size(), SQLITE_STATIC);
@@ -30,12 +31,17 @@ bool TacInserter::Insert(const boost::uuids::uuid &uuid, const char *name, int n
 		cerr << "failed to bind name: " << e << endl;
 		return false;
 	}
-	e = sqlite3_bind_int(stmt(), 3, nod);
+	e = sqlite3_bind_int(stmt(), 3, noir);
+	if (e != SQLITE_OK) {
+		cerr << "failed to bind noir: " << e << endl;
+		return false;
+	}
+	e = sqlite3_bind_int(stmt(), 4, nod);
 	if (e != SQLITE_OK) {
 		cerr << "failed to bind nod: " << e << endl;
 		return false;
 	}
-	e = sqlite3_bind_text(stmt(), 4, body, -1, SQLITE_STATIC);
+	e = sqlite3_bind_text(stmt(), 5, body, -1, SQLITE_STATIC);
 	if (e != SQLITE_OK) {
 		cerr << "failed to bind body: " << e << endl;
 		return false;
@@ -49,10 +55,10 @@ bool TacInserter::Insert(const boost::uuids::uuid &uuid, const char *name, int n
 	return true;
 }
 
-bool TacInserter::Insert(const char *name, int nod, const char *body)
+bool TacInserter::Insert(const char *name, int noir, int nod, const char *body)
 {
 	boost::uuids::uuid nu = boost::uuids::nil_uuid();
-	return Insert(nu, name, nod, body);
+	return Insert(nu, name, noir, nod, body);
 }
 
 }

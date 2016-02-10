@@ -4,4 +4,6 @@
 
 #define VARIABLES_SCHEMA "(space_id BLOB, type TEXT, id INTEGER, name TEXT, unit TEXT, ncols INTEGER, nrows INTEGER, capacity REAL)"
 
+#define TACS_SCHEMA "(uuid BLOB, name TEXT, noir INTEGER, nod INTEGER, body TEXT)"
+
 #endif

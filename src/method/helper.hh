@@ -9,6 +9,8 @@
 namespace flint {
 namespace method {
 
+void RewriteDelayParam(Compound &x, const Expr &expr);
+
 void RewriteDeltaTime(Compound &x, const std::string &id);
 
 }

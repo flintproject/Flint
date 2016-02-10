@@ -17,8 +17,9 @@ message SectionHeader {
 message BlockHeader {
 
   required string name = 1;
-  required int32 nod = 2; /* number of data */
-  required int32 noc = 3; /* number of code */
+  required int32 noir = 2; /* number of integer registers */
+  required int32 nod = 3; /* number of data */
+  required int32 noc = 4; /* number of code */
 
 }
 
@@ -182,35 +183,206 @@ message Store {
 
 }
 
+message Refer {
+
+  required int32 i0 = 1; /* target register */
+  optional string v = 2; /* operand variable name */
+  optional int32 so = 3; /* sector offset */
+  optional int32 lo = 4; /* layer offset */
+
+}
+
+message Deref {
+
+  required int32 f0 = 1; /* target floating-point register */
+  required int32 i1 = 2; /* operand register */
+  required int32 k = 3;  /* offset */
+
+}
+
+message Alloca {
+
+  required int32 i0 = 1; /* target register */
+  required int32 k = 2;  /* size */
+
+}
+
+message Save {
+
+  optional string v = 1; /* target variable name */
+  optional int32 so = 2; /* sector offset */
+  optional int32 lo = 3; /* layer offset */
+  required int32 i1 = 4; /* operand register */
+  required int32 k = 5;  /* size */
+
+}
+
+message Move {
+
+  required int32 i0 = 1; /* target register */
+  required int32 f1 = 2; /* operand floating-point register */
+  required int32 k = 3; /* offset */
+
+}
+
+message Transpose {
+
+  required int32 i0 = 1; /* target register */
+  required int32 i1 = 2; /* operand register */
+  required int32 kr = 3; /* resulting # of rows */
+  required int32 kc = 4; /* resulting # of columns */
+
+}
+
+message Outerproduct {
+
+  required int32 i0 = 1; /* target register */
+  required int32 k1 = 2; /* size of operand 1 */
+  required int32 i1 = 3; /* operand register 1 */
+  required int32 k2 = 4; /* size of operand 2 */
+  required int32 i2 = 5; /* operand register 2 */
+
+}
+
+message Scalarproduct {
+
+  required int32 f0 = 1; /* target floating-point register */
+  required int32 k = 2;  /* size of each operand */
+  required int32 i1 = 3; /* operand register 1 */
+  required int32 i2 = 4; /* operand register 2 */
+
+}
+
+message Vectorproduct {
+
+  required int32 i0 = 1; /* target register */
+  required int32 i1 = 2; /* operand register 1 */
+  required int32 i2 = 3; /* operand register 2 */
+
+}
+
+message Determinant {
+
+  required int32 f0 = 1; /* target floating-point register */
+  required int32 k = 2;  /* # of columns of operand */
+  required int32 i1 = 3; /* operand register */
+
+}
+
+message Select2 {
+
+  required int32 f0 = 1; /* target floating-point register */
+  required int32 i1 = 2; /* operand register */
+  required int32 f2 = 3; /* index (1-based) */
+
+}
+
+message Select3 {
+
+  required int32 f0 = 1; /* target floating-point register */
+  required int32 kr = 2; /* # of rows */
+  required int32 kc = 3; /* # of columns */
+  required int32 i1 = 4; /* operand register */
+  required int32 f2 = 5; /* row index (1-based) */
+  required int32 f3 = 6; /* column index (1-based) */
+
+}
+
+/*
+ * Select row
+ */
+message Selrow {
+
+  required int32 i0 = 1; /* target register */
+  required int32 kr = 2; /* # of rows */
+  required int32 kc = 3; /* # of columns */
+  required int32 i1 = 4; /* operand register 1 */
+  required int32 f2 = 5; /* row index (1-based) */
+
+}
+
+message Mult {
+
+  required int32 i0 = 1; /* target register */
+  required int32 k = 2;  /* size */
+  required int32 f1 = 3; /* operand floating-point register 1 */
+  required int32 i2 = 4; /* operand register 2 */
+
+}
+
+/*
+ * Matrix multiplication
+ */
+message Mmul {
+
+  required int32 i0 = 1; /* target register */
+  required int32 kr = 2; /* # of rows of operand 1 */
+  required int32 kx = 3; /* # of columns of operand 1 */
+  required int32 kc = 4; /* # of columns of operand 2 */
+  required int32 i1 = 5; /* operand register 1 */
+  required int32 i2 = 6; /* operand register 2 */
+
+}
+
 message Code {
 
   enum Type {
+    kAlloca = 13;
     kBr = 1;
-    kJmp = 2;
     kCall1 = 3;
     kCall2 = 4;
-    kLb = 10;
-    kLd = 12;
+    kDeref = 14;
+    kDeterminant = 15;
     kGen1 = 5;
     kGen2 = 6;
+    kJmp = 2;
+    kLb = 10;
+    kLd = 12;
     kLoad = 7;
     kLoadi = 8;
+    kMmul = 16;
+    kMove = 17;
+    kMult = 18;
+    kOuterproduct = 19;
+    kRefer = 20;
     kRet   = 11;
+    kSave = 21;
+    kScalarproduct = 22;
+    kSelect2 = 23;
+    kSelect3 = 24;
+    kSelrow = 25;
     kStore = 9;
+    kTranspose = 26;
+    kVectorproduct = 27;
   }
 
   required Type type = 1;
 
+  optional Alloca alloca = 13;
   optional Br br = 2;
-  optional Jmp jmp = 3;
   optional Call1 call1 = 4;
   optional Call2 call2 = 5;
-  optional Lb lb = 11;
-  optional Ld ld = 12;
+  optional Deref deref = 14;
+  optional Determinant determinant = 15;
   optional Gen1 gen1 = 6;
   optional Gen2 gen2 = 7;
+  optional Jmp jmp = 3;
+  optional Lb lb = 11;
+  optional Ld ld = 12;
   optional Load load = 8;
   optional Loadi loadi = 9;
+  optional Mmul mmul = 16;
+  optional Move move = 17;
+  optional Mult mult = 18;
+  optional Outerproduct outerproduct = 19;
+  optional Refer refer = 20;
+  optional Save save = 21;
+  optional Scalarproduct scalarproduct = 22;
+  optional Select2 select2 = 23;
+  optional Select3 select3 = 24;
+  optional Selrow selrow = 25;
   optional Store store = 10;
+  optional Transpose transpose = 26;
+  optional Vectorproduct vectorproduct = 27;
 
 }

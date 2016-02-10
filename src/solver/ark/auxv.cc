@@ -7,6 +7,7 @@
 
 #include <cassert>
 #include <cstdio>
+#include <cstring>
 #include <iostream>
 #include <memory>
 
@@ -26,10 +27,12 @@ public:
 
 	AuxvExecutor()
 		: data_(nullptr)
+		, ir_(nullptr)
 		, tmp_(nullptr)
 	{}
 
 	void set_data(double *data) {data_ = data;}
+	void set_ir(intptr_t *ir) {ir_ = ir;}
 	void set_tmp(double *tmp) {tmp_ = tmp;}
 
 	bool Lb(const bc::Lb &/*lb*/, int /*offset*/) {
@@ -60,20 +63,47 @@ public:
 		return v;
 	}
 
+	double *Refer(const bc::Refer &refer, int offset) {
+		switch (refer.lo()) {
+		case -2:
+			return &data_[refer.so()];
+		default:
+			{
+				assert(refer.lo() == 0 || refer.lo() == -1);
+				int k = offset + refer.so();
+				return &data_[k];
+			}
+		}
+	}
+
+	void Save(const bc::Save &save, int offset) {
+		assert(save.lo() == 0);
+		int k = offset + save.so();
+		std::memmove(&data_[k],
+					 reinterpret_cast<double *>(ir_[save.i1()]),
+					 sizeof(double)*save.k());
+	}
+
 	bool Reduce(const ReductionUnit &ru) {
 		return ru(data_);
 	}
 
 private:
 	double *data_;
+	intptr_t *ir_;
 	double *tmp_;
 };
 
 Auxv::Auxv(Processor *processor)
 	: processor_(processor)
 	, executor_(new AuxvExecutor)
+	, ir_()
 	, tmp_()
 {
+	int max_noir = processor_->GetMaxNoir();
+	ir_.reset(new intptr_t[max_noir]);
+	executor_->set_ir(ir_.get());
+	processor_->set_ir(ir_.get());
 	int max_nod = processor_->GetMaxNumberOfData();
 	tmp_.reset(new double[max_nod]);
 	executor_->set_tmp(tmp_.get());

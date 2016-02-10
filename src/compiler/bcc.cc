@@ -123,6 +123,7 @@ struct Block {
 	std::vector<bc::Code> code;
 	boost::uuids::uuid uuid;
 	std::string name;
+	int noir;
 	int nod;
 };
 
@@ -273,6 +274,24 @@ struct Lexer : lex::lexer<TLexer> {
 		true_ = "true";
 		false_ = "false";
 
+		refer_ = "refer";
+		deref_ = "deref";
+		alloca_ = "alloca";
+		save_ = "save";
+		move_ = "move";
+		transpose_ = "transpose";
+		outerproduct_ = "outerproduct";
+		scalarproduct_ = "scalarproduct";
+		vectorproduct_ = "vectorproduct";
+		determinant_ = "determinant";
+		select2_ = "select2";
+		select3_ = "select3";
+		selrow_ = "selrow";
+		mult_ = "mult";
+		mmul_ = "mmul";
+
+		irp_ = "\"$\"i";
+
 		real = "{FLOAT}";
 		integer = "{SIGN}?{DIGIT}+";
 		address = "\"$\"{DIGIT}+";
@@ -295,6 +314,11 @@ struct Lexer : lex::lexer<TLexer> {
 		this->self += weibull_variate_;
 		this->self += eulergamma_ | exponentiale_ | pi_;
 		this->self += true_ | false_;
+		this->self += refer_ | deref_ | alloca_ | save_ | move_;
+		this->self += transpose_ | outerproduct_ | scalarproduct_ | vectorproduct_;
+		this->self += determinant_ | select2_ | select3_ | selrow_;
+		this->self += mult_ | mmul_;
+		this->self += irp_;
 		this->self += real | integer | address | label | id;
 	}
 
@@ -313,6 +337,11 @@ struct Lexer : lex::lexer<TLexer> {
 	lex::token_def<> weibull_variate_;
 	lex::token_def<> eulergamma_, exponentiale_, pi_;
 	lex::token_def<> true_, false_;
+	lex::token_def<> refer_, deref_, alloca_, save_, move_;
+	lex::token_def<> transpose_, outerproduct_, scalarproduct_, vectorproduct_;
+	lex::token_def<> determinant_, select2_, select3_, selrow_;
+	lex::token_def<> mult_, mmul_;
+	lex::token_def<> irp_;
 	lex::token_def<std::string> id;
 	lex::token_def<int> integer;
 	lex::token_def<std::string> address, label;
@@ -476,6 +505,152 @@ void ProcessTail(int &x, const std::string &s)
 	x = std::atoi(s.c_str()+1);
 }
 
+void ProcessRefer(bc::Code &code, const bc::Refer &given)
+{
+	code.set_type(bc::Code::kRefer);
+	bc::Refer *x = code.mutable_refer();
+	x->set_i0(given.i0());
+	x->set_v(given.v());
+}
+
+void ProcessDeref(bc::Code &code, const bc::Deref &given)
+{
+	code.set_type(bc::Code::kDeref);
+	bc::Deref *x = code.mutable_deref();
+	x->set_f0(given.f0());
+	x->set_i1(given.i1());
+	x->set_k(given.k());
+}
+
+void ProcessAlloca(bc::Code &code, const bc::Alloca &given)
+{
+	code.set_type(bc::Code::kAlloca);
+	bc::Alloca *x = code.mutable_alloca();
+	x->set_i0(given.i0());
+	x->set_k(given.k());
+}
+
+void ProcessSave(bc::Code &code, const bc::Save &given)
+{
+	code.set_type(bc::Code::kSave);
+	bc::Save *x = code.mutable_save();
+	x->set_v(given.v());
+	x->set_i1(given.i1());
+	x->set_k(given.k());
+}
+
+void ProcessMove(bc::Code &code, const bc::Move &given)
+{
+	code.set_type(bc::Code::kMove);
+	bc::Move *x = code.mutable_move();
+	x->set_i0(given.i0());
+	x->set_f1(given.f1());
+	x->set_k(given.k());
+}
+
+void ProcessTranspose(bc::Code &code, const bc::Transpose &given)
+{
+	code.set_type(bc::Code::kTranspose);
+	bc::Transpose *x = code.mutable_transpose();
+	x->set_i0(given.i0());
+	x->set_i1(given.i1());
+	x->set_kc(given.kc());
+	x->set_kr(given.kr());
+}
+
+void ProcessOuterproduct(bc::Code &code, const bc::Outerproduct &given)
+{
+	code.set_type(bc::Code::kOuterproduct);
+	bc::Outerproduct *x = code.mutable_outerproduct();
+	x->set_i0(given.i0());
+	x->set_k1(given.k1());
+	x->set_i1(given.i1());
+	x->set_k2(given.k2());
+	x->set_i2(given.i2());
+}
+
+void ProcessScalarproduct(bc::Code &code, const bc::Scalarproduct &given)
+{
+	code.set_type(bc::Code::kScalarproduct);
+	bc::Scalarproduct *x = code.mutable_scalarproduct();
+	x->set_f0(given.f0());
+	x->set_k(given.k());
+	x->set_i1(given.i1());
+	x->set_i2(given.i2());
+}
+
+void ProcessVectorproduct(bc::Code &code, const bc::Vectorproduct &given)
+{
+	code.set_type(bc::Code::kVectorproduct);
+	bc::Vectorproduct *x = code.mutable_vectorproduct();
+	x->set_i0(given.i0());
+	x->set_i1(given.i1());
+	x->set_i2(given.i2());
+}
+
+void ProcessDeterminant(bc::Code &code, const bc::Determinant &given)
+{
+	code.set_type(bc::Code::kDeterminant);
+	bc::Determinant *x = code.mutable_determinant();
+	x->set_f0(given.f0());
+	x->set_k(given.k());
+	x->set_i1(given.i1());
+}
+
+void ProcessSelect2(bc::Code &code, const bc::Select2 &given)
+{
+	code.set_type(bc::Code::kSelect2);
+	bc::Select2 *x = code.mutable_select2();
+	x->set_f0(given.f0());
+	x->set_i1(given.i1());
+	x->set_f2(given.f2());
+}
+
+void ProcessSelect3(bc::Code &code, const bc::Select3 &given)
+{
+	code.set_type(bc::Code::kSelect3);
+	bc::Select3 *x = code.mutable_select3();
+	x->set_f0(given.f0());
+	x->set_kc(given.kc());
+	x->set_kr(given.kr());
+	x->set_i1(given.i1());
+	x->set_f2(given.f2());
+	x->set_f3(given.f3());
+}
+
+void ProcessSelrow(bc::Code &code, const bc::Selrow &given)
+{
+	code.set_type(bc::Code::kSelrow);
+	bc::Selrow *x = code.mutable_selrow();
+	x->set_i0(given.i0());
+	x->set_kc(given.kc());
+	x->set_kr(given.kr());
+	x->set_i1(given.i1());
+	x->set_f2(given.f2());
+}
+
+void ProcessMult(bc::Code &code, const bc::Mult &given)
+{
+	code.set_type(bc::Code::kMult);
+	bc::Mult *x = code.mutable_mult();
+	x->set_i0(given.i0());
+	x->set_k(given.k());
+	x->set_f1(given.f1());
+	x->set_i2(given.i2());
+}
+
+void ProcessMmul(bc::Code &code, const bc::Mmul &given)
+{
+	code.set_type(bc::Code::kMmul);
+	bc::Mmul *x = code.mutable_mmul();
+	x->set_i0(given.i0());
+	x->set_kr(given.kr());
+	x->set_kx(given.kx());
+	x->set_kc(given.kc());
+	x->set_i1(given.i1());
+	x->set_i2(given.i2());
+}
+
 template<typename TIterator>
 struct Grammar : qi::grammar<TIterator, Body()> {
 
@@ -503,6 +678,21 @@ struct Grammar : qi::grammar<TIterator, Body()> {
 			| inst_loadi [bind(&ProcessInstLoadi, _val, _1)]
 			| td.ret_ [bind(&bc::Code::set_type, _val, val(bc::Code::kRet))]
 			| inst_store [bind(&ProcessInstStore, _val, _1)]
+			| inst_refer [bind(&ProcessRefer, _val, _1)]
+			| inst_deref [bind(&ProcessDeref, _val, _1)]
+			| inst_alloca [bind(&ProcessAlloca, _val, _1)]
+			| inst_save [bind(&ProcessSave, _val, _1)]
+			| inst_move [bind(&ProcessMove, _val, _1)]
+			| inst_transpose [bind(&ProcessTranspose, _val, _1)]
+			| inst_outerproduct [bind(&ProcessOuterproduct, _val, _1)]
+			| inst_scalarproduct [bind(&ProcessScalarproduct, _val, _1)]
+			| inst_vectorproduct [bind(&ProcessVectorproduct, _val, _1)]
+			| inst_determinant [bind(&ProcessDeterminant, _val, _1)]
+			| inst_select2 [bind(&ProcessSelect2, _val, _1)]
+			| inst_select3 [bind(&ProcessSelect3, _val, _1)]
+			| inst_selrow [bind(&ProcessSelrow, _val, _1)]
+			| inst_mult [bind(&ProcessMult, _val, _1)]
+			| inst_mmul [bind(&ProcessMmul, _val, _1)]
 			;
 
 		inst_op = td.address [bind(&ProcessAddress, _val, _1)]
@@ -530,6 +720,77 @@ struct Grammar : qi::grammar<TIterator, Body()> {
 
 		inst_store = td.store_ >> ' ' >> td.id [at_c<0>(_val) = _1]
 							   >> address [at_c<1>(_val) = _1];
+
+		inst_refer = td.refer_ >> ir [bind(&bc::Refer::set_i0, _val, _1)]
+							   >> ' ' >> td.id [bind(static_cast<void (bc::Refer::*)(const std::string &)>(&bc::Refer::set_v), _val, _1)];
+
+		inst_deref = td.deref_ >> address [bind(&bc::Deref::set_f0, _val, _1)]
+							   >> ir [bind(&bc::Deref::set_i1, _val, _1)]
+							   >> ' ' >> td.integer [bind(&bc::Deref::set_k, _val, _1)];
+
+		inst_alloca = td.alloca_ >> ir [bind(&bc::Alloca::set_i0, _val, _1)]
+								 >> ' ' >> td.integer [bind(&bc::Alloca::set_k, _val, _1)];
+
+		inst_save = td.save_ >> ' ' >> td.id [bind(static_cast<void (bc::Save::*)(const std::string &)>(&bc::Save::set_v), _val, _1)]
+							 >> ir [bind(&bc::Save::set_i1, _val, _1)]
+							 >> ' ' >> td.integer [bind(&bc::Save::set_k, _val, _1)];
+
+		inst_move = td.move_ >> ir [bind(&bc::Move::set_i0, _val, _1)]
+							 >> address [bind(&bc::Move::set_f1, _val, _1)]
+							 >> ' ' >> td.integer [bind(&bc::Move::set_k, _val, _1)];
+
+		inst_transpose = td.transpose_ >> ir [bind(&bc::Transpose::set_i0, _val, _1)]
+									   >> ir [bind(&bc::Transpose::set_i1, _val, _1)]
+									   >> ' ' >> td.integer [bind(&bc::Transpose::set_kr, _val, _1)]
+									   >> ' ' >> td.integer [bind(&bc::Transpose::set_kc, _val, _1)];
+
+		inst_outerproduct = td.outerproduct_ >> ir [bind(&bc::Outerproduct::set_i0, _val, _1)]
+											 >> ' ' >> td.integer [bind(&bc::Outerproduct::set_k1, _val, _1)]
+											 >> ir [bind(&bc::Outerproduct::set_i1, _val, _1)]
+											 >> ' ' >> td.integer [bind(&bc::Outerproduct::set_k2, _val, _1)]
+											 >> ir [bind(&bc::Outerproduct::set_i2, _val, _1)];
+
+		inst_scalarproduct = td.scalarproduct_ >> address [bind(&bc::Scalarproduct::set_f0, _val, _1)]
+											 >> ' ' >> td.integer [bind(&bc::Scalarproduct::set_k, _val, _1)]
+											 >> ir [bind(&bc::Scalarproduct::set_i1, _val, _1)]
+											 >> ir [bind(&bc::Scalarproduct::set_i2, _val, _1)];
+
+		inst_vectorproduct = td.vectorproduct_ >> ir [bind(&bc::Vectorproduct::set_i0, _val, _1)]
+											   >> ir [bind(&bc::Vectorproduct::set_i1, _val, _1)]
+											   >> ir [bind(&bc::Vectorproduct::set_i2, _val, _1)];
+
+		inst_determinant = td.determinant_ >> address [bind(&bc::Determinant::set_f0, _val, _1)]
+										   >> ' ' >> td.integer [bind(&bc::Determinant::set_k, _val, _1)]
+										   >> ir [bind(&bc::Determinant::set_i1, _val, _1)];
+
+		inst_select2 = td.select2_ >> address [bind(&bc::Select2::set_f0, _val, _1)]
+								   >> ir [bind(&bc::Select2::set_i1, _val, _1)]
+								   >> address [bind(&bc::Select2::set_f2, _val, _1)];
+
+		inst_select3 = td.select3_ >> address [bind(&bc::Select3::set_f0, _val, _1)]
+								   >> ' ' >> td.integer [bind(&bc::Select3::set_kr, _val, _1)]
+								   >> ' ' >> td.integer [bind(&bc::Select3::set_kc, _val, _1)]
+								   >> ir [bind(&bc::Select3::set_i1, _val, _1)]
+								   >> address [bind(&bc::Select3::set_f2, _val, _1)]
+								   >> address [bind(&bc::Select3::set_f3, _val, _1)];
+
+		inst_selrow = td.selrow_ >> ir [bind(&bc::Selrow::set_i0, _val, _1)]
+								 >> ' ' >> td.integer [bind(&bc::Selrow::set_kr, _val, _1)]
+								 >> ' ' >> td.integer [bind(&bc::Selrow::set_kc, _val, _1)]
+								 >> ir [bind(&bc::Selrow::set_i1, _val, _1)]
+								 >> address [bind(&bc::Selrow::set_f2, _val, _1)];
+
+		inst_mult = td.mult_ >> ir [bind(&bc::Mult::set_i0, _val, _1)]
+							 >> ' ' >> td.integer [bind(&bc::Mult::set_k, _val, _1)]
+							 >> address [bind(&bc::Mult::set_f1, _val, _1)]
+							 >> ir [bind(&bc::Mult::set_i2, _val, _1)];
+
+		inst_mmul = td.mmul_ >> ir [bind(&bc::Mmul::set_i0, _val, _1)]
+							 >> ' ' >> td.integer [bind(&bc::Mmul::set_kr, _val, _1)]
+							 >> ' ' >> td.integer [bind(&bc::Mmul::set_kx, _val, _1)]
+							 >> ' ' >> td.integer [bind(&bc::Mmul::set_kc, _val, _1)]
+							 >> ir [bind(&bc::Mmul::set_i1, _val, _1)]
+							 >> ir [bind(&bc::Mmul::set_i2, _val, _1)];
 
 		operation %= binary_call | unary_call | binary_gen | unary_gen;
 
@@ -607,6 +868,10 @@ struct Grammar : qi::grammar<TIterator, Body()> {
 
 		address = ' ' >> td.address [bind(&ProcessTail, _val, _1)];
 
+		ir = ' ' >> td.irp_ >> td.integer [_val = _1];
+
+		iimm = ' ' >> td.integer [_val = _1];
+
 		label = ' ' >> td.label [bind(&ProcessTail, _val, _1)];
 
 		imm = ' ' >> (td.eulergamma_ [_val = val(boost::math::constants::euler<double>())]
@@ -629,6 +894,21 @@ struct Grammar : qi::grammar<TIterator, Body()> {
 	qi::rule<TIterator, InstLoad()> inst_load;
 	qi::rule<TIterator, InstLoadi()> inst_loadi;
 	qi::rule<TIterator, InstStore()> inst_store;
+	qi::rule<TIterator, bc::Refer> inst_refer;
+	qi::rule<TIterator, bc::Deref> inst_deref;
+	qi::rule<TIterator, bc::Alloca> inst_alloca;
+	qi::rule<TIterator, bc::Save> inst_save;
+	qi::rule<TIterator, bc::Move> inst_move;
+	qi::rule<TIterator, bc::Transpose> inst_transpose;
+	qi::rule<TIterator, bc::Outerproduct> inst_outerproduct;
+	qi::rule<TIterator, bc::Scalarproduct> inst_scalarproduct;
+	qi::rule<TIterator, bc::Vectorproduct> inst_vectorproduct;
+	qi::rule<TIterator, bc::Determinant> inst_determinant;
+	qi::rule<TIterator, bc::Select2> inst_select2;
+	qi::rule<TIterator, bc::Select3> inst_select3;
+	qi::rule<TIterator, bc::Selrow> inst_selrow;
+	qi::rule<TIterator, bc::Mult> inst_mult;
+	qi::rule<TIterator, bc::Mmul> inst_mmul;
 	qi::rule<TIterator, Operation()> operation;
 	qi::rule<TIterator, UnaryCall()> unary_call;
 	qi::rule<TIterator, BinaryCall()> binary_call;
@@ -638,7 +918,7 @@ struct Grammar : qi::grammar<TIterator, Body()> {
 	qi::rule<TIterator, bc::Call2::Op()> call2_op;
 	qi::rule<TIterator, bc::Gen1::Type()> gen1_type;
 	qi::rule<TIterator, bc::Gen2::Type()> gen2_type;
-	qi::rule<TIterator, int()> address, label;
+	qi::rule<TIterator, int()> address, ir, iimm, label;
 	qi::rule<TIterator, double()> imm;
 };
 
@@ -663,7 +943,7 @@ public:
 	{
 	}
 
-	int Parse(const boost::uuids::uuid &uuid, const char *name, int nod, const char *code) {
+	int Parse(const boost::uuids::uuid &uuid, const char *name, int noir, int nod, const char *code) {
 		base_iterator_type it = code;
 		base_iterator_type eit = code + std::strlen(code);
 		Body body;
@@ -675,6 +955,7 @@ public:
 		Block block;
 		block.uuid = uuid;
 		block.name = name;
+		block.noir = noir;
 		block.nod = nod;
 		ProcessBody(block, body);
 		bv_->push_back(block);
@@ -691,14 +972,15 @@ int Process(void *data, int argc, char **argv, char **names)
 {
 	(void)names;
 	Parser *parser = static_cast<Parser *>(data);
-	assert(argc == 4);
+	assert(argc == 5);
 	assert(argv[0]);
 	boost::uuids::uuid uuid;
 	memcpy(&uuid, argv[0], uuid.size());
 	const char *name = argv[1];
-	int nod = std::atoi(argv[2]);
-	const char *code = argv[3];
-	return parser->Parse(uuid, name, nod, code);
+	int noir = std::atoi(argv[2]);
+	int nod = std::atoi(argv[3]);
+	const char *code = argv[4];
+	return parser->Parse(uuid, name, noir, nod, code);
 }
 
 int SetNol(void *data, int argc, char **argv, char **names)
@@ -772,6 +1054,7 @@ bool Bcc(sqlite3 *db, std::ostream *os)
 	std::unique_ptr<bc::BlockHeader> bh(new bc::BlockHeader);
 	for (BlockVector::const_iterator it=bv.begin();it!=bv.end();++it) {
 		bh->set_name(it->name);
+		bh->set_noir(it->noir);
 		bh->set_nod(it->nod);
 		bh->set_noc(it->GetCodeSize());
 		if (!PackToOstream(*bh, os)) {

@@ -13,12 +13,13 @@ class TacInserter : StatementDriver {
 public:
 	explicit TacInserter(sqlite3 *db);
 
-	bool Insert(const boost::uuids::uuid &uuid, const char *name, int nod, const char *body);
+	bool Insert(const boost::uuids::uuid &uuid, const char *name,
+				int noir, int nod, const char *body);
 
 	/*
 	 * Call Insert() with the default nil UUID.
 	 */
-	bool Insert(const char *name, int nod, const char *body);
+	bool Insert(const char *name, int noir, int nod, const char *body);
 };
 
 }
