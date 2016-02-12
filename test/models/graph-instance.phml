@@ -115,16 +115,19 @@
           <is:transition type="probability">
             <m:math><m:cn>0.1</m:cn></m:math>
           </is:transition>
+          <is:description>10%</is:description>
         </is:arc>
         <is:arc arc-id="2" tail-node-id="2" head-node-id="3">
           <is:transition type="probability">
             <m:math><m:cn>0.01</m:cn></m:math>
           </is:transition>
+          <is:description>1%</is:description>
         </is:arc>
         <is:arc arc-id="3" tail-node-id="3" head-node-id="4">
           <is:transition type="probability">
             <m:math><m:cn>0.001</m:cn></m:math>
           </is:transition>
+          <is:description>0.1%</is:description>
         </is:arc>
       </is:arc-set>
       <is:event-condition>

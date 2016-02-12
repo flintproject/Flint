@@ -318,6 +318,10 @@ int GraphReader::ReadArc()
 				i = ReadTransition(arc.get());
 				if (i <= 0) return i;
 				continue;
+			} else if (xmlStrEqual(local_name, BAD_CAST "description")) {
+				// ignore description
+				i = xmlTextReaderNext(text_reader_);
+				continue;
 			} else {
 				cerr << "unknown child of <arc>: " << local_name << endl;
 				return -2;
