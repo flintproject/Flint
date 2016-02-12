@@ -739,8 +739,9 @@ private:
 			}
 		}
 
-		if (!element->unit_id()) {
-			cerr << "missing unit-id of <element>" << endl;
+		if (element->unit_id() < 0) {
+			cerr << "missing unit-id of <element> in unit with unit-id "
+				 << unit->unit_id() << endl;
 			return -2;
 		}
 		if (!dd_->SaveElement(unit, element.get())) return -2;

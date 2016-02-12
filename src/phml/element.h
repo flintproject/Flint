@@ -11,7 +11,7 @@ public:
 	Element &operator=(const Element &) = delete;
 
 	Element()
-		: unit_id_()
+		: unit_id_(-1) // initialized with an invalid value for error detection
 		, exponent_()
 		, factor_()
 		, multiplier_()

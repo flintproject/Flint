@@ -20661,7 +20661,8 @@ BOOST_AUTO_TEST_CASE(timeseries)
 
 BOOST_AUTO_TEST_CASE(double_pendulum) {
 	ReadAndError(TEST_MODELS("double_pendulum.isml"),
-				 "missing unit-id of <element>\n");
+				 "missing <col> in <dimension> of type vector\n"
+				 " at physical-quantity \"sol\" (5) of module \"Dynamic_Equation\" (4f33ece0-83f3-4b0d-8859-96d6f9838929)\n");
 }
 
 BOOST_AUTO_TEST_CASE(self_circular_unit) {
