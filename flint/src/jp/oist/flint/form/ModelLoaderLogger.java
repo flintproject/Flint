@@ -2,11 +2,16 @@
 package jp.oist.flint.form;
 
 import jp.oist.flint.desktop.Desktop;
+import java.awt.Dialog;
 import java.awt.Dimension;
+import java.awt.Window;
+import java.awt.event.HierarchyEvent;
+import java.awt.event.HierarchyListener;
 import java.util.ArrayList;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.SwingUtilities;
 
 public class ModelLoaderLogger implements IFrame {
 
@@ -36,7 +41,20 @@ public class ModelLoaderLogger implements IFrame {
             textArea.append(System.getProperty("line.separator"));
             textArea.append(line);
         }
-        JScrollPane scrollPane = new JScrollPane(textArea);
+        final JScrollPane scrollPane = new JScrollPane(textArea);
+        // Trick for a resizeable JOptionPane dialog from:
+        // <https://blogs.oracle.com/scblog/entry/tip_making_joptionpane_dialog_resizable>
+        scrollPane.addHierarchyListener(new HierarchyListener() {
+            @Override
+            public void hierarchyChanged(HierarchyEvent e) {
+                Window window = SwingUtilities.getWindowAncestor(scrollPane);
+                if (window instanceof Dialog) {
+                    Dialog dialog = (Dialog)window;
+                    if (!dialog.isResizable())
+                        dialog.setResizable(true);
+                }
+            }
+        });
         scrollPane.setPreferredSize(new Dimension(400, 100));
         JOptionPane.showMessageDialog(mDesktop.getPane(), scrollPane, title, JOptionPane.ERROR_MESSAGE);
     }
