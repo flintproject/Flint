@@ -42,6 +42,7 @@ rm -rf %{buildroot}
 /etc/ld.so.conf.d/%{name}.conf
 /opt/flint/bin/zipcmp
 /opt/flint/bin/zipmerge
+/opt/flint/bin/ziptool
 /opt/flint/include/zip.h
 /opt/flint/lib/libzip.a
 /opt/flint/lib/libzip.la
@@ -51,6 +52,7 @@ rm -rf %{buildroot}
 /opt/flint/lib/libzip/include/zipconf.h
 /opt/flint/share/man/man1/zipcmp.1
 /opt/flint/share/man/man1/zipmerge.1
+/opt/flint/share/man/man1/ziptool.1
 /opt/flint/share/man/man3/libzip.3
 /opt/flint/share/man/man3/ZIP_SOURCE_GET_ARGS.3
 /opt/flint/share/man/man3/zip_*
