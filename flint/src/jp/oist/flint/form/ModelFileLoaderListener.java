@@ -30,7 +30,9 @@ public class ModelFileLoaderListener implements PropertyChangeListener {
             try {
                 document = mLoader.get();
             } catch (ExecutionException | InterruptedException e) {
-                mLogger.showErrorDialog(e.getMessage(), "Error on opening model");
+                Throwable cause = e.getCause();
+                String message = cause == null ? e.getMessage() : cause.getMessage();
+                mLogger.showErrorDialog(message, "Error on opening model");
                 return;
             }
             Desktop desktop = mLogger.getDesktop();
