@@ -603,6 +603,7 @@ struct KeyFun {
 
 const KeyFun kKeyFun[] = {
 	// Keep the following entries in bibliographical order.
+	{"$Mod", &Context::BinaryScalar},
 	{"$exponential_variate", &Context::UnaryScalar},
 	{"$gamma_variate", &Context::BinaryScalar},
 	{"$gauss_variate", &Context::BinaryScalar},

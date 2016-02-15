@@ -95,6 +95,7 @@ message Call2 {
     kMax = 8;
     kMin = 9;
     kMinus2 = 10;
+    kModulo = 18;
     kNeq = 11;
     kPlus = 12;
     kPower = 13;

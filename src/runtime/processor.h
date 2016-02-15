@@ -213,6 +213,18 @@ void DoCall2(const bc::Call2 &c2, double *tmp)
 	case bc::Call2::kMinus2:
 		tmp[a] = tmp[a1] - tmp[a2];
 		break;
+	case bc::Call2::kModulo:
+		{
+			// Obtain the remainder of Euclidean division expressed efficiently
+			// in terms of truncated division.
+			// See "Division and Modulus for Computer Scientists":
+			// http://research.microsoft.com/pubs/151917/divmodnote.pdf
+			double r_t = std::fmod(tmp[a1], tmp[a2]);
+			if (r_t < 0)
+				r_t += std::fabs(tmp[a2]);
+			tmp[a] = r_t;
+		}
+		break;
 	case bc::Call2::kNeq:
 		tmp[a] = tmp[a1] != tmp[a2];
 		break;

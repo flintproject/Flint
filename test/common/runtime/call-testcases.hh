@@ -296,3 +296,20 @@ BOOST_AUTO_TEST_CASE(times)
 	TESTCASE2(times, 2, -3, -6);
 	TESTCASE2(times, -2, -3, 6);
 }
+
+BOOST_AUTO_TEST_CASE($Mod)
+{
+	TESTCASE2($Mod, 0, 1, 0);
+	TESTCASE2($Mod, 8, 3, 2);
+	TESTCASE2($Mod, 8, -3, 2);
+	TESTCASE2($Mod, -8, 3, 1);
+	TESTCASE2($Mod, -8, -3, 1);
+	TESTCASE2($Mod, 1, 2, 1);
+	TESTCASE2($Mod, 1, -2, 1);
+	TESTCASE2($Mod, -1, 2, 1);
+	TESTCASE2($Mod, -1, -2, 1);
+	TESTCASE2($Mod, 2.25, 1, 0.25);
+	TESTCASE2($Mod, 7.5, 3.5, 0.5);
+	TESTCASE2($Mod, -7.5, 3.5, 3);
+	TESTCASE2($Mod, -7.5, 3.5, 3);
+}

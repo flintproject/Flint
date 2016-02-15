@@ -259,6 +259,8 @@ struct Lexer : lex::lexer<TLexer> {
 		tanh_ = "tanh";
 		times_ = "times";
 
+		mod_ = "$Mod";
+
 		exponential_variate_ = "$exponential_variate";
 		gamma_variate_ = "$gamma_variate";
 		gauss_variate_ = "$gauss_variate";
@@ -309,6 +311,7 @@ struct Lexer : lex::lexer<TLexer> {
 		this->self += lt_ | max_ | min_ | minus_ | neq_ | plus_;
 		this->self += power_ | rem_ | root_ | sec_ | sech_ | sin_ | sinh_;
 		this->self += tan_ | tanh_ | times_;
+		this->self += mod_;
 		this->self += exponential_variate_ | gamma_variate_ | gauss_variate_;
 		this->self += lognormal_variate_ | poisson_variate_ | uniform_variate_;
 		this->self += weibull_variate_;
@@ -332,6 +335,7 @@ struct Lexer : lex::lexer<TLexer> {
 	lex::token_def<> lt_, max_, min_, minus_, neq_, plus_;
 	lex::token_def<> power_, rem_, root_, sec_, sech_, sin_, sinh_;
 	lex::token_def<> tan_, tanh_, times_;
+	lex::token_def<> mod_;
 	lex::token_def<> exponential_variate_, gamma_variate_, gauss_variate_;
 	lex::token_def<> lognormal_variate_, poisson_variate_, uniform_variate_;
 	lex::token_def<> weibull_variate_;
@@ -853,6 +857,7 @@ struct Grammar : qi::grammar<TIterator, Body()> {
 			| td.rem_ [_val = val(bc::Call2::kRemainder)]
 			| td.root_ [_val = val(bc::Call2::kRoot2)]
 			| td.times_ [_val = val(bc::Call2::kTimes)]
+			| td.mod_ [_val = val(bc::Call2::kModulo)]
 			;
 
 		gen1_type = td.exponential_variate_ [_val = val(bc::Gen1::kExponentialVariate)]
