@@ -76,9 +76,10 @@ tmp/libxml2-$(LIBXML2_VERSION): src/libxml2-sources-$(LIBXML2_VERSION).tar.gz | 
 	tar -C var -zxf $<
 	touch $@
 
-tmp/libzip-$(LIBZIP_VERSION): src/libzip-$(LIBZIP_VERSION).tar.gz | tmp
+tmp/libzip-$(LIBZIP_VERSION): src/libzip-$(LIBZIP_VERSION).tar.gz libzip-$(LIBZIP_VERSION)-regress.patch | tmp
 	-rm -rf var/libzip-$(LIBZIP_VERSION)
 	tar -C var -zxf $<
+	patch var/libzip-$(LIBZIP_VERSION)/Makefile.in libzip-$(LIBZIP_VERSION)-regress.patch
 	touch $@
 
 tmp/zlib-$(ZLIB_VERSION): src/zlib-$(ZLIB_VERSION).tar.gz | tmp

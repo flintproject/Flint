@@ -1,0 +1,11 @@
+--- Makefile.in	2016-02-07 22:17:16.000000000 +0900
++++ Makefile.in.new	2016-02-16 13:16:43.377168627 +0900
+@@ -358,7 +358,7 @@
+ # not GPL, thus no COPYING
+ AUTOMAKE_OPTIONS = dist-xz foreign
+ ACLOCAL_AMFLAGS = -I m4
+-SUBDIRS = lib man src regress examples
++SUBDIRS = lib man src examples
+ pkgconfigdir = $(libdir)/pkgconfig
+ pkgconfig_DATA = libzip.pc
+ EXTRA_DIST = API-CHANGES \
