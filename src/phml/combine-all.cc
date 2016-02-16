@@ -101,12 +101,13 @@ bool CombineAll(sqlite3 *db)
 	}
 	sqlite3_finalize(stmt);
 
-	for (UuidVector::const_iterator it=uv.begin();it!=uv.end();++it) {
-		if (!ParseFile(*it)) return false;
+	for (const auto &u : uv) {
+		if (!ParseFile(u))
+			return false;
 	}
 
-	for (UuidVector::const_iterator it=uv.begin();it!=uv.end();++it) {
-		if (!Combine(*it, db))
+	for (const auto &u : uv) {
+		if (!Combine(u, db))
 			return false;
 	}
 

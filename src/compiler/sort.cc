@@ -31,7 +31,6 @@ using std::cerr;
 using std::endl;
 using std::memcpy;
 using std::string;
-using std::vector;
 
 using namespace boost::spirit;
 
@@ -85,10 +84,8 @@ public:
 	{}
 
 	void operator()(const Compound &c) const {
-		std::vector<Expr>::const_iterator it, end = c.children.end();
-		for (it=c.children.begin();it!=end;++it) {
-			boost::apply_visitor(*this, *it);
-		}
+		for (const auto &child : c.children)
+			boost::apply_visitor(*this, child);
 	}
 
 	void operator()(const std::string &s) const {
@@ -121,10 +118,10 @@ public:
 	}
 
 	void operator()(const Compound &c) const {
-		std::vector<Expr>::const_iterator bit = c.children.begin();
-		std::vector<Expr>::const_iterator eit = c.children.end();
+		auto bit = c.children.cbegin();
+		auto eit = c.children.cend();
 		os_->put('(');
-		for (std::vector<Expr>::const_iterator it=bit;it!=eit;++it) {
+		for (auto it=bit;it!=eit;++it) {
 			if (it != bit) os_->put(' ');
 			boost::apply_visitor(*this, *it);
 		}
@@ -431,13 +428,13 @@ bool Sort(sqlite3 *db)
 		if (!umit->second.CalculateLevels(umit->first, arr.get())) {
 			return false;
 		}
-		vector<IndexAndLevel> v;
+		std::vector<IndexAndLevel> v;
 		for (size_t k=0;k<n;k++) {
 			v.push_back(IndexAndLevel(k, arr[k]));
 		}
 		std::stable_sort(v.begin(), v.end());
-		for (vector<IndexAndLevel>::const_iterator vit=v.begin();vit!=v.end();++vit) {
-			size_t m = vit->index();
+		for (const auto &ial : v) {
+			size_t m = ial.index();
 			const Line &line(umit->second.at(m));
 			std::string math = line.GetMath();
 			if (!inserter.Insert(umit->first,

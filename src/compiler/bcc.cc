@@ -26,8 +26,6 @@
 
 using std::cerr;
 using std::endl;
-using std::make_pair;
-using std::memcpy;
 
 using namespace boost::spirit;
 
@@ -115,9 +113,8 @@ struct Block {
 	}
 
 	void Print(std::ostream *os) const {
-		for (std::vector<bc::Code>::const_iterator it=code.begin();it!=code.end();++it) {
-			PackToOstream(*it, os);
-		}
+		for (const auto &c : code)
+			PackToOstream(c, os);
 	}
 
 	std::vector<bc::Code> code;
@@ -355,11 +352,11 @@ struct Lexer : lex::lexer<TLexer> {
 void ProcessBody(Block &block, Body &body)
 {
 	int l;
-	for (std::vector<bc::Code>::iterator it=body.code.begin();it!=body.code.end();++it) {
-		switch (it->type()) {
+	for (auto &c : body.code) {
+		switch (c.type()) {
 		case bc::Code::kBr:
 			{
-				bc::Br *br = it->mutable_br();
+				bc::Br *br = c.mutable_br();
 				l = br->l();
 				br->clear_l();
 				br->set_p(body.labels.at(l));
@@ -367,7 +364,7 @@ void ProcessBody(Block &block, Body &body)
 			break;
 		case bc::Code::kJmp:
 			{
-				bc::Jmp *jmp = it->mutable_jmp();
+				bc::Jmp *jmp = c.mutable_jmp();
 				l = jmp->l();
 				jmp->clear_l();
 				jmp->set_p(body.labels.at(l));
@@ -980,7 +977,7 @@ int Process(void *data, int argc, char **argv, char **names)
 	assert(argc == 5);
 	assert(argv[0]);
 	boost::uuids::uuid uuid;
-	memcpy(&uuid, argv[0], uuid.size());
+	std::memcpy(&uuid, argv[0], uuid.size());
 	const char *name = argv[1];
 	int noir = std::atoi(argv[2]);
 	int nod = std::atoi(argv[3]);
@@ -1017,13 +1014,13 @@ bool Bcc(sqlite3 *db, std::ostream *os)
 	}
 
 	std::unique_ptr<NobVector> nv(new NobVector);
-	for (BlockVector::const_iterator it=bv.begin();it!=bv.end();++it) {
+	for (const auto &b : bv) {
 		if (nv->empty()) {
-			nv->push_back(make_pair(it->uuid, 1));
-		} else if (nv->back().first == it->uuid) {
+			nv->push_back(std::make_pair(b.uuid, 1));
+		} else if (nv->back().first == b.uuid) {
 			nv->back().second++;
 		} else {
-			nv->push_back(make_pair(it->uuid, 1));
+			nv->push_back(std::make_pair(b.uuid, 1));
 		}
 	}
 	// write header
@@ -1046,30 +1043,29 @@ bool Bcc(sqlite3 *db, std::ostream *os)
 	// write section headers
 	std::unique_ptr<bc::SectionHeader> sh(new bc::SectionHeader);
 	std::unique_ptr<char[]> bu(new char[boost::uuids::uuid::static_size()]);
-	for (NobVector::const_iterator nit=nv->begin();nit!=nv->end();++nit) {
-		const boost::uuids::uuid &uuid(nit->first);
+	for (const auto &nob : *nv) {
+		const boost::uuids::uuid &uuid(nob.first);
 		std::copy(uuid.begin(), uuid.end(), bu.get());
 		sh->set_id(bu.get(), uuid.size());
-		sh->set_nob(nit->second);
+		sh->set_nob(nob.second);
 		if (!PackToOstream(*sh, os)) {
 			return false;
 		}
 	}
 	// write block headers
 	std::unique_ptr<bc::BlockHeader> bh(new bc::BlockHeader);
-	for (BlockVector::const_iterator it=bv.begin();it!=bv.end();++it) {
-		bh->set_name(it->name);
-		bh->set_noir(it->noir);
-		bh->set_nod(it->nod);
-		bh->set_noc(it->GetCodeSize());
+	for (const auto &b : bv) {
+		bh->set_name(b.name);
+		bh->set_noir(b.noir);
+		bh->set_nod(b.nod);
+		bh->set_noc(b.GetCodeSize());
 		if (!PackToOstream(*bh, os)) {
 			return false;
 		}
 	}
 	// write body
-	for (BlockVector::const_iterator it=bv.begin();it!=bv.end();++it) {
-		it->Print(os);
-	}
+	for (const auto &b : bv)
+		b.Print(os);
 
 	return true;
 }

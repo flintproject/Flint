@@ -37,8 +37,7 @@ public:
 	Handler(const FieldSet &fields, std::ostream *os) : fields_(fields), os_(os) {}
 
 	int GetStep(size_t /*buf_size*/, const char *buf) {
-		for (FieldSet::const_iterator it=fields_.begin();it!=fields_.end();++it) {
-			int d = *it;
+		for (int d : fields_) {
 			os_->write(buf+sizeof(double)*d, sizeof(double));
 			if (!os_->good()) {
 				cerr << "could not write step: " << d << endl;
@@ -84,8 +83,8 @@ public:
 		const char *pu = reader_.units();
 		std::uint32_t n = 0;
 		std::uint32_t len;
-		for (FieldSet::const_iterator it=fields_.begin();it!=fields_.end();++it) {
-			std::uint32_t i = static_cast<std::uint32_t>(*it);
+		for (int f : fields_) {
+			std::uint32_t i = static_cast<std::uint32_t>(f);
 			if (i >= header.num_objs) break;
 
 			do {

@@ -50,8 +50,9 @@ struct Detector : public boost::static_visitor<bool>
 	bool operator()(const Sexp &sexp) const
 	{
 		const std::vector<Math> &c(sexp.children);
-		for (std::vector<Math>::const_iterator it=c.begin();it!=c.end();++it) {
-			if (boost::apply_visitor(Detector(), *it)) return true;
+		for (const auto &math : c) {
+			if (boost::apply_visitor(Detector(), math))
+				return true;
 		}
 		return false;
 	}
@@ -77,7 +78,7 @@ public:
 	{
 		oss_->put('(');
 		const std::vector<Math> &c(sexp.children);
-		for (std::vector<Math>::const_iterator it=c.begin();it!=c.end();++it) {
+		for (auto it=c.cbegin();it!=c.cend();++it) {
 			if (it != c.begin()) oss_->put(' ');
 			if (!boost::apply_visitor(*this, *it)) return false;
 		}

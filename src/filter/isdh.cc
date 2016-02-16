@@ -25,8 +25,6 @@ using std::cerr;
 using std::cin;
 using std::endl;
 using std::memcpy;
-using std::string;
-using std::vector;
 
 namespace flint {
 namespace filter {
@@ -53,7 +51,7 @@ public:
 	void ReadColumn(std::unique_ptr<lo::Column> &&column) {
 		boost::uuids::uuid u;
 		memcpy(&u, column->uuid().data(), u.size());
-		string s;
+		std::string s;
 		if (u.is_nil()) {
 			s = column->name();
 		} else {
@@ -80,17 +78,17 @@ public:
 		memcpy(buf, &header, sizeof(header));
 		ofs->write(buf, sizeof(header));
 
-		for (vector<string>::const_iterator it=descriptions_.begin();it!=descriptions_.end();++it) {
-			std::uint32_t len = it->size();
+		for (const auto &desc : descriptions_) {
+			std::uint32_t len = desc.size();
 			memcpy(buf, &len, sizeof(len));
 			ofs->write(buf, sizeof(len));
-			ofs->write(it->c_str(), len);
+			ofs->write(desc.c_str(), len);
 		}
-		for (vector<string>::const_iterator it=units_.begin();it!=units_.end();++it) {
-			std::uint32_t len = it->size();
+		for (const auto &u : units_) {
+			std::uint32_t len = u.size();
 			memcpy(buf, &len, sizeof(len));
 			ofs->write(buf, sizeof(len));
-			ofs->write(it->c_str(), len);
+			ofs->write(u.c_str(), len);
 		}
 	}
 
@@ -98,8 +96,8 @@ private:
 	std::uint32_t num_objs_;
 	std::uint32_t num_bytes_descs_;
 	std::uint32_t num_bytes_units_;
-	vector<string> descriptions_;
-	vector<string> units_;
+	std::vector<std::string> descriptions_;
+	std::vector<std::string> units_;
 };
 
 }

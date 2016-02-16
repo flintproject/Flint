@@ -16,11 +16,8 @@
 using std::atoi;
 using std::cerr;
 using std::endl;
-using std::make_pair;
 using std::memcpy;
 using std::multimap;
-using std::vector;
-using std::pair;
 
 namespace flint {
 namespace phml {
@@ -266,8 +263,7 @@ public:
 				GenerateMaps(&tail_map, &head_map);
 				// collect all edges connecting to descendants
 				std::set<Edge> inner_edges;
-				for (vector<boost::uuids::uuid>::const_iterator it=template_descendants_.begin();it!=template_descendants_.end();++it) {
-					const boost::uuids::uuid &uuid = *it;
+				for (const auto &uuid : template_descendants_) {
 					multimap<boost::uuids::uuid, std::set<Edge>::iterator>::iterator tit = tail_map.find(uuid);
 					while (tit != tail_map.end()) {
 						inner_edges.insert(*tit->second);
@@ -303,31 +299,30 @@ public:
 				}
 
 				// remove original edges
-				for (std::set<Edge>::const_iterator it=inner_edges.begin();it!=inner_edges.end();++it) {
-					edge_set_->erase(*it);
-				}
-				for (std::set<Edge>::const_iterator it=t_outer_edges.begin();it!=t_outer_edges.end();++it) {
-					edge_set_->erase(*it);
-				}
-				for (std::set<Edge>::const_iterator it=h_outer_edges.begin();it!=h_outer_edges.end();++it) {
-					edge_set_->erase(*it);
-				}
+				for (const auto &e : inner_edges)
+					edge_set_->erase(e);
+				for (const auto &e : t_outer_edges)
+					edge_set_->erase(e);
+				for (const auto &e : h_outer_edges)
+					edge_set_->erase(e);
 
 				// convert inner edges to instance ones
 				std::set<InstanceEdge> instance_edges;
-				for (std::set<Edge>::const_iterator it=inner_edges.begin();it!=inner_edges.end();++it) {
+				for (const auto &e : inner_edges) {
 					size_t tail_index = 0;
-					for (vector<boost::uuids::uuid>::const_iterator tit=template_descendants_.begin();tit!=template_descendants_.end();++tit) {
-						if (it->tail_uuid() == *tit) break;
+					for (const auto &uuid : template_descendants_) {
+						if (e.tail_uuid() == uuid)
+							break;
 						tail_index++;
 					}
 					size_t head_index = 0;
-					for (vector<boost::uuids::uuid>::const_iterator hit=template_descendants_.begin();hit!=template_descendants_.end();++hit) {
-						if (it->head_uuid() == *hit) break;
+					for (const auto &uuid : template_descendants_) {
+						if (e.head_uuid() == uuid)
+							break;
 						head_index++;
 					}
-					bool b = instance_edges.emplace(tail_index, it->tail_port_id(),
-													head_index, it->head_port_id()).second;
+					bool b = instance_edges.emplace(tail_index, e.tail_port_id(),
+													head_index, e.head_port_id()).second;
 					assert(b);
 				}
 
@@ -338,8 +333,7 @@ public:
 						cerr << "invalid instance descendants: " << it->first << endl;
 						return false;
 					}
-					for (std::set<InstanceEdge>::const_iterator iit=instance_edges.begin();iit!=instance_edges.end();++iit) {
-						const InstanceEdge &ie = *iit;
+					for (const auto &ie : instance_edges) {
 						const boost::uuids::uuid &tail_uuid = iv.at(ie.tail_index());
 						const boost::uuids::uuid &head_uuid = iv.at(ie.head_index());
 						AddEdge(edge_set_,
@@ -347,8 +341,7 @@ public:
 								head_uuid, ie.head_port_id());
 					}
 				}
-				for (std::set<Edge>::const_iterator it=t_outer_edges.begin();it!=t_outer_edges.end();++it) {
-					const Edge &e = *it;
+				for (const auto &e : t_outer_edges) {
 					for (auto iit=instance_map_.cbegin();iit!=instance_map_.cend();++iit) {
 						const boost::uuids::uuid &instance_id = iit->first;
 						AddEdge(edge_set_,
@@ -356,8 +349,7 @@ public:
 								e.head_uuid(), e.head_port_id());
 					}
 				}
-				for (std::set<Edge>::const_iterator it=h_outer_edges.begin();it!=h_outer_edges.end();++it) {
-					const Edge &e = *it;
+				for (const auto &e : h_outer_edges) {
 					for (auto iit=instance_map_.cbegin();iit!=instance_map_.cend();++iit) {
 						const boost::uuids::uuid &instance_id = iit->first;
 						AddEdge(edge_set_,
@@ -383,16 +375,16 @@ private:
 	{
 		tail_map->clear();
 		head_map->clear();
-		for (std::set<Edge>::const_iterator it=edge_set_->begin();it!=edge_set_->end();++it) {
-			tail_map->insert(make_pair(it->tail_uuid(), it));
-			head_map->insert(make_pair(it->head_uuid(), it));
+		for (auto it=edge_set_->cbegin();it!=edge_set_->cend();++it) {
+			tail_map->insert(std::make_pair(it->tail_uuid(), it));
+			head_map->insert(std::make_pair(it->head_uuid(), it));
 		}
 	}
 
 	std::set<Edge> *edge_set_;
 	std::vector<boost::uuids::uuid> instance_descendants_;
 	std::map<boost::uuids::uuid, std::vector<boost::uuids::uuid> > instance_map_;
-	vector<boost::uuids::uuid> template_descendants_;
+	std::vector<boost::uuids::uuid> template_descendants_;
 };
 
 class SpanDriver {
@@ -483,8 +475,9 @@ bool Span(sqlite3 *db)
 	std::unique_ptr<SpanDriver> driver(new SpanDriver);
 	if (!driver->Initialize(db))
 		return false;
-	for (std::set<Edge>::const_iterator it=edge_set.begin();it!=edge_set.end();++it) {
-		if (!driver->Save(*it)) return false;
+	for (const auto &e : edge_set) {
+		if (!driver->Save(e))
+			return false;
 	}
 
 	return true;

@@ -172,8 +172,9 @@ public:
 		}
 		sqlite3_reset(query_stmt_);
 
-		for (Vector::const_iterator it=roots_.begin();it!=roots_.end();++it) {
-			if (!SaveDescendants(*it, 0)) return false;
+		for (const auto &v : roots_) {
+			if (!SaveDescendants(v, 0))
+				return false;
 		}
 		return true;
 	}

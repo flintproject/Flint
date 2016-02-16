@@ -257,9 +257,8 @@ void Lookup(const Node &p, multimap<Node, Node> &edges, set<Node> *q)
 		const Node &tail = it->second;
 		s.insert(tail);
 	}
-	for (set<Node>::const_iterator it=s.begin();it!=s.end();++it) {
-		Lookup(*it, edges, q);
-	}
+	for (const auto &node : s)
+		Lookup(node, edges, q);
 }
 
 void PrintIncompatiblePorts(const Port &from, const Port &to)
@@ -303,8 +302,7 @@ bool Reach(sqlite3 *db)
 			Node p(uuid, inport.port_id());
 			set<Node> t;
 			Lookup(p, edges, &t);
-			for (set<Node>::const_iterator tit=t.begin();tit!=t.end();++tit) {
-				const Node &o = *tit;
+			for (const auto &o : t) {
 				if (o.port_id() <= 0) {
 					cerr << "invalid port-id of edge: " << o.port_id() << endl;
 					return false;
@@ -339,7 +337,7 @@ bool Reach(sqlite3 *db)
 						return false;
 					}
 				}
-				if (!driver->Save(tit->uuid(), oit->second.physical_quantity_id(),
+				if (!driver->Save(o.uuid(), oit->second.physical_quantity_id(),
 								  uuid, inport.physical_quantity_id(),
 								  inport.reduction()))
 					return false;

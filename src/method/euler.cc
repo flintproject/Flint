@@ -36,11 +36,9 @@ public:
 	void operator()(const Compound &c) const {
 		os_->put('(');
 		*os_ << c.keyword;
-		std::vector<Expr>::const_iterator bit = c.children.begin();
-		std::vector<Expr>::const_iterator eit = c.children.end();
-		for (std::vector<Expr>::const_iterator it=bit;it!=eit;++it) {
+		for (const auto &child : c.children) {
 			os_->put(' ');
-			boost::apply_visitor(*this, *it);
+			boost::apply_visitor(*this, child);
 		}
 		os_->put(')');
 	}

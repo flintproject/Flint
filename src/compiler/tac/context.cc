@@ -551,9 +551,9 @@ bool Context::Piecewise(RegisterType rt, int n, std::deque<cas::Expr> &children)
 	int l = l_++;
 	std::vector<int> v1;
 	bool otherwise = false;
-	for (auto it=children.begin();it!=children.end();++it) {
-		assert(it->which() == cas::kExprIsCompound);
-		cas::Compound &comp(boost::get<cas::Compound>(*it));
+	for (auto &expr : children) {
+		assert(expr.which() == cas::kExprIsCompound);
+		cas::Compound &comp(boost::get<cas::Compound>(expr));
 		if (IsPiece(comp)) {
 			int l1 = l_++;
 			int m = fr_++;
@@ -572,9 +572,9 @@ bool Context::Piecewise(RegisterType rt, int n, std::deque<cas::Expr> &children)
 	if (!otherwise)
 		*os_ << "  ret" << endl;
 	auto v1it = v1.cbegin();
-	for (auto it=children.begin();it!=children.end();++it) {
-		assert(it->which() == cas::kExprIsCompound);
-		cas::Compound &comp(boost::get<cas::Compound>(*it));
+	for (auto &expr : children) {
+		assert(expr.which() == cas::kExprIsCompound);
+		cas::Compound &comp(boost::get<cas::Compound>(expr));
 		if (IsPiece(comp)) {
 			*os_ << " L" << *v1it++ << ':' << endl;
 			if (!Assign(rt, n, comp.children.at(0)))
@@ -600,9 +600,9 @@ bool Context::EmitTrial(int n, std::deque<cas::Expr> &children)
 		 << "  loadi $" << p1 << " 1" << endl
 		 << "  $" << p << " = ($uniform_variate $" << p0 << " $" << p1 << ')' << endl;
 	std::vector<int> v1;
-	for (auto it=children.begin();it!=children.end();++it) {
-		assert(it->which() == cas::kExprIsCompound);
-		cas::Compound &comp(boost::get<cas::Compound>(*it));
+	for (auto &expr : children) {
+		assert(expr.which() == cas::kExprIsCompound);
+		cas::Compound &comp(boost::get<cas::Compound>(expr));
 		if (IsOutcome(comp)) {
 			int l1 = l_++;
 			int m0 = fr_++;
@@ -620,9 +620,9 @@ bool Context::EmitTrial(int n, std::deque<cas::Expr> &children)
 	}
 	*os_ << "  ret" << endl;
 	auto v1it = v1.cbegin();
-	for (auto it=children.begin();it!=children.end();++it) {
-		assert(it->which() == cas::kExprIsCompound);
-		cas::Compound &comp(boost::get<cas::Compound>(*it));
+	for (auto &expr : children) {
+		assert(expr.which() == cas::kExprIsCompound);
+		cas::Compound &comp(boost::get<cas::Compound>(expr));
 		if (IsOutcome(comp)) {
 			*os_ << " L" << *v1it++ << ':' << endl;
 			if (!Assign(RegisterType::kFloat, n, comp.children.at(0)))

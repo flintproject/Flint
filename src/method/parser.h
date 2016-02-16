@@ -60,11 +60,9 @@ bool TransformConditional(const Compound &c, Expr &lhs, Compound &rhs)
 	rhs.keyword = "piecewise";
 	rhs.children.clear();
 
-	std::vector<Expr>::const_iterator bit = c.children.begin();
-	std::vector<Expr>::const_iterator eit = c.children.end();
-	for (std::vector<Expr>::const_iterator it=bit;it!=eit;++it) {
-		assert(it->which() == kExprIsCompound);
-		const Compound &cs = boost::get<Compound>(*it);
+	for (const auto &child : c.children) {
+		assert(child.which() == kExprIsCompound);
+		const Compound &cs = boost::get<Compound>(child);
 		assert(cs.keyword == "case");
 		Compound r;
 		Compound w;

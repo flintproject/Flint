@@ -65,8 +65,8 @@ public:
 	bool operator()(const dav::Sexp &sexp) const
 	{
 		const std::vector<dav::Math> &c(sexp.children);
-		for (std::vector<dav::Math>::const_iterator it=c.begin();it!=c.end();++it) {
-			if (!boost::apply_visitor(*this, *it))
+		for (const auto &math : c) {
+			if (!boost::apply_visitor(*this, math))
 				return false;
 		}
 		return true;

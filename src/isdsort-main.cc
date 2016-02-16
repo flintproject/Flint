@@ -68,9 +68,8 @@ public:
 
 	void WriteDescriptionsAndUnits()
 	{
-		for (std::vector<string>::const_iterator it=leading_descs_.begin();it!=leading_descs_.end();++it) {
-			WriteEntry(*it);
-		}
+		for (const auto &desc : leading_descs_)
+			WriteEntry(desc);
 		for (std::map<string, std::uint32_t>::const_iterator it=rest_descs_.begin();it!=rest_descs_.end();++it) {
 			WriteEntry(it->first);
 		}
