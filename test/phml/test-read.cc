@@ -200,11 +200,12 @@ BOOST_AUTO_TEST_CASE(graph_probability)
 {
 	ReadAndCheck(TEST_MODELS("graph-probability.phml"));
 	std::vector<std::string> extras{
-		"0df0882ecbb711e48be8b31a3f8cd0c1 x before (eq %x (piecewise (piece (piecewise (piece ($trial ($outcome 2 0.5)) (eq %x 1)) (piece ($trial ($outcome 3 0.5)) (eq %x 2)) (piece ($trial ($outcome 2 0.49) ($outcome 4 0.5)) (eq %x 3))) (geq %y -1))))"
+		"0df0882ecbb711e48be8b31a3f8cd0c1 x before (eq %x (piecewise (piece (piecewise (piece ($trial ($outcome 2 %p)) (eq %x 1)) (piece ($trial ($outcome 3 0.50)) (eq %x 2)) (piece ($trial ($outcome 2 0.49) ($outcome 4 0.01)) (eq %x 3))) (geq %y -1))))"
 	};
 	CheckExtras(extras);
 	std::vector<std::string> impls{
 		"0df0882ecbb711e48be8b31a3f8cd0c1 y (eq (diff (bvar %time) %y) (piecewise (piece -1 (eq %x 1)) (piece -2 (eq %x 2)) (piece -3 (eq %x 3)) (otherwise 0)))",
+		"0df0882ecbb711e48be8b31a3f8cd0c1 p (eq %p 0.5)",
 		"0df0882ecbb711e48be8b31a3f8cd0c1 x (eq (diff (bvar %time) %x) 0)"
 	};
 	CheckImpls(impls);

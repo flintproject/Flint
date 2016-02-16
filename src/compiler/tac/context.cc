@@ -23,39 +23,6 @@ namespace tac {
 
 namespace {
 
-class Printer : public boost::static_visitor<> {
-public:
-	explicit Printer(std::ostream *os)
-		: os_(os)
-	{}
-
-	void operator()(const cas::Compound &c) const {
-		*os_ << '(' << c.keyword.c_str();
-		auto bit = c.children.cbegin();
-		auto eit = c.children.cend();
-		for (auto it=bit;it!=eit;++it) {
-			os_->put(' ');
-			boost::apply_visitor(*this, *it);
-		}
-		os_->put(')');
-	}
-
-	void operator()(const cas::Identifier &s) const {
-		*os_ << s.name;
-	}
-
-	void operator()(int i) const {
-		*os_ << i;
-	}
-
-	void operator()(const flint::lexer::Real &r) const {
-		*os_ << r.lexeme;
-	}
-
-private:
-	std::ostream *os_;
-};
-
 bool IsAnd(const cas::Compound &c)
 {
 	return c.keyword == "and";
@@ -606,12 +573,14 @@ bool Context::EmitTrial(int n, std::deque<cas::Expr> &children)
 		if (IsOutcome(comp)) {
 			int l1 = l_++;
 			int m0 = fr_++;
-			*os_ << "  loadi $" << m0 << ' ';
-			boost::apply_visitor(Printer(os_), comp.children.at(1));
-			*os_ << endl;
+			if (!Assign(RegisterType::kFloat, m0, comp.children.at(1)))
+				return false;
 			int m1 = fr_++;
-			*os_ << "  $" << m1 << " = (leq $" << p << " $" << m0 << ')' << endl
-				 << "  br $" << m1 << " L" << l1 << endl;
+			*os_ << "  $" << m1 << " = (minus $" << p << " $" << m0 << ')' << endl;
+			p = m1; // keep the register number for the decreased value as p
+			int m2 = fr_++;
+			*os_ << "  $" << m2 << " = (leq $" << m1 << " $" << p0 << ')' << endl
+				 << "  br $" << m2 << " L" << l1 << endl;
 			v1.push_back(l1);
 		} else {
 			cerr << "error: unexpected child of $trial: " << uuid_ << ' ' << id_ << endl;

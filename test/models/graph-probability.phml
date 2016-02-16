@@ -108,7 +108,7 @@
                 <is:arc-set>
                   <is:arc arc-id="1" tail-node-id="1" head-node-id="2">
                     <is:transition type="probability">
-                      <m:math><m:cn>0.5</m:cn></m:math>
+                      <m:math><m:ci>p</m:ci></m:math>
                     </is:transition>
                   </is:arc>
                   <is:arc arc-id="2" tail-node-id="2" head-node-id="3">
@@ -173,6 +173,18 @@
                   </m:piecewise>>
                 </m:apply>
               </m:math>
+            </is:definition>
+          </is:implementation>
+        </is:physical-quantity>
+        <is:physical-quantity physical-quantity-id="3" type="static-parameter">
+          <is:name>p</is:name>
+          <is:dimension type="scalar" />
+          <is:value-type-set>
+            <is:value-type precision="double" unit-id="0"/>
+          </is:value-type-set>
+          <is:implementation>
+            <is:definition type="ae" format="mathml">
+              <m:math><m:apply><m:eq/><m:ci>p</m:ci><m:cn>0.5</m:cn></m:apply></m:math>
             </is:definition>
           </is:implementation>
         </is:physical-quantity>

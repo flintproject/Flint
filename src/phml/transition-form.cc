@@ -158,7 +158,6 @@ bool TransitionForm::operator()(sqlite3 *db)
 				assert(type == "probability");
 				se << " ($trial";
 			}
-			double p = 0;
 			for (bit=am.upper_bound(tail_node_id);ait!=bit;++ait) {
 				const Arc &arc(ait->second);
 				if (type != arc.type()) {
@@ -171,12 +170,7 @@ bool TransitionForm::operator()(sqlite3 *db)
 					se << " ($outcome ";
 				}
 				se << arc.head_node_id();
-				if (type == "condition") {
-					se << arc.math();
-				} else {
-					p += atof(arc.math().c_str());
-					se << ' ' << p;
-				}
+				se << arc.math();
 				se << ")";
 			}
 			se << ") (eq %"
