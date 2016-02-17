@@ -558,7 +558,7 @@ BOOST_AUTO_TEST_CASE(Vector) {
 	Setup("(vector %x %y %z 1.25)");
 	BOOST_CHECK(compiler::tac::Tac(da.get(), db));
 	Check(1, 4,
-		  "  alloca $i0 4\n"
+		  "  alloc $i0 4\n"
 		  "  load $0 %x\n"
 		  "  move $i0 $0 0\n"
 		  "  load $1 %y\n"
@@ -574,7 +574,7 @@ BOOST_AUTO_TEST_CASE(Matrix) {
 	Setup("(matrix (matrixrow 1 0) (matrixrow %x %y) (matrixrow 0 -1))");
 	BOOST_CHECK(compiler::tac::Tac(da.get(), db));
 	Check(1, 6,
-		  "  alloca $i0 6\n"
+		  "  alloc $i0 6\n"
 		  "  loadi $0 1\n"
 		  "  move $i0 $0 0\n"
 		  "  loadi $1 0\n"

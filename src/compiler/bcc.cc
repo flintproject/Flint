@@ -275,7 +275,7 @@ struct Lexer : lex::lexer<TLexer> {
 
 		refer_ = "refer";
 		deref_ = "deref";
-		alloca_ = "alloca";
+		alloc_ = "alloc";
 		save_ = "save";
 		move_ = "move";
 		transpose_ = "transpose";
@@ -314,7 +314,7 @@ struct Lexer : lex::lexer<TLexer> {
 		this->self += weibull_variate_;
 		this->self += eulergamma_ | exponentiale_ | pi_;
 		this->self += true_ | false_;
-		this->self += refer_ | deref_ | alloca_ | save_ | move_;
+		this->self += refer_ | deref_ | alloc_ | save_ | move_;
 		this->self += transpose_ | outerproduct_ | scalarproduct_ | vectorproduct_;
 		this->self += determinant_ | select2_ | select3_ | selrow_;
 		this->self += mult_ | mmul_;
@@ -338,7 +338,7 @@ struct Lexer : lex::lexer<TLexer> {
 	lex::token_def<> weibull_variate_;
 	lex::token_def<> eulergamma_, exponentiale_, pi_;
 	lex::token_def<> true_, false_;
-	lex::token_def<> refer_, deref_, alloca_, save_, move_;
+	lex::token_def<> refer_, deref_, alloc_, save_, move_;
 	lex::token_def<> transpose_, outerproduct_, scalarproduct_, vectorproduct_;
 	lex::token_def<> determinant_, select2_, select3_, selrow_;
 	lex::token_def<> mult_, mmul_;
@@ -523,10 +523,10 @@ void ProcessDeref(bc::Code &code, const bc::Deref &given)
 	x->set_k(given.k());
 }
 
-void ProcessAlloca(bc::Code &code, const bc::Alloca &given)
+void ProcessAlloc(bc::Code &code, const bc::Alloc &given)
 {
-	code.set_type(bc::Code::kAlloca);
-	bc::Alloca *x = code.mutable_alloca();
+	code.set_type(bc::Code::kAlloc);
+	bc::Alloc *x = code.mutable_alloc();
 	x->set_i0(given.i0());
 	x->set_k(given.k());
 }
@@ -681,7 +681,7 @@ struct Grammar : qi::grammar<TIterator, Body()> {
 			| inst_store [bind(&ProcessInstStore, _val, _1)]
 			| inst_refer [bind(&ProcessRefer, _val, _1)]
 			| inst_deref [bind(&ProcessDeref, _val, _1)]
-			| inst_alloca [bind(&ProcessAlloca, _val, _1)]
+			| inst_alloc [bind(&ProcessAlloc, _val, _1)]
 			| inst_save [bind(&ProcessSave, _val, _1)]
 			| inst_move [bind(&ProcessMove, _val, _1)]
 			| inst_transpose [bind(&ProcessTranspose, _val, _1)]
@@ -729,8 +729,8 @@ struct Grammar : qi::grammar<TIterator, Body()> {
 							   >> ir [bind(&bc::Deref::set_i1, _val, _1)]
 							   >> ' ' >> td.integer [bind(&bc::Deref::set_k, _val, _1)];
 
-		inst_alloca = td.alloca_ >> ir [bind(&bc::Alloca::set_i0, _val, _1)]
-								 >> ' ' >> td.integer [bind(&bc::Alloca::set_k, _val, _1)];
+		inst_alloc = td.alloc_ >> ir [bind(&bc::Alloc::set_i0, _val, _1)]
+							   >> ' ' >> td.integer [bind(&bc::Alloc::set_k, _val, _1)];
 
 		inst_save = td.save_ >> ' ' >> td.id [bind(static_cast<void (bc::Save::*)(const std::string &)>(&bc::Save::set_v), _val, _1)]
 							 >> ir [bind(&bc::Save::set_i1, _val, _1)]
@@ -898,7 +898,7 @@ struct Grammar : qi::grammar<TIterator, Body()> {
 	qi::rule<TIterator, InstStore()> inst_store;
 	qi::rule<TIterator, bc::Refer> inst_refer;
 	qi::rule<TIterator, bc::Deref> inst_deref;
-	qi::rule<TIterator, bc::Alloca> inst_alloca;
+	qi::rule<TIterator, bc::Alloc> inst_alloc;
 	qi::rule<TIterator, bc::Save> inst_save;
 	qi::rule<TIterator, bc::Move> inst_move;
 	qi::rule<TIterator, bc::Transpose> inst_transpose;

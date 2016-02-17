@@ -654,9 +654,9 @@ public:
 						ci++;
 					}
 					break;
-				case bc::Code::kAlloca:
+				case bc::Code::kAlloc:
 					{
-						const bc::Alloca &a(code.alloca());
+						const bc::Alloc &a(code.alloc());
 						stack.emplace(new double[a.k()]);
 						ir_[a.i0()] = reinterpret_cast<intptr_t>(stack.top().get());
 						ci++;
@@ -903,9 +903,9 @@ public:
 									ci++;
 								}
 								break;
-							case bc::Code::kAlloca:
+							case bc::Code::kAlloc:
 								{
-									const bc::Alloca &a(code.alloca());
+									const bc::Alloc &a(code.alloc());
 									stack.emplace(new double[a.k()]);
 									ir_[a.i0()] = reinterpret_cast<intptr_t>(stack.top().get());
 									ci++;

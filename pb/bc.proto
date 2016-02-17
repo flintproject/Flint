@@ -201,7 +201,7 @@ message Deref {
 
 }
 
-message Alloca {
+message Alloc {
 
   required int32 i0 = 1; /* target register */
   required int32 k = 2;  /* size */
@@ -328,7 +328,7 @@ message Mmul {
 message Code {
 
   enum Type {
-    kAlloca = 13;
+    kAlloc = 13;
     kBr = 1;
     kCall1 = 3;
     kCall2 = 4;
@@ -359,7 +359,7 @@ message Code {
 
   required Type type = 1;
 
-  optional Alloca alloca = 13;
+  optional Alloc alloc = 13;
   optional Br br = 2;
   optional Call1 call1 = 4;
   optional Call2 call2 = 5;

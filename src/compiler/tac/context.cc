@@ -191,7 +191,7 @@ bool Context::Componentwise(RegisterType rt, int n, cas::Compound &c)
 			return false;
 		args.push_back(p);
 	}
-	*os_ << "  alloca $i" << n << ' ' << size << endl;
+	*os_ << "  alloc $i" << n << ' ' << size << endl;
 	for (int i=0;i<size;i++) {
 		std::vector<int> params;
 		for (auto k : args) {
@@ -242,7 +242,7 @@ bool Context::Determinant(RegisterType rt, int n, cas::Compound &c)
 bool Context::Matrix(RegisterType rt, int n, cas::Compound &c)
 {
 	assert(rt == RegisterType::kInteger);
-	*os_ << "  alloca $i" << n << ' ' << (c.col * c.row) << endl;
+	*os_ << "  alloc $i" << n << ' ' << (c.col * c.row) << endl;
 	int i=0;
 	for (auto &e : c.children) {
 		assert(e.which() == cas::kExprIsCompound);
@@ -395,7 +395,7 @@ bool Context::Vector(RegisterType rt, int n, cas::Compound &c)
 {
 	assert(rt == RegisterType::kInteger);
 	int size = c.col * c.row;
-	*os_ << "  alloca $i" << n << ' ' << size << endl;
+	*os_ << "  alloc $i" << n << ' ' << size << endl;
 	for (int i=0;i<size;i++) {
 		int m = fr_++;
 		if (!Assign(RegisterType::kFloat, m, c.children[i]))

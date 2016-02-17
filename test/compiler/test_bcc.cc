@@ -470,8 +470,8 @@ BOOST_AUTO_TEST_CASE(Deref) {
 	BOOST_CHECK(compiler::bcc::Bcc(db, &std::cout));
 }
 
-BOOST_AUTO_TEST_CASE(Alloca) {
-	Setup("%c", 6, 0, "  alloca $i5 24\n");
+BOOST_AUTO_TEST_CASE(Alloc) {
+	Setup("%c", 6, 0, "  alloc $i5 24\n");
 	BOOST_CHECK(compiler::bcc::Bcc(db, &std::cout));
 }
 
