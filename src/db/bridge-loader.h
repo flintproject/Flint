@@ -35,7 +35,10 @@ public:
 			assert(module_id);
 			boost::uuids::uuid u;
 			std::memcpy(&u, module_id, u.size());
-			if (!handler->Handle(u, pq_id, (const char *)direction, (const char *)sub_type, (const char *)connector))
+			if (!handler->Handle(u, pq_id,
+								 reinterpret_cast<const char *>(direction),
+								 reinterpret_cast<const char *>(sub_type),
+								 reinterpret_cast<const char *>(connector)))
 				return false;
 		}
 		if (e != SQLITE_DONE) {

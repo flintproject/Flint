@@ -100,7 +100,7 @@ public:
 		std::unique_ptr<UuidGenerator> gen(new UuidGenerator(path));
 		for (e = sqlite3_step(query_stmt_); e == SQLITE_ROW; e = sqlite3_step(query_stmt_)) {
 			const unsigned char *c = sqlite3_column_text(query_stmt_, 0);
-			size_t clen = strlen((const char *)c);
+			size_t clen = strlen(reinterpret_cast<const char *>(c));
 			if (clen == 0) {
 				cerr << "empty component name" << endl;
 				return false;
@@ -111,7 +111,7 @@ public:
 				cerr << "failed to bind uuid: " << e << endl;
 				return false;
 			}
-			e = sqlite3_bind_text(insert_stmt_, 2, (const char *)c, -1, SQLITE_STATIC);
+			e = sqlite3_bind_text(insert_stmt_, 2, reinterpret_cast<const char *>(c), -1, SQLITE_STATIC);
 			if (e != SQLITE_OK) {
 				cerr << "failed to bind name: " << e << endl;
 				return false;
@@ -167,31 +167,31 @@ public:
 		boost::uuids::uuid u;
 		for (e = sqlite3_step(stmt()); e == SQLITE_ROW; e = sqlite3_step(stmt())) {
 			const unsigned char *c = sqlite3_column_text(stmt(), 0);
-			size_t clen = strlen((const char *)c);
+			size_t clen = strlen(reinterpret_cast<const char *>(c));
 			if (clen == 0) {
 				cerr << "empty component name" << endl;
 				return false;
 			}
 			const unsigned char *body = sqlite3_column_text(stmt(), 1);
-			size_t nlen = strlen((const char *)body);
+			size_t nlen = strlen(reinterpret_cast<const char *>(body));
 			if (nlen == 0) {
 				cerr << "empty body" << endl;
 				return false;
 			}
-			if (!cm_->Find((const char *)c, &u)) return false;
+			if (!cm_->Find(reinterpret_cast<const char *>(c), &u)) return false;
 
-			if (!ei_.Insert(u, (const char *)&body[1])) return false;
+			if (!ei_.Insert(u, reinterpret_cast<const char *>(&body[1]))) return false;
 
 			// register it as a dependent variable
 			std::unique_ptr<char[]> tail(new char[nlen+1]);
-			strcpy(tail.get(), (const char *)&body[kPrefixLength]);
+			strcpy(tail.get(), reinterpret_cast<const char *>(&body[kPrefixLength]));
 			for (size_t i=0;i<nlen-kPrefixLength;i++) {
 				if (tail[i] == ')') {
 					tail[i] = '\0';
 					break;
 				}
 			}
-			dvm_[(const char *)c].insert(tail.get());
+			dvm_[reinterpret_cast<const char *>(c)].insert(tail.get());
 		}
 		if (e != SQLITE_DONE) {
 			cerr << "failed to step statement: " << e << endl;
@@ -230,30 +230,30 @@ public:
 		for (e = sqlite3_step(stmt()); e == SQLITE_ROW; e = sqlite3_step(stmt())) {
 			int id = static_cast<int>(sqlite3_column_int64(stmt(), 0));
 			const unsigned char *c = sqlite3_column_text(stmt(), 1);
-			size_t clen = strlen((const char *)c);
+			size_t clen = strlen(reinterpret_cast<const char *>(c));
 			if (clen == 0) {
 				cerr << "empty component name" << endl;
 				return false;
 			}
 			const unsigned char *n = sqlite3_column_text(stmt(), 2);
-			size_t nlen = strlen((const char *)n);
+			size_t nlen = strlen(reinterpret_cast<const char *>(n));
 			if (nlen == 0) {
 				cerr << "empty variable name" << endl;
 				return false;
 			}
 			const unsigned char *iv = sqlite3_column_text(stmt(), 3);
-			if (!cm_->Find((const char *)c, &u)) return false;
-			if (strcmp("time", (const char *)n) == 0) {
+			if (!cm_->Find(reinterpret_cast<const char *>(c), &u)) return false;
+			if (strcmp("time", reinterpret_cast<const char *>(n)) == 0) {
 				// ignore "time", because we suppose all of them are equivalent
 				// to the system "time"
 			} else if (iv) {
-				if (ode_dumper->IsDependentVariable((const char *)c, (const char *)n)) {
-					if (!Insert(u, 'x', id, (const char *)n)) return false;
+				if (ode_dumper->IsDependentVariable(reinterpret_cast<const char *>(c), reinterpret_cast<const char *>(n))) {
+					if (!Insert(u, 'x', id, reinterpret_cast<const char *>(n))) return false;
 				} else {
-					if (!Insert(u, 's', id, (const char *)n)) return false;
+					if (!Insert(u, 's', id, reinterpret_cast<const char *>(n))) return false;
 				}
 			} else {
-				if (!Insert(u, 'v', id, (const char *)n)) return false;
+				if (!Insert(u, 'v', id, reinterpret_cast<const char *>(n))) return false;
 			}
 		}
 		if (e != SQLITE_DONE) {
@@ -283,23 +283,23 @@ public:
 		boost::uuids::uuid u;
 		for (e = sqlite3_step(stmt()); e == SQLITE_ROW; e = sqlite3_step(stmt())) {
 			const unsigned char *c = sqlite3_column_text(stmt(), 0);
-			size_t clen = strlen((const char *)c);
+			size_t clen = strlen(reinterpret_cast<const char *>(c));
 			if (clen == 0) {
 				cerr << "empty component name" << endl;
 				return false;
 			}
 			const unsigned char *n = sqlite3_column_text(stmt(), 1);
-			size_t nlen = strlen((const char *)n);
+			size_t nlen = strlen(reinterpret_cast<const char *>(n));
 			if (nlen == 0) {
 				cerr << "empty variable name" << endl;
 				return false;
 			}
 			const unsigned char *iv = sqlite3_column_text(stmt(), 2);
-			if (!cm_->Find((const char *)c, &u)) return false;
+			if (!cm_->Find(reinterpret_cast<const char *>(c), &u)) return false;
 
-			size_t blen = strlen((const char *)n) + strlen((const char *)iv);
+			size_t blen = strlen(reinterpret_cast<const char *>(n)) + strlen(reinterpret_cast<const char *>(iv));
 			std::unique_ptr<char[]> buf(new char[blen+8]);
-			sprintf(buf.get(), "(eq %%%s %s)", (const char *)n, (const char *)iv);
+			sprintf(buf.get(), "(eq %%%s %s)", reinterpret_cast<const char *>(n), reinterpret_cast<const char *>(iv));
 			if (!ii_.Insert(u, buf.get())) return false;
 		}
 		if (e != SQLITE_DONE) {
@@ -331,20 +331,20 @@ public:
 		boost::uuids::uuid u;
 		for (e = sqlite3_step(stmt()); e == SQLITE_ROW; e = sqlite3_step(stmt())) {
 			const unsigned char *c = sqlite3_column_text(stmt(), 0);
-			size_t clen = strlen((const char *)c);
+			size_t clen = strlen(reinterpret_cast<const char *>(c));
 			if (clen == 0) {
 				cerr << "empty component name" << endl;
 				return false;
 			}
 			const unsigned char *body = sqlite3_column_text(stmt(), 1);
-			size_t nlen = strlen((const char *)body);
+			size_t nlen = strlen(reinterpret_cast<const char *>(body));
 			if (nlen == 0) {
 				cerr << "empty body" << endl;
 				return false;
 			}
-			if (!cm_->Find((const char *)c, &u)) return false;
+			if (!cm_->Find(reinterpret_cast<const char *>(c), &u)) return false;
 
-			const char *math = (const char *)&body[1];
+			const char *math = reinterpret_cast<const char *>(&body[1]);
 			if (!ei_.Insert(u, math)) return false;
 			if (!ii_.Insert(u, math)) return false;
 		}
@@ -392,19 +392,19 @@ public:
 			const unsigned char *n2 = sqlite3_column_text(stmt(), 7);
 			const unsigned char *pub2 = sqlite3_column_text(stmt(), 8);
 			const unsigned char *pri2 = sqlite3_column_text(stmt(), 9);
-			if (!cm_->Find((const char *)c1, &u1)) return false;
-			if (!cm_->Find((const char *)c2, &u2)) return false;
+			if (!cm_->Find(reinterpret_cast<const char *>(c1), &u1)) return false;
+			if (!cm_->Find(reinterpret_cast<const char *>(c2), &u2)) return false;
 
-			if ( ( (pub1 && strcmp((const char *)pub1, "out") == 0) ||
-				   (pri1 && strcmp((const char *)pri1, "out") == 0) ) &&
-				 ( (pub2 && strcmp((const char *)pub2, "in") == 0) ||
-				   (pri2 && strcmp((const char *)pri2, "in") == 0) ) ) {
+			if ( ( (pub1 && strcmp(reinterpret_cast<const char *>(pub1), "out") == 0) ||
+				   (pri1 && strcmp(reinterpret_cast<const char *>(pri1), "out") == 0) ) &&
+				 ( (pub2 && strcmp(reinterpret_cast<const char *>(pub2), "in") == 0) ||
+				   (pri2 && strcmp(reinterpret_cast<const char *>(pri2), "in") == 0) ) ) {
 				if (!driver_->Save(u1, id1, u2, id2, Reduction::kSum))
 					return false;
-			} else if ( ( (pub1 && strcmp((const char *)pub1, "in") == 0) ||
-						  (pri1 && strcmp((const char *)pri1, "in") == 0) ) &&
-						( (pub2 && strcmp((const char *)pub2, "out") == 0) ||
-						  (pri2 && strcmp((const char *)pri2, "out") == 0) ) ) {
+			} else if ( ( (pub1 && strcmp(reinterpret_cast<const char *>(pub1), "in") == 0) ||
+						  (pri1 && strcmp(reinterpret_cast<const char *>(pri1), "in") == 0) ) &&
+						( (pub2 && strcmp(reinterpret_cast<const char *>(pub2), "out") == 0) ||
+						  (pri2 && strcmp(reinterpret_cast<const char *>(pri2), "out") == 0) ) ) {
 				if (!driver_->Save(u2, id2, u1, id1, Reduction::kSum))
 					return false;
 			} else {

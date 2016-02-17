@@ -32,7 +32,7 @@ bool IsInCellMLNamespace(const xmlChar *uri)
 	static const char CELLML_NAMESPACE_HEAD[] = "http://www.cellml.org/cellml/";
 	static const size_t kLength = sizeof(CELLML_NAMESPACE_HEAD)/sizeof(CELLML_NAMESPACE_HEAD[0])-1;
 	if (!uri) return true;
-	if (std::strncmp(CELLML_NAMESPACE_HEAD, (const char *)uri, kLength) == 0) return true;
+	if (std::strncmp(CELLML_NAMESPACE_HEAD, reinterpret_cast<const char *>(uri), kLength) == 0) return true;
 	return false;
 }
 
@@ -40,7 +40,7 @@ bool IsInMathMLNamespace(const xmlChar *uri)
 {
 	static const char MATHML_NAMESPACE_URI[] = "http://www.w3.org/1998/Math/MathML";
 	if (!uri) return false;
-	if (strcmp(MATHML_NAMESPACE_URI, (const char *)uri) == 0) return true;
+	if (strcmp(MATHML_NAMESPACE_URI, reinterpret_cast<const char *>(uri)) == 0) return true;
 	return false;
 }
 
@@ -213,7 +213,7 @@ public:
 	int Handle(int i) {
 		sqlite3_stmt *stmt = parser_->stmt_maths();
 		int e;
-		e = sqlite3_bind_text(stmt, 1, (const char *)component_->name(),
+		e = sqlite3_bind_text(stmt, 1, reinterpret_cast<const char *>(component_->name()),
 							  -1, SQLITE_STATIC);
 		if (e != SQLITE_OK) {
 			cerr << "failed to bind parameter: " << e << endl;
@@ -367,37 +367,37 @@ private:
 		// insert a row into units
 		sqlite3_stmt *stmt = parser_->stmt_units();
 		int e;
-		e = sqlite3_bind_text(stmt, 1, (const char *)units->name(),
+		e = sqlite3_bind_text(stmt, 1, reinterpret_cast<const char *>(units->name()),
 							  -1, SQLITE_STATIC);
 		if (e != SQLITE_OK) {
 			cerr << "failed to bind parameter: " << e << endl;
 			return -2;
 		}
-		e = sqlite3_bind_text(stmt, 2, (const char *)unit->units(),
+		e = sqlite3_bind_text(stmt, 2, reinterpret_cast<const char *>(unit->units()),
 							  -1, SQLITE_STATIC);
 		if (e != SQLITE_OK) {
 			cerr << "failed to bind parameter: " << e << endl;
 			return -2;
 		}
-		e = sqlite3_bind_text(stmt, 3, (const char *)unit->prefix(),
+		e = sqlite3_bind_text(stmt, 3, reinterpret_cast<const char *>(unit->prefix()),
 							  -1, SQLITE_STATIC);
 		if (e != SQLITE_OK) {
 			cerr << "failed to bind parameter: " << e << endl;
 			return -2;
 		}
-		e = sqlite3_bind_text(stmt, 4, (const char *)unit->exponent(),
+		e = sqlite3_bind_text(stmt, 4, reinterpret_cast<const char *>(unit->exponent()),
 							  -1, SQLITE_STATIC);
 		if (e != SQLITE_OK) {
 			cerr << "failed to bind parameter: " << e << endl;
 			return -2;
 		}
-		e = sqlite3_bind_text(stmt, 5, (const char *)unit->multiplier(),
+		e = sqlite3_bind_text(stmt, 5, reinterpret_cast<const char *>(unit->multiplier()),
 							  -1, SQLITE_STATIC);
 		if (e != SQLITE_OK) {
 			cerr << "failed to bind parameter: " << e << endl;
 			return -2;
 		}
-		e = sqlite3_bind_text(stmt, 6, (component) ? (const char *)component->name() : NULL,
+		e = sqlite3_bind_text(stmt, 6, (component) ? reinterpret_cast<const char *>(component->name()) : NULL,
 							  -1, SQLITE_STATIC);
 		if (e != SQLITE_OK) {
 			cerr << "failed to bind parameter: " << e << endl;
@@ -515,37 +515,37 @@ private:
 		// insert a row into variables
 		sqlite3_stmt *stmt = parser_->stmt_variables();
 		int e;
-		e = sqlite3_bind_text(stmt, 1, (const char *)component->name(),
+		e = sqlite3_bind_text(stmt, 1, reinterpret_cast<const char *>(component->name()),
 							  -1, SQLITE_STATIC);
 		if (e != SQLITE_OK) {
 			cerr << "failed to bind parameter: " << e << endl;
 			return -2;
 		}
-		e = sqlite3_bind_text(stmt, 2, (const char *)variable->name(),
+		e = sqlite3_bind_text(stmt, 2, reinterpret_cast<const char *>(variable->name()),
 							  -1, SQLITE_STATIC);
 		if (e != SQLITE_OK) {
 			cerr << "failed to bind parameter: " << e << endl;
 			return -2;
 		}
-		e = sqlite3_bind_text(stmt, 3, (const char *)variable->units(),
+		e = sqlite3_bind_text(stmt, 3, reinterpret_cast<const char *>(variable->units()),
 							  -1, SQLITE_STATIC);
 		if (e != SQLITE_OK) {
 			cerr << "failed to bind parameter: " << e << endl;
 			return -2;
 		}
-		e = sqlite3_bind_text(stmt, 4, (const char *)variable->public_interface(),
+		e = sqlite3_bind_text(stmt, 4, reinterpret_cast<const char *>(variable->public_interface()),
 							  -1, SQLITE_STATIC);
 		if (e != SQLITE_OK) {
 			cerr << "failed to bind parameter: " << e << endl;
 			return -2;
 		}
-		e = sqlite3_bind_text(stmt, 5, (const char *)variable->private_interface(),
+		e = sqlite3_bind_text(stmt, 5, reinterpret_cast<const char *>(variable->private_interface()),
 							  -1, SQLITE_STATIC);
 		if (e != SQLITE_OK) {
 			cerr << "failed to bind parameter: " << e << endl;
 			return -2;
 		}
-		e = sqlite3_bind_text(stmt, 6, (const char *)variable->initial_value(),
+		e = sqlite3_bind_text(stmt, 6, reinterpret_cast<const char *>(variable->initial_value()),
 							  -1, SQLITE_STATIC);
 		if (e != SQLITE_OK) {
 			cerr << "failed to bind parameter: " << e << endl;
@@ -632,13 +632,13 @@ private:
 		// insert a row into connections
 		sqlite3_stmt *stmt = parser_->stmt_connections();
 		int e;
-		e = sqlite3_bind_text(stmt, 1, (const char *)connection->component_1(),
+		e = sqlite3_bind_text(stmt, 1, reinterpret_cast<const char *>(connection->component_1()),
 							  -1, SQLITE_STATIC);
 		if (e != SQLITE_OK) {
 			cerr << "failed to bind parameter: " << e << endl;
 			return -2;
 		}
-		e = sqlite3_bind_text(stmt, 2, (const char *)connection->component_2(),
+		e = sqlite3_bind_text(stmt, 2, reinterpret_cast<const char *>(connection->component_2()),
 							  -1, SQLITE_STATIC);
 		if (e != SQLITE_OK) {
 			cerr << "failed to bind parameter: " << e << endl;
@@ -691,13 +691,13 @@ private:
 			cerr << "failed to bind parameter: " << e << endl;
 			return -2;
 		}
-		e = sqlite3_bind_text(stmt, 2, (const char *)map_variables->variable_1(),
+		e = sqlite3_bind_text(stmt, 2, reinterpret_cast<const char *>(map_variables->variable_1()),
 							  -1, SQLITE_STATIC);
 		if (e != SQLITE_OK) {
 			cerr << "failed to bind parameter: " << e << endl;
 			return -2;
 		}
-		e = sqlite3_bind_text(stmt, 3, (const char *)map_variables->variable_2(),
+		e = sqlite3_bind_text(stmt, 3, reinterpret_cast<const char *>(map_variables->variable_2()),
 							  -1, SQLITE_STATIC);
 		if (e != SQLITE_OK) {
 			cerr << "failed to bind parameter: " << e << endl;

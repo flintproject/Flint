@@ -25,7 +25,7 @@ bool PackToOstream(const TMessage &message, std::ostream *os)
 	uint32_t byte_size = static_cast<uint32_t>(message.ByteSize());
 	assert(byte_size > 0);
 	uint32_t n_byte_size = htonl(byte_size);
-	memcpy((void *)buffer, (const void *)&n_byte_size, kHeadSize);
+	memcpy(buffer, &n_byte_size, kHeadSize);
 	if (!os->write(buffer, kHeadSize).good()) return false;
 	return message.SerializeToOstream(os);
 }
@@ -38,7 +38,7 @@ bool UnpackFromIstream(TMessage &message, std::istream *is)
 
 	if (!is->read(buffer, kHeadSize).good()) return false;
 	uint32_t n_byte_size = 0;
-	memcpy((void *)&n_byte_size, (const void *)buffer, kHeadSize);
+	memcpy(&n_byte_size, buffer, kHeadSize);
 	uint32_t byte_size = ntohl(n_byte_size);
 	if (byte_size == 0) {
 		std::cerr << "found invalid message size: 0" << std::endl;
