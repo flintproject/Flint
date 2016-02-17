@@ -27,6 +27,7 @@ csc
 csch
 csymbol
 degree : only with <root>
+determinant
 diff
 divide
 eq
@@ -44,6 +45,8 @@ log
 logbase
 lt
 math
+matrix
+matrixrow
 max
 mean
 min
@@ -52,6 +55,7 @@ neq
 not
 or
 otherwise
+outerproduct
 pi
 piece
 piecewice
@@ -59,15 +63,20 @@ plus
 power
 rem
 root
+scalarproduct
 sec
 sech
+selector
 sep
 sin
 sinh
 tan
 tanh
 times
+transpose
 true
+vector
+vectorproduct
 xor
 
 [1] http://www.w3.org/TR/MathML2/
