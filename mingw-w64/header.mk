@@ -23,6 +23,7 @@ BOOST_DLLS := \
     libboost_program_options-mt \
     libboost_system-mt
 SUNDIALS_DLLS := \
+    libsundials_arkode \
     libsundials_cvodes \
     libsundials_ida \
     libsundials_kinsol \

@@ -131,6 +131,9 @@
           <Component Id='boost.system' Guid='d02c802a-1a7e-11e1-8142-7b383aa4b0d4'>
             <File Id='libboost_system' Name='libboost_system-mt.dll' DiskId='1' Source='libboost_system-mt.dll' />
           </Component>
+          <Component Id='sundials.arkode' Guid='f7c161ce-d5db-11e5-9360-47a2ddac8059'>
+            <File Id='libsundials_arkode' Name='libsundials_arkode.dll' DiskId='1' Source='libsundials_arkode.dll' />
+          </Component>
           <Component Id='sundials.cvodes' Guid='3076eb1a-ff63-11e4-bdb9-6b3b5e708c9b'>
             <File Id='libsundials_cvodes' Name='libsundials_cvodes.dll' DiskId='1' Source='libsundials_cvodes.dll' />
           </Component>
@@ -249,6 +252,7 @@
       <ComponentRef Id='boost.filesystem' />
       <ComponentRef Id='boost.program_options' />
       <ComponentRef Id='boost.system' />
+      <ComponentRef Id='sundials.arkode' />
       <ComponentRef Id='sundials.cvodes' />
       <ComponentRef Id='sundials.ida' />
       <ComponentRef Id='sundials.kinsol' />

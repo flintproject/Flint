@@ -30,6 +30,7 @@ DYLIBS := \
     libprotobuf.9 \
     libzip.4
 SUNDIALS_DYLIBS := \
+    arkode.1 \
     cvode.1 \
     cvodes.2 \
     ida.2 \
