@@ -23,6 +23,7 @@
 #include "job.hh"
 #include "phsp.hh"
 #include "sedml.hh"
+#include "solver.h"
 #include "task.hh"
 #include "task/config-reader.hh"
 
@@ -154,9 +155,22 @@ bool Job(const char *task_dir,
 	}
 	char layout_file[kShort];
 	sprintf(layout_file, "%s/layout", task_dir);
-	char bc_file[kShort];
-	sprintf(bc_file, "%s/bc", task_dir);
-	bool r = job::Evolve(db, layout_file, bc_file, ofp, option);
+	bool r;
+	if (reader.GetMethod() == compiler::Method::kArk) {
+		solver::Option opt;
+		opt.end = reader.length();
+		opt.dt = reader.step();
+		opt.layout_file = layout_file;
+		opt.input_data_file = option.input_data_file;
+		opt.filter_file = option.filter_file;
+		opt.granularity = option.granularity;
+		opt.output_fp = ofp;
+		r = solver::Solve(db, solver::Method::kArk, opt);
+	} else {
+		char bc_file[kShort];
+		sprintf(bc_file, "%s/bc", task_dir);
+		r = job::Evolve(db, layout_file, bc_file, ofp, option);
+	}
 	fclose(ofp);
 	return r;
 }

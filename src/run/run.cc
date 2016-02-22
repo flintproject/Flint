@@ -129,7 +129,7 @@ bool Run(const char *input, int size)
 		return false;
 	if (!filter::Isdh("filter", "isdh"))
 		return false;
-	{
+	if (reader.GetMethod() != compiler::Method::kArk) {
 		cas::DimensionAnalyzer da;
 		if (!da.Load(db))
 			return false;

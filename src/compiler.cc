@@ -44,6 +44,9 @@ bool Compiler::Compile(sqlite3 *db, const char *table, Method method, const char
 		if (!method::Rk4(db, table, tmp.db()))
 			return false;
 		break;
+	case Method::kArk:
+		assert(false); // TODO
+		break;
 	}
 	return GenerateBytecode(tmp.db(), output);
 }

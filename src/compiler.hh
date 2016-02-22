@@ -16,7 +16,8 @@ enum class Method {
 	kAssign,
 	kEuler,
 	kEvent,
-	kRk4
+	kRk4,
+	kArk
 };
 
 class Compiler {

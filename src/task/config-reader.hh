@@ -23,9 +23,6 @@ public:
 
 	bool Read();
 
-	/*
-	 * Return kEuler or kRk4.
-	 */
 	compiler::Method GetMethod() const;
 
 private:

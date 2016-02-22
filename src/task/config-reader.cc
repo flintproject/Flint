@@ -82,6 +82,8 @@ compiler::Method ConfigReader::GetMethod() const
 		return compiler::Method::kRk4;
 	if (strcmp(method_.get(), "euler") == 0)
 		return compiler::Method::kEuler;
+	if (strcmp(method_.get(), "ark") == 0)
+		return compiler::Method::kArk;
 	return compiler::Method::kRk4;
 }
 
