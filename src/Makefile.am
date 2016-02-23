@@ -31,7 +31,6 @@ BUILT_SOURCES = \
 
 bin_PROGRAMS = \
 	csv2isd \
-	flint-ark \
 	flint-cli \
 	flint-exec \
 	flint-lodbg \
@@ -202,11 +201,6 @@ csv2isd_CPPFLAGS = $(BOOST_CPPFLAGS)
 csv2isd_LDFLAGS = $(BOOST_FILESYSTEM_LDFLAGS) $(BOOST_SYSTEM_LDFLAGS)
 csv2isd_LDADD = libflintxx.la libflint.la libsqlite3.la $(BOOST_FILESYSTEM_LIBS) $(BOOST_SYSTEM_LIBS)
 csv2isd_SOURCES = csv2isd-main.cc
-
-flint_ark_CPPFLAGS = $(PROTOBUF_CFLAGS) $(BOOST_CPPFLAGS)
-flint_ark_LDFLAGS = $(BOOST_FILESYSTEM_LDFLAGS) $(BOOST_SYSTEM_LDFLAGS)
-flint_ark_LDADD = libflintxx.la libflint.la libsqlite3.la $(PROTOBUF_LIBS) $(BOOST_FILESYSTEM_LIBS) $(BOOST_SYSTEM_LIBS)
-flint_ark_SOURCES = flint-ark-main.cc
 
 flint_cli_CPPFLAGS = $(PROTOBUF_CFLAGS) $(BOOST_CPPFLAGS)
 flint_cli_LDFLAGS = $(BOOST_PROGRAM_OPTIONS_LDFLAGS)
