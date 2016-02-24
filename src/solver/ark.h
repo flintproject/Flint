@@ -5,13 +5,16 @@
 #include "sqlite3.h"
 
 namespace flint {
-namespace solver {
 
+namespace job {
 struct Option;
+}
+
+namespace solver {
 
 namespace ark {
 
-bool Solve(sqlite3 *db, const Option &option);
+bool Solve(sqlite3 *db, const job::Option &option);
 
 }
 }

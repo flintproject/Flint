@@ -323,13 +323,12 @@ bool SaveData(const char *output_data_file, size_t layer_size, double *data)
 }
 
 bool Evolve(sqlite3 *db,
-			const char *layout_file,
 			const char *bc_file,
-			FILE *output_fp,
 			const Option &option)
 {
 	size_t granularity = option.granularity;
 	double output_start_time = option.output_start_time;
+	FILE *output_fp = option.output_fp;
 
 	bool with_filter = option.filter_file != NULL;
 	bool with_pre = option.pre_file != NULL;
@@ -339,7 +338,7 @@ bool Evolve(sqlite3 *db,
 	// load layout at first
 	std::unique_ptr<Layout> layout(new Layout);
 	{
-		std::unique_ptr<LayoutLoader> loader(new LayoutLoader(layout_file));
+		std::unique_ptr<LayoutLoader> loader(new LayoutLoader(option.layout_file));
 		if (!loader->Load(layout.get())) return false;
 	}
 	size_t layer_size = layout->Calculate();

@@ -11,6 +11,7 @@
 #include <memory>
 
 #include "cas.h"
+#include "job.hh"
 #include "lo/layout.h"
 #include "lo/layout_loader.h"
 #include "runtime/flow.hh"
@@ -52,7 +53,7 @@ Processor *CreateProcessor(const Layout *layout, size_t layer_size,
 
 }
 
-bool Solve(sqlite3 *db, const Option &option)
+bool Solve(sqlite3 *db, const job::Option &option)
 {
 	std::unique_ptr<cas::System> system(new cas::System);
 	if (!system->Load(db))

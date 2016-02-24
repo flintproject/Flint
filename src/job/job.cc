@@ -98,6 +98,7 @@ bool Job(const char *task_dir,
 		option.granularity = reader.granularity();
 		option.output_start_time = reader.output_start_time();
 	}
+	option.task_dir = task_dir;
 	char before_bc_file[kShort];
 	sprintf(before_bc_file, "%s/before-bc", task_dir);
 	if (boost::filesystem::exists(before_bc_file)) {
@@ -153,24 +154,19 @@ bool Job(const char *task_dir,
 		}
 		fclose(ifp);
 	}
+	option.output_fp = ofp;
+
 	char layout_file[kShort];
 	sprintf(layout_file, "%s/layout", task_dir);
+	option.layout_file = layout_file;
+
 	bool r;
 	if (reader.GetMethod() == compiler::Method::kArk) {
-		solver::Option opt;
-		opt.end = reader.length();
-		opt.dt = reader.step();
-		opt.task_dir = task_dir;
-		opt.layout_file = layout_file;
-		opt.input_data_file = option.input_data_file;
-		opt.filter_file = option.filter_file;
-		opt.granularity = option.granularity;
-		opt.output_fp = ofp;
-		r = solver::Solve(db, solver::Method::kArk, opt);
+		r = solver::Solve(db, solver::Method::kArk, option);
 	} else {
 		char bc_file[kShort];
 		sprintf(bc_file, "%s/bc", task_dir);
-		r = job::Evolve(db, layout_file, bc_file, ofp, option);
+		r = job::Evolve(db, bc_file, option);
 	}
 	fclose(ofp);
 	return r;

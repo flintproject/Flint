@@ -5,12 +5,13 @@
 #include "config.h"
 #endif
 
+#include "job.hh"
 #include "solver/ark.h"
 
 namespace flint {
 namespace solver {
 
-bool Solve(sqlite3 *db, Method method, const Option &option)
+bool Solve(sqlite3 *db, Method method, const job::Option &option)
 {
 	switch (method) {
 	case Method::kArk:

@@ -8,17 +8,24 @@
 #include <algorithm>
 #include <cassert>
 #include <cstdio>
+#include <cstring>
 #include <iostream>
 #include <memory>
 #include <vector>
+
+#define BOOST_DATE_TIME_NO_LIB
+#include <boost/interprocess/file_mapping.hpp>
+#include <boost/interprocess/mapped_region.hpp>
 
 #include <arkode/arkode.h>
 #include <arkode/arkode_dense.h>
 #include <arkode/arkode_direct.h>
 #include <nvector/nvector_serial.h>
 
+#include "bc/index.h"
 #include "filter/cutter.h"
 #include "filter/writer.hh"
+#include "job.hh"
 #include "lo/layout.h"
 #include "solver.h"
 #include "solver/ark/auxv.h"
@@ -110,7 +117,7 @@ void Ark::WriteData(int lo, N_Vector y)
 	assert(i == dim_);
 }
 
-bool Ark::Solve(const Option &option)
+bool Ark::Solve(const job::Option &option)
 {
 	bool with_filter = option.filter_file != nullptr;
 	FILE *output_fp = option.output_fp;
@@ -172,12 +179,23 @@ bool Ark::Solve(const Option &option)
 	/* skeleton: 12. Specify rootfinding problem */
 	/* skeleton: 13. Advance solution in time */
 	size_t granularity = option.granularity;
-	size_t g = (option.end == 0) ? 0 : granularity-1;
+	double output_start_time = option.output_start_time;
+
+	bool with_control = option.control_file != nullptr;
+	std::unique_ptr<boost::interprocess::file_mapping> control_fm;
+	std::unique_ptr<boost::interprocess::mapped_region> control_region;
+	if (with_control) {
+		control_fm.reset(new boost::interprocess::file_mapping(option.control_file, boost::interprocess::read_only));
+		control_region.reset(new boost::interprocess::mapped_region(*control_fm, boost::interprocess::read_only));
+	}
+	char control;
+
+	size_t g = (output_start_time == 0) ? 0 : granularity-1;
 	realtype tout = 0;
 	realtype tret;
 	do {
-		tout += option.dt;
-		tout = std::min(tout, option.end);
+		tout += data_[kIndexDt];
+		tout = std::min(tout, data_[kIndexEnd]);
 
 		r = ARKode(arkode_mem_, tout, y_, &tret, ARK_NORMAL);
 		if (r != ARK_SUCCESS) {
@@ -190,19 +208,37 @@ bool Ark::Solve(const Option &option)
 		if (!auxv_->Evaluate(data_.get()))
 			return false;
 
-		if (granularity <= 1 || ++g == granularity) {
-			if (with_filter) {
-				if (!writer->Write(data_.get(), output_fp))
-					return false;
-			} else {
-				if (std::fwrite(data_.get(), sizeof(double), layer_size_, output_fp) != static_cast<size_t>(layer_size_)) {
-					cerr << "failed to write output" << endl;
-					return false;
+		if (output_start_time <= data_[kIndexTime]) {
+			if (granularity <= 1 || ++g == granularity) {
+				if (with_filter) {
+					if (!writer->Write(data_.get(), output_fp))
+						return false;
+				} else {
+					if (std::fwrite(data_.get(), sizeof(double), layer_size_, output_fp) != static_cast<size_t>(layer_size_)) {
+						cerr << "failed to write output" << endl;
+						return false;
+					}
 				}
+				g = 0;
 			}
-			g = 0;
 		}
-	} while (tret < option.end);
+
+		if (option.progress_address) {
+			if (data_[kIndexEnd] <= 0) {
+				cerr << "non-positive end time: " << data_[kIndexEnd] << endl;
+				return false;
+			}
+			char c = static_cast<char>(100 * (data_[kIndexTime] / data_[kIndexEnd]));
+			std::memcpy(option.progress_address, &c, 1);
+		}
+
+		if (with_control) {
+			memcpy(&control, control_region->get_address(), 1);
+			if (control == 1) {
+				break;
+			}
+		}
+	} while (tret < data_[kIndexEnd]);
 
 	/* skeleton: 14. Get optional outputs */
 	return true;

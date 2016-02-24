@@ -7,28 +7,22 @@
 #include "sqlite3.h"
 
 namespace flint {
+
+namespace job {
+struct Option;
+}
+
 namespace solver {
 
 enum class Method {
 	kArk
 };
 
-struct Option {
-	double end;
-	double dt;
-	const char *task_dir;
-	const char *layout_file;
-	const char *input_data_file;
-	const char *filter_file;
-	int granularity;
-	FILE *output_fp;
-};
-
 /*
  * Note that db is for read only.
  * Return true in case of success, false otherwise.
  */
-bool Solve(sqlite3 *db, Method method, const Option &option);
+bool Solve(sqlite3 *db, Method method, const job::Option &option);
 
 }
 }

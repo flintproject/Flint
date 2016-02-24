@@ -13,9 +13,11 @@ namespace flint {
 
 class Layout;
 
-namespace solver {
-
+namespace job {
 struct Option;
+}
+
+namespace solver {
 
 namespace ark {
 
@@ -42,7 +44,7 @@ public:
 
 	void WriteData(int lo, N_Vector ydot);
 
-	bool Solve(const Option &option);
+	bool Solve(const job::Option &option);
 
 private:
 	bool SetProblemDimensions();

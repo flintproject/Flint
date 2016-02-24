@@ -34,14 +34,17 @@ bool Store(sqlite3 *db,
 struct Option {
 	size_t granularity;
 	double output_start_time;
+	const char *task_dir;
 	const char *pre_file;
 	const char *post_file;
+	const char *layout_file;
 	const char *filter_file;
 	const char *input_data_file;
 	const char *input_history_file;
 	const char *control_file;
 	const char *output_data_file;
 	const char *output_history_file;
+	FILE *output_fp;
 	void *progress_address;
 };
 
@@ -50,9 +53,7 @@ struct Option {
  * Return true in case of success, false otherwise.
  */
 bool Evolve(sqlite3 *db,
-			const char *layout_file,
 			const char *bc_file,
-			FILE *output_fp,
 			const Option &option);
 
 /*
