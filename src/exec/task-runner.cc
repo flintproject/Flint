@@ -145,9 +145,9 @@ bool TaskRunner::Run()
 	reader_.reset(new task::ConfigReader(modeldb_driver_->db()));
 	if (!reader_->Read())
 		return false;
-	char bc_file[kFilenameLength];
-	sprintf(bc_file, "%s/bc", dir_.get());
-	{
+	if (reader_->GetMethod() != compiler::Method::kArk) {
+		char bc_file[kFilenameLength];
+		sprintf(bc_file, "%s/bc", dir_.get());
 		cas::DimensionAnalyzer da;
 		if (!da.Load(modeldb_driver_->db()))
 			return false;

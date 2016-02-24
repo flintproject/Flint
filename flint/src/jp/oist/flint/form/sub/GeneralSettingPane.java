@@ -188,7 +188,7 @@ public class GeneralSettingPane extends javax.swing.JPanel
         lbl_Integration_Method.setPreferredSize(new java.awt.Dimension(180, 15));
         pnl_Numerial_Integration_Method.add(lbl_Integration_Method);
 
-        cmb_Integration_Method.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Euler", "Runge-Kutta" }));
+        cmb_Integration_Method.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Euler", "Runge-Kutta", "ARK" }));
         cmb_Integration_Method.setMinimumSize(new java.awt.Dimension(150, 24));
         cmb_Integration_Method.setPreferredSize(new java.awt.Dimension(150, 24));
         pnl_Numerial_Integration_Method.add(cmb_Integration_Method);
@@ -342,7 +342,7 @@ public class GeneralSettingPane extends javax.swing.JPanel
         lbl_data_per.setText("1 data per ");
         pnl_Data_Sampling.add(lbl_data_per);
 
-        list_Granularity.setModel(new javax.swing.SpinnerNumberModel(Integer.valueOf(1), Integer.valueOf(1), null, Integer.valueOf(1)));
+        list_Granularity.setModel(new javax.swing.SpinnerNumberModel(1, 1, null, 1));
         list_Granularity.setAutoscrolls(true);
         list_Granularity.setMaximumSize(new java.awt.Dimension(32767, 20));
         list_Granularity.setMinimumSize(new java.awt.Dimension(35, 20));

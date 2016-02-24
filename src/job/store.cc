@@ -227,11 +227,13 @@ public:
 										return false;
 									}
 								} else {
+									// TODO: support for non-scalar values
 									double value = mit->second;
-									if (std::fwrite(&value, sizeof(double), dp->size(), fp) != static_cast<size_t>(dp->size())) {
-										// TODO
+									if (std::fwrite(&value, sizeof(double), 1u, fp) != 1u)
 										return false;
-									}
+									int size = dp->size() - 1;
+									if (std::fseek(fp, size*sizeof(double), SEEK_CUR) != 0)
+										return false;
 								}
 							}
 						}

@@ -6,6 +6,7 @@
 #endif
 
 #include <cstdio>
+#include <cstring>
 #include <iostream>
 #include <memory>
 
@@ -70,24 +71,29 @@ bool Solve(sqlite3 *db, const Option &option)
 	}
 	size_t layer_size = layout->Calculate();
 
-	const char *auxv_bc_file = "auxv-bc";
-	if (!system->SaveAuxVarBc(auxv_bc_file))
+	size_t dirname_size = std::strlen(option.task_dir);
+	assert(dirname_size > 0);
+	std::unique_ptr<char[]> auxv_bc_file(new char[dirname_size+32]);
+	std::sprintf(auxv_bc_file.get(), "%s/auxv-bc", option.task_dir);
+	if (!system->SaveAuxVarBc(auxv_bc_file.get()))
 		return false;
-	const char *mass_bc_file = "mass-bc";
-	if (!system->SaveOdeMassBc(mass_bc_file))
+	std::unique_ptr<char[]> mass_bc_file(new char[dirname_size+32]);
+	std::sprintf(mass_bc_file.get(), "%s/mass-bc", option.task_dir);
+	if (!system->SaveOdeMassBc(mass_bc_file.get()))
 		return false;
-	const char *rhs_bc_file = "rhs-bc";
-	if (!system->SaveOdeRhsBc(rhs_bc_file))
+	std::unique_ptr<char[]> rhs_bc_file(new char[dirname_size+32]);
+	std::sprintf(rhs_bc_file.get(), "%s/rhs-bc", option.task_dir);
+	if (!system->SaveOdeRhsBc(rhs_bc_file.get()))
 		return false;
 
 	std::unique_ptr<Processor> auxv_proc(CreateProcessor(layout.get(), layer_size,
-														 inbound.get(), auxv_bc_file));
+														 inbound.get(), auxv_bc_file.get()));
 	if (!auxv_proc)
 		return false;
 	std::unique_ptr<Auxv> auxv(new Auxv(auxv_proc.get()));
 
 	std::unique_ptr<Processor> mass_proc(CreateProcessor(layout.get(), layer_size,
-														 inbound.get(), mass_bc_file));
+														 inbound.get(), mass_bc_file.get()));
 	if (!mass_proc)
 		return false;
 	std::unique_ptr<Mmdm> mmdm(new Mmdm(layout->SelectStates()));
@@ -96,7 +102,7 @@ bool Solve(sqlite3 *db, const Option &option)
 	std::unique_ptr<Mass> mass(new Mass(mass_proc.get(), mmdm.get()));
 
 	std::unique_ptr<Processor> rhs_proc(CreateProcessor(layout.get(), layer_size,
-														inbound.get(), rhs_bc_file));
+														inbound.get(), rhs_bc_file.get()));
 	if (!rhs_proc)
 		return false;
 	std::unique_ptr<Rhs> rhs(new Rhs(layer_size, rhs_proc.get()));

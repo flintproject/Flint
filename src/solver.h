@@ -16,6 +16,7 @@ enum class Method {
 struct Option {
 	double end;
 	double dt;
+	const char *task_dir;
 	const char *layout_file;
 	const char *input_data_file;
 	const char *filter_file;

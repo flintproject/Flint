@@ -10,7 +10,7 @@ public class IntegrationMethodFormat {
         switch (method) {
         case EULER:         return "Euler";
         case RUNGE_KUTTA:   return "Runge-Kutta";
-        case ADAMS_MOULTON: return "Adams-Moulton";
+        case ARK: return "ARK";
         }
         return null;
     }
@@ -20,7 +20,7 @@ public class IntegrationMethodFormat {
         switch (method) {
         case EULER:         return "0000030";
         case RUNGE_KUTTA:   return "0000032";
-        case ADAMS_MOULTON: return "0000280";
+        case ARK: return "9999999"; // TODO: use a proper ID if it appears
         }
         return null;
     }

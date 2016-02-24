@@ -166,7 +166,7 @@ int CreateAsts(sqlite3 *db)
 int CreateLayout(sqlite3 *db)
 {
 	return CreateView(db, "layout",
-					  "SELECT p.space_id AS track_id, p.name AS track_name, c.uuid AS sector_id, c.label, v.name, v.type, v.id, v.unit, v.capacity FROM spaces AS p"
+					  "SELECT p.space_id AS track_id, p.name AS track_name, c.uuid AS sector_id, c.label, v.name, v.type, v.id, v.unit, v.ncols, v.nrows, v.capacity FROM spaces AS p"
 					  " LEFT JOIN scopes AS c ON p.space_id = c.space_id"
 					  " LEFT JOIN variables AS v ON p.space_id = v.space_id"
 					  " WHERE c.uuid IS NOT NULL AND v.name IS NOT NULL"

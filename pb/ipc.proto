@@ -65,7 +65,7 @@ enum ModelLanguage {
 enum IntegrationMethod {
   EULER = 0;
   RUNGE_KUTTA = 1;
-  ADAMS_MOULTON = 2;
+  ARK = 2;
 }
 
 message HeartbeatInterfaceParameter {

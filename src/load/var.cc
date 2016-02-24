@@ -42,10 +42,16 @@ int AddColumn(void *data, int argc, char **argv, char **names)
 {
 	State *state = static_cast<State *>(data);
 	(void)names;
-	assert(argc == 9);
+	assert(argc == 11);
+
+	assert(argv[8]);
+	assert(argv[9]);
+	int size = std::atoi(argv[8]) * std::atoi(argv[9]);
+	assert(size > 0);
+
 	std::unique_ptr<lo::Column> c(new lo::Column);
 	c->set_position(state->pos);
-	c->set_size(1); // TODO: variable size
+	c->set_size(size);
 	assert(argv[2]);
 	c->set_uuid(argv[2], boost::uuids::uuid::static_size()); // sector_id
 	c->set_name(argv[4]); // name
@@ -59,7 +65,7 @@ int AddColumn(void *data, int argc, char **argv, char **names)
 		c->set_type(lo::X);
 		break;
 	default:
-		state->pos += 1; // TODO: variable size
+		state->pos += size;
 		return 0;
 	}
 	c->set_id(std::atoi(argv[6])); // id
@@ -71,7 +77,7 @@ int AddColumn(void *data, int argc, char **argv, char **names)
 		c->set_label(argv[3]);
 	}
 	state->columns.push_back(std::move(c));
-	state->pos += 1; // TODO: variable size
+	state->pos += size;
 	return 0;
 }
 

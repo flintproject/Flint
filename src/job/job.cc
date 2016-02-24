@@ -160,6 +160,7 @@ bool Job(const char *task_dir,
 		solver::Option opt;
 		opt.end = reader.length();
 		opt.dt = reader.step();
+		opt.task_dir = task_dir;
 		opt.layout_file = layout_file;
 		opt.input_data_file = option.input_data_file;
 		opt.filter_file = option.filter_file;

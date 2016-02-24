@@ -270,8 +270,8 @@ public class SedmlHandler2 extends SedmlHandler
             switch (mKisaoId) {
             case "KISAO:0000032":
                 return Ipc.IntegrationMethod.RUNGE_KUTTA;
-            case "KISAO:0000280":
-                return Ipc.IntegrationMethod.ADAMS_MOULTON;
+            case "KISAO:9999999":
+                return Ipc.IntegrationMethod.ARK;
             default:
                 // KISAO:0000030
                 return Ipc.IntegrationMethod.EULER;

@@ -28,12 +28,14 @@ namespace {
 
 enum {
 	kEuler,
-	kRungeKutta4th
+	kRungeKutta4th,
+	kArk
 };
 
 const char *kAlgorithmName[] = {
 	"euler",
-	"rk4"
+	"rk4",
+	"ark"
 };
 
 int BindAlgorithm(const struct sedml_uniformtimecourse *utc,
@@ -49,6 +51,8 @@ int BindAlgorithm(const struct sedml_uniformtimecourse *utc,
 		i = kEuler;
 	} else if (strcmp(kisaoID, "KISAO:0000032") == 0) {
 		i = kRungeKutta4th;
+	} else if (strcmp(kisaoID, "KISAO:9999999") == 0) {
+		i = kArk;
 	} else {
 		fprintf(stderr, "unexpected kisaoID of algorithm in SED-ML: %s\n",
 				kisaoID);
