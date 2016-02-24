@@ -7,7 +7,6 @@ import java.io.EOFException;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.RandomAccessFile;
 import java.nio.ByteOrder;
 import java.nio.DoubleBuffer;
 import java.nio.MappedByteBuffer;
@@ -76,20 +75,6 @@ public abstract class ParameterModel extends AbstractTableModel {
 
             mParameterList.add(parameter);
         }
-        }
-        }
-    }
-
-    public void save(File file) throws IOException {
-        try (RandomAccessFile raf = new RandomAccessFile(file, "rw");
-             FileChannel fc = raf.getChannel()) {
-        MappedByteBuffer mbb = fc.map(FileChannel.MapMode.READ_WRITE, 0, mHeader.getSize() * 8);
-        mbb.order(ByteOrder.nativeOrder()); // TODO
-        DoubleBuffer db = mbb.asDoubleBuffer();
-
-        for (Parameter parameter : mParameterList) {
-            Double value = Double.parseDouble(parameter.getValue());
-            db.put(parameter.getPosition(), value); // FIXME: size
         }
         }
     }
