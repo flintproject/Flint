@@ -485,11 +485,11 @@ private:
 			if (!Analyse(&(*it), &c, &r))
 				return false;
 			if (c != c0) {
-				cerr << "inconsistent col" << endl; // TODO
+				cerr << "inconsistent col: " << c0 << " vs " << c << endl; // TODO
 				return false;
 			}
 			if (r != r0) {
-				cerr << "inconsistent row" << endl; // TODO
+				cerr << "inconsistent row: " << r0 << " vs " << r << endl; // TODO
 				return false;
 			}
 		}
