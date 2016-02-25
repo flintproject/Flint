@@ -24,7 +24,6 @@ import javax.swing.SwingWorker;
 import jp.oist.flint.control.FileChooser;
 import jp.oist.flint.control.VariableList;
 import jp.oist.flint.dao.TaskDao;
-import jp.oist.flint.executor.ISimulationTrackProcessor;
 import jp.oist.flint.form.sub.IChartController;
 import jp.oist.flint.form.sub.IChartSetting;
 import jp.oist.flint.plot.gnuplot.GnuPlotter;
@@ -42,7 +41,7 @@ import jp.physiome.Ipc;
 import org.jfree.chart.ChartPanel;
 
 public class PlotWindow extends javax.swing.JFrame 
-    implements IChartController, IChartSetting, ISimulationTrackProcessor  {
+    implements IChartController, IChartSetting {
 
     private final static String LABEL_SEPARATOR = "@";
 
@@ -317,7 +316,6 @@ public class PlotWindow extends javax.swing.JFrame
                               + " [" + progress.getPercent() + " %]");
     }
 
-    @Override
     public boolean processSimulationTrack(final Ipc.SimulationTrack simTrack) {
         int numTracks = simTrack.getKeyCount();
         if (numTracks == 0) return false;
