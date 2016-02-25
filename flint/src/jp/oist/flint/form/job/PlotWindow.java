@@ -339,6 +339,7 @@ public class PlotWindow extends javax.swing.JFrame
         LinkedHashMap<String, String> y2Track = new LinkedHashMap<>();
         LinkedHashMap<String, String> variableTrack = new LinkedHashMap<>();
 
+        int index = 0;
         for (int i = 0; i < numTracks; i++) {
             String key = simTrack.getKey(i);
             String name = simTrack.getName(i);
@@ -346,7 +347,9 @@ public class PlotWindow extends javax.swing.JFrame
             String title = (label.length() == 0) ? name : name + LABEL_SEPARATOR + label;
             String legend = "["+ i + "] " + title; // it is better to keep legend the same as title
 
-            mMap.put(key, i);
+            mMap.put(key, index);
+            index += simTrack.getSize(i);
+
             mLegendMap.put(key, legend); // each legend has to be unique in XYSeriesCollection
             if ( (xKeys == null && "time".equals(name)) || (xKeys != null && xKeys.contains(key)) ) {
                 xTrack.put(key, title);

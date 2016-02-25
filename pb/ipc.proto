@@ -256,6 +256,7 @@ message SimulationTrack {
   repeated string name = 2;
   repeated string scope_name = 3;
   repeated string label = 4;
+  repeated int32 size = 5;
 
 }
 
