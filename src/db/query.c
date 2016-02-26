@@ -112,7 +112,7 @@ int CreateSingleton(sqlite3 *db)
 		return 0;
 	if (!CreateTable(db, "time_unit", "(name TEXT)"))
 		return 0;
-	if (!CreateTable(db, "flows", "(source INTEGER, target INTEGER, reduction INTEGER)"))
+	if (!CreateTable(db, "flows", "(source INTEGER, target INTEGER, reduction INTEGER, size INTEGER)"))
 		return 0;
 	if (!CreateSprinkles(db))
 		return 0;

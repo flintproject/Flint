@@ -211,9 +211,12 @@ public:
 	void Communicate(const FlowInboundMap *inbound) {
 		for (auto it=inbound->cbegin();it!=inbound->cend();++it) {
 			int dst = it->first;
-			auto &sources = it->second.second;
+			const auto &ic = it->second;
+			const auto &sources = ic.sources;
+			for (int i=0;i<ic.size;i++) {
 			double d;
-			switch (it->second.first) {
+			int k;
+			switch (ic.reduction) {
 			case Reduction::kUnspecified:
 				assert(false);
 				break;
@@ -222,17 +225,22 @@ public:
 
 			case Reduction::kSum:
 				d = 0;
-				for (auto src : sources)
-					d += DATA_AT(src);
+				for (auto src : sources) {
+					k = src+i;
+					d += DATA_AT(k);
+				}
 				break;
 			case Reduction::kMax:
 				{
 					auto sit = sources.cbegin();
 					auto seit = sources.cend();
 					assert(sit != seit);
-					d = DATA_AT(*sit);
-					while (++sit != seit)
-						d = std::max(d, DATA_AT(*sit));
+					k = *sit+i;
+					d = DATA_AT(k);
+					while (++sit != seit) {
+						k = *sit+i;
+						d = std::max(d, DATA_AT(k));
+					}
 				}
 				break;
 			case Reduction::kMin:
@@ -240,9 +248,12 @@ public:
 					auto sit = sources.cbegin();
 					auto seit = sources.cend();
 					assert(sit != seit);
-					d = DATA_AT(*sit);
-					while (++sit != seit)
-						d = std::min(d, DATA_AT(*sit));
+					k = *sit+i;
+					d = DATA_AT(k);
+					while (++sit != seit) {
+						k = *sit+i;
+						d = std::min(d, DATA_AT(k));
+					}
 				}
 				break;
 			case Reduction::kMean:
@@ -250,9 +261,12 @@ public:
 					auto sit = sources.cbegin();
 					auto seit = sources.cend();
 					assert(sit != seit);
-					d = DATA_AT(*sit);
-					while (++sit != seit)
-						d += DATA_AT(*sit);
+					k = *sit+i;
+					d = DATA_AT(k);
+					while (++sit != seit) {
+						k = *sit+i;
+						d += DATA_AT(k);
+					}
 					d /= sources.size();
 				}
 				break;
@@ -263,8 +277,9 @@ public:
 				d = sources.size();
 				break;
 			}
-			data_[dst] = d;
-			color_[dst] = 1;
+			data_[dst+i] = d;
+			color_[dst+i] = 1;
+			}
 		}
 	}
 

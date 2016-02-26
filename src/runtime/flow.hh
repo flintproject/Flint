@@ -10,7 +10,13 @@
 
 namespace flint {
 
-typedef std::unordered_map<int, std::pair<Reduction, std::unordered_set<int> > > FlowInboundMap;
+struct InboundChannel {
+	Reduction reduction;
+	std::unordered_set<int> sources;
+	int size;
+};
+
+typedef std::unordered_map<int, InboundChannel> FlowInboundMap;
 
 /*
  * Note that db is for read only.

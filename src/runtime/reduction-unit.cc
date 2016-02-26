@@ -1,6 +1,7 @@
 /* -*- Mode: C++; tab-width: 4; indent-tabs-mode: t; c-basic-offset: 4 -*- vim:set ts=4 sw=4 sts=4 noet: */
 #include "reduction-unit.hh"
 
+#include <cassert>
 #include <algorithm>
 #include <cstdio>
 #include <iostream>
@@ -11,11 +12,14 @@ using std::endl;
 
 namespace flint {
 
-ReductionUnit::ReductionUnit(Reduction reduction, int target_addr)
+ReductionUnit::ReductionUnit(Reduction reduction, int target_addr, int size)
 	: reduction_(reduction)
 	, target_addr_(target_addr)
 	, source_addrs_()
-{}
+	, size_(size)
+{
+	assert(size > 0);
+}
 
 void ReductionUnit::AddSourceAddr(int source_addr)
 {
@@ -24,6 +28,7 @@ void ReductionUnit::AddSourceAddr(int source_addr)
 
 bool ReductionUnit::operator()(double *data) const
 {
+	for (int i=0;i<size_;i++) {
 	double d;
 	switch (reduction_) {
 	case Reduction::kUnspecified:
@@ -32,7 +37,7 @@ bool ReductionUnit::operator()(double *data) const
 	case Reduction::kSum:
 		d = 0;
 		for (auto a : source_addrs_)
-			d += data[a];
+			d += data[a+i];
 		break;
 	case Reduction::kMax:
 		{
@@ -41,9 +46,9 @@ bool ReductionUnit::operator()(double *data) const
 				cerr << "failed to take max due to no input" << endl;
 				return false;
 			}
-			d = data[*it];
+			d = data[*it+i];
 			while (++it != source_addrs_.cend())
-				d = std::max(d, data[*it]);
+				d = std::max(d, data[*it+i]);
 		}
 		break;
 	case Reduction::kMin:
@@ -53,9 +58,9 @@ bool ReductionUnit::operator()(double *data) const
 				cerr << "failed to take min due to no input" << endl;
 				return false;
 			}
-			d = data[*it];
+			d = data[*it+i];
 			while (++it != source_addrs_.cend()) {
-				d = std::min(d, data[*it]);
+				d = std::min(d, data[*it+i]);
 			}
 		}
 		break;
@@ -66,9 +71,9 @@ bool ReductionUnit::operator()(double *data) const
 				cerr << "failed to take mean due to no input" << endl;
 				return false;
 			}
-			d = data[*it];
+			d = data[*it+i];
 			while (++it != source_addrs_.cend())
-				d += data[*it];
+				d += data[*it+i];
 			d /= source_addrs_.size();
 		}
 		break;
@@ -76,7 +81,8 @@ bool ReductionUnit::operator()(double *data) const
 		d = source_addrs_.size();
 		break;
 	}
-	data[target_addr_] = d;
+	data[target_addr_+i] = d;
+	}
 	return true;
 }
 

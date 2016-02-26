@@ -10,11 +10,12 @@ namespace flint {
 
 class ReductionUnit {
 public:
-	ReductionUnit(Reduction reduction, int target_addr);
+	ReductionUnit(Reduction reduction, int target_addr, int size);
 
 	Reduction reduction() const {return reduction_;}
 	int target_addr() const {return target_addr_;}
 	const std::unordered_set<int> &source_addrs() const {return source_addrs_;}
+	int size() const {return size_;}
 
 	void AddSourceAddr(int source_addr);
 
@@ -24,6 +25,7 @@ private:
 	Reduction reduction_;
 	int target_addr_;
 	std::unordered_set<int> source_addrs_;
+	int size_;
 };
 
 }

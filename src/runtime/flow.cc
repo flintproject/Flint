@@ -21,17 +21,19 @@ public:
 		: inbound_(inbound)
 	{}
 
-	bool Handle(int source, int target, Reduction reduction) {
-		auto &p = (*inbound_)[target];
-		p.first = reduction;
-		if (p.second.insert(source).second)
-			return true;
-		cerr << "duplicate entries in flows: "
-			 << source
-			 << " -> "
-			 << target
-			 << endl;
-		return false;
+	bool Handle(int source, int target, Reduction reduction, int size) {
+		auto &c = (*inbound_)[target];
+		c.reduction = reduction;
+		if (!c.sources.insert(source).second) {
+			cerr << "duplicate entries in flows: "
+				 << source
+				 << " -> "
+				 << target
+				 << endl;
+			return false;
+		}
+		c.size = size;
+		return true;
 	}
 
 private:
@@ -42,14 +44,16 @@ int Process(void *data, int argc, char **argv, char **names)
 {
 	Handler *h = static_cast<Handler *>(data);
 	(void)names;
-	assert(argc == 3);
+	assert(argc == 4);
 	assert(argv[0]);
 	assert(argv[1]);
 	// argv[2] can be null
+	assert(argv[3]);
 	int source = atoi(argv[0]);
 	int target = atoi(argv[1]);
 	Reduction reduction = (argv[2]) ? static_cast<Reduction>(atoi(argv[2])) : Reduction::kUnspecified;
-	return h->Handle(source, target, reduction) ? 0 : 1;
+	int size = std::atoi(argv[3]);
+	return h->Handle(source, target, reduction, size) ? 0 : 1;
 }
 
 }
