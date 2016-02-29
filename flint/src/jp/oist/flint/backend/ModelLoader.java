@@ -112,6 +112,9 @@ public class ModelLoader extends SwingWorker<Document, Void> {
         }
         if (nc.hasIntegration()) {
             switch (nc.getIntegration()) {
+            case "ark":
+                mResponseBuilder.setIntegrationMethod(Ipc.IntegrationMethod.ARK);
+                break;
             case "euler":
                 mResponseBuilder.setIntegrationMethod(Ipc.IntegrationMethod.EULER);
                 break;
