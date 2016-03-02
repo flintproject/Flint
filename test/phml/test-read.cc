@@ -158,6 +158,25 @@ private:
 
 BOOST_FIXTURE_TEST_SUITE(test_read, F)
 
+BOOST_AUTO_TEST_CASE(damped_system)
+{
+	ReadAndCheck(TEST_MODELS("damped-system.phml"));
+	std::vector<std::string> ivs{
+		"77495f8880884fcbbf2991df656981be v (eq %v (vector 0 0 0 0))",
+		"77495f8880884fcbbf2991df656981be x (eq %x (vector 0.1 0 0 0))"
+	};
+	CheckIvs(ivs);
+}
+
+BOOST_AUTO_TEST_CASE(fem1ode)
+{
+	ReadAndCheck(TEST_MODELS("fem1ode.phml"));
+	std::vector<std::string> ivs{
+		"f7893575fba740a1b489ef7a1adc3e4d c (eq %c (vector (sin %h) (sin (times 2 %h)) (sin (times 3 %h)) (sin (times 4 %h)) (sin (times 5 %h)) (sin (times 6 %h)) (sin (times 7 %h)) (sin (times 8 %h)) (sin (times 9 %h)) (sin (times 10 %h)) (sin (times 11 %h)) (sin (times 12 %h)) (sin (times 13 %h)) (sin (times 14 %h)) (sin (times 15 %h)) (sin (times 16 %h)) (sin (times 17 %h)) (sin (times 18 %h)) (sin (times 19 %h))))"
+	};
+	CheckIvs(ivs);
+}
+
 BOOST_AUTO_TEST_CASE(graph_condition)
 {
 	ReadAndCheck(TEST_MODELS("graph-condition.phml"));

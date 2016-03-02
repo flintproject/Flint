@@ -1,0 +1,541 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<is:insilico-model  xmlns:m="http://www.w3.org/1998/Math/MathML" xmlns:is="http://www.physiome.jp/ns/insilicoml" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:pd="http://www.physiodesigner.org/2012/ns/physiodesigner/1.0" version="1.0" xsi:schemalocation="http://www.physiome.jp/ns/insilicoml-1.0 insilicoml.xsd">
+<is:header>
+<is:model-name>A damped system</is:model-name>
+<is:meta-information>
+<is:article-set/>
+<is:creator-set/>
+</is:meta-information>
+<is:date>
+<is:created>2016-02-24T07:58:58+09:00</is:created>
+<is:last-modified>2016-02-24T07:58:58+09:00</is:last-modified>
+</is:date>
+<is:numerical-configuration>
+<is:time-discretization unit-id="12" evolution="true">
+<is:step>0.01</is:step>
+<is:step-min/>
+<is:step-max/>
+</is:time-discretization>
+<is:simulation-time-span unit-id="12">100</is:simulation-time-span>
+<is:algorithm>
+<is:integration name="ark"/>
+</is:algorithm>
+</is:numerical-configuration>
+<is:description/>
+</is:header>
+<is:unit-set>
+<is:unit unit-id="0">
+<is:name>dimensionless</is:name>
+</is:unit>
+<is:unit unit-id="1">
+<is:name>metre</is:name>
+</is:unit>
+<is:unit unit-id="2">
+<is:name>kilogram</is:name>
+</is:unit>
+<is:unit unit-id="3">
+<is:name>second</is:name>
+</is:unit>
+<is:unit unit-id="4">
+<is:name>ampere</is:name>
+</is:unit>
+<is:unit unit-id="5">
+<is:name>kelvin</is:name>
+</is:unit>
+<is:unit unit-id="6">
+<is:name>mole</is:name>
+</is:unit>
+<is:unit unit-id="7">
+<is:name>candela</is:name>
+</is:unit>
+<is:unit unit-id="8">
+<is:name>radian</is:name>
+</is:unit>
+<is:unit unit-id="9">
+<is:name>meter</is:name>
+<is:element unit-id="1"/>
+</is:unit>
+<is:unit unit-id="10">
+<is:name>gram</is:name>
+<is:element unit-id="2" prefix="milli"/>
+</is:unit>
+<is:unit unit-id="11">
+<is:name>degree</is:name>
+</is:unit>
+<is:unit unit-id="12">
+<is:name>millisecond</is:name>
+<is:element unit-id="3" exponent="1" prefix="milli"/>
+</is:unit>
+<is:unit unit-id="13">
+<is:name>volt</is:name>
+<is:element unit-id="1" exponent="2"/>
+<is:element unit-id="2" exponent="1"/>
+<is:element unit-id="3" exponent="-3"/>
+<is:element unit-id="4" exponent="-1"/>
+</is:unit>
+<is:unit unit-id="14">
+<is:name>siemens</is:name>
+<is:element unit-id="1" exponent="-2"/>
+<is:element unit-id="2" exponent="-1"/>
+<is:element unit-id="3" exponent="3"/>
+<is:element unit-id="4" exponent="2"/>
+</is:unit>
+<is:unit unit-id="15">
+<is:name>farad</is:name>
+<is:element unit-id="1" exponent="-2"/>
+<is:element unit-id="2" exponent="-1"/>
+<is:element unit-id="3" exponent="4"/>
+<is:element unit-id="4" exponent="2"/>
+</is:unit>
+</is:unit-set>
+
+<is:module-set>
+
+<is:module module-id="77495f88-8088-4fcb-bf29-91df656981be" type="functional-unit">
+<is:property>
+<is:name>Damped system</is:name>
+<is:capsulation state="false"/>
+<is:template state="false"/>
+<is:keyword-set/>
+<is:track>
+<is:involved db-id="this" date="2016-02-24T07:59:09+09:00"/>
+</is:track>
+<is:frame-coordinate/>
+<is:description/>
+</is:property>
+<is:port-set/>
+
+<is:physical-quantity-set>
+<is:physical-quantity physical-quantity-id="1" type="state">
+<is:name>v</is:name>
+<is:dimension type="vector">
+<is:col>1</is:col>
+<is:row>4</is:row>
+</is:dimension>
+<is:value-type-set>
+<is:value-type precision="double" unit-id="0"/>
+</is:value-type-set>
+<is:initial-value>
+<is:definition type="ae" format="mathml">
+<m:math><m:apply><m:eq/><m:ci>v</m:ci><m:vector><m:cn>0</m:cn><m:cn>0</m:cn><m:cn>0</m:cn><m:cn>0</m:cn></m:vector></m:apply></m:math>
+</is:definition>
+</is:initial-value>
+<is:implementation>
+<is:definition type="ode" sub-type="" format="mathml">
+<m:math><m:apply><m:eq/><m:apply><m:times/><m:ci>M</m:ci><m:apply><m:diff/><m:bvar><m:ci>time</m:ci></m:bvar><m:ci>v</m:ci></m:apply></m:apply><m:apply><m:minus/><m:apply><m:minus/><m:ci>f</m:ci><m:apply><m:times/><m:ci>C</m:ci><m:ci>v</m:ci></m:apply></m:apply><m:apply><m:times/><m:ci>K</m:ci><m:ci>x</m:ci></m:apply></m:apply></m:apply></m:math>
+</is:definition>
+</is:implementation>
+<is:problem-condition-set/>
+<is:description/>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="2" type="variable-parameter">
+<is:name>M</is:name>
+<is:dimension type="matrix">
+<is:col>4</is:col>
+<is:row>4</is:row>
+</is:dimension>
+<is:value-type-set>
+<is:value-type precision="double" unit-id="0"/>
+</is:value-type-set>
+<is:initial-value/>
+<is:implementation>
+<is:definition type="ae" sub-type="" format="mathml">
+<m:math><m:apply><m:eq/><m:ci>M</m:ci><m:matrix><m:matrixrow><m:ci>m1</m:ci><m:cn>0</m:cn><m:cn>0</m:cn><m:cn>0</m:cn></m:matrixrow><m:matrixrow><m:cn>0</m:cn><m:ci>m2</m:ci><m:cn>0</m:cn><m:cn>0</m:cn></m:matrixrow><m:matrixrow><m:cn>0</m:cn><m:cn>0</m:cn><m:ci>m3</m:ci><m:cn>0</m:cn></m:matrixrow><m:matrixrow><m:cn>0</m:cn><m:cn>0</m:cn><m:cn>0</m:cn><m:ci>m4</m:ci></m:matrixrow></m:matrix></m:apply></m:math>
+</is:definition>
+</is:implementation>
+<is:problem-condition-set/>
+<is:description/>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="3" type="static-parameter">
+<is:name>f</is:name>
+<is:dimension type="vector">
+<is:col>1</is:col>
+<is:row>4</is:row>
+</is:dimension>
+<is:value-type-set>
+<is:value-type precision="double" unit-id="0"/>
+</is:value-type-set>
+<is:initial-value/>
+<is:implementation>
+<is:definition type="ae" sub-type="" format="mathml">
+<m:math><m:apply><m:eq/><m:ci>f</m:ci><m:vector><m:cn>0</m:cn><m:cn>0</m:cn><m:cn>0</m:cn><m:cn>0</m:cn></m:vector></m:apply></m:math>
+</is:definition>
+</is:implementation>
+<is:problem-condition-set/>
+<is:description/>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="4" type="variable-parameter">
+<is:name>C</is:name>
+<is:dimension type="matrix">
+<is:col>4</is:col>
+<is:row>4</is:row>
+</is:dimension>
+<is:value-type-set>
+<is:value-type precision="double" unit-id="0"/>
+</is:value-type-set>
+<is:initial-value/>
+<is:implementation>
+<is:definition type="ae" sub-type="" format="mathml">
+<m:math><m:apply><m:eq/><m:ci>C</m:ci><m:apply><m:plus/><m:ci>Cin</m:ci><m:ci>Cout</m:ci></m:apply></m:apply></m:math>
+</is:definition>
+</is:implementation>
+<is:problem-condition-set/>
+<is:description/>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="5" type="variable-parameter">
+<is:name>K</is:name>
+<is:dimension type="matrix">
+<is:col>4</is:col>
+<is:row>4</is:row>
+</is:dimension>
+<is:value-type-set>
+<is:value-type precision="double" unit-id="0"/>
+</is:value-type-set>
+<is:initial-value/>
+<is:implementation>
+<is:definition type="ae" sub-type="" format="mathml">
+<m:math><m:apply><m:eq/><m:ci>K</m:ci><m:matrix><m:matrixrow><m:apply><m:plus/><m:ci>k1</m:ci><m:ci>k2</m:ci></m:apply><m:apply><m:minus/><m:ci>k2</m:ci></m:apply><m:cn>0</m:cn><m:cn>0</m:cn></m:matrixrow><m:matrixrow><m:apply><m:minus/><m:ci>k2</m:ci></m:apply><m:apply><m:plus/><m:ci>k2</m:ci><m:ci>k3</m:ci></m:apply><m:apply><m:minus/><m:ci>k3</m:ci></m:apply><m:cn>0</m:cn></m:matrixrow><m:matrixrow><m:cn>0</m:cn><m:apply><m:minus/><m:ci>k3</m:ci></m:apply><m:apply><m:plus/><m:ci>k3</m:ci><m:ci>k4</m:ci></m:apply><m:apply><m:minus/><m:ci>k4</m:ci></m:apply></m:matrixrow><m:matrixrow><m:cn>0</m:cn><m:cn>0</m:cn><m:apply><m:minus/><m:ci>k4</m:ci></m:apply><m:apply><m:plus/><m:ci>k4</m:ci><m:ci>k5</m:ci></m:apply></m:matrixrow></m:matrix></m:apply></m:math>
+</is:definition>
+</is:implementation>
+<is:problem-condition-set/>
+<is:description/>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="6" type="state">
+<is:name>x</is:name>
+<is:dimension type="vector">
+<is:col>1</is:col>
+<is:row>4</is:row>
+</is:dimension>
+<is:value-type-set>
+<is:value-type precision="double" unit-id="0"/>
+</is:value-type-set>
+<is:initial-value>
+<is:definition type="ae" format="mathml">
+<m:math><m:apply><m:eq/><m:ci>x</m:ci><m:vector><m:cn>0.1</m:cn><m:cn>0</m:cn><m:cn>0</m:cn><m:cn>0</m:cn></m:vector></m:apply></m:math>
+</is:definition>
+</is:initial-value>
+<is:implementation>
+<is:definition type="ode" sub-type="" format="mathml">
+<m:math><m:apply><m:eq/><m:apply><m:diff/><m:bvar><m:ci>time</m:ci></m:bvar><m:ci>x</m:ci></m:apply><m:ci>v</m:ci></m:apply></m:math>
+</is:definition>
+</is:implementation>
+<is:problem-condition-set/>
+<is:description/>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="7" type="static-parameter">
+<is:name>m1</is:name>
+<is:dimension type="scalar"/>
+<is:value-type-set>
+<is:value-type precision="double" unit-id="0"/>
+</is:value-type-set>
+<is:initial-value/>
+<is:implementation>
+<is:definition type="ae" sub-type="" format="mathml">
+<m:math><m:apply><m:eq/><m:ci>m1</m:ci><m:cn>0.1</m:cn></m:apply></m:math>
+</is:definition>
+</is:implementation>
+<is:problem-condition-set/>
+<is:description/>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="8" type="static-parameter">
+<is:name>m2</is:name>
+<is:dimension type="scalar"/>
+<is:value-type-set>
+<is:value-type precision="double" unit-id="0"/>
+</is:value-type-set>
+<is:initial-value/>
+<is:implementation>
+<is:definition type="ae" sub-type="" format="mathml">
+<m:math><m:apply><m:eq/><m:ci>m2</m:ci><m:cn>0.1</m:cn></m:apply></m:math>
+</is:definition>
+</is:implementation>
+<is:problem-condition-set/>
+<is:description/>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="9" type="static-parameter">
+<is:name>m3</is:name>
+<is:dimension type="scalar"/>
+<is:value-type-set>
+<is:value-type precision="double" unit-id="0"/>
+</is:value-type-set>
+<is:initial-value/>
+<is:implementation>
+<is:definition type="ae" sub-type="" format="mathml">
+<m:math><m:apply><m:eq/><m:ci>m3</m:ci><m:cn>0.1</m:cn></m:apply></m:math>
+</is:definition>
+</is:implementation>
+<is:problem-condition-set/>
+<is:description/>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="10" type="static-parameter">
+<is:name>m4</is:name>
+<is:dimension type="scalar"/>
+<is:value-type-set>
+<is:value-type precision="double" unit-id="0"/>
+</is:value-type-set>
+<is:initial-value/>
+<is:implementation>
+<is:definition type="ae" sub-type="" format="mathml">
+<m:math><m:apply><m:eq/><m:ci>m4</m:ci><m:cn>0.1</m:cn></m:apply></m:math>
+</is:definition>
+</is:implementation>
+<is:problem-condition-set/>
+<is:description/>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="11" type="variable-parameter">
+<is:name>Cin</is:name>
+<is:dimension type="matrix">
+<is:col>4</is:col>
+<is:row>4</is:row>
+</is:dimension>
+<is:value-type-set>
+<is:value-type precision="double" unit-id="0"/>
+</is:value-type-set>
+<is:initial-value/>
+<is:implementation>
+<is:definition type="ae" sub-type="" format="mathml">
+<m:math><m:apply><m:eq/><m:ci>Cin</m:ci><m:matrix><m:matrixrow><m:apply><m:plus/><m:ci>c1</m:ci><m:ci>c2</m:ci></m:apply><m:apply><m:minus/><m:ci>c2</m:ci></m:apply><m:cn>0</m:cn><m:cn>0</m:cn></m:matrixrow><m:matrixrow><m:apply><m:minus/><m:ci>c2</m:ci></m:apply><m:apply><m:plus/><m:ci>c2</m:ci><m:ci>c3</m:ci></m:apply><m:apply><m:minus/><m:ci>c3</m:ci></m:apply><m:cn>0</m:cn></m:matrixrow><m:matrixrow><m:cn>0</m:cn><m:apply><m:minus/><m:ci>c3</m:ci></m:apply><m:apply><m:plus/><m:ci>c3</m:ci><m:ci>c4</m:ci></m:apply><m:apply><m:minus/><m:ci>c4</m:ci></m:apply></m:matrixrow><m:matrixrow><m:cn>0</m:cn><m:cn>0</m:cn><m:apply><m:minus/><m:ci>c4</m:ci></m:apply><m:apply><m:plus/><m:ci>c4</m:ci><m:ci>c5</m:ci></m:apply></m:matrixrow></m:matrix></m:apply></m:math>
+</is:definition>
+</is:implementation>
+<is:problem-condition-set/>
+<is:description/>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="12" type="variable-parameter">
+<is:name>Cout</is:name>
+<is:dimension type="matrix">
+<is:col>4</is:col>
+<is:row>4</is:row>
+</is:dimension>
+<is:value-type-set>
+<is:value-type precision="double" unit-id="0"/>
+</is:value-type-set>
+<is:initial-value/>
+<is:implementation>
+<is:definition type="ae" sub-type="" format="mathml">
+<m:math><m:apply><m:eq/><m:ci>Cout</m:ci><m:matrix><m:matrixrow><m:ci>d1</m:ci><m:cn>0</m:cn><m:cn>0</m:cn><m:cn>0</m:cn></m:matrixrow><m:matrixrow><m:cn>0</m:cn><m:ci>d2</m:ci><m:cn>0</m:cn><m:cn>0</m:cn></m:matrixrow><m:matrixrow><m:cn>0</m:cn><m:cn>0</m:cn><m:ci>d3</m:ci><m:cn>0</m:cn></m:matrixrow><m:matrixrow><m:cn>0</m:cn><m:cn>0</m:cn><m:cn>0</m:cn><m:ci>d4</m:ci></m:matrixrow></m:matrix></m:apply></m:math>
+</is:definition>
+</is:implementation>
+<is:problem-condition-set/>
+<is:description/>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="13" type="static-parameter">
+<is:name>k1</is:name>
+<is:dimension type="scalar"/>
+<is:value-type-set>
+<is:value-type precision="double" unit-id="0"/>
+</is:value-type-set>
+<is:initial-value/>
+<is:implementation>
+<is:definition type="ae" sub-type="" format="mathml">
+<m:math><m:apply><m:eq/><m:ci>k1</m:ci><m:cn>0.2</m:cn></m:apply></m:math>
+</is:definition>
+</is:implementation>
+<is:problem-condition-set/>
+<is:description/>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="14" type="static-parameter">
+<is:name>k2</is:name>
+<is:dimension type="scalar"/>
+<is:value-type-set>
+<is:value-type precision="double" unit-id="0"/>
+</is:value-type-set>
+<is:initial-value/>
+<is:implementation>
+<is:definition type="ae" sub-type="" format="mathml">
+<m:math><m:apply><m:eq/><m:ci>k2</m:ci><m:cn>0.2</m:cn></m:apply></m:math>
+</is:definition>
+</is:implementation>
+<is:problem-condition-set/>
+<is:description/>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="15" type="static-parameter">
+<is:name>k3</is:name>
+<is:dimension type="scalar"/>
+<is:value-type-set>
+<is:value-type precision="double" unit-id="0"/>
+</is:value-type-set>
+<is:initial-value/>
+<is:implementation>
+<is:definition type="ae" sub-type="" format="mathml">
+<m:math><m:apply><m:eq/><m:ci>k3</m:ci><m:cn>0.2</m:cn></m:apply></m:math>
+</is:definition>
+</is:implementation>
+<is:problem-condition-set/>
+<is:description/>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="16" type="static-parameter">
+<is:name>k4</is:name>
+<is:dimension type="scalar"/>
+<is:value-type-set>
+<is:value-type precision="double" unit-id="0"/>
+</is:value-type-set>
+<is:initial-value/>
+<is:implementation>
+<is:definition type="ae" sub-type="" format="mathml">
+<m:math><m:apply><m:eq/><m:ci>k4</m:ci><m:cn>0.2</m:cn></m:apply></m:math>
+</is:definition>
+</is:implementation>
+<is:problem-condition-set/>
+<is:description/>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="17" type="static-parameter">
+<is:name>k5</is:name>
+<is:dimension type="scalar"/>
+<is:value-type-set>
+<is:value-type precision="double" unit-id="0"/>
+</is:value-type-set>
+<is:initial-value/>
+<is:implementation>
+<is:definition type="ae" sub-type="" format="mathml">
+<m:math><m:apply><m:eq/><m:ci>k5</m:ci><m:cn>0</m:cn></m:apply></m:math>
+</is:definition>
+</is:implementation>
+<is:problem-condition-set/>
+<is:description/>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="18" type="static-parameter">
+<is:name>c1</is:name>
+<is:dimension type="scalar"/>
+<is:value-type-set>
+<is:value-type precision="double" unit-id="0"/>
+</is:value-type-set>
+<is:initial-value/>
+<is:implementation>
+<is:definition type="ae" sub-type="" format="mathml">
+<m:math><m:apply><m:eq/><m:ci>c1</m:ci><m:cn>1</m:cn></m:apply></m:math>
+</is:definition>
+</is:implementation>
+<is:problem-condition-set/>
+<is:description/>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="19" type="static-parameter">
+<is:name>c2</is:name>
+<is:dimension type="scalar"/>
+<is:value-type-set>
+<is:value-type precision="double" unit-id="0"/>
+</is:value-type-set>
+<is:initial-value/>
+<is:implementation>
+<is:definition type="ae" sub-type="" format="mathml">
+<m:math><m:apply><m:eq/><m:ci>c2</m:ci><m:cn>0</m:cn></m:apply></m:math>
+</is:definition>
+</is:implementation>
+<is:problem-condition-set/>
+<is:description/>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="20" type="static-parameter">
+<is:name>c3</is:name>
+<is:dimension type="scalar"/>
+<is:value-type-set>
+<is:value-type precision="double" unit-id="0"/>
+</is:value-type-set>
+<is:initial-value/>
+<is:implementation>
+<is:definition type="ae" sub-type="" format="mathml">
+<m:math><m:apply><m:eq/><m:ci>c3</m:ci><m:cn>0</m:cn></m:apply></m:math>
+</is:definition>
+</is:implementation>
+<is:problem-condition-set/>
+<is:description/>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="21" type="static-parameter">
+<is:name>c4</is:name>
+<is:dimension type="scalar"/>
+<is:value-type-set>
+<is:value-type precision="double" unit-id="0"/>
+</is:value-type-set>
+<is:initial-value/>
+<is:implementation>
+<is:definition type="ae" sub-type="" format="mathml">
+<m:math><m:apply><m:eq/><m:ci>c4</m:ci><m:cn>0.2</m:cn></m:apply></m:math>
+</is:definition>
+</is:implementation>
+<is:problem-condition-set/>
+<is:description/>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="22" type="static-parameter">
+<is:name>c5</is:name>
+<is:dimension type="scalar"/>
+<is:value-type-set>
+<is:value-type precision="double" unit-id="0"/>
+</is:value-type-set>
+<is:initial-value/>
+<is:implementation>
+<is:definition type="ae" sub-type="" format="mathml">
+<m:math><m:apply><m:eq/><m:ci>c5</m:ci><m:cn>0.1</m:cn></m:apply></m:math>
+</is:definition>
+</is:implementation>
+<is:problem-condition-set/>
+<is:description/>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="23" type="static-parameter">
+<is:name>d1</is:name>
+<is:dimension type="scalar"/>
+<is:value-type-set>
+<is:value-type precision="double" unit-id="0"/>
+</is:value-type-set>
+<is:initial-value/>
+<is:implementation>
+<is:definition type="ae" sub-type="" format="mathml">
+<m:math><m:apply><m:eq/><m:ci>d1</m:ci><m:cn>0</m:cn></m:apply></m:math>
+</is:definition>
+</is:implementation>
+<is:problem-condition-set/>
+<is:description/>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="24" type="static-parameter">
+<is:name>d2</is:name>
+<is:dimension type="scalar"/>
+<is:value-type-set>
+<is:value-type precision="double" unit-id="0"/>
+</is:value-type-set>
+<is:initial-value/>
+<is:implementation>
+<is:definition type="ae" sub-type="" format="mathml">
+<m:math><m:apply><m:eq/><m:ci>d2</m:ci><m:cn>0</m:cn></m:apply></m:math>
+</is:definition>
+</is:implementation>
+<is:problem-condition-set/>
+<is:description/>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="25" type="static-parameter">
+<is:name>d3</is:name>
+<is:dimension type="scalar"/>
+<is:value-type-set>
+<is:value-type precision="double" unit-id="0"/>
+</is:value-type-set>
+<is:initial-value/>
+<is:implementation>
+<is:definition type="ae" sub-type="" format="mathml">
+<m:math><m:apply><m:eq/><m:ci>d3</m:ci><m:cn>0</m:cn></m:apply></m:math>
+</is:definition>
+</is:implementation>
+<is:problem-condition-set/>
+<is:description/>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="26" type="static-parameter">
+<is:name>d4</is:name>
+<is:dimension type="scalar"/>
+<is:value-type-set>
+<is:value-type precision="double" unit-id="0"/>
+</is:value-type-set>
+<is:initial-value/>
+<is:implementation>
+<is:definition type="ae" sub-type="" format="mathml">
+<m:math><m:apply><m:eq/><m:ci>d4</m:ci><m:cn>0.2</m:cn></m:apply></m:math>
+</is:definition>
+</is:implementation>
+<is:problem-condition-set/>
+<is:description/>
+</is:physical-quantity>
+</is:physical-quantity-set>
+<is:morphology/>
+<is:timeseries-set/>
+<is:event-set/>
+</is:module>
+</is:module-set>
+<is:template-set/>
+<is:instance-set/>
+<is:controller-set/>
+<is:edge-set/>
+</is:insilico-model>

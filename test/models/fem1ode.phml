@@ -1,0 +1,1128 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<is:insilico-model  xmlns:m="http://www.w3.org/1998/Math/MathML" xmlns:is="http://www.physiome.jp/ns/insilicoml" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:pd="http://www.physiodesigner.org/2012/ns/physiodesigner/1.0" version="1.0" xsi:schemalocation="http://www.physiome.jp/ns/insilicoml-1.0 insilicoml.xsd">
+<is:header>
+<is:numerical-configuration>
+<is:simulation-time-span unit-id="3">4</is:simulation-time-span>
+<is:algorithm>
+<is:integration name="ark"/>
+</is:algorithm>
+</is:numerical-configuration>
+</is:header>
+<is:unit-set>
+<is:unit unit-id="0">
+<is:name>dimensionless</is:name>
+</is:unit>
+<is:unit unit-id="1">
+<is:name>metre</is:name>
+</is:unit>
+<is:unit unit-id="2">
+<is:name>kilogram</is:name>
+</is:unit>
+<is:unit unit-id="3">
+<is:name>second</is:name>
+</is:unit>
+<is:unit unit-id="4">
+<is:name>ampere</is:name>
+</is:unit>
+<is:unit unit-id="5">
+<is:name>kelvin</is:name>
+</is:unit>
+<is:unit unit-id="6">
+<is:name>mole</is:name>
+</is:unit>
+<is:unit unit-id="7">
+<is:name>candela</is:name>
+</is:unit>
+<is:unit unit-id="8">
+<is:name>radian</is:name>
+</is:unit>
+<is:unit unit-id="9">
+<is:name>meter</is:name>
+<is:element unit-id="1"/>
+</is:unit>
+<is:unit unit-id="10">
+<is:name>gram</is:name>
+<is:element unit-id="2" prefix="milli"/>
+</is:unit>
+<is:unit unit-id="11">
+<is:name>degree</is:name>
+</is:unit>
+<is:unit unit-id="12">
+<is:name>millisecond</is:name>
+<is:element unit-id="3" exponent="1" prefix="milli"/>
+</is:unit>
+<is:unit unit-id="13">
+<is:name>volt</is:name>
+<is:element unit-id="1" exponent="2"/>
+<is:element unit-id="2" exponent="1"/>
+<is:element unit-id="3" exponent="-3"/>
+<is:element unit-id="4" exponent="-1"/>
+</is:unit>
+<is:unit unit-id="14">
+<is:name>siemens</is:name>
+<is:element unit-id="1" exponent="-2"/>
+<is:element unit-id="2" exponent="-1"/>
+<is:element unit-id="3" exponent="3"/>
+<is:element unit-id="4" exponent="2"/>
+</is:unit>
+<is:unit unit-id="15">
+<is:name>farad</is:name>
+<is:element unit-id="1" exponent="-2"/>
+<is:element unit-id="2" exponent="-1"/>
+<is:element unit-id="3" exponent="4"/>
+<is:element unit-id="4" exponent="2"/>
+</is:unit>
+</is:unit-set>
+
+<is:module-set>
+
+<is:module module-id="f7893575-fba7-40a1-b489-ef7a1adc3e4d" type="functional-unit">
+<is:property>
+<is:name>M</is:name>
+<is:capsulation state="false"/>
+<is:template state="false"/>
+<is:keyword-set/>
+<is:track>
+<is:involved db-id="this" date="2015-12-18T07:09:19+09:00"/>
+</is:track>
+<is:frame-coordinate/>
+</is:property>
+<is:port-set/>
+
+<is:physical-quantity-set>
+<is:physical-quantity physical-quantity-id="1" type="state">
+<is:name>c</is:name>
+<is:dimension type="vector">
+<is:col>1</is:col>
+<is:row>19</is:row>
+</is:dimension>
+<is:value-type-set>
+<is:value-type precision="double" unit-id="0"/>
+</is:value-type-set>
+<is:initial-value>
+<is:definition type="ae" format="mathml">
+  <m:math>
+    <m:apply>
+      <m:eq/>
+      <m:ci>c</m:ci>
+      <m:vector>
+        <m:apply><m:sin/><m:ci>h</m:ci></m:apply>
+        <m:apply><m:sin/><m:apply><m:times/><m:cn>2</m:cn><m:ci>h</m:ci></m:apply></m:apply>
+        <m:apply><m:sin/><m:apply><m:times/><m:cn>3</m:cn><m:ci>h</m:ci></m:apply></m:apply>
+        <m:apply><m:sin/><m:apply><m:times/><m:cn>4</m:cn><m:ci>h</m:ci></m:apply></m:apply>
+        <m:apply><m:sin/><m:apply><m:times/><m:cn>5</m:cn><m:ci>h</m:ci></m:apply></m:apply>
+        <m:apply><m:sin/><m:apply><m:times/><m:cn>6</m:cn><m:ci>h</m:ci></m:apply></m:apply>
+        <m:apply><m:sin/><m:apply><m:times/><m:cn>7</m:cn><m:ci>h</m:ci></m:apply></m:apply>
+        <m:apply><m:sin/><m:apply><m:times/><m:cn>8</m:cn><m:ci>h</m:ci></m:apply></m:apply>
+        <m:apply><m:sin/><m:apply><m:times/><m:cn>9</m:cn><m:ci>h</m:ci></m:apply></m:apply>
+        <m:apply><m:sin/><m:apply><m:times/><m:cn>10</m:cn><m:ci>h</m:ci></m:apply></m:apply>
+        <m:apply><m:sin/><m:apply><m:times/><m:cn>11</m:cn><m:ci>h</m:ci></m:apply></m:apply>
+        <m:apply><m:sin/><m:apply><m:times/><m:cn>12</m:cn><m:ci>h</m:ci></m:apply></m:apply>
+        <m:apply><m:sin/><m:apply><m:times/><m:cn>13</m:cn><m:ci>h</m:ci></m:apply></m:apply>
+        <m:apply><m:sin/><m:apply><m:times/><m:cn>14</m:cn><m:ci>h</m:ci></m:apply></m:apply>
+        <m:apply><m:sin/><m:apply><m:times/><m:cn>15</m:cn><m:ci>h</m:ci></m:apply></m:apply>
+        <m:apply><m:sin/><m:apply><m:times/><m:cn>16</m:cn><m:ci>h</m:ci></m:apply></m:apply>
+        <m:apply><m:sin/><m:apply><m:times/><m:cn>17</m:cn><m:ci>h</m:ci></m:apply></m:apply>
+        <m:apply><m:sin/><m:apply><m:times/><m:cn>18</m:cn><m:ci>h</m:ci></m:apply></m:apply>
+        <m:apply><m:sin/><m:apply><m:times/><m:cn>19</m:cn><m:ci>h</m:ci></m:apply></m:apply>
+      </m:vector>
+    </m:apply>
+  </m:math>
+</is:definition>
+</is:initial-value>
+<is:implementation>
+<is:definition type="ode" sub-type="" format="mathml">
+<m:math><m:apply><m:eq/><m:apply><m:times/><m:ci>M</m:ci><m:apply><m:diff/><m:bvar><m:ci>time</m:ci></m:bvar><m:ci>c</m:ci></m:apply></m:apply><m:apply><m:times/><m:ci>J</m:ci><m:ci>c</m:ci></m:apply></m:apply></m:math>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="2" type="static-parameter">
+<is:name>N</is:name>
+<is:dimension type="scalar"/>
+<is:value-type-set>
+<is:value-type precision="double" unit-id="0"/>
+</is:value-type-set>
+<is:initial-value/>
+<is:implementation>
+<is:definition type="ae" sub-type="" format="mathml">
+<m:math><m:apply><m:eq/><m:ci>N</m:ci><m:cn>19</m:cn></m:apply></m:math>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="3" type="static-parameter">
+<is:name>h</is:name>
+<is:dimension type="scalar"/>
+<is:value-type-set>
+<is:value-type precision="double" unit-id="0"/>
+</is:value-type-set>
+<is:initial-value/>
+<is:implementation>
+<is:definition type="ae" sub-type="" format="mathml">
+<m:math><m:apply><m:eq/><m:ci>h</m:ci><m:apply><m:divide/><m:pi/><m:apply><m:plus/><m:ci>N</m:ci><m:cn>1</m:cn></m:apply></m:apply></m:apply></m:math>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="4" type="variable-parameter">
+<is:name>M</is:name>
+<is:dimension type="matrix">
+<is:col>19</is:col>
+<is:row>19</is:row>
+</is:dimension>
+<is:value-type-set>
+<is:value-type precision="double" unit-id="0"/>
+</is:value-type-set>
+<is:initial-value/>
+<is:implementation>
+<is:definition type="ae" sub-type="" format="mathml">
+  <m:math>
+    <m:apply>
+      <m:eq/>
+      <m:ci>M</m:ci>
+      <m:matrix>
+        <m:matrixrow>
+          <m:ci>m0</m:ci>
+          <m:ci>m1</m:ci>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+        </m:matrixrow>
+        <m:matrixrow>
+          <m:ci>m1</m:ci>
+          <m:ci>m0</m:ci>
+          <m:ci>m1</m:ci>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+        </m:matrixrow>
+        <m:matrixrow>
+          <m:cn>0</m:cn>
+          <m:ci>m1</m:ci>
+          <m:ci>m0</m:ci>
+          <m:ci>m1</m:ci>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+        </m:matrixrow>
+        <m:matrixrow>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:ci>m1</m:ci>
+          <m:ci>m0</m:ci>
+          <m:ci>m1</m:ci>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+        </m:matrixrow>
+        <m:matrixrow>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:ci>m1</m:ci>
+          <m:ci>m0</m:ci>
+          <m:ci>m1</m:ci>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+        </m:matrixrow>
+        <m:matrixrow>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:ci>m1</m:ci>
+          <m:ci>m0</m:ci>
+          <m:ci>m1</m:ci>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+        </m:matrixrow>
+        <m:matrixrow>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:ci>m1</m:ci>
+          <m:ci>m0</m:ci>
+          <m:ci>m1</m:ci>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+        </m:matrixrow>
+        <m:matrixrow>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:ci>m1</m:ci>
+          <m:ci>m0</m:ci>
+          <m:ci>m1</m:ci>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+        </m:matrixrow>
+        <m:matrixrow>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:ci>m1</m:ci>
+          <m:ci>m0</m:ci>
+          <m:ci>m1</m:ci>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+        </m:matrixrow>
+        <m:matrixrow>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:ci>m1</m:ci>
+          <m:ci>m0</m:ci>
+          <m:ci>m1</m:ci>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+        </m:matrixrow>
+        <m:matrixrow>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:ci>m1</m:ci>
+          <m:ci>m0</m:ci>
+          <m:ci>m1</m:ci>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+        </m:matrixrow>
+        <m:matrixrow>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:ci>m1</m:ci>
+          <m:ci>m0</m:ci>
+          <m:ci>m1</m:ci>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+        </m:matrixrow>
+        <m:matrixrow>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:ci>m1</m:ci>
+          <m:ci>m0</m:ci>
+          <m:ci>m1</m:ci>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+        </m:matrixrow>
+        <m:matrixrow>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:ci>m1</m:ci>
+          <m:ci>m0</m:ci>
+          <m:ci>m1</m:ci>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+        </m:matrixrow>
+        <m:matrixrow>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:ci>m1</m:ci>
+          <m:ci>m0</m:ci>
+          <m:ci>m1</m:ci>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+        </m:matrixrow>
+        <m:matrixrow>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:ci>m1</m:ci>
+          <m:ci>m0</m:ci>
+          <m:ci>m1</m:ci>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+        </m:matrixrow>
+        <m:matrixrow>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:ci>m1</m:ci>
+          <m:ci>m0</m:ci>
+          <m:ci>m1</m:ci>
+          <m:cn>0</m:cn>
+        </m:matrixrow>
+        <m:matrixrow>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:ci>m1</m:ci>
+          <m:ci>m0</m:ci>
+          <m:ci>m1</m:ci>
+        </m:matrixrow>
+        <m:matrixrow>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:ci>m1</m:ci>
+          <m:ci>m0</m:ci>
+        </m:matrixrow>
+      </m:matrix>
+    </m:apply>
+  </m:math>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="5" type="variable-parameter">
+<is:name>m0</is:name>
+<is:dimension type="scalar"/>
+<is:value-type-set>
+<is:value-type precision="double" unit-id="0"/>
+</is:value-type-set>
+<is:initial-value/>
+<is:implementation>
+<is:definition type="ae" sub-type="" format="mathml">
+  <m:math>
+    <m:apply>
+      <m:eq/>
+      <m:ci>m0</m:ci>
+      <m:apply>
+        <m:times/>
+        <m:apply>
+          <m:divide/>
+          <m:apply>
+            <m:times/>
+            <m:cn>2</m:cn>
+            <m:ci>h</m:ci>
+          </m:apply>
+          <m:cn>3</m:cn>
+        </m:apply>
+        <m:apply>
+          <m:exp/>
+          <m:apply>
+            <m:minus/>
+            <m:ci>time</m:ci>
+          </m:apply>
+        </m:apply>
+      </m:apply>
+    </m:apply>
+  </m:math>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="6" type="variable-parameter">
+<is:name>m1</is:name>
+<is:dimension type="scalar"/>
+<is:value-type-set>
+<is:value-type precision="double" unit-id="0"/>
+</is:value-type-set>
+<is:initial-value/>
+<is:implementation>
+<is:definition type="ae" sub-type="" format="mathml">
+  <m:math>
+    <m:apply>
+      <m:eq/>
+      <m:ci>m1</m:ci>
+      <m:apply>
+        <m:times/>
+        <m:apply>
+          <m:divide/>
+          <m:ci>h</m:ci>
+          <m:cn>6</m:cn>
+        </m:apply>
+        <m:apply>
+          <m:exp/>
+          <m:apply>
+            <m:minus/>
+            <m:ci>time</m:ci>
+          </m:apply>
+        </m:apply>
+      </m:apply>
+    </m:apply>
+  </m:math>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="7" type="variable-parameter">
+<is:name>J</is:name>
+<is:dimension type="matrix">
+<is:col>19</is:col>
+<is:row>19</is:row>
+</is:dimension>
+<is:value-type-set>
+<is:value-type precision="double" unit-id="0"/>
+</is:value-type-set>
+<is:initial-value/>
+<is:implementation>
+<is:definition type="ae" sub-type="" format="mathml">
+  <m:math>
+    <m:apply>
+      <m:eq/>
+      <m:ci>J</m:ci>
+      <m:matrix>
+        <m:matrixrow>
+          <m:ci>j0</m:ci>
+          <m:ci>j1</m:ci>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+        </m:matrixrow>
+        <m:matrixrow>
+          <m:ci>j1</m:ci>
+          <m:ci>j0</m:ci>
+          <m:ci>j1</m:ci>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+        </m:matrixrow>
+        <m:matrixrow>
+          <m:cn>0</m:cn>
+          <m:ci>j1</m:ci>
+          <m:ci>j0</m:ci>
+          <m:ci>j1</m:ci>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+        </m:matrixrow>
+        <m:matrixrow>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:ci>j1</m:ci>
+          <m:ci>j0</m:ci>
+          <m:ci>j1</m:ci>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+        </m:matrixrow>
+        <m:matrixrow>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:ci>j1</m:ci>
+          <m:ci>j0</m:ci>
+          <m:ci>j1</m:ci>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+        </m:matrixrow>
+        <m:matrixrow>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:ci>j1</m:ci>
+          <m:ci>j0</m:ci>
+          <m:ci>j1</m:ci>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+        </m:matrixrow>
+        <m:matrixrow>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:ci>j1</m:ci>
+          <m:ci>j0</m:ci>
+          <m:ci>j1</m:ci>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+        </m:matrixrow>
+        <m:matrixrow>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:ci>j1</m:ci>
+          <m:ci>j0</m:ci>
+          <m:ci>j1</m:ci>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+        </m:matrixrow>
+        <m:matrixrow>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:ci>j1</m:ci>
+          <m:ci>j0</m:ci>
+          <m:ci>j1</m:ci>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+        </m:matrixrow>
+        <m:matrixrow>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:ci>j1</m:ci>
+          <m:ci>j0</m:ci>
+          <m:ci>j1</m:ci>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+        </m:matrixrow>
+        <m:matrixrow>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:ci>j1</m:ci>
+          <m:ci>j0</m:ci>
+          <m:ci>j1</m:ci>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+        </m:matrixrow>
+        <m:matrixrow>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:ci>j1</m:ci>
+          <m:ci>j0</m:ci>
+          <m:ci>j1</m:ci>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+        </m:matrixrow>
+        <m:matrixrow>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:ci>j1</m:ci>
+          <m:ci>j0</m:ci>
+          <m:ci>j1</m:ci>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+        </m:matrixrow>
+        <m:matrixrow>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:ci>j1</m:ci>
+          <m:ci>j0</m:ci>
+          <m:ci>j1</m:ci>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+        </m:matrixrow>
+        <m:matrixrow>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:ci>j1</m:ci>
+          <m:ci>j0</m:ci>
+          <m:ci>j1</m:ci>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+        </m:matrixrow>
+        <m:matrixrow>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:ci>j1</m:ci>
+          <m:ci>j0</m:ci>
+          <m:ci>j1</m:ci>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+        </m:matrixrow>
+        <m:matrixrow>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:ci>j1</m:ci>
+          <m:ci>j0</m:ci>
+          <m:ci>j1</m:ci>
+          <m:cn>0</m:cn>
+        </m:matrixrow>
+        <m:matrixrow>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:ci>j1</m:ci>
+          <m:ci>j0</m:ci>
+          <m:ci>j1</m:ci>
+        </m:matrixrow>
+        <m:matrixrow>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:cn>0</m:cn>
+          <m:ci>j1</m:ci>
+          <m:ci>j0</m:ci>
+        </m:matrixrow>
+      </m:matrix>
+    </m:apply>
+  </m:math>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="8" type="variable-parameter">
+<is:name>j0</is:name>
+<is:dimension type="scalar"/>
+<is:value-type-set>
+<is:value-type precision="double" unit-id="0"/>
+</is:value-type-set>
+<is:initial-value/>
+<is:implementation>
+<is:definition type="ae" sub-type="" format="mathml">
+  <m:math>
+    <m:apply>
+      <m:eq/>
+      <m:ci>j0</m:ci>
+      <m:apply>
+        <m:divide/>
+        <m:cn>-2</m:cn>
+        <m:ci>h</m:ci>
+      </m:apply>
+    </m:apply>
+  </m:math>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="9" type="variable-parameter">
+<is:name>j1</is:name>
+<is:dimension type="scalar"/>
+<is:value-type-set>
+<is:value-type precision="double" unit-id="0"/>
+</is:value-type-set>
+<is:initial-value/>
+<is:implementation>
+<is:definition type="ae" sub-type="" format="mathml">
+  <m:math>
+    <m:apply>
+      <m:eq/>
+      <m:ci>j1</m:ci>
+      <m:apply>
+        <m:divide/>
+        <m:cn>1</m:cn>
+        <m:ci>h</m:ci>
+      </m:apply>
+    </m:apply>
+  </m:math>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+</is:physical-quantity-set>
+</is:module>
+</is:module-set>
+</is:insilico-model>
