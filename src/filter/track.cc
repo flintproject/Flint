@@ -53,7 +53,8 @@ public:
 		st_->add_name(column->name());
 		st_->add_scope_name(column->track_name());
 		st_->add_label(column->label());
-		st_->add_size(column->size());
+		st_->add_col(column->col());
+		st_->add_row(column->row());
 	}
 
 private:

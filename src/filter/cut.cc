@@ -40,7 +40,7 @@ public:
 	}
 
 	void ReadColumn(std::unique_ptr<lo::Column> &&column) {
-		columns_.insert(make_pair(column->position(), column->size()));
+		columns_.insert(make_pair(column->position(), column->col() * column->row()));
 	}
 
 	bool Apply(FILE *ifp, FILE *ofp) const {

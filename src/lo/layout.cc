@@ -44,7 +44,7 @@ size_t Layout::MarkConstant(int nol, size_t size, char *arr) const
 					// nothing to do
 					break;
 				}
-				offset += dp->size();
+				offset += dp->col() * dp->row();
 			}
 		}
 	}
@@ -66,7 +66,7 @@ long Layout::SelectStates(std::vector<std::pair<int, int> > *states) const
 			di = dib;
 			while (di < die) {
 				const auto &dp = dv_.at(di++);
-				int data_size = dp->size();
+				int data_size = dp->col() * dp->row();
 				switch (dp->type()) {
 				case lo::X:
 					if (states)

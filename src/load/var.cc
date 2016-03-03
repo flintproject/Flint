@@ -46,12 +46,16 @@ int AddColumn(void *data, int argc, char **argv, char **names)
 
 	assert(argv[8]);
 	assert(argv[9]);
-	int size = std::atoi(argv[8]) * std::atoi(argv[9]);
-	assert(size > 0);
+	int col = std::atoi(argv[8]);
+	assert(col > 0);
+	int row = std::atoi(argv[9]);
+	assert(row > 0);
+	int size = col * row;
 
 	std::unique_ptr<lo::Column> c(new lo::Column);
 	c->set_position(state->pos);
-	c->set_size(size);
+	c->set_col(col);
+	c->set_row(row);
 	assert(argv[2]);
 	c->set_uuid(argv[2], boost::uuids::uuid::static_size()); // sector_id
 	c->set_name(argv[4]); // name

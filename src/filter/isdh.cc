@@ -58,10 +58,11 @@ public:
 			s = to_string(u) + ":" + column->name();
 			if (column->has_label()) s += "@" + column->label();
 		}
-		num_objs_ += column->size();
-		num_bytes_descs_ += (sizeof(std::uint32_t)+s.size()) * column->size();
-		num_bytes_units_ += (sizeof(std::uint32_t)+column->unit().size()) * column->size();
-		for (int i=0;i<column->size();i++) {
+		int size = column->col() * column->row();
+		num_objs_ += size;
+		num_bytes_descs_ += (sizeof(std::uint32_t)+s.size()) * size;
+		num_bytes_units_ += (sizeof(std::uint32_t)+column->unit().size()) * size;
+		for (int i=0;i<size;i++) {
 			descriptions_.push_back(s);
 			units_.push_back(column->unit());
 		}

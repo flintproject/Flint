@@ -113,7 +113,8 @@ public:
 
 		char us0[boost::uuids::uuid::static_size()] = {0};
 		c->set_position(0);
-		c->set_size(1);
+		c->set_col(1);
+		c->set_row(1);
 		c->set_uuid(us0, boost::uuids::uuid::static_size());
 		c->set_id(0); // no such value, let's use 0 as a fallback
 		c->set_name("time");
@@ -141,7 +142,8 @@ public:
 					if (spec->Contains(su, dp->name())) {
 						c.reset(new lo::Column);
 						c->set_position(pos);
-						c->set_size(dp->size());
+						c->set_col(dp->col());
+						c->set_row(dp->row());
 						c->set_uuid(sp->id().data(), boost::uuids::uuid::static_size());
 						c->set_id(dp->id());
 						c->set_name(dp->name());
@@ -150,7 +152,7 @@ public:
 						if (sp->has_label()) c->set_label(sp->label());
 						columns->push_back(std::move(c));
 					}
-					pos += dp->size();
+					pos += dp->col() * dp->row();
 				}
 			}
 		}

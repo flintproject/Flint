@@ -75,7 +75,7 @@ public:
 				const auto &dp = dv_.at(di++);
 				locater->SetPosition(dp->name(), sector_size);
 				if (dom) (*dom)[track_id].insert(std::make_pair(dp->id(), sector_size));
-				sector_size += dp->size();
+				sector_size += dp->col() * dp->row();
 			}
 			lm_.insert(std::make_pair(track_id, std::move(locater)));
 
@@ -131,7 +131,7 @@ public:
 					if (dp->has_capacity()) {
 						history[offset].set_capacity(dp->capacity());
 					}
-					offset += dp->size();
+					offset += dp->col() * dp->row();
 				}
 			}
 		}
@@ -168,7 +168,7 @@ public:
 							std::cerr << us << std::endl;
 						}
 					}
-					offset += dp->size();
+					offset += dp->col() * dp->row();
 				}
 			}
 		}
@@ -199,7 +199,7 @@ public:
 						// nothing to do
 						break;
 					}
-					offset += dp->size();
+					offset += dp->col() * dp->row();
 				}
 			}
 		}
@@ -240,7 +240,6 @@ public:
 			std::unordered_map<std::string, std::string> xm;
 			for (int i=0;i<nod;i++) {
 				const auto &dp = dv_.at(di++);
-				int data_size = dp->size();
 				switch (dp->type()) {
 				case lo::X:
 					{
@@ -254,7 +253,7 @@ public:
 					break;
 				}
 				am.insert(std::make_pair(dp->name(), pos));
-				pos += data_size;
+				pos += dp->col() * dp->row();
 			}
 			assert(di == die);
 
@@ -263,7 +262,7 @@ public:
 				di = dib;
 				while (di < die) {
 					const auto &dp = dv_.at(di++);
-					int data_size = dp->size();
+					int data_size = dp->col() * dp->row();
 					switch (dp->type()) {
 					case lo::X:
 						{
@@ -340,7 +339,7 @@ public:
 						break;
 					}
 					cout << dp->name() << endl;
-					offset += dp->size();
+					offset += dp->col() * dp->row();
 				}
 			}
 		}

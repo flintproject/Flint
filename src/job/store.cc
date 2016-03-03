@@ -116,7 +116,7 @@ public:
 						cerr << "unexpected data type: " << dp->type() << endl;
 						return -1;
 					}
-					pos += dp->size();
+					pos += dp->col() * dp->row();
 				}
 			}
 		}
@@ -205,13 +205,14 @@ public:
 				di = dib;
 				while (di < die) {
 					const auto &dp = dv_.at(di++);
+					int data_size = dp->col() * dp->row();
 					switch (dp->type()) {
 					case lo::S:
 					case lo::X:
 						{
 							TargetValueMap::const_iterator it = tvm.find(su);
 							if (it == tvm.end()) {
-								if (fseek(fp, dp->size()*sizeof(double), SEEK_CUR) != 0) {
+								if (fseek(fp, data_size*sizeof(double), SEEK_CUR) != 0) {
 									return false;
 								}
 							} else {
@@ -223,7 +224,7 @@ public:
 									mit = it->second.find(dp->name());
 								}
 								if (mit == it->second.end()) {
-									if (fseek(fp, dp->size()*sizeof(double), SEEK_CUR) != 0) {
+									if (fseek(fp, data_size*sizeof(double), SEEK_CUR) != 0) {
 										return false;
 									}
 								} else {
@@ -231,7 +232,7 @@ public:
 									double value = mit->second;
 									if (std::fwrite(&value, sizeof(double), 1u, fp) != 1u)
 										return false;
-									int size = dp->size() - 1;
+									int size = data_size - 1;
 									if (std::fseek(fp, size*sizeof(double), SEEK_CUR) != 0)
 										return false;
 								}
@@ -239,7 +240,7 @@ public:
 						}
 						break;
 					default:
-						if (fseek(fp, dp->size()*sizeof(double), SEEK_CUR) != 0) {
+						if (fseek(fp, data_size*sizeof(double), SEEK_CUR) != 0) {
 							return false;
 						}
 						break;

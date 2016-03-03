@@ -32,7 +32,8 @@ message Data {
 
   required int32 id = 1;
   required string name = 2;
-  required int32 size = 3;
+  required int32 col = 3;
+  required int32 row = 7;
   required Type type = 4;
   required string unit = 5; /* empty string means that no unit is specified */
   optional double capacity = 6; /* for delay differential equations */
@@ -50,7 +51,8 @@ message Header {
 message Column {
 
   required int32 position = 1;
-  required int32 size = 2;
+  required int32 col = 2;
+  required int32 row = 10;
   required bytes uuid = 3; /* 16 byte-length UUID */
   required int32 id = 4; /* physical-quantity-id for PHML. */
   required string name = 5;

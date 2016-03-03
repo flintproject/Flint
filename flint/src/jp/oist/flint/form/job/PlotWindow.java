@@ -348,7 +348,7 @@ public class PlotWindow extends javax.swing.JFrame
             String legend = "["+ i + "] " + title; // it is better to keep legend the same as title
 
             mMap.put(key, index);
-            index += simTrack.getSize(i);
+            index += simTrack.getCol(i) * simTrack.getRow(i);
 
             mLegendMap.put(key, legend); // each legend has to be unique in XYSeriesCollection
             if ( (xKeys == null && "time".equals(name)) || (xKeys != null && xKeys.contains(key)) ) {
