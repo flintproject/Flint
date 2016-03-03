@@ -1,5 +1,16 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <is:insilico-model  xmlns:m="http://www.w3.org/1998/Math/MathML" xmlns:is="http://www.physiome.jp/ns/insilicoml" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:pd="http://www.physiodesigner.org/2012/ns/physiodesigner/1.0" version="1.0" xsi:schemalocation="http://www.physiome.jp/ns/insilicoml-1.0 insilicoml.xsd">
+<is:header>
+<is:numerical-configuration>
+<is:time-discretization unit-id="12" evolution="true">
+<is:step>0.01</is:step>
+</is:time-discretization>
+<is:simulation-time-span unit-id="12">100</is:simulation-time-span>
+<is:algorithm>
+<is:integration name="ark"/>
+</is:algorithm>
+</is:numerical-configuration>
+</is:header>
 <is:unit-set>
 <is:unit unit-id="0">
 <is:name>dimensionless</is:name>
