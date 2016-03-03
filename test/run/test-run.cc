@@ -27,6 +27,15 @@ struct F : public test::TemporaryWorkingDirectory {
 
 BOOST_FIXTURE_TEST_SUITE(test_run, F)
 
+BOOST_AUTO_TEST_CASE(fhn) {
+	PushWorkingDirectory("fhn");
+	int s = GenerateInput(TEST_MODELS("fhn.phml"), "fhn.out");
+	test::StderrCapture sc;
+	BOOST_CHECK(run::Run(input_.get(), s));
+	BOOST_CHECK(sc.Get().empty());
+	PopWorkingDirectory();
+}
+
 BOOST_AUTO_TEST_CASE(x_missing_name) {
 	PushWorkingDirectory("x-missing-name");
 	int s = GenerateInput(TEST_MODELS("x-missing-name.phml"), "x-missing-name.out");
