@@ -5,6 +5,7 @@ import jp.oist.flint.dao.DaoException;
 import jp.oist.flint.job.Job;
 import jp.oist.flint.job.Progress;
 import jp.oist.flint.theme.Icon;
+import jp.oist.flint.util.LegendCollection;
 import java.awt.BorderLayout;
 import java.awt.HeadlessException;
 import java.beans.PropertyChangeEvent;
@@ -45,7 +46,7 @@ public class PlotWindow extends javax.swing.JFrame
 
     private final static String LABEL_SEPARATOR = "@";
 
-    private final HashMap<String, String> mLegendMap;
+    private HashMap<String, String> mLegendMap;
     private final HashMap<String, Integer> mMap;
 
     private VariableList mVariables;
@@ -339,28 +340,38 @@ public class PlotWindow extends javax.swing.JFrame
         LinkedHashMap<String, String> y2Track = new LinkedHashMap<>();
         LinkedHashMap<String, String> variableTrack = new LinkedHashMap<>();
 
+        LegendCollection lc = new LegendCollection();
         int index = 0;
         for (int i = 0; i < numTracks; i++) {
-            String key = simTrack.getKey(i);
-            String name = simTrack.getName(i);
+            int col = simTrack.getCol(i);
+            int row = simTrack.getRow(i);
+            String barekey = simTrack.getKey(i);
+            String barename = simTrack.getName(i);
             String label = simTrack.getLabel(i);
-            String title = (label.length() == 0) ? name : name + LABEL_SEPARATOR + label;
-            String legend = "["+ i + "] " + title; // it is better to keep legend the same as title
+            for (int k=0;k<col;k++) { // column-major
+                for (int j=0;j<row;j++) {
+                    String suffix = (col == 1) ? ((row == 1) ? "" : "[" + (j+1) + "]") : ((row == 1) ? ("[" + (k+1) + "]") : ("[" + (k+1) + ", " + (j+1) + "]"));
+                    String key = barekey + suffix;
+                    String name = barename + suffix;
+                    String title = (label.length() == 0) ? name : name + LABEL_SEPARATOR + label;
 
-            mMap.put(key, index);
-            index += simTrack.getCol(i) * simTrack.getRow(i);
+                    lc.register(key, title, index);
+                    mMap.put(key, index);
+                    index += 1;
 
-            mLegendMap.put(key, legend); // each legend has to be unique in XYSeriesCollection
-            if ( (xKeys == null && "time".equals(name)) || (xKeys != null && xKeys.contains(key)) ) {
-                xTrack.put(key, title);
-            } else if ( yKeys != null && yKeys.contains(key) ) {
-                yTrack.put(key, title);
-            } else if ( y2Keys != null && y2Keys.contains(key) ) {
-                y2Track.put(key, title);
-            } else {
-                variableTrack.put(key, title);
+                    if ( (xKeys == null && "time".equals(name)) || (xKeys != null && xKeys.contains(key)) ) {
+                        xTrack.put(key, title);
+                    } else if ( yKeys != null && yKeys.contains(key) ) {
+                        yTrack.put(key, title);
+                    } else if ( y2Keys != null && y2Keys.contains(key) ) {
+                        y2Track.put(key, title);
+                    } else {
+                        variableTrack.put(key, title);
+                    }
+                }
             }
         }
+        mLegendMap = lc.toHashMap(); // each legend has to be unique in XYSeriesCollection
 
         ListItemTransferHandler h = new ListItemTransferHandler();
 
