@@ -71,10 +71,6 @@ public class PlotWindow extends javax.swing.JFrame
         mIsdFile = mJob.getIsdFile();
         mCsvFile = new File(mIsdFile.getParent(), "csv");
 
-        if (!mIsdFile.exists() || !mIsdFile.canRead())
-            throw new IOException(String.format("ISD file does not exist. ( %s )",
-                    mIsdFile.getAbsolutePath()));
-
         mLegendMap = new HashMap<>();
         mMap = new HashMap<>();
 
