@@ -151,7 +151,6 @@ public class MainFrame extends javax.swing.JFrame
         }
 
         mPhspFile = phspFile;
-        try {
             setEditable(false);
             ModelLoaderLogger logger = new ModelLoaderLogger(mDesktop);
             PhspReader phspLoader = new PhspReader(phspFile);
@@ -169,11 +168,6 @@ public class MainFrame extends javax.swing.JFrame
             });
             phspLoader.execute();
             return true;
-        } catch (IOException ex) {
-            setEditable(true);
-            showErrorDialog(ex.getMessage(), "Error on loading PHSP");
-            return false;
-        }
     }
 
     public boolean closeModel (SubFrame subFrame) {

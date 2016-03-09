@@ -4,7 +4,6 @@ package jp.oist.flint.phsp;
 import org.apache.log4j.Logger;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
@@ -48,12 +47,8 @@ public class PhspReader extends SwingWorker <IPhspConfiguration, Model> {
 
     private IPhspConfiguration mConfiguration;
 
-    public PhspReader (File phspFile) throws IOException {
+    public PhspReader(File phspFile) {
         mPhspFile = phspFile;
-
-        if (!phspFile.exists())
-            throw new IOException("file (%s) does not exist.");
-
         mBasePath = mPhspFile.getParent();
 
         mConfiguration = null;
@@ -73,11 +68,6 @@ public class PhspReader extends SwingWorker <IPhspConfiguration, Model> {
         throws IOException, ParserConfigurationException, PhspException, SAXException, TransformerException {
         if (mConfiguration != null)
             return mConfiguration;
-
-        if (!mPhspFile.exists()) {
-            String msg = String.format("`%s` does not exist.", mPhspFile.getPath());
-            throw new FileNotFoundException(msg);
-        }
 
         DocumentBuilderFactory dbfactory = DocumentBuilderFactory.newInstance(); 
         dbfactory.setSchema(newSchema());
