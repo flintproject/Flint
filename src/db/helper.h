@@ -4,6 +4,8 @@
 
 #define VARIABLES_SCHEMA "(space_id BLOB, type TEXT, id INTEGER, name TEXT, unit TEXT, ncols INTEGER, nrows INTEGER, capacity REAL)"
 
+#define REACHES_SCHEMA "(output_uuid BLOB, output_id INTEGER, input_uuid BLOB, input_id INTEGER, reduction INTEGER)"
+
 #define TACS_SCHEMA "(uuid BLOB, name TEXT, noir INTEGER, nod INTEGER, body TEXT)"
 
 #endif

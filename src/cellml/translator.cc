@@ -81,7 +81,7 @@ public:
 			return false;
 		if (!CreateTable(db, "variables", VARIABLES_SCHEMA))
 			return false;
-		if (!CreateTable(db, "reaches", "(output_uuid BLOB, output_id INTEGER, input_uuid BLOB, input_id INTEGER, reduction INTEGER)"))
+		if (!CreateTable(db, "reaches", REACHES_SCHEMA))
 			return false;
 		if (!CreateView(db, "scopes", "SELECT space_id AS uuid, space_id, NULL AS label FROM spaces"))
 			return false;

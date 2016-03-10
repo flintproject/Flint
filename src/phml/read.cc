@@ -2267,7 +2267,7 @@ const Schema kSubsequentTables[] = {
 	{"scopes", "(uuid BLOB, space_id BLOB, label TEXT)"},
 	{"journals", "(indent INTEGER, uuid BLOB)"},
 	{"spans", "(tail_uuid BLOB, tail_port_id INTEGER, head_uuid BLOB, head_port_id INTEGER)"},
-	{"reaches", "(output_uuid BLOB, output_id INTEGER, input_uuid BLOB, input_id INTEGER, reduction INTEGER)"},
+	{"reaches", REACHES_SCHEMA},
 	{"combined_values", "(uuid BLOB, math TEXT)"},
 	{"combined_functions", "(uuid BLOB, math TEXT)"},
 	{"combined_odes", "(uuid BLOB, math TEXT)"},
