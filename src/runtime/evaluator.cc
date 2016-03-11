@@ -69,7 +69,7 @@ public:
 		}
 		SectorOffsetMap::const_iterator somit = som_->find(sector_id);
 		if (somit == som_->end()) {
-			cerr << "unknown track: " << sector_id << endl;
+			cerr << "unknown sector: " << sector_id << endl;
 			return false;
 		}
 		int offset = somit->second + pqit->second;
