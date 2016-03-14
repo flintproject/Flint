@@ -60,22 +60,6 @@ char *TemporaryPath::Touch()
 	return path;
 }
 
-char *TemporaryPath::Create(const void *data, size_t size)
-{
-	int fd;
-	char *path = MakeTemporaryFile(name_, directory_, &fd);
-	if (!path) return NULL;
-	ssize_t s = write(fd, data, size);
-	if (s < 0) {
-		close(fd);
-		std::remove(path);
-		free(path);
-		return NULL;
-	}
-	close(fd);
-	return path;
-}
-
 #else
 
 char *TemporaryPath::Touch()
@@ -85,28 +69,6 @@ char *TemporaryPath::Touch()
 		cerr << "could not generate temporary name" << endl;
 		return NULL;
 	}
-	return path;
-}
-
-char *TemporaryPath::Create(const void *data, size_t size)
-{
-	if (size == 0) return NULL;
-	char *path = Touch();
-	if (!path) return NULL;
-	FILE *fp = fopen(path, "wb");
-	if (!fp) {
-		cerr << "could not open file: " << path << endl;
-		free(path);
-		return NULL;
-	}
-	size_t s = fwrite(data, size, 1, fp);
-	if (s == 0) {
-		cerr << "could not write to file: " << path << endl;
-		fclose(fp);
-		free(path);
-		return NULL;
-	}
-	fclose(fp);
 	return path;
 }
 

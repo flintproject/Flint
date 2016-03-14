@@ -26,15 +26,4 @@ BOOST_AUTO_TEST_CASE(Touch) {
 	free(p);
 }
 
-BOOST_AUTO_TEST_CASE(Create) {
-	char *p = temporary_path_->Create("abc", 3);
-	std::ifstream ifs(p);
-	std::ostringstream oss;
-	oss << ifs.rdbuf();
-	BOOST_CHECK_EQUAL(oss.str(), "abc");
-	ifs.close();
-	std::remove(p);
-	free(p);
-}
-
 BOOST_AUTO_TEST_SUITE_END()

@@ -16,7 +16,6 @@ public:
 	~TemporaryPath() {}
 
 	char *Touch();
-	char *Create(const void *data, size_t size);
 
 private:
 	std::string name_;
