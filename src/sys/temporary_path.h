@@ -8,18 +8,16 @@ namespace flint {
 
 class TemporaryPath {
 public:
-	TemporaryPath() : name_("tmp"), directory_() {}
 	explicit TemporaryPath(const std::string &name)
-		: name_(name), directory_() {}
-	TemporaryPath(const std::string &name, const std::string &directory)
-		: name_(name), directory_(directory) {}
+		: name_(name)
+	{}
+
 	~TemporaryPath() {}
 
 	char *Touch();
 
 private:
 	std::string name_;
-	std::string directory_;
 };
 
 }

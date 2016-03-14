@@ -9,7 +9,7 @@
 #include "test.hh"
 
 struct F {
-	F() : temporary_path_(new TemporaryPath) {}
+	F() : temporary_path_(new TemporaryPath("foo")) {}
 	~F() {}
 
 	std::unique_ptr<TemporaryPath> temporary_path_;

@@ -20,17 +20,12 @@ namespace flint {
 
 namespace {
 
-char *MakeTemporaryFile(const std::string &name, const std::string &dir, int *fd)
+char *MakeTemporaryFile(const std::string &name, int *fd)
 {
-	using namespace boost::filesystem;
-
-	path p(dir.empty() ? "/tmp" : dir);
-	const char *tmpdir = getenv("TMPDIR");
-	if (tmpdir && strlen(tmpdir) > 0) {
-		p = path(tmpdir);
-	}
-	if (!exists(p) || !is_directory(p)) {
-		cerr << p << " is not a proper directory" << endl;
+	boost::system::error_code ec;
+	boost::filesystem::path p = boost::filesystem::temp_directory_path(ec);
+	if (ec) {
+		cerr << "failed to get temporary directory path" << endl;
 		return NULL;
 	}
 	p /= name + ".XXXXXX";
@@ -55,7 +50,7 @@ char *MakeTemporaryFile(const std::string &name, const std::string &dir, int *fd
 char *TemporaryPath::Touch()
 {
 	int fd;
-	char *path = MakeTemporaryFile(name_, directory_, &fd);
+	char *path = MakeTemporaryFile(name_, &fd);
 	if (path) close(fd);
 	return path;
 }
@@ -64,7 +59,7 @@ char *TemporaryPath::Touch()
 
 char *TemporaryPath::Touch()
 {
-	char *path = tempnam(directory_.empty() ? NULL : directory_.c_str(), name_.c_str());
+	char *path = tempnam(NULL, name_.c_str());
 	if (!path) {
 		cerr << "could not generate temporary name" << endl;
 		return NULL;
