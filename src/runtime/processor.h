@@ -545,245 +545,245 @@ public:
 				int k = cu.sector_index();
 				int bi = cu.block_index();
 
-			const bc::SectionHeader &sh(shv_->at(si));
-			const std::string &id(sh.id());
-			const Mounter &mounter(layout_->GetMounter(id));
-			int nos = mounter.size();
-			assert(k < nos);
-			int offset = mounter.GetOffset(k);
-			const bc::BlockHeader &bh(bhv_->at(bi));
-			int ci = code_offset_[bi];
-			int cib = ci;
-			int cie = cib + bh.noc();
-			std::stack<std::unique_ptr<double[]> > stack;
-			while (ci < cie) {
-				const bc::Code &code(cv_->at(ci));
-				switch (code.type()) {
-				case bc::Code::kBr:
-					{
-						const bc::Br &br(code.br());
-						if (tmp_[br.a()]) {
-							ci = cib + br.p();
+				const bc::SectionHeader &sh(shv_->at(si));
+				const std::string &id(sh.id());
+				const Mounter &mounter(layout_->GetMounter(id));
+				int nos = mounter.size();
+				assert(k < nos);
+				int offset = mounter.GetOffset(k);
+				const bc::BlockHeader &bh(bhv_->at(bi));
+				int ci = code_offset_[bi];
+				int cib = ci;
+				int cie = cib + bh.noc();
+				std::stack<std::unique_ptr<double[]> > stack;
+				while (ci < cie) {
+					const bc::Code &code(cv_->at(ci));
+					switch (code.type()) {
+					case bc::Code::kBr:
+						{
+							const bc::Br &br(code.br());
+							if (tmp_[br.a()]) {
+								ci = cib + br.p();
+							} else {
+								ci++;
+							}
+						}
+						break;
+					case bc::Code::kJmp:
+						ci = cib + code.jmp().p();
+						break;
+					case bc::Code::kCall1:
+						DoCall1(code.call1(), tmp_);
+						ci++;
+						break;
+					case bc::Code::kCall2:
+						DoCall2(code.call2(), tmp_);
+						ci++;
+						break;
+					case bc::Code::kLb:
+						if (executor->Lb(code.lb(), offset)) {
+							ci++;
 						} else {
+							std::cerr << "failed to look back: " << ci << std::endl;
+							return false;
+						}
+						break;
+					case bc::Code::kLd:
+						if (DoLd(code.ld())) {
+							ci++;
+						} else {
+							std::cerr << "failed to load data: " << ci << std::endl;
+							return false;
+						}
+						break;
+					case bc::Code::kGen1:
+						DoGen1(code.gen1(), tmp_, rng_);
+						ci++;
+						break;
+					case bc::Code::kGen2:
+						DoGen2(code.gen2(), tmp_, rng_);
+						ci++;
+						break;
+					case bc::Code::kLoad:
+						if (executor->Load(code.load(), offset)) {
+							ci++;
+						} else {
+							std::cerr << "failed to load: " << ci << std::endl;
+							return false;
+						}
+						break;
+					case bc::Code::kLoadi:
+						{
+							const bc::Loadi &loadi(code.loadi());
+							tmp_[loadi.a()] = loadi.v();
 							ci++;
 						}
-					}
-					break;
-				case bc::Code::kJmp:
-					ci = cib + code.jmp().p();
-					break;
-				case bc::Code::kCall1:
-					DoCall1(code.call1(), tmp_);
-					ci++;
-					break;
-				case bc::Code::kCall2:
-					DoCall2(code.call2(), tmp_);
-					ci++;
-					break;
-				case bc::Code::kLb:
-					if (executor->Lb(code.lb(), offset)) {
-						ci++;
-					} else {
-						std::cerr << "failed to look back: " << ci << std::endl;
-						return false;
-					}
-					break;
-				case bc::Code::kLd:
-					if (DoLd(code.ld())) {
-						ci++;
-					} else {
-						std::cerr << "failed to load data: " << ci << std::endl;
-						return false;
-					}
-					break;
-				case bc::Code::kGen1:
-					DoGen1(code.gen1(), tmp_, rng_);
-					ci++;
-					break;
-				case bc::Code::kGen2:
-					DoGen2(code.gen2(), tmp_, rng_);
-					ci++;
-					break;
-				case bc::Code::kLoad:
-					if (executor->Load(code.load(), offset)) {
-						ci++;
-					} else {
-						std::cerr << "failed to load: " << ci << std::endl;
-						return false;
-					}
-					break;
-				case bc::Code::kLoadi:
-					{
-						const bc::Loadi &loadi(code.loadi());
-						tmp_[loadi.a()] = loadi.v();
-						ci++;
-					}
-					break;
-				case bc::Code::kRet:
-					ci = cie;
-					break;
-				case bc::Code::kStore:
-					{
-					double v = executor->Store(code.store(), offset);
-					if (!IsFinite(v, offset)) {
-						boost::uuids::uuid u;
-						std::memcpy(&u, sh.id().data(), u.size());
-						std::cerr << "section: " << u << std::endl;
-						std::cerr << "block:   " << bh.name() << std::endl;
-						std::cerr << "index:   " << (ci - cib) << std::endl;
-						std::cerr << "registers:" << std::endl;
-						for (int i=0;i<bh.nod();i++) {
-							std::cerr << "$" << i << " = " << tmp_[i] << std::endl;
+						break;
+					case bc::Code::kRet:
+						ci = cie;
+						break;
+					case bc::Code::kStore:
+						{
+							double v = executor->Store(code.store(), offset);
+							if (!IsFinite(v, offset)) {
+								boost::uuids::uuid u;
+								std::memcpy(&u, sh.id().data(), u.size());
+								std::cerr << "section: " << u << std::endl;
+								std::cerr << "block:   " << bh.name() << std::endl;
+								std::cerr << "index:   " << (ci - cib) << std::endl;
+								std::cerr << "registers:" << std::endl;
+								for (int i=0;i<bh.nod();i++) {
+									std::cerr << "$" << i << " = " << tmp_[i] << std::endl;
+								}
+								return false;
+							}
+							ci++;
 						}
-						return false;
+						break;
+					case bc::Code::kRefer:
+						{
+							const bc::Refer &refer(code.refer());
+							ir_[refer.i0()] = reinterpret_cast<intptr_t>(executor->Refer(refer, offset));
+							ci++;
+						}
+						break;
+					case bc::Code::kDeref:
+						{
+							const bc::Deref &deref(code.deref());
+							tmp_[deref.f0()] = *(reinterpret_cast<double *>(ir_[deref.i1()]) + deref.k());
+							ci++;
+						}
+						break;
+					case bc::Code::kAlloc:
+						{
+							const bc::Alloc &a(code.alloc());
+							stack.emplace(new double[a.k()]);
+							ir_[a.i0()] = reinterpret_cast<intptr_t>(stack.top().get());
+							ci++;
+						}
+						break;
+					case bc::Code::kSave:
+						{
+							const bc::Save &save(code.save());
+							executor->Save(save, offset);
+							ci++;
+						}
+						break;
+					case bc::Code::kMove:
+						{
+							const bc::Move &move(code.move());
+							*(reinterpret_cast<double *>(ir_[move.i0()]) + move.k()) = tmp_[move.f1()];
+							ci++;
+						}
+						break;
+					case bc::Code::kTranspose:
+						{
+							const bc::Transpose &transpose(code.transpose());
+							stack.emplace(new double[transpose.kc() * transpose.kr()]);
+							double *d0 = stack.top().get();
+							ir_[transpose.i0()] = reinterpret_cast<intptr_t>(d0);
+							const double *d1 = reinterpret_cast<const double *>(ir_[transpose.i1()]);
+							runtime::Transpose(d0, d1, transpose.kr(), transpose.kc());
+							ci++;
+						}
+						break;
+					case bc::Code::kOuterproduct:
+						{
+							const bc::Outerproduct &outerproduct(code.outerproduct());
+							stack.emplace(new double[outerproduct.k1() * outerproduct.k2()]);
+							double *d0 = stack.top().get();
+							ir_[outerproduct.i0()] = reinterpret_cast<intptr_t>(d0);
+							const double *d1 = reinterpret_cast<const double *>(ir_[outerproduct.i1()]);
+							const double *d2 = reinterpret_cast<const double *>(ir_[outerproduct.i2()]);
+							runtime::Outerproduct(d0, outerproduct.k1(), d1, outerproduct.k2(), d2);
+							ci++;
+						}
+						break;
+					case bc::Code::kScalarproduct:
+						{
+							const bc::Scalarproduct &scalarproduct(code.scalarproduct());
+							const double *d1 = reinterpret_cast<const double *>(ir_[scalarproduct.i1()]);
+							const double *d2 = reinterpret_cast<const double *>(ir_[scalarproduct.i2()]);
+							tmp_[scalarproduct.f0()] = runtime::Scalarproduct(scalarproduct.k(), d1, d2);
+							ci++;
+						}
+						break;
+					case bc::Code::kVectorproduct:
+						{
+							const bc::Vectorproduct &vectorproduct(code.vectorproduct());
+							stack.emplace(new double[3]);
+							double *d0 = stack.top().get();
+							ir_[vectorproduct.i0()] = reinterpret_cast<intptr_t>(d0);
+							const double *d1 = reinterpret_cast<const double *>(ir_[vectorproduct.i1()]);
+							const double *d2 = reinterpret_cast<const double *>(ir_[vectorproduct.i2()]);
+							runtime::Vectorproduct(d0, d1, d2);
+							ci++;
+						}
+						break;
+					case bc::Code::kDeterminant:
+						{
+							const bc::Determinant &determinant(code.determinant());
+							const double *d1 = reinterpret_cast<const double *>(ir_[determinant.i1()]);
+							tmp_[determinant.f0()] = runtime::Determinant(determinant.k(), d1);
+							ci++;
+						}
+						break;
+					case bc::Code::kSelect2:
+						{
+							const bc::Select2 &select2(code.select2());
+							const double *d1 = reinterpret_cast<const double *>(ir_[select2.i1()]);
+							tmp_[select2.f0()] = runtime::Select2(d1, static_cast<int>(tmp_[select2.f2()]));
+							ci++;
+						}
+						break;
+					case bc::Code::kSelect3:
+						{
+							const bc::Select3 &select3(code.select3());
+							const double *d1 = reinterpret_cast<const double *>(ir_[select3.i1()]);
+							tmp_[select3.f0()] = runtime::Select3(select3.kr(), select3.kc(), d1,
+																  static_cast<int>(tmp_[select3.f2()]),
+																  static_cast<int>(tmp_[select3.f3()]));
+							ci++;
+						}
+						break;
+					case bc::Code::kSelrow:
+						{
+							const bc::Selrow &selrow(code.selrow());
+							stack.emplace(new double[selrow.kr()]);
+							double *d0 = stack.top().get();
+							const double *d1 = reinterpret_cast<const double *>(ir_[selrow.i1()]);
+							runtime::Selrow(d0, selrow.kr(), selrow.kc(), d1, static_cast<int>(tmp_[selrow.f2()]));
+							ci++;
+						}
+						break;
+					case bc::Code::kMult:
+						{
+							const bc::Mult &mult(code.mult());
+							stack.emplace(new double[mult.k()]);
+							double *d0 = stack.top().get();
+							ir_[mult.i0()] = reinterpret_cast<intptr_t>(d0);
+							const double *d2 = reinterpret_cast<const double *>(ir_[mult.i2()]);
+							runtime::Mult(d0, mult.k(), tmp_[mult.f1()], d2);
+							ci++;
+						}
+						break;
+					case bc::Code::kMmul:
+						{
+							const bc::Mmul &mmul(code.mmul());
+							stack.emplace(new double[mmul.kc() * mmul.kr()]);
+							double *d0 = stack.top().get();
+							ir_[mmul.i0()] = reinterpret_cast<intptr_t>(d0);
+							const double *d1 = reinterpret_cast<const double *>(ir_[mmul.i1()]);
+							const double *d2 = reinterpret_cast<const double *>(ir_[mmul.i2()]);
+							runtime::Mmul(d0, mmul.kr(), mmul.kx(), mmul.kc(), d1, d2);
+							ci++;
+						}
+						break;
+					default:
+						assert(false);
+						break;
 					}
-					ci++;
-					}
-					break;
-				case bc::Code::kRefer:
-					{
-						const bc::Refer &refer(code.refer());
-						ir_[refer.i0()] = reinterpret_cast<intptr_t>(executor->Refer(refer, offset));
-						ci++;
-					}
-					break;
-				case bc::Code::kDeref:
-					{
-						const bc::Deref &deref(code.deref());
-						tmp_[deref.f0()] = *(reinterpret_cast<double *>(ir_[deref.i1()]) + deref.k());
-						ci++;
-					}
-					break;
-				case bc::Code::kAlloc:
-					{
-						const bc::Alloc &a(code.alloc());
-						stack.emplace(new double[a.k()]);
-						ir_[a.i0()] = reinterpret_cast<intptr_t>(stack.top().get());
-						ci++;
-					}
-					break;
-				case bc::Code::kSave:
-					{
-						const bc::Save &save(code.save());
-						executor->Save(save, offset);
-						ci++;
-					}
-					break;
-				case bc::Code::kMove:
-					{
-						const bc::Move &move(code.move());
-						*(reinterpret_cast<double *>(ir_[move.i0()]) + move.k()) = tmp_[move.f1()];
-						ci++;
-					}
-					break;
-				case bc::Code::kTranspose:
-					{
-						const bc::Transpose &transpose(code.transpose());
-						stack.emplace(new double[transpose.kc() * transpose.kr()]);
-						double *d0 = stack.top().get();
-						ir_[transpose.i0()] = reinterpret_cast<intptr_t>(d0);
-						const double *d1 = reinterpret_cast<const double *>(ir_[transpose.i1()]);
-						runtime::Transpose(d0, d1, transpose.kr(), transpose.kc());
-						ci++;
-					}
-					break;
-				case bc::Code::kOuterproduct:
-					{
-						const bc::Outerproduct &outerproduct(code.outerproduct());
-						stack.emplace(new double[outerproduct.k1() * outerproduct.k2()]);
-						double *d0 = stack.top().get();
-						ir_[outerproduct.i0()] = reinterpret_cast<intptr_t>(d0);
-						const double *d1 = reinterpret_cast<const double *>(ir_[outerproduct.i1()]);
-						const double *d2 = reinterpret_cast<const double *>(ir_[outerproduct.i2()]);
-						runtime::Outerproduct(d0, outerproduct.k1(), d1, outerproduct.k2(), d2);
-						ci++;
-					}
-					break;
-				case bc::Code::kScalarproduct:
-					{
-						const bc::Scalarproduct &scalarproduct(code.scalarproduct());
-						const double *d1 = reinterpret_cast<const double *>(ir_[scalarproduct.i1()]);
-						const double *d2 = reinterpret_cast<const double *>(ir_[scalarproduct.i2()]);
-						tmp_[scalarproduct.f0()] = runtime::Scalarproduct(scalarproduct.k(), d1, d2);
-						ci++;
-					}
-					break;
-				case bc::Code::kVectorproduct:
-					{
-						const bc::Vectorproduct &vectorproduct(code.vectorproduct());
-						stack.emplace(new double[3]);
-						double *d0 = stack.top().get();
-						ir_[vectorproduct.i0()] = reinterpret_cast<intptr_t>(d0);
-						const double *d1 = reinterpret_cast<const double *>(ir_[vectorproduct.i1()]);
-						const double *d2 = reinterpret_cast<const double *>(ir_[vectorproduct.i2()]);
-						runtime::Vectorproduct(d0, d1, d2);
-						ci++;
-					}
-					break;
-				case bc::Code::kDeterminant:
-					{
-						const bc::Determinant &determinant(code.determinant());
-						const double *d1 = reinterpret_cast<const double *>(ir_[determinant.i1()]);
-						tmp_[determinant.f0()] = runtime::Determinant(determinant.k(), d1);
-						ci++;
-					}
-					break;
-				case bc::Code::kSelect2:
-					{
-						const bc::Select2 &select2(code.select2());
-						const double *d1 = reinterpret_cast<const double *>(ir_[select2.i1()]);
-						tmp_[select2.f0()] = runtime::Select2(d1, static_cast<int>(tmp_[select2.f2()]));
-						ci++;
-					}
-					break;
-				case bc::Code::kSelect3:
-					{
-						const bc::Select3 &select3(code.select3());
-						const double *d1 = reinterpret_cast<const double *>(ir_[select3.i1()]);
-						tmp_[select3.f0()] = runtime::Select3(select3.kr(), select3.kc(), d1,
-															  static_cast<int>(tmp_[select3.f2()]),
-															  static_cast<int>(tmp_[select3.f3()]));
-						ci++;
-					}
-					break;
-				case bc::Code::kSelrow:
-					{
-						const bc::Selrow &selrow(code.selrow());
-						stack.emplace(new double[selrow.kr()]);
-						double *d0 = stack.top().get();
-						const double *d1 = reinterpret_cast<const double *>(ir_[selrow.i1()]);
-						runtime::Selrow(d0, selrow.kr(), selrow.kc(), d1, static_cast<int>(tmp_[selrow.f2()]));
-						ci++;
-					}
-					break;
-				case bc::Code::kMult:
-					{
-						const bc::Mult &mult(code.mult());
-						stack.emplace(new double[mult.k()]);
-						double *d0 = stack.top().get();
-						ir_[mult.i0()] = reinterpret_cast<intptr_t>(d0);
-						const double *d2 = reinterpret_cast<const double *>(ir_[mult.i2()]);
-						runtime::Mult(d0, mult.k(), tmp_[mult.f1()], d2);
-						ci++;
-					}
-					break;
-				case bc::Code::kMmul:
-					{
-						const bc::Mmul &mmul(code.mmul());
-						stack.emplace(new double[mmul.kc() * mmul.kr()]);
-						double *d0 = stack.top().get();
-						ir_[mmul.i0()] = reinterpret_cast<intptr_t>(d0);
-						const double *d1 = reinterpret_cast<const double *>(ir_[mmul.i1()]);
-						const double *d2 = reinterpret_cast<const double *>(ir_[mmul.i2()]);
-						runtime::Mmul(d0, mmul.kr(), mmul.kx(), mmul.kc(), d1, d2);
-						ci++;
-					}
-					break;
-				default:
-					assert(false);
-					break;
 				}
-			}
 			} else {
 				const ReductionUnit &ru = boost::get<ReductionUnit>(eu);
 				if (!executor->Reduce(ru))
@@ -799,243 +799,243 @@ public:
 		int bi = 0; // block index
 		int ci = 0; // code index
 
-    		int nos = static_cast<int>(shv_->size());
-			while (si < nos) {
-				const bc::SectionHeader &sh(shv_->at(si++));
-				int bib = bi;
-				int bie = bi + sh.nob();
-				const std::string &id(sh.id());
-				const Mounter &mounter(layout_->GetMounter(id));
-				int nos = mounter.size();
-				for (int k=0;k<nos;k++) { // for each sector
-					bi = bib; // reset block index
-					int offset = mounter.GetOffset(k);
-					while (bi < bie) {
-						const bc::BlockHeader &bh(bhv_->at(bi));
-						ci = code_offset_[bi++];
-						int cib = ci;
-						int cie = cib + bh.noc();
-						std::stack<std::unique_ptr<double[]> > stack;
-						while (ci < cie) {
-							const bc::Code &code(cv_->at(ci));
-							switch (code.type()) {
-							case bc::Code::kBr:
-								{
-									const bc::Br &br(code.br());
-									if (tmp_[br.a()]) {
-										ci = cib + br.p();
-									} else {
-										ci++;
-									}
-								}
-								break;
-							case bc::Code::kJmp:
-								ci = cib + code.jmp().p();
-								break;
-							case bc::Code::kCall1:
-								DoCall1(code.call1(), tmp_);
-								ci++;
-								break;
-							case bc::Code::kCall2:
-								DoCall2(code.call2(), tmp_);
-								ci++;
-								break;
-							case bc::Code::kLb:
-								if (executor->Lb(code.lb(), offset)) {
-									ci++;
+		int nos = static_cast<int>(shv_->size());
+		while (si < nos) {
+			const bc::SectionHeader &sh(shv_->at(si++));
+			int bib = bi;
+			int bie = bi + sh.nob();
+			const std::string &id(sh.id());
+			const Mounter &mounter(layout_->GetMounter(id));
+			int nos = mounter.size();
+			for (int k=0;k<nos;k++) { // for each sector
+				bi = bib; // reset block index
+				int offset = mounter.GetOffset(k);
+				while (bi < bie) {
+					const bc::BlockHeader &bh(bhv_->at(bi));
+					ci = code_offset_[bi++];
+					int cib = ci;
+					int cie = cib + bh.noc();
+					std::stack<std::unique_ptr<double[]> > stack;
+					while (ci < cie) {
+						const bc::Code &code(cv_->at(ci));
+						switch (code.type()) {
+						case bc::Code::kBr:
+							{
+								const bc::Br &br(code.br());
+								if (tmp_[br.a()]) {
+									ci = cib + br.p();
 								} else {
-									std::cerr << "failed to look back: " << ci << std::endl;
-									return false;
-								}
-								break;
-							case bc::Code::kLd:
-								if (DoLd(code.ld())) {
 									ci++;
-								} else {
-									std::cerr << "failed to load data: " << ci << std::endl;
-									return false;
 								}
-								break;
-							case bc::Code::kGen1:
-								DoGen1(code.gen1(), tmp_, rng_);
+							}
+							break;
+						case bc::Code::kJmp:
+							ci = cib + code.jmp().p();
+							break;
+						case bc::Code::kCall1:
+							DoCall1(code.call1(), tmp_);
+							ci++;
+							break;
+						case bc::Code::kCall2:
+							DoCall2(code.call2(), tmp_);
+							ci++;
+							break;
+						case bc::Code::kLb:
+							if (executor->Lb(code.lb(), offset)) {
 								ci++;
-								break;
-							case bc::Code::kGen2:
-								DoGen2(code.gen2(), tmp_, rng_);
+							} else {
+								std::cerr << "failed to look back: " << ci << std::endl;
+								return false;
+							}
+							break;
+						case bc::Code::kLd:
+							if (DoLd(code.ld())) {
 								ci++;
-								break;
-							case bc::Code::kLoad:
-								if (executor->Load(code.load(), offset)) {
-									ci++;
-								} else {
-									std::cerr << "failed to load: " << ci << std::endl;
-									return false;
-								}
-								break;
-							case bc::Code::kLoadi:
-								{
-									const bc::Loadi &loadi(code.loadi());
-									tmp_[loadi.a()] = loadi.v();
-									ci++;
-								}
-								break;
-							case bc::Code::kRet:
-								ci = cie;
-								break;
-							case bc::Code::kStore:
-								{
+							} else {
+								std::cerr << "failed to load data: " << ci << std::endl;
+								return false;
+							}
+							break;
+						case bc::Code::kGen1:
+							DoGen1(code.gen1(), tmp_, rng_);
+							ci++;
+							break;
+						case bc::Code::kGen2:
+							DoGen2(code.gen2(), tmp_, rng_);
+							ci++;
+							break;
+						case bc::Code::kLoad:
+							if (executor->Load(code.load(), offset)) {
+								ci++;
+							} else {
+								std::cerr << "failed to load: " << ci << std::endl;
+								return false;
+							}
+							break;
+						case bc::Code::kLoadi:
+							{
+								const bc::Loadi &loadi(code.loadi());
+								tmp_[loadi.a()] = loadi.v();
+								ci++;
+							}
+							break;
+						case bc::Code::kRet:
+							ci = cie;
+							break;
+						case bc::Code::kStore:
+							{
 								double v = executor->Store(code.store(), offset);
 								if (!IsFinite(v, offset)) return false;
 								ci++;
-								}
-								break;
-							case bc::Code::kRefer:
-								{
-									const bc::Refer &refer(code.refer());
-									ir_[refer.i0()] = reinterpret_cast<intptr_t>(executor->Refer(refer, offset));
-									ci++;
-								}
-								break;
-							case bc::Code::kDeref:
-								{
-									const bc::Deref &deref(code.deref());
-									tmp_[deref.f0()] = *(reinterpret_cast<double *>(ir_[deref.i1()]) + deref.k());
-									ci++;
-								}
-								break;
-							case bc::Code::kAlloc:
-								{
-									const bc::Alloc &a(code.alloc());
-									stack.emplace(new double[a.k()]);
-									ir_[a.i0()] = reinterpret_cast<intptr_t>(stack.top().get());
-									ci++;
-								}
-								break;
-							case bc::Code::kSave:
-								{
-									const bc::Save &save(code.save());
-									executor->Save(save, offset);
-									ci++;
-								}
-								break;
-							case bc::Code::kMove:
-								{
-									const bc::Move &move(code.move());
-									*(reinterpret_cast<double *>(ir_[move.i0()]) + move.k()) = tmp_[move.f1()];
-									ci++;
-								}
-								break;
-							case bc::Code::kTranspose:
-								{
-									const bc::Transpose &transpose(code.transpose());
-									stack.emplace(new double[transpose.kc() * transpose.kr()]);
-									double *d0 = stack.top().get();
-									ir_[transpose.i0()] = reinterpret_cast<intptr_t>(d0);
-									const double *d1 = reinterpret_cast<const double *>(ir_[transpose.i1()]);
-									runtime::Transpose(d0, d1, transpose.kr(), transpose.kc());
-									ci++;
-								}
-								break;
-							case bc::Code::kOuterproduct:
-								{
-									const bc::Outerproduct &outerproduct(code.outerproduct());
-									stack.emplace(new double[outerproduct.k1() * outerproduct.k2()]);
-									double *d0 = stack.top().get();
-									ir_[outerproduct.i0()] = reinterpret_cast<intptr_t>(d0);
-									const double *d1 = reinterpret_cast<const double *>(ir_[outerproduct.i1()]);
-									const double *d2 = reinterpret_cast<const double *>(ir_[outerproduct.i2()]);
-									runtime::Outerproduct(d0, outerproduct.k1(), d1, outerproduct.k2(), d2);
-									ci++;
-								}
-								break;
-							case bc::Code::kScalarproduct:
-								{
-									const bc::Scalarproduct &scalarproduct(code.scalarproduct());
-									const double *d1 = reinterpret_cast<const double *>(ir_[scalarproduct.i1()]);
-									const double *d2 = reinterpret_cast<const double *>(ir_[scalarproduct.i2()]);
-									tmp_[scalarproduct.f0()] = runtime::Scalarproduct(scalarproduct.k(), d1, d2);
-									ci++;
-								}
-								break;
-							case bc::Code::kVectorproduct:
-								{
-									const bc::Vectorproduct &vectorproduct(code.vectorproduct());
-									stack.emplace(new double[3]);
-									double *d0 = stack.top().get();
-									ir_[vectorproduct.i0()] = reinterpret_cast<intptr_t>(d0);
-									const double *d1 = reinterpret_cast<const double *>(ir_[vectorproduct.i1()]);
-									const double *d2 = reinterpret_cast<const double *>(ir_[vectorproduct.i2()]);
-									runtime::Vectorproduct(d0, d1, d2);
-									ci++;
-								}
-								break;
-							case bc::Code::kDeterminant:
-								{
-									const bc::Determinant &determinant(code.determinant());
-									const double *d1 = reinterpret_cast<const double *>(ir_[determinant.i1()]);
-									tmp_[determinant.f0()] = runtime::Determinant(determinant.k(), d1);
-									ci++;
-								}
-								break;
-							case bc::Code::kSelect2:
-								{
-									const bc::Select2 &select2(code.select2());
-									const double *d1 = reinterpret_cast<const double *>(ir_[select2.i1()]);
-									tmp_[select2.f0()] = runtime::Select2(d1, static_cast<int>(tmp_[select2.f2()]));
-									ci++;
-								}
-								break;
-							case bc::Code::kSelect3:
-								{
-									const bc::Select3 &select3(code.select3());
-									const double *d1 = reinterpret_cast<const double *>(ir_[select3.i1()]);
-									tmp_[select3.f0()] = runtime::Select3(select3.kr(), select3.kc(), d1,
-																		  static_cast<int>(tmp_[select3.f2()]),
-																		  static_cast<int>(tmp_[select3.f3()]));
-									ci++;
-								}
-								break;
-							case bc::Code::kSelrow:
-								{
-									const bc::Selrow &selrow(code.selrow());
-									stack.emplace(new double[selrow.kr()]);
-									double *d0 = stack.top().get();
-									const double *d1 = reinterpret_cast<const double *>(ir_[selrow.i1()]);
-									runtime::Selrow(d0, selrow.kr(), selrow.kc(), d1, static_cast<int>(tmp_[selrow.f2()]));
-									ci++;
-								}
-								break;
-							case bc::Code::kMult:
-								{
-									const bc::Mult &mult(code.mult());
-									stack.emplace(new double[mult.k()]);
-									double *d0 = stack.top().get();
-									ir_[mult.i0()] = reinterpret_cast<intptr_t>(d0);
-									const double *d2 = reinterpret_cast<const double *>(ir_[mult.i2()]);
-									runtime::Mult(d0, mult.k(), tmp_[mult.f1()], d2);
-									ci++;
-								}
-								break;
-							case bc::Code::kMmul:
-								{
-									const bc::Mmul &mmul(code.mmul());
-									stack.emplace(new double[mmul.kc() * mmul.kr()]);
-									double *d0 = stack.top().get();
-									ir_[mmul.i0()] = reinterpret_cast<intptr_t>(d0);
-									const double *d1 = reinterpret_cast<const double *>(ir_[mmul.i1()]);
-									const double *d2 = reinterpret_cast<const double *>(ir_[mmul.i2()]);
-									runtime::Mmul(d0, mmul.kr(), mmul.kx(), mmul.kc(), d1, d2);
-									ci++;
-								}
-								break;
-							default:
-								assert(false);
-								break;
 							}
+							break;
+						case bc::Code::kRefer:
+							{
+								const bc::Refer &refer(code.refer());
+								ir_[refer.i0()] = reinterpret_cast<intptr_t>(executor->Refer(refer, offset));
+								ci++;
+							}
+							break;
+						case bc::Code::kDeref:
+							{
+								const bc::Deref &deref(code.deref());
+								tmp_[deref.f0()] = *(reinterpret_cast<double *>(ir_[deref.i1()]) + deref.k());
+								ci++;
+							}
+							break;
+						case bc::Code::kAlloc:
+							{
+								const bc::Alloc &a(code.alloc());
+								stack.emplace(new double[a.k()]);
+								ir_[a.i0()] = reinterpret_cast<intptr_t>(stack.top().get());
+								ci++;
+							}
+							break;
+						case bc::Code::kSave:
+							{
+								const bc::Save &save(code.save());
+								executor->Save(save, offset);
+								ci++;
+							}
+							break;
+						case bc::Code::kMove:
+							{
+								const bc::Move &move(code.move());
+								*(reinterpret_cast<double *>(ir_[move.i0()]) + move.k()) = tmp_[move.f1()];
+								ci++;
+							}
+							break;
+						case bc::Code::kTranspose:
+							{
+								const bc::Transpose &transpose(code.transpose());
+								stack.emplace(new double[transpose.kc() * transpose.kr()]);
+								double *d0 = stack.top().get();
+								ir_[transpose.i0()] = reinterpret_cast<intptr_t>(d0);
+								const double *d1 = reinterpret_cast<const double *>(ir_[transpose.i1()]);
+								runtime::Transpose(d0, d1, transpose.kr(), transpose.kc());
+								ci++;
+							}
+							break;
+						case bc::Code::kOuterproduct:
+							{
+								const bc::Outerproduct &outerproduct(code.outerproduct());
+								stack.emplace(new double[outerproduct.k1() * outerproduct.k2()]);
+								double *d0 = stack.top().get();
+								ir_[outerproduct.i0()] = reinterpret_cast<intptr_t>(d0);
+								const double *d1 = reinterpret_cast<const double *>(ir_[outerproduct.i1()]);
+								const double *d2 = reinterpret_cast<const double *>(ir_[outerproduct.i2()]);
+								runtime::Outerproduct(d0, outerproduct.k1(), d1, outerproduct.k2(), d2);
+								ci++;
+							}
+							break;
+						case bc::Code::kScalarproduct:
+							{
+								const bc::Scalarproduct &scalarproduct(code.scalarproduct());
+								const double *d1 = reinterpret_cast<const double *>(ir_[scalarproduct.i1()]);
+								const double *d2 = reinterpret_cast<const double *>(ir_[scalarproduct.i2()]);
+								tmp_[scalarproduct.f0()] = runtime::Scalarproduct(scalarproduct.k(), d1, d2);
+								ci++;
+							}
+							break;
+						case bc::Code::kVectorproduct:
+							{
+								const bc::Vectorproduct &vectorproduct(code.vectorproduct());
+								stack.emplace(new double[3]);
+								double *d0 = stack.top().get();
+								ir_[vectorproduct.i0()] = reinterpret_cast<intptr_t>(d0);
+								const double *d1 = reinterpret_cast<const double *>(ir_[vectorproduct.i1()]);
+								const double *d2 = reinterpret_cast<const double *>(ir_[vectorproduct.i2()]);
+								runtime::Vectorproduct(d0, d1, d2);
+								ci++;
+							}
+							break;
+						case bc::Code::kDeterminant:
+							{
+								const bc::Determinant &determinant(code.determinant());
+								const double *d1 = reinterpret_cast<const double *>(ir_[determinant.i1()]);
+								tmp_[determinant.f0()] = runtime::Determinant(determinant.k(), d1);
+								ci++;
+							}
+							break;
+						case bc::Code::kSelect2:
+							{
+								const bc::Select2 &select2(code.select2());
+								const double *d1 = reinterpret_cast<const double *>(ir_[select2.i1()]);
+								tmp_[select2.f0()] = runtime::Select2(d1, static_cast<int>(tmp_[select2.f2()]));
+								ci++;
+							}
+							break;
+						case bc::Code::kSelect3:
+							{
+								const bc::Select3 &select3(code.select3());
+								const double *d1 = reinterpret_cast<const double *>(ir_[select3.i1()]);
+								tmp_[select3.f0()] = runtime::Select3(select3.kr(), select3.kc(), d1,
+																	  static_cast<int>(tmp_[select3.f2()]),
+																	  static_cast<int>(tmp_[select3.f3()]));
+								ci++;
+							}
+							break;
+						case bc::Code::kSelrow:
+							{
+								const bc::Selrow &selrow(code.selrow());
+								stack.emplace(new double[selrow.kr()]);
+								double *d0 = stack.top().get();
+								const double *d1 = reinterpret_cast<const double *>(ir_[selrow.i1()]);
+								runtime::Selrow(d0, selrow.kr(), selrow.kc(), d1, static_cast<int>(tmp_[selrow.f2()]));
+								ci++;
+							}
+							break;
+						case bc::Code::kMult:
+							{
+								const bc::Mult &mult(code.mult());
+								stack.emplace(new double[mult.k()]);
+								double *d0 = stack.top().get();
+								ir_[mult.i0()] = reinterpret_cast<intptr_t>(d0);
+								const double *d2 = reinterpret_cast<const double *>(ir_[mult.i2()]);
+								runtime::Mult(d0, mult.k(), tmp_[mult.f1()], d2);
+								ci++;
+							}
+							break;
+						case bc::Code::kMmul:
+							{
+								const bc::Mmul &mmul(code.mmul());
+								stack.emplace(new double[mmul.kc() * mmul.kr()]);
+								double *d0 = stack.top().get();
+								ir_[mmul.i0()] = reinterpret_cast<intptr_t>(d0);
+								const double *d1 = reinterpret_cast<const double *>(ir_[mmul.i1()]);
+								const double *d2 = reinterpret_cast<const double *>(ir_[mmul.i2()]);
+								runtime::Mmul(d0, mmul.kr(), mmul.kx(), mmul.kc(), d1, d2);
+								ci++;
+							}
+							break;
+						default:
+							assert(false);
+							break;
 						}
 					}
 				}
 			}
+		}
 
 		// in case of empty byte code
 		if (nos == 0) return true;
@@ -1053,85 +1053,85 @@ private:
 		int ci = 0; // code index
 
 		int nos = static_cast<int>(shv_->size());
-    		for (;si < nos; si++) {
-				const bc::SectionHeader &sh(shv_->at(si));
-				int bib = bi;
-				int bie = bi + sh.nob();
-				const std::string &id(sh.id());
-				const Mounter &mounter(layout_->GetMounter(id));
-				int nos = mounter.size();
-				for (int k=0;k<nos;k++) { // for each sector
-					bi = bib; // reset block index
-					int offset = mounter.GetOffset(k);
-					for (;bi < bie; bi++) {
-						std::unique_ptr<CalculationDependency> cd(new CalculationDependency(si, k, bi));
+		for (;si < nos; si++) {
+			const bc::SectionHeader &sh(shv_->at(si));
+			int bib = bi;
+			int bie = bi + sh.nob();
+			const std::string &id(sh.id());
+			const Mounter &mounter(layout_->GetMounter(id));
+			int nos = mounter.size();
+			for (int k=0;k<nos;k++) { // for each sector
+				bi = bib; // reset block index
+				int offset = mounter.GetOffset(k);
+				for (;bi < bie; bi++) {
+					std::unique_ptr<CalculationDependency> cd(new CalculationDependency(si, k, bi));
 
-						const bc::BlockHeader &bh(bhv_->at(bi));
-						ci = code_offset_[bi];
-						int cib = ci;
-						int cie = cib + bh.noc();
-						for (;ci < cie; ci++) {
-							const bc::Code &code(cv_->at(ci));
-							switch (code.type()) {
-							case bc::Code::kLoad:
-								{
-									const bc::Load &load = code.load();
-									switch (load.lo()) {
-									case -1:
-										// nothing to do
-										break;
-									case -2:
-										// nothing to do
-										break;
-									default:
-										{
-											int addr = offset + load.so() + (layer_size_ * load.lo());
-											cd->AddLoadAddress(addr);
-										}
-										break;
+					const bc::BlockHeader &bh(bhv_->at(bi));
+					ci = code_offset_[bi];
+					int cib = ci;
+					int cie = cib + bh.noc();
+					for (;ci < cie; ci++) {
+						const bc::Code &code(cv_->at(ci));
+						switch (code.type()) {
+						case bc::Code::kLoad:
+							{
+								const bc::Load &load = code.load();
+								switch (load.lo()) {
+								case -1:
+									// nothing to do
+									break;
+								case -2:
+									// nothing to do
+									break;
+								default:
+									{
+										int addr = offset + load.so() + (layer_size_ * load.lo());
+										cd->AddLoadAddress(addr);
 									}
+									break;
 								}
-								break;
-							case bc::Code::kStore:
-								{
-									const bc::Store &store = code.store();
-									int addr = offset + store.so() + (layer_size_ * store.lo());
-									cd->SetStoreAddr(addr);
-								}
-								break;
-							case bc::Code::kRefer:
-								{
-									const bc::Refer &refer = code.refer();
-									switch (refer.lo()) {
-									case -1:
-									case -2:
-										// nothing to do
-										break;
-									default:
-										{
-											int addr = offset + refer.so() + (layer_size_ * refer.lo());
-											cd->AddLoadAddress(addr); // TODO: fix misnomer
-										}
-										break;
-									}
-								}
-								break;
-							case bc::Code::kSave:
-								{
-									const bc::Save &save = code.save();
-									int addr = offset + save.so() + (layer_size_ * save.lo());
-									cd->SetStoreAddr(addr); // TODO: fix misnomer
-								}
-								break;
-							default:
-								break;
 							}
+							break;
+						case bc::Code::kStore:
+							{
+								const bc::Store &store = code.store();
+								int addr = offset + store.so() + (layer_size_ * store.lo());
+								cd->SetStoreAddr(addr);
+							}
+							break;
+						case bc::Code::kRefer:
+							{
+								const bc::Refer &refer = code.refer();
+								switch (refer.lo()) {
+								case -1:
+								case -2:
+									// nothing to do
+									break;
+								default:
+									{
+										int addr = offset + refer.so() + (layer_size_ * refer.lo());
+										cd->AddLoadAddress(addr); // TODO: fix misnomer
+									}
+									break;
+								}
+							}
+							break;
+						case bc::Code::kSave:
+							{
+								const bc::Save &save = code.save();
+								int addr = offset + save.so() + (layer_size_ * save.lo());
+								cd->SetStoreAddr(addr); // TODO: fix misnomer
+							}
+							break;
+						default:
+							break;
 						}
-
-						cdv->push_back(std::move(cd));
 					}
+
+					cdv->push_back(std::move(cd));
 				}
 			}
+		}
 	}
 
 	void CollectReductionUnits(int nol, const FlowInboundMap *inbound,
