@@ -1,5 +1,5 @@
 /* -*- Mode: C++; tab-width: 4; indent-tabs-mode: t; c-basic-offset: 4 -*- vim:set ts=4 sw=4 sts=4 noet: */
-#include "compiler.hh"
+#include "compiler.h"
 
 #include <cstdlib>
 #include <cstdio>
@@ -9,8 +9,8 @@
 #include "compiler/bcc.h"
 #include "compiler/sort.h"
 #include "compiler/tac.h"
-#include "db/driver.hh"
-#include "method.hh"
+#include "db/driver.h"
+#include "method.h"
 
 using std::cerr;
 using std::endl;

@@ -3,12 +3,12 @@
 #include "config.h"
 #endif
 
-#include "sbml.hh"
+#include "sbml.h"
 
 #include "database.h"
 
 #define BOOST_TEST_MODULE test_load
-#include "test.hh"
+#include "test.h"
 
 BOOST_FIXTURE_TEST_SUITE(test_load, test::MemoryFixture)
 

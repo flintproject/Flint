@@ -3,7 +3,7 @@
 #include "config.h"
 #endif
 
-#include "sbml.hh"
+#include "sbml.h"
 
 #include <cassert>
 #include <cstdio>
@@ -16,9 +16,9 @@
 #include <vector>
 
 #include "db/query.h"
-#include "db/statement-driver.hh"
+#include "db/statement-driver.h"
 #include "db/variable-inserter.h"
-#include "sbml.hh"
+#include "sbml.h"
 
 using std::cerr;
 using std::endl;

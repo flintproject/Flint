@@ -3,7 +3,7 @@
 #include "config.h"
 #endif
 
-#include "job.hh"
+#include "job.h"
 
 #define BOOST_FILESYSTEM_NO_DEPRECATED
 #include <boost/filesystem.hpp>
@@ -11,12 +11,12 @@
 #include "database.h"
 #include "db/helper.h"
 #include "db/query.h"
-#include "db/tac-inserter.hh"
+#include "db/tac-inserter.h"
 #include "db/variable-inserter.h"
-#include "layout.hh"
+#include "layout.h"
 
 #define BOOST_TEST_MODULE test_evolve
-#include "test.hh"
+#include "test.h"
 
 
 namespace {
@@ -121,6 +121,6 @@ struct F : public test::MemoryFixture {
 
 BOOST_FIXTURE_TEST_SUITE(test_evolve, F)
 
-#include "common/runtime/call-testcases.hh"
+#include "common/runtime/call-testcases.h"
 
 BOOST_AUTO_TEST_SUITE_END()

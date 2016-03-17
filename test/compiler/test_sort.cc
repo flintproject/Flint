@@ -2,7 +2,7 @@
 #include "compiler/sort.h"
 
 #define BOOST_TEST_MODULE test_sort
-#include "test.hh"
+#include "test.h"
 
 struct F : public test::MemoryFixture {
 	F()

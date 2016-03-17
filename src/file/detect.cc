@@ -3,7 +3,7 @@
 #include "config.h"
 #endif
 
-#include "file.hh"
+#include "file.h"
 
 #include <cassert>
 #include <cstdio>

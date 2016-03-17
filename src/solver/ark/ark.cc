@@ -24,8 +24,8 @@
 
 #include "bc/index.h"
 #include "filter/cutter.h"
-#include "filter/writer.hh"
-#include "job.hh"
+#include "filter/writer.h"
+#include "job.h"
 #include "lo/layout.h"
 #include "solver.h"
 #include "solver/ark/auxv.h"

@@ -3,10 +3,10 @@
 #include "config.h"
 #endif
 
-#include "sedml.hh"
+#include "sedml.h"
 
 #define BOOST_TEST_MODULE test_read
-#include "test.hh"
+#include "test.h"
 
 BOOST_FIXTURE_TEST_SUITE(test_read, test::MemoryFixture)
 

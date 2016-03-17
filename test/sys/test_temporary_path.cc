@@ -6,7 +6,7 @@
 #include "sys/temporary_path.h"
 
 #define BOOST_TEST_MODULE test_temporary_path
-#include "test.hh"
+#include "test.h"
 
 struct F {
 	F() : temporary_path_(new TemporaryPath("foo")) {}

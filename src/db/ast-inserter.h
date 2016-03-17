@@ -5,7 +5,7 @@
 #include <boost/uuid/uuid.hpp>
 
 #include "sqlite3.h"
-#include "db/statement-driver.hh"
+#include "db/statement-driver.h"
 
 namespace flint {
 namespace db {

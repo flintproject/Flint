@@ -3,7 +3,7 @@
 #include "config.h"
 #endif
 
-#include "runtime.hh"
+#include "runtime.h"
 
 #include <cstdio>
 #include <iostream>

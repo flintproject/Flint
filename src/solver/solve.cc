@@ -5,7 +5,7 @@
 #include "config.h"
 #endif
 
-#include "job.hh"
+#include "job.h"
 #include "solver/ark.h"
 
 namespace flint {

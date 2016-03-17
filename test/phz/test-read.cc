@@ -3,14 +3,14 @@
 #include "config.h"
 #endif
 
-#include "phz.hh"
+#include "phz.h"
 
 #define BOOST_FILESYSTEM_NO_DEPRECATED
 #include <boost/filesystem.hpp>
 #include "database.h"
 
 #define BOOST_TEST_MODULE test_read
-#include "test.hh"
+#include "test.h"
 
 struct F : public test::MemoryFixture {
 

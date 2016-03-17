@@ -1,8 +1,5 @@
 include $(top_srcdir)/common.mk
 
-.h.hh:
-	install -m 0644 $< $@
-
 bc.pb.cc bc.pb.h: $(top_srcdir)/pb/bc.proto
 	$(PROTOC_EXECUTABLE) -I$(top_srcdir)/pb --cpp_out=./ $<
 

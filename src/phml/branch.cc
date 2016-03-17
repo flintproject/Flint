@@ -1,5 +1,5 @@
 /* -*- Mode: C++; tab-width: 4; indent-tabs-mode: t; c-basic-offset: 4 -*- vim:set ts=4 sw=4 sts=4 noet: */
-#include "branch.hh"
+#include "branch.h"
 
 #include <cstdio>
 #include <cstdlib>
@@ -12,7 +12,7 @@
 
 #include <boost/uuid/uuid_io.hpp>
 
-#include "db/statement-driver.hh"
+#include "db/statement-driver.h"
 #include "uuidgen.h"
 
 using std::cerr;

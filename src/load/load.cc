@@ -3,7 +3,7 @@
 #include "config.h"
 #endif
 
-#include "load.hh"
+#include "load.h"
 
 #include <cstdio>
 #include <cstring>
@@ -14,19 +14,19 @@
 #include <vector>
 
 #include "cas/dimension.h"
-#include "cellml.hh"
-#include "compiler.hh"
+#include "cellml.h"
+#include "compiler.h"
 #include "database.h"
-#include "db/driver.hh"
-#include "db/statement-driver.hh"
-#include "file.hh"
-#include "layout.hh"
-#include "load/param.hh"
-#include "load/var.hh"
-#include "phml.hh"
-#include "phz.hh"
-#include "runtime.hh"
-#include "sbml.hh"
+#include "db/driver.h"
+#include "db/statement-driver.h"
+#include "file.h"
+#include "layout.h"
+#include "load/param.h"
+#include "load/var.h"
+#include "phml.h"
+#include "phz.h"
+#include "runtime.h"
+#include "sbml.h"
 
 using std::cerr;
 using std::endl;

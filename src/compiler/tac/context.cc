@@ -12,7 +12,7 @@
 #include <boost/uuid/uuid_io.hpp>
 #include <boost/variant/recursive_variant.hpp>
 
-#include "lexer.hh"
+#include "lexer.h"
 
 using std::cerr;
 using std::endl;

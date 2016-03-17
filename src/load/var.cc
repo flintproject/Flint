@@ -3,7 +3,7 @@
 #include "config.h"
 #endif
 
-#include "load/var.hh"
+#include "load/var.h"
 
 #include <cassert>
 #include <cstdio>

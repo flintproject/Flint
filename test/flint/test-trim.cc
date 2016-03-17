@@ -8,7 +8,7 @@
 #include <libxml/xmlmemory.h>
 
 #define BOOST_TEST_MODULE test_trim
-#include "test.hh"
+#include "test.h"
 
 struct F {
 	F()

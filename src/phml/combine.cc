@@ -13,7 +13,7 @@
 #include <boost/uuid/uuid_io.hpp>
 
 #include "db/bridge-loader.h"
-#include "db/driver.hh"
+#include "db/driver.h"
 #include "db/eq-inserter.h"
 #include "db/query.h"
 #include "db/variable-inserter.h"

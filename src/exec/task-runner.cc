@@ -3,7 +3,7 @@
 #include "config.h"
 #endif
 
-#include "exec/task-runner.hh"
+#include "exec/task-runner.h"
 
 #include <atomic>
 #include <cassert>
@@ -18,18 +18,18 @@
 #include <boost/filesystem.hpp>
 
 #include "cas/dimension.h"
-#include "compiler.hh"
-#include "db/driver.hh"
-#include "db/read-only-driver.hh"
-#include "exec.hh"
-#include "exec/job-runner.hh"
-#include "exec/parameter.hh"
-#include "exec/progress.hh"
-#include "filter.hh"
-#include "job.hh"
-#include "layout.hh"
-#include "load.hh"
-#include "task.hh"
+#include "compiler.h"
+#include "db/driver.h"
+#include "db/read-only-driver.h"
+#include "exec.h"
+#include "exec/job-runner.h"
+#include "exec/parameter.h"
+#include "exec/progress.h"
+#include "filter.h"
+#include "job.h"
+#include "layout.h"
+#include "load.h"
+#include "task.h"
 
 using std::cerr;
 using std::endl;

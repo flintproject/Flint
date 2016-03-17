@@ -11,8 +11,8 @@
 #include "cas/dimension.h"
 #include "cas/icg.h"
 #include "cas/printer.h"
-#include "compiler.hh"
-#include "db/driver.hh"
+#include "compiler.h"
+#include "db/driver.h"
 #include "db/query.h"
 
 using std::cerr;

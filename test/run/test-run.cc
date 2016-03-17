@@ -3,12 +3,12 @@
 #include "config.h"
 #endif
 
-#include "run.hh"
+#include "run.h"
 
 #include "cli.pb.h"
 
 #define BOOST_TEST_MODULE test_run
-#include "test.hh"
+#include "test.h"
 
 struct F : public test::TemporaryWorkingDirectory {
 

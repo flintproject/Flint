@@ -14,7 +14,7 @@
 #include <boost/variant/recursive_variant.hpp>
 #include <boost/uuid/uuid.hpp>
 
-#include "lexer.hh"
+#include "lexer.h"
 #include "sqlite3.h"
 
 namespace flint {

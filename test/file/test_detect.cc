@@ -3,10 +3,10 @@
 #include "config.h"
 #endif
 
-#include "file.hh"
+#include "file.h"
 
 #define BOOST_TEST_MODULE test_detect
-#include "test.hh"
+#include "test.h"
 
 struct F {
 	file::Format format;

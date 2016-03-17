@@ -8,7 +8,7 @@
 
 #include <boost/uuid/uuid.hpp>
 
-#include "statement-driver.hh"
+#include "statement-driver.h"
 
 namespace flint {
 namespace db {

@@ -3,12 +3,12 @@
 #include "config.h"
 #endif
 
-#include "job.hh"
+#include "job.h"
 
 #include <memory>
 
 #define BOOST_TEST_MODULE test_path
-#include "test.hh"
+#include "test.h"
 
 struct F {
 	std::unique_ptr<char[]> path_;

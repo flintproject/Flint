@@ -3,7 +3,7 @@
 #include "config.h"
 #endif
 
-#include "phml.hh"
+#include "phml.h"
 
 #include <cassert>
 #include <cstdio>
@@ -20,8 +20,8 @@
 
 #include <libxml/xmlreader.h>
 
-#include "branch.hh"
-#include "db.hh"
+#include "branch.h"
+#include "db.h"
 #include "db/helper.h"
 #include "db/query.h"
 #include "flint/utf8string.h"
@@ -30,7 +30,7 @@
 #include "phml/database-driver.h"
 #include "phml/definition.h"
 #include "phml/definition_dumper.h"
-#include "phml/delay-arg-validator.hh"
+#include "phml/delay-arg-validator.h"
 #include "phml/edge.h"
 #include "phml/element.h"
 #include "phml/extra-implementation.h"
@@ -53,11 +53,11 @@
 #include "phml/timeseries.h"
 #include "phml/transition-form.h"
 #include "phml/unit.h"
-#include "reach.hh"
-#include "span.hh"
-#include "sprinkle.hh"
+#include "reach.h"
+#include "span.h"
+#include "sprinkle.h"
 #include "sqlite3.h"
-#include "ts.hh"
+#include "ts.h"
 
 using std::atoi;
 using std::cerr;

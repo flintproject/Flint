@@ -3,7 +3,7 @@
 #include "config.h"
 #endif
 
-#include "phml.hh"
+#include "phml.h"
 
 #include <cassert>
 #include <cstdio>
@@ -18,7 +18,7 @@
 #include "ipc.pb.h"
 #include "unit.pb.h"
 #include "bc/pack.h"
-#include "db/statement-driver.hh"
+#include "db/statement-driver.h"
 
 using std::cerr;
 using std::endl;

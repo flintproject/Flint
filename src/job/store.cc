@@ -3,7 +3,7 @@
 #include "config.h"
 #endif
 
-#include "job.hh"
+#include "job.h"
 
 #include <cassert>
 #include <cstdio>
@@ -22,7 +22,7 @@
 #include "lo.pb.h"
 
 #include "bc/index.h"
-#include "db/statement-driver.hh"
+#include "db/statement-driver.h"
 #include "lo/layout_loader.h"
 
 using std::cerr;

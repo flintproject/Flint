@@ -11,10 +11,10 @@
 #include <memory>
 
 #include "cas.h"
-#include "job.hh"
+#include "job.h"
 #include "lo/layout.h"
 #include "lo/layout_loader.h"
-#include "runtime/flow.hh"
+#include "runtime/flow.h"
 #include "runtime/processor.h"
 #include "solver.h"
 #include "solver/ark/ark.h"

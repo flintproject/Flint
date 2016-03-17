@@ -15,7 +15,7 @@
 #include <boost/uuid/uuid_io.hpp>
 
 #include "db/query.h"
-#include "method/helper.hh"
+#include "method/helper.h"
 
 #include "sqlite3.h"
 

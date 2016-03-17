@@ -3,7 +3,7 @@
 #include "config.h"
 #endif
 
-#include "job.hh"
+#include "job.h"
 
 #include <algorithm>
 #include <cassert>
@@ -26,14 +26,14 @@
 #include "bc/locater.h"
 #include "bc/mounter.h"
 #include "bc/pack.h"
-#include "db/read-only-driver.hh"
+#include "db/read-only-driver.h"
 #include "filter/cutter.h"
 #include "lo/layout.h"
 #include "lo/layout_loader.h"
 #include "runtime/history.h"
 #include "runtime/processor.h"
 #include "runtime/timeseries.h"
-#include "ts.hh"
+#include "ts.h"
 
 using std::cerr;
 using std::endl;

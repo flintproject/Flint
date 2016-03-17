@@ -4,7 +4,7 @@
 #include "db/helper.h"
 
 #define BOOST_TEST_MODULE test_eq_vectorproduct
-#include "test.hh"
+#include "test.h"
 
 struct F : public test::MemoryFixture {
 	F()

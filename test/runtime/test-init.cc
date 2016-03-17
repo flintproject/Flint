@@ -3,18 +3,18 @@
 #include "config.h"
 #endif
 
-#include "runtime.hh"
+#include "runtime.h"
 
 #include "compiler/bcc.h"
 #include "database.h"
 #include "db/helper.h"
 #include "db/query.h"
-#include "db/tac-inserter.hh"
+#include "db/tac-inserter.h"
 #include "db/variable-inserter.h"
-#include "layout.hh"
+#include "layout.h"
 
 #define BOOST_TEST_MODULE test_init
-#include "test.hh"
+#include "test.h"
 
 
 namespace {
@@ -103,7 +103,7 @@ struct F : public test::MemoryFixture {
 
 BOOST_FIXTURE_TEST_SUITE(test_init, F)
 
-#include "common/runtime/call-testcases.hh"
+#include "common/runtime/call-testcases.h"
 
 BOOST_AUTO_TEST_CASE(same_seed)
 {

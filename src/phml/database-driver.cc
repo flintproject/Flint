@@ -39,7 +39,7 @@
 #include "phml/time-discretization.h"
 #include "phml/timeseries.h"
 #include "phml/unit.h"
-#include "reduction.hh"
+#include "reduction.h"
 
 using std::cerr;
 using std::endl;

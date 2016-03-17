@@ -3,7 +3,7 @@
 #include "config.h"
 #endif
 
-#include "run/spec.hh"
+#include "run/spec.h"
 
 #include <cassert>
 #include <cstdlib>

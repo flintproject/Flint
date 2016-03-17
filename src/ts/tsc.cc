@@ -1,5 +1,5 @@
 /* -*- Mode: C++; tab-width: 4; indent-tabs-mode: t; c-basic-offset: 4 -*- vim:set ts=4 sw=4 sts=4 noet: */
-#include "ts.hh"
+#include "ts.h"
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -25,7 +25,7 @@
 #include <boost/uuid/uuid_io.hpp>
 
 #include "csv/export.h"
-#include "db/driver.hh"
+#include "db/driver.h"
 #include "db/eq-inserter.h"
 #include "db/query.h"
 #include "db/timeseries-loader.h"

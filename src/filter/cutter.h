@@ -9,7 +9,7 @@
 #include "lo.pb.h"
 
 #include "filter/filter_loader.h"
-#include "filter/writer.hh"
+#include "filter/writer.h"
 
 namespace flint {
 namespace filter {

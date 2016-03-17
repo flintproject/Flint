@@ -3,7 +3,7 @@
 #include "config.h"
 #endif
 
-#include "layout.hh"
+#include "layout.h"
 
 #include <cassert>
 #include <cstdio>
@@ -24,7 +24,7 @@
 
 #include "bc/pack.h"
 #include "db/space_loader.h"
-#include "db/statement-driver.hh"
+#include "db/statement-driver.h"
 #include "db/variable-loader.h"
 #include "variable.h"
 

@@ -3,15 +3,15 @@
 #include "config.h"
 #endif
 
-#include "layout.hh"
+#include "layout.h"
 
 #define BOOST_FILESYSTEM_NO_DEPRECATED
 #include <boost/filesystem.hpp>
 #include "database.h"
-#include "phml.hh"
+#include "phml.h"
 
 #define BOOST_TEST_MODULE test_generate
-#include "test.hh"
+#include "test.h"
 
 struct F : public test::MemoryFixture {
 

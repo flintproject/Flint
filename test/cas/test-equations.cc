@@ -4,7 +4,7 @@
 #include "db/helper.h"
 
 #define BOOST_TEST_MODULE test_equations
-#include "test.hh"
+#include "test.h"
 
 const char *kUnaryFunctions[] = {
 	"abs",

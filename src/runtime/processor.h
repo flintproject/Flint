@@ -25,13 +25,13 @@
 #include "bc/bc_loader.h"
 #include "lo/layout.h"
 #include "numeric/prng.h"
-#include "runtime/flow.hh"
+#include "runtime/flow.h"
 #include "runtime/matrix.h"
 #include "runtime/section-context.h"
 #include "runtime/timeseries.h"
 
-#include "calculation-dependency.hh"
-#include "execution-unit.hh"
+#include "calculation-dependency.h"
+#include "execution-unit.h"
 
 namespace flint {
 namespace {

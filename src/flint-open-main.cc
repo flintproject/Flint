@@ -9,7 +9,7 @@
 #include <iostream>
 
 #include "bc/binary.h"
-#include "load.hh"
+#include "load.h"
 
 using std::cerr;
 using std::endl;

@@ -7,7 +7,7 @@
 #include <boost/spirit/include/phoenix.hpp>
 #include <boost/spirit/include/qi.hpp>
 
-#include "method/helper.hh"
+#include "method/helper.h"
 
 namespace flint {
 namespace method {

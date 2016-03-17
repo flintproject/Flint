@@ -3,7 +3,7 @@
 
 #include <sstream>
 #define BOOST_TEST_MODULE test_math_dumper
-#include "test.hh"
+#include "test.h"
 
 struct GF {
 	GF() {

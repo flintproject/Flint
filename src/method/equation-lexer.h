@@ -6,7 +6,7 @@
 
 #include <boost/spirit/include/lex_lexertl.hpp>
 
-#include "lexer.hh"
+#include "lexer.h"
 
 namespace flint {
 namespace method {

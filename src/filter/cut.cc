@@ -3,7 +3,7 @@
 #include "config.h"
 #endif
 
-#include "filter.hh"
+#include "filter.h"
 
 #include <cstdio>
 #include <cstdlib>

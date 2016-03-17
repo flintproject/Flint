@@ -3,7 +3,7 @@
 #include "config.h"
 #endif
 
-#include "filter.hh"
+#include "filter.h"
 
 #include <algorithm>
 #include <cassert>
@@ -24,8 +24,8 @@
 #include "lo.pb.h"
 
 #include "bc/index.h"
-#include "db/read-only-driver.hh"
-#include "db/statement-driver.hh"
+#include "db/read-only-driver.h"
+#include "db/statement-driver.h"
 #include "filter/spec_loader.h"
 #include "lo/layout_loader.h"
 

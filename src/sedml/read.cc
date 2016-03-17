@@ -3,7 +3,7 @@
 #include "config.h"
 #endif
 
-#include "sedml.hh"
+#include "sedml.h"
 
 #include <cassert>
 #include <cstdio>

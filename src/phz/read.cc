@@ -3,7 +3,7 @@
 #include "config.h"
 #endif
 
-#include "phz.hh"
+#include "phz.h"
 
 #include <cassert>
 #include <cerrno>

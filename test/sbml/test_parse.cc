@@ -3,13 +3,13 @@
 #include "config.h"
 #endif
 
-#include "sbml.hh"
+#include "sbml.h"
 
 #include "database.h"
-#include "db/driver.hh"
+#include "db/driver.h"
 
 #define BOOST_TEST_MODULE test_parse
-#include "test.hh"
+#include "test.h"
 
 BOOST_FIXTURE_TEST_SUITE(test_parse, test::MemoryFixture)
 

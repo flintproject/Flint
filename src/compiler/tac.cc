@@ -22,8 +22,8 @@
 #include "compiler/tac/context.h"
 #include "db/helper.h"
 #include "db/query.h"
-#include "db/tac-inserter.hh"
-#include "lexer.hh"
+#include "db/tac-inserter.h"
+#include "lexer.h"
 
 using std::cerr;
 using std::endl;

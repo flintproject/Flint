@@ -3,7 +3,7 @@
 #include "config.h"
 #endif
 
-#include "job.hh"
+#include "job.h"
 
 #include <cassert>
 #include <cstdio>

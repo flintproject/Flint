@@ -6,7 +6,7 @@
 #include "db/variable-inserter.h"
 
 #define BOOST_TEST_MODULE test_tac
-#include "test.hh"
+#include "test.h"
 
 struct F : public test::MemoryFixture {
 	F()

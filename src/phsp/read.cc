@@ -3,7 +3,7 @@
 #include "config.h"
 #endif
 
-#include "phsp.hh"
+#include "phsp.h"
 
 #include <cstdio>
 #include <cstdlib>

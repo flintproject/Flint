@@ -3,14 +3,14 @@
 #include "config.h"
 #endif
 
-#include "phsp.hh"
+#include "phsp.h"
 
 #define BOOST_FILESYSTEM_NO_DEPRECATED
 #include <boost/filesystem.hpp>
-#include "sedml.hh"
+#include "sedml.h"
 
 #define BOOST_TEST_MODULE test_read
-#include "test.hh"
+#include "test.h"
 
 BOOST_FIXTURE_TEST_SUITE(test_read, test::MemoryFixture)
 

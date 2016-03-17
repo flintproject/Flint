@@ -1,11 +1,11 @@
 /* -*- Mode: C++; tab-width: 4; indent-tabs-mode: t; c-basic-offset: 4 -*- vim:set ts=4 sw=4 sts=4 noet: */
-#ifndef FLINT_METHOD_PRINTER_HH_
-#define FLINT_METHOD_PRINTER_HH_
+#ifndef FLINT_METHOD_PRINTER_H_
+#define FLINT_METHOD_PRINTER_H_
 
 #include <iostream>
 #include <string>
 
-#include "method.hh"
+#include "method.h"
 
 namespace flint {
 namespace method {

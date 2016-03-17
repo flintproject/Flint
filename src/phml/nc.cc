@@ -3,7 +3,7 @@
 #include "config.h"
 #endif
 
-#include "phml.hh"
+#include "phml.h"
 
 #include <cassert>
 #include <cstdlib>
@@ -12,7 +12,7 @@
 #include <iostream>
 #include <memory>
 
-#include "db/statement-driver.hh"
+#include "db/statement-driver.h"
 #include "phml.pb.h"
 
 using std::cerr;

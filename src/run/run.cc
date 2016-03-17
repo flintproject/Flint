@@ -3,7 +3,7 @@
 #include "config.h"
 #endif
 
-#include "run.hh"
+#include "run.h"
 
 #include <cstdio>
 #include <cstdlib>
@@ -14,17 +14,17 @@
 #include <boost/filesystem.hpp>
 
 #include "cas/dimension.h"
-#include "compiler.hh"
-#include "db/driver.hh"
-#include "db/statement-driver.hh"
-#include "file.hh"
-#include "filter.hh"
-#include "job.hh"
-#include "load.hh"
-#include "run/spec.hh"
+#include "compiler.h"
+#include "db/driver.h"
+#include "db/statement-driver.h"
+#include "file.h"
+#include "filter.h"
+#include "job.h"
+#include "load.h"
+#include "run/spec.h"
 #include "system.h"
-#include "task.hh"
-#include "task/config-reader.hh"
+#include "task.h"
+#include "task/config-reader.h"
 #include "utf8path.h"
 
 #include "cli.pb.h"

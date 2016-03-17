@@ -4,11 +4,11 @@
 #include <boost/uuid/string_generator.hpp>
 
 #define BOOST_TEST_MODULE test_bcc
-#include "test.hh"
+#include "test.h"
 
 #include "db/helper.h"
 #include "db/query.h"
-#include "db/tac-inserter.hh"
+#include "db/tac-inserter.h"
 
 struct F : test::MemoryFixture {
 	F()

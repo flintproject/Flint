@@ -3,12 +3,12 @@
 #include "config.h"
 #endif
 
-#include "phml.hh"
+#include "phml.h"
 
 #include "database.h"
 
 #define BOOST_TEST_MODULE test_uot
-#include "test.hh"
+#include "test.h"
 
 struct F : public test::MemoryFixture {
 

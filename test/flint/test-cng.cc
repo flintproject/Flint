@@ -8,7 +8,7 @@
 #include <libxml/xmlmemory.h>
 
 #define BOOST_TEST_MODULE test_cng
-#include "test.hh"
+#include "test.h"
 
 struct F {
 	F()

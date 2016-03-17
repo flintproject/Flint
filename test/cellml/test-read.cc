@@ -3,12 +3,12 @@
 #include "config.h"
 #endif
 
-#include "cellml.hh"
+#include "cellml.h"
 
 #include "database.h"
 
 #define BOOST_TEST_MODULE test_read
-#include "test.hh"
+#include "test.h"
 
 BOOST_FIXTURE_TEST_SUITE(test_read, test::MemoryFixture)
 

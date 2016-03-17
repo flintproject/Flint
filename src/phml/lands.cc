@@ -3,7 +3,7 @@
 #include "config.h"
 #endif
 
-#include "phml.hh"
+#include "phml.h"
 
 #include <cassert>
 #include <cstdio>
@@ -15,7 +15,7 @@
 
 #include <boost/rational.hpp>
 
-#include "db/statement-driver.hh"
+#include "db/statement-driver.h"
 #include "ipc.pb.h"
 #include "phml.pb.h"
 #include "bc/pack.h"

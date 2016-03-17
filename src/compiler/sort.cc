@@ -22,10 +22,10 @@
 #include <boost/uuid/uuid_io.hpp>
 #include <boost/variant/recursive_variant.hpp>
 
-#include "db/driver.hh"
+#include "db/driver.h"
 #include "db/query.h"
-#include "db/statement-driver.hh"
-#include "lexer.hh"
+#include "db/statement-driver.h"
+#include "lexer.h"
 
 using std::cerr;
 using std::endl;

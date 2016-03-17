@@ -1,5 +1,5 @@
 /* -*- Mode: C++; tab-width: 4; indent-tabs-mode: t; c-basic-offset: 4 -*- vim:set ts=4 sw=4 sts=4 noet: */
-#include "method.hh"
+#include "method.h"
 
 #include <cassert>
 #include <cstdio>
@@ -18,7 +18,7 @@
 #include "db/query.h"
 #include "method/equation-grammar.h"
 #include "method/equation-lexer.h"
-#include "method/helper.hh"
+#include "method/helper.h"
 #include "method/parser.h"
 #include "method/printer.h"
 

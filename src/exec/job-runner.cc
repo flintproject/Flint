@@ -3,7 +3,7 @@
 #include "config.h"
 #endif
 
-#include "exec/job-runner.hh"
+#include "exec/job-runner.h"
 
 #include <cstdio>
 #include <cstdlib>
@@ -13,11 +13,11 @@
 #define BOOST_FILESYSTEM_NO_DEPRECATED
 #include <boost/filesystem.hpp>
 
-#include "compiler.hh"
-#include "db/read-only-driver.hh"
-#include "exec/task-runner.hh"
-#include "job.hh"
-#include "runtime.hh"
+#include "compiler.h"
+#include "db/read-only-driver.h"
+#include "exec/task-runner.h"
+#include "job.h"
+#include "runtime.h"
 
 using std::cerr;
 using std::endl;

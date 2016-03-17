@@ -3,7 +3,7 @@
 #include "config.h"
 #endif
 
-#include "job.hh"
+#include "job.h"
 
 #include <cstdio>
 #include <cstdlib>
@@ -14,18 +14,18 @@
 #include <boost/filesystem.hpp>
 
 #include "bc/binary.h"
-#include "compiler.hh"
+#include "compiler.h"
 #include "database.h"
-#include "db/driver.hh"
-#include "db/read-only-driver.hh"
-#include "exec.hh"
-#include "filter.hh"
-#include "job.hh"
-#include "phsp.hh"
-#include "sedml.hh"
+#include "db/driver.h"
+#include "db/read-only-driver.h"
+#include "exec.h"
+#include "filter.h"
+#include "job.h"
+#include "phsp.h"
+#include "sedml.h"
 #include "solver.h"
-#include "task.hh"
-#include "task/config-reader.hh"
+#include "task.h"
+#include "task/config-reader.h"
 
 using std::cerr;
 using std::endl;

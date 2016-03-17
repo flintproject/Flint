@@ -1,5 +1,5 @@
 /* -*- Mode: C++; tab-width: 4; indent-tabs-mode: t; c-basic-offset: 4 -*- vim:set ts=4 sw=4 sts=4 noet: */
-#include "phml.hh"
+#include "phml.h"
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -19,10 +19,10 @@
 #include <boost/uuid/uuid_io.hpp>
 
 #include "database.h"
-#include "db/driver.hh"
+#include "db/driver.h"
 #include "phml/combine.h"
 #include "phml/import.h"
-#include "sbml.hh"
+#include "sbml.h"
 #include "utf8path.h"
 
 #include "system.h"

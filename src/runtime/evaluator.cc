@@ -28,7 +28,7 @@
 #include "lo/layout_loader.h"
 #include "runtime/processor.h"
 #include "runtime/timeseries.h"
-#include "ts.hh"
+#include "ts.h"
 
 using std::cerr;
 using std::endl;

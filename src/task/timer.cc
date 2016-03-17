@@ -3,7 +3,7 @@
 #include "config.h"
 #endif
 
-#include "task.hh"
+#include "task.h"
 
 #include <cassert>
 #include <cstdio>

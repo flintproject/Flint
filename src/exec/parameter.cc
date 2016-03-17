@@ -3,7 +3,7 @@
 #include "config.h"
 #endif
 
-#include "exec/parameter.hh"
+#include "exec/parameter.h"
 
 #include <cassert>
 #include <cstdio>

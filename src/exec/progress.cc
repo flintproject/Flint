@@ -3,7 +3,7 @@
 #include "config.h"
 #endif
 
-#include "exec/progress.hh"
+#include "exec/progress.h"
 
 #include <chrono>
 #include <cstdint>

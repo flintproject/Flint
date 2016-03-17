@@ -5,7 +5,7 @@
 #include <iostream>
 
 #include "bc/binary.h"
-#include "run.hh"
+#include "run.h"
 
 using std::cerr;
 using std::endl;

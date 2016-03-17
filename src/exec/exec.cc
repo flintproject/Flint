@@ -3,7 +3,7 @@
 #include "config.h"
 #endif
 
-#include "exec.hh"
+#include "exec.h"
 
 #include <cassert>
 #include <cstdio>
@@ -16,11 +16,11 @@
 #include <thread>
 #include <vector>
 
-#include "db/driver.hh"
-#include "exec/task-runner.hh"
+#include "db/driver.h"
+#include "exec/task-runner.h"
 #include "flint/process.h"
-#include "phsp.hh"
-#include "sedml.hh"
+#include "phsp.h"
+#include "sedml.h"
 
 using std::cerr;
 using std::endl;

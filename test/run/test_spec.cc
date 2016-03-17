@@ -3,15 +3,15 @@
 #include "config.h"
 #endif
 
-#include "run/spec.hh"
+#include "run/spec.h"
 
-#include "cellml.hh"
+#include "cellml.h"
 #include "database.h"
-#include "phml.hh"
-#include "sbml.hh"
+#include "phml.h"
+#include "sbml.h"
 
 #define BOOST_TEST_MODULE test_spec
-#include "test.hh"
+#include "test.h"
 
 struct F : public test::MemoryFixture {
 

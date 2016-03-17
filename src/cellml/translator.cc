@@ -21,7 +21,7 @@
 #include "db/helper.h"
 #include "db/query.h"
 #include "db/reach-driver.h"
-#include "db/statement-driver.hh"
+#include "db/statement-driver.h"
 #include "db/variable-inserter.h"
 #include "modelpath.h"
 #include "sqlite3.h"
