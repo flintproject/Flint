@@ -73,6 +73,7 @@ libflintxx_la_SOURCES = \
     lo.pb.cc \
     phml.pb.cc \
     unit.pb.cc \
+    background.cc \
     cas/dimension.cc \
     cas/eq.cc \
     cas/equation.cc \
@@ -204,9 +205,9 @@ flint_cli_LDFLAGS = $(BOOST_PROGRAM_OPTIONS_LDFLAGS)
 flint_cli_LDADD = libflintxx.la libflint.la libsqlite3.la $(PROTOBUF_LIBS) $(BOOST_PROGRAM_OPTIONS_LIBS)
 flint_cli_SOURCES = flint-cli-main.cc
 
-flint_exec_CPPFLAGS = $(BOOST_CPPFLAGS)
+flint_exec_CPPFLAGS = $(PROTOBUF_CFLAGS) $(BOOST_CPPFLAGS)
 flint_exec_LDFLAGS = $(BOOST_FILESYSTEM_LDFLAGS) $(BOOST_SYSTEM_LDFLAGS)
-flint_exec_LDADD = libflintxx.la libflint.la libsqlite3.la $(BOOST_FILESYSTEM_LIBS) $(BOOST_SYSTEM_LIBS)
+flint_exec_LDADD = libflintxx.la libflint.la libsqlite3.la $(PROTOBUF_LIBS) $(BOOST_FILESYSTEM_LIBS) $(BOOST_SYSTEM_LIBS)
 flint_exec_SOURCES = flint-exec-main.cc
 
 flint_lodbg_CPPFLAGS = $(PROTOBUF_CFLAGS) $(BOOST_CPPFLAGS)

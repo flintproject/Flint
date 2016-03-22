@@ -3,6 +3,20 @@ package cli;
 option java_package = "jp.physiome";
 option java_outer_classname = "Cli";
 
+message ExecOption {
+
+  required string sedml_filename = 1; // in UTF-8
+  required string phsp_filename = 2; // in UTF-8
+
+  /*
+   * If this field is present, the process must wait for acquiring the exclusive
+   * lock of the file. Moreover, it should die immediately after the lock has been
+   * acquired.
+   */
+  optional string lock_filename = 3;  // in UTF-8
+
+}
+
 message RunOption {
 
   required string model_filename = 1;
@@ -10,5 +24,10 @@ message RunOption {
   optional string error_filename = 3;
   optional int32 granularity = 4;
   optional string spec_filename = 5;
+
+  /*
+   * See the description in ExecOption.
+   */
+  optional string lock_filename = 6;
 
 }

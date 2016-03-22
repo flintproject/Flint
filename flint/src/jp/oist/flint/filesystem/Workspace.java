@@ -15,11 +15,8 @@ import java.util.UUID;
 public class Workspace {
 
     private static final String LOCK_FILE_NAME = "flint.lock";
-    private static final String LOG_FILE_NAME = "flint.log";
 
     private final static String WORKSPACE_NAME;
-
-    private static FileLock mFileLock; 
 
     static {
         WORKSPACE_NAME = new File(".flint", UUID.randomUUID().toString()).getPath();
@@ -38,9 +35,8 @@ public class Workspace {
                 System.exit(1);
             }
             lockFile.deleteOnExit();
-            FileOutputStream lockStream = new FileOutputStream(lockFile);
-            FileChannel lockChannel = lockStream.getChannel();
-            mFileLock = lockChannel.lock();
+            LockThread lockThread = new LockThread(lockFile);
+            lockThread.start();
 
             clear();
         } catch (IOException ioe) {
@@ -99,6 +95,10 @@ public class Workspace {
         return new File(System.getProperty("user.home"), WORKSPACE_NAME);
     }
 
+    public static File getLockFile() {
+        return new File(getFile(), LOCK_FILE_NAME);
+    }
+
     public static File createTempFile(String prefix, String suffix) throws IOException {
         // Prefix must be at least three characters long
         // See
@@ -132,6 +132,33 @@ public class Workspace {
 
         if (!target.delete()) {
             Logger.getRootLogger().error("failed to delete " + target);
+        }
+    }
+
+    private static class LockThread extends Thread {
+
+        private final File mFile;
+
+        public LockThread(File file) {
+            mFile = file;
+            setDaemon(true);
+        }
+
+        @Override
+        public void run() {
+            for (;;) {
+                try {
+                    FileOutputStream fos = new FileOutputStream(mFile);
+                    FileChannel fc = fos.getChannel();
+                    try (FileLock lock = fc.lock()) {
+                        assert lock.isValid();
+                        assert !lock.isShared();
+                        Thread.sleep(Long.MAX_VALUE);
+                    }
+                } catch (InterruptedException | IOException e) {
+                    Logger.getRootLogger().fatal("unlocked " + mFile.toString() + ": " + e.getMessage());
+                }
+            }
         }
     }
 

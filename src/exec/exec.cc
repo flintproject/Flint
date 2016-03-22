@@ -18,6 +18,7 @@
 
 #include "db/driver.h"
 #include "exec/task-runner.h"
+#include "flint/background.h"
 #include "flint/process.h"
 #include "phsp.h"
 #include "sedml.h"
@@ -112,15 +113,17 @@ bool RunTasks(sqlite3 *db)
 
 }
 
-bool Exec(const char *sedml_file, const char *phsp_file)
+bool Exec(const cli::ExecOption &option)
 {
+	if (option.has_lock_filename())
+		InitializeBackgroundProcess(option.lock_filename().c_str());
 	if (!CreatePidTxt())
 		return false;
 	db::Driver driver("x.db");
 	sqlite3 *db = driver.db();
-	if (!sedml::Read(sedml_file, db))
+	if (!sedml::Read(option.sedml_filename().c_str(), db))
 		return false;
-	if (!phsp::Read(phsp_file, db))
+	if (!phsp::Read(option.phsp_filename().c_str(), db))
 		return false;
 	return RunTasks(db);
 }

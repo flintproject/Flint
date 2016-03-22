@@ -4,6 +4,8 @@
 #include <cstring>
 #include <iostream>
 
+#include "cli.pb.h"
+
 #include "bc/binary.h"
 #include "exec.h"
 
@@ -24,7 +26,7 @@ void Usage()
 
 int main(int argc, char *argv[])
 {
-	const size_t kInputLength = 2048;
+	const size_t kInputLength = 4096;
 
 	if (argc == 2) {
 		Usage();
@@ -37,27 +39,17 @@ int main(int argc, char *argv[])
 
 	RequestBinaryStdio();
 	// read input parameters from stdin
-	char filenames[kInputLength]; // FIXME
-	size_t s = std::fread(filenames, 1, kInputLength, stdin);
-	if (s == 0) {
-		cerr << "failed to read SEDML/PHSP file names" << endl;
+	char input[kInputLength]; // FIXME
+	size_t size = std::fread(input, 1, kInputLength, stdin);
+	if (size == 0) {
+		cerr << "failed to read the input" << endl;
 		return EXIT_FAILURE;
 	}
-	int num_nulls = 0;
-	for (size_t i=0;i<s;i++) {
-		if (!filenames[i]) {
-			if (++num_nulls == 2) {
-				break;
-			}
-		}
-	}
-	if (num_nulls < 2) {
-		cerr << "failed to read SEDML/PHSP file names: " << num_nulls << endl;
+	cli::ExecOption option;
+	if (!option.ParseFromArray(input, size)) {
+		cerr << "failed to parse the input" << endl;
 		return EXIT_FAILURE;
 	}
-	const char *sedml_filename = filenames;
-	const char *phsp_filename = filenames;
-	while (*phsp_filename++) {}
 
-	return exec::Exec(sedml_filename, phsp_filename) ? EXIT_SUCCESS : EXIT_FAILURE;
+	return exec::Exec(option) ? EXIT_SUCCESS : EXIT_FAILURE;
 }

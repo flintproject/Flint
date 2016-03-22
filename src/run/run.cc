@@ -19,6 +19,7 @@
 #include "db/statement-driver.h"
 #include "file.h"
 #include "filter.h"
+#include "flint/background.h"
 #include "job.h"
 #include "load.h"
 #include "run/spec.h"
@@ -80,6 +81,9 @@ bool Run(const char *input, int size)
 			return false;
 		}
 	}
+
+	if (option.has_lock_filename())
+		InitializeBackgroundProcess(option.lock_filename().c_str());
 
 	if (!load::Load(option.model_filename().c_str(), load::kRun))
 		return false;

@@ -4,6 +4,8 @@
 
 #include "sqlite3.h"
 
+#include "cli.pb.h"
+
 namespace flint {
 namespace exec {
 
@@ -14,10 +16,9 @@ namespace exec {
 int Enum(sqlite3 *db);
 
 /*
- * Both sedml_file and phsp_file are encoded in UTF-8.
  * Return true in case of success, false otherwise.
  */
-bool Exec(const char *sedml_file, const char *phsp_file);
+bool Exec(const cli::ExecOption &option);
 
 }
 }
