@@ -2,6 +2,7 @@
 #include "flint/background.h"
 
 #include <cstdio>
+#include <cstdlib>
 #include <cstring>
 #include <iostream>
 #include <thread>
@@ -32,7 +33,7 @@ bool WaitForLockAndDie(const char *filename)
 		 << " was released."
 		 << endl;
 	cerr << "So this simulation process should also be shutdown, bye." << endl;
-	std::_Exit(1);
+	std::_Exit(EXIT_FAILURE);
 }
 
 }
