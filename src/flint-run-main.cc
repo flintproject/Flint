@@ -4,6 +4,8 @@
 #include <cstring>
 #include <iostream>
 
+#include "cli.pb.h"
+
 #include "bc/binary.h"
 #include "run.h"
 
@@ -43,5 +45,10 @@ int main(int argc, char *argv[])
 		cerr << "failed to read the input" << endl;
 		return EXIT_FAILURE;
 	}
-	return run::Run(buffer, (int)s) ? EXIT_SUCCESS : EXIT_FAILURE;
+	cli::RunOption option;
+	if (!option.ParseFromArray(buffer, s)) {
+		cerr << "failed to parse the input" << endl;
+		return EXIT_FAILURE;
+	}
+	return run::Run(option) ? EXIT_SUCCESS : EXIT_FAILURE;
 }

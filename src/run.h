@@ -2,13 +2,15 @@
 #ifndef FLINT_RUN_H_
 #define FLINT_RUN_H_
 
+#include "cli.pb.h"
+
 namespace flint {
 namespace run {
 
 /*
  * Return true in case of success, false otherwise.
  */
-bool Run(const char *input, int size);
+bool Run(const cli::RunOption &option);
 
 }
 }

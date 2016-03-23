@@ -28,8 +28,6 @@
 #include "task/config-reader.h"
 #include "utf8path.h"
 
-#include "cli.pb.h"
-
 using std::cerr;
 using std::endl;
 using std::perror;
@@ -64,14 +62,8 @@ public:
 
 }
 
-bool Run(const char *input, int size)
+bool Run(const cli::RunOption &option)
 {
-	cli::RunOption option;
-	if (!option.ParseFromArray(input, size)) {
-		cerr << "failed to parse the input" << endl;
-		return false;
-	}
-
 	// redirect errors if requested
 	if (option.has_error_filename()) {
 		boost::filesystem::path error_path = GetPathFromUtf8(option.error_filename().c_str());
