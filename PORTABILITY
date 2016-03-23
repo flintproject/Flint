@@ -18,7 +18,7 @@ $ scl enable devtoolset-3 bash
 == RHEL/CentOS 7
 
 Install necessary tools for building and installing Flint with:
-$ sudo yum install gcc gcc-c++ autoconf automake libtool java-1.7.0-openjdk \
+$ sudo yum install gcc gcc-c++ autoconf automake libtool cmake java-1.7.0-openjdk \
     wget zlib-devel
 
 
@@ -27,21 +27,21 @@ $ sudo yum install gcc gcc-c++ autoconf automake libtool java-1.7.0-openjdk \
 We do not have a Debian package (.deb) for Flint yet.
 Before building Flint, you will want to install prerequisite Debian packages
 as follows:
-$ sudo apt-get install gcc g++ autoconf automake libtool openjdk-7-jdk \
+$ sudo apt-get install gcc g++ autoconf automake libtool cmake openjdk-7-jdk \
     pkgconf zlib1g-dev
 
 
 == Fedora 23
 
 Use dnf(8) to install required packages for building Flint:
-$ sudo dnf install gcc gcc-c++ autoconf automake libtool java-1.8.0-openjdk \
+$ sudo dnf install gcc gcc-c++ autoconf automake libtool cmake java-1.8.0-openjdk \
     wget zlib-devel
 
 
 == Ubuntu 14.04.3 LTS (Trusty Tahr)
 
 All you have to do for installing necessary tools is:
-$ sudo apt-get install g++ autoconf automake libtool openjdk-7-jdk
+$ sudo apt-get install g++ autoconf automake libtool cmake openjdk-7-jdk
 
 
 * References
