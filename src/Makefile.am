@@ -152,6 +152,7 @@ libflintxx_la_SOURCES = \
     phml/target-pq.cc \
     phml/transition-form.cc \
     phml/unit-of-time.cc \
+    phml/validator.cc \
     phsp/read.cc \
     phz/read.cc \
     reduction.cc \

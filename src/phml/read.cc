@@ -53,6 +53,7 @@
 #include "phml/timeseries.h"
 #include "phml/transition-form.h"
 #include "phml/unit.h"
+#include "phml/validator.h"
 #include "reach.h"
 #include "span.h"
 #include "sprinkle.h"
@@ -2379,6 +2380,12 @@ bool Read(sqlite3 *db)
 		if (reader->Read() < 0) return false;
 	}
 
+	// validate the model immediately after reading it
+	{
+		VariableDefinitionValidator vdv(db);
+		if (!vdv.Validate())
+			return false;
+	}
 	{
 		std::unique_ptr<CapsulatedByValidator> validator(new CapsulatedByValidator);
 		if (!validator->Validate(db))
@@ -2389,6 +2396,7 @@ bool Read(sqlite3 *db)
 		if (!dav.Validate()) return false;
 	}
 
+	// then, rewrite the model
 	{
 		std::unique_ptr<phml::GraphIvRewriter> rewriter(new phml::GraphIvRewriter);
 		if (!rewriter->Rewrite(db))
