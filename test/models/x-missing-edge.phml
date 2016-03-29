@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<is:insilico-model xmlns:pd="http://www.physiodesigner.org/2012/ns/physiodesigner/1.0" xmlns:m="http://www.w3.org/1998/Math/MathML" xmlns:is="http://www.physiome.jp/ns/insilicoml" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="1.0" xsi:schemalocation="http://www.physiome.jp/ns/insilicoml-1.0 insilicoml.xsd">
+<is:header>
+<is:numerical-configuration>
+<is:time-discretization unit-id="12" evolution="true">
+<is:step>0.01</is:step>
+</is:time-discretization>
+<is:simulation-time-span unit-id="12">100</is:simulation-time-span>
+<is:algorithm>
+<is:integration name="euler"/>
+</is:algorithm>
+</is:numerical-configuration>
+</is:header>
+<is:unit-set>
+<is:unit unit-id="0">
+<is:name>dimensionless</is:name>
+</is:unit>
+<is:unit unit-id="1">
+<is:name>metre</is:name>
+</is:unit>
+<is:unit unit-id="2">
+<is:name>kilogram</is:name>
+</is:unit>
+<is:unit unit-id="3">
+<is:name>second</is:name>
+</is:unit>
+<is:unit unit-id="4">
+<is:name>ampere</is:name>
+</is:unit>
+<is:unit unit-id="5">
+<is:name>kelvin</is:name>
+</is:unit>
+<is:unit unit-id="6">
+<is:name>mole</is:name>
+</is:unit>
+<is:unit unit-id="7">
+<is:name>candela</is:name>
+</is:unit>
+<is:unit unit-id="8">
+<is:name>radian</is:name>
+</is:unit>
+<is:unit unit-id="9">
+<is:name>meter</is:name>
+<is:element unit-id="1"/>
+</is:unit>
+<is:unit unit-id="10">
+<is:name>gram</is:name>
+<is:element unit-id="2" prefix="milli"/>
+</is:unit>
+<is:unit unit-id="11">
+<is:name>degree</is:name>
+</is:unit>
+<is:unit unit-id="12">
+<is:name>millisecond</is:name>
+<is:element unit-id="3" exponent="1" prefix="milli"/>
+</is:unit>
+<is:unit unit-id="13">
+<is:name>volt</is:name>
+<is:element unit-id="1" exponent="2"/>
+<is:element unit-id="2" exponent="1"/>
+<is:element unit-id="3" exponent="-3"/>
+<is:element unit-id="4" exponent="-1"/>
+</is:unit>
+<is:unit unit-id="14">
+<is:name>siemens</is:name>
+<is:element unit-id="1" exponent="-2"/>
+<is:element unit-id="2" exponent="-1"/>
+<is:element unit-id="3" exponent="3"/>
+<is:element unit-id="4" exponent="2"/>
+</is:unit>
+<is:unit unit-id="15">
+<is:name>farad</is:name>
+<is:element unit-id="1" exponent="-2"/>
+<is:element unit-id="2" exponent="-1"/>
+<is:element unit-id="3" exponent="4"/>
+<is:element unit-id="4" exponent="2"/>
+</is:unit>
+</is:unit-set>
+<is:module-set>
+<is:module module-id="e5f71759-f65b-4fc9-847c-41a823aa4df4" type="functional-unit">
+<is:property>
+<is:name>X</is:name>
+<is:capsulation state="true">
+<is:capsulated-by module-id="b7c74afe-bcb8-4d3d-b3a2-bd8e5683ad5f"/>
+</is:capsulation>
+<is:template state="false"/>
+</is:property>
+<is:port-set>
+<is:port port-id="1" direction="out" ref-physical-quantity-id="1">
+<is:name>port_1</is:name>
+</is:port>
+</is:port-set>
+<is:physical-quantity-set>
+<is:physical-quantity physical-quantity-id="1" type="state">
+<is:name>x</is:name>
+<is:dimension type="scalar"/>
+<is:value-type-set>
+<is:value-type precision="double" unit-id="0"/>
+</is:value-type-set>
+<is:initial-value>
+<is:definition type="ae" format="mathml">
+<m:math><m:apply><m:eq/><m:ci>x</m:ci><m:cn>1</m:cn></m:apply></m:math>
+</is:definition>
+</is:initial-value>
+<is:implementation>
+<is:definition type="ode" sub-type="" format="mathml">
+<m:math><m:apply><m:eq/><m:apply><m:diff/><m:bvar><m:ci>time</m:ci></m:bvar><m:ci>x</m:ci></m:apply><m:apply><m:divide/><m:cn>1</m:cn><m:ci>x</m:ci></m:apply></m:apply></m:math>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+</is:physical-quantity-set>
+</is:module>
+<is:module module-id="b7c74afe-bcb8-4d3d-b3a2-bd8e5683ad5f" type="capsule">
+<is:property>
+<is:name>capsule_of_X</is:name>
+<is:capsulation state="false"/>
+<is:template state="false"/>
+</is:property>
+<is:port-set>
+<is:port port-id="1" direction="out">
+<is:name>port_1</is:name>
+</is:port>
+</is:port-set>
+</is:module>
+<is:module module-id="6a8996b8-8e4e-4c2b-8224-a998aeaf5f46" type="functional-unit">
+<is:property>
+<is:name>Y</is:name>
+<is:capsulation state="true">
+<is:capsulated-by module-id="99894d9c-4d11-4e4e-8877-a64ade7007ed"/>
+</is:capsulation>
+<is:template state="false"/>
+</is:property>
+<is:port-set>
+<is:port port-id="1" direction="in" multiple="false">
+<is:name>port_1</is:name>
+</is:port>
+</is:port-set>
+<is:physical-quantity-set>
+<is:physical-quantity physical-quantity-id="1" type="variable-parameter">
+<is:name>y</is:name>
+<is:dimension type="scalar"/>
+<is:value-type-set>
+<is:value-type precision="double" unit-id="0"/>
+</is:value-type-set>
+<is:implementation>
+<is:definition type="assign" sub-type="port" format="reference">
+<is:reference port-id="1"/>
+</is:definition>
+<is:extra-implementation type="multiple-input-assignment">
+<is:definition type="reduction" sub-type="sum" format=""/>
+</is:extra-implementation>
+</is:implementation>
+</is:physical-quantity>
+</is:physical-quantity-set>
+</is:module>
+<is:module module-id="99894d9c-4d11-4e4e-8877-a64ade7007ed" type="capsule">
+<is:property>
+<is:name>capsule_of_Y</is:name>
+<is:capsulation state="false"/>
+<is:template state="false"/>
+</is:property>
+<is:port-set>
+<is:port port-id="1" direction="in" multiple="false">
+<is:name>port_1</is:name>
+</is:port>
+</is:port-set>
+</is:module>
+</is:module-set>
+<is:edge-set>
+<is:edge edge-id="b0662dd6-bc3a-4c7b-85b0-47cb92351022" type="capsular">
+<is:tail module-id="e5f71759-f65b-4fc9-847c-41a823aa4df4" port-id="0"/>
+<is:head module-id="b7c74afe-bcb8-4d3d-b3a2-bd8e5683ad5f" port-id="0"/>
+<is:operation>encapsulation</is:operation>
+</is:edge>
+<is:edge edge-id="05bb3a93-bf75-426d-b5b4-1475574f874b" type="forwarding">
+<is:tail module-id="e5f71759-f65b-4fc9-847c-41a823aa4df4" port-id="1"/>
+<is:head module-id="b7c74afe-bcb8-4d3d-b3a2-bd8e5683ad5f" port-id="1"/>
+<is:operation>output forwarding</is:operation>
+</is:edge>
+<is:edge edge-id="ca4bd37b-9859-469c-8536-b15332503f78" type="capsular">
+<is:tail module-id="6a8996b8-8e4e-4c2b-8224-a998aeaf5f46" port-id="0"/>
+<is:head module-id="99894d9c-4d11-4e4e-8877-a64ade7007ed" port-id="0"/>
+<is:operation>encapsulation</is:operation>
+</is:edge>
+<is:edge edge-id="d65d74f5-b38c-497e-ac82-2edd5e6ad452" type="forwarding" multiple="false">
+<is:tail module-id="99894d9c-4d11-4e4e-8877-a64ade7007ed" port-id="1"/>
+<is:head module-id="6a8996b8-8e4e-4c2b-8224-a998aeaf5f46" port-id="1"/>
+<is:operation>input forwarding</is:operation>
+</is:edge>
+</is:edge-set>
+</is:insilico-model>

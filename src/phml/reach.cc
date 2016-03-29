@@ -317,7 +317,7 @@ bool Reach(sqlite3 *db)
 				Node ok(om, o.port_id());
 				std::map<Node, Port>::const_iterator oit = outports.find(ok);
 				if (oit == outports.end()) {
-					cerr << "lost without corresponding edge or output-port" << endl;
+					cerr << "there is no edge to a port;" << endl;
 					cerr << "  port-id: " << o.port_id() << endl;
 					cerr << "  module-id: " << uit->second->module_id() << endl;
 					cerr << "  uuid: " << uit->second->uuid() << endl;

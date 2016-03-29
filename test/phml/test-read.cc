@@ -20765,6 +20765,14 @@ BOOST_AUTO_TEST_CASE(x_empty_definition_of_instantaneous_extra_impl) {
 				 " at physical-quantity \"x\" (1) of module \"X\" (2563a638-89dc-11e5-b0ba-1bdda966072b)\n");
 }
 
+BOOST_AUTO_TEST_CASE(x_missing_edge) {
+	ReadAndError(TEST_MODELS("x-missing-edge.phml"),
+				 "there is no edge to a port;\n"
+				 "  port-id: 1\n"
+				 "  module-id: 99894d9c-4d11-4e4e-8877-a64ade7007ed\n"
+				 "  uuid: 99894d9c-4d11-4e4e-8877-a64ade7007ed\n");
+}
+
 BOOST_AUTO_TEST_CASE(x_variable_defined_by_ode) {
 	ReadAndError(TEST_MODELS("x-variable-defined-by-ode.phml"),
 				 "physical-quantity \"v\" (1) of module \"M\" (b3dee97b-99ff-435e-ada0-fe0861272757) is of type variable-parameter, but defined with <diff>\n");
