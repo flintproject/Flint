@@ -82,6 +82,8 @@ public class MainFrame extends javax.swing.JFrame
 
     private PhspSimulator mSimulator = null;
 
+    private File mLastFile = null;
+
     public MainFrame(Desktop desktop, ControlPane controlPane, ProgressPane progressPane)
         throws IOException {
         super();
@@ -206,8 +208,8 @@ public class MainFrame extends javax.swing.JFrame
             subFrame.setEditable(editable);
     }
 
-    public void openPerformed(String lastPath) {
-        FileChooser fc = new FileChooser(this, "Open model", FileChooser.Mode.LOAD, lastPath);
+    public void openPerformed(String hint) {
+        FileChooser fc = new FileChooser(this, "Open model", FileChooser.Mode.LOAD, (mLastFile == null) ?  hint : mLastFile.getParent());
         JFileChooser jfc = fc.getJFileChooser();
         if (jfc != null) {
             jfc.setAcceptAllFileFilterUsed(false);
@@ -224,7 +226,9 @@ public class MainFrame extends javax.swing.JFrame
 
         if (!fc.showDialog()) return;
 
-        openModel(fc.getSelectedFile());
+        File selectedFile = fc.getSelectedFile();
+        mLastFile = selectedFile;
+        openModel(selectedFile);
     }
 
     public void recentModelPerformed (Object source, File f) {
