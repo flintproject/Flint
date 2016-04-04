@@ -68,15 +68,15 @@ public class MenuBar extends JMenuBar
     /* Items on Menu "Help */
     private JMenuItem mItemAbout;
 
-    private final IMenuDelegator mDelegator;
+    private final MainFrame mFrame;
 
     private String mLastPath = null;
 
-    public MenuBar(IMenuDelegator delegator) {
+    public MenuBar(MainFrame frame) {
         super();
 
-        assert delegator != null;
-        mDelegator = delegator;
+        assert frame != null;
+        mFrame = frame;
         initComponents();
     }
 
@@ -93,7 +93,7 @@ public class MenuBar extends JMenuBar
         mItemOpen.addActionListener(new ActionListener () {
             @Override
             public void actionPerformed(ActionEvent e) {
-                mDelegator.openPerformed(mLastPath);
+                mFrame.openPerformed(mLastPath);
             }
         });
 
@@ -109,7 +109,7 @@ public class MenuBar extends JMenuBar
         mItemClose.addActionListener(new ActionListener () {
             @Override
             public void actionPerformed(ActionEvent e) {
-                mDelegator.closePerformed(e.getSource());
+                mFrame.closePerformed(e.getSource());
             }
         });
 
@@ -119,7 +119,7 @@ public class MenuBar extends JMenuBar
         mItemLoadConfiguration.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                mDelegator.loadConfigurationPerformed(e.getSource());
+                mFrame.loadConfigurationPerformed(e.getSource());
             }
         });
 
@@ -129,7 +129,7 @@ public class MenuBar extends JMenuBar
         mItemSaveConfiguration.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                mDelegator.saveConfigurationPerformed(e.getSource());
+                mFrame.saveConfigurationPerformed(e.getSource());
             }
         });
 
@@ -139,7 +139,7 @@ public class MenuBar extends JMenuBar
         mItemSaveAsPhsp.addActionListener(new ActionListener(){
             @Override
             public void actionPerformed(ActionEvent e) {
-                mDelegator.saveAsPhspPerformed(e.getSource());
+                mFrame.saveAsPhspPerformed(e.getSource());
             }
         });
 
@@ -151,7 +151,7 @@ public class MenuBar extends JMenuBar
         mItemExit.addActionListener(new ActionListener () {
             @Override
             public void actionPerformed(ActionEvent e) {
-                mDelegator.exitPerformed(e.getSource());
+                mFrame.exitPerformed(e.getSource());
             }
         });
 
@@ -179,7 +179,7 @@ public class MenuBar extends JMenuBar
         mItemCopy.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                mDelegator.copyPerformed(e.getSource());
+                mFrame.copyPerformed(e.getSource());
             }
         });
 
@@ -192,7 +192,7 @@ public class MenuBar extends JMenuBar
         mItemCut.addActionListener(new ActionListener(){
             @Override
             public void actionPerformed(ActionEvent e) {
-                mDelegator.cutPerformed(e.getSource());
+                mFrame.cutPerformed(e.getSource());
             }
         });
 
@@ -203,7 +203,7 @@ public class MenuBar extends JMenuBar
         mItemPreference.addActionListener(new ActionListener (){
             @Override
             public void actionPerformed(ActionEvent e) {
-                mDelegator.preferencePerformed(e.getSource());
+                mFrame.preferencePerformed(e.getSource());
             }
         });
 
@@ -224,7 +224,7 @@ public class MenuBar extends JMenuBar
         mItemRun.addActionListener(new ActionListener () {
             @Override
             public void actionPerformed(ActionEvent e) {
-                mDelegator.simulationRunPerformed(e.getSource());
+                mFrame.simulationRunPerformed(e.getSource());
             }
         });
 
@@ -236,7 +236,7 @@ public class MenuBar extends JMenuBar
         mItemPause.addActionListener(new ActionListener () {
             @Override
             public void actionPerformed(ActionEvent e) {
-                mDelegator.simulationPausePerformed(e.getSource());
+                mFrame.simulationPausePerformed(e.getSource());
             }
         });
 
@@ -248,7 +248,7 @@ public class MenuBar extends JMenuBar
         mItemResume.addActionListener(new ActionListener () {
             @Override
             public void actionPerformed(ActionEvent e) {
-                mDelegator.simulationResumePerformed(e.getSource());
+                mFrame.simulationResumePerformed(e.getSource());
             }
         });
 
@@ -257,7 +257,7 @@ public class MenuBar extends JMenuBar
         mItemSendToFlintK3.addActionListener(new ActionListener(){
             @Override
             public void actionPerformed(ActionEvent e) {
-                mDelegator.sendToK3Performed(e.getSource());
+                mFrame.sendToK3Performed(e.getSource());
             }
         });
         mItemSendToFlintK3.setEnabled(false);
@@ -277,7 +277,7 @@ public class MenuBar extends JMenuBar
         mItemAbout.addActionListener(new ActionListener () {
             @Override
             public void actionPerformed(ActionEvent e) {
-                mDelegator.aboutPerformed(e.getSource());
+                mFrame.aboutPerformed(e.getSource());
             }
         });
 
@@ -295,7 +295,7 @@ public class MenuBar extends JMenuBar
         m.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                mDelegator.recentModelPerformed(e.getSource(), model);
+                mFrame.recentModelPerformed(e.getSource(), model);
             }
         });
         return m;

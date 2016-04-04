@@ -62,7 +62,7 @@ import javax.xml.transform.TransformerException;
  */
 public class MainFrame extends javax.swing.JFrame 
     implements ICallee, IDesktopListener,
-               IMenuDelegator, ISimulationConfigurationList, IFrame {
+               ISimulationConfigurationList, IFrame {
 
     static {
         try {
@@ -206,10 +206,6 @@ public class MainFrame extends javax.swing.JFrame
             subFrame.setEditable(editable);
     }
 
-    /*
-     * Implements MenuBar Delegater
-     */
-    @Override
     public void openPerformed(String lastPath) {
         FileChooser fc = new FileChooser(this, "Open model", FileChooser.Mode.LOAD, lastPath);
         JFileChooser jfc = fc.getJFileChooser();
@@ -231,17 +227,14 @@ public class MainFrame extends javax.swing.JFrame
         openModel(fc.getSelectedFile());
     }
 
-    @Override
     public void recentModelPerformed (Object source, File f) {
         openModel(f);
     }
 
-    @Override
     public void closePerformed (Object source) {
         closeModel(getSelectedSubFrame());
     }
 
-    @Override
     public void loadConfigurationPerformed (Object source) {
         Preferences prefs = Preferences.userRoot().node("/jp/oist/flint");
         String defaultPath = prefs.get("defaultConfigurationPath", "");
@@ -277,7 +270,6 @@ public class MainFrame extends javax.swing.JFrame
         }
     }
 
-    @Override
     public void saveConfigurationPerformed (Object source) {
         FileChooser fc = new FileChooser(this, "Select SED-ML file", FileChooser.Mode.SAVE, "");
         if (fc.showDialog()) {
@@ -303,7 +295,6 @@ public class MainFrame extends javax.swing.JFrame
         }
     }
 
-    @Override
     public void saveAsPhspPerformed (Object source) {
         try {
             if (mDesktop.isEmpty()) {
@@ -355,32 +346,27 @@ public class MainFrame extends javax.swing.JFrame
         }
     }
 
-    @Override
     public void exitPerformed (Object source) {
         if (mSimulator != null)
             mSimulator.cancel(true);
         System.exit(0);
     }
 
-    @Override
     public void copyPerformed (Object source) {
         SubFrame subFrame = getSelectedSubFrame();
         subFrame.copy();
     }
 
-    @Override
     public void cutPerformed (Object source) {
         SubFrame subFrame = getSelectedSubFrame();
         subFrame.cut();
     }
 
-    @Override
     public void preferencePerformed (Object source) {
        PreferenceDialog ad = new PreferenceDialog(this, true);
         ad.setVisible(true);
     }
 
-    @Override
     public void simulationRunPerformed(Object source) {
         try {
             mSimulator = mDesktop.runSimulation(this);
@@ -395,21 +381,18 @@ public class MainFrame extends javax.swing.JFrame
         }
     }
 
-    @Override
     public void simulationPausePerformed(Object source) {
         if (mSimulator != null) {
             mDesktop.pauseSimulation(new File(mSimulator.getWorkingDirectory(), "pid.txt"));
         }
     }
 
-    @Override
     public void simulationResumePerformed(Object source) {
         if (mSimulator != null) {
             mDesktop.resumeSimulation(new File(mSimulator.getWorkingDirectory(), "pid.txt"));
         }
     }
 
-    @Override
     public void sendToK3Performed(Object source) {
         Preferences prefs = Preferences.userRoot().node("/jp/oist/flint/session/k3");
         final String encryptedUserId = prefs.get("encryptedUserId", null); 
@@ -468,7 +451,6 @@ public class MainFrame extends javax.swing.JFrame
         worker.execute();
     }
 
-    @Override
     public void aboutPerformed (Object source) {
         AboutDialog ad = new AboutDialog(this);
         ad.setVisible(true);

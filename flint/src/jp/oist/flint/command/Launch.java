@@ -51,7 +51,7 @@ public class Launch implements Runnable {
             session.addListener(menuBar);
             desktop.addListener(menuBar);
             mMainFrame.setJMenuBar(menuBar);
-            controlPane.setDelegator(mMainFrame);
+            controlPane.setFrame(mMainFrame);
             desktop.addListener(mMainFrame);
             desktop.addLoadingListener(controlPane);
             desktop.addLoadingListener(menuBar);

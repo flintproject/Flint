@@ -25,10 +25,10 @@ public class ControlPane extends PeripheralPane
 
     private JButton mBtnSimulationRun;
 
-    private IMenuDelegator mDelegator;
+    private MainFrame mFrame;
 
     public ControlPane() {
-        mDelegator = null;
+        mFrame = null;
         initComponents();
         addFocusListener(this);
     }
@@ -48,8 +48,8 @@ public class ControlPane extends PeripheralPane
         mBtnSimulationRun.addActionListener(new ActionListener () {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (mDelegator != null)
-                    mDelegator.simulationRunPerformed(e);
+                if (mFrame != null)
+                    mFrame.simulationRunPerformed(e);
             }
         });
         contentPane.add(mBtnSimulationRun, BorderLayout.CENTER);
@@ -66,8 +66,8 @@ public class ControlPane extends PeripheralPane
     public void focusLost(FocusEvent e) {
     }
 
-    public void setDelegator(IMenuDelegator delegator) {
-        mDelegator = delegator;
+    public void setFrame(MainFrame frame) {
+        mFrame = frame;
     }
 
     /* ILoadingListener */
