@@ -17,7 +17,7 @@ In order to build Flint, the following libraries are required:
   https://github.com/raim/SBML_odeSolver
 - SUNDIALS 2.6.2
   https://computation.llnl.gov/casc/sundials/main.html
-- libxml 2.7.8 or higher
+- libxml 2.7.6 or higher
   http://xmlsoft.org/
 - libSBML 3.4.1 or later
   http://sbml.org/Software/libSBML

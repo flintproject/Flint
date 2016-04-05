@@ -90,7 +90,7 @@ fi
 AC_SUBST([SUNDIALS_CFLAGS])
 AC_SUBST([SUNDIALS_LIBS])
 
-AM_PATH_XML2([2.7.3])
+AM_PATH_XML2([2.7.6])
 
 # Checks for header files.
 AC_CHECK_HEADERS([arpa/inet.h float.h stdint.h string.h sys/resource.h sys/time.h unistd.h])
