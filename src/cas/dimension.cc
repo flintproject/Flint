@@ -61,6 +61,21 @@ public:
 
 	bool Analyse(Expr *expr, int *col, int *row);
 
+	// TODO: support matrix/vector
+	bool At(Compound *c)
+	{
+		assert(c->children.size() == 3);
+		if (!Scalar(&c->children[0]))
+			return false;
+		if (!Scalar(&c->children[1]))
+			return false;
+		if (!Scalar(&c->children[2]))
+			return false;
+		c->col = 1;
+		c->row = 1;
+		return true;
+	}
+
 	bool Diff(Compound *c)
 	{
 		assert(c->children.size() == 2);
@@ -603,6 +618,7 @@ struct KeyFun {
 
 const KeyFun kKeyFun[] = {
 	// Keep the following entries in bibliographical order.
+	{"$At", &Context::At},
 	{"$Mod", &Context::BinaryScalar},
 	{"$exponential_variate", &Context::UnaryScalar},
 	{"$gamma_variate", &Context::BinaryScalar},

@@ -66,6 +66,14 @@ BOOST_AUTO_TEST_CASE(fsk) {
 	boost::filesystem::remove_all(p1);
 }
 
+BOOST_AUTO_TEST_CASE(timeseries) {
+	PushWorkingDirectory("timeseries");
+	test::StderrCapture capture;
+	BOOST_CHECK(load::Load(TEST_MODELS("timeseries.phml"), load::kExec));
+	BOOST_CHECK_EQUAL(capture.Get(), "");
+	PopWorkingDirectory();
+}
+
 BOOST_AUTO_TEST_CASE(x_static_only) {
 	PushWorkingDirectory("x-static-only");
 	test::StderrCapture capture;
