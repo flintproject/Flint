@@ -14,6 +14,14 @@ using std::endl;
 namespace flint {
 namespace runtime {
 
+std::string GetCanonicalName(const std::string &v)
+{
+	assert(v.size() > 1);
+	// trim leading '%' and the tail starting with '#'
+	size_t pos = v.find_first_of("#");
+	return v.substr(1, (pos == std::string::npos) ? pos : pos-1);
+}
+
 void ReportSectionContext(const bc::SectionHeader &sh)
 {
 	boost::uuids::uuid u;

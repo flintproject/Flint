@@ -368,7 +368,6 @@ public:
 								return false;
 							}
 							lb->set_so(so);
-							lb->clear_v();
 						}
 						break;
 					case bc::Code::kLoad:
@@ -584,7 +583,7 @@ public:
 						if (executor->Lb(code.lb(), offset)) {
 							ci++;
 						} else {
-							std::cerr << "failed to look back: " << ci << std::endl;
+							runtime::ReportSectionContext(sh);
 							return false;
 						}
 						break;
@@ -593,6 +592,7 @@ public:
 							ci++;
 						} else {
 							std::cerr << "failed to load data: " << ci << std::endl;
+							runtime::ReportSectionContext(sh);
 							return false;
 						}
 						break;
@@ -609,6 +609,7 @@ public:
 							ci++;
 						} else {
 							std::cerr << "failed to load: " << ci << std::endl;
+							runtime::ReportSectionContext(sh);
 							return false;
 						}
 						break;
@@ -844,7 +845,7 @@ public:
 							if (executor->Lb(code.lb(), offset)) {
 								ci++;
 							} else {
-								std::cerr << "failed to look back: " << ci << std::endl;
+								runtime::ReportSectionContext(sh);
 								return false;
 							}
 							break;
@@ -853,6 +854,7 @@ public:
 								ci++;
 							} else {
 								std::cerr << "failed to load data: " << ci << std::endl;
+								runtime::ReportSectionContext(sh);
 								return false;
 							}
 							break;
@@ -869,6 +871,7 @@ public:
 								ci++;
 							} else {
 								std::cerr << "failed to load: " << ci << std::endl;
+								runtime::ReportSectionContext(sh);
 								return false;
 							}
 							break;

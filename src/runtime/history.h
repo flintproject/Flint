@@ -13,6 +13,8 @@
 
 #include "bc.pb.h"
 
+#include "runtime/section-context.h"
+
 namespace flint {
 
 class History {
@@ -91,14 +93,12 @@ public:
 		if (r.first == m_.begin()) { // older than every existing one
 			// check if delay overflows capacity
 			if (t < time - capacity_) {
-				std::cerr << "failed to look back the value (index "
-						  << lb.d()
-						  << ", time "
+				std::cerr << "failed to look back the value of variable "
+						  << runtime::GetCanonicalName(lb.v())
+						  << " at time "
 						  << t
-						  << "), possibly due to too small value of <max-delay>: "
+						  << ", possibly due to too small value of <max-delay>: "
 						  << capacity_
-						  << ": "
-						  << time
 						  << std::endl;
 				return false;
 			}

@@ -114,7 +114,7 @@ message Call2 {
 message Lb {
 
   required int32 a  = 1;
-  optional string v = 2;
+  required string v = 2;
   optional int32 so = 3; /* sector offset */
   required int32 d  = 4;
 

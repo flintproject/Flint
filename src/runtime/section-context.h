@@ -2,10 +2,14 @@
 #ifndef FLINT_RUNTIME_SECTION_CONTEXT_H_
 #define FLINT_RUNTIME_SECTION_CONTEXT_H_
 
+#include <string>
+
 #include "bc.pb.h"
 
 namespace flint {
 namespace runtime {
+
+std::string GetCanonicalName(const std::string &v);
 
 void ReportSectionContext(const bc::SectionHeader &sh);
 

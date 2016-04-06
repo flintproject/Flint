@@ -34,6 +34,18 @@ BOOST_AUTO_TEST_CASE(fhn) {
 	PopWorkingDirectory();
 }
 
+BOOST_AUTO_TEST_CASE(x_delta_time_with_too_small_max_delay) {
+	PushWorkingDirectory("x-delta-time-with-too-small-max-delay");
+	std::unique_ptr<cli::RunOption> option(GenerateOption(TEST_MODELS("x-delta-time-with-too-small-max-delay.phml"),
+														  "x-delta-time-with-too-small-max-delay.out"));
+	test::StderrCapture sc;
+	BOOST_CHECK(!run::Run(*option));
+	BOOST_CHECK_EQUAL(sc.Get(),
+					  "failed to look back the value of variable y at time -0.001, possibly due to too small value of <max-delay>: 0.0001\n"
+					  " in d7ee586c-fbb4-11e5-8405-fbf140396b2a\n");
+	PopWorkingDirectory();
+}
+
 BOOST_AUTO_TEST_CASE(x_missing_name) {
 	PushWorkingDirectory("x-missing-name");
 	std::unique_ptr<cli::RunOption> option(GenerateOption(TEST_MODELS("x-missing-name.phml"), "x-missing-name.out"));
