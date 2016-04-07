@@ -161,6 +161,7 @@ libflintxx_la_SOURCES = \
     runtime/calculation-dependency.cc \
     runtime/eval.cc \
     runtime/evaluator.cc \
+    runtime/history.cc \
     runtime/init.cc \
     runtime/flow.cc \
     runtime/matrix.cc \
