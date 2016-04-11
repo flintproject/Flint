@@ -155,17 +155,16 @@ struct Lexer : lex::lexer<TLexer> {
 			("FLOAT", "{SIGN}?({DIGIT}*\".\"{DIGIT}+{EXPONENT}?|{DIGIT}+{EXPONENT})")
 			;
 
-		uuid36 = "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}";
 		real = "{FLOAT}";
 		integer = "{SIGN}?{DIGIT}+";
 		id = "[%@][a-zA-Z_][a-zA-Z_0-9:#]*";
 		keyword = "[$]?[a-zA-Z_][a-zA-Z_0-9]*";
 
 		this->self = lex::token_def<>('\n') | '\r' | '(' | ')' | ' ';
-		this->self += uuid36 | real | integer | id | keyword;
+		this->self += real | integer | id | keyword;
 	}
 
-	lex::token_def<std::string> uuid36, id, keyword;
+	lex::token_def<std::string> id, keyword;
 	lex::token_def<int> integer;
 	lex::token_def<flint::lexer::Real> real;
 };
