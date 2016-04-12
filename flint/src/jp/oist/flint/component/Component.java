@@ -90,6 +90,7 @@ public class Component {
 
     public static List<String> getIsd2csvCommand(File inputFile, File outputFile, int port) {
         Command command = new Command("isd2csv");
+        command.addOption("maximum-precision");
         command.addOption("progress", port);
         command.addArgument(inputFile);
         command.setOutputFile(outputFile);

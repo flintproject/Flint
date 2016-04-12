@@ -28,6 +28,10 @@ public class Command {
         return mOptions;
     }
 
+    public void addOption(String key) {
+        mOptions.add("--" + key);
+    }
+
     public void addOption(String key, int value) {
         mOptions.add("--" + key + " " + value);
     }
