@@ -20756,7 +20756,8 @@ BOOST_AUTO_TEST_CASE(x_capsulated_by) {
 
 BOOST_AUTO_TEST_CASE(x_delay_without_max_delay) {
 	ReadAndError(TEST_MODELS("x-delay-without-max-delay.phml"),
-				 "a is given as 1st argument of Delay(), but it lacks <max-delay>\n");
+				 "a is given as 1st argument of Delay()/DeltaTime(), but it lacks <max-delay>\n"
+				 " in fe9114f8-2f6a-11e5-a753-031605a77f16\n");
 }
 
 BOOST_AUTO_TEST_CASE(x_empty_definition_of_instantaneous_extra_impl) {

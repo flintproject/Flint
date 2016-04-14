@@ -14,6 +14,8 @@
 #include <boost/spirit/include/lex_lexertl.hpp>
 #include <boost/spirit/include/phoenix.hpp>
 #include <boost/spirit/include/qi.hpp>
+#include <boost/uuid/uuid.hpp>
+#include <boost/uuid/uuid_io.hpp>
 #include <boost/variant/recursive_variant.hpp>
 
 #include "db/statement-driver.h"
@@ -55,9 +57,10 @@ namespace {
 class Visitor : public boost::static_visitor<bool>
 {
 public:
-	Visitor(sqlite3_int64 rowid, sqlite3 *db)
-		: rowid_(rowid),
-		  driver_(db,
+	Visitor(sqlite3_int64 rowid, const boost::uuids::uuid &uuid, sqlite3 *db)
+		: rowid_(rowid)
+		, uuid_(uuid)
+		, driver_(db,
 				  "SELECT max_delay FROM pqs WHERE module_rowid = ? AND name = ?")
 	{
 	}
@@ -94,7 +97,9 @@ public:
 				const unsigned char *max_delay = sqlite3_column_text(driver_.stmt(), 0);
 				if (!max_delay) {
 					cerr << name
-						 << " is given as 1st argument of Delay(), but it lacks <max-delay>"
+						 << " is given as 1st argument of Delay()/DeltaTime(), but it lacks <max-delay>"
+						 << endl
+						 << " in " << uuid_
 						 << endl;
 					return false;
 				}
@@ -102,8 +107,9 @@ public:
 			sqlite3_reset(driver_.stmt());
 			return true;
 		case SQLITE_DONE:
-			cerr << "Delay()'s 1st argument must be a PQ name in the same module: "
-				 << name
+			cerr << "Delay()/DeltaTime()'s 1st argument must be a PQ name in the same module, but got: "
+				 << name << endl
+				 << " in " << uuid_
 				 << endl;
 			return false;
 		default:
@@ -116,6 +122,7 @@ public:
 
 private:
 	sqlite3_int64 rowid_;
+	boost::uuids::uuid uuid_;
 	db::StatementDriver driver_;
 };
 
@@ -178,7 +185,7 @@ public:
 	{
 	}
 
-	bool Parse(sqlite3_int64 module_rowid, const char *math) {
+	bool Parse(sqlite3_int64 module_rowid, const boost::uuids::uuid &u, const char *math) {
 		const char *p = math;
 		iterator_type it = tokens_.begin(p, math + std::strlen(math));
 		iterator_type end = tokens_.end();
@@ -188,7 +195,7 @@ public:
 			cerr << "failed to parse math: " << math << endl;
 			return false;
 		}
-		return boost::apply_visitor(Visitor(module_rowid, db_), ast);
+		return boost::apply_visitor(Visitor(module_rowid, u, db_), ast);
 	}
 
 private:
@@ -200,9 +207,13 @@ private:
 int Process(void *data, int argc, char **argv, char **names)
 {
 	(void)names;
-	assert(argc == 2);
+	assert(argc == 3);
+	assert(argv[0]);
+	assert(argv[1]);
 	Parser *parser = static_cast<Parser *>(data);
-	return (parser->Parse(std::atol(argv[0]), argv[1])) ? 0 : 1;
+	boost::uuids::uuid u;
+	std::memcpy(&u, argv[1], u.size());
+	return (parser->Parse(std::atol(argv[0]), u, argv[2])) ? 0 : 1;
 }
 
 bool IsValid(const char *query, Parser *parser, sqlite3 *db)
@@ -232,12 +243,14 @@ DelayArgValidator::DelayArgValidator(sqlite3 *db)
 bool DelayArgValidator::Validate()
 {
 	std::unique_ptr<Parser> parser(new Parser(db_));
-	if (!IsValid("SELECT p.module_rowid, i.math FROM impls AS i"
-				 " LEFT JOIN pqs AS p ON i.pq_rowid = p.rowid",
+	if (!IsValid("SELECT p.module_rowid, m.module_id, i.math FROM impls AS i"
+				 " LEFT JOIN pqs AS p ON i.pq_rowid = p.rowid"
+				 " LEFT JOIN modules AS m ON p.module_rowid = m.rowid",
 				 parser.get(), db_))
 		return false;
-	if (!IsValid("SELECT p.module_rowid, e.math FROM extras AS e"
-				 " LEFT JOIN pqs AS p ON e.pq_rowid = p.rowid",
+	if (!IsValid("SELECT p.module_rowid, m.module_id, e.math FROM extras AS e"
+				 " LEFT JOIN pqs AS p ON e.pq_rowid = p.rowid"
+				 " LEFT JOIN modules AS m ON p.module_rowid = m.rowid",
 				 parser.get(), db_))
 		return false;
 	return true;
