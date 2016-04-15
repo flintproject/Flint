@@ -116,4 +116,27 @@ BOOST_AUTO_TEST_CASE(Real) {
 	CHECK_TOKEN(Token::Type::kReal, 4);
 }
 
+BOOST_AUTO_TEST_CASE(Compound) {
+	tokenizer::Tokenizer t("(hello (world %x1 2.3) 4)");
+	BOOST_CHECK_EQUAL(t(&token), 1);
+	CHECK_TOKEN(Token::Type::kParenthesis, 1);
+	BOOST_CHECK_EQUAL(t(&token), 1);
+	CHECK_TOKEN(Token::Type::kKeyword, 5);
+	BOOST_CHECK_EQUAL(t(&token), 1);
+	CHECK_TOKEN(Token::Type::kParenthesis, 1);
+	BOOST_CHECK_EQUAL(t(&token), 1);
+	CHECK_TOKEN(Token::Type::kKeyword, 5);
+	BOOST_CHECK_EQUAL(t(&token), 1);
+	CHECK_TOKEN(Token::Type::kIdentifier, 3);
+	BOOST_CHECK_EQUAL(t(&token), 1);
+	CHECK_TOKEN(Token::Type::kReal, 3);
+	BOOST_CHECK_EQUAL(t(&token), 1);
+	CHECK_TOKEN(Token::Type::kParenthesis, 1);
+	BOOST_CHECK_EQUAL(t(&token), 1);
+	CHECK_TOKEN(Token::Type::kInteger, 1);
+	BOOST_CHECK_EQUAL(t(&token), 1);
+	CHECK_TOKEN(Token::Type::kParenthesis, 1);
+	BOOST_CHECK_EQUAL(t(&token), 0);
+}
+
 BOOST_AUTO_TEST_SUITE_END()
