@@ -131,6 +131,7 @@ libflintxx_la_SOURCES = \
     method/printer.cc \
     method/rk4.cc \
     modelpath.cc \
+    parser.cc \
     phml/branch.cc \
     phml/combine-all.cc \
     phml/combine.cc \
@@ -171,6 +172,7 @@ libflintxx_la_SOURCES = \
     sbml/parser.cc \
     sbml/read.cc \
     sedml/read.cc \
+    sexp.cc \
     solver/ark/ark.cc \
     solver/ark/auxv.cc \
     solver/ark/mass.cc \
