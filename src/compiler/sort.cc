@@ -50,23 +50,12 @@ struct Compound {
 	std::vector<Expr> children;
 };
 
-struct Entry {
-	std::string uuid;
-	std::string name;
-	Expr expr;
-};
-
 }
 }
 }
 
 BOOST_FUSION_ADAPT_STRUCT(flint::compiler::sort::Compound,
 						  (std::vector<flint::compiler::sort::Expr>, children))
-
-BOOST_FUSION_ADAPT_STRUCT(flint::compiler::sort::Entry,
-						  (std::string, uuid)
-						  (std::string, name)
-						  (flint::compiler::sort::Expr, expr))
 
 namespace flint {
 namespace compiler {
