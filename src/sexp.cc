@@ -21,6 +21,11 @@ Identifier::Identifier(const Token &token)
 
 Identifier::~Identifier() = default;
 
+std::string Identifier::GetString() const
+{
+	return std::string(token_.lexeme, token_.size);
+}
+
 Literal::Literal(const Token &token)
 	: Expression(Type::kLiteral)
 	, token_(token)

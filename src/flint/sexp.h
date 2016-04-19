@@ -3,6 +3,7 @@
 #define FLINT_SEXP_H_
 
 #include <memory>
+#include <string>
 #include <vector>
 
 #include "flint/token.h"
@@ -36,6 +37,8 @@ public:
 
 	const Token &token() const {return token_;}
 
+	std::string GetString() const;
+
 private:
 	Token token_;
 };
@@ -61,9 +64,27 @@ public:
 
 	size_t GetSize() const;
 
+	const std::vector<std::unique_ptr<Expression> > &children() const {return children_;}
+
 private:
 	std::vector<std::unique_ptr<Expression> > children_;
 };
+
+template<typename TVisitor>
+void ApplyVisitor(TVisitor &visitor, const Expression &expr)
+{
+	switch (expr.type()) {
+	case Expression::Type::kIdentifier:
+		visitor(static_cast<const Identifier &>(expr));
+		break;
+	case Expression::Type::kLiteral:
+		visitor(static_cast<const Literal &>(expr));
+		break;
+	case Expression::Type::kCompound:
+		visitor(static_cast<const Compound &>(expr));
+		break;
+	}
+}
 
 }
 }

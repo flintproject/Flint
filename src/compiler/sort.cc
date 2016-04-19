@@ -6,63 +6,33 @@
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
-#include <iterator>
+#include <iostream>
 #include <memory>
-#include <sstream>
 #include <string>
 #include <vector>
 #include <unordered_map>
 #include <unordered_set>
 
 #include <boost/functional/hash.hpp>
-#include <boost/fusion/include/adapt_struct.hpp>
-#include <boost/spirit/include/lex_lexertl.hpp>
-#include <boost/spirit/include/qi.hpp>
-#include <boost/spirit/include/support_multi_pass.hpp>
 #include <boost/uuid/uuid_io.hpp>
-#include <boost/variant/recursive_variant.hpp>
 
 #include "db/driver.h"
 #include "db/query.h"
 #include "db/statement-driver.h"
-#include "lexer.h"
+#include "flint/parser.h"
+#include "flint/sexp.h"
 
 using std::cerr;
 using std::endl;
 using std::memcpy;
 using std::string;
 
-using namespace boost::spirit;
-
-namespace flint {
-namespace compiler {
-namespace sort {
-
-struct Compound;
-
-typedef boost::variant<boost::recursive_wrapper<Compound>,
-					   std::string,
-					   int,
-					   flint::lexer::Real
-					   > Expr;
-
-struct Compound {
-	std::vector<Expr> children;
-};
-
-}
-}
-}
-
-BOOST_FUSION_ADAPT_STRUCT(flint::compiler::sort::Compound,
-						  (std::vector<flint::compiler::sort::Expr>, children))
-
 namespace flint {
 namespace compiler {
 namespace sort {
 namespace {
 
-class DependencyCollector : public boost::static_visitor<> {
+class DependencyCollector {
 public:
 	DependencyCollector(const string &name,
 						const std::unordered_map<string, size_t> &candidates,
@@ -72,12 +42,17 @@ public:
 		, dependencies_(dependencies)
 	{}
 
-	void operator()(const Compound &c) const {
-		for (const auto &child : c.children)
-			boost::apply_visitor(*this, child);
+	void operator()(const sexp::Compound &c) {
+		for (auto &child : c.children())
+			sexp::ApplyVisitor(*this, *child);
 	}
 
-	void operator()(const std::string &s) const {
+	void operator()(const sexp::Identifier &x) {
+		const Token &t = x.token();
+		if (t.type == Token::Type::kKeyword)
+			return;
+		assert(t.type == Token::Type::kIdentifier);
+		auto s = x.GetString();
 		if (s == name_)
 			return;
 		std::unordered_map<string, size_t>::const_iterator it = candidates_.find(s);
@@ -85,11 +60,7 @@ public:
 			dependencies_->insert(it->second);
 	}
 
-	void operator()(int /*i*/) const {
-		// nothing to do
-	}
-
-	void operator()(const flint::lexer::Real &) const {
+	void operator()(const sexp::Literal &/*a*/) {
 		// nothing to do
 	}
 
@@ -99,108 +70,36 @@ private:
 	std::unordered_set<size_t> *dependencies_;
 };
 
-class Printer : public boost::static_visitor<> {
-public:
-	explicit Printer(std::ostream *os)
-		: os_(os)
-	{
-	}
-
-	void operator()(const Compound &c) const {
-		auto bit = c.children.cbegin();
-		auto eit = c.children.cend();
-		os_->put('(');
-		for (auto it=bit;it!=eit;++it) {
-			if (it != bit) os_->put(' ');
-			boost::apply_visitor(*this, *it);
-		}
-		os_->put(')');
-	}
-
-	void operator()(const std::string &s) const {
-		*os_ << s;
-	}
-
-	void operator()(int i) const {
-		*os_ << i;
-	}
-
-	void operator()(const flint::lexer::Real &r) const {
-		*os_ << r.lexeme;
-	}
-
-private:
-	std::ostream *os_;
-};
-
-template<typename TLexer>
-struct Lexer : lex::lexer<TLexer> {
-
-	Lexer() {
-		this->self.add_pattern
-			("DIGIT", "[0-9]")
-			("SIGN", "[-+]")
-			("EXPONENT", "[eE]{SIGN}?{DIGIT}+")
-			("FLOAT", "{SIGN}?({DIGIT}*\".\"{DIGIT}+{EXPONENT}?|{DIGIT}+{EXPONENT})")
-			;
-
-		real = "{FLOAT}";
-		integer = "{SIGN}?{DIGIT}+";
-		id = "[%@][a-zA-Z_][a-zA-Z_0-9:#]*";
-		keyword = "[$]?[a-zA-Z_][a-zA-Z_0-9]*";
-
-		this->self = lex::token_def<>('\n') | '\r' | '(' | ')' | ' ';
-		this->self += real | integer | id | keyword;
-	}
-
-	lex::token_def<std::string> id, keyword;
-	lex::token_def<int> integer;
-	lex::token_def<flint::lexer::Real> real;
-};
-
-template<typename TIterator>
-struct Grammar : qi::grammar<TIterator, Expr()> {
-
-	template<typename TTokenDef>
-	Grammar(TTokenDef const &td)
-	: Grammar::base_type(expr)
-	{
-		expr %= (compound | td.real | td.integer | td.id | td.keyword);
-
-		compound %= '(' >> (expr % ' ') >> ')';
-	}
-
-	qi::rule<TIterator, Expr()> expr;
-	qi::rule<TIterator, Compound()> compound;
-};
-
 class Line {
 public:
 	Line(const Line &) = delete;
 	Line &operator=(const Line &) = delete;
 
-	Line(const std::string &name, const Expr &expr)
-		: name_(name),
-		  expr_(expr)
+	Line(const char *name,
+		 std::unique_ptr<char[]> &&math,
+		 std::unique_ptr<sexp::Expression> &&expr)
+		: name_(name)
+		, math_(std::move(math))
+		, expr_(std::move(expr))
 	{
 	}
 
 	const string &name() const {return name_;}
 
 	size_t CollectDependencies(const std::unordered_map<string, size_t> &candidates, std::unordered_set<size_t> *dependencies) {
-		boost::apply_visitor(DependencyCollector(name_, candidates, dependencies), expr_);
+		DependencyCollector dc(name_, candidates, dependencies);
+		sexp::ApplyVisitor(dc, *expr_);
 		return dependencies->size();
 	}
 
 	std::string GetMath() const {
-		std::ostringstream oss;
-		boost::apply_visitor(Printer(&oss), expr_);
-		return oss.str();
+		return std::string(math_.get());
 	}
 
 private:
 	std::string name_;
-	Expr expr_;
+	std::unique_ptr<char[]> math_;
+	std::unique_ptr<sexp::Expression> expr_;
 };
 
 class LineVector {
@@ -214,9 +113,10 @@ public:
 		return lines_.size();
 	}
 
-	void Add(const std::string &name, const Expr &expr) {
-		std::unique_ptr<Line> line(new Line(name, expr));
-		lines_.push_back(std::move(line));
+	void Add(const char *name,
+			 std::unique_ptr<char[]> &&math,
+			 std::unique_ptr<sexp::Expression> &&expr) {
+		lines_.emplace_back(new Line(name, std::move(math), std::move(expr)));
 	}
 
 	bool CalculateLevels(const boost::uuids::uuid &uuid, int *levels) {
@@ -303,53 +203,24 @@ typedef std::unordered_map<boost::uuids::uuid,
 						   LineVector,
 						   boost::hash<boost::uuids::uuid> > UuidMap;
 
-/*
- * This class creates and keeps both tokens and grammar objects which
- * construction is expensive in terms of performance.
- */
-class Parser {
-public:
-	typedef const char *base_iterator_type;
-	typedef lex::lexertl::token<base_iterator_type> token_type;
-	typedef lex::lexertl::lexer<token_type> lexer_type;
-	typedef Lexer<lexer_type> RealLexer;
-	typedef Grammar<RealLexer::iterator_type> RealGrammar;
-
-	explicit Parser(UuidMap *um)
-		: tokens_()
-		, grammar_(tokens_)
-		, um_(um)
-	{
-	}
-
-	int Parse(const boost::uuids::uuid &uuid, const char *name, const char *math) {
-		base_iterator_type it = math;
-		base_iterator_type eit = math + std::strlen(math);
-		Expr expr;
-		bool r = lex::tokenize_and_parse(it, eit, tokens_, grammar_, expr);
-		if (!r || it != eit) {
-			cerr << "failed to parse expression: " << *it << endl;
-			return 1;
-		}
-		(*um_)[uuid].Add(name, expr);
-		return 0;
-	}
-
-private:
-	RealLexer tokens_;
-	RealGrammar grammar_;
-	UuidMap *um_;
-};
-
 int Process(void *data, int argc, char **argv, char **names)
 {
 	(void)names;
 	assert(argc == 3);
-	Parser *parser = static_cast<Parser *>(data);
+	UuidMap *um = static_cast<UuidMap *>(data);
 	assert(argv[0]);
+	assert(argv[1]);
+	assert(argv[2]);
 	boost::uuids::uuid u;
 	memcpy(&u, argv[0], u.size());
-	return parser->Parse(u, argv[1], argv[2]);
+	std::unique_ptr<char[]> math(new char[std::strlen(argv[2])+1]);
+	std::strcpy(math.get(), argv[2]);
+	std::unique_ptr<sexp::Expression> expr;
+	parser::Parser parser(math.get());
+	if (parser(&expr) <= 0)
+		return 1;
+	(*um)[u].Add(argv[1], std::move(math), std::move(expr));
+	return 0;
 }
 
 class Inserter : db::StatementDriver {
@@ -392,10 +263,9 @@ bool Sort(sqlite3 *db)
 {
 	UuidMap um;
 	{
-		Parser parser(&um);
 		char *em;
 		int e;
-		e = sqlite3_exec(db, "SELECT * FROM asts", Process, &parser, &em);
+		e = sqlite3_exec(db, "SELECT * FROM asts", Process, &um, &em);
 		if (e != SQLITE_OK) {
 			if (e != SQLITE_ABORT)
 				cerr << "failed to select asts: " << e << ": " << em << endl;
