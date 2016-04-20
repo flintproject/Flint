@@ -18,12 +18,12 @@
 
 #include "bc.pb.h"
 
-#include "bc/bc_loader.h"
 #include "bc/index.h"
 #include "bc/locater.h"
 #include "bc/mounter.h"
 #include "bc/pack.h"
 #include "db/sprinkle-loader.h"
+#include "flint/bc.h"
 #include "lo/layout.h"
 #include "lo/layout_loader.h"
 #include "runtime/processor.h"
@@ -249,10 +249,8 @@ bool Evaluator::Evaluate(sqlite3 *db,
 
 	// load bc next
 	int nol = 0;
-	{
-		std::unique_ptr<BcLoader> loader(new BcLoader(bc_file));
-		if (!loader->Load(&nol, processor.get())) return false;
-	}
+	if (!LoadBytecode(bc_file, &nol, processor.get()))
+		return false;
 	if (nol != 1) { // nol should be always 1
 		cerr << "invalid nol: " << nol << endl;
 		return false;

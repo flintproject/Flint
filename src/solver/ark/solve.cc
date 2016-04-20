@@ -11,6 +11,7 @@
 #include <memory>
 
 #include "cas.h"
+#include "flint/bc.h"
 #include "job.h"
 #include "lo/layout.h"
 #include "lo/layout_loader.h"
@@ -37,11 +38,8 @@ Processor *CreateProcessor(const Layout *layout, size_t layer_size,
 {
 	std::unique_ptr<Processor> processor(new Processor(layout, layer_size));
 	int nol = 0;
-	{
-		std::unique_ptr<BcLoader> loader(new BcLoader(file));
-		if (!loader->Load(&nol, processor.get()))
-			return nullptr;
-	}
+	if (!LoadBytecode(file, &nol, processor.get()))
+		return nullptr;
 	assert(nol <= 2);
 	if (!processor->SolveLocation())
 		return nullptr;

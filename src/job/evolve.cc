@@ -21,13 +21,13 @@
 
 #include "bc.pb.h"
 
-#include "bc/bc_loader.h"
 #include "bc/index.h"
 #include "bc/locater.h"
 #include "bc/mounter.h"
 #include "bc/pack.h"
 #include "db/read-only-driver.h"
 #include "filter/cutter.h"
+#include "flint/bc.h"
 #include "lo/layout.h"
 #include "lo/layout_loader.h"
 #include "runtime/history.h"
@@ -376,24 +376,18 @@ bool Evolve(sqlite3 *db,
 
 	// load bc next
 	int nol = 0;
-	{
-		std::unique_ptr<BcLoader> loader(new BcLoader(bc_file));
-		if (!loader->Load(&nol, processor.get())) return false;
-	}
+	if (!LoadBytecode(bc_file, &nol, processor.get()))
+		return false;
 	if (nol <= 0) {
 		cerr << "invalid nol: " << nol << endl;
 		return false;
 	}
 	// load preprocess bytecode if specified
-	if (with_pre) {
-		std::unique_ptr<BcLoader> loader(new BcLoader(option.pre_file));
-		if (!loader->Load(NULL, preprocessor.get())) return false;
-	}
+	if (with_pre && !LoadBytecode(option.pre_file, nullptr, preprocessor.get()))
+		return false;
 	// load postprocess bytecode if specified
-	if (with_post) {
-		std::unique_ptr<BcLoader> loader(new BcLoader(option.post_file));
-		if (!loader->Load(NULL, postprocessor.get())) return false;
-	}
+	if (with_post && !LoadBytecode(option.post_file, nullptr, postprocessor.get()))
+		return false;
 
 	// replace nominal location in bytecode
 	if (!processor->SolveLocation()) {

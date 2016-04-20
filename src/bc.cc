@@ -1,43 +1,41 @@
 /* -*- Mode: C++; tab-width: 4; indent-tabs-mode: t; c-basic-offset: 4 -*- vim:set ts=4 sw=4 sts=4 noet: */
-#ifndef FLINT_BC_BC_LOADER_H_
-#define FLINT_BC_BC_LOADER_H_
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
 
+#include "flint/bc.h"
+
+#include <cstdio>
 #include <fstream>
-#include <memory>
-#include <string>
-#include <vector>
+#include <iostream>
 
 #include "bc/pack.h"
-
-#include "bc.pb.h"
+#include "flint/ct.h"
 
 namespace flint {
 
-typedef std::vector<bc::SectionHeader> ShVector;
-typedef std::vector<bc::BlockHeader> BhVector;
-typedef std::vector<bc::Code> CVector;
+namespace {
 
-class BcLoader {
+class Loader {
 public:
-	BcLoader(const BcLoader &) = delete;
-	BcLoader &operator=(const BcLoader &) = delete;
+	Loader(const Loader &) = delete;
+	Loader &operator=(const Loader &) = delete;
 
-	explicit BcLoader(const std::string &file) : ifs_(file.c_str(), std::ios::in|std::ios::binary) {}
+	explicit Loader(const std::string &file) : ifs_(file.c_str(), std::ios::in|std::ios::binary) {}
 
-	~BcLoader() {
+	~Loader() {
 		if (ifs_.is_open()) ifs_.close();
 	}
 
-	template<typename TProcessor>
-	bool Load(int *nol, TProcessor *processor) {
+	bool Load(int *nol, ct::DataFlowAnalyzer *dfa) {
 		if (!ifs_.is_open()) {
 			std::cerr << "failed to open bc file" << std::endl;
 			return false;
 		}
 
-		ShVector *shv = processor->GetShv();
-		BhVector *bhv = processor->GetBhv();
-		CVector *cv = processor->GetCv();
+		ct::ShVector *shv = dfa->GetShv();
+		ct::BhVector *bhv = dfa->GetBhv();
+		ct::CVector *cv = dfa->GetCv();
 
 		if (!UnpackFromIstream(header_, &ifs_)) {
 			return false;
@@ -82,4 +80,10 @@ private:
 
 }
 
-#endif
+bool LoadBytecode(const std::string &file, int *nol, ct::DataFlowAnalyzer *dfa)
+{
+	Loader loader(file);
+	return loader.Load(nol, dfa);
+}
+
+}

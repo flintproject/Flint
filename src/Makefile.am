@@ -74,6 +74,7 @@ libflintxx_la_SOURCES = \
     phml.pb.cc \
     unit.pb.cc \
     background.cc \
+    bc.cc \
     cas/dimension.cc \
     cas/eq.cc \
     cas/equation.cc \

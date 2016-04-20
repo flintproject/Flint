@@ -5,7 +5,8 @@
 #include <memory>
 #include <vector>
 
-#include "bc/bc_loader.h"
+#include "bc.pb.h"
+
 #include "runtime/execution-unit.h"
 #include "runtime/flow.h"
 
@@ -15,6 +16,10 @@ class CalculationDependency;
 class Layout;
 
 namespace ct {
+
+typedef std::vector<bc::SectionHeader> ShVector;
+typedef std::vector<bc::BlockHeader> BhVector;
+typedef std::vector<bc::Code> CVector;
 
 typedef std::vector<std::unique_ptr<ReductionUnit> > ReductionUnitVector;
 
