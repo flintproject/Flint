@@ -13,7 +13,7 @@ public:
 	Template(const Template &) = delete;
 	Template &operator=(const Template &) = delete;
 
-	Template() : template_id_(NULL), ref_module_id_(NULL) {}
+	Template() : template_id_(nullptr), ref_module_id_(nullptr) {}
 
 	~Template() {
 		if (template_id_) xmlFree(template_id_);

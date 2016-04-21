@@ -104,20 +104,20 @@ bool Job(const char *task_dir,
 	if (boost::filesystem::exists(before_bc_file)) {
 		option.pre_file = before_bc_file;
 	} else {
-		option.pre_file = NULL;
+		option.pre_file = nullptr;
 	}
 	char after_bc_file[kShort];
 	sprintf(after_bc_file, "%s/after-bc", task_dir);
 	if (boost::filesystem::exists(after_bc_file)) {
 		option.post_file = after_bc_file;
 	} else {
-		option.post_file = NULL;
+		option.post_file = nullptr;
 	}
 	char filter_file[kShort];
 	sprintf(filter_file, "%s/filter", task_dir);
 	option.filter_file = filter_file;
 	option.input_data_file = start_file;
-	option.input_history_file = NULL;
+	option.input_history_file = nullptr;
 	option.control_file = control_file;
 	option.output_data_file = output_data_file;
 	option.output_history_file = output_history_file;

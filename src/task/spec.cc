@@ -20,7 +20,7 @@ bool Spec(int id, sqlite3 *db, FILE *fp)
 	int e;
 	sqlite3_stmt *stmt;
 	e = sqlite3_prepare_v2(db, "SELECT variable FROM dgs WHERE task_id = ?",
-						   -1, &stmt, NULL);
+						   -1, &stmt, nullptr);
 	if (e != SQLITE_OK) {
 		fprintf(stderr, "failed to prepare statement: %d\n", e);
 		return false;

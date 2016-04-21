@@ -374,9 +374,9 @@ public:
 	Analysis(sqlite3 *db, odeModel_t *model)
 		: db_(db)
 		, model_(model)
-		, stmt_a_(NULL)
-		, stmt_c_(NULL)
-		, stmt_o_(NULL)
+		, stmt_a_(nullptr)
+		, stmt_c_(nullptr)
+		, stmt_o_(nullptr)
 	{
 		assert(model);
 	}
@@ -396,19 +396,19 @@ public:
 
 		int e;
 		e = sqlite3_prepare_v2(db_, "INSERT INTO assignments VALUES (?, ?)",
-							   -1, &stmt_a_, NULL);
+							   -1, &stmt_a_, nullptr);
 		if (e != SQLITE_OK) {
 			cerr << "failed to prepare statement: " << e << endl;
 			return false;
 		}
 		e = sqlite3_prepare_v2(db_, "INSERT INTO constants VALUES (?, ?)",
-							   -1, &stmt_c_, NULL);
+							   -1, &stmt_c_, nullptr);
 		if (e != SQLITE_OK) {
 			cerr << "failed to prepare statement: " << e << endl;
 			return false;
 		}
 		e = sqlite3_prepare_v2(db_, "INSERT INTO odes VALUES (?, ?, ?)",
-							   -1, &stmt_o_, NULL);
+							   -1, &stmt_o_, nullptr);
 		if (e != SQLITE_OK) {
 			cerr << "failed to prepare statement: " << e << endl;
 			return false;

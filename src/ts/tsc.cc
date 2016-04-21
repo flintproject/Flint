@@ -128,7 +128,7 @@ public:
 	{
 		std::unique_ptr<char[]> filename(GetUtf8FromPath(path));
 		int e;
-		e = sqlite3_bind_text(stmt(), 1, filename.get(), -1, NULL);
+		e = sqlite3_bind_text(stmt(), 1, filename.get(), -1, nullptr);
 		if (e != SQLITE_OK) {
 			cerr << "failed to bind filename: " << e << endl;
 			return false;

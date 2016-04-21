@@ -49,8 +49,8 @@ class Converter {
 public:
 #ifdef ENABLE_TCP
 	Converter(ostream *os, std::uint32_t num_objs, size_t length = 0,
-			  boost::asio::ip::udp::endpoint *endpoint = NULL,
-			  boost::asio::ip::udp::socket *socket = NULL)
+			  boost::asio::ip::udp::endpoint *endpoint = nullptr,
+			  boost::asio::ip::udp::socket *socket = nullptr)
 		: length_(length),
 		  position_(),
 		  endpoint_(endpoint),

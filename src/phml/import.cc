@@ -30,8 +30,8 @@ public:
 	Parser(const std::string &uuid, xmlDocPtr doc)
 		: uuid_(uuid),
 		  doc_(doc),
-		  context_(NULL),
-		  object_(NULL)
+		  context_(nullptr),
+		  object_(nullptr)
 	{
 		assert(doc);
 	}

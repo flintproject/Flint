@@ -180,7 +180,7 @@ int Filter(const char *input,
 
 	const char *ru = reader.units();
 	std::unique_ptr<char[]> units;
-	char *u = NULL;
+	char *u = nullptr;
 	if (ru) { // when units are available
 		units.reset(new char[reader.num_bytes_units()]);
 		u = units.get();
@@ -291,7 +291,7 @@ int main(int argc, char *argv[])
 			if (r == EXIT_SUCCESS && vm.count("columns")) PrintNumOfColumns(num_columns, *cv);
 			return r;
 		} else {
-			char *output_path = NULL;
+			char *output_path = nullptr;
 			{
 				std::unique_ptr<TemporaryPath> temp_path(new TemporaryPath("isdstrip"));
 				output_path = temp_path->Touch();

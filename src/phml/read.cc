@@ -83,7 +83,7 @@ public:
 
 	bool Validate(sqlite3 *db) {
 		bool r = true;
-		int e = sqlite3_prepare_v2(db, kQuery, -1, &query_stmt_, NULL);
+		int e = sqlite3_prepare_v2(db, kQuery, -1, &query_stmt_, nullptr);
 		if (e != SQLITE_OK) {
 			cerr << "failed to prepare statement: " << kQuery << ": " << e << endl;
 			return false;
@@ -140,13 +140,13 @@ public:
 	bool Write(sqlite3 *db) {
 		int e;
 		e = sqlite3_prepare_v2(db, "SELECT module_id, capsulated_by FROM modules WHERE type = 'capsule' OR type = 'functional-unit'",
-							   -1, &query_stmt_, NULL);
+							   -1, &query_stmt_, nullptr);
 		if (e != SQLITE_OK) {
 			cerr << "failed to prepare statement: " << e << endl;
 			return false;
 		}
 		e = sqlite3_prepare_v2(db, "INSERT INTO trees VALUES (?, ?)",
-							   -1, &tree_stmt_, NULL);
+							   -1, &tree_stmt_, nullptr);
 		if (e != SQLITE_OK) {
 			cerr << "failed to prepare statement: " << e << endl;
 			return false;
@@ -685,7 +685,7 @@ private:
 				}
 				element->set_unit_id(unit_id);
 			} else if (xmlStrEqual(local_name, BAD_CAST "exponent")) {
-				element->set_exponent(strtod((char *)value, NULL));
+				element->set_exponent(strtod((char *)value, nullptr));
 			} else if (xmlStrEqual(local_name, BAD_CAST "prefix")) {
 				if (xmlStrEqual(value, BAD_CAST "yotta")) {
 					element->set_factor(24);
@@ -732,9 +732,9 @@ private:
 					return -2;
 				}
 			} else if (xmlStrEqual(local_name, BAD_CAST "multiplier")) {
-				element->set_multiplier(strtod((char *)value, NULL));
+				element->set_multiplier(strtod((char *)value, nullptr));
 			} else if (xmlStrEqual(local_name, BAD_CAST "offset")) {
-				element->set_offset(strtod((char *)value, NULL));
+				element->set_offset(strtod((char *)value, nullptr));
 			} else {
 				cerr << "unknown attribute of <element>: " << local_name << endl;
 				return -2;
@@ -2319,7 +2319,7 @@ bool CreateViews(sqlite3 *db, const View *views, size_t n)
 		sprintf(buf, "CREATE VIEW IF NOT EXISTS %s AS SELECT %s",
 				view.name, view.rest_of_query);
 
-		e = sqlite3_exec(db, buf, NULL, NULL, &em);
+		e = sqlite3_exec(db, buf, nullptr, nullptr, &em);
 		if (e != SQLITE_OK) {
 			cerr << "failed to create view " << view.name
 				 << ": " << e
@@ -2368,7 +2368,7 @@ bool Read(sqlite3 *db)
 	LIBXML_TEST_VERSION
 	xmlInitParser();
 
-	xmlTextReaderPtr text_reader = xmlReaderForFile(model_filename.get(), NULL, 0);
+	xmlTextReaderPtr text_reader = xmlReaderForFile(model_filename.get(), nullptr, 0);
 	if (!text_reader) {
 		cerr << "could not read the input: " << model_filename.get() << endl;
 		xmlCleanupParser();

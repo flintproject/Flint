@@ -64,7 +64,7 @@ char *History::Load(char *p)
 					  << ": "
 					  << v
 					  << std::endl;
-			return NULL;
+			return nullptr;
 		}
 	}
 	return p;

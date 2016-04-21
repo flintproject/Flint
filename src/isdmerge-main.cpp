@@ -105,7 +105,7 @@ int main(int argc, char *argv[]) {
 			}
 			ru = reader.units();
 		} else {
-			ru = NULL;
+			ru = nullptr;
 			has_units = false;
 		}
 		for(size_t j = 0; j < reader.num_objs(); j++) {

@@ -14,7 +14,7 @@ namespace base {
 template <class T>
 class Rational {
 public:
-	static bool FromStream(std::istream &in, boost::rational<T> &r, int *s = NULL)
+	static bool FromStream(std::istream &in, boost::rational<T> &r, int *s = nullptr)
 	{
 		T d = 0, n = 1;
 		bool d_found = false;

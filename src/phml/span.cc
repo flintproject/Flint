@@ -147,7 +147,7 @@ public:
 	bool Load(sqlite3 *db, std::set<Edge> *edge_set)
 	{
 		int e = sqlite3_prepare_v2(db, "SELECT * FROM edges",
-								   -1, &stmt_, NULL);
+								   -1, &stmt_, nullptr);
 		if (e != SQLITE_OK) {
 			cerr << "failed to prepare statement: " << e << endl;
 			return false;
@@ -194,7 +194,7 @@ public:
 	template<typename THandler>
 	bool Load(sqlite3 *db, THandler *handler) {
 		int e = sqlite3_prepare_v2(db, "SELECT * FROM journals",
-								   -1, &stmt_, NULL);
+								   -1, &stmt_, nullptr);
 		if (e != SQLITE_OK) {
 			cerr << "failed to prepare statement: " << e << endl;
 			return false;
@@ -403,7 +403,7 @@ public:
 
 	bool Initialize(sqlite3 *db) {
 		int e = sqlite3_prepare_v2(db, "INSERT INTO spans VALUES (?, ?, ?, ?)",
-								   -1, &stmt_, NULL);
+								   -1, &stmt_, nullptr);
 		if (e != SQLITE_OK) {
 			cerr << "failed to prepare statement: "
 				 << e

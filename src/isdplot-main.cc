@@ -188,7 +188,7 @@ int CallGnuplot(const char *gnuplot,
 
 		char *args[2];
 		args[0] = arg0;
-		args[1] = NULL;
+		args[1] = nullptr;
 		execv(args[0], args); // should not return
 		cerr << "could not exec " << gnuplot << ": " << strerror(errno) << endl;
 		_Exit(EXIT_FAILURE);
@@ -202,7 +202,7 @@ int CallGnuplot(const char *gnuplot,
 	if (write(fd, buf.c_str(), buf.size()) < 0) {
 		cerr << "could not write into pipe; " << strerror(errno);
 		close(fd);
-		waitpid(pid, NULL, 0);
+		waitpid(pid, nullptr, 0);
 		return EXIT_FAILURE;
 	}
 	close(fd);
@@ -225,7 +225,7 @@ int CallGnuplot(const char *gnuplot,
 	SECURITY_ATTRIBUTES saAttr;
 	saAttr.nLength = sizeof(SECURITY_ATTRIBUTES);
 	saAttr.bInheritHandle = TRUE;
-	saAttr.lpSecurityDescriptor = NULL;
+	saAttr.lpSecurityDescriptor = nullptr;
 
 	HANDLE hChildInRead, hChildInWrite;
 	if (!CreatePipe(&hChildInRead, &hChildInWrite, &saAttr, 0)) {
@@ -248,13 +248,13 @@ int CallGnuplot(const char *gnuplot,
 	PROCESS_INFORMATION piProcInfo;
 	ZeroMemory(&piProcInfo, sizeof(piProcInfo));
 	bool b = CreateProcess(gnuplot,
-						   NULL,
-						   NULL,
-						   NULL,
+						   nullptr,
+						   nullptr,
+						   nullptr,
 						   TRUE,
 						   0,
-						   NULL,
-						   NULL,
+						   nullptr,
+						   nullptr,
 						   &siStartInfo,
 						   &piProcInfo);
 	if (!b) {
@@ -269,7 +269,7 @@ int CallGnuplot(const char *gnuplot,
 	ostringstream bss;
 	CreateScript(num_columns, csv_path, output_path, &bss);
 	const string &buf(bss.str());
-	WriteFile(hChildInWrite, (LPCVOID)buf.c_str(), (DWORD)buf.size(),  NULL, NULL);
+	WriteFile(hChildInWrite, (LPCVOID)buf.c_str(), (DWORD)buf.size(), nullptr, nullptr);
 	CloseHandle(hChildInWrite);
 
 	WaitForSingleObject(piProcInfo.hProcess, INFINITE);
@@ -291,8 +291,8 @@ int CallGnuplot(const char *gnuplot,
 
 #endif
 
-char *stripped_path = NULL;
-char *csv_path = NULL;
+char *stripped_path = nullptr;
+char *csv_path = nullptr;
 
 void Cleanup(void)
 {

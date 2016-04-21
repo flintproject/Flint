@@ -23,7 +23,7 @@ public:
 };
 
 struct F {
-	F() : text_reader_(NULL),
+	F() : text_reader_(nullptr),
 		  os_()
 	{}
 
@@ -34,8 +34,8 @@ struct F {
 
 	void ReadAndDump(const char *filename,
 							const char *expected) {
-		text_reader_ = xmlReaderForFile(filename, NULL, 0);
-		BOOST_CHECK(text_reader_ != NULL);
+		text_reader_ = xmlReaderForFile(filename, nullptr, 0);
+		BOOST_CHECK(text_reader_ != nullptr);
 		Handler handler;
 		mathml::MathDumper dumper(text_reader_, &os_);
 		int i = dumper.Read(&handler);

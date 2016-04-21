@@ -23,7 +23,7 @@ public:
 	DefinitionDumper(xmlTextReaderPtr &text_reader,
 					 TReader *reader)
 		: text_reader_(text_reader),
-		  name_(NULL),
+		  name_(nullptr),
 		  math_dumper_(text_reader, reader->GetOutputStream()),
 		  reader_(reader)
 	{}

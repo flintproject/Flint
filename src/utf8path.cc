@@ -24,7 +24,7 @@ boost::filesystem::path GetPathFromUtf8(const char *utf8)
 								  MB_ERR_INVALID_CHARS,
 								  utf8,
 								  -1,
-								  NULL,
+								  nullptr,
 								  0);
 	if (len == 0) {
 		std::cerr << "failed to convert file name encoded in UTF-8: "
@@ -65,10 +65,10 @@ char *GetUtf8FromPath(const boost::filesystem::path &path)
 								  0, // TODO: WC_ERR_INVALID_CHARS
 								  path_ws.c_str(),
 								  path_ws.size(),
-								  NULL,
+								  nullptr,
 								  0,
-								  NULL,
-								  NULL);
+								  nullptr,
+								  nullptr);
 	if (len == 0) {
 		std::cerr << "failed to convert path into a file name encoded in UTF-8: "
 				  << path
@@ -84,8 +84,8 @@ char *GetUtf8FromPath(const boost::filesystem::path &path)
 								path_ws.size(),
 								utf8,
 								len,
-								NULL,
-								NULL);
+								nullptr,
+								nullptr);
 	if (r == 0) {
 		std::cerr << "failed to convert path into file name encoded in UTF-8: "
 				  << path

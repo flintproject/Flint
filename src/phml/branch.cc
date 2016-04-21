@@ -199,7 +199,7 @@ bool Branch(const boost::filesystem::path &path, sqlite3 *db)
 
 	sqlite3_stmt *stmt;
 	int e = sqlite3_prepare_v2(db, "SELECT t.module_id, t.level, m.template_state FROM trees AS t LEFT JOIN modules AS m ON t.module_id = m.module_id",
-							   -1, &stmt, NULL);
+							   -1, &stmt, nullptr);
 	if (e != SQLITE_OK) {
 		cerr << "failed to prepare statement: "
 			 << e

@@ -139,7 +139,7 @@ public:
 
 		/* mark it generated */
 		sprintf(query, "UPDATE jobs SET status = 'generated' WHERE rowid = '%d'", rowid);
-		e = sqlite3_exec(input_, query, NULL, NULL, &em);
+		e = sqlite3_exec(input_, query, nullptr, nullptr, &em);
 		if (e != SQLITE_OK) {
 			fprintf(stderr, "failed to update jobs: %d: %s\n", e, em);
 			sqlite3_free(em);

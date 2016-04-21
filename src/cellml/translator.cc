@@ -85,13 +85,13 @@ public:
 			return false;
 		if (!CreateView(db, "scopes", "SELECT space_id AS uuid, space_id, NULL AS label FROM spaces"))
 			return false;
-		e = sqlite3_prepare_v2(db, kTreeQuery, -1, &query_stmt_, NULL);
+		e = sqlite3_prepare_v2(db, kTreeQuery, -1, &query_stmt_, nullptr);
 		if (e != SQLITE_OK) {
 			cerr << "failed to prepare statement: " << kTreeQuery << endl;
 			return false;
 		}
 		e = sqlite3_prepare_v2(db, "INSERT INTO spaces VALUES (?, ?)",
-							   -1, &insert_stmt_, NULL);
+							   -1, &insert_stmt_, nullptr);
 		if (e != SQLITE_OK) {
 			cerr << "failed to prepare statement: " << e << endl;
 			return false;

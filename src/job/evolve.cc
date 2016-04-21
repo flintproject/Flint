@@ -56,11 +56,11 @@ public:
 
 	explicit Executor(size_t layer_size)
 	: layer_size_(layer_size),
-	  data_(NULL),
-	  prev_(NULL),
+	  data_(nullptr),
+	  prev_(nullptr),
 	  ir_(nullptr),
-	  tmp_(NULL),
-	  history_(NULL) {}
+	  tmp_(nullptr),
+	  history_(nullptr) {}
 
 	void set_data(double *data) {data_ = data;}
 	void set_prev(double *prev) {prev_ = prev;}
@@ -141,12 +141,12 @@ public:
 
 	explicit PExecutor(size_t layer_size)
 	: layer_size_(layer_size),
-	  data_(NULL),
-	  prev_(NULL),
-	  color_(NULL),
+	  data_(nullptr),
+	  prev_(nullptr),
+	  color_(nullptr),
 	  ir_(nullptr),
-	  tmp_(NULL),
-	  history_(NULL) {}
+	  tmp_(nullptr),
+	  history_(nullptr) {}
 
 	void set_data(double *data) {data_ = data;}
 	void set_prev(double *prev) {prev_ = prev;}
@@ -345,10 +345,10 @@ bool Evolve(sqlite3 *db,
 	double output_start_time = option.output_start_time;
 	FILE *output_fp = option.output_fp;
 
-	bool with_filter = option.filter_file != NULL;
-	bool with_pre = option.pre_file != NULL;
-	bool with_post = option.post_file != NULL;
-	bool with_control = option.control_file != NULL;
+	bool with_filter = option.filter_file != nullptr;
+	bool with_pre = option.pre_file != nullptr;
+	bool with_post = option.post_file != nullptr;
+	bool with_control = option.control_file != nullptr;
 
 	// load layout at first
 	std::unique_ptr<Layout> layout(new Layout);
@@ -426,7 +426,7 @@ bool Evolve(sqlite3 *db,
 
 	// arrange previous data space
 	std::unique_ptr<double[]> prev(new double[layer_size * nol]()); // default-initialized
-	if (option.input_data_file != NULL) { // fill the first layer with input
+	if (option.input_data_file != nullptr) { // fill the first layer with input
 		if (!LoadData(option.input_data_file, layer_size, prev.get())) return false;
 	}
 	executor->set_prev(prev.get());
@@ -469,7 +469,7 @@ bool Evolve(sqlite3 *db,
 	if (!layout->SpecifyCapacity(layer_size, history.get())) {
 		return false;
 	}
-	if (option.input_history_file != NULL) {
+	if (option.input_history_file != nullptr) {
 		HistoryLoader loader(option.input_history_file);
 		if (!loader.Load(layer_size, history.get())) return false;
 	}
@@ -600,10 +600,10 @@ bool Evolve(sqlite3 *db,
 	} while (data[kIndexTime] < data[kIndexEnd]);
 	fflush(output_fp);
 
-	if (option.output_data_file != NULL) {
+	if (option.output_data_file != nullptr) {
 		if (!SaveData(option.output_data_file, layer_size, data.get())) return false;
 	}
-	if (option.output_history_file != NULL) {
+	if (option.output_history_file != nullptr) {
 		HistoryDumper dumper(option.output_history_file);
 		if (!dumper.Dump(layer_size, history.get())) return false;
 	}

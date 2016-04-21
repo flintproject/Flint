@@ -68,7 +68,7 @@ bool CombineAll(sqlite3 *db)
 	sqlite3_stmt *stmt;
 	int e = sqlite3_prepare_v2(db,
 							   "SELECT m.module_id, i.type, i.ref FROM imports AS i LEFT JOIN modules AS m ON i.module_rowid = m.rowid",
-							   -1, &stmt, NULL);
+							   -1, &stmt, nullptr);
 	if (e != SQLITE_OK) {
 		cerr << "failed to prepare statement: " << e << endl;
 		return false;

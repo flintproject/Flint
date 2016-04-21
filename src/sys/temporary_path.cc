@@ -26,21 +26,21 @@ char *MakeTemporaryFile(const std::string &name, int *fd)
 	boost::filesystem::path p = boost::filesystem::temp_directory_path(ec);
 	if (ec) {
 		cerr << "failed to get temporary directory path" << endl;
-		return NULL;
+		return nullptr;
 	}
 	p /= name + ".XXXXXX";
 	const char *pc = p.c_str();
 	char *filepath = (char *)malloc(strlen(pc) + 1);
 	if (!filepath) {
 		cerr << "could not allocate filepath" << endl;
-		return NULL;
+		return nullptr;
 	}
 	strcpy(filepath, pc);
 	*fd = mkstemp(filepath);
 	if (*fd < 0) {
 		cerr << "could not make temporary file: " << filepath << endl;
 		free(filepath);
-		return NULL;
+		return nullptr;
 	}
 	return filepath;
 }
@@ -59,10 +59,10 @@ char *TemporaryPath::Touch()
 
 char *TemporaryPath::Touch()
 {
-	char *path = tempnam(NULL, name_.c_str());
+	char *path = tempnam(nullptr, name_.c_str());
 	if (!path) {
 		cerr << "could not generate temporary name" << endl;
-		return NULL;
+		return nullptr;
 	}
 	return path;
 }

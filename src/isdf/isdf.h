@@ -45,7 +45,7 @@ typedef struct ISDFHeaderStruct{
 #endif
 		padding[0] = padding[1] = 0;
 
-		time_t t = std::time(NULL);
+		time_t t = std::time(nullptr);
 		struct tm *utc = std::gmtime(&t);
 		// Note that on Windows strftime() comes from MSVCRT.LIB,
 		// so some of the formatting codes are unavailable.

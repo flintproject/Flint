@@ -12,9 +12,9 @@ namespace flint {
 namespace db {
 
 ReadOnlyDriver::ReadOnlyDriver(const char *filename)
-	: db_(NULL)
+	: db_(nullptr)
 {
-	if (sqlite3_open_v2(filename, &db_, SQLITE_OPEN_READONLY, NULL) != SQLITE_OK) {
+	if (sqlite3_open_v2(filename, &db_, SQLITE_OPEN_READONLY, nullptr) != SQLITE_OK) {
 		cerr << "failed to open database for read-only: " << filename << endl;
 		exit(EXIT_FAILURE);
 	}

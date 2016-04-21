@@ -95,17 +95,17 @@ bool TransitionForm::operator()(sqlite3 *db)
 	ConditionMap cm;
 	PqArcMap pam;
 	int e;
-	e = sqlite3_prepare_v2(db, kQuerySelect, -1, &stmt_select_, NULL);
+	e = sqlite3_prepare_v2(db, kQuerySelect, -1, &stmt_select_, nullptr);
 	if (e != SQLITE_OK) {
 		cerr << "failed to prepare statement: " << kQuerySelect << ": " << e << endl;
 		return false;
 	}
-	e = sqlite3_prepare_v2(db, kQueryExtras, -1, &stmt_extras_, NULL);
+	e = sqlite3_prepare_v2(db, kQueryExtras, -1, &stmt_extras_, nullptr);
 	if (e != SQLITE_OK) {
 		cerr << "failed to prepare statement: " << kQueryExtras << ": " << e << endl;
 		return false;
 	}
-	e = sqlite3_prepare_v2(db, kQueryImpls, -1, &stmt_impls_, NULL);
+	e = sqlite3_prepare_v2(db, kQueryImpls, -1, &stmt_impls_, nullptr);
 	if (e != SQLITE_OK) {
 		cerr << "failed to prepare statement: " << kQueryImpls << ": " << e << endl;
 		return false;

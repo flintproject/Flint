@@ -293,9 +293,9 @@ public:
 	Processor(const Layout *layout, int layer_size)
 		: ct::DataFlowAnalyzer(layout, layer_size)
 		, ir_(nullptr)
-		, tmp_(NULL)
-		, tv_(NULL)
-		, rng_(NULL)
+		, tmp_(nullptr)
+		, tv_(nullptr)
+		, rng_(nullptr)
 	{}
 
 	void set_ir(intptr_t *ir) {ir_ = ir;}

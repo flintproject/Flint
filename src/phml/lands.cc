@@ -180,7 +180,7 @@ bool LengthAndStep(sqlite3 *db, const char *nc_file, const char *uot_file)
 			if (!writer.Write(len, nc.td().step().c_str()))
 				return false;
 		} else {
-			double len = std::strtod(nc.sts().value().c_str(), NULL);
+			double len = std::strtod(nc.sts().value().c_str(), nullptr);
 			// TODO: check len
 			if (!writer.Write(len, "0.01"))
 				return false;

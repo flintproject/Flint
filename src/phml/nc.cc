@@ -43,13 +43,13 @@ public:
 	bool Drive(sqlite3 *db) {
 		int e;
 		e = sqlite3_prepare_v2(db, "SELECT * FROM ncs",
-							   -1, &nc_stmt_, NULL);
+							   -1, &nc_stmt_, nullptr);
 		if (e != SQLITE_OK) {
 			cerr << "failed to prepare statement: " << e << endl;
 			return false;
 		}
 		e = sqlite3_prepare_v2(db, "SELECT unit_id, step FROM tds WHERE module_id IS NULL",
-							   -1, &td_stmt_, NULL);
+							   -1, &td_stmt_, nullptr);
 		if (e != SQLITE_OK) {
 			cerr << "failed to prepare statement: " << e << endl;
 			return false;

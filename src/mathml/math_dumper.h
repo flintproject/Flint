@@ -21,7 +21,7 @@ class MathDumper {
 public:
 	MathDumper(xmlTextReaderPtr &text_reader, std::ostream *os)
 		: text_reader_(text_reader),
-		  name_(NULL),
+		  name_(nullptr),
 		  found_(),
 		  os_(os)
 	{}

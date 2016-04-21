@@ -58,7 +58,7 @@ public:
 		e = sqlite3_step(stmt());
 		if (e != SQLITE_ROW) {
 			cerr << "failed to step statement: " << e << endl;
-			return NULL;
+			return nullptr;
 		}
 		const char *f = (const char *)sqlite3_column_text(stmt(), 0);
 		size_t len = strlen(f);

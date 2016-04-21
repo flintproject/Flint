@@ -253,7 +253,7 @@ public:
 		assert(path);
 		assert(parser);
 		xmlInitParser();
-		text_reader_ = xmlReaderForFile(path, NULL, 0);
+		text_reader_ = xmlReaderForFile(path, nullptr, 0);
 	}
 
 	~CellMLReader() {
@@ -273,7 +273,7 @@ public:
 			if (type == XML_READER_TYPE_ELEMENT) {
 				const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
 				if (xmlStrEqual(local_name, BAD_CAST "units")) {
-					i = ReadUnits(NULL);
+					i = ReadUnits(nullptr);
 					if (i <= 0) return i;
 					continue;
 				} else if (xmlStrEqual(local_name, BAD_CAST "component")) {
@@ -397,7 +397,7 @@ private:
 			cerr << "failed to bind parameter: " << e << endl;
 			return -2;
 		}
-		e = sqlite3_bind_text(stmt, 6, (component) ? reinterpret_cast<const char *>(component->name()) : NULL,
+		e = sqlite3_bind_text(stmt, 6, (component) ? reinterpret_cast<const char *>(component->name()) : nullptr,
 							  -1, SQLITE_STATIC);
 		if (e != SQLITE_OK) {
 			cerr << "failed to bind parameter: " << e << endl;
@@ -775,7 +775,7 @@ private:
 
 		e = sqlite3_prepare_v2(db_,
 							   "INSERT INTO cellml_units VALUES (?, ?, ?, ?, ?, ?)",
-							   -1, &stmt, NULL);
+							   -1, &stmt, nullptr);
 		if (e != SQLITE_OK) {
 			cerr << "failed to prepare statement: " << e << endl;
 			return false;
@@ -784,7 +784,7 @@ private:
 
 		e = sqlite3_prepare_v2(db_,
 							   "INSERT INTO cellml_variables VALUES (?, ?, ?, ?, ?, ?)",
-							   -1, &stmt, NULL);
+							   -1, &stmt, nullptr);
 		if (e != SQLITE_OK) {
 			cerr << "failed to prepare statement: " << e << endl;
 			return false;
@@ -793,7 +793,7 @@ private:
 
 		e = sqlite3_prepare_v2(db_,
 							   "INSERT INTO cellml_maths VALUES (?, ?)",
-							   -1, &stmt, NULL);
+							   -1, &stmt, nullptr);
 		if (e != SQLITE_OK) {
 			cerr << "failed to prepare statement: " << e << endl;
 			return false;
@@ -802,7 +802,7 @@ private:
 
 		e = sqlite3_prepare_v2(db_,
 							   "INSERT INTO cellml_connections VALUES (?, ?)",
-							   -1, &stmt, NULL);
+							   -1, &stmt, nullptr);
 		if (e != SQLITE_OK) {
 			cerr << "failed to prepare statement: " << e << endl;
 			return false;
@@ -811,7 +811,7 @@ private:
 
 		e = sqlite3_prepare_v2(db_,
 							   "INSERT INTO cellml_map_variables VALUES (?, ?, ?)",
-							   -1, &stmt, NULL);
+							   -1, &stmt, nullptr);
 		if (e != SQLITE_OK) {
 			cerr << "failed to prepare statement: " << e << endl;
 			return false;

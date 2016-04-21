@@ -123,7 +123,7 @@ bool Read(const char *sedml_file, sqlite3 *db)
 		fprintf(stderr, "failed to allocate SED-ML document\n");
 		return false;
 	}
-	if (sedml_read_file(sedml_path_s.c_str(), NULL, doc) < 0) {
+	if (sedml_read_file(sedml_path_s.c_str(), nullptr, doc) < 0) {
 		fprintf(stderr, "failed to read SED-ML file: %s\n", sedml_file);
 		goto bail;
 	}
@@ -163,7 +163,7 @@ bool Read(const char *sedml_file, sqlite3 *db)
 			goto bail;
 		}
 
-		const struct sedml_model *model = NULL;
+		const struct sedml_model *model = nullptr;
 		for (int k=0;k<sedml->num_models;k++) {
 			const struct sedml_model *m = sedml->models[k];
 			if (!m || !m->id) continue;
@@ -181,7 +181,7 @@ bool Read(const char *sedml_file, sqlite3 *db)
 		sqlite3_stmt *stmt;
 		int e;
 		e = sqlite3_prepare_v2(db, "INSERT INTO models VALUES (?, NULL)",
-							   -1, &stmt, NULL);
+							   -1, &stmt, nullptr);
 		if (e != SQLITE_OK) {
 			fprintf(stderr, "failed to prepare statement: %d\n", e);
 			goto bail;
@@ -203,7 +203,7 @@ bool Read(const char *sedml_file, sqlite3 *db)
 
 		sqlite3_int64 model_id = sqlite3_last_insert_rowid(db);
 
-		const struct sedml_simulation *simulation = NULL;
+		const struct sedml_simulation *simulation = nullptr;
 		for (int i=0;i<sedml->num_simulations;i++) {
 			const struct sedml_simulation *s = sedml->simulations[i];
 			if (!s || !s->id) continue;
@@ -227,7 +227,7 @@ bool Read(const char *sedml_file, sqlite3 *db)
 		utc = (const struct sedml_uniformtimecourse *)simulation;
 
 		e = sqlite3_prepare_v2(db, "INSERT INTO sims VALUES (?, ?, ?, ?, ?)",
-							   -1, &stmt, NULL);
+							   -1, &stmt, nullptr);
 		if (e != SQLITE_OK) {
 			fprintf(stderr, "failed to prepare statement: %d\n", e);
 			goto bail;
@@ -265,7 +265,7 @@ bool Read(const char *sedml_file, sqlite3 *db)
 		sqlite3_int64 sim_id = sqlite3_last_insert_rowid(db);
 
 		e = sqlite3_prepare_v2(db, "INSERT INTO tasks VALUES (?, ?)",
-							   -1, &stmt, NULL);
+							   -1, &stmt, nullptr);
 		if (e != SQLITE_OK) {
 			cerr << "failed to prepare statement: " << e << endl;
 			goto bail;
@@ -306,7 +306,7 @@ bool Read(const char *sedml_file, sqlite3 *db)
 				if (!variable->target) continue;
 
 				e = sqlite3_prepare_v2(db, "INSERT INTO dgs VALUES (?, ?)",
-									   -1, &stmt, NULL);
+									   -1, &stmt, nullptr);
 				if (e != SQLITE_OK) {
 					cerr << "failed to prepare statement: " << e << endl;
 					goto bail;

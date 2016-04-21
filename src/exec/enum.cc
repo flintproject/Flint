@@ -39,7 +39,7 @@ int Enumerate(sqlite3 *db)
 	char *em;
 	int e;
 	/* get parameters as well as their values */
-	e = sqlite3_prepare_v2(db, SQL, -1, &stmt, NULL);
+	e = sqlite3_prepare_v2(db, SQL, -1, &stmt, nullptr);
 	if (e != SQLITE_OK) {
 		fprintf(stderr, "failed to parepare statement: %s\n", SQL);
 		return 0;
@@ -48,7 +48,7 @@ int Enumerate(sqlite3 *db)
 	size_t qlen = 1024;
 	char *q = static_cast<char *>(malloc(qlen));
 	if (!q) {
-		perror(NULL);
+		perror(nullptr);
 		return 0;
 	}
 	sprintf(q, "CREATE TABLE enum (");
@@ -56,7 +56,7 @@ int Enumerate(sqlite3 *db)
 	while (*p) p++; /* move to '\0' */
 
 	int num_params = 0;
-	struct Range *ranges = NULL;
+	struct Range *ranges = nullptr;
 	size_t size_ranges = 0;
 
 	while ( (e = sqlite3_step(stmt)) != SQLITE_DONE) {
@@ -141,7 +141,7 @@ int Enumerate(sqlite3 *db)
 	*(p-2) = ')';
 	*(p-1) = '\0';
 
-	e = sqlite3_exec(db, q, NULL, NULL, &em);
+	e = sqlite3_exec(db, q, nullptr, nullptr, &em);
 	if (e != SQLITE_OK) {
 		fprintf(stderr, "failed to create table: %d: %s\n", e, em);
 		sqlite3_free(em);
@@ -156,7 +156,7 @@ int Enumerate(sqlite3 *db)
 		strcat(q, ", ?");
 	}
 	strcat(q, ")");
-	e = sqlite3_prepare_v2(db, q, -1, &stmt, NULL);
+	e = sqlite3_prepare_v2(db, q, -1, &stmt, nullptr);
 	if (e != SQLITE_OK) {
 		fprintf(stderr, "failed to parepare statement: %s\n", q);
 		/* TODO */
@@ -166,7 +166,7 @@ int Enumerate(sqlite3 *db)
 	/* prepare to insert corresponding entries in jobs */
 	sqlite3_stmt *job_stmt;
 	sprintf(q, "INSERT INTO jobs VALUES (?, 'pending')");
-	e = sqlite3_prepare_v2(db, q, -1, &job_stmt, NULL);
+	e = sqlite3_prepare_v2(db, q, -1, &job_stmt, nullptr);
 	if (e != SQLITE_OK) {
 		fprintf(stderr, "failed to prepare statement: %s\n", q);
 		/* TODO */

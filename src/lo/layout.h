@@ -55,7 +55,7 @@ public:
 	 */
 	bool ContainsDependentVariable() const;
 
-	int Calculate(DataOffsetMap *dom = NULL, SectorOffsetMap *som = NULL) {
+	int Calculate(DataOffsetMap *dom = nullptr, SectorOffsetMap *som = nullptr) {
 		int offset = kOffsetBase;
 		int di = 0;
 		int si = 0;

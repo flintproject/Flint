@@ -92,11 +92,11 @@ public:
 
 	explicit Executor(size_t layer_size)
 	: layer_size_(layer_size),
-	  data_(NULL),
+	  data_(nullptr),
 	  ir_(nullptr),
-	  tmp_(NULL),
-	  target_(NULL),
-	  color_(NULL)
+	  tmp_(nullptr),
+	  target_(nullptr),
+	  color_(nullptr)
 	{}
 
 	void set_data(double *data) {data_ = data;}

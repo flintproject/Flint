@@ -24,7 +24,7 @@ EqInserter::EqInserter(const char *table, sqlite3 *db)
 			"INSERT INTO %s VALUES (?, ?)",
 			table);
 	int e;
-	e = sqlite3_prepare_v2(db, query_.get(), -1, &stmt_, NULL);
+	e = sqlite3_prepare_v2(db, query_.get(), -1, &stmt_, nullptr);
 	if (e != SQLITE_OK) {
 		cerr << "failed to prepare statement: " << e
 			 << ": " << query_.get()

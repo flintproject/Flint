@@ -15,8 +15,8 @@ public:
 
 	TimeDiscretization()
 		: unit_id_(),
-		  step_(NULL),
-		  module_id_(NULL)
+		  step_(nullptr),
+		  module_id_(nullptr)
 	{
 	}
 

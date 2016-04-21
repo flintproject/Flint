@@ -46,7 +46,7 @@ public:
 	Model(const Model &) = delete;
 	Model &operator=(const Model &) = delete;
 
-	Model() : format_(NULL), iref_(NULL) {}
+	Model() : format_(nullptr), iref_(nullptr) {}
 
 	~Model() {
 		if (format_) xmlFree(format_);
@@ -140,11 +140,11 @@ public:
 	Target &operator=(const Target &) = delete;
 
 	Target()
-		: uuid_(NULL),
+		: uuid_(nullptr),
 		  physical_quantity_id_(),
-		  species_id_(NULL),
-		  parameter_id_(NULL),
-		  reaction_id_(NULL)
+		  species_id_(nullptr),
+		  parameter_id_(nullptr),
+		  reaction_id_(nullptr)
 	{}
 
 	~Target() {
@@ -255,7 +255,7 @@ private:
 							   " LEFT JOIN models ON tasks.model_id = models.rowid"
 							   " WHERE models.model_path = ?"
 							   " ORDER BY tasks.rowid DESC",
-							   -1, &stmt, NULL);
+							   -1, &stmt, nullptr);
 		if (e != SQLITE_OK) {
 			cerr << "failed to prepare statement: "
 				 << e << " (" << __FILE__ << ":" << __LINE__ << ")"
@@ -309,7 +309,7 @@ private:
 
 		// update the model entry
 		e = sqlite3_prepare_v2(db_, "UPDATE models SET absolute_path = ? WHERE rowid = ?",
-							   -1, &stmt, NULL);
+							   -1, &stmt, nullptr);
 		if (e != SQLITE_OK) {
 			cerr << "failed to prepare statement: "
 				 << e << " (" << __FILE__ << ":" << __LINE__ << ")"
@@ -337,7 +337,7 @@ private:
 		char query[1024];
 		sprintf(query, "ATTACH DATABASE '%d/db' AS 'db%d'", rowid, rowid);
 		char *em;
-		e = sqlite3_exec(db_, query, NULL, NULL, &em);
+		e = sqlite3_exec(db_, query, nullptr, nullptr, &em);
 		if (e != SQLITE_OK) {
 			cerr << "failed to attach database: " << e
 				 << ": " << em << endl;
@@ -355,7 +355,7 @@ private:
 		if (!CreateTable(db_, table_name, "(format TEXT)"))
 			return -2;
 		sprintf(query, "INSERT INTO db%d.model VALUES (?)", rowid);
-		e = sqlite3_prepare_v2(db_, query, -1, &stmt, NULL);
+		e = sqlite3_prepare_v2(db_, query, -1, &stmt, nullptr);
 		if (e != SQLITE_OK) {
 			cerr << "failed to prepare statement: "
 				 << e << " (" << __FILE__ << ":" << __LINE__ << ")"
@@ -404,7 +404,7 @@ private:
 						return -2;
 					// detach the database after the transaction
 					sprintf(query, "DETACH DATABASE 'db%d'", rowid);
-					e = sqlite3_exec(db_, query, NULL, NULL, &em);
+					e = sqlite3_exec(db_, query, nullptr, nullptr, &em);
 					if (e != SQLITE_OK) {
 						cerr << "failed to detach database: " << e
 							 << ": " << em << endl;
@@ -538,7 +538,7 @@ private:
 		sqlite3_stmt *stmt;
 		char query[1024];
 		sprintf(query, "INSERT INTO db%d.phsp_parameters VALUES (?, ?)", rowid);
-		int e = sqlite3_prepare_v2(db_, query, -1, &stmt, NULL);
+		int e = sqlite3_prepare_v2(db_, query, -1, &stmt, nullptr);
 		if (e != SQLITE_OK) {
 			cerr << "failed to prepare statement: "
 				 << e << " (" << __FILE__ << ":" << __LINE__ << ")"
@@ -684,7 +684,7 @@ private:
 						char query[1024];
 						sprintf(query, "INSERT INTO db%d.phsp_targets values (?, ?, ?)", rowid);
 						sqlite3_stmt *stmt;
-						int e = sqlite3_prepare_v2(db_, query, -1, &stmt, NULL);
+						int e = sqlite3_prepare_v2(db_, query, -1, &stmt, nullptr);
 						if (e != SQLITE_OK) {
 							cerr << "failed to prepare statement: "
 								 << e << " (" << __FILE__ << ":" << __LINE__ << ")"
@@ -711,7 +711,7 @@ private:
 								cerr << "failed to bind uuid: " << e << endl;
 								return -2;
 							}
-							const char *id = NULL;
+							const char *id = nullptr;
 							if (target->species_id()) id = (const char *)target->species_id();
 							if (target->parameter_id()) id = (const char *)target->parameter_id();
 							if (target->reaction_id()) id = (const char *)target->reaction_id();
@@ -803,7 +803,7 @@ bool Read(const char *phsp_file, sqlite3 *db)
 	boost::filesystem::path pp = GetPathFromUtf8(phsp_file);
 	string pp_s = pp.string();
 
-	xmlTextReaderPtr text_reader = xmlReaderForFile(pp_s.c_str(), NULL, 0);
+	xmlTextReaderPtr text_reader = xmlReaderForFile(pp_s.c_str(), nullptr, 0);
 	if (!text_reader) {
 		cerr << "could not read " << phsp_file << endl;
 		return false;

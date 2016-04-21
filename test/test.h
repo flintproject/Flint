@@ -65,7 +65,7 @@ public:
 	{}
 
 	void Exec(const char *query) {
-		int e = sqlite3_exec(db_, query, NULL, NULL, NULL);
+		int e = sqlite3_exec(db_, query, nullptr, nullptr, nullptr);
 		BOOST_CHECK_EQUAL(e, SQLITE_OK);
 	}
 
@@ -94,7 +94,7 @@ public:
 private:
 	void CollectRows(const char *query, std::vector<std::string> *rows)
 	{
-		int e = sqlite3_exec(db_, query, &AddRow, rows, NULL);
+		int e = sqlite3_exec(db_, query, &AddRow, rows, nullptr);
 		BOOST_CHECK_EQUAL(e, SQLITE_OK);
 	}
 

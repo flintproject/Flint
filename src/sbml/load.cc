@@ -32,7 +32,7 @@ class Ode {
 public:
 	Ode(const char *name, const char *value, const char *rhs)
 		: name_(name),
-		  value_(strtod(value, NULL)),
+		  value_(strtod(value, nullptr)),
 		  rhs_(rhs)
 	{}
 
@@ -79,7 +79,7 @@ private:
 
 class Compartment {
 public:
-	Compartment(const char *name, const char *value) : name_(name), value_(strtod(value, NULL)) {}
+	Compartment(const char *name, const char *value) : name_(name), value_(strtod(value, nullptr)) {}
 
 	static Compartment *Parse(char *rest) {
 		size_t s = 1;

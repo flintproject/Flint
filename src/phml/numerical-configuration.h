@@ -14,11 +14,11 @@ public:
 	NumericalConfiguration &operator=(const NumericalConfiguration &) = delete;
 
 	NumericalConfiguration()
-		: rg_name_(NULL),
-		  rg_seed_(NULL),
-		  integration_(NULL),
+		: rg_name_(nullptr),
+		  rg_seed_(nullptr),
+		  integration_(nullptr),
 		  sts_unit_id_(),
-		  sts_value_(NULL)
+		  sts_value_(nullptr)
 	{}
 
 	~NumericalConfiguration() {

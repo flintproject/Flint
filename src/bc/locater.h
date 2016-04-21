@@ -22,7 +22,7 @@ public:
 		m_.insert(std::make_pair(name, location));
 	}
 
-	bool Find(const std::string &name, int *so, int *lo = NULL) const {
+	bool Find(const std::string &name, int *so, int *lo = nullptr) const {
 		using std::cerr;
 		using std::endl;
 

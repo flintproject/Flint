@@ -12,10 +12,10 @@ namespace flint {
 namespace db {
 
 StatementDriver::StatementDriver(sqlite3 *db, const char *query)
-	: stmt_(NULL)
+	: stmt_(nullptr)
 {
 	int e;
-	e = sqlite3_prepare_v2(db, query, -1, &stmt_, NULL);
+	e = sqlite3_prepare_v2(db, query, -1, &stmt_, nullptr);
 	if (e != SQLITE_OK) {
 		cerr << "failed to prepare statement: " << e
 			 << ": " << query << endl;

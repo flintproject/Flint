@@ -48,19 +48,19 @@ const char kQueryUpdate[] = "UPDATE ivs SET math = ? WHERE pq_rowid = ?";
 
 bool GraphIvRewriter::Rewrite(sqlite3 *db)
 {
-	int e = sqlite3_prepare_v2(db, kQueryGraph, -1, &stmt_graph_, NULL);
+	int e = sqlite3_prepare_v2(db, kQueryGraph, -1, &stmt_graph_, nullptr);
 	if (e != SQLITE_OK) {
 		cerr << "failed to prepare statement: " << kQueryGraph
 			 << ": " << e << endl;
 		return false;
 	}
-	e = sqlite3_prepare_v2(db, kQueryNode, -1, &stmt_node_, NULL);
+	e = sqlite3_prepare_v2(db, kQueryNode, -1, &stmt_node_, nullptr);
 	if (e != SQLITE_OK) {
 		cerr << "failed to prepare statement: " << kQueryNode
 			 << ": " << e << endl;
 		return false;
 	}
-	e = sqlite3_prepare_v2(db, kQueryUpdate, -1, &stmt_update_, NULL);
+	e = sqlite3_prepare_v2(db, kQueryUpdate, -1, &stmt_update_, nullptr);
 	if (e != SQLITE_OK) {
 		cerr << "failed to prepare statement: " << kQueryUpdate
 			 << ": " << e << endl;

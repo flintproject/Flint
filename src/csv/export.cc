@@ -67,7 +67,7 @@ bool DecomposeColumn(char *column, char **unit)
 		cerr << "missing ')': " << column << endl;
 		return false;
 	}
-	*unit = NULL; // no unit included
+	*unit = nullptr; // no unit included
 	return true;
 }
 
@@ -131,7 +131,7 @@ bool ExportIsdFromCsv(const boost::filesystem::path &input_path,
 	UnitMap units;
 	UnitLengthMap unit_len;
 	for (std::uint32_t i=0;i<num_cols;i++) {
-		char *unit = NULL;
+		char *unit = nullptr;
 		if (!DecomposeColumn(columns[i], &unit)) return false;
 		if (!unit) continue;
 		units.insert(std::make_pair(i, unit));

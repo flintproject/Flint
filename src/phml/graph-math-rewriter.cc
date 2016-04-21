@@ -183,17 +183,17 @@ GraphMathRewriter::~GraphMathRewriter()
 
 bool GraphMathRewriter::Rewrite(sqlite3 *db)
 {
-	int e = sqlite3_prepare_v2(db, query_select_, -1, &stmt_select_, NULL);
+	int e = sqlite3_prepare_v2(db, query_select_, -1, &stmt_select_, nullptr);
 	if (e != SQLITE_OK) {
 		cerr << "failed to prepare statement: " << query_select_ << ": " << e << endl;
 		return false;
 	}
-	e = sqlite3_prepare_v2(db, kQueryNode, -1, &stmt_node_, NULL);
+	e = sqlite3_prepare_v2(db, kQueryNode, -1, &stmt_node_, nullptr);
 	if (e != SQLITE_OK) {
 		cerr << "failed to prepare statement: " << kQueryNode << ": " << e << endl;
 		return false;
 	}
-	e = sqlite3_prepare_v2(db, query_update_, -1, &stmt_update_, NULL);
+	e = sqlite3_prepare_v2(db, query_update_, -1, &stmt_update_, nullptr);
 	if (e != SQLITE_OK) {
 		cerr << "failed to prepare statement: " << query_update_ << ": " << e << endl;
 		return false;
