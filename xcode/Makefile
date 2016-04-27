@@ -7,11 +7,12 @@ PREFIX = $(abspath usr)
 PKG_CONFIG_PATH = $(PREFIX)/lib/pkgconfig
 
 JARS := \
-    GarudaBackend \
+    GarudaSDK-2.0 \
     commons-cli-1.3.1 \
+    commons-io-2.4 \
     commons-logging-1.2 \
     dom4j-1.6.1 \
-    garuda-csr \
+    jackson-all-1.8.1 \
     jcommon-1.0.23 \
     jfreechart-1.0.19 \
     jsonic-1.2.10 \

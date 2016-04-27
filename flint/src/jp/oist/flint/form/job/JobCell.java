@@ -8,7 +8,6 @@ import jp.oist.flint.job.Job;
 import jp.oist.flint.job.Progress;
 import jp.oist.flint.util.DurationFormat;
 import jp.oist.flint.util.PeriodFormat;
-import jp.sbi.garuda.platform.commons.net.GarudaConnectionNotInitializedException;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -197,8 +196,6 @@ public class JobCell extends JPanel {
     private void btn_SendViaGarudaActionPerformed(ActionEvent evt) {//GEN-FIRST:event_btn_SendViaGarudaActionPerformed
         try {
             mProvider.getJobMenu(mIndex).sendViaGaruda();
-        } catch (GarudaConnectionNotInitializedException gcnie) {
-            showErrorDialog(gcnie.getMessage(), "Error with Garuda");
         } catch (DaoException | IOException | SQLException ex) {
             showErrorDialog("Sending file failed\n\n" + ex.getMessage(),
                             "Sending file failed");

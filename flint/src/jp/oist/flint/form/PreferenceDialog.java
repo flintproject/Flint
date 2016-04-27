@@ -6,8 +6,8 @@ import jp.oist.flint.garuda.GarudaClient;
 import jp.oist.flint.plotter.IPlotter;
 import jp.oist.flint.plotter.PlotterLoadException;
 import jp.oist.flint.plotter.PlotterLoader;
-import jp.sbi.garuda.platform.commons.exception.NetworkException;
-import jp.sbi.garuda.platform.commons.net.GarudaConnectionNotInitializedException;
+import jp.sbi.garuda.backend.net.exception.GarudaConnectionNotInitializedException;
+import jp.sbi.garuda.backend.net.exception.NetworkConnectionException;
 import org.apache.log4j.Logger;
 import java.util.prefs.BackingStoreException;
 import java.awt.event.ActionEvent;
@@ -387,7 +387,7 @@ public class PreferenceDialog extends javax.swing.JDialog {
                 radioButtonDisabled.setSelected(true);
 
                 JOptionPane.showMessageDialog(this, gcnie.getMessage(), "Error on Garuda API", JOptionPane.ERROR_MESSAGE);
-            } catch (NetworkException ne) {
+            } catch (NetworkConnectionException ne) {
                 // recur the previous state
                 radioButtonEnabled.setSelected(false);
                 radioButtonDisabled.setSelected(true);

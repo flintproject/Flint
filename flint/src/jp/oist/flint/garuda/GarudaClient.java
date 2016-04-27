@@ -2,12 +2,14 @@
 package jp.oist.flint.garuda;
 
 import jp.oist.flint.form.MainFrame;
-import jp.sbi.garuda.client.backend.BackendAlreadyInitializedException;
-import jp.sbi.garuda.client.backend.GarudaClientBackend;
-import jp.sbi.garuda.platform.commons.Gadget;
-import jp.sbi.garuda.platform.commons.exception.NetworkException;
-import jp.sbi.garuda.platform.commons.net.GarudaConnectionNotInitializedException;
+import jp.sbi.garuda.backend.GarudaBackend;
+import jp.sbi.garuda.backend.POJOs.CompatibleGadgetDetails;
+import jp.sbi.garuda.backend.exception.NoFileToSendException;
+import jp.sbi.garuda.backend.incomingHandler.IncomingResponseProtocolHandler;
+import jp.sbi.garuda.backend.net.exception.GarudaConnectionNotInitializedException;
+import jp.sbi.garuda.backend.net.exception.NetworkConnectionException;
 import java.io.File;
+import javax.swing.JFrame;
 import org.apache.log4j.Logger;
 
 public class GarudaClient {
@@ -16,16 +18,14 @@ public class GarudaClient {
     private static final String ID_ON_WINDOWS = "01a209fc-6a80-11e2-8738-1f7eda18fd79";
     private static final String NAME = "Flint";
 
-    private static GarudaClientBackend mGarudaClientBackend;
-
-    private static GarudaListener mGarudaListener;
+    private static GarudaBackend mBackend;
 
     public static boolean isRunning() {
-        return mGarudaClientBackend != null && mGarudaClientBackend.isInitialized();
+        return mBackend != null && mBackend.isConnectionLive();
     }
 
     public static void start(MainFrame frame)
-        throws GarudaConnectionNotInitializedException, NetworkException {
+        throws GarudaConnectionNotInitializedException, NetworkConnectionException {
         String osName = System.getProperty("os.name");
         if (osName == null) {
             Logger.getRootLogger().fatal("could not detect OS name");
@@ -37,28 +37,26 @@ public class GarudaClient {
         } else { // Mac OS X and others
             id = ID_ON_MACOSX;
         }
-        mGarudaClientBackend = new GarudaClientBackend(id, NAME);
-        mGarudaListener = new GarudaListener(frame, mGarudaClientBackend);
-        mGarudaClientBackend.addGarudaChangeListener(mGarudaListener);
-        try {
-            mGarudaClientBackend.initialize();
-        } catch (BackendAlreadyInitializedException baie) {
-            // cannot happen and can be ignored
-        }
+        mBackend = new GarudaBackend(id, NAME, frame);
+        mBackend.getIncomingRequestHandler().addLoadDataRequestActionListener(new LoadDataRequestListener(frame));
+        mBackend.getIncomingResponseHandler().addActivateGadgetResponseActionListener(new ActivateGadgetResponseListener());
+        mBackend.activateGadget();
     }
 
     public static void stop() {
-        mGarudaClientBackend.stopBackend();
+        mBackend.stopService();
     }
 
-    public static void requestForLoadableGadgets(ICompatibleGadgetClient client,
-                                                 String type)
-        throws GarudaConnectionNotInitializedException {
-        mGarudaListener.requestForLoadableGadgets(client, type);
+    public static void beginSendFile(File file, String format, JFrame frame) {
+        frame.setEnabled(false);
+        IncomingResponseProtocolHandler irph = mBackend.getIncomingResponseHandler();
+        irph.addGetCompatibleGadgetListResponseActionListener(new CompatibleGadgetListResponseListener(irph, frame));
+        mBackend.getCompatibleGadgetList(file, format);
     }
 
-    public static void sentFileToGadget(Gadget gadget, File file)
-        throws NetworkException {
-        mGarudaClientBackend.sentFileToGadget(gadget, file);
+    public static void commitSendFile(CompatibleGadgetDetails target, JFrame frame) throws NoFileToSendException {
+        IncomingResponseProtocolHandler irph = mBackend.getIncomingResponseHandler();
+        irph.addSendDataToGadgetResponseActionListener(new SendDataResponseListener(irph, frame));
+        mBackend.sendDataToGadgetAsFile(target);
     }
 }

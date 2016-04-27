@@ -14,7 +14,6 @@ import jp.oist.flint.form.job.ParameterFilter;
 import jp.oist.flint.job.Job;
 import jp.oist.flint.phsp.entity.ParameterSet;
 import jp.oist.flint.theme.Icon;
-import jp.sbi.garuda.platform.commons.net.GarudaConnectionNotInitializedException;
 import java.awt.CardLayout;
 import java.awt.Cursor;
 import java.awt.Dimension;
@@ -398,7 +397,6 @@ public class JobWindow extends javax.swing.JFrame
                     break;
                 }
             } catch (DaoException |
-                     GarudaConnectionNotInitializedException |
                      IOException |
                      SQLException ex) {
                 showErrorDialog(ex.getMessage(),

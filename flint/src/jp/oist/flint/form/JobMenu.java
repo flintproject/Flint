@@ -8,14 +8,12 @@ import jp.oist.flint.dao.TaskDao;
 import jp.oist.flint.export.ExportReceiver;
 import jp.oist.flint.export.ExportWorker;
 import jp.oist.flint.filesystem.Workspace;
-import jp.oist.flint.form.job.GadgetDialog;
 import jp.oist.flint.form.job.PlotWindow;
 import jp.oist.flint.form.sub.InputDialogForExport;
 import jp.oist.flint.garuda.GarudaClient;
 import jp.oist.flint.job.Job;
 import jp.oist.flint.util.Utility;
 import jp.physiome.Ipc;
-import jp.sbi.garuda.platform.commons.net.GarudaConnectionNotInitializedException;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
@@ -59,11 +57,45 @@ public class JobMenu implements IFrame {
     }
 
     public void sendViaGaruda()
-        throws DaoException, GarudaConnectionNotInitializedException, IOException, SQLException {
-        File isdFile = mSimulationDao.obtainJob(mTaskId, mJobId).getIsdFile();
-        GadgetDialog dialog = new GadgetDialog(mFrame, this, isdFile);
-        dialog.setLocationRelativeTo(mFrame);
-        GarudaClient.requestForLoadableGadgets(dialog, "csv");
+        throws DaoException, IOException, SQLException {
+        TaskDao taskDao = mSimulationDao.obtainTask(mTaskId);
+        File isdFile = taskDao.obtainJob(mJobId).getIsdFile();
+        InputDialogForExport inputDialog = new InputDialogForExport(mFrame);
+        String ext = inputDialog.show();
+        if (ext == null)
+            return;
+        if ("csv".equalsIgnoreCase(ext)) { // export as CSV
+            final File file = Workspace.createTempFile("garuda", ".csv");
+            ExportReceiver receiver = new ExportReceiver(mFrame);
+            final ExportWorker worker = new ExportWorker(this, receiver, isdFile, file);
+            receiver.setWorker(worker); // make cancellation possible
+            worker.addPropertyChangeListener(new PropertyChangeListener() {
+                    @Override
+                    public void propertyChange(PropertyChangeEvent evt) {
+                        String propertyName = evt.getPropertyName();
+                        Object newValue = evt.getNewValue();
+                        if ("state".equals(propertyName)
+                            && SwingWorker.StateValue.DONE.equals(newValue)) {
+                            try {
+                                if (worker.get())
+                                    GarudaClient.beginSendFile(file, "csv", mFrame);
+                            } catch (CancellationException ce) {
+                                showMessageDialog("Exporting is cancelled.",
+                                                  "Export cancelled");
+                            } catch (InterruptedException ex) {
+                                showErrorDialog("Export interrupted\n\n" + ex.getMessage(),
+                                                "CSV Export interrupted");
+                            } catch (ExecutionException ex) {
+                                showErrorDialog("Export aborted\n\n" + ex.getMessage(),
+                                                "CSV Export aborted ");
+                            }
+                        }
+                    }
+                });
+            worker.execute();
+        } else { // ISD
+            GarudaClient.beginSendFile(isdFile, "isd", mFrame);
+        }
     }
 
     public void export()

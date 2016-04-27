@@ -35,11 +35,14 @@
           </Component>
 
           <Directory Id='ClasspathDir' Name='lib'>
-            <Component Id='GarudaBackend' Guid='d79a58a0-6a82-11e2-bc79-4364f72defdd'>
-              <File Id='GarudaBackend.jar' Name='GarudaBackend.jar' DiskId='1' Source='lib/GarudaBackend.jar' />
+            <Component Id='GarudaSDK' Guid='a43f5bae-0c64-11e6-9b26-6f71a21d7a44'>
+              <File Id='GarudaSDK.jar' Name='GarudaSDK-2.0.jar' DiskId='1' Source='lib/GarudaSDK-2.0.jar' />
             </Component>
             <Component Id='commons_cli' Guid='2ca271c8-7593-11e2-8411-271d74e77d40'>
               <File Id='commons_cli.jar' Name='commons-cli-1.3.1.jar' DiskId='1' Source='lib/commons-cli-1.3.1.jar' />
+            </Component>
+            <Component Id='commons_io' Guid='c0b185a0-0c64-11e6-a54d-db69f68035e6'>
+              <File Id='commons_io.jar' Name='commons-io-2.4.jar' DiskId='1' Source='lib/commons-io-2.4.jar' />
             </Component>
             <Component Id='commons_logging' Guid='97ddc5e4-3552-11e3-b56b-efd74f2f8d34'>
               <File Id='commons_logging.jar' Name='commons-logging-1.2.jar' DiskId='1' Source='lib/commons-logging-1.2.jar' />
@@ -47,8 +50,8 @@
             <Component Id='dom4j' Guid='d6f40772-848e-11e2-be41-672554022a02'>
               <File Id='dom4j.jar' Name='dom4j-1.6.1.jar' DiskId='1' Source='lib/dom4j-1.6.1.jar' />
             </Component>
-            <Component Id='garuda_csr' Guid='26457a40-da1c-11e1-b0a4-b798fddaaf6b'>
-              <File Id='garuda_csr.jar' Name='garuda-csr.jar' DiskId='1' Source='lib/garuda-csr.jar' />
+            <Component Id='jackson' Guid='c132460e-0c64-11e6-9f6f-537952a81177'>
+              <File Id='jackson.jar' Name='jackson-all-1.8.1.jar' DiskId='1' Source='lib/jackson-all-1.8.1.jar' />
             </Component>
             <Component Id='jcommon' Guid='3032ea7a-cc92-11e1-9ce1-77b4b70ee673'>
               <File Id='jcommon.jar' Name='jcommon-1.0.23.jar' DiskId='1' Source='lib/jcommon-1.0.23.jar' />
@@ -217,11 +220,12 @@
       <ComponentRef Id='flint_exe' />
       <ComponentRef Id='flint_jar' />
       <ComponentRef Id='icon_png' />
-      <ComponentRef Id='GarudaBackend' />
+      <ComponentRef Id='GarudaSDK' />
       <ComponentRef Id='commons_cli' />
+      <ComponentRef Id='commons_io' />
       <ComponentRef Id='commons_logging' />
       <ComponentRef Id='dom4j' />
-      <ComponentRef Id='garuda_csr' />
+      <ComponentRef Id='jackson' />
       <ComponentRef Id='jcommon' />
       <ComponentRef Id='jfreechart' />
       <ComponentRef Id='jsonic' />

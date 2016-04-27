@@ -1,64 +1,27 @@
 /* -*- Mode: Java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- vim:set ts=4 sw=4 sts=4 et: */
-package jp.oist.flint.form.job;
+package jp.oist.flint.garuda;
 
-import jp.oist.flint.form.IFrame;
-import jp.oist.flint.garuda.ICompatibleGadgetClient;
-import jp.sbi.garuda.platform.commons.Gadget;
-import java.io.File;
-import java.util.ArrayList;
+import jp.sbi.garuda.backend.POJOs.CompatibleGadgetDetails;
 import java.util.List;
 import javax.swing.DefaultListModel;
+import javax.swing.JFrame;
 import javax.swing.ListSelectionModel;
 
-public class GadgetDialog extends javax.swing.JDialog
-    implements ICompatibleGadgetClient {
+public class GadgetDialog extends javax.swing.JDialog {
 
-    final IFrame mFrame;
-    final File mFile;
-    final DefaultListModel<String> mListModel1;
-    final DefaultListModel<String> mListModel2;
+    final DefaultListModel<String> mListModel;
 
-    public GadgetDialog(java.awt.Frame parent, IFrame frame, File file) {
-        super(parent, true); // modal
-        mFrame = frame;
-        mFile = file;
-        mListModel1 = new DefaultListModel<>();
-        mListModel2 = new DefaultListModel<>();
-        initComponents();
-    }
-
-    @Override
-    public void loadGadgetsForCsv(List<Gadget> list) {
-        ArrayList<Gadget> gadgets = new ArrayList<>();
-        for (Gadget gadget : list) {
-            mListModel1.addElement(gadget.getName());
-            gadgets.add(gadget);
+    public GadgetDialog(JFrame parent, List<CompatibleGadgetDetails> gadgets) {
+        super(parent, "Choose a target gadget", true); // modal
+        mListModel = new DefaultListModel<>();
+        for (CompatibleGadgetDetails gadget : gadgets) {
+            mListModel.addElement(gadget.getName());
         }
+
+        initComponents();
 
         ListSelectionModel lsm = jList1.getSelectionModel();
-        lsm.addListSelectionListener(new GadgetSelectionListener(this, mFrame, gadgets, mFile, "csv"));
-
-        /* TODO: due to the broken protocol, we can not request differnt types of gadgets any further */
-        setVisible(true);
-        // try {
-        //     GarudaClient.requestForLoadableGadgets(this, "isd");
-        // } catch (GarudaConnectionNotInitializedException gcnie) {
-        //     mFrame.showErrorDialog(gcnie.getMessage(), "Error with Garuda");
-        // }
-    }
-
-    @Override
-    public void loadGadgetsForIsd(List<Gadget> list) {
-        ArrayList<Gadget> gadgets = new ArrayList<>();
-        for (Gadget gadget : list) {
-            mListModel2.addElement(gadget.getName());
-            gadgets.add(gadget);
-        }
-
-        ListSelectionModel lsm = jList2.getSelectionModel();
-        lsm.addListSelectionListener(new GadgetSelectionListener(this, mFrame, gadgets, mFile, "isd"));
-
-        setVisible(true);
+        lsm.addListSelectionListener(new GadgetSelectionListener(this, parent, gadgets));
     }
 
     /**
@@ -70,31 +33,18 @@ public class GadgetDialog extends javax.swing.JDialog
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jTabbedPane1 = new javax.swing.JTabbedPane();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jList1 = new javax.swing.JList();
-        jScrollPane2 = new javax.swing.JScrollPane();
-        jList2 = new javax.swing.JList();
+        jList1 = new javax.swing.JList<>();
         jPanel1 = new javax.swing.JPanel();
         jButton1 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
-        jList1.setModel(mListModel1);
-        jList1.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        jList1.setModel(mListModel);
         jScrollPane1.setViewportView(jList1);
-
-        jTabbedPane1.addTab("CSV", jScrollPane1);
-
-        jList2.setModel(mListModel2);
-        jList2.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
-        jScrollPane2.setViewportView(jList2);
-
-        jTabbedPane1.addTab("ISD", jScrollPane2);
 
         jButton1.setText("Close");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
-            @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton1ActionPerformed(evt);
             }
@@ -104,7 +54,7 @@ public class GadgetDialog extends javax.swing.JDialog
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
+            .addGap(0, 291, Short.MAX_VALUE)
             .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                     .addContainerGap(106, Short.MAX_VALUE)
@@ -124,17 +74,18 @@ public class GadgetDialog extends javax.swing.JDialog
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jTabbedPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 264, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jScrollPane1)
                     .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 206, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap()
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 32, Short.MAX_VALUE)
                 .addContainerGap())
@@ -145,15 +96,13 @@ public class GadgetDialog extends javax.swing.JDialog
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         dispose();
+        getParent().setEnabled(true);
     }//GEN-LAST:event_jButton1ActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
-    private javax.swing.JList jList1;
-    private javax.swing.JList jList2;
+    private javax.swing.JList<String> jList1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JTabbedPane jTabbedPane1;
     // End of variables declaration//GEN-END:variables
 }

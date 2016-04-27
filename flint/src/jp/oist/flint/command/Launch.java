@@ -9,8 +9,8 @@ import jp.oist.flint.form.MenuBar;
 import jp.oist.flint.form.ProgressPane;
 import jp.oist.flint.garuda.GarudaClient;
 import jp.oist.flint.rpc.Server;
-import jp.sbi.garuda.platform.commons.exception.NetworkException;
-import jp.sbi.garuda.platform.commons.net.GarudaConnectionNotInitializedException;
+import jp.sbi.garuda.backend.net.exception.GarudaConnectionNotInitializedException;
+import jp.sbi.garuda.backend.net.exception.NetworkConnectionException;
 import org.apache.log4j.Logger;
 import java.awt.Color;
 import java.io.File;
@@ -83,7 +83,7 @@ public class Launch implements Runnable {
 
         try {
             GarudaClient.start(mMainFrame);
-        } catch (GarudaConnectionNotInitializedException | NetworkException e) {
+        } catch (GarudaConnectionNotInitializedException | NetworkConnectionException e) {
             Logger.getRootLogger().info("Garuda client fails at launch", e);
         }
     }
