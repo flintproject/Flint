@@ -1,6 +1,7 @@
 /* -*- Mode: Java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- vim:set ts=4 sw=4 sts=4 et: */
 package jp.oist.flint.garuda;
 
+import jp.sbi.garuda.backend.GarudaBackend;
 import jp.sbi.garuda.backend.POJOs.CompatibleGadgetDetails;
 import java.util.List;
 import javax.swing.DefaultListModel;
@@ -11,7 +12,7 @@ public class GadgetDialog extends javax.swing.JDialog {
 
     final DefaultListModel<String> mListModel;
 
-    public GadgetDialog(JFrame parent, List<CompatibleGadgetDetails> gadgets) {
+    public GadgetDialog(JFrame parent, GarudaBackend backend, List<CompatibleGadgetDetails> gadgets) {
         super(parent, "Choose a target gadget", true); // modal
         mListModel = new DefaultListModel<>();
         for (CompatibleGadgetDetails gadget : gadgets) {
@@ -21,7 +22,7 @@ public class GadgetDialog extends javax.swing.JDialog {
         initComponents();
 
         ListSelectionModel lsm = jList1.getSelectionModel();
-        lsm.addListSelectionListener(new GadgetSelectionListener(this, parent, gadgets));
+        lsm.addListSelectionListener(new GadgetSelectionListener(this, parent, backend, gadgets));
     }
 
     /**

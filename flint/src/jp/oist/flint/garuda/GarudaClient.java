@@ -3,8 +3,6 @@ package jp.oist.flint.garuda;
 
 import jp.oist.flint.form.MainFrame;
 import jp.sbi.garuda.backend.GarudaBackend;
-import jp.sbi.garuda.backend.POJOs.CompatibleGadgetDetails;
-import jp.sbi.garuda.backend.exception.NoFileToSendException;
 import jp.sbi.garuda.backend.incomingHandler.IncomingResponseProtocolHandler;
 import jp.sbi.garuda.backend.net.exception.GarudaConnectionNotInitializedException;
 import jp.sbi.garuda.backend.net.exception.NetworkConnectionException;
@@ -47,16 +45,10 @@ public class GarudaClient {
         mBackend.stopService();
     }
 
-    public static void beginSendFile(File file, String format, JFrame frame) {
+    public static void sendFile(File file, String format, JFrame frame) {
         frame.setEnabled(false);
         IncomingResponseProtocolHandler irph = mBackend.getIncomingResponseHandler();
-        irph.addGetCompatibleGadgetListResponseActionListener(new CompatibleGadgetListResponseListener(irph, frame));
+        irph.addGetCompatibleGadgetListResponseActionListener(new CompatibleGadgetListResponseListener(mBackend, irph, frame));
         mBackend.getCompatibleGadgetList(file, format);
-    }
-
-    public static void commitSendFile(CompatibleGadgetDetails target, JFrame frame) throws NoFileToSendException {
-        IncomingResponseProtocolHandler irph = mBackend.getIncomingResponseHandler();
-        irph.addSendDataToGadgetResponseActionListener(new SendDataResponseListener(irph, frame));
-        mBackend.sendDataToGadgetAsFile(target);
     }
 }

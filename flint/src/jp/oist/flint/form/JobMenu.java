@@ -78,7 +78,7 @@ public class JobMenu implements IFrame {
                             && SwingWorker.StateValue.DONE.equals(newValue)) {
                             try {
                                 if (worker.get())
-                                    GarudaClient.beginSendFile(file, "csv", mFrame);
+                                    GarudaClient.sendFile(file, "csv", mFrame);
                             } catch (CancellationException ce) {
                                 showMessageDialog("Exporting is cancelled.",
                                                   "Export cancelled");
@@ -94,7 +94,7 @@ public class JobMenu implements IFrame {
                 });
             worker.execute();
         } else { // ISD
-            GarudaClient.beginSendFile(isdFile, "isd", mFrame);
+            GarudaClient.sendFile(isdFile, "isd", mFrame);
         }
     }
 

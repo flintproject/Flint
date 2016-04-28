@@ -1,6 +1,7 @@
 /* -*- Mode: Java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- vim:set ts=4 sw=4 sts=4 et: */
 package jp.oist.flint.garuda;
 
+import jp.sbi.garuda.backend.GarudaBackend;
 import jp.sbi.garuda.backend.POJOs.CompatibleGadgetDetails;
 import jp.sbi.garuda.backend.incomingHandler.IncomingResponseProtocolHandler;
 import jp.sbi.garuda.backend.incomingHandler.garudaActionListeners.responses.GetCompatibleGadgetListResponseActionListener;
@@ -13,12 +14,16 @@ import javax.swing.SwingUtilities;
 class CompatibleGadgetListResponseListener
     implements GetCompatibleGadgetListResponseActionListener {
 
+    private final GarudaBackend mBackend;
+
     private final IncomingResponseProtocolHandler mHandler;
 
     private final JFrame mFrame;
 
-    public CompatibleGadgetListResponseListener(IncomingResponseProtocolHandler handler,
+    public CompatibleGadgetListResponseListener(GarudaBackend backend,
+                                                IncomingResponseProtocolHandler handler,
                                                 JFrame frame) {
+        mBackend = backend;
         mHandler = handler;
         mFrame = frame;
     }
@@ -39,7 +44,7 @@ class CompatibleGadgetListResponseListener
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
-                GadgetDialog dialog = new GadgetDialog(mFrame, gadgets);
+                GadgetDialog dialog = new GadgetDialog(mFrame, mBackend, gadgets);
                 dialog.setLocationRelativeTo(mFrame);
                 dialog.setVisible(true);
             }
