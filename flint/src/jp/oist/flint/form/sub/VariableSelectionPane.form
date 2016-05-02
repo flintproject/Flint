@@ -62,8 +62,8 @@
                     <Property name="autoCreateRowSorter" type="boolean" value="true"/>
                     <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.editors2.TableModelEditor">
                       <Table columnCount="2" rowCount="1">
-                        <Column editable="false" title="Module Name" type="java.lang.String"/>
-                        <Column editable="false" title="Physical Quantity Name" type="java.lang.String"/>
+                        <Column editable="false" title="Module" type="java.lang.String"/>
+                        <Column editable="false" title="Physical Quantity" type="java.lang.String"/>
                       </Table>
                     </Property>
                     <Property name="columnModel" type="javax.swing.table.TableColumnModel" editor="org.netbeans.modules.form.editors2.TableColumnModelEditor">
@@ -132,8 +132,8 @@
                   <Properties>
                     <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.editors2.TableModelEditor">
                       <Table columnCount="2" rowCount="1">
-                        <Column editable="false" title="Module Name" type="java.lang.String"/>
-                        <Column editable="false" title="Physical Quantity Name" type="java.lang.String"/>
+                        <Column editable="false" title="Module" type="java.lang.String"/>
+                        <Column editable="false" title="Physical Quantity" type="java.lang.String"/>
                       </Table>
                     </Property>
                     <Property name="columnModel" type="javax.swing.table.TableColumnModel" editor="org.netbeans.modules.form.editors2.TableColumnModelEditor">
@@ -320,8 +320,8 @@
                       <Properties>
                         <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
                           <StringArray count="2">
-                            <StringItem index="0" value="Physical Quantity Name"/>
-                            <StringItem index="1" value="Module Name"/>
+                            <StringItem index="0" value="Physical Quantity"/>
+                            <StringItem index="1" value="Module"/>
                           </StringArray>
                         </Property>
                       </Properties>

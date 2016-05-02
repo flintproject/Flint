@@ -222,7 +222,7 @@ public class VariableSelectionPane extends javax.swing.JPanel
                 {null, null}
             },
             new String [] {
-                "Module Name", "Physical Quantity Name"
+                "Module", "Physical Quantity"
             }
         ) {
             Class[] types = new Class [] {
@@ -261,7 +261,7 @@ public class VariableSelectionPane extends javax.swing.JPanel
                 {null, null}
             },
             new String [] {
-                "Module Name", "Physical Quantity Name"
+                "Module", "Physical Quantity"
             }
         ) {
             Class[] types = new Class [] {
@@ -352,7 +352,7 @@ public class VariableSelectionPane extends javax.swing.JPanel
         mFilterColumnLabel.setPreferredSize(new java.awt.Dimension(115, 15));
         pnl_FilterRow3.add(mFilterColumnLabel, java.awt.BorderLayout.WEST);
 
-        cmb_Filter_Column.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Physical Quantity Name", "Module Name" }));
+        cmb_Filter_Column.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Physical Quantity", "Module" }));
         cmb_Filter_Column.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 cmb_Filter_ColumnActionPerformed(evt);

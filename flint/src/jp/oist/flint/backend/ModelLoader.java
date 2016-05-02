@@ -180,8 +180,8 @@ public class ModelLoader extends SwingWorker<Document, Void> {
 
     private Ipc.ModelVariableTable buildModelVariableTableForPhml(File dir) throws IOException {
         Ipc.ModelVariableTable.Builder builder = Ipc.ModelVariableTable.newBuilder();
-        builder.addColumn("Physical Quantity Name");
-        builder.addColumn("Module Name");
+        builder.addColumn("Physical Quantity");
+        builder.addColumn("Module");
 
         File file = new File(dir, "var");
         try (DataInputStream dis = new DataInputStream(new FileInputStream(file))) {
@@ -237,8 +237,8 @@ public class ModelLoader extends SwingWorker<Document, Void> {
 
     private Ipc.ModelVariableTable buildModelVariableTableForSbml(File dir) throws IOException {
         Ipc.ModelVariableTable.Builder builder = Ipc.ModelVariableTable.newBuilder();
-        builder.addColumn("Variable Name");
-        builder.addColumn("Module Name");
+        builder.addColumn("Variable");
+        builder.addColumn("Module");
 
         File file = new File(dir, "var");
         try (DataInputStream dis = new DataInputStream(new FileInputStream(file))) {

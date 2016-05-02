@@ -23,7 +23,7 @@ public class PhmlParameterModel extends ParameterModel {
     PhmlParameterModel(File paramFile, File dataFile) throws IOException {
         super(paramFile, dataFile);
 
-        mColumns = new Object[] { "Module Name",  "PQ Name", "PQ Type", "Expression", "Module ID", "PQ ID" };
+        mColumns = new Object[] { "Module", "PQ", "Type", "Expression", "Module ID", "PQ ID" };
     }
 
     @Override
