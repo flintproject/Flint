@@ -8,15 +8,11 @@ import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.nio.charset.StandardCharsets;
-import java.security.GeneralSecurityException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import javax.crypto.Cipher;
-import javax.crypto.spec.SecretKeySpec;
 import javax.swing.DropMode;
 import javax.swing.JComponent;
 import javax.swing.ListSelectionModel;
@@ -24,7 +20,6 @@ import javax.swing.TransferHandler;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
-import net.arnx.jsonic.util.Base64;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
@@ -33,24 +28,6 @@ import org.xml.sax.helpers.DefaultHandler;
  * This is the class which collects utility functions for general use.
  */
 public class Utility {
-
-    private final static byte[] KEY = new byte[] {
-        0x43, 0x54, 0x30, 0x73, 0x41, 0x4f, 0x38, 0x6d, 
-        0x34, 0x33, 0x59, 0x49, 0x45, 0x6d, 0x64, 0x67, 
-    };
-
-    public static Number s2num (String s) {
-
-        try {
-            return Long.parseLong(s);
-        } catch (NumberFormatException ex) { }
-
-        try {
-            return Double.parseDouble(s);
-        } catch (NumberFormatException ex) {}
-
-        return null;
-    }
 
     /**
      * The file name of the specified file path is returned.
@@ -267,23 +244,6 @@ public class Utility {
         } catch (NumberFormatException ex) { }
 
         return -1;
-    }
-
-    public static String encrypt(String str) throws GeneralSecurityException {
-            Cipher cipher  = Cipher.getInstance("AES");
-            cipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(KEY, "AES"));
-            byte[] encryptData = cipher.doFinal(str.getBytes(StandardCharsets.UTF_8));
-
-            return Base64.encode(encryptData);
-    }
-
-    public static String decrypt (String encryptStr) throws GeneralSecurityException {
-            byte[] encryptData = Base64.decode(encryptStr);
-            Cipher cipher  = Cipher.getInstance("AES");
-            cipher.init(Cipher.DECRYPT_MODE, new SecretKeySpec(KEY, "AES"));
-            byte[] data = cipher.doFinal(encryptData);
-
-            return new String(data, StandardCharsets.UTF_8);
     }
 
     private static class BreakException extends SAXException { 

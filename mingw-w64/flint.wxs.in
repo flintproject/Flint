@@ -59,9 +59,6 @@
             <Component Id='jfreechart' Guid='393169b2-cc92-11e1-8207-5b9a33bb7817'>
               <File Id='jfreechart.jar' Name='jfreechart-1.0.19.jar' DiskId='1' Source='lib/jfreechart-1.0.19.jar' />
             </Component>
-            <Component Id='jsonic' Guid='26d71536-da1c-11e1-99f0-5798c6b9e64f'>
-              <File Id='jsonic.jar' Name='jsonic-1.2.10.jar' DiskId='1' Source='lib/jsonic-1.2.10.jar' />
-            </Component>
             <Component Id='log4j' Guid='278080d0-da1c-11e1-99c1-4783ff8d51ca'>
               <File Id='log4j.jar' Name='log4j-1.2.17.jar' DiskId='1' Source='lib/log4j-1.2.17.jar' />
             </Component>
@@ -228,7 +225,6 @@
       <ComponentRef Id='jackson' />
       <ComponentRef Id='jcommon' />
       <ComponentRef Id='jfreechart' />
-      <ComponentRef Id='jsonic' />
       <ComponentRef Id='log4j' />
       <ComponentRef Id='protobuf_java' />
       <ComponentRef Id='sqlite_jdbc' />

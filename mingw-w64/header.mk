@@ -7,7 +7,6 @@ JARS := \
     jackson-all-1.8.1 \
     jcommon-1.0.23 \
     jfreechart-1.0.19 \
-    jsonic-1.2.10 \
     log4j-1.2.17 \
     protobuf-java-2.6.1 \
     sqlite-jdbc-3.8.11.2
