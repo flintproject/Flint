@@ -9,9 +9,6 @@ import jp.oist.flint.desktop.Document;
 import jp.oist.flint.desktop.IDesktopListener;
 import jp.oist.flint.executor.PhspSimulator;
 import jp.oist.flint.form.sub.SubFrame;
-import jp.oist.flint.k3.K3Client;
-import jp.oist.flint.k3.K3Request;
-import jp.oist.flint.k3.K3RequestBuilder;
 import jp.oist.flint.phsp.PhspException;
 import jp.oist.flint.phsp.PhspReader;
 import jp.oist.flint.phsp.PhspReaderListener;
@@ -42,7 +39,6 @@ import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 import javax.swing.JComponent;
@@ -398,61 +394,10 @@ public class MainFrame extends javax.swing.JFrame
     }
 
     public void sendToK3Performed(Object source) {
-        Preferences prefs = Preferences.userRoot().node("/jp/oist/flint/session/k3");
-        final String encryptedUserId = prefs.get("encryptedUserId", null); 
-        final String encryptedPassword = prefs.get("encryptedPassword", null); 
-
-        if (encryptedUserId == null  || encryptedUserId.isEmpty() 
-                || encryptedPassword == null || encryptedPassword.isEmpty()) {
-            StringBuilder sb = new StringBuilder("Please specify your account of Flint K3.");
-            sb.append(System.getProperty("line.separator"));
-            sb.append("(Edit -> Preference -> K3)");
-            showErrorDialog(sb.toString(), "Error on preference");
-            return;
-        }
-
-        SubFrame subFrame  = getSelectedSubFrame();
-        final Object retval = JOptionPane.showInputDialog(this,
-                                                          "New job's title:",
-                                                          "New job's title",
-                 JOptionPane.QUESTION_MESSAGE, null, null,
-                 subFrame.getModelFile().getName());
-
-        if (retval == null)
-            return;
-
-        SwingWorker<Integer, Void> worker = new SwingWorker<Integer, Void>() {
-            @Override
-            protected Integer doInBackground() throws Exception {
-                SubFrame subFrame  = getSelectedSubFrame();
-                String jobName = (String)retval;
-                String userId = Utility.decrypt(encryptedUserId);
-                String passwd = Utility.decrypt(encryptedPassword);
-
-                K3RequestBuilder reqBuilder = new K3RequestBuilder(
-                        subFrame.getModelFile(), subFrame);
-                K3Request request = reqBuilder.build(jobName, userId, passwd);
-
-                K3Client k3 = new K3Client();
-                return k3.submit(request);
-            }
-            @Override
-            protected void done () {
-                try {
-                    int jobId = get();
-                    String message = String.format("Submitted successfully your job to Flint K3 (Job ID : %d)", jobId);
-                    String title = "Job submitted to Flint K3";
-                    JOptionPane.showMessageDialog(MainFrame.this,
-                                                  message,
-                                                  title,
-                                                  JOptionPane.INFORMATION_MESSAGE);
-                } catch (InterruptedException | ExecutionException ex) {
-                    showErrorDialog(ex.getMessage(),
-                                    "Error on communicating with Flint K3");
-                }
-            }
-        };
-        worker.execute();
+        SubFrame subFrame = getSelectedSubFrame();
+        File file = subFrame.getModelFile();
+        K3Dialog dialog = new K3Dialog(this, file, subFrame);
+        dialog.setVisible(true);
     }
 
     public void aboutPerformed (Object source) {

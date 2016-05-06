@@ -1,31 +1,19 @@
 /* -*- Mode: Java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- vim:set ts=4 sw=4 sts=4 et: */
 package jp.oist.flint.form;
 
-import java.awt.Desktop;
 import jp.oist.flint.garuda.GarudaClient;
 import jp.oist.flint.plotter.IPlotter;
 import jp.oist.flint.plotter.PlotterLoadException;
 import jp.oist.flint.plotter.PlotterLoader;
 import jp.sbi.garuda.backend.net.exception.GarudaConnectionNotInitializedException;
 import jp.sbi.garuda.backend.net.exception.NetworkConnectionException;
-import org.apache.log4j.Logger;
-import java.util.prefs.BackingStoreException;
 import java.awt.event.ActionEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.security.GeneralSecurityException;
-import java.util.prefs.Preferences;
+import java.util.prefs.BackingStoreException;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.JComponent;
 import javax.swing.JOptionPane;
 import javax.swing.KeyStroke;
-import jp.oist.flint.util.Utility;
 
 /**
  * This is the class of the Preference dialog.
@@ -38,7 +26,7 @@ public class PreferenceDialog extends javax.swing.JDialog {
      * Creates new form Preference
      */
     public PreferenceDialog(MainFrame parent, boolean modal) {
-        super((java.awt.Frame)parent, modal);
+        super(parent, modal);
         initComponents();
 
         if (GarudaClient.isRunning()) {
@@ -49,61 +37,9 @@ public class PreferenceDialog extends javax.swing.JDialog {
         Action closeAction = new AbstractAction() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    buttonCloseActionPerformed(null);
+                    closeDialog(e);
                 }
         };
-
-        label_FlintK3.addMouseListener(new MouseAdapter(){
-            @Override
-            public void mousePressed (MouseEvent evt) {
-                String url = "https://flintk3.unit.oist.jp/user/";
-                try {
-                    Desktop desktop = Desktop.getDesktop();
-                    desktop.browse(new URI(url));
-                } catch (IOException ex) {
-                    JOptionPane.showMessageDialog(PreferenceDialog.this, 
-                            "Could not open the default browser\n " 
-                                + "Please access to '" + url + "'", 
-                            "Could not open the default browser.",
-                            JOptionPane.ERROR_MESSAGE);
-                } catch (URISyntaxException ex) {
-                    // ignored.
-                    Logger.getRootLogger().error(ex.getMessage());
-                }
-            }
-        });
-
-        addWindowListener(new WindowAdapter () {
-            @Override
-            public void windowOpened (WindowEvent evt) {
-                Preferences prefs = Preferences.userRoot().node("/jp/oist/flint/session/k3");
-                String encryptedUserId = prefs.get("encryptedUserId", null); 
-                String encryptedPassword = prefs.get("encryptedPassword", null); 
-
-                String userId = "";
-                String password = "";
-                String key = "";
-
-                try {
-                if (encryptedUserId != null && !encryptedUserId.isEmpty())
-                    userId = Utility.decrypt(encryptedUserId);
-
-                if (encryptedPassword != null && !encryptedPassword.isEmpty())
-                    password = Utility.decrypt(encryptedPassword);
-                } catch (GeneralSecurityException gse) {
-                    // there is no way to recover encrypted information,
-                    // so give up ...
-                    Logger.getRootLogger().error(gse.getMessage());
-                }
-
-                txtfield_Username.setText(userId);
-                txtfield_Password.setText(password);
-            }
-            @Override
-            public void windowClosing(WindowEvent e) {
-                buttonCloseActionPerformed(null);
-            }
-        });
 
         getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("ESCAPE"), "close");
         getRootPane().getActionMap().put("close", closeAction);
@@ -114,7 +50,7 @@ public class PreferenceDialog extends javax.swing.JDialog {
             // ignored
         }
 
-        setLocationRelativeTo((java.awt.Frame)parent);
+        setLocationRelativeTo(parent);
     }
 
     /**
@@ -136,13 +72,6 @@ public class PreferenceDialog extends javax.swing.JDialog {
         jPanel3 = new javax.swing.JPanel();
         radioButtonEnabled = new javax.swing.JRadioButton();
         radioButtonDisabled = new javax.swing.JRadioButton();
-        jPanel4 = new javax.swing.JPanel();
-        txtfield_Username = new javax.swing.JTextField();
-        txtfield_Password = new javax.swing.JPasswordField();
-        jLabel1 = new javax.swing.JLabel();
-        jLabel2 = new javax.swing.JLabel();
-        jLabel3 = new javax.swing.JLabel();
-        label_FlintK3 = new javax.swing.JLabel();
         jPanel2 = new javax.swing.JPanel();
         buttonClose = new javax.swing.JButton();
 
@@ -160,7 +89,6 @@ public class PreferenceDialog extends javax.swing.JDialog {
         jLabel4.setText("Plotter:");
 
         comboBoxPlotter.addActionListener(new java.awt.event.ActionListener() {
-            @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 comboBoxPlotterActionPerformed(evt);
             }
@@ -168,7 +96,6 @@ public class PreferenceDialog extends javax.swing.JDialog {
 
         buttonDeletePlotter.setText("Delete Plotter");
         buttonDeletePlotter.addActionListener(new java.awt.event.ActionListener() {
-            @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 buttonDeletePlotterActionPerformed(evt);
             }
@@ -176,7 +103,6 @@ public class PreferenceDialog extends javax.swing.JDialog {
 
         buttonConfigure.setText("Configure");
         buttonConfigure.addActionListener(new java.awt.event.ActionListener() {
-            @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 buttonConfigureActionPerformed(evt);
             }
@@ -184,7 +110,6 @@ public class PreferenceDialog extends javax.swing.JDialog {
 
         buttonRegisterPlotter.setText("Register Plotter");
         buttonRegisterPlotter.addActionListener(new java.awt.event.ActionListener() {
-            @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 buttonRegisterPlotterActionPerformed(evt);
             }
@@ -228,7 +153,6 @@ public class PreferenceDialog extends javax.swing.JDialog {
 
         radioButtonEnabled.setText("Online");
         radioButtonEnabled.addActionListener(new java.awt.event.ActionListener() {
-            @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 radioButtonEnabledActionPerformed(evt);
             }
@@ -237,7 +161,6 @@ public class PreferenceDialog extends javax.swing.JDialog {
         radioButtonDisabled.setSelected(true);
         radioButtonDisabled.setText("Offline");
         radioButtonDisabled.addActionListener(new java.awt.event.ActionListener() {
-            @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 radioButtonDisabledActionPerformed(evt);
             }
@@ -266,54 +189,6 @@ public class PreferenceDialog extends javax.swing.JDialog {
 
         jTabbedPane1.addTab("Garuda", jPanel3);
 
-        jLabel1.setText("User ID   :");
-
-        jLabel2.setText("Password:");
-
-        jLabel3.setText("If you do not have your account yet, please register at");
-
-        label_FlintK3.setText("<html><body><a href='https://flintk3.unit.oist.jp/user/'>Flint K3</a></body></html>");
-        label_FlintK3.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
-
-        javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
-        jPanel4.setLayout(jPanel4Layout);
-        jPanel4Layout.setHorizontalGroup(
-            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel4Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel4Layout.createSequentialGroup()
-                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(txtfield_Password, javax.swing.GroupLayout.PREFERRED_SIZE, 204, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(txtfield_Username, javax.swing.GroupLayout.PREFERRED_SIZE, 204, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addComponent(jLabel3)
-                    .addComponent(label_FlintK3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-        jPanel4Layout.setVerticalGroup(
-            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel4Layout.createSequentialGroup()
-                .addGap(25, 25, 25)
-                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(txtfield_Username, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel1))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(txtfield_Password, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel2))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jLabel3)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(label_FlintK3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(31, Short.MAX_VALUE))
-        );
-
-        jTabbedPane1.addTab("K3", jPanel4);
-
         getContentPane().add(jTabbedPane1, java.awt.BorderLayout.CENTER);
 
         jPanel2.setMinimumSize(new java.awt.Dimension(450, 30));
@@ -328,9 +203,8 @@ public class PreferenceDialog extends javax.swing.JDialog {
         buttonClose.setMinimumSize(new java.awt.Dimension(80, 24));
         buttonClose.setPreferredSize(new java.awt.Dimension(80, 24));
         buttonClose.addActionListener(new java.awt.event.ActionListener() {
-            @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                buttonCloseActionPerformed(evt);
+                closeDialog(evt);
             }
         });
         jPanel2.add(buttonClose);
@@ -339,31 +213,6 @@ public class PreferenceDialog extends javax.swing.JDialog {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
-    private void buttonCloseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonCloseActionPerformed
-        Preferences prefs = Preferences.userRoot().node("/jp/oist/flint/session/k3");
-        String userId = txtfield_Username.getText();
-        String passwd = new String(txtfield_Password.getPassword());
-
-        String encryptedUserId = "";
-        String encryptedPassword = "";
-
-        try {
-        if (userId != null && !userId.isEmpty())
-            encryptedUserId = Utility.encrypt(userId);
-
-        if (passwd != null && !passwd.isEmpty())
-            encryptedPassword = Utility.encrypt(passwd);
-        } catch (GeneralSecurityException gse) {
-            JOptionPane.showMessageDialog(this, gse.getMessage(), "Error on encrypting account information", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-
-        prefs.put("encryptedUserId", encryptedUserId);
-        prefs.put("encryptedPassword", encryptedPassword);
-
-        dispose();
-    }//GEN-LAST:event_buttonCloseActionPerformed
 
     private void radioButtonDisabledActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_radioButtonDisabledActionPerformed
         if (radioButtonDisabled.isSelected()) {
@@ -432,25 +281,22 @@ public class PreferenceDialog extends javax.swing.JDialog {
         }
     }//GEN-LAST:event_comboBoxPlotterActionPerformed
 
+    private void closeDialog(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_closeDialog
+        dispose();
+    }//GEN-LAST:event_closeDialog
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton buttonClose;
     private javax.swing.JButton buttonConfigure;
     private javax.swing.JButton buttonDeletePlotter;
     private javax.swing.JButton buttonRegisterPlotter;
     private javax.swing.JComboBox comboBoxPlotter;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
-    private javax.swing.JPanel jPanel4;
     private javax.swing.JTabbedPane jTabbedPane1;
-    private javax.swing.JLabel label_FlintK3;
     private javax.swing.JRadioButton radioButtonDisabled;
     private javax.swing.JRadioButton radioButtonEnabled;
-    private javax.swing.JPasswordField txtfield_Password;
-    private javax.swing.JTextField txtfield_Username;
     // End of variables declaration//GEN-END:variables
 }
