@@ -372,6 +372,23 @@ follows:
 \item Choose a target gadget from the list in the next dialog.
 \end{enumerate}
 
+\section{Flint K3}
+Instead of runnsing simulation with Flint, it is also possible to submit a loaded
+model to Flint K3 (\url{https://flintk3.unit.oist.jp/}) for simulation.
+A K3 account is necessary to use this advanced feature.
+
+\subsection{From menu}
+To submit a model to Flint K3,
+\begin{enumerate}
+\item Load a model
+\item Select the menu ``Control''$\rightarrow$``Send to Flint K3''
+\item Enter the User ID and Password of a K3 account and the title of new job
+  (see Fig.~\ref{fig:new-job-to-k3})
+\item Push button ``Submit''
+\end{enumerate}
+\FigureOfImage{new-job-to-k3}{The ``New job to K3'' dialog.}
+Then a dialog will appear to tell whether it is done successfully or not.
+
 \section{Preference}
 \label{sec:preference}
 Users can customize Flint's preference.
@@ -389,13 +406,6 @@ should be \[{\tt /Applications/gnuplot.app/bin/gnuplot}.\]
 Turning it on makes Flint enabled for the Garuda protocol on the desktop, like
 Fig.~\ref{fig:preference-garuda}.
 \FigureOfImage{preference-garuda}{The ``Garuda'' panel on the preference dialog.}
-
-\subsection{K3}
-Instead of runnsing simulation with Flint, submitting a loaded model to Flint K3
-(\url{https://flintk3.unit.oist.jp/}) for simulation is also possible.
-In order to enable the feature, users must specify its account information at
-this preference in advance, like Fig.~\ref{fig:preference-k3}.
-\FigureOfImage{preference-k3}{The ``K3'' panel on the preference dialog.}
 
 \section{Shortcut keys}
 There are useful shortcut keys as follows:
