@@ -32,7 +32,7 @@ namespace compiler {
 namespace sort {
 namespace {
 
-class DependencyCollector {
+class DependencyCollector : public sexp::Visitor<void> {
 public:
 	DependencyCollector(const string &name,
 						const std::unordered_map<string, size_t> &candidates,

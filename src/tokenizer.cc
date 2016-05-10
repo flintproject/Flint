@@ -144,7 +144,8 @@ int Impl::ReadKeyword(const char *p, Token *token)
 int Impl::ReadRestOfKeyword(const char *p, Token *token)
 {
 	char c = point_[0];
-	while ( c == '_' ||
+	while ( c == '-' || // allow hyphen for, e.g., case-set
+			c == '_' ||
 			std::isalnum(c) )
 		c = *(++point_);
 	token->type = Token::Type::kKeyword;

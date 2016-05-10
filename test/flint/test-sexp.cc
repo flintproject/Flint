@@ -11,7 +11,7 @@ struct F {
 	std::unique_ptr<sexp::Expression> expr;
 };
 
-struct V {
+struct V : public sexp::Visitor<void> {
 	void operator()(const sexp::Identifier &a) {
 		oss << a.GetString();
 	}

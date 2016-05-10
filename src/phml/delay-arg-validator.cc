@@ -10,52 +10,22 @@
 #include <string>
 #include <vector>
 
-#include <boost/fusion/include/adapt_struct.hpp>
-#include <boost/spirit/include/lex_lexertl.hpp>
-#include <boost/spirit/include/phoenix.hpp>
-#include <boost/spirit/include/qi.hpp>
 #include <boost/uuid/uuid.hpp>
 #include <boost/uuid/uuid_io.hpp>
-#include <boost/variant/recursive_variant.hpp>
 
 #include "db/statement-driver.h"
+#include "flint/parser.h"
+#include "flint/sexp.h"
 
 using std::cerr;
 using std::endl;
-
-using namespace boost::spirit;
-
-namespace flint {
-namespace phml {
-namespace dav {
-
-struct Sexp;
-struct Dexp;
-
-typedef boost::variant<boost::recursive_wrapper<Sexp>, Dexp, std::string> Math;
-
-struct Sexp {
-	std::vector<Math> children;
-};
-
-struct Dexp {
-	std::string arg;
-};
-
-}
-}
-}
-
-BOOST_FUSION_ADAPT_STRUCT(flint::phml::dav::Sexp, (std::vector<flint::phml::dav::Math>, children))
-BOOST_FUSION_ADAPT_STRUCT(flint::phml::dav::Dexp, (std::string, arg))
 
 namespace flint {
 namespace phml {
 
 namespace {
 
-class Visitor : public boost::static_visitor<bool>
-{
+class Visitor : public sexp::Visitor<bool> {
 public:
 	Visitor(sqlite3_int64 rowid, const boost::uuids::uuid &uuid, sqlite3 *db)
 		: rowid_(rowid)
@@ -65,26 +35,55 @@ public:
 	{
 	}
 
-	bool operator()(const dav::Sexp &sexp) const
-	{
-		const std::vector<dav::Math> &c(sexp.children);
-		for (const auto &math : c) {
-			if (!boost::apply_visitor(*this, math))
+	bool operator()(const sexp::Identifier &/*x*/) {return true;}
+
+	bool operator()(const sexp::Literal &/*a*/) {return true;}
+
+	bool operator()(const sexp::Compound &c) {
+		const auto &children = c.children();
+		size_t s = children.size();
+		assert(s > 0);
+		const auto &head = children.at(0);
+		if (head->type() == sexp::Expression::Type::kIdentifier) {
+			const auto &t = static_cast<const sexp::Identifier *>(head.get())->token();
+			if (std::string(t.lexeme, t.size) != "$Delay")
+				goto next;
+			if (s != 3) {
+				std::cerr << "invalid number of arguments for Delay()/DeltaTime(): "
+						  << (s-1)
+						  << std::endl;
 				return false;
+			}
+			const auto &child1 = children.at(1);
+			if (child1->type() != sexp::Expression::Type::kIdentifier) {
+				std::cerr << "invalid 1st argument for Delay()/DeltaTime()" << std::endl;
+				return false;
+			}
+			const auto &t1 = static_cast<const sexp::Identifier *>(child1.get())->token();
+			if (t1.type != Token::Type::kIdentifier) {
+				std::cerr << "invalid 1st argument for Delay()/DeltaTime()" << std::endl;
+				return false;
+			}
+			if (!ValidateArgument(std::string(t1.lexeme, t1.size)))
+				return false;
+			return sexp::ApplyVisitor(*this, *children.at(2));
 		}
+	next:
+		for (size_t i=1;i<s;i++)
+			if (!sexp::ApplyVisitor(*this, *children.at(i)))
+				return false;
 		return true;
 	}
 
-	bool operator()(const dav::Dexp &dexp) const
-	{
+private:
+	bool ValidateArgument(const std::string &id) {
 		int e;
 		e = sqlite3_bind_int64(driver_.stmt(), 1, rowid_);
 		if (e != SQLITE_OK) {
 			cerr << "failed to bind module_rowid: " << e << endl;
 			return false;
 		}
-		const char *arg = dexp.arg.c_str();
-		const char *name = arg+1; // skip the leading '%'
+		const char *name = id.c_str()+1; // skip the leading '%'
 		e = sqlite3_bind_text(driver_.stmt(), 2, name, -1, SQLITE_STATIC);
 		if (e != SQLITE_OK) {
 			cerr << "failed to bind name: " << e << endl;
@@ -118,90 +117,29 @@ public:
 		}
 	}
 
-	bool operator()(const std::string &) const {return true;}
-
-private:
 	sqlite3_int64 rowid_;
 	boost::uuids::uuid uuid_;
 	db::StatementDriver driver_;
 };
 
-template<typename TLexer>
-struct DelayArgLexer : lex::lexer<TLexer> {
-
-	DelayArgLexer() {
-		constant = "[^()%$ ]+";
-		id = "%[^()%$ ]+";
-		dollar_delay = "\\$Delay";
-		keyword = "\\$[^()%$ ]+";
-		whitespace = "[ ]+";
-
-		this->self = lex::token_def<>('(') | ')' | constant | id | dollar_delay | keyword;
-
-		this->self("WS") = whitespace;
-	}
-
-	lex::token_def<std::string> constant, id, keyword;
-	lex::token_def<> dollar_delay, whitespace;
-};
-
-template<typename TIterator, typename TLexer>
-struct DelayArgGrammar : qi::grammar<TIterator, dav::Math(), qi::in_state_skipper<TLexer> > {
-
-	template<typename TTokenDef>
-	DelayArgGrammar(TTokenDef const &td)
-		: DelayArgGrammar::base_type(start)
-	{
-		using boost::phoenix::at_c;
-
-		start = (dexp | sexp | td.constant | td.id | td.keyword);
-
-		dexp = '(' >> td.dollar_delay
-				   >> td.id [at_c<0>(_val) = _1]
-				   >> start
-				   >> ')' ;
-
-		sexp %= '(' >> +start >> ')';
-	}
-
-	qi::rule<TIterator, dav::Math(), qi::in_state_skipper<TLexer> > start;
-	qi::rule<TIterator, dav::Dexp(), qi::in_state_skipper<TLexer> > dexp;
-	qi::rule<TIterator, dav::Sexp(), qi::in_state_skipper<TLexer> > sexp;
-};
-
 class Parser {
 public:
-	typedef const char * base_iterator_type;
-	typedef lex::lexertl::token<base_iterator_type> token_type;
-	typedef lex::lexertl::lexer<token_type> lexer_type;
-	typedef DelayArgLexer<lexer_type> DAL;
-	typedef DAL::iterator_type iterator_type;
-	typedef DelayArgGrammar<iterator_type, DAL::lexer_def> DAG;
-
 	explicit Parser(sqlite3 *db)
 		: db_(db)
-		, tokens_()
-		, grammar_(tokens_)
 	{
 	}
 
 	bool Parse(sqlite3_int64 module_rowid, const boost::uuids::uuid &u, const char *math) {
-		const char *p = math;
-		iterator_type it = tokens_.begin(p, math + std::strlen(math));
-		iterator_type end = tokens_.end();
-		dav::Math ast;
-		bool r = qi::phrase_parse(it, end, grammar_, qi::in_state("WS")[tokens_.self], ast);
-		if (!r || it != end) {
-			cerr << "failed to parse math: " << math << endl;
+		std::unique_ptr<sexp::Expression> expr;
+		parser::Parser parser(math);
+		if (parser(&expr) <= 0)
 			return false;
-		}
-		return boost::apply_visitor(Visitor(module_rowid, u, db_), ast);
+		Visitor visitor(module_rowid, u, db_);
+		return sexp::ApplyVisitor(visitor, *expr);
 	}
 
 private:
 	sqlite3 *db_;
-	DAL tokens_;
-	DAG grammar_;
 };
 
 int Process(void *data, int argc, char **argv, char **names)

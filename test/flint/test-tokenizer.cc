@@ -62,6 +62,10 @@ BOOST_AUTO_TEST_CASE(Keyword) {
 	tokenizer::Tokenizer t2("$Flint");
 	BOOST_CHECK_EQUAL(t2(&token), 1);
 	CHECK_TOKEN(Token::Type::kKeyword, 6);
+
+	tokenizer::Tokenizer t3("case-set");
+	BOOST_CHECK_EQUAL(t3(&token), 1);
+	CHECK_TOKEN(Token::Type::kKeyword, 8);
 }
 
 BOOST_AUTO_TEST_CASE(Integer) {

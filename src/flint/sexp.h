@@ -2,6 +2,7 @@
 #ifndef FLINT_SEXP_H_
 #define FLINT_SEXP_H_
 
+#include <cassert>
 #include <memory>
 #include <string>
 #include <vector>
@@ -70,19 +71,27 @@ private:
 	std::vector<std::unique_ptr<Expression> > children_;
 };
 
-template<typename TVisitor>
-void ApplyVisitor(TVisitor &visitor, const Expression &expr)
+template<typename T>
+class Visitor {
+public:
+	virtual T operator()(const Identifier &) = 0;
+	virtual T operator()(const Literal &) = 0;
+	virtual T operator()(const Compound &) = 0;
+};
+
+template<typename T>
+T ApplyVisitor(Visitor<T> &visitor, const Expression &expr)
 {
 	switch (expr.type()) {
 	case Expression::Type::kIdentifier:
-		visitor(static_cast<const Identifier &>(expr));
-		break;
+		return visitor(static_cast<const Identifier &>(expr));
 	case Expression::Type::kLiteral:
-		visitor(static_cast<const Literal &>(expr));
-		break;
+		return visitor(static_cast<const Literal &>(expr));
 	case Expression::Type::kCompound:
-		visitor(static_cast<const Compound &>(expr));
-		break;
+		return visitor(static_cast<const Compound &>(expr));
+	default:
+		assert(false);
+		return T();
 	}
 }
 
