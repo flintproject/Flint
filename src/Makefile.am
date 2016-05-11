@@ -189,6 +189,7 @@ libflintxx_la_SOURCES = \
     task/form.cc \
     task/spec.cc \
     task/timer.cc \
+    token.cc \
     tokenizer.cc \
     ts/tsc.cc \
     ts/tsfiles.cc \

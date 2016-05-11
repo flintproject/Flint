@@ -2,6 +2,9 @@
 #ifndef FLINT_TOKEN_H_
 #define FLINT_TOKEN_H_
 
+#include <ostream>
+#include <string>
+
 namespace flint {
 
 struct Token {
@@ -17,6 +20,10 @@ struct Token {
 	Type type;
 	const char *lexeme;
 	int size;
+
+	bool Equals(const std::string &s) const;
+
+	std::ostream &Write(std::ostream *os) const;
 };
 
 }

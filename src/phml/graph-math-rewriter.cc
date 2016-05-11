@@ -4,65 +4,46 @@
 #include <cassert>
 #include <cstdlib>
 #include <cstring>
+#include <iostream>
 #include <memory>
 #include <sstream>
 #include <string>
 #include <vector>
-#include <boost/fusion/include/adapt_struct.hpp>
-#include <boost/spirit/include/lex_lexertl.hpp>
-#include <boost/spirit/include/phoenix.hpp>
-#include <boost/spirit/include/qi.hpp>
-#include <boost/variant/recursive_variant.hpp>
+
+#include "flint/parser.h"
+#include "flint/sexp.h"
 
 using std::cerr;
 using std::endl;
 
-using namespace boost::spirit;
-
-namespace flint {
-
-// AST
-
-struct Sexp;
-struct Gexp;
-
-typedef boost::variant<boost::recursive_wrapper<Sexp>, Gexp, std::string> Math;
-
-struct Sexp {
-	std::vector<Math> children;
-};
-
-struct Gexp {
-	std::string lhs;
-	std::string rhs;
-};
-
-}
-
-BOOST_FUSION_ADAPT_STRUCT(flint::Sexp, (std::vector<flint::Math>, children))
-BOOST_FUSION_ADAPT_STRUCT(flint::Gexp, (std::string, lhs) (std::string, rhs))
-
 namespace flint {
 namespace {
 
-struct Detector : public boost::static_visitor<bool>
+struct Detector : public sexp::Visitor<bool>
 {
-	bool operator()(const Sexp &sexp) const
-	{
-		const std::vector<Math> &c(sexp.children);
-		for (const auto &math : c) {
-			if (boost::apply_visitor(Detector(), math))
+	bool operator()(const sexp::Identifier &/*x*/) override {return false;}
+
+	bool operator()(const sexp::Literal &/*a*/) override {return false;}
+
+	bool operator()(const sexp::Compound &c) override {
+		const auto &children = c.children();
+		size_t s = children.size();
+		assert(s > 0);
+		const auto &head = children.at(0);
+		if (head->type() == sexp::Expression::Type::kIdentifier) {
+			const Token &t = static_cast<const sexp::Identifier *>(head.get())->token();
+			if (t.Equals("$is"))
+				return true;
+		}
+		for (size_t i=1;i<s;i++) {
+			if (sexp::ApplyVisitor(*this, *children.at(i)))
 				return true;
 		}
 		return false;
 	}
-
-	bool operator()(const Gexp &) const {return true;}
-
-	bool operator()(const std::string &) const {return false;}
 };
 
-class Writer : public boost::static_visitor<bool>
+class Writer : public sexp::Visitor<bool>
 {
 public:
 	Writer(phml::GraphMathRewriter *rewriter,
@@ -74,83 +55,65 @@ public:
 	{
 	}
 
-	bool operator()(const Sexp &sexp) const
-	{
-		oss_->put('(');
-		const std::vector<Math> &c(sexp.children);
-		for (auto it=c.cbegin();it!=c.cend();++it) {
-			if (it != c.begin()) oss_->put(' ');
-			if (!boost::apply_visitor(*this, *it)) return false;
+	bool operator()(const sexp::Identifier &x) override {
+		return x.Write(oss_);
+	}
+
+	bool operator()(const sexp::Literal &a) override {
+		return a.Write(oss_);
+	}
+
+	bool operator()(const sexp::Compound &c) override {
+		const auto &children = c.children();
+		size_t s = children.size();
+		assert(s > 0);
+		const auto &head = children.at(0);
+		if (head->type() != sexp::Expression::Type::kIdentifier)
+			return RewriteRecursively(c);
+		const Token &t = static_cast<const sexp::Identifier *>(head.get())->token();
+		if (!t.Equals("$is"))
+			return RewriteRecursively(c);
+		assert(s == 3);
+		const auto &lhs = children.at(1);
+		const auto &rhs = children.at(2);
+		if (rhs->type() != sexp::Expression::Type::kIdentifier) {
+			std::cerr << "invalid 2nd argument of $is: ";
+			rhs->Write(&std::cerr);
+			std::cerr << std::endl;
+			return false;
 		}
-		oss_->put(')');
-		return true;
-	}
-
-	bool operator()(const Gexp &gexp) const {
-		const char *s = gexp.rhs.c_str();
+		const Token &t2 = static_cast<const sexp::Identifier *>(rhs.get())->token();
+		// copy lexeme, but skip the first %
+		std::unique_ptr<char[]> node_name(new char[t2.size]);
+		std::memcpy(node_name.get(), t2.lexeme+1, t2.size-1);
+		node_name[t2.size-1] = '\0';
 		int node_id;
-		if (!rewriter_->FindNode(pq_rowid_, &s[1], &node_id)) return false;
-		*oss_ << "(eq " << gexp.lhs << ' ' << node_id << ')';
-		return true;
-	}
-
-	bool operator()(const std::string &s) const
-	{
-		*oss_ << s;
-		return true;
+		if (!rewriter_->FindNode(pq_rowid_, node_name.get(), &node_id))
+			return false;
+		*oss_ << "(eq ";
+		lhs->Write(oss_);
+		oss_->put(' ');
+		*oss_ << node_id;
+		return oss_->put(')');
 	}
 
 private:
+	bool RewriteRecursively(const sexp::Compound &c) {
+		const auto &children = c.children();
+		size_t s = children.size();
+		oss_->put('(');
+		for (size_t i=0;i<s;i++) {
+			if (i > 0)
+				oss_->put(' ');
+			if (!sexp::ApplyVisitor(*this, *children.at(i)))
+				return false;
+		}
+		return oss_->put(')');
+	}
+
 	phml::GraphMathRewriter *rewriter_;
 	sqlite3_int64 pq_rowid_;
 	std::ostringstream *oss_;
-};
-
-template<typename TLexer>
-struct GraphMathLexer : lex::lexer<TLexer> {
-
-	GraphMathLexer() {
-		constant = "[^()%$ ]+";
-		id = "%[^()%$ ]+";
-		dollar_is = "\\$is";
-		keyword = "\\$[^()%$ ]+";
-		whitespace = "[ ]+";
-
-		this->self = lex::token_def<>('(') | ')' | constant | id | dollar_is | keyword;
-
-		this->self("WS") = whitespace;
-	}
-
-	lex::token_def<std::string> constant, id, keyword;
-	lex::token_def<> dollar_is, whitespace;
-};
-
-template<typename TIterator, typename TLexer>
-struct GraphMathGrammar : qi::grammar<TIterator, Math(), qi::in_state_skipper<TLexer> > {
-
-	template<typename TTokenDef>
-	GraphMathGrammar(TTokenDef const &td)
-	: GraphMathGrammar::base_type(start)
-	{
-		using boost::phoenix::at_c;
-
-		start = (gexp | sexp | td.constant | td.id | td.keyword);
-
-		gexp = '(' >> td.dollar_is
-				   >> td.id [at_c<0>(_val) = _1]
-				   >> td.id [at_c<1>(_val) = _1]
-				   >> ')' ;
-
-		sexp %= '(' >> +start >> ')';
-
-		BOOST_SPIRIT_DEBUG_NODE(start);
-		BOOST_SPIRIT_DEBUG_NODE(gexp);
-		BOOST_SPIRIT_DEBUG_NODE(sexp);
-	}
-
-	qi::rule<TIterator, Math(), qi::in_state_skipper<TLexer> > start;
-	qi::rule<TIterator, Gexp(), qi::in_state_skipper<TLexer> > gexp;
-	qi::rule<TIterator, Sexp(), qi::in_state_skipper<TLexer> > sexp;
 };
 
 const char kQueryNode[] = \
@@ -216,28 +179,18 @@ bool GraphMathRewriter::Process(sqlite3_int64 rowid,
 								sqlite3_int64 pq_rowid,
 								const char *math)
 {
-	typedef const char * base_iterator_type;
-	typedef lex::lexertl::token<base_iterator_type> token_type;
-	typedef lex::lexertl::lexer<token_type> lexer_type;
-	typedef GraphMathLexer<lexer_type> GML;
-	typedef GML::iterator_type iterator_type;
-	typedef GraphMathGrammar<iterator_type, GML::lexer_def> GMG;
-
-	GML tokens;
-	GMG grammar(tokens);
-	const char *p = math;
-	iterator_type it = tokens.begin(p, math + std::strlen(math));
-	iterator_type end = tokens.end();
-	Math ast;
-	bool r = qi::phrase_parse(it, end, grammar, qi::in_state("WS")[tokens.self], ast);
-	if (!r || it != end) {
-		cerr << "failed to parse math: " << math << endl;
+	std::unique_ptr<sexp::Expression> expr;
+	parser::Parser parser(math);
+	if (!parser(&expr))
 		return false;
-	}
-	if (!boost::apply_visitor(Detector(), ast)) return true;
+	Detector d;
+	if (!sexp::ApplyVisitor(d, *expr))
+		return true;
 	std::ostringstream oss;
 	oss.put(' '); // a leading space
-	if (!boost::apply_visitor(Writer(this, pq_rowid, &oss), ast)) return false;
+	Writer w(this, pq_rowid, &oss);
+	if (!sexp::ApplyVisitor(w, *expr))
+		return false;
 	return Update(rowid, oss.str().c_str());
 }
 

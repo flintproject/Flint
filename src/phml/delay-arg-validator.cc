@@ -46,7 +46,7 @@ public:
 		const auto &head = children.at(0);
 		if (head->type() == sexp::Expression::Type::kIdentifier) {
 			const auto &t = static_cast<const sexp::Identifier *>(head.get())->token();
-			if (std::string(t.lexeme, t.size) != "$Delay")
+			if (!t.Equals("$Delay"))
 				goto next;
 			if (s != 3) {
 				std::cerr << "invalid number of arguments for Delay()/DeltaTime(): "

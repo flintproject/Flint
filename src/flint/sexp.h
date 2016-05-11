@@ -4,6 +4,7 @@
 
 #include <cassert>
 #include <memory>
+#include <ostream>
 #include <string>
 #include <vector>
 
@@ -26,6 +27,8 @@ public:
 
 	Type type() const {return type_;}
 
+	virtual std::ostream &Write(std::ostream *os) const = 0;
+
 protected:
 	Type type_;
 };
@@ -35,6 +38,8 @@ public:
 	explicit Identifier(const Token &token);
 
 	virtual ~Identifier();
+
+	virtual std::ostream &Write(std::ostream *os) const override;
 
 	const Token &token() const {return token_;}
 
@@ -51,6 +56,8 @@ public:
 
 	virtual ~Literal();
 
+	virtual std::ostream &Write(std::ostream *os) const override;
+
 	const Token &token() const {return token_;}
 
 private:
@@ -62,6 +69,8 @@ public:
 	explicit Compound(std::vector<std::unique_ptr<Expression> > &&children);
 
 	virtual ~Compound();
+
+	virtual std::ostream &Write(std::ostream *os) const override;
 
 	size_t GetSize() const;
 

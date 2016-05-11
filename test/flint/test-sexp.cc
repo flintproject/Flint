@@ -1,6 +1,8 @@
 /* -*- Mode: C++; tab-width: 4; indent-tabs-mode: t; c-basic-offset: 4 -*- vim:set ts=4 sw=4 sts=4 noet: */
 #include "flint/sexp.h"
 
+#include <sstream>
+
 #define BOOST_TEST_MODULE test_sexp
 #include "test.h"
 
@@ -69,6 +71,10 @@ BOOST_AUTO_TEST_CASE(Visitor) {
 	V v;
 	sexp::ApplyVisitor(v, *expr);
 	BOOST_CHECK_EQUAL(v.GetString(), "(x (y %z 1))");
+
+	std::ostringstream oss;
+	expr->Write(&oss);
+	BOOST_CHECK_EQUAL(oss.str(), "(x (y %z 1))");
 }
 
 BOOST_AUTO_TEST_SUITE_END()
