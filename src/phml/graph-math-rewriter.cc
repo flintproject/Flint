@@ -56,11 +56,11 @@ public:
 	}
 
 	bool operator()(const sexp::Identifier &x) override {
-		return x.Write(oss_);
+		return bool(x.Write(oss_));
 	}
 
 	bool operator()(const sexp::Literal &a) override {
-		return a.Write(oss_);
+		return bool(a.Write(oss_));
 	}
 
 	bool operator()(const sexp::Compound &c) override {
@@ -94,7 +94,7 @@ public:
 		lhs->Write(oss_);
 		oss_->put(' ');
 		*oss_ << node_id;
-		return oss_->put(')');
+		return bool(oss_->put(')'));
 	}
 
 private:
@@ -108,7 +108,7 @@ private:
 			if (!sexp::ApplyVisitor(*this, *children.at(i)))
 				return false;
 		}
-		return oss_->put(')');
+		return bool(oss_->put(')'));
 	}
 
 	phml::GraphMathRewriter *rewriter_;
