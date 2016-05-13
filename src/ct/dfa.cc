@@ -13,6 +13,8 @@
 
 #include "bc.pb.h"
 
+#include "bc/locater.h"
+#include "bc/mounter.h"
 #include "lo/layout.h"
 #include "runtime/calculation-dependency.h"
 #include "runtime/flow.h"

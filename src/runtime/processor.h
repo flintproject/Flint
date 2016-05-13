@@ -19,6 +19,7 @@
 
 #include "bc.pb.h"
 
+#include "bc/mounter.h"
 #include "flint/ct.h"
 #include "lo/layout.h"
 #include "numeric/prng.h"

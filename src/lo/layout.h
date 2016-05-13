@@ -2,25 +2,25 @@
 #ifndef FLINT_LO_LAYOUT_H_
 #define FLINT_LO_LAYOUT_H_
 
-#include <algorithm>
+#include <cassert>
 #include <cstring>
-#include <iomanip>
+#include <iostream>
 #include <memory>
 #include <set>
 #include <string>
 #include <unordered_map>
-#include <unordered_set>
 #include <vector>
 
 #include <boost/functional/hash.hpp>
 #include <boost/uuid/uuid_io.hpp>
 
 #include "bc/index.h"
-#include "bc/locater.h"
-#include "bc/mounter.h"
 #include "lo.pb.h"
 
 namespace flint {
+
+class Locater;
+class Mounter;
 
 typedef std::unordered_map<boost::uuids::uuid,
 						   std::unordered_map<int, int>,
@@ -36,7 +36,9 @@ public:
 	Layout(const Layout &) = delete;
 	Layout &operator=(const Layout &) = delete;
 
-	Layout() {}
+	Layout();
+
+	~Layout();
 
 	void AddTrack(std::unique_ptr<lo::Track> &&track) {
 		tv_.push_back(std::move(track));
@@ -55,60 +57,11 @@ public:
 	 */
 	bool ContainsDependentVariable() const;
 
-	int Calculate(DataOffsetMap *dom = nullptr, SectorOffsetMap *som = nullptr) {
-		int offset = kOffsetBase;
-		int di = 0;
-		int si = 0;
-		boost::uuids::uuid track_id;
-		boost::uuids::uuid sector_id;
-		for (const auto &tp : tv_) {
-			memcpy(&track_id, tp->id().data(), track_id.size());
+	int Calculate(DataOffsetMap *dom = nullptr, SectorOffsetMap *som = nullptr);
 
-			int nos = tp->nos();
-			int nod = tp->nod();
-			int die = di + nod;
-			int sie = si + nos;
-			int sector_size = 0;
+	const Locater *GetLocater(const std::string &id) const;
 
-			std::unique_ptr<Locater> locater(new Locater);
-			while (di < die) {
-				const auto &dp = dv_.at(di++);
-				locater->SetPosition(dp->name(), sector_size);
-				if (dom) (*dom)[track_id].insert(std::make_pair(dp->id(), sector_size));
-				sector_size += dp->col() * dp->row();
-			}
-			lm_.insert(std::make_pair(track_id, std::move(locater)));
-
-			std::unique_ptr<Mounter> mounter(new Mounter(nos));
-			for (int i=0;i<nos;i++) {
-				mounter->SetOffset(i, offset);
-				const auto &sp = sv_.at(si++);
-				if (som) {
-					memcpy(&sector_id, sp->id().data(), sector_id.size());
-					som->insert(std::make_pair(sector_id, offset));
-				}
-				offset += sector_size;
-			}
-			mm_.insert(std::make_pair(track_id, std::move(mounter)));
-			assert(si == sie);
-		}
-		return offset;
-	}
-
-	const Locater *GetLocater(const std::string &id) const {
-		boost::uuids::uuid u;
-		std::memcpy(&u, id.data(), u.size());
-		LocaterMap::const_iterator it = lm_.find(u);
-		if (it == lm_.end()) return nullptr;
-		return it->second.get();
-	}
-
-	const Mounter &GetMounter(const std::string &id) const {
-		boost::uuids::uuid u;
-		std::memcpy(&u, id.data(), u.size());
-		assert(mm_.find(u) != mm_.end());
-		return *mm_.at(u);
-	}
+	const Mounter &GetMounter(const std::string &id) const;
 
 	template<typename THistory>
 	bool SpecifyCapacity(size_t size, THistory *history) const {
@@ -142,69 +95,9 @@ public:
 		return true;
 	}
 
-	void DetectRed(size_t size, const size_t *color) const {
-		std::unordered_set<std::string> red;
+	void DetectRed(size_t size, const size_t *color) const;
 
-		size_t offset = kOffsetBase;
-		int di = 0;
-		for (const auto &tp : tv_) {
-			int nos = tp->nos();
-			int nod = tp->nod();
-			int dib = di;
-			int die = di + nod;
-
-			for (int i=0;i<nos;i++) {
-				di = dib;
-				while (di < die) {
-					const auto &dp = dv_.at(di++);
-					assert(offset < size);
-					if (!color[offset]) {
-						boost::uuids::uuid u;
-						std::memcpy(&u, tp->id().data(), u.size());
-						std::string us = to_string(u);
-						us += ":";
-						us += dp->name();
-						if (red.insert(us).second) {
-							std::cerr << us << std::endl;
-						}
-					}
-					offset += dp->col() * dp->row();
-				}
-			}
-		}
-		assert(offset == size);
-	}
-
-	void CollectConstant(int nol, size_t size, std::set<int> *addrs) const {
-		size_t offset = kOffsetBase;
-		int di = 0;
-		for (const auto &tp : tv_) {
-			int nos = tp->nos();
-			int nod = tp->nod();
-			int dib = di;
-			int die = di + nod;
-
-			for (int i=0;i<nos;i++) {
-				di = dib;
-				while (di < die) {
-					const auto &dp = dv_.at(di++);
-					assert(offset < size);
-					switch (dp->type()) {
-					case lo::S:
-						for (int j=0;j<nol;j++) {
-							addrs->insert(offset + (j * size));
-						}
-						break;
-					default:
-						// nothing to do
-						break;
-					}
-					offset += dp->col() * dp->row();
-				}
-			}
-		}
-		assert(offset == size);
-	}
+	void CollectConstant(int nol, size_t size, std::set<int> *addrs) const;
 
 	/*
 	 * Return the number of "on".
@@ -298,53 +191,7 @@ public:
 		return true;
 	}
 
-	void Debug(size_t size) const {
-		using std::cout;
-		using std::endl;
-
-		size_t offset = kOffsetBase;
-		int si = 0;
-		int di = 0;
-		for (const auto &tp : tv_) {
-			boost::uuids::uuid u;
-			memcpy(&u, tp->id().data(), u.size());
-			cout << "T " << u << " " << tp->name() << endl;
-
-			int nos = tp->nos();
-			int nod = tp->nod();
-			int dib = di;
-			int die = di + nod;
-
-			for (int i=0;i<nos;i++) {
-				memcpy(&u, sv_[si++]->id().data(), u.size());
-				cout << "S " << u << endl;
-
-				di = dib;
-				while (di < die) {
-					const auto &dp = dv_.at(di++);
-					assert(offset < size);
-					cout << "|" << std::setw(4) << offset;
-					switch (dp->type()) {
-					case lo::S:
-						cout << "|S|";
-						break;
-					case lo::T:
-						cout << "|T|";
-						break;
-					case lo::V:
-						cout << "|V|";
-						break;
-					case lo::X:
-						cout << "|X|";
-						break;
-					}
-					cout << dp->name() << endl;
-					offset += dp->col() * dp->row();
-				}
-			}
-		}
-		assert(offset == size);
-	}
+	void Debug(size_t size) const;
 
 private:
 	typedef std::vector<std::unique_ptr<lo::Track> > TrackVector;
