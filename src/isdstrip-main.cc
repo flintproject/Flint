@@ -274,10 +274,10 @@ int main(int argc, char *argv[])
 		return (print_help == 1) ? EXIT_SUCCESS : EXIT_FAILURE;
 	}
 
-	std::unique_ptr<vector<std::uint32_t> > cv(new vector<std::uint32_t>);
+	std::vector<std::uint32_t> cv;
 	std::uint32_t num_columns = 0;
 		const char *input_path = input_file.c_str();
-		if (!ExtractConstantColumns(input_path, &num_columns, cv.get())) {
+		if (!ExtractConstantColumns(input_path, &num_columns, &cv)) {
 			return EXIT_FAILURE;
 		}
 		if (vm.count("output")) {
@@ -286,9 +286,9 @@ int main(int argc, char *argv[])
 				cerr << "could not open output file: " << output_file << endl;
 				return EXIT_FAILURE;
 			}
-			int r = Filter(input_path, *cv, &ofs);
+			int r = Filter(input_path, cv, &ofs);
 			ofs.close();
-			if (r == EXIT_SUCCESS && vm.count("columns")) PrintNumOfColumns(num_columns, *cv);
+			if (r == EXIT_SUCCESS && vm.count("columns")) PrintNumOfColumns(num_columns, cv);
 			return r;
 		} else {
 			char *output_path = nullptr;
@@ -307,13 +307,13 @@ int main(int argc, char *argv[])
 				free(output_path);
 				return EXIT_FAILURE;
 			}
-			int r = Filter(input_path, *cv, &ofs);
+			int r = Filter(input_path, cv, &ofs);
 			ofs.close();
 			if (r == EXIT_SUCCESS) {
 				// FIXME: thin possibility to fail to rename()
 				remove(input_path);
 				rename(output_path, input_path);
-				if (vm.count("columns")) PrintNumOfColumns(num_columns, *cv);
+				if (vm.count("columns")) PrintNumOfColumns(num_columns, cv);
 			} else {
 				remove(output_path);
 			}
