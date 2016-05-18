@@ -38,6 +38,11 @@ $ sudo dnf install gcc gcc-c++ autoconf automake libtool cmake java-1.8.0-openjd
     wget zlib-devel
 
 
+== Ubuntu 16.04 LTS (Xenial Xerus)
+
+$ sudo apt install g++ autoconf automake libtool cmake openjdk-8-jdk zlib1g-dev
+
+
 == Ubuntu 14.04.3 LTS (Trusty Tahr)
 
 All you have to do for installing necessary tools is:
