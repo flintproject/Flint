@@ -47,5 +47,17 @@ bool Writer::Write(const double *data, FILE *fp) const
 	return true;
 }
 
+bool Writer::PrintCode(std::ostream *os) const
+{
+	*os << "static const struct {" << std::endl;
+	*os << "\tsize_t i;" << std::endl;
+	*os << "\tsize_t s;" << std::endl;
+	*os << "} output_range[] = {" << std::endl;
+	for (auto const &p : v_)
+		*os << "\t{" << p.first << ", " << p.second	<< "}," << std::endl;
+	*os << "};" << std::endl;
+	return bool(*os);
+}
+
 }
 }

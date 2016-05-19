@@ -1,0 +1,15 @@
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; flint-tr -- translate a given model into C for simulation
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+This program translate a given model into a C99 source code for simulation.
+
+= Synopsis
+
+flint-tr
+flint-tr -h
+
+
+= Description
+
+Note that flint-cli can produces input for flint-tr.

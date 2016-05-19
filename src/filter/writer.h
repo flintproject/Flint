@@ -4,6 +4,7 @@
 
 #include <cstdio>
 #include <map>
+#include <ostream>
 #include <vector>
 
 namespace flint {
@@ -17,6 +18,8 @@ public:
 	explicit Writer(const std::map<int, int> &m);
 
 	bool Write(const double *data, FILE *fp) const;
+
+	bool PrintCode(std::ostream *os) const;
 
 private:
 	std::vector<std::pair<size_t, size_t> > v_;

@@ -35,6 +35,7 @@ bin_PROGRAMS = \
 	flint-pause \
 	flint-resume \
 	flint-run \
+	flint-tr \
 	isd2csv \
 	isdbswap \
 	isdcut \
@@ -191,6 +192,8 @@ libflintxx_la_SOURCES = \
     task/timer.cc \
     token.cc \
     tokenizer.cc \
+    tr/translate.cc \
+    tr/translator.cc \
     ts/tsc.cc \
     ts/tsfiles.cc \
     utf8path.cc \
@@ -234,6 +237,11 @@ flint_run_CPPFLAGS = $(PROTOBUF_CFLAGS) $(BOOST_CPPFLAGS)
 flint_run_LDFLAGS = $(BOOST_FILESYSTEM_LDFLAGS) $(BOOST_SYSTEM_LDFLAGS)
 flint_run_LDADD = libflintxx.la libflint.la libsqlite3.la $(PROTOBUF_LIBS) $(BOOST_FILESYSTEM_LIBS) $(BOOST_SYSTEM_LIBS)
 flint_run_SOURCES = flint-run-main.cc
+
+flint_tr_CPPFLAGS = $(PROTOBUF_CFLAGS) $(BOOST_CPPFLAGS)
+flint_tr_LDFLAGS = $(BOOST_FILESYSTEM_LDFLAGS) $(BOOST_SYSTEM_LDFLAGS)
+flint_tr_LDADD = libflintxx.la libflint.la libsqlite3.la $(PROTOBUF_LIBS) $(BOOST_FILESYSTEM_LIBS) $(BOOST_SYSTEM_LIBS)
+flint_tr_SOURCES = flint-tr-main.cc
 
 isd2csv_CPPFLAGS = $(BOOST_CPPFLAGS)
 isd2csv_LDFLAGS = $(BOOST_PROGRAM_OPTIONS_LDFLAGS)

@@ -1,0 +1,5 @@
+The .c files in this directory is for input to xxd(1).
+The corresponding output suffixed with .h is also in this directory
+so that building Flint does not require xxd.
+Do not forget to run `make` in order to generate .h after modifiying
+.c files.
