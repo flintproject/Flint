@@ -91,6 +91,9 @@
           <Component Id='flint_run' Guid='c7541b2a-9d03-11e3-9698-b745a2cde4a7'>
             <File Id='flint_run.exe' Name='flint-run.exe' DiskId='1' Source='flint-run.exe' />
           </Component>
+          <Component Id='flint_tr' Guid='cc9b2224-1d79-11e6-aa6a-1771aef9e319'>
+            <File Id='flint_tr.exe' Name='flint-tr.exe' DiskId='1' Source='flint-tr.exe' />
+          </Component>
           <Component Id='isd2csv' Guid='b87afd3a-a54d-11e1-bac1-b759ca208b40'>
             <File Id='isd2csv.exe' Name='isd2csv.exe' DiskId='1' Source='isd2csv.exe' />
           </Component>
@@ -239,6 +242,7 @@
       <ComponentRef Id='flint_pause' />
       <ComponentRef Id='flint_resume' />
       <ComponentRef Id='flint_run' />
+      <ComponentRef Id='flint_tr' />
       <ComponentRef Id='isd2csv' />
       <ComponentRef Id='isdcut' />
       <ComponentRef Id='isddiff' />
