@@ -114,9 +114,9 @@ public:
 		header.num_bytes_comment = 0; // discard the original comment
 		header.num_bytes_descs = num_bytes_descs;
 		header.num_bytes_units = num_bytes_units;
-		std::unique_ptr<char[]> h(new char[sizeof(header)]);
-		memcpy(h.get(), &header, sizeof(header));
-		os->write(h.get(), sizeof(header));
+		char h[sizeof(header)];
+		memcpy(h, &header, sizeof(header));
+		os->write(h, sizeof(header));
 		os->write(descriptions.get(), num_bytes_descs);
 		os->write(units.get(), num_bytes_units);
 		std::unique_ptr<Handler> handler(new Handler(fields_, os));
