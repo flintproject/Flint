@@ -1,5 +1,5 @@
 /* -*- Mode: C++; tab-width: 4; indent-tabs-mode: t; c-basic-offset: 4 -*- vim:set ts=4 sw=4 sts=4 noet: */
-#include "flint/parser.h"
+#include "flint/sexp/parser.h"
 
 #include <cassert>
 #include <cctype>
@@ -11,10 +11,11 @@
 #include <vector>
 
 #include "flint/sexp.h"
-#include "flint/token.h"
-#include "flint/tokenizer.h"
+#include "flint/sexp/token.h"
+#include "flint/sexp/tokenizer.h"
 
 namespace flint {
+namespace sexp {
 namespace parser {
 
 class Impl {
@@ -113,5 +114,6 @@ int Parser::operator()(std::unique_ptr<sexp::Expression> *expp)
 	return impl_->Parse(expp);
 }
 
+}
 }
 }

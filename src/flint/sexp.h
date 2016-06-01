@@ -8,7 +8,7 @@
 #include <string>
 #include <vector>
 
-#include "flint/token.h"
+#include "flint/sexp/token.h"
 
 namespace flint {
 namespace sexp {

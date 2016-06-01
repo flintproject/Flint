@@ -19,8 +19,8 @@
 #include "db/driver.h"
 #include "db/query.h"
 #include "db/statement-driver.h"
-#include "flint/parser.h"
 #include "flint/sexp.h"
+#include "flint/sexp/parser.h"
 
 using std::cerr;
 using std::endl;
@@ -48,10 +48,10 @@ public:
 	}
 
 	void operator()(const sexp::Identifier &x) {
-		const Token &t = x.token();
-		if (t.type == Token::Type::kKeyword)
+		const auto &t = x.token();
+		if (t.type == sexp::Token::Type::kKeyword)
 			return;
-		assert(t.type == Token::Type::kIdentifier);
+		assert(t.type == sexp::Token::Type::kIdentifier);
 		auto s = x.GetString();
 		if (s == name_)
 			return;
@@ -216,7 +216,7 @@ int Process(void *data, int argc, char **argv, char **names)
 	std::unique_ptr<char[]> math(new char[std::strlen(argv[2])+1]);
 	std::strcpy(math.get(), argv[2]);
 	std::unique_ptr<sexp::Expression> expr;
-	parser::Parser parser(math.get());
+	sexp::parser::Parser parser(math.get());
 	if (parser(&expr) <= 0)
 		return 1;
 	(*um)[u].Add(argv[1], std::move(math), std::move(expr));

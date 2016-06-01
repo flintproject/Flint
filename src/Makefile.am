@@ -134,7 +134,6 @@ libflintxx_la_SOURCES = \
     method/printer.cc \
     method/rk4.cc \
     modelpath.cc \
-    parser.cc \
     phml/branch.cc \
     phml/combine-all.cc \
     phml/combine.cc \
@@ -165,9 +164,9 @@ libflintxx_la_SOURCES = \
     runtime/calculation-dependency.cc \
     runtime/eval.cc \
     runtime/evaluator.cc \
+    runtime/flow.cc \
     runtime/history.cc \
     runtime/init.cc \
-    runtime/flow.cc \
     runtime/matrix.cc \
     runtime/reduction-unit.cc \
     runtime/section-context.cc \
@@ -176,6 +175,9 @@ libflintxx_la_SOURCES = \
     sbml/read.cc \
     sedml/read.cc \
     sexp.cc \
+    sexp/parser.cc \
+    sexp/token.cc \
+    sexp/tokenizer.cc \
     solver/ark/ark.cc \
     solver/ark/auxv.cc \
     solver/ark/mass.cc \
@@ -185,13 +187,11 @@ libflintxx_la_SOURCES = \
     solver/ark/user-supplied.cc \
     solver/solve.cc \
     sys/temporary_path.cc \
-    task/config.cc \
     task/config-reader.cc \
+    task/config.cc \
     task/form.cc \
     task/spec.cc \
     task/timer.cc \
-    token.cc \
-    tokenizer.cc \
     tr/translate.cc \
     tr/translator.cc \
     ts/tsc.cc \

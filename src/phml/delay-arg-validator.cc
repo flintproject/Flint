@@ -14,8 +14,8 @@
 #include <boost/uuid/uuid_io.hpp>
 
 #include "db/statement-driver.h"
-#include "flint/parser.h"
 #include "flint/sexp.h"
+#include "flint/sexp/parser.h"
 
 using std::cerr;
 using std::endl;
@@ -60,7 +60,7 @@ public:
 				return false;
 			}
 			const auto &t1 = static_cast<const sexp::Identifier *>(child1.get())->token();
-			if (t1.type != Token::Type::kIdentifier) {
+			if (t1.type != sexp::Token::Type::kIdentifier) {
 				std::cerr << "invalid 1st argument for Delay()/DeltaTime()" << std::endl;
 				return false;
 			}
@@ -131,7 +131,7 @@ public:
 
 	bool Parse(sqlite3_int64 module_rowid, const boost::uuids::uuid &u, const char *math) {
 		std::unique_ptr<sexp::Expression> expr;
-		parser::Parser parser(math);
+		sexp::parser::Parser parser(math);
 		if (parser(&expr) <= 0)
 			return false;
 		Visitor visitor(module_rowid, u, db_);

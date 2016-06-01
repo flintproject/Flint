@@ -6,23 +6,25 @@
 #define BOOST_TEST_MODULE test_sexp
 #include "test.h"
 
-#include "flint/token.h"
+#include "flint/sexp/token.h"
+
+using namespace sexp;
 
 struct F {
 	Token t;
-	std::unique_ptr<sexp::Expression> expr;
+	std::unique_ptr<Expression> expr;
 };
 
-struct V : public sexp::Visitor<void> {
-	void operator()(const sexp::Identifier &a) {
+struct V : public Visitor<void> {
+	void operator()(const Identifier &a) {
 		oss << a.GetString();
 	}
 
-	void operator()(const sexp::Literal &b) {
+	void operator()(const Literal &b) {
 		oss << std::string(b.token().lexeme, b.token().size);
 	}
 
-	void operator()(const sexp::Compound &c) {
+	void operator()(const Compound &c) {
 		oss << '(';
 		bool first = true;
 		for (auto &child : c.children()) {
@@ -31,7 +33,7 @@ struct V : public sexp::Visitor<void> {
 			} else {
 				oss << ' ';
 			}
-			sexp::ApplyVisitor(*this, *child);
+			ApplyVisitor(*this, *child);
 		}
 		oss << ')';
 	}
@@ -46,30 +48,30 @@ struct V : public sexp::Visitor<void> {
 BOOST_FIXTURE_TEST_SUITE(test_sexp, F)
 
 BOOST_AUTO_TEST_CASE(Visitor) {
-	std::vector<std::unique_ptr<sexp::Expression> > xyz1;
-	std::vector<std::unique_ptr<sexp::Expression> > yz1;
+	std::vector<std::unique_ptr<Expression> > xyz1;
+	std::vector<std::unique_ptr<Expression> > yz1;
 
 	t.type = Token::Type::kKeyword;
 	t.lexeme = "y";
 	t.size = 1;
-	yz1.emplace_back(new sexp::Identifier(t));
+	yz1.emplace_back(new Identifier(t));
 	t.type = Token::Type::kIdentifier;
 	t.lexeme = "%z";
 	t.size = 2;
-	yz1.emplace_back(new sexp::Identifier(t));
+	yz1.emplace_back(new Identifier(t));
 	t.type = Token::Type::kInteger;
 	t.lexeme = "1";
 	t.size = 1;
-	yz1.emplace_back(new sexp::Literal(t));
+	yz1.emplace_back(new Literal(t));
 
 	t.type = Token::Type::kKeyword;
 	t.lexeme = "x";
 	t.size = 1;
-	xyz1.emplace_back(new sexp::Identifier(t));
-	xyz1.emplace_back(new sexp::Compound(std::move(yz1)));
-	expr.reset(new sexp::Compound(std::move(xyz1)));
+	xyz1.emplace_back(new Identifier(t));
+	xyz1.emplace_back(new Compound(std::move(yz1)));
+	expr.reset(new Compound(std::move(xyz1)));
 	V v;
-	sexp::ApplyVisitor(v, *expr);
+	ApplyVisitor(v, *expr);
 	BOOST_CHECK_EQUAL(v.GetString(), "(x (y %z 1))");
 
 	std::ostringstream oss;

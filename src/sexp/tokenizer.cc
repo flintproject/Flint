@@ -1,5 +1,5 @@
 /* -*- Mode: C++; tab-width: 4; indent-tabs-mode: t; c-basic-offset: 4 -*- vim:set ts=4 sw=4 sts=4 noet: */
-#include "flint/tokenizer.h"
+#include "flint/sexp/tokenizer.h"
 
 #include <cctype>
 #include <cstdio>
@@ -7,9 +7,10 @@
 #include <cstring>
 #include <iostream>
 
-#include "flint/token.h"
+#include "flint/sexp/token.h"
 
 namespace flint {
+namespace sexp {
 namespace tokenizer {
 
 class Impl {
@@ -291,5 +292,6 @@ int Tokenizer::operator()(Token *token)
 	return impl_->Read(token);
 }
 
+}
 }
 }

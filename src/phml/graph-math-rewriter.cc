@@ -10,8 +10,8 @@
 #include <string>
 #include <vector>
 
-#include "flint/parser.h"
 #include "flint/sexp.h"
+#include "flint/sexp/parser.h"
 
 using std::cerr;
 using std::endl;
@@ -31,7 +31,7 @@ struct Detector : public sexp::Visitor<bool>
 		assert(s > 0);
 		const auto &head = children.at(0);
 		if (head->type() == sexp::Expression::Type::kIdentifier) {
-			const Token &t = static_cast<const sexp::Identifier *>(head.get())->token();
+			const auto &t = static_cast<const sexp::Identifier *>(head.get())->token();
 			if (t.Equals("$is"))
 				return true;
 		}
@@ -70,7 +70,7 @@ public:
 		const auto &head = children.at(0);
 		if (head->type() != sexp::Expression::Type::kIdentifier)
 			return RewriteRecursively(c);
-		const Token &t = static_cast<const sexp::Identifier *>(head.get())->token();
+		const auto &t = static_cast<const sexp::Identifier *>(head.get())->token();
 		if (!t.Equals("$is"))
 			return RewriteRecursively(c);
 		assert(s == 3);
@@ -82,7 +82,7 @@ public:
 			std::cerr << std::endl;
 			return false;
 		}
-		const Token &t2 = static_cast<const sexp::Identifier *>(rhs.get())->token();
+		const auto &t2 = static_cast<const sexp::Identifier *>(rhs.get())->token();
 		// copy lexeme, but skip the first %
 		std::unique_ptr<char[]> node_name(new char[t2.size]);
 		std::memcpy(node_name.get(), t2.lexeme+1, t2.size-1);
@@ -180,7 +180,7 @@ bool GraphMathRewriter::Process(sqlite3_int64 rowid,
 								const char *math)
 {
 	std::unique_ptr<sexp::Expression> expr;
-	parser::Parser parser(math);
+	sexp::parser::Parser parser(math);
 	if (!parser(&expr))
 		return false;
 	Detector d;

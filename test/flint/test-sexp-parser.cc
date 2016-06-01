@@ -1,11 +1,14 @@
 /* -*- Mode: C++; tab-width: 4; indent-tabs-mode: t; c-basic-offset: 4 -*- vim:set ts=4 sw=4 sts=4 noet: */
-#include "flint/parser.h"
+#include "flint/sexp/parser.h"
 
 #define BOOST_TEST_MODULE test_parser
 #include "test.h"
 
 #include "flint/sexp.h"
-#include "flint/token.h"
+#include "flint/sexp/token.h"
+
+using sexp::Token;
+using sexp::parser::Parser;
 
 struct F {
 	std::unique_ptr<sexp::Expression> exp;
@@ -30,58 +33,58 @@ struct F {
 BOOST_FIXTURE_TEST_SUITE(test_parser, F)
 
 BOOST_AUTO_TEST_CASE(Empty) {
-	parser::Parser p0("");
+	Parser p0("");
 	BOOST_REQUIRE_EQUAL(p0(&exp), 0);
 
-	parser::Parser p1("   ");
+	Parser p1("   ");
 	BOOST_REQUIRE_EQUAL(p1(&exp), 0);
 }
 
 BOOST_AUTO_TEST_CASE(Parenthesis) {
-	parser::Parser p0("(");
+	Parser p0("(");
 	BOOST_REQUIRE_EQUAL(p0(&exp), 0);
 
-	parser::Parser p1(")");
+	Parser p1(")");
 	BOOST_REQUIRE_EQUAL(p1(&exp), -1);
 
-	parser::Parser p2("()");
+	Parser p2("()");
 	BOOST_REQUIRE_EQUAL(p2(&exp), -1);
 }
 
 BOOST_AUTO_TEST_CASE(Identifier) {
-	parser::Parser p0("%x");
+	Parser p0("%x");
 	BOOST_REQUIRE_EQUAL(p0(&exp), 1);
 	CHECK_IDENTIFIER(Token::Type::kIdentifier);
 }
 
 BOOST_AUTO_TEST_CASE(Keyword) {
-	parser::Parser p0("x");
+	Parser p0("x");
 	BOOST_REQUIRE_EQUAL(p0(&exp), 1);
 	CHECK_IDENTIFIER(Token::Type::kKeyword);
 }
 
 BOOST_AUTO_TEST_CASE(Integer) {
-	parser::Parser p("+24");
+	Parser p("+24");
 	BOOST_REQUIRE_EQUAL(p(&exp), 1);
 	CHECK_LITERAL(Token::Type::kInteger);
 }
 
 BOOST_AUTO_TEST_CASE(Real) {
-	parser::Parser p("1.259");
+	Parser p("1.259");
 	BOOST_REQUIRE_EQUAL(p(&exp), 1);
 	CHECK_LITERAL(Token::Type::kReal);
 }
 
 BOOST_AUTO_TEST_CASE(Compound) {
-	parser::Parser p0("(hello world)");
+	Parser p0("(hello world)");
 	BOOST_REQUIRE_EQUAL(p0(&exp), 1);
 	CHECK_COMPOUND(2u);
 
-	parser::Parser p1("(hello (world %x1 2.3) 4)");
+	Parser p1("(hello (world %x1 2.3) 4)");
 	BOOST_REQUIRE_EQUAL(p1(&exp), 1);
 	CHECK_COMPOUND(3u);
 
-	parser::Parser p2("(hello (world %x1 2.3) 4 (more (and more longer)))");
+	Parser p2("(hello (world %x1 2.3) 4 (more (and more longer)))");
 	BOOST_REQUIRE_EQUAL(p2(&exp), 1);
 	CHECK_COMPOUND(4u);
 }
