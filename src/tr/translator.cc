@@ -276,7 +276,7 @@ void Translator::PrintFunctions()
 		int bie = bi + sh.nob();
 		while (bi < bie) {
 			os_ << std::endl;
-			os_ << "void block" << bi << "(int offset)" << std::endl;
+			os_ << "static void block" << bi << "(int offset)" << std::endl;
 			os_ << '{' << std::endl;
 			const bc::BlockHeader &bh(bhv_->at(bi));
 			ci = code_offset_[bi++];
@@ -374,7 +374,7 @@ void Translator::PrintReductionFunctions()
 		if (eu.which() == 1) {
 			os_ << std::endl;
 			const ReductionUnit &ru = boost::get<ReductionUnit>(eu);
-			os_ << "const struct Reduction r" << i++ << " = {" << std::endl;
+			os_ << "static const struct Reduction r" << i++ << " = {" << std::endl;
 			switch (ru.reduction()) {
 			case Reduction::kUnspecified:
 				assert(false);
