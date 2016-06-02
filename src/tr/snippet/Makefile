@@ -1,6 +1,6 @@
 .PHONY: all clean
 
-TARGET_FILES = header.h misc.h reduction.h
+TARGET_FILES = function.h header.h misc.h reduction.h
 
 all: $(TARGET_FILES)
 

@@ -197,7 +197,7 @@ void PrintCall2(const bc::Call2 &c2, std::ostream &os)
 		os << "tmp[" << a1 << "] - tmp[" << a2 << "];";
 		break;
 	case bc::Call2::kModulo:
-		os << "assert(0); /* TODO: kModulo */";
+		os << "modulo(tmp[" << a1 << "], tmp[" << a2 << "]);";
 		break;
 	case bc::Call2::kNeq:
 		os << "(tmp[" << a1 << "] != tmp[" << a2 << "]);"; // FIXME
@@ -253,6 +253,13 @@ void Translator::PrintHeader(int nol, size_t layer_size,
 
 void Translator::PrintFunctions()
 {
+	static const unsigned char kFunctionSnippet[] = {
+#include "tr/snippet/function.h"
+	};
+	os_ << std::endl;
+	for (auto c : kFunctionSnippet)
+		os_.put(c);
+
 	int si = 0; // section index
 	int bi = 0; // block index
 	int ci = 0; // code index
