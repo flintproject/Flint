@@ -5,3 +5,5 @@
 
 static double *data;
 static double *prev;
+
+static const int steps_per_output = 1;
