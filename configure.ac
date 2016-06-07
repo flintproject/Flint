@@ -18,12 +18,12 @@ AC_LANG([C++])
 AC_PROG_CC
 : ${WARNINGCFLAGS=""}
 AS_IF([test "$GCC" = yes],
-      [WARNINGCFLAGS="-Wall -Wextra -Wcast-align -Wpointer-arith -Wmissing-prototypes -Wstrict-prototypes -Wnested-externs -Wwrite-strings"])
+      [WARNINGCFLAGS="-Wall -Wextra -Wcast-align -Wcast-qual -Wpointer-arith -Wmissing-prototypes -Wstrict-prototypes -Wnested-externs -Wwrite-strings"])
 AC_SUBST([WARNINGCFLAGS])
 AC_PROG_CXX
 : ${WARNINGCXXFLAGS=""}
 AS_IF([test "$GXX" = yes],
-      [WARNINGCXXFLAGS="-Wall -Wextra -Wcast-align -Wpointer-arith -Wmissing-declarations"])
+      [WARNINGCXXFLAGS="-Wall -Wextra -Wcast-align -Wcast-qual -Wpointer-arith -Wmissing-declarations"])
 AC_SUBST([WARNINGCXXFLAGS])
 
 LT_INIT([win32-dll disable-static pic-only])
