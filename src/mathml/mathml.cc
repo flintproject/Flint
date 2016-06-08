@@ -14,14 +14,12 @@ const char *kScalarConstantElement[] = {
 	"pi"
 };
 
-const int kNumScalarConstantElement = static_cast<int>(sizeof(kScalarConstantElement)/sizeof(kScalarConstantElement[0]));
-
 }
 
 bool IsScalarConstantElement(const std::string &name)
 {
-	for (int i=0;i<kNumScalarConstantElement;i++) {
-		if (std::strcmp(name.c_str(), kScalarConstantElement[i]) == 0)
+	for (const char *e : kScalarConstantElement) {
+		if (std::strcmp(name.c_str(), e) == 0)
 			return true;
 	}
 	return false;
