@@ -34,6 +34,18 @@ BOOST_AUTO_TEST_CASE(fhn) {
 	PopWorkingDirectory();
 }
 
+BOOST_AUTO_TEST_CASE(x_delta_time_without_pq) {
+	PushWorkingDirectory("x-delta-time-without-pq");
+	std::unique_ptr<cli::RunOption> option(GenerateOption(TEST_MODELS("x-delta-time-without-pq.phml"),
+														  "x-delta-time-without-pq.out"));
+	test::StderrCapture sc;
+	BOOST_CHECK(!run::Run(*option));
+	BOOST_CHECK_EQUAL(sc.Get(),
+					  "failed to find variable: y\n"
+					  " in 669641d8-3027-11e5-ac85-7b2ae3e84a6c\n");
+	PopWorkingDirectory();
+}
+
 BOOST_AUTO_TEST_CASE(x_delta_time_with_too_small_max_delay) {
 	PushWorkingDirectory("x-delta-time-with-too-small-max-delay");
 	std::unique_ptr<cli::RunOption> option(GenerateOption(TEST_MODELS("x-delta-time-with-too-small-max-delay.phml"),
