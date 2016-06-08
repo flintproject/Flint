@@ -77,7 +77,7 @@ public class Job {
     }
 
     public File getIsdFile() {
-        return new File(mWorkingDir, "isd");
+        return new File(mWorkingDir, "out.isd");
     }
 
     public boolean isCancelled() {

@@ -44,7 +44,7 @@ JobRunner::JobRunner(TaskRunner *tr, int id)
 	sprintf(generated_db_.get(), "%s/generated.db", dir_.get());
 	sprintf(generated_init_.get(), "%s/generated-init", dir_.get());
 	sprintf(stored_.get(), "%s/stored", dir_.get());
-	sprintf(isd_.get(), "%s/isd", dir_.get());
+	sprintf(isd_.get(), "%s/out.isd", dir_.get());
 }
 
 bool JobRunner::Run()
