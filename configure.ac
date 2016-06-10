@@ -61,6 +61,13 @@ BOOST_TEST
 # see <http://www.boost.org/doc/libs/1_61_0/doc/html/interprocess.html>.
 AC_SEARCH_LIBS([shm_open],[rt])
 
+AC_ARG_ENABLE(release,
+        [AS_HELP_STRING([--enable-release],
+                [Enable the release (production) mode. Default: no])],
+        [],
+        [enable_release=no])
+AS_IF([test "x$enable_release" != xno],[AC_DEFINE([NDEBUG],[1],[Defined as 1 if the release mode is enabled])])
+
 AC_ARG_ENABLE(tcp,
         [AS_HELP_STRING([--enable-tcp],
                 [Enable TCP support. Default: yes])],
