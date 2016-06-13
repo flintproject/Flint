@@ -39,10 +39,8 @@ using std::cerr;
 using std::endl;
 using std::fclose;
 using std::fopen;
-using std::fputc;
 using std::fread;
 using std::fwrite;
-using std::string;
 
 namespace flint {
 namespace job {

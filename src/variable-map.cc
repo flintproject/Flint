@@ -6,9 +6,6 @@
 
 #include <cassert>
 
-using std::cerr;
-using std::endl;
-
 namespace flint {
 
 namespace {
