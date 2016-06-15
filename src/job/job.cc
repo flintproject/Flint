@@ -156,6 +156,16 @@ bool Job(const char *task_dir,
 	}
 	option.output_fp = ofp;
 
+	char stats_file[kLong];
+	std::sprintf(stats_file, "%s/stats", job_dir);
+	FILE *sfp = std::fopen(stats_file, "w");
+	if (!sfp) {
+		std::fclose(ofp);
+		std::perror(stats_file);
+		return false;
+	}
+	option.stats_fp = sfp;
+
 	char layout_file[kShort];
 	sprintf(layout_file, "%s/layout", task_dir);
 	option.layout_file = layout_file;
@@ -168,6 +178,7 @@ bool Job(const char *task_dir,
 		sprintf(bc_file, "%s/bc", task_dir);
 		r = job::Evolve(db, bc_file, option);
 	}
+	std::fclose(sfp);
 	fclose(ofp);
 	return r;
 }

@@ -7,6 +7,8 @@
 
 #include <algorithm>
 #include <cassert>
+#include <chrono>
+#include <cinttypes>
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
@@ -342,6 +344,7 @@ bool Evolve(sqlite3 *db,
 	size_t granularity = option.granularity;
 	double output_start_time = option.output_start_time;
 	FILE *output_fp = option.output_fp;
+	FILE *stats_fp = option.stats_fp;
 
 	bool with_filter = option.filter_file != nullptr;
 	bool with_pre = option.pre_file != nullptr;
@@ -527,6 +530,8 @@ bool Evolve(sqlite3 *db,
 	size_t g = (output_start_time == 0) ? 0 : granularity-1;
 
 	bool result = true;
+	int num_steps = 0;
+	auto rt_start = std::chrono::steady_clock::now();
 	// execute bytecode
 	do {
 		// push into history
@@ -595,7 +600,18 @@ bool Evolve(sqlite3 *db,
 		executor->set_data(data.get());
 		if (with_post) postexecutor->set_prev(data.get());
 		data[kIndexTime] = last_time;
+		++num_steps;
 	} while (data[kIndexTime] < data[kIndexEnd]);
+
+	if (stats_fp) {
+		auto rt_end = std::chrono::steady_clock::now();
+		auto duration = std::chrono::duration_cast<std::chrono::microseconds>(rt_end - rt_start).count();
+		std::fprintf(stats_fp, "number of steps: %d\n", num_steps);
+		std::fprintf(stats_fp, "duration (microseconds): %" PRId64 "\n", duration);
+		if (num_steps > 0)
+			std::fprintf(stats_fp, "mean (microseconds): %" PRId64 "\n", duration/num_steps);
+	}
+
 	fflush(output_fp);
 
 	if (option.output_data_file != nullptr) {

@@ -45,6 +45,7 @@ struct Option {
 	const char *output_data_file;
 	const char *output_history_file;
 	FILE *output_fp;
+	FILE *stats_fp;
 	void *progress_address;
 };
 
