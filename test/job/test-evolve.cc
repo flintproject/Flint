@@ -7,6 +7,7 @@
 
 #define BOOST_FILESYSTEM_NO_DEPRECATED
 #include <boost/filesystem.hpp>
+#include "bc/index.h"
 #include "compiler/bcc.h"
 #include "database.h"
 #include "db/helper.h"
@@ -23,7 +24,7 @@ namespace {
 
 void CheckOutput(double expected)
 {
-	static const int kBufferSize = 56;
+	static const int kBufferSize = sizeof(double)*(kOffsetBase+3);
 
 	FILE *fp = std::fopen("output", "rb");
 	BOOST_REQUIRE(fp);
@@ -32,7 +33,7 @@ void CheckOutput(double expected)
 	fclose(fp);
 	BOOST_REQUIRE_EQUAL(s, 1u);
 	double x;
-	memcpy(&x, &buf[48], sizeof(x));
+	std::memcpy(&x, &buf[sizeof(double)*(kOffsetBase+2)], sizeof(x));
 	BOOST_CHECK_EQUAL(x, expected);
 }
 
