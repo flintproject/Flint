@@ -118,9 +118,9 @@ var/$(call flint_basename,$(1)): var/$(2)
 	cp -pR $$< $$@
 endef
 
-.PHONY: all mostlyclean clean dist distclean maintainer-clean
+.PHONY: all mostlyclean clean dist distclean maintainer-clean download
 
-all: $(RPM_FILES)
+all: download $(RPM_FILES)
 
 mostlyclean:
 	-rm flint.spec var/flint-$(VERSION).tar.gz
@@ -137,6 +137,8 @@ maintainer-clean: distclean
 	-sudo rpm -e flint-gui
 	-sudo rpm -e flint
 	-sudo rpm -e $(DEPNAMES)
+
+download: $(foreach lib,$(BOOST_UNDERSCORE).tar.bz2 clibsedml-$(CLIBSEDML_COMMIT).tar.gz libSBML-$(LIBSBML_VERSION)-core-src.zip libzip-$(LIBZIP_VERSION).tar.gz protobuf-$(PROTOBUF_VERSION).tar.gz SBML_odeSolver-$(SOSLIB_COMMIT).tar.gz sundials-$(SUNDIALS_VERSION).tar.gz,src/$(lib))
 
 Flint_$(DIST).$(ARCH).zip: $(DIST_FILES)
 	zip -r $@ Flint_$(DIST).$(ARCH)

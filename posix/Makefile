@@ -5,14 +5,16 @@ PREFIX ?= $(abspath opt)
 
 PKG_CONFIG_PATH = $(PREFIX)/clibsedml-$(CLIBSEDML_COMMIT)/lib/pkgconfig:$(PREFIX)/libsbml-$(LIBSBML_VERSION)/lib/pkgconfig:$(PREFIX)/libxml2-$(LIBXML2_VERSION)/lib/pkgconfig:$(PREFIX)/libzip-$(LIBZIP_VERSION)/lib/pkgconfig:$(PREFIX)/protobuf-$(PROTOBUF_VERSION)/lib/pkgconfig:$(PREFIX)/SBML_odeSolver-$(SOSLIB_COMMIT)/lib/pkgconfig
 
-.PHONY: all check check-sequential-version mostlyclean clean distclean install
+.PHONY: all check check-sequential-version download mostlyclean clean distclean install
 
-all: $(foreach lib,$(EXTERNAL_LIBRARIES),src/$(lib)) tmp/sequential-version.installed
+all: download tmp/sequential-version.installed
 
 check: check-sequential-version
 
 check-sequential-version: tmp/sequential-version.installed
 	$(MAKE) -C var/sequential-version check
+
+download: $(foreach lib,$(EXTERNAL_LIBRARIES),src/$(lib))
 
 mostlyclean:
 	-rm -rf tmp/sequential-version.installed opt/sequential-version var/sequential-version

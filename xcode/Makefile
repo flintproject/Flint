@@ -111,9 +111,9 @@ $(call flint_macos_program_name,$(1)): opt/bin/$(1) tmp/bundled
 	for name in $(FLINT_DYLIBS); do install_name_tool -change $(CURDIR)/opt/lib/$$$$name.dylib @executable_path/../Frameworks/$$$$name.dylib $$@; done
 endef
 
-.PHONY: all check mostlyclean clean distclean
+.PHONY: all check mostlyclean clean distclean download
 
-all: $(foreach lib,$(BOOST_UNDERSCORE) clibsedml-$(CLIBSEDML_COMMIT) libsbml-$(LIBSBML_VERSION) libxml2-$(LIBXML2_VERSION) libzip-$(LIBZIP_VERSION) protobuf-$(PROTOBUF_VERSION) SBML_odeSolver-$(SOSLIB_COMMIT) sundials-$(SUNDIALS_VERSION),tmp/$(lib).installed) $(DMGS)
+all: download $(foreach lib,$(BOOST_UNDERSCORE) clibsedml-$(CLIBSEDML_COMMIT) libsbml-$(LIBSBML_VERSION) libxml2-$(LIBXML2_VERSION) libzip-$(LIBZIP_VERSION) protobuf-$(PROTOBUF_VERSION) SBML_odeSolver-$(SOSLIB_COMMIT) sundials-$(SUNDIALS_VERSION),tmp/$(lib).installed) $(DMGS)
 
 check:
 	env DYLD_LIBRARY_PATH=$(PREFIX)/lib $(MAKE) -C build check
@@ -127,6 +127,8 @@ clean: mostlyclean
 
 distclean: clean
 	-rm -f $(foreach lib,$(EXTERNAL_LIBRARIES),src/$(lib))
+
+download: $(foreach lib,$(EXTERNAL_LIBRARIES),src/$(lib))
 
 var:
 	install -d $@

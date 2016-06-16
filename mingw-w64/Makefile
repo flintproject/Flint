@@ -32,9 +32,9 @@ $(call flint_exe_name,$(1)): opt/bin/$(1).exe | flint
 	strip $$@
 endef
 
-.PHONY: all mostlyclean clean distclean
+.PHONY: all mostlyclean clean distclean download
 
-all: flint.zip
+all: download flint.zip
 
 mostlyclean:
 	-rm -rf flint.zip flint var/flint ../configure
@@ -45,6 +45,8 @@ clean: mostlyclean
 
 distclean: clean
 	-rm -f src/*.zip src/*.tar.bz2 src/*.tar.gz
+
+download: $(foreach lib,$(EXTERNAL_LIBRARIES),src/$(lib))
 
 build var:
 	install -d $@
