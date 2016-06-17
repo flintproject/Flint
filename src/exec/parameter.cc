@@ -16,9 +16,6 @@
 
 using std::cerr;
 using std::endl;
-using std::fclose;
-using std::fopen;
-using std::perror;
 using std::sprintf;
 
 namespace flint {

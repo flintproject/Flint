@@ -11,7 +11,6 @@
 using std::cerr;
 using std::endl;
 using std::exit;
-using std::printf;
 
 namespace flint {
 namespace db {

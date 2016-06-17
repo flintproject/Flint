@@ -15,7 +15,6 @@ using std::fprintf;
 using std::malloc;
 using std::memcpy;
 using std::perror;
-using std::printf;
 using std::realloc;
 using std::sprintf;
 using std::strcat;

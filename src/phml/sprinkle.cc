@@ -8,7 +8,6 @@
 #include <iostream>
 #include <map>
 #include <memory>
-#include <string>
 #include <vector>
 
 #include <boost/uuid/uuid_io.hpp>
@@ -23,8 +22,6 @@ using std::endl;
 using std::make_pair;
 using std::map;
 using std::pair;
-using std::printf;
-using std::string;
 using std::vector;
 
 namespace flint {

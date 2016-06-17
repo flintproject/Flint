@@ -13,7 +13,6 @@
 
 #include <boost/uuid/uuid_io.hpp>
 
-using std::atoi;
 using std::cerr;
 using std::endl;
 using std::memcpy;

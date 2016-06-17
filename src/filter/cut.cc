@@ -11,7 +11,6 @@
 #include <iostream>
 #include <map>
 #include <memory>
-#include <string>
 
 #include "lo.pb.h"
 
@@ -21,7 +20,6 @@ using std::cerr;
 using std::endl;
 using std::make_pair;
 using std::map;
-using std::string;
 
 namespace flint {
 namespace filter {

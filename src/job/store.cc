@@ -34,8 +34,6 @@ using std::fseek;
 using std::make_pair;
 using std::memcpy;
 using std::perror;
-using std::printf;
-using std::sscanf;
 using std::string;
 using std::strlen;
 

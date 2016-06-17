@@ -25,7 +25,6 @@ using std::endl;
 using std::make_pair;
 using std::map;
 using std::string;
-using std::strlen;
 using std::strcmp;
 
 namespace flint {

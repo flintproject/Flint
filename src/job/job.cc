@@ -32,7 +32,6 @@ using std::endl;
 using std::fclose;
 using std::fopen;
 using std::perror;
-using std::strcmp;
 
 namespace flint {
 namespace job {
