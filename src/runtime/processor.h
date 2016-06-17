@@ -10,8 +10,8 @@
 #include <limits>
 #include <memory>
 #include <random>
-#include <stack>
 #include <string>
+#include <vector>
 
 #include <boost/math/special_functions/factorials.hpp>
 #include <boost/uuid/uuid.hpp>
@@ -323,7 +323,7 @@ public:
 				int ci = code_offset_[bi];
 				int cib = ci;
 				int cie = cib + bh.noc();
-				std::stack<std::unique_ptr<double[]> > stack;
+				heap_.clear();
 				while (ci < cie) {
 					const bc::Code &code(cv_->at(ci));
 					switch (code.type()) {
@@ -427,8 +427,8 @@ public:
 					case bc::Code::kAlloc:
 						{
 							const bc::Alloc &a(code.alloc());
-							stack.emplace(new double[a.k()]);
-							ir_[a.i0()] = reinterpret_cast<intptr_t>(stack.top().get());
+							heap_.emplace_back(new double[a.k()]);
+							ir_[a.i0()] = reinterpret_cast<intptr_t>(heap_.back().get());
 							ci++;
 						}
 						break;
@@ -449,8 +449,8 @@ public:
 					case bc::Code::kTranspose:
 						{
 							const bc::Transpose &transpose(code.transpose());
-							stack.emplace(new double[transpose.kc() * transpose.kr()]);
-							double *d0 = stack.top().get();
+							heap_.emplace_back(new double[transpose.kc() * transpose.kr()]);
+							double *d0 = heap_.back().get();
 							ir_[transpose.i0()] = reinterpret_cast<intptr_t>(d0);
 							const double *d1 = reinterpret_cast<const double *>(ir_[transpose.i1()]);
 							runtime::Transpose(d0, d1, transpose.kr(), transpose.kc());
@@ -460,8 +460,8 @@ public:
 					case bc::Code::kOuterproduct:
 						{
 							const bc::Outerproduct &outerproduct(code.outerproduct());
-							stack.emplace(new double[outerproduct.k1() * outerproduct.k2()]);
-							double *d0 = stack.top().get();
+							heap_.emplace_back(new double[outerproduct.k1() * outerproduct.k2()]);
+							double *d0 = heap_.back().get();
 							ir_[outerproduct.i0()] = reinterpret_cast<intptr_t>(d0);
 							const double *d1 = reinterpret_cast<const double *>(ir_[outerproduct.i1()]);
 							const double *d2 = reinterpret_cast<const double *>(ir_[outerproduct.i2()]);
@@ -481,8 +481,8 @@ public:
 					case bc::Code::kVectorproduct:
 						{
 							const bc::Vectorproduct &vectorproduct(code.vectorproduct());
-							stack.emplace(new double[3]);
-							double *d0 = stack.top().get();
+							heap_.emplace_back(new double[3]);
+							double *d0 = heap_.back().get();
 							ir_[vectorproduct.i0()] = reinterpret_cast<intptr_t>(d0);
 							const double *d1 = reinterpret_cast<const double *>(ir_[vectorproduct.i1()]);
 							const double *d2 = reinterpret_cast<const double *>(ir_[vectorproduct.i2()]);
@@ -519,8 +519,8 @@ public:
 					case bc::Code::kSelrow:
 						{
 							const bc::Selrow &selrow(code.selrow());
-							stack.emplace(new double[selrow.kr()]);
-							double *d0 = stack.top().get();
+							heap_.emplace_back(new double[selrow.kr()]);
+							double *d0 = heap_.back().get();
 							const double *d1 = reinterpret_cast<const double *>(ir_[selrow.i1()]);
 							runtime::Selrow(d0, selrow.kr(), selrow.kc(), d1, static_cast<int>(tmp_[selrow.f2()]));
 							ci++;
@@ -529,8 +529,8 @@ public:
 					case bc::Code::kMult:
 						{
 							const bc::Mult &mult(code.mult());
-							stack.emplace(new double[mult.k()]);
-							double *d0 = stack.top().get();
+							heap_.emplace_back(new double[mult.k()]);
+							double *d0 = heap_.back().get();
 							ir_[mult.i0()] = reinterpret_cast<intptr_t>(d0);
 							const double *d2 = reinterpret_cast<const double *>(ir_[mult.i2()]);
 							runtime::Mult(d0, mult.k(), tmp_[mult.f1()], d2);
@@ -540,8 +540,8 @@ public:
 					case bc::Code::kMmul:
 						{
 							const bc::Mmul &mmul(code.mmul());
-							stack.emplace(new double[mmul.kc() * mmul.kr()]);
-							double *d0 = stack.top().get();
+							heap_.emplace_back(new double[mmul.kc() * mmul.kr()]);
+							double *d0 = heap_.back().get();
 							ir_[mmul.i0()] = reinterpret_cast<intptr_t>(d0);
 							const double *d1 = reinterpret_cast<const double *>(ir_[mmul.i1()]);
 							const double *d2 = reinterpret_cast<const double *>(ir_[mmul.i2()]);
@@ -585,7 +585,7 @@ public:
 					ci = code_offset_[bi++];
 					int cib = ci;
 					int cie = cib + bh.noc();
-					std::stack<std::unique_ptr<double[]> > stack;
+					heap_.clear();
 					while (ci < cie) {
 						const bc::Code &code(cv_->at(ci));
 						switch (code.type()) {
@@ -678,8 +678,8 @@ public:
 						case bc::Code::kAlloc:
 							{
 								const bc::Alloc &a(code.alloc());
-								stack.emplace(new double[a.k()]);
-								ir_[a.i0()] = reinterpret_cast<intptr_t>(stack.top().get());
+								heap_.emplace_back(new double[a.k()]);
+								ir_[a.i0()] = reinterpret_cast<intptr_t>(heap_.back().get());
 								ci++;
 							}
 							break;
@@ -700,8 +700,8 @@ public:
 						case bc::Code::kTranspose:
 							{
 								const bc::Transpose &transpose(code.transpose());
-								stack.emplace(new double[transpose.kc() * transpose.kr()]);
-								double *d0 = stack.top().get();
+								heap_.emplace_back(new double[transpose.kc() * transpose.kr()]);
+								double *d0 = heap_.back().get();
 								ir_[transpose.i0()] = reinterpret_cast<intptr_t>(d0);
 								const double *d1 = reinterpret_cast<const double *>(ir_[transpose.i1()]);
 								runtime::Transpose(d0, d1, transpose.kr(), transpose.kc());
@@ -711,8 +711,8 @@ public:
 						case bc::Code::kOuterproduct:
 							{
 								const bc::Outerproduct &outerproduct(code.outerproduct());
-								stack.emplace(new double[outerproduct.k1() * outerproduct.k2()]);
-								double *d0 = stack.top().get();
+								heap_.emplace_back(new double[outerproduct.k1() * outerproduct.k2()]);
+								double *d0 = heap_.back().get();
 								ir_[outerproduct.i0()] = reinterpret_cast<intptr_t>(d0);
 								const double *d1 = reinterpret_cast<const double *>(ir_[outerproduct.i1()]);
 								const double *d2 = reinterpret_cast<const double *>(ir_[outerproduct.i2()]);
@@ -732,8 +732,8 @@ public:
 						case bc::Code::kVectorproduct:
 							{
 								const bc::Vectorproduct &vectorproduct(code.vectorproduct());
-								stack.emplace(new double[3]);
-								double *d0 = stack.top().get();
+								heap_.emplace_back(new double[3]);
+								double *d0 = heap_.back().get();
 								ir_[vectorproduct.i0()] = reinterpret_cast<intptr_t>(d0);
 								const double *d1 = reinterpret_cast<const double *>(ir_[vectorproduct.i1()]);
 								const double *d2 = reinterpret_cast<const double *>(ir_[vectorproduct.i2()]);
@@ -770,8 +770,8 @@ public:
 						case bc::Code::kSelrow:
 							{
 								const bc::Selrow &selrow(code.selrow());
-								stack.emplace(new double[selrow.kr()]);
-								double *d0 = stack.top().get();
+								heap_.emplace_back(new double[selrow.kr()]);
+								double *d0 = heap_.back().get();
 								const double *d1 = reinterpret_cast<const double *>(ir_[selrow.i1()]);
 								runtime::Selrow(d0, selrow.kr(), selrow.kc(), d1, static_cast<int>(tmp_[selrow.f2()]));
 								ci++;
@@ -780,8 +780,8 @@ public:
 						case bc::Code::kMult:
 							{
 								const bc::Mult &mult(code.mult());
-								stack.emplace(new double[mult.k()]);
-								double *d0 = stack.top().get();
+								heap_.emplace_back(new double[mult.k()]);
+								double *d0 = heap_.back().get();
 								ir_[mult.i0()] = reinterpret_cast<intptr_t>(d0);
 								const double *d2 = reinterpret_cast<const double *>(ir_[mult.i2()]);
 								runtime::Mult(d0, mult.k(), tmp_[mult.f1()], d2);
@@ -791,8 +791,8 @@ public:
 						case bc::Code::kMmul:
 							{
 								const bc::Mmul &mmul(code.mmul());
-								stack.emplace(new double[mmul.kc() * mmul.kr()]);
-								double *d0 = stack.top().get();
+								heap_.emplace_back(new double[mmul.kc() * mmul.kr()]);
+								double *d0 = heap_.back().get();
 								ir_[mmul.i0()] = reinterpret_cast<intptr_t>(d0);
 								const double *d1 = reinterpret_cast<const double *>(ir_[mmul.i1()]);
 								const double *d2 = reinterpret_cast<const double *>(ir_[mmul.i2()]);
@@ -826,6 +826,7 @@ private:
 	double *tmp_;
 	TimeseriesVector *tv_;
 	std::mt19937 *rng_;
+	std::vector<std::unique_ptr<double[]> > heap_;
 };
 
 }
