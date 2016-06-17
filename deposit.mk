@@ -44,7 +44,7 @@ ifeq ($(OS),Darwin)
 
 define external_library_source
 src/$(2): | src
-	curl -o $$@ $(1)/$(2)
+	curl -L -o $$@ $(1)/$(2)
 	md5 $$@ | grep $(3)
 endef
 
@@ -52,7 +52,7 @@ else ifeq ($(OS),FreeBSD)
 
 define external_library_source
 src/$(2): | src
-	curl -o $$@ $(1)/$(2)
+	curl -L -o $$@ $(1)/$(2)
 	md5 $$@ | grep $(3)
 endef
 
