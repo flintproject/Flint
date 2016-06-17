@@ -4,7 +4,7 @@ CLIBSEDML_COMMIT = d8596b56
 SOSLIB_COMMIT = 87bfbc8d
 
 BOOST_VERSION = 1.61.0
-LIBSBML_VERSION = 5.11.4
+LIBSBML_VERSION = 5.13.0
 LIBXML2_VERSION = 2.7.8
 LIBZIP_VERSION = 1.1.1
 PROTOBUF_VERSION = 2.6.1
@@ -68,7 +68,7 @@ endif
 
 $(eval $(call external_library_source,http://downloads.sourceforge.net/project/boost/boost/$(BOOST_VERSION),$(BOOST_UNDERSCORE).tar.bz2,6095876341956f65f9d35939ccea1a9f))
 $(eval $(call external_library_source,$(DEPOSIT_URL),clibsedml-$(CLIBSEDML_COMMIT).tar.gz,d780b4f02d5272e3c0b2d4610e6d6c3f))
-$(eval $(call external_library_source,http://downloads.sourceforge.net/project/sbml/libsbml/$(LIBSBML_VERSION)/stable,libSBML-$(LIBSBML_VERSION)-core-src.zip,d854f58ba65c685692bff6031b78db27))
+$(eval $(call external_library_source,http://downloads.sourceforge.net/project/sbml/libsbml/$(LIBSBML_VERSION)/stable,libSBML-$(LIBSBML_VERSION)-core-src.zip,6581723e894eee8058b95fa80df7aad4))
 $(eval $(call external_library_source,http://xmlsoft.org/sources,libxml2-sources-$(LIBXML2_VERSION).tar.gz,a78857dd73a8784776d7f9625ccf7a39))
 $(eval $(call external_library_source,http://www.nih.at/libzip,libzip-$(LIBZIP_VERSION).tar.gz,133aefc4c7e45a1b7d168a617e289ef6))
 $(eval $(call external_library_source,https://github.com/google/protobuf/releases/download/v$(PROTOBUF_VERSION),protobuf-$(PROTOBUF_VERSION).tar.gz,f3916ce13b7fcb3072a1fa8cf02b2423))
