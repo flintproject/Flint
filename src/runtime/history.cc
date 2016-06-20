@@ -14,7 +14,7 @@
 namespace flint {
 
 History::History()
-	: capacity_()
+	: capacity_(0)
 	, m_()
 {}
 
@@ -33,6 +33,8 @@ bool History::Dump(FILE *fp) const
 
 void History::Insert(double t, double v)
 {
+	if (capacity_ <= 0)
+		return;
 	HistoryMap::iterator it = m_.begin();
 	while (it != m_.end()) {
 		if (it->first + capacity_ >= t) {
