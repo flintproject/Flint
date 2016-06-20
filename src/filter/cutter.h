@@ -36,7 +36,7 @@ public:
 	}
 
 	void ReadColumn(std::unique_ptr<lo::Column> &&column) {
-		columns_.insert(std::make_pair(column->position(), column->col() * column->row()));
+		columns_.emplace(column->position(), column->col() * column->row());
 	}
 
 	Writer *CreateWriter() const {

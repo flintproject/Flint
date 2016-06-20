@@ -47,10 +47,10 @@ int Layout::Calculate(DataOffsetMap *dom, SectorOffsetMap *som)
 		while (di < die) {
 			const auto &dp = dv_.at(di++);
 			locater->SetPosition(dp->name(), sector_size);
-			if (dom) (*dom)[track_id].insert(std::make_pair(dp->id(), sector_size));
+			if (dom) (*dom)[track_id].emplace(dp->id(), sector_size);
 			sector_size += dp->col() * dp->row();
 		}
-		lm_.insert(std::make_pair(track_id, std::move(locater)));
+		lm_.emplace(track_id, std::move(locater));
 
 		std::unique_ptr<Mounter> mounter(new Mounter(nos));
 		for (int i=0;i<nos;i++) {
@@ -58,11 +58,11 @@ int Layout::Calculate(DataOffsetMap *dom, SectorOffsetMap *som)
 			const auto &sp = sv_.at(si++);
 			if (som) {
 				std::memcpy(&sector_id, sp->id().data(), sector_id.size());
-				som->insert(std::make_pair(sector_id, offset));
+				som->emplace(sector_id, offset);
 			}
 			offset += sector_size;
 		}
-		mm_.insert(std::make_pair(track_id, std::move(mounter)));
+		mm_.emplace(track_id, std::move(mounter));
 		assert(si == sie);
 	}
 	return offset;
@@ -204,7 +204,7 @@ long Layout::SelectStates(std::vector<std::pair<int, int> > *states) const
 				switch (dp->type()) {
 				case lo::X:
 					if (states)
-						states->push_back(std::make_pair(offset, data_size));
+						states->emplace_back(offset, data_size);
 					total += data_size;
 					break;
 				default:

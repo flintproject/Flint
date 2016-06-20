@@ -162,7 +162,7 @@ public:
 				assert(sqlite3_column_bytes(query_stmt_, 1) == boost::uuids::uuid::static_size());
 				boost::uuids::uuid parent;
 				memcpy(&parent, capsulated_by, parent.size());
-				children_.insert(std::make_pair(parent, child));
+				children_.emplace(parent, child);
 			} else {
 				roots_.push_back(child);
 			}

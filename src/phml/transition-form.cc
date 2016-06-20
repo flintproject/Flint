@@ -119,12 +119,12 @@ bool TransitionForm::operator()(sqlite3 *db)
 		const unsigned char *math = sqlite3_column_text(stmt_select_, 4);
 		const unsigned char *cmath = sqlite3_column_text(stmt_select_, 5);
 		const unsigned char *pq_name = sqlite3_column_text(stmt_select_, 6);
-		nm.insert(std::make_pair(pq_rowid, std::string((const char *)pq_name)));
+		nm.emplace(pq_rowid, std::string((const char *)pq_name));
 		if (cmath)
-			cm.insert(std::make_pair(pq_rowid, std::string(reinterpret_cast<const char *>(cmath))));
-		pam[pq_rowid].insert(std::make_pair(tail_node_id, Arc(head_node_id,
-															  (const char *)type,
-															  (const char *)math)));
+			cm.emplace(pq_rowid, std::string(reinterpret_cast<const char *>(cmath)));
+		pam[pq_rowid].emplace(tail_node_id, Arc(head_node_id,
+												(const char *)type,
+												(const char *)math));
 	}
 	if (e != SQLITE_DONE) {
 		cerr << "failed to step statement: " << kQuerySelect << ": " << e << endl;

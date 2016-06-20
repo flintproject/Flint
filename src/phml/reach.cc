@@ -23,7 +23,6 @@
 
 using std::cerr;
 using std::endl;
-using std::make_pair;
 using std::multimap;
 using std::set;
 using std::string;
@@ -128,7 +127,7 @@ public:
 	bool Handle(boost::uuids::uuid uuid, int port_id, int pq_id,
 				char pq_type, Reduction reduction)
 	{
-		ports_->emplace(std::make_pair(uuid, Port(uuid, port_id, pq_id, pq_type, reduction)));
+		ports_->emplace(uuid, Port(uuid, port_id, pq_id, pq_type, reduction));
 		return true;
 	}
 
@@ -156,7 +155,7 @@ public:
 	bool Handle(boost::uuids::uuid uuid, int port_id, int pq_id, char pq_type) {
 		Node node(uuid, port_id);
 		// reduction makes little sense for output port, so just call it unspecified
-		ports_->emplace(std::make_pair(node, Port(uuid, port_id, pq_id, pq_type, Reduction::kUnspecified)));
+		ports_->emplace(node, Port(uuid, port_id, pq_id, pq_type, Reduction::kUnspecified));
 		return true;
 	}
 
@@ -200,8 +199,8 @@ public:
 			cerr << "duplicate entry of scope: " << uuid << endl;
 			return false;
 		}
-		mmap_->insert(make_pair(space_id, p.first));
-		umap_->insert(make_pair(uuid, p.first));
+		mmap_->emplace(space_id, p.first);
+		umap_->emplace(uuid, p.first);
 		return true;
 	}
 
@@ -228,8 +227,8 @@ public:
 	bool Handle(boost::uuids::uuid tail_uuid, int tail_port_id,
 				boost::uuids::uuid head_uuid, int head_port_id) {
 		// reverse direction: from head to tail
-		spans_->insert(make_pair(Node(head_uuid, head_port_id),
-								 Node(tail_uuid, tail_port_id)));
+		spans_->emplace(Node(head_uuid, head_port_id),
+						Node(tail_uuid, tail_port_id));
 		return true;
 	}
 

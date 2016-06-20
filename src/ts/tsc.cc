@@ -37,7 +37,6 @@
 
 using std::cerr;
 using std::endl;
-using std::make_pair;
 using std::strcmp;
 using std::string;
 
@@ -61,7 +60,7 @@ public:
 
 	bool Handle(const boost::uuids::uuid &uuid, std::unique_ptr<Variable> &&var) {
 		if (var->type() != 't') return true; // skip other types
-		(*map_)[uuid].insert(std::make_pair(var->id(), var->name()));
+		(*map_)[uuid].emplace(var->id(), var->name());
 		return true;
 	}
 
@@ -101,7 +100,7 @@ public:
 			boost::filesystem::path a_path = boost::filesystem::absolute(isd_path);
 			if (!ExportIsdFromCsv(ref_path, a_path)) return false;
 			PathSet::iterator it = ps_->insert(a_path).first;
-			(*tm_)[uuid].insert(make_pair(ts_id, it));
+			(*tm_)[uuid].emplace(ts_id, it);
 			return true;
 		}
 		if (strcmp(format, "isd") != 0) {
@@ -109,7 +108,7 @@ public:
 			return false;
 		}
 		PathSet::iterator it = ps_->insert(ref_path).first;
-		(*tm_)[uuid].insert(make_pair(ts_id, it));
+		(*tm_)[uuid].emplace(ts_id, it);
 		return true;
 	}
 
@@ -153,7 +152,7 @@ public:
 	explicit DescriptionHandler(ColumnMap *cm) : cm_(cm) {}
 
 	void GetDescription(std::uint32_t i, std::uint32_t bytes, const char *d) {
-		if (!cm_->insert(make_pair(string(d, bytes), i)).second) {
+		if (!cm_->emplace(string(d, bytes), i).second) {
 			cerr << "found duplicate name of columns: " << endl;
 		}
 	}
@@ -306,7 +305,7 @@ bool Tsc(sqlite3 *db)
 			IsdfLoader loader(p);
 			if (!loader.Load(cm.get()))
 				return false;
-			im->insert(std::make_pair(p, std::move(cm)));
+			im->emplace(p, std::move(cm));
 		}
 	}
 	{

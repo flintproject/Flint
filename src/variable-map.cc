@@ -32,7 +32,7 @@ void VariableMap::Add(const boost::uuids::uuid &u,
 					  std::unique_ptr<Variable> &&v)
 {
 	std::string name = v->name();
-	m_[u].insert(std::make_pair(name, std::move(v)));
+	m_[u].emplace(name, std::move(v));
 }
 
 bool VariableMap::Load(sqlite3 *db)

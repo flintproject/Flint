@@ -22,7 +22,6 @@
 
 using std::cerr;
 using std::endl;
-using std::make_pair;
 using std::map;
 using std::string;
 using std::strcmp;
@@ -207,7 +206,7 @@ public:
 
 	bool Handle(const boost::uuids::uuid &u, std::unique_ptr<Variable> &&var) {
 		if (uuid_ != u) return true; // skip this entry
-		pqm_->insert(std::make_pair(var->id(), var->name()));
+		pqm_->emplace(var->id(), var->name());
 		max_pq_id_ = std::max(var->id(), max_pq_id_);
 		return true;
 	}
@@ -248,7 +247,7 @@ public:
 				cerr << "failed to find physical-quantity: " << pq_id << endl;
 				return false;
 			}
-			writer_->bm().insert(make_pair("sbml:" + string(connector), it->second));
+			writer_->bm().emplace("sbml:" + string(connector), it->second);
 		} else {
 			cerr << "invalid bridge: " << uuid << ":" << pq_id << endl;
 			return false;

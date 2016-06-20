@@ -87,7 +87,7 @@ public:
 			unit->set_name(std::string((const char *)name));
 			if (!loader_.Load(rowid, unit.get()))
 				return false;
-			units->insert(std::make_pair(unit_id, std::move(unit)));
+			units->emplace(unit_id, std::move(unit));
 		}
 		if (e != SQLITE_DONE) {
 			cerr << "failed to step statement: " << e << endl;

@@ -30,7 +30,6 @@
 
 using std::cerr;
 using std::endl;
-using std::make_pair;
 using std::memcpy;
 using std::string;
 
@@ -52,7 +51,7 @@ public:
 	explicit ModuleHandler(ModuleMap *mm) : mm_(mm) {}
 
 	bool Handle(boost::uuids::uuid u, const char *name) {
-		mm_->insert(make_pair(u, name));
+		mm_->emplace(u, name);
 		return true;
 	}
 

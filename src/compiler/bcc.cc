@@ -1016,11 +1016,11 @@ bool Bcc(sqlite3 *db, std::ostream *os)
 	std::unique_ptr<NobVector> nv(new NobVector);
 	for (const auto &b : bv) {
 		if (nv->empty()) {
-			nv->push_back(std::make_pair(b.uuid, 1));
+			nv->emplace_back(b.uuid, 1);
 		} else if (nv->back().first == b.uuid) {
 			nv->back().second++;
 		} else {
-			nv->push_back(std::make_pair(b.uuid, 1));
+			nv->emplace_back(b.uuid, 1);
 		}
 	}
 	// write header

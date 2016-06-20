@@ -19,7 +19,7 @@ public:
 	Locater() {}
 
 	void SetPosition(const std::string &name, int location) {
-		m_.insert(std::make_pair(name, location));
+		m_.emplace(name, location);
 	}
 
 	bool Find(const std::string &name, int *so, int *lo = nullptr) const {

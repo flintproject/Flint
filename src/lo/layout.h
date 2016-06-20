@@ -139,13 +139,13 @@ public:
 						std::string m;
 						if (!system.FindMass(track_id, dp->name(), &m))
 							return false;
-						xm.insert(std::make_pair(dp->name(), m));
+						xm.emplace(dp->name(), m);
 					}
 					break;
 				default:
 					break;
 				}
-				am.insert(std::make_pair(dp->name(), pos));
+				am.emplace(dp->name(), pos);
 				pos += dp->col() * dp->row();
 			}
 			assert(di == die);

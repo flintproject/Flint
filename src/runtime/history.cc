@@ -43,7 +43,7 @@ void History::Insert(double t, double v)
 		++it;
 	}
 	m_.erase(m_.begin(), it);
-	m_.insert(std::make_pair(t, v));
+	m_.emplace(t, v);
 }
 
 char *History::Load(char *p)
@@ -60,7 +60,7 @@ char *History::Load(char *p)
 		p += sizeof(t);
 		std::memcpy(&v, p, sizeof(v));
 		p += sizeof(v);
-		if (!m_.insert(std::make_pair(t, v)).second) {
+		if (!m_.emplace(t, v).second) {
 			std::cerr << "duplicate time: "
 					  << t
 					  << ": "

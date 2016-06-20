@@ -19,7 +19,6 @@
 using std::cerr;
 using std::cout;
 using std::endl;
-using std::make_pair;
 using std::map;
 using std::pair;
 using std::vector;
@@ -38,7 +37,7 @@ public:
 	explicit TargetHandler(TargetMap *tm) : tm_(tm) {}
 
 	bool Handle(boost::uuids::uuid u0, boost::uuids::uuid u1, int pq_id, double value) {
-		(*tm_)[make_pair(u1, u0)].insert(make_pair(pq_id, value));
+		(*tm_)[std::make_pair(u1, u0)].emplace(pq_id, value);
 		return true;
 	}
 
@@ -62,7 +61,7 @@ public:
 			break;
 		case 2:
 			{
-				bool b = im_.insert(make_pair(u, std::move(instances_))).second;
+				bool b = im_.emplace(u, std::move(instances_)).second;
 				if (!b) {
 					cerr << "duplicate instance id: " << u << endl;
 					return false;
@@ -82,8 +81,8 @@ public:
 						return false;
 					}
 					for (size_t i=0;i<s;i++) {
-						bool b = jm_->insert(make_pair(make_pair(templates_[i], imit->first),
-													   (*imit->second)[i])).second;
+						bool b = jm_->emplace(std::make_pair(templates_[i], imit->first),
+											  (*imit->second)[i]).second;
 						if (!b) {
 							cerr << "duplicate template/instance: " << templates_[i]
 								 << "/" << imit->first

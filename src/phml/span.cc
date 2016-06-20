@@ -242,7 +242,7 @@ public:
 			instance_descendants_.push_back(journal_uuid);
 			{
 				boost::uuids::uuid instance_id(journal_uuid);
-				bool b = instance_map_.insert(std::make_pair(instance_id, std::move(instance_descendants_))).second;
+				bool b = instance_map_.emplace(instance_id, std::move(instance_descendants_)).second;
 				if (!b) {
 					cerr << "duplicate instance id: " << instance_id << endl;
 					return false;
@@ -375,8 +375,8 @@ private:
 		tail_map->clear();
 		head_map->clear();
 		for (auto it=edge_set_->cbegin();it!=edge_set_->cend();++it) {
-			tail_map->insert(std::make_pair(it->tail_uuid(), it));
-			head_map->insert(std::make_pair(it->head_uuid(), it));
+			tail_map->emplace(it->tail_uuid(), it);
+			head_map->emplace(it->head_uuid(), it);
 		}
 	}
 

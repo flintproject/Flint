@@ -24,7 +24,7 @@ void Compact(const std::map<int, int> &m, std::vector<std::pair<size_t, size_t> 
 				break;
 			s += it->second;
 		}
-		v->emplace_back(std::make_pair(size_t(p), size_t(s)));
+		v->emplace_back(size_t(p), size_t(s));
 	}
 }
 

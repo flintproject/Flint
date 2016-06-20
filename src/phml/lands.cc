@@ -71,7 +71,7 @@ public:
 
 	void AddTimeUnit(std::unique_ptr<ipc::TimeUnit> &&tu) {
 		int id = tu->id();
-		tum_->insert(std::make_pair(id, std::move(tu)));
+		tum_->emplace(id, std::move(tu));
 	}
 
 private:

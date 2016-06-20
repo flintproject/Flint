@@ -134,10 +134,10 @@ bool ExportIsdFromCsv(const boost::filesystem::path &input_path,
 		char *unit = nullptr;
 		if (!DecomposeColumn(columns[i], &unit)) return false;
 		if (!unit) continue;
-		units.insert(std::make_pair(i, unit));
+		units.emplace(i, unit);
 		size_t len = strlen(unit);
 		assert(len);
-		unit_len.insert(std::make_pair(i, static_cast<std::uint32_t>(len)));
+		unit_len.emplace(i, static_cast<std::uint32_t>(len));
 	}
 	assert(units.size() == unit_len.size());
 	bool no_units = (units.size() == 0);

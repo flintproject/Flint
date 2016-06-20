@@ -44,7 +44,7 @@ public:
 		if (i < skip_) {
 			leading_descs_.push_back(desc);
 		} else {
-			rest_descs_.insert(std::make_pair(desc, i));
+			rest_descs_.emplace(desc, i);
 		}
 	}
 

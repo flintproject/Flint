@@ -123,7 +123,7 @@ public:
 		size_t n = lines_.size();
 		std::unordered_map<string, size_t> nm;
 		for (size_t i=0;i<n;i++) {
-			auto p = nm.insert(std::make_pair(lines_[i]->name(), i));
+			auto p = nm.emplace(lines_[i]->name(), i);
 			if (!p.second) {
 				cerr << "more than one entries for " << p.first->first
 					 << " in " << uuid

@@ -41,7 +41,7 @@ namespace {
 class ComponentMap {
 public:
 	void Insert(const unsigned char *name, const boost::uuids::uuid &uuid) {
-		map_.insert(std::make_pair(std::string(reinterpret_cast<const char *>(name)), uuid));
+		map_.emplace(std::string(reinterpret_cast<const char *>(name)), uuid);
 	}
 
 	bool Find(const char *c, boost::uuids::uuid *u) const {

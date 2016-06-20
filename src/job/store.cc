@@ -31,7 +31,6 @@ using std::fclose;
 using std::fopen;
 using std::fread;
 using std::fseek;
-using std::make_pair;
 using std::memcpy;
 using std::perror;
 using std::string;
@@ -107,7 +106,7 @@ public:
 						if (std::strncmp(dp->name().c_str(), "phsp:target", 11) == 0) {
 							const char *nstr = dp->name().c_str();
 							int target_id = std::atoi(&nstr[11]);
-							tm->insert(make_pair(target_id, pos));
+							tm->emplace(target_id, pos);
 						}
 						break;
 					default:
@@ -156,7 +155,7 @@ public:
 			const void *uuid = sqlite3_column_blob(stmt(), 0);
 			assert(uuid);
 			memcpy(&u, uuid, u.size());
-			(*tvm)[u].insert(make_pair((const char *)sqlite3_column_text(stmt(), 1), data[it->second]));
+			(*tvm)[u].emplace((const char *)sqlite3_column_text(stmt(), 1), data[it->second]);
 			sqlite3_reset(stmt());
 		}
 		return true;

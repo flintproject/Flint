@@ -128,7 +128,7 @@ bool GraphIvRewriter::Process(sqlite3_int64 pq_rowid,
 	if (!FindNode(pq_rowid, rhs.c_str(), &node_id)) return false;
 	std::unique_ptr<char[]> buf(new char[len + 64]); // long enough
 	sprintf(buf.get(), " (eq %%%s %d)", name, node_id);
-	m_.insert(std::make_pair(pq_rowid, buf.get()));
+	m_.emplace(pq_rowid, buf.get());
 	return true;
 }
 

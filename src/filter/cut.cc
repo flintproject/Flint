@@ -18,7 +18,6 @@
 
 using std::cerr;
 using std::endl;
-using std::make_pair;
 using std::map;
 
 namespace flint {
@@ -38,7 +37,7 @@ public:
 	}
 
 	void ReadColumn(std::unique_ptr<lo::Column> &&column) {
-		columns_.insert(make_pair(column->position(), column->col() * column->row()));
+		columns_.emplace(column->position(), column->col() * column->row());
 	}
 
 	bool Apply(FILE *ifp, FILE *ofp) const {
