@@ -217,7 +217,6 @@ BOOST_AUTO_TEST_CASE(Neq) {
 		  "  jmp L0\n"
 		  " L1:\n"
 		  "  load $0 %y\n"
-		  "  jmp L0\n"
 		  " L0:\n"
 		  "  store %Q $0\n"
 		  );
@@ -242,7 +241,6 @@ BOOST_AUTO_TEST_CASE(And) {
 		  "  jmp L0\n"
 		  " L1:\n"
 		  "  load $0 %y\n"
-		  "  jmp L0\n"
 		  " L0:\n"
 		  "  store %Q $0\n"
 		  );
@@ -264,7 +262,6 @@ BOOST_AUTO_TEST_CASE(Or) {
 		  "  jmp L0\n"
 		  " L1:\n"
 		  "  load $0 %y\n"
-		  "  jmp L0\n"
 		  " L0:\n"
 		  "  store %Q $0\n"
 		  );
@@ -286,7 +283,6 @@ BOOST_AUTO_TEST_CASE(Xor) {
 		  "  jmp L0\n"
 		  " L1:\n"
 		  "  load $0 %y\n"
-		  "  jmp L0\n"
 		  " L0:\n"
 		  "  store %Q $0\n"
 		  );
@@ -308,7 +304,6 @@ BOOST_AUTO_TEST_CASE(NotAnd) {
 		  "  jmp L0\n"
 		  " L1:\n"
 		  "  load $0 %y\n"
-		  "  jmp L0\n"
 		  " L0:\n"
 		  "  store %Q $0\n"
 		  );
@@ -326,7 +321,6 @@ BOOST_AUTO_TEST_CASE(NotEq) {
 		  "  jmp L0\n"
 		  " L1:\n"
 		  "  load $0 %y\n"
-		  "  jmp L0\n"
 		  " L0:\n"
 		  "  store %Q $0\n"
 		  );
@@ -344,7 +338,6 @@ BOOST_AUTO_TEST_CASE(NotGeq) {
 		  "  jmp L0\n"
 		  " L1:\n"
 		  "  load $0 %y\n"
-		  "  jmp L0\n"
 		  " L0:\n"
 		  "  store %Q $0\n"
 		  );
@@ -362,7 +355,6 @@ BOOST_AUTO_TEST_CASE(NotGt) {
 		  "  jmp L0\n"
 		  " L1:\n"
 		  "  load $0 %y\n"
-		  "  jmp L0\n"
 		  " L0:\n"
 		  "  store %Q $0\n"
 		  );
@@ -380,7 +372,6 @@ BOOST_AUTO_TEST_CASE(NotLeq) {
 		  "  jmp L0\n"
 		  " L1:\n"
 		  "  load $0 %y\n"
-		  "  jmp L0\n"
 		  " L0:\n"
 		  "  store %Q $0\n"
 		  );
@@ -398,7 +389,6 @@ BOOST_AUTO_TEST_CASE(NotLt) {
 		  "  jmp L0\n"
 		  " L1:\n"
 		  "  load $0 %y\n"
-		  "  jmp L0\n"
 		  " L0:\n"
 		  "  store %Q $0\n"
 		  );
@@ -416,7 +406,6 @@ BOOST_AUTO_TEST_CASE(NotNeq) {
 		  "  jmp L0\n"
 		  " L1:\n"
 		  "  load $0 %y\n"
-		  "  jmp L0\n"
 		  " L0:\n"
 		  "  store %Q $0\n"
 		  );
@@ -434,7 +423,6 @@ BOOST_AUTO_TEST_CASE(NotNot) {
 		  "  jmp L0\n"
 		  " L1:\n"
 		  "  load $0 %y\n"
-		  "  jmp L0\n"
 		  " L0:\n"
 		  "  store %Q $0\n"
 		  );
@@ -459,7 +447,6 @@ BOOST_AUTO_TEST_CASE(NotOr) {
 		  "  jmp L0\n"
 		  " L1:\n"
 		  "  load $0 %y\n"
-		  "  jmp L0\n"
 		  " L0:\n"
 		  "  store %Q $0\n"
 		  );
@@ -481,7 +468,6 @@ BOOST_AUTO_TEST_CASE(NotXor) {
 		  "  jmp L0\n"
 		  " L1:\n"
 		  "  load $0 %y\n"
-		  "  jmp L0\n"
 		  " L0:\n"
 		  "  store %Q $0\n"
 		  );
@@ -517,7 +503,6 @@ BOOST_AUTO_TEST_CASE(Trial) {
 		  "  load $13 %y\n"
 		  "  loadi $14 1\n"
 		  "  $0 = (plus $13 $14)\n"
-		  "  jmp L0\n"
 		  " L0:\n"
 		  "  store %Q $0\n"
 		  );

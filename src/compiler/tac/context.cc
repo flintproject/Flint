@@ -545,7 +545,8 @@ bool Context::Piecewise(RegisterType rt, int n, std::deque<cas::Expr> &children)
 			*os_ << " L" << *v1it++ << ':' << endl;
 			if (!Assign(rt, n, comp.children.at(0)))
 				return false;
-			*os_ << "  jmp L" << l << endl;
+			if (v1it != v1.cend()) // need jmp at every branch but last
+				*os_ << "  jmp L" << l << endl;
 		} else if (IsOtherwise(comp)) {
 			/* nothing to do */
 		} else {
@@ -595,7 +596,8 @@ bool Context::EmitTrial(int n, std::deque<cas::Expr> &children)
 			*os_ << " L" << *v1it++ << ':' << endl;
 			if (!Assign(RegisterType::kFloat, n, comp.children.at(0)))
 				return false;
-			*os_ << "  jmp L" << l << endl;
+			if (v1it != v1.cend()) // needs jmp at every branch but last
+				*os_ << "  jmp L" << l << endl;
 		} else {
 			assert(false);
 		}
