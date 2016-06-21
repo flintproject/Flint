@@ -7,7 +7,8 @@
 <!-- the Compile on Save feature is turned off for the project. -->
 <!-- You can turn off the Compile on Save (or Deploy on Save) setting -->
 <!-- in the project's Project Properties dialog box.-->
-<project name="flint" default="default" basedir=".">
+<project xmlns:if="ant:if" xmlns:unless="ant:unless"
+         name="flint" default="default" basedir=".">
     <description>Builds, tests, and runs the project flint.</description>
     <import file="nbproject/build-impl.xml"/>
     <!--
@@ -104,13 +105,28 @@
                 javacchome="${javacc.home}"/>
     </target>
 
-    <target name="-pre-compile" depends="-javacc"/>
+    <target name="-pre-compile" depends="-javacc,-revision-properties"/>
 
     <target name="-post-clean" depends="-javacc-property">
         <delete>
             <fileset dir="${export.path}" includes="*.java"/>
         </delete>
         <delete file="${export.path}/TextFormulaAnalyzer.jj"/>
+    </target>
+
+    <target name="-revision">
+      <exec executable="git" failifexecutionfails="false" outputproperty="revision">
+        <arg value="describe"/>
+        <arg value="--always"/>
+      </exec>
+    </target>
+
+    <target name="-revision-properties" depends="-revision">
+      <propertyfile file="${build.dir}/classes/revision.properties">
+        <entry key="revision" value="${revision}" if:set="revision"/>
+        <entry key="revision" value="unknown" unless:set="revision"/>
+        <entry key="timestamp" type="date" value="now"/>
+      </propertyfile>
     </target>
 
     <!-- We do not want to generate Javadoc in any case -->

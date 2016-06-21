@@ -6,6 +6,7 @@ import java.awt.event.ActionEvent;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.ResourceBundle;
 import javax.swing.AbstractAction;
 import javax.swing.JComponent;
 import javax.swing.KeyStroke;
@@ -30,7 +31,11 @@ public class AboutDialog extends javax.swing.JDialog {
         initComponents();
 
         String lineSeparator = System.getProperty("line.separator");
-        StringBuilder buffer = new StringBuilder("Flint " + VERSION + lineSeparator);
+        ResourceBundle rb = ResourceBundle.getBundle("revision");
+        String revision = rb.getString("revision");
+        String timestamp = rb.getString("timestamp");
+        StringBuilder buffer = new StringBuilder("Flint version: ");
+        buffer.append(VERSION).append(" (").append(revision).append(", ").append(timestamp).append(")").append(lineSeparator);
         String javaVersion = System.getProperty("java.version");
         buffer.append("Java version: ").append(javaVersion).append(lineSeparator);
         String javaHome = System.getProperty("java.home");
