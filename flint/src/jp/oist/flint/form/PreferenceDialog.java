@@ -14,6 +14,7 @@ import javax.swing.Action;
 import javax.swing.JComponent;
 import javax.swing.JOptionPane;
 import javax.swing.KeyStroke;
+import jp.oist.flint.preference.ExperimentalFeatures;
 
 /**
  * This is the class of the Preference dialog.
@@ -33,6 +34,9 @@ public class PreferenceDialog extends javax.swing.JDialog {
             radioButtonEnabled.setSelected(true);
             radioButtonDisabled.setSelected(false);
         }
+
+        if (ExperimentalFeatures.enabled())
+            checkBoxEx.setSelected(true);
 
         Action closeAction = new AbstractAction() {
                 @Override
@@ -72,6 +76,8 @@ public class PreferenceDialog extends javax.swing.JDialog {
         jPanel3 = new javax.swing.JPanel();
         radioButtonEnabled = new javax.swing.JRadioButton();
         radioButtonDisabled = new javax.swing.JRadioButton();
+        jPanel4 = new javax.swing.JPanel();
+        checkBoxEx = new javax.swing.JCheckBox();
         jPanel2 = new javax.swing.JPanel();
         buttonClose = new javax.swing.JButton();
 
@@ -189,6 +195,32 @@ public class PreferenceDialog extends javax.swing.JDialog {
 
         jTabbedPane1.addTab("Garuda", jPanel3);
 
+        checkBoxEx.setText("Experimental features enabled");
+        checkBoxEx.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                checkBoxExActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
+        jPanel4.setLayout(jPanel4Layout);
+        jPanel4Layout.setHorizontalGroup(
+            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel4Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(checkBoxEx)
+                .addContainerGap(201, Short.MAX_VALUE))
+        );
+        jPanel4Layout.setVerticalGroup(
+            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel4Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(checkBoxEx)
+                .addContainerGap(146, Short.MAX_VALUE))
+        );
+
+        jTabbedPane1.addTab("Advanced", jPanel4);
+
         getContentPane().add(jTabbedPane1, java.awt.BorderLayout.CENTER);
 
         jPanel2.setMinimumSize(new java.awt.Dimension(450, 30));
@@ -285,16 +317,31 @@ public class PreferenceDialog extends javax.swing.JDialog {
         dispose();
     }//GEN-LAST:event_closeDialog
 
+    private void checkBoxExActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_checkBoxExActionPerformed
+        boolean enabledOld = ExperimentalFeatures.enabled();
+        boolean enabledNew = checkBoxEx.isSelected();
+        if (enabledOld != enabledNew) {
+            ExperimentalFeatures.setEnabled(enabledNew);
+            StringBuilder sb = new StringBuilder();
+            sb.append("The experimental features will be ");
+            sb.append((enabledNew) ? "enabled" : "disabled");
+            sb.append(" after restarting Flint.");
+            JOptionPane.showMessageDialog(this, sb.toString());
+        }
+    }//GEN-LAST:event_checkBoxExActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton buttonClose;
     private javax.swing.JButton buttonConfigure;
     private javax.swing.JButton buttonDeletePlotter;
     private javax.swing.JButton buttonRegisterPlotter;
+    private javax.swing.JCheckBox checkBoxEx;
     private javax.swing.JComboBox comboBoxPlotter;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
+    private javax.swing.JPanel jPanel4;
     private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JRadioButton radioButtonDisabled;
     private javax.swing.JRadioButton radioButtonEnabled;

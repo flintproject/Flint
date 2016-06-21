@@ -7,7 +7,10 @@ import jp.oist.flint.control.ModelFileTransferHandler;
 import jp.oist.flint.desktop.Desktop;
 import jp.oist.flint.desktop.Document;
 import jp.oist.flint.desktop.IDesktopListener;
+import jp.oist.flint.executor.FlintTrJob;
 import jp.oist.flint.executor.PhspSimulator;
+import jp.oist.flint.executor.SimulatorService;
+import jp.oist.flint.filesystem.Workspace;
 import jp.oist.flint.form.sub.SubFrame;
 import jp.oist.flint.phsp.PhspException;
 import jp.oist.flint.phsp.PhspReader;
@@ -22,6 +25,7 @@ import jp.oist.flint.sedml.SedmlWriter;
 import jp.oist.flint.textformula.analyzer.ParseException;
 import jp.oist.flint.theme.Icon;
 import jp.oist.flint.util.Utility;
+import jp.physiome.Cli.RunOption;
 import org.apache.log4j.Logger;
 import org.xml.sax.SAXException;
 import java.awt.BorderLayout;
@@ -403,6 +407,43 @@ public class MainFrame extends javax.swing.JFrame
     public void aboutPerformed (Object source) {
         AboutDialog ad = new AboutDialog(this);
         ad.setVisible(true);
+    }
+
+    public void exportIntoC() {
+        FileChooser fc = new FileChooser(this, "Select target C file", FileChooser.Mode.SAVE, "");
+        if (fc.showDialog()) {
+            final File file = fc.getSelectedFile();
+            if (file.exists()) {
+                int a = JOptionPane.showConfirmDialog(this,
+                                                      "Is it OK to replace the existing file?",
+                                                      "Replace the existing file?",
+                                                      JOptionPane.YES_NO_OPTION);
+                if (a != JOptionPane.YES_OPTION)
+                    return;
+            }
+            SubFrame subFrame = getSelectedSubFrame();
+            File modelFile = subFrame.getModelFile();
+            RunOption.Builder builder = RunOption.newBuilder();
+            builder.setModelFilename(modelFile.getAbsolutePath());
+            builder.setOutputFilename(file.getAbsolutePath());
+            try {
+                File dir = Workspace.createTempDirectory("flint-tr");
+                FlintTrJob job = new FlintTrJob(builder.build(), dir);
+                SimulatorService service = new SimulatorService(this);
+                if (service.call(job)) {
+                    StringBuilder sb = new StringBuilder();
+                    sb.append("Exported ");
+                    sb.append(modelFile.getName());
+                    sb.append(" successfully into ");
+                    sb.append(file);
+                    JOptionPane.showMessageDialog(this, sb.toString());
+                } else {
+                    showErrorDialog("Failed to export into C", "Error on exporting");
+                }
+            } catch (Exception e) {
+                showErrorDialog(e.getMessage(), "Error on exporting");
+            }
+        }
     }
 
     /*

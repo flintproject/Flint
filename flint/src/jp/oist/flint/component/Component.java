@@ -73,6 +73,10 @@ public class Component {
         return getCommandByName("flint-run");
     }
 
+    public static List<String> getFlintTrCommand() {
+        return getCommandByName("flint-tr");
+    }
+
     public static List<String> getFlintPauseCommand(int pid) {
         return getCommandByName("flint-pause " + pid);
     }

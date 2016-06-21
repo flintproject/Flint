@@ -30,6 +30,7 @@ storage of name "jp/oist/flint". The following keys are in use:
 - defaultComponentPath
 - defaultConfigurationPath
 - defaultPlotter
+- experimentalFeatures
 There are following subdirectories:
 - gnuplot/
   The node for preferences of gnuplot.

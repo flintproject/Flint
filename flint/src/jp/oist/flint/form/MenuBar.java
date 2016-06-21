@@ -7,6 +7,7 @@ import jp.oist.flint.desktop.IDesktopListener;
 import jp.oist.flint.desktop.ILoadingListener;
 import jp.oist.flint.desktop.ISimulationListener;
 import jp.oist.flint.executor.PhspSimulator;
+import jp.oist.flint.preference.ExperimentalFeatures;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -25,6 +26,8 @@ public class MenuBar extends JMenuBar
     /* Item names on Menu "File" */
     public final static String OPEN = "menu.file.open";
     public final static String RECENT_MODELS = "menu.file.recentModels";
+    public final static String EXPORT = "menu.file.export";
+    public final static String EXPORT_C = "menu.file.export.c";
     public final static String CLOSE = "menu.file.close";
     public final static String LOAD_CONFIGURATION = "menu.file.loadConfiguration";
     public final static String SAVE_CONFIGURATION = "menu.file.saveConfiguration";
@@ -48,6 +51,8 @@ public class MenuBar extends JMenuBar
     /* Items on Menu "File" */
     private JMenuItem mItemOpen;
     private JMenu     mMenuRecentModels;
+    private JMenu     mMenuExport = null;
+    private JMenuItem mItemExportC = null;
     private JMenuItem mItemClose;
     private JMenuItem mItemLoadConfiguration;
     private JMenuItem mItemSaveConfiguration;
@@ -99,6 +104,23 @@ public class MenuBar extends JMenuBar
 
         mMenuRecentModels = new JMenu("Recent Models...");
         mMenuRecentModels.setName(RECENT_MODELS);
+
+        if (ExperimentalFeatures.enabled()) {
+            mMenuExport = new JMenu("Export...");
+            mMenuExport.setName(EXPORT);
+            mMenuExport.setEnabled(false);
+
+            mItemExportC = new JMenuItem("C");
+            mItemExportC.setName(EXPORT_C);
+            mItemExportC.setToolTipText("Export simulation code into C");
+            mItemExportC.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    mFrame.exportIntoC();
+                }
+            });
+            mMenuExport.add(mItemExportC);
+        }
 
         mItemClose        = new JMenuItem("Close");
         mItemClose.setName(CLOSE);
@@ -157,6 +179,8 @@ public class MenuBar extends JMenuBar
 
         menuFile.add(mItemOpen);
         menuFile.add(mMenuRecentModels);
+        if (mMenuExport != null)
+            menuFile.add(mMenuExport);
         menuFile.add(mItemClose);
         menuFile.addSeparator();
         menuFile.add(mItemLoadConfiguration);
@@ -317,12 +341,16 @@ public class MenuBar extends JMenuBar
 
     @Override
     public void loadingStarted() {
+        if (mMenuExport != null)
+            mMenuExport.setEnabled(false);
         mItemRun.setEnabled(false);
         mItemSendToFlintK3.setEnabled(false);
     }
 
     @Override
     public void loadingDone() {
+        if (mMenuExport != null)
+            mMenuExport.setEnabled(true);
         mItemRun.setEnabled(true);
         mItemSendToFlintK3.setEnabled(true);
     }
@@ -333,6 +361,8 @@ public class MenuBar extends JMenuBar
     public void simulationRequested() {
         mItemOpen.setEnabled(false);
         mMenuRecentModels.setEnabled(false);
+        if (mMenuExport != null)
+            mMenuExport.setEnabled(false);
         mItemClose.setEnabled(false);
         mItemLoadConfiguration.setEnabled(false);
         mItemSaveConfiguration.setEnabled(false);
@@ -351,6 +381,8 @@ public class MenuBar extends JMenuBar
     public void simulationDone() {
         mItemOpen.setEnabled(true);
         mMenuRecentModels.setEnabled(true);
+        if (mMenuExport != null)
+            mMenuExport.setEnabled(true);
         mItemClose.setEnabled(true);
         mItemLoadConfiguration.setEnabled(true);
         mItemSaveConfiguration.setEnabled(true);
@@ -377,6 +409,8 @@ public class MenuBar extends JMenuBar
 
     @Override
     public void documentAdded(Document doc) {
+        if (mMenuExport != null)
+            mMenuExport.setEnabled(true);
         mItemSaveAsPhsp.setEnabled(true);
         mItemLoadConfiguration.setEnabled(true);
         mItemSaveConfiguration.setEnabled(true);
@@ -390,6 +424,8 @@ public class MenuBar extends JMenuBar
     @Override
     public void documentRemoved(Document doc, boolean empty) {
         if (empty) {
+            if (mMenuExport != null)
+                mMenuExport.setEnabled(false);
             mItemSaveAsPhsp.setEnabled(false);
             mItemLoadConfiguration.setEnabled(false);
             mItemSaveConfiguration.setEnabled(false);
