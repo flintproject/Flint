@@ -7,13 +7,7 @@ namespace flint {
 class CalculationUnit {
 public:
 	CalculationUnit(int section_index, int block_index,
-					int offset, int cib, int cie)
-		: section_index_(section_index)
-		, block_index_(block_index)
-		, offset_(offset)
-		, cib_(cib)
-		, cie_(cie)
-	{}
+					int offset, int cib, int cie);
 
 	int section_index() const {return section_index_;}
 	int block_index() const {return block_index_;}

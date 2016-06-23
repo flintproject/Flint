@@ -314,7 +314,7 @@ public:
 				int cib = ci;
 				int cie = cu.cie();
 				heap_.clear();
-				while (ci < cie) {
+				do {
 					const bc::Code &code(cv_->at(ci));
 					switch (code.type()) {
 					case bc::Code::kBr:
@@ -553,7 +553,7 @@ public:
 						assert(false);
 						break;
 					}
-				}
+				} while (ci < cie);
 			} else {
 				const ReductionUnit &ru = boost::get<ReductionUnit>(eu);
 				if (!executor->Reduce(ru))
