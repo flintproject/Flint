@@ -309,20 +309,10 @@ public:
 		for (const ExecutionUnit &eu : euv_) {
 			if (eu.which() == 0) {
 				const CalculationUnit &cu = boost::get<CalculationUnit>(eu);
-				int si = cu.section_index();
-				int k = cu.sector_index();
-				int bi = cu.block_index();
-
-				const bc::SectionHeader &sh(shv_->at(si));
-				const std::string &id(sh.id());
-				const Mounter &mounter(layout_->GetMounter(id));
-				int nos = mounter.size();
-				assert(k < nos);
-				int offset = mounter.GetOffset(k);
-				const bc::BlockHeader &bh(bhv_->at(bi));
-				int ci = code_offset_[bi];
+				int offset = cu.offset();
+				int ci = cu.cib();
 				int cib = ci;
-				int cie = cib + bh.noc();
+				int cie = cu.cie();
 				heap_.clear();
 				while (ci < cie) {
 					const bc::Code &code(cv_->at(ci));
@@ -352,6 +342,8 @@ public:
 						if (executor->Lb(code.lb(), offset)) {
 							ci++;
 						} else {
+							int si = cu.section_index();
+							const bc::SectionHeader &sh(shv_->at(si));
 							runtime::ReportSectionContext(sh);
 							return false;
 						}
@@ -361,6 +353,8 @@ public:
 							ci++;
 						} else {
 							std::cerr << "failed to load data: " << ci << std::endl;
+							int si = cu.section_index();
+							const bc::SectionHeader &sh(shv_->at(si));
 							runtime::ReportSectionContext(sh);
 							return false;
 						}
@@ -378,6 +372,8 @@ public:
 							ci++;
 						} else {
 							std::cerr << "failed to load: " << ci << std::endl;
+							int si = cu.section_index();
+							const bc::SectionHeader &sh(shv_->at(si));
 							runtime::ReportSectionContext(sh);
 							return false;
 						}
@@ -396,6 +392,10 @@ public:
 						{
 							double v = executor->Store(code.store(), offset);
 							if (!IsFinite(v, offset)) {
+								int si = cu.section_index();
+								int bi = cu.block_index();
+								const bc::SectionHeader &sh(shv_->at(si));
+								const bc::BlockHeader &bh(bhv_->at(bi));
 								boost::uuids::uuid u;
 								std::memcpy(&u, sh.id().data(), u.size());
 								std::cerr << "section: " << u << std::endl;

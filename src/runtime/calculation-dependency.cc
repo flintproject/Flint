@@ -11,8 +11,10 @@ using std::endl;
 
 namespace flint {
 
-CalculationDependency::CalculationDependency(int section_index, int sector_index, int block_index)
-	: cu_(new CalculationUnit(section_index, sector_index, block_index))
+CalculationDependency::CalculationDependency(int section_index, int block_index,
+											 int offset, int cib, int cie)
+	: cu_(new CalculationUnit(section_index, block_index,
+							  offset, cib, cie))
 	, load_addrs_()
 	, store_addr_(-1)
 {

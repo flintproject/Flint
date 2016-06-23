@@ -283,12 +283,11 @@ void DataFlowAnalyzer::CollectCalculationDependencies(CalculationDependencyVecto
 			bi = bib; // reset block index
 			int offset = mounter.GetOffset(k);
 			for (;bi < bie; bi++) {
-				std::unique_ptr<CalculationDependency> cd(new CalculationDependency(si, k, bi));
-
 				const bc::BlockHeader &bh(bhv_->at(bi));
 				ci = code_offset_[bi];
 				int cib = ci;
 				int cie = cib + bh.noc();
+				std::unique_ptr<CalculationDependency> cd(new CalculationDependency(si, bi, offset, cib, cie));
 				for (;ci < cie; ci++) {
 					const bc::Code &code(cv_->at(ci));
 					switch (code.type()) {

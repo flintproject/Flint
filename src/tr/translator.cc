@@ -464,17 +464,8 @@ void Translator::PrintMain(const filter::Writer &writer)
 	for (const ExecutionUnit &eu : euv_) {
 		if (eu.which() == 0) {
 			const CalculationUnit &cu = boost::get<CalculationUnit>(eu);
-			int si = cu.section_index();
-			int k = cu.sector_index();
 			int bi = cu.block_index();
-
-			const bc::SectionHeader &sh(shv_->at(si));
-			const std::string &id(sh.id());
-			const Mounter &mounter(layout_->GetMounter(id));
-			int nos = mounter.size();
-			assert(k < nos);
-			int offset = mounter.GetOffset(k);
-			const bc::BlockHeader &bh(bhv_->at(bi));
+			int offset = cu.offset();
 			os_ << "\t\tblock" << bi << "("
 				<< offset
 				<< ");"

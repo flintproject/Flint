@@ -11,7 +11,8 @@ class CalculationUnit;
 
 class CalculationDependency {
 public:
-	CalculationDependency(int section_index, int sector_index, int block_index);
+	CalculationDependency(int section_index, int block_index,
+						  int offset, int cib, int cie);
 
 	const CalculationUnit &cu() const {return *cu_;}
 	const std::unordered_set<int> &load_addrs() const {return load_addrs_;}

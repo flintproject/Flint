@@ -6,20 +6,27 @@ namespace flint {
 
 class CalculationUnit {
 public:
-	CalculationUnit(int section_index, int sector_index, int block_index)
+	CalculationUnit(int section_index, int block_index,
+					int offset, int cib, int cie)
 		: section_index_(section_index)
-		, sector_index_(sector_index)
 		, block_index_(block_index)
+		, offset_(offset)
+		, cib_(cib)
+		, cie_(cie)
 	{}
 
 	int section_index() const {return section_index_;}
-	int sector_index() const {return sector_index_;}
 	int block_index() const {return block_index_;}
+	int offset() const {return offset_;}
+	int cib() const {return cib_;}
+	int cie() const {return cie_;}
 
 private:
 	int section_index_;
-	int sector_index_;
 	int block_index_;
+	int offset_;
+	int cib_;
+	int cie_;
 };
 
 }
