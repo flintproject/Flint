@@ -31,7 +31,7 @@ $ sudo apt-get install gcc g++ autoconf automake libtool cmake openjdk-7-jdk \
     pkgconf zlib1g-dev
 
 
-== Fedora 23
+== Fedora 24
 
 Use dnf(8) to install required packages for building Flint:
 $ sudo dnf install gcc gcc-c++ autoconf automake libtool cmake java-1.8.0-openjdk \
