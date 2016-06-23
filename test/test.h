@@ -17,6 +17,7 @@
 #include <boost/filesystem.hpp>
 #include <boost/filesystem/fstream.hpp>
 #define BOOST_TEST_DYN_LINK
+bool init_unit_test(); // to avoid uninteresting -Wmissing-declarations
 #include <boost/test/unit_test.hpp>
 
 #include "db/driver.h"
