@@ -22,12 +22,18 @@ struct F : public test::TemporaryWorkingDirectory {
 
 BOOST_FIXTURE_TEST_SUITE(test_translate, F)
 
+#ifdef __clang__
+#define CC "clang"
+#else
+#define CC "gcc"
+#endif
+
 #define TRANSLATE_OK_CASE(name, filename) BOOST_AUTO_TEST_CASE(name) {	\
 		PushWorkingDirectory(#name);									\
 		std::unique_ptr<cli::RunOption> option(GenerateOption(TEST_MODELS(filename), filename ".c")); \
 		test::StderrCapture sc;											\
 		BOOST_CHECK(tr::Translate(*option));							\
-		BOOST_CHECK_EQUAL(RunSystem("gcc -std=c99 -Wall -W " filename ".c -lm"), EXIT_SUCCESS);	\
+		BOOST_CHECK_EQUAL(RunSystem(CC " -std=c99 -Wall -W " filename ".c -lm"), EXIT_SUCCESS);	\
 		BOOST_CHECK(sc.Get().empty());									\
 		PopWorkingDirectory();											\
 	}
@@ -48,5 +54,7 @@ TRANSLATE_OK_CASE(ringed_Beeler_Reuter_1977_model_with_static_instance, "ringed_
 TRANSLATE_OK_CASE(ringed_Luo_Rudy_1991_model_with_instance, "ringed_Luo_Rudy_1991_model_with_instance.isml")
 TRANSLATE_OK_CASE(Rybak_2006_with_static_instance_and_multiple_input, "Rybak_2006_with_static_instance_and_multiple_input.isml")
 TRANSLATE_OK_CASE(yang_tong_mccarver_hines_beard_2006, "yang_tong_mccarver_hines_beard_2006.cellml")
+
+#undef CC
 
 BOOST_AUTO_TEST_SUITE_END()
