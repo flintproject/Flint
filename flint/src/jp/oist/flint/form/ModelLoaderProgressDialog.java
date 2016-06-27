@@ -16,7 +16,7 @@ public class ModelLoaderProgressDialog implements PropertyChangeListener {
         bar.setIndeterminate(true);
         bar.setString(path);
         bar.setStringPainted(true);
-        mDialog = new JDialog(frame, "Loading a model", true);
+        mDialog = new JDialog(frame, "Loading a model"); // modeless, in order not to block subsequent dialogs
         mDialog.add(bar);
         mDialog.pack();
         mDialog.setLocationRelativeTo(frame);
