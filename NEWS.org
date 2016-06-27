@@ -1,0 +1,23 @@
+* Flint 1.5 (2016-06-XX)
+
+** New features
+   - SUNDIALS's ARK solver is available as ARK method; note that, for now,
+     this is for pure ODE models only.
+   - Support for the modulo operation as csymbol function "Mod" in PHML.
+   - It is now possible to send a CSV or ISD file to another gadget through
+     the Garuda protocol.
+** Improvements
+   - Simulation got faster; simulation time reduced by about 30%.
+   - Now it can detect non-state physical-quantities defined by ODEs in PHML
+     as a model error.
+   - The error dialog on simulation failure becomes resizable.
+   - <description> can appear in PHML's <arc>.
+   - PHML's <transition type="probability"> allows any MathML expression as
+     its value.
+   - For security reason, user's Flint K3 account is no longer saved.
+   - It works with Garuda platform 1.2.
+   - Some error messages become more informative.
+** Bug fixes
+   - Missing edges in a PHML model can be detected more reliably.
+   - flint-exec's processes no longer remain running after Flint's exit.
+   - An error dialog appears as soon as the loading process exits abnormally.
