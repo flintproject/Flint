@@ -16,7 +16,7 @@ import javax.swing.KeyStroke;
  */
 public class AboutDialog extends javax.swing.JDialog {
 
-    private final static String URL = "http://www.physiodesigner.org/";
+    private final static String URL = "http://flintproject.github.io/";
     private final static String VERSION = "1.5";
 
     class CloseAction extends AbstractAction {
