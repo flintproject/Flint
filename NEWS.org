@@ -1,4 +1,4 @@
-* Flint 1.5 (2016-06-XX)
+* Flint 1.5 (2016-06-29)
 
 ** New features
    - SUNDIALS's ARK solver is available as ARK method; note that, for now,
