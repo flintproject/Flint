@@ -482,6 +482,11 @@ public class MainFrame extends javax.swing.JFrame
             showErrorDialog(msg, "Error on opening model");
             return false;
         }
+        if (!file.isFile()) {
+            showErrorDialog(file.getPath() + " is not a file.",
+                            "Error on opening model");
+            return false;
+        }
 
         // check xml format
         String format = Utility.detectXMLFormat(file);
@@ -501,31 +506,11 @@ public class MainFrame extends javax.swing.JFrame
             }
         }
 
-        String path;
-        try {
-            path = file.getCanonicalPath();
-        } catch (IOException ex) {
-            showErrorDialog("could not get canonical path : " + file.toString(),
-                    "Error on opening model");
-            return false;
-        }
-
-        if (!file.isFile()) {
-            showErrorDialog("could not get canonical path : " + file.toString(),
-                    "Error on opening model"); return false; }
-
-        int len = (int)file.length();
-        if (len == 0) {
-            showErrorDialog("file has length 0 : " + path,
-                    "Error on opening model");
-            return false;
-        }
-
         ModelLoaderLogger logger = new ModelLoaderLogger(mDesktop);
         setEditable(false);
         ModelLoader loader = new ModelLoader(file);
         loader.addPropertyChangeListener(new ModelFileLoaderListener(logger, loader));
-        loader.addPropertyChangeListener(new ModelLoaderProgressDialog(this, path));
+        loader.addPropertyChangeListener(new ModelLoaderProgressDialog(this, file.getPath()));
         loader.addPropertyChangeListener(new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
