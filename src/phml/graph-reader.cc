@@ -34,7 +34,7 @@ int GraphReader::Read()
 		int type = xmlTextReaderNodeType(text_reader_);
 		if (type == XML_READER_TYPE_ELEMENT) {
 			const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
-			if (xmlStrEqual(local_name, BAD_CAST "graph")) {
+			if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("graph"))) {
 				i = ReadGraph();
 				if (i <= 0) return i;
 				continue;
@@ -44,7 +44,7 @@ int GraphReader::Read()
 			}
 		} else if (type == XML_READER_TYPE_END_ELEMENT) {
 			const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
-			if (xmlStrEqual(local_name, BAD_CAST "definition")) {
+			if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("definition"))) {
 				return xmlTextReaderRead(text_reader_);
 			}
 		}
@@ -65,16 +65,16 @@ int GraphReader::ReadGraph()
 		int type = xmlTextReaderNodeType(text_reader_);
 		if (type == XML_READER_TYPE_ELEMENT) {
 			const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
-			if (xmlStrEqual(local_name, BAD_CAST "event-condition")) {
+			if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("event-condition"))) {
 				i = ReadEventCondition();
 				if (i <= 0)
 					return i;
 				continue;
-			} else if (xmlStrEqual(local_name, BAD_CAST "node-set")) {
+			} else if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("node-set"))) {
 				i = ReadNodeSet();
 				if (i <= 0) return i;
 				continue;
-			} else if (xmlStrEqual(local_name, BAD_CAST "arc-set")) {
+			} else if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("arc-set"))) {
 				i = ReadArcSet();
 				if (i <= 0) return i;
 				continue;
@@ -84,7 +84,7 @@ int GraphReader::ReadGraph()
 			}
 		} else if (type == XML_READER_TYPE_END_ELEMENT) {
 			const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
-			if (xmlStrEqual(local_name, BAD_CAST "graph")) {
+			if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("graph"))) {
 				return xmlTextReaderRead(text_reader_);
 			}
 		}
@@ -101,7 +101,7 @@ int GraphReader::ReadEventCondition()
 		int type = xmlTextReaderNodeType(text_reader_);
 		if (type == XML_READER_TYPE_ELEMENT) {
 			const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
-			if (xmlStrEqual(local_name, BAD_CAST "math")) {
+			if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("math"))) {
 				mathml::MathDumper math_dumper(text_reader_, &ec.stream());
 				i = math_dumper.Read(&ec);
 				if (i <= 0)
@@ -113,7 +113,7 @@ int GraphReader::ReadEventCondition()
 			}
 		} else if (type == XML_READER_TYPE_END_ELEMENT) {
 			const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
-			if (xmlStrEqual(local_name, BAD_CAST "event-condition")) {
+			if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("event-condition"))) {
 				if (!driver_->SaveEventCondition(pq_, ec))
 					return -2;
 				return xmlTextReaderRead(text_reader_);
@@ -131,7 +131,7 @@ int GraphReader::ReadNodeSet()
 		int type = xmlTextReaderNodeType(text_reader_);
 		if (type == XML_READER_TYPE_ELEMENT) {
 			const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
-			if (xmlStrEqual(local_name, BAD_CAST "node")) {
+			if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("node"))) {
 				i = ReadNode();
 				if (i <= 0) return i;
 				continue;
@@ -141,7 +141,7 @@ int GraphReader::ReadNodeSet()
 			}
 		} else if (type == XML_READER_TYPE_END_ELEMENT) {
 			const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
-			if (xmlStrEqual(local_name, BAD_CAST "node-set")) {
+			if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("node-set"))) {
 				return xmlTextReaderRead(text_reader_);
 			}
 		}
@@ -158,7 +158,7 @@ int GraphReader::ReadNode()
 		if (xmlTextReaderIsNamespaceDecl(text_reader_)) continue;
 
 		const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
-		if (xmlStrEqual(local_name, BAD_CAST "node-id")) {
+		if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("node-id"))) {
 			const xmlChar *value = xmlTextReaderConstValue(text_reader_);
 			node_id = atoi((const char *)value);
 			if (node_id <= 0) {
@@ -180,11 +180,11 @@ int GraphReader::ReadNode()
 		int type = xmlTextReaderNodeType(text_reader_);
 		if (type == XML_READER_TYPE_ELEMENT) {
 			const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
-			if (xmlStrEqual(local_name, BAD_CAST "name")) {
+			if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("name"))) {
 				i = ReadNodeName(node.get());
 				if (i <= 0) return i;
 				continue;
-			} else if (xmlStrEqual(local_name, BAD_CAST "description")) {
+			} else if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("description"))) {
 				// ignore description
 				i = xmlTextReaderNext(text_reader_);
 				continue;
@@ -194,7 +194,7 @@ int GraphReader::ReadNode()
 			}
 		} else if (type == XML_READER_TYPE_END_ELEMENT) {
 			const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
-			if (xmlStrEqual(local_name, BAD_CAST "node")) {
+			if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("node"))) {
 				if (!node->name()) {
 					cerr << "missing <name> of <node>" << endl;
 					return -2;
@@ -241,7 +241,7 @@ int GraphReader::ReadArcSet()
 		int type = xmlTextReaderNodeType(text_reader_);
 		if (type == XML_READER_TYPE_ELEMENT) {
 			const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
-			if (xmlStrEqual(local_name, BAD_CAST "arc")) {
+			if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("arc"))) {
 				i = ReadArc();
 				if (i <= 0) return i;
 				continue;
@@ -251,7 +251,7 @@ int GraphReader::ReadArcSet()
 			}
 		} else if (type == XML_READER_TYPE_END_ELEMENT) {
 			const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
-			if (xmlStrEqual(local_name, BAD_CAST "arc-set")) {
+			if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("arc-set"))) {
 				return xmlTextReaderRead(text_reader_);
 			}
 		}
@@ -270,21 +270,21 @@ int GraphReader::ReadArc()
 		if (xmlTextReaderIsNamespaceDecl(text_reader_)) continue;
 
 		const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
-		if (xmlStrEqual(local_name, BAD_CAST "arc-id")) {
+		if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("arc-id"))) {
 			const xmlChar *value = xmlTextReaderConstValue(text_reader_);
 			arc_id = atoi((const char *)value);
 			if (arc_id <= 0) {
 				cerr << "invalid value of arc-id of <arc>: " << value << endl;
 				return -2;
 			}
-		} else if (xmlStrEqual(local_name, BAD_CAST "head-node-id")) {
+		} else if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("head-node-id"))) {
 			const xmlChar *value = xmlTextReaderConstValue(text_reader_);
 			head_node_id = std::atoi(reinterpret_cast<const char *>(value));
 			if (arc_id <= 0) {
 				cerr << "invalid value of head-node-id of <arc>: " << value << endl;
 				return -2;
 			}
-		} else if (xmlStrEqual(local_name, BAD_CAST "tail-node-id")) {
+		} else if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("tail-node-id"))) {
 			const xmlChar *value = xmlTextReaderConstValue(text_reader_);
 			tail_node_id = std::atoi(reinterpret_cast<const char *>(value));
 			if (arc_id <= 0) {
@@ -314,11 +314,11 @@ int GraphReader::ReadArc()
 		int type = xmlTextReaderNodeType(text_reader_);
 		if (type == XML_READER_TYPE_ELEMENT) {
 			const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
-			if (xmlStrEqual(local_name, BAD_CAST "transition")) {
+			if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("transition"))) {
 				i = ReadTransition(arc.get());
 				if (i <= 0) return i;
 				continue;
-			} else if (xmlStrEqual(local_name, BAD_CAST "description")) {
+			} else if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("description"))) {
 				// ignore description
 				i = xmlTextReaderNext(text_reader_);
 				continue;
@@ -328,7 +328,7 @@ int GraphReader::ReadArc()
 			}
 		} else if (type == XML_READER_TYPE_END_ELEMENT) {
 			const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
-			if (xmlStrEqual(local_name, BAD_CAST "arc")) {
+			if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("arc"))) {
 				if (arc->type() == Arc::kUnspecified) {
 					cerr << "missing transition of <arc>: " << arc_id << endl;
 					return -2;
@@ -349,11 +349,11 @@ int GraphReader::ReadTransition(Arc *arc)
 		if (xmlTextReaderIsNamespaceDecl(text_reader_)) continue;
 
 		const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
-		if (xmlStrEqual(local_name, BAD_CAST "type")) {
+		if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("type"))) {
 			const xmlChar *value = xmlTextReaderConstValue(text_reader_);
-			if (xmlStrEqual(value, BAD_CAST "condition")) {
+			if (xmlStrEqual(value, reinterpret_cast<const xmlChar *>("condition"))) {
 				arc->set_type(Arc::kCondition);
-			} else if (xmlStrEqual(value, BAD_CAST "probability")) {
+			} else if (xmlStrEqual(value, reinterpret_cast<const xmlChar *>("probability"))) {
 				arc->set_type(Arc::kProbability);
 			} else {
 				cerr << "unknown type of <transition>: " << value << endl;
@@ -373,7 +373,7 @@ int GraphReader::ReadTransition(Arc *arc)
 		int type = xmlTextReaderNodeType(text_reader_);
 		if (type == XML_READER_TYPE_ELEMENT) {
 			const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
-			if (xmlStrEqual(local_name, BAD_CAST "math")) {
+			if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("math"))) {
 				mathml::MathDumper math_dumper(text_reader_, &arc->stream());
 				i = math_dumper.Read(this);
 				if (i <= 0) return i;
@@ -384,7 +384,7 @@ int GraphReader::ReadTransition(Arc *arc)
 			}
 		} else if (type == XML_READER_TYPE_END_ELEMENT) {
 			const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
-			if (xmlStrEqual(local_name, BAD_CAST "transition")) {
+			if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("transition"))) {
 				return xmlTextReaderRead(text_reader_);
 			}
 		}

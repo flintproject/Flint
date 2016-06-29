@@ -50,8 +50,10 @@ public:
 		}
 		std::unique_ptr<char[]> pattern(new char[128]);
 		sprintf(pattern.get(), "//is:module[@module-id='%s']/is:import/*", uuid_.c_str());
-		xmlXPathRegisterNs(context_, BAD_CAST "is", BAD_CAST "http://www.physiome.jp/ns/insilicoml");
-		object_ = xmlXPathEvalExpression(BAD_CAST pattern.get(), context_);
+		xmlXPathRegisterNs(context_,
+						   reinterpret_cast<const xmlChar *>("is"),
+						   reinterpret_cast<const xmlChar *>("http://www.physiome.jp/ns/insilicoml"));
+		object_ = xmlXPathEvalExpression(reinterpret_cast<const xmlChar *>(pattern.get()), context_);
 		if (!object_) {
 			cerr << "invalid XPath pattern: " << pattern.get() << endl;
 			return false;

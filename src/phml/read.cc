@@ -261,34 +261,34 @@ public:
 			int type = xmlTextReaderNodeType(text_reader_);
 			if (type == XML_READER_TYPE_ELEMENT) {
 				const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
-				if (xmlStrEqual(local_name, BAD_CAST "header")) {
+				if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("header"))) {
 					i = ReadHeader();
 					if (i <= 0) return i;
 					continue;
-				} else if (xmlStrEqual(local_name, BAD_CAST "unit-set")) {
+				} else if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("unit-set"))) {
 					i = ReadUnitSet();
 					if (i <= 0) return i;
 					continue;
-				} else if (xmlStrEqual(local_name, BAD_CAST "module-set")) {
+				} else if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("module-set"))) {
 					i = ReadModuleSet();
 					if (i <= 0) return i;
 					continue;
-				} else if (xmlStrEqual(local_name, BAD_CAST "template-set")) {
+				} else if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("template-set"))) {
 					i = ReadTemplateSet();
 					if (i <= 0) return i;
 					continue;
-				} else if (xmlStrEqual(local_name, BAD_CAST "instance-set")) {
+				} else if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("instance-set"))) {
 					i = ReadInstanceSet();
 					if (i <= 0) return i;
 					continue;
-				} else if (xmlStrEqual(local_name, BAD_CAST "edge-set")) {
+				} else if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("edge-set"))) {
 					i = ReadEdgeSet();
 					if (i <= 0) return i;
 					continue;
 				}
 			} else if (type == XML_READER_TYPE_END_ELEMENT) {
 				const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
-				if (xmlStrEqual(local_name, BAD_CAST "edge-set")) {
+				if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("edge-set"))) {
 					return 1;
 				}
 			}
@@ -317,14 +317,14 @@ private:
 			int type = xmlTextReaderNodeType(text_reader_);
 			if (type == XML_READER_TYPE_ELEMENT) {
 				const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
-				if (xmlStrEqual(local_name, BAD_CAST "numerical-configuration")) {
+				if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("numerical-configuration"))) {
 					i = ReadNumericalConfiguration();
 					if (i <= 0) return i;
 					continue;
 				}
 			} else if (type == XML_READER_TYPE_END_ELEMENT) {
 				const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
-				if (xmlStrEqual(local_name, BAD_CAST "header")) {
+				if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("header"))) {
 					return xmlTextReaderRead(text_reader_);
 				}
 			}
@@ -340,15 +340,15 @@ private:
 			int type = xmlTextReaderNodeType(text_reader_);
 			if (type == XML_READER_TYPE_ELEMENT) {
 				const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
-				if (xmlStrEqual(local_name, BAD_CAST "time-discretization")) {
+				if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("time-discretization"))) {
 					i = ReadTimeDiscretization();
 					if (i <= 0) return i;
 					continue;
-				} else if (xmlStrEqual(local_name, BAD_CAST "algorithm")) {
+				} else if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("algorithm"))) {
 					i = ReadAlgorithm(nc.get());
 					if (i <= 0) return i;
 					continue;
-				} else if (xmlStrEqual(local_name, BAD_CAST "simulation-time-span")) {
+				} else if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("simulation-time-span"))) {
 					i = ReadSimulationTimeSpan(nc.get());
 					if (i <= 0) return i;
 					continue;
@@ -358,7 +358,7 @@ private:
 				}
 			} else if (type == XML_READER_TYPE_END_ELEMENT) {
 				const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
-				if (xmlStrEqual(local_name, BAD_CAST "numerical-configuration")) {
+				if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("numerical-configuration"))) {
 					if (!dd_->SaveNumericalConfiguration(nc.get())) return -2;
 					return xmlTextReaderRead(text_reader_);
 				}
@@ -379,7 +379,7 @@ private:
 			if (xmlTextReaderIsNamespaceDecl(text_reader_)) continue;
 
 			const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
-			if (xmlStrEqual(local_name, BAD_CAST "unit-id")) {
+			if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("unit-id"))) {
 				const xmlChar *value = xmlTextReaderConstValue(text_reader_);
 				int unit_id = atoi((const char *)value);
 				if (unit_id > 0) {
@@ -396,14 +396,14 @@ private:
 			int type = xmlTextReaderNodeType(text_reader_);
 			if (type == XML_READER_TYPE_ELEMENT) {
 				const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
-				if (xmlStrEqual(local_name, BAD_CAST "step")) {
+				if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("step"))) {
 					i = ReadStep(td.get());
 					if (i <= 0) return i;
 					continue;
 				}
 			} else if (type == XML_READER_TYPE_END_ELEMENT) {
 				const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
-				if (xmlStrEqual(local_name, BAD_CAST "time-discretization")) {
+				if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("time-discretization"))) {
 					if (td->unit_id() && td->step()) {
 						if (!dd_->SaveTimeDiscretization(td.get(), module_.get())) return -2;
 					}
@@ -453,11 +453,11 @@ private:
 			int type = xmlTextReaderNodeType(text_reader_);
 			if (type == XML_READER_TYPE_ELEMENT) {
 				const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
-				if (xmlStrEqual(local_name, BAD_CAST "random-generator")) {
+				if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("random-generator"))) {
 					i = ReadRandomGenerator(nc);
 					if (i <= 0) return i;
 					continue;
-				} else if (xmlStrEqual(local_name, BAD_CAST "integration")) {
+				} else if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("integration"))) {
 					i = ReadIntegration(nc);
 					if (i <= 0) return i;
 					continue;
@@ -467,7 +467,7 @@ private:
 				}
 			} else if (type == XML_READER_TYPE_END_ELEMENT) {
 				const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
-				if (xmlStrEqual(local_name, BAD_CAST "algorithm")) {
+				if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("algorithm"))) {
 					return xmlTextReaderRead(text_reader_);
 				}
 			}
@@ -482,11 +482,11 @@ private:
 			if (xmlTextReaderIsNamespaceDecl(text_reader_)) continue;
 
 			const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
-			if (xmlStrEqual(local_name, BAD_CAST "type")) {
+			if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("type"))) {
 				// ignored
-			} else if (xmlStrEqual(local_name, BAD_CAST "name")) {
+			} else if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("name"))) {
 				nc->set_rg_name(xmlTextReaderValue(text_reader_));
-			} else if (xmlStrEqual(local_name, BAD_CAST "seed")) {
+			} else if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("seed"))) {
 				nc->set_rg_seed(xmlTextReaderValue(text_reader_));
 			} else {
 				cerr << "unknown attribute of <random-generator>: " << local_name << endl;
@@ -506,7 +506,7 @@ private:
 			if (xmlTextReaderIsNamespaceDecl(text_reader_)) continue;
 
 			const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
-			if (xmlStrEqual(local_name, BAD_CAST "name")) {
+			if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("name"))) {
 				nc->set_integration(xmlTextReaderValue(text_reader_));
 			} else {
 				cerr << "unknown attribute of <integration>: " << local_name << endl;
@@ -526,7 +526,7 @@ private:
 			if (xmlTextReaderIsNamespaceDecl(text_reader_)) continue;
 
 			const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
-			if (xmlStrEqual(local_name, BAD_CAST "unit-id")) {
+			if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("unit-id"))) {
 				const xmlChar *value = xmlTextReaderConstValue(text_reader_);
 				int unit_id = atoi((const char *)value);
 				if (unit_id <= 0) {
@@ -574,7 +574,7 @@ private:
 			int type = xmlTextReaderNodeType(text_reader_);
 			if (type == XML_READER_TYPE_ELEMENT) {
 				const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
-				if (xmlStrEqual(local_name, BAD_CAST "unit")) {
+				if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("unit"))) {
 					i = ReadUnit();
 					if (i <= 0) return i;
 					continue;
@@ -584,7 +584,7 @@ private:
 				}
 			} else if (type == XML_READER_TYPE_END_ELEMENT) {
 				const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
-				if (xmlStrEqual(local_name, BAD_CAST "unit-set")) {
+				if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("unit-set"))) {
 					return xmlTextReaderRead(text_reader_);
 				}
 			}
@@ -595,7 +595,7 @@ private:
 
 	int ReadUnit() {
 		xmlChar *value;
-		int i = ReadAttributeValue(BAD_CAST "unit-id", &value);
+		int i = ReadAttributeValue(reinterpret_cast<const xmlChar *>("unit-id"), &value);
 		if (i <= 0) {
 			cerr << "missing unit-id of <unit>" << endl;
 			return -2;
@@ -612,11 +612,11 @@ private:
 			int type = xmlTextReaderNodeType(text_reader_);
 			if (type == XML_READER_TYPE_ELEMENT) {
 				const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
-				if (xmlStrEqual(local_name, BAD_CAST "name")) {
+				if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("name"))) {
 					i = ReadUnitName(unit.get());
 					if (i <= 0) return i;
 					continue;
-				} else if (xmlStrEqual(local_name, BAD_CAST "element")) {
+				} else if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("element"))) {
 					i = ReadElement(unit.get());
 					if (i <= 0) return i;
 					continue;
@@ -626,7 +626,7 @@ private:
 				}
 			} else if (type == XML_READER_TYPE_END_ELEMENT) {
 				const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
-				if (xmlStrEqual(local_name, BAD_CAST "unit")) {
+				if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("unit"))) {
 					if (!unit->name()) {
 						cerr << "missing <name> of <unit>" << endl;
 						return -2;
@@ -673,7 +673,7 @@ private:
 			const xmlChar *value = xmlTextReaderConstValue(text_reader_);
 			if (!value) continue;
 
-			if (xmlStrEqual(local_name, BAD_CAST "unit-id")) {
+			if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("unit-id"))) {
 				int unit_id = atoi((char *)value);
 				if (unit_id < 0) {
 					cerr << "invalid unit-id of <element>" << endl;
@@ -684,56 +684,56 @@ private:
 					return -2;
 				}
 				element->set_unit_id(unit_id);
-			} else if (xmlStrEqual(local_name, BAD_CAST "exponent")) {
+			} else if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("exponent"))) {
 				element->set_exponent(strtod((char *)value, nullptr));
-			} else if (xmlStrEqual(local_name, BAD_CAST "prefix")) {
-				if (xmlStrEqual(value, BAD_CAST "yotta")) {
+			} else if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("prefix"))) {
+				if (xmlStrEqual(value, reinterpret_cast<const xmlChar *>("yotta"))) {
 					element->set_factor(24);
-				} else if (xmlStrEqual(value, BAD_CAST "zetta")) {
+				} else if (xmlStrEqual(value, reinterpret_cast<const xmlChar *>("zetta"))) {
 					element->set_factor(21);
-				} else if (xmlStrEqual(value, BAD_CAST "exa")) {
+				} else if (xmlStrEqual(value, reinterpret_cast<const xmlChar *>("exa"))) {
 					element->set_factor(18);
-				} else if (xmlStrEqual(value, BAD_CAST "peta")) {
+				} else if (xmlStrEqual(value, reinterpret_cast<const xmlChar *>("peta"))) {
 					element->set_factor(15);
-				} else if (xmlStrEqual(value, BAD_CAST "tera")) {
+				} else if (xmlStrEqual(value, reinterpret_cast<const xmlChar *>("tera"))) {
 					element->set_factor(12);
-				} else if (xmlStrEqual(value, BAD_CAST "giga")) {
+				} else if (xmlStrEqual(value, reinterpret_cast<const xmlChar *>("giga"))) {
 					element->set_factor(9);
-				} else if (xmlStrEqual(value, BAD_CAST "mega")) {
+				} else if (xmlStrEqual(value, reinterpret_cast<const xmlChar *>("mega"))) {
 					element->set_factor(6);
-				} else if (xmlStrEqual(value, BAD_CAST "kilo")) {
+				} else if (xmlStrEqual(value, reinterpret_cast<const xmlChar *>("kilo"))) {
 					element->set_factor(3);
-				} else if (xmlStrEqual(value, BAD_CAST "hecto")) {
+				} else if (xmlStrEqual(value, reinterpret_cast<const xmlChar *>("hecto"))) {
 					element->set_factor(2);
-				} else if (xmlStrEqual(value, BAD_CAST "deca")) {
+				} else if (xmlStrEqual(value, reinterpret_cast<const xmlChar *>("deca"))) {
 					element->set_factor(1);
-				} else if (xmlStrEqual(value, BAD_CAST "deci")) {
+				} else if (xmlStrEqual(value, reinterpret_cast<const xmlChar *>("deci"))) {
 					element->set_factor(-1);
-				} else if (xmlStrEqual(value, BAD_CAST "centi")) {
+				} else if (xmlStrEqual(value, reinterpret_cast<const xmlChar *>("centi"))) {
 					element->set_factor(-2);
-				} else if (xmlStrEqual(value, BAD_CAST "milli")) {
+				} else if (xmlStrEqual(value, reinterpret_cast<const xmlChar *>("milli"))) {
 					element->set_factor(-3);
-				} else if (xmlStrEqual(value, BAD_CAST "micro")) {
+				} else if (xmlStrEqual(value, reinterpret_cast<const xmlChar *>("micro"))) {
 					element->set_factor(-6);
-				} else if (xmlStrEqual(value, BAD_CAST "nano")) {
+				} else if (xmlStrEqual(value, reinterpret_cast<const xmlChar *>("nano"))) {
 					element->set_factor(-9);
-				} else if (xmlStrEqual(value, BAD_CAST "pico")) {
+				} else if (xmlStrEqual(value, reinterpret_cast<const xmlChar *>("pico"))) {
 					element->set_factor(-12);
-				} else if (xmlStrEqual(value, BAD_CAST "femto")) {
+				} else if (xmlStrEqual(value, reinterpret_cast<const xmlChar *>("femto"))) {
 					element->set_factor(-15);
-				} else if (xmlStrEqual(value, BAD_CAST "atto")) {
+				} else if (xmlStrEqual(value, reinterpret_cast<const xmlChar *>("atto"))) {
 					element->set_factor(-18);
-				} else if (xmlStrEqual(value, BAD_CAST "zepto")) {
+				} else if (xmlStrEqual(value, reinterpret_cast<const xmlChar *>("zepto"))) {
 					element->set_factor(-21);
-				} else if (xmlStrEqual(value, BAD_CAST "yocto")) {
+				} else if (xmlStrEqual(value, reinterpret_cast<const xmlChar *>("yocto"))) {
 					element->set_factor(-24);
 				} else {
 					cerr << "unknown prefix of <element>: " << value << endl;
 					return -2;
 				}
-			} else if (xmlStrEqual(local_name, BAD_CAST "multiplier")) {
+			} else if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("multiplier"))) {
 				element->set_multiplier(strtod((char *)value, nullptr));
-			} else if (xmlStrEqual(local_name, BAD_CAST "offset")) {
+			} else if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("offset"))) {
 				element->set_offset(strtod((char *)value, nullptr));
 			} else {
 				cerr << "unknown attribute of <element>: " << local_name << endl;
@@ -760,7 +760,7 @@ private:
 			int type = xmlTextReaderNodeType(text_reader_);
 			if (type == XML_READER_TYPE_ELEMENT) {
 				const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
-				if (xmlStrEqual(local_name, BAD_CAST "module")) {
+				if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("module"))) {
 					i = ReadModule();
 					if (i <= 0) {
 						ReportHint();
@@ -773,7 +773,7 @@ private:
 				}
 			} else if (type == XML_READER_TYPE_END_ELEMENT) {
 				const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
-				if (xmlStrEqual(local_name, BAD_CAST "module-set")) {
+				if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("module-set"))) {
 					return xmlTextReaderRead(text_reader_);
 				}
 			}
@@ -789,9 +789,9 @@ private:
 			if (xmlTextReaderIsNamespaceDecl(text_reader_)) continue;
 
 			const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
-			if (xmlStrEqual(local_name, BAD_CAST "module-id")) {
+			if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("module-id"))) {
 				module_->set_module_id(xmlTextReaderValue(text_reader_));
-			} else if (xmlStrEqual(local_name, BAD_CAST "type")) {
+			} else if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("type"))) {
 				module_->set_type(xmlTextReaderValue(text_reader_));
 			}
 		}
@@ -808,30 +808,30 @@ private:
 			int type = xmlTextReaderNodeType(text_reader_);
 			if (type == XML_READER_TYPE_ELEMENT) {
 				const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
-				if (xmlStrEqual(local_name, BAD_CAST "property")) {
+				if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("property"))) {
 					i = ReadProperty();
 					if (i <= 0) return i;
 					continue;
-				} else if (xmlStrEqual(local_name, BAD_CAST "port")) {
+				} else if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("port"))) {
 					i = ReadPort();
 					if (i <= 0) return i;
 					continue;
-				} else if (xmlStrEqual(local_name, BAD_CAST "physical-quantity")) {
+				} else if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("physical-quantity"))) {
 					i = ReadPQ();
 					if (i <= 0) return i;
 					continue;
-				} else if (xmlStrEqual(local_name, BAD_CAST "import")) {
+				} else if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("import"))) {
 					i = ReadImport();
 					if (i <= 0) return i;
 					continue;
-				} else if (xmlStrEqual(local_name, BAD_CAST "timeseries")) {
+				} else if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("timeseries"))) {
 					i = ReadTimeseries();
 					if (i <= 0) return i;
 					continue;
 				}
 			} else if (type == XML_READER_TYPE_END_ELEMENT) {
 				const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
-				if (xmlStrEqual(local_name, BAD_CAST "module")) {
+				if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("module"))) {
 					module_.reset();
 					return xmlTextReaderRead(text_reader_);
 				}
@@ -847,26 +847,26 @@ private:
 			int type = xmlTextReaderNodeType(text_reader_);
 			if (type == XML_READER_TYPE_ELEMENT) {
 				const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
-				if (xmlStrEqual(local_name, BAD_CAST "name")) {
+				if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("name"))) {
 					i = ReadModuleName();
 					if (i <= 0) return i;
 					continue;
-				} else if (xmlStrEqual(local_name, BAD_CAST "capsulation")) {
+				} else if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("capsulation"))) {
 					i = ReadCapsulation();
 					if (i <= 0) return i;
 					continue;
-				} else if (xmlStrEqual(local_name, BAD_CAST "template")) {
+				} else if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("template"))) {
 					i = ReadModuleTemplate();
 					if (i <= 0) return i;
 					continue;
-				} else if (xmlStrEqual(local_name, BAD_CAST "time-discretization")) {
+				} else if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("time-discretization"))) {
 					i = ReadTimeDiscretization();
 					if (i <= 0) return i;
 					continue;
 				}
 			} else if (type == XML_READER_TYPE_END_ELEMENT) {
 				const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
-				if (xmlStrEqual(local_name, BAD_CAST "property")) {
+				if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("property"))) {
 					if (!dd_->SaveModule(module_.get())) return -2;
 					return xmlTextReaderRead(text_reader_);
 				}
@@ -908,14 +908,14 @@ private:
 			int type = xmlTextReaderNodeType(text_reader_);
 			if (type == XML_READER_TYPE_ELEMENT) {
 				const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
-				if (xmlStrEqual(local_name, BAD_CAST "capsulated-by")) {
+				if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("capsulated-by"))) {
 					i = ReadCapsulatedBy();
 					if (i <= 0) return i;
 					continue;
 				}
 			} else if (type == XML_READER_TYPE_END_ELEMENT) {
 				const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
-				if (xmlStrEqual(local_name, BAD_CAST "capsulation")) {
+				if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("capsulation"))) {
 					return xmlTextReaderRead(text_reader_);
 				}
 			}
@@ -926,7 +926,7 @@ private:
 
 	int ReadCapsulatedBy() {
 		xmlChar *module_id;
-		int i = ReadAttributeValue(BAD_CAST "module-id", &module_id);
+		int i = ReadAttributeValue(reinterpret_cast<const xmlChar *>("module-id"), &module_id);
 		if (i <= 0) {
 			cerr << "missing module-id of <capsulated-by>" << endl;
 			return -2;
@@ -937,7 +937,7 @@ private:
 
 	int ReadModuleTemplate() {
 		xmlChar *state;
-		int i = ReadAttributeValue(BAD_CAST "state", &state);
+		int i = ReadAttributeValue(reinterpret_cast<const xmlChar *>("state"), &state);
 		if (i <= 0) {
 			cerr << "missing state of <template>" << endl;
 			return -2;
@@ -953,22 +953,22 @@ private:
 			if (xmlTextReaderIsNamespaceDecl(text_reader_)) continue;
 
 			const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
-			if (xmlStrEqual(local_name, BAD_CAST "port-id")) {
+			if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("port-id"))) {
 				port->set_port_id(xmlTextReaderValue(text_reader_));
-			} else if (xmlStrEqual(local_name, BAD_CAST "direction")) {
+			} else if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("direction"))) {
 				xmlChar *direction = xmlTextReaderValue(text_reader_);
-				if (xmlStrEqual(direction, BAD_CAST "in")) {
+				if (xmlStrEqual(direction, reinterpret_cast<const xmlChar *>("in"))) {
 					port->set_direction(direction);
-				} else if (xmlStrEqual(direction, BAD_CAST "out")) {
+				} else if (xmlStrEqual(direction, reinterpret_cast<const xmlChar *>("out"))) {
 					port->set_direction(direction);
 				} else {
 					cerr << "unknown direction of <port>: " << direction << endl;
 					xmlFree(direction);
 					return -2;
 				}
-			} else if (xmlStrEqual(local_name, BAD_CAST "ref-physical-quantity-id")) {
+			} else if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("ref-physical-quantity-id"))) {
 				port->set_ref_pq_id(xmlTextReaderValue(text_reader_));
-			} else if (xmlStrEqual(local_name, BAD_CAST "multiple")) {
+			} else if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("multiple"))) {
 				port->set_multiple(xmlTextReaderValue(text_reader_));
 			} else {
 				cerr << "unknown attribute of <port>: " << local_name << endl;
@@ -990,7 +990,7 @@ private:
 			if (xmlTextReaderIsNamespaceDecl(text_reader_)) continue;
 
 			const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
-			if (xmlStrEqual(local_name, BAD_CAST "physical-quantity-id")) {
+			if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("physical-quantity-id"))) {
 				const xmlChar *value = xmlTextReaderConstValue(text_reader_);
 				int pq_id = atoi((const char *)value);
 				if (pq_id <= 0) {
@@ -998,24 +998,24 @@ private:
 					return -2;
 				}
 				pq_->set_pq_id(pq_id);
-			} else if (xmlStrEqual(local_name, BAD_CAST "type")) {
+			} else if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("type"))) {
 				const xmlChar *value = xmlTextReaderConstValue(text_reader_);
-				if (xmlStrEqual(value, BAD_CAST "state")) {
+				if (xmlStrEqual(value, reinterpret_cast<const xmlChar *>("state"))) {
 					pq_->set_type(PQ::kState);
-				} else if (xmlStrEqual(value, BAD_CAST "variable-parameter")) {
+				} else if (xmlStrEqual(value, reinterpret_cast<const xmlChar *>("variable-parameter"))) {
 					pq_->set_type(PQ::kVariableParameter);
-				} else if (xmlStrEqual(value, BAD_CAST "static-parameter")) {
+				} else if (xmlStrEqual(value, reinterpret_cast<const xmlChar *>("static-parameter"))) {
 					pq_->set_type(PQ::kStaticParameter);
-				} else if (xmlStrEqual(value, BAD_CAST "func-expression")) {
+				} else if (xmlStrEqual(value, reinterpret_cast<const xmlChar *>("func-expression"))) {
 					// skip this type of PQ
 					return i;
-				} else if (xmlStrEqual(value, BAD_CAST "nominal")) {
+				} else if (xmlStrEqual(value, reinterpret_cast<const xmlChar *>("nominal"))) {
 					// skip this type of PQ
 					return i;
-				} else if (xmlStrEqual(value, BAD_CAST "morphology")) {
+				} else if (xmlStrEqual(value, reinterpret_cast<const xmlChar *>("morphology"))) {
 					// skip this type of PQ
 					return i;
-				} else if (xmlStrEqual(value, BAD_CAST "timeseries")) {
+				} else if (xmlStrEqual(value, reinterpret_cast<const xmlChar *>("timeseries"))) {
 					pq_->set_type(PQ::kTimeseries);
 				} else {
 					cerr << "unknown type fo <physical-quantity>: " << value << endl;
@@ -1037,34 +1037,34 @@ private:
 			int type = xmlTextReaderNodeType(text_reader_);
 			if (type == XML_READER_TYPE_ELEMENT) {
 				const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
-				if (xmlStrEqual(local_name, BAD_CAST "name")) {
+				if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("name"))) {
 					i = ReadPqName();
 					if (i <= 0) return i;
 					continue;
-				} else if (xmlStrEqual(local_name, BAD_CAST "dimension")) {
+				} else if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("dimension"))) {
 					i = ReadDimension();
 					if (i <= 0) return i;
 					continue;
-				} else if (xmlStrEqual(local_name, BAD_CAST "max-delay")) {
+				} else if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("max-delay"))) {
 					i = ReadMaxDelay();
 					if (i <= 0) return i;
 					continue;
-				} else if (xmlStrEqual(local_name, BAD_CAST "value-type-set")) {
+				} else if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("value-type-set"))) {
 					i = ReadValueTypeSet();
 					if (i <= 0) return i;
 					continue;
-				} else if (xmlStrEqual(local_name, BAD_CAST "initial-value")) {
+				} else if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("initial-value"))) {
 					i = ReadInitialValue();
 					if (i <= 0) return i;
 					continue;
-				} else if (xmlStrEqual(local_name, BAD_CAST "implementation")) {
+				} else if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("implementation"))) {
 					i = ReadImplementation();
 					if (i <= 0) return i;
 					continue;
 				}
 			} else if (type == XML_READER_TYPE_END_ELEMENT) {
 				const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
-				if (xmlStrEqual(local_name, BAD_CAST "physical-quantity")) {
+				if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("physical-quantity"))) {
 					if (!pq_->name()) {
 						cerr << "missing <name> of <physical-quantity>: " << pq_->pq_id() << endl;
 						return -2;
@@ -1147,19 +1147,19 @@ private:
 			if (xmlTextReaderIsNamespaceDecl(text_reader_)) continue;
 
 			const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
-			if (xmlStrEqual(local_name, BAD_CAST "type")) {
+			if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("type"))) {
 				const xmlChar *value = xmlTextReaderConstValue(text_reader_);
-				if (xmlStrEqual(value, BAD_CAST "scalar")) {
+				if (xmlStrEqual(value, reinterpret_cast<const xmlChar *>("scalar"))) {
 					pq_->set_col(1);
 					pq_->set_row(1);
 					snprintf(dimension_type, 7, "%s", (const char *)value);
-				} else if (xmlStrEqual(value, BAD_CAST "vector")) {
+				} else if (xmlStrEqual(value, reinterpret_cast<const xmlChar *>("vector"))) {
 					if (isEmpty) {
 						cerr << "empty <dimension> of type vector" << endl;
 						return -2;
 					}
 					snprintf(dimension_type, 7, "%s", (const char *)value);
-				} else if (xmlStrEqual(value, BAD_CAST "matrix")) {
+				} else if (xmlStrEqual(value, reinterpret_cast<const xmlChar *>("matrix"))) {
 					if (isEmpty) {
 						cerr << "empty <dimension> of type matrix" << endl;
 						return -2;
@@ -1182,18 +1182,18 @@ private:
 			int type = xmlTextReaderNodeType(text_reader_);
 			if (type == XML_READER_TYPE_ELEMENT) {
 				const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
-				if (xmlStrEqual(local_name, BAD_CAST "col")) {
+				if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("col"))) {
 					i = ReadCol();
 					if (i <= 0) return i;
 					continue;
-				} else if (xmlStrEqual(local_name, BAD_CAST "row")) {
+				} else if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("row"))) {
 					i = ReadRow();
 					if (i <= 0) return i;
 					continue;
 				}
 			} else if (type == XML_READER_TYPE_END_ELEMENT) {
 				const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
-				if (xmlStrEqual(local_name, BAD_CAST "dimension")) {
+				if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("dimension"))) {
 					if (strcmp(dimension_type, "scalar") == 0) {
 						if (pq_->col() * pq_->row() != 1) {
 							cerr << "<dimension> of type scalar with col*row: "
@@ -1239,7 +1239,7 @@ private:
 			xmlFree(s);
 			return -2;
 		}
-		if (xmlStrEqual(col, BAD_CAST "discretization-dependent")) {
+		if (xmlStrEqual(col, reinterpret_cast<const xmlChar *>("discretization-dependent"))) {
 			cerr << "unsupported discretization-dependent <col>" << endl;
 			xmlFree(s);
 			return -2;
@@ -1270,7 +1270,7 @@ private:
 			xmlFree(s);
 			return -2;
 		}
-		if (xmlStrEqual(row, BAD_CAST "discretization-dependent")) {
+		if (xmlStrEqual(row, reinterpret_cast<const xmlChar *>("discretization-dependent"))) {
 			cerr << "unsupported discretization-dependent <row>" << endl;
 			xmlFree(s);
 			return -2;
@@ -1328,7 +1328,7 @@ private:
 			int type = xmlTextReaderNodeType(text_reader_);
 			if (type == XML_READER_TYPE_ELEMENT) {
 				const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
-				if (xmlStrEqual(local_name, BAD_CAST "value-type")) {
+				if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("value-type"))) {
 					i = ReadValueType();
 					if (i <= 0) return i;
 					continue;
@@ -1338,7 +1338,7 @@ private:
 				}
 			} else if (type == XML_READER_TYPE_END_ELEMENT) {
 				const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
-				if (xmlStrEqual(local_name, BAD_CAST "value-type-set")) {
+				if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("value-type-set"))) {
 					return xmlTextReaderRead(text_reader_);
 				}
 			}
@@ -1349,7 +1349,7 @@ private:
 
 	int ReadValueType() {
 		xmlChar *unit_id;
-		int i = ReadAttributeValue(BAD_CAST "unit-id", &unit_id);
+		int i = ReadAttributeValue(reinterpret_cast<const xmlChar *>("unit-id"), &unit_id);
 		if (i <= 0) {
 			cerr << "missing unit-id of <value-type>" << endl;
 			return -2;
@@ -1369,7 +1369,7 @@ private:
 			int type = xmlTextReaderNodeType(text_reader_);
 			if (type == XML_READER_TYPE_ELEMENT) {
 				const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
-				if (xmlStrEqual(local_name, BAD_CAST "definition")) {
+				if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("definition"))) {
 					iv_dumper_.reset(new phml::DefinitionDumper<InitialValue>(text_reader_,
 																			  pq_->name(),
 																			  iv_.get()));
@@ -1382,7 +1382,7 @@ private:
 				}
 			} else if (type == XML_READER_TYPE_END_ELEMENT) {
 				const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
-				if (xmlStrEqual(local_name, BAD_CAST "initial-value")) {
+				if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("initial-value"))) {
 					return xmlTextReaderRead(text_reader_);
 				}
 			}
@@ -1398,22 +1398,22 @@ private:
 			int type = xmlTextReaderNodeType(text_reader_);
 			if (type == XML_READER_TYPE_ELEMENT) {
 				const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
-				if (xmlStrEqual(local_name, BAD_CAST "definition")) {
+				if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("definition"))) {
 					i = ReadDefinitionOfImplementation();
 					if (i <= 0) return i;
 					continue;
-				} else if (xmlStrEqual(local_name, BAD_CAST "extra-implementation")) {
+				} else if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("extra-implementation"))) {
 					i = ReadExtraImplementation();
 					if (i <= 0) return i;
 					continue;
-				} if (xmlStrEqual(local_name, BAD_CAST "bridge")) {
+				} if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("bridge"))) {
 					i = ReadBridge();
 					if (i <= 0) return i;
 					continue;
 				}
 			} else if (type == XML_READER_TYPE_END_ELEMENT) {
 				const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
-				if (xmlStrEqual(local_name, BAD_CAST "implementation")) {
+				if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("implementation"))) {
 					return xmlTextReaderRead(text_reader_);
 				}
 			}
@@ -1429,33 +1429,33 @@ private:
 			if (xmlTextReaderIsNamespaceDecl(text_reader_)) continue;
 
 			const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
-			if (xmlStrEqual(local_name, BAD_CAST "type")) {
+			if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("type"))) {
 				definition->set_type(xmlTextReaderValue(text_reader_));
-			} else if (xmlStrEqual(local_name, BAD_CAST "sub-type")) {
+			} else if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("sub-type"))) {
 				definition->set_sub_type(xmlTextReaderValue(text_reader_));
-			} else if (xmlStrEqual(local_name, BAD_CAST "format")) {
+			} else if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("format"))) {
 				definition->set_format(xmlTextReaderValue(text_reader_));
 			}
 		}
-		if (xmlStrEqual(definition->type(), BAD_CAST "assign")) {
-			if (xmlStrEqual(definition->sub_type(), BAD_CAST "bridge")) {
+		if (xmlStrEqual(definition->type(), reinterpret_cast<const xmlChar *>("assign"))) {
+			if (xmlStrEqual(definition->sub_type(), reinterpret_cast<const xmlChar *>("bridge"))) {
 				return xmlTextReaderNext(text_reader_);
 			}
-			if (xmlStrEqual(definition->format(), BAD_CAST "reference")) {
+			if (xmlStrEqual(definition->format(), reinterpret_cast<const xmlChar *>("reference"))) {
 				// expect assigning a port or timeseries
 				i = xmlTextReaderRead(text_reader_);
 				while (i > 0) {
 					int type = xmlTextReaderNodeType(text_reader_);
 					if (type == XML_READER_TYPE_ELEMENT) {
 						const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
-						if (xmlStrEqual(local_name, BAD_CAST "reference")) {
+						if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("reference"))) {
 							i = ReadReference();
 							if (i <= 0) return i;
 							continue;
 						}
 					} else if (type == XML_READER_TYPE_END_ELEMENT) {
 						const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
-						if (xmlStrEqual(local_name, BAD_CAST "definition")) {
+						if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("definition"))) {
 							return xmlTextReaderRead(text_reader_);
 						}
 					}
@@ -1463,7 +1463,7 @@ private:
 				}
 				return i;
 			}
-		} else if (xmlStrEqual(definition->type(), BAD_CAST "graph")) {
+		} else if (xmlStrEqual(definition->type(), reinterpret_cast<const xmlChar *>("graph"))) {
 			pq_->set_unit_id(xmlCharStrdup("0")); // unit: dimensionless
 			phml::GraphReader graph_reader(pq_.get(), text_reader_, dd_.get());
 			return graph_reader.Read();
@@ -1482,7 +1482,7 @@ private:
 			if (xmlTextReaderIsNamespaceDecl(text_reader_)) continue;
 
 			const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
-			if (xmlStrEqual(local_name, BAD_CAST "port-id")) {
+			if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("port-id"))) {
 				const xmlChar *value = xmlTextReaderConstValue(text_reader_);
 				int port_id = atoi((const char *)value);
 				if (port_id <= 0) {
@@ -1490,7 +1490,7 @@ private:
 					return -2;
 				}
 				ref_->set_port_id(port_id);
-			} else if (xmlStrEqual(local_name, BAD_CAST "timeseries-id")) {
+			} else if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("timeseries-id"))) {
 				const xmlChar *value = xmlTextReaderConstValue(text_reader_);
 				int timeseries_id = atoi((const char *)value);
 				if (timeseries_id <= 0) {
@@ -1498,7 +1498,7 @@ private:
 					return -2;
 				}
 				ref_->set_timeseries_id(timeseries_id);
-			} else if (xmlStrEqual(local_name, BAD_CAST "element-id")) {
+			} else if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("element-id"))) {
 				ref_->set_element_id(xmlTextReaderValue(text_reader_));
 			} else {
 				cerr << "unknown attribute of <reference>: " << local_name << endl;
@@ -1515,13 +1515,13 @@ private:
 			if (xmlTextReaderIsNamespaceDecl(text_reader_)) continue;
 
 			const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
-			if (xmlStrEqual(local_name, BAD_CAST "type")) {
+			if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("type"))) {
 				extra_->set_type(xmlTextReaderValue(text_reader_));
-			} else if (xmlStrEqual(local_name, BAD_CAST "order")) {
+			} else if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("order"))) {
 				xmlChar *value = xmlTextReaderValue(text_reader_);
-				if (xmlStrEqual(value, BAD_CAST "before")) {
+				if (xmlStrEqual(value, reinterpret_cast<const xmlChar *>("before"))) {
 					extra_->set_order(value);
-				} else if (xmlStrEqual(value, BAD_CAST "after")) {
+				} else if (xmlStrEqual(value, reinterpret_cast<const xmlChar *>("after"))) {
 					extra_->set_order(value);
 				} else if (xmlStrlen(value) == 0) {
 					xmlFree(value);
@@ -1545,8 +1545,8 @@ private:
 			cerr << "missing type of <extra-implementation>" << endl;
 			return -2;
 		}
-		if ( !xmlStrEqual(extra_->type(), BAD_CAST "instantaneous") &&
-			 !xmlStrEqual(extra_->type(), BAD_CAST "multiple-input-assignment") ) {
+		if ( !xmlStrEqual(extra_->type(), reinterpret_cast<const xmlChar *>("instantaneous")) &&
+			 !xmlStrEqual(extra_->type(), reinterpret_cast<const xmlChar *>("multiple-input-assignment")) ) {
 			// TODO: other types of <extra-implementation>
 			cerr << "unsupported type of <extra-implementation>: "
 				 << extra_->type()
@@ -1559,7 +1559,7 @@ private:
 			int type = xmlTextReaderNodeType(text_reader_);
 			if (type == XML_READER_TYPE_ELEMENT) {
 				const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
-				if (xmlStrEqual(local_name, BAD_CAST "definition")) {
+				if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("definition"))) {
 					i = ReadDefinitionOfExtraImplementation();
 					if (i <= 0) return i;
 					continue;
@@ -1569,7 +1569,7 @@ private:
 				}
 			} else if (type == XML_READER_TYPE_END_ELEMENT) {
 				const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
-				if (xmlStrEqual(local_name, BAD_CAST "extra-implementation")) {
+				if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("extra-implementation"))) {
 					return xmlTextReaderRead(text_reader_);
 				}
 			}
@@ -1586,20 +1586,20 @@ private:
 			if (xmlTextReaderIsNamespaceDecl(text_reader_)) continue;
 
 			const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
-			if (xmlStrEqual(local_name, BAD_CAST "type")) {
+			if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("type"))) {
 				def->set_type(xmlTextReaderValue(text_reader_));
-			} else if (xmlStrEqual(local_name, BAD_CAST "sub-type")) {
+			} else if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("sub-type"))) {
 				def->set_sub_type(xmlTextReaderValue(text_reader_));
-			} else if (xmlStrEqual(local_name, BAD_CAST "format")) {
+			} else if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("format"))) {
 				def->set_format(xmlTextReaderValue(text_reader_));
 			}
 		}
-		if (xmlStrEqual(extra_->type(), BAD_CAST "multiple-input-assignment")) {
-			if (xmlStrEqual(def->type(), BAD_CAST "loop")) {
+		if (xmlStrEqual(extra_->type(), reinterpret_cast<const xmlChar *>("multiple-input-assignment"))) {
+			if (xmlStrEqual(def->type(), reinterpret_cast<const xmlChar *>("loop"))) {
 				cerr << "multiple-input-assignment's definition of type loop is not supported yet" << endl;
 				return -2;
 			}
-			if (!xmlStrEqual(def->type(), BAD_CAST "reduction")) {
+			if (!xmlStrEqual(def->type(), reinterpret_cast<const xmlChar *>("reduction"))) {
 				cerr << "found <extra-implementation> of type multiple-input-assignment, but its definition's type is not reduction: "
 					 << def->type() << endl;
 				return -2;
@@ -1607,7 +1607,7 @@ private:
 			extra_->set_definition(def.release());
 			return xmlTextReaderNext(text_reader_);
 		}
-		assert(xmlStrEqual(extra_->type(), BAD_CAST "instantaneous"));
+		assert(xmlStrEqual(extra_->type(), reinterpret_cast<const xmlChar *>("instantaneous")));
 		if (isEmpty != 0) {
 			cerr << "empty <definition> in <extra-implementation> of type instantaneous" << endl;
 			return -2;
@@ -1630,28 +1630,28 @@ private:
 			if (xmlTextReaderIsNamespaceDecl(text_reader_)) continue;
 
 			const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
-			if (xmlStrEqual(local_name, BAD_CAST "type")) {
+			if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("type"))) {
 				const xmlChar *value = xmlTextReaderConstValue(text_reader_);
-				if (!xmlStrEqual(value, BAD_CAST "sbml")) {
+				if (!xmlStrEqual(value, reinterpret_cast<const xmlChar *>("sbml"))) {
 					cerr << "unknown type of <bridge>: " << value << endl;
 					return -2;
 				}
-			} else if (xmlStrEqual(local_name, BAD_CAST "sub-type")) {
+			} else if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("sub-type"))) {
 				xmlChar *value = xmlTextReaderValue(text_reader_);
-				if (xmlStrEqual(value, BAD_CAST "species")) {
+				if (xmlStrEqual(value, reinterpret_cast<const xmlChar *>("species"))) {
 					bridge_->set_sub_type(value);
-				} else if (xmlStrEqual(value, BAD_CAST "parameter")) {
+				} else if (xmlStrEqual(value, reinterpret_cast<const xmlChar *>("parameter"))) {
 					bridge_->set_sub_type(value);
 				} else {
 					cerr << "unknown sub-type of <bridge>: " << value << endl;
 					xmlFree(value);
 					return -2;
 				}
-			} else if (xmlStrEqual(local_name, BAD_CAST "direction")) {
+			} else if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("direction"))) {
 				xmlChar *value = xmlTextReaderValue(text_reader_);
-				if (xmlStrEqual(value, BAD_CAST "get")) {
+				if (xmlStrEqual(value, reinterpret_cast<const xmlChar *>("get"))) {
 					bridge_->set_direction(value);
-				} else if (xmlStrEqual(value, BAD_CAST "set")) {
+				} else if (xmlStrEqual(value, reinterpret_cast<const xmlChar *>("set"))) {
 					bridge_->set_direction(value);
 				} else {
 					cerr << "unknown direction of <bridge>: " << value << endl;
@@ -1677,7 +1677,7 @@ private:
 			int type = xmlTextReaderNodeType(text_reader_);
 			if (type == XML_READER_TYPE_ELEMENT) {
 				const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
-				if (xmlStrEqual(local_name, BAD_CAST "connector")) {
+				if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("connector"))) {
 					i = ReadConnector();
 					if (i <= 0) return i;
 					continue;
@@ -1687,7 +1687,7 @@ private:
 				}
 			} else if (type == XML_READER_TYPE_END_ELEMENT) {
 				const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
-				if (xmlStrEqual(local_name, BAD_CAST "bridge")) {
+				if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("bridge"))) {
 					return xmlTextReaderRead(text_reader_);
 				}
 			}
@@ -1703,21 +1703,21 @@ private:
 			if (xmlTextReaderIsNamespaceDecl(text_reader_)) continue;
 
 			const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
-			if (xmlStrEqual(local_name, BAD_CAST "type")) {
+			if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("type"))) {
 				const xmlChar *value = xmlTextReaderConstValue(text_reader_);
-				if (xmlStrEqual(value, BAD_CAST "parameter")) {
-					if (!xmlStrEqual(bridge_->sub_type(), BAD_CAST "parameter")) {
+				if (xmlStrEqual(value, reinterpret_cast<const xmlChar *>("parameter"))) {
+					if (!xmlStrEqual(bridge_->sub_type(), reinterpret_cast<const xmlChar *>("parameter"))) {
 						cerr << "mismatch between bridge's sub-type and connector's type" << endl;
 						return -2;
 					}
 					continue;
-				} else if (xmlStrEqual(value, BAD_CAST "species")) {
-					if (!xmlStrEqual(bridge_->sub_type(), BAD_CAST "species")) {
+				} else if (xmlStrEqual(value, reinterpret_cast<const xmlChar *>("species"))) {
+					if (!xmlStrEqual(bridge_->sub_type(), reinterpret_cast<const xmlChar *>("species"))) {
 						cerr << "mismatch between bridge's sub-type and connector's type" << endl;
 						return -2;
 					}
 					continue;
-				} else if (xmlStrEqual(value, BAD_CAST "reaction")) {
+				} else if (xmlStrEqual(value, reinterpret_cast<const xmlChar *>("reaction"))) {
 					// skip this connector
 					return xmlTextReaderNext(text_reader_);
 				} else {
@@ -1749,30 +1749,30 @@ private:
 			if (xmlTextReaderIsNamespaceDecl(text_reader_)) continue;
 
 			const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
-			if (xmlStrEqual(local_name, BAD_CAST "type")) {
+			if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("type"))) {
 				xmlChar *value = xmlTextReaderValue(text_reader_);
-				if (xmlStrEqual(value, BAD_CAST "external")) {
+				if (xmlStrEqual(value, reinterpret_cast<const xmlChar *>("external"))) {
 					import->set_type(value);
-				} else if (xmlStrEqual(value, BAD_CAST "internal")) {
+				} else if (xmlStrEqual(value, reinterpret_cast<const xmlChar *>("internal"))) {
 					import->set_type(value);
 				} else {
 					cerr << "unknown type of <import>: " << value << endl;
 					xmlFree(value);
 					return -2;
 				}
-			} else if (xmlStrEqual(local_name, BAD_CAST "format")) {
+			} else if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("format"))) {
 				const xmlChar *value = xmlTextReaderConstValue(text_reader_);
-				if (xmlStrEqual(value, BAD_CAST "sbml")) {
+				if (xmlStrEqual(value, reinterpret_cast<const xmlChar *>("sbml"))) {
 					import->set_format(Import::kSbml);
 				} else {
 					cerr << "unknown format of <import>: " << value << endl;
 					return -2;
 				}
-			} else if (xmlStrEqual(local_name, BAD_CAST "iref")) {
+			} else if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("iref"))) {
 				import->set_iref(xmlTextReaderValue(text_reader_));
-			} else if (xmlStrEqual(local_name, BAD_CAST "xref")) {
+			} else if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("xref"))) {
 				import->set_xref(xmlTextReaderValue(text_reader_));
-			} else if (xmlStrEqual(local_name, BAD_CAST "zref")) {
+			} else if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("zref"))) {
 				import->set_zref(xmlTextReaderValue(text_reader_));
 			} else {
 				cerr << "unknown attribute of <import>: " << local_name << endl;
@@ -1798,23 +1798,23 @@ private:
 			if (xmlTextReaderIsNamespaceDecl(text_reader_)) continue;
 
 			const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
-			if (xmlStrEqual(local_name, BAD_CAST "timeseries-id")) {
+			if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("timeseries-id"))) {
 				ts->set_timeseries_id(xmlTextReaderValue(text_reader_));
-			} else if (xmlStrEqual(local_name, BAD_CAST "name")) {
+			} else if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("name"))) {
 				// we can ignore the name
-			} else if (xmlStrEqual(local_name, BAD_CAST "format")) {
+			} else if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("format"))) {
 				xmlChar *value = xmlTextReaderValue(text_reader_);
-				if ( xmlStrEqual(value, BAD_CAST "csv") ||
-					 xmlStrEqual(value, BAD_CAST "isd") ) {
+				if ( xmlStrEqual(value, reinterpret_cast<const xmlChar *>("csv")) ||
+					 xmlStrEqual(value, reinterpret_cast<const xmlChar *>("isd")) ) {
 					ts->set_format(value);
 				} else {
 					cerr << "unknown format of <timeseries>: " << value << endl;
 					xmlFree(value);
 					return -2;
 				}
-			} else if (xmlStrEqual(local_name, BAD_CAST "iref")) {
+			} else if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("iref"))) {
 				ts->set_iref(xmlTextReaderValue(text_reader_));
-			} else if (xmlStrEqual(local_name, BAD_CAST "zref")) {
+			} else if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("zref"))) {
 				ts->set_zref(xmlTextReaderValue(text_reader_));
 			} else {
 				cerr << "unknown attribute of <timeseries>: " << local_name << endl;
@@ -1847,7 +1847,7 @@ private:
 			int type = xmlTextReaderNodeType(text_reader_);
 			if (type == XML_READER_TYPE_ELEMENT) {
 				const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
-				if (xmlStrEqual(local_name, BAD_CAST "template")) {
+				if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("template"))) {
 					i = ReadTemplate();
 					if (i <= 0) return i;
 					continue;
@@ -1857,7 +1857,7 @@ private:
 				}
 			} else if (type == XML_READER_TYPE_END_ELEMENT) {
 				const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
-				if (xmlStrEqual(local_name, BAD_CAST "template-set")) {
+				if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("template-set"))) {
 					return xmlTextReaderNext(text_reader_);
 				}
 			}
@@ -1873,9 +1873,9 @@ private:
 			if (xmlTextReaderIsNamespaceDecl(text_reader_)) continue;
 
 			const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
-			if (xmlStrEqual(local_name, BAD_CAST "template-id")) {
+			if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("template-id"))) {
 				t->set_template_id(xmlTextReaderValue(text_reader_));
-			} else if (xmlStrEqual(local_name, BAD_CAST "ref-module-id")) {
+			} else if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("ref-module-id"))) {
 				t->set_ref_module_id(xmlTextReaderValue(text_reader_));
 			} else {
 				cerr << "unknown attribute of <template>: " << local_name << endl;
@@ -1904,7 +1904,7 @@ private:
 			int type = xmlTextReaderNodeType(text_reader_);
 			if (type == XML_READER_TYPE_ELEMENT) {
 				const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
-				if (xmlStrEqual(local_name, BAD_CAST "instance")) {
+				if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("instance"))) {
 					i = ReadInstance();
 					if (i <= 0) return i;
 					continue;
@@ -1914,7 +1914,7 @@ private:
 				}
 			} else if (type == XML_READER_TYPE_END_ELEMENT) {
 				const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
-				if (xmlStrEqual(local_name, BAD_CAST "instance-set")) {
+				if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("instance-set"))) {
 					return xmlTextReaderNext(text_reader_);
 				}
 			}
@@ -1931,9 +1931,9 @@ private:
 			if (xmlTextReaderIsNamespaceDecl(text_reader_)) continue;
 
 			const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
-			if (xmlStrEqual(local_name, BAD_CAST "module-id")) {
+			if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("module-id"))) {
 				instance_->set_module_id(xmlTextReaderValue(text_reader_));
-			} else if (xmlStrEqual(local_name, BAD_CAST "label")) {
+			} else if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("label"))) {
 				instance_->set_label(xmlTextReaderValue(text_reader_));
 			} else {
 				cerr << "unknown attribute of <instance>: " << local_name << endl;
@@ -1949,18 +1949,18 @@ private:
 			int type = xmlTextReaderNodeType(text_reader_);
 			if (type == XML_READER_TYPE_ELEMENT) {
 				const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
-				if (xmlStrEqual(local_name, BAD_CAST "instance-of")) {
+				if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("instance-of"))) {
 					i = ReadInstanceOf();
 					if (i <= 0) return i;
 					continue;
-				} else if (xmlStrEqual(local_name, BAD_CAST "target-module")) {
+				} else if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("target-module"))) {
 					i = ReadTargetModule();
 					if (i <= 0) return i;
 					continue;
 				}
 			} else if (type == XML_READER_TYPE_END_ELEMENT) {
 				const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
-				if (xmlStrEqual(local_name, BAD_CAST "instance")) {
+				if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("instance"))) {
 					return xmlTextReaderRead(text_reader_);
 				}
 			}
@@ -1973,7 +1973,7 @@ private:
 		assert(instance_);
 
 		xmlChar *template_id;
-		int i = ReadAttributeValue(BAD_CAST "template-id", &template_id);
+		int i = ReadAttributeValue(reinterpret_cast<const xmlChar *>("template-id"), &template_id);
 		if (i <= 0) {
 			cerr << "missing template-id of <instance-of>: " << instance_->module_id() << endl;
 			return -2;
@@ -1985,7 +1985,7 @@ private:
 
 	int ReadTargetModule() {
 		xmlChar *module_id;
-		int i = ReadAttributeValue(BAD_CAST "module-id", &module_id);
+		int i = ReadAttributeValue(reinterpret_cast<const xmlChar *>("module-id"), &module_id);
 		if (i <= 0) {
 			cerr << "missing module-id of <target-module>: " << instance_->module_id() << endl;
 			return -2;
@@ -1997,14 +1997,14 @@ private:
 			int type = xmlTextReaderNodeType(text_reader_);
 			if (type == XML_READER_TYPE_ELEMENT) {
 				const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
-				if (xmlStrEqual(local_name, BAD_CAST "target-physical-quantity")) {
+				if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("target-physical-quantity"))) {
 					i = ReadTargetPq(tm.get());
 					if (i <= 0) return i;
 					continue;
 				}
 			} else if (type == XML_READER_TYPE_END_ELEMENT) {
 				const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
-				if (xmlStrEqual(local_name, BAD_CAST "target-module")) {
+				if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("target-module"))) {
 					return xmlTextReaderRead(text_reader_);
 				}
 			}
@@ -2022,7 +2022,7 @@ private:
 			if (xmlTextReaderIsNamespaceDecl(text_reader_)) continue;
 
 			const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
-			if (xmlStrEqual(local_name, BAD_CAST "physical-quantity-id")) {
+			if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("physical-quantity-id"))) {
 				const xmlChar *value = xmlTextReaderConstValue(text_reader_);
 				pq_id = atoi((const char *)value);
 				if (pq_id <= 0) {
@@ -2042,14 +2042,14 @@ private:
 			int type = xmlTextReaderNodeType(text_reader_);
 			if (type == XML_READER_TYPE_ELEMENT) {
 				const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
-				if (xmlStrEqual(local_name, BAD_CAST "definition")) {
+				if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("definition"))) {
 					i = tpq_dumper->Read(0);
 					if (i <= 0) return i;
 					continue;
 				}
 			} else if (type == XML_READER_TYPE_END_ELEMENT) {
 				const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
-				if (xmlStrEqual(local_name, BAD_CAST "target-physical-quantity")) {
+				if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("target-physical-quantity"))) {
 					if (!dd_->SaveTargetPq(tm, tpq.get())) return -2;
 					return xmlTextReaderRead(text_reader_);
 				}
@@ -2069,7 +2069,7 @@ private:
 			int type = xmlTextReaderNodeType(text_reader_);
 			if (type == XML_READER_TYPE_ELEMENT) {
 				const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
-				if (xmlStrEqual(local_name, BAD_CAST "edge")) {
+				if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("edge"))) {
 					i = ReadEdge();
 					if (i <= 0) return i;
 					continue;
@@ -2079,7 +2079,7 @@ private:
 				}
 			} else if (type == XML_READER_TYPE_END_ELEMENT) {
 				const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
-				if (xmlStrEqual(local_name, BAD_CAST "edge-set")) {
+				if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("edge-set"))) {
 					return xmlTextReaderRead(text_reader_);
 				}
 			}
@@ -2095,19 +2095,19 @@ private:
 			if (xmlTextReaderIsNamespaceDecl(text_reader_)) continue;
 
 			const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
-			if (xmlStrEqual(local_name, BAD_CAST "edge-id")) {
+			if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("edge-id"))) {
 				// ignored
-			} else if (xmlStrEqual(local_name, BAD_CAST "type")) {
+			} else if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("type"))) {
 				const xmlChar *value = xmlTextReaderConstValue(text_reader_);
-				if (xmlStrEqual(value, BAD_CAST "functional")) {
+				if (xmlStrEqual(value, reinterpret_cast<const xmlChar *>("functional"))) {
 					edge_.reset(new Edge(Edge::kFunctional));
-				} else if (xmlStrEqual(value, BAD_CAST "forwarding")) {
+				} else if (xmlStrEqual(value, reinterpret_cast<const xmlChar *>("forwarding"))) {
 					edge_.reset(new Edge(Edge::kForwarding));
 				} else {
 					// let's skip this edge
 					return xmlTextReaderNext(text_reader_);
 				}
-			} else if (xmlStrEqual(local_name, BAD_CAST "multiple")) {
+			} else if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("multiple"))) {
 				// ignored
 			} else {
 				cerr << "unknown attribute of <edge>: " << local_name << endl;
@@ -2123,18 +2123,18 @@ private:
 			int type = xmlTextReaderNodeType(text_reader_);
 			if (type == XML_READER_TYPE_ELEMENT) {
 				const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
-				if (xmlStrEqual(local_name, BAD_CAST "tail")) {
+				if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("tail"))) {
 					i = ReadTail();
 					if (i <= 0) return i;
 					continue;
-				} else if (xmlStrEqual(local_name, BAD_CAST "head")) {
+				} else if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("head"))) {
 					i = ReadHead();
 					if (i <= 0) return i;
 					continue;
 				}
 			} else if (type == XML_READER_TYPE_END_ELEMENT) {
 				const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
-				if (xmlStrEqual(local_name, BAD_CAST "edge")) {
+				if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("edge"))) {
 					if (!dd_->SaveEdge(edge_.get())) return -2;
 					return xmlTextReaderRead(text_reader_);
 				}
@@ -2150,9 +2150,9 @@ private:
 			if (xmlTextReaderIsNamespaceDecl(text_reader_)) continue;
 
 			const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
-			if (xmlStrEqual(local_name, BAD_CAST "module-id")) {
+			if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("module-id"))) {
 				edge_->set_tail_module_id(xmlTextReaderValue(text_reader_));
-			} else if (xmlStrEqual(local_name, BAD_CAST "port-id")) {
+			} else if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("port-id"))) {
 				edge_->set_tail_port_id(xmlTextReaderValue(text_reader_));
 			} else {
 				cerr << "unknown attribute of <tail>: " << local_name << endl;
@@ -2176,9 +2176,9 @@ private:
 			if (xmlTextReaderIsNamespaceDecl(text_reader_)) continue;
 
 			const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
-			if (xmlStrEqual(local_name, BAD_CAST "module-id")) {
+			if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("module-id"))) {
 				edge_->set_head_module_id(xmlTextReaderValue(text_reader_));
-			} else if (xmlStrEqual(local_name, BAD_CAST "port-id")) {
+			} else if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("port-id"))) {
 				edge_->set_head_port_id(xmlTextReaderValue(text_reader_));
 			} else {
 				cerr << "unknown attribute of <head>: " << local_name << endl;

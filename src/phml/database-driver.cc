@@ -775,7 +775,7 @@ bool DatabaseDriver::SaveReference(const PQ *pq, const Reference *reference, con
 		}
 		if ( extra &&
 			 extra->definition() &&
-			 xmlStrEqual(extra->definition()->type(), BAD_CAST "reduction") ) {
+			 xmlStrEqual(extra->definition()->type(), reinterpret_cast<const xmlChar *>("reduction")) ) {
 			Reduction reduction;
 			if (!ConvertStringToReduction((const char *)extra->definition()->sub_type(),
 										  &reduction))
@@ -935,7 +935,7 @@ bool DatabaseDriver::SaveImport(const Module *module, const Import *import,
 	}
 
 	std::unique_ptr<char[]> utf8;
-	if (xmlStrEqual(import->type(), BAD_CAST "external")) {
+	if (xmlStrEqual(import->type(), reinterpret_cast<const xmlChar *>("external"))) {
 		boost::filesystem::path path;
 		if (!GetAbsolutePathFromReference(import, given_path, model_path, &path)) {
 			cerr << "external <import> without reference" << endl;

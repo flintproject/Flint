@@ -272,15 +272,15 @@ public:
 			int type = xmlTextReaderNodeType(text_reader_);
 			if (type == XML_READER_TYPE_ELEMENT) {
 				const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
-				if (xmlStrEqual(local_name, BAD_CAST "units")) {
+				if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("units"))) {
 					i = ReadUnits(nullptr);
 					if (i <= 0) return i;
 					continue;
-				} else if (xmlStrEqual(local_name, BAD_CAST "component")) {
+				} else if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("component"))) {
 					i = ReadComponent();
 					if (i <= 0) return i;
 					continue;
-				} else if (xmlStrEqual(local_name, BAD_CAST "connection")) {
+				} else if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("connection"))) {
 					i = ReadConnection();
 					if (i <= 0) return i;
 					continue;
@@ -303,7 +303,7 @@ private:
 			if (!IsInCellMLNamespace(uri)) continue;
 
 			const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
-			if (xmlStrEqual(local_name, BAD_CAST "name")) {
+			if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("name"))) {
 				units.reset(new CellMLUnits(xmlTextReaderValue(text_reader_)));
 				break;
 			}
@@ -322,14 +322,14 @@ private:
 			int type = xmlTextReaderNodeType(text_reader_);
 			if (type == XML_READER_TYPE_ELEMENT) {
 				const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
-				if (xmlStrEqual(local_name, BAD_CAST "unit")) {
+				if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("unit"))) {
 					i = ReadUnit(component, units.get());
 					if (i <= 0) return i;
 					continue;
 				}
 			} else if (type == XML_READER_TYPE_END_ELEMENT) {
 				const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
-				if (xmlStrEqual(local_name, BAD_CAST "units")) {
+				if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("units"))) {
 					return xmlTextReaderRead(text_reader_);
 				}
 			}
@@ -345,13 +345,13 @@ private:
 			if (xmlTextReaderIsNamespaceDecl(text_reader_)) continue;
 
 			const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
-			if (xmlStrEqual(local_name, BAD_CAST "units")) {
+			if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("units"))) {
 				unit->set_units(xmlTextReaderValue(text_reader_));
-			} else if (xmlStrEqual(local_name, BAD_CAST "prefix")) {
+			} else if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("prefix"))) {
 				unit->set_prefix(xmlTextReaderValue(text_reader_));
-			} else if (xmlStrEqual(local_name, BAD_CAST "exponent")) {
+			} else if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("exponent"))) {
 				unit->set_exponent(xmlTextReaderValue(text_reader_));
-			} else if (xmlStrEqual(local_name, BAD_CAST "multiplier")) {
+			} else if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("multiplier"))) {
 				unit->set_multiplier(xmlTextReaderValue(text_reader_));
 			} else {
 				cerr << "unknown attribute of <unit>: " << local_name << endl;
@@ -421,7 +421,7 @@ private:
 			if (!IsInCellMLNamespace(uri)) continue;
 
 			const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
-			if (xmlStrEqual(local_name, BAD_CAST "name")) {
+			if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("name"))) {
 				xmlChar *name = xmlTextReaderValue(text_reader_);
 				component.reset(new CellMLComponent(name));
 				break;
@@ -438,7 +438,7 @@ private:
 			if (IsInMathMLNamespace(uri)) {
 				if (type == XML_READER_TYPE_ELEMENT) {
 					const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
-					if (xmlStrEqual(local_name, BAD_CAST "math")) {
+					if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("math"))) {
 						std::unique_ptr<FormulaHandler<TParser> > handler(new FormulaHandler<TParser>(parser_, component.get()));
 						std::unique_ptr<mathml::MathDumper> math_dumper(new mathml::MathDumper(text_reader_, handler->oss()));
 						i = math_dumper->Read(handler.get());
@@ -455,15 +455,15 @@ private:
 			}
 			if (type == XML_READER_TYPE_ELEMENT) {
 				const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
-				if (xmlStrEqual(local_name, BAD_CAST "units")) {
+				if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("units"))) {
 					i = ReadUnits(component.get());
 					if (i <= 0) return i;
 					continue;
-				} else if (xmlStrEqual(local_name, BAD_CAST "variable")) {
+				} else if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("variable"))) {
 					i = ReadVariable(component.get());
 					if (i <= 0) return i;
 					continue;
-				} else if (xmlStrEqual(local_name, BAD_CAST "role")) {
+				} else if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("role"))) {
 					// TODO
 					cerr << "<role> is not yet supported" << endl;
 				} else {
@@ -475,7 +475,7 @@ private:
 				}
 			} else if (type == XML_READER_TYPE_END_ELEMENT) {
 				const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
-				if (xmlStrEqual(local_name, BAD_CAST "component")) {
+				if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("component"))) {
 					return xmlTextReaderRead(text_reader_);
 				}
 			}
@@ -493,15 +493,15 @@ private:
 			if (!IsInCellMLNamespace(uri)) continue;
 
 			const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
-			if (xmlStrEqual(local_name, BAD_CAST "name")) {
+			if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("name"))) {
 				variable->set_name(xmlTextReaderValue(text_reader_));
-			} else if (xmlStrEqual(local_name, BAD_CAST "units")) {
+			} else if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("units"))) {
 				variable->set_units(xmlTextReaderValue(text_reader_));
-			} else if (xmlStrEqual(local_name, BAD_CAST "initial_value")) {
+			} else if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("initial_value"))) {
 				variable->set_initial_value(xmlTextReaderValue(text_reader_));
-			} else if (xmlStrEqual(local_name, BAD_CAST "public_interface")) {
+			} else if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("public_interface"))) {
 				variable->set_public_interface(xmlTextReaderValue(text_reader_));
-			} else if (xmlStrEqual(local_name, BAD_CAST "private_interface")) {
+			} else if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("private_interface"))) {
 				variable->set_private_interface(xmlTextReaderValue(text_reader_));
 			} else {
 				cerr << "unknown attribute of <variable>: "
@@ -572,12 +572,12 @@ private:
 			int type = xmlTextReaderNodeType(text_reader_);
 			if (type == XML_READER_TYPE_ELEMENT) {
 				const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
-				if (xmlStrEqual(local_name, BAD_CAST "map_components")) {
+				if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("map_components"))) {
 					connection.reset(new CellMLConnection);
 					i = ReadMapComponents(connection.get());
 					if (i <= 0) return i;
 					continue;
-				} else if (xmlStrEqual(local_name, BAD_CAST "map_variables")) {
+				} else if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("map_variables"))) {
 					if (!connection) {
 						cerr << "no leading <map_components> found" << endl;
 						return -2;
@@ -593,7 +593,7 @@ private:
 				}
 			} else if (type == XML_READER_TYPE_END_ELEMENT) {
 				const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
-				if (xmlStrEqual(local_name, BAD_CAST "connection")) {
+				if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("connection"))) {
 					return xmlTextReaderRead(text_reader_);
 				}
 			}
@@ -610,9 +610,9 @@ private:
 			if (!IsInCellMLNamespace(uri)) continue;
 
 			const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
-			if (xmlStrEqual(local_name, BAD_CAST "component_1")) {
+			if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("component_1"))) {
 				connection->set_component_1(xmlTextReaderValue(text_reader_));
-			} else if (xmlStrEqual(local_name, BAD_CAST "component_2")) {
+			} else if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("component_2"))) {
 				connection->set_component_2(xmlTextReaderValue(text_reader_));
 			} else {
 				cerr << "unknown attribute of <map_components>: "
@@ -664,9 +664,9 @@ private:
 			if (!IsInCellMLNamespace(uri)) continue;
 
 			const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
-			if (xmlStrEqual(local_name, BAD_CAST "variable_1")) {
+			if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("variable_1"))) {
 				map_variables->set_variable_1(xmlTextReaderValue(text_reader_));
-			} else if (xmlStrEqual(local_name, BAD_CAST "variable_2")) {
+			} else if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("variable_2"))) {
 				map_variables->set_variable_2(xmlTextReaderValue(text_reader_));
 			} else {
 				cerr << "unknown attribute of <map_components>: "

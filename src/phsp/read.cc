@@ -195,9 +195,9 @@ public:
 			int type = xmlTextReaderNodeType(text_reader_);
 			if (type == XML_READER_TYPE_ELEMENT) {
 				const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
-				if (xmlStrEqual(local_name, BAD_CAST "phsp")) {
+				if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("phsp"))) {
 					// skip the top element
-				} else if (xmlStrEqual(local_name, BAD_CAST "model")) {
+				} else if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("model"))) {
 					i = ReadModel(cp);
 					if (i <= 0) return i;
 					continue;
@@ -207,7 +207,7 @@ public:
 				}
 			} else if (type == XML_READER_TYPE_END_ELEMENT) {
 				const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
-				if (xmlStrEqual(local_name, BAD_CAST "phsp")) {
+				if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("phsp"))) {
 					return 1;
 				}
 			}
@@ -224,14 +224,14 @@ private:
 			if (xmlTextReaderIsNamespaceDecl(text_reader_)) continue;
 
 			const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
-			if (xmlStrEqual(local_name, BAD_CAST "format")) {
+			if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("format"))) {
 				model->set_format(xmlTextReaderValue(text_reader_));
-				if ( !xmlStrEqual(model->format(), BAD_CAST "phml") &&
-					 !xmlStrEqual(model->format(), BAD_CAST "sbml") ) {
+				if ( !xmlStrEqual(model->format(), reinterpret_cast<const xmlChar *>("phml")) &&
+					 !xmlStrEqual(model->format(), reinterpret_cast<const xmlChar *>("sbml")) ) {
 					cerr << "unknown format of <model>: " << (const char *)model->format() << endl;
 					return -2;
 				}
-			} else if (xmlStrEqual(local_name, BAD_CAST "iref")) {
+			} else if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("iref"))) {
 				model->set_iref(xmlTextReaderValue(text_reader_));
 			}
 		}
@@ -272,7 +272,7 @@ private:
 				int type = xmlTextReaderNodeType(text_reader_);
 				if (type == XML_READER_TYPE_END_ELEMENT) {
 					const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
-					if (xmlStrEqual(local_name, BAD_CAST "model")) {
+					if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("model"))) {
 						return xmlTextReaderRead(text_reader_);
 					}
 				}
@@ -384,18 +384,18 @@ private:
 			int type = xmlTextReaderNodeType(text_reader_);
 			if (type == XML_READER_TYPE_ELEMENT) {
 				const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
-				if (xmlStrEqual(local_name, BAD_CAST "parameter-set")) {
+				if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("parameter-set"))) {
 					i = ReadParameterSet(rowid);
 					if (i <= 0) return i;
 					continue;
-				} else if (xmlStrEqual(local_name, BAD_CAST "target-set")) {
+				} else if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("target-set"))) {
 					i = ReadTargetSet(rowid);
 					if (i <= 0) return i;
 					continue;
 				}
 			} else if (type == XML_READER_TYPE_END_ELEMENT) {
 				const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
-				if (xmlStrEqual(local_name, BAD_CAST "model")) {
+				if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("model"))) {
 					// commit the transaction per attached session
 					if (!CommitTransaction(db_))
 						return -2;
@@ -422,7 +422,7 @@ private:
 			int type = xmlTextReaderNodeType(text_reader_);
 			if (type == XML_READER_TYPE_ELEMENT) {
 				const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
-				if (xmlStrEqual(local_name, BAD_CAST "parameter")) {
+				if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("parameter"))) {
 					i = ReadParameter(rowid);
 					if (i <= 0) return i;
 					continue;
@@ -432,7 +432,7 @@ private:
 				}
 			} else if (type == XML_READER_TYPE_END_ELEMENT) {
 				const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
-				if (xmlStrEqual(local_name, BAD_CAST "parameter-set")) {
+				if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("parameter-set"))) {
 					return 1;
 				}
 			}
@@ -448,7 +448,7 @@ private:
 			if (xmlTextReaderIsNamespaceDecl(text_reader_)) continue;
 
 			const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
-			if (xmlStrEqual(local_name, BAD_CAST "name")) {
+			if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("name"))) {
 				parameter.reset(new Parameter(xmlTextReaderValue(text_reader_)));
 			} else {
 				// ignore
@@ -463,14 +463,14 @@ private:
 			int type = xmlTextReaderNodeType(text_reader_);
 			if (type == XML_READER_TYPE_ELEMENT) {
 				const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
-				if (xmlStrEqual(local_name, BAD_CAST "range")) {
+				if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("range"))) {
 					i = ReadRange(rowid, parameter.get());
 					if (i <= 0) return i;
 					continue;
 				}
 			} else if (type == XML_READER_TYPE_END_ELEMENT) {
 				const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
-				if (xmlStrEqual(local_name, BAD_CAST "parameter")) {
+				if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("parameter"))) {
 					return xmlTextReaderRead(text_reader_);
 				}
 			}
@@ -486,17 +486,17 @@ private:
 			if (xmlTextReaderIsNamespaceDecl(text_reader_)) continue;
 
 			const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
-			if (xmlStrEqual(local_name, BAD_CAST "type")) {
+			if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("type"))) {
 				const xmlChar *type = xmlTextReaderConstValue(text_reader_);
-				if (xmlStrEqual(type, BAD_CAST "interval")) {
+				if (xmlStrEqual(type, reinterpret_cast<const xmlChar *>("interval"))) {
 					range->set_type(Range::kInterval);
-				} else if (xmlStrEqual(type, BAD_CAST "enum")) {
+				} else if (xmlStrEqual(type, reinterpret_cast<const xmlChar *>("enum"))) {
 					range->set_type(Range::kEnum);
 				} else {
 					cerr << "unkown type of <range>: " << type << endl;
 					return -2;
 				}
-			} else if (xmlStrEqual(local_name, BAD_CAST "lower")) {
+			} else if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("lower"))) {
 				boost::rational<long> lower;
 				bool b = base::Rational<long>::FromString((const char *)xmlTextReaderConstValue(text_reader_), lower);
 				if (!b) {
@@ -504,7 +504,7 @@ private:
 					return -2;
 				}
 				range->set_lower(lower);
-			} else if (xmlStrEqual(local_name, BAD_CAST "upper")) {
+			} else if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("upper"))) {
 				boost::rational<long> upper;
 				bool b = base::Rational<long>::FromString((const char *)xmlTextReaderConstValue(text_reader_), upper);
 				if (!b) {
@@ -512,7 +512,7 @@ private:
 					return -2;
 				}
 				range->set_upper(upper);
-			} else if (xmlStrEqual(local_name, BAD_CAST "step")) {
+			} else if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("step"))) {
 				boost::rational<long> step;
 				bool b = base::Rational<long>::FromString((const char *)xmlTextReaderConstValue(text_reader_), step);
 				if (!b) {
@@ -595,7 +595,7 @@ private:
 			int type = xmlTextReaderNodeType(text_reader_);
 			if (type == XML_READER_TYPE_ELEMENT) {
 				const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
-				if (xmlStrEqual(local_name, BAD_CAST "target")) {
+				if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("target"))) {
 					i = ReadTarget(rowid);
 					if (i <= 0) return i;
 					continue;
@@ -605,7 +605,7 @@ private:
 				}
 			} else if (type == XML_READER_TYPE_END_ELEMENT) {
 				const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
-				if (xmlStrEqual(local_name, BAD_CAST "target-set")) {
+				if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("target-set"))) {
 					return 1;
 				}
 			}
@@ -623,20 +623,20 @@ private:
 			if (xmlTextReaderIsNamespaceDecl(text_reader_)) continue;
 
 			const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
-			if (xmlStrEqual(local_name, BAD_CAST "module-id")) {
+			if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("module-id"))) {
 				target->set_uuid(xmlTextReaderValue(text_reader_));
-			} else if (xmlStrEqual(local_name, BAD_CAST "physical-quantity-id")) {
+			} else if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("physical-quantity-id"))) {
 				int id = atoi((const char *)xmlTextReaderConstValue(text_reader_));
 				if (id <= 0) {
 					cerr << "invalid physical-quantity-id: " << id << endl;
 					return -2;
 				}
 				target->set_physical_quantity_id(id);
-			} else if (xmlStrEqual(local_name, BAD_CAST "species-id")) {
+			} else if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("species-id"))) {
 				target->set_species_id(xmlTextReaderValue(text_reader_));
-			} else if (xmlStrEqual(local_name, BAD_CAST "parameter-id")) {
+			} else if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("parameter-id"))) {
 				target->set_parameter_id(xmlTextReaderValue(text_reader_));
-			} else if (xmlStrEqual(local_name, BAD_CAST "reaction-id")) {
+			} else if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("reaction-id"))) {
 				target->set_reaction_id(xmlTextReaderValue(text_reader_));
 			} else {
 				cerr << "unknown attribute of <target>: " << local_name << endl;
@@ -662,7 +662,7 @@ private:
 			int type = xmlTextReaderNodeType(text_reader_);
 			if (type == XML_READER_TYPE_ELEMENT) {
 				const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
-				if (xmlStrEqual(local_name, BAD_CAST "value")) {
+				if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("value"))) {
 					i = ReadValue(&oss);
 					if (i <= 0) return i;
 					continue;
@@ -672,7 +672,7 @@ private:
 				}
 			} else if (type == XML_READER_TYPE_END_ELEMENT) {
 				const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
-				if (xmlStrEqual(local_name, BAD_CAST "target")) {
+				if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("target"))) {
 					string s(oss.str());
 					if (s.empty()) {
 						cerr << "missing value of <target>" << endl;
@@ -768,7 +768,7 @@ private:
 			int type = xmlTextReaderNodeType(text_reader_);
 			if (type == XML_READER_TYPE_ELEMENT) {
 				const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
-				if (xmlStrEqual(local_name, BAD_CAST "math")) {
+				if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("math"))) {
 					std::unique_ptr<Handler> handler(new Handler);
 					std::unique_ptr<mathml::MathDumper> math_dumper(new mathml::MathDumper(text_reader_, oss));
 					i = math_dumper->Read(handler.get());
@@ -780,7 +780,7 @@ private:
 				}
 			} else if (type == XML_READER_TYPE_END_ELEMENT) {
 				const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
-				if (xmlStrEqual(local_name, BAD_CAST "value")) {
+				if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("value"))) {
 					return xmlTextReaderRead(text_reader_);
 				}
 			}

@@ -43,14 +43,14 @@ public:
 			if (xmlTextReaderIsNamespaceDecl(text_reader_)) continue;
 
 			const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
-			if (xmlStrEqual(local_name, BAD_CAST "type")) {
+			if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("type"))) {
 				const xmlChar *value = xmlTextReaderConstValue(text_reader_);
-				if (xmlStrEqual(value, BAD_CAST "assign")) {
+				if (xmlStrEqual(value, reinterpret_cast<const xmlChar *>("assign"))) {
 					// skip one of type assign
 					return xmlTextReaderNext(text_reader_);
-				} else if (xmlStrEqual(value, BAD_CAST "graph")) {
+				} else if (xmlStrEqual(value, reinterpret_cast<const xmlChar *>("graph"))) {
 					assert(false);
-				} else if (xmlStrEqual(value, BAD_CAST "loop")) {
+				} else if (xmlStrEqual(value, reinterpret_cast<const xmlChar *>("loop"))) {
 					// skip one of type loop
 					return xmlTextReaderNext(text_reader_);
 				}
@@ -63,11 +63,11 @@ public:
 			int type = xmlTextReaderNodeType(text_reader_);
 			if (type == XML_READER_TYPE_ELEMENT) {
 				const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
-				if (xmlStrEqual(local_name, BAD_CAST "case-set")) {
+				if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("case-set"))) {
 					i = ReadCaseSet(level);
 					if (i <= 0) return i;
 					continue;
-				} else if (xmlStrEqual(local_name, BAD_CAST "math")) {
+				} else if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("math"))) {
 					std::unique_ptr<Handler> handler(new Handler);
 					i = math_dumper_.Read(handler.get());
 					if (i < 0) return i;
@@ -85,7 +85,7 @@ public:
 				}
 			} else if (type == XML_READER_TYPE_END_ELEMENT) {
 				const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
-				if (xmlStrEqual(local_name, BAD_CAST "definition")) {
+				if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("definition"))) {
 					reader_->CloseDefinition(level);
 					return xmlTextReaderRead(text_reader_);
 				}
@@ -119,7 +119,7 @@ private:
 			int type = xmlTextReaderNodeType(text_reader_);
 			if (type == XML_READER_TYPE_ELEMENT) {
 				const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
-				if (xmlStrEqual(local_name, BAD_CAST "case")) {
+				if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("case"))) {
 					i = ReadCase(level);
 					if (i <= 0) return i;
 					continue;
@@ -129,7 +129,7 @@ private:
 				}
 			} else if (type == XML_READER_TYPE_END_ELEMENT) {
 				const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
-				if (xmlStrEqual(local_name, BAD_CAST "case-set")) {
+				if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("case-set"))) {
 					reader_->Print(")");
 					return xmlTextReaderRead(text_reader_);
 				}
@@ -146,18 +146,18 @@ private:
 			int type = xmlTextReaderNodeType(text_reader_);
 			if (type == XML_READER_TYPE_ELEMENT) {
 				const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
-				if (xmlStrEqual(local_name, BAD_CAST "condition")) {
+				if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("condition"))) {
 					i = ReadCondition();
 					if (i <= 0) return i;
 					continue;
-				} else if (xmlStrEqual(local_name, BAD_CAST "definition")) {
+				} else if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("definition"))) {
 					i = Read(level + 1);
 					if (i <= 0) return i;
 					continue;
 				}
 			} else if (type == XML_READER_TYPE_END_ELEMENT) {
 				const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
-				if (xmlStrEqual(local_name, BAD_CAST "case")) {
+				if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("case"))) {
 					reader_->Print(")");
 					return xmlTextReaderRead(text_reader_);
 				}
@@ -173,9 +173,9 @@ private:
 			if (xmlTextReaderIsNamespaceDecl(text_reader_)) continue;
 
 			const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
-			if (xmlStrEqual(local_name, BAD_CAST "format")) {
+			if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("format"))) {
 				const xmlChar *value = xmlTextReaderConstValue(text_reader_);
-				if (!xmlStrEqual(value, BAD_CAST "mathml")) {
+				if (!xmlStrEqual(value, reinterpret_cast<const xmlChar *>("mathml"))) {
 					cerr << "unknown format of <condition>: " << value << endl;
 					return -2;
 				}
@@ -187,7 +187,7 @@ private:
 			int type = xmlTextReaderNodeType(text_reader_);
 			if (type == XML_READER_TYPE_ELEMENT) {
 				const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
-				if (xmlStrEqual(local_name, BAD_CAST "math")) {
+				if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("math"))) {
 					std::unique_ptr<Handler> handler(new Handler);
 					i = math_dumper_.Read(handler.get());
 					if (i <= 0) return i;
@@ -198,7 +198,7 @@ private:
 				}
 			} else if (type == XML_READER_TYPE_END_ELEMENT) {
 				const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
-				if (xmlStrEqual(local_name, BAD_CAST "condition")) {
+				if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("condition"))) {
 					reader_->Print(")");
 					return xmlTextReaderRead(text_reader_);
 				}

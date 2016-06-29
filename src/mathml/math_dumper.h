@@ -51,7 +51,7 @@ public:
 				continue;
 			} else if (type == XML_READER_TYPE_END_ELEMENT) {
 				const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
-				if (xmlStrEqual(local_name, BAD_CAST "math")) {
+				if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("math"))) {
 					return xmlTextReaderRead(text_reader_);
 				}
 			}
@@ -75,7 +75,7 @@ public:
 				continue;
 			} else if (type == XML_READER_TYPE_END_ELEMENT) {
 				const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
-				if (xmlStrEqual(local_name, BAD_CAST "apply")) {
+				if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("apply"))) {
 					os_->put(')');
 					return xmlTextReaderRead(text_reader_);
 				}
@@ -97,7 +97,7 @@ public:
 				continue;
 			} else if (type == XML_READER_TYPE_END_ELEMENT) {
 				const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
-				if (xmlStrEqual(local_name, BAD_CAST "bvar")) {
+				if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("bvar"))) {
 					os_->put(')');
 					return xmlTextReaderRead(text_reader_);
 				}
@@ -140,18 +140,18 @@ public:
 			if (xmlTextReaderIsNamespaceDecl(text_reader_)) continue;
 
 			const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
-			if (xmlStrEqual(local_name, BAD_CAST "type")) {
+			if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("type"))) {
 				const xmlChar *value = xmlTextReaderConstValue(text_reader_);
-				if (xmlStrEqual(value, BAD_CAST "integer")) {
+				if (xmlStrEqual(value, reinterpret_cast<const xmlChar *>("integer"))) {
 					cn_type = kInteger;
 					break;
-				} else if (xmlStrEqual(value, BAD_CAST "real")) {
+				} else if (xmlStrEqual(value, reinterpret_cast<const xmlChar *>("real"))) {
 					cn_type = kReal;
 					break;
-				} else if (xmlStrEqual(value, BAD_CAST "e-notation")) {
+				} else if (xmlStrEqual(value, reinterpret_cast<const xmlChar *>("e-notation"))) {
 					cn_type = kENotation;
 					break;
-				} else if (xmlStrEqual(value, BAD_CAST "rational")) {
+				} else if (xmlStrEqual(value, reinterpret_cast<const xmlChar *>("rational"))) {
 					cn_type = kRational;
 					break;
 				} else {
@@ -177,7 +177,7 @@ public:
 				xmlFree(s);
 			} else if (type == XML_READER_TYPE_ELEMENT) {
 				const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
-				if (!xmlStrEqual(local_name, BAD_CAST "sep")) {
+				if (!xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("sep"))) {
 					cerr << "unexpected element in <cn>: " << local_name << endl;
 					return -2;
 				}
@@ -191,7 +191,7 @@ public:
 				}
 			} else if (type == XML_READER_TYPE_END_ELEMENT) {
 				const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
-				if (xmlStrEqual(local_name, BAD_CAST "cn")) {
+				if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("cn"))) {
 					return xmlTextReaderRead(text_reader_);
 				}
 			}
@@ -227,7 +227,7 @@ public:
 				continue;
 			} else if (type == XML_READER_TYPE_END_ELEMENT) {
 				const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
-				if (xmlStrEqual(local_name, BAD_CAST "logbase")) {
+				if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("logbase"))) {
 					os_->put(')');
 					return xmlTextReaderRead(text_reader_);
 				}
@@ -249,7 +249,7 @@ public:
 				continue;
 			} else if (type == XML_READER_TYPE_END_ELEMENT) {
 				const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
-				if (xmlStrEqual(local_name, BAD_CAST "matrix")) {
+				if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("matrix"))) {
 					os_->put(')');
 					return xmlTextReaderRead(text_reader_);
 				}
@@ -271,7 +271,7 @@ public:
 				continue;
 			} else if (type == XML_READER_TYPE_END_ELEMENT) {
 				const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
-				if (xmlStrEqual(local_name, BAD_CAST "matrixrow")) {
+				if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("matrixrow"))) {
 					os_->put(')');
 					return xmlTextReaderRead(text_reader_);
 				}
@@ -293,7 +293,7 @@ public:
 				continue;
 			} else if (type == XML_READER_TYPE_END_ELEMENT) {
 				const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
-				if (xmlStrEqual(local_name, BAD_CAST "otherwise")) {
+				if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("otherwise"))) {
 					os_->put(')');
 					return xmlTextReaderRead(text_reader_);
 				}
@@ -315,7 +315,7 @@ public:
 				continue;
 			} else if (type == XML_READER_TYPE_END_ELEMENT) {
 				const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
-				if (xmlStrEqual(local_name, BAD_CAST "piece")) {
+				if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("piece"))) {
 					os_->put(')');
 					return xmlTextReaderRead(text_reader_);
 				}
@@ -337,7 +337,7 @@ public:
 				continue;
 			} else if (type == XML_READER_TYPE_END_ELEMENT) {
 				const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
-				if (xmlStrEqual(local_name, BAD_CAST "piecewise")) {
+				if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("piecewise"))) {
 					os_->put(')');
 					return xmlTextReaderRead(text_reader_);
 				}
@@ -359,7 +359,7 @@ public:
 				continue;
 			} else if (type == XML_READER_TYPE_END_ELEMENT) {
 				const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
-				if (xmlStrEqual(local_name, BAD_CAST "vector")) {
+				if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("vector"))) {
 					os_->put(')');
 					return xmlTextReaderRead(text_reader_);
 				}

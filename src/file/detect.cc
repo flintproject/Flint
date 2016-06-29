@@ -70,32 +70,32 @@ public:
 			if (type == XML_READER_TYPE_ELEMENT) {
 				const xmlChar *uri = xmlTextReaderConstNamespaceUri(text_reader_);
 				const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
-				if ( xmlStrEqual(uri, BAD_CAST "http://www.physiodesigner.org/2013/ns/phsp/1.0") &&
-					 xmlStrEqual(local_name, BAD_CAST "phsp") ) {
+				if ( xmlStrEqual(uri, reinterpret_cast<const xmlChar *>("http://www.physiodesigner.org/2013/ns/phsp/1.0")) &&
+					 xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("phsp")) ) {
 					*format_ = kPhsp;
 					return true;
-				} else if ( xmlStrEqual(uri, BAD_CAST "http://www.physiodesigner.org/2012/ns/physiodesigner/1.0") &&
-					 xmlStrEqual(local_name, BAD_CAST "insilico-model") ) {
+				} else if ( xmlStrEqual(uri, reinterpret_cast<const xmlChar *>("http://www.physiodesigner.org/2012/ns/physiodesigner/1.0")) &&
+					 xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("insilico-model")) ) {
 					*format_ = kPhml;
 					return true;
-				} else if ( xmlStrEqual(uri, BAD_CAST "http://www.physiome.jp/ns/insilicoml") &&
-							xmlStrEqual(local_name, BAD_CAST "insilico-model") ) {
+				} else if ( xmlStrEqual(uri, reinterpret_cast<const xmlChar *>("http://www.physiome.jp/ns/insilicoml")) &&
+							xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("insilico-model")) ) {
 					*format_ = kIsml;
 					return true;
-				} else if ( xmlStrstr(uri, BAD_CAST "http://www.cellml.org/cellml/") &&
-							xmlStrEqual(local_name, BAD_CAST "model") ) {
+				} else if ( xmlStrstr(uri, reinterpret_cast<const xmlChar *>("http://www.cellml.org/cellml/")) &&
+							xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("model")) ) {
 					*format_ = kCellml;
 					return true;
-				} else if ( xmlStrstr(uri, BAD_CAST "http://www.sbml.org/sbml/") &&
-							xmlStrEqual(local_name, BAD_CAST "sbml") ) {
+				} else if ( xmlStrstr(uri, reinterpret_cast<const xmlChar *>("http://www.sbml.org/sbml/")) &&
+							xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("sbml")) ) {
 					*format_ = kSbml;
 					return true;
-				} else if ( xmlStrEqual(uri ,BAD_CAST "http://www.w3.org/1998/Math/MathML") &&
-							xmlStrEqual(local_name, BAD_CAST "math")) {
+				} else if ( xmlStrEqual(uri ,reinterpret_cast<const xmlChar *>("http://www.w3.org/1998/Math/MathML")) &&
+							xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("math"))) {
 					*format_ = kMathml;
 					return true;
-				} else if ( xmlStrEqual(uri ,BAD_CAST "http://sed-ml.org/") &&
-							xmlStrEqual(local_name, BAD_CAST "sedML")) {
+				} else if ( xmlStrEqual(uri ,reinterpret_cast<const xmlChar *>("http://sed-ml.org/")) &&
+							xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("sedML"))) {
 					*format_ = kSedml;
 					return true;
 				} else {
