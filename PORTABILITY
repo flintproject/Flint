@@ -46,7 +46,7 @@ $ sudo apt install g++ autoconf automake libtool cmake openjdk-8-jdk zlib1g-dev
 == Ubuntu 14.04.3 LTS (Trusty Tahr)
 
 All you have to do for installing necessary tools is:
-$ sudo apt-get install g++ autoconf automake libtool cmake openjdk-7-jdk
+$ sudo apt-get install g++ autoconf automake libtool cmake openjdk-7-jdk zlib1g-dev
 
 
 * References
