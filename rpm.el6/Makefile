@@ -59,7 +59,7 @@ TARGET_PACKAGES = $(FLINT_PACKAGE) $(FLINT_GUI_PACKAGE)
 DIST_PACKAGES = $(FLINT_PACKAGE) $(FLINT_GUI_PACKAGE)
 
 RPM_FILES := $(foreach p,$(DEPPACKAGES) $(TARGET_PACKAGES),rpm/$(p))
-DIST_FILES := $(foreach p,$(DEPPACKAGES) $(DIST_PACKAGES),Flint_$(DIST).$(ARCH)/$(p))
+DIST_FILES := $(foreach p,$(DEPPACKAGES) $(DIST_PACKAGES),Flint-$(VERSION)-$(DIST).$(ARCH)/$(p))
 
 define flint_archive
 $(call flint_tarball,$(1)): var/$(call flint_basename,$(1))
@@ -126,12 +126,12 @@ mostlyclean:
 	-rm flint.spec var/flint-$(VERSION).tar.gz
 
 clean:
-	-rm -rf Flint_$(DIST).$(ARCH) rpm $(DEPINSTALLED) *.spec var/*.tar.gz var/*/
+	-rm -rf Flint-$(VERSION)-$(DIST).$(ARCH) rpm $(DEPINSTALLED) *.spec var/*.tar.gz var/*/
 
-dist: Flint_$(DIST).$(ARCH).zip
+dist: Flint-$(VERSION)-$(DIST).$(ARCH).zip
 
 distclean: clean
-	-rm -f Flint_$(DIST).$(ARCH).zip
+	-rm -f Flint-$(VERSION)-$(DIST).$(ARCH).zip
 
 maintainer-clean: distclean
 	-sudo rpm -e flint-gui
@@ -140,8 +140,8 @@ maintainer-clean: distclean
 
 download: $(foreach lib,$(BOOST_UNDERSCORE).tar.bz2 clibsedml-$(CLIBSEDML_COMMIT).tar.gz libSBML-$(LIBSBML_VERSION)-core-src.zip libzip-$(LIBZIP_VERSION).tar.gz protobuf-$(PROTOBUF_VERSION).tar.gz SBML_odeSolver-$(SOSLIB_COMMIT).tar.gz sundials-$(SUNDIALS_VERSION).tar.gz,src/$(lib))
 
-Flint_$(DIST).$(ARCH).zip: $(DIST_FILES)
-	zip -r $@ Flint_$(DIST).$(ARCH)
+Flint-$(VERSION)-$(DIST).$(ARCH).zip: $(DIST_FILES)
+	zip -r $@ Flint-$(VERSION)-$(DIST).$(ARCH)
 
 $(foreach d,$(DEPS),$(eval $(call flint_archive,$(d))))
 
