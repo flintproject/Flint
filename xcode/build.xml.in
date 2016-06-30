@@ -10,7 +10,7 @@
       <bundleapp outputdirectory="root/Applications"
 		 name="Flint"
 		 displayname="Flint"
-		 shortversion="1.6.0"
+		 shortversion="VERSION"
 		 identifier="jp.oist.flint"
 		 icon="../flint.icns"
 		 mainclassname="jp.oist.flint.command.Main">

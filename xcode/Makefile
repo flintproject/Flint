@@ -1,6 +1,7 @@
 # -*- Mode: makefile-gmake; tab-width: 4; indent-tabs-mode: t -*-
 include config.mk
 include ../deposit.mk
+include ../version.mk
 
 PREFIX = $(abspath usr)
 
@@ -217,6 +218,9 @@ tmp/SBML_odeSolver-$(SOSLIB_COMMIT).installed: tmp/SBML_odeSolver-$(SOSLIB_COMMI
 
 ../configure: ../configure.ac
 	(cd .. && autoreconf -i -f)
+
+build.xml: build.xml.in
+	m4 -DVERSION=$(VERSION) $< > $@
 
 build/Makefile: ../configure
 	install -d $(dir $@)

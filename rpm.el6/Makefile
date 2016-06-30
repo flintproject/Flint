@@ -1,10 +1,10 @@
 # -*- Mode: makefile-gmake; tab-width: 4; indent-tabs-mode: t -*-
 include ../deposit.mk
+include ../version.mk
 include config.mk
 
 ARCH := $(shell uname -m)
 
-VERSION = 1.6.0
 RELEASE = 1
 
 DEPS := \

@@ -1,6 +1,7 @@
 # -*- Mode: makefile-gmake; tab-width: 4; indent-tabs-mode: t -*-
 include config.mk
 include ../deposit.mk
+include ../version.mk
 include header.mk
 
 PREFIX = $(abspath opt)
@@ -225,7 +226,7 @@ flint/flint.xml: flint.xml | flint
 	install -p -m 0644 $< $@
 
 flint/flint.wxs: flint.wxs.in | flint
-	m4 -DLIBGCC_DLL=$(LIBGCC_DLL) -DLIBSTDCXX_DLL=$(LIBSTDCXX_DLL) -DLIBWINPTHREAD_DLL=$(LIBWINPTHREAD_DLL) $< > $@
+	m4 -DVERSION=$(VERSION) -DLIBGCC_DLL=$(LIBGCC_DLL) -DLIBSTDCXX_DLL=$(LIBSTDCXX_DLL) -DLIBWINPTHREAD_DLL=$(LIBWINPTHREAD_DLL) $< > $@
 
 flint/icon.png: ../flint/src/jp/oist/flint/image/icon.png | flint
 	install -p -m 0644 $< $@

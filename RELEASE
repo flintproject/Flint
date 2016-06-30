@@ -3,6 +3,4 @@
   configure.ac
   doc/flint-user-guide.tex
   flint/src/jp/oist/flint/form/AboutDialog.java
-  mingw-w64/flint.wxs.in
-  rpm.el6/Makefile
-  xcode/build.xml
+  version.mk
