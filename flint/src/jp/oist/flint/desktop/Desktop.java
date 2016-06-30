@@ -97,7 +97,18 @@ public class Desktop implements IPhspConfiguration {
             showErrorDialog(msg, "Error on opening model");
             return false;
         }
-
+        String path;
+        try {
+            path = file.getCanonicalPath();
+        } catch (IOException ex) {
+            showErrorDialog("could not get canonical path : " + file.toString(),
+                            "Error on opening model");
+            return false;
+        }
+        if (!file.isFile()) {
+            showErrorDialog(path + " is not a file.", "Error on opening model");
+            return false;
+        }
         // check if the file is opened.
         for (Document doc : mDocuments) {
             if (file.equals(doc.getFile())) {
@@ -109,27 +120,6 @@ public class Desktop implements IPhspConfiguration {
                 return true;
             }
         }
-
-        String path;
-        try {
-            path = file.getCanonicalPath();
-        } catch (IOException ex) {
-            showErrorDialog("could not get canonical path : " + file.toString(),
-                            "Error on opening model");
-            return false;
-        }
-
-        if (!file.isFile()) {
-            showErrorDialog("could not get canonical path : " + file.toString(),
-                            "Error on opening model"); return false; }
-
-        int len = (int)file.length();
-        if (len == 0) {
-            showErrorDialog("file has length 0 : " + path,
-                            "Error on opening model");
-            return false;
-        }
-
         ModelLoaderLogger logger = new ModelLoaderLogger(this);
         ModelLoader loader = new ModelLoader(file);
         loader.addPropertyChangeListener(new ModelFileLoaderListener(logger, loader));

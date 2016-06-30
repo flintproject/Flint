@@ -482,7 +482,18 @@ public class MainFrame extends javax.swing.JFrame
             showErrorDialog(msg, "Error on opening model");
             return false;
         }
-
+        String path;
+        try {
+            path = file.getCanonicalPath();
+        } catch (IOException ex) {
+            showErrorDialog("could not get canonical path : " + file.toString(),
+                    "Error on opening model");
+            return false;
+        }
+        if (!file.isFile()) {
+            showErrorDialog(path + " is not a file.", "Error on opening model");
+            return false;
+        }
         // check xml format
         String format = Utility.detectXMLFormat(file);
 
@@ -500,27 +511,6 @@ public class MainFrame extends javax.swing.JFrame
                return true;
             }
         }
-
-        String path;
-        try {
-            path = file.getCanonicalPath();
-        } catch (IOException ex) {
-            showErrorDialog("could not get canonical path : " + file.toString(),
-                    "Error on opening model");
-            return false;
-        }
-
-        if (!file.isFile()) {
-            showErrorDialog("could not get canonical path : " + file.toString(),
-                    "Error on opening model"); return false; }
-
-        int len = (int)file.length();
-        if (len == 0) {
-            showErrorDialog("file has length 0 : " + path,
-                    "Error on opening model");
-            return false;
-        }
-
         ModelLoaderLogger logger = new ModelLoaderLogger(mDesktop);
         setEditable(false);
         ModelLoader loader = new ModelLoader(file);
