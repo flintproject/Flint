@@ -1,5 +1,6 @@
 *.dmg
 *.pkg
+build.xml
 build/
 config.mk
 flint/
