@@ -151,7 +151,7 @@ void Layout::CollectConstant(int nol, size_t size, std::set<int> *addrs) const
 	assert(offset == size);
 }
 
-size_t Layout::MarkConstant(int nol, size_t size, char *arr) const
+size_t Layout::MarkConstant(int nol, size_t size, int *levels) const
 {
 	size_t num_of_on = 0;
 	size_t offset = kOffsetBase;
@@ -170,7 +170,7 @@ size_t Layout::MarkConstant(int nol, size_t size, char *arr) const
 				switch (dp->type()) {
 				case lo::S:
 					for (int j=0;j<nol;j++) {
-						arr[offset + (j * size)] = 1;
+						levels[offset + (j * size)] = 1;
 						num_of_on++;
 					}
 					break;

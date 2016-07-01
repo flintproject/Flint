@@ -102,7 +102,7 @@ public:
 	/*
 	 * Return the number of "on".
 	 */
-	size_t MarkConstant(int nol, size_t size, char *arr) const;
+	size_t MarkConstant(int nol, size_t size, int *levels) const;
 
 	/*
 	 * Select the locations occupied as a variable of type 'X'.

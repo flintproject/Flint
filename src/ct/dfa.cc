@@ -188,20 +188,22 @@ bool DataFlowAnalyzer::SolveDependencies(int nol,
 	std::unique_ptr<ReductionUnitVector> ruv(new ReductionUnitVector);
 	CollectReductionUnits(nol, inbound, ruv.get());
 
-	std::unique_ptr<char[]> ready_addresses(new char[nol * layer_size_]());
+	std::unique_ptr<int[]> levels(new int[nol * layer_size_]());
 	if (constantAvailable)
-		layout_->MarkConstant(nol, layer_size_, ready_addresses.get());
+		layout_->MarkConstant(nol, layer_size_, levels.get());
+	int m = 0;
 	while (!cdv->empty() || !ruv->empty()) {
 		size_t n = 0;
+		++m;
 
-		// Level 2N
+		// Level 2M
 		CalculationDependencyVector::iterator cit = cdv->begin();
 		while (cit != cdv->end()) {
 			const std::unordered_set<int> &la = (*cit)->load_addrs();
 			if (std::all_of(la.begin(), la.end(),
-							[&ready_addresses](int i){return ready_addresses[i] == 1;})) {
+							[&levels, m](int i){return 1 <= levels[i] && levels[i] < 2*m;})) {
 				euv_.push_back((*cit)->cu());
-				ready_addresses[(*cit)->store_addr()] = 1;
+				levels[(*cit)->store_addr()] = 2*m;
 				n++;
 				cit = cdv->erase(cit);
 			} else {
@@ -209,14 +211,14 @@ bool DataFlowAnalyzer::SolveDependencies(int nol,
 			}
 		}
 
-		// Level 2N+1
+		// Level 2M+1
 		ReductionUnitVector::iterator rit = ruv->begin();
 		while (rit != ruv->end()) {
 			const std::unordered_set<int> &sa = (*rit)->source_addrs();
 			if (std::all_of(sa.begin(), sa.end(),
-							[&ready_addresses](int i){return ready_addresses[i] == 1;})) {
+							[&levels, m](int i){return 1 <= levels[i] && levels[i] <= 2*m;})) {
 				euv_.push_back(**rit);
-				ready_addresses[(*rit)->target_addr()] = 1;
+				levels[(*rit)->target_addr()] = 2*m+1;
 				n++;
 				rit = ruv->erase(rit);
 			} else {
@@ -239,7 +241,7 @@ bool DataFlowAnalyzer::SolveDependencies(int nol,
 						std::cerr << "," << *lait;
 					}
 					// append a question mark if the address is unprepared
-					if (ready_addresses[*lait] == 0) {
+					if (levels[*lait] == 0) {
 						std::cerr << "?";
 					}
 				}
