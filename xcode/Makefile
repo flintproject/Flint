@@ -120,7 +120,7 @@ check:
 	env DYLD_LIBRARY_PATH=$(PREFIX)/lib $(MAKE) -C build check
 
 mostlyclean:
-	-rm -rf tmp/bundled $(DMGS) flint flint-component.pkg resources root opt build ../configure
+	-rm -rf tmp/bundled $(DMGS) flint flint-component.pkg resources root opt build build.xml ../configure
 	ant -f ../flint/build.xml clean
 
 clean: mostlyclean
