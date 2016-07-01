@@ -61,7 +61,7 @@ PROGRAMS := \
     isdstrip \
     isdwc
 
-DMGS = flint.dmg
+DMGS = Flint-$(VERSION).dmg
 
 APP = root/Applications/Flint.app
 
@@ -120,7 +120,7 @@ check:
 	env DYLD_LIBRARY_PATH=$(PREFIX)/lib $(MAKE) -C build check
 
 mostlyclean:
-	-rm -rf tmp/bundled $(DMGS) flint flint-component.pkg resources root opt build build.xml ../configure
+	-rm -rf tmp/bundled Flint-*.dmg Flint-*/ flint-component.pkg resources root opt build build.xml ../configure
 	ant -f ../flint/build.xml clean
 
 clean: mostlyclean
@@ -290,17 +290,17 @@ $(APP)/Contents/Resources/icon.png: ../flint/src/jp/oist/flint/image/icon.png
 flint-component.pkg: component.plist $(foreach d,$(BOOST_DYLIBS),$(call flint_frameworks_boost_dylib_name,$(d))) $(foreach d,$(DYLIBS) $(FLINT_DYLIBS),$(call flint_frameworks_dylib_name,$(d))) $(foreach d,$(SUNDIALS_DYLIBS),$(call flint_frameworks_sundials_dylib_name,$(d))) $(foreach p,$(PROGRAMS),$(call flint_macos_program_name,$(p))) $(foreach j,$(JARS),$(call flint_java_jar_name,$(j))) $(APP)/Contents/Resources/third-party-licenses.txt $(APP)/Contents/Resources/flint.icns $(APP)/Contents/Resources/icon.png $(APP)/Contents/Java/flint.jar $(APP)/Contents/MacOS/JavaAppLauncher $(APP)/Contents/Info.plist $(APP)/Contents/PkgInfo
 	pkgbuild --quiet --identifier jp.oist.flint --component-plist $< --root root $@
 
-flint resources:
+Flint-$(VERSION) resources:
 	install -d $@
 
 resources/license.rtf: ../doc/license.rtf | resources
 	install -p -m 0644 $< $@
 
-flint/flint.pkg: distribution.xml flint-component.pkg resources/license.rtf | flint
+Flint-$(VERSION)/Flint-$(VERSION).pkg: distribution.xml flint-component.pkg resources/license.rtf | Flint-$(VERSION)
 	productbuild --quiet --distribution $< --resources resources $@
 
-flint.dmg: flint/flint.pkg
-	hdiutil create -fs HFS+ -ov -srcfolder flint $@
+Flint-$(VERSION).dmg: Flint-$(VERSION)/Flint-$(VERSION).pkg
+	hdiutil create -fs HFS+ -ov -srcfolder Flint-$(VERSION) $@
 	install -p -m 0644 $@ flint-`date +%Y%m%d`.dmg
 
 .DEFAULT_GOAL := all
