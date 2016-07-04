@@ -39,7 +39,7 @@ the output files for the job with job-id '2999' of the task are found in
 
 A non-exhaustive summary of output files for each job:
 
-* isd
+* out.isd
   The main output, timeseries data in ISDF.
 
 * values.txt
