@@ -16,6 +16,6 @@ Download
 Binary installers of Flint's official releases for Windows and Mac OS X
 are freely available at
 
-http://flintproject.github.io/
+https://flintproject.github.io/
 
 as well as documentation including its user manual and tutorials.
