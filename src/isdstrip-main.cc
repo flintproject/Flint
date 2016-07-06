@@ -197,18 +197,18 @@ int Filter(const char *input,
 		}
 	}
 
-	char header[sizeof(isdf::ISDFHeader)];
-	memcpy(header, &reader.header(), sizeof(isdf::ISDFHeader));
-	reinterpret_cast<isdf::ISDFHeader *>(header)->num_objs -= cv.size();
-	reinterpret_cast<isdf::ISDFHeader *>(header)->num_bytes_comment = 0; // discard the original comment
-	reinterpret_cast<isdf::ISDFHeader *>(header)->num_bytes_descs = static_cast<std::uint32_t>(d - descs.get());
+	isdf::ISDFHeader header;
+	memcpy(&header, &reader.header(), sizeof(header));
+	header.num_objs -= cv.size();
+	header.num_bytes_comment = 0; // discard the original comment
+	header.num_bytes_descs = static_cast<std::uint32_t>(d - descs.get());
 	if (ru) { // when units are available
-		reinterpret_cast<isdf::ISDFHeader *>(header)->num_bytes_units = static_cast<std::uint32_t>(u - units.get());
+		header.num_bytes_units = static_cast<std::uint32_t>(u - units.get());
 	} else {
-		reinterpret_cast<isdf::ISDFHeader *>(header)->num_bytes_units = 0;
+		header.num_bytes_units = 0;
 	}
 
-	os->write(header, sizeof(isdf::ISDFHeader));
+	os->write(reinterpret_cast<const char *>(&header), sizeof(header));
 	if (!os->good()) {
 		cerr << "could not write header" << endl;
 		ifs.close();
