@@ -4,6 +4,7 @@ package jp.oist.flint.rpc;
 import com.sun.net.httpserver.HttpServer;
 import java.io.IOException;
 import java.net.BindException;
+import java.net.InetAddress;
 import java.net.InetSocketAddress;
 
 public class Server {
@@ -13,7 +14,7 @@ public class Server {
     private final HttpServer mHttpServer;
 
     public Server(ICallee callee) throws BindException, IOException {
-        InetSocketAddress isa = new InetSocketAddress(PORT);
+        InetSocketAddress isa = new InetSocketAddress(InetAddress.getLoopbackAddress(), PORT);
         mHttpServer = HttpServer.create(isa, 0); // use the default value for the socket backlog
         mHttpServer.createContext("/open-model", new OpenModelRequestHandler(callee));
         mHttpServer.createContext("/run", new RunRequestHandler(callee));
