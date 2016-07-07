@@ -140,7 +140,13 @@ maintainer-clean: distclean
 
 download: $(foreach lib,$(BOOST_UNDERSCORE).tar.bz2 clibsedml-$(CLIBSEDML_COMMIT).tar.gz libSBML-$(LIBSBML_VERSION)-core-src.zip libzip-$(LIBZIP_VERSION).tar.gz protobuf-$(PROTOBUF_VERSION).tar.gz SBML_odeSolver-$(SOSLIB_COMMIT).tar.gz sundials-$(SUNDIALS_VERSION).tar.gz,src/$(lib))
 
-Flint-$(VERSION)-$(DIST).$(ARCH).zip: $(DIST_FILES)
+Flint-$(VERSION)-$(DIST).$(ARCH):
+	install -d $@
+
+Flint-$(VERSION)-$(DIST).$(ARCH)/README: data/README | Flint-$(VERSION)-$(DIST).$(ARCH)
+	install -p -m 0644 $< $@
+
+Flint-$(VERSION)-$(DIST).$(ARCH).zip: $(DIST_FILES) Flint-$(VERSION)-$(DIST).$(ARCH)/README
 	zip -r $@ Flint-$(VERSION)-$(DIST).$(ARCH)
 
 $(foreach d,$(DEPS),$(eval $(call flint_archive,$(d))))

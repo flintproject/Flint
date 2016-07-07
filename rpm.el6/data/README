@@ -1,0 +1,4 @@
+To install Flint, run the following command in this directory:
+$ sudo rpm -Uvh --replacepkgs flint-*.rpm
+If rpm exits abnormally with an error message about missing dependency,
+e.g., gnuplot, please install it and retry again.
