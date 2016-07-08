@@ -39,11 +39,11 @@ public class AboutDialog extends javax.swing.JDialog {
         buffer.append("OS arch: ").append(osArch);
         jTextArea1.setText(buffer.toString());
 
+        CloseByKeyStrokeAction action = CloseByKeyStrokeAction.register(this);
+        jButton1.addActionListener(action);
         jButton1.requestFocusInWindow();
 
         setLocationRelativeTo(parent);
-
-        CloseByKeyStrokeAction.register(this);
     }
 
     /**
@@ -74,7 +74,6 @@ public class AboutDialog extends javax.swing.JDialog {
         jLabel3.setToolTipText(URL);
         jLabel3.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         jLabel3.addMouseListener(new java.awt.event.MouseAdapter() {
-            @Override
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 jLabel3MouseClicked(evt);
             }
@@ -86,12 +85,6 @@ public class AboutDialog extends javax.swing.JDialog {
         jScrollPane1.setViewportView(jTextArea1);
 
         jButton1.setText("Close");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
-            @Override
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
-            }
-        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -130,10 +123,6 @@ public class AboutDialog extends javax.swing.JDialog {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        dispose();
-    }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jLabel3MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel3MouseClicked
         try {

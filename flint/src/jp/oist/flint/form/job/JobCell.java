@@ -21,6 +21,7 @@ import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -204,7 +205,7 @@ public class JobCell extends JPanel {
 
     private void btn_ViewActionPerformed(ActionEvent evt) {//GEN-FIRST:event_btn_ViewActionPerformed
         try {
-            mProvider.getJobMenu(mIndex).view();
+            mProvider.getJobMenu(mIndex).view((JFrame)mProvider); // NB: casting IJobMenuProvider to JFrame is hackish
         } catch (DaoException | IOException | SQLException ex) {
             showErrorDialog("Viewing failed\n\n" + ex.getMessage(),
                             "Viewing failed");

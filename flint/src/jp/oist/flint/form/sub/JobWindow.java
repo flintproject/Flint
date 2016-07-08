@@ -91,7 +91,7 @@ public class JobWindow extends javax.swing.JFrame
 
         pack();
 
-        CloseByKeyStrokeAction.register(this);
+        CloseByKeyStrokeAction.register(this, parent);
     }
 
     @SuppressWarnings("unchecked")
@@ -375,7 +375,7 @@ public class JobWindow extends javax.swing.JFrame
                 JobMenu menu = getJobMenu(evt.getIndex());
                 switch (action) {
                 case "view":
-                    menu.view();
+                    menu.view(JobWindow.this);
                     break;
                 case "export":
                     menu.export();

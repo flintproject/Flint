@@ -162,14 +162,14 @@ public class JobMenu implements IFrame {
         }
     }
 
-    public void view()
+    public void view(JFrame owner)
         throws DaoException, IOException, SQLException {
         TaskDao taskDao = mSimulationDao.obtainTask(mTaskId);
         Job job = taskDao.obtainJob(mJobId);
         File trackFile = taskDao.getTrackFile();
         try (FileInputStream fis = new FileInputStream(trackFile)) {
             Ipc.SimulationTrack st = Ipc.SimulationTrack.parseFrom(fis);
-            PlotWindow plotWindow = new PlotWindow(new File(taskDao.getModelPath()), job.getParameterDescription(), taskDao, mJobId);
+            PlotWindow plotWindow = new PlotWindow(owner, new File(taskDao.getModelPath()), job.getParameterDescription(), taskDao, mJobId);
             plotWindow.setLocationRelativeTo(mFrame);
             plotWindow.setVisible(true);
             plotWindow.processSimulationTrack(st);

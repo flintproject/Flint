@@ -30,7 +30,7 @@ class TaskDetailActionListener implements ActionListener {
         try {
             TaskDao taskDao = mSimulationDao.obtainTask(mSubFrame.getDocument().getFile().getPath());
             Task task = new Task(taskDao.getTaskId(), taskDao.getWorkingDir());
-            TaskWindow window = new TaskWindow(taskDao.getModelPath(), task, mSimulationDao);
+            TaskWindow window = new TaskWindow(mSubFrame, taskDao.getModelPath(), task, mSimulationDao);
             window.setLocationRelativeTo(mSubFrame);
             window.setVisible(true);
         } catch (DaoException |

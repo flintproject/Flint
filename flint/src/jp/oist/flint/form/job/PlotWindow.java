@@ -39,10 +39,11 @@ import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.ExecutionException;
 import javax.swing.JDialog;
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.SwingWorker;
 
-public class PlotWindow extends javax.swing.JFrame 
+public class PlotWindow extends JFrame
     implements IChartController, IChartSetting {
 
     private final static String LABEL_SEPARATOR = "@";
@@ -61,7 +62,7 @@ public class PlotWindow extends javax.swing.JFrame
     private final File mIsdFile;
     private final File mCsvFile;
 
-    public PlotWindow(File modelFile, String title, TaskDao taskDao, int jobId)
+    public PlotWindow(JFrame frame, File modelFile, String title, TaskDao taskDao, int jobId)
         throws DaoException, IOException, SQLException {
         super(title);
 
@@ -79,7 +80,7 @@ public class PlotWindow extends javax.swing.JFrame
 
         jSplitPane1.setDividerLocation(0.20);
 
-        CloseByKeyStrokeAction.register(this);
+        CloseByKeyStrokeAction.register(this, frame);
     }
 
     public void setExportCsvAndPlotEnabled(boolean enabled) {

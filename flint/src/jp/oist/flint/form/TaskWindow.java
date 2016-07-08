@@ -3,6 +3,7 @@ package jp.oist.flint.form;
 
 import jp.oist.flint.dao.SimulationDao;
 import jp.oist.flint.form.job.JobCell;
+import jp.oist.flint.form.sub.SubFrame;
 import jp.oist.flint.task.ParameterDefinition;
 import jp.oist.flint.task.Task;
 import jp.oist.flint.theme.Icon;
@@ -38,7 +39,7 @@ public class TaskWindow extends JFrame
 
     private JobCell mCell;
 
-    public TaskWindow(String title, Task task, SimulationDao simulationDao) {
+    public TaskWindow(SubFrame subFrame, String title, Task task, SimulationDao simulationDao) {
         super(title);
 
         mTask = task;
@@ -83,7 +84,7 @@ public class TaskWindow extends JFrame
         mTimer = new Timer(TIMER_NAME, true);
         mTimer.scheduleAtFixedRate(new JobCellTimerTask(mTimer, mCell, mSimulationDao, mTask.getId(), 1), 0, DELAY);
 
-        CloseByKeyStrokeAction.register(this);
+        CloseByKeyStrokeAction.register(this, subFrame);
     }
 
     /*
