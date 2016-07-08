@@ -2,14 +2,10 @@
 package jp.oist.flint.form;
 
 import java.awt.Desktop;
-import java.awt.event.ActionEvent;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ResourceBundle;
-import javax.swing.AbstractAction;
-import javax.swing.JComponent;
-import javax.swing.KeyStroke;
 
 /**
  * This is the class of the About dialog.
@@ -18,13 +14,6 @@ public class AboutDialog extends javax.swing.JDialog {
 
     private final static String URL = "https://flintproject.github.io/";
     private final static String VERSION = "1.6";
-
-    class CloseAction extends AbstractAction {
-        @Override
-        public void actionPerformed(ActionEvent event) {
-            AboutDialog.this.dispose();
-        }
-    }
 
     public AboutDialog(java.awt.Frame parent) {
         super(parent, true);
@@ -52,10 +41,9 @@ public class AboutDialog extends javax.swing.JDialog {
 
         jButton1.requestFocusInWindow();
 
-        getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("ESCAPE"), "close");
-        getRootPane().getActionMap().put("close", new CloseAction());
-
         setLocationRelativeTo(parent);
+
+        CloseByKeyStrokeAction.register(this);
     }
 
     /**

@@ -1,11 +1,30 @@
 /* -*- Mode: Java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- vim:set ts=4 sw=4 sts=4 et: */
 package jp.oist.flint.form.job;
 
+import jp.oist.flint.control.FileChooser;
+import jp.oist.flint.control.VariableList;
 import jp.oist.flint.dao.DaoException;
+import jp.oist.flint.dao.TaskDao;
+import jp.oist.flint.form.CloseByKeyStrokeAction;
+import jp.oist.flint.form.sub.IChartController;
+import jp.oist.flint.form.sub.IChartSetting;
 import jp.oist.flint.job.Job;
 import jp.oist.flint.job.Progress;
+import jp.oist.flint.plot.gnuplot.GnuPlotter;
+import jp.oist.flint.plotter.IPlotter;
+import jp.oist.flint.plotter.PlotterLoadException;
+import jp.oist.flint.plotter.PlotterLoader;
 import jp.oist.flint.theme.Icon;
 import jp.oist.flint.util.LegendCollection;
+import jp.oist.flint.util.ListItemModel;
+import jp.oist.flint.util.ListItemTransferHandler;
+import jp.oist.flint.util.Utility;
+import jp.oist.flint.view.ChartListener;
+import jp.oist.flint.view.ChartUpdater;
+import jp.oist.flint.view.Summary;
+import jp.oist.flint.view.SummaryAdapter;
+import jp.physiome.Ipc;
+import org.jfree.chart.ChartPanel;
 import java.awt.BorderLayout;
 import java.awt.HeadlessException;
 import java.beans.PropertyChangeEvent;
@@ -22,24 +41,6 @@ import java.util.concurrent.ExecutionException;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import javax.swing.SwingWorker;
-import jp.oist.flint.control.FileChooser;
-import jp.oist.flint.control.VariableList;
-import jp.oist.flint.dao.TaskDao;
-import jp.oist.flint.form.sub.IChartController;
-import jp.oist.flint.form.sub.IChartSetting;
-import jp.oist.flint.plot.gnuplot.GnuPlotter;
-import jp.oist.flint.plotter.IPlotter;
-import jp.oist.flint.plotter.PlotterLoadException;
-import jp.oist.flint.plotter.PlotterLoader;
-import jp.oist.flint.util.ListItemModel;
-import jp.oist.flint.util.ListItemTransferHandler;
-import jp.oist.flint.util.Utility;
-import jp.oist.flint.view.ChartListener;
-import jp.oist.flint.view.ChartUpdater;
-import jp.oist.flint.view.Summary;
-import jp.oist.flint.view.SummaryAdapter;
-import jp.physiome.Ipc;
-import org.jfree.chart.ChartPanel;
 
 public class PlotWindow extends javax.swing.JFrame 
     implements IChartController, IChartSetting {
@@ -77,6 +78,8 @@ public class PlotWindow extends javax.swing.JFrame
         initComponents();
 
         jSplitPane1.setDividerLocation(0.20);
+
+        CloseByKeyStrokeAction.register(this);
     }
 
     public void setExportCsvAndPlotEnabled(boolean enabled) {

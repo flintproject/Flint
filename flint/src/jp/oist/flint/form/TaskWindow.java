@@ -82,6 +82,8 @@ public class TaskWindow extends JFrame
 
         mTimer = new Timer(TIMER_NAME, true);
         mTimer.scheduleAtFixedRate(new JobCellTimerTask(mTimer, mCell, mSimulationDao, mTask.getId(), 1), 0, DELAY);
+
+        CloseByKeyStrokeAction.register(this);
     }
 
     /*

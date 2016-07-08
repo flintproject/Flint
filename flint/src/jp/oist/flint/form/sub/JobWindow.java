@@ -4,6 +4,7 @@ package jp.oist.flint.form.sub;
 import jp.oist.flint.dao.DaoException;
 import jp.oist.flint.dao.SimulationDao;
 import jp.oist.flint.dao.TaskDao;
+import jp.oist.flint.form.CloseByKeyStrokeAction;
 import jp.oist.flint.form.IJobMenuProvider;
 import jp.oist.flint.form.JobMenu;
 import jp.oist.flint.form.JobPane;
@@ -20,8 +21,6 @@ import java.awt.Dimension;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.IOException;
@@ -65,13 +64,6 @@ public class JobWindow extends javax.swing.JFrame
         mSelectionModel = new DefaultListSelectionModel();
         mDataModel = new CombinationModel();
 
-        addWindowListener(new WindowAdapter() {
-            @Override
-            public void windowClosing(WindowEvent e) {
-                setVisible(false);
-            }
-        }); 
-
         mDataModel.load(parameterSet, new ParameterFilter () {
             @Override
             public boolean accept (Number[] values) {
@@ -98,6 +90,8 @@ public class JobWindow extends javax.swing.JFrame
         pnl_Body.add(scrollPane, PANELKEY_VIEWER);
 
         pack();
+
+        CloseByKeyStrokeAction.register(this);
     }
 
     @SuppressWarnings("unchecked")
@@ -120,14 +114,13 @@ public class JobWindow extends javax.swing.JFrame
         jPanel5 = new javax.swing.JPanel();
         pb_StatusBar = new javax.swing.JProgressBar();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
         pnl_Head.setBorder(javax.swing.BorderFactory.createEmptyBorder(2, 0, 2, 0));
         pnl_Head.setMaximumSize(new java.awt.Dimension(32767, 50));
         pnl_Head.setMinimumSize(new java.awt.Dimension(10, 50));
         pnl_Head.setOpaque(false);
         pnl_Head.setPreferredSize(new java.awt.Dimension(700, 50));
-        pnl_Head.setRequestFocusEnabled(false);
         pnl_Head.setLayout(new java.awt.BorderLayout());
 
         jPanel1.setBorder(javax.swing.BorderFactory.createEmptyBorder(2, 0, 2, 0));
@@ -135,7 +128,6 @@ public class JobWindow extends javax.swing.JFrame
         jPanel1.setMinimumSize(new java.awt.Dimension(350, 50));
         jPanel1.setOpaque(false);
         jPanel1.setPreferredSize(new java.awt.Dimension(350, 50));
-        jPanel1.setRequestFocusEnabled(false);
         java.awt.FlowLayout flowLayout1 = new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0);
         flowLayout1.setAlignOnBaseline(true);
         jPanel1.setLayout(flowLayout1);
@@ -186,7 +178,6 @@ public class JobWindow extends javax.swing.JFrame
         jPanel2.setMinimumSize(new java.awt.Dimension(350, 50));
         jPanel2.setOpaque(false);
         jPanel2.setPreferredSize(new java.awt.Dimension(350, 50));
-        jPanel2.setRequestFocusEnabled(false);
         java.awt.FlowLayout flowLayout2 = new java.awt.FlowLayout(java.awt.FlowLayout.RIGHT, 5, 0);
         flowLayout2.setAlignOnBaseline(true);
         jPanel2.setLayout(flowLayout2);
