@@ -1,3 +1,9 @@
+* Flint 1.6 (2016-07-XX)
+
+** New features
+   - Shortcut keys Escape and Ctrl+W (or Cmd+W on Mac) can close subwindows.
+
+
 * Flint 1.5 (2016-06-29)
 
 ** New features

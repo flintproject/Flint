@@ -2,6 +2,7 @@
 package jp.oist.flint.form;
 
 import java.awt.Component;
+import java.awt.Toolkit;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.InputEvent;
@@ -35,7 +36,7 @@ public class CloseByKeyStrokeAction extends AbstractAction {
         CloseByKeyStrokeAction action = new CloseByKeyStrokeAction(window, owner);
         InputMap inputMap = component.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
         inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), "close");
-        inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_W, InputEvent.CTRL_DOWN_MASK), "close");
+        inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_W, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()), "close");
         component.getActionMap().put("close", action);
         return action;
     }
