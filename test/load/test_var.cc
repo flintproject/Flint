@@ -5,8 +5,12 @@
 
 #include "load/var.h"
 
+#include <boost/uuid/uuid_io.hpp>
+
+#include "bc/pack.h"
 #include "cellml.h"
 #include "database.h"
+#include "lo.pb.h"
 #include "phml.h"
 #include "sbml.h"
 
@@ -30,17 +34,45 @@ struct F : public test::MemoryFixture {
 		BOOST_REQUIRE(sbml::Read(driver_.db()));
 	}
 
-	void GenerateAndCompare(const char *output, const char *expected)
+	void GenerateAndCompare(const char *output,
+							const char *input)
 	{
 		BOOST_REQUIRE(load::Var(driver_.db(), output));
 
-		boost::filesystem::path op(output);
 		boost::filesystem::path fp(__FILE__);
 		boost::filesystem::path ep = fp.parent_path();
 		ep /= "var";
-		ep /= expected;
-		test::CheckSame(op, ep);
-		boost::filesystem::remove(op);
+		ep /= input;
+		boost::filesystem::ifstream efs(ep);
+		BOOST_REQUIRE(efs);
+		std::vector<std::string> expected;
+		std::string line;
+		while (!std::getline(efs, line).eof())
+			expected.push_back(line);
+		efs.close();
+
+		std::ifstream ifs(output, std::ios::binary);
+		BOOST_REQUIRE(ifs);
+		lo::Header header;
+		BOOST_REQUIRE(UnpackFromIstream(header, &ifs));
+		lo::Column column;
+		for (auto &e : expected) {
+			BOOST_REQUIRE(UnpackFromIstream(column, &ifs));
+			boost::uuids::uuid uuid;
+			std::memcpy(&uuid, column.uuid().c_str(), uuid.size());
+			std::ostringstream oss;
+			oss << column.position()
+				<< ' '
+				<< uuid
+				<< ' '
+				<< column.id()
+				<< ' '
+				<< column.name();
+			BOOST_CHECK_EQUAL(oss.str(), e);
+		}
+		BOOST_CHECK_EQUAL(ifs.get(), EOF);
+
+		std::remove(output);
 	}
 };
 
@@ -49,26 +81,26 @@ BOOST_FIXTURE_TEST_SUITE(test_var, F)
 BOOST_AUTO_TEST_CASE(lockwood_ewy_hermann_holford_2006) {
 	Cellml(TEST_MODELS("lockwood_ewy_hermann_holford_2006.cellml"));
 	GenerateAndCompare("lockwood_ewy_hermann_holford_2006.cellml.var",
-					   "lockwood_ewy_hermann_holford_2006.cellml.bin");
+					   "lockwood_ewy_hermann_holford_2006.cellml.txt");
 }
 
 BOOST_AUTO_TEST_CASE(yang_tong_mccarver_hines_beard_2006) {
 	Cellml(TEST_MODELS("yang_tong_mccarver_hines_beard_2006.cellml"));
 	GenerateAndCompare("yang_tong_mccarver_hines_beard_2006.cellml.var",
-					   "yang_tong_mccarver_hines_beard_2006.cellml.bin");
+					   "yang_tong_mccarver_hines_beard_2006.cellml.txt");
 }
 
 BOOST_AUTO_TEST_CASE(Rybak_2006_with_static_instance_and_multiple_input) {
 	Phml(TEST_MODELS("Rybak_2006_with_static_instance_and_multiple_input.isml"));
 	GenerateAndCompare("Rybak_2006_with_static_instance_and_multiple_input.isml.var",
-					   "Rybak_2006_with_static_instance_and_multiple_input.isml.bin");
+					   "Rybak_2006_with_static_instance_and_multiple_input.isml.txt");
 }
 
 BOOST_AUTO_TEST_CASE(hepatocyte_external) {
 	Phml(TEST_MODELS("hepatocyte_external.isml"));
 	boost::filesystem::remove("4d96c8de-d10a-48e2-a0e0-be9d74e58e78.db");
 	GenerateAndCompare("hepatocyte_external.isml.var",
-					   "hepatocyte_external.isml.bin");
+					   "hepatocyte_external.isml.txt");
 }
 
 BOOST_AUTO_TEST_CASE(hepatocyte_internal) {
@@ -76,25 +108,25 @@ BOOST_AUTO_TEST_CASE(hepatocyte_internal) {
 	boost::filesystem::remove("4d96c8de-d10a-48e2-a0e0-be9d74e58e78.db");
 	boost::filesystem::remove("4d96c8de-d10a-48e2-a0e0-be9d74e58e78.xml");
 	GenerateAndCompare("hepatocyte_internal.isml.var",
-					   "hepatocyte_internal.isml.bin");
+					   "hepatocyte_internal.isml.txt");
 }
 
 BOOST_AUTO_TEST_CASE(ringed_Beeler_Reuter_1977_model_with_static_instance) {
 	Phml(TEST_MODELS("ringed_Beeler_Reuter_1977_model_with_static_instance.isml"));
 	GenerateAndCompare("ringed_Beeler_Reuter_1977_model_with_static_instance.isml.var",
-					   "ringed_Beeler_Reuter_1977_model_with_static_instance.isml.bin");
+					   "ringed_Beeler_Reuter_1977_model_with_static_instance.isml.txt");
 }
 
 BOOST_AUTO_TEST_CASE(BIOMD0000000114) {
 	Sbml(TEST_MODELS("BIOMD0000000114.xml"));
 	GenerateAndCompare("BIOMD0000000114.xml.var",
-					   "BIOMD0000000114.xml.bin");
+					   "BIOMD0000000114.xml.txt");
 }
 
 BOOST_AUTO_TEST_CASE(BIOMD0000000152) {
 	Sbml(TEST_MODELS("BIOMD0000000152.xml"));
 	GenerateAndCompare("BIOMD0000000152.xml.var",
-					   "BIOMD0000000152.xml.bin");
+					   "BIOMD0000000152.xml.txt");
 }
 
 BOOST_AUTO_TEST_SUITE_END()

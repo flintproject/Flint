@@ -20,6 +20,7 @@
 
 #include "bc/index.h"
 #include "bc/pack.h"
+#include "db/query.h"
 
 using std::cerr;
 using std::endl;
@@ -42,7 +43,7 @@ int AddColumn(void *data, int argc, char **argv, char **names)
 {
 	State *state = static_cast<State *>(data);
 	(void)names;
-	assert(argc == 11);
+	assert(argc == 13);
 
 	assert(argv[8]);
 	assert(argv[9]);
@@ -63,9 +64,15 @@ int AddColumn(void *data, int argc, char **argv, char **names)
 	assert(std::strlen(argv[5]) == 1);
 	switch (argv[5][0]) { // type
 	case 'v':
+		if (argv[11]) {
+			assert(argv[12]);
+			state->pos += size;
+			return 0;
+		}
 		c->set_type(lo::V);
 		break;
 	case 'x':
+		assert(!argv[11] && !argv[12]);
 		c->set_type(lo::X);
 		break;
 	default:
@@ -89,7 +96,9 @@ bool Process(sqlite3 *db, State *state)
 {
 	char *em;
 	int e;
-	e = sqlite3_exec(db, "SELECT * FROM layout",
+	e = sqlite3_exec(db,
+					 "SELECT l.*, a.output_uuid, a.output_id FROM layout AS l"
+					 " LEFT JOIN aliases AS a ON l.sector_id = a.input_uuid AND l.id = a.input_id",
 					 &AddColumn, state, &em);
 	if (e != SQLITE_OK) {
 		if (e != SQLITE_ABORT)
@@ -104,6 +113,13 @@ bool Process(sqlite3 *db, State *state)
 
 bool Var(sqlite3 *db, const char *output)
 {
+	if (!CreateTable(db, "aliases",
+					 "AS SELECT output_uuid, output_id, input_uuid, input_id FROM reaches"
+					 " WHERE reduction = 1"
+					 " GROUP BY input_uuid, input_id"
+					 " HAVING COUNT(*) = 1"))
+		return false;
+
 	State state;
 	if (!Process(db, &state))
 		return false;

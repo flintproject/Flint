@@ -15,6 +15,7 @@
 #include <string>
 #include <vector>
 
+#include "db/helper.h"
 #include "db/query.h"
 #include "db/statement-driver.h"
 #include "db/variable-inserter.h"
@@ -346,6 +347,8 @@ bool Read(sqlite3 *db)
 					"SELECT * FROM input_functions UNION ALL SELECT * FROM input_odes"))
 		return false;
 	if (!CreateLayout(db))
+		return false;
+	if (!CreateTable(db, "reaches", REACHES_SCHEMA))
 		return false;
 
 	return CommitTransaction(db);

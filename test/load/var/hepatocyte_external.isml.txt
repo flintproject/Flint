@@ -1,0 +1,5 @@
+7 4d96c8de-d10a-48e2-a0e0-be9d74e58e78 5 CDFDA_Hep_IS
+8 4d96c8de-d10a-48e2-a0e0-be9d74e58e78 6 sbml:re1
+12 4d96c8de-d10a-48e2-a0e0-be9d74e58e78 10 sbml:s1
+13 4d96c8de-d10a-48e2-a0e0-be9d74e58e78 11 sbml:s2
+14 50228b3c-0ccb-4b61-872c-b0b5fff54ed5 2 CDFDA_Buf
