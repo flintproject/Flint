@@ -384,11 +384,25 @@ bool Evolve(sqlite3 *db,
 		return false;
 	}
 	// load preprocess bytecode if specified
-	if (with_pre && !LoadBytecode(option.pre_file, nullptr, preprocessor.get()))
-		return false;
+	if (with_pre) {
+		if (!LoadBytecode(option.pre_file, nullptr, preprocessor.get()))
+			return false;
+		// ... but ignore preprocess if empty
+		if (preprocessor->IsEmpty()) {
+			preprocessor.reset();
+			with_pre = false;
+		}
+	}
 	// load postprocess bytecode if specified
-	if (with_post && !LoadBytecode(option.post_file, nullptr, postprocessor.get()))
-		return false;
+	if (with_post) {
+		if (!LoadBytecode(option.post_file, nullptr, postprocessor.get()))
+			return false;
+		// ... but ignore postprocess if empty
+		if (postprocessor->IsEmpty()) {
+			postprocessor.reset();
+			with_post = false;
+		}
+	}
 
 	// replace nominal location in bytecode
 	if (!processor->SolveLocation()) {

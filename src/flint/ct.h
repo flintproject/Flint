@@ -36,6 +36,11 @@ public:
 	BhVector *GetBhv() const;
 	CVector *GetCv() const;
 
+	/*
+	 * Returns true if there is no code at all, false otherwise.
+	 */
+	bool IsEmpty() const;
+
 	void CalculateCodeOffset();
 
 	/*

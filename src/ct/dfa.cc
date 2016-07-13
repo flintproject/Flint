@@ -48,6 +48,11 @@ CVector *DataFlowAnalyzer::GetCv() const
 	return cv_.get();
 }
 
+bool DataFlowAnalyzer::IsEmpty() const
+{
+	return cv_->empty();
+}
+
 void DataFlowAnalyzer::CalculateCodeOffset()
 {
 	code_offset_.reset(new int[bhv_->size()]);
