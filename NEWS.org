@@ -2,7 +2,10 @@
 
 ** New features
    - Shortcut keys Escape and Ctrl+W (or Cmd+W on Mac) can close subwindows.
-
+** Improvements
+   - Output variables no longer includes redundant ones, such as any PHML
+     variable-parameters assigned to an input port which has a unique edge
+     of reduction "sum".
 
 * Flint 1.5 (2016-06-29)
 
