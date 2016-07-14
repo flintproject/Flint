@@ -349,28 +349,26 @@ bool Evolve(sqlite3 *db,
 	if (with_post) postprocessor->CalculateCodeOffset();
 
 	// arrange input timeseries data
-	std::unique_ptr<TimeseriesVector> tv;
-
-	std::unique_ptr<FlowInboundMap> inbound(new FlowInboundMap);
-	{
-		tv.reset(new TimeseriesVector);
-		if (!ts::LoadTimeseriesVector(db, tv.get()))
-			return false;
-		processor->set_tv(tv.get());
-		if (with_pre) preprocessor->set_tv(tv.get());
-		if (with_post) postprocessor->set_tv(tv.get());
-
-		if (!LoadFlows(db, inbound.get()))
-			return false;
-	}
-
-	if (!processor->SolveDependencies(nol, inbound.get(), true)) {
+	std::unique_ptr<TimeseriesVector> tv(new TimeseriesVector);
+	if (!ts::LoadTimeseriesVector(db, tv.get()))
 		return false;
-	}
+	processor->set_tv(tv.get());
 	if (with_pre)
-		preprocessor->ScheduleEvents(*inbound);
+		preprocessor->set_tv(tv.get());
 	if (with_post)
-		postprocessor->ScheduleEvents(*inbound);
+		postprocessor->set_tv(tv.get());
+
+	{
+		FlowInboundMap inbound;
+		if (!LoadFlows(db, &inbound))
+			return false;
+		if (!processor->SolveDependencies(nol, &inbound, true))
+			return false;
+		if (with_pre)
+			preprocessor->ScheduleEvents(inbound);
+		if (with_post)
+			postprocessor->ScheduleEvents(inbound);
+	}
 
 	// arrange previous data space
 	std::unique_ptr<double[]> prev(new double[layer_size * nol]()); // default-initialized
