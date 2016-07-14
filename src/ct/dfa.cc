@@ -270,6 +270,72 @@ bool DataFlowAnalyzer::SolveDependencies(int nol,
 	return true;
 }
 
+void DataFlowAnalyzer::ScheduleEvents(const FlowInboundMap &inbound)
+{
+	// Collect target addresses in which events update values
+	std::unordered_set<int> addrs;
+
+	int si = 0; // section index
+	int bi = 0; // block index
+	int ci = 0; // code index
+
+	int nos = static_cast<int>(shv_->size());
+	for (;si < nos; si++) {
+		const bc::SectionHeader &sh(shv_->at(si));
+		int bib = bi;
+		int bie = bi + sh.nob();
+		const std::string &id(sh.id());
+		const Mounter &mounter(layout_->GetMounter(id));
+		int nos = mounter.size();
+		for (int k=0;k<nos;k++) { // for each sector
+			bi = bib; // reset block index
+			int offset = mounter.GetOffset(k);
+			for (;bi < bie; bi++) {
+				const bc::BlockHeader &bh(bhv_->at(bi));
+				ci = code_offset_[bi];
+				int cib = ci;
+				int cie = cib + bh.noc();
+				std::unique_ptr<CalculationUnit> cu(new CalculationUnit(si, bi, offset, cib, cie));
+				for (;ci < cie; ci++) {
+					const bc::Code &code(cv_->at(ci));
+					switch (code.type()) {
+					case bc::Code::kStore:
+						{
+							const bc::Store &store = code.store();
+							addrs.insert(offset + store.so());
+						}
+						break;
+					case bc::Code::kSave:
+						{
+							const bc::Save &save = code.save();
+							addrs.insert(offset + save.so()); // TODO: fix misnomer
+						}
+						break;
+					default:
+						break;
+					}
+				}
+				euv_.push_back(*cu);
+			}
+		}
+	}
+
+	// Collect reductions which sources include any of addrs
+	for (auto it=inbound.cbegin();it!=inbound.cend();++it) {
+		std::unique_ptr<ReductionUnit> ru(new ReductionUnit(it->second.reduction,
+															it->first,
+															it->second.size));
+		bool found = false;
+		for (int src : it->second.sources) {
+			ru->AddSourceAddr(src);
+			if (!found && addrs.count(src))
+				found = true;
+		}
+		if (found)
+			euv_.push_back(*ru);
+	}
+}
+
 void DataFlowAnalyzer::CollectCalculationDependencies(CalculationDependencyVector *cdv)
 {
 	assert(cdv);

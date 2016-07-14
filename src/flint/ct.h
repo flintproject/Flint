@@ -57,6 +57,8 @@ public:
 						   const FlowInboundMap *inbound,
 						   bool constantAvailable);
 
+	void ScheduleEvents(const FlowInboundMap &inbound);
+
 private:
 	void CollectCalculationDependencies(CalculationDependencyVector *cdv);
 

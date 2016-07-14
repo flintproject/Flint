@@ -208,79 +208,8 @@ public:
 			color_[k+i] = 1;
 	}
 
-	void Communicate(const FlowInboundMap *inbound) {
-		for (auto it=inbound->cbegin();it!=inbound->cend();++it) {
-			int dst = it->first;
-			const auto &ic = it->second;
-			const auto &sources = ic.sources;
-			for (int i=0;i<ic.size;i++) {
-			double d;
-			int k;
-			switch (ic.reduction) {
-			case Reduction::kUnspecified:
-				assert(false);
-				break;
-
-#define DATA_AT(i) (color_[i]) ? data_[i] : prev_[i]
-
-			case Reduction::kSum:
-				d = 0;
-				for (auto src : sources) {
-					k = src+i;
-					d += DATA_AT(k);
-				}
-				break;
-			case Reduction::kMax:
-				{
-					auto sit = sources.cbegin();
-					auto seit = sources.cend();
-					assert(sit != seit);
-					k = *sit+i;
-					d = DATA_AT(k);
-					while (++sit != seit) {
-						k = *sit+i;
-						d = std::max(d, DATA_AT(k));
-					}
-				}
-				break;
-			case Reduction::kMin:
-				{
-					auto sit = sources.cbegin();
-					auto seit = sources.cend();
-					assert(sit != seit);
-					k = *sit+i;
-					d = DATA_AT(k);
-					while (++sit != seit) {
-						k = *sit+i;
-						d = std::min(d, DATA_AT(k));
-					}
-				}
-				break;
-			case Reduction::kMean:
-				{
-					auto sit = sources.cbegin();
-					auto seit = sources.cend();
-					assert(sit != seit);
-					k = *sit+i;
-					d = DATA_AT(k);
-					while (++sit != seit) {
-						k = *sit+i;
-						d += DATA_AT(k);
-					}
-					d /= sources.size();
-				}
-				break;
-
-#undef DATA_AT
-
-			case Reduction::kDegree:
-				d = sources.size();
-				break;
-			}
-			data_[dst+i] = d;
-			color_[dst+i] = 1;
-			}
-		}
+	bool Reduce(const ReductionUnit &ru) {
+		return ru(prev_, data_, color_);
 	}
 
 	void Flush() {
@@ -438,6 +367,10 @@ bool Evolve(sqlite3 *db,
 	if (!processor->SolveDependencies(nol, inbound.get(), true)) {
 		return false;
 	}
+	if (with_pre)
+		preprocessor->ScheduleEvents(*inbound);
+	if (with_post)
+		postprocessor->ScheduleEvents(*inbound);
 
 	// arrange previous data space
 	std::unique_ptr<double[]> prev(new double[layer_size * nol]()); // default-initialized
@@ -555,10 +488,11 @@ bool Evolve(sqlite3 *db,
 
 		// advance step
 		if (with_pre) {
-			if (!preprocessor->Execute(preexecutor.get(), inbound.get())) {
+			if (!preprocessor->Process(preexecutor.get())) {
 				result = false;
 				break;
 			}
+			preexecutor->Flush();
 		}
 		if (!processor->Process(executor.get())) {
 			result = false;
@@ -568,10 +502,11 @@ bool Evolve(sqlite3 *db,
 		data[kIndexTime] += prev[kIndexDt];
 		double last_time = data[kIndexTime];
 		if (with_post) {
-			if (!postprocessor->Execute(postexecutor.get(), inbound.get())) {
+			if (!postprocessor->Process(postexecutor.get())) {
 				result = false;
 				break;
 			}
+			postexecutor->Flush();
 		}
 
 		if (output_start_time <= data[kIndexTime]) {

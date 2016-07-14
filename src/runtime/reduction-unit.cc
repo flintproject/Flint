@@ -86,4 +86,81 @@ bool ReductionUnit::operator()(double *data) const
 	return true;
 }
 
+bool ReductionUnit::operator()(const double *prev,
+							   double *data,
+							   int *color) const
+{
+	double d;
+	int k;
+	for (int i=0;i<size_;i++) {
+		switch (reduction_) {
+		case Reduction::kUnspecified:
+			cerr << "reduction is unspecified" << endl;
+			return false;
+
+#define DATA_AT(i) (color[i]) ? data[i] : prev[i]
+
+		case Reduction::kSum:
+			d = 0;
+			for (auto a : source_addrs_) {
+				k = a+i;
+				d += DATA_AT(k);
+			}
+			break;
+		case Reduction::kMax:
+			{
+				auto it = source_addrs_.cbegin();
+				if (it == source_addrs_.cend()) {
+					cerr << "failed to take max due to no input" << endl;
+					return false;
+				}
+				k = *it+i;
+				d = DATA_AT(k);
+				while (++it != source_addrs_.cend()) {
+					k = *it+i;
+					d = std::max(d, DATA_AT(k));
+				}
+			}
+			break;
+		case Reduction::kMin:
+			{
+				auto it = source_addrs_.cbegin();
+				if (it == source_addrs_.cend()) {
+					cerr << "failed to take min due to no input" << endl;
+					return false;
+				}
+				k = *it+i;
+				d = DATA_AT(k);
+				while (++it != source_addrs_.cend()) {
+					k = *it+i;
+					d = std::min(d, DATA_AT(k));
+				}
+			}
+			break;
+		case Reduction::kMean:
+			{
+				auto it = source_addrs_.cbegin();
+				if (it == source_addrs_.cend()) {
+					cerr << "failed to take mean due to no input" << endl;
+					return false;
+				}
+				k = *it+i;
+				d = DATA_AT(k);
+				while (++it != source_addrs_.cend()) {
+					k = *it+i;
+					d += DATA_AT(k);
+				}
+				d /= source_addrs_.size();
+			}
+			break;
+		case Reduction::kDegree:
+			d = source_addrs_.size();
+			break;
+		}
+		data[target_addr_+i] = d;
+		color[target_addr_+i] = 1;
+	}
+	return true;
+}
+
 }

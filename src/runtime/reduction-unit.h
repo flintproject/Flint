@@ -21,6 +21,8 @@ public:
 
 	bool operator()(double *data) const;
 
+	bool operator()(const double *prev, double *data, int *color) const;
+
 private:
 	Reduction reduction_;
 	int target_addr_;
