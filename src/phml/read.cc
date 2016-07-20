@@ -381,7 +381,7 @@ private:
 			const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
 			if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("unit-id"))) {
 				const xmlChar *value = xmlTextReaderConstValue(text_reader_);
-				int unit_id = atoi((const char *)value);
+				int unit_id = atoi(reinterpret_cast<const char *>(value));
 				if (unit_id > 0) {
 					td->set_unit_id(unit_id);
 				} else {
@@ -528,7 +528,7 @@ private:
 			const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
 			if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("unit-id"))) {
 				const xmlChar *value = xmlTextReaderConstValue(text_reader_);
-				int unit_id = atoi((const char *)value);
+				int unit_id = atoi(reinterpret_cast<const char *>(value));
 				if (unit_id <= 0) {
 					cerr << "invalid unit-id of <simulation-time-span>: " << value << endl;
 					return -2;
@@ -600,7 +600,7 @@ private:
 			cerr << "missing unit-id of <unit>" << endl;
 			return -2;
 		}
-		int unit_id = atoi((const char *)value);
+		int unit_id = atoi(reinterpret_cast<const char *>(value));
 		xmlFree(value);
 		if (unit_id < 0) {
 			cerr << "invalid unit-id " << unit_id << endl;
@@ -674,7 +674,7 @@ private:
 			if (!value) continue;
 
 			if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("unit-id"))) {
-				int unit_id = atoi((char *)value);
+				int unit_id = atoi(reinterpret_cast<const char *>(value));
 				if (unit_id < 0) {
 					cerr << "invalid unit-id of <element>" << endl;
 					return -2;
@@ -685,7 +685,7 @@ private:
 				}
 				element->set_unit_id(unit_id);
 			} else if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("exponent"))) {
-				element->set_exponent(strtod((char *)value, nullptr));
+				element->set_exponent(strtod(reinterpret_cast<const char *>(value), nullptr));
 			} else if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("prefix"))) {
 				if (xmlStrEqual(value, reinterpret_cast<const xmlChar *>("yotta"))) {
 					element->set_factor(24);
@@ -732,9 +732,9 @@ private:
 					return -2;
 				}
 			} else if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("multiplier"))) {
-				element->set_multiplier(strtod((char *)value, nullptr));
+				element->set_multiplier(strtod(reinterpret_cast<const char *>(value), nullptr));
 			} else if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("offset"))) {
-				element->set_offset(strtod((char *)value, nullptr));
+				element->set_offset(strtod(reinterpret_cast<const char *>(value), nullptr));
 			} else {
 				cerr << "unknown attribute of <element>: " << local_name << endl;
 				return -2;
@@ -992,7 +992,7 @@ private:
 			const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
 			if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("physical-quantity-id"))) {
 				const xmlChar *value = xmlTextReaderConstValue(text_reader_);
-				int pq_id = atoi((const char *)value);
+				int pq_id = atoi(reinterpret_cast<const char *>(value));
 				if (pq_id <= 0) {
 					cerr << "invalid physical-quantity-id of <physical-quantity>: " << value << endl;
 					return -2;
@@ -1152,19 +1152,19 @@ private:
 				if (xmlStrEqual(value, reinterpret_cast<const xmlChar *>("scalar"))) {
 					pq_->set_col(1);
 					pq_->set_row(1);
-					snprintf(dimension_type, 7, "%s", (const char *)value);
+					snprintf(dimension_type, 7, "%s", reinterpret_cast<const char *>(value));
 				} else if (xmlStrEqual(value, reinterpret_cast<const xmlChar *>("vector"))) {
 					if (isEmpty) {
 						cerr << "empty <dimension> of type vector" << endl;
 						return -2;
 					}
-					snprintf(dimension_type, 7, "%s", (const char *)value);
+					snprintf(dimension_type, 7, "%s", reinterpret_cast<const char *>(value));
 				} else if (xmlStrEqual(value, reinterpret_cast<const xmlChar *>("matrix"))) {
 					if (isEmpty) {
 						cerr << "empty <dimension> of type matrix" << endl;
 						return -2;
 					}
-					snprintf(dimension_type, 7, "%s", (const char *)value);
+					snprintf(dimension_type, 7, "%s", reinterpret_cast<const char *>(value));
 				} else {
 					cerr << "invalid type of <dimension>: " << value << endl;
 					return -2;
@@ -1245,7 +1245,7 @@ private:
 			return -2;
 		}
 
-		int n = std::atoi((const char *)col);
+		int n = std::atoi(reinterpret_cast<const char *>(col));
 		if (n <= 0) {
 			cerr << "invalid value of <col>: " << col << endl;
 			xmlFree(s);
@@ -1276,7 +1276,7 @@ private:
 			return -2;
 		}
 
-		int n = std::atoi((const char *)row);
+		int n = std::atoi(reinterpret_cast<const char *>(row));
 		if (n <= 0) {
 			cerr << "invalid value of <row>: " << row << endl;
 			xmlFree(s);
@@ -1484,7 +1484,7 @@ private:
 			const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
 			if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("port-id"))) {
 				const xmlChar *value = xmlTextReaderConstValue(text_reader_);
-				int port_id = atoi((const char *)value);
+				int port_id = atoi(reinterpret_cast<const char *>(value));
 				if (port_id <= 0) {
 					cerr << "invalid port-id of <reference>: " << value << endl;
 					return -2;
@@ -1492,7 +1492,7 @@ private:
 				ref_->set_port_id(port_id);
 			} else if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("timeseries-id"))) {
 				const xmlChar *value = xmlTextReaderConstValue(text_reader_);
-				int timeseries_id = atoi((const char *)value);
+				int timeseries_id = atoi(reinterpret_cast<const char *>(value));
 				if (timeseries_id <= 0) {
 					cerr << "invalid timeseries-id of <reference>: " << value << endl;
 					return -2;
@@ -2024,7 +2024,7 @@ private:
 			const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
 			if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("physical-quantity-id"))) {
 				const xmlChar *value = xmlTextReaderConstValue(text_reader_);
-				pq_id = atoi((const char *)value);
+				pq_id = atoi(reinterpret_cast<const char *>(value));
 				if (pq_id <= 0) {
 					cerr << "invalid physical-quantity-id of <target-physical-quantity>: " << tm->module_id() << endl;
 					return -2;
