@@ -45,7 +45,7 @@ struct F : public test::MemoryFixture {
 		BOOST_REQUIRE_EQUAL(CreateSingleton(driver_.db()), 1);
 		test::Sql sql(driver_.db());
 		sql.Exec("UPDATE config SET method = 'euler', length = '0.01', step = '0.01', granularity = '1'");
-		db::VariableInserter vi("variables", driver_.db());
+		db::VariableInserter vi("variables", false, driver_.db());
 		BOOST_REQUIRE(vi.Insert('v', 1, "a"));
 		BOOST_REQUIRE(vi.Insert('v', 2, "b"));
 		BOOST_REQUIRE(vi.Insert('v', 3, "x"));

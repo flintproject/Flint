@@ -16,7 +16,7 @@ public:
 	VariableInserter(const VariableInserter &) = delete;
 	VariableInserter &operator=(const VariableInserter &) = delete;
 
-	VariableInserter(const char *table, sqlite3 *db);
+	VariableInserter(const char *table, bool independent, sqlite3 *db);
 
 	~VariableInserter();
 
@@ -32,6 +32,7 @@ public:
 private:
 	std::unique_ptr<char[]> query_;
 	sqlite3_stmt *stmt_;
+	bool independent_;
 };
 
 }

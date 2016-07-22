@@ -173,7 +173,7 @@ int HandleConstant(void *data, int argc, char **argv, char **names)
 class VariableWriter : public db::VariableInserter {
 public:
 	explicit VariableWriter(sqlite3 *db)
-		: db::VariableInserter("variables", db)
+		: db::VariableInserter("variables", true, db) // TODO: real independency
 		, i_(1)
 	{
 	}

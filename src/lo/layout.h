@@ -105,6 +105,11 @@ public:
 	size_t MarkConstant(int nol, size_t size, int *levels) const;
 
 	/*
+	 * Return the number of "on".
+	 */
+	size_t MarkLiteral(int nol, size_t size, int *levels, size_t *color) const;
+
+	/*
 	 * Select the locations occupied as a variable of type 'X'.
 	 * A location consists of its offset and size.
 	 * Return its total size i.e. the number of scalar states.

@@ -174,7 +174,7 @@ int HandleConstant(void *data, int argc, char **argv, char **names)
 class VariableWriter : public db::VariableInserter {
 public:
 	explicit VariableWriter(sqlite3 *db)
-		: db::VariableInserter("variables", db)
+		: db::VariableInserter("variables", true, db) // TODO: real independency
 		, i_(1)
 	{
 	}
@@ -342,6 +342,9 @@ bool Read(sqlite3 *db)
 
 	if (!CreateView(db, "input_ivs",
 					"SELECT * FROM input_values UNION ALL SELECT * FROM input_functions"))
+		return false;
+	if (!CreateView(db, "dependent_ivs",
+					"SELECT * FROM input_functions"))
 		return false;
 	if (!CreateView(db, "input_eqs",
 					"SELECT * FROM input_functions UNION ALL SELECT * FROM input_odes"))

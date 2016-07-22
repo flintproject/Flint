@@ -30,7 +30,7 @@ struct F : public test::MemoryFixture {
 		size_t s = std::strlen(name);
 		std::unique_ptr<char[]> query(new char[s+128]);
 		std::sprintf(query.get(),
-					 "INSERT INTO variables VALUES (X'e85dc418a53211e5a8182fb4ee48322a', '%c', '%d', '%s', 'dimensionless', '%d', '%d', NULL)",
+					 "INSERT INTO variables VALUES (X'e85dc418a53211e5a8182fb4ee48322a', '%c', '%d', '%s', 'dimensionless', '%d', '%d', NULL, '0')",
 					 type, id, name, col, row);
 		sql.Exec(query.get());
 	}

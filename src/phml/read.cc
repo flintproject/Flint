@@ -1073,7 +1073,10 @@ private:
 						cerr << "missing <dimension> of <physical-quantity>" << endl;
 						return -2;
 					}
-					if (!dd_->UpdatePq(pq_.get())) return -2;
+					if (!dd_->UpdatePq(pq_.get(),
+									   (iv_dumper_ && iv_dumper_->TargetIsIndependent()) ||
+									   (impl_dumper_ && impl_dumper_->TargetIsIndependent())))
+						return -2;
 					if (iv_dumper_) {
 						if (pq_->type() != PQ::kState) {
 							cerr << "unexpected <initial-value> for <physical-quantity> of type "
@@ -2242,7 +2245,7 @@ const Schema kModelTables[] = {
 	{"ncs", "(rg_name TEXT, rg_seed TEXT, integration TEXT, sts_unit_id INTEGER, sts_value TEXT)"},
 	{"tds", "(unit_id INTEGER, step TEXT, module_id BLOB)"},
 	{"modules", "(module_id BLOB, type TEXT, name TEXT, capsulated_by BLOB, template_state TEXT)"},
-	{"pqs", "(module_rowid INTEGER, type TEXT, pq_id INTEGER, unit_id INTEGER, name TEXT, ncols INTEGER, nrows INTEGER, max_delay TEXT)"},
+	{"pqs", "(module_rowid INTEGER, type TEXT, pq_id INTEGER, unit_id INTEGER, name TEXT, ncols INTEGER, nrows INTEGER, max_delay TEXT, independent INTEGER)"},
 	{"ivs", "(pq_rowid INTEGER, math TEXT)"},
 	{"impls", "(pq_rowid INTEGER, math TEXT)"},
 	{"ecs", "(pq_rowid INTEGER, math TEXT)"},
@@ -2296,7 +2299,7 @@ struct View {
 const View kViews[] = {
 	{"joins", "m.module_id AS module_id, i.module_id AS uuid, i.label AS label FROM instances AS i LEFT JOIN templates As t ON i.template_id = t.template_id LEFT JOIN modules AS m ON m.module_id = t.ref_module_id"},
 	{"spaces", "module_id AS space_id, name FROM modules WHERE type = 'functional-unit'"},
-	{"public_variables", "m.module_id AS space_id, p.type, p.pq_id AS id, p.name, u.name AS unit, p.ncols, p.nrows, p.max_delay AS capacity FROM pqs AS p LEFT JOIN modules AS m ON p.module_rowid = m.rowid LEFT JOIN units AS u ON p.unit_id = u.unit_id"},
+	{"public_variables", "m.module_id AS space_id, p.type, p.pq_id AS id, p.name, u.name AS unit, p.ncols, p.nrows, p.max_delay AS capacity, p.independent FROM pqs AS p LEFT JOIN modules AS m ON p.module_rowid = m.rowid LEFT JOIN units AS u ON p.unit_id = u.unit_id"},
 	{"variables", "* FROM public_variables UNION ALL SELECT * FROM private_variables"},
 	{"time_unit", "u.name FROM tds AS t JOIN units AS u ON t.unit_id = u.unit_id WHERE t.module_id IS NULL"},
 	{"sv_eqs", "m.module_id, ltrim(i.math) FROM impls AS i LEFT JOIN pqs AS p ON i.pq_rowid = p.rowid LEFT JOIN modules AS m ON p.module_rowid = m.rowid WHERE p.type = 's' OR p.type = 'v'"},
@@ -2304,6 +2307,10 @@ const View kViews[] = {
 	{"iv_eqs", "m.module_id, ltrim(i.math) FROM ivs AS i LEFT JOIN pqs AS p ON i.pq_rowid = p.rowid LEFT JOIN modules AS m ON p.module_rowid = m.rowid"},
 	{"input_ivs", "* FROM sv_eqs UNION ALL SELECT * FROM iv_eqs UNION ALL SELECT * FROM tscs UNION ALL SELECT * FROM combined_values UNION ALL SELECT * FROM combined_functions"},
 	{"input_eqs", "* FROM vx_eqs UNION ALL SELECT * FROM tscs UNION ALL SELECT * FROM combined_functions UNION ALL SELECT * FROM combined_odes"},
+	{"si_eqs", "m.module_id, ltrim(i.math) FROM impls AS i LEFT JOIN pqs AS p ON i.pq_rowid = p.rowid LEFT JOIN modules AS m ON p.module_rowid = m.rowid WHERE p.type = 's' AND p.independent = '1'"},
+	{"ivi_eqs", "m.module_id, ltrim(i.math) FROM ivs AS i LEFT JOIN pqs AS p ON i.pq_rowid = p.rowid LEFT JOIN modules AS m ON p.module_rowid = m.rowid WHERE p.independent = '1'"},
+	{"independent_ivs", "* FROM si_eqs UNION ALL SELECT * FROM ivi_eqs"},
+	{"dependent_ivs", "* FROM input_ivs EXCEPT SELECT * FROM independent_ivs"},
 	{"before_eqs", "m.module_id, ltrim(e.math) FROM extras AS e LEFT JOIN pqs AS p ON e.pq_rowid = p.rowid LEFT JOIN modules AS m ON p.module_rowid = m.rowid WHERE e.order_type = 'before'"},
 	{"after_eqs", "m.module_id, ltrim(e.math) FROM extras AS e LEFT JOIN pqs AS p ON e.pq_rowid = p.rowid LEFT JOIN modules AS m ON p.module_rowid = m.rowid WHERE e.order_type = 'after'"}
 };

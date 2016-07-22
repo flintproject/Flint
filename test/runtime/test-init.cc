@@ -40,7 +40,7 @@ struct F : public test::MemoryFixture {
 	F()
 	{
 		BOOST_REQUIRE_EQUAL(CreateSingleton(driver_.db()), 1);
-		db::VariableInserter vi("variables", driver_.db());
+		db::VariableInserter vi("variables", false, driver_.db());
 		BOOST_REQUIRE(vi.Insert('v', 1, "a"));
 		BOOST_REQUIRE(vi.Insert('v', 2, "b"));
 		BOOST_REQUIRE(vi.Insert('v', 3, "x"));

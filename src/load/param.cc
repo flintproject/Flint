@@ -42,7 +42,7 @@ int AddColumn(void *data, int argc, char **argv, char **names)
 {
 	State *state = static_cast<State *>(data);
 	(void)names;
-	assert(argc == 11);
+	assert(argc == 12);
 
 	assert(argv[8]);
 	assert(argv[9]);
@@ -61,14 +61,12 @@ int AddColumn(void *data, int argc, char **argv, char **names)
 	c->set_name(argv[4]); // name
 	assert(argv[5]);
 	assert(std::strlen(argv[5]) == 1);
-	switch (argv[5][0]) { // type
-	case 's':
+	char type = argv[5][0];
+	if (type == 's' && (argv[11] && std::atoi(argv[11]) == 1)) { // static and independent
 		c->set_type(lo::S);
-		break;
-	case 'x':
+	} else if (type == 'x' && (argv[11] && std::atoi(argv[11]) == 1)) { // state and independent iv
 		c->set_type(lo::X);
-		break;
-	default:
+	} else {
 		state->pos += size;
 		return 0;
 	}

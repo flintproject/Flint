@@ -186,6 +186,47 @@ size_t Layout::MarkConstant(int nol, size_t size, int *levels) const
 	return num_of_on;
 }
 
+size_t Layout::MarkLiteral(int nol, size_t size, int *levels, size_t *color) const
+{
+	size_t k;
+	size_t num_of_on = 0;
+	size_t offset = kOffsetBase;
+	int di = 0;
+	for (const auto &tp : tv_) {
+		int nos = tp->nos();
+		int nod = tp->nod();
+		int dib = di;
+		int die = di + nod;
+
+		for (int i=0;i<nos;i++) {
+			di = dib;
+			while (di < die) {
+				const auto &dp = dv_.at(di++);
+				assert(offset < size);
+				switch (dp->type()) {
+				case lo::S:
+				case lo::X:
+					if (dp->independent()) {
+						for (int j=0;j<nol;j++) {
+							k = offset + (j * size);
+							levels[k] = 1;
+							color[k] = 1;
+							num_of_on++;
+						}
+					}
+					break;
+				default:
+					// nothing to do
+					break;
+				}
+				offset += dp->col() * dp->row();
+			}
+		}
+	}
+	assert(offset == size);
+	return num_of_on;
+}
+
 long Layout::SelectStates(std::vector<std::pair<int, int> > *states) const
 {
 	long total = 0;
@@ -240,22 +281,26 @@ void Layout::Debug(size_t size) const
 			while (di < die) {
 				const auto &dp = dv_.at(di++);
 				assert(offset < size);
-				std::cout << "|" << std::setw(4) << offset;
+				std::cout << '|' << std::setw(4) << offset << '|';
 				switch (dp->type()) {
 				case lo::S:
-					std::cout << "|S|";
+					std::cout << 'S';
 					break;
 				case lo::T:
-					std::cout << "|T|";
+					std::cout << 'T';
 					break;
 				case lo::V:
-					std::cout << "|V|";
+					std::cout << 'V';
 					break;
 				case lo::X:
-					std::cout << "|X|";
+					std::cout << 'X';
 					break;
 				}
-				std::cout << dp->name() << std::endl;
+				if (dp->independent())
+					std::cout << 'i';
+				else
+					std::cout << ' ';
+				std::cout << '|' << dp->name() << std::endl;
 				offset += dp->col() * dp->row();
 			}
 		}

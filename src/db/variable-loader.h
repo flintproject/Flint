@@ -37,6 +37,7 @@ public:
 			int col = sqlite3_column_int(stmt(), 5);
 			int row = sqlite3_column_int(stmt(), 6);
 			double capacity = sqlite3_column_double(stmt(), 7);
+			int independent = sqlite3_column_int(stmt(), 8);
 
 			assert(space_id);
 			boost::uuids::uuid u;
@@ -65,7 +66,8 @@ public:
 													   (const char *)unit,
 													   col,
 													   row,
-													   capacity));
+													   capacity,
+													   independent));
 			if (!handler->Handle(u, std::move(var)))
 				return false;
 		}

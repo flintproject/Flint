@@ -11,7 +11,7 @@ public:
 	Variable(const Variable &) = delete;
 	Variable &operator=(const Variable &) = delete;
 
-	Variable(char type, int id, const char *name, const char *unit, int col, int row, double capacity);
+	Variable(char type, int id, const char *name, const char *unit, int col, int row, double capacity, bool independent);
 
 	char type() const {return type_;}
 	int id() const {return id_;}
@@ -20,6 +20,7 @@ public:
 	int col() const {return col_;}
 	int row() const {return row_;}
 	double capacity() const {return capacity_;}
+	bool independent() const {return independent_;}
 
 private:
 	char type_;
@@ -29,6 +30,7 @@ private:
 	int col_;
 	int row_;
 	double capacity_;
+	bool independent_;
 };
 
 }

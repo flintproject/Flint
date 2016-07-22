@@ -17,7 +17,7 @@ struct F : public test::MemoryFixture {
 		, da(new cas::DimensionAnalyzer)
 	{
 		sql.Exec("CREATE TABLE variables " VARIABLES_SCHEMA);
-		vi.reset(new db::VariableInserter("variables", db));
+		vi.reset(new db::VariableInserter("variables", false, db));
 		sql.Exec("CREATE TABLE sorts (uuid BLOB, name TEXT, math TEXT)");
 	}
 

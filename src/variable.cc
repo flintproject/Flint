@@ -11,7 +11,8 @@ Variable::Variable(char type,
 				   const char *unit,
 				   int col,
 				   int row,
-				   double capacity)
+				   double capacity,
+				   bool independent)
 	: type_(type)
 	, id_(id)
 	, name_(name)
@@ -19,6 +20,7 @@ Variable::Variable(char type,
 	, col_(col)
 	, row_(row)
 	, capacity_(capacity)
+	, independent_(independent)
 {
 	assert(unit);
 }

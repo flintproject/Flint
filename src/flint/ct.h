@@ -25,6 +25,12 @@ typedef std::vector<std::unique_ptr<ReductionUnit> > ReductionUnitVector;
 
 typedef std::vector<std::unique_ptr<CalculationDependency> > CalculationDependencyVector;
 
+enum class Availability {
+	kNone = 0,
+	kLiteral = 1,
+	kConstant = 2
+};
+
 class DataFlowAnalyzer {
 public:
 	DataFlowAnalyzer(const DataFlowAnalyzer &) = delete;
@@ -55,7 +61,8 @@ public:
 
 	bool SolveDependencies(int nol,
 						   const FlowInboundMap *inbound,
-						   bool constantAvailable);
+						   Availability availability = Availability::kConstant,
+						   size_t *color = nullptr);
 
 	void ScheduleEvents(const FlowInboundMap &inbound);
 

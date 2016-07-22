@@ -50,7 +50,7 @@ private:
 class VariableWriter : public db::VariableInserter {
 public:
 	VariableWriter(int id, const boost::uuids::uuid &uuid, sqlite3 *db)
-		: db::VariableInserter("private_variables", db)
+		: db::VariableInserter("private_variables", false, db)
 		, id_(id)
 		, uuid_(uuid)
 	{

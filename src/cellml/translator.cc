@@ -218,7 +218,7 @@ private:
 class VariableDumper : public db::VariableInserter, public db::StatementDriver {
 public:
 	VariableDumper(sqlite3 *db, const ComponentMap *cm)
-		: db::VariableInserter("variables", db)
+		: db::VariableInserter("variables", true, db) // TODO: real independency
 		, db::StatementDriver(db, "SELECT rowid, component, name, initial_value FROM cellml_variables")
 		, cm_(cm)
 	{
@@ -439,6 +439,8 @@ bool TranslateCellml(sqlite3 *db)
 		return false;
 
 	if (!CreateTable(db, "input_ivs", "(uuid BLOB, math TEXT)"))
+		return false;
+	if (!CreateTable(db, "dependent_ivs", "(uuid BLOB, math TEXT)")) // TODO: insert proper rows
 		return false;
 	if (!CreateTable(db, "input_eqs", "(uuid BLOB, math TEXT)"))
 		return false;

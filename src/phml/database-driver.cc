@@ -307,7 +307,7 @@ bool DatabaseDriver::Initialize()
 		return false;
 	}
 
-	e = sqlite3_prepare_v2(db_, "UPDATE pqs SET unit_id = ?, name = ?, ncols = ?, nrows = ?, max_delay = ? WHERE rowid = ?",
+	e = sqlite3_prepare_v2(db_, "UPDATE pqs SET unit_id = ?, name = ?, ncols = ?, nrows = ?, max_delay = ?, independent = ? WHERE rowid = ?",
 						   -1, &update_stmt_[kPq], nullptr);
 	if (e != SQLITE_OK) {
 		cerr << "failed to prepare statement: " << e << endl;
@@ -580,7 +580,7 @@ bool DatabaseDriver::SavePq(const Module *module, PQ *pq)
 	return true;
 }
 
-bool DatabaseDriver::UpdatePq(const PQ *pq)
+bool DatabaseDriver::UpdatePq(const PQ *pq, bool independent)
 {
 	assert(pq->IsSaved());
 	sqlite3_stmt *stmt = update_stmt_[kPq];
@@ -610,7 +610,12 @@ bool DatabaseDriver::UpdatePq(const PQ *pq)
 		cerr << "failed to bind max_delay: " << e << endl;
 		return false;
 	}
-	e = sqlite3_bind_int64(stmt, 6, pq->rowid());
+	e = sqlite3_bind_int(stmt, 6, independent ? 1 : 0);
+	if (e != SQLITE_OK) {
+		cerr << "failed to bind independent: " << e << endl;
+		return false;
+	}
+	e = sqlite3_bind_int64(stmt, 7, pq->rowid());
 	if (e != SQLITE_OK) {
 		cerr << "failed to bind rowid: " << e << endl;
 		return false;

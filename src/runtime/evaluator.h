@@ -4,6 +4,7 @@
 
 #include <memory>
 
+#include "flint/ct.h"
 #include "lo/layout.h"
 #include "sqlite3.h"
 
@@ -16,9 +17,12 @@ public:
 
 	bool Load(const char *layout_file);
 
-	bool Evaluate(sqlite3 *db, int seed,
+	bool Evaluate(sqlite3 *db,
+				  ct::Availability availability,
+				  int seed,
 				  const char *bc_file,
-				  const char *output_file);
+				  const char *output_file,
+				  const char *input_file = nullptr);
 
 private:
 	Layout layout_;

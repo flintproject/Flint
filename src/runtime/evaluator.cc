@@ -211,9 +211,11 @@ bool Evaluator::Load(const char *layout_file)
 }
 
 bool Evaluator::Evaluate(sqlite3 *db,
+						 ct::Availability availability,
 						 int seed,
 						 const char *bc_file,
-						 const char *output_file)
+						 const char *output_file,
+						 const char *input_file)
 {
 	std::unique_ptr<Executor> executor(new Executor(layer_size_));
 	std::unique_ptr<Processor> processor(new Processor(&layout_, layer_size_));
@@ -221,6 +223,10 @@ bool Evaluator::Evaluate(sqlite3 *db,
 	// arrange data space
 	std::unique_ptr<double[]> data(new double[layer_size_]()); // default-initialized
 	executor->set_data(data.get());
+
+	// initialize color space
+	std::unique_ptr<size_t[]> color(new size_t[layer_size_]()); // default-initialized
+	executor->set_color(color.get());
 
 	std::unique_ptr<bool[]> target(new bool[layer_size_]()); // default-initialized
 	executor->set_target(target.get());
@@ -244,6 +250,21 @@ bool Evaluator::Evaluate(sqlite3 *db,
 			return false;
 		processor->set_tv(tv.get());
 	}
+	// read input if specified
+	if (input_file) {
+		FILE *fp = std::fopen(input_file, "rb");
+		if (!fp) {
+			std::perror(input_file);
+			return false;
+		}
+		if (std::fread(data.get(), sizeof(double), layer_size_, fp) != layer_size_) {
+			std::cerr << "failed to read input: " << input_file << std::endl;
+			std::fclose(fp);
+			return false;
+		}
+		std::fclose(fp);
+	}
+
 	if (!LoadFlows(db, inbound.get()))
 		return false;
 
@@ -263,7 +284,8 @@ bool Evaluator::Evaluate(sqlite3 *db,
 
 	processor->CalculateCodeOffset();
 
-	if (!processor->SolveDependencies(nol, inbound.get(), false)) return false;
+	if (!processor->SolveDependencies(nol, inbound.get(), availability, color.get()))
+		return false;
 
 	int max_noir = processor->GetMaxNoir();
 	std::unique_ptr<intptr_t[]> ir(new intptr_t[max_noir]);
@@ -277,10 +299,6 @@ bool Evaluator::Evaluate(sqlite3 *db,
 	std::unique_ptr<double[]> tmp(new double[max_nod]);
 	executor->set_tmp(tmp.get());
 	processor->set_tmp(tmp.get());
-
-	// initialize color space
-	std::unique_ptr<size_t[]> color(new size_t[layer_size_]()); // default-initialized
-	executor->set_color(color.get());
 
 	// initialize pseudo random number generator with given seed
 	std::unique_ptr<std::mt19937> rng(new std::mt19937(seed));

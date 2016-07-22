@@ -15,12 +15,13 @@ using std::exit;
 namespace flint {
 namespace db {
 
-VariableInserter::VariableInserter(const char *table, sqlite3 *db)
+VariableInserter::VariableInserter(const char *table, bool independent, sqlite3 *db)
 	: query_(new char[128]) // long enough
 	, stmt_(nullptr)
+	, independent_(independent)
 {
 	sprintf(query_.get(),
-			"INSERT INTO %s VALUES (?, ?, ?, ?, 'dimensionless', ?, ?, NULL)",
+			"INSERT INTO %s VALUES (?, ?, ?, ?, 'dimensionless', ?, ?, NULL, ?)",
 			table);
 	int e;
 	e = sqlite3_prepare_v2(db, query_.get(), -1, &stmt_, nullptr);
@@ -73,6 +74,11 @@ bool VariableInserter::Insert(const boost::uuids::uuid &space_id,
 	e = sqlite3_bind_int(stmt_, 6, row);
 	if (e != SQLITE_OK) {
 		cerr << "failed to bind nrows: " << e << endl;
+		return false;
+	}
+	e = sqlite3_bind_int(stmt_, 7, independent_ ? 1 : 0);
+	if (e != SQLITE_OK) {
+		cerr << "failed to bind independent: " << e << endl;
 		return false;
 	}
 	e = sqlite3_step(stmt_);

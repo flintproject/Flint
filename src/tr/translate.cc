@@ -217,7 +217,7 @@ bool Translate(const cli::RunOption &option)
 	std::unique_ptr<FlowInboundMap> inbound(new FlowInboundMap);
 	if (!LoadFlows(db, inbound.get()))
 		return false;
-	if (!translator->SolveDependencies(nol, inbound.get(), true))
+	if (!translator->SolveDependencies(nol, inbound.get()))
 		return false;
 
 	translator->PrintHeader(nol, layer_size, reader.length(), reader.step());

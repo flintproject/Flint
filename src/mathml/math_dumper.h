@@ -22,19 +22,25 @@ public:
 	MathDumper(xmlTextReaderPtr &text_reader, std::ostream *os)
 		: text_reader_(text_reader),
 		  name_(nullptr),
-		  found_(),
+		  found_(false),
+		  independent_(true),
 		  os_(os)
 	{}
 
 	MathDumper(xmlTextReaderPtr &text_reader, const xmlChar *name, std::ostream *os)
 		: text_reader_(text_reader),
 		  name_(name),
-		  found_(),
+		  found_(false),
+		  independent_(true),
 		  os_(os)
 	{}
 
 	bool TargetIsFound() const {
 		return found_;
+	}
+
+	bool TargetIsIndependent() const {
+		return independent_;
 	}
 
 	template<typename THandler>
@@ -117,9 +123,12 @@ public:
 		xmlChar *name;
 		int i = Trim(s, &name);
 		if (i == 0) return -2;
-		// check if it is the name
-		if (name_ && !found_ && xmlStrEqual(name, name_)) {
-			found_ = true;
+		if (name_) {
+			// check whether it is the name or not
+			if (!found_ && xmlStrEqual(name, name_))
+				found_ = true;
+			if (independent_ && !xmlStrEqual(name, name_))
+				independent_ = false;
 		}
 		*os_ << "%" << (const char *)name;
 		xmlFree(s);
@@ -373,6 +382,7 @@ private:
 	xmlTextReaderPtr &text_reader_;
 	const xmlChar *name_;
 	bool found_;
+	bool independent_;
 	std::ostream *os_;
 };
 

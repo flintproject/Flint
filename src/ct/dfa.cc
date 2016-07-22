@@ -185,7 +185,8 @@ int DataFlowAnalyzer::GetMaxNumberOfData()
 
 bool DataFlowAnalyzer::SolveDependencies(int nol,
 										 const FlowInboundMap *inbound,
-										 bool constantAvailable)
+										 Availability availability,
+										 size_t *color)
 {
 	std::unique_ptr<CalculationDependencyVector> cdv(new CalculationDependencyVector);
 	CollectCalculationDependencies(cdv.get());
@@ -194,8 +195,17 @@ bool DataFlowAnalyzer::SolveDependencies(int nol,
 	CollectReductionUnits(nol, inbound, ruv.get());
 
 	std::unique_ptr<int[]> levels(new int[nol * layer_size_]());
-	if (constantAvailable)
+	switch (availability) {
+	case Availability::kNone:
+		// nothing to do
+		break;
+	case Availability::kLiteral:
+		layout_->MarkLiteral(nol, layer_size_, levels.get(), color);
+		break;
+	case Availability::kConstant:
 		layout_->MarkConstant(nol, layer_size_, levels.get());
+		break;
+	}
 	int m = 0;
 	while (!cdv->empty() || !ruv->empty()) {
 		size_t n = 0;
@@ -233,6 +243,8 @@ bool DataFlowAnalyzer::SolveDependencies(int nol,
 
 		if (n == 0) {
 			std::cerr << "failed to solve the rest of dependencies: "
+					  << static_cast<int>(availability)
+					  << ", "
 					  << cdv->size()
 					  << "/"
 					  << ruv->size()

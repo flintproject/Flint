@@ -2,7 +2,7 @@
 #ifndef FLINT_DB_HELPER_H_
 #define FLINT_DB_HELPER_H_
 
-#define VARIABLES_SCHEMA "(space_id BLOB, type TEXT, id INTEGER, name TEXT, unit TEXT, ncols INTEGER, nrows INTEGER, capacity REAL)"
+#define VARIABLES_SCHEMA "(space_id BLOB, type TEXT, id INTEGER, name TEXT, unit TEXT, ncols INTEGER, nrows INTEGER, capacity REAL, independent INTEGER)"
 
 #define REACHES_SCHEMA "(output_uuid BLOB, output_id INTEGER, input_uuid BLOB, input_id INTEGER, reduction INTEGER)"
 

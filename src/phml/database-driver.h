@@ -55,7 +55,7 @@ public:
 
 	bool SavePq(const Module *module, PQ *pq);
 
-	bool UpdatePq(const PQ *pq);
+	bool UpdatePq(const PQ *pq, bool independent);
 
 	bool SaveInitialValue(const PQ *pq, const InitialValue *iv);
 

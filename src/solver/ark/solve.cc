@@ -44,7 +44,7 @@ Processor *CreateProcessor(const Layout *layout, size_t layer_size,
 	if (!processor->SolveLocation())
 		return nullptr;
 	processor->CalculateCodeOffset();
-	if (!processor->SolveDependencies(nol, inbound, true))
+	if (!processor->SolveDependencies(nol, inbound))
 		return nullptr;
 	return processor.release();
 }

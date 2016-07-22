@@ -214,7 +214,11 @@ bool Generate(sqlite3 *db, const char *filename)
 			default: assert(false); break;
 			}
 			data->set_unit(np->unit());
-			if (np->capacity() > 0) data->set_capacity(np->capacity());
+			if (np->capacity() > 0)
+				data->set_capacity(np->capacity());
+			else
+				data->clear_capacity();
+			data->set_independent(np->independent());
 			if (!PackToOstream(*data, &ofs)) {
 				return false;
 			}

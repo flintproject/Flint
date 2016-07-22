@@ -146,12 +146,16 @@ bool TaskRunner::Run()
 	if (!reader_->Read())
 		return false;
 	if (reader_->GetMethod() != compiler::Method::kArk) {
-		char bc_file[kFilenameLength];
-		sprintf(bc_file, "%s/bc", dir_.get());
 		cas::DimensionAnalyzer da;
 		if (!da.Load(modeldb_driver_->db()))
 			return false;
 		compiler::Compiler c(&da);
+		reinit_bc_.reset(new char[kFilenameLength]);
+		sprintf(reinit_bc_.get(), "%s/reinit-bc", dir_.get());
+		if (!c.Compile(modeldb_driver_->db(), "dependent_ivs", compiler::Method::kAssign, reinit_bc_.get()))
+			return false;
+		char bc_file[kFilenameLength];
+		sprintf(bc_file, "%s/bc", dir_.get());
 		if (!c.Compile(modeldb_driver_->db(), "input_eqs", reader_->GetMethod(), bc_file))
 			return false;
 	}

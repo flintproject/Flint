@@ -28,7 +28,7 @@ bool Init(sqlite3 *db,
 		cerr << "no dependent variables found" << endl;
 		return false;
 	}
-	return e->Evaluate(db, seed, bc_file, output_file);
+	return e->Evaluate(db, ct::Availability::kNone, seed, bc_file, output_file);
 }
 
 }

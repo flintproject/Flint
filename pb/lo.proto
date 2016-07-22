@@ -37,6 +37,7 @@ message Data {
   required Type type = 4;
   required string unit = 5; /* empty string means that no unit is specified */
   optional double capacity = 6; /* for delay differential equations */
+  required bool independent = 8;
 
 }
 

@@ -37,6 +37,10 @@ public:
 		  reader_(reader)
 	{}
 
+	bool TargetIsIndependent() const {
+		return math_dumper_.TargetIsIndependent();
+	}
+
 	int Read(int level) {
 		int i;
 		while ( (i = xmlTextReaderMoveToNextAttribute(text_reader_)) > 0) {
