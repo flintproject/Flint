@@ -2,7 +2,7 @@ This directory contains header libraries developed by third parties.
 
 Eigen/
 
-from Eigen 3.2.8.
+from Eigen 3.2.9.
 Its COPYING.README says:
 ---
 Eigen is primarily MPL2 licensed. See COPYING.MPL2 and these links:
@@ -23,4 +23,3 @@ For example, with most compilers, you could add this to your project CXXFLAGS:
   -DEIGEN_MPL2_ONLY
 This will cause a compilation error to be generated if you #include any code that is
 LGPL licensed.
----
