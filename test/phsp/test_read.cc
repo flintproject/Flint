@@ -18,7 +18,7 @@ BOOST_AUTO_TEST_CASE(Izhikevich_2003) {
 	BOOST_CHECK(sedml::Read(TEST_MODELS("Izhikevich_2003.xml"), driver_.db()));
 	BOOST_CHECK(phsp::Read(TEST_MODELS("Izhikevich_2003.phsp"), driver_.db()));
 	BOOST_CHECK(boost::filesystem::is_directory("1"));
-	BOOST_CHECK(boost::filesystem::is_regular_file("1/db"));
+	BOOST_CHECK(boost::filesystem::is_regular_file("1/task.db"));
 	BOOST_CHECK_EQUAL(boost::filesystem::remove_all("1"), 2u);
 }
 

@@ -330,9 +330,9 @@ private:
 		}
 		sqlite3_finalize(stmt);
 
-		// attach a specific database for the model
+		// attach a task database for the model
 		char query[1024];
-		sprintf(query, "ATTACH DATABASE '%d/db' AS 'db%d'", rowid, rowid);
+		sprintf(query, "ATTACH DATABASE '%d/task.db' AS 'db%d'", rowid, rowid);
 		char *em;
 		e = sqlite3_exec(db_, query, nullptr, nullptr, &em);
 		if (e != SQLITE_OK) {

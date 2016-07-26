@@ -161,7 +161,7 @@ bool TaskRunner::Run()
 	}
 
 	char db_file[kFilenameLength];
-	sprintf(db_file, "%s/db", dir_.get());
+	sprintf(db_file, "%s/task.db", dir_.get());
 	db_driver_.reset(new db::Driver(db_file));
 	if (!exec::SaveParameters(id_, db_driver_->db()))
 		return false;

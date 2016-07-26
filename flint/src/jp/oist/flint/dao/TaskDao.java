@@ -33,7 +33,7 @@ public class TaskDao extends DaoObject {
     private MappedByteBuffer mProgressBuffer;
 
     public TaskDao(int taskId, String modelPath, File dir) {
-        super("db", new File(dir, String.valueOf(taskId)));
+        super("task.db", new File(dir, String.valueOf(taskId)));
 
         mTaskId = taskId;
         mModelPath = modelPath;
