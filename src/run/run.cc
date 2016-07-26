@@ -106,9 +106,10 @@ bool Run(const cli::RunOption &option)
 			perror("spec.txt");
 			return false;
 		}
-		if (!Spec(db, fp))
+		bool r = Spec(db, fp);
+		std::fclose(fp);
+		if (!r)
 			return false;
-		fclose(fp);
 	}
 	// prepare granularity
 	{
