@@ -78,7 +78,7 @@ public:
 		: dir_(new char[kFilenameLength])
 		, after_bc_(new char[kFilenameLength])
 		, before_bc_(new char[kFilenameLength])
-		, const_bc_(new char[kFilenameLength])
+		, init_bc_(new char[kFilenameLength])
 		, init_(new char[kFilenameLength])
 		, layout_(new char[kFilenameLength])
 		, model_(new char[kFilenameLength])
@@ -96,7 +96,7 @@ public:
 		}
 		sprintf(after_bc_.get(), "%s/after-bc", dir_.get());
 		sprintf(before_bc_.get(), "%s/before-bc", dir_.get());
-		sprintf(const_bc_.get(), "%s/const-bc", dir_.get());
+		sprintf(init_bc_.get(), "%s/init.bc", dir_.get());
 		sprintf(init_.get(), "%s/init", dir_.get());
 		sprintf(layout_.get(), "%s/layout", dir_.get());
 		sprintf(model_.get(), "%s/model", dir_.get());
@@ -125,10 +125,10 @@ public:
 			if (!da.Load(db))
 				return false;
 			compiler::Compiler c(&da);
-			if (!c.Compile(db, "input_ivs", compiler::Method::kAssign, const_bc_.get()))
+			if (!c.Compile(db, "input_ivs", compiler::Method::kAssign, init_bc_.get()))
 				return false;
 		}
-		return runtime::Init(db, 0, layout_.get(), const_bc_.get(), init_.get());
+		return runtime::Init(db, 0, layout_.get(), init_bc_.get(), init_.get());
 	}
 
 	bool LoadPhml(sqlite3 *db)
@@ -149,14 +149,14 @@ public:
 			if (!da.Load(db))
 				return false;
 			compiler::Compiler c(&da);
-			if (!c.Compile(db, "input_ivs", compiler::Method::kAssign, const_bc_.get()))
+			if (!c.Compile(db, "input_ivs", compiler::Method::kAssign, init_bc_.get()))
 				return false;
 			if (!c.Compile(db, "after_eqs", compiler::Method::kEvent, after_bc_.get()))
 				return false;
 			if (!c.Compile(db, "before_eqs", compiler::Method::kEvent, before_bc_.get()))
 				return false;
 		}
-		return runtime::Init(db, seed, layout_.get(), const_bc_.get(), init_.get());
+		return runtime::Init(db, seed, layout_.get(), init_bc_.get(), init_.get());
 	}
 
 	bool LoadSbml(sqlite3 *db)
@@ -170,17 +170,17 @@ public:
 			if (!da.Load(db))
 				return false;
 			compiler::Compiler c(&da);
-			if (!c.Compile(db, "input_ivs", compiler::Method::kAssign, const_bc_.get()))
+			if (!c.Compile(db, "input_ivs", compiler::Method::kAssign, init_bc_.get()))
 				return false;
 		}
-		return runtime::Init(db, 0, layout_.get(), const_bc_.get(), init_.get());
+		return runtime::Init(db, 0, layout_.get(), init_bc_.get(), init_.get());
 	}
 
 private:
 	std::unique_ptr<char[]> dir_;
 	std::unique_ptr<char[]> after_bc_;
 	std::unique_ptr<char[]> before_bc_;
-	std::unique_ptr<char[]> const_bc_;
+	std::unique_ptr<char[]> init_bc_;
 	std::unique_ptr<char[]> init_;
 	std::unique_ptr<char[]> layout_;
 	std::unique_ptr<char[]> model_;
