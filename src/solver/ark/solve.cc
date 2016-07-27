@@ -73,15 +73,15 @@ bool Solve(sqlite3 *db, const job::Option &option)
 	size_t dirname_size = std::strlen(option.task_dir);
 	assert(dirname_size > 0);
 	std::unique_ptr<char[]> auxv_bc_file(new char[dirname_size+32]);
-	std::sprintf(auxv_bc_file.get(), "%s/auxv-bc", option.task_dir);
+	std::sprintf(auxv_bc_file.get(), "%s/auxv.bc", option.task_dir);
 	if (!system->SaveAuxVarBc(auxv_bc_file.get()))
 		return false;
 	std::unique_ptr<char[]> mass_bc_file(new char[dirname_size+32]);
-	std::sprintf(mass_bc_file.get(), "%s/mass-bc", option.task_dir);
+	std::sprintf(mass_bc_file.get(), "%s/mass.bc", option.task_dir);
 	if (!system->SaveOdeMassBc(mass_bc_file.get()))
 		return false;
 	std::unique_ptr<char[]> rhs_bc_file(new char[dirname_size+32]);
-	std::sprintf(rhs_bc_file.get(), "%s/rhs-bc", option.task_dir);
+	std::sprintf(rhs_bc_file.get(), "%s/rhs.bc", option.task_dir);
 	if (!system->SaveOdeRhsBc(rhs_bc_file.get()))
 		return false;
 

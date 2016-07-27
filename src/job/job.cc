@@ -99,14 +99,14 @@ bool Job(const char *task_dir,
 	}
 	option.task_dir = task_dir;
 	char before_bc_file[kShort];
-	sprintf(before_bc_file, "%s/before-bc", task_dir);
+	sprintf(before_bc_file, "%s/before.bc", task_dir);
 	if (boost::filesystem::exists(before_bc_file)) {
 		option.pre_file = before_bc_file;
 	} else {
 		option.pre_file = nullptr;
 	}
 	char after_bc_file[kShort];
-	sprintf(after_bc_file, "%s/after-bc", task_dir);
+	sprintf(after_bc_file, "%s/after.bc", task_dir);
 	if (boost::filesystem::exists(after_bc_file)) {
 		option.post_file = after_bc_file;
 	} else {

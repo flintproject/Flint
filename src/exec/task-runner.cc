@@ -151,7 +151,7 @@ bool TaskRunner::Run()
 			return false;
 		compiler::Compiler c(&da);
 		reinit_bc_.reset(new char[kFilenameLength]);
-		sprintf(reinit_bc_.get(), "%s/reinit-bc", dir_.get());
+		sprintf(reinit_bc_.get(), "%s/reinit.bc", dir_.get());
 		if (!c.Compile(modeldb_driver_->db(), "dependent_ivs", compiler::Method::kAssign, reinit_bc_.get()))
 			return false;
 		char bc_file[kFilenameLength];

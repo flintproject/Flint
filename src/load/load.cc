@@ -94,8 +94,8 @@ public:
 		} else {
 			sprintf(dir_.get(), ".");
 		}
-		sprintf(after_bc_.get(), "%s/after-bc", dir_.get());
-		sprintf(before_bc_.get(), "%s/before-bc", dir_.get());
+		sprintf(after_bc_.get(), "%s/after.bc", dir_.get());
+		sprintf(before_bc_.get(), "%s/before.bc", dir_.get());
 		sprintf(init_bc_.get(), "%s/init.bc", dir_.get());
 		sprintf(init_.get(), "%s/init", dir_.get());
 		sprintf(layout_.get(), "%s/layout", dir_.get());

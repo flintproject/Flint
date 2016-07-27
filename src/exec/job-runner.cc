@@ -41,7 +41,7 @@ JobRunner::JobRunner(TaskRunner *tr, int id)
 	, reinit_(new char[kFilenameLength])
 	, isd_(new char[kFilenameLength])
 {
-	sprintf(generated_bc_.get(), "%s/generated-bc", dir_.get());
+	sprintf(generated_bc_.get(), "%s/generated.bc", dir_.get());
 	sprintf(generated_db_.get(), "%s/generated.db", dir_.get());
 	sprintf(generated_init_.get(), "%s/generated-init", dir_.get());
 	sprintf(stored_.get(), "%s/stored", dir_.get());
