@@ -10,7 +10,7 @@ PKG_CONFIG_PATH = $(PREFIX)/lib/pkgconfig
 JARS := \
     GarudaSDK-2.0 \
     commons-cli-1.3.1 \
-    commons-io-2.4 \
+    commons-io-2.5 \
     commons-logging-1.2 \
     dom4j-1.6.1 \
     jackson-all-1.8.1 \
