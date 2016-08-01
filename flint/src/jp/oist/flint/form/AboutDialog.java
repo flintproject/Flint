@@ -13,7 +13,7 @@ import java.util.ResourceBundle;
 public class AboutDialog extends javax.swing.JDialog {
 
     private final static String URL = "https://flintproject.github.io/";
-    private final static String VERSION = "1.6";
+    private final static String VERSION = "1.7";
 
     public AboutDialog(java.awt.Frame parent) {
         super(parent, true);
