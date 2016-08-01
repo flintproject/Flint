@@ -7,7 +7,7 @@ BOOST_VERSION = 1.61.0
 LIBSBML_VERSION = 5.13.0
 LIBXML2_VERSION = 2.7.8
 LIBZIP_VERSION = 1.1.1
-PROTOBUF_VERSION = 2.6.1
+PROTOBUF_VERSION = 3.0.0
 SUNDIALS_VERSION = 2.6.2
 ZLIB_VERSION = 1.2.8
 
@@ -19,7 +19,7 @@ EXTERNAL_LIBRARIES = \
 	libSBML-$(LIBSBML_VERSION)-core-src.zip \
 	libxml2-sources-$(LIBXML2_VERSION).tar.gz \
 	libzip-$(LIBZIP_VERSION).tar.gz \
-	protobuf-$(PROTOBUF_VERSION).tar.gz \
+	protobuf-java-$(PROTOBUF_VERSION).tar.gz \
 	SBML_odeSolver-$(SOSLIB_COMMIT).tar.gz \
 	sundials-$(SUNDIALS_VERSION).tar.gz \
 	zlib-$(ZLIB_VERSION).tar.gz
@@ -71,7 +71,7 @@ $(eval $(call external_library_source,$(DEPOSIT_URL),clibsedml-$(CLIBSEDML_COMMI
 $(eval $(call external_library_source,http://downloads.sourceforge.net/project/sbml/libsbml/$(LIBSBML_VERSION)/stable,libSBML-$(LIBSBML_VERSION)-core-src.zip,6581723e894eee8058b95fa80df7aad4))
 $(eval $(call external_library_source,http://xmlsoft.org/sources,libxml2-sources-$(LIBXML2_VERSION).tar.gz,a78857dd73a8784776d7f9625ccf7a39))
 $(eval $(call external_library_source,http://www.nih.at/libzip,libzip-$(LIBZIP_VERSION).tar.gz,133aefc4c7e45a1b7d168a617e289ef6))
-$(eval $(call external_library_source,https://github.com/google/protobuf/releases/download/v$(PROTOBUF_VERSION),protobuf-$(PROTOBUF_VERSION).tar.gz,f3916ce13b7fcb3072a1fa8cf02b2423))
+$(eval $(call external_library_source,https://github.com/google/protobuf/releases/download/v$(PROTOBUF_VERSION),protobuf-java-$(PROTOBUF_VERSION).tar.gz,c5002fc32110450d06252ad6c53bb879))
 $(eval $(call external_library_source,$(DEPOSIT_URL),SBML_odeSolver-$(SOSLIB_COMMIT).tar.gz,c44cf16d5c7aab2176faeafa8cacb62d))
 $(eval $(call external_library_source,http://pkgs.fedoraproject.org/repo/extras/sundials/sundials-$(SUNDIALS_VERSION).tar.gz/3deeb0ede9f514184c6bd83ecab77d95,sundials-$(SUNDIALS_VERSION).tar.gz,3deeb0ede9f514184c6bd83ecab77d95))
 $(eval $(call external_library_source,http://zlib.net,zlib-$(ZLIB_VERSION).tar.gz,44d667c142d7cda120332623eab69f40))

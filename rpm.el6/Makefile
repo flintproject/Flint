@@ -138,7 +138,7 @@ maintainer-clean: distclean
 	-sudo rpm -e flint
 	-sudo rpm -e $(DEPNAMES)
 
-download: $(foreach lib,$(BOOST_UNDERSCORE).tar.bz2 clibsedml-$(CLIBSEDML_COMMIT).tar.gz libSBML-$(LIBSBML_VERSION)-core-src.zip libzip-$(LIBZIP_VERSION).tar.gz protobuf-$(PROTOBUF_VERSION).tar.gz SBML_odeSolver-$(SOSLIB_COMMIT).tar.gz sundials-$(SUNDIALS_VERSION).tar.gz,src/$(lib))
+download: $(foreach lib,$(BOOST_UNDERSCORE).tar.bz2 clibsedml-$(CLIBSEDML_COMMIT).tar.gz libSBML-$(LIBSBML_VERSION)-core-src.zip libzip-$(LIBZIP_VERSION).tar.gz protobuf-java-$(PROTOBUF_VERSION).tar.gz SBML_odeSolver-$(SOSLIB_COMMIT).tar.gz sundials-$(SUNDIALS_VERSION).tar.gz,src/$(lib))
 
 Flint-$(VERSION)-$(DIST).$(ARCH):
 	install -d $@
@@ -194,7 +194,7 @@ $(eval $(call flint_expand_tar_gz,libzip-$(LIBZIP_VERSION),libzip-$(LIBZIP_VERSI
 
 $(eval $(call flint_setup_dir,libzip,libzip-$(LIBZIP_VERSION)))
 
-$(eval $(call flint_expand_tar_gz,protobuf-$(PROTOBUF_VERSION),protobuf-$(PROTOBUF_VERSION)))
+$(eval $(call flint_expand_tar_gz,protobuf-$(PROTOBUF_VERSION),protobuf-java-$(PROTOBUF_VERSION)))
 
 $(eval $(call flint_setup_dir,protobuf,protobuf-$(PROTOBUF_VERSION)))
 

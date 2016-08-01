@@ -56,7 +56,7 @@ tmp/libzip-$(LIBZIP_VERSION): src/libzip-$(LIBZIP_VERSION).tar.gz | tmp
 	tar -C var -zxf $<
 	touch $@
 
-tmp/protobuf-$(PROTOBUF_VERSION): src/protobuf-$(PROTOBUF_VERSION).tar.gz | tmp
+tmp/protobuf-$(PROTOBUF_VERSION): src/protobuf-java-$(PROTOBUF_VERSION).tar.gz | tmp
 	-rm -rf var/protobuf-$(PROTOBUF_VERSION)
 	tar -C var -zxf $<
 	touch $@

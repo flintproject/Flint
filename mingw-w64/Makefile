@@ -90,7 +90,7 @@ tmp/zlib-$(ZLIB_VERSION): src/zlib-$(ZLIB_VERSION).tar.gz | tmp
 	tar -C var -zxf $<
 	touch $@
 
-tmp/protobuf-$(PROTOBUF_VERSION): src/protobuf-$(PROTOBUF_VERSION).tar.gz | tmp
+tmp/protobuf-$(PROTOBUF_VERSION): src/protobuf-java-$(PROTOBUF_VERSION).tar.gz | tmp
 	-rm -rf var/protobuf-$(PROTOBUF_VERSION)
 	tar -C var -zxf $<
 	touch $@
@@ -118,7 +118,7 @@ tmp/clibsedml-$(CLIBSEDML_COMMIT).installed: tmp/clibsedml-$(CLIBSEDML_COMMIT) t
 	(cd var/clibsedml-$(CLIBSEDML_COMMIT) && autoreconf -i -f && env CFLAGS='-std=c99 -Wall -W -Werror' ./configure --host=$(HOST) --prefix=$(PREFIX) --with-xml-prefix=$(PREFIX) --disable-xmltest && $(MAKE) all install)
 	touch $@
 
-usr/bin/protoc: src/protobuf-$(PROTOBUF_VERSION).tar.gz | build
+usr/bin/protoc: src/protobuf-java-$(PROTOBUF_VERSION).tar.gz | build
 	-rm -rf build/protobuf-$(PROTOBUF_VERSION)
 	tar -C build -zxf $<
 	(cd build/protobuf-$(PROTOBUF_VERSION) && ./configure --prefix=$(abspath usr) && $(MAKE) all install)

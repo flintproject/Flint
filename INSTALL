@@ -10,7 +10,7 @@ pkg-config is helpful but not required.
 In order to build Flint, the following libraries are required:
 - Boost 1.61.0
   http://www.boost.org/
-- Protocol buffers 2.6.1
+- Protocol buffers 3.0.0
   https://developers.google.com/protocol-buffers/
 - Git sundials-2.4.0 branch version of The SBML ODE Solver Library (SOSlib)
   http://mescalin.tbi.univie.ac.at/~raim/odeSolver/
