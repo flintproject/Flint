@@ -135,7 +135,7 @@ bool Ark::Solve(const job::Option &option)
 	}
 
 	/* skeleton: 3. Set vector of initial values */
-	if (!SetVectorOfInitialValues(option.input_data_file))
+	if (!SetVectorOfInitialValues(option.input_data->data()))
 		return false;
 
 	/* skeleton: 4. Create ARKode object */
@@ -254,21 +254,10 @@ bool Ark::SetProblemDimensions()
 	return true;
 }
 
-bool Ark::SetVectorOfInitialValues(const char *data_file)
+bool Ark::SetVectorOfInitialValues(const double *input_data)
 {
 	y_ = N_VNew_Serial(dim_);
-
-	FILE *fp = std::fopen(data_file, "rb");
-	if (!fp) {
-		std::perror(data_file);
-		return false;
-	}
-	size_t r = std::fread(data_.get(), sizeof(double), layer_size_, fp);
-	std::fclose(fp);
-	if (r != static_cast<size_t>(layer_size_)) {
-		cerr << "failed to read fully: " << data_file << endl;
-		return false;
-	}
+	std::memcpy(data_.get(), input_data, layer_size_ * sizeof(double));
 	WriteData(0, y_);
 	return true;
 }

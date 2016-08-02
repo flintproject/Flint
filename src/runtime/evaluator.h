@@ -3,6 +3,7 @@
 #define FLINT_RUNTIME_EVALUATOR_H_
 
 #include <memory>
+#include <vector>
 
 #include "flint/ct.h"
 #include "lo/layout.h"
@@ -21,8 +22,7 @@ public:
 				  ct::Availability availability,
 				  int seed,
 				  const char *bc_file,
-				  const char *output_file,
-				  const char *input_file = nullptr);
+				  std::vector<double> *data);
 
 private:
 	Layout layout_;

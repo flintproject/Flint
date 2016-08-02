@@ -49,7 +49,7 @@ public:
 private:
 	bool SetProblemDimensions();
 
-	bool SetVectorOfInitialValues(const char *data_file);
+	bool SetVectorOfInitialValues(const double *data_file);
 
 	const Layout* layout_;
 	int layer_size_;

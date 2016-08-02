@@ -40,26 +40,17 @@ public:
 		columns_.emplace(column->position(), column->col() * column->row());
 	}
 
-	bool Apply(FILE *ifp, FILE *ofp) const {
+	bool Apply(const double *data, FILE *ofp) const {
 		if (size_ == 0) {
 			cerr << "size is zero" << endl;
 			return false;
 		}
-		std::unique_ptr<double[]> data(new double[size_]);
-		for (;;) {
-			size_t s = fread(data.get(), sizeof(double), size_, ifp);
-			if (s == 0) break;
-			if (s != size_) {
-				cerr << "too short input" << endl;
+		for (map<int, int>::const_iterator it=columns_.begin();it!=columns_.end();++it) {
+			size_t p = static_cast<size_t>(it->first);
+			size_t s = static_cast<size_t>(it->second);
+			if (std::fwrite(data+p, sizeof(double), s, ofp) != s) {
+				cerr << "failed to filter output" << endl;
 				return false;
-			}
-			for (map<int, int>::const_iterator it=columns_.begin();it!=columns_.end();++it) {
-				size_t p = static_cast<size_t>(it->first);
-				s = static_cast<size_t>(it->second);
-				if (fwrite(data.get()+p, sizeof(double), s, ofp) != s) {
-					cerr << "failed to filter output" << endl;
-					return false;
-				}
 			}
 		}
 		return true;
@@ -72,14 +63,14 @@ private:
 
 }
 
-bool Cut(const char *filter_file, FILE *ifp, FILE *ofp)
+bool Cut(const char *filter_file, const double *data, FILE *ofp)
 {
 	std::unique_ptr<Filter> filter(new Filter);
 	{
 		std::unique_ptr<FilterLoader> loader(new FilterLoader(filter_file));
 		if (!loader->Load(filter.get())) return false;
 	}
-	return filter->Apply(ifp, ofp);
+	return filter->Apply(data, ofp);
 }
 
 }

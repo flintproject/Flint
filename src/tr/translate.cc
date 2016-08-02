@@ -89,33 +89,13 @@ bool PrintFileAsByteArray(const char *filename, const char *name,
 	return true;
 }
 
-bool PrintFileAsDoubleArray(const char *filename, size_t size,
+bool PrintDataAsDoubleArray(const std::vector<double> &data,
 							const char *name, std::ostream *os)
 {
-	static const int kBufferSize = 1024;
-
-	boost::filesystem::path path(filename);
-	FILE *fp = std::fopen(filename, "rb");
-	if (!fp) {
-		std::perror(filename);
-		return false;
-	}
-	std::unique_ptr<double[]> buf(new double[kBufferSize]);
 	*os << std::endl;
 	*os << "static const double " << name << "[] = {" << std::endl;
-	size_t t = 0;
-	while (t < size) {
-		size_t s = std::fread(buf.get(), sizeof(double), kBufferSize, fp);
-		for (size_t i=0;i<s;i++)
-			*os << '\t' << buf[i] << ',' << std::endl;
-		t += s;
-	}
-	auto e = std::ferror(fp);
-	std::fclose(fp);
-	if (e) {
-		std::cerr << "an error occurred when reading " << filename << std::endl;
-		return false;
-	}
+	for (auto d : data)
+		*os << '\t' << d << ',' << std::endl;
 	*os << "};" << std::endl;
 	return true;
 }
@@ -124,7 +104,8 @@ bool PrintFileAsDoubleArray(const char *filename, size_t size,
 
 bool Translate(const cli::RunOption &option)
 {
-	if (!load::Load(option.model_filename().c_str(), load::kRun))
+	std::vector<double> data;
+	if (!load::Load(option.model_filename().c_str(), load::kRun, 0, &data))
 		return false;
 
 	db::Driver driver("model.db");
@@ -231,7 +212,7 @@ bool Translate(const cli::RunOption &option)
 	translator->PrintReductionFunctions();
 	if (!PrintFileAsByteArray("isdh", "isdh", &ofs))
 		return false;
-	if (!PrintFileAsDoubleArray("init", layer_size,
+	if (!PrintDataAsDoubleArray(data,
 								"input", &ofs))
 		return false;
 	translator->PrintMain(*writer);

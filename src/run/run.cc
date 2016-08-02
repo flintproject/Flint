@@ -77,7 +77,8 @@ bool Run(const cli::RunOption &option)
 	if (option.has_lock_filename())
 		InitializeBackgroundProcess(option.lock_filename().c_str());
 
-	if (!load::Load(option.model_filename().c_str(), load::kRun))
+	std::vector<double> data;
+	if (!load::Load(option.model_filename().c_str(), load::kRun, 0, &data))
 		return false;
 
 	db::Driver driver("model.db");
@@ -136,7 +137,7 @@ bool Run(const cli::RunOption &option)
 	}
 	boost::filesystem::path output_path = GetPathFromUtf8(option.output_filename().c_str());
 	std::string output_file = output_path.string();
-	return job::Job(".", "0", nullptr, "init", output_file.c_str(), reader, db);
+	return job::Job(".", "0", nullptr, &data, output_file.c_str(), reader, db);
 }
 
 }

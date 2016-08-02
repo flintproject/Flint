@@ -5,6 +5,8 @@
 #include "flint/ct.h"
 #include "sqlite3.h"
 
+#include <vector>
+
 namespace flint {
 namespace runtime {
 
@@ -16,8 +18,7 @@ bool Eval(sqlite3 *db,
 		  int seed,
 		  const char *layout_file,
 		  const char *bc_file,
-		  const char *output_file,
-		  const char *input_file = nullptr);
+		  std::vector<double> *data);
 
 /*
  * Return true in case of success, otherwise false.
@@ -26,7 +27,7 @@ bool Init(sqlite3 *db,
 		  int seed,
 		  const char *layout_file,
 		  const char *bc_file,
-		  const char *output_file);
+		  std::vector<double> *data);
 
 }
 }

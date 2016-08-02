@@ -3,6 +3,7 @@
 #define FLINT_JOB_H_
 
 #include <cstdio>
+#include <vector>
 #include "sqlite3.h"
 
 namespace flint {
@@ -28,8 +29,8 @@ bool Generate(sqlite3 *input, const char *dir, int *job_id);
  * Return true in case of success, false otherwise.
  */
 bool Store(sqlite3 *db,
-		   const char *source_layout_file, const char *source_data_file,
-		   const char *target_layout_file, const char *target_data_file);
+		   const char *source_layout_file, double *source_data,
+		   const char *target_layout_file, double *target_data);
 
 struct Option {
 	size_t granularity;
@@ -39,7 +40,7 @@ struct Option {
 	const char *post_file;
 	const char *layout_file;
 	const char *filter_file;
-	const char *input_data_file;
+	std::vector<double> *input_data;
 	const char *input_history_file;
 	const char *control_file;
 	const char *output_data_file;
@@ -64,7 +65,7 @@ bool Evolve(sqlite3 *db,
 bool Job(const char *task_dir,
 		 const char *job_dir,
 		 void *progress_address,
-		 const char *data_file,
+		 std::vector<double> *data,
 		 const char *output_file,
 		 const task::ConfigReader &reader,
 		 sqlite3 *db);

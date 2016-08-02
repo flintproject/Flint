@@ -63,7 +63,7 @@ public class Job {
     }
 
     public Progress getProgress() {
-        return new Progress(new File(mWorkingDir, "start"),
+        return new Progress(new File(mWorkingDir, "values.txt"),
                             getIsdFile(),
                             mProgressBuffer.get(mJobId));
     }

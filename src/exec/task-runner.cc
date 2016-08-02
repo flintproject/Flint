@@ -54,9 +54,9 @@ bool CreateSpec(int id, sqlite3 *db)
 	return r;
 }
 
-bool Setup(int id, const char *path)
+bool Setup(int id, const char *path, std::vector<double> *data)
 {
-	if (!load::Load(path, load::kExec, id))
+	if (!load::Load(path, load::kExec, id, data))
 		return false;
 	{
 		db::Driver driver("x.db");
@@ -77,12 +77,10 @@ TaskRunner::TaskRunner(int id, char *path)
 	, dir_(new char[kFilenameLength])
 	, layout_(new char[kFilenameLength])
 	, generated_layout_(new char[kFilenameLength])
-	, init_(new char[kFilenameLength])
 {
 	sprintf(dir_.get(), "%d", id);
 	sprintf(layout_.get(), "%d/layout", id);
 	sprintf(generated_layout_.get(), "%d/generated-layout", id);
-	sprintf(init_.get(), "%d/init", id);
 }
 
 TaskRunner::~TaskRunner() = default;
@@ -112,7 +110,7 @@ void *TaskRunner::GetProgressAddress(int job_id)
 
 bool TaskRunner::Run()
 {
-	if (!Setup(id_, path_.get()))
+	if (!Setup(id_, path_.get(), &data_))
 		return false;
 
 	{

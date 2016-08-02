@@ -29,7 +29,7 @@ bool Form(sqlite3 *db);
 /*
  * Return true in case of success, false otherwise.
  */
-bool Timer(double length, double step, FILE *fp);
+bool Timer(double length, double step, double *data);
 
 }
 }

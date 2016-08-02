@@ -27,12 +27,7 @@
 
 using std::cerr;
 using std::endl;
-using std::fclose;
-using std::fopen;
-using std::fread;
-using std::fseek;
 using std::memcpy;
-using std::perror;
 using std::string;
 using std::strlen;
 
@@ -181,13 +176,11 @@ public:
 		dv_.push_back(std::move(data));
 	}
 
-	bool Rewrite(const char *format, const TargetValueMap &tvm, FILE *fp) const {
+	bool Rewrite(const char *format, const TargetValueMap &tvm, double *target_data) const {
 		std::unique_ptr<char[]> buf(new char[32]); // FIXME
 		int si = 0;
 		int di = 0;
-		if (fseek(fp, kOffsetBase*sizeof(double), SEEK_SET) != 0) {
-			return false;
-		}
+		size_t i = kOffsetBase;
 		for (const auto &tp : tv_) {
 			int nos = tp->nos();
 			int nod = tp->nod();
@@ -209,9 +202,7 @@ public:
 						{
 							TargetValueMap::const_iterator it = tvm.find(su);
 							if (it == tvm.end()) {
-								if (fseek(fp, data_size*sizeof(double), SEEK_CUR) != 0) {
-									return false;
-								}
+								i += data_size;
 							} else {
 								std::unordered_map<string, double>::const_iterator mit;
 								if (strcmp("phml", format) == 0) {
@@ -221,25 +212,18 @@ public:
 									mit = it->second.find(dp->name());
 								}
 								if (mit == it->second.end()) {
-									if (fseek(fp, data_size*sizeof(double), SEEK_CUR) != 0) {
-										return false;
-									}
+									i += data_size;
 								} else {
 									// TODO: support for non-scalar values
 									double value = mit->second;
-									if (std::fwrite(&value, sizeof(double), 1u, fp) != 1u)
-										return false;
-									int size = data_size - 1;
-									if (std::fseek(fp, size*sizeof(double), SEEK_CUR) != 0)
-										return false;
+									target_data[i] = value;
+									i += data_size;
 								}
 							}
 						}
 						break;
 					default:
-						if (fseek(fp, data_size*sizeof(double), SEEK_CUR) != 0) {
-							return false;
-						}
+						i += data_size;
 						break;
 					}
 				}
@@ -261,8 +245,8 @@ private:
 }
 
 bool Store(sqlite3 *db,
-		   const char *source_layout_file, const char *source_data_file,
-		   const char *target_layout_file, const char *target_data_file)
+		   const char *source_layout_file, double *source_data,
+		   const char *target_layout_file, double *target_data)
 {
 	SourceLayout source_layout;
 	{
@@ -275,19 +259,6 @@ bool Store(sqlite3 *db,
 		return false;
 	}
 
-	std::unique_ptr<double[]> data(new double[source_layer_size]);
-	FILE *fp = fopen(source_data_file, "rb");
-	if (!fp) {
-		perror(source_data_file);
-		return false;
-	}
-	if (fread(data.get(), sizeof(double), source_layer_size, fp) != static_cast<size_t>(source_layer_size)) {
-		cerr << "could not read data with size: " << source_layer_size << endl;
-		fclose(fp);
-		return false;
-	}
-	fclose(fp);
-
 	std::unique_ptr<char[]> format;
 	TargetValueMap tvm;
 	{
@@ -299,7 +270,7 @@ bool Store(sqlite3 *db,
 		}
 		{
 			TargetLoader loader(db);
-			if (!loader.Load(tm, data.get(), &tvm))
+			if (!loader.Load(tm, source_data, &tvm))
 				return false;
 		}
 	}
@@ -309,18 +280,7 @@ bool Store(sqlite3 *db,
 		std::unique_ptr<LayoutLoader> loader(new LayoutLoader(target_layout_file));
 		if (!loader->Load(&target_layout)) return false;
 	}
-	fp = fopen(target_data_file, "r+b");
-	if (!fp) {
-		perror(target_data_file);
-		return false;
-	}
-	if (!target_layout.Rewrite(format.get(), tvm, fp)) {
-		fclose(fp);
-		return false;
-	}
-	fclose(fp);
-
-	return true;
+	return target_layout.Rewrite(format.get(), tvm, target_data);
 }
 
 }

@@ -39,7 +39,7 @@ namespace job {
 bool Job(const char *task_dir,
 		 const char *job_dir,
 		 void *progress_address,
-		 const char *data_file,
+		 std::vector<double> *data,
 		 const char *output_file,
 		 const task::ConfigReader &reader,
 		 sqlite3 *db)
@@ -55,25 +55,12 @@ bool Job(const char *task_dir,
 		return false;
 	}
 
-	char start_file[kLong];
-	sprintf(start_file, "%s/start", job_dir);
-	boost::filesystem::copy_file(data_file, start_file, ec);
-	if (ec) {
-		cerr << "failed to copy file: " << ec << endl;
+	if (!task::Timer(reader.length(), reader.step(), data->data()))
 		return false;
-	}
-	FILE *fp = fopen(start_file, "r+b");
-	if (!fp) {
-		perror(start_file);
-		return false;
-	}
-	if (!task::Timer(reader.length(), reader.step(), fp))
-		return false;
-	fclose(fp);
 
 	char control_file[kLong];
 	sprintf(control_file, "%s/control", job_dir);
-	fp = fopen(control_file, "w");
+	FILE *fp = fopen(control_file, "w");
 	if (!fp) {
 		perror(control_file);
 		return false;
@@ -115,7 +102,7 @@ bool Job(const char *task_dir,
 	char filter_file[kShort];
 	sprintf(filter_file, "%s/filter", task_dir);
 	option.filter_file = filter_file;
-	option.input_data_file = start_file;
+	option.input_data = data;
 	option.input_history_file = nullptr;
 	option.control_file = control_file;
 	option.output_data_file = output_data_file;
@@ -140,18 +127,10 @@ bool Job(const char *task_dir,
 	}
 	// write initial values only when output_start_time is 0.
 	if (option.output_start_time == 0) {
-		FILE *ifp = fopen(start_file, "rb");
-		if (!ifp) {
-			perror(start_file);
+		if (!filter::Cut(filter_file, data->data(), ofp)) {
 			fclose(ofp);
 			return false;
 		}
-		if (!filter::Cut(filter_file, ifp, ofp)) {
-			fclose(ofp);
-			fclose(ifp);
-			return false;
-		}
-		fclose(ifp);
 	}
 	option.output_fp = ofp;
 

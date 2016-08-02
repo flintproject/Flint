@@ -46,5 +46,20 @@ int main(int argc, char *argv[])
 		return EXIT_FAILURE;
 	}
 	given_file[s] = '\0';
-	return load::Load(given_file, load::kOpen) ? EXIT_SUCCESS : EXIT_FAILURE;
+	std::vector<double> data;
+	if (!load::Load(given_file, load::kOpen, 0, &data))
+		return EXIT_FAILURE;
+	// save initial values as init
+	FILE *fp = std::fopen("init", "wb");
+	if (!fp) {
+		std::perror("init");
+		return EXIT_FAILURE;
+	}
+	if (std::fwrite(data.data(), sizeof(double), data.size(), fp) != data.size()) {
+		std::cerr << "failed to write init" << std::endl;
+		std::fclose(fp);
+		return EXIT_FAILURE;
+	}
+	std::fclose(fp);
+	return EXIT_SUCCESS;
 }

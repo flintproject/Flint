@@ -12,6 +12,8 @@
 #include "task/config-reader.h"
 #include "sqlite3.h"
 
+#include <vector>
+
 namespace flint {
 
 namespace cas {
@@ -29,7 +31,7 @@ public:
 	const char *dir() const {return dir_.get();}
 	const char *layout() const {return layout_.get();}
 	const char *generated_layout() const {return generated_layout_.get();}
-	const char *init() const {return init_.get();}
+	const std::vector<double> &data() const {return data_;}
 	const char *reinit_bc() const {return reinit_bc_.get();}
 	const task::ConfigReader &reader() const {return *reader_;}
 
@@ -48,7 +50,7 @@ private:
 	std::unique_ptr<char[]> dir_;
 	std::unique_ptr<char[]> layout_;
 	std::unique_ptr<char[]> generated_layout_;
-	std::unique_ptr<char[]> init_;
+	std::vector<double> data_;
 	std::unique_ptr<char[]> reinit_bc_;
 	std::unique_ptr<db::Driver> db_driver_;
 	std::unique_ptr<db::ReadOnlyDriver> modeldb_driver_;

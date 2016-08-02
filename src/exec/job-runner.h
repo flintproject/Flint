@@ -21,9 +21,6 @@ private:
 	std::unique_ptr<char[]> dir_;
 	std::unique_ptr<char[]> generated_bc_;
 	std::unique_ptr<char[]> generated_db_;
-	std::unique_ptr<char[]> generated_init_;
-	std::unique_ptr<char[]> stored_;
-	std::unique_ptr<char[]> reinit_;
 	std::unique_ptr<char[]> isd_;
 };
 

@@ -13,7 +13,8 @@ BOOST_FIXTURE_TEST_SUITE(test_load, test::TemporaryWorkingDirectory)
 BOOST_AUTO_TEST_CASE(empty) {
 	PushWorkingDirectory("empty");
 	test::StderrCapture capture;
-	BOOST_CHECK(!load::Load(TEST_MODELS("empty.phml"), load::kExec));
+	std::vector<double> data;
+	BOOST_CHECK(!load::Load(TEST_MODELS("empty.phml"), load::kExec, 0, &data));
 	BOOST_CHECK_EQUAL(capture.Get(), "no variables found, possibly due to empty model or no instances\n");
 	PopWorkingDirectory();
 }
@@ -30,16 +31,13 @@ BOOST_AUTO_TEST_CASE(exponential) {
 	BOOST_CHECK(boost::filesystem::create_directory(p0));
 	BOOST_CHECK(boost::filesystem::create_directory(p1));
 	boost::filesystem::current_path(p0);
-	BOOST_CHECK(load::Load(TEST_MODELS("exponential.isml"), load::kExec));
+	std::vector<double> data0;
+	BOOST_CHECK(load::Load(TEST_MODELS("exponential.isml"), load::kExec, 0, &data0));
 	boost::filesystem::current_path(p1);
-	BOOST_CHECK(load::Load(TEST_MODELS("exponential_with_seed.isml"), load::kExec));
-	boost::filesystem::path p0_init(p0);
-	boost::filesystem::path p1_init(p1);
-	p0_init /= "init";
-	p1_init /= "init";
-	test::CheckDifference(p0_init, p1_init);
-	boost::filesystem::remove_all(p0);
-	boost::filesystem::remove_all(p1);
+	std::vector<double> data1;
+	BOOST_CHECK(load::Load(TEST_MODELS("exponential_with_seed.isml"), load::kExec, 0, &data1));
+	BOOST_CHECK_EQUAL(data0.size(), data1.size());
+	BOOST_TEST(data0 != data1);
 }
 
 BOOST_AUTO_TEST_CASE(fsk) {
@@ -54,14 +52,12 @@ BOOST_AUTO_TEST_CASE(fsk) {
 	BOOST_CHECK(boost::filesystem::create_directory(p0));
 	BOOST_CHECK(boost::filesystem::create_directory(p1));
 	boost::filesystem::current_path(p0);
-	BOOST_CHECK(load::Load(TEST_MODELS("fsk.phml"), load::kExec));
+	std::vector<double> data0;
+	BOOST_CHECK(load::Load(TEST_MODELS("fsk.phml"), load::kExec, 0, &data0));
 	boost::filesystem::current_path(p1);
-	BOOST_CHECK(load::Load(TEST_MODELS("fsk-plus-no-instance.phml"), load::kExec));
-	boost::filesystem::path p0_init(p0);
-	boost::filesystem::path p1_init(p1);
-	p0_init /= "init";
-	p1_init /= "init";
-	test::CheckSame(p0_init, p1_init);
+	std::vector<double> data1;
+	BOOST_CHECK(load::Load(TEST_MODELS("fsk-plus-no-instance.phml"), load::kExec, 0, &data1));
+	BOOST_TEST(data0 == data1);
 	boost::filesystem::remove_all(p0);
 	boost::filesystem::remove_all(p1);
 }
@@ -69,7 +65,8 @@ BOOST_AUTO_TEST_CASE(fsk) {
 BOOST_AUTO_TEST_CASE(timeseries) {
 	PushWorkingDirectory("timeseries");
 	test::StderrCapture capture;
-	BOOST_CHECK(load::Load(TEST_MODELS("timeseries.phml"), load::kExec));
+	std::vector<double> data;
+	BOOST_CHECK(load::Load(TEST_MODELS("timeseries.phml"), load::kExec, 0, &data));
 	BOOST_CHECK_EQUAL(capture.Get(), "");
 	PopWorkingDirectory();
 }
@@ -77,7 +74,8 @@ BOOST_AUTO_TEST_CASE(timeseries) {
 BOOST_AUTO_TEST_CASE(x_static_only) {
 	PushWorkingDirectory("x-static-only");
 	test::StderrCapture capture;
-	BOOST_CHECK(!load::Load(TEST_MODELS("x-static-only.phml"), load::kExec));
+	std::vector<double> data;
+	BOOST_CHECK(!load::Load(TEST_MODELS("x-static-only.phml"), load::kExec, 0, &data));
 	BOOST_CHECK_EQUAL(capture.Get(), "no dependent variables found\n");
 	PopWorkingDirectory();
 }

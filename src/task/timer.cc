@@ -5,33 +5,16 @@
 
 #include "task.h"
 
-#include <cassert>
-#include <cstdio>
-#include <cstdlib>
-#include <iostream>
-
-using std::cerr;
-using std::endl;
-using std::fwrite;
+#include "bc/index.h"
 
 namespace flint {
 namespace task {
 
-bool Timer(double end, double dt, FILE *fp)
+bool Timer(double end, double dt, double *data)
 {
-	double start = 0;
-	if (fwrite(&start, sizeof(double), 1, fp) != 1) {
-		cerr << "failed to write start" << endl;
-		return false;
-	}
-	if (fwrite(&end, sizeof(double), 1, fp) != 1) {
-		cerr << "failed to write end" << endl;
-		return false;
-	}
-	if (fwrite(&dt, sizeof(double), 1, fp) != 1) {
-		cerr << "failed to write dt" << endl;
-		return false;
-	}
+	data[kIndexTime] = 0;
+	data[kIndexEnd] = end;
+	data[kIndexDt] = dt;
 	return true;
 }
 

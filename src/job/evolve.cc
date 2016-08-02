@@ -41,7 +41,6 @@ using std::cerr;
 using std::endl;
 using std::fclose;
 using std::fopen;
-using std::fread;
 using std::fwrite;
 
 namespace flint {
@@ -232,22 +231,6 @@ private:
 	History *history_;
 };
 
-bool LoadData(const char *input_data_file, size_t layer_size, double *data)
-{
-	FILE *fp = fopen(input_data_file, "rb");
-	if (!fp) {
-		cerr << "could not open " << input_data_file << endl;
-		return false;
-	}
-	if (fread(data, sizeof(double), layer_size, fp) != layer_size) {
-		fclose(fp);
-		cerr << "missing or short input data" << endl;
-		return false;
-	}
-	fclose(fp);
-	return true;
-}
-
 bool SaveData(const char *output_data_file, size_t layer_size, double *data)
 {
 	FILE *fp = fopen(output_data_file, "wb");
@@ -372,9 +355,8 @@ bool Evolve(sqlite3 *db,
 
 	// arrange previous data space
 	std::unique_ptr<double[]> prev(new double[layer_size * nol]()); // default-initialized
-	if (option.input_data_file != nullptr) { // fill the first layer with input
-		if (!LoadData(option.input_data_file, layer_size, prev.get())) return false;
-	}
+	if (option.input_data) // fill the first layer with input
+		std::memcpy(prev.get(), option.input_data->data(), layer_size * sizeof(double));
 	executor->set_prev(prev.get());
 	preexecutor->set_prev(prev.get());
 

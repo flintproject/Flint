@@ -79,7 +79,6 @@ public:
 		, after_bc_(new char[kFilenameLength])
 		, before_bc_(new char[kFilenameLength])
 		, init_bc_(new char[kFilenameLength])
-		, init_(new char[kFilenameLength])
 		, layout_(new char[kFilenameLength])
 		, model_(new char[kFilenameLength])
 		, modeldb_(new char[kFilenameLength])
@@ -97,7 +96,6 @@ public:
 		sprintf(after_bc_.get(), "%s/after.bc", dir_.get());
 		sprintf(before_bc_.get(), "%s/before.bc", dir_.get());
 		sprintf(init_bc_.get(), "%s/init.bc", dir_.get());
-		sprintf(init_.get(), "%s/init", dir_.get());
 		sprintf(layout_.get(), "%s/layout", dir_.get());
 		sprintf(model_.get(), "%s/model", dir_.get());
 		sprintf(modeldb_.get(), "%s/model.db", dir_.get());
@@ -114,7 +112,7 @@ public:
 	const char *phz() const {return phz_.get();}
 	const char *var() const {return var_.get();}
 
-	bool LoadCellml(sqlite3 *db)
+	bool LoadCellml(sqlite3 *db, std::vector<double> *data)
 	{
 		if (!cellml::Read(db))
 			return false;
@@ -128,10 +126,10 @@ public:
 			if (!c.Compile(db, "input_ivs", compiler::Method::kAssign, init_bc_.get()))
 				return false;
 		}
-		return runtime::Init(db, 0, layout_.get(), init_bc_.get(), init_.get());
+		return runtime::Init(db, 0, layout_.get(), init_bc_.get(), data);
 	}
 
-	bool LoadPhml(sqlite3 *db)
+	bool LoadPhml(sqlite3 *db, std::vector<double> *data)
 	{
 		if (!phml::Read(db))
 			return false;
@@ -156,10 +154,10 @@ public:
 			if (!c.Compile(db, "before_eqs", compiler::Method::kEvent, before_bc_.get()))
 				return false;
 		}
-		return runtime::Init(db, seed, layout_.get(), init_bc_.get(), init_.get());
+		return runtime::Init(db, seed, layout_.get(), init_bc_.get(), data);
 	}
 
-	bool LoadSbml(sqlite3 *db)
+	bool LoadSbml(sqlite3 *db, std::vector<double> *data)
 	{
 		if (!flint::sbml::Read(db))
 			return false;
@@ -173,7 +171,7 @@ public:
 			if (!c.Compile(db, "input_ivs", compiler::Method::kAssign, init_bc_.get()))
 				return false;
 		}
-		return runtime::Init(db, 0, layout_.get(), init_bc_.get(), init_.get());
+		return runtime::Init(db, 0, layout_.get(), init_bc_.get(), data);
 	}
 
 private:
@@ -181,7 +179,6 @@ private:
 	std::unique_ptr<char[]> after_bc_;
 	std::unique_ptr<char[]> before_bc_;
 	std::unique_ptr<char[]> init_bc_;
-	std::unique_ptr<char[]> init_;
 	std::unique_ptr<char[]> layout_;
 	std::unique_ptr<char[]> model_;
 	std::unique_ptr<char[]> modeldb_;
@@ -194,7 +191,7 @@ private:
 
 }
 
-bool Load(const char *given_file, ConfigMode mode, int dir)
+bool Load(const char *given_file, ConfigMode mode, int dir, std::vector<double> *data)
 {
 	Loader loader(dir);
 	db::Driver driver(loader.modeldb());
@@ -207,17 +204,17 @@ bool Load(const char *given_file, ConfigMode mode, int dir)
 	switch (format) {
 	case file::kIsml:
 	case file::kPhml:
-		if (!loader.LoadPhml(db))
+		if (!loader.LoadPhml(db, data))
 			return false;
 		break;
 	case file::kPhz:
 		if (!phz::Read(db, loader.phz()))
 			return false;
-		if (!loader.LoadPhml(db))
+		if (!loader.LoadPhml(db, data))
 			return false;
 		break;
 	case file::kCellml:
-		if (!loader.LoadCellml(db))
+		if (!loader.LoadCellml(db, data))
 			return false;
 		if (mode == kRun) {
 			ConfigWriter writer(db);
@@ -226,7 +223,7 @@ bool Load(const char *given_file, ConfigMode mode, int dir)
 		}
 		break;
 	case file::kSbml:
-		if (!loader.LoadSbml(db))
+		if (!loader.LoadSbml(db, data))
 			return false;
 		if (mode == kRun) {
 			ConfigWriter writer(db);

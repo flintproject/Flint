@@ -32,9 +32,6 @@
 
 using std::cerr;
 using std::endl;
-using std::fclose;
-using std::fopen;
-using std::fwrite;
 
 namespace flint {
 namespace runtime {
@@ -214,15 +211,14 @@ bool Evaluator::Evaluate(sqlite3 *db,
 						 ct::Availability availability,
 						 int seed,
 						 const char *bc_file,
-						 const char *output_file,
-						 const char *input_file)
+						 std::vector<double> *data)
 {
 	std::unique_ptr<Executor> executor(new Executor(layer_size_));
 	std::unique_ptr<Processor> processor(new Processor(&layout_, layer_size_));
 
 	// arrange data space
-	std::unique_ptr<double[]> data(new double[layer_size_]()); // default-initialized
-	executor->set_data(data.get());
+	data->resize(layer_size_);
+	executor->set_data(data->data());
 
 	// initialize color space
 	std::unique_ptr<size_t[]> color(new size_t[layer_size_]()); // default-initialized
@@ -239,7 +235,7 @@ bool Evaluator::Evaluate(sqlite3 *db,
 	// read targets from database, if any
 	{
 		db::SprinkleLoader loader(db);
-		std::unique_ptr<TargetHandler> handler(new TargetHandler(&dom_, &som_, data.get(), target.get()));
+		std::unique_ptr<TargetHandler> handler(new TargetHandler(&dom_, &som_, data->data(), target.get()));
 		if (!loader.Load(handler.get())) {
 			return false;
 		}
@@ -249,20 +245,6 @@ bool Evaluator::Evaluate(sqlite3 *db,
 		if (!ts::LoadTimeseriesVector(db, tv.get()))
 			return false;
 		processor->set_tv(tv.get());
-	}
-	// read input if specified
-	if (input_file) {
-		FILE *fp = std::fopen(input_file, "rb");
-		if (!fp) {
-			std::perror(input_file);
-			return false;
-		}
-		if (std::fread(data.get(), sizeof(double), layer_size_, fp) != layer_size_) {
-			std::cerr << "failed to read input: " << input_file << std::endl;
-			std::fclose(fp);
-			return false;
-		}
-		std::fclose(fp);
 	}
 
 	if (!LoadFlows(db, inbound.get()))
@@ -304,7 +286,7 @@ bool Evaluator::Evaluate(sqlite3 *db,
 	std::unique_ptr<std::mt19937> rng(new std::mt19937(seed));
 	// generate the future seed by the generator
 	int future_seed = static_cast<int>((*rng)());
-	data[kIndexSeed] = static_cast<double>(future_seed);
+	(*data)[kIndexSeed] = static_cast<double>(future_seed);
 	processor->set_rng(rng.get());
 
 	if (!processor->Process(executor.get())) return false;
@@ -314,20 +296,6 @@ bool Evaluator::Evaluate(sqlite3 *db,
 		layout_.DetectRed(layer_size_, color.get());
 		return false;
 	}
-
-	FILE *fp = fopen(output_file, "wb");
-	if (!fp) {
-		std::perror(output_file);
-		return false;
-	}
-	// output the first layer of data
-	if (fwrite(data.get(), sizeof(double), layer_size_, fp) != layer_size_) {
-		cerr << "failed to write output: " << output_file << endl;
-		fclose(fp);
-		return false;
-	}
-	fclose(fp);
-
 	return true;
 }
 

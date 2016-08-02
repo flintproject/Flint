@@ -19,7 +19,8 @@ namespace runtime {
 
 bool Init(sqlite3 *db,
 		  int seed,
-		  const char *layout_file, const char *bc_file, const char *output_file)
+		  const char *layout_file, const char *bc_file,
+		  std::vector<double> *data)
 {
 	std::unique_ptr<Evaluator> e(new Evaluator);
 	if (!e->Load(layout_file))
@@ -28,7 +29,7 @@ bool Init(sqlite3 *db,
 		cerr << "no dependent variables found" << endl;
 		return false;
 	}
-	return e->Evaluate(db, ct::Availability::kNone, seed, bc_file, output_file);
+	return e->Evaluate(db, ct::Availability::kNone, seed, bc_file, data);
 }
 
 }

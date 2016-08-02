@@ -19,19 +19,10 @@
 
 namespace {
 
-void CheckOutput(double expected)
+void CheckOutput(const std::vector<double> &data, double expected)
 {
-	static const int kBufferSize = 56;
-
-	FILE *fp = std::fopen("output", "rb");
-	BOOST_CHECK(fp);
-	char buf[kBufferSize];
-	size_t s = fread(buf, kBufferSize, 1, fp);
-	fclose(fp);
-	BOOST_CHECK_EQUAL(s, 1u);
-	double x;
-	memcpy(&x, &buf[48], sizeof(x));
-	BOOST_CHECK_EQUAL(x, expected);
+	BOOST_CHECK_EQUAL(data.size(), 7u);
+	BOOST_CHECK_EQUAL(data[6], expected);
 }
 
 }
@@ -53,7 +44,6 @@ struct F : public test::MemoryFixture {
 	{
 		boost::filesystem::remove("layout");
 		boost::filesystem::remove("bc");
-		boost::filesystem::remove("output");
 	}
 
 	void Insert(const char *name, int noir, int nod, const char *body)
@@ -83,8 +73,9 @@ struct F : public test::MemoryFixture {
 		std::ofstream ofs("bc", std::ios::out|std::ios::binary);		\
 		BOOST_REQUIRE(compiler::bcc::Bcc(driver_.db(), &ofs));			\
 		ofs.close();													\
-		BOOST_CHECK(runtime::Init(driver_.db(), 0, "layout", "bc", "output")); \
-		CheckOutput(expected);											\
+		std::vector<double> data;										\
+		BOOST_CHECK(runtime::Init(driver_.db(), 0, "layout", "bc", &data)); \
+		CheckOutput(data, expected);									\
 	} while (0)
 
 #define TESTCASE2(f, a, b, expected) do {								\
@@ -97,8 +88,9 @@ struct F : public test::MemoryFixture {
 		std::ofstream ofs("bc", std::ios::out|std::ios::binary);		\
 		BOOST_REQUIRE(compiler::bcc::Bcc(driver_.db(), &ofs));			\
 		ofs.close();													\
-		BOOST_CHECK(runtime::Init(driver_.db(), 0, "layout", "bc", "output")); \
-		CheckOutput(expected);											\
+		std::vector<double> data;										\
+		BOOST_CHECK(runtime::Init(driver_.db(), 0, "layout", "bc", &data)); \
+		CheckOutput(data, expected);									\
 	} while (0)
 
 BOOST_FIXTURE_TEST_SUITE(test_init, F)
@@ -115,13 +107,11 @@ BOOST_AUTO_TEST_CASE(same_seed)
 	std::ofstream ofs("bc", std::ios::out|std::ios::binary);
 	BOOST_REQUIRE(compiler::bcc::Bcc(driver_.db(), &ofs));
 	ofs.close();
-	BOOST_CHECK(runtime::Init(driver_.db(), 42, "layout", "bc", "output0"));
-	BOOST_CHECK(runtime::Init(driver_.db(), 42, "layout", "bc", "output1"));
-	boost::filesystem::path output0("output0");
-	boost::filesystem::path output1("output1");
-	test::CheckSame(output0, output1);
-	boost::filesystem::remove(output0);
-	boost::filesystem::remove(output1);
+	std::vector<double> data0;
+	BOOST_CHECK(runtime::Init(driver_.db(), 42, "layout", "bc", &data0));
+	std::vector<double> data1;
+	BOOST_CHECK(runtime::Init(driver_.db(), 42, "layout", "bc", &data1));
+	BOOST_TEST(data0 == data1);
 }
 
 BOOST_AUTO_TEST_CASE(different_seed)
@@ -135,13 +125,12 @@ BOOST_AUTO_TEST_CASE(different_seed)
 	std::ofstream ofs("bc", std::ios::out|std::ios::binary);
 	BOOST_REQUIRE(compiler::bcc::Bcc(driver_.db(), &ofs));
 	ofs.close();
-	BOOST_CHECK(runtime::Init(driver_.db(), 0, "layout", "bc", "output0"));
-	BOOST_CHECK(runtime::Init(driver_.db(), 1, "layout", "bc", "output1"));
-	boost::filesystem::path output0("output0");
-	boost::filesystem::path output1("output1");
-	test::CheckDifference(output0, output1);
-	boost::filesystem::remove(output0);
-	boost::filesystem::remove(output1);
+	std::vector<double> data0;
+	BOOST_CHECK(runtime::Init(driver_.db(), 0, "layout", "bc", &data0));
+	std::vector<double> data1;
+	BOOST_CHECK(runtime::Init(driver_.db(), 1, "layout", "bc", &data1));
+	BOOST_CHECK_EQUAL(data0.size(), data1.size());
+	BOOST_TEST(data0 != data1);
 }
 
 BOOST_AUTO_TEST_SUITE_END()

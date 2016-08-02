@@ -16,11 +16,11 @@ bool Eval(sqlite3 *db,
 		  ct::Availability availability,
 		  int seed,
 		  const char *layout_file, const char *bc_file,
-		  const char *output_file, const char *input_file)
+		  std::vector<double> *data)
 {
 	std::unique_ptr<Evaluator> e(new Evaluator);
 	return e->Load(layout_file) &&
-		e->Evaluate(db, availability, seed, bc_file, output_file, input_file);
+		e->Evaluate(db, availability, seed, bc_file, data);
 }
 
 }

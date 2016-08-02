@@ -2,6 +2,8 @@
 #ifndef FLINT_LOAD_H_
 #define FLINT_LOAD_H_
 
+#include <vector>
+
 namespace flint {
 namespace load {
 
@@ -16,7 +18,8 @@ enum ConfigMode {
  * given_file is encoded in UTF-8.
  * Return true in case of success, otherwise false.
  */
-bool Load(const char *given_file, ConfigMode mode, int dir = 0);
+bool Load(const char *given_file, ConfigMode mode, int dir,
+		  std::vector<double> *data);
 
 }
 }
