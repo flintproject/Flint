@@ -182,7 +182,7 @@ $(foreach j,$(JARS),$(eval $(call flint_jar,$(j))))
 
 opt/bin/libODES-0.dll: tmp/SBML_odeSolver-$(SOSLIB_COMMIT).installed
 
-opt/bin/libprotobuf-9.dll: tmp/protobuf-$(PROTOBUF_VERSION).installed
+opt/bin/libprotobuf-10.dll: tmp/protobuf-$(PROTOBUF_VERSION).installed
 
 opt/bin/libsedml-0.dll: tmp/clibsedml-$(CLIBSEDML_COMMIT).installed
 
