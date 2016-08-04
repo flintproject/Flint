@@ -31,8 +31,6 @@
 #include "load.h"
 #include "task.h"
 
-using std::cerr;
-using std::endl;
 using std::sprintf;
 
 namespace flint {
