@@ -44,8 +44,9 @@
 namespace flint {
 namespace tr {
 
-Translator::Translator(const Layout *layout, int layer_size, std::ostream &os)
-	: ct::DataFlowAnalyzer(layout, layer_size)
+Translator::Translator(const Layout *layout, int layer_size, Bytecode *bytecode,
+					   std::ostream &os)
+	: ct::DataFlowAnalyzer(layout, layer_size, bytecode)
 	, os_(os)
 {
 }

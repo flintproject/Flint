@@ -18,6 +18,9 @@
 #include "sqlite3.h"
 
 namespace flint {
+
+struct Bytecode;
+
 namespace cas {
 
 struct Compound;
@@ -130,11 +133,11 @@ public:
 
 	void Add(const boost::uuids::uuid &uuid, Def def);
 
-	bool SaveAuxVarBc(const char *file);
+	Bytecode *GenerateAuxVarBc();
 
-	bool SaveOdeMassBc(const char *file);
+	Bytecode *GenerateOdeMassBc();
 
-	bool SaveOdeRhsBc(const char *file);
+	Bytecode *GenerateOdeRhsBc();
 
 	/*
 	 * Return true in case of success, false otherwise.

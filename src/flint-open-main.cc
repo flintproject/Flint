@@ -7,9 +7,12 @@
 #include <cstdlib>
 #include <cstring>
 #include <iostream>
+#include <memory>
 
 #include "bc/binary.h"
+#include "flint/bc.h"
 #include "load.h"
+#include "task.h"
 
 using std::cerr;
 using std::endl;
@@ -47,8 +50,11 @@ int main(int argc, char *argv[])
 	}
 	given_file[s] = '\0';
 	std::vector<double> data;
-	if (!load::Load(given_file, load::kOpen, 0, &data))
-		return EXIT_FAILURE;
+	{
+		std::unique_ptr<task::Task> task(load::Load(given_file, load::kOpen, 0, &data));
+		if (!task)
+			return EXIT_FAILURE;
+	}
 	// save initial values as init
 	FILE *fp = std::fopen("init", "wb");
 	if (!fp) {

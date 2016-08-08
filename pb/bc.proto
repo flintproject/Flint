@@ -1,12 +1,5 @@
 package bc;
 
-message Header {
-
-  required int32 nol = 1; /* number of layers */
-  required int32 nos = 2; /* number of sections */
-
-}
-
 message SectionHeader {
 
   required bytes id = 1;  /* 16 byte-length UUID */

@@ -291,8 +291,8 @@ public:
 	Processor(const Processor &) = delete;
 	Processor &operator=(const Processor &) = delete;
 
-	Processor(const Layout *layout, int layer_size)
-		: ct::DataFlowAnalyzer(layout, layer_size)
+	Processor(const Layout *layout, int layer_size, Bytecode *bytecode)
+		: ct::DataFlowAnalyzer(layout, layer_size, bytecode)
 		, ir_(nullptr)
 		, tmp_(nullptr)
 		, tv_(nullptr)

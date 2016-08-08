@@ -52,19 +52,6 @@ bool CreateSpec(int id, sqlite3 *db)
 	return r;
 }
 
-bool Setup(int id, const char *path, std::vector<double> *data)
-{
-	if (!load::Load(path, load::kExec, id, data))
-		return false;
-	{
-		db::Driver driver("x.db");
-		if (!task::Config(id, driver.db()))
-			return false;
-	}
-	db::ReadOnlyDriver driver("x.db");
-	return CreateSpec(id, driver.db());
-}
-
 const int kFilenameLength = 64;
 
 }
@@ -82,6 +69,11 @@ TaskRunner::TaskRunner(int id, char *path)
 }
 
 TaskRunner::~TaskRunner() = default;
+
+task::Task *TaskRunner::GetTask()
+{
+	return task_.get();
+}
 
 sqlite3 *TaskRunner::GetDatabase()
 {
@@ -104,6 +96,20 @@ void *TaskRunner::GetProgressAddress(int job_id)
 	assert(static_cast<size_t>(job_id) < progress_region_->get_size());
 	char *addr = static_cast<char *>(progress_region_->get_address());
 	return addr + job_id;
+}
+
+bool TaskRunner::Setup(int id, const char *path, std::vector<double> *data)
+{
+	task_.reset(load::Load(path, load::kExec, id, data));
+	if (!task_)
+		return false;
+	{
+		db::Driver driver("x.db");
+		if (!task::Config(id, driver.db()))
+			return false;
+	}
+	db::ReadOnlyDriver driver("x.db");
+	return CreateSpec(id, driver.db());
 }
 
 bool TaskRunner::Run()
@@ -146,13 +152,11 @@ bool TaskRunner::Run()
 		if (!da.Load(modeldb_driver_->db()))
 			return false;
 		compiler::Compiler c(&da);
-		reinit_bc_.reset(new char[kFilenameLength]);
-		sprintf(reinit_bc_.get(), "%s/reinit.bc", dir_.get());
-		if (!c.Compile(modeldb_driver_->db(), "dependent_ivs", compiler::Method::kAssign, reinit_bc_.get()))
+		task_->reinit_bc.reset(c.Compile(modeldb_driver_->db(), "dependent_ivs", compiler::Method::kAssign));
+		if (!task_->reinit_bc)
 			return false;
-		char bc_file[kFilenameLength];
-		sprintf(bc_file, "%s/bc", dir_.get());
-		if (!c.Compile(modeldb_driver_->db(), "input_eqs", reader_->GetMethod(), bc_file))
+		task_->bc.reset(c.Compile(modeldb_driver_->db(), "input_eqs", reader_->GetMethod()));
+		if (!task_->bc)
 			return false;
 	}
 

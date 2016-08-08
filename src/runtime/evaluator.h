@@ -21,7 +21,7 @@ public:
 	bool Evaluate(sqlite3 *db,
 				  ct::Availability availability,
 				  int seed,
-				  const char *bc_file,
+				  Bytecode *bytecode,
 				  std::vector<double> *data);
 
 private:

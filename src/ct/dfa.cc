@@ -23,30 +23,15 @@
 namespace flint {
 namespace ct {
 
-DataFlowAnalyzer::DataFlowAnalyzer(const Layout *layout, int layer_size)
+DataFlowAnalyzer::DataFlowAnalyzer(const Layout *layout, int layer_size, Bytecode *bytecode)
 	: layout_(layout)
 	, layer_size_(layer_size)
-	, shv_(new ShVector)
-	, bhv_(new BhVector)
-	, cv_(new CVector)
+	, shv_(bytecode->shv.get())
+	, bhv_(bytecode->bhv.get())
+	, cv_(bytecode->cv.get())
 	, euv_()
 	, code_offset_()
 {}
-
-ShVector *DataFlowAnalyzer::GetShv() const
-{
-	return shv_.get();
-}
-
-BhVector *DataFlowAnalyzer::GetBhv() const
-{
-	return bhv_.get();
-}
-
-CVector *DataFlowAnalyzer::GetCv() const
-{
-	return cv_.get();
-}
 
 bool DataFlowAnalyzer::IsEmpty() const
 {
@@ -110,7 +95,7 @@ bool DataFlowAnalyzer::SolveLocation()
 						}
 						load->set_so(so);
 						load->set_lo(lo);
-						load->clear_v();
+						//load->clear_v(); // keep the name for later call
 					}
 					break;
 				case bc::Code::kStore:
@@ -123,7 +108,7 @@ bool DataFlowAnalyzer::SolveLocation()
 						}
 						store->set_so(so);
 						store->set_lo(lo);
-						store->clear_v();
+						//store->clear_v(); // keep the name for later call
 					}
 					break;
 				case bc::Code::kRefer:
@@ -136,7 +121,7 @@ bool DataFlowAnalyzer::SolveLocation()
 						}
 						refer->set_so(so);
 						refer->set_lo(lo);
-						refer->clear_v();
+						//refer->clear_v(); // keep the name for later call
 					}
 					break;
 				case bc::Code::kSave:
@@ -149,7 +134,7 @@ bool DataFlowAnalyzer::SolveLocation()
 						}
 						save->set_so(so);
 						save->set_lo(lo);
-						save->clear_v();
+						//save->clear_v(); // keep the name for later call
 					}
 					break;
 				default:

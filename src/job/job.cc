@@ -20,6 +20,7 @@
 #include "db/read-only-driver.h"
 #include "exec.h"
 #include "filter.h"
+#include "flint/bc.h"
 #include "job.h"
 #include "phsp.h"
 #include "sedml.h"
@@ -38,6 +39,7 @@ namespace job {
 
 bool Job(const char *task_dir,
 		 const char *job_dir,
+		 task::Task *task,
 		 void *progress_address,
 		 std::vector<double> *data,
 		 const char *output_file,
@@ -85,20 +87,6 @@ bool Job(const char *task_dir,
 		option.output_start_time = reader.output_start_time();
 	}
 	option.task_dir = task_dir;
-	char before_bc_file[kShort];
-	sprintf(before_bc_file, "%s/before.bc", task_dir);
-	if (boost::filesystem::exists(before_bc_file)) {
-		option.pre_file = before_bc_file;
-	} else {
-		option.pre_file = nullptr;
-	}
-	char after_bc_file[kShort];
-	sprintf(after_bc_file, "%s/after.bc", task_dir);
-	if (boost::filesystem::exists(after_bc_file)) {
-		option.post_file = after_bc_file;
-	} else {
-		option.post_file = nullptr;
-	}
 	char filter_file[kShort];
 	sprintf(filter_file, "%s/filter", task_dir);
 	option.filter_file = filter_file;
@@ -152,9 +140,7 @@ bool Job(const char *task_dir,
 	if (reader.GetMethod() == compiler::Method::kArk) {
 		r = solver::Solve(db, solver::Method::kArk, option);
 	} else {
-		char bc_file[kShort];
-		sprintf(bc_file, "%s/bc", task_dir);
-		r = job::Evolve(db, bc_file, option);
+		r = job::Evolve(db, task, option);
 	}
 	std::fclose(sfp);
 	fclose(ofp);

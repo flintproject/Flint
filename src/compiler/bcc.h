@@ -2,14 +2,19 @@
 #ifndef FLINT_COMPILER_BCC_H_
 #define FLINT_COMPILER_BCC_H_
 
-#include <iostream>
 #include "sqlite3.h"
 
 namespace flint {
+
+struct Bytecode;
+
 namespace compiler {
 namespace bcc {
 
-bool Bcc(sqlite3 *db, std::ostream *os);
+/**
+ * Returns nullptr in case of failure.
+ */
+Bytecode *Bcc(sqlite3 *db);
 
 }
 }

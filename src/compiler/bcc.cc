@@ -22,7 +22,7 @@
 #include <boost/uuid/uuid_io.hpp>
 
 #include "bc.pb.h"
-#include "bc/pack.h"
+#include "flint/bc.h"
 
 using std::cerr;
 using std::endl;
@@ -110,11 +110,6 @@ struct Body {
 struct Block {
 	int GetCodeSize() const {
 		return static_cast<int>(code.size());
-	}
-
-	void Print(std::ostream *os) const {
-		for (const auto &c : code)
-			PackToOstream(c, os);
 	}
 
 	std::vector<bc::Code> code;
@@ -989,15 +984,14 @@ int SetNol(void *data, int argc, char **argv, char **names)
 {
 	(void)names;
 	assert(argc == 1);
-	bc::Header *header = (bc::Header *)data;
-	int nol = std::atoi(argv[0]);
-	header->set_nol(nol);
+	Bytecode *bytecode = static_cast<Bytecode *>(data);
+	bytecode->nol = std::atoi(argv[0]);
 	return 0;
 }
 
 }
 
-bool Bcc(sqlite3 *db, std::ostream *os)
+Bytecode *Bcc(sqlite3 *db)
 {
 	BlockVector bv;
 	{
@@ -1009,7 +1003,7 @@ bool Bcc(sqlite3 *db, std::ostream *os)
 			if (e != SQLITE_ABORT)
 				cerr << "failed to enumerate tacs: " << e << ": " << em << endl;
 			sqlite3_free(em);
-			return false;
+			return nullptr;
 		}
 	}
 
@@ -1023,51 +1017,45 @@ bool Bcc(sqlite3 *db, std::ostream *os)
 			nv->emplace_back(b.uuid, 1);
 		}
 	}
-	// write header
-	std::unique_ptr<bc::Header> header(new bc::Header);
+	std::unique_ptr<Bytecode> bytecode(new Bytecode);
+	// save nol
 	{
 		char *em;
 		int e;
-		e = sqlite3_exec(db, "SELECT * FROM nol", SetNol, header.get(), &em);
+		e = sqlite3_exec(db, "SELECT * FROM nol", SetNol, bytecode.get(), &em);
 		if (e != SQLITE_OK) {
 			if (e != SQLITE_ABORT)
 				cerr << "failed to select nol: " << e << ": " << em << endl;
 			sqlite3_free(em);
-			return false;
+			return nullptr;
 		}
 	}
-	header->set_nos(static_cast<int>(nv->size()));
-	if (!PackToOstream(*header, os)) {
-		return false;
-	}
-	// write section headers
-	std::unique_ptr<bc::SectionHeader> sh(new bc::SectionHeader);
+	// save section headers
 	std::unique_ptr<char[]> bu(new char[boost::uuids::uuid::static_size()]);
 	for (const auto &nob : *nv) {
+		bc::SectionHeader sh;
 		const boost::uuids::uuid &uuid(nob.first);
 		std::copy(uuid.begin(), uuid.end(), bu.get());
-		sh->set_id(bu.get(), uuid.size());
-		sh->set_nob(nob.second);
-		if (!PackToOstream(*sh, os)) {
-			return false;
-		}
+		sh.set_id(bu.get(), uuid.size());
+		sh.set_nob(nob.second);
+		bytecode->shv->push_back(sh);
 	}
-	// write block headers
-	std::unique_ptr<bc::BlockHeader> bh(new bc::BlockHeader);
+	// save block headers
 	for (const auto &b : bv) {
-		bh->set_name(b.name);
-		bh->set_noir(b.noir);
-		bh->set_nod(b.nod);
-		bh->set_noc(b.GetCodeSize());
-		if (!PackToOstream(*bh, os)) {
-			return false;
-		}
+		bc::BlockHeader bh;
+		bh.set_name(b.name);
+		bh.set_noir(b.noir);
+		bh.set_nod(b.nod);
+		bh.set_noc(b.GetCodeSize());
+		bytecode->bhv->push_back(bh);
 	}
-	// write body
+	// save body
 	for (const auto &b : bv)
-		b.Print(os);
+		bytecode->cv->insert(bytecode->cv->end(),
+							 b.code.begin(),
+							 b.code.end());
 
-	return true;
+	return bytecode.release();
 }
 
 }

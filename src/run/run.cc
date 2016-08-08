@@ -78,7 +78,8 @@ bool Run(const cli::RunOption &option)
 		InitializeBackgroundProcess(option.lock_filename().c_str());
 
 	std::vector<double> data;
-	if (!load::Load(option.model_filename().c_str(), load::kRun, 0, &data))
+	std::unique_ptr<task::Task> task(load::Load(option.model_filename().c_str(), load::kRun, 0, &data));
+	if (!task)
 		return false;
 
 	db::Driver driver("model.db");
@@ -132,12 +133,13 @@ bool Run(const cli::RunOption &option)
 		if (!da.Load(db))
 			return false;
 		compiler::Compiler c(&da);
-		if (!c.Compile(db, "input_eqs", reader.GetMethod(), "bc"))
+		task->bc.reset(c.Compile(db, "input_eqs", reader.GetMethod()));
+		if (!task->bc)
 			return false;
 	}
 	boost::filesystem::path output_path = GetPathFromUtf8(option.output_filename().c_str());
 	std::string output_file = output_path.string();
-	return job::Job(".", "0", nullptr, &data, output_file.c_str(), reader, db);
+	return job::Job(".", "0", task.get(), nullptr, &data, output_file.c_str(), reader, db);
 }
 
 }

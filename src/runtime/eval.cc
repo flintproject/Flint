@@ -15,12 +15,13 @@ namespace runtime {
 bool Eval(sqlite3 *db,
 		  ct::Availability availability,
 		  int seed,
-		  const char *layout_file, const char *bc_file,
+		  const char *layout_file,
+		  Bytecode *bytecode,
 		  std::vector<double> *data)
 {
 	std::unique_ptr<Evaluator> e(new Evaluator);
 	return e->Load(layout_file) &&
-		e->Evaluate(db, availability, seed, bc_file, data);
+		e->Evaluate(db, availability, seed, bytecode, data);
 }
 
 }

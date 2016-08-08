@@ -8,6 +8,8 @@
 
 namespace flint {
 
+struct Bytecode;
+
 namespace filter {
 class Writer;
 }
@@ -19,7 +21,8 @@ public:
 	Translator(const Translator &) = delete;
 	Translator &operator=(const Translator &) = delete;
 
-	Translator(const Layout *layout, int layer_size, std::ostream &os);
+	Translator(const Layout *layout, int layer_size, Bytecode *bytecode,
+			   std::ostream &os);
 
 	void PrintHeader(int nol, size_t layer_size, double length, double step);
 

@@ -18,6 +18,7 @@
 #include "exec/task-runner.h"
 #include "job.h"
 #include "runtime.h"
+#include "task.h"
 
 using std::sprintf;
 
@@ -32,38 +33,42 @@ JobRunner::JobRunner(TaskRunner *tr, int id)
 	: tr_(tr)
 	, progress_address_(tr->GetProgressAddress(id))
 	, dir_(job::BuildPath(tr->dir(), id))
-	, generated_bc_(new char[kFilenameLength])
 	, generated_db_(new char[kFilenameLength])
 	, isd_(new char[kFilenameLength])
 {
-	sprintf(generated_bc_.get(), "%s/generated.bc", dir_.get());
 	sprintf(generated_db_.get(), "%s/generated.db", dir_.get());
 	sprintf(isd_.get(), "%s/out.isd", dir_.get());
 }
 
 bool JobRunner::Run()
 {
+	std::vector<double> generated_init;
 	{
-		compiler::Compiler c(tr_->GetDimensionAnalyzer());
-		db::ReadOnlyDriver g(generated_db_.get());
-		if (!c.Compile(g.db(), "parameter_eqs", compiler::Method::kAssign, generated_bc_.get()))
+		std::unique_ptr<Bytecode> generated_bc;
+		{
+			compiler::Compiler c(tr_->GetDimensionAnalyzer());
+			db::ReadOnlyDriver g(generated_db_.get());
+			generated_bc.reset(c.Compile(g.db(), "parameter_eqs", compiler::Method::kAssign));
+			if (!generated_bc)
+				return false;
+		}
+		// TODO: give a proper seed if desired
+		if (!runtime::Eval(tr_->GetDatabase(), ct::Availability::kNone, 0,
+						   tr_->generated_layout(), generated_bc.get(), &generated_init))
 			return false;
 	}
-	std::vector<double> generated_init;
-	// TODO: give a proper seed if desired
-	if (!runtime::Eval(tr_->GetDatabase(), ct::Availability::kNone, 0,
-					   tr_->generated_layout(), generated_bc_.get(), &generated_init))
-		return false;
 	std::vector<double> init(tr_->data()); // copy data
 	if (!job::Store(tr_->GetDatabase(), tr_->generated_layout(), generated_init.data(), tr_->layout(), init.data()))
 		return false;
-	if (tr_->reinit_bc()) {
+	if (tr_->GetTask()->reinit_bc) {
 		// Re-calculate the rest of initial values
 		if (!runtime::Eval(tr_->GetModelDatabase(), ct::Availability::kLiteral, 0,
-						   tr_->layout(), tr_->reinit_bc(), &init))
-		return false;
+						   tr_->layout(), tr_->GetTask()->reinit_bc.get(), &init))
+			return false;
 	}
-	return job::Job(tr_->dir(), dir_.get(), progress_address_,
+	return job::Job(tr_->dir(), dir_.get(),
+					tr_->GetTask(),
+					progress_address_,
 					&init,
 					isd_.get(), tr_->reader(), tr_->GetModelDatabase());
 }

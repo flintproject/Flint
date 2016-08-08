@@ -7,8 +7,12 @@
 #include "sqlite3.h"
 
 namespace flint {
+
+struct Bytecode;
+
 namespace task {
 class ConfigReader;
+struct Task;
 }
 
 namespace job {
@@ -36,8 +40,6 @@ struct Option {
 	size_t granularity;
 	double output_start_time;
 	const char *task_dir;
-	const char *pre_file;
-	const char *post_file;
 	const char *layout_file;
 	const char *filter_file;
 	std::vector<double> *input_data;
@@ -55,7 +57,7 @@ struct Option {
  * Return true in case of success, false otherwise.
  */
 bool Evolve(sqlite3 *db,
-			const char *bc_file,
+			task::Task *task,
 			const Option &option);
 
 /*
@@ -64,6 +66,7 @@ bool Evolve(sqlite3 *db,
  */
 bool Job(const char *task_dir,
 		 const char *job_dir,
+		 task::Task *task,
 		 void *progress_address,
 		 std::vector<double> *data,
 		 const char *output_file,

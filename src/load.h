@@ -5,6 +5,11 @@
 #include <vector>
 
 namespace flint {
+
+namespace task {
+struct Task;
+}
+
 namespace load {
 
 enum ConfigMode {
@@ -16,10 +21,10 @@ enum ConfigMode {
 /*
  * Load the given model.
  * given_file is encoded in UTF-8.
- * Return true in case of success, otherwise false.
+ * Return nullptr in case of failure.
  */
-bool Load(const char *given_file, ConfigMode mode, int dir,
-		  std::vector<double> *data);
+task::Task *Load(const char *given_file, ConfigMode mode, int dir,
+				 std::vector<double> *data);
 
 }
 }

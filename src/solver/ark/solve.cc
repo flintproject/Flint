@@ -34,12 +34,10 @@ namespace ark {
 namespace {
 
 Processor *CreateProcessor(const Layout *layout, size_t layer_size,
-						   FlowInboundMap *inbound, const char *file)
+						   FlowInboundMap *inbound, Bytecode *bytecode)
 {
-	std::unique_ptr<Processor> processor(new Processor(layout, layer_size));
-	int nol = 0;
-	if (!LoadBytecode(file, &nol, processor.get()))
-		return nullptr;
+	std::unique_ptr<Processor> processor(new Processor(layout, layer_size, bytecode));
+	int nol = bytecode->nol;
 	assert(nol <= 2);
 	if (!processor->SolveLocation())
 		return nullptr;
@@ -72,27 +70,24 @@ bool Solve(sqlite3 *db, const job::Option &option)
 
 	size_t dirname_size = std::strlen(option.task_dir);
 	assert(dirname_size > 0);
-	std::unique_ptr<char[]> auxv_bc_file(new char[dirname_size+32]);
-	std::sprintf(auxv_bc_file.get(), "%s/auxv.bc", option.task_dir);
-	if (!system->SaveAuxVarBc(auxv_bc_file.get()))
+	std::unique_ptr<Bytecode> auxv_bc(system->GenerateAuxVarBc());
+	if (!auxv_bc)
 		return false;
-	std::unique_ptr<char[]> mass_bc_file(new char[dirname_size+32]);
-	std::sprintf(mass_bc_file.get(), "%s/mass.bc", option.task_dir);
-	if (!system->SaveOdeMassBc(mass_bc_file.get()))
+	std::unique_ptr<Bytecode> mass_bc(system->GenerateOdeMassBc());
+	if (!mass_bc)
 		return false;
-	std::unique_ptr<char[]> rhs_bc_file(new char[dirname_size+32]);
-	std::sprintf(rhs_bc_file.get(), "%s/rhs.bc", option.task_dir);
-	if (!system->SaveOdeRhsBc(rhs_bc_file.get()))
+	std::unique_ptr<Bytecode> rhs_bc(system->GenerateOdeRhsBc());
+	if (!rhs_bc)
 		return false;
 
 	std::unique_ptr<Processor> auxv_proc(CreateProcessor(layout.get(), layer_size,
-														 inbound.get(), auxv_bc_file.get()));
+														 inbound.get(), auxv_bc.get()));
 	if (!auxv_proc)
 		return false;
 	std::unique_ptr<Auxv> auxv(new Auxv(auxv_proc.get()));
 
 	std::unique_ptr<Processor> mass_proc(CreateProcessor(layout.get(), layer_size,
-														 inbound.get(), mass_bc_file.get()));
+														 inbound.get(), mass_bc.get()));
 	if (!mass_proc)
 		return false;
 	std::unique_ptr<Mmdm> mmdm(new Mmdm(layout->SelectStates()));
@@ -101,7 +96,7 @@ bool Solve(sqlite3 *db, const job::Option &option)
 	std::unique_ptr<Mass> mass(new Mass(mass_proc.get(), mmdm.get()));
 
 	std::unique_ptr<Processor> rhs_proc(CreateProcessor(layout.get(), layer_size,
-														inbound.get(), rhs_bc_file.get()));
+														inbound.get(), rhs_bc.get()));
 	if (!rhs_proc)
 		return false;
 	std::unique_ptr<Rhs> rhs(new Rhs(layer_size, rhs_proc.get()));

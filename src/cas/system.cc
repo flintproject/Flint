@@ -14,6 +14,7 @@
 #include "compiler.h"
 #include "db/driver.h"
 #include "db/query.h"
+#include "flint/bc.h"
 
 using std::cerr;
 using std::endl;
@@ -70,13 +71,13 @@ bool System::GenerateAuxVarAst(sqlite3 *db)
 	return true;
 }
 
-bool System::SaveAuxVarBc(const char *file)
+Bytecode *System::GenerateAuxVarBc()
 {
 	db::Driver driver(":memory:");
 	if (!GenerateAuxVarAst(driver.db()))
 		return false;
 	compiler::Compiler c(da_.get());
-	return c.GenerateBytecode(driver.db(), file);
+	return c.GenerateBytecode(driver.db());
 }
 
 bool System::GenerateOdeMassAst(sqlite3 *db)
@@ -105,13 +106,13 @@ bool System::GenerateOdeMassAst(sqlite3 *db)
 	return true;
 }
 
-bool System::SaveOdeMassBc(const char *file)
+Bytecode *System::GenerateOdeMassBc()
 {
 	db::Driver driver(":memory:");
 	if (!GenerateOdeMassAst(driver.db()))
 		return false;
 	compiler::Compiler c(da_.get());
-	return c.GenerateBytecode(driver.db(), file);
+	return c.GenerateBytecode(driver.db());
 }
 
 bool System::GenerateOdeRhsAst(sqlite3 *db)
@@ -140,13 +141,13 @@ bool System::GenerateOdeRhsAst(sqlite3 *db)
 	return true;
 }
 
-bool System::SaveOdeRhsBc(const char *file)
+Bytecode *System::GenerateOdeRhsBc()
 {
 	db::Driver driver(":memory:");
 	if (!GenerateOdeRhsAst(driver.db()))
 		return false;
 	compiler::Compiler c(da_.get());
-	return c.GenerateBytecode(driver.db(), file);
+	return c.GenerateBytecode(driver.db());
 }
 
 bool System::FindMass(const boost::uuids::uuid &uuid, const std::string &name,

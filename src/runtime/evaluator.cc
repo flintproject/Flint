@@ -21,7 +21,6 @@
 #include "bc/index.h"
 #include "bc/locater.h"
 #include "bc/mounter.h"
-#include "bc/pack.h"
 #include "db/sprinkle-loader.h"
 #include "flint/bc.h"
 #include "lo/layout.h"
@@ -210,11 +209,11 @@ bool Evaluator::Load(const char *layout_file)
 bool Evaluator::Evaluate(sqlite3 *db,
 						 ct::Availability availability,
 						 int seed,
-						 const char *bc_file,
+						 Bytecode *bytecode,
 						 std::vector<double> *data)
 {
 	std::unique_ptr<Executor> executor(new Executor(layer_size_));
-	std::unique_ptr<Processor> processor(new Processor(&layout_, layer_size_));
+	std::unique_ptr<Processor> processor(new Processor(&layout_, layer_size_, bytecode));
 
 	// arrange data space
 	data->resize(layer_size_);
@@ -250,10 +249,7 @@ bool Evaluator::Evaluate(sqlite3 *db,
 	if (!LoadFlows(db, inbound.get()))
 		return false;
 
-	// load bc next
-	int nol = 0;
-	if (!LoadBytecode(bc_file, &nol, processor.get()))
-		return false;
+	int nol = bytecode->nol;
 	if (nol != 1) { // nol should be always 1
 		cerr << "invalid nol: " << nol << endl;
 		return false;

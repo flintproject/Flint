@@ -2,9 +2,12 @@
 #ifndef FLINT_COMPILER_H_
 #define FLINT_COMPILER_H_
 
+#include "flint/bc.h"
 #include "sqlite3.h"
 
 namespace flint {
+
+struct Bytecode;
 
 namespace cas {
 class DimensionAnalyzer;
@@ -28,13 +31,15 @@ public:
 
 	/*
 	 * Note that db is for read only.
+	 * Returns nullptr in case of failure.
 	 */
-	bool Compile(sqlite3 *db, const char *table, Method method, const char *output);
+	Bytecode *Compile(sqlite3 *db, const char *table, Method method);
 
 	/*
 	 * Note that db is for read only.
+	 * Returns nullptr in case of failure.
 	 */
-	bool GenerateBytecode(sqlite3 *db, const char *output);
+	Bytecode *GenerateBytecode(sqlite3 *db);
 
 private:
 	const cas::DimensionAnalyzer *da_;

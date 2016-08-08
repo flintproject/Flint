@@ -2,13 +2,12 @@
 #ifndef FLINT_CT_H_
 #define FLINT_CT_H_
 
-#include <memory>
-#include <vector>
-
-#include "bc.pb.h"
-
+#include "flint/bc.h"
 #include "runtime/execution-unit.h"
 #include "runtime/flow.h"
+
+#include <memory>
+#include <vector>
 
 namespace flint {
 
@@ -16,10 +15,6 @@ class CalculationDependency;
 class Layout;
 
 namespace ct {
-
-typedef std::vector<bc::SectionHeader> ShVector;
-typedef std::vector<bc::BlockHeader> BhVector;
-typedef std::vector<bc::Code> CVector;
 
 typedef std::vector<std::unique_ptr<ReductionUnit> > ReductionUnitVector;
 
@@ -36,11 +31,7 @@ public:
 	DataFlowAnalyzer(const DataFlowAnalyzer &) = delete;
 	DataFlowAnalyzer &operator=(const DataFlowAnalyzer &) = delete;
 
-	DataFlowAnalyzer(const Layout *layout, int layer_size);
-
-	ShVector *GetShv() const;
-	BhVector *GetBhv() const;
-	CVector *GetCv() const;
+	DataFlowAnalyzer(const Layout *layout, int layer_size, Bytecode *bytecode);
 
 	/*
 	 * Returns true if there is no code at all, false otherwise.
@@ -76,9 +67,9 @@ protected:
 	const Layout *layout_;
 	size_t layer_size_;
 
-	std::unique_ptr<ShVector> shv_;
-	std::unique_ptr<BhVector> bhv_;
-	std::unique_ptr<CVector> cv_;
+	ShVector *shv_;
+	BhVector *bhv_;
+	CVector *cv_;
 
 	std::vector<ExecutionUnit> euv_;
 

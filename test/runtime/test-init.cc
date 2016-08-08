@@ -11,6 +11,7 @@
 #include "db/query.h"
 #include "db/tac-inserter.h"
 #include "db/variable-inserter.h"
+#include "flint/bc.h"
 #include "layout.h"
 
 #define BOOST_TEST_MODULE test_init
@@ -43,7 +44,6 @@ struct F : public test::MemoryFixture {
 	~F()
 	{
 		boost::filesystem::remove("layout");
-		boost::filesystem::remove("bc");
 	}
 
 	void Insert(const char *name, int noir, int nod, const char *body)
@@ -51,6 +51,8 @@ struct F : public test::MemoryFixture {
 		db::TacInserter ti(driver_.db());
 		BOOST_CHECK(ti.Insert(name, noir, nod, body));
 	}
+
+	std::unique_ptr<Bytecode> bytecode;
 };
 
 #define SETUP(a, b) do {						\
@@ -70,11 +72,10 @@ struct F : public test::MemoryFixture {
 			   "  load $1 %a#0\n"										\
 			   "  $0 = (" #f " $1)\n"									\
 			   "  store %x#0 $0\n");									\
-		std::ofstream ofs("bc", std::ios::out|std::ios::binary);		\
-		BOOST_REQUIRE(compiler::bcc::Bcc(driver_.db(), &ofs));			\
-		ofs.close();													\
+		bytecode.reset(compiler::bcc::Bcc(driver_.db()));				\
+		BOOST_REQUIRE(bytecode);										\
 		std::vector<double> data;										\
-		BOOST_CHECK(runtime::Init(driver_.db(), 0, "layout", "bc", &data)); \
+		BOOST_CHECK(runtime::Init(driver_.db(), 0, "layout", bytecode.get(), &data)); \
 		CheckOutput(data, expected);									\
 	} while (0)
 
@@ -85,11 +86,10 @@ struct F : public test::MemoryFixture {
 			   "  load $2 %b#0\n"										\
 			   "  $0 = (" #f " $1 $2)\n"								\
 			   "  store %x#0 $0\n");									\
-		std::ofstream ofs("bc", std::ios::out|std::ios::binary);		\
-		BOOST_REQUIRE(compiler::bcc::Bcc(driver_.db(), &ofs));			\
-		ofs.close();													\
+		bytecode.reset(compiler::bcc::Bcc(driver_.db()));				\
+		BOOST_REQUIRE(bytecode);										\
 		std::vector<double> data;										\
-		BOOST_CHECK(runtime::Init(driver_.db(), 0, "layout", "bc", &data)); \
+		BOOST_CHECK(runtime::Init(driver_.db(), 0, "layout", bytecode.get(), &data)); \
 		CheckOutput(data, expected);									\
 	} while (0)
 
@@ -104,13 +104,12 @@ BOOST_AUTO_TEST_CASE(same_seed)
 		   "  load $1 %a#0\n"
 		   "  $0 = ($exponential_variate $1)\n"
 		   "  store %x#0 $0\n");
-	std::ofstream ofs("bc", std::ios::out|std::ios::binary);
-	BOOST_REQUIRE(compiler::bcc::Bcc(driver_.db(), &ofs));
-	ofs.close();
+	bytecode.reset(compiler::bcc::Bcc(driver_.db()));
+	BOOST_REQUIRE(bytecode);
 	std::vector<double> data0;
-	BOOST_CHECK(runtime::Init(driver_.db(), 42, "layout", "bc", &data0));
+	BOOST_CHECK(runtime::Init(driver_.db(), 42, "layout", bytecode.get(), &data0));
 	std::vector<double> data1;
-	BOOST_CHECK(runtime::Init(driver_.db(), 42, "layout", "bc", &data1));
+	BOOST_CHECK(runtime::Init(driver_.db(), 42, "layout", bytecode.get(), &data1));
 	BOOST_TEST(data0 == data1);
 }
 
@@ -122,13 +121,12 @@ BOOST_AUTO_TEST_CASE(different_seed)
 		   "  load $2 %b#0\n"
 		   "  $0 = ($uniform_variate $1 $2)\n"
 		   "  store %x#0 $0\n");
-	std::ofstream ofs("bc", std::ios::out|std::ios::binary);
-	BOOST_REQUIRE(compiler::bcc::Bcc(driver_.db(), &ofs));
-	ofs.close();
+	bytecode.reset(compiler::bcc::Bcc(driver_.db()));
+	BOOST_REQUIRE(bytecode);
 	std::vector<double> data0;
-	BOOST_CHECK(runtime::Init(driver_.db(), 0, "layout", "bc", &data0));
+	BOOST_CHECK(runtime::Init(driver_.db(), 0, "layout", bytecode.get(), &data0));
 	std::vector<double> data1;
-	BOOST_CHECK(runtime::Init(driver_.db(), 1, "layout", "bc", &data1));
+	BOOST_CHECK(runtime::Init(driver_.db(), 1, "layout", bytecode.get(), &data1));
 	BOOST_CHECK_EQUAL(data0.size(), data1.size());
 	BOOST_TEST(data0 != data1);
 }

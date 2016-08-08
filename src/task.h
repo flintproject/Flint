@@ -2,11 +2,23 @@
 #ifndef FLINT_TASK_H_
 #define FLINT_TASK_H_
 
-#include <cstdio>
 #include "sqlite3.h"
 
+#include <cstdio>
+#include <memory>
+
 namespace flint {
+
+struct Bytecode;
+
 namespace task {
+
+struct Task {
+	std::unique_ptr<Bytecode> bc;
+	std::unique_ptr<Bytecode> pre_bc;
+	std::unique_ptr<Bytecode> post_bc;
+	std::unique_ptr<Bytecode> reinit_bc;
+};
 
 /*
  * Save a task's configuration into an attached database.

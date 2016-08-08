@@ -2,15 +2,26 @@
 #ifndef FLINT_BC_H_
 #define FLINT_BC_H_
 
+#include "bc.pb.h"
+
+#include <memory>
 #include <string>
+#include <vector>
 
 namespace flint {
 
-namespace ct {
-class DataFlowAnalyzer;
-}
+typedef std::vector<bc::SectionHeader> ShVector;
+typedef std::vector<bc::BlockHeader> BhVector;
+typedef std::vector<bc::Code> CVector;
 
-bool LoadBytecode(const std::string &file, int *nol, ct::DataFlowAnalyzer *dfa);
+struct Bytecode {
+	int nol;
+	std::unique_ptr<ShVector> shv;
+	std::unique_ptr<BhVector> bhv;
+	std::unique_ptr<CVector> cv;
+
+	Bytecode();
+};
 
 }
 

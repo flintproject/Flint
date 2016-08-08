@@ -35,6 +35,7 @@
 #include "runtime/history.h"
 #include "runtime/processor.h"
 #include "runtime/timeseries.h"
+#include "task.h"
 #include "ts.h"
 
 using std::cerr;
@@ -250,7 +251,7 @@ bool SaveData(const char *output_data_file, size_t layer_size, double *data)
 }
 
 bool Evolve(sqlite3 *db,
-			const char *bc_file,
+			task::Task *task,
 			const Option &option)
 {
 	size_t granularity = option.granularity;
@@ -259,8 +260,8 @@ bool Evolve(sqlite3 *db,
 	FILE *stats_fp = option.stats_fp;
 
 	bool with_filter = option.filter_file != nullptr;
-	bool with_pre = option.pre_file != nullptr;
-	bool with_post = option.post_file != nullptr;
+	bool with_pre = bool(task->pre_bc);
+	bool with_post = bool(task->post_bc);
 	bool with_control = option.control_file != nullptr;
 
 	// load layout at first
@@ -281,36 +282,33 @@ bool Evolve(sqlite3 *db,
 	}
 
 	std::unique_ptr<Executor> executor(new Executor(layer_size));
-	std::unique_ptr<Processor> processor(new Processor(layout.get(), layer_size));
-	std::unique_ptr<PExecutor> preexecutor(new PExecutor(layer_size));
-	std::unique_ptr<Processor> preprocessor(new Processor(layout.get(), layer_size));
-	std::unique_ptr<PExecutor> postexecutor(new PExecutor(layer_size));
-	std::unique_ptr<Processor> postprocessor(new Processor(layout.get(), layer_size));
+	std::unique_ptr<Processor> processor(new Processor(layout.get(), layer_size, task->bc.get()));
+	std::unique_ptr<PExecutor> preexecutor;
+	std::unique_ptr<Processor> preprocessor;
+	std::unique_ptr<PExecutor> postexecutor;
+	std::unique_ptr<Processor> postprocessor;
 
-	// load bc next
-	int nol = 0;
-	if (!LoadBytecode(bc_file, &nol, processor.get()))
-		return false;
+	int nol = task->bc->nol;
 	if (nol <= 0) {
 		cerr << "invalid nol: " << nol << endl;
 		return false;
 	}
-	// load preprocess bytecode if specified
 	if (with_pre) {
-		if (!LoadBytecode(option.pre_file, nullptr, preprocessor.get()))
-			return false;
-		// ... but ignore preprocess if empty
+		preexecutor.reset(new PExecutor(layer_size));
+		preprocessor.reset(new Processor(layout.get(), layer_size, task->pre_bc.get()));
+		// ignore preprocess if empty
 		if (preprocessor->IsEmpty()) {
+			preexecutor.reset();
 			preprocessor.reset();
 			with_pre = false;
 		}
 	}
-	// load postprocess bytecode if specified
 	if (with_post) {
-		if (!LoadBytecode(option.post_file, nullptr, postprocessor.get()))
-			return false;
-		// ... but ignore postprocess if empty
+		postexecutor.reset(new PExecutor(layer_size));
+		postprocessor.reset(new Processor(layout.get(), layer_size, task->post_bc.get()));
+		// ignore postprocess if empty
 		if (postprocessor->IsEmpty()) {
+			postexecutor.reset();
 			postprocessor.reset();
 			with_post = false;
 		}
@@ -358,12 +356,14 @@ bool Evolve(sqlite3 *db,
 	if (option.input_data) // fill the first layer with input
 		std::memcpy(prev.get(), option.input_data->data(), layer_size * sizeof(double));
 	executor->set_prev(prev.get());
-	preexecutor->set_prev(prev.get());
+	if (with_pre)
+		preexecutor->set_prev(prev.get());
 
 	// arrange data space
 	std::unique_ptr<double[]> data(new double[layer_size * nol]()); // default-initialized
 	executor->set_data(data.get());
-	postexecutor->set_prev(data.get());
+	if (with_post)
+		postexecutor->set_prev(data.get());
 
 	// copy time, dt, end and seed to data
 	std::memcpy(data.get(), prev.get(), kOffsetBase * sizeof(double));
@@ -384,13 +384,17 @@ bool Evolve(sqlite3 *db,
 
 	// arrange work space
 	std::unique_ptr<double[]> work(new double[layer_size]()); // default-initialized
-	preexecutor->set_data(work.get());
-	postexecutor->set_data(work.get());
+	if (with_pre)
+		preexecutor->set_data(work.get());
+	if (with_post)
+		postexecutor->set_data(work.get());
 
 	// arrange color space
 	std::unique_ptr<int[]> color(new int[layer_size]()); // default-initialized
-	preexecutor->set_color(color.get());
-	postexecutor->set_color(color.get());
+	if (with_pre)
+		preexecutor->set_color(color.get());
+	if (with_post)
+		postexecutor->set_color(color.get());
 
 	// arrange history
 	std::unique_ptr<History[]> history(new History[layer_size]);
@@ -402,8 +406,10 @@ bool Evolve(sqlite3 *db,
 		if (!loader.Load(layer_size, history.get())) return false;
 	}
 	executor->set_history(history.get());
-	preexecutor->set_history(history.get());
-	postexecutor->set_history(history.get());
+	if (with_pre)
+		preexecutor->set_history(history.get());
+	if (with_post)
+		postexecutor->set_history(history.get());
 
 	int max_noir = processor->GetMaxNoir();
 	if (with_pre)

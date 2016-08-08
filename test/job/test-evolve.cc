@@ -14,7 +14,9 @@
 #include "db/query.h"
 #include "db/tac-inserter.h"
 #include "db/variable-inserter.h"
+#include "flint/bc.h"
 #include "layout.h"
+#include "task.h"
 
 #define BOOST_TEST_MODULE test_evolve
 #include "test.h"
@@ -59,7 +61,6 @@ struct F : public test::MemoryFixture {
 	~F()
 	{
 		boost::filesystem::remove("layout");
-		boost::filesystem::remove("bc");
 		boost::filesystem::remove("output");
 	}
 
@@ -70,6 +71,7 @@ struct F : public test::MemoryFixture {
 	}
 
 	job::Option option_;
+	task::Task task_;
 };
 
 #define SETUP(a, b) do {						\
@@ -89,14 +91,13 @@ struct F : public test::MemoryFixture {
 			   "  load $1 %a#0\n"										\
 			   "  $0 = (" #f " $1)\n"									\
 			   "  store %x#0 $0\n");									\
-		std::ofstream ofs("bc", std::ios::out|std::ios::binary);		\
-		BOOST_REQUIRE(compiler::bcc::Bcc(driver_.db(), &ofs));			\
-		ofs.close();													\
+		task_.bc.reset(compiler::bcc::Bcc(driver_.db()));				\
+		BOOST_REQUIRE(task_.bc);										\
 		FILE *fp = std::fopen("output", "wb");							\
 		BOOST_REQUIRE(fp);												\
 		option_.layout_file = "layout";									\
 		option_.output_fp = fp;											\
-		BOOST_REQUIRE(job::Evolve(driver_.db(), "bc", option_));		\
+		BOOST_REQUIRE(job::Evolve(driver_.db(), &task_, option_));		\
 		std::fclose(fp);												\
 		CheckOutput(expected);											\
 	} while (0)
@@ -108,14 +109,12 @@ struct F : public test::MemoryFixture {
 			   "  load $2 %b#0\n"										\
 			   "  $0 = (" #f " $1 $2)\n"								\
 			   "  store %x#0 $0\n");									\
-		std::ofstream ofs("bc", std::ios::out|std::ios::binary);		\
-		BOOST_REQUIRE(compiler::bcc::Bcc(driver_.db(), &ofs));			\
-		ofs.close();													\
+		task_.bc.reset(compiler::bcc::Bcc(driver_.db()));				\
 		FILE *fp = std::fopen("output", "wb");							\
 		BOOST_REQUIRE(fp);												\
 		option_.layout_file = "layout";									\
 		option_.output_fp = fp;											\
-		BOOST_REQUIRE(job::Evolve(driver_.db(), "bc", option_));		\
+		BOOST_REQUIRE(job::Evolve(driver_.db(), &task_, option_));		\
 		std::fclose(fp);												\
 		CheckOutput(expected);											\
 	} while (0)

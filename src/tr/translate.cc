@@ -11,6 +11,7 @@
 #include <cstring>
 #include <iomanip>
 #include <iostream>
+#include <memory>
 
 #define BOOST_FILESYSTEM_NO_DEPRECATED
 #include <boost/filesystem.hpp>
@@ -105,7 +106,8 @@ bool PrintDataAsDoubleArray(const std::vector<double> &data,
 bool Translate(const cli::RunOption &option)
 {
 	std::vector<double> data;
-	if (!load::Load(option.model_filename().c_str(), load::kRun, 0, &data))
+	std::unique_ptr<task::Task> task(load::Load(option.model_filename().c_str(), load::kRun, 0, &data));
+	if (!task)
 		return false;
 
 	db::Driver driver("model.db");
@@ -150,7 +152,8 @@ bool Translate(const cli::RunOption &option)
 		if (!da.Load(db))
 			return false;
 		compiler::Compiler c(&da);
-		if (!c.Compile(db, "input_eqs", reader.GetMethod(), "bc"))
+		task->bc.reset(c.Compile(db, "input_eqs", reader.GetMethod()));
+		if (!task->bc)
 			return false;
 	}
 	boost::filesystem::path output_path = GetPathFromUtf8(option.output_filename().c_str());
@@ -180,11 +183,8 @@ bool Translate(const cli::RunOption &option)
 		return false;
 	}
 
-	// load bc next
-	int nol = 0;
-	std::unique_ptr<Translator> translator(new Translator(layout.get(), layer_size, ofs));
-	if (!LoadBytecode("bc", &nol, translator.get()))
-		return false;
+	int nol = task->bc->nol;
+	std::unique_ptr<Translator> translator(new Translator(layout.get(), layer_size, task->bc.get(), ofs));
 	if (nol <= 0) {
 		std::cerr << "invalid nol: " << nol << std::endl;
 		return false;

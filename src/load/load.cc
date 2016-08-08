@@ -27,6 +27,7 @@
 #include "phz.h"
 #include "runtime.h"
 #include "sbml.h"
+#include "task.h"
 
 using std::cerr;
 using std::endl;
@@ -76,9 +77,6 @@ public:
 
 	explicit Loader(int dir)
 		: dir_(new char[kFilenameLength])
-		, after_bc_(new char[kFilenameLength])
-		, before_bc_(new char[kFilenameLength])
-		, init_bc_(new char[kFilenameLength])
 		, layout_(new char[kFilenameLength])
 		, model_(new char[kFilenameLength])
 		, modeldb_(new char[kFilenameLength])
@@ -93,9 +91,6 @@ public:
 		} else {
 			sprintf(dir_.get(), ".");
 		}
-		sprintf(after_bc_.get(), "%s/after.bc", dir_.get());
-		sprintf(before_bc_.get(), "%s/before.bc", dir_.get());
-		sprintf(init_bc_.get(), "%s/init.bc", dir_.get());
 		sprintf(layout_.get(), "%s/layout", dir_.get());
 		sprintf(model_.get(), "%s/model", dir_.get());
 		sprintf(modeldb_.get(), "%s/model.db", dir_.get());
@@ -112,73 +107,85 @@ public:
 	const char *phz() const {return phz_.get();}
 	const char *var() const {return var_.get();}
 
-	bool LoadCellml(sqlite3 *db, std::vector<double> *data)
+	task::Task *LoadCellml(sqlite3 *db, std::vector<double> *data)
 	{
 		if (!cellml::Read(db))
-			return false;
+			return nullptr;
 		if (!layout::Generate(db, layout_.get()))
-			return false;
+			return nullptr;
+		std::unique_ptr<Bytecode> init_bc;
 		{
 			cas::DimensionAnalyzer da;
 			if (!da.Load(db))
-				return false;
+				return nullptr;
 			compiler::Compiler c(&da);
-			if (!c.Compile(db, "input_ivs", compiler::Method::kAssign, init_bc_.get()))
-				return false;
+			init_bc.reset(c.Compile(db, "input_ivs", compiler::Method::kAssign));
+			if (!init_bc)
+				return nullptr;
 		}
-		return runtime::Init(db, 0, layout_.get(), init_bc_.get(), data);
+		if (!runtime::Init(db, 0, layout_.get(), init_bc.get(), data))
+			return nullptr;
+		return new task::Task;
 	}
 
-	bool LoadPhml(sqlite3 *db, std::vector<double> *data)
+	task::Task *LoadPhml(sqlite3 *db, std::vector<double> *data)
 	{
 		if (!phml::Read(db))
-			return false;
+			return nullptr;
 		int seed = static_cast<int>(std::clock());
 		if (!phml::Nc(db, nc_.get(), &seed))
-			return false;
+			return nullptr;
 		if (!phml::UnitOfTime(db, unitoftime_.get()))
-			return false;
+			return nullptr;
 		if (!phml::LengthAndStep(db, nc_.get(), unitoftime_.get()))
-			return false;
+			return nullptr;
 		if (!layout::Generate(db, layout_.get()))
-			return false;
+			return nullptr;
+		std::unique_ptr<Bytecode> init_bc;
+		std::unique_ptr<task::Task> task(new task::Task);
 		{
 			cas::DimensionAnalyzer da;
 			if (!da.Load(db))
-				return false;
+				return nullptr;
 			compiler::Compiler c(&da);
-			if (!c.Compile(db, "input_ivs", compiler::Method::kAssign, init_bc_.get()))
-				return false;
-			if (!c.Compile(db, "after_eqs", compiler::Method::kEvent, after_bc_.get()))
-				return false;
-			if (!c.Compile(db, "before_eqs", compiler::Method::kEvent, before_bc_.get()))
-				return false;
+			init_bc.reset(c.Compile(db, "input_ivs", compiler::Method::kAssign));
+			if (!init_bc)
+				return nullptr;
+			task->post_bc.reset(c.Compile(db, "after_eqs", compiler::Method::kEvent));
+			if (!task->post_bc)
+				return nullptr;
+			task->pre_bc.reset(c.Compile(db, "before_eqs", compiler::Method::kEvent));
+			if (!task->pre_bc)
+				return nullptr;
 		}
-		return runtime::Init(db, seed, layout_.get(), init_bc_.get(), data);
+		if (!runtime::Init(db, seed, layout_.get(), init_bc.get(), data))
+			return nullptr;
+		return task.release();
 	}
 
-	bool LoadSbml(sqlite3 *db, std::vector<double> *data)
+	task::Task *LoadSbml(sqlite3 *db, std::vector<double> *data)
 	{
 		if (!flint::sbml::Read(db))
-			return false;
+			return nullptr;
 		if (!layout::Generate(db, layout_.get()))
-			return false;
+			return nullptr;
+		std::unique_ptr<Bytecode> init_bc;
 		{
 			cas::DimensionAnalyzer da;
 			if (!da.Load(db))
-				return false;
+				return nullptr;
 			compiler::Compiler c(&da);
-			if (!c.Compile(db, "input_ivs", compiler::Method::kAssign, init_bc_.get()))
-				return false;
+			init_bc.reset(c.Compile(db, "input_ivs", compiler::Method::kAssign));
+			if (!init_bc)
+				return nullptr;
 		}
-		return runtime::Init(db, 0, layout_.get(), init_bc_.get(), data);
+		if (!runtime::Init(db, 0, layout_.get(), init_bc.get(), data))
+			return nullptr;
+		return new task::Task;
 	}
 
 private:
 	std::unique_ptr<char[]> dir_;
-	std::unique_ptr<char[]> after_bc_;
-	std::unique_ptr<char[]> before_bc_;
-	std::unique_ptr<char[]> init_bc_;
 	std::unique_ptr<char[]> layout_;
 	std::unique_ptr<char[]> model_;
 	std::unique_ptr<char[]> modeldb_;
@@ -191,57 +198,62 @@ private:
 
 }
 
-bool Load(const char *given_file, ConfigMode mode, int dir, std::vector<double> *data)
+task::Task *Load(const char *given_file, ConfigMode mode, int dir, std::vector<double> *data)
 {
 	Loader loader(dir);
 	db::Driver driver(loader.modeldb());
 	sqlite3 *db = driver.db();
 	if (!SaveGivenFile(db, given_file))
-		return false;
+		return nullptr;
 	file::Format format;
 	if (!file::Txt(given_file, &format, dir))
-		return false;
+		return nullptr;
+	std::unique_ptr<task::Task> task;
 	switch (format) {
 	case file::kIsml:
 	case file::kPhml:
-		if (!loader.LoadPhml(db, data))
-			return false;
+		task.reset(loader.LoadPhml(db, data));
+		if (!task)
+			return nullptr;
 		break;
 	case file::kPhz:
 		if (!phz::Read(db, loader.phz()))
-			return false;
-		if (!loader.LoadPhml(db, data))
-			return false;
+			return nullptr;
+		task.reset(loader.LoadPhml(db, data));
+		if (!task)
+			return nullptr;
 		break;
 	case file::kCellml:
-		if (!loader.LoadCellml(db, data))
-			return false;
+		task.reset(loader.LoadCellml(db, data));
+		if (!task)
+			return nullptr;
 		if (mode == kRun) {
 			ConfigWriter writer(db);
 			if (!writer.Write("rk4", "2000", "0.01"))
-				return false;
+				return nullptr;
 		}
 		break;
 	case file::kSbml:
-		if (!loader.LoadSbml(db, data))
-			return false;
+		task.reset(loader.LoadSbml(db, data));
+		if (!task)
+			return nullptr;
 		if (mode == kRun) {
 			ConfigWriter writer(db);
 			if (!writer.Write("rk4", "100", "0.01"))
-				return false;
+				return nullptr;
 		}
 		break;
 	default:
 		cerr << "unexpected file format: " << format << endl;
-		return false;
+		return nullptr;
 	}
 	if (mode == kOpen) {
 		if (!Param(db, loader.param()))
-			return false;
+			return nullptr;
 		if (!Var(db, loader.var()))
-			return false;
+			return nullptr;
 	}
-	return true;
+	return task.release();
 }
 
 }

@@ -17,7 +17,7 @@ bool Eval(sqlite3 *db,
 		  ct::Availability availability,
 		  int seed,
 		  const char *layout_file,
-		  const char *bc_file,
+		  Bytecode *bytecode,
 		  std::vector<double> *data);
 
 /*
@@ -26,7 +26,7 @@ bool Eval(sqlite3 *db,
 bool Init(sqlite3 *db,
 		  int seed,
 		  const char *layout_file,
-		  const char *bc_file,
+		  Bytecode *bytecode,
 		  std::vector<double> *data);
 
 }
