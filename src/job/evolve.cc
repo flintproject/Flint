@@ -343,7 +343,7 @@ bool Evolve(sqlite3 *db,
 		FlowInboundMap inbound;
 		if (!LoadFlows(db, &inbound))
 			return false;
-		if (!processor->SolveDependencies(nol, &inbound))
+		if (!processor->SolveDependencies(&inbound))
 			return false;
 		if (with_pre)
 			preprocessor->ScheduleEvents(inbound);

@@ -315,7 +315,7 @@ public:
 				int cie = cu.cie();
 				heap_.clear();
 				do {
-					const bc::Code &code(cv_->at(ci));
+					const bc::Code &code(GetCv().at(ci));
 					switch (code.type()) {
 					case bc::Code::kBr:
 						{
@@ -343,7 +343,7 @@ public:
 							ci++;
 						} else {
 							int si = cu.section_index();
-							const bc::SectionHeader &sh(shv_->at(si));
+							const bc::SectionHeader &sh(GetShv().at(si));
 							runtime::ReportSectionContext(sh);
 							return false;
 						}
@@ -354,7 +354,7 @@ public:
 						} else {
 							std::cerr << "failed to load data: " << ci << std::endl;
 							int si = cu.section_index();
-							const bc::SectionHeader &sh(shv_->at(si));
+							const bc::SectionHeader &sh(GetShv().at(si));
 							runtime::ReportSectionContext(sh);
 							return false;
 						}
@@ -373,7 +373,7 @@ public:
 						} else {
 							std::cerr << "failed to load: " << ci << std::endl;
 							int si = cu.section_index();
-							const bc::SectionHeader &sh(shv_->at(si));
+							const bc::SectionHeader &sh(GetShv().at(si));
 							runtime::ReportSectionContext(sh);
 							return false;
 						}
@@ -394,8 +394,8 @@ public:
 							if (!IsFinite(v, offset)) {
 								int si = cu.section_index();
 								int bi = cu.block_index();
-								const bc::SectionHeader &sh(shv_->at(si));
-								const bc::BlockHeader &bh(bhv_->at(bi));
+								const bc::SectionHeader &sh(GetShv().at(si));
+								const bc::BlockHeader &bh(GetBhv().at(bi));
 								boost::uuids::uuid u;
 								std::memcpy(&u, sh.id().data(), u.size());
 								std::cerr << "section: " << u << std::endl;

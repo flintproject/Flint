@@ -198,10 +198,10 @@ bool Translate(const cli::RunOption &option)
 	std::unique_ptr<FlowInboundMap> inbound(new FlowInboundMap);
 	if (!LoadFlows(db, inbound.get()))
 		return false;
-	if (!translator->SolveDependencies(nol, inbound.get()))
+	if (!translator->SolveDependencies(inbound.get()))
 		return false;
 
-	translator->PrintHeader(nol, layer_size, reader.length(), reader.step());
+	translator->PrintHeader(layer_size, reader.length(), reader.step());
 
 	// TODO: use std::hexfloat once GCC 5 is supposed to be available
 	// choose the defaultfloat

@@ -24,7 +24,7 @@ public:
 	Translator(const Layout *layout, int layer_size, Bytecode *bytecode,
 			   std::ostream &os);
 
-	void PrintHeader(int nol, size_t layer_size, double length, double step);
+	void PrintHeader(size_t layer_size, double length, double step);
 
 	void PrintFunctions();
 

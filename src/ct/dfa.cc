@@ -26,24 +26,22 @@ namespace ct {
 DataFlowAnalyzer::DataFlowAnalyzer(const Layout *layout, int layer_size, Bytecode *bytecode)
 	: layout_(layout)
 	, layer_size_(layer_size)
-	, shv_(bytecode->shv.get())
-	, bhv_(bytecode->bhv.get())
-	, cv_(bytecode->cv.get())
+	, bytecode_(bytecode)
 	, euv_()
 	, code_offset_()
 {}
 
 bool DataFlowAnalyzer::IsEmpty() const
 {
-	return cv_->empty();
+	return bytecode_->cv->empty();
 }
 
 void DataFlowAnalyzer::CalculateCodeOffset()
 {
-	code_offset_.reset(new int[bhv_->size()]);
+	code_offset_.reset(new int[GetBhv().size()]);
 	int bi = 0;
 	int ci = 0;
-	for (const auto &bh : *bhv_) {
+	for (const auto &bh : GetBhv()) {
 		code_offset_[bi++] = ci;
 		ci += bh.noc();
 	}
@@ -51,20 +49,20 @@ void DataFlowAnalyzer::CalculateCodeOffset()
 
 bool DataFlowAnalyzer::SolveLocation()
 {
-	ShVector::iterator sit = shv_->begin();
-	BhVector::iterator bit = bhv_->begin();
-	CVector::iterator cit = cv_->begin();
-	while (sit != shv_->end()) {
+	auto sit = GetShv().begin();
+	auto bit = GetBhv().begin();
+	auto cit = GetCv().begin();
+	while (sit != GetShv().end()) {
 		int nob = sit->nob();
 		const Locater *locater = layout_->GetLocater(sit->id());
 		if (!locater) {
 			// no such sector, so let's remove the section
 			for (int i=0;i<nob;i++) {
 				CVector::iterator cend = cit + bit->noc();
-				cit = cv_->erase(cit, cend);
-				bit = bhv_->erase(bit);
+				cit = GetCv().erase(cit, cend);
+				bit = GetBhv().erase(bit);
 			}
-			sit = shv_->erase(sit);
+			sit = GetShv().erase(sit);
 			continue;
 		}
 		BhVector::iterator bend = bit + nob;
@@ -145,15 +143,15 @@ bool DataFlowAnalyzer::SolveLocation()
 		}
 		sit++;
 	}
-	assert(bit == bhv_->end());
-	assert(cit == cv_->end());
+	assert(bit == GetBhv().end());
+	assert(cit == GetCv().end());
 	return true;
 }
 
 int DataFlowAnalyzer::GetMaxNoir()
 {
 	int max_noir = 0;
-	for (const auto &bh : *bhv_) {
+	for (const auto &bh : GetBhv()) {
 		max_noir = std::max(max_noir, bh.noir());
 	}
 	return max_noir;
@@ -162,14 +160,13 @@ int DataFlowAnalyzer::GetMaxNoir()
 int DataFlowAnalyzer::GetMaxNumberOfData()
 {
 	int max_nod = 0;
-	for (const auto &bh : *bhv_) {
+	for (const auto &bh : GetBhv()) {
 		max_nod = std::max(max_nod, bh.nod());
 	}
 	return max_nod;
 }
 
-bool DataFlowAnalyzer::SolveDependencies(int nol,
-										 const FlowInboundMap *inbound,
+bool DataFlowAnalyzer::SolveDependencies(const FlowInboundMap *inbound,
 										 Availability availability,
 										 size_t *color)
 {
@@ -177,18 +174,18 @@ bool DataFlowAnalyzer::SolveDependencies(int nol,
 	CollectCalculationDependencies(cdv.get());
 
 	std::unique_ptr<ReductionUnitVector> ruv(new ReductionUnitVector);
-	CollectReductionUnits(nol, inbound, ruv.get());
+	CollectReductionUnits(inbound, ruv.get());
 
-	std::unique_ptr<int[]> levels(new int[nol * layer_size_]());
+	std::unique_ptr<int[]> levels(new int[GetNol() * layer_size_]());
 	switch (availability) {
 	case Availability::kNone:
 		// nothing to do
 		break;
 	case Availability::kLiteral:
-		layout_->MarkLiteral(nol, layer_size_, levels.get(), color);
+		layout_->MarkLiteral(GetNol(), layer_size_, levels.get(), color);
 		break;
 	case Availability::kConstant:
-		layout_->MarkConstant(nol, layer_size_, levels.get());
+		layout_->MarkConstant(GetNol(), layer_size_, levels.get());
 		break;
 	}
 	int m = 0;
@@ -276,9 +273,9 @@ void DataFlowAnalyzer::ScheduleEvents(const FlowInboundMap &inbound)
 	int bi = 0; // block index
 	int ci = 0; // code index
 
-	int nos = static_cast<int>(shv_->size());
+	int nos = static_cast<int>(GetShv().size());
 	for (;si < nos; si++) {
-		const bc::SectionHeader &sh(shv_->at(si));
+		const bc::SectionHeader &sh(GetShv().at(si));
 		int bib = bi;
 		int bie = bi + sh.nob();
 		const std::string &id(sh.id());
@@ -288,13 +285,13 @@ void DataFlowAnalyzer::ScheduleEvents(const FlowInboundMap &inbound)
 			bi = bib; // reset block index
 			int offset = mounter.GetOffset(k);
 			for (;bi < bie; bi++) {
-				const bc::BlockHeader &bh(bhv_->at(bi));
+				const bc::BlockHeader &bh(GetBhv().at(bi));
 				ci = code_offset_[bi];
 				int cib = ci;
 				int cie = cib + bh.noc();
 				std::unique_ptr<CalculationUnit> cu(new CalculationUnit(si, bi, offset, cib, cie));
 				for (;ci < cie; ci++) {
-					const bc::Code &code(cv_->at(ci));
+					const bc::Code &code(GetCv().at(ci));
 					switch (code.type()) {
 					case bc::Code::kStore:
 						{
@@ -341,9 +338,9 @@ void DataFlowAnalyzer::CollectCalculationDependencies(CalculationDependencyVecto
 	int bi = 0; // block index
 	int ci = 0; // code index
 
-	int nos = static_cast<int>(shv_->size());
+	int nos = static_cast<int>(GetShv().size());
 	for (;si < nos; si++) {
-		const bc::SectionHeader &sh(shv_->at(si));
+		const bc::SectionHeader &sh(GetShv().at(si));
 		int bib = bi;
 		int bie = bi + sh.nob();
 		const std::string &id(sh.id());
@@ -353,13 +350,13 @@ void DataFlowAnalyzer::CollectCalculationDependencies(CalculationDependencyVecto
 			bi = bib; // reset block index
 			int offset = mounter.GetOffset(k);
 			for (;bi < bie; bi++) {
-				const bc::BlockHeader &bh(bhv_->at(bi));
+				const bc::BlockHeader &bh(GetBhv().at(bi));
 				ci = code_offset_[bi];
 				int cib = ci;
 				int cie = cib + bh.noc();
 				std::unique_ptr<CalculationDependency> cd(new CalculationDependency(si, bi, offset, cib, cie));
 				for (;ci < cie; ci++) {
-					const bc::Code &code(cv_->at(ci));
+					const bc::Code &code(GetCv().at(ci));
 					switch (code.type()) {
 					case bc::Code::kLoad:
 						{
@@ -422,14 +419,14 @@ void DataFlowAnalyzer::CollectCalculationDependencies(CalculationDependencyVecto
 	}
 }
 
-void DataFlowAnalyzer::CollectReductionUnits(int nol, const FlowInboundMap *inbound,
+void DataFlowAnalyzer::CollectReductionUnits(const FlowInboundMap *inbound,
 											 ReductionUnitVector *ruv)
 {
 	assert(inbound);
 	assert(ruv);
 
 	for (auto it=inbound->cbegin();it!=inbound->cend();++it) {
-		for (int i=0;i<nol;i++) {
+		for (int i=0;i<GetNol();i++) {
 			if (i%2 == 0) { // only on an even layer
 				std::unique_ptr<ReductionUnit> rd(new ReductionUnit(it->second.reduction,
 																	it->first + (i * layer_size_),
@@ -441,6 +438,26 @@ void DataFlowAnalyzer::CollectReductionUnits(int nol, const FlowInboundMap *inbo
 			}
 		}
 	}
+}
+
+int DataFlowAnalyzer::GetNol() const
+{
+	return bytecode_->nol;
+}
+
+ShVector &DataFlowAnalyzer::GetShv()
+{
+	return *bytecode_->shv;
+}
+
+BhVector &DataFlowAnalyzer::GetBhv()
+{
+	return *bytecode_->bhv;
+}
+
+CVector &DataFlowAnalyzer::GetCv()
+{
+	return *bytecode_->cv;
 }
 
 }

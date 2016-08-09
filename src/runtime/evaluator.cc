@@ -262,7 +262,7 @@ bool Evaluator::Evaluate(sqlite3 *db,
 
 	processor->CalculateCodeOffset();
 
-	if (!processor->SolveDependencies(nol, inbound.get(), availability, color.get()))
+	if (!processor->SolveDependencies(inbound.get(), availability, color.get()))
 		return false;
 
 	int max_noir = processor->GetMaxNoir();

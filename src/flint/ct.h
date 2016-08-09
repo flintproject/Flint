@@ -50,8 +50,7 @@ public:
 
 	int GetMaxNumberOfData();
 
-	bool SolveDependencies(int nol,
-						   const FlowInboundMap *inbound,
+	bool SolveDependencies(const FlowInboundMap *inbound,
 						   Availability availability = Availability::kConstant,
 						   size_t *color = nullptr);
 
@@ -60,16 +59,18 @@ public:
 private:
 	void CollectCalculationDependencies(CalculationDependencyVector *cdv);
 
-	void CollectReductionUnits(int nol, const FlowInboundMap *inbound,
+	void CollectReductionUnits(const FlowInboundMap *inbound,
 							   ReductionUnitVector *ruv);
 
 protected:
+	int GetNol() const;
+	ShVector &GetShv();
+	BhVector &GetBhv();
+	CVector &GetCv();
+
 	const Layout *layout_;
 	size_t layer_size_;
-
-	ShVector *shv_;
-	BhVector *bhv_;
-	CVector *cv_;
+	Bytecode *bytecode_;
 
 	std::vector<ExecutionUnit> euv_;
 

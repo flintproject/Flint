@@ -37,12 +37,11 @@ Processor *CreateProcessor(const Layout *layout, size_t layer_size,
 						   FlowInboundMap *inbound, Bytecode *bytecode)
 {
 	std::unique_ptr<Processor> processor(new Processor(layout, layer_size, bytecode));
-	int nol = bytecode->nol;
-	assert(nol <= 2);
+	assert(bytecode->nol <= 2);
 	if (!processor->SolveLocation())
 		return nullptr;
 	processor->CalculateCodeOffset();
-	if (!processor->SolveDependencies(nol, inbound))
+	if (!processor->SolveDependencies(inbound))
 		return nullptr;
 	return processor.release();
 }

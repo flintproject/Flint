@@ -235,7 +235,7 @@ void PrintGen2(const bc::Gen2 &c2, std::ostream &os)
 
 }
 
-void Translator::PrintHeader(int nol, size_t layer_size,
+void Translator::PrintHeader(size_t layer_size,
 							 double length, double step)
 {
 	static const unsigned char kHeaderSnippet[] = {
@@ -248,7 +248,7 @@ void Translator::PrintHeader(int nol, size_t layer_size,
 	os_ << "static const double length = " << length << ';' << std::endl;
 	os_ << "static const double step = " << step << ';' << std::endl;
 	os_ << std::endl;
-	os_ << "static const int nol = " << nol << ';' << std::endl;
+	os_ << "static const int nol = " << GetNol() << ';' << std::endl;
 	os_ << "static const size_t layer_size = " << layer_size << ';' << std::endl;
 }
 
@@ -265,9 +265,9 @@ void Translator::PrintFunctions()
 	int bi = 0; // block index
 	int ci = 0; // code index
 
-	int nos = static_cast<int>(shv_->size());
+	int nos = static_cast<int>(GetShv().size());
 	while (si < nos) {
-		const bc::SectionHeader &sh(shv_->at(si++));
+		const bc::SectionHeader &sh(GetShv().at(si++));
 
 		boost::uuids::uuid uuid;
 		std::memcpy(&uuid, sh.id().c_str(), uuid.size());
@@ -279,7 +279,7 @@ void Translator::PrintFunctions()
 			os_ << std::endl;
 			os_ << "static void block" << bi << "(int offset)" << std::endl;
 			os_ << '{' << std::endl;
-			const bc::BlockHeader &bh(bhv_->at(bi));
+			const bc::BlockHeader &bh(GetBhv().at(bi));
 			ci = code_offset_[bi++];
 			int cib = ci;
 			int cie = cib + bh.noc();
@@ -291,7 +291,7 @@ void Translator::PrintFunctions()
 			while (ci < cie) {
 				if (labels.count(ci - cib))
 					os_ << "l" << (ci - cib) << ':' << std::endl;
-				const bc::Code &code(cv_->at(ci++));
+				const bc::Code &code(GetCv().at(ci++));
 				switch (code.type()) {
 				case bc::Code::kBr:
 					{
