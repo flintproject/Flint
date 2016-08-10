@@ -43,17 +43,14 @@ public abstract class DaoObject implements AutoCloseable {
     }
 
     private void connect() throws SQLException, IOException {
+        assert mConnection == null;
         String dsn = String.format("jdbc:sqlite:%s", mDatabaseFile.getCanonicalPath());
-
-        if (mConnection != null)
-            mConnection.close();
-
         SQLiteConfig config = new SQLiteConfig();
         config.setReadOnly(true);
         mConnection = DriverManager.getConnection(dsn, config.toProperties());
     }
 
-    public Connection getConnection()
+    public synchronized Connection getConnection()
             throws SQLException, IOException {
         if (mConnection == null)
             connect();
