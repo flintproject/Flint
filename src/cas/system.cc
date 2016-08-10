@@ -75,7 +75,7 @@ Bytecode *System::GenerateAuxVarBc()
 {
 	db::Driver driver(":memory:");
 	if (!GenerateAuxVarAst(driver.db()))
-		return false;
+		return nullptr;
 	compiler::Compiler c(da_.get());
 	return c.GenerateBytecode(driver.db());
 }
@@ -110,7 +110,7 @@ Bytecode *System::GenerateOdeMassBc()
 {
 	db::Driver driver(":memory:");
 	if (!GenerateOdeMassAst(driver.db()))
-		return false;
+		return nullptr;
 	compiler::Compiler c(da_.get());
 	return c.GenerateBytecode(driver.db());
 }
@@ -145,7 +145,7 @@ Bytecode *System::GenerateOdeRhsBc()
 {
 	db::Driver driver(":memory:");
 	if (!GenerateOdeRhsAst(driver.db()))
-		return false;
+		return nullptr;
 	compiler::Compiler c(da_.get());
 	return c.GenerateBytecode(driver.db());
 }
