@@ -16,7 +16,11 @@
 #include <thread>
 #include <vector>
 
+#define BOOST_FILESYSTEM_NO_DEPRECATED
+#include <boost/filesystem.hpp>
+
 #include "db/driver.h"
+#include "db/read-only-driver.h"
 #include "exec/task-runner.h"
 #include "flint/background.h"
 #include "flint/process.h"
@@ -103,8 +107,31 @@ bool CollectTasks(sqlite3 *db, FutureTaskPool *pool)
 	return true;
 }
 
-bool RunTasks(sqlite3 *db)
+bool ReadInput(const cli::ExecOption &option)
 {
+	db::Driver driver("input.db");
+	sqlite3 *db = driver.db();
+	return sedml::Read(option.sedml_filename().c_str(), db) &&
+		phsp::Read(option.phsp_filename().c_str(), db);
+}
+
+bool CopyInput()
+{
+	boost::system::error_code ec;
+	boost::filesystem::copy_file("input.db", "x.db", ec);
+	if (ec) {
+		std::cerr << "failed to copy input.db to x.db: "
+				  << ec.message()
+				  << std::endl;
+		return false;
+	}
+	return true;
+}
+
+bool RunTasks()
+{
+	db::ReadOnlyDriver driver("input.db");
+	sqlite3 *db = driver.db();
 	FutureTaskPool pool;
 	if (!CollectTasks(db, &pool))
 		return false;
@@ -117,15 +144,7 @@ bool Exec(const cli::ExecOption &option)
 {
 	if (option.has_lock_filename())
 		InitializeBackgroundProcess(option.lock_filename().c_str());
-	if (!CreatePidTxt())
-		return false;
-	db::Driver driver("x.db");
-	sqlite3 *db = driver.db();
-	if (!sedml::Read(option.sedml_filename().c_str(), db))
-		return false;
-	if (!phsp::Read(option.phsp_filename().c_str(), db))
-		return false;
-	return RunTasks(db);
+	return CreatePidTxt() && ReadInput(option) && CopyInput() && RunTasks();
 }
 
 }

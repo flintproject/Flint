@@ -18,7 +18,7 @@ public class SimulationDao extends DaoObject {
     private Map<String, TaskDao> mModelPathMap;
 
     public SimulationDao(File dir) {
-        super("x.db", dir);
+        super("input.db", dir);
 
         mTaskIdMap = null;
         mModelPathMap = null;
