@@ -3,12 +3,14 @@ package jp.oist.flint.desktop;
 
 import jp.oist.flint.dao.DaoException;
 import jp.oist.flint.dao.TaskDao;
+import jp.oist.flint.executor.PhspProgressMonitor;
 import jp.oist.flint.executor.PhspSimulator;
 import jp.oist.flint.form.ProgressPane;
 import jp.oist.flint.textformula.analyzer.ParseException;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.HashSet;
 import javax.swing.SwingWorker;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
@@ -19,35 +21,52 @@ class ParametrizationMonitor extends SwingWorker<Void, TaskDao> {
 
     private final ProgressPane mProgressPane;
 
-    public ParametrizationMonitor(PhspSimulator simulator, ProgressPane progressPane) {
+    private final PhspProgressMonitor mProgressMonitor;
+
+    public ParametrizationMonitor(PhspSimulator simulator,
+                                  ProgressPane progressPane,
+                                  PhspProgressMonitor progressMonitor) {
         mSimulator = simulator;
         mProgressPane = progressPane;
+        mProgressMonitor = progressMonitor;
     }
 
     @Override
     protected Void doInBackground() {
-        for (;;) {
+        HashSet<Integer> taskIdSet = new HashSet<>();
+        while (taskIdSet.isEmpty()) {
             try {
-                Thread.sleep(100);
+                Thread.sleep(1000);
             } catch (InterruptedException ex) {
             }
 
             try {
-                boolean done = true;
-                for (int i : mSimulator.getSimulationDao().getTaskIdSet()) {
-                    TaskDao task = mSimulator.getSimulationDao().obtainTask(i);
-                    if (!task.isStarted()) {
-                        done = false;
-                        continue;
-                    }
-                    publish(task);
-                }
-                if (done)
-                    return null;
+                taskIdSet.addAll(mSimulator.getSimulationDao().getTaskIdSet());
             } catch (DaoException | IOException | SQLException ex) {
-                // let's wait and retry
             }
         }
+        mProgressMonitor.execute();
+        while (!taskIdSet.isEmpty()) {
+            HashSet<Integer> done = new HashSet<>();
+            for (int i : taskIdSet) {
+                try {
+                    TaskDao task = mSimulator.getSimulationDao().obtainTask(i);
+                    if (!task.isStarted())
+                        continue;
+                    publish(task);
+                    done.add(i);
+                } catch (DaoException | IOException | SQLException ex) {
+                    // let's wait and retry
+                }
+            }
+            taskIdSet.removeAll(done);
+
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException ex) {
+            }
+        }
+        return null;
     }
 
     @Override

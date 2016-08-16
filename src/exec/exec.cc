@@ -109,7 +109,7 @@ bool CollectTasks(sqlite3 *db, FutureTaskPool *pool)
 
 bool ReadInput(const cli::ExecOption &option)
 {
-	db::Driver driver("input.db");
+	db::Driver driver("exec.db");
 	sqlite3 *db = driver.db();
 	return sedml::Read(option.sedml_filename().c_str(), db) &&
 		phsp::Read(option.phsp_filename().c_str(), db);
@@ -118,6 +118,13 @@ bool ReadInput(const cli::ExecOption &option)
 bool CopyInput()
 {
 	boost::system::error_code ec;
+	boost::filesystem::rename("exec.db", "input.db", ec);
+	if (ec) {
+		std::cerr << "failed to rename exec.db to input.db: "
+				  << ec.message()
+				  << std::endl;
+		return false;
+	}
 	boost::filesystem::copy_file("input.db", "x.db", ec);
 	if (ec) {
 		std::cerr << "failed to copy input.db to x.db: "

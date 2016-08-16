@@ -186,10 +186,10 @@ public class Desktop implements IPhspConfiguration {
 
         SimulatorService service = new SimulatorService(mainFrame);
         final PhspSimulator simulator = new PhspSimulator(service, mainFrame, this);
-        ParametrizationMonitor pm = new ParametrizationMonitor(simulator, mProgressPane);
         final PhspProgressMonitor monitor = new PhspProgressMonitor(simulator.getSimulationDao(),
                                                                     mainFrame,
                                                                     mProgressPane);
+        ParametrizationMonitor pm = new ParametrizationMonitor(simulator, mProgressPane, monitor);
         simulator.addPropertyChangeListener(new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent e) {
@@ -240,7 +240,6 @@ public class Desktop implements IPhspConfiguration {
 
         simulator.execute();
         pm.execute();
-        monitor.execute();
         return simulator;
     }
 

@@ -73,15 +73,15 @@ public class PhspProgressMonitor extends SwingWorker<Void, Job> {
     }
 
     @Override
-    protected Void doInBackground() {
+    protected Void doInBackground() throws DaoException, IOException, SQLException {
         while (!mDone) {
             try {
-                Thread.sleep(100);
+                Thread.sleep(500);
             } catch (InterruptedException ex) {
             }
 
-            try {
-                for (int i : mSimulationDao.getTaskIdSet()) {
+            for (int i : mSimulationDao.getTaskIdSet()) {
+                try {
                     TaskDao task = mSimulationDao.obtainTask(i);
                     if (!task.isStarted())
                         continue;
@@ -90,9 +90,9 @@ public class PhspProgressMonitor extends SwingWorker<Void, Job> {
                         Job job = task.obtainJob(j);
                         publish(job);
                     }
+                } catch (DaoException | IOException | SQLException ex) {
+                    // go next
                 }
-            } catch (DaoException | IOException | SQLException ex) {
-                // give up
             }
         }
         return null;
