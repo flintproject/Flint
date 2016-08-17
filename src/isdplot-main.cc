@@ -165,6 +165,13 @@ int CallGnuplot(const char *gnuplot,
 				const char *csv_path,
 				const char *output_path)
 {
+	// prepare arguments of execv() before fork
+	std::unique_ptr<char[]> arg0(new char[std::strlen(gnuplot)+1]);
+	std::strcpy(arg0.get(), gnuplot);
+	char *args[2];
+	args[0] = arg0.get();
+	args[1] = nullptr;
+
 	int pipefd[2];
 	if (pipe(pipefd) == -1) {
 		cerr << "could not create pipe; " << strerror(errno);
@@ -182,15 +189,7 @@ int CallGnuplot(const char *gnuplot,
 		int r = dup2(pipefd[0], STDIN_FILENO); // replace starndard input
 		if (r == -1) _Exit(EXIT_FAILURE);
 		close(pipefd[0]);
-
-		char *arg0 = new char[strlen(gnuplot)+1];
-		strcpy(arg0, gnuplot);
-
-		char *args[2];
-		args[0] = arg0;
-		args[1] = nullptr;
 		execv(args[0], args); // should not return
-		cerr << "could not exec " << gnuplot << ": " << strerror(errno) << endl;
 		_Exit(EXIT_FAILURE);
 	}
 	// parent
