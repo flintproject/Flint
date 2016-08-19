@@ -41,7 +41,7 @@ int ListColumns(istream *is)
 
 class IndexedColumnPrinter {
 public:
-	IndexedColumnPrinter(std::uint32_t row) : row_(row), offset_(row * sizeof(double)) {}
+	explicit IndexedColumnPrinter(std::uint32_t row) : row_(row), offset_(row * sizeof(double)) {}
 
 	void GetDescription(std::uint32_t i, size_t bytes, const char *desc) {
 		if (i == row_) {

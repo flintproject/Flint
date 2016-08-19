@@ -42,7 +42,7 @@ namespace {
 class TimeUnitLoader : db::StatementDriver {
 public:
 	// Note that db is for read only.
-	TimeUnitLoader(sqlite3 *db)
+	explicit TimeUnitLoader(sqlite3 *db)
 		: db::StatementDriver(db, "SELECT * from time_unit")
 	{
 	}

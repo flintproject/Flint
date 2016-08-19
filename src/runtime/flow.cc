@@ -17,7 +17,7 @@ namespace {
 
 class Handler {
 public:
-	Handler(FlowInboundMap *inbound)
+	explicit Handler(FlowInboundMap *inbound)
 		: inbound_(inbound)
 	{}
 

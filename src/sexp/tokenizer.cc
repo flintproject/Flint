@@ -15,7 +15,7 @@ namespace tokenizer {
 
 class Impl {
 public:
-	Impl(const char *input);
+	explicit Impl(const char *input);
 
 	int Read(Token *token);
 

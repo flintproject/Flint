@@ -20,7 +20,7 @@ namespace parser {
 
 class Impl {
 public:
-	Impl(const char *input);
+	explicit Impl(const char *input);
 
 	~Impl();
 
