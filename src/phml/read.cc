@@ -312,6 +312,8 @@ private:
 	}
 
 	int ReadHeader() {
+		if (xmlTextReaderIsEmptyElement(text_reader_)) // ignore empty element
+			return xmlTextReaderRead(text_reader_);
 		int i = xmlTextReaderRead(text_reader_);
 		while (i > 0) {
 			int type = xmlTextReaderNodeType(text_reader_);
@@ -334,6 +336,8 @@ private:
 	}
 
 	int ReadNumericalConfiguration() {
+		if (xmlTextReaderIsEmptyElement(text_reader_)) // ignore empty element
+			return xmlTextReaderRead(text_reader_);
 		std::unique_ptr<NumericalConfiguration> nc(new NumericalConfiguration);
 		int i = xmlTextReaderRead(text_reader_);
 		while (i > 0) {
@@ -448,6 +452,8 @@ private:
 	}
 
 	int ReadAlgorithm(NumericalConfiguration *nc) {
+		if (xmlTextReaderIsEmptyElement(text_reader_)) // ignore empty element
+			return xmlTextReaderRead(text_reader_);
 		int i = xmlTextReaderRead(text_reader_);
 		while (i > 0) {
 			int type = xmlTextReaderNodeType(text_reader_);
@@ -569,6 +575,8 @@ private:
 	}
 
 	int ReadUnitSet() {
+		if (xmlTextReaderIsEmptyElement(text_reader_)) // ignore empty element
+			return xmlTextReaderRead(text_reader_);
 		int i = xmlTextReaderRead(text_reader_);
 		while (i > 0) {
 			int type = xmlTextReaderNodeType(text_reader_);
