@@ -1,3 +1,11 @@
+* Flint 1.6.1 (2016-08-31)
+
+** Bug fixes
+   - Fixed an error "failed to step statement: 5" when starting simulation
+     on Windows 10
+   - Fixed an error "failed to commit transaction: 5: database is locked"
+     happening occasionally when pushing button "Run" on Windows 7
+
 * Flint 1.6 (2016-07-29)
 
 ** New features
