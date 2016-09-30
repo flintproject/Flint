@@ -8,11 +8,11 @@ JARS := \
     jcommon-1.0.23 \
     jfreechart-1.0.19 \
     log4j-1.2.17 \
-    protobuf-java-3.0.0 \
+    protobuf-java-3.1.0 \
     sqlite-jdbc-3.8.11.2
 BIN_DLLS := \
     libODES-0 \
-    libprotobuf-10 \
+    libprotobuf-11 \
     libsbml \
     libsedml-0 \
     libxml2-2 \

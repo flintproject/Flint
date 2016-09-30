@@ -28,7 +28,7 @@ DYLIBS := \
     libsbml.$(LIBSBML_VERSION) \
     libsedml.0 \
     libxml2.2 \
-    libprotobuf.10 \
+    libprotobuf.11 \
     libzip.4
 SUNDIALS_DYLIBS := \
     arkode.1 \

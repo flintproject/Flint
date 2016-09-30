@@ -63,7 +63,7 @@
               <File Id='log4j.jar' Name='log4j-1.2.17.jar' DiskId='1' Source='lib/log4j-1.2.17.jar' />
             </Component>
             <Component Id='protobuf_java' Guid='e62bbfaa-1fae-11e1-a3c7-c705326b6d6c'>
-              <File Id='protobuf_java.jar' Name='protobuf-java-3.0.0.jar' DiskId='1' Source='lib/protobuf-java-3.0.0.jar' />
+              <File Id='protobuf_java.jar' Name='protobuf-java-3.1.0.jar' DiskId='1' Source='lib/protobuf-java-3.1.0.jar' />
             </Component>
             <Component Id='sqlite_jdbc' Guid='7a65beae-bef5-11e3-8a59-a7cc068a8766'>
               <File Id='sqlite_jdbc.jar' Name='sqlite-jdbc-3.8.11.2.jar' DiskId='1' Source='lib/sqlite-jdbc-3.8.11.2.jar' />
@@ -153,7 +153,7 @@
             <File Id='libsedml' Name='libsedml-0.dll' DiskId='1' Source='libsedml-0.dll' />
           </Component>
           <Component Id='protobuf' Guid='233d044c-ff5f-11e4-bcee-2f0a32a0ce0d'>
-            <File Id='libprotobuf' Name='libprotobuf-10.dll' DiskId='1' Source='libprotobuf-10.dll' />
+            <File Id='libprotobuf' Name='libprotobuf-11.dll' DiskId='1' Source='libprotobuf-11.dll' />
           </Component>
           <Component Id='sbml' Guid='e23853ca-ff5e-11e4-a61d-873a99f64190'>
             <File Id='libsbml' Name='libsbml.dll' DiskId='1' Source='libsbml.dll' />

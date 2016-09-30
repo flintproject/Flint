@@ -11,12 +11,12 @@ BuildRequires: gcc-c++
 BuildRequires: make
 BuildRequires: flint-boost
 BuildRequires: flint-clibsedml
-BuildRequires: flint-protobuf
+BuildRequires: flint-protobuf >= 3.1.0
 BuildRequires: flint-soslib
 BuildRequires: libxml2-devel >= 2.7
 Requires: flint-boost
 Requires: flint-clibsedml
-Requires: flint-protobuf
+Requires: flint-protobuf >= 3.1.0
 Requires: flint-soslib
 Requires: libxml2 >= 2.7
 Requires: make
@@ -50,7 +50,7 @@ rm -rf %{buildroot}
 make install DESTDIR=%{buildroot}
 mkdir -p %{buildroot}/opt/flint/share/java/lib
 install flint/dist/flint.jar %{buildroot}/opt/flint/share/java/
-install flint/lib/GarudaSDK-2.0.jar flint/lib/commons-cli-1.3.1.jar flint/lib/commons-io-2.5.jar flint/lib/commons-logging-1.2.jar flint/lib/dom4j-1.6.1.jar flint/lib/jackson-all-1.8.1.jar flint/lib/jcommon-1.0.23.jar flint/lib/jfreechart-1.0.19.jar flint/lib/log4j-1.2.17.jar flint/lib/protobuf-java-3.0.0.jar flint/lib/sqlite-jdbc-3.8.11.2.jar %{buildroot}/opt/flint/share/java/lib/
+install flint/lib/GarudaSDK-2.0.jar flint/lib/commons-cli-1.3.1.jar flint/lib/commons-io-2.5.jar flint/lib/commons-logging-1.2.jar flint/lib/dom4j-1.6.1.jar flint/lib/jackson-all-1.8.1.jar flint/lib/jcommon-1.0.23.jar flint/lib/jfreechart-1.0.19.jar flint/lib/log4j-1.2.17.jar flint/lib/protobuf-java-3.1.0.jar flint/lib/sqlite-jdbc-3.8.11.2.jar %{buildroot}/opt/flint/share/java/lib/
 echo '#!/bin/sh' > %{buildroot}/opt/flint/bin/flint
 echo 'export PATH=/opt/flint/bin:$PATH' >> %{buildroot}/opt/flint/bin/flint
 echo 'cd /opt/flint' >> %{buildroot}/opt/flint/bin/flint
@@ -113,7 +113,7 @@ rm -rf %{buildroot}
 /opt/flint/share/java/lib/jcommon-1.0.23.jar
 /opt/flint/share/java/lib/jfreechart-1.0.19.jar
 /opt/flint/share/java/lib/log4j-1.2.17.jar
-/opt/flint/share/java/lib/protobuf-java-3.0.0.jar
+/opt/flint/share/java/lib/protobuf-java-3.1.0.jar
 /opt/flint/share/java/lib/sqlite-jdbc-3.8.11.2.jar
 
 %changelog
