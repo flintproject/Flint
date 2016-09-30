@@ -3,7 +3,7 @@ Name: flint-sundials
 Version: sundials_VERSION
 Release: sundials_RELEASE%{?dist}
 License: BSD-3-clause
-URL: https://computation.llnl.gov/casc/sundials/main.html
+URL: http://computation.llnl.gov/projects/sundials
 Source0: %{name}-%{version}.tar.gz
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
 BuildRequires: cmake

@@ -32,11 +32,11 @@ DYLIBS := \
     libzip.4
 SUNDIALS_DYLIBS := \
     arkode.1 \
-    cvode.1 \
+    cvode.2 \
     cvodes.2 \
     ida.2 \
-    kinsol.1 \
-    nvecserial.0
+    kinsol.2 \
+    nvecserial.2
 FLINT_DYLIBS := \
     libflint.0 \
     libflintxx.0 \
