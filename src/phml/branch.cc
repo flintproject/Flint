@@ -15,8 +15,6 @@
 #include "db/statement-driver.h"
 #include "uuidgen.h"
 
-using std::cerr;
-using std::endl;
 using std::memcpy;
 using std::strcmp;
 using std::string;
@@ -92,10 +90,10 @@ public:
 			boost::uuids::uuid uu;
 			memcpy(&uu, uuid, uu.size());
 			if (!module_id) {
-				cerr << "template for instance "
+				std::cerr << "template for instance "
 					 << uu
 					 << " is unknown i.e. its template-id does not equal to any in the template-set"
-					 << endl;
+					 << std::endl;
 				return false;
 			}
 			boost::uuids::uuid mu;
@@ -107,7 +105,7 @@ public:
 			}
 		}
 		if (e != SQLITE_DONE) {
-			cerr << "failed to step statement: " << e << endl;
+			std::cerr << "failed to step statement: " << e << std::endl;
 			return false;
 		}
 		sqlite3_reset(stmt());
@@ -126,17 +124,17 @@ public:
 		int e;
 		e = sqlite3_bind_int(stmt(), 1, indent);
 		if (e != SQLITE_OK) {
-			cerr << "failed to bind indent: " << e << endl;
+			std::cerr << "failed to bind indent: " << e << std::endl;
 			return false;
 		}
 		e = sqlite3_bind_blob(stmt(), 2, &uuid, uuid.size(), SQLITE_STATIC);
 		if (e != SQLITE_OK) {
-			cerr << "failed to bind uuid: " << e << endl;
+			std::cerr << "failed to bind uuid: " << e << std::endl;
 			return false;
 		}
 		e = sqlite3_step(stmt());
 		if (e != SQLITE_DONE) {
-			cerr << "failed to step statement: " << e << endl;
+			std::cerr << "failed to step statement: " << e << std::endl;
 			return false;
 		}
 		sqlite3_reset(stmt());
@@ -155,12 +153,12 @@ public:
 		int e;
 		e = sqlite3_bind_blob(stmt(), 1, &node.uuid(), node.uuid().size(), SQLITE_STATIC);
 		if (e != SQLITE_OK) {
-			cerr << "failed to bind uuid: " << e << endl;
+			std::cerr << "failed to bind uuid: " << e << std::endl;
 			return false;
 		}
 		e = sqlite3_bind_blob(stmt(), 2, &node.module_id(), node.module_id().size(), SQLITE_STATIC);
 		if (e != SQLITE_OK) {
-			cerr << "failed to bind space_id: " << e << endl;
+			std::cerr << "failed to bind space_id: " << e << std::endl;
 			return false;
 		}
 		if (node.label().empty()) {
@@ -169,12 +167,12 @@ public:
 			e = sqlite3_bind_text(stmt(), 3, node.label().c_str(), -1, SQLITE_STATIC);
 		}
 		if (e != SQLITE_OK) {
-			cerr << "failed to bind label: " << e << endl;
+			std::cerr << "failed to bind label: " << e << std::endl;
 			return false;
 		}
 		e = sqlite3_step(stmt());
 		if (e != SQLITE_DONE) {
-			cerr << "failed to step statement: " << e << endl;
+			std::cerr << "failed to step statement: " << e << std::endl;
 			return false;
 		}
 		sqlite3_reset(stmt());
@@ -201,13 +199,13 @@ bool Branch(const boost::filesystem::path &path, sqlite3 *db)
 	int e = sqlite3_prepare_v2(db, "SELECT t.module_id, t.level, m.template_state FROM trees AS t LEFT JOIN modules AS m ON t.module_id = m.module_id",
 							   -1, &stmt, nullptr);
 	if (e != SQLITE_OK) {
-		cerr << "failed to prepare statement: "
+		std::cerr << "failed to prepare statement: "
 			 << e
 			 << ": "
 			 << __FILE__
 			 << ":"
 			 << __LINE__
-			 << endl;
+			 << std::endl;
 		return false;
 	}
 
@@ -264,15 +262,15 @@ bool Branch(const boost::filesystem::path &path, sqlite3 *db)
 		if (!jd->Save(0, uuid)) return false;
 	}
 	if (e != SQLITE_DONE) {
-		cerr << "failed to step statement: " << e << endl;
+		std::cerr << "failed to step statement: " << e << std::endl;
 		return false;
 	}
 	sqlite3_finalize(stmt);
 
 	if (!instance_map.empty()) {
-		cerr << "the following instances miss their templates:" << endl;
+		std::cerr << "the following instances miss their templates:" << std::endl;
 		for (auto it=instance_map.cbegin();it!=instance_map.cend();++it) {
-			cerr << it->first << " " << it->second.uuid() << endl;
+			std::cerr << it->first << " " << it->second.uuid() << std::endl;
 		}
 		return false;
 	}

@@ -14,8 +14,6 @@
 #include "db/query.h"
 #include "modelpath.h"
 
-using std::cerr;
-using std::endl;
 using std::printf;
 using std::putchar;
 using std::string;
@@ -70,7 +68,7 @@ bool PrintToOstream(const ASTNode_t *node, std::ostream *os)
 		*os << " %time";
 		break;
 	case AST_FUNCTION:
-		cerr << "not yet support user-defined functions" << endl;
+		std::cerr << "not yet support user-defined functions" << std::endl;
 		return false;
 	case AST_FUNCTION_ABS:
 		*os << " (abs";
@@ -173,7 +171,7 @@ bool PrintToOstream(const ASTNode_t *node, std::ostream *os)
 		os->put(')');
 		break;
 	case AST_FUNCTION_DELAY:
-		cerr << "not yet support DELAY" << endl;
+		std::cerr << "not yet support DELAY" << std::endl;
 		return false;
 	case AST_FUNCTION_EXP:
 		*os << " (exp";
@@ -297,7 +295,7 @@ bool PrintToOstream(const ASTNode_t *node, std::ostream *os)
 		break;
 	default:
 		if (ASTNode_isBoolean(node)) {
-			cerr << "not yet support Boolean" << endl;
+			std::cerr << "not yet support Boolean" << std::endl;
 			return false;
 		} else if (ASTNode_isConstant(node)) { // true, false, pi, exponentiale
 			switch (ASTNode_getType(node)) {
@@ -314,25 +312,25 @@ bool PrintToOstream(const ASTNode_t *node, std::ostream *os)
 				*os << " true";
 				break;
 			default:
-				cerr << "unknown Constant: " << ASTNode_getType(node) << endl;
+				std::cerr << "unknown Constant: " << ASTNode_getType(node) << std::endl;
 				return false;
 			}
 		} else if (ASTNode_isInfinity(node)) {
-			cerr << "not yet support Infinity" << endl;
+			std::cerr << "not yet support Infinity" << std::endl;
 			return false;
 		} else if (ASTNode_isLambda(node)) {
-			cerr << "not yet support Lambda" << endl;
+			std::cerr << "not yet support Lambda" << std::endl;
 			return false;
 		} else if (ASTNode_isNaN(node)) {
-			cerr << "not yet support NaN" << endl;
+			std::cerr << "not yet support NaN" << std::endl;
 			return false;
 		} else if (ASTNode_isNegInfinity(node)) {
-			cerr << "not yet support NegInfinity" << endl;
+			std::cerr << "not yet support NegInfinity" << std::endl;
 			return false;
 		} else if (ASTNode_isPiecewise(node)) {
 			assert(false); // this shoud not happen
 		} else {
-			cerr << "unknown node" << endl;
+			std::cerr << "unknown node" << std::endl;
 			return false;
 		}
 	}
@@ -352,7 +350,7 @@ bool PrintPiecesToOstream(const ASTNode_t *node, std::ostream *os)
 {
 	int num = ASTNode_getNumChildren(node);
 	if (num <= 0) {
-		cerr << "neither <piece> nor <otherwise> in <piecewise>" << endl;
+		std::cerr << "neither <piece> nor <otherwise> in <piecewise>" << std::endl;
 		return false;
 	}
 	int i = 0;
@@ -398,19 +396,19 @@ public:
 		e = sqlite3_prepare_v2(db_, "INSERT INTO assignments VALUES (?, ?)",
 							   -1, &stmt_a_, nullptr);
 		if (e != SQLITE_OK) {
-			cerr << "failed to prepare statement: " << e << endl;
+			std::cerr << "failed to prepare statement: " << e << std::endl;
 			return false;
 		}
 		e = sqlite3_prepare_v2(db_, "INSERT INTO constants VALUES (?, ?)",
 							   -1, &stmt_c_, nullptr);
 		if (e != SQLITE_OK) {
-			cerr << "failed to prepare statement: " << e << endl;
+			std::cerr << "failed to prepare statement: " << e << std::endl;
 			return false;
 		}
 		e = sqlite3_prepare_v2(db_, "INSERT INTO odes VALUES (?, ?, ?)",
 							   -1, &stmt_o_, nullptr);
 		if (e != SQLITE_OK) {
-			cerr << "failed to prepare statement: " << e << endl;
+			std::cerr << "failed to prepare statement: " << e << std::endl;
 			return false;
 		}
 
@@ -475,17 +473,17 @@ private:
 		int e;
 		e = sqlite3_bind_text(stmt_a_, 1, name, -1, SQLITE_STATIC);
 		if (e != SQLITE_OK) {
-			cerr << "failed to bind name: " << e << endl;
+			std::cerr << "failed to bind name: " << e << std::endl;
 			return false;
 		}
 		e = sqlite3_bind_text(stmt_a_, 2, math, -1, SQLITE_STATIC);
 		if (e != SQLITE_OK) {
-			cerr << "failed to bind math: " << e << endl;
+			std::cerr << "failed to bind math: " << e << std::endl;
 			return false;
 		}
 		e = sqlite3_step(stmt_a_);
 		if (e != SQLITE_DONE) {
-			cerr << "failed to step statement: " << e << endl;
+			std::cerr << "failed to step statement: " << e << std::endl;
 			return false;
 		}
 		sqlite3_reset(stmt_a_);
@@ -497,17 +495,17 @@ private:
 		int e;
 		e = sqlite3_bind_text(stmt_c_, 1, name, -1, SQLITE_STATIC);
 		if (e != SQLITE_OK) {
-			cerr << "failed to bind name: " << e << endl;
+			std::cerr << "failed to bind name: " << e << std::endl;
 			return false;
 		}
 		e = sqlite3_bind_double(stmt_c_, 2, value);
 		if (e != SQLITE_OK) {
-			cerr << "failed to bind value: " << e << endl;
+			std::cerr << "failed to bind value: " << e << std::endl;
 			return false;
 		}
 		e = sqlite3_step(stmt_c_);
 		if (e != SQLITE_DONE) {
-			cerr << "failed to step statement: " << e << endl;
+			std::cerr << "failed to step statement: " << e << std::endl;
 			return false;
 		}
 		sqlite3_reset(stmt_c_);
@@ -519,22 +517,22 @@ private:
 		int e;
 		e = sqlite3_bind_text(stmt_o_, 1, name, -1, SQLITE_STATIC);
 		if (e != SQLITE_OK) {
-			cerr << "failed to bind name: " << e << endl;
+			std::cerr << "failed to bind name: " << e << std::endl;
 			return false;
 		}
 		e = sqlite3_bind_double(stmt_o_, 2, initial_value);
 		if (e != SQLITE_OK) {
-			cerr << "failed to bind initial_value: " << e << endl;
+			std::cerr << "failed to bind initial_value: " << e << std::endl;
 			return false;
 		}
 		e = sqlite3_bind_text(stmt_o_, 3, math, -1, SQLITE_STATIC);
 		if (e != SQLITE_OK) {
-			cerr << "failed to bind math: " << e << endl;
+			std::cerr << "failed to bind math: " << e << std::endl;
 			return false;
 		}
 		e = sqlite3_step(stmt_o_);
 		if (e != SQLITE_DONE) {
-			cerr << "failed to step statement: " << e << endl;
+			std::cerr << "failed to step statement: " << e << std::endl;
 			return false;
 		}
 		sqlite3_reset(stmt_o_);
@@ -557,7 +555,7 @@ bool Parse(sqlite3 *db)
 	std::unique_ptr<char[]> model_file(GetModelFilename(db));
 	odeModel_t *model = ODEModel_createFromFile(model_file.get());
 	if (!model) {
-		cerr << "could not create ODE system from an SBML model: " << model_file.get() << endl;
+		std::cerr << "could not create ODE system from an SBML model: " << model_file.get() << std::endl;
 		SolverError_dumpAndClearErrors();
 		return false;
 	}

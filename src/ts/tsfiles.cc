@@ -6,9 +6,6 @@
 
 #include "utf8path.h"
 
-using std::cerr;
-using std::endl;
-
 namespace flint {
 namespace ts {
 
@@ -32,8 +29,8 @@ bool LoadTimeseriesVector(sqlite3 *db, TimeseriesVector *tv)
 	int e;
 	e = sqlite3_exec(db, "SELECT * FROM tsfiles", &Process, tv, &em);
 	if (e != SQLITE_OK) {
-		cerr << "failed to select tsfiles: " << e
-			 << ": " << em << endl;
+		std::cerr << "failed to select tsfiles: " << e
+			 << ": " << em << std::endl;
 		sqlite3_free(em);
 		return false;
 	}

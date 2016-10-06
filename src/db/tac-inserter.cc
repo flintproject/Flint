@@ -7,9 +7,6 @@
 
 #include <boost/uuid/nil_generator.hpp>
 
-using std::cerr;
-using std::endl;
-
 namespace flint {
 namespace db {
 
@@ -23,32 +20,32 @@ bool TacInserter::Insert(const boost::uuids::uuid &uuid, const char *name,
 	int e;
 	e = sqlite3_bind_blob(stmt(), 1, &uuid, uuid.size(), SQLITE_STATIC);
 	if (e != SQLITE_OK) {
-		cerr << "failed to bind uuid: " << e << endl;
+		std::cerr << "failed to bind uuid: " << e << std::endl;
 		return false;
 	}
 	e = sqlite3_bind_text(stmt(), 2, name, -1, SQLITE_STATIC);
 	if (e != SQLITE_OK) {
-		cerr << "failed to bind name: " << e << endl;
+		std::cerr << "failed to bind name: " << e << std::endl;
 		return false;
 	}
 	e = sqlite3_bind_int(stmt(), 3, noir);
 	if (e != SQLITE_OK) {
-		cerr << "failed to bind noir: " << e << endl;
+		std::cerr << "failed to bind noir: " << e << std::endl;
 		return false;
 	}
 	e = sqlite3_bind_int(stmt(), 4, nod);
 	if (e != SQLITE_OK) {
-		cerr << "failed to bind nod: " << e << endl;
+		std::cerr << "failed to bind nod: " << e << std::endl;
 		return false;
 	}
 	e = sqlite3_bind_text(stmt(), 5, body, -1, SQLITE_STATIC);
 	if (e != SQLITE_OK) {
-		cerr << "failed to bind body: " << e << endl;
+		std::cerr << "failed to bind body: " << e << std::endl;
 		return false;
 	}
 	e = sqlite3_step(stmt());
 	if (e != SQLITE_DONE) {
-		cerr << "failed to step: " << e << endl;
+		std::cerr << "failed to step: " << e << std::endl;
 		return false;
 	}
 	sqlite3_reset(stmt());

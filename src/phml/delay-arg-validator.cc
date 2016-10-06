@@ -17,9 +17,6 @@
 #include "flint/sexp.h"
 #include "flint/sexp/parser.h"
 
-using std::cerr;
-using std::endl;
-
 namespace flint {
 namespace phml {
 
@@ -80,13 +77,13 @@ private:
 		int e;
 		e = sqlite3_bind_int64(driver_.stmt(), 1, rowid_);
 		if (e != SQLITE_OK) {
-			cerr << "failed to bind module_rowid: " << e << endl;
+			std::cerr << "failed to bind module_rowid: " << e << std::endl;
 			return false;
 		}
 		const char *name = id.c_str()+1; // skip the leading '%'
 		e = sqlite3_bind_text(driver_.stmt(), 2, name, -1, SQLITE_STATIC);
 		if (e != SQLITE_OK) {
-			cerr << "failed to bind name: " << e << endl;
+			std::cerr << "failed to bind name: " << e << std::endl;
 			return false;
 		}
 		e = sqlite3_step(driver_.stmt());
@@ -95,24 +92,24 @@ private:
 			{
 				const unsigned char *max_delay = sqlite3_column_text(driver_.stmt(), 0);
 				if (!max_delay) {
-					cerr << name
+					std::cerr << name
 						 << " is given as 1st argument of Delay()/DeltaTime(), but it lacks <max-delay>"
-						 << endl
+						 << std::endl
 						 << " in " << uuid_
-						 << endl;
+						 << std::endl;
 					return false;
 				}
 			}
 			sqlite3_reset(driver_.stmt());
 			return true;
 		case SQLITE_DONE:
-			cerr << "Delay()/DeltaTime()'s 1st argument must be a PQ name in the same module, but got: "
-				 << name << endl
+			std::cerr << "Delay()/DeltaTime()'s 1st argument must be a PQ name in the same module, but got: "
+				 << name << std::endl
 				 << " in " << uuid_
-				 << endl;
+				 << std::endl;
 			return false;
 		default:
-			cerr << "failed to step statement: " << e << endl;
+			std::cerr << "failed to step statement: " << e << std::endl;
 			return false;
 		}
 	}
@@ -164,8 +161,8 @@ bool IsValid(const char *query, Parser *parser, sqlite3 *db)
 	case SQLITE_ABORT: // the callback returns non-zero
 		return false;
 	default:
-		cerr << "failed to exec: " << e
-			 << ": " << em << endl;
+		std::cerr << "failed to exec: " << e
+			 << ": " << em << std::endl;
 		sqlite3_free(em);
 		return false;
 	}

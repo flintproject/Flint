@@ -9,9 +9,6 @@
 
 #include <boost/uuid/uuid_io.hpp>
 
-using std::cerr;
-using std::endl;
-
 namespace flint {
 namespace phml {
 
@@ -60,7 +57,7 @@ bool VariableDefinitionValidator::Validate()
 		int pq_id = sqlite3_column_int(stmt, 3);
 		const unsigned char *pq_name = sqlite3_column_text(stmt, 4);
 		assert(pq_name);
-		cerr << "physical-quantity \""
+		std::cerr << "physical-quantity \""
 			 << pq_name
 			 << "\" ("
 			 << pq_id
@@ -71,9 +68,9 @@ bool VariableDefinitionValidator::Validate()
 			 << ") is of type "
 			 << GetTypeName(pq_type)
 			 << ", but defined with <diff>"
-			 << endl;
+			 << std::endl;
 	} else {
-		cerr << "failed to step statement: " << e << endl;
+		std::cerr << "failed to step statement: " << e << std::endl;
 	}
 	return false;
 }

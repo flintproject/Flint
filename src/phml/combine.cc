@@ -20,8 +20,6 @@
 #include "db/variable-loader.h"
 #include "variable.h"
 
-using std::cerr;
-using std::endl;
 using std::map;
 using std::string;
 using std::strcmp;
@@ -237,19 +235,19 @@ public:
 		if (strcmp(direction, "get") == 0) {
 			PhysicalQuantityMap::const_iterator it = pqm_->find(pq_id);
 			if (it == pqm_->end()) {
-				cerr << "failed to find physical-quantity: " << pq_id << endl;
+				std::cerr << "failed to find physical-quantity: " << pq_id << std::endl;
 				return false;
 			}
 			writer_->function_writer().WriteGet(it->second, connector);
 		} else if (strcmp(direction, "set") == 0) {
 			PhysicalQuantityMap::const_iterator it = pqm_->find(pq_id);
 			if (it == pqm_->end()) {
-				cerr << "failed to find physical-quantity: " << pq_id << endl;
+				std::cerr << "failed to find physical-quantity: " << pq_id << std::endl;
 				return false;
 			}
 			writer_->bm().emplace("sbml:" + string(connector), it->second);
 		} else {
-			cerr << "invalid bridge: " << uuid << ":" << pq_id << endl;
+			std::cerr << "invalid bridge: " << uuid << ":" << pq_id << std::endl;
 			return false;
 		}
 		return true;
@@ -298,21 +296,21 @@ public:
 		e = sqlite3_exec(db(), "SELECT * FROM assignments", ProcessAssignment, writer, &em);
 		if (e != SQLITE_OK) {
 			if (e != SQLITE_ABORT)
-				cerr << "failed to select assignments: " << e << ": " << em << endl;
+				std::cerr << "failed to select assignments: " << e << ": " << em << std::endl;
 			sqlite3_free(em);
 			return false;
 		}
 		e = sqlite3_exec(db(), "SELECT * FROM constants", ProcessConstant, writer, &em);
 		if (e != SQLITE_OK) {
 			if (e != SQLITE_ABORT)
-				cerr << "failed to select constants: " << e << ": " << em << endl;
+				std::cerr << "failed to select constants: " << e << ": " << em << std::endl;
 			sqlite3_free(em);
 			return false;
 		}
 		e = sqlite3_exec(db(), "SELECT * FROM odes", ProcessOde, writer, &em);
 		if (e != SQLITE_OK) {
 			if (e != SQLITE_ABORT)
-				cerr << "failed to select odes: " << e << ": " << em << endl;
+				std::cerr << "failed to select odes: " << e << ": " << em << std::endl;
 			sqlite3_free(em);
 			return false;
 		}

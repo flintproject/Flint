@@ -20,8 +20,6 @@
 #include "db/statement-driver.h"
 #include "db/variable-inserter.h"
 
-using std::cerr;
-using std::endl;
 using std::string;
 using std::strtod;
 
@@ -118,21 +116,21 @@ public:
 		e = sqlite3_exec(db_, "SELECT * FROM odes", HandleOde, ov, &em);
 		if (e != SQLITE_OK) {
 			if (e != SQLITE_ABORT)
-				cerr << "failed to select odes: " << e << ": " << em << endl;
+				std::cerr << "failed to select odes: " << e << ": " << em << std::endl;
 			sqlite3_free(em);
 			return false;
 		}
 		e = sqlite3_exec(db_, "SELECT * FROM assignments", HandleAssignment, av, &em);
 		if (e != SQLITE_OK) {
 			if (e != SQLITE_ABORT)
-				cerr << "failed to select assignments: " << e << ": " << em << endl;
+				std::cerr << "failed to select assignments: " << e << ": " << em << std::endl;
 			sqlite3_free(em);
 			return false;
 		}
 		e = sqlite3_exec(db_, "SELECT * FROM constants", HandleConstant, cv, &em);
 		if (e != SQLITE_OK) {
 			if (e != SQLITE_ABORT)
-				cerr << "failed to select constants: " << e << ": " << em << endl;
+				std::cerr << "failed to select constants: " << e << ": " << em << std::endl;
 			sqlite3_free(em);
 			return false;
 		}
@@ -202,12 +200,12 @@ public:
 		int e;
 		e = sqlite3_bind_text(stmt(), 1, math.c_str(), -1, SQLITE_STATIC);
 		if (e != SQLITE_OK) {
-			cerr << "failed to bind math: " << e << endl;
+			std::cerr << "failed to bind math: " << e << std::endl;
 			return false;
 		}
 		e = sqlite3_step(stmt());
 		if (e != SQLITE_DONE) {
-			cerr << "failed to step: " << e << endl;
+			std::cerr << "failed to step: " << e << std::endl;
 			return false;
 		}
 		sqlite3_reset(stmt());
@@ -228,12 +226,12 @@ public:
 		int e;
 		e = sqlite3_bind_text(stmt(), 1, math.c_str(), -1, SQLITE_STATIC);
 		if (e != SQLITE_OK) {
-			cerr << "failed to bind math: " << e << endl;
+			std::cerr << "failed to bind math: " << e << std::endl;
 			return false;
 		}
 		e = sqlite3_step(stmt());
 		if (e != SQLITE_DONE) {
-			cerr << "failed to step: " << e << endl;
+			std::cerr << "failed to step: " << e << std::endl;
 			return false;
 		}
 		sqlite3_reset(stmt());
@@ -258,12 +256,12 @@ public:
 		int e;
 		e = sqlite3_bind_text(stmt(), 1, math.c_str(), -1, SQLITE_STATIC);
 		if (e != SQLITE_OK) {
-			cerr << "failed to bind math: " << e << endl;
+			std::cerr << "failed to bind math: " << e << std::endl;
 			return false;
 		}
 		e = sqlite3_step(stmt());
 		if (e != SQLITE_DONE) {
-			cerr << "failed to step: " << e << endl;
+			std::cerr << "failed to step: " << e << std::endl;
 			return false;
 		}
 		sqlite3_reset(stmt());

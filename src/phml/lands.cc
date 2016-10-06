@@ -20,9 +20,6 @@
 #include "phml.pb.h"
 #include "bc/pack.h"
 
-using std::cerr;
-using std::endl;
-
 namespace flint {
 namespace phml {
 
@@ -42,13 +39,13 @@ public:
 	template<typename THandler>
 	bool Load(THandler *handler) {
 		if (!ifs_.is_open()) {
-			cerr << "failed to open unitoftime file" << endl;
+			std::cerr << "failed to open unitoftime file" << std::endl;
 			return false;
 		}
 		while (ifs_.peek() != EOF) {
 			std::unique_ptr<ipc::TimeUnit> tu(new ipc::TimeUnit);
 			if (!UnpackFromIstream(*tu, &ifs_)) {
-				cerr << "failed to read TimeUnit" << endl;
+				std::cerr << "failed to read TimeUnit" << std::endl;
 				return false;
 			}
 			handler->AddTimeUnit(std::move(tu));
@@ -91,7 +88,7 @@ public:
 
 	bool Load(::phml::NumericalConfiguration *nc) {
 		if (!ifs_.is_open()) {
-			cerr << "failed to open nc file" << endl;
+			std::cerr << "failed to open nc file" << std::endl;
 			return false;
 		}
 		return nc->ParseFromIstream(&ifs_);
@@ -111,17 +108,17 @@ public:
 		int e;
 		e = sqlite3_bind_double(stmt(), 1, length);
 		if (e != SQLITE_OK) {
-			cerr << "failed to bind length: " << e << endl;
+			std::cerr << "failed to bind length: " << e << std::endl;
 			return false;
 		}
 		e = sqlite3_bind_text(stmt(), 2, step, -1, SQLITE_STATIC);
 		if (e != SQLITE_OK) {
-			cerr << "failed to bind step: " << e << endl;
+			std::cerr << "failed to bind step: " << e << std::endl;
 			return false;
 		}
 		e = sqlite3_step(stmt());
 		if (e != SQLITE_DONE) {
-			cerr << "failed to step statement: " << e << endl;
+			std::cerr << "failed to step statement: " << e << std::endl;
 			return false;
 		}
 		sqlite3_reset(stmt());
@@ -153,7 +150,7 @@ bool LengthAndStep(sqlite3 *db, const char *nc_file, const char *uot_file)
 			int sts_unit_id = nc.sts().unit_id();
 			it = tum.find(sts_unit_id);
 			if (it == tum.end()) {
-				cerr << "unknown unit-id of simulation-time-span: " << sts_unit_id << endl;
+				std::cerr << "unknown unit-id of simulation-time-span: " << sts_unit_id << std::endl;
 				return false;
 			}
 			const std::unique_ptr<ipc::TimeUnit> &sts_unit = it->second;
@@ -162,7 +159,7 @@ bool LengthAndStep(sqlite3 *db, const char *nc_file, const char *uot_file)
 			int td_unit_id = nc.td().unit_id();
 			it = tum.find(td_unit_id);
 			if (it == tum.end()) {
-				cerr << "unknown unit-id of time-discretization: " << td_unit_id << endl;
+				std::cerr << "unknown unit-id of time-discretization: " << td_unit_id << std::endl;
 				return false;
 			}
 			const std::unique_ptr<ipc::TimeUnit> &td_unit = it->second;
@@ -172,7 +169,7 @@ bool LengthAndStep(sqlite3 *db, const char *nc_file, const char *uot_file)
 
 			double len;
 			if (std::sscanf(nc.sts().value().c_str(), "%lf", &len) != 1) {
-				cerr << "invalid value of simulation-time-span: " << nc.sts().value() << endl;
+				std::cerr << "invalid value of simulation-time-span: " << nc.sts().value() << std::endl;
 				return false;
 			}
 			len *= boost::rational_cast<double>(r_sts);

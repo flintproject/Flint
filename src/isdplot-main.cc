@@ -29,8 +29,6 @@
 
 namespace po = boost::program_options;
 
-using std::cerr;
-using std::endl;
 using std::ifstream;
 using std::istream;
 using std::ios;
@@ -57,12 +55,12 @@ bool CountColumns(const char *input, std::uint32_t *num_columns)
 {
 	ifstream ifs(input, ios::in|ios::binary);
 	if (!ifs.is_open()) {
-		cerr << "could not open input file: " << input << endl;
+		std::cerr << "could not open input file: " << input << std::endl;
 		return false;
 	}
 	std::unique_ptr<char[]> header(new char[sizeof(isdf::ISDFHeader)]);
 	if (!ReadHeader(&ifs, header.get())) {
-		cerr << "could not read header: " << input << endl;
+		std::cerr << "could not read header: " << input << std::endl;
 		ifs.close();
 		return false;
 	}
@@ -137,23 +135,23 @@ void CreateScript(std::uint32_t num_columns,
 		col = 1;
 	}
 
-	*bss << "set datafile separator \",\"" << endl
-		 << "set format y '%g'" << endl
-		 << "set key autotitle columnhead" << endl
-		 << "set terminal png size " << w << "," << h << endl;
+	*bss << "set datafile separator \",\"" << std::endl
+		 << "set format y '%g'" << std::endl
+		 << "set key autotitle columnhead" << std::endl
+		 << "set terminal png size " << w << "," << h << std::endl;
 
 	*bss << "set output ";
 	PutQuotedPath(output_path, bss);
-	*bss << endl;
+	*bss << std::endl;
 
-	*bss << "set multiplot layout " << row << "," << col << " rowsfirst downwards" << endl;
+	*bss << "set multiplot layout " << row << "," << col << " rowsfirst downwards" << std::endl;
 	unsigned int n = row*col+1;
 	for (unsigned int i=2;i<=n;i++) {
 		*bss << "plot ";
 		PutQuotedPath(csv_path, bss);
-		*bss << " using 1:" << i << " axes x1y1 with lines" << endl;
+		*bss << " using 1:" << i << " axes x1y1 with lines" << std::endl;
 	}
-	*bss << "unset multiplot" << endl;
+	*bss << "unset multiplot" << std::endl;
 }
 
 #ifdef HAVE_FORK
@@ -174,14 +172,14 @@ int CallGnuplot(const char *gnuplot,
 
 	int pipefd[2];
 	if (pipe(pipefd) == -1) {
-		cerr << "could not create pipe; " << strerror(errno);
+		std::cerr << "could not create pipe; " << strerror(errno);
 		return EXIT_FAILURE;
 	}
 	pid_t pid = fork();
 	if (pid == -1) { // fork failed
 		close(pipefd[1]);
 		close(pipefd[0]);
-		cerr << "could not fork; " << strerror(errno);
+		std::cerr << "could not fork; " << strerror(errno);
 		return EXIT_FAILURE;
 	}
 	if (pid == 0) { // child
@@ -199,7 +197,7 @@ int CallGnuplot(const char *gnuplot,
 	CreateScript(num_columns, csv_path, output_path, &bss);
 	const string &buf(bss.str());
 	if (write(fd, buf.c_str(), buf.size()) < 0) {
-		cerr << "could not write into pipe; " << strerror(errno);
+		std::cerr << "could not write into pipe; " << strerror(errno);
 		close(fd);
 		waitpid(pid, nullptr, 0);
 		return EXIT_FAILURE;
@@ -228,11 +226,11 @@ int CallGnuplot(const char *gnuplot,
 
 	HANDLE hChildInRead, hChildInWrite;
 	if (!CreatePipe(&hChildInRead, &hChildInWrite, &saAttr, 0)) {
-		cerr << "could not create pipe" << endl;
+		std::cerr << "could not create pipe" << std::endl;
 		return EXIT_FAILURE;
 	}
 	if (!SetHandleInformation(hChildInWrite, HANDLE_FLAG_INHERIT, 0)) {
-		cerr << "could not set handle information" << endl;
+		std::cerr << "could not set handle information" << std::endl;
 		CloseHandle(hChildInWrite);
 		CloseHandle(hChildInRead);
 		return EXIT_FAILURE;
@@ -257,7 +255,7 @@ int CallGnuplot(const char *gnuplot,
 						   &siStartInfo,
 						   &piProcInfo);
 	if (!b) {
-		cerr << "could not create process: " << GetLastError() << endl;
+		std::cerr << "could not create process: " << GetLastError() << std::endl;
 		// should follow GetLastError()
 		CloseHandle(hChildInWrite);
 		CloseHandle(hChildInRead);
@@ -333,8 +331,8 @@ int main(int argc, char *argv[])
 		print_help = 2;
 	}
 	if (print_help != 0) {
-		cerr << "usage: isdplot [OPTIONS] PATH" << endl;
-		cerr << opts << endl;
+		std::cerr << "usage: isdplot [OPTIONS] PATH" << std::endl;
+		std::cerr << opts << std::endl;
 		return (print_help == 1) ? EXIT_SUCCESS : EXIT_FAILURE;
 	}
 
@@ -346,12 +344,12 @@ int main(int argc, char *argv[])
 	if (vm.count("isdstrip")) {
 		stripped_path = temp_path->Touch();
 		if (!stripped_path) {
-			cerr << "could not create temporary path" << endl;
+			std::cerr << "could not create temporary path" << std::endl;
 			return EXIT_FAILURE;
 		}
 		int r = CallIsdstrip(isdstrip, input_path, stripped_path);
 		if (r != EXIT_SUCCESS) {
-			cerr << "isdstrip exit abnormally: " << r << endl;
+			std::cerr << "isdstrip exit abnormally: " << r << std::endl;
 			remove(stripped_path);
 			free(stripped_path);
 			return r;
@@ -365,12 +363,12 @@ int main(int argc, char *argv[])
 	}
 	csv_path = temp_path->Touch();
 	if (!csv_path) {
-		cerr << "could not create temporary path" << endl;
+		std::cerr << "could not create temporary path" << std::endl;
 		return EXIT_FAILURE;
 	}
 	int r = CallIsd2csv(isd2csv, input_path, csv_path);
 	if (r != EXIT_SUCCESS) {
-		cerr << "isd2csv exit abnormally: " << r << endl;
+		std::cerr << "isd2csv exit abnormally: " << r << std::endl;
 		return r;
 	}
 	r = CallGnuplot(gnuplot.c_str(), num_columns, csv_path, output_file.c_str());

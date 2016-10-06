@@ -19,9 +19,6 @@
 #include "cas/dimension.h"
 #include "cas/helper.h"
 
-using std::cerr;
-using std::endl;
-
 using namespace boost::spirit;
 
 namespace flint {
@@ -65,18 +62,18 @@ bool IsBoundVariable(const Expr &expr)
 					if (s0 == "%time")
 						return true;
 				}
-				cerr << "unsupported bound variable of <diff>" << endl;
+				std::cerr << "unsupported bound variable of <diff>" << std::endl;
 				return false;
 			}
 		}
 	}
-	cerr << "unsupported form of <diff>'s 1st argument" << endl;
+	std::cerr << "unsupported form of <diff>'s 1st argument" << std::endl;
 	return false;
 }
 
 void ReportInvalidLeafOfCaseSet(const boost::uuids::uuid &uuid)
 {
-	cerr << "invalid formula found in <case-set>: " << uuid << endl;
+	std::cerr << "invalid formula found in <case-set>: " << uuid << std::endl;
 }
 
 bool TransformConditional(const Compound &c, Expr &lhs, Compound &rhs)
@@ -288,7 +285,7 @@ public:
 		Compound statement;
 		bool r = lex::tokenize_and_parse(it, eit, tokens_, grammar_, statement);
 		if (!r || it != eit) {
-			cerr << "failed to parse equation: " << it << endl;
+			std::cerr << "failed to parse equation: " << it << std::endl;
 			return 1;
 		}
 		return ProcessUuidAndStatement(uuid, statement);
@@ -319,11 +316,11 @@ private:
 		if (!da_.Analyse(uuid, &rhs, &rhs_col, &rhs_row))
 			return 1;
 		if (lhs_col != rhs_col) {
-			cerr << "col mismatch between RHS and LHS" << endl;
+			std::cerr << "col mismatch between RHS and LHS" << std::endl;
 			return 1;
 		}
 		if (lhs_row != rhs_row) {
-			cerr << "row mismatch between RHS and LHS" << endl;
+			std::cerr << "row mismatch between RHS and LHS" << std::endl;
 			return 1;
 		}
 		if (lhs.which() == kExprIsCompound) {
@@ -332,7 +329,7 @@ private:
 		} else if (lhs.which() == kExprIsIdentifier) {
 			output_->Add(uuid, Def(boost::get<Identifier>(lhs).name, lhs_col, lhs_row, rhs));
 		} else {
-			cerr << "unsupported form of equation" << endl; // TODO
+			std::cerr << "unsupported form of equation" << std::endl; // TODO
 			return 1;
 		}
 		return 0;
@@ -360,7 +357,7 @@ private:
 										  col, row, rhs, c.children[0]);
 			}
 		}
-		cerr << "unsupported form of equation's LHS" << endl; // TODO
+		std::cerr << "unsupported form of equation's LHS" << std::endl; // TODO
 		return false;
 	}
 
@@ -397,8 +394,8 @@ bool AnnotateEquations(sqlite3 *db, const char *input, System *output)
 	int e = sqlite3_exec(db, query.c_str(), Process, parser.get(), &em);
 	if (e != SQLITE_OK) {
 		if (e != SQLITE_ABORT)
-			cerr << "failed to select " << input
-				 << ": " << e << ": " << em << endl;
+			std::cerr << "failed to select " << input
+				 << ": " << e << ": " << em << std::endl;
 		sqlite3_free(em);
 		return false;
 	}

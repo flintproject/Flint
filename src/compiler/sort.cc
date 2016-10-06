@@ -22,8 +22,6 @@
 #include "flint/sexp.h"
 #include "flint/sexp/parser.h"
 
-using std::cerr;
-using std::endl;
 using std::memcpy;
 using std::string;
 
@@ -125,9 +123,9 @@ public:
 		for (size_t i=0;i<n;i++) {
 			auto p = nm.emplace(lines_[i]->name(), i);
 			if (!p.second) {
-				cerr << "more than one entries for " << p.first->first
+				std::cerr << "more than one entries for " << p.first->first
 					 << " in " << uuid
-					 << endl;
+					 << std::endl;
 				return false;
 			}
 			levels[i] = -1;
@@ -158,16 +156,16 @@ public:
 				}
 			}
 			if (!found) {
-				cerr << "failed to calculate level in "
+				std::cerr << "failed to calculate level in "
 					 << uuid
 					 << ':'
-					 << endl;
+					 << std::endl;
 				for (size_t i=0;i<n;i++) {
 					if (levels[i] < 0)
-						cerr << ' ' << lines_[i]->name()
+						std::cerr << ' ' << lines_[i]->name()
 							 << ": "
 							 << lines_[i]->GetMath()
-							 << endl;
+							 << std::endl;
 				}
 				return false;
 			}
@@ -234,22 +232,22 @@ public:
 		int e;
 		e = sqlite3_bind_blob(stmt(), 1, &uuid, uuid.size(), SQLITE_STATIC);
 		if (e != SQLITE_OK) {
-			cerr << "failed to bind uuid: " << e << endl;
+			std::cerr << "failed to bind uuid: " << e << std::endl;
 			return false;
 		}
 		e = sqlite3_bind_text(stmt(), 2, name, -1, SQLITE_STATIC);
 		if (e != SQLITE_OK) {
-			cerr << "failed to bind name: " << e << endl;
+			std::cerr << "failed to bind name: " << e << std::endl;
 			return false;
 		}
 		e = sqlite3_bind_text(stmt(), 3, math, -1, SQLITE_STATIC);
 		if (e != SQLITE_OK) {
-			cerr << "failed to bind math: " << e << endl;
+			std::cerr << "failed to bind math: " << e << std::endl;
 			return false;
 		}
 		e = sqlite3_step(stmt());
 		if (e != SQLITE_DONE) {
-			cerr << "failed to step: " << e << endl;
+			std::cerr << "failed to step: " << e << std::endl;
 			return false;
 		}
 		sqlite3_reset(stmt());
@@ -268,7 +266,7 @@ bool Sort(sqlite3 *db)
 		e = sqlite3_exec(db, "SELECT * FROM asts", Process, &um, &em);
 		if (e != SQLITE_OK) {
 			if (e != SQLITE_ABORT)
-				cerr << "failed to select asts: " << e << ": " << em << endl;
+				std::cerr << "failed to select asts: " << e << ": " << em << std::endl;
 			sqlite3_free(em);
 			return false;
 		}

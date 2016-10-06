@@ -14,9 +14,6 @@
 namespace flint {
 namespace mathml {
 
-using std::cerr;
-using std::endl;
-
 class MathDumper {
 public:
 	MathDumper(xmlTextReaderPtr &text_reader, std::ostream *os)
@@ -117,7 +114,7 @@ public:
 	{
 		xmlChar *s = xmlTextReaderReadString(text_reader_);
 		if (!s) {
-			cerr << "missing body of <ci>" << endl;
+			std::cerr << "missing body of <ci>" << std::endl;
 			return -2;
 		}
 		xmlChar *name;
@@ -164,7 +161,7 @@ public:
 					cn_type = kRational;
 					break;
 				} else {
-					cerr << "unsupported type of <cn>: " << value << endl;
+					std::cerr << "unsupported type of <cn>: " << value << std::endl;
 					return -2;
 				}
 			}
@@ -176,7 +173,7 @@ public:
 			if (type == XML_READER_TYPE_TEXT) {
 				xmlChar *s = xmlTextReaderValue(text_reader_);
 				if (!s) {
-					cerr << "missing body of <cn>" << endl;
+					std::cerr << "missing body of <cn>" << std::endl;
 					return -2;
 				}
 				xmlChar *t;
@@ -187,7 +184,7 @@ public:
 			} else if (type == XML_READER_TYPE_ELEMENT) {
 				const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
 				if (!xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("sep"))) {
-					cerr << "unexpected element in <cn>: " << local_name << endl;
+					std::cerr << "unexpected element in <cn>: " << local_name << std::endl;
 					return -2;
 				}
 				if (cn_type == kENotation) {
@@ -195,7 +192,7 @@ public:
 				} else if (cn_type == kRational) {
 					*os_ << "/";
 				} else {
-					cerr << "<sep> in <cn> of wrong type" << endl;
+					std::cerr << "<sep> in <cn> of wrong type" << std::endl;
 					return -2;
 				}
 			} else if (type == XML_READER_TYPE_END_ELEMENT) {
@@ -213,7 +210,7 @@ public:
 	{
 		xmlChar *s = xmlTextReaderReadString(text_reader_);
 		if (!s) {
-			cerr << "missing body of <csymbol>" << endl;
+			std::cerr << "missing body of <csymbol>" << std::endl;
 			return -2;
 		}
 		xmlChar *name;

@@ -13,8 +13,6 @@
 
 #include <boost/uuid/uuid_io.hpp>
 
-using std::cerr;
-using std::endl;
 using std::memcpy;
 using std::multimap;
 
@@ -117,7 +115,7 @@ void AddEdge(std::set<Edge> *edge_set,
 	auto p = edge_set->emplace(tail_uuid, tail_port_id,
 							   head_uuid, head_port_id);
 	if (!p.second) {
-		cerr << "warning: duplicate edge entry: "
+		std::cerr << "warning: duplicate edge entry: "
 			 << p.first->tail_uuid()
 			 << ":"
 			 << p.first->tail_port_id()
@@ -125,7 +123,7 @@ void AddEdge(std::set<Edge> *edge_set,
 			 << p.first->head_uuid()
 			 << ":"
 			 << p.first->head_port_id()
-			 << endl;
+			 << std::endl;
 	}
 }
 
@@ -148,7 +146,7 @@ public:
 		int e = sqlite3_prepare_v2(db, "SELECT * FROM edges",
 								   -1, &stmt_, nullptr);
 		if (e != SQLITE_OK) {
-			cerr << "failed to prepare statement: " << e << endl;
+			std::cerr << "failed to prepare statement: " << e << std::endl;
 			return false;
 		}
 		for (e = sqlite3_step(stmt_); e == SQLITE_ROW; e = sqlite3_step(stmt_)) {
@@ -166,7 +164,7 @@ public:
 					hmu, head_port_id);
 		}
 		if (e != SQLITE_DONE) {
-			cerr << "failed to step statement: " << e << endl;
+			std::cerr << "failed to step statement: " << e << std::endl;
 			return false;
 		}
 		return true;
@@ -195,14 +193,14 @@ public:
 		int e = sqlite3_prepare_v2(db, "SELECT * FROM journals",
 								   -1, &stmt_, nullptr);
 		if (e != SQLITE_OK) {
-			cerr << "failed to prepare statement: " << e << endl;
+			std::cerr << "failed to prepare statement: " << e << std::endl;
 			return false;
 		}
 		for (e = sqlite3_step(stmt_); e == SQLITE_ROW; e = sqlite3_step(stmt_)) {
 			int indent = sqlite3_column_int(stmt_, 0);
 			const void *uuid = sqlite3_column_blob(stmt_, 1);
 			if (!uuid) {
-				cerr << "uuid is null" << endl;
+				std::cerr << "uuid is null" << std::endl;
 				return false;
 			}
 			boost::uuids::uuid u;
@@ -210,7 +208,7 @@ public:
 			if (!handler->Handle(indent, u)) return false;
 		}
 		if (e != SQLITE_DONE) {
-			cerr << "failed to step statement: " << e << endl;
+			std::cerr << "failed to step statement: " << e << std::endl;
 			return false;
 		}
 		return true;
@@ -244,7 +242,7 @@ public:
 				boost::uuids::uuid instance_id(journal_uuid);
 				bool b = instance_map_.emplace(instance_id, std::move(instance_descendants_)).second;
 				if (!b) {
-					cerr << "duplicate instance id: " << instance_id << endl;
+					std::cerr << "duplicate instance id: " << instance_id << std::endl;
 					return false;
 				}
 				instance_descendants_.clear();
@@ -329,7 +327,7 @@ public:
 				for (auto it=instance_map_.cbegin();it!=instance_map_.cend();++it) {
 					const auto &iv = it->second;
 					if (iv.size() != template_descendants_.size() + 1) {
-						cerr << "invalid instance descendants: " << it->first << endl;
+						std::cerr << "invalid instance descendants: " << it->first << std::endl;
 						return false;
 					}
 					for (const auto &ie : instance_edges) {
@@ -362,7 +360,7 @@ public:
 			}
 			break;
 		default:
-			cerr << "invalid indent of journal: " << indent << endl;
+			std::cerr << "invalid indent of journal: " << indent << std::endl;
 			return false;
 		}
 		return true;
@@ -404,13 +402,13 @@ public:
 		int e = sqlite3_prepare_v2(db, "INSERT INTO spans VALUES (?, ?, ?, ?)",
 								   -1, &stmt_, nullptr);
 		if (e != SQLITE_OK) {
-			cerr << "failed to prepare statement: "
+			std::cerr << "failed to prepare statement: "
 				 << e
 				 << ": "
 				 << __FILE__
 				 << ":"
 				 << __LINE__
-				 << endl;
+				 << std::endl;
 			return false;
 		}
 		return true;
@@ -420,27 +418,27 @@ public:
 		int e;
 		e = sqlite3_bind_blob(stmt_, 1, &edge.tail_uuid(), edge.tail_uuid().size(), SQLITE_STATIC);
 		if (e != SQLITE_OK) {
-			cerr << "failed to bind tail_uuid: " << e << endl;
+			std::cerr << "failed to bind tail_uuid: " << e << std::endl;
 			return false;
 		}
 		e = sqlite3_bind_int(stmt_, 2, edge.tail_port_id());
 		if (e != SQLITE_OK) {
-			cerr << "failed to bind tail_port_id: " << e << endl;
+			std::cerr << "failed to bind tail_port_id: " << e << std::endl;
 			return false;
 		}
 		e = sqlite3_bind_blob(stmt_, 3, &edge.head_uuid(), edge.head_uuid().size(), SQLITE_STATIC);
 		if (e != SQLITE_OK) {
-			cerr << "failed to bind head_uuid: " << e << endl;
+			std::cerr << "failed to bind head_uuid: " << e << std::endl;
 			return false;
 		}
 		e = sqlite3_bind_int(stmt_, 4, edge.head_port_id());
 		if (e != SQLITE_OK) {
-			cerr << "failed to bind head_port_id: " << e << endl;
+			std::cerr << "failed to bind head_port_id: " << e << std::endl;
 			return false;
 		}
 		e = sqlite3_step(stmt_);
 		if (e != SQLITE_DONE) {
-			cerr << "failed to step statement: " << e << endl;
+			std::cerr << "failed to step statement: " << e << std::endl;
 			return false;
 		}
 		sqlite3_reset(stmt_);

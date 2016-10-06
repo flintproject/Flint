@@ -25,8 +25,6 @@
 #include "db/statement-driver.h"
 #include "lo/layout_loader.h"
 
-using std::cerr;
-using std::endl;
 using std::memcpy;
 using std::string;
 using std::strlen;
@@ -49,7 +47,7 @@ public:
 		int e;
 		e = sqlite3_step(stmt());
 		if (e != SQLITE_ROW) {
-			cerr << "failed to step statement: " << e << endl;
+			std::cerr << "failed to step statement: " << e << std::endl;
 			return nullptr;
 		}
 		const char *f = (const char *)sqlite3_column_text(stmt(), 0);
@@ -105,7 +103,7 @@ public:
 						}
 						break;
 					default:
-						cerr << "unexpected data type: " << dp->type() << endl;
+						std::cerr << "unexpected data type: " << dp->type() << std::endl;
 						return -1;
 					}
 					pos += dp->col() * dp->row();
@@ -139,12 +137,12 @@ public:
 		for (TargetMap::const_iterator it=tm.begin();it!=tm.end();++it) {
 			int e = sqlite3_bind_int(stmt(), 1, it->first);
 			if (e != SQLITE_OK) {
-				cerr << "failed to bind rowid: " << e << endl;
+				std::cerr << "failed to bind rowid: " << e << std::endl;
 				return false;
 			}
 			e = sqlite3_step(stmt());
 			if (e != SQLITE_ROW) {
-				cerr << "missing row with rowid " << it->first << " in phsp_targets" << endl;
+				std::cerr << "missing row with rowid " << it->first << " in phsp_targets" << std::endl;
 				return false;
 			}
 			const void *uuid = sqlite3_column_blob(stmt(), 0);

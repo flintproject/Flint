@@ -9,8 +9,6 @@
 #include "bc/binary.h"
 #include "run.h"
 
-using std::cerr;
-using std::endl;
 using std::strcmp;
 
 using namespace flint;
@@ -21,7 +19,7 @@ const size_t kInputLength = 8192;
 
 void Usage()
 {
-	cerr << "usage: flint-run" << endl;
+	std::cerr << "usage: flint-run" << std::endl;
 }
 
 } // namespace
@@ -42,12 +40,12 @@ int main(int argc, char *argv[])
 	char buffer[kInputLength];
 	size_t s = std::fread(buffer, 1, kInputLength, stdin);
 	if (s == 0) {
-		cerr << "failed to read the input" << endl;
+		std::cerr << "failed to read the input" << std::endl;
 		return EXIT_FAILURE;
 	}
 	cli::RunOption option;
 	if (!option.ParseFromArray(buffer, s)) {
-		cerr << "failed to parse the input" << endl;
+		std::cerr << "failed to parse the input" << std::endl;
 		return EXIT_FAILURE;
 	}
 	return run::Run(option) ? EXIT_SUCCESS : EXIT_FAILURE;

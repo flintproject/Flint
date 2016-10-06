@@ -10,9 +10,6 @@
 #include <map>
 #include <unordered_map>
 
-using std::cerr;
-using std::endl;
-
 namespace flint {
 namespace {
 
@@ -54,17 +51,17 @@ bool Insert(sqlite3_stmt *stmt, sqlite3_int64 pq_rowid, const std::string &math)
 	int e;
 	e = sqlite3_bind_int64(stmt, 1, pq_rowid);
 	if (e != SQLITE_OK) {
-		cerr << "failed to bind pq_rowid: " << e << endl;
+		std::cerr << "failed to bind pq_rowid: " << e << std::endl;
 		return false;
 	}
 	e = sqlite3_bind_text(stmt, 2, math.c_str(), -1, SQLITE_STATIC);
 	if (e != SQLITE_OK) {
-		cerr << "failed to bind math: " << e << endl;
+		std::cerr << "failed to bind math: " << e << std::endl;
 		return false;
 	}
 	e = sqlite3_step(stmt);
 	if (e != SQLITE_DONE) {
-		cerr << "failed to step statement: " << e << endl;
+		std::cerr << "failed to step statement: " << e << std::endl;
 		return false;
 	}
 	sqlite3_reset(stmt);
@@ -97,17 +94,17 @@ bool TransitionForm::operator()(sqlite3 *db)
 	int e;
 	e = sqlite3_prepare_v2(db, kQuerySelect, -1, &stmt_select_, nullptr);
 	if (e != SQLITE_OK) {
-		cerr << "failed to prepare statement: " << kQuerySelect << ": " << e << endl;
+		std::cerr << "failed to prepare statement: " << kQuerySelect << ": " << e << std::endl;
 		return false;
 	}
 	e = sqlite3_prepare_v2(db, kQueryExtras, -1, &stmt_extras_, nullptr);
 	if (e != SQLITE_OK) {
-		cerr << "failed to prepare statement: " << kQueryExtras << ": " << e << endl;
+		std::cerr << "failed to prepare statement: " << kQueryExtras << ": " << e << std::endl;
 		return false;
 	}
 	e = sqlite3_prepare_v2(db, kQueryImpls, -1, &stmt_impls_, nullptr);
 	if (e != SQLITE_OK) {
-		cerr << "failed to prepare statement: " << kQueryImpls << ": " << e << endl;
+		std::cerr << "failed to prepare statement: " << kQueryImpls << ": " << e << std::endl;
 		return false;
 	}
 
@@ -127,7 +124,7 @@ bool TransitionForm::operator()(sqlite3 *db)
 												(const char *)math));
 	}
 	if (e != SQLITE_DONE) {
-		cerr << "failed to step statement: " << kQuerySelect << ": " << e << endl;
+		std::cerr << "failed to step statement: " << kQuerySelect << ": " << e << std::endl;
 		return false;
 	}
 	for (NameMap::const_iterator nit=nm.begin();nit!=nm.end();++nit) {
@@ -161,7 +158,7 @@ bool TransitionForm::operator()(sqlite3 *db)
 			for (bit=am.upper_bound(tail_node_id);ait!=bit;++ait) {
 				const Arc &arc(ait->second);
 				if (type != arc.type()) {
-					cerr << "incompatible types among <transition>s of the same PQ" << endl;
+					std::cerr << "incompatible types among <transition>s of the same PQ" << std::endl;
 					return false;
 				}
 				if (type == "condition") {

@@ -11,9 +11,6 @@
 
 #include "runtime/evaluator.h"
 
-using std::cerr;
-using std::endl;
-
 namespace flint {
 namespace runtime {
 
@@ -27,7 +24,7 @@ bool Init(sqlite3 *db,
 	if (!e->Load(layout_file))
 		return false;
 	if (!e->layout().ContainsDependentVariable()) {
-		cerr << "no dependent variables found" << endl;
+		std::cerr << "no dependent variables found" << std::endl;
 		return false;
 	}
 	return e->Evaluate(db, ct::Availability::kNone, seed, bytecode, data);

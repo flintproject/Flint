@@ -12,9 +12,6 @@
 #include "db/ast-inserter.h"
 #include "cas/printer.h"
 
-using std::cerr;
-using std::endl;
-
 namespace flint {
 namespace cas {
 namespace icg {

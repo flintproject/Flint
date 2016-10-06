@@ -13,9 +13,6 @@
 #include "flint/sexp.h"
 #include "flint/sexp/parser.h"
 
-using std::cerr;
-using std::endl;
-
 namespace flint {
 namespace {
 
@@ -148,17 +145,17 @@ bool GraphMathRewriter::Rewrite(sqlite3 *db)
 {
 	int e = sqlite3_prepare_v2(db, query_select_, -1, &stmt_select_, nullptr);
 	if (e != SQLITE_OK) {
-		cerr << "failed to prepare statement: " << query_select_ << ": " << e << endl;
+		std::cerr << "failed to prepare statement: " << query_select_ << ": " << e << std::endl;
 		return false;
 	}
 	e = sqlite3_prepare_v2(db, kQueryNode, -1, &stmt_node_, nullptr);
 	if (e != SQLITE_OK) {
-		cerr << "failed to prepare statement: " << kQueryNode << ": " << e << endl;
+		std::cerr << "failed to prepare statement: " << kQueryNode << ": " << e << std::endl;
 		return false;
 	}
 	e = sqlite3_prepare_v2(db, query_update_, -1, &stmt_update_, nullptr);
 	if (e != SQLITE_OK) {
-		cerr << "failed to prepare statement: " << query_update_ << ": " << e << endl;
+		std::cerr << "failed to prepare statement: " << query_update_ << ": " << e << std::endl;
 		return false;
 	}
 
@@ -169,7 +166,7 @@ bool GraphMathRewriter::Rewrite(sqlite3 *db)
 		if (!Process(rowid, pq_rowid, (const char *)math)) return false;
 	}
 	if (e != SQLITE_DONE) {
-		cerr << "failed to step statement: " << query_select_ << ": " << e << endl;
+		std::cerr << "failed to step statement: " << query_select_ << ": " << e << std::endl;
 		return false;
 	}
 	return true;
@@ -199,22 +196,22 @@ bool GraphMathRewriter::FindNode(sqlite3_int64 pq_rowid, const char *node_name, 
 	int e;
 	e = sqlite3_bind_text(stmt_node_, 1, node_name, -1, SQLITE_STATIC);
 	if (e != SQLITE_OK) {
-		cerr << "failed to bind name: " << kQueryNode
-			 << ": " << e << endl;
+		std::cerr << "failed to bind name: " << kQueryNode
+			 << ": " << e << std::endl;
 		return false;
 	}
 	e = sqlite3_bind_int64(stmt_node_, 2, pq_rowid);
 	if (e != SQLITE_OK) {
-		cerr << "failed to bind pq_rowid: " << kQueryNode
-			 << ": " << e << endl;
+		std::cerr << "failed to bind pq_rowid: " << kQueryNode
+			 << ": " << e << std::endl;
 		return false;
 	}
 	e = sqlite3_step(stmt_node_);
 	if (e != SQLITE_ROW) {
-		cerr << "failed to find node with pq_rowid/named: "
+		std::cerr << "failed to find node with pq_rowid/named: "
 			 << pq_rowid << '/' << node_name
 			 << ": " << kQueryNode
-			 << ": " << e << endl;
+			 << ": " << e << std::endl;
 		return false;
 	}
 	int r = sqlite3_column_int(stmt_node_, 0);
@@ -228,20 +225,20 @@ bool GraphMathRewriter::Update(sqlite3_int64 rowid, const char *math)
 {
 	int e = sqlite3_bind_text(stmt_update_, 1, math, -1, SQLITE_STATIC);
 	if (e != SQLITE_OK) {
-		cerr << "failed to bind math: " << query_update_
-			 << ": " << e << endl;
+		std::cerr << "failed to bind math: " << query_update_
+			 << ": " << e << std::endl;
 		return false;
 	}
 	e = sqlite3_bind_int64(stmt_update_, 2, rowid);
 	if (e != SQLITE_OK) {
-		cerr << "failed to bind rowid: " << query_update_
-			 << ": " << e << endl;
+		std::cerr << "failed to bind rowid: " << query_update_
+			 << ": " << e << std::endl;
 		return false;
 	}
 	e = sqlite3_step(stmt_update_);
 	if (e != SQLITE_DONE) {
-		cerr << "failed to step statement: " << query_update_
-			 << ": " << e << endl;
+		std::cerr << "failed to step statement: " << query_update_
+			 << ": " << e << std::endl;
 		return false;
 	}
 	sqlite3_reset(stmt_update_);

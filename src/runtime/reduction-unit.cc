@@ -7,9 +7,6 @@
 #include <iostream>
 #include <numeric>
 
-using std::cerr;
-using std::endl;
-
 namespace flint {
 
 ReductionUnit::ReductionUnit(Reduction reduction, int target_addr, int size)
@@ -32,7 +29,7 @@ bool ReductionUnit::operator()(double *data) const
 	double d;
 	switch (reduction_) {
 	case Reduction::kUnspecified:
-		cerr << "reduction is unspecified" << endl;
+		std::cerr << "reduction is unspecified" << std::endl;
 		return false;
 	case Reduction::kSum:
 		d = 0;
@@ -43,7 +40,7 @@ bool ReductionUnit::operator()(double *data) const
 		{
 			auto it = source_addrs_.cbegin();
 			if (it == source_addrs_.cend()) {
-				cerr << "failed to take max due to no input" << endl;
+				std::cerr << "failed to take max due to no input" << std::endl;
 				return false;
 			}
 			d = data[*it+i];
@@ -55,7 +52,7 @@ bool ReductionUnit::operator()(double *data) const
 		{
 			auto it = source_addrs_.cbegin();
 			if (it == source_addrs_.cend()) {
-				cerr << "failed to take min due to no input" << endl;
+				std::cerr << "failed to take min due to no input" << std::endl;
 				return false;
 			}
 			d = data[*it+i];
@@ -68,7 +65,7 @@ bool ReductionUnit::operator()(double *data) const
 		{
 			auto it = source_addrs_.cbegin();
 			if (it == source_addrs_.cend()) {
-				cerr << "failed to take mean due to no input" << endl;
+				std::cerr << "failed to take mean due to no input" << std::endl;
 				return false;
 			}
 			d = data[*it+i];
@@ -95,7 +92,7 @@ bool ReductionUnit::operator()(const double *prev,
 	for (int i=0;i<size_;i++) {
 		switch (reduction_) {
 		case Reduction::kUnspecified:
-			cerr << "reduction is unspecified" << endl;
+			std::cerr << "reduction is unspecified" << std::endl;
 			return false;
 
 #define DATA_AT(i) (color[i]) ? data[i] : prev[i]
@@ -111,7 +108,7 @@ bool ReductionUnit::operator()(const double *prev,
 			{
 				auto it = source_addrs_.cbegin();
 				if (it == source_addrs_.cend()) {
-					cerr << "failed to take max due to no input" << endl;
+					std::cerr << "failed to take max due to no input" << std::endl;
 					return false;
 				}
 				k = *it+i;
@@ -126,7 +123,7 @@ bool ReductionUnit::operator()(const double *prev,
 			{
 				auto it = source_addrs_.cbegin();
 				if (it == source_addrs_.cend()) {
-					cerr << "failed to take min due to no input" << endl;
+					std::cerr << "failed to take min due to no input" << std::endl;
 					return false;
 				}
 				k = *it+i;
@@ -141,7 +138,7 @@ bool ReductionUnit::operator()(const double *prev,
 			{
 				auto it = source_addrs_.cbegin();
 				if (it == source_addrs_.cend()) {
-					cerr << "failed to take mean due to no input" << endl;
+					std::cerr << "failed to take mean due to no input" << std::endl;
 					return false;
 				}
 				k = *it+i;

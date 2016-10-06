@@ -14,8 +14,6 @@
 #include <boost/interprocess/mapped_region.hpp>
 #include "isdf/isdf.h"
 
-using std::cerr;
-using std::endl;
 using std::strcmp;
 using std::memcpy;
 using std::vector;
@@ -38,25 +36,25 @@ bool DecomposeColumn(char *column, char **unit)
 		}
 		char *s = p++;
 		if ( (c = *p++) == '\0' ) {
-			cerr << "invalid column found: " << column << endl;
+			std::cerr << "invalid column found: " << column << std::endl;
 			return false;
 		}
 		if (c != '(') {
-			cerr << "invalid column found: " << column << endl;
+			std::cerr << "invalid column found: " << column << std::endl;
 			return false;
 		}
 		if ( (c = *p++) == '\0' ) {
-			cerr << "invalid column found: " << column << endl;
+			std::cerr << "invalid column found: " << column << std::endl;
 			return false;
 		}
 		if (c == ')') {
-			cerr << "empty unit found: " << column << endl;
+			std::cerr << "empty unit found: " << column << std::endl;
 			return false;
 		}
 		while ( (c = *p++) ) {
 			if (c != ')') continue;
 			if (*p--  != '\0') {
-				cerr << "trailing chars after ')': " << column << endl;
+				std::cerr << "trailing chars after ')': " << column << std::endl;
 				return false;
 			}
 			*p = '\0'; // replace ')' with '\0'
@@ -64,7 +62,7 @@ bool DecomposeColumn(char *column, char **unit)
 			*unit = ++s; // set begin of unit
 			return true;
 		}
-		cerr << "missing ')': " << column << endl;
+		std::cerr << "missing ')': " << column << std::endl;
 		return false;
 	}
 	*unit = nullptr; // no unit included
@@ -103,9 +101,9 @@ bool ExportIsdFromCsv(const boost::filesystem::path &input_path,
 	}
 	if (bol.size() != eol.size()) {
 		if (eol.size() == 0) {
-			cerr << "The input file seems Unix-style; LF found, but no CR." << endl;
+			std::cerr << "The input file seems Unix-style; LF found, but no CR." << std::endl;
 		} else {
-			cerr << "BOL/EOL mismatch: " << bol.size() << " vs " << eol.size() << endl;
+			std::cerr << "BOL/EOL mismatch: " << bol.size() << " vs " << eol.size() << std::endl;
 		}
 		return false;
 	}
@@ -147,7 +145,7 @@ bool ExportIsdFromCsv(const boost::filesystem::path &input_path,
 	for (std::uint32_t i=0; i<num_cols; i++) {
 		size_t len = strlen(columns[i]);
 		if (len == 0) {
-			cerr << "empty column name at " << i << endl;
+			std::cerr << "empty column name at " << i << std::endl;
 			return false;
 		}
 		std::uint32_t u32len = static_cast<std::uint32_t>(len);
@@ -178,18 +176,18 @@ bool ExportIsdFromCsv(const boost::filesystem::path &input_path,
 		return false;
 	}
 	if (fwrite(&header, sizeof(header), 1, ofp) != 1) {
-		cerr << "failed to write header" << endl;
+		std::cerr << "failed to write header" << std::endl;
 		return false;
 	}
 	// descriptions
 	for (std::uint32_t i=0; i<num_cols; i++) {
 		std::uint32_t u32len = desc_len[i];
 		if (fwrite(&u32len, 4, 1, ofp) != 1) {
-			cerr << "failed to write length" << endl;
+			std::cerr << "failed to write length" << std::endl;
 			return false;
 		}
 		if (fwrite(columns[i], u32len, 1, ofp) != 1) {
-			cerr << "failed to write description" << endl;
+			std::cerr << "failed to write description" << std::endl;
 			return false;
 		}
 	}
@@ -199,17 +197,17 @@ bool ExportIsdFromCsv(const boost::filesystem::path &input_path,
 			if (it == units.end()) {
 				std::uint32_t u32len = 0;
 				if (fwrite(&u32len, 4, 1, ofp) != 1) {
-					cerr << "failed to write unit's length" << endl;
+					std::cerr << "failed to write unit's length" << std::endl;
 					return false;
 				}
 			} else {
 				std::uint32_t u32len = unit_len[i];
 				if (fwrite(&u32len, 4, 1, ofp) != 1) {
-					cerr << "failed to write unit's length" << endl;
+					std::cerr << "failed to write unit's length" << std::endl;
 					return false;
 				}
 				if (fwrite(it->second, u32len, 1, ofp) != 1) {
-					cerr << "failed to write unit" << endl;
+					std::cerr << "failed to write unit" << std::endl;
 					return false;
 				}
 			}
@@ -223,11 +221,11 @@ bool ExportIsdFromCsv(const boost::filesystem::path &input_path,
 			char *q;
 			double d = strtod(p, &q);
 			if (p == q) {
-				cerr << "invalid double: " << (addr + bol[i]) << endl;
+				std::cerr << "invalid double: " << (addr + bol[i]) << std::endl;
 				return false;
 			}
 			if (fwrite(&d, sizeof(d), 1, ofp) != 1) {
-				cerr << "failed to write value" << endl;
+				std::cerr << "failed to write value" << std::endl;
 				return false;
 			}
 			if (addr + eol[i] <= q) {

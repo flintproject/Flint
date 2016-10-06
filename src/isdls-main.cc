@@ -8,10 +8,6 @@
 
 namespace po = boost::program_options;
 
-using std::cerr;
-using std::cin;
-using std::cout;
-using std::endl;
 using std::ifstream;
 using std::istream;
 using std::ios;
@@ -24,8 +20,8 @@ namespace {
 
 struct ColumnPrinter {
 	void GetDescription(std::uint32_t, size_t bytes, const char *desc) {
-		cout.write(desc, bytes);
-		cout << endl;
+		std::cout.write(desc, bytes);
+		std::cout << std::endl;
 	}
 };
 
@@ -45,15 +41,15 @@ public:
 
 	void GetDescription(std::uint32_t i, size_t bytes, const char *desc) {
 		if (i == row_) {
-			cout.write(desc, bytes);
-			cout << endl;
+			std::cout.write(desc, bytes);
+			std::cout << std::endl;
 		}
 	}
 
 	int GetStep(size_t, const char *buf) {
 		double d;
 		memcpy(&d, buf + offset_, sizeof(double));
-		cout << d << endl;
+		std::cout << d << std::endl;
 		return 1;
 	}
 
@@ -69,7 +65,7 @@ int ListRow(std::uint32_t row, istream *is)
 
 	std::uint32_t num_objs = reader.num_objs();
 	if (num_objs <= row) {
-		cerr << "boundary error of index exceeding num_objs: " << num_objs << endl;
+		std::cerr << "boundary error of index exceeding num_objs: " << num_objs << std::endl;
 		return EXIT_FAILURE;
 	}
 
@@ -85,7 +81,7 @@ int PrintDataOffset(istream *is)
 {
 	isdf::Reader reader;
 	if (!reader.ReadHeader(is)) return EXIT_FAILURE;
-	cout << reader.GetDataOffset() << endl;
+	std::cout << reader.GetDataOffset() << std::endl;
 	return EXIT_SUCCESS;
 }
 
@@ -116,8 +112,8 @@ int main(int argc, char *argv[])
 		print_help = 2;
 	}
 	if (print_help != 0) {
-		cerr << "usage: isdls [OPTIONS] [PATH]" << endl;
-		cerr << opts;
+		std::cerr << "usage: isdls [OPTIONS] [PATH]" << std::endl;
+		std::cerr << opts;
 		return (print_help == 1) ? EXIT_SUCCESS : EXIT_FAILURE;
 	}
 
@@ -125,7 +121,7 @@ int main(int argc, char *argv[])
 	if (vm.count("input")) {
 		ifstream ifs(input_file.c_str(), ios::in|ios::binary);
 		if (!ifs.is_open()) {
-			cerr << "could not open input file: " << input_file << endl;
+			std::cerr << "could not open input file: " << input_file << std::endl;
 			return EXIT_FAILURE;
 		}
 		if (vm.count("data-offset")) {
@@ -138,11 +134,11 @@ int main(int argc, char *argv[])
 		ifs.close();
 	} else {
 		if (vm.count("data-offset")) {
-			r = PrintDataOffset(&cin);
+			r = PrintDataOffset(&std::cin);
 		} else if (vm.count("row")) {
-			r = ListRow(row, &cin);
+			r = ListRow(row, &std::cin);
 		} else {
-			r = ListColumns(&cin);
+			r = ListColumns(&std::cin);
 		}
 	}
 	return r;

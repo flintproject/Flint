@@ -16,8 +16,6 @@
 
 #include "filter/filter_loader.h"
 
-using std::cerr;
-using std::endl;
 using std::map;
 
 namespace flint {
@@ -42,14 +40,14 @@ public:
 
 	bool Apply(const double *data, FILE *ofp) const {
 		if (size_ == 0) {
-			cerr << "size is zero" << endl;
+			std::cerr << "size is zero" << std::endl;
 			return false;
 		}
 		for (map<int, int>::const_iterator it=columns_.begin();it!=columns_.end();++it) {
 			size_t p = static_cast<size_t>(it->first);
 			size_t s = static_cast<size_t>(it->second);
 			if (std::fwrite(data+p, sizeof(double), s, ofp) != s) {
-				cerr << "failed to filter output" << endl;
+				std::cerr << "failed to filter output" << std::endl;
 				return false;
 			}
 		}

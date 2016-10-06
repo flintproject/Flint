@@ -23,9 +23,6 @@ public:
 	}
 
 	bool Find(const std::string &name, int *so, int *lo = nullptr) const {
-		using std::cerr;
-		using std::endl;
-
 		switch (name[0]) {
 		case '%':
 			if (name == "%time") {
@@ -43,7 +40,7 @@ public:
 				}
 				std::unordered_map<std::string, int>::const_iterator it = m_.find(n);
 				if (it == m_.end()) {
-					cerr << "missing name: " << n << endl;
+					std::cerr << "missing name: " << n << std::endl;
 					return false;
 				}
 				*so = it->second;
@@ -53,7 +50,7 @@ public:
 				} else {
 					const char *s = name.c_str();
 					if (!isdigit(s[p+1])) {
-						cerr << "invalid suffix: " << name << endl;
+						std::cerr << "invalid suffix: " << name << std::endl;
 						return false;
 					}
 					int i = atoi(s+p+1);
@@ -73,7 +70,7 @@ public:
 		default:
 			break;
 		}
-		cerr << "unknown name: " << name << endl;
+		std::cerr << "unknown name: " << name << std::endl;
 		return false;
 	}
 

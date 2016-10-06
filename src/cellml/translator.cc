@@ -27,8 +27,6 @@
 #include "sqlite3.h"
 #include "uuidgen.h"
 
-using std::cerr;
-using std::endl;
 using std::sprintf;
 using std::strcmp;
 using std::strcpy;
@@ -47,9 +45,9 @@ public:
 	bool Find(const char *c, boost::uuids::uuid *u) const {
 		auto it = map_.find(std::string(c));
 		if (it == map_.end()) {
-			cerr << "could not find component named "
+			std::cerr << "could not find component named "
 				 << c
-				 << endl;
+				 << std::endl;
 			return false;
 		}
 		*u = it->second;
@@ -87,13 +85,13 @@ public:
 			return false;
 		e = sqlite3_prepare_v2(db, kTreeQuery, -1, &query_stmt_, nullptr);
 		if (e != SQLITE_OK) {
-			cerr << "failed to prepare statement: " << kTreeQuery << endl;
+			std::cerr << "failed to prepare statement: " << kTreeQuery << std::endl;
 			return false;
 		}
 		e = sqlite3_prepare_v2(db, "INSERT INTO spaces VALUES (?, ?)",
 							   -1, &insert_stmt_, nullptr);
 		if (e != SQLITE_OK) {
-			cerr << "failed to prepare statement: " << e << endl;
+			std::cerr << "failed to prepare statement: " << e << std::endl;
 			return false;
 		}
 
@@ -102,30 +100,30 @@ public:
 			const unsigned char *c = sqlite3_column_text(query_stmt_, 0);
 			size_t clen = strlen(reinterpret_cast<const char *>(c));
 			if (clen == 0) {
-				cerr << "empty component name" << endl;
+				std::cerr << "empty component name" << std::endl;
 				return false;
 			}
 			boost::uuids::uuid uuid = (*gen)();
 			e = sqlite3_bind_blob(insert_stmt_, 1, &uuid, uuid.size(), SQLITE_STATIC);
 			if (e != SQLITE_OK) {
-				cerr << "failed to bind uuid: " << e << endl;
+				std::cerr << "failed to bind uuid: " << e << std::endl;
 				return false;
 			}
 			e = sqlite3_bind_text(insert_stmt_, 2, reinterpret_cast<const char *>(c), -1, SQLITE_STATIC);
 			if (e != SQLITE_OK) {
-				cerr << "failed to bind name: " << e << endl;
+				std::cerr << "failed to bind name: " << e << std::endl;
 				return false;
 			}
 			e = sqlite3_step(insert_stmt_);
 			if (e != SQLITE_DONE) {
-				cerr << "failed to step statement: " << e << endl;
+				std::cerr << "failed to step statement: " << e << std::endl;
 				return false;
 			}
 			sqlite3_reset(insert_stmt_);
 			cm->Insert(c, uuid);
 		}
 		if (e != SQLITE_DONE) {
-			cerr << "failed to step statement: " << e << endl;
+			std::cerr << "failed to step statement: " << e << std::endl;
 			return false;
 		}
 		return true;
@@ -169,13 +167,13 @@ public:
 			const unsigned char *c = sqlite3_column_text(stmt(), 0);
 			size_t clen = strlen(reinterpret_cast<const char *>(c));
 			if (clen == 0) {
-				cerr << "empty component name" << endl;
+				std::cerr << "empty component name" << std::endl;
 				return false;
 			}
 			const unsigned char *body = sqlite3_column_text(stmt(), 1);
 			size_t nlen = strlen(reinterpret_cast<const char *>(body));
 			if (nlen == 0) {
-				cerr << "empty body" << endl;
+				std::cerr << "empty body" << std::endl;
 				return false;
 			}
 			if (!cm_->Find(reinterpret_cast<const char *>(c), &u)) return false;
@@ -194,7 +192,7 @@ public:
 			dvm_[reinterpret_cast<const char *>(c)].insert(tail.get());
 		}
 		if (e != SQLITE_DONE) {
-			cerr << "failed to step statement: " << e << endl;
+			std::cerr << "failed to step statement: " << e << std::endl;
 			return false;
 		}
 		return true;
@@ -232,13 +230,13 @@ public:
 			const unsigned char *c = sqlite3_column_text(stmt(), 1);
 			size_t clen = strlen(reinterpret_cast<const char *>(c));
 			if (clen == 0) {
-				cerr << "empty component name" << endl;
+				std::cerr << "empty component name" << std::endl;
 				return false;
 			}
 			const unsigned char *n = sqlite3_column_text(stmt(), 2);
 			size_t nlen = strlen(reinterpret_cast<const char *>(n));
 			if (nlen == 0) {
-				cerr << "empty variable name" << endl;
+				std::cerr << "empty variable name" << std::endl;
 				return false;
 			}
 			const unsigned char *iv = sqlite3_column_text(stmt(), 3);
@@ -257,7 +255,7 @@ public:
 			}
 		}
 		if (e != SQLITE_DONE) {
-			cerr << "failed to step statement: " << e << endl;
+			std::cerr << "failed to step statement: " << e << std::endl;
 			return false;
 		}
 		return true;
@@ -285,13 +283,13 @@ public:
 			const unsigned char *c = sqlite3_column_text(stmt(), 0);
 			size_t clen = strlen(reinterpret_cast<const char *>(c));
 			if (clen == 0) {
-				cerr << "empty component name" << endl;
+				std::cerr << "empty component name" << std::endl;
 				return false;
 			}
 			const unsigned char *n = sqlite3_column_text(stmt(), 1);
 			size_t nlen = strlen(reinterpret_cast<const char *>(n));
 			if (nlen == 0) {
-				cerr << "empty variable name" << endl;
+				std::cerr << "empty variable name" << std::endl;
 				return false;
 			}
 			const unsigned char *iv = sqlite3_column_text(stmt(), 2);
@@ -303,7 +301,7 @@ public:
 			if (!ii_.Insert(u, buf.get())) return false;
 		}
 		if (e != SQLITE_DONE) {
-			cerr << "failed to step statement: " << e << endl;
+			std::cerr << "failed to step statement: " << e << std::endl;
 			return false;
 		}
 		return true;
@@ -333,13 +331,13 @@ public:
 			const unsigned char *c = sqlite3_column_text(stmt(), 0);
 			size_t clen = strlen(reinterpret_cast<const char *>(c));
 			if (clen == 0) {
-				cerr << "empty component name" << endl;
+				std::cerr << "empty component name" << std::endl;
 				return false;
 			}
 			const unsigned char *body = sqlite3_column_text(stmt(), 1);
 			size_t nlen = strlen(reinterpret_cast<const char *>(body));
 			if (nlen == 0) {
-				cerr << "empty body" << endl;
+				std::cerr << "empty body" << std::endl;
 				return false;
 			}
 			if (!cm_->Find(reinterpret_cast<const char *>(c), &u)) return false;
@@ -349,7 +347,7 @@ public:
 			if (!ii_.Insert(u, math)) return false;
 		}
 		if (e != SQLITE_DONE) {
-			cerr << "failed to step statement: " << e << endl;
+			std::cerr << "failed to step statement: " << e << std::endl;
 			return false;
 		}
 		return true;
@@ -408,16 +406,16 @@ public:
 				if (!driver_->Save(u2, id2, u1, id1, Reduction::kSum))
 					return false;
 			} else {
-				cerr << "invalid variable mapping found: "
+				std::cerr << "invalid variable mapping found: "
 					 << c1 << '|' << n1 << '|' << pub1 << '|' << pri1
 					 << ' '
 					 << c2 << '|' << n2 << '|' << pub2 << '|' << pri2
-					 << endl;
+					 << std::endl;
 				return false;
 			}
 		}
 		if (e != SQLITE_DONE) {
-			cerr << "failed to step statement: " << e << endl;
+			std::cerr << "failed to step statement: " << e << std::endl;
 			return false;
 		}
 		return true;

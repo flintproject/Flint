@@ -16,9 +16,6 @@
 #include "db/query.h"
 #include "flint/bc.h"
 
-using std::cerr;
-using std::endl;
-
 namespace flint {
 namespace cas {
 
@@ -155,7 +152,7 @@ bool System::FindMass(const boost::uuids::uuid &uuid, const std::string &name,
 {
 	auto it = odes_.find(uuid);
 	if (it == odes_.end()) {
-		cerr << "failed to find mass matrix: " << uuid << endl;
+		std::cerr << "failed to find mass matrix: " << uuid << std::endl;
 		return false;
 	}
 	for (const auto &ode : it->second) {
@@ -173,19 +170,19 @@ bool System::FindMass(const boost::uuids::uuid &uuid, const std::string &name,
 				*found = mass_name.substr(1);
 				return true;
 			}
-			cerr << "found unsupported form of mass matrix: "
+			std::cerr << "found unsupported form of mass matrix: "
 				 << uuid
 				 << ": "
 				<< name
-				 << endl;
+				 << std::endl;
 			return false;
 		}
 	}
-	cerr << "failed to find mass matrix: "
+	std::cerr << "failed to find mass matrix: "
 		 << uuid
 		 << ": "
 		 << name
-		 << endl;
+		 << std::endl;
 	return false;
 }
 

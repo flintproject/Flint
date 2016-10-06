@@ -7,8 +7,6 @@
 #include <cstring>
 #include <iostream>
 
-using std::cerr;
-using std::endl;
 using std::memcpy;
 using std::strcmp;
 
@@ -32,13 +30,13 @@ bool ConfigReader::Read()
 	int e;
 	e = sqlite3_step(stmt());
 	if (e != SQLITE_ROW) {
-		cerr << "failed to step: " << e << endl;
+		std::cerr << "failed to step: " << e << std::endl;
 		return false;
 	}
 
 	const unsigned char *method = sqlite3_column_text(stmt(), 0);
 	if (!method) {
-		cerr << "method is null" << endl;
+		std::cerr << "method is null" << std::endl;
 		return false;
 	}
 	int len_m = sqlite3_column_bytes(stmt(), 0);
@@ -49,27 +47,27 @@ bool ConfigReader::Read()
 
 	length_ = sqlite3_column_double(stmt(), 1);
 	if (length_ <= 0) {
-		cerr << "length is <= 0" << endl;
+		std::cerr << "length is <= 0" << std::endl;
 		return false;
 	}
 
 	step_ = sqlite3_column_double(stmt(), 2);
 	if (step_ <= 0) {
-		cerr << "step is <= 0" << endl;
+		std::cerr << "step is <= 0" << std::endl;
 		return false;
 	}
 
 	granularity_ = sqlite3_column_int(stmt(), 3);
 	if (granularity_ <= 0) {
-		cerr << "granularity is non-positive" << endl;
+		std::cerr << "granularity is non-positive" << std::endl;
 		return false;
 	}
 
 	output_start_time_ = sqlite3_column_double(stmt(), 4);
 	if (output_start_time_ < 0) {
-		cerr << "output_start_time is negative: "
+		std::cerr << "output_start_time is negative: "
 			 << output_start_time_
-			 << endl;
+			 << std::endl;
 		return false;
 	}
 

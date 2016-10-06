@@ -27,8 +27,6 @@
 #include "sqlite3.h"
 #include "utf8path.h"
 
-using std::cerr;
-using std::endl;
 using std::perror;
 using std::sprintf;
 using std::string;
@@ -103,21 +101,21 @@ public:
 
 	bool IsValid() {
 		if (type_ == kUnspecified) {
-			cerr << "type is unspecified" << endl;
+			std::cerr << "type is unspecified" << std::endl;
 			return false;
 		}
 		if (type_ == kInterval) {
 			if (upper_ < lower_) {
-				cerr << "the upper value ("
+				std::cerr << "the upper value ("
 					 << upper_
 					 << ") is smaller than the lower one ("
 					 << lower_
 					 << ")"
-					 << endl;
+					 << std::endl;
 				return false;
 			}
 			if (step_ <= 0) {
-				cerr << "the step value is non-positive: " << step_ << endl;
+				std::cerr << "the step value is non-positive: " << step_ << std::endl;
 				return false;
 			}
 		}
@@ -202,7 +200,7 @@ public:
 					if (i <= 0) return i;
 					continue;
 				} else {
-					cerr << "unknown child of <phsp>: " << local_name << endl;
+					std::cerr << "unknown child of <phsp>: " << local_name << std::endl;
 					return -2;
 				}
 			} else if (type == XML_READER_TYPE_END_ELEMENT) {
@@ -228,7 +226,7 @@ private:
 				model->set_format(xmlTextReaderValue(text_reader_));
 				if ( !xmlStrEqual(model->format(), reinterpret_cast<const xmlChar *>("phml")) &&
 					 !xmlStrEqual(model->format(), reinterpret_cast<const xmlChar *>("sbml")) ) {
-					cerr << "unknown format of <model>: " << (const char *)model->format() << endl;
+					std::cerr << "unknown format of <model>: " << (const char *)model->format() << std::endl;
 					return -2;
 				}
 			} else if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("iref"))) {
@@ -236,11 +234,11 @@ private:
 			}
 		}
 		if (!model->format()) {
-			cerr << "missing format of <model>" << endl;
+			std::cerr << "missing format of <model>" << std::endl;
 			return -2;
 		}
 		if (!model->iref()) {
-			cerr << "missing iref of <model>" << endl;
+			std::cerr << "missing iref of <model>" << std::endl;
 			return -2;
 		}
 
@@ -254,14 +252,14 @@ private:
 							   " ORDER BY tasks.rowid DESC",
 							   -1, &stmt, nullptr);
 		if (e != SQLITE_OK) {
-			cerr << "failed to prepare statement: "
+			std::cerr << "failed to prepare statement: "
 				 << e << " (" << __FILE__ << ":" << __LINE__ << ")"
-				 << endl;
+				 << std::endl;
 			return -2;
 		}
 		e = sqlite3_bind_text(stmt, 1, (const char *)model->iref(), -1, SQLITE_STATIC);
 		if (e != SQLITE_OK) {
-			cerr << "failed to bind parameter: " << e << endl;
+			std::cerr << "failed to bind parameter: " << e << std::endl;
 			return -2;
 		}
 		e = sqlite3_step(stmt);
@@ -281,9 +279,9 @@ private:
 			return i;
 		}
 		if (e != SQLITE_ROW) {
-			cerr << "failed to find a corresponding model: "
+			std::cerr << "failed to find a corresponding model: "
 				 << (const char *)model->iref()
-				 << endl;
+				 << std::endl;
 			return -2;
 		}
 		int rowid = static_cast<int>(sqlite3_column_int64(stmt, 0));
@@ -294,9 +292,9 @@ private:
 		sprintf(dir_path, "%d", rowid);
 		boost::filesystem::path dp(dir_path);
 		if (!boost::filesystem::is_directory(dp) && !boost::filesystem::create_directory(dp)) {
-			cerr << "failed to create a directory: "
+			std::cerr << "failed to create a directory: "
 				 << dir_path
-				 << endl;
+				 << std::endl;
 			return -2;
 		}
 
@@ -308,24 +306,24 @@ private:
 		e = sqlite3_prepare_v2(db_, "UPDATE models SET absolute_path = ? WHERE rowid = ?",
 							   -1, &stmt, nullptr);
 		if (e != SQLITE_OK) {
-			cerr << "failed to prepare statement: "
+			std::cerr << "failed to prepare statement: "
 				 << e << " (" << __FILE__ << ":" << __LINE__ << ")"
-				 << endl;
+				 << std::endl;
 			return -2;
 		}
 		e = sqlite3_bind_text(stmt, 1, utf8amp.get(), -1, SQLITE_STATIC);
 		if (e != SQLITE_OK) {
-			cerr << "failed to bind absolute_path: " << e << endl;
+			std::cerr << "failed to bind absolute_path: " << e << std::endl;
 			return -2;
 		}
 		e = sqlite3_bind_int64(stmt, 2, rowid);
 		if (e != SQLITE_OK) {
-			cerr << "failed to bind rowid: " << e << endl;
+			std::cerr << "failed to bind rowid: " << e << std::endl;
 			return -2;
 		}
 		e = sqlite3_step(stmt);
 		if (e != SQLITE_DONE) {
-			cerr << "failed to step statement: " << e << endl;
+			std::cerr << "failed to step statement: " << e << std::endl;
 			return -2;
 		}
 		sqlite3_finalize(stmt);
@@ -336,8 +334,8 @@ private:
 		char *em;
 		e = sqlite3_exec(db_, query, nullptr, nullptr, &em);
 		if (e != SQLITE_OK) {
-			cerr << "failed to attach database: " << e
-				 << ": " << em << endl;
+			std::cerr << "failed to attach database: " << e
+				 << ": " << em << std::endl;
 			sqlite3_free(em);
 			return -2;
 		}
@@ -354,19 +352,19 @@ private:
 		sprintf(query, "INSERT INTO db%d.model VALUES (?)", rowid);
 		e = sqlite3_prepare_v2(db_, query, -1, &stmt, nullptr);
 		if (e != SQLITE_OK) {
-			cerr << "failed to prepare statement: "
+			std::cerr << "failed to prepare statement: "
 				 << e << " (" << __FILE__ << ":" << __LINE__ << ")"
-				 << endl;
+				 << std::endl;
 			return -2;
 		}
 		e = sqlite3_bind_text(stmt, 1, (const char *)model->format(), -1, SQLITE_STATIC);
 		if (e != SQLITE_OK) {
-			cerr << "failed to bind parameter: " << e << endl;
+			std::cerr << "failed to bind parameter: " << e << std::endl;
 			return -2;
 		}
 		e = sqlite3_step(stmt);
 		if (e != SQLITE_DONE) {
-			cerr << "failed to step statement: " << e << endl;
+			std::cerr << "failed to step statement: " << e << std::endl;
 			return -2;
 		}
 		sqlite3_finalize(stmt);
@@ -403,8 +401,8 @@ private:
 					sprintf(query, "DETACH DATABASE 'db%d'", rowid);
 					e = sqlite3_exec(db_, query, nullptr, nullptr, &em);
 					if (e != SQLITE_OK) {
-						cerr << "failed to detach database: " << e
-							 << ": " << em << endl;
+						std::cerr << "failed to detach database: " << e
+							 << ": " << em << std::endl;
 						sqlite3_free(em);
 						return -2;
 					}
@@ -427,7 +425,7 @@ private:
 					if (i <= 0) return i;
 					continue;
 				} else {
-					cerr << "unknown child of <parameter-set>: " << local_name << endl;
+					std::cerr << "unknown child of <parameter-set>: " << local_name << std::endl;
 					return -2;
 				}
 			} else if (type == XML_READER_TYPE_END_ELEMENT) {
@@ -455,7 +453,7 @@ private:
 			}
 		}
 		if (!parameter) {
-			cerr << "missing name of <parameter>" << endl;
+			std::cerr << "missing name of <parameter>" << std::endl;
 			return -2;
 		}
 		i = xmlTextReaderRead(text_reader_);
@@ -493,14 +491,14 @@ private:
 				} else if (xmlStrEqual(type, reinterpret_cast<const xmlChar *>("enum"))) {
 					range->set_type(Range::kEnum);
 				} else {
-					cerr << "unkown type of <range>: " << type << endl;
+					std::cerr << "unkown type of <range>: " << type << std::endl;
 					return -2;
 				}
 			} else if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("lower"))) {
 				boost::rational<long> lower;
 				bool b = base::Rational<long>::FromString((const char *)xmlTextReaderConstValue(text_reader_), lower);
 				if (!b) {
-					cerr << "failed to parse lower" << endl;
+					std::cerr << "failed to parse lower" << std::endl;
 					return -2;
 				}
 				range->set_lower(lower);
@@ -508,7 +506,7 @@ private:
 				boost::rational<long> upper;
 				bool b = base::Rational<long>::FromString((const char *)xmlTextReaderConstValue(text_reader_), upper);
 				if (!b) {
-					cerr << "failed to parse upper" << endl;
+					std::cerr << "failed to parse upper" << std::endl;
 					return -2;
 				}
 				range->set_upper(upper);
@@ -516,17 +514,17 @@ private:
 				boost::rational<long> step;
 				bool b = base::Rational<long>::FromString((const char *)xmlTextReaderConstValue(text_reader_), step);
 				if (!b) {
-					cerr << "failed to parse step" << endl;
+					std::cerr << "failed to parse step" << std::endl;
 					return -2;
 				}
 				range->set_step(step);
 			} else {
-				cerr << "unknown attribute of <range>: " << local_name << endl;
+				std::cerr << "unknown attribute of <range>: " << local_name << std::endl;
 				return -2;
 			}
 		}
 		if (range->type() == Range::kUnspecified) {
-			cerr << "missing type of <range>" << endl;
+			std::cerr << "missing type of <range>" << std::endl;
 			return -2;
 		}
 
@@ -537,14 +535,14 @@ private:
 		sprintf(query, "INSERT INTO db%d.phsp_parameters VALUES (?, ?)", rowid);
 		int e = sqlite3_prepare_v2(db_, query, -1, &stmt, nullptr);
 		if (e != SQLITE_OK) {
-			cerr << "failed to prepare statement: "
+			std::cerr << "failed to prepare statement: "
 				 << e << " (" << __FILE__ << ":" << __LINE__ << ")"
-				 << endl;
+				 << std::endl;
 			return -2;
 		}
 		e = sqlite3_bind_text(stmt, 1, (const char *)parameter->name(), -1, SQLITE_STATIC);
 		if (e != SQLITE_OK) {
-			cerr << "failed to bind parameter: " << e << endl;
+			std::cerr << "failed to bind parameter: " << e << std::endl;
 			return -2;
 		}
 
@@ -561,13 +559,13 @@ private:
 			size_t len = s.size();
 			char *p = static_cast<char *>(malloc(len));
 			if (!p) {
-				cerr << "failed to malloc: " << len << endl;
+				std::cerr << "failed to malloc: " << len << std::endl;
 				return -2;
 			}
 			memcpy(p, s.c_str(), len);
 			e = sqlite3_bind_text(stmt, 2, p, len, free);
 			if (e != SQLITE_OK) {
-				cerr << "failed to bind parameter: " << e << endl;
+				std::cerr << "failed to bind parameter: " << e << std::endl;
 				return -2;
 			}
 		} else { // enum
@@ -575,13 +573,13 @@ private:
 			if (i < 0) return i;
 			e = sqlite3_bind_text(stmt, 2, (const char *)xmlTextReaderReadString(text_reader_), -1, xmlFree);
 			if (e != SQLITE_OK) {
-				cerr << "failed to bind parameter: " << e << endl;
+				std::cerr << "failed to bind parameter: " << e << std::endl;
 				return -2;
 			}
 		}
 		e = sqlite3_step(stmt);
 		if (e != SQLITE_DONE) {
-			cerr << "failed to step statement: " << e << endl;
+			std::cerr << "failed to step statement: " << e << std::endl;
 			return -2;
 		}
 		sqlite3_finalize(stmt);
@@ -600,7 +598,7 @@ private:
 					if (i <= 0) return i;
 					continue;
 				} else {
-					cerr << "unknown child of <target-set>: " << local_name << endl;
+					std::cerr << "unknown child of <target-set>: " << local_name << std::endl;
 					return -2;
 				}
 			} else if (type == XML_READER_TYPE_END_ELEMENT) {
@@ -628,7 +626,7 @@ private:
 			} else if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("physical-quantity-id"))) {
 				int id = atoi((const char *)xmlTextReaderConstValue(text_reader_));
 				if (id <= 0) {
-					cerr << "invalid physical-quantity-id: " << id << endl;
+					std::cerr << "invalid physical-quantity-id: " << id << std::endl;
 					return -2;
 				}
 				target->set_physical_quantity_id(id);
@@ -639,20 +637,20 @@ private:
 			} else if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("reaction-id"))) {
 				target->set_reaction_id(xmlTextReaderValue(text_reader_));
 			} else {
-				cerr << "unknown attribute of <target>: " << local_name << endl;
+				std::cerr << "unknown attribute of <target>: " << local_name << std::endl;
 				return -2;
 			}
 		}
 		if (target->uuid()) {
 			if (target->physical_quantity_id() == 0) {
-				cerr << "missing physical-quantity-id of <target>" << endl;
+				std::cerr << "missing physical-quantity-id of <target>" << std::endl;
 				return -2;
 			}
 		} else {
 			if ( !target->species_id() &&
 				 !target->parameter_id() &&
 				 !target->reaction_id() ) {
-				cerr << "missing species-id/parameter-id/reaction-id of <target>" << endl;
+				std::cerr << "missing species-id/parameter-id/reaction-id of <target>" << std::endl;
 				return -2;
 			}
 		}
@@ -667,7 +665,7 @@ private:
 					if (i <= 0) return i;
 					continue;
 				} else {
-					cerr << "unknown child element of <target>: " << local_name << endl;
+					std::cerr << "unknown child element of <target>: " << local_name << std::endl;
 					return -2;
 				}
 			} else if (type == XML_READER_TYPE_END_ELEMENT) {
@@ -675,7 +673,7 @@ private:
 				if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("target"))) {
 					string s(oss.str());
 					if (s.empty()) {
-						cerr << "missing value of <target>" << endl;
+						std::cerr << "missing value of <target>" << std::endl;
 						return -2;
 					} else {
 						char query[1024];
@@ -683,9 +681,9 @@ private:
 						sqlite3_stmt *stmt;
 						int e = sqlite3_prepare_v2(db_, query, -1, &stmt, nullptr);
 						if (e != SQLITE_OK) {
-							cerr << "failed to prepare statement: "
+							std::cerr << "failed to prepare statement: "
 								 << e << " (" << __FILE__ << ":" << __LINE__ << ")"
-								 << endl;
+								 << std::endl;
 							return -2;
 						}
 						boost::uuids::uuid u; // to be alive until sqlite3_step()
@@ -693,19 +691,19 @@ private:
 							u = target->GetUuid();
 							e = sqlite3_bind_blob(stmt, 1, &u, u.size(), SQLITE_STATIC);
 							if (e != SQLITE_OK) {
-								cerr << "failed to bind uuid: " << e << endl;
+								std::cerr << "failed to bind uuid: " << e << std::endl;
 								return -2;
 							}
 							e = sqlite3_bind_int(stmt, 2, target->physical_quantity_id());
 							if (e != SQLITE_OK) {
-								cerr << "failed to bind parameter: " << e << endl;
+								std::cerr << "failed to bind parameter: " << e << std::endl;
 								return -2;
 							}
 						} else { // SBML
 							u = boost::uuids::nil_uuid();
 							e = sqlite3_bind_blob(stmt, 1, &u, u.size(), SQLITE_STATIC);
 							if (e != SQLITE_OK) {
-								cerr << "failed to bind uuid: " << e << endl;
+								std::cerr << "failed to bind uuid: " << e << std::endl;
 								return -2;
 							}
 							const char *id = nullptr;
@@ -716,24 +714,24 @@ private:
 							size_t len = strlen(id);
 							char *buf = (char *)malloc(len + 6);
 							if (!buf) {
-								cerr << "failed to malloc" << endl;
+								std::cerr << "failed to malloc" << std::endl;
 								return -2;
 							}
 							sprintf(buf, "sbml:%s", id);
 							e = sqlite3_bind_text(stmt, 2, buf, -1, free);
 							if (e != SQLITE_OK) {
-								cerr << "failed to bind parameter: " << e << endl;
+								std::cerr << "failed to bind parameter: " << e << std::endl;
 								return -2;
 							}
 						}
 						e = sqlite3_bind_text(stmt, 3, s.c_str(), -1, SQLITE_STATIC);
 						if (e != SQLITE_OK) {
-							cerr << "failed to bind parameter: " << e << endl;
+							std::cerr << "failed to bind parameter: " << e << std::endl;
 							return -2;
 						}
 						e = sqlite3_step(stmt);
 						if (e != SQLITE_DONE) {
-							cerr << "failed to step statement: " << e << endl;
+							std::cerr << "failed to step statement: " << e << std::endl;
 							return -2;
 						}
 						sqlite3_finalize(stmt);
@@ -752,7 +750,7 @@ private:
 
 		int Handle(int i) {
 			if (count_++) {
-				cerr << "two or more elements in <math>" << endl;
+				std::cerr << "two or more elements in <math>" << std::endl;
 				return -2;
 			}
 			return i;
@@ -775,7 +773,7 @@ private:
 					if (i <= 0) return i;
 					continue;
 				} else {
-					cerr << "unknown child element of <value>: " << local_name << endl;
+					std::cerr << "unknown child element of <value>: " << local_name << std::endl;
 					return -2;
 				}
 			} else if (type == XML_READER_TYPE_END_ELEMENT) {
@@ -802,7 +800,7 @@ bool Read(const char *phsp_file, sqlite3 *db)
 
 	xmlTextReaderPtr text_reader = xmlReaderForFile(pp_s.c_str(), nullptr, 0);
 	if (!text_reader) {
-		cerr << "could not read " << phsp_file << endl;
+		std::cerr << "could not read " << phsp_file << std::endl;
 		return false;
 	}
 

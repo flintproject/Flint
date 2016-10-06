@@ -22,9 +22,6 @@
 #include "bc/pack.h"
 #include "db/query.h"
 
-using std::cerr;
-using std::endl;
-
 namespace flint {
 namespace load {
 
@@ -104,7 +101,7 @@ bool Process(sqlite3 *db, State *state)
 					 &AddColumn, state, &em);
 	if (e != SQLITE_OK) {
 		if (e != SQLITE_ABORT)
-			cerr << "failed to select layout: " << e << ": " << em << endl;
+			std::cerr << "failed to select layout: " << e << ": " << em << std::endl;
 		sqlite3_free(em);
 		return false;
 	}
@@ -130,16 +127,16 @@ bool Var(sqlite3 *db, const char *output)
 
 	std::ofstream ofs(output, std::ios::out|std::ios::binary);
 	if (!ofs) {
-		cerr << "failed to open " << output << endl;
+		std::cerr << "failed to open " << output << std::endl;
 		return false;
 	}
 	if (!PackToOstream(header, &ofs)) {
-		cerr << "failed to pack Header" << endl;
+		std::cerr << "failed to pack Header" << std::endl;
 		return false;
 	}
 	for (auto it=state.columns.cbegin();it!=state.columns.cend();++it) {
 		if (!PackToOstream(**it, &ofs)) {
-			cerr << "failed to pack Column" << endl;
+			std::cerr << "failed to pack Column" << std::endl;
 			return false;
 		}
 	}

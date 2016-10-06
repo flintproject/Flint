@@ -16,9 +16,6 @@
 #include "db/sprinkle-driver.h"
 #include "db/target-loader.h"
 
-using std::cerr;
-using std::cout;
-using std::endl;
 using std::map;
 using std::pair;
 using std::vector;
@@ -63,7 +60,7 @@ public:
 			{
 				bool b = im_.emplace(u, std::move(instances_)).second;
 				if (!b) {
-					cerr << "duplicate instance id: " << u << endl;
+					std::cerr << "duplicate instance id: " << u << std::endl;
 					return false;
 				}
 				instances_.reset(new vector<boost::uuids::uuid>);
@@ -77,16 +74,16 @@ public:
 				size_t s = templates_.size();
 				for (auto imit=im_.cbegin();imit!=im_.cend();++imit) {
 					if (imit->second->size() != s) {
-						cerr << "mismatch of numbers of template/instance: " << u << endl;
+						std::cerr << "mismatch of numbers of template/instance: " << u << std::endl;
 						return false;
 					}
 					for (size_t i=0;i<s;i++) {
 						bool b = jm_->emplace(std::make_pair(templates_[i], imit->first),
 											  (*imit->second)[i]).second;
 						if (!b) {
-							cerr << "duplicate template/instance: " << templates_[i]
+							std::cerr << "duplicate template/instance: " << templates_[i]
 								 << "/" << imit->first
-								 << endl;
+								 << std::endl;
 							return false;
 						}
 					}
@@ -137,8 +134,8 @@ bool Sprinkle(sqlite3 *db)
 	for (auto it=tm->cbegin();it!=tm->cend();++it) {
 		JournalMap::const_iterator jmit = jm->find(it->first);
 		if (jmit == jm->end()) {
-			cerr << "unknown template/instance: " << it->first.first
-				 << "/" << it->first.second << endl;
+			std::cerr << "unknown template/instance: " << it->first.first
+				 << "/" << it->first.second << std::endl;
 			return false;
 		}
 		boost::uuids::uuid track_id = it->first.first;

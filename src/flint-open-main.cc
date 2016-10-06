@@ -14,8 +14,6 @@
 #include "load.h"
 #include "task.h"
 
-using std::cerr;
-using std::endl;
 using std::strcmp;
 
 using namespace flint;
@@ -24,7 +22,7 @@ namespace {
 
 void Usage()
 {
-	cerr << "usage: flint-open" << endl;
+	std::cerr << "usage: flint-open" << std::endl;
 }
 
 } // namespace
@@ -45,7 +43,7 @@ int main(int argc, char *argv[])
 	char given_file[1024]; // FIXME
 	size_t s = fread(given_file, 1, 1023, stdin);
 	if (s == 0) {
-		cerr << "failed to read model file name" << endl;
+		std::cerr << "failed to read model file name" << std::endl;
 		return EXIT_FAILURE;
 	}
 	given_file[s] = '\0';

@@ -10,8 +10,6 @@
 
 #include "csv/export.h"
 
-using std::cerr;
-using std::endl;
 using std::strcmp;
 
 using namespace flint;
@@ -20,7 +18,7 @@ namespace {
 
 void usage()
 {
-	cerr << "usage: csv2isd INPUT OUTPUT" << endl;
+	std::cerr << "usage: csv2isd INPUT OUTPUT" << std::endl;
 }
 
 } // namespace

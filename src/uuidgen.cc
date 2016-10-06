@@ -11,9 +11,6 @@
 #include <boost/interprocess/file_mapping.hpp>
 #include <boost/interprocess/mapped_region.hpp>
 
-using std::cerr;
-using std::endl;
-
 namespace flint {
 namespace {
 
@@ -32,7 +29,7 @@ public:
 		void *addr = mr_.get_address();
 		size_t size = mr_.get_size();
 		if (size == 0) {
-			cerr << "mapped region is of size 0" << endl;
+			std::cerr << "mapped region is of size 0" << std::endl;
 			return false;
 		}
 		std::uint32_t a = 1;

@@ -5,8 +5,6 @@
 #include <cstring>
 #include <iostream>
 
-using std::cerr;
-using std::endl;
 using std::strcmp;
 
 namespace flint {
@@ -28,7 +26,7 @@ bool ConvertStringToReduction(const char *s, Reduction *r)
 	} else if (strcmp(s, "degree") == 0) {
 		*r = Reduction::kDegree;
 	} else {
-		cerr << "unknown reduction: " << s << endl;
+		std::cerr << "unknown reduction: " << s << std::endl;
 		return false;
 	}
 	return true;

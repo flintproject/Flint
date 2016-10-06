@@ -15,9 +15,6 @@
 #include "db/statement-driver.h"
 #include "phml.pb.h"
 
-using std::cerr;
-using std::endl;
-
 namespace flint {
 namespace phml {
 
@@ -45,13 +42,13 @@ public:
 		e = sqlite3_prepare_v2(db, "SELECT * FROM ncs",
 							   -1, &nc_stmt_, nullptr);
 		if (e != SQLITE_OK) {
-			cerr << "failed to prepare statement: " << e << endl;
+			std::cerr << "failed to prepare statement: " << e << std::endl;
 			return false;
 		}
 		e = sqlite3_prepare_v2(db, "SELECT unit_id, step FROM tds WHERE module_id IS NULL",
 							   -1, &td_stmt_, nullptr);
 		if (e != SQLITE_OK) {
-			cerr << "failed to prepare statement: " << e << endl;
+			std::cerr << "failed to prepare statement: " << e << std::endl;
 			return false;
 		}
 		return SetPartOfNumericalConfiguration() && SetTimeDiscretization();
@@ -65,7 +62,7 @@ private:
 			return true;
 		}
 		if (e != SQLITE_ROW) { // error
-			cerr << "failed to step prepared statement" << endl;
+			std::cerr << "failed to step prepared statement" << std::endl;
 			return false;
 		}
 		const unsigned char *rg_name = sqlite3_column_text(nc_stmt_, 0);
@@ -97,7 +94,7 @@ private:
 			return true;
 		}
 		if (e != SQLITE_ROW) { // error
-			cerr << "failed to step prepared statement" << endl;
+			std::cerr << "failed to step prepared statement" << std::endl;
 			return false;
 		}
 		int unit_id = sqlite3_column_int(td_stmt_, 0);
@@ -126,12 +123,12 @@ public:
 		int e;
 		e = sqlite3_bind_text(stmt(), 1, method, -1, SQLITE_STATIC);
 		if (e != SQLITE_OK) {
-			cerr << "failed to bind method: " << e << endl;
+			std::cerr << "failed to bind method: " << e << std::endl;
 			return false;
 		}
 		e = sqlite3_step(stmt());
 		if (e != SQLITE_DONE) {
-			cerr << "failed to step statement: " << e << endl;
+			std::cerr << "failed to step statement: " << e << std::endl;
 			return false;
 		}
 		sqlite3_reset(stmt());
@@ -152,11 +149,11 @@ bool Nc(sqlite3 *db, const char *output, int *seed)
 	{
 		std::ofstream ofs(output, std::ios::binary);
 		if (!ofs) {
-			cerr << "failed to open " << output << endl;
+			std::cerr << "failed to open " << output << std::endl;
 			return false;
 		}
 		if (!nc->SerializeToOstream(&ofs)) {
-			cerr << "failed to serialize NumericalConfiguration" << endl;
+			std::cerr << "failed to serialize NumericalConfiguration" << std::endl;
 			return false;
 		}
 		ofs.close();

@@ -35,8 +35,6 @@
 #include "utf8path.h"
 #include "variable.h"
 
-using std::cerr;
-using std::endl;
 using std::strcmp;
 using std::string;
 
@@ -90,11 +88,11 @@ public:
 			boost::filesystem::path temp_path("tsc.%%%%-%%%%-%%%%-%%%%.isd");
 			boost::filesystem::path isd_path = boost::filesystem::unique_path(temp_path, ec);
 			if (ec) {
-				cerr << ec << endl;
+				std::cerr << ec << std::endl;
 				return false;
 			}
 			if (boost::filesystem::exists(isd_path, ec)) {
-				cerr << "failed to create temporary path: " << isd_path << endl;
+				std::cerr << "failed to create temporary path: " << isd_path << std::endl;
 				return false;
 			}
 			boost::filesystem::path a_path = boost::filesystem::absolute(isd_path);
@@ -104,7 +102,7 @@ public:
 			return true;
 		}
 		if (strcmp(format, "isd") != 0) {
-			cerr << "unknown format: " << format << endl;
+			std::cerr << "unknown format: " << format << std::endl;
 			return false;
 		}
 		PathSet::iterator it = ps_->insert(ref_path).first;
@@ -129,12 +127,12 @@ public:
 		int e;
 		e = sqlite3_bind_text(stmt(), 1, filename.get(), -1, nullptr);
 		if (e != SQLITE_OK) {
-			cerr << "failed to bind filename: " << e << endl;
+			std::cerr << "failed to bind filename: " << e << std::endl;
 			return false;
 		}
 		e = sqlite3_step(stmt());
 		if (e != SQLITE_DONE) {
-			cerr << "failed to step: " << e << endl;
+			std::cerr << "failed to step: " << e << std::endl;
 			return false;
 		}
 		sqlite3_reset(stmt());
@@ -153,7 +151,7 @@ public:
 
 	void GetDescription(std::uint32_t i, std::uint32_t bytes, const char *d) {
 		if (!cm_->emplace(string(d, bytes), i).second) {
-			cerr << "found duplicate name of columns: " << endl;
+			std::cerr << "found duplicate name of columns: " << std::endl;
 		}
 	}
 
@@ -177,9 +175,9 @@ public:
 
 	bool Load(ColumnMap *cm) {
 		if (!ifs_.is_open()) {
-			cerr << "failed to open ISDF file: "
+			std::cerr << "failed to open ISDF file: "
 				 << path_
-				 << endl;
+				 << std::endl;
 			return false;
 		}
 		isdf::Reader reader;
@@ -210,47 +208,47 @@ public:
 	bool Handle(const boost::uuids::uuid &uuid, int pq_id, int ts_id, const char *element_id) {
 		TimeseriesMap::const_iterator it = tm_->find(uuid);
 		if (it == tm_->end()) {
-			cerr << "missing module-id in timeseries: " << uuid << endl;
+			std::cerr << "missing module-id in timeseries: " << uuid << std::endl;
 			return false;
 		}
 		std::unordered_map<int, PathSet::iterator>::const_iterator mit = it->second.find(ts_id);
 		if (mit == it->second.end()) {
-			cerr << "missing timeseries: "
+			std::cerr << "missing timeseries: "
 				 << uuid
 				 << " "
 				 << ts_id
-				 << endl;
+				 << std::endl;
 			return false;
 		}
 		PqMap::const_iterator pit = pqm_->find(uuid);
 		if (pit == pqm_->end()) {
-			cerr << "missing module-id in physical-quantities: "
+			std::cerr << "missing module-id in physical-quantities: "
 				 << uuid
-				 << endl;
+				 << std::endl;
 			return false;
 		}
 		std::unordered_map<int, string>::const_iterator qit = pit->second.find(pq_id);
 		if (qit == pit->second.end()) {
-			cerr << "missing physical-quantity-id: "
+			std::cerr << "missing physical-quantity-id: "
 				 << uuid
 				 << " "
 				 << pq_id
-				 << endl;
+				 << std::endl;
 			return false;
 		}
 		IsdfMap::const_iterator iit = im_->find(*mit->second);
 		if (iit == im_->end()) {
-			cerr << "missing path: " << *mit->second << endl;
+			std::cerr << "missing path: " << *mit->second << std::endl;
 			return false;
 		}
 		string name(element_id);
 		ColumnMap::const_iterator cit = iit->second->find(name);
 		if (cit == iit->second->end()) {
-			cerr << "missing element in "
+			std::cerr << "missing element in "
 				 << *mit->second
 				 << " with element_id "
 				 << element_id
-				 << endl;
+				 << std::endl;
 			return false;
 		}
 		int idx0 = static_cast<int>(std::distance(ps_->begin(), mit->second));

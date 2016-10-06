@@ -38,8 +38,6 @@
 #include "task.h"
 #include "ts.h"
 
-using std::cerr;
-using std::endl;
 using std::fclose;
 using std::fopen;
 using std::fwrite;
@@ -236,12 +234,12 @@ bool SaveData(const char *output_data_file, size_t layer_size, double *data)
 {
 	FILE *fp = fopen(output_data_file, "wb");
 	if (!fp) {
-		cerr << "could not open " << output_data_file << endl;
+		std::cerr << "could not open " << output_data_file << std::endl;
 		return false;
 	}
 	if (fwrite(data, sizeof(double), layer_size, fp) != layer_size) {
 		fclose(fp);
-		cerr << "failed to write output data" << endl;
+		std::cerr << "failed to write output data" << std::endl;
 		return false;
 	}
 	fclose(fp);
@@ -290,7 +288,7 @@ bool Evolve(sqlite3 *db,
 
 	int nol = task->bc->nol;
 	if (nol <= 0) {
-		cerr << "invalid nol: " << nol << endl;
+		std::cerr << "invalid nol: " << nol << std::endl;
 		return false;
 	}
 	if (with_pre) {
@@ -504,7 +502,7 @@ bool Evolve(sqlite3 *db,
 				} else {
 					// output the first layer of data
 					if (fwrite(data.get(), sizeof(double), layer_size, output_fp) != layer_size) {
-						cerr << "failed to write output" << endl;
+						std::cerr << "failed to write output" << std::endl;
 						return false;
 					}
 				}
@@ -514,7 +512,7 @@ bool Evolve(sqlite3 *db,
 
 		if (option.progress_address) {
 			if (data[kIndexEnd] <= 0) {
-				cerr << "non-positive end time: " << data[kIndexEnd] << endl;
+				std::cerr << "non-positive end time: " << data[kIndexEnd] << std::endl;
 				return false;
 			}
 			char c = static_cast<char>(100 * (data[kIndexTime] / data[kIndexEnd]));

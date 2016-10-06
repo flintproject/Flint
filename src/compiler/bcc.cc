@@ -24,9 +24,6 @@
 #include "bc.pb.h"
 #include "flint/bc.h"
 
-using std::cerr;
-using std::endl;
-
 using namespace boost::spirit;
 
 namespace flint {
@@ -946,7 +943,7 @@ public:
 		Body body;
 		bool r = lex::tokenize_and_parse(it, eit, tokens_, grammar_, body);
 		if (!r || it != eit) {
-			cerr << "failed to parse: " << it << endl;
+			std::cerr << "failed to parse: " << it << std::endl;
 			return 1;
 		}
 		Block block;
@@ -1001,7 +998,7 @@ Bytecode *Bcc(sqlite3 *db)
 		e = sqlite3_exec(db, "SELECT * FROM tacs", Process, &parser, &em);
 		if (e != SQLITE_OK) {
 			if (e != SQLITE_ABORT)
-				cerr << "failed to enumerate tacs: " << e << ": " << em << endl;
+				std::cerr << "failed to enumerate tacs: " << e << ": " << em << std::endl;
 			sqlite3_free(em);
 			return nullptr;
 		}
@@ -1025,7 +1022,7 @@ Bytecode *Bcc(sqlite3 *db)
 		e = sqlite3_exec(db, "SELECT * FROM nol", SetNol, bytecode.get(), &em);
 		if (e != SQLITE_OK) {
 			if (e != SQLITE_ABORT)
-				cerr << "failed to select nol: " << e << ": " << em << endl;
+				std::cerr << "failed to select nol: " << e << ": " << em << std::endl;
 			sqlite3_free(em);
 			return nullptr;
 		}

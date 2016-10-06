@@ -15,8 +15,6 @@
 
 #include "isdf/reader.h"
 
-using std::cerr;
-using std::endl;
 using std::fclose;
 using std::fopen;
 using std::fwrite;
@@ -123,13 +121,13 @@ bool CopyFile(const char *source, const char *target)
 				return true;
 			}
 			fclose(ifp);
-			cerr << "failed to read file: " << source << endl;
+			std::cerr << "failed to read file: " << source << std::endl;
 			return false;
 		}
 	} while (fwrite(buf.get(), s, 1, ofp) == 1);
 	fclose(ofp);
 	fclose(ifp);
-	cerr << "failed to write file: " << target << endl;
+	std::cerr << "failed to write file: " << target << std::endl;
 	return false;
 }
 
@@ -167,7 +165,7 @@ private:
 
 void Usage()
 {
-	cerr << "usage: isdsort INPUT OUTPUT [SKIP]" << endl;
+	std::cerr << "usage: isdsort INPUT OUTPUT [SKIP]" << std::endl;
 }
 
 } // namespace
@@ -192,7 +190,7 @@ int main(int argc, char *argv[])
 	if (argc == 4) {
 		int s = std::atoi(argv[3]);
 		if (s <= 0) {
-			cerr << "invalid skip: " << argv[3] << endl;
+			std::cerr << "invalid skip: " << argv[3] << std::endl;
 			return EXIT_FAILURE;
 		}
 		skip = static_cast<std::uint32_t>(s);
@@ -200,7 +198,7 @@ int main(int argc, char *argv[])
 
 	std::ifstream ifs(argv[1], std::ios::in|std::ios::binary);
 	if (!ifs.is_open()) {
-		cerr << "failed to open file: " << argv[1] << endl;
+		std::cerr << "failed to open file: " << argv[1] << std::endl;
 		return EXIT_FAILURE;
 	}
 	std::unique_ptr<isdf::Reader> reader(new isdf::Reader);

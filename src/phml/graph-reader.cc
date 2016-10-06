@@ -14,9 +14,6 @@
 #include "phml/node.h"
 #include "phml/pq.h"
 
-using std::cerr;
-using std::endl;
-
 namespace flint {
 namespace phml {
 
@@ -39,7 +36,7 @@ int GraphReader::Read()
 				if (i <= 0) return i;
 				continue;
 			} else {
-				cerr << "<graph> is expected, but: " << local_name << endl;
+				std::cerr << "<graph> is expected, but: " << local_name << std::endl;
 				return -2;
 			}
 		} else if (type == XML_READER_TYPE_END_ELEMENT) {
@@ -79,7 +76,7 @@ int GraphReader::ReadGraph()
 				if (i <= 0) return i;
 				continue;
 			} else {
-				cerr << "unknown child of <graph>: " << local_name << endl;
+				std::cerr << "unknown child of <graph>: " << local_name << std::endl;
 				return -2;
 			}
 		} else if (type == XML_READER_TYPE_END_ELEMENT) {
@@ -108,7 +105,7 @@ int GraphReader::ReadEventCondition()
 					return i;
 				continue;
 			} else {
-				cerr << "unknown child of <event-condition>: " << local_name << endl;
+				std::cerr << "unknown child of <event-condition>: " << local_name << std::endl;
 				return -2;
 			}
 		} else if (type == XML_READER_TYPE_END_ELEMENT) {
@@ -136,7 +133,7 @@ int GraphReader::ReadNodeSet()
 				if (i <= 0) return i;
 				continue;
 			} else {
-				cerr << "unknown child of <node-set>: " << local_name << endl;
+				std::cerr << "unknown child of <node-set>: " << local_name << std::endl;
 				return -2;
 			}
 		} else if (type == XML_READER_TYPE_END_ELEMENT) {
@@ -162,16 +159,16 @@ int GraphReader::ReadNode()
 			const xmlChar *value = xmlTextReaderConstValue(text_reader_);
 			node_id = atoi((const char *)value);
 			if (node_id <= 0) {
-				cerr << "invalid value of node-id of <node>: " << value << endl;
+				std::cerr << "invalid value of node-id of <node>: " << value << std::endl;
 				return -2;
 			}
 		} else {
-			cerr << "unknown attribute of <node>: " << local_name << endl;
+			std::cerr << "unknown attribute of <node>: " << local_name << std::endl;
 			return -2;
 		}
 	}
 	if (node_id == 0) {
-		cerr << "missing node-id of <node>" << endl;
+		std::cerr << "missing node-id of <node>" << std::endl;
 		return -2;
 	}
 	std::unique_ptr<Node> node(new Node(node_id));
@@ -189,14 +186,14 @@ int GraphReader::ReadNode()
 				i = xmlTextReaderNext(text_reader_);
 				continue;
 			} else {
-				cerr << "unknown child of <node>: " << local_name << endl;
+				std::cerr << "unknown child of <node>: " << local_name << std::endl;
 				return -2;
 			}
 		} else if (type == XML_READER_TYPE_END_ELEMENT) {
 			const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
 			if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("node"))) {
 				if (!node->name()) {
-					cerr << "missing <name> of <node>" << endl;
+					std::cerr << "missing <name> of <node>" << std::endl;
 					return -2;
 				}
 				if (!driver_->SaveNode(pq_, node.get())) return -2;
@@ -219,12 +216,12 @@ int GraphReader::ReadNodeName(Node *node)
 		return -2;
 	}
 	if (xmlStrlen(name) == 0) {
-		cerr << "node name is empty" << endl;
+		std::cerr << "node name is empty" << std::endl;
 		xmlFree(s);
 		return -2;
 	}
 	if (ContainNonGraphic(name)) {
-		cerr << "node name contains invalid character: \"" << name << "\"" << endl;
+		std::cerr << "node name contains invalid character: \"" << name << "\"" << std::endl;
 		xmlFree(s);
 		return -2;
 	}
@@ -246,7 +243,7 @@ int GraphReader::ReadArcSet()
 				if (i <= 0) return i;
 				continue;
 			} else {
-				cerr << "unknown child of <arc-set>: " << local_name << endl;
+				std::cerr << "unknown child of <arc-set>: " << local_name << std::endl;
 				return -2;
 			}
 		} else if (type == XML_READER_TYPE_END_ELEMENT) {
@@ -274,38 +271,38 @@ int GraphReader::ReadArc()
 			const xmlChar *value = xmlTextReaderConstValue(text_reader_);
 			arc_id = atoi((const char *)value);
 			if (arc_id <= 0) {
-				cerr << "invalid value of arc-id of <arc>: " << value << endl;
+				std::cerr << "invalid value of arc-id of <arc>: " << value << std::endl;
 				return -2;
 			}
 		} else if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("head-node-id"))) {
 			const xmlChar *value = xmlTextReaderConstValue(text_reader_);
 			head_node_id = std::atoi(reinterpret_cast<const char *>(value));
 			if (arc_id <= 0) {
-				cerr << "invalid value of head-node-id of <arc>: " << value << endl;
+				std::cerr << "invalid value of head-node-id of <arc>: " << value << std::endl;
 				return -2;
 			}
 		} else if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("tail-node-id"))) {
 			const xmlChar *value = xmlTextReaderConstValue(text_reader_);
 			tail_node_id = std::atoi(reinterpret_cast<const char *>(value));
 			if (arc_id <= 0) {
-				cerr << "invalid value of tail-node-id of <arc>: " << value << endl;
+				std::cerr << "invalid value of tail-node-id of <arc>: " << value << std::endl;
 				return -2;
 			}
 		} else {
-			cerr << "unknown attribute of <arc>: " << local_name << endl;
+			std::cerr << "unknown attribute of <arc>: " << local_name << std::endl;
 			return -2;
 		}
 	}
 	if (arc_id == 0) {
-		cerr << "missing arc-id of <arc>" << endl;
+		std::cerr << "missing arc-id of <arc>" << std::endl;
 		return -2;
 	}
 	if (head_node_id == 0) {
-		cerr << "missing head-node-id of <arc>" << endl;
+		std::cerr << "missing head-node-id of <arc>" << std::endl;
 		return -2;
 	}
 	if (tail_node_id == 0) {
-		cerr << "missing tail-node-id of <arc>" << endl;
+		std::cerr << "missing tail-node-id of <arc>" << std::endl;
 		return -2;
 	}
 	std::unique_ptr<Arc> arc(new Arc(arc_id, tail_node_id, head_node_id));
@@ -323,14 +320,14 @@ int GraphReader::ReadArc()
 				i = xmlTextReaderNext(text_reader_);
 				continue;
 			} else {
-				cerr << "unknown child of <arc>: " << local_name << endl;
+				std::cerr << "unknown child of <arc>: " << local_name << std::endl;
 				return -2;
 			}
 		} else if (type == XML_READER_TYPE_END_ELEMENT) {
 			const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
 			if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("arc"))) {
 				if (arc->type() == Arc::kUnspecified) {
-					cerr << "missing transition of <arc>: " << arc_id << endl;
+					std::cerr << "missing transition of <arc>: " << arc_id << std::endl;
 					return -2;
 				}
 				if (!driver_->SaveArc(pq_, arc.get())) return -2;
@@ -356,16 +353,16 @@ int GraphReader::ReadTransition(Arc *arc)
 			} else if (xmlStrEqual(value, reinterpret_cast<const xmlChar *>("probability"))) {
 				arc->set_type(Arc::kProbability);
 			} else {
-				cerr << "unknown type of <transition>: " << value << endl;
+				std::cerr << "unknown type of <transition>: " << value << std::endl;
 				return -2;
 			}
 		} else {
-			cerr << "unknown attribute of <transition>: " << local_name << endl;
+			std::cerr << "unknown attribute of <transition>: " << local_name << std::endl;
 			return -2;
 		}
 	}
 	if (arc->type() == Arc::kUnspecified) {
-		cerr << "missing type of <transition>" << endl;
+		std::cerr << "missing type of <transition>" << std::endl;
 		return -2;
 	}
 	i = xmlTextReaderRead(text_reader_);
@@ -379,7 +376,7 @@ int GraphReader::ReadTransition(Arc *arc)
 				if (i <= 0) return i;
 				continue;
 			} else {
-				cerr << "unknown child of <transition>: " << local_name << endl;
+				std::cerr << "unknown child of <transition>: " << local_name << std::endl;
 				return -2;
 			}
 		} else if (type == XML_READER_TYPE_END_ELEMENT) {

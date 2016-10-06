@@ -61,8 +61,6 @@
 #include "ts.h"
 
 using std::atoi;
-using std::cerr;
-using std::endl;
 using std::memcpy;
 
 namespace flint {
@@ -85,7 +83,7 @@ public:
 		bool r = true;
 		int e = sqlite3_prepare_v2(db, kQuery, -1, &query_stmt_, nullptr);
 		if (e != SQLITE_OK) {
-			cerr << "failed to prepare statement: " << kQuery << ": " << e << endl;
+			std::cerr << "failed to prepare statement: " << kQuery << ": " << e << std::endl;
 			return false;
 		}
 		for (e = sqlite3_step(query_stmt_); e == SQLITE_ROW; e = sqlite3_step(query_stmt_)) {
@@ -97,12 +95,12 @@ public:
 			boost::uuids::uuid mu, cu;
 			memcpy(&mu, module_id, mu.size());
 			memcpy(&cu, capsulated_by, cu.size());
-			cerr << "module of module-id " << mu
+			std::cerr << "module of module-id " << mu
 				 << " is capsulated by unknown capsule module: " << cu
-				 << endl;
+				 << std::endl;
 		}
 		if (e != SQLITE_DONE) {
-			cerr << "failed to step statement: " << kQuery << ": " << e << endl;
+			std::cerr << "failed to step statement: " << kQuery << ": " << e << std::endl;
 			return false;
 		}
 		sqlite3_reset(query_stmt_);
@@ -142,13 +140,13 @@ public:
 		e = sqlite3_prepare_v2(db, "SELECT module_id, capsulated_by FROM modules WHERE type = 'capsule' OR type = 'functional-unit'",
 							   -1, &query_stmt_, nullptr);
 		if (e != SQLITE_OK) {
-			cerr << "failed to prepare statement: " << e << endl;
+			std::cerr << "failed to prepare statement: " << e << std::endl;
 			return false;
 		}
 		e = sqlite3_prepare_v2(db, "INSERT INTO trees VALUES (?, ?)",
 							   -1, &tree_stmt_, nullptr);
 		if (e != SQLITE_OK) {
-			cerr << "failed to prepare statement: " << e << endl;
+			std::cerr << "failed to prepare statement: " << e << std::endl;
 			return false;
 		}
 		for (e = sqlite3_step(query_stmt_); e == SQLITE_ROW; e = sqlite3_step(query_stmt_)) {
@@ -168,7 +166,7 @@ public:
 			}
 		}
 		if (e != SQLITE_DONE) {
-			cerr << "failed to step statement: " << e << endl;
+			std::cerr << "failed to step statement: " << e << std::endl;
 			return false;
 		}
 		sqlite3_reset(query_stmt_);
@@ -196,17 +194,17 @@ private:
 	bool Save(const boost::uuids::uuid &module_id, int level) {
 		int e = sqlite3_bind_blob(tree_stmt_, 1, &module_id, module_id.size(), SQLITE_STATIC);
 		if (e != SQLITE_OK) {
-			cerr << "failed to bind module_id: " << e << endl;
+			std::cerr << "failed to bind module_id: " << e << std::endl;
 			return false;
 		}
 		e = sqlite3_bind_int64(tree_stmt_, 2, level);
 		if (e != SQLITE_OK) {
-			cerr << "failed to bind level: " << e << endl;
+			std::cerr << "failed to bind level: " << e << std::endl;
 			return false;
 		}
 		e = sqlite3_step(tree_stmt_);
 		if (e != SQLITE_DONE) {
-			cerr << "failed to step statement: " << e << endl;
+			std::cerr << "failed to step statement: " << e << std::endl;
 			return false;
 		}
 		sqlite3_reset(tree_stmt_);
@@ -300,14 +298,14 @@ public:
 private:
 	void ReportHint() {
 		if (module_ && module_->module_id() && module_->name()) {
-			cerr << " at";
+			std::cerr << " at";
 			if (pq_ && pq_->pq_id() > 0 && pq_->name()) {
-				cerr << " physical-quantity \"" << pq_->name()
+				std::cerr << " physical-quantity \"" << pq_->name()
 					 << "\" (" << pq_->pq_id() << ") of";
 			}
-			cerr << " module \"" << module_->name()
+			std::cerr << " module \"" << module_->name()
 				 << "\" (" << module_->module_id()
-				 << ')' << endl;
+				 << ')' << std::endl;
 		}
 	}
 
@@ -357,7 +355,7 @@ private:
 					if (i <= 0) return i;
 					continue;
 				} else {
-					cerr << "unknown child of <numerical-configuration>: " << local_name << endl;
+					std::cerr << "unknown child of <numerical-configuration>: " << local_name << std::endl;
 					return -2;
 				}
 			} else if (type == XML_READER_TYPE_END_ELEMENT) {
@@ -390,8 +388,8 @@ private:
 					td->set_unit_id(unit_id);
 				} else {
 					// generously ignore invalid unit-id
-					cerr << "warning: invalid unit-id of <time-discretization>: "
-						 << unit_id << endl;
+					std::cerr << "warning: invalid unit-id of <time-discretization>: "
+						 << unit_id << std::endl;
 				}
 			}
 		}
@@ -423,7 +421,7 @@ private:
 		xmlChar *s = xmlTextReaderReadString(text_reader_);
 		if (!s) {
 			// generously ignore empty step
-			cerr << "warning: missing body of <step>" << endl;
+			std::cerr << "warning: missing body of <step>" << std::endl;
 			return xmlTextReaderNext(text_reader_);
 		}
 		xmlChar *step;
@@ -434,14 +432,14 @@ private:
 		int len = xmlStrlen(step);
 		if (len == 0) {
 			// generously ignore empty step
-			cerr << "warning: empty body of <step>" << endl;
+			std::cerr << "warning: empty body of <step>" << std::endl;
 			xmlFree(s);
 			return xmlTextReaderNext(text_reader_);
 		}
 
 		// validate step
 		if (ContainNonGraphic(step)) {
-			cerr << "<step> contains invalid character: \"" << step << "\"" << endl;
+			std::cerr << "<step> contains invalid character: \"" << step << "\"" << std::endl;
 			xmlFree(s);
 			return -2;
 		}
@@ -468,7 +466,7 @@ private:
 					if (i <= 0) return i;
 					continue;
 				} else {
-					cerr << "unknown child of <algorithm>: " << local_name << endl;
+					std::cerr << "unknown child of <algorithm>: " << local_name << std::endl;
 					return -2;
 				}
 			} else if (type == XML_READER_TYPE_END_ELEMENT) {
@@ -495,12 +493,12 @@ private:
 			} else if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("seed"))) {
 				nc->set_rg_seed(xmlTextReaderValue(text_reader_));
 			} else {
-				cerr << "unknown attribute of <random-generator>: " << local_name << endl;
+				std::cerr << "unknown attribute of <random-generator>: " << local_name << std::endl;
 				return -2;
 			}
 		}
 		if (!nc->rg_name()) {
-			cerr << "missing name of <random-generator>" << endl;
+			std::cerr << "missing name of <random-generator>" << std::endl;
 			return -2;
 		}
 		return xmlTextReaderNext(text_reader_);
@@ -515,12 +513,12 @@ private:
 			if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("name"))) {
 				nc->set_integration(xmlTextReaderValue(text_reader_));
 			} else {
-				cerr << "unknown attribute of <integration>: " << local_name << endl;
+				std::cerr << "unknown attribute of <integration>: " << local_name << std::endl;
 				return -2;
 			}
 		}
 		if (!nc->integration()) {
-			cerr << "missing name of <integration>" << endl;
+			std::cerr << "missing name of <integration>" << std::endl;
 			return -2;
 		}
 		return xmlTextReaderNext(text_reader_);
@@ -536,14 +534,14 @@ private:
 				const xmlChar *value = xmlTextReaderConstValue(text_reader_);
 				int unit_id = atoi(reinterpret_cast<const char *>(value));
 				if (unit_id <= 0) {
-					cerr << "invalid unit-id of <simulation-time-span>: " << value << endl;
+					std::cerr << "invalid unit-id of <simulation-time-span>: " << value << std::endl;
 					return -2;
 				}
 				nc->set_sts_unit_id(unit_id);
 			}
 		}
 		if (!nc->sts_unit_id()) {
-			cerr << "missing unit-id of <simulation-time-span>" << endl;
+			std::cerr << "missing unit-id of <simulation-time-span>" << std::endl;
 			return -2;
 		}
 
@@ -560,12 +558,12 @@ private:
 		int len = xmlStrlen(sts_value);
 		if (len == 0) {
 			// generously ignore empty simulation-time-span
-			cerr << "warning: empty body of <simulation-time-span>" << endl;
+			std::cerr << "warning: empty body of <simulation-time-span>" << std::endl;
 			xmlFree(s);
 			return xmlTextReaderNext(text_reader_);
 		}
 		if (ContainNonGraphic(sts_value)) {
-			cerr << "<simulation-time-span> contains invalid character: \"" << sts_value << "\"" << endl;
+			std::cerr << "<simulation-time-span> contains invalid character: \"" << sts_value << "\"" << std::endl;
 			xmlFree(s);
 			return -2;
 		}
@@ -587,7 +585,7 @@ private:
 					if (i <= 0) return i;
 					continue;
 				} else {
-					cerr << "unknown child of <unit-set>: " << local_name << endl;
+					std::cerr << "unknown child of <unit-set>: " << local_name << std::endl;
 					return -2;
 				}
 			} else if (type == XML_READER_TYPE_END_ELEMENT) {
@@ -605,13 +603,13 @@ private:
 		xmlChar *value;
 		int i = ReadAttributeValue(reinterpret_cast<const xmlChar *>("unit-id"), &value);
 		if (i <= 0) {
-			cerr << "missing unit-id of <unit>" << endl;
+			std::cerr << "missing unit-id of <unit>" << std::endl;
 			return -2;
 		}
 		int unit_id = atoi(reinterpret_cast<const char *>(value));
 		xmlFree(value);
 		if (unit_id < 0) {
-			cerr << "invalid unit-id " << unit_id << endl;
+			std::cerr << "invalid unit-id " << unit_id << std::endl;
 			return -2;
 		}
 		std::unique_ptr<Unit> unit(new Unit(unit_id));
@@ -629,14 +627,14 @@ private:
 					if (i <= 0) return i;
 					continue;
 				} else {
-					cerr << "unknown child of <unit>: " << local_name << endl;
+					std::cerr << "unknown child of <unit>: " << local_name << std::endl;
 					return -2;
 				}
 			} else if (type == XML_READER_TYPE_END_ELEMENT) {
 				const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
 				if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("unit"))) {
 					if (!unit->name()) {
-						cerr << "missing <name> of <unit>" << endl;
+						std::cerr << "missing <name> of <unit>" << std::endl;
 						return -2;
 					}
 					return xmlTextReaderRead(text_reader_);
@@ -655,7 +653,7 @@ private:
 		int len = xmlStrlen(s);
 		for (int i=0;i<len;i++) {
 			if (!isprint(s[i])) {
-				cerr << "unit name contains invalid character: \"" << s << "\"" << endl;
+				std::cerr << "unit name contains invalid character: \"" << s << "\"" << std::endl;
 				xmlFree(s);
 				return -2;
 			}
@@ -668,7 +666,7 @@ private:
 
 	int ReadElement(const Unit *unit) {
 		if (!unit->rowid()) {
-			cerr << "<element> comes before <name> of <unit>" << endl;
+			std::cerr << "<element> comes before <name> of <unit>" << std::endl;
 			return -2;
 		}
 
@@ -684,11 +682,11 @@ private:
 			if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("unit-id"))) {
 				int unit_id = atoi(reinterpret_cast<const char *>(value));
 				if (unit_id < 0) {
-					cerr << "invalid unit-id of <element>" << endl;
+					std::cerr << "invalid unit-id of <element>" << std::endl;
 					return -2;
 				}
 				if (unit_id == unit->unit_id()) {
-					cerr << "unit with unit-id " << unit_id << " is ill-defined by <element> with its own unit-id" << endl;
+					std::cerr << "unit with unit-id " << unit_id << " is ill-defined by <element> with its own unit-id" << std::endl;
 					return -2;
 				}
 				element->set_unit_id(unit_id);
@@ -736,7 +734,7 @@ private:
 				} else if (xmlStrEqual(value, reinterpret_cast<const xmlChar *>("yocto"))) {
 					element->set_factor(-24);
 				} else {
-					cerr << "unknown prefix of <element>: " << value << endl;
+					std::cerr << "unknown prefix of <element>: " << value << std::endl;
 					return -2;
 				}
 			} else if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("multiplier"))) {
@@ -744,14 +742,14 @@ private:
 			} else if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("offset"))) {
 				element->set_offset(strtod(reinterpret_cast<const char *>(value), nullptr));
 			} else {
-				cerr << "unknown attribute of <element>: " << local_name << endl;
+				std::cerr << "unknown attribute of <element>: " << local_name << std::endl;
 				return -2;
 			}
 		}
 
 		if (element->unit_id() < 0) {
-			cerr << "missing unit-id of <element> in unit with unit-id "
-				 << unit->unit_id() << endl;
+			std::cerr << "missing unit-id of <element> in unit with unit-id "
+				 << unit->unit_id() << std::endl;
 			return -2;
 		}
 		if (!dd_->SaveElement(unit, element.get())) return -2;
@@ -776,7 +774,7 @@ private:
 					}
 					continue;
 				} else {
-					cerr << "unknown child of <module-set>: " << local_name << endl;
+					std::cerr << "unknown child of <module-set>: " << local_name << std::endl;
 					return -2;
 				}
 			} else if (type == XML_READER_TYPE_END_ELEMENT) {
@@ -804,11 +802,11 @@ private:
 			}
 		}
 		if (!module_->module_id()) {
-			cerr << "missing module-id of <module>" << endl;
+			std::cerr << "missing module-id of <module>" << std::endl;
 			return -2;
 		}
 		if (!module_->type()) {
-			cerr << "missing type of <module>: " << module_->module_id() << endl;
+			std::cerr << "missing type of <module>: " << module_->module_id() << std::endl;
 			return -2;
 		}
 		i = xmlTextReaderRead(text_reader_);
@@ -894,7 +892,7 @@ private:
 			switch (s[i]) {
 			case '\n':
 			case '\r':
-				cerr << "name contains invalid character: \"" << s << "\"" << endl;
+				std::cerr << "name contains invalid character: \"" << s << "\"" << std::endl;
 				xmlFree(s);
 				return -2;
 			default:
@@ -936,7 +934,7 @@ private:
 		xmlChar *module_id;
 		int i = ReadAttributeValue(reinterpret_cast<const xmlChar *>("module-id"), &module_id);
 		if (i <= 0) {
-			cerr << "missing module-id of <capsulated-by>" << endl;
+			std::cerr << "missing module-id of <capsulated-by>" << std::endl;
 			return -2;
 		}
 		module_->set_capsulated_by(module_id);
@@ -947,7 +945,7 @@ private:
 		xmlChar *state;
 		int i = ReadAttributeValue(reinterpret_cast<const xmlChar *>("state"), &state);
 		if (i <= 0) {
-			cerr << "missing state of <template>" << endl;
+			std::cerr << "missing state of <template>" << std::endl;
 			return -2;
 		}
 		module_->set_template_state(state);
@@ -970,7 +968,7 @@ private:
 				} else if (xmlStrEqual(direction, reinterpret_cast<const xmlChar *>("out"))) {
 					port->set_direction(direction);
 				} else {
-					cerr << "unknown direction of <port>: " << direction << endl;
+					std::cerr << "unknown direction of <port>: " << direction << std::endl;
 					xmlFree(direction);
 					return -2;
 				}
@@ -979,12 +977,12 @@ private:
 			} else if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("multiple"))) {
 				port->set_multiple(xmlTextReaderValue(text_reader_));
 			} else {
-				cerr << "unknown attribute of <port>: " << local_name << endl;
+				std::cerr << "unknown attribute of <port>: " << local_name << std::endl;
 				return -2;
 			}
 		}
 		if (!port->port_id()) {
-			cerr << "missing port-id of <port>" << endl;
+			std::cerr << "missing port-id of <port>" << std::endl;
 			return -2;
 		}
 		if (!dd_->SavePort(module_.get(), port.get())) return -2;
@@ -1002,7 +1000,7 @@ private:
 				const xmlChar *value = xmlTextReaderConstValue(text_reader_);
 				int pq_id = atoi(reinterpret_cast<const char *>(value));
 				if (pq_id <= 0) {
-					cerr << "invalid physical-quantity-id of <physical-quantity>: " << value << endl;
+					std::cerr << "invalid physical-quantity-id of <physical-quantity>: " << value << std::endl;
 					return -2;
 				}
 				pq_->set_pq_id(pq_id);
@@ -1026,17 +1024,17 @@ private:
 				} else if (xmlStrEqual(value, reinterpret_cast<const xmlChar *>("timeseries"))) {
 					pq_->set_type(PQ::kTimeseries);
 				} else {
-					cerr << "unknown type fo <physical-quantity>: " << value << endl;
+					std::cerr << "unknown type fo <physical-quantity>: " << value << std::endl;
 					return -2;
 				}
 			}
 		}
 		if (pq_->pq_id() == 0) {
-			cerr << "missing physical-quantity-id of <physical-quantity>" << endl;
+			std::cerr << "missing physical-quantity-id of <physical-quantity>" << std::endl;
 			return -2;
 		}
 		if (pq_->type() == PQ::kUnknown) {
-			cerr << "missing type of <physical-quantity>: " << pq_->pq_id() << endl;
+			std::cerr << "missing type of <physical-quantity>: " << pq_->pq_id() << std::endl;
 			return -2;
 		}
 		if (!dd_->SavePq(module_.get(), pq_.get())) return -2;
@@ -1074,11 +1072,11 @@ private:
 				const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
 				if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("physical-quantity"))) {
 					if (!pq_->name()) {
-						cerr << "missing <name> of <physical-quantity>: " << pq_->pq_id() << endl;
+						std::cerr << "missing <name> of <physical-quantity>: " << pq_->pq_id() << std::endl;
 						return -2;
 					}
 					if (pq_->col() == 0 && pq_->row() == 0) {
-						cerr << "missing <dimension> of <physical-quantity>" << endl;
+						std::cerr << "missing <dimension> of <physical-quantity>" << std::endl;
 						return -2;
 					}
 					if (!dd_->UpdatePq(pq_.get(),
@@ -1087,9 +1085,9 @@ private:
 						return -2;
 					if (iv_dumper_) {
 						if (pq_->type() != PQ::kState) {
-							cerr << "unexpected <initial-value> for <physical-quantity> of type "
+							std::cerr << "unexpected <initial-value> for <physical-quantity> of type "
 								 << pq_->GetTypeName()
-								 << endl;
+								 << std::endl;
 							return -2;
 						}
 						if (iv_->IsProper() && !dd_->SaveInitialValue(pq_.get(), iv_.get())) return -2;
@@ -1131,15 +1129,15 @@ private:
 			return -2;
 		}
 		if (xmlStrlen(name) == 0) {
-			cerr << "empty name of <physical-quantity>" << endl;
+			std::cerr << "empty name of <physical-quantity>" << std::endl;
 			xmlFree(s);
 			return -2;
 		}
 		if (ContainNonGraphic(name)) {
-			cerr << "<physical-quantity>'s name contains invalid character: \""
+			std::cerr << "<physical-quantity>'s name contains invalid character: \""
 				 << s
 				 << "\""
-				 << endl;
+				 << std::endl;
 			xmlFree(s);
 			return -2;
 		}
@@ -1166,24 +1164,24 @@ private:
 					snprintf(dimension_type, 7, "%s", reinterpret_cast<const char *>(value));
 				} else if (xmlStrEqual(value, reinterpret_cast<const xmlChar *>("vector"))) {
 					if (isEmpty) {
-						cerr << "empty <dimension> of type vector" << endl;
+						std::cerr << "empty <dimension> of type vector" << std::endl;
 						return -2;
 					}
 					snprintf(dimension_type, 7, "%s", reinterpret_cast<const char *>(value));
 				} else if (xmlStrEqual(value, reinterpret_cast<const xmlChar *>("matrix"))) {
 					if (isEmpty) {
-						cerr << "empty <dimension> of type matrix" << endl;
+						std::cerr << "empty <dimension> of type matrix" << std::endl;
 						return -2;
 					}
 					snprintf(dimension_type, 7, "%s", reinterpret_cast<const char *>(value));
 				} else {
-					cerr << "invalid type of <dimension>: " << value << endl;
+					std::cerr << "invalid type of <dimension>: " << value << std::endl;
 					return -2;
 				}
 			}
 		}
 		if (dimension_type[0] == '\0') {
-			cerr << "missing type of <dimension>" << endl;
+			std::cerr << "missing type of <dimension>" << std::endl;
 			return -2;
 		}
 		i = xmlTextReaderRead(text_reader_);
@@ -1207,23 +1205,23 @@ private:
 				if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("dimension"))) {
 					if (strcmp(dimension_type, "scalar") == 0) {
 						if (pq_->col() * pq_->row() != 1) {
-							cerr << "<dimension> of type scalar with col*row: "
+							std::cerr << "<dimension> of type scalar with col*row: "
 								 << pq_->col() << '*' << pq_->row()
-								 << endl;
+								 << std::endl;
 							return -2;
 						}
 					} else {
 						if (pq_->col() == 0) {
-							cerr << "missing <col> in <dimension> of type " << dimension_type << endl;
+							std::cerr << "missing <col> in <dimension> of type " << dimension_type << std::endl;
 							return -2;
 						}
 						if (pq_->row() == 0) {
-							cerr << "missing <row> in <dimension> of type " << dimension_type << endl;
+							std::cerr << "missing <row> in <dimension> of type " << dimension_type << std::endl;
 							return -2;
 						}
 						if (std::strcmp(dimension_type, "vector") == 0) {
 							if (pq_->col() * pq_->row() != std::max(pq_->col(), pq_->row())) {
-								cerr << "either <col> or <row> of <dimension> of type vector must be 1" << endl;
+								std::cerr << "either <col> or <row> of <dimension> of type vector must be 1" << std::endl;
 								return -2;
 							}
 						}
@@ -1246,19 +1244,19 @@ private:
 			return -2;
 		}
 		if (xmlStrlen(col) == 0) {
-			cerr << "empty <col>" << endl;
+			std::cerr << "empty <col>" << std::endl;
 			xmlFree(s);
 			return -2;
 		}
 		if (xmlStrEqual(col, reinterpret_cast<const xmlChar *>("discretization-dependent"))) {
-			cerr << "unsupported discretization-dependent <col>" << endl;
+			std::cerr << "unsupported discretization-dependent <col>" << std::endl;
 			xmlFree(s);
 			return -2;
 		}
 
 		int n = std::atoi(reinterpret_cast<const char *>(col));
 		if (n <= 0) {
-			cerr << "invalid value of <col>: " << col << endl;
+			std::cerr << "invalid value of <col>: " << col << std::endl;
 			xmlFree(s);
 			return -2;
 		}
@@ -1277,19 +1275,19 @@ private:
 			return -2;
 		}
 		if (xmlStrlen(row) == 0) {
-			cerr << "empty <row>" << endl;
+			std::cerr << "empty <row>" << std::endl;
 			xmlFree(s);
 			return -2;
 		}
 		if (xmlStrEqual(row, reinterpret_cast<const xmlChar *>("discretization-dependent"))) {
-			cerr << "unsupported discretization-dependent <row>" << endl;
+			std::cerr << "unsupported discretization-dependent <row>" << std::endl;
 			xmlFree(s);
 			return -2;
 		}
 
 		int n = std::atoi(reinterpret_cast<const char *>(row));
 		if (n <= 0) {
-			cerr << "invalid value of <row>: " << row << endl;
+			std::cerr << "invalid value of <row>: " << row << std::endl;
 			xmlFree(s);
 			return -2;
 		}
@@ -1308,18 +1306,18 @@ private:
 			return -2;
 		}
 		if (xmlStrlen(max_delay) == 0) {
-			cerr << "warning: empty <max-delay> of <physical-quantity> in module "
+			std::cerr << "warning: empty <max-delay> of <physical-quantity> in module "
 				 << module_->module_id()
-				 << endl;
+				 << std::endl;
 			xmlFree(s);
 			// We do not want to raise the error for old models, so just skip it
 			return xmlTextReaderNext(text_reader_);
 		}
 		if (ContainNonGraphic(max_delay)) {
-			cerr << "<max-delay> contains invalid character: \""
+			std::cerr << "<max-delay> contains invalid character: \""
 				 << max_delay
 				 << "\""
-				 << endl;
+				 << std::endl;
 			xmlFree(s);
 			return -2;
 		}
@@ -1331,7 +1329,7 @@ private:
 
 	int ReadValueTypeSet() {
 		if (xmlTextReaderIsEmptyElement(text_reader_)) {
-			cerr << "missing <value-type>" << endl;
+			std::cerr << "missing <value-type>" << std::endl;
 			return -2;
 		}
 		int i = xmlTextReaderRead(text_reader_);
@@ -1344,7 +1342,7 @@ private:
 					if (i <= 0) return i;
 					continue;
 				} else {
-					cerr << "unknown child of <value-type-set>: " << local_name << endl;
+					std::cerr << "unknown child of <value-type-set>: " << local_name << std::endl;
 					return -2;
 				}
 			} else if (type == XML_READER_TYPE_END_ELEMENT) {
@@ -1362,7 +1360,7 @@ private:
 		xmlChar *unit_id;
 		int i = ReadAttributeValue(reinterpret_cast<const xmlChar *>("unit-id"), &unit_id);
 		if (i <= 0) {
-			cerr << "missing unit-id of <value-type>" << endl;
+			std::cerr << "missing unit-id of <value-type>" << std::endl;
 			return -2;
 		}
 		pq_->set_unit_id(unit_id); // TODO: check invalid values
@@ -1388,7 +1386,7 @@ private:
 					if (i <= 0) return i;
 					continue;
 				} else {
-					cerr << "unknown child element of <initial-value>: " << local_name << endl;
+					std::cerr << "unknown child element of <initial-value>: " << local_name << std::endl;
 					return -2;
 				}
 			} else if (type == XML_READER_TYPE_END_ELEMENT) {
@@ -1497,7 +1495,7 @@ private:
 				const xmlChar *value = xmlTextReaderConstValue(text_reader_);
 				int port_id = atoi(reinterpret_cast<const char *>(value));
 				if (port_id <= 0) {
-					cerr << "invalid port-id of <reference>: " << value << endl;
+					std::cerr << "invalid port-id of <reference>: " << value << std::endl;
 					return -2;
 				}
 				ref_->set_port_id(port_id);
@@ -1505,14 +1503,14 @@ private:
 				const xmlChar *value = xmlTextReaderConstValue(text_reader_);
 				int timeseries_id = atoi(reinterpret_cast<const char *>(value));
 				if (timeseries_id <= 0) {
-					cerr << "invalid timeseries-id of <reference>: " << value << endl;
+					std::cerr << "invalid timeseries-id of <reference>: " << value << std::endl;
 					return -2;
 				}
 				ref_->set_timeseries_id(timeseries_id);
 			} else if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("element-id"))) {
 				ref_->set_element_id(xmlTextReaderValue(text_reader_));
 			} else {
-				cerr << "unknown attribute of <reference>: " << local_name << endl;
+				std::cerr << "unknown attribute of <reference>: " << local_name << std::endl;
 				return -2;
 			}
 		}
@@ -1537,31 +1535,31 @@ private:
 				} else if (xmlStrlen(value) == 0) {
 					xmlFree(value);
 					/* ignore this with warning */
-					cerr << "warning: empty value of order of <extra-implementation> of "
+					std::cerr << "warning: empty value of order of <extra-implementation> of "
 						 << pq_->name()
 						 << " in "
 						 << module_->module_id()
-						 << endl;
+						 << std::endl;
 				} else {
-					cerr << "unknown value of order: " << value << endl;
+					std::cerr << "unknown value of order: " << value << std::endl;
 					xmlFree(value);
 					return -2;
 				}
 			} else {
-				cerr << "unknown attribute of <extra-implementation>: " << local_name << endl;
+				std::cerr << "unknown attribute of <extra-implementation>: " << local_name << std::endl;
 				return -2;
 			}
 		}
 		if (!extra_->type()) {
-			cerr << "missing type of <extra-implementation>" << endl;
+			std::cerr << "missing type of <extra-implementation>" << std::endl;
 			return -2;
 		}
 		if ( !xmlStrEqual(extra_->type(), reinterpret_cast<const xmlChar *>("instantaneous")) &&
 			 !xmlStrEqual(extra_->type(), reinterpret_cast<const xmlChar *>("multiple-input-assignment")) ) {
 			// TODO: other types of <extra-implementation>
-			cerr << "unsupported type of <extra-implementation>: "
+			std::cerr << "unsupported type of <extra-implementation>: "
 				 << extra_->type()
-				 << endl;
+				 << std::endl;
 			return -2;
 		}
 
@@ -1575,7 +1573,7 @@ private:
 					if (i <= 0) return i;
 					continue;
 				} else {
-					cerr << "unknown child element of <extra-implementation>: " << local_name << endl;
+					std::cerr << "unknown child element of <extra-implementation>: " << local_name << std::endl;
 					return -2;
 				}
 			} else if (type == XML_READER_TYPE_END_ELEMENT) {
@@ -1607,12 +1605,12 @@ private:
 		}
 		if (xmlStrEqual(extra_->type(), reinterpret_cast<const xmlChar *>("multiple-input-assignment"))) {
 			if (xmlStrEqual(def->type(), reinterpret_cast<const xmlChar *>("loop"))) {
-				cerr << "multiple-input-assignment's definition of type loop is not supported yet" << endl;
+				std::cerr << "multiple-input-assignment's definition of type loop is not supported yet" << std::endl;
 				return -2;
 			}
 			if (!xmlStrEqual(def->type(), reinterpret_cast<const xmlChar *>("reduction"))) {
-				cerr << "found <extra-implementation> of type multiple-input-assignment, but its definition's type is not reduction: "
-					 << def->type() << endl;
+				std::cerr << "found <extra-implementation> of type multiple-input-assignment, but its definition's type is not reduction: "
+					 << def->type() << std::endl;
 				return -2;
 			}
 			extra_->set_definition(def.release());
@@ -1620,11 +1618,11 @@ private:
 		}
 		assert(xmlStrEqual(extra_->type(), reinterpret_cast<const xmlChar *>("instantaneous")));
 		if (isEmpty != 0) {
-			cerr << "empty <definition> in <extra-implementation> of type instantaneous" << endl;
+			std::cerr << "empty <definition> in <extra-implementation> of type instantaneous" << std::endl;
 			return -2;
 		}
 		if (!extra_->order()) {
-			cerr << "missing order of <extra-implementation>" << endl;
+			std::cerr << "missing order of <extra-implementation>" << std::endl;
 			return -2;
 		}
 		// expect definition in MathML
@@ -1644,7 +1642,7 @@ private:
 			if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("type"))) {
 				const xmlChar *value = xmlTextReaderConstValue(text_reader_);
 				if (!xmlStrEqual(value, reinterpret_cast<const xmlChar *>("sbml"))) {
-					cerr << "unknown type of <bridge>: " << value << endl;
+					std::cerr << "unknown type of <bridge>: " << value << std::endl;
 					return -2;
 				}
 			} else if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("sub-type"))) {
@@ -1654,7 +1652,7 @@ private:
 				} else if (xmlStrEqual(value, reinterpret_cast<const xmlChar *>("parameter"))) {
 					bridge_->set_sub_type(value);
 				} else {
-					cerr << "unknown sub-type of <bridge>: " << value << endl;
+					std::cerr << "unknown sub-type of <bridge>: " << value << std::endl;
 					xmlFree(value);
 					return -2;
 				}
@@ -1665,21 +1663,21 @@ private:
 				} else if (xmlStrEqual(value, reinterpret_cast<const xmlChar *>("set"))) {
 					bridge_->set_direction(value);
 				} else {
-					cerr << "unknown direction of <bridge>: " << value << endl;
+					std::cerr << "unknown direction of <bridge>: " << value << std::endl;
 					xmlFree(value);
 					return -2;
 				}
 			} else {
-				cerr << "unknown attribute of <bridge>: " << local_name << endl;
+				std::cerr << "unknown attribute of <bridge>: " << local_name << std::endl;
 				return -2;
 			}
 		}
 		if (!bridge_->sub_type()) {
-			cerr << "missing sub-type of <bridge>" << endl;
+			std::cerr << "missing sub-type of <bridge>" << std::endl;
 			return -2;
 		}
 		if (!bridge_->direction()) {
-			cerr << "missing direction of <bridge>" << endl;
+			std::cerr << "missing direction of <bridge>" << std::endl;
 			return -2;
 		}
 
@@ -1693,7 +1691,7 @@ private:
 					if (i <= 0) return i;
 					continue;
 				} else {
-					cerr << "unknown child element of <bridge>: " << local_name << endl;
+					std::cerr << "unknown child element of <bridge>: " << local_name << std::endl;
 					return -2;
 				}
 			} else if (type == XML_READER_TYPE_END_ELEMENT) {
@@ -1718,13 +1716,13 @@ private:
 				const xmlChar *value = xmlTextReaderConstValue(text_reader_);
 				if (xmlStrEqual(value, reinterpret_cast<const xmlChar *>("parameter"))) {
 					if (!xmlStrEqual(bridge_->sub_type(), reinterpret_cast<const xmlChar *>("parameter"))) {
-						cerr << "mismatch between bridge's sub-type and connector's type" << endl;
+						std::cerr << "mismatch between bridge's sub-type and connector's type" << std::endl;
 						return -2;
 					}
 					continue;
 				} else if (xmlStrEqual(value, reinterpret_cast<const xmlChar *>("species"))) {
 					if (!xmlStrEqual(bridge_->sub_type(), reinterpret_cast<const xmlChar *>("species"))) {
-						cerr << "mismatch between bridge's sub-type and connector's type" << endl;
+						std::cerr << "mismatch between bridge's sub-type and connector's type" << std::endl;
 						return -2;
 					}
 					continue;
@@ -1732,11 +1730,11 @@ private:
 					// skip this connector
 					return xmlTextReaderNext(text_reader_);
 				} else {
-					cerr << "unknown type of <connector>: " << local_name << endl;
+					std::cerr << "unknown type of <connector>: " << local_name << std::endl;
 					return -2;
 				}
 			} else {
-				cerr << "unknown attribute of <connector>: " << local_name << endl;
+				std::cerr << "unknown attribute of <connector>: " << local_name << std::endl;
 				return -2;
 			}
 		}
@@ -1746,7 +1744,7 @@ private:
 		if (i <= 0) return i;
 		xmlChar *s = xmlTextReaderReadString(text_reader_);
 		if (!s) {
-			cerr << "missing body of <connector>" << endl;
+			std::cerr << "missing body of <connector>" << std::endl;
 			return -2;
 		}
 		bridge_->set_connector(s);
@@ -1767,7 +1765,7 @@ private:
 				} else if (xmlStrEqual(value, reinterpret_cast<const xmlChar *>("internal"))) {
 					import->set_type(value);
 				} else {
-					cerr << "unknown type of <import>: " << value << endl;
+					std::cerr << "unknown type of <import>: " << value << std::endl;
 					xmlFree(value);
 					return -2;
 				}
@@ -1776,7 +1774,7 @@ private:
 				if (xmlStrEqual(value, reinterpret_cast<const xmlChar *>("sbml"))) {
 					import->set_format(Import::kSbml);
 				} else {
-					cerr << "unknown format of <import>: " << value << endl;
+					std::cerr << "unknown format of <import>: " << value << std::endl;
 					return -2;
 				}
 			} else if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("iref"))) {
@@ -1786,16 +1784,16 @@ private:
 			} else if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("zref"))) {
 				import->set_zref(xmlTextReaderValue(text_reader_));
 			} else {
-				cerr << "unknown attribute of <import>: " << local_name << endl;
+				std::cerr << "unknown attribute of <import>: " << local_name << std::endl;
 				return -2;
 			}
 		}
 		if (!import->type()) {
-			cerr << "missing type of <import>" << endl;
+			std::cerr << "missing type of <import>" << std::endl;
 			return -2;
 		}
 		if (import->format() == Import::kUnspecifiedFormat) {
-			cerr << "missing format of <import>" << endl;
+			std::cerr << "missing format of <import>" << std::endl;
 			return -2;
 		}
 		if (!dd_->SaveImport(module_.get(), import.get(), given_path_, model_path_)) return -2;
@@ -1819,7 +1817,7 @@ private:
 					 xmlStrEqual(value, reinterpret_cast<const xmlChar *>("isd")) ) {
 					ts->set_format(value);
 				} else {
-					cerr << "unknown format of <timeseries>: " << value << endl;
+					std::cerr << "unknown format of <timeseries>: " << value << std::endl;
 					xmlFree(value);
 					return -2;
 				}
@@ -1828,20 +1826,20 @@ private:
 			} else if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("zref"))) {
 				ts->set_zref(xmlTextReaderValue(text_reader_));
 			} else {
-				cerr << "unknown attribute of <timeseries>: " << local_name << endl;
+				std::cerr << "unknown attribute of <timeseries>: " << local_name << std::endl;
 				return -2;
 			}
 		}
 		if (!ts->timeseries_id()) {
-			cerr << "missing timeseries-id of <timeseries>" << endl;
+			std::cerr << "missing timeseries-id of <timeseries>" << std::endl;
 			return -2;
 		}
 		if (!ts->format()) {
-			cerr << "missing format of <timeseries>" << endl;
+			std::cerr << "missing format of <timeseries>" << std::endl;
 			return -2;
 		}
 		if (!ts->iref() && !ts->zref()) {
-			cerr << "missing iref/zref of <timeseries>" << endl;
+			std::cerr << "missing iref/zref of <timeseries>" << std::endl;
 			return -2;
 		}
 		if (!dd_->SaveTimeseries(module_.get(), ts.get(), given_path_, model_path_)) return -2;
@@ -1863,7 +1861,7 @@ private:
 					if (i <= 0) return i;
 					continue;
 				} else {
-					cerr << "unknown child of <template-set>: " << local_name << endl;
+					std::cerr << "unknown child of <template-set>: " << local_name << std::endl;
 					return -2;
 				}
 			} else if (type == XML_READER_TYPE_END_ELEMENT) {
@@ -1889,16 +1887,16 @@ private:
 			} else if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("ref-module-id"))) {
 				t->set_ref_module_id(xmlTextReaderValue(text_reader_));
 			} else {
-				cerr << "unknown attribute of <template>: " << local_name << endl;
+				std::cerr << "unknown attribute of <template>: " << local_name << std::endl;
 				return -2;
 			}
 		}
 		if (!t->template_id()) {
-			cerr << "missing template-id of <template>" << endl;
+			std::cerr << "missing template-id of <template>" << std::endl;
 			return -2;
 		}
 		if (!t->ref_module_id()) {
-			cerr << "missing ref-module-id of <template>: " << t->template_id() << endl;
+			std::cerr << "missing ref-module-id of <template>: " << t->template_id() << std::endl;
 			return -2;
 		}
 		if (!dd_->SaveTemplate(t.get())) return -2;
@@ -1920,7 +1918,7 @@ private:
 					if (i <= 0) return i;
 					continue;
 				} else {
-					cerr << "unknown child of <instance-set>: " << local_name << endl;
+					std::cerr << "unknown child of <instance-set>: " << local_name << std::endl;
 					return -2;
 				}
 			} else if (type == XML_READER_TYPE_END_ELEMENT) {
@@ -1947,12 +1945,12 @@ private:
 			} else if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("label"))) {
 				instance_->set_label(xmlTextReaderValue(text_reader_));
 			} else {
-				cerr << "unknown attribute of <instance>: " << local_name << endl;
+				std::cerr << "unknown attribute of <instance>: " << local_name << std::endl;
 				return -2;
 			}
 		}
 		if (!instance_->module_id()) {
-			cerr << "missing module-id of <instance>" << endl;
+			std::cerr << "missing module-id of <instance>" << std::endl;
 			return -2;
 		}
 		i = xmlTextReaderRead(text_reader_);
@@ -1986,7 +1984,7 @@ private:
 		xmlChar *template_id;
 		int i = ReadAttributeValue(reinterpret_cast<const xmlChar *>("template-id"), &template_id);
 		if (i <= 0) {
-			cerr << "missing template-id of <instance-of>: " << instance_->module_id() << endl;
+			std::cerr << "missing template-id of <instance-of>: " << instance_->module_id() << std::endl;
 			return -2;
 		}
 		instance_->set_template_id(template_id);
@@ -1998,7 +1996,7 @@ private:
 		xmlChar *module_id;
 		int i = ReadAttributeValue(reinterpret_cast<const xmlChar *>("module-id"), &module_id);
 		if (i <= 0) {
-			cerr << "missing module-id of <target-module>: " << instance_->module_id() << endl;
+			std::cerr << "missing module-id of <target-module>: " << instance_->module_id() << std::endl;
 			return -2;
 		}
 		std::unique_ptr<TargetModule> tm(new TargetModule(module_id));
@@ -2037,13 +2035,13 @@ private:
 				const xmlChar *value = xmlTextReaderConstValue(text_reader_);
 				pq_id = atoi(reinterpret_cast<const char *>(value));
 				if (pq_id <= 0) {
-					cerr << "invalid physical-quantity-id of <target-physical-quantity>: " << tm->module_id() << endl;
+					std::cerr << "invalid physical-quantity-id of <target-physical-quantity>: " << tm->module_id() << std::endl;
 					return -2;
 				}
 			}
 		}
 		if (pq_id <= 0) {
-			cerr << "missing physical-quantity-id of <target-physical-quantity>: " << tm->module_id() << endl;
+			std::cerr << "missing physical-quantity-id of <target-physical-quantity>: " << tm->module_id() << std::endl;
 			return -2;
 		}
 		std::unique_ptr<TargetPq> tpq(new TargetPq(pq_id));
@@ -2085,7 +2083,7 @@ private:
 					if (i <= 0) return i;
 					continue;
 				} else {
-					cerr << "unknown child of <edge-set>: " << local_name << endl;
+					std::cerr << "unknown child of <edge-set>: " << local_name << std::endl;
 					return -2;
 				}
 			} else if (type == XML_READER_TYPE_END_ELEMENT) {
@@ -2121,12 +2119,12 @@ private:
 			} else if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("multiple"))) {
 				// ignored
 			} else {
-				cerr << "unknown attribute of <edge>: " << local_name << endl;
+				std::cerr << "unknown attribute of <edge>: " << local_name << std::endl;
 				return -2;
 			}
 		}
 		if (!edge_) {
-			cerr << "missing type of <edge>" << endl;
+			std::cerr << "missing type of <edge>" << std::endl;
 			return -2;
 		}
 		i = xmlTextReaderRead(text_reader_);
@@ -2166,16 +2164,16 @@ private:
 			} else if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("port-id"))) {
 				edge_->set_tail_port_id(xmlTextReaderValue(text_reader_));
 			} else {
-				cerr << "unknown attribute of <tail>: " << local_name << endl;
+				std::cerr << "unknown attribute of <tail>: " << local_name << std::endl;
 				return -2;
 			}
 		}
 		if (!edge_->tail_module_id()) {
-			cerr << "missing module-id of <tail>" << endl;
+			std::cerr << "missing module-id of <tail>" << std::endl;
 			return -2;
 		}
 		if (!edge_->tail_port_id()) {
-			cerr << "missing port-id of <tail>" << endl;
+			std::cerr << "missing port-id of <tail>" << std::endl;
 			return -2;
 		}
 		return xmlTextReaderNext(text_reader_);
@@ -2192,16 +2190,16 @@ private:
 			} else if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("port-id"))) {
 				edge_->set_head_port_id(xmlTextReaderValue(text_reader_));
 			} else {
-				cerr << "unknown attribute of <head>: " << local_name << endl;
+				std::cerr << "unknown attribute of <head>: " << local_name << std::endl;
 				return -2;
 			}
 		}
 		if (!edge_->head_module_id()) {
-			cerr << "missing module-id of <head>" << endl;
+			std::cerr << "missing module-id of <head>" << std::endl;
 			return -2;
 		}
 		if (!edge_->head_port_id()) {
-			cerr << "missing port-id of <head>" << endl;
+			std::cerr << "missing port-id of <head>" << std::endl;
 			return -2;
 		}
 		return xmlTextReaderNext(text_reader_);
@@ -2336,9 +2334,9 @@ bool CreateViews(sqlite3 *db, const View *views, size_t n)
 
 		e = sqlite3_exec(db, buf, nullptr, nullptr, &em);
 		if (e != SQLITE_OK) {
-			cerr << "failed to create view " << view.name
+			std::cerr << "failed to create view " << view.name
 				 << ": " << e
-				 << ": " << em << endl;
+				 << ": " << em << std::endl;
 			sqlite3_free(em);
 			return false;
 		}
@@ -2385,7 +2383,7 @@ bool Read(sqlite3 *db)
 
 	xmlTextReaderPtr text_reader = xmlReaderForFile(model_filename.get(), nullptr, 0);
 	if (!text_reader) {
-		cerr << "could not read the input: " << model_filename.get() << endl;
+		std::cerr << "could not read the input: " << model_filename.get() << std::endl;
 		xmlCleanupParser();
 		return false;
 	}

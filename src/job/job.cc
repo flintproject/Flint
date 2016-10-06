@@ -28,8 +28,6 @@
 #include "task.h"
 #include "task/config-reader.h"
 
-using std::cerr;
-using std::endl;
 using std::fclose;
 using std::fopen;
 using std::perror;
@@ -53,7 +51,7 @@ bool Job(const char *task_dir,
 	// ensure the job directory
 	boost::filesystem::create_directories(job_dir, ec);
 	if (ec) {
-		cerr << "failed to create directory: " << ec << endl;
+		std::cerr << "failed to create directory: " << ec << std::endl;
 		return false;
 	}
 
@@ -101,11 +99,11 @@ bool Job(const char *task_dir,
 	sprintf(isdh_file, "%s/isdh", task_dir);
 	boost::filesystem::copy_file(isdh_file, output_file, ec);
 	if (ec) {
-		cerr << "failed to copy "
+		std::cerr << "failed to copy "
 			 << isdh_file
 			 << " to "
 			 << output_file
-			 << ": " << ec << endl;
+			 << ": " << ec << std::endl;
 		return false;
 	}
 	FILE *ofp = fopen(output_file, "ab");

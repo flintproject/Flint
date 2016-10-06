@@ -8,8 +8,6 @@
 
 #include <boost/uuid/nil_generator.hpp>
 
-using std::cerr;
-using std::endl;
 using std::exit;
 using std::sprintf;
 
@@ -26,9 +24,9 @@ EqInserter::EqInserter(const char *table, sqlite3 *db)
 	int e;
 	e = sqlite3_prepare_v2(db, query_.get(), -1, &stmt_, nullptr);
 	if (e != SQLITE_OK) {
-		cerr << "failed to prepare statement: " << e
+		std::cerr << "failed to prepare statement: " << e
 			 << ": " << query_.get()
-			 << endl;
+			 << std::endl;
 		exit(EXIT_FAILURE);
 	}
 }
@@ -43,17 +41,17 @@ bool EqInserter::Insert(const boost::uuids::uuid &uuid, const char *math)
 	int e;
 	e = sqlite3_bind_blob(stmt_, 1, &uuid, uuid.size(), SQLITE_STATIC);
 	if (e != SQLITE_OK) {
-		cerr << "failed to bind uuid: " << e << endl;
+		std::cerr << "failed to bind uuid: " << e << std::endl;
 		return false;
 	}
 	e = sqlite3_bind_text(stmt_, 2, math, -1, SQLITE_STATIC);
 	if (e != SQLITE_OK) {
-		cerr << "failed to bind math: " << e << endl;
+		std::cerr << "failed to bind math: " << e << std::endl;
 		return false;
 	}
 	e = sqlite3_step(stmt_);
 	if (e != SQLITE_DONE) {
-		cerr << "failed to step statement: " << e << endl;
+		std::cerr << "failed to step statement: " << e << std::endl;
 		return false;
 	}
 	sqlite3_reset(stmt_);

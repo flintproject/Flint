@@ -11,9 +11,6 @@
 #include "variable.h"
 #include "variable-map.h"
 
-using std::cerr;
-using std::endl;
-
 namespace flint {
 namespace cas {
 
@@ -35,7 +32,7 @@ bool IsUnary(const Compound &c)
 {
 	size_t s = c.children.size();
 	if (s != 1) {
-		cerr << '<' << c.keyword << "> got " << s << " arguments" << endl;
+		std::cerr << '<' << c.keyword << "> got " << s << " arguments" << std::endl;
 		return false;
 	}
 	return true;
@@ -45,7 +42,7 @@ bool IsBinary(const Compound &c)
 {
 	size_t s = c.children.size();
 	if (s != 2) {
-		cerr << '<' << c.keyword << "> got " << s << " arguments" << endl;
+		std::cerr << '<' << c.keyword << "> got " << s << " arguments" << std::endl;
 		return false;
 	}
 	return true;
@@ -98,11 +95,11 @@ public:
 		if (!Analyse(&c->children[1], &col1, &row1))
 			return false;
 		if (col0 != col1) {
-			cerr << "col mismatch between <" << c->keyword << ">'s RHS and LHS" << endl;
+			std::cerr << "col mismatch between <" << c->keyword << ">'s RHS and LHS" << std::endl;
 			return false;
 		}
 		if (row0 != row1) {
-			cerr << "row mismatch between <" << c->keyword << ">'s RHS and LHS" << endl;
+			std::cerr << "row mismatch between <" << c->keyword << ">'s RHS and LHS" << std::endl;
 			return false;
 		}
 		c->col = c->row = 1;
@@ -112,7 +109,7 @@ public:
 	bool Plus(Compound *c)
 	{
 		if (c->children.size() == 0) {
-			cerr << "empty arguments of <plus>" << endl;
+			std::cerr << "empty arguments of <plus>" << std::endl;
 			return false;
 		}
 		int col, row;
@@ -126,7 +123,7 @@ public:
 	bool Minus(Compound *c)
 	{
 		if (c->children.size() == 0) {
-			cerr << "empty arguments of <minus>" << endl;
+			std::cerr << "empty arguments of <minus>" << std::endl;
 			return false;
 		}
 		int col, row;
@@ -140,7 +137,7 @@ public:
 	bool Times(Compound *c)
 	{
 		if (c->children.size() == 0) {
-			cerr << "empty arguments of <times>" << endl;
+			std::cerr << "empty arguments of <times>" << std::endl;
 			return false;
 		}
 		int col, row;
@@ -169,7 +166,7 @@ public:
 			c->col = c->row = 1;
 			return true;
 		default:
-			cerr << "<log> got " << s << "arguments" << endl;
+			std::cerr << "<log> got " << s << "arguments" << std::endl;
 			return false;
 		}
 	}
@@ -218,7 +215,7 @@ public:
 			c->col = c->row = 1;
 			return true;
 		default:
-			cerr << "<root> got " << s << "arguments" << endl;
+			std::cerr << "<root> got " << s << "arguments" << std::endl;
 			return false;
 		}
 	}
@@ -226,7 +223,7 @@ public:
 	bool Matrix(Compound *c)
 	{
 		if (c->children.empty()) {
-			cerr << "empty <matrix> found" << endl;
+			std::cerr << "empty <matrix> found" << std::endl;
 			return false;
 		}
 		int col0;
@@ -237,7 +234,7 @@ public:
 			if (!Matrixrow(&(*it), &col))
 				return false;
 			if (col != col0) {
-				cerr << "column numbers of <matrixrow>s are not aligned in <matrix>" << endl; // TODO
+				std::cerr << "column numbers of <matrixrow>s are not aligned in <matrix>" << std::endl; // TODO
 				return false;
 			}
 		}
@@ -254,9 +251,9 @@ public:
 		if (!Analyse(&c->children[0], &col0, &row0))
 			return false;
 		if (col0 != row0) {
-			cerr << "col/row mismatch for <determinant>: "
+			std::cerr << "col/row mismatch for <determinant>: "
 				 << col0 << '/' << row0
-				 << endl;
+				 << std::endl;
 			return false;
 		}
 		c->col = c->row = 1;
@@ -266,7 +263,7 @@ public:
 	bool Vector(Compound *c)
 	{
 		if (c->children.empty()) {
-			cerr << "empty <vector> found" << endl;
+			std::cerr << "empty <vector> found" << std::endl;
 			return false;
 		}
 		for (auto &child : c->children) {
@@ -283,11 +280,11 @@ public:
 		int col0, row0;
 		switch (c->children.size()) {
 		case 0:
-			cerr << "empty <selector> found" << endl;
+			std::cerr << "empty <selector> found" << std::endl;
 			return false;
 		case 1:
 			// TODO
-			cerr << "unary <selector> is not supported yet" << endl;
+			std::cerr << "unary <selector> is not supported yet" << std::endl;
 			return false;
 		case 2:
 			if (!Analyse(&c->children[0], &col0, &row0))
@@ -311,7 +308,7 @@ public:
 			c->col = c->row = 1;
 			return true;
 		default:
-			cerr << "more than 3 arguments for <selector>" << endl;
+			std::cerr << "more than 3 arguments for <selector>" << std::endl;
 			return false;
 		}
 	}
@@ -339,13 +336,13 @@ public:
 		if (!Analyse(&c->children[1], &col1, &row1))
 			return false;
 		if (col0 != 1) {
-			cerr << "1st argument of <outerproduct> must be a column vector, but it had "
-				 << col0 << " columns" << endl;
+			std::cerr << "1st argument of <outerproduct> must be a column vector, but it had "
+				 << col0 << " columns" << std::endl;
 			return false;
 		}
 		if (row1 != 1) {
-			cerr << "2nd argument of <outerproduct> must be a row vector, but it had "
-				 << row1 << " rows" << endl;
+			std::cerr << "2nd argument of <outerproduct> must be a row vector, but it had "
+				 << row1 << " rows" << std::endl;
 			return false;
 		}
 		c->col = col1;
@@ -361,8 +358,8 @@ public:
 		if (!HaveSameDimension(&c->children, &col, &row))
 			return false;
 		if (col != 1 && row != 1) {
-			cerr << "<scalarproduct> got a non-vector: "
-				 << col << '/' << row << endl;
+			std::cerr << "<scalarproduct> got a non-vector: "
+				 << col << '/' << row << std::endl;
 			return false;
 		}
 		c->col = c->row = 1;
@@ -386,8 +383,8 @@ public:
 			c->row = 3;
 			return true;
 		}
-		cerr << "<vectorproduct> got a non-3-dimensional vector: "
-			 << col << '/' << row << endl;
+		std::cerr << "<vectorproduct> got a non-3-dimensional vector: "
+			 << col << '/' << row << std::endl;
 		return false;
 	}
 
@@ -426,7 +423,7 @@ public:
 	bool Piecewise(Compound *c)
 	{
 		if (c->children.size() == 0) {
-			cerr << "empty <piecewise>" << endl;
+			std::cerr << "empty <piecewise>" << std::endl;
 			return false;
 		}
 		int col, row;
@@ -448,13 +445,13 @@ public:
 		if (!Analyse(&c->children[1], &col1, &row1))
 			return false;
 		if (col1 != 1) {
-			cerr << "condition part of <piece> must be scalar, but given " << col1
-				 << " as the number of columns" << endl;
+			std::cerr << "condition part of <piece> must be scalar, but given " << col1
+				 << " as the number of columns" << std::endl;
 			return false;
 		}
 		if (row1 != 1) {
-			cerr << "condition part of <piece> must be scalar, but given " << row1
-				 << " as the number of rows" << endl;
+			std::cerr << "condition part of <piece> must be scalar, but given " << row1
+				 << " as the number of rows" << std::endl;
 			return false;
 		}
 		c->col = col0;
@@ -477,7 +474,7 @@ public:
 	bool Trial(Compound *c)
 	{
 		if (c->children.size() == 0) {
-			cerr << "empty $trial" << endl;
+			std::cerr << "empty $trial" << std::endl;
 			return false;
 		}
 		int col, row;
@@ -500,11 +497,11 @@ private:
 			if (!Analyse(&(*it), &c, &r))
 				return false;
 			if (c != c0) {
-				cerr << "inconsistent col: " << c0 << " vs " << c << endl; // TODO
+				std::cerr << "inconsistent col: " << c0 << " vs " << c << std::endl; // TODO
 				return false;
 			}
 			if (r != r0) {
-				cerr << "inconsistent row: " << r0 << " vs " << r << endl; // TODO
+				std::cerr << "inconsistent row: " << r0 << " vs " << r << std::endl; // TODO
 				return false;
 			}
 		}
@@ -519,15 +516,15 @@ private:
 		if (!Analyse(expr, &col, &row))
 			return false;
 		if (col != 1) {
-			cerr << "scalar expected, but (col, row) = ("
+			std::cerr << "scalar expected, but (col, row) = ("
 				 << col << ", " << row
-				 << ')' << endl;
+				 << ')' << std::endl;
 			return false;
 		}
 		if (row != 1) {
-			cerr << "scalar expected, but (col, row) = ("
+			std::cerr << "scalar expected, but (col, row) = ("
 				 << col << ", " << row
-				 << ')' << endl;
+				 << ')' << std::endl;
 			return false;
 		}
 		return true;
@@ -539,9 +536,9 @@ private:
 		if (!Analyse(expr, &col, &row))
 			return false;
 		if (col != row) {
-			cerr << "col expected to equal row, but (col, row) = ("
+			std::cerr << "col expected to equal row, but (col, row) = ("
 				 << col << ", " << row
-				 << ')' << endl;
+				 << ')' << std::endl;
 			return false;
 		}
 		*n = col;
@@ -574,7 +571,7 @@ private:
 			return true;
 		}
 		if (c0 != r1) {
-			cerr << "col/row mismatch for multiplication" << endl; // TODO
+			std::cerr << "col/row mismatch for multiplication" << std::endl; // TODO
 			return false;
 		}
 		*col = c1;
@@ -585,17 +582,17 @@ private:
 	bool Matrixrow(Expr *expr, int *col)
 	{
 		if (expr->which() != kExprIsCompound) {
-			cerr << "expected <matrixrow>, but got something else" << endl; // TODO
+			std::cerr << "expected <matrixrow>, but got something else" << std::endl; // TODO
 			return false;
 		}
 		Compound &c = boost::get<Compound>(*expr);
 		if (c.keyword != "matrixrow") {
-			cerr << "expected <matrixrow>, but got something else" << endl; // TODO
+			std::cerr << "expected <matrixrow>, but got something else" << std::endl; // TODO
 			return false;
 		}
 		size_t size = c.children.size();
 		if (size == 0) {
-			cerr << "empty <matrixrow> found" << endl;
+			std::cerr << "empty <matrixrow> found" << std::endl;
 			return false;
 		}
 		for (auto &child : c.children) {
@@ -710,7 +707,7 @@ bool Context::Analyse(Expr *expr, int *col, int *row)
 				return true;
 			}
 		}
-		cerr << "unsupported function: " << c.keyword << endl;
+		std::cerr << "unsupported function: " << c.keyword << std::endl;
 		return false;
 	} else if (type == kExprIsIdentifier) {
 		Identifier &id = boost::get<Identifier>(*expr);
@@ -724,7 +721,7 @@ bool Context::Analyse(Expr *expr, int *col, int *row)
 			}
 			const Variable *v = vm_->Find(uuid_, name1);
 			if (!v) {
-				cerr << "failed to find variable: " << name1 << endl;
+				std::cerr << "failed to find variable: " << name1 << std::endl;
 				return false;
 			}
 			*col = id.col = v->col();

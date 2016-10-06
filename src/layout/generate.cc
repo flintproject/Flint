@@ -28,8 +28,6 @@
 #include "db/variable-loader.h"
 #include "variable.h"
 
-using std::cerr;
-using std::endl;
 using std::memcpy;
 using std::string;
 
@@ -162,7 +160,7 @@ bool Generate(sqlite3 *db, const char *filename)
 
 	std::ofstream ofs(filename, std::ios::out|std::ios::binary);
 	if (!ofs.is_open()) {
-		cerr << "could not open output file: " << filename << endl;
+		std::cerr << "could not open output file: " << filename << std::endl;
 		return false;
 	}
 

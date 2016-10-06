@@ -13,8 +13,6 @@
 #include "statement-driver.h"
 #include "query.h"
 
-using std::cerr;
-using std::endl;
 using std::memcpy;
 
 namespace flint {
@@ -35,27 +33,27 @@ public:
 		int e;
 		e = sqlite3_bind_blob(stmt(), 1, &u, u.size(), SQLITE_STATIC);
 		if (e != SQLITE_OK) {
-			cerr << "failed to bind uuid: " << e << endl;
+			std::cerr << "failed to bind uuid: " << e << std::endl;
 			return false;
 		}
 		e = sqlite3_bind_text(stmt(), 2, id, -1, SQLITE_STATIC);
 		if (e != SQLITE_OK) {
-			cerr << "failed to bind id: " << e << endl;
+			std::cerr << "failed to bind id: " << e << std::endl;
 			return false;
 		}
 		e = sqlite3_bind_int(stmt(), 3, offset_++);
 		if (e != SQLITE_OK) {
-			cerr << "failed to bind value: " << e << endl;
+			std::cerr << "failed to bind value: " << e << std::endl;
 			return false;
 		}
 		e = sqlite3_bind_int(stmt(), 4, size);
 		if (e != SQLITE_OK) {
-			cerr << "failed to bind size: " << e << endl;
+			std::cerr << "failed to bind size: " << e << std::endl;
 			return false;
 		}
 		e = sqlite3_step(stmt());
 		if (e != SQLITE_DONE) {
-			cerr << "failed to step statement: " << e << endl;
+			std::cerr << "failed to step statement: " << e << std::endl;
 			return false;
 		}
 		sqlite3_reset(stmt());
@@ -92,7 +90,7 @@ int CreateOffsets(sqlite3 *db)
 					 &InsertOffset, &inserter, &em);
 	if (e != SQLITE_OK) {
 		if (e != SQLITE_ABORT)
-			cerr << "failed to select layout: " << e << ": " << em << endl;
+			std::cerr << "failed to select layout: " << e << ": " << em << std::endl;
 		sqlite3_free(em);
 		return 0;
 	}

@@ -20,8 +20,6 @@
 #include "sqlite3.h"
 #include "modelpath.h"
 
-using std::cerr;
-using std::endl;
 using std::strcmp;
 
 namespace flint {
@@ -216,19 +214,19 @@ public:
 		e = sqlite3_bind_text(stmt, 1, reinterpret_cast<const char *>(component_->name()),
 							  -1, SQLITE_STATIC);
 		if (e != SQLITE_OK) {
-			cerr << "failed to bind parameter: " << e << endl;
+			std::cerr << "failed to bind parameter: " << e << std::endl;
 			return -2;
 		}
 		std::string body = oss_.str();
 		e = sqlite3_bind_text(stmt, 2, body.c_str(),
 							  -1, SQLITE_STATIC);
 		if (e != SQLITE_OK) {
-			cerr << "failed to bind parameter: " << e << endl;
+			std::cerr << "failed to bind parameter: " << e << std::endl;
 			return -2;
 		}
 		e = sqlite3_step(stmt);
 		if (e != SQLITE_DONE) {
-			cerr << "failed to step statement: " << e << endl;
+			std::cerr << "failed to step statement: " << e << std::endl;
 			return -2;
 		}
 		sqlite3_reset(stmt);
@@ -309,7 +307,7 @@ private:
 			}
 		}
 		if (!units) {
-			cerr << "no name attribute of <units>" << endl;
+			std::cerr << "no name attribute of <units>" << std::endl;
 			return -2;
 		}
 		i = xmlTextReaderRead(text_reader_);
@@ -354,14 +352,14 @@ private:
 			} else if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("multiplier"))) {
 				unit->set_multiplier(xmlTextReaderValue(text_reader_));
 			} else {
-				cerr << "unknown attribute of <unit>: " << local_name << endl;
+				std::cerr << "unknown attribute of <unit>: " << local_name << std::endl;
 				return -2;
 			}
 		}
 		if (!unit->units()) {
-			cerr << "no units attribute of <unit>: "
+			std::cerr << "no units attribute of <unit>: "
 				 << units->name()
-				 << endl;
+				 << std::endl;
 			return -2;
 		}
 		// insert a row into units
@@ -370,42 +368,42 @@ private:
 		e = sqlite3_bind_text(stmt, 1, reinterpret_cast<const char *>(units->name()),
 							  -1, SQLITE_STATIC);
 		if (e != SQLITE_OK) {
-			cerr << "failed to bind parameter: " << e << endl;
+			std::cerr << "failed to bind parameter: " << e << std::endl;
 			return -2;
 		}
 		e = sqlite3_bind_text(stmt, 2, reinterpret_cast<const char *>(unit->units()),
 							  -1, SQLITE_STATIC);
 		if (e != SQLITE_OK) {
-			cerr << "failed to bind parameter: " << e << endl;
+			std::cerr << "failed to bind parameter: " << e << std::endl;
 			return -2;
 		}
 		e = sqlite3_bind_text(stmt, 3, reinterpret_cast<const char *>(unit->prefix()),
 							  -1, SQLITE_STATIC);
 		if (e != SQLITE_OK) {
-			cerr << "failed to bind parameter: " << e << endl;
+			std::cerr << "failed to bind parameter: " << e << std::endl;
 			return -2;
 		}
 		e = sqlite3_bind_text(stmt, 4, reinterpret_cast<const char *>(unit->exponent()),
 							  -1, SQLITE_STATIC);
 		if (e != SQLITE_OK) {
-			cerr << "failed to bind parameter: " << e << endl;
+			std::cerr << "failed to bind parameter: " << e << std::endl;
 			return -2;
 		}
 		e = sqlite3_bind_text(stmt, 5, reinterpret_cast<const char *>(unit->multiplier()),
 							  -1, SQLITE_STATIC);
 		if (e != SQLITE_OK) {
-			cerr << "failed to bind parameter: " << e << endl;
+			std::cerr << "failed to bind parameter: " << e << std::endl;
 			return -2;
 		}
 		e = sqlite3_bind_text(stmt, 6, (component) ? reinterpret_cast<const char *>(component->name()) : nullptr,
 							  -1, SQLITE_STATIC);
 		if (e != SQLITE_OK) {
-			cerr << "failed to bind parameter: " << e << endl;
+			std::cerr << "failed to bind parameter: " << e << std::endl;
 			return -2;
 		}
 		e = sqlite3_step(stmt);
 		if (e != SQLITE_DONE) {
-			cerr << "failed to step statement: " << e << endl;
+			std::cerr << "failed to step statement: " << e << std::endl;
 			return -2;
 		}
 		sqlite3_reset(stmt);
@@ -428,7 +426,7 @@ private:
 			}
 		}
 		if (!component) {
-			cerr << "no name attribute of <component>" << endl;
+			std::cerr << "no name attribute of <component>" << std::endl;
 			return -2;
 		}
 		i = xmlTextReaderRead(text_reader_);
@@ -465,13 +463,13 @@ private:
 					continue;
 				} else if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("role"))) {
 					// TODO
-					cerr << "<role> is not yet supported" << endl;
+					std::cerr << "<role> is not yet supported" << std::endl;
 				} else {
 					// TODO
-					cerr << "skip <"
+					std::cerr << "skip <"
 						 << local_name
 						 << ">"
-						 << endl;
+						 << std::endl;
 				}
 			} else if (type == XML_READER_TYPE_END_ELEMENT) {
 				const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
@@ -504,11 +502,11 @@ private:
 			} else if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("private_interface"))) {
 				variable->set_private_interface(xmlTextReaderValue(text_reader_));
 			} else {
-				cerr << "unknown attribute of <variable>: "
+				std::cerr << "unknown attribute of <variable>: "
 					 << local_name
 					 << " in "
 					 << component->name()
-					 << endl;
+					 << std::endl;
 				return -2;
 			}
 		}
@@ -518,42 +516,42 @@ private:
 		e = sqlite3_bind_text(stmt, 1, reinterpret_cast<const char *>(component->name()),
 							  -1, SQLITE_STATIC);
 		if (e != SQLITE_OK) {
-			cerr << "failed to bind parameter: " << e << endl;
+			std::cerr << "failed to bind parameter: " << e << std::endl;
 			return -2;
 		}
 		e = sqlite3_bind_text(stmt, 2, reinterpret_cast<const char *>(variable->name()),
 							  -1, SQLITE_STATIC);
 		if (e != SQLITE_OK) {
-			cerr << "failed to bind parameter: " << e << endl;
+			std::cerr << "failed to bind parameter: " << e << std::endl;
 			return -2;
 		}
 		e = sqlite3_bind_text(stmt, 3, reinterpret_cast<const char *>(variable->units()),
 							  -1, SQLITE_STATIC);
 		if (e != SQLITE_OK) {
-			cerr << "failed to bind parameter: " << e << endl;
+			std::cerr << "failed to bind parameter: " << e << std::endl;
 			return -2;
 		}
 		e = sqlite3_bind_text(stmt, 4, reinterpret_cast<const char *>(variable->public_interface()),
 							  -1, SQLITE_STATIC);
 		if (e != SQLITE_OK) {
-			cerr << "failed to bind parameter: " << e << endl;
+			std::cerr << "failed to bind parameter: " << e << std::endl;
 			return -2;
 		}
 		e = sqlite3_bind_text(stmt, 5, reinterpret_cast<const char *>(variable->private_interface()),
 							  -1, SQLITE_STATIC);
 		if (e != SQLITE_OK) {
-			cerr << "failed to bind parameter: " << e << endl;
+			std::cerr << "failed to bind parameter: " << e << std::endl;
 			return -2;
 		}
 		e = sqlite3_bind_text(stmt, 6, reinterpret_cast<const char *>(variable->initial_value()),
 							  -1, SQLITE_STATIC);
 		if (e != SQLITE_OK) {
-			cerr << "failed to bind parameter: " << e << endl;
+			std::cerr << "failed to bind parameter: " << e << std::endl;
 			return -2;
 		}
 		e = sqlite3_step(stmt);
 		if (e != SQLITE_DONE) {
-			cerr << "failed to step statement: " << e << endl;
+			std::cerr << "failed to step statement: " << e << std::endl;
 			return -2;
 		}
 		sqlite3_reset(stmt);
@@ -579,16 +577,16 @@ private:
 					continue;
 				} else if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("map_variables"))) {
 					if (!connection) {
-						cerr << "no leading <map_components> found" << endl;
+						std::cerr << "no leading <map_components> found" << std::endl;
 						return -2;
 					}
 					i = ReadMapVariables(connection.get());
 					if (i <= 0) return i;
 					continue;
 				} else {
-					cerr << "unknown child of <connection>: "
+					std::cerr << "unknown child of <connection>: "
 						 << local_name
-						 << endl;
+						 << std::endl;
 					return -2;
 				}
 			} else if (type == XML_READER_TYPE_END_ELEMENT) {
@@ -615,18 +613,18 @@ private:
 			} else if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("component_2"))) {
 				connection->set_component_2(xmlTextReaderValue(text_reader_));
 			} else {
-				cerr << "unknown attribute of <map_components>: "
+				std::cerr << "unknown attribute of <map_components>: "
 					 << local_name
-					 << endl;
+					 << std::endl;
 				return -2;
 			}
 		}
 		if (!connection->component_1()) {
-			cerr << "no component_1 attribute of <map_components>" << endl;
+			std::cerr << "no component_1 attribute of <map_components>" << std::endl;
 			return -2;
 		}
 		if (!connection->component_2()) {
-			cerr << "no component_2 attribute of <map_components>" << endl;
+			std::cerr << "no component_2 attribute of <map_components>" << std::endl;
 			return -2;
 		}
 		// insert a row into connections
@@ -635,18 +633,18 @@ private:
 		e = sqlite3_bind_text(stmt, 1, reinterpret_cast<const char *>(connection->component_1()),
 							  -1, SQLITE_STATIC);
 		if (e != SQLITE_OK) {
-			cerr << "failed to bind parameter: " << e << endl;
+			std::cerr << "failed to bind parameter: " << e << std::endl;
 			return -2;
 		}
 		e = sqlite3_bind_text(stmt, 2, reinterpret_cast<const char *>(connection->component_2()),
 							  -1, SQLITE_STATIC);
 		if (e != SQLITE_OK) {
-			cerr << "failed to bind parameter: " << e << endl;
+			std::cerr << "failed to bind parameter: " << e << std::endl;
 			return -2;
 		}
 		e = sqlite3_step(stmt);
 		if (e != SQLITE_DONE) {
-			cerr << "failed to step statement: " << e << endl;
+			std::cerr << "failed to step statement: " << e << std::endl;
 			return -2;
 		}
 		sqlite3_reset(stmt);
@@ -669,18 +667,18 @@ private:
 			} else if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("variable_2"))) {
 				map_variables->set_variable_2(xmlTextReaderValue(text_reader_));
 			} else {
-				cerr << "unknown attribute of <map_components>: "
+				std::cerr << "unknown attribute of <map_components>: "
 					 << local_name
-					 << endl;
+					 << std::endl;
 				return -2;
 			}
 		}
 		if (!map_variables->variable_1()) {
-			cerr << "no variable_1 attribute of <map_variables>" << endl;
+			std::cerr << "no variable_1 attribute of <map_variables>" << std::endl;
 			return -2;
 		}
 		if (!map_variables->variable_2()) {
-			cerr << "no variable_2 attribute of <map_variables>" << endl;
+			std::cerr << "no variable_2 attribute of <map_variables>" << std::endl;
 			return -2;
 		}
 		// insert a row into map_variables
@@ -688,24 +686,24 @@ private:
 		int e;
 		e = sqlite3_bind_int64(stmt, 1, connection->id());
 		if (e != SQLITE_OK) {
-			cerr << "failed to bind parameter: " << e << endl;
+			std::cerr << "failed to bind parameter: " << e << std::endl;
 			return -2;
 		}
 		e = sqlite3_bind_text(stmt, 2, reinterpret_cast<const char *>(map_variables->variable_1()),
 							  -1, SQLITE_STATIC);
 		if (e != SQLITE_OK) {
-			cerr << "failed to bind parameter: " << e << endl;
+			std::cerr << "failed to bind parameter: " << e << std::endl;
 			return -2;
 		}
 		e = sqlite3_bind_text(stmt, 3, reinterpret_cast<const char *>(map_variables->variable_2()),
 							  -1, SQLITE_STATIC);
 		if (e != SQLITE_OK) {
-			cerr << "failed to bind parameter: " << e << endl;
+			std::cerr << "failed to bind parameter: " << e << std::endl;
 			return -2;
 		}
 		e = sqlite3_step(stmt);
 		if (e != SQLITE_DONE) {
-			cerr << "failed to step statement: " << e << endl;
+			std::cerr << "failed to step statement: " << e << std::endl;
 			return -2;
 		}
 		sqlite3_reset(stmt);
@@ -777,7 +775,7 @@ private:
 							   "INSERT INTO cellml_units VALUES (?, ?, ?, ?, ?, ?)",
 							   -1, &stmt, nullptr);
 		if (e != SQLITE_OK) {
-			cerr << "failed to prepare statement: " << e << endl;
+			std::cerr << "failed to prepare statement: " << e << std::endl;
 			return false;
 		}
 		stmt_units_ = stmt;
@@ -786,7 +784,7 @@ private:
 							   "INSERT INTO cellml_variables VALUES (?, ?, ?, ?, ?, ?)",
 							   -1, &stmt, nullptr);
 		if (e != SQLITE_OK) {
-			cerr << "failed to prepare statement: " << e << endl;
+			std::cerr << "failed to prepare statement: " << e << std::endl;
 			return false;
 		}
 		stmt_variables_ = stmt;
@@ -795,7 +793,7 @@ private:
 							   "INSERT INTO cellml_maths VALUES (?, ?)",
 							   -1, &stmt, nullptr);
 		if (e != SQLITE_OK) {
-			cerr << "failed to prepare statement: " << e << endl;
+			std::cerr << "failed to prepare statement: " << e << std::endl;
 			return false;
 		}
 		stmt_maths_ = stmt;
@@ -804,7 +802,7 @@ private:
 							   "INSERT INTO cellml_connections VALUES (?, ?)",
 							   -1, &stmt, nullptr);
 		if (e != SQLITE_OK) {
-			cerr << "failed to prepare statement: " << e << endl;
+			std::cerr << "failed to prepare statement: " << e << std::endl;
 			return false;
 		}
 		stmt_connections_ = stmt;
@@ -813,7 +811,7 @@ private:
 							   "INSERT INTO cellml_map_variables VALUES (?, ?, ?)",
 							   -1, &stmt, nullptr);
 		if (e != SQLITE_OK) {
-			cerr << "failed to prepare statement: " << e << endl;
+			std::cerr << "failed to prepare statement: " << e << std::endl;
 			return false;
 		}
 		stmt_map_variables_ = stmt;

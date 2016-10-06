@@ -9,8 +9,6 @@
 #include <boost/spirit/include/qi.hpp>
 #include <boost/uuid/uuid_io.hpp>
 
-using std::cerr;
-using std::endl;
 using std::memcpy;
 using std::string;
 
@@ -50,20 +48,20 @@ bool GraphIvRewriter::Rewrite(sqlite3 *db)
 {
 	int e = sqlite3_prepare_v2(db, kQueryGraph, -1, &stmt_graph_, nullptr);
 	if (e != SQLITE_OK) {
-		cerr << "failed to prepare statement: " << kQueryGraph
-			 << ": " << e << endl;
+		std::cerr << "failed to prepare statement: " << kQueryGraph
+			 << ": " << e << std::endl;
 		return false;
 	}
 	e = sqlite3_prepare_v2(db, kQueryNode, -1, &stmt_node_, nullptr);
 	if (e != SQLITE_OK) {
-		cerr << "failed to prepare statement: " << kQueryNode
-			 << ": " << e << endl;
+		std::cerr << "failed to prepare statement: " << kQueryNode
+			 << ": " << e << std::endl;
 		return false;
 	}
 	e = sqlite3_prepare_v2(db, kQueryUpdate, -1, &stmt_update_, nullptr);
 	if (e != SQLITE_OK) {
-		cerr << "failed to prepare statement: " << kQueryUpdate
-			 << ": " << e << endl;
+		std::cerr << "failed to prepare statement: " << kQueryUpdate
+			 << ": " << e << std::endl;
 		return false;
 	}
 
@@ -81,7 +79,7 @@ bool GraphIvRewriter::Rewrite(sqlite3 *db)
 					 (const char *)math)) return false;
 	}
 	if (e != SQLITE_DONE) {
-		cerr << "failed to step statement: " << kQueryGraph << ": " << e << endl;
+		std::cerr << "failed to step statement: " << kQueryGraph << ": " << e << std::endl;
 		return false;
 	}
 	for (Map::const_iterator it=m_.begin();it!=m_.end();++it) {
@@ -113,15 +111,15 @@ bool GraphIvRewriter::Process(sqlite3_int64 pq_rowid,
 				   >> +((graph - ')')[push_back(boost::phoenix::ref(rhs), _1)])
 				   >> ')');
 	if (!r || p != math + len) {
-		cerr << "failed to parse the definition of "
+		std::cerr << "failed to parse the definition of "
 			 << module_id << ':' << name
-			 << "'s initial-value: " << math << endl;
+			 << "'s initial-value: " << math << std::endl;
 		return false;
 	}
 	if (std::strcmp(name, lhs.c_str()) != 0) {
-		cerr << "unexpected LHS of the definition of "
+		std::cerr << "unexpected LHS of the definition of "
 			 << module_id << ':' << name
-			 << "'s initial-value: " << math << endl;
+			 << "'s initial-value: " << math << std::endl;
 		return false;
 	}
 	int node_id;
@@ -139,20 +137,20 @@ bool GraphIvRewriter::FindNode(sqlite3_int64 pq_rowid,
 	int e;
 	e = sqlite3_bind_int64(stmt_node_, 1, pq_rowid);
 	if (e != SQLITE_OK) {
-		cerr << "failed to bind pq_rowid: " << kQueryNode
-			 << ": " << e << endl;
+		std::cerr << "failed to bind pq_rowid: " << kQueryNode
+			 << ": " << e << std::endl;
 		return false;
 	}
 	e = sqlite3_bind_text(stmt_node_, 2, node_name, -1, SQLITE_STATIC);
 	if (e != SQLITE_OK) {
-		cerr << "failed to bind name: " << kQueryNode
-			 << ": " << e << endl;
+		std::cerr << "failed to bind name: " << kQueryNode
+			 << ": " << e << std::endl;
 		return false;
 	}
 	e = sqlite3_step(stmt_node_);
 	if (e != SQLITE_ROW) {
-		cerr << "failed to find node named " << node_name
-			 << ": " << kQueryNode << endl;
+		std::cerr << "failed to find node named " << node_name
+			 << ": " << kQueryNode << std::endl;
 		return false;
 	}
 	int r = sqlite3_column_int(stmt_node_, 0);
@@ -166,20 +164,20 @@ bool GraphIvRewriter::Update(sqlite3_int64 pq_rowid, const char *math)
 {
 	int e = sqlite3_bind_text(stmt_update_, 1, math, -1, SQLITE_STATIC);
 	if (e != SQLITE_OK) {
-		cerr << "failed to bind math: " << kQueryUpdate
-			 << ": " << e << endl;
+		std::cerr << "failed to bind math: " << kQueryUpdate
+			 << ": " << e << std::endl;
 		return false;
 	}
 	e = sqlite3_bind_int64(stmt_update_, 2, pq_rowid);
 	if (e != SQLITE_OK) {
-		cerr << "failed to bind pq_rowid: " << kQueryUpdate
-			 << ": " << e << endl;
+		std::cerr << "failed to bind pq_rowid: " << kQueryUpdate
+			 << ": " << e << std::endl;
 		return false;
 	}
 	e = sqlite3_step(stmt_update_);
 	if (e != SQLITE_DONE) {
-		cerr << "failed to step statement: " << kQueryUpdate
-			 << ": " << e << endl;
+		std::cerr << "failed to step statement: " << kQueryUpdate
+			 << ": " << e << std::endl;
 		return false;
 	}
 	sqlite3_reset(stmt_update_);

@@ -20,8 +20,6 @@
 
 #include "filter/filter_loader.h"
 
-using std::cerr;
-using std::endl;
 using std::memcpy;
 using std::string;
 
@@ -75,11 +73,11 @@ bool Track(const char *filter_file, const char *output_file)
 	}
 	std::ofstream ofs(output_file, std::ios::binary);
 	if (!ofs) {
-		cerr << "failed to open " << output_file << endl;
+		std::cerr << "failed to open " << output_file << std::endl;
 		return false;
 	}
 	if (!st->SerializeToOstream(&ofs)) {
-		cerr << "failed to serialize SimulationTrack" << endl;
+		std::cerr << "failed to serialize SimulationTrack" << std::endl;
 		return false;
 	}
 	ofs.close();

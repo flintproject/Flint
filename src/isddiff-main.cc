@@ -20,9 +20,6 @@
 
 namespace po = boost::program_options;
 
-using std::cerr;
-using std::cout;
-using std::endl;
 using std::string;
 using std::strncmp;
 
@@ -43,11 +40,11 @@ int CompareTimestamp(const isdf::ISDFHeader &header0,
 		memcpy(ts1.get(), header1.timestamp, 20);
 		ts0[20] = 0;
 		ts1[20] = 0;
-		cout << "timestamp: "
+		std::cout << "timestamp: "
 			 << ts0.get()
 			 << " vs "
 			 << ts1.get()
-			 << endl;
+			 << std::endl;
 		return kExitDifferent;
 	}
 	return EXIT_SUCCESS;
@@ -59,12 +56,12 @@ int CompareComment(const isdf::Reader &reader0,
 	std::uint32_t nb0 = reader0.num_bytes_comment();
 	std::uint32_t nb1 = reader1.num_bytes_comment();
 	if (nb0 != nb1) {
-		cout << "comment" << endl;
+		std::cout << "comment" << std::endl;
 		return kExitDifferent;
 	}
 	if (nb0 == 0) return EXIT_SUCCESS; // no comment
 	if (strncmp(reader0.comment(), reader1.comment(), nb0) != 0) {
-		cout << "comment" << endl;
+		std::cout << "comment" << std::endl;
 		return kExitDifferent;
 	}
 	return EXIT_SUCCESS;
@@ -76,11 +73,11 @@ int CompareDescriptions(const isdf::Reader &reader0,
 	std::uint32_t nb0 = reader0.num_bytes_descs();
 	std::uint32_t nb1 = reader1.num_bytes_descs();
 	if (nb0 != nb1) {
-		cout << "descriptions" << endl;
+		std::cout << "descriptions" << std::endl;
 		return kExitDifferent;
 	}
 	if (strncmp(reader0.descriptions(), reader1.descriptions(), nb0) != 0) {
-		cout << "descriptions" << endl;
+		std::cout << "descriptions" << std::endl;
 		return kExitDifferent;
 	}
 	return EXIT_SUCCESS;
@@ -92,12 +89,12 @@ int CompareUnits(const isdf::Reader &reader0,
 	std::uint32_t nb0 = reader0.num_bytes_units();
 	std::uint32_t nb1 = reader1.num_bytes_units();
 	if (nb0 != nb1) {
-		cout << "units" << endl;
+		std::cout << "units" << std::endl;
 		return kExitDifferent;
 	}
 	if (nb0 == 0) return EXIT_SUCCESS; // no units
 	if (strncmp(reader0.units(), reader1.units(), nb0) != 0) {
-		cout << "units" << endl;
+		std::cout << "units" << std::endl;
 		return kExitDifferent;
 	}
 	return EXIT_SUCCESS;
@@ -106,11 +103,11 @@ int CompareUnits(const isdf::Reader &reader0,
 void PrintDifference(std::uint32_t i, std::uint32_t k,
 					 double v0, double v1)
 {
-	cout << "step " << i << " [" << k << "]: "
+	std::cout << "step " << i << " [" << k << "]: "
 		 << v0
 		 << " vs "
 		 << v1
-		 << endl;
+		 << std::endl;
 }
 
 int CompareBody(std::uint32_t num_objs,
@@ -133,37 +130,37 @@ int CompareBody(std::uint32_t num_objs,
 		if (f0 != f1) {
 			if (f0) {
 				if (e0) {
-					cout << "step " << i << " is missing in "
+					std::cout << "step " << i << " is missing in "
 						 << input_file0
-						 << endl;
+						 << std::endl;
 					return kExitDifferent;
 				}
 			} else {
 				if (e1) {
-					cout << "step " << i << " is missing in "
+					std::cout << "step " << i << " is missing in "
 						 << input_file1
-						 << endl;
+						 << std::endl;
 					return kExitDifferent;
 				}
 			}
 		}
 		if (f0) {
 			if (e0 != e1) {
-				cerr << "reading step " << i << " fails" << endl;
+				std::cerr << "reading step " << i << " fails" << std::endl;
 				return kExitDifferent; // TODO
 			}
 			return r;
 		}
 		if (is0.bad()) {
-			cerr << "error occurred at reading "
+			std::cerr << "error occurred at reading "
 				 << input_file0
-				 << endl;
+				 << std::endl;
 			return kExitFailure;
 		}
 		if (is1.bad()) {
-			cerr << "error occurred at reading "
+			std::cerr << "error occurred at reading "
 				 << input_file1
-				 << endl;
+				 << std::endl;
 			return kExitFailure;
 		}
 
@@ -218,21 +215,21 @@ int main(int argc, char *argv[])
 		print_help = 2;
 	}
 	if (print_help != 0) {
-		cerr << "usage: isddiff [OPTIONS] INPUT0 INPUT1" << endl;
-		cerr << opts;
+		std::cerr << "usage: isddiff [OPTIONS] INPUT0 INPUT1" << std::endl;
+		std::cerr << opts;
 		return (print_help == 1) ? EXIT_SUCCESS : kExitFailure;
 	}
 
 	std::ifstream ifs0(input_file0.c_str(), std::ios::in|std::ios::binary);
 	if (!ifs0.is_open()) {
-		cerr << "failed to open file: " << input_file0 << endl;
+		std::cerr << "failed to open file: " << input_file0 << std::endl;
 		return kExitFailure;
 	}
 
 	std::ifstream ifs1(input_file1.c_str(), std::ios::in|std::ios::binary);
 	if (!ifs1.is_open()) {
 		ifs0.close();
-		cerr << "failed to open file: " << input_file1 << endl;
+		std::cerr << "failed to open file: " << input_file1 << std::endl;
 		return kExitFailure;
 	}
 
@@ -261,11 +258,11 @@ int main(int argc, char *argv[])
 	std::uint32_t no1 = reader1->num_objs();
 	if (no0 != no1) {
 		result = kExitDifferent;
-		cerr << "num_objs: "
+		std::cerr << "num_objs: "
 			 << no0
 			 << " vs "
 			 << no1
-			 << endl;
+			 << std::endl;
 	}
 
 	if (vm.count("ignore-comment")) {

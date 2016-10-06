@@ -9,8 +9,6 @@
 #include <cstring>
 #include <iostream>
 
-using std::cerr;
-using std::endl;
 using std::sprintf;
 
 namespace flint {
@@ -25,16 +23,16 @@ bool Config(int id, sqlite3 *db)
 	sprintf(query, "ATTACH DATABASE '%d/model.db' AS m%d", id, id);
 	e = sqlite3_exec(db, query, nullptr, nullptr, &em);
 	if (e != SQLITE_OK) {
-		cerr << "failed to attach database: " << e
-			 << ": " << em << endl;
+		std::cerr << "failed to attach database: " << e
+			 << ": " << em << std::endl;
 		return false;
 	}
 
 	sprintf(query, "DELETE FROM m%d.config", id);
 	e = sqlite3_exec(db, query, nullptr, nullptr, &em);
 	if (e != SQLITE_OK) {
-		cerr << "failed to delete from config: " << e
-			 << ": " << em << endl;
+		std::cerr << "failed to delete from config: " << e
+			 << ": " << em << std::endl;
 		return false;
 	}
 
@@ -46,16 +44,16 @@ bool Config(int id, sqlite3 *db)
 			id, id);
 	e = sqlite3_exec(db, query, nullptr, nullptr, &em);
 	if (e != SQLITE_OK) {
-		cerr << "failed to insert into config: " << e
-			 << ": " << em << endl;
+		std::cerr << "failed to insert into config: " << e
+			 << ": " << em << std::endl;
 		return false;
 	}
 
 	sprintf(query, "DETACH DATABASE m%d", id);
 	e = sqlite3_exec(db, query, nullptr, nullptr, &em);
 	if (e != SQLITE_OK) {
-		cerr << "failed to detach database: " << e
-			 << ": " << em << endl;
+		std::cerr << "failed to detach database: " << e
+			 << ": " << em << std::endl;
 		return false;
 	}
 

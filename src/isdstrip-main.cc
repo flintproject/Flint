@@ -20,9 +20,6 @@
 
 namespace po = boost::program_options;
 
-using std::cerr;
-using std::cout;
-using std::endl;
 using std::ifstream;
 using std::ios;
 using std::ofstream;
@@ -40,7 +37,7 @@ bool ExtractConstantColumns(const char *input,
 {
 	ifstream ifs(input, ios::in|ios::binary);
 	if (!ifs.is_open()) {
-		cerr << "could not open input file: " << input << endl;
+		std::cerr << "could not open input file: " << input << std::endl;
 		return false;
 	}
 	isdf::Reader reader;
@@ -67,7 +64,7 @@ bool ExtractConstantColumns(const char *input,
 			}
 			return true;
 		} else {
-			cerr << "failed to read data: " << input << endl;
+			std::cerr << "failed to read data: " << input << std::endl;
 		}
 		ifs.close();
 		return false;
@@ -84,7 +81,7 @@ bool ExtractConstantColumns(const char *input,
 				// done
 				break;
 			} else {
-				cerr << "failed to read data: " << input << endl;
+				std::cerr << "failed to read data: " << input << std::endl;
 				ifs.close();
 				return false;
 			}
@@ -131,7 +128,7 @@ public:
 		}
 		os_->write(buf_.get(), buf_size_);
 		if (!os_->good()) {
-			cerr << "failed to write data" << endl;
+			std::cerr << "failed to write data" << std::endl;
 			return -1;
 		}
 		return 1;
@@ -151,7 +148,7 @@ int Filter(const char *input,
 {
 	ifstream ifs(input, ios::in|ios::binary);
 	if (!ifs.is_open()) {
-		cerr << "could not open file: " << input << endl;
+		std::cerr << "could not open file: " << input << std::endl;
 		return EXIT_FAILURE;
 	}
 	isdf::Reader reader;
@@ -210,20 +207,20 @@ int Filter(const char *input,
 
 	os->write(reinterpret_cast<const char *>(&header), sizeof(header));
 	if (!os->good()) {
-		cerr << "could not write header" << endl;
+		std::cerr << "could not write header" << std::endl;
 		ifs.close();
 		return EXIT_FAILURE;
 	}
 	os->write(descs.get(), d - descs.get());
 	if (!os->good()) {
-		cerr << "could not write descriptions" << endl;
+		std::cerr << "could not write descriptions" << std::endl;
 		ifs.close();
 		return EXIT_FAILURE;
 	}
 	if (ru) { // when units are available
 		os->write(units.get(), u - units.get());
 		if (!os->good()) {
-			cerr << "could not write units" << endl;
+			std::cerr << "could not write units" << std::endl;
 			ifs.close();
 			return EXIT_FAILURE;
 		}
@@ -240,7 +237,7 @@ int Filter(const char *input,
 
 void PrintNumOfColumns(std::uint32_t num_columns, const vector<std::uint32_t> &cv)
 {
-	cout << num_columns - static_cast<std::uint32_t>(cv.size()) << endl;
+	std::cout << num_columns - static_cast<std::uint32_t>(cv.size()) << std::endl;
 }
 
 } // namespace
@@ -269,8 +266,8 @@ int main(int argc, char *argv[])
 		print_help = 2;
 	}
 	if (print_help != 0) {
-		cerr << "usage: isdstrip [OPTIONS] PATH" << endl;
-		cerr << opts << endl;
+		std::cerr << "usage: isdstrip [OPTIONS] PATH" << std::endl;
+		std::cerr << opts << std::endl;
 		return (print_help == 1) ? EXIT_SUCCESS : EXIT_FAILURE;
 	}
 
@@ -283,7 +280,7 @@ int main(int argc, char *argv[])
 		if (vm.count("output")) {
 			ofstream ofs(output_file.c_str(), ios::out|ios::binary);
 			if (!ofs.is_open()) {
-				cerr << "could not open output file: " << output_file << endl;
+				std::cerr << "could not open output file: " << output_file << std::endl;
 				return EXIT_FAILURE;
 			}
 			int r = Filter(input_path, cv, &ofs);
@@ -296,13 +293,13 @@ int main(int argc, char *argv[])
 				std::unique_ptr<TemporaryPath> temp_path(new TemporaryPath("isdstrip"));
 				output_path = temp_path->Touch();
 				if (!output_path) {
-					cerr << "could not create temporary path" << endl;
+					std::cerr << "could not create temporary path" << std::endl;
 					return EXIT_FAILURE;
 				}
 			}
 			ofstream ofs(output_path, ios::out|ios::binary);
 			if (!ofs.is_open()) {
-				cerr << "could not open output file: " << output_path << endl;
+				std::cerr << "could not open output file: " << output_path << std::endl;
 				remove(output_path);
 				free(output_path);
 				return EXIT_FAILURE;

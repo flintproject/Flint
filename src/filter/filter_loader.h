@@ -23,24 +23,21 @@ public:
 
 	template<typename TFilter>
 	bool Load(TFilter *filter) {
-		using std::cerr;
-		using std::endl;
-
 		if (!ifs_.is_open()) {
-			cerr << "failed to open filter file" << endl;
+			std::cerr << "failed to open filter file" << std::endl;
 			return false;
 		}
 
 		std::unique_ptr<lo::Header> header(new lo::Header);
 		if (!UnpackFromIstream(*header, &ifs_)) {
-			cerr << "could not read Header" << endl;
+			std::cerr << "could not read Header" << std::endl;
 			return false;
 		}
 		filter->ReadHeader(header->size());
 		while (ifs_.peek() != EOF) {
 			std::unique_ptr<lo::Column> column(new lo::Column);
 			if (!UnpackFromIstream(*column, &ifs_)) {
-				cerr << "could not read Column" << endl;
+				std::cerr << "could not read Column" << std::endl;
 				return false;
 			}
 			filter->ReadColumn(std::move(column));

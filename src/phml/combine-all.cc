@@ -27,8 +27,6 @@
 
 #include "system.h"
 
-using std::cerr;
-using std::endl;
 using std::memcpy;
 using std::sprintf;
 using std::strcmp;
@@ -70,7 +68,7 @@ bool CombineAll(sqlite3 *db)
 							   "SELECT m.module_id, i.type, i.ref FROM imports AS i LEFT JOIN modules AS m ON i.module_rowid = m.rowid",
 							   -1, &stmt, nullptr);
 	if (e != SQLITE_OK) {
-		cerr << "failed to prepare statement: " << e << endl;
+		std::cerr << "failed to prepare statement: " << e << std::endl;
 		return false;
 	}
 
@@ -96,7 +94,7 @@ bool CombineAll(sqlite3 *db)
 		uv.push_back(uuid);
 	}
 	if (e != SQLITE_DONE) {
-		cerr << "failed to step statement: " << e << endl;
+		std::cerr << "failed to step statement: " << e << std::endl;
 		return false;
 	}
 	sqlite3_finalize(stmt);

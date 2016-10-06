@@ -13,8 +13,6 @@
 
 #include <libxml/xmlreader.h>
 
-using std::cerr;
-using std::endl;
 using std::fclose;
 using std::fopen;
 using std::fread;
@@ -42,9 +40,9 @@ int CheckPhz(const char *filename)
 	int r = fread(magic, 2, 1, fp);
 	fclose(fp);
 	if (r != 1) {
-		cerr << "failed to read magic in model file: "
+		std::cerr << "failed to read magic in model file: "
 			 << filename
-			 << endl;
+			 << std::endl;
 		return -1;
 	}
 	if (strncmp(magic, "PK", 2) == 0) { // looks like zip
@@ -99,10 +97,10 @@ public:
 					*format_ = kSedml;
 					return true;
 				} else {
-					cerr << "unknown pair of namespace and element";
-					if (uri) cerr << ":" << uri;
-					if (local_name) cerr << ": <" << local_name << ">";
-					cerr << endl;
+					std::cerr << "unknown pair of namespace and element";
+					if (uri) std::cerr << ":" << uri;
+					if (local_name) std::cerr << ": <" << local_name << ">";
+					std::cerr << std::endl;
 					return false;
 				}
 			}
@@ -132,7 +130,7 @@ bool DetectFormat(const char *filename, Format *format)
 
 	xmlTextReaderPtr text_reader = xmlReaderForFile(filename, nullptr, 0);
 	if (!text_reader) {
-		cerr << "could not read the input: " << filename << endl;
+		std::cerr << "could not read the input: " << filename << std::endl;
 		return false;
 	}
 	Reader reader(text_reader, format);

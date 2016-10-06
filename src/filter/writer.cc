@@ -4,9 +4,6 @@
 #include <cassert>
 #include <iostream>
 
-using std::cerr;
-using std::endl;
-
 namespace flint {
 namespace filter {
 
@@ -40,7 +37,7 @@ bool Writer::Write(const double *data, FILE *fp) const
 {
 	for (auto const &p : v_) {
 		if (fwrite(data + p.first, sizeof(double), p.second, fp) != p.second) {
-			cerr << "failed to filter output" << endl;
+			std::cerr << "failed to filter output" << std::endl;
 			return false;
 		}
 	}

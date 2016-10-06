@@ -11,10 +11,6 @@
 
 namespace po = boost::program_options;
 
-using std::cerr;
-using std::cin;
-using std::cout;
-using std::endl;
 using std::ifstream;
 using std::istream;
 using std::ios;
@@ -33,7 +29,7 @@ int ReadAndCount(bool columns, istream *is, ostream *os)
 	if (!reader.SkipComment(is)) return EXIT_FAILURE;
 
 	if (columns) {
-		*os << reader.num_objs() << endl;
+		*os << reader.num_objs() << std::endl;
 		return EXIT_SUCCESS;
 	}
 
@@ -41,7 +37,7 @@ int ReadAndCount(bool columns, istream *is, ostream *os)
 	if (!reader.SkipUnits(is)) return EXIT_FAILURE;
 	size_t num_steps;
 	if (!reader.CountSteps(is, &num_steps)) return EXIT_FAILURE;
-	*os << reader.num_objs() << " " << num_steps << endl;
+	*os << reader.num_objs() << " " << num_steps << std::endl;
 	return EXIT_SUCCESS;
 }
 
@@ -70,8 +66,8 @@ int main(int argc, char *argv[])
 		print_help = 2;
 	}
 	if (print_help != 0) {
-		cerr << "usage: isdwc [OPTIONS] [PATH]" << endl;
-		cerr << opts;
+		std::cerr << "usage: isdwc [OPTIONS] [PATH]" << std::endl;
+		std::cerr << opts;
 		return (print_help == 1) ? EXIT_SUCCESS : EXIT_FAILURE;
 	}
 
@@ -80,32 +76,32 @@ int main(int argc, char *argv[])
 	if (vm.count("output")) {
 		ofstream ofs(output_file.c_str(), ios::out|ios::binary);
 		if (!ofs.is_open()) {
-			cerr << "could not open output file: " << output_file << endl;
+			std::cerr << "could not open output file: " << output_file << std::endl;
 			return EXIT_FAILURE;
 		}
 		if (vm.count("input")) {
 			ifstream ifs(input_file.c_str(), ios::in|ios::binary);
 			if (!ifs.is_open()) {
-				cerr << "could not open input file: " << input_file << endl;
+				std::cerr << "could not open input file: " << input_file << std::endl;
 				return EXIT_FAILURE;
 			}
 			r = ReadAndCount(columns, &ifs, &ofs);
 			ifs.close();
 		} else {
-			r = ReadAndCount(columns, &cin, &ofs);
+			r = ReadAndCount(columns, &std::cin, &ofs);
 		}
 		ofs.close();
 	} else {
 		if (vm.count("input")) {
 			ifstream ifs(input_file.c_str(), ios::in|ios::binary);
 			if (!ifs.is_open()) {
-				cerr << "could not open input file: " << input_file << endl;
+				std::cerr << "could not open input file: " << input_file << std::endl;
 				return EXIT_FAILURE;
 			}
-			r = ReadAndCount(columns, &ifs, &cout);
+			r = ReadAndCount(columns, &ifs, &std::cout);
 			ifs.close();
 		} else {
-			r = ReadAndCount(columns, &cin, &cout);
+			r = ReadAndCount(columns, &std::cin, &std::cout);
 		}
 	}
 	return r;

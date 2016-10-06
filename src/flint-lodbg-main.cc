@@ -12,17 +12,13 @@
 #include "lo/layout.h"
 #include "lo/layout_loader.h"
 
-using std::cerr;
-using std::cout;
-using std::endl;
-
 using namespace flint;
 
 namespace {
 
 void Usage()
 {
-	cerr << "usage: flint-lodbg LAYOUT" << endl;
+	std::cerr << "usage: flint-lodbg LAYOUT" << std::endl;
 }
 
 } // namespace
@@ -48,7 +44,7 @@ int main(int argc, char *argv[])
 		if (!loader->Load(layout.get())) return EXIT_FAILURE;
 	}
 	size_t layer_size = layout->Calculate();
-	cout << "layer_size: " << layer_size << endl;
+	std::cout << "layer_size: " << layer_size << std::endl;
 	layout->Debug(layer_size);
 
 	google::protobuf::ShutdownProtobufLibrary();

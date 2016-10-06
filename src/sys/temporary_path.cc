@@ -11,9 +11,6 @@
 #define BOOST_FILESYSTEM_NO_DEPRECATED
 #include <boost/filesystem.hpp>
 
-using std::cerr;
-using std::endl;
-
 namespace flint {
 
 #ifdef HAVE_MKSTEMP
@@ -25,20 +22,20 @@ char *MakeTemporaryFile(const std::string &name, int *fd)
 	boost::system::error_code ec;
 	boost::filesystem::path p = boost::filesystem::temp_directory_path(ec);
 	if (ec) {
-		cerr << "failed to get temporary directory path" << endl;
+		std::cerr << "failed to get temporary directory path" << std::endl;
 		return nullptr;
 	}
 	p /= name + ".XXXXXX";
 	const char *pc = p.c_str();
 	char *filepath = (char *)malloc(strlen(pc) + 1);
 	if (!filepath) {
-		cerr << "could not allocate filepath" << endl;
+		std::cerr << "could not allocate filepath" << std::endl;
 		return nullptr;
 	}
 	strcpy(filepath, pc);
 	*fd = mkstemp(filepath);
 	if (*fd < 0) {
-		cerr << "could not make temporary file: " << filepath << endl;
+		std::cerr << "could not make temporary file: " << filepath << std::endl;
 		free(filepath);
 		return nullptr;
 	}
@@ -61,7 +58,7 @@ char *TemporaryPath::Touch()
 {
 	char *path = tempnam(nullptr, name_.c_str());
 	if (!path) {
-		cerr << "could not generate temporary name" << endl;
+		std::cerr << "could not generate temporary name" << std::endl;
 		return nullptr;
 	}
 	return path;

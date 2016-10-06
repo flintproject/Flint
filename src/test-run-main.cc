@@ -13,14 +13,11 @@
 
 #include "cli.pb.h"
 
-using std::cerr;
-using std::endl;
-
 namespace {
 
 void Usage()
 {
-	cerr << "usage: test-run MODEL OUTPUT [G [S]]" << endl;
+	std::cerr << "usage: test-run MODEL OUTPUT [G [S]]" << std::endl;
 }
 
 } // namespace
@@ -42,9 +39,9 @@ int main(int argc, char *argv[])
 	if (argc > 3) {
 		int n = atoi(argv[3]);
 		if (n <= 0) {
-			cerr << "granularity expects a positive integer, but "
+			std::cerr << "granularity expects a positive integer, but "
 				 << argv[3]
-				 << endl;
+				 << std::endl;
 			return EXIT_FAILURE;
 		}
 		option.set_granularity(n);
@@ -55,11 +52,11 @@ int main(int argc, char *argv[])
 	int s = option.ByteSize();
 	std::unique_ptr<char[]> buffer(new char[s]);
 	if (!option.SerializeToArray(buffer.get(), s)) {
-		cerr << "failed to serialize to array" << endl;
+		std::cerr << "failed to serialize to array" << std::endl;
 		return EXIT_FAILURE;
 	}
 	if (std::fwrite(buffer.get(), s, 1, stdout) != 1) {
-		cerr << "failed to write option" << endl;
+		std::cerr << "failed to write option" << std::endl;
 		return EXIT_FAILURE;
 	}
 

@@ -33,9 +33,6 @@
 #include "solver/ark/rhs.h"
 #include "solver/ark/user-supplied.h"
 
-using std::cerr;
-using std::endl;
-
 namespace flint {
 namespace solver {
 namespace ark {
@@ -141,21 +138,21 @@ bool Ark::Solve(const job::Option &option)
 	/* skeleton: 4. Create ARKode object */
 	arkode_mem_ = ARKodeCreate();
 	if (!arkode_mem_) {
-		cerr << "failed to create ARKode object" << endl;
+		std::cerr << "failed to create ARKode object" << std::endl;
 		return false;
 	}
 
 	/* skeleton: 5. Initialize ARKode solver */
 	int r = ARKodeInit(arkode_mem_, nullptr, ArkRhs, 0.0, y_);
 	if (r != ARK_SUCCESS) {
-		cerr << "failed to initialize ARKode solver: " << r << endl;
+		std::cerr << "failed to initialize ARKode solver: " << r << std::endl;
 		return false;
 	}
 
 	/* skeleton: 6. Specify integration tolerances */
 	r = ARKodeSStolerances(arkode_mem_, 1e-4, 1e-9);
 	if (r != ARK_SUCCESS) {
-		cerr << "failed to specify integration tolerances: " << r << endl;
+		std::cerr << "failed to specify integration tolerances: " << r << std::endl;
 		return false;
 	}
 
@@ -171,7 +168,7 @@ bool Ark::Solve(const job::Option &option)
 	/* skeleton: 10. Attach mass matrix linear solver module */
 	r = ARKMassDense(arkode_mem_, dim_, ArkDlsDenseMass);
 	if (r != ARKDLS_SUCCESS) {
-		cerr << "ARKMassDense() failed: " << r << endl;
+		std::cerr << "ARKMassDense() failed: " << r << std::endl;
 		return false;
 	}
 
@@ -199,7 +196,7 @@ bool Ark::Solve(const job::Option &option)
 
 		r = ARKode(arkode_mem_, tout, y_, &tret, ARK_NORMAL);
 		if (r != ARK_SUCCESS) {
-			cerr << "failed to advance step via ARKode: " << r << endl;
+			std::cerr << "failed to advance step via ARKode: " << r << std::endl;
 			return false;
 		}
 
@@ -215,7 +212,7 @@ bool Ark::Solve(const job::Option &option)
 						return false;
 				} else {
 					if (std::fwrite(data_.get(), sizeof(double), layer_size_, output_fp) != static_cast<size_t>(layer_size_)) {
-						cerr << "failed to write output" << endl;
+						std::cerr << "failed to write output" << std::endl;
 						return false;
 					}
 				}
@@ -225,7 +222,7 @@ bool Ark::Solve(const job::Option &option)
 
 		if (option.progress_address) {
 			if (data_[kIndexEnd] <= 0) {
-				cerr << "non-positive end time: " << data_[kIndexEnd] << endl;
+				std::cerr << "non-positive end time: " << data_[kIndexEnd] << std::endl;
 				return false;
 			}
 			char c = static_cast<char>(100 * (data_[kIndexTime] / data_[kIndexEnd]));
@@ -248,7 +245,7 @@ bool Ark::SetProblemDimensions()
 {
 	dim_ = layout_->SelectStates(&states_);
 	if (dim_ <= 0) {
-		cerr << "the number of states is <= 0" << endl; // TODO
+		std::cerr << "the number of states is <= 0" << std::endl; // TODO
 		return false;
 	}
 	return true;

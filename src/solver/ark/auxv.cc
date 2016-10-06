@@ -13,9 +13,6 @@
 
 #include "runtime/processor.h"
 
-using std::cerr;
-using std::endl;
-
 namespace flint {
 namespace solver {
 namespace ark {

@@ -8,8 +8,6 @@
 
 #include "reduction.h"
 
-using std::cerr;
-using std::endl;
 using std::atoi;
 
 namespace flint {
@@ -25,11 +23,11 @@ public:
 		auto &c = (*inbound_)[target];
 		c.reduction = reduction;
 		if (!c.sources.insert(source).second) {
-			cerr << "duplicate entries in flows: "
+			std::cerr << "duplicate entries in flows: "
 				 << source
 				 << " -> "
 				 << target
-				 << endl;
+				 << std::endl;
 			return false;
 		}
 		c.size = size;
@@ -67,8 +65,8 @@ bool LoadFlows(sqlite3 *db, FlowInboundMap *im)
 	if (e == SQLITE_OK)
 		return true;
 	if (e != SQLITE_ABORT)
-		cerr << "failed to select flows: " << e
-			 << ": " << em << endl;
+		std::cerr << "failed to select flows: " << e
+			 << ": " << em << std::endl;
 	sqlite3_free(em);
 	return false;
 }

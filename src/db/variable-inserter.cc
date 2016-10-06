@@ -8,8 +8,6 @@
 
 #include <boost/uuid/nil_generator.hpp>
 
-using std::cerr;
-using std::endl;
 using std::exit;
 
 namespace flint {
@@ -26,9 +24,9 @@ VariableInserter::VariableInserter(const char *table, bool independent, sqlite3 
 	int e;
 	e = sqlite3_prepare_v2(db, query_.get(), -1, &stmt_, nullptr);
 	if (e != SQLITE_OK) {
-		cerr << "failed to prepare statement: " << e
+		std::cerr << "failed to prepare statement: " << e
 			 << ": " << query_.get()
-			 << endl;
+			 << std::endl;
 		exit(EXIT_FAILURE);
 	}
 }
@@ -48,42 +46,42 @@ bool VariableInserter::Insert(const boost::uuids::uuid &space_id,
 	int e;
 	e = sqlite3_bind_blob(stmt_, 1, &space_id, space_id.size(), SQLITE_STATIC);
 	if (e != SQLITE_OK) {
-		cerr << "failed to bind space_id: " << e << endl;
+		std::cerr << "failed to bind space_id: " << e << std::endl;
 		return false;
 	}
 	e = sqlite3_bind_text(stmt_, 2, &type, 1, SQLITE_STATIC);
 	if (e != SQLITE_OK) {
-		cerr << "failed to bind type: " << e << endl;
+		std::cerr << "failed to bind type: " << e << std::endl;
 		return false;
 	}
 	e = sqlite3_bind_int(stmt_, 3, id);
 	if (e != SQLITE_OK) {
-		cerr << "failed to bind id: " << e << endl;
+		std::cerr << "failed to bind id: " << e << std::endl;
 		return false;
 	}
 	e = sqlite3_bind_text(stmt_, 4, name, -1, SQLITE_STATIC);
 	if (e != SQLITE_OK) {
-		cerr << "failed to bind name: " << e << endl;
+		std::cerr << "failed to bind name: " << e << std::endl;
 		return false;
 	}
 	e = sqlite3_bind_int(stmt_, 5, col);
 	if (e != SQLITE_OK) {
-		cerr << "failed to bind ncols: " << e << endl;
+		std::cerr << "failed to bind ncols: " << e << std::endl;
 		return false;
 	}
 	e = sqlite3_bind_int(stmt_, 6, row);
 	if (e != SQLITE_OK) {
-		cerr << "failed to bind nrows: " << e << endl;
+		std::cerr << "failed to bind nrows: " << e << std::endl;
 		return false;
 	}
 	e = sqlite3_bind_int(stmt_, 7, independent_ ? 1 : 0);
 	if (e != SQLITE_OK) {
-		cerr << "failed to bind independent: " << e << endl;
+		std::cerr << "failed to bind independent: " << e << std::endl;
 		return false;
 	}
 	e = sqlite3_step(stmt_);
 	if (e != SQLITE_DONE) {
-		cerr << "failed to step statement: " << e << endl;
+		std::cerr << "failed to step statement: " << e << std::endl;
 		return false;
 	}
 	sqlite3_reset(stmt_);

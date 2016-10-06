@@ -20,9 +20,6 @@
 #include "bc/pack.h"
 #include "db/statement-driver.h"
 
-using std::cerr;
-using std::endl;
-
 namespace flint {
 namespace phml {
 
@@ -39,7 +36,7 @@ public:
 	bool Load(sqlite3_int64 rowid, unit::Unit *unit) {
 		int e = sqlite3_bind_int64(stmt(), 1, rowid);
 		if (e != SQLITE_OK) {
-			cerr << "failed to bind unit_rowid: " << e << endl;
+			std::cerr << "failed to bind unit_rowid: " << e << std::endl;
 			return false;
 		}
 		for (e = sqlite3_step(stmt()); e == SQLITE_ROW; e = sqlite3_step(stmt())) {
@@ -57,7 +54,7 @@ public:
 			if (offset) e->set_offset(offset);
 		}
 		if (e != SQLITE_DONE) {
-			cerr << "failed to step statement: " << e << endl;
+			std::cerr << "failed to step statement: " << e << std::endl;
 			return false;
 		}
 		sqlite3_reset(stmt());
@@ -90,7 +87,7 @@ public:
 			units->emplace(unit_id, std::move(unit));
 		}
 		if (e != SQLITE_DONE) {
-			cerr << "failed to step statement: " << e << endl;
+			std::cerr << "failed to step statement: " << e << std::endl;
 			return false;
 		}
 		return true;
@@ -104,7 +101,7 @@ bool IsOfTime(const UnitMap &units, int id, long *denominator, long *numerator)
 {
 	UnitMap::const_iterator it = units.find(id);
 	if (it == units.end()) {
-		cerr << "missing unit with unit-id " << id << endl;
+		std::cerr << "missing unit with unit-id " << id << std::endl;
 		return false;
 	}
 	const std::unique_ptr<unit::Unit> &unit = it->second;
@@ -133,12 +130,12 @@ bool IsOfTime(const UnitMap &units, int id, long *denominator, long *numerator)
 			if (element.has_multiplier()) {
 				double multiplier = element.multiplier();
 				if (multiplier < 0) {
-					cerr << "non-positional multiplier: " << multiplier << endl;
+					std::cerr << "non-positional multiplier: " << multiplier << std::endl;
 					return false;
 				}
 				long m = static_cast<long>(multiplier);
 				if (static_cast<double>(m) != multiplier) {
-					cerr << "multiplier was truncated: " << multiplier << endl;
+					std::cerr << "multiplier was truncated: " << multiplier << std::endl;
 				}
 				n *= m;
 			}
@@ -164,7 +161,7 @@ bool UnitOfTime(sqlite3 *db, const char *output)
 
 	std::ofstream ofs(output, std::ios::binary);
 	if (!ofs) {
-		cerr << "failed to open " << output << endl;
+		std::cerr << "failed to open " << output << std::endl;
 		return false;
 	}
 	ipc::TimeUnit tu;
@@ -176,7 +173,7 @@ bool UnitOfTime(sqlite3 *db, const char *output)
 			tu.set_n(n);
 			tu.set_id(it->first);
 			if (!PackToOstream(tu, &ofs)) {
-				cerr << "failed to pack TimeUnit" << endl;
+				std::cerr << "failed to pack TimeUnit" << std::endl;
 				return false;
 			}
 		}

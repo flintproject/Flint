@@ -28,8 +28,6 @@
 #include "task/config-reader.h"
 #include "utf8path.h"
 
-using std::cerr;
-using std::endl;
 using std::perror;
 
 namespace flint {
@@ -47,12 +45,12 @@ public:
 		int e;
 		e = sqlite3_bind_int(stmt(), 1, granularity);
 		if (e != SQLITE_OK) {
-			cerr << "failed to bind granularity: " << e << endl;
+			std::cerr << "failed to bind granularity: " << e << std::endl;
 			return false;
 		}
 		e = sqlite3_step(stmt());
 		if (e != SQLITE_DONE) {
-			cerr << "failed to step statement: " << e << endl;
+			std::cerr << "failed to step statement: " << e << std::endl;
 			return false;
 		}
 		sqlite3_reset(stmt());
@@ -89,16 +87,16 @@ bool Run(const cli::RunOption &option)
 		boost::filesystem::path spec_path = GetPathFromUtf8(option.spec_filename().c_str());
 		boost::system::error_code ec;
 		if (!boost::filesystem::is_regular_file(spec_path, ec) || ec) {
-			cerr << ec.message() << endl;
+			std::cerr << ec.message() << std::endl;
 			return false;
 		}
 		boost::filesystem::copy_file(spec_path, "spec.txt", ec);
 		if (ec) {
-			cerr << "failed to copy "
+			std::cerr << "failed to copy "
 				 << option.spec_filename()
 				 << " to spec.txt: "
 				 << ec.message()
-				 << endl;
+				 << std::endl;
 			return false;
 		}
 	} else {

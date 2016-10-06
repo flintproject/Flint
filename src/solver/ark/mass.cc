@@ -14,9 +14,6 @@
 #include "runtime/processor.h"
 #include "solver/ark/mmdm.h"
 
-using std::cerr;
-using std::endl;
-
 namespace flint {
 namespace solver {
 namespace ark {

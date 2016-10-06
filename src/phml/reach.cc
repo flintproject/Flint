@@ -21,8 +21,6 @@
 #include "db/span-loader.h"
 #include "reduction.h"
 
-using std::cerr;
-using std::endl;
 using std::multimap;
 using std::set;
 using std::string;
@@ -196,7 +194,7 @@ public:
 			p = scopes_->emplace(uuid, space_id);
 		}
 		if (!p.second) {
-			cerr << "duplicate entry of scope: " << uuid << endl;
+			std::cerr << "duplicate entry of scope: " << uuid << std::endl;
 			return false;
 		}
 		mmap_->emplace(space_id, p.first);
@@ -262,12 +260,12 @@ void Lookup(const Node &p, multimap<Node, Node> &edges, set<Node> *q)
 
 void PrintIncompatiblePorts(const Port &from, const Port &to)
 {
-	cerr << "  from" << endl
-		 << "    port-id: " << from.port_id() << endl
-		 << "    module-id: " << from.module_id() << endl
-		 << "  to" << endl
-		 << "    port-id: " << to.port_id() << endl
-		 << "    module-id: " << to.module_id() << endl;
+	std::cerr << "  from" << std::endl
+		 << "    port-id: " << from.port_id() << std::endl
+		 << "    module-id: " << from.module_id() << std::endl
+		 << "  to" << std::endl
+		 << "    port-id: " << to.port_id() << std::endl
+		 << "    module-id: " << to.module_id() << std::endl;
 }
 
 } // namespace
@@ -303,35 +301,35 @@ bool Reach(sqlite3 *db)
 			Lookup(p, edges, &t);
 			for (const auto &o : t) {
 				if (o.port_id() <= 0) {
-					cerr << "invalid port-id of edge: " << o.port_id() << endl;
+					std::cerr << "invalid port-id of edge: " << o.port_id() << std::endl;
 					return false;
 				}
 				// find corresponding output-port
 				Umap::const_iterator uit = umap.find(o.uuid());
 				if (uit == umap.end()) {
-					cerr << "missing node with uuid: " << o.uuid() << endl;
+					std::cerr << "missing node with uuid: " << o.uuid() << std::endl;
 					return false;
 				}
 				const boost::uuids::uuid &om = uit->second->module_id();
 				Node ok(om, o.port_id());
 				std::map<Node, Port>::const_iterator oit = outports.find(ok);
 				if (oit == outports.end()) {
-					cerr << "there is no edge to a port;" << endl;
-					cerr << "  port-id: " << o.port_id() << endl;
-					cerr << "  module-id: " << uit->second->module_id() << endl;
-					cerr << "  uuid: " << uit->second->uuid() << endl;
-					if (!uit->second->label().empty()) cerr << "  label: " <<  uit->second->label() << endl;
+					std::cerr << "there is no edge to a port;" << std::endl;
+					std::cerr << "  port-id: " << o.port_id() << std::endl;
+					std::cerr << "  module-id: " << uit->second->module_id() << std::endl;
+					std::cerr << "  uuid: " << uit->second->uuid() << std::endl;
+					if (!uit->second->label().empty()) std::cerr << "  label: " <<  uit->second->label() << std::endl;
 					return false;
 				}
 				// check if PQ types of both sides are compatible
 				if (inport.pq_type() == 's') {
 					switch (oit->second.pq_type()) {
 					case 'x':
-						cerr << "found invalid edge from a state to a static-parameter" << endl;
+						std::cerr << "found invalid edge from a state to a static-parameter" << std::endl;
 						PrintIncompatiblePorts(inport, oit->second);
 						return false;
 					case 'v':
-						cerr << "found invalid edge from a variable-parameter to a static-parameter" << endl;
+						std::cerr << "found invalid edge from a variable-parameter to a static-parameter" << std::endl;
 						PrintIncompatiblePorts(inport, oit->second);
 						return false;
 					}

@@ -27,8 +27,6 @@
 #include "phsp.h"
 #include "sedml.h"
 
-using std::cerr;
-using std::endl;
 using std::memcpy;
 
 namespace flint {
@@ -100,8 +98,8 @@ bool CollectTasks(sqlite3 *db, FutureTaskPool *pool)
 					 " WHERE m.absolute_path IS NOT NULL",
 					 &PickTask, pool, &em);
 	if (e != SQLITE_OK) {
-		cerr << "failed to exec: " << e
-			 << ": " << em << endl;
+		std::cerr << "failed to exec: " << e
+			 << ": " << em << std::endl;
 		return false;
 	}
 	return true;

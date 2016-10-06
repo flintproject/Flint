@@ -17,8 +17,6 @@
 
 namespace po = boost::program_options;
 
-using std::cerr;
-using std::endl;
 using std::string;
 
 int main(int argc, char *argv[])
@@ -49,8 +47,8 @@ int main(int argc, char *argv[])
 		print_help = 2;
 	}
 	if (print_help) {
-		cerr << "usage: " << argv[0] << " MODEL OUTPUT" << endl;
-		cerr << opts;
+		std::cerr << "usage: " << argv[0] << " MODEL OUTPUT" << std::endl;
+		std::cerr << opts;
 		return (print_help == 1) ? EXIT_SUCCESS : EXIT_FAILURE;
 	}
 
@@ -63,7 +61,7 @@ int main(int argc, char *argv[])
 	int bs = option->ByteSize();
 	std::unique_ptr<char[]> ba(new char[bs]);
 	if (!option->SerializeToArray(ba.get(), bs)) {
-		cerr << "failed to serialize option" << endl;
+		std::cerr << "failed to serialize option" << std::endl;
 		return EXIT_FAILURE;
 	}
 	std::fwrite(ba.get(), bs, 1, stdout);

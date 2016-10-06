@@ -6,9 +6,6 @@
 
 #include "calculation-unit.h"
 
-using std::cerr;
-using std::endl;
-
 namespace flint {
 
 CalculationDependency::CalculationDependency(int section_index, int block_index,
@@ -28,7 +25,7 @@ void CalculationDependency::AddLoadAddress(int load_addr)
 void CalculationDependency::SetStoreAddr(int store_addr)
 {
 	if (store_addr_ >= 0) {
-		cerr << "more than one store addr found: " << store_addr_ << endl;
+		std::cerr << "more than one store addr found: " << store_addr_ << std::endl;
 	}
 	store_addr_ = store_addr;
 }

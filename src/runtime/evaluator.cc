@@ -29,9 +29,6 @@
 #include "runtime/timeseries.h"
 #include "ts.h"
 
-using std::cerr;
-using std::endl;
-
 namespace flint {
 namespace runtime {
 
@@ -55,17 +52,17 @@ public:
 				double value) {
 		DataOffsetMap::const_iterator domit = dom_->find(track_id);
 		if (domit == dom_->end()) {
-			cerr << "unknown track: " << track_id << endl;
+			std::cerr << "unknown track: " << track_id << std::endl;
 			return false;
 		}
 		std::unordered_map<int, int>::const_iterator pqit = domit->second.find(pq_id);
 		if (pqit == domit->second.end()) {
-			cerr << "unknow physical-quantity-id: " << pq_id << endl;
+			std::cerr << "unknow physical-quantity-id: " << pq_id << std::endl;
 			return false;
 		}
 		SectorOffsetMap::const_iterator somit = som_->find(sector_id);
 		if (somit == som_->end()) {
-			cerr << "unknown sector: " << sector_id << endl;
+			std::cerr << "unknown sector: " << sector_id << std::endl;
 			return false;
 		}
 		int offset = somit->second + pqit->second;
@@ -200,7 +197,7 @@ bool Evaluator::Load(const char *layout_file)
 		return false;
 	layer_size_ = layout_.Calculate(&dom_, &som_);
 	if (layer_size_ == kOffsetBase) {
-		cerr << "no variables found, possibly due to empty model or no instances" << endl;
+		std::cerr << "no variables found, possibly due to empty model or no instances" << std::endl;
 		return false;
 	}
 	return true;
@@ -251,7 +248,7 @@ bool Evaluator::Evaluate(sqlite3 *db,
 
 	int nol = bytecode->nol;
 	if (nol != 1) { // nol should be always 1
-		cerr << "invalid nol: " << nol << endl;
+		std::cerr << "invalid nol: " << nol << std::endl;
 		return false;
 	}
 
@@ -288,7 +285,7 @@ bool Evaluator::Evaluate(sqlite3 *db,
 	if (!processor->Process(executor.get())) return false;
 
 	if (!IsAllGreen(color.get(), layer_size_)) {
-		cerr << "could not calculate initial values of some variables:" << endl;
+		std::cerr << "could not calculate initial values of some variables:" << std::endl;
 		layout_.DetectRed(layer_size_, color.get());
 		return false;
 	}

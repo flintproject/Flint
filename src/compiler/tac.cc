@@ -25,8 +25,6 @@
 #include "db/tac-inserter.h"
 #include "lexer.h"
 
-using std::cerr;
-using std::endl;
 using std::memcpy;
 
 using namespace boost::spirit;
@@ -303,7 +301,7 @@ public:
 		cas::Expr expr;
 		bool r = lex::tokenize_and_parse(it, eit, tokens_, grammar_, expr);
 		if (!r || it != eit) {
-			cerr << "failed to parse expression: " << it << endl;
+			std::cerr << "failed to parse expression: " << it << std::endl;
 			return 1;
 		}
 		int col, row;
@@ -336,7 +334,7 @@ int Process(void *data, int argc, char **argv, char **names)
 	memcpy(&uuid, argv[0], uuid.size());
 	int r = parser->Parse(uuid, argv[1], argv[2]);
 	if (r) // aborting ...
-		cerr << " in " << uuid << endl;
+		std::cerr << " in " << uuid << std::endl;
 	return r;
 }
 
@@ -355,8 +353,8 @@ bool Tac(const cas::DimensionAnalyzer *da, sqlite3 *db)
 	e = sqlite3_exec(db, "SELECT * FROM sorts", Process, parser.get(), &em);
 	if (e != SQLITE_OK) {
 		if (e != SQLITE_ABORT)
-			cerr << "failed to enumerate sorts: " << e
-				 << ": " << em << endl;
+			std::cerr << "failed to enumerate sorts: " << e
+				 << ": " << em << std::endl;
 		sqlite3_free(em);
 		return false;
 	}

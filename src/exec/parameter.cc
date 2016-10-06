@@ -14,8 +14,6 @@
 #include <boost/filesystem.hpp>
 #include <boost/filesystem/fstream.hpp>
 
-using std::cerr;
-using std::endl;
 using std::sprintf;
 
 namespace flint {
@@ -31,7 +29,7 @@ int WriteParameter(void *data, int argc, char **argv, char **names)
 	assert(argc == 2);
 	assert(argv[0] != nullptr);
 	assert(argv[1] != nullptr);
-	*ofs << argv[0] << '|' << argv[1] << endl;
+	*ofs << argv[0] << '|' << argv[1] << std::endl;
 	return 0;
 }
 
@@ -45,7 +43,7 @@ bool SaveParameters(int id, sqlite3 *db)
 	boost::filesystem::path path(filename);
 	boost::filesystem::ofstream ofs(path);
 	if (!ofs.is_open()) {
-		cerr << "failed to open " << path << endl;
+		std::cerr << "failed to open " << path << std::endl;
 		return false;
 	}
 	char *em;
@@ -54,7 +52,7 @@ bool SaveParameters(int id, sqlite3 *db)
 	ofs.close();
 	if (e != SQLITE_OK) {
 		if (e != SQLITE_ABORT)
-			cerr << "failed to select phsp_parameters: " << e << ": " << em << endl;
+			std::cerr << "failed to select phsp_parameters: " << e << ": " << em << std::endl;
 		sqlite3_free(em);
 		return false;
 	}
@@ -63,9 +61,9 @@ bool SaveParameters(int id, sqlite3 *db)
 	sprintf(filename, "%d/parameters.txt", id);
 	boost::filesystem::rename(path, filename, ec);
 	if (ec) {
-		cerr << "failed to rename " << path
+		std::cerr << "failed to rename " << path
 			 << " to " << filename
-			 << endl;
+			 << std::endl;
 		boost::filesystem::remove(path);
 		return false;
 	}

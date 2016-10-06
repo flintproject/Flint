@@ -10,9 +10,6 @@
 
 using namespace flint::solver::ark;
 
-using std::cerr;
-using std::endl;
-
 int ArkRhs(realtype t, N_Vector y, N_Vector ydot, void *user_data)
 {
 	try {
@@ -22,7 +19,7 @@ int ArkRhs(realtype t, N_Vector y, N_Vector ydot, void *user_data)
 			return -1;
 		ark->WriteData(1, ydot);
 	} catch (...) {
-		cerr << "exception occurred in " << __func__ << endl;
+		std::cerr << "exception occurred in " << __func__ << std::endl;
 		return -1;
 	}
 	return 0;
@@ -40,7 +37,7 @@ int ArkDlsDenseMass(long int /*N*/, realtype t,
 			return -1;
 		ark->mass()->Write(ark->data(), M);
 	} catch (...) {
-		cerr << "exception occurred in " << __func__ << endl;
+		std::cerr << "exception occurred in " << __func__ << std::endl;
 		return -1;
 	}
 	return 0;

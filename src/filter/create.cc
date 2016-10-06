@@ -29,8 +29,6 @@
 #include "filter/spec_loader.h"
 #include "lo/layout_loader.h"
 
-using std::cerr;
-using std::endl;
 using std::memcpy;
 using std::string;
 
@@ -60,7 +58,7 @@ public:
 			sqlite3_reset(stmt());
 			return true;
 		}
-		cerr << "failed to step statement: " << e << endl;
+		std::cerr << "failed to step statement: " << e << std::endl;
 		return false;
 	}
 };
@@ -199,16 +197,16 @@ bool Create(sqlite3 *db, const char *spec_file, const char *layout_file, const c
 
 	std::ofstream ofs(output_file, std::ios::out|std::ios::binary);
 	if (!ofs.is_open()) {
-		cerr << "could not open output file: " << output_file << endl;
+		std::cerr << "could not open output file: " << output_file << std::endl;
 		return false;
 	}
 	if (!PackToOstream(*header, &ofs)) {
-		cerr << "failed to pack Header" << endl;
+		std::cerr << "failed to pack Header" << std::endl;
 		return false;
 	}
 	for (const auto &cp : columns) {
 		if (!PackToOstream(*cp, &ofs)) {
-			cerr << "failed to pack Column" << endl;
+			std::cerr << "failed to pack Column" << std::endl;
 			return false;
 		}
 	}

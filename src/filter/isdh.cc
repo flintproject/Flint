@@ -21,9 +21,6 @@
 #include "filter/filter_loader.h"
 #include "isdf/isdf.h"
 
-using std::cerr;
-using std::cin;
-using std::endl;
 using std::memcpy;
 
 namespace flint {
@@ -112,7 +109,7 @@ bool Isdh(const char *filter_file, const char *output_file)
 	}
 	std::ofstream ofs(output_file, std::ios::out|std::ios::binary);
 	if (!ofs.is_open()) {
-		cerr << "could not open output file: " << output_file << endl;
+		std::cerr << "could not open output file: " << output_file << std::endl;
 		return false;
 	}
 	filter->Write(&ofs);

@@ -18,8 +18,6 @@
 #include "db/query.h"
 #include "db/statement-driver.h"
 
-using std::cerr;
-using std::endl;
 using std::fclose;
 using std::fopen;
 using std::fprintf;
@@ -51,7 +49,7 @@ public:
 			return 0;
 		}
 		if (e != SQLITE_ROW) {
-			cerr << "failed to get a next job: " << e << endl;
+			std::cerr << "failed to get a next job: " << e << std::endl;
 			return -1;
 		}
 		*rowid = sqlite3_column_int(stmt(), 0);
@@ -125,14 +123,14 @@ public:
 		e = sqlite3_exec(input_, query, SaveParameter, &inserter_, &em);
 		if (e != SQLITE_OK) {
 			if (e != SQLITE_ABORT)
-				cerr << "failed to select enum: " << e << ": " << em << endl;
+				std::cerr << "failed to select enum: " << e << ": " << em << std::endl;
 			sqlite3_free(em);
 			return false;
 		}
 		e = sqlite3_exec(input_, "SELECT uuid, body FROM equations", SaveEquation, &inserter_, &em);
 		if (e != SQLITE_OK) {
 			if (e != SQLITE_ABORT)
-				cerr << "failed to select equations: " << e << ": " << em << endl;
+				std::cerr << "failed to select equations: " << e << ": " << em << std::endl;
 			sqlite3_free(em);
 			return false;
 		}
@@ -173,8 +171,8 @@ bool Generate(sqlite3 *input, const char *dir, int *job_id)
 	boost::system::error_code ec;
 	boost::filesystem::create_directories(path.get(), ec);
 	if (ec) {
-		cerr << "failed to create directories: " << path.get()
-			 << ": " << ec << endl;
+		std::cerr << "failed to create directories: " << path.get()
+			 << ": " << ec << std::endl;
 		return false;
 	}
 	char filename[96];
@@ -208,9 +206,9 @@ bool Generate(sqlite3 *input, const char *dir, int *job_id)
 	char values_file[96]; // large enough
 	sprintf(values_file, "%s/values.txt", path.get());
 	if (std::rename(filename, values_file) != 0) {
-		cerr << "failed to rename " << filename
+		std::cerr << "failed to rename " << filename
 			 << " to " << values_file
-			 << endl;
+			 << std::endl;
 		std::remove(filename);
 		return false;
 	}

@@ -21,8 +21,6 @@
 
 namespace po = boost::program_options;
 
-using std::cerr;
-using std::endl;
 using std::ios;
 using std::ostream;
 using std::ofstream;
@@ -56,8 +54,8 @@ int main(int argc, char *argv[]) {
 		print_help = 2;
 	}
 	if (print_help != 0 || !vm.count("input-files")) {
-		cerr << "usage: isdmerge [OPTIONS] input-files" << endl;
-		cerr << opts;
+		std::cerr << "usage: isdmerge [OPTIONS] input-files" << std::endl;
+		std::cerr << opts;
 		return (print_help == 1) ? EXIT_SUCCESS : EXIT_FAILURE;
 	}
 
@@ -67,8 +65,8 @@ int main(int argc, char *argv[]) {
 	for(size_t i = 0; i < input_files.size(); i++) {
 		ifs[i].open(input_files[i].c_str(), ios::binary|ios::in);
 		if (!ifs[i]) {
-			cerr << "error. can't open file " << input_files[i].c_str();
-			cerr << ". ignore this file." << endl;
+			std::cerr << "error. can't open file " << input_files[i].c_str();
+			std::cerr << ". ignore this file." << std::endl;
 		}
 	}
 
@@ -86,8 +84,8 @@ int main(int argc, char *argv[]) {
 			 !reader.ReadDescriptions(&ifs[i]) ||
 			 !reader.ReadUnits(&ifs[i]) ) {
 			ifs[i].close();
-			cerr << "error on " << input_files[i].c_str();
-			cerr << ". ignore this file." << endl;
+			std::cerr << "error on " << input_files[i].c_str();
+			std::cerr << ". ignore this file." << std::endl;
 			continue;
 		}
 
@@ -98,7 +96,7 @@ int main(int argc, char *argv[]) {
 		const char *ru;
 		if (reader.num_bytes_units() > 0 ) {
 			if (!has_units) {
-				cerr << "missing units in " << input_files[i].c_str() << endl;
+				std::cerr << "missing units in " << input_files[i].c_str() << std::endl;
 				return EXIT_FAILURE;
 			}
 			ru = reader.units();
@@ -142,7 +140,7 @@ int main(int argc, char *argv[]) {
 	}
 	ofstream ofs(output_file.c_str(), ios::binary|ios::out);
 	if (!ofs.is_open()) {
-		cerr << "could not open output file: " << output_file << endl;
+		std::cerr << "could not open output file: " << output_file << std::endl;
 		return EXIT_FAILURE;
 	}
 	string ustr = ss_unit.str();

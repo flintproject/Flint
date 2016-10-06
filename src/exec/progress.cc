@@ -12,8 +12,6 @@
 #include <iostream>
 #include <memory>
 
-using std::cerr;
-using std::endl;
 using std::fclose;
 using std::fopen;
 using std::fputc;
@@ -40,12 +38,12 @@ boost::interprocess::file_mapping *CreateProgressFile(int n, const char *dir)
 	}
 	int r = fseek(fp, n, SEEK_SET);
 	if (r != 0) {
-		cerr << "failed to seek: " << filename.get() << endl;
+		std::cerr << "failed to seek: " << filename.get() << std::endl;
 		fclose(fp);
 		return nullptr;
 	}
 	if (fputc('\0', fp) == EOF) {
-		cerr << "failed to write null character: " << filename.get() << endl;
+		std::cerr << "failed to write null character: " << filename.get() << std::endl;
 		fclose(fp);
 		return nullptr;
 	}
@@ -55,9 +53,9 @@ boost::interprocess::file_mapping *CreateProgressFile(int n, const char *dir)
 	std::unique_ptr<char[]> progress(new char[len + 32]); // large enough
 	sprintf(progress.get(), "%s/progress", dir);
 	if (rename(filename.get(), progress.get()) != 0) {
-		cerr << "failed to rename " << filename.get()
+		std::cerr << "failed to rename " << filename.get()
 			 << " to " << progress.get()
-			 << endl;
+			 << std::endl;
 		remove(filename.get());
 		return nullptr;
 	}

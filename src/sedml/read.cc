@@ -18,9 +18,6 @@
 #include "sqlite3.h"
 #include "utf8path.h"
 
-using std::cerr;
-using std::endl;
-
 namespace flint {
 namespace sedml {
 
@@ -103,7 +100,7 @@ bool BindOutputStartTime(const struct sedml_uniformtimecourse *utc,
 {
 	int e = sqlite3_bind_double(stmt, 5, utc->outputStartTime);
 	if (e != SQLITE_OK) {
-		cerr << "failed to bind output_start_time: " << e << endl;
+		std::cerr << "failed to bind output_start_time: " << e << std::endl;
 		return false;
 	}
 	return true;
@@ -267,7 +264,7 @@ bool Read(const char *sedml_file, sqlite3 *db)
 		e = sqlite3_prepare_v2(db, "INSERT INTO tasks VALUES (?, ?)",
 							   -1, &stmt, nullptr);
 		if (e != SQLITE_OK) {
-			cerr << "failed to prepare statement: " << e << endl;
+			std::cerr << "failed to prepare statement: " << e << std::endl;
 			goto bail;
 		}
 		e = sqlite3_bind_int64(stmt, 1, model_id);
@@ -308,7 +305,7 @@ bool Read(const char *sedml_file, sqlite3 *db)
 				e = sqlite3_prepare_v2(db, "INSERT INTO dgs VALUES (?, ?)",
 									   -1, &stmt, nullptr);
 				if (e != SQLITE_OK) {
-					cerr << "failed to prepare statement: " << e << endl;
+					std::cerr << "failed to prepare statement: " << e << std::endl;
 					goto bail;
 				}
 				e = sqlite3_bind_int64(stmt, 1, task_id);

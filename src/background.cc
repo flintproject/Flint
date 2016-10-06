@@ -15,9 +15,6 @@
 
 #include "utf8path.h"
 
-using std::cerr;
-using std::endl;
-
 namespace flint {
 
 namespace {
@@ -28,11 +25,11 @@ bool WaitForLockAndDie(const char *filename)
 	std::string lock_file = lock_path.string();
 	boost::interprocess::file_lock lock(lock_file.c_str());
 	boost::interprocess::scoped_lock<boost::interprocess::file_lock> sl(lock);
-	cerr << "the main process seems to have died as the exclusive lock with "
+	std::cerr << "the main process seems to have died as the exclusive lock with "
 		 << lock_file
 		 << " was released."
-		 << endl;
-	cerr << "So this simulation process should also be shutdown, bye." << endl;
+		 << std::endl;
+	std::cerr << "So this simulation process should also be shutdown, bye." << std::endl;
 	std::_Exit(EXIT_FAILURE);
 }
 

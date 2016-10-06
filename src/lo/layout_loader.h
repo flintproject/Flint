@@ -23,11 +23,8 @@ public:
 
 	template<typename TLayout>
 	bool Load(TLayout *layout) {
-		using std::cerr;
-		using std::endl;
-
 		if (!ifs_.is_open()) {
-			cerr << "failed to open layout file" << endl;
+			std::cerr << "failed to open layout file" << std::endl;
 			return false;
 		}
 
@@ -37,7 +34,7 @@ public:
 			{
 				std::unique_ptr<lo::Track> track(new lo::Track);
 				if (!UnpackFromIstream(*track, &ifs_)) {
-					cerr << "could not read Track" << endl;
+					std::cerr << "could not read Track" << std::endl;
 					return false;
 				}
 				nos = track->nos();
@@ -48,7 +45,7 @@ public:
 			for (int di=0;di<nod;di++) {
 				std::unique_ptr<lo::Data> data(new lo::Data);
 				if (!UnpackFromIstream(*data, &ifs_)) {
-					cerr << "could not read Data" << endl;
+					std::cerr << "could not read Data" << std::endl;
 					return false;
 				}
 				layout->AddData(std::move(data));
@@ -56,7 +53,7 @@ public:
 			for (int si=0;si<nos;si++) {
 				std::unique_ptr<lo::Sector> sector(new lo::Sector);
 				if (!UnpackFromIstream(*sector, &ifs_)) {
-					cerr << "could not read Sector" << endl;
+					std::cerr << "could not read Sector" << std::endl;
 					return false;
 				}
 				layout->AddSector(std::move(sector));

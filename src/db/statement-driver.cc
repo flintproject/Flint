@@ -5,9 +5,6 @@
 #include <cstdlib>
 #include <iostream>
 
-using std::cerr;
-using std::endl;
-
 namespace flint {
 namespace db {
 
@@ -17,8 +14,8 @@ StatementDriver::StatementDriver(sqlite3 *db, const char *query)
 	int e;
 	e = sqlite3_prepare_v2(db, query, -1, &stmt_, nullptr);
 	if (e != SQLITE_OK) {
-		cerr << "failed to prepare statement: " << e
-			 << ": " << query << endl;
+		std::cerr << "failed to prepare statement: " << e
+			 << ": " << query << std::endl;
 		exit(EXIT_FAILURE);
 	}
 }

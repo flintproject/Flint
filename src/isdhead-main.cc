@@ -18,8 +18,6 @@
 
 namespace po = boost::program_options;
 
-using std::cerr;
-using std::endl;
 using std::string;
 
 using namespace flint;
@@ -36,7 +34,7 @@ public:
 	int GetStep(std::uint32_t buf_size, const char *buf) {
 		os_->write(buf, buf_size);
 		if (!os_->good()) {
-			cerr << "could not write step" << endl;
+			std::cerr << "could not write step" << std::endl;
 			return -1;
 		}
 		if (++n_ == num_rows_) {
@@ -65,7 +63,7 @@ public:
 		if (t < eot_) {
 			os_->write(buf, buf_size);
 			if (!os_->good()) {
-				cerr << "could not write step" << endl;
+				std::cerr << "could not write step" << std::endl;
 				return -1;
 			}
 		} else {
@@ -144,34 +142,34 @@ int main(int argc, char *argv[])
 		print_help = 2;
 	}
 	if (print_help != 0) {
-		cerr << "usage: isdhead [OPTIONS] [PATH]" << endl;
-		cerr << opts << endl;
+		std::cerr << "usage: isdhead [OPTIONS] [PATH]" << std::endl;
+		std::cerr << opts << std::endl;
 		return (print_help == 1) ? EXIT_SUCCESS : EXIT_FAILURE;
 	}
 
 	std::unique_ptr<Dam> dam;
 	if (vm.count("rows") > 0) {
 		if (vm.count("eot") > 0) {
-			cerr << "please specify one and only one of the following options: --rows(-n) / --eot(-t)" << endl;
+			std::cerr << "please specify one and only one of the following options: --rows(-n) / --eot(-t)" << std::endl;
 			return EXIT_FAILURE;
 		}
 		dam.reset(new Dam(num_rows));
 	} else if (vm.count("eot") > 0) {
 		dam.reset(new Dam(eot));
 	} else {
-		cerr << "please specify one and only one of the following options: --rows(-n) / --eot(-t)" << endl;
+		std::cerr << "please specify one and only one of the following options: --rows(-n) / --eot(-t)" << std::endl;
 		return EXIT_FAILURE;
 	}
 	if (vm.count("input")) {
 		std::ifstream ifs(input_file.c_str(), std::ios::in|std::ios::binary);
 		if (!ifs.is_open()) {
-			cerr << "could not open file: " << input_file << endl;
+			std::cerr << "could not open file: " << input_file << std::endl;
 			return EXIT_FAILURE;
 		}
 		if (vm.count("output")) {
 			std::ofstream ofs(output_file.c_str(), std::ios::out|std::ios::binary);
 			if (!ofs.is_open()) {
-				cerr << "could not open output file: " << output_file << endl;
+				std::cerr << "could not open output file: " << output_file << std::endl;
 				return EXIT_FAILURE;
 			}
 			if (!dam->Pass(&ifs, &ofs)) return EXIT_FAILURE;
@@ -183,7 +181,7 @@ int main(int argc, char *argv[])
 	} else if (vm.count("output")) {
 		std::ofstream ofs(output_file.c_str(), std::ios::out|std::ios::binary);
 		if (!ofs.is_open()) {
-			cerr << "could not open output file: " << output_file << endl;
+			std::cerr << "could not open output file: " << output_file << std::endl;
 			return EXIT_FAILURE;
 		}
 		if (!dam->Pass(&std::cin, &ofs)) return EXIT_FAILURE;

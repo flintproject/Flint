@@ -13,8 +13,6 @@
 namespace flint {
 namespace phml {
 
-using std::cerr;
-using std::endl;
 using mathml::MathDumper;
 
 template<typename TReader>
@@ -76,15 +74,15 @@ public:
 					i = math_dumper_.Read(handler.get());
 					if (i < 0) return i;
 					if (name_ && !math_dumper_.TargetIsFound()) {
-						cerr << "invalid definition of <"
+						std::cerr << "invalid definition of <"
 							 << TReader::kName
 							 << '>'
-							 << endl;
+							 << std::endl;
 						return -2;
 					}
 					continue;
 				} else {
-					cerr << "unexpected child element of <definition>: " << local_name << endl;
+					std::cerr << "unexpected child element of <definition>: " << local_name << std::endl;
 					return -2;
 				}
 			} else if (type == XML_READER_TYPE_END_ELEMENT) {
@@ -106,7 +104,7 @@ private:
 
 		int Handle(int i) {
 			if (count_++) {
-				cerr << "two or more elements in <math>" << endl;
+				std::cerr << "two or more elements in <math>" << std::endl;
 				return -2;
 			}
 			return i;
@@ -128,7 +126,7 @@ private:
 					if (i <= 0) return i;
 					continue;
 				} else {
-					cerr << "unknown child element of <case-set>: " << local_name << endl;
+					std::cerr << "unknown child element of <case-set>: " << local_name << std::endl;
 					return -2;
 				}
 			} else if (type == XML_READER_TYPE_END_ELEMENT) {
@@ -180,7 +178,7 @@ private:
 			if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("format"))) {
 				const xmlChar *value = xmlTextReaderConstValue(text_reader_);
 				if (!xmlStrEqual(value, reinterpret_cast<const xmlChar *>("mathml"))) {
-					cerr << "unknown format of <condition>: " << value << endl;
+					std::cerr << "unknown format of <condition>: " << value << std::endl;
 					return -2;
 				}
 			}
@@ -197,7 +195,7 @@ private:
 					if (i <= 0) return i;
 					continue;
 				} else {
-					cerr << "unexpected child element of <condition>: " << local_name << endl;
+					std::cerr << "unexpected child element of <condition>: " << local_name << std::endl;
 					return -2;
 				}
 			} else if (type == XML_READER_TYPE_END_ELEMENT) {

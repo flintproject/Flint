@@ -20,10 +20,6 @@
 
 namespace po = boost::program_options;
 
-using std::cerr;
-using std::cin;
-using std::cout;
-using std::endl;
 using std::ifstream;
 using std::istream;
 using std::ios;
@@ -205,8 +201,8 @@ int main(int argc, char *argv[])
 		print_help = 2;
 	}
 	if (print_help != 0) {
-		cerr << "usage: isd2csv [OPTIONS] [PATH]" << endl;
-		cerr << opts;
+		std::cerr << "usage: isd2csv [OPTIONS] [PATH]" << std::endl;
+		std::cerr << opts;
 		return (print_help == 1) ? EXIT_SUCCESS : EXIT_FAILURE;
 	}
 
@@ -214,7 +210,7 @@ int main(int argc, char *argv[])
 	if (vm.count("output")) {
 		ofstream ofs(output_file.c_str(), ios::out|ios::binary);
 		if (!ofs.is_open()) {
-			cerr << "could not open output file: " << output_file << endl;
+			std::cerr << "could not open output file: " << output_file << std::endl;
 			return EXIT_FAILURE;
 		}
 		if (vm.count("maximum-precision"))
@@ -222,7 +218,7 @@ int main(int argc, char *argv[])
 		if (vm.count("input")) {
 			ifstream ifs(input_file.c_str(), ios::in|ios::binary);
 			if (!ifs.is_open()) {
-				cerr << "could not open input file: " << input_file << endl;
+				std::cerr << "could not open input file: " << input_file << std::endl;
 				return EXIT_FAILURE;
 			}
 #ifdef ENABLE_TCP
@@ -233,32 +229,32 @@ int main(int argc, char *argv[])
 			ifs.close();
 		} else {
 #ifdef ENABLE_TCP
-			r = Convert(port, &cin, &ofs);
+			r = Convert(port, &std::cin, &ofs);
 #else
-			r = Convert(&cin, &ofs);
+			r = Convert(&std::cin, &ofs);
 #endif
 		}
 		ofs.close();
 	} else {
 		if (vm.count("maximum-precision"))
-			RequestMaxNumOfDigits(&cout);
+			RequestMaxNumOfDigits(&std::cout);
 		if (vm.count("input")) {
 			ifstream ifs(input_file.c_str(), ios::in|ios::binary);
 			if (!ifs.is_open()) {
-				cerr << "could not open input file: " << input_file << endl;
+				std::cerr << "could not open input file: " << input_file << std::endl;
 				return EXIT_FAILURE;
 			}
 #ifdef ENABLE_TCP
-			r = Convert(port, &ifs, &cout);
+			r = Convert(port, &ifs, &std::cout);
 #else
-			r = Convert(&ifs, &cout);
+			r = Convert(&ifs, &std::cout);
 #endif
 			ifs.close();
 		} else {
 #ifdef ENABLE_TCP
-			r = Convert(port, &cin, &cout);
+			r = Convert(port, &std::cin, &std::cout);
 #else
-			r = Convert(&cin, &cout);
+			r = Convert(&std::cin, &std::cout);
 #endif
 		}
 	}

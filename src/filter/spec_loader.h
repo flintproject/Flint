@@ -24,15 +24,13 @@ public:
 
 	template<typename TFilter>
 	bool Load(TFilter *filter) {
-		using std::cerr;
-		using std::endl;
 		using std::strlen;
 
 		static const size_t kLineSize = 1024; // FIXME
 		static const size_t kUuidSize = 36;
 
 		if (!ifs_.is_open()) {
-			cerr << "failed to open spec file" << endl;
+			std::cerr << "failed to open spec file" << std::endl;
 			return false;
 		}
 
@@ -41,7 +39,7 @@ public:
 		boost::uuids::uuid u;
 		while (ifs_.getline(line.get(), kLineSize)) {
 			if (strlen(line.get()) < kUuidSize + 2) {
-				cerr << "invalid line: " << line.get() << endl;
+				std::cerr << "invalid line: " << line.get() << std::endl;
 				return false;
 			}
 			line[kUuidSize] = '\0';

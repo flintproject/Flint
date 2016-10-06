@@ -23,8 +23,6 @@
 #include "modelpath.h"
 #include "utf8path.h"
 
-using std::cerr;
-using std::endl;
 using std::perror;
 using std::string;
 
@@ -41,20 +39,20 @@ bool Read(sqlite3 *db, const char *dir)
 		int len = zip_error_to_str(buf, 1023, ze, errno);
 		assert(len < 1024);
 		buf[len] = '\0';
-		cerr << buf << endl;
+		std::cerr << buf << std::endl;
 		return false;
 	}
 	zip_int64_t ne = zip_get_num_entries(zp, 0);
 	if (ne < 0) {
-		cerr << "the zip archive is null: "
+		std::cerr << "the zip archive is null: "
 			 << filename.get()
-			 << endl;
+			 << std::endl;
 		return false;
 	}
 	if (ne == 0) {
-		cerr << "the zip archive is empty: "
+		std::cerr << "the zip archive is empty: "
 			 << filename.get()
-			 << endl;
+			 << std::endl;
 		return false;
 	}
 
@@ -63,14 +61,14 @@ bool Read(sqlite3 *db, const char *dir)
 	for (zip_int64_t i=0;i<ne;i++) {
 		const char *name = zip_get_name(zp, i, 0);
 		if (!name) {
-			cerr << zip_strerror(zp) << endl;
+			std::cerr << zip_strerror(zp) << std::endl;
 			return false;
 		}
 		size_t nlen = strlen(name);
 		if (nlen <= 1) {
-			cerr << "unexpected entry in the zip archive: "
+			std::cerr << "unexpected entry in the zip archive: "
 				 << name
-				 << endl;
+				 << std::endl;
 			continue;
 		} else if (name[nlen-1] == '/') {
 			// skip a directory entry
@@ -91,7 +89,7 @@ bool Read(sqlite3 *db, const char *dir)
 
 		struct zip_file *zfp = zip_fopen_index(zp, i, 0);
 		if (!zfp) {
-			cerr << zip_strerror(zp) << endl;
+			std::cerr << zip_strerror(zp) << std::endl;
 			fclose(ofp);
 			return false;
 		}
@@ -100,21 +98,21 @@ bool Read(sqlite3 *db, const char *dir)
 		int len;
 		while ( (len = zip_fread(zfp, buf, 1024)) ) {
 			if (len < 0) {
-				cerr << "failed to read entry of index "
+				std::cerr << "failed to read entry of index "
 					 << i
 					 << " in the zip archive: "
 					 << filename.get()
-					 << endl;
+					 << std::endl;
 				fclose(ofp);
 				return false;
 			}
 			assert(len <= 1024);
 			if (fwrite(buf, len, 1, ofp) != 1) {
-				cerr << "failed to write entry of index "
+				std::cerr << "failed to write entry of index "
 					 << i
 					 << " in the zip archive: "
 					 << filename.get()
-					 << endl;
+					 << std::endl;
 				fclose(ofp);
 				return false;
 			}
@@ -127,18 +125,18 @@ bool Read(sqlite3 *db, const char *dir)
 
 	tp /= "model.phml";
 	if (!boost::filesystem::is_regular_file(tp)) {
-		cerr << "missing model.phml in the zip archive: "
+		std::cerr << "missing model.phml in the zip archive: "
 			 << filename.get()
-			 << endl;
+			 << std::endl;
 		return false;
 	}
 
 	boost::filesystem::path amp = boost::filesystem::absolute(tp);
 	std::unique_ptr<char[]> mf(GetUtf8FromPath(amp));
 	if (strlen(mf.get()) >= 1024) {
-		cerr << "resulting filename is too long: "
+		std::cerr << "resulting filename is too long: "
 			 << mf.get()
-			 << endl;
+			 << std::endl;
 		return false;
 	}
 	if (!SaveModelFile(db, mf.get())) return false;

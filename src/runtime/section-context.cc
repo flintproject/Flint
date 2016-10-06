@@ -8,9 +8,6 @@
 #include <boost/uuid/uuid.hpp>
 #include <boost/uuid/uuid_io.hpp>
 
-using std::cerr;
-using std::endl;
-
 namespace flint {
 namespace runtime {
 
@@ -26,7 +23,7 @@ void ReportSectionContext(const bc::SectionHeader &sh)
 {
 	boost::uuids::uuid u;
 	std::memcpy(&u, sh.id().data(), u.size());
-	cerr << " in " << u << endl;
+	std::cerr << " in " << u << std::endl;
 }
 
 }

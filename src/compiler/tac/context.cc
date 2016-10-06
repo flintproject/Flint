@@ -13,9 +13,6 @@
 
 #include "lexer.h"
 
-using std::cerr;
-using std::endl;
-
 namespace flint {
 namespace compiler {
 namespace tac {
@@ -167,12 +164,12 @@ bool Context::EmitCode(cas::Expr &expr)
 		fr_++;
 		if (!Assign(RegisterType::kFloat, 0, expr))
 			return false;
-		*os_ << "  store " << id_ << " $0" << endl;
+		*os_ << "  store " << id_ << " $0" << std::endl;
 	} else {
 		ir_++;
 		if (!Assign(RegisterType::kInteger, 0, expr))
 			return false;
-		*os_ << "  save " << id_ << " $i0 " << (col * row) << endl;
+		*os_ << "  save " << id_ << " $i0 " << (col * row) << std::endl;
 	}
 	return true;
 }
@@ -190,20 +187,20 @@ bool Context::Componentwise(RegisterType rt, int n, cas::Compound &c)
 			return false;
 		args.push_back(p);
 	}
-	*os_ << "  alloc $i" << n << ' ' << size << endl;
+	*os_ << "  alloc $i" << n << ' ' << size << std::endl;
 	for (int i=0;i<size;i++) {
 		std::vector<int> params;
 		for (auto k : args) {
 			int m = fr_++;
-			*os_ << "  deref $" << m << " $i" << k << ' ' << i << endl;
+			*os_ << "  deref $" << m << " $i" << k << ' ' << i << std::endl;
 			params.push_back(m);
 		}
 		int m = fr_++;
 		*os_ << "  $" << m << " = (" << c.keyword;
 		for (auto k : params)
 			*os_ << " $" << k;
-		*os_ << ')' << endl;
-		*os_ << "  move $i" << n << " $" << m << ' ' << i << endl;
+		*os_ << ')' << std::endl;
+		*os_ << "  move $i" << n << " $" << m << ' ' << i << std::endl;
 	}
 	return true;
 }
@@ -220,7 +217,7 @@ bool Context::NaryScalarToScalar(RegisterType /*rt*/, int n, cas::Compound &c)
 	*os_ << "  $" << n << " = (" << c.keyword;
 	for (auto i : args)
 		*os_ << " $" << i;
-	*os_ << ')' << endl;
+	*os_ << ')' << std::endl;
 	return true;
 }
 
@@ -234,14 +231,14 @@ bool Context::Determinant(RegisterType rt, int n, cas::Compound &c)
 	int n1 = ir_++;
 	if (!Assign(RegisterType::kInteger, n1, c.children[0]))
 		return false;
-	*os_ << "  determinant $" << n << ' ' << col << " $i" << n1 << endl;
+	*os_ << "  determinant $" << n << ' ' << col << " $i" << n1 << std::endl;
 	return true;
 }
 
 bool Context::Matrix(RegisterType rt, int n, cas::Compound &c)
 {
 	assert(rt == RegisterType::kInteger);
-	*os_ << "  alloc $i" << n << ' ' << (c.col * c.row) << endl;
+	*os_ << "  alloc $i" << n << ' ' << (c.col * c.row) << std::endl;
 	int i=0;
 	for (auto &e : c.children) {
 		assert(e.which() == cas::kExprIsCompound);
@@ -251,7 +248,7 @@ bool Context::Matrix(RegisterType rt, int n, cas::Compound &c)
 			int m = fr_++;
 			if (!Assign(RegisterType::kFloat, m, rcc))
 				return false;
-			*os_ << "  move $i" << n << " $" << m << ' ' << i++ << endl;
+			*os_ << "  move $i" << n << " $" << m << ' ' << i++ << std::endl;
 		}
 	}
 	return true;
@@ -269,7 +266,7 @@ bool Context::Outerproduct(RegisterType rt, int n, cas::Compound &c)
 	*os_ << "  outerproduct $i" << n
 		 << ' ' << c.row << " $i" << n1
 		 << ' ' << c.col << " $i" << n2
-		 << endl;
+		 << std::endl;
 	return true;
 }
 
@@ -285,7 +282,7 @@ bool Context::Scalarproduct(RegisterType rt, int n, cas::Compound &c)
 	if (!Assign(RegisterType::kInteger, n2, c.children[1]))
 		return false;
 	int size = std::max(col, row);
-	*os_ << "  scalarproduct $" << n << ' ' << size << " $i" << n1 << " $i" << n2 << endl;
+	*os_ << "  scalarproduct $" << n << ' ' << size << " $i" << n1 << " $i" << n2 << std::endl;
 	return true;
 }
 
@@ -307,9 +304,9 @@ bool Context::Selector(RegisterType rt, int n, cas::Compound &c)
 			 << ' ' << row0
 			 << ' ' << col0
 			 << " $i" << n0
-			 << " $" << m1 << endl;
+			 << " $" << m1 << std::endl;
 	} else if (size == 2) {
-		*os_ << "  select2 $" << n << " $i" << n0 << " $" << m1 << endl;
+		*os_ << "  select2 $" << n << " $i" << n0 << " $" << m1 << std::endl;
 	} else {
 		assert(size == 3);
 		int col0, row0;
@@ -323,7 +320,7 @@ bool Context::Selector(RegisterType rt, int n, cas::Compound &c)
 			 << " $i" << n0
 			 << " $" << m1
 			 << " $" << m2
-			 << endl;
+			 << std::endl;
 	}
 	return true;
 }
@@ -348,7 +345,7 @@ bool Context::Times(RegisterType rt, int n, cas::Compound &c)
 		if (!Assign(RegisterType::kInteger, n1, e1))
 			return false;
 		int size = col1 * row1;
-		*os_ << "  mult $i" << n << ' ' << size << " $" << m0 << " $i" << n1 << endl;
+		*os_ << "  mult $i" << n << ' ' << size << " $" << m0 << " $i" << n1 << std::endl;
 	} else if (col1 == 1 && row1 == 1) { // when the 2nd operand is scalar
 		int n0 = ir_++;
 		if (!Assign(RegisterType::kInteger, n0, e0))
@@ -357,7 +354,7 @@ bool Context::Times(RegisterType rt, int n, cas::Compound &c)
 		if (!Assign(RegisterType::kFloat, m1, e1))
 			return false;
 		int size = col0 * row0;
-		*os_ << "  mult $i" << n << ' ' << size << " $" << m1 << " $i" << n0 << endl;
+		*os_ << "  mult $i" << n << ' ' << size << " $" << m1 << " $i" << n0 << std::endl;
 	} else { // both are matrices
 		int n0 = ir_++;
 		if (!Assign(RegisterType::kInteger, n0, e0))
@@ -371,7 +368,7 @@ bool Context::Times(RegisterType rt, int n, cas::Compound &c)
 			 << ' ' << col1
 			 << " $i" << n0
 			 << " $i" << n1
-			 << endl;
+			 << std::endl;
 	}
 	return true;
 }
@@ -386,7 +383,7 @@ bool Context::Transpose(RegisterType rt, int n, cas::Compound &c)
 		 << " $i" << n1
 		 << ' ' << c.row
 		 << ' ' << c.col
-		 << endl;
+		 << std::endl;
 	return true;
 }
 
@@ -394,12 +391,12 @@ bool Context::Vector(RegisterType rt, int n, cas::Compound &c)
 {
 	assert(rt == RegisterType::kInteger);
 	int size = c.col * c.row;
-	*os_ << "  alloc $i" << n << ' ' << size << endl;
+	*os_ << "  alloc $i" << n << ' ' << size << std::endl;
 	for (int i=0;i<size;i++) {
 		int m = fr_++;
 		if (!Assign(RegisterType::kFloat, m, c.children[i]))
 			return false;
-		*os_ << "  move $i" << n << " $" << m << ' ' << i << endl;
+		*os_ << "  move $i" << n << " $" << m << ' ' << i << std::endl;
 	}
 	return true;
 }
@@ -413,7 +410,7 @@ bool Context::Vectorproduct(RegisterType rt, int n, cas::Compound &c)
 	int n2 = ir_++;
 	if (!Assign(RegisterType::kInteger, n2, c.children[1]))
 		return false;
-	*os_ << "  vectorproduct $i" << n << " $i" << n1 << " $i" << n2 << endl;
+	*os_ << "  vectorproduct $i" << n << " $i" << n1 << " $i" << n2 << std::endl;
 	return true;
 }
 
@@ -432,11 +429,11 @@ bool Context::EmitCondition(int n, int l, cas::Expr &expr)
 			int l2 = l_++;
 			if (!EmitCondition(n, l2, comp.children.at(0)))
 				return false;
-			*os_ << "  jmp L" << l1 << endl;
-			*os_ << " L" << l2 << ':' << endl;
+			*os_ << "  jmp L" << l1 << std::endl;
+			*os_ << " L" << l2 << ':' << std::endl;
 			if (!EmitCondition(n, l, comp.children.at(1)))
 				return false;
-			*os_ << " L" << l1 << ':' << endl;
+			*os_ << " L" << l1 << ':' << std::endl;
 			return bool(*os_);
 		} else if (IsOr(comp)) {
 			return EmitCondition(n, l, comp.children.at(0))
@@ -446,7 +443,7 @@ bool Context::EmitCondition(int n, int l, cas::Expr &expr)
 
 	if (!Assign(RegisterType::kFloat, n, expr))
 		return false;
-	*os_ << "  br $" << n << " L" << l << endl;
+	*os_ << "  br $" << n << " L" << l << std::endl;
 	return bool(*os_);
 }
 
@@ -454,19 +451,19 @@ bool Context::EmitAt(int n, std::deque<cas::Expr> &children)
 {
 	size_t len = children.size();
 	if (len > 3) {
-		cerr << "error: more than 3 arguments: " << uuid_ << ' ' << id_ << endl;
+		std::cerr << "error: more than 3 arguments: " << uuid_ << ' ' << id_ << std::endl;
 		return false;
 	}
 	if (len < 3) {
-		cerr << "error: EmitAt: missing arguments: " << uuid_ << ' ' << id_ << endl;
+		std::cerr << "error: EmitAt: missing arguments: " << uuid_ << ' ' << id_ << std::endl;
 		return false;
 	}
 	if (children.at(0).which() != cas::kExprIsInteger) {
-		cerr << "error: invalid 1st argument of At: " << uuid_ << ' ' << id_ << endl;
+		std::cerr << "error: invalid 1st argument of At: " << uuid_ << ' ' << id_ << std::endl;
 		return false;
 	}
 	if (children.at(1).which() != cas::kExprIsInteger) {
-		cerr << "error: invalid 2nd argument of At: " << uuid_ << ' ' << id_ << endl;
+		std::cerr << "error: invalid 2nd argument of At: " << uuid_ << ' ' << id_ << std::endl;
 		return false;
 	}
 	int m = fr_++;
@@ -480,7 +477,7 @@ bool Context::EmitAt(int n, std::deque<cas::Expr> &children)
 		 << boost::get<int>(children.at(1))
 		 << " $"
 		 << m
-		 << endl;
+		 << std::endl;
 	return bool(*os_);
 }
 
@@ -488,15 +485,15 @@ bool Context::EmitLookback(int n, std::deque<cas::Expr> &children)
 {
 	size_t len = children.size();
 	if (len > 2) {
-		cerr << "error: more than 2 arguments: " << uuid_ << ' ' << id_ << endl;
+		std::cerr << "error: more than 2 arguments: " << uuid_ << ' ' << id_ << std::endl;
 		return false;
 	}
 	if (len < 2) {
-		cerr << "error: EmitLookback: missing arguments: " << uuid_ << ' ' << id_ << endl;
+		std::cerr << "error: EmitLookback: missing arguments: " << uuid_ << ' ' << id_ << std::endl;
 		return false;
 	}
 	if (children.at(0).which() != cas::kExprIsIdentifier) {
-		cerr << "error: invalid 1st argument of Delay/DeltaTime: " << uuid_ << ' ' << id_ << endl;
+		std::cerr << "error: invalid 1st argument of Delay/DeltaTime: " << uuid_ << ' ' << id_ << std::endl;
 		return false;
 	}
 	int m = fr_++;
@@ -508,7 +505,7 @@ bool Context::EmitLookback(int n, std::deque<cas::Expr> &children)
 		 << boost::get<cas::Identifier>(children.at(0)).name.c_str()
 		 << " $"
 		 << m
-		 << endl;
+		 << std::endl;
 	return bool(*os_);
 }
 
@@ -530,30 +527,30 @@ bool Context::Piecewise(RegisterType rt, int n, std::deque<cas::Expr> &children)
 			otherwise = true;
 			if (!Assign(rt, n, comp.children.at(0)))
 				return false;
-			*os_ << "  jmp L" << l << endl;
+			*os_ << "  jmp L" << l << std::endl;
 		} else {
 			assert(false);
 		}
 	}
 	if (!otherwise)
-		*os_ << "  ret" << endl;
+		*os_ << "  ret" << std::endl;
 	auto v1it = v1.cbegin();
 	for (auto &expr : children) {
 		assert(expr.which() == cas::kExprIsCompound);
 		cas::Compound &comp(boost::get<cas::Compound>(expr));
 		if (IsPiece(comp)) {
-			*os_ << " L" << *v1it++ << ':' << endl;
+			*os_ << " L" << *v1it++ << ':' << std::endl;
 			if (!Assign(rt, n, comp.children.at(0)))
 				return false;
 			if (v1it != v1.cend()) // need jmp at every branch but last
-				*os_ << "  jmp L" << l << endl;
+				*os_ << "  jmp L" << l << std::endl;
 		} else if (IsOtherwise(comp)) {
 			/* nothing to do */
 		} else {
 			assert(false);
 		}
 	}
-	*os_ << " L" << l << ':' << endl;
+	*os_ << " L" << l << ':' << std::endl;
 	return bool(*os_);
 }
 
@@ -563,9 +560,9 @@ bool Context::EmitTrial(int n, std::deque<cas::Expr> &children)
 	int p0 = fr_++;
 	int p1 = fr_++;
 	int p = fr_++;
-	*os_ << "  loadi $" << p0 << " 0" << endl
-		 << "  loadi $" << p1 << " 1" << endl
-		 << "  $" << p << " = ($uniform_variate $" << p0 << " $" << p1 << ')' << endl;
+	*os_ << "  loadi $" << p0 << " 0" << std::endl
+		 << "  loadi $" << p1 << " 1" << std::endl
+		 << "  $" << p << " = ($uniform_variate $" << p0 << " $" << p1 << ')' << std::endl;
 	std::vector<int> v1;
 	for (auto &expr : children) {
 		assert(expr.which() == cas::kExprIsCompound);
@@ -576,33 +573,33 @@ bool Context::EmitTrial(int n, std::deque<cas::Expr> &children)
 			if (!Assign(RegisterType::kFloat, m0, comp.children.at(1)))
 				return false;
 			int m1 = fr_++;
-			*os_ << "  $" << m1 << " = (minus $" << p << " $" << m0 << ')' << endl;
+			*os_ << "  $" << m1 << " = (minus $" << p << " $" << m0 << ')' << std::endl;
 			p = m1; // keep the register number for the decreased value as p
 			int m2 = fr_++;
-			*os_ << "  $" << m2 << " = (leq $" << m1 << " $" << p0 << ')' << endl
-				 << "  br $" << m2 << " L" << l1 << endl;
+			*os_ << "  $" << m2 << " = (leq $" << m1 << " $" << p0 << ')' << std::endl
+				 << "  br $" << m2 << " L" << l1 << std::endl;
 			v1.push_back(l1);
 		} else {
-			cerr << "error: unexpected child of $trial: " << uuid_ << ' ' << id_ << endl;
+			std::cerr << "error: unexpected child of $trial: " << uuid_ << ' ' << id_ << std::endl;
 			return false;
 		}
 	}
-	*os_ << "  ret" << endl;
+	*os_ << "  ret" << std::endl;
 	auto v1it = v1.cbegin();
 	for (auto &expr : children) {
 		assert(expr.which() == cas::kExprIsCompound);
 		cas::Compound &comp(boost::get<cas::Compound>(expr));
 		if (IsOutcome(comp)) {
-			*os_ << " L" << *v1it++ << ':' << endl;
+			*os_ << " L" << *v1it++ << ':' << std::endl;
 			if (!Assign(RegisterType::kFloat, n, comp.children.at(0)))
 				return false;
 			if (v1it != v1.cend()) // needs jmp at every branch but last
-				*os_ << "  jmp L" << l << endl;
+				*os_ << "  jmp L" << l << std::endl;
 		} else {
 			assert(false);
 		}
 	}
-	*os_ << " L" << l << ':' << endl;
+	*os_ << " L" << l << ':' << std::endl;
 	return bool(*os_);
 }
 
@@ -638,15 +635,15 @@ bool Context::Assign(RegisterType rt, int n, cas::Compound &c)
 
 	size_t len = c.children.size();
 	if (len < 1) {
-		cerr << "error: missing arguments for " << c.keyword << ": "
-			 << uuid_ << ' ' << id_ << endl;
+		std::cerr << "error: missing arguments for " << c.keyword << ": "
+			 << uuid_ << ' ' << id_ << std::endl;
 		return false;
 	}
 	for (const auto &kf : kKeyFun) { // TODO: faster search e.g. via bsearch?
 		if (c.keyword == kf.keyword)
 			return (this->*(kf.function))(rt, n, c);
 	}
-	cerr << "unsupported function: " << c.keyword << endl;
+	std::cerr << "unsupported function: " << c.keyword << std::endl;
 	return false;
 }
 
@@ -654,12 +651,12 @@ bool Context::Assign(RegisterType rt, int n, const cas::Identifier &id)
 {
 	const std::string &s(id.name);
 	if (rt == RegisterType::kInteger) {
-		*os_ << "  refer $i" << n << " " << id.name << endl;
+		*os_ << "  refer $i" << n << " " << id.name << std::endl;
 	} else {
 		if ( (s[0] == '%' || s[0] == '@') && isalpha(s[1]) ) {
-			*os_ << "  load $" << n << ' ' << s << endl;
+			*os_ << "  load $" << n << ' ' << s << std::endl;
 		} else {
-			*os_ << "  loadi $" << n << ' ' << s << endl;
+			*os_ << "  loadi $" << n << ' ' << s << std::endl;
 		}
 	}
 	return true;
@@ -667,13 +664,13 @@ bool Context::Assign(RegisterType rt, int n, const cas::Identifier &id)
 
 bool Context::Assign(int n, int i)
 {
-	*os_ << "  loadi $" << n << ' ' << i << endl;
+	*os_ << "  loadi $" << n << ' ' << i << std::endl;
 	return true;
 }
 
 bool Context::Assign(int n, const lexer::Real &r)
 {
-	*os_ << "  loadi $" << n << ' ' << r.lexeme << endl;
+	*os_ << "  loadi $" << n << ' ' << r.lexeme << std::endl;
 	return true;
 }
 

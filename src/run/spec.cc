@@ -13,9 +13,6 @@
 
 #include <boost/uuid/uuid_io.hpp>
 
-using std::cerr;
-using std::endl;
-
 namespace flint {
 namespace run {
 
@@ -45,8 +42,8 @@ bool Spec(sqlite3 *db, FILE *fp)
 	if (e == SQLITE_OK)
 		return true;
 	if (e != SQLITE_ABORT)
-		cerr << "failed to select layout: " << e
-			 << ": " << em << endl;
+		std::cerr << "failed to select layout: " << e
+			 << ": " << em << std::endl;
 	sqlite3_free(em);
 	return false;
 }

@@ -29,8 +29,6 @@
 #include "sbml.h"
 #include "task.h"
 
-using std::cerr;
-using std::endl;
 using std::sprintf;
 
 namespace flint {
@@ -48,22 +46,22 @@ public:
 		int e;
 		e = sqlite3_bind_text(stmt(), 1, method, -1, SQLITE_STATIC);
 		if (e != SQLITE_OK) {
-			cerr << "failed to bind method: " << e << endl;
+			std::cerr << "failed to bind method: " << e << std::endl;
 			return false;
 		}
 		e = sqlite3_bind_text(stmt(), 2, length, -1, SQLITE_STATIC);
 		if (e != SQLITE_OK) {
-			cerr << "failed to bind length: " << e << endl;
+			std::cerr << "failed to bind length: " << e << std::endl;
 			return false;
 		}
 		e = sqlite3_bind_text(stmt(), 3, step, -1, SQLITE_STATIC);
 		if (e != SQLITE_OK) {
-			cerr << "failed to bind step: " << e << endl;
+			std::cerr << "failed to bind step: " << e << std::endl;
 			return false;
 		}
 		e = sqlite3_step(stmt());
 		if (e != SQLITE_DONE) {
-			cerr << "failed to step statement: " << e << endl;
+			std::cerr << "failed to step statement: " << e << std::endl;
 			return false;
 		}
 		sqlite3_reset(stmt());
@@ -244,7 +242,7 @@ task::Task *Load(const char *given_file, ConfigMode mode, int dir, std::vector<d
 		}
 		break;
 	default:
-		cerr << "unexpected file format: " << format << endl;
+		std::cerr << "unexpected file format: " << format << std::endl;
 		return nullptr;
 	}
 	if (mode == kOpen) {

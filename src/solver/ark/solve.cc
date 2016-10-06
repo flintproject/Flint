@@ -24,9 +24,6 @@
 #include "solver/ark/mmdm.h"
 #include "solver/ark/rhs.h"
 
-using std::cerr;
-using std::endl;
-
 namespace flint {
 namespace solver {
 namespace ark {

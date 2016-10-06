@@ -16,9 +16,6 @@
 #include "db/variable-inserter.h"
 #include "sqlite3.h"
 
-using std::cerr;
-using std::endl;
-
 namespace flint {
 namespace task {
 
@@ -66,14 +63,14 @@ bool InsertNames(sqlite3 *db)
 	e = sqlite3_exec(db, "SELECT name FROM phsp_parameters", InsertParameterName, &inserter, &em);
 	if (e != SQLITE_OK) {
 		if (e != SQLITE_ABORT)
-			cerr << "failed to select phsp_parameters: " << e << ": " << em << endl;
+			std::cerr << "failed to select phsp_parameters: " << e << ": " << em << std::endl;
 		sqlite3_free(em);
 		return false;
 	}
 	e = sqlite3_exec(db, "SELECT rowid FROM phsp_targets", InsertTargetName, &inserter, &em);
 	if (e != SQLITE_OK) {
 		if (e != SQLITE_ABORT)
-			cerr << "failed to select phsp_targets: " << e << ": " << em << endl;
+			std::cerr << "failed to select phsp_targets: " << e << ": " << em << std::endl;
 		sqlite3_free(em);
 		return false;
 	}
@@ -103,7 +100,7 @@ bool InsertEquations(sqlite3 *db)
 	e = sqlite3_exec(db, "SELECT rowid, math FROM phsp_targets", InsertTargetEquation, &inserter, &em);
 	if (e != SQLITE_OK) {
 		if (e != SQLITE_ABORT)
-			cerr << "failed to select phsp_targets: " << e << ": " << em << endl;
+			std::cerr << "failed to select phsp_targets: " << e << ": " << em << std::endl;
 		sqlite3_free(em);
 		return false;
 	}

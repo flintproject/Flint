@@ -16,8 +16,6 @@
 
 #include "modelpath.h"
 
-using std::cerr;
-using std::endl;
 using std::fclose;
 using std::fopen;
 using std::sprintf;
@@ -45,7 +43,7 @@ public:
 	bool Dump(const char *dump_file) {
 		context_ = xmlXPathNewContext(doc_);
 		if (!context_) {
-			cerr << "failed to create XPath context" << endl;
+			std::cerr << "failed to create XPath context" << std::endl;
 			return false;
 		}
 		std::unique_ptr<char[]> pattern(new char[128]);
@@ -55,24 +53,24 @@ public:
 						   reinterpret_cast<const xmlChar *>("http://www.physiome.jp/ns/insilicoml"));
 		object_ = xmlXPathEvalExpression(reinterpret_cast<const xmlChar *>(pattern.get()), context_);
 		if (!object_) {
-			cerr << "invalid XPath pattern: " << pattern.get() << endl;
+			std::cerr << "invalid XPath pattern: " << pattern.get() << std::endl;
 			return false;
 		}
 		assert(object_->type == XPATH_NODESET);
 		assert(object_->nodesetval);
 		if (object_->nodesetval->nodeNr == 0) {
-			cerr << "no such <import>" << endl;
+			std::cerr << "no such <import>" << std::endl;
 			return false;
 		}
 		if (object_->nodesetval->nodeNr > 1) {
-			cerr << "invalid <import>: " << object_->nodesetval->nodeNr << endl;
+			std::cerr << "invalid <import>: " << object_->nodesetval->nodeNr << std::endl;
 			return false;
 		}
 		xmlNodePtr node = xmlDocSetRootElement(doc_, object_->nodesetval->nodeTab[0]);
 		if (node) xmlUnlinkNode(node);
 		FILE *fp = fopen(dump_file, "w");
 		if (!fp) {
-			cerr << "failed to open dump file: " << dump_file << endl;
+			std::cerr << "failed to open dump file: " << dump_file << std::endl;
 			return false;
 		}
 		xmlDocDump(fp, doc_);
@@ -95,7 +93,7 @@ bool DumpImport(sqlite3 *db, const boost::uuids::uuid &uuid)
 	std::unique_ptr<char[]> model_file(GetModelFilename(db));
 	xmlDocPtr doc = xmlParseFile(model_file.get());
 	if (!doc) {
-		cerr << "xml file seems malformed: " << model_file.get() << endl;
+		std::cerr << "xml file seems malformed: " << model_file.get() << std::endl;
 		return false;
 	}
 	std::unique_ptr<char[]> dump_file(new char[64]);

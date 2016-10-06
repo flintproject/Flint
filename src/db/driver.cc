@@ -5,8 +5,6 @@
 #include <cstdlib>
 #include <iostream>
 
-using std::cerr;
-using std::endl;
 using std::exit;
 
 namespace flint {
@@ -16,7 +14,7 @@ Driver::Driver(const char *filename)
 	: db_(nullptr)
 {
 	if (sqlite3_open(filename, &db_) != SQLITE_OK) {
-		cerr << "failed to open database: " << filename << endl;
+		std::cerr << "failed to open database: " << filename << std::endl;
 		exit(EXIT_FAILURE);
 	}
 }

@@ -9,8 +9,6 @@
 #include "bc/binary.h"
 #include "exec.h"
 
-using std::cerr;
-using std::endl;
 using std::strcmp;
 
 using namespace flint;
@@ -19,7 +17,7 @@ namespace {
 
 void Usage()
 {
-	cerr << "usage: flint-exec" << endl;
+	std::cerr << "usage: flint-exec" << std::endl;
 }
 
 }
@@ -42,12 +40,12 @@ int main(int argc, char *argv[])
 	char input[kInputLength]; // FIXME
 	size_t size = std::fread(input, 1, kInputLength, stdin);
 	if (size == 0) {
-		cerr << "failed to read the input" << endl;
+		std::cerr << "failed to read the input" << std::endl;
 		return EXIT_FAILURE;
 	}
 	cli::ExecOption option;
 	if (!option.ParseFromArray(input, size)) {
-		cerr << "failed to parse the input" << endl;
+		std::cerr << "failed to parse the input" << std::endl;
 		return EXIT_FAILURE;
 	}
 
