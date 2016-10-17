@@ -21,7 +21,6 @@
 #include "db/variable-inserter.h"
 #include "sbml.h"
 
-using std::string;
 using std::strtod;
 
 namespace flint {
@@ -46,14 +45,14 @@ public:
 	}
 
 	char type() const {return 'x';}
-	const string &name() const {return name_;}
+	const std::string &name() const {return name_;}
 	double value() const {return value_;}
-	const string &rhs() const {return rhs_;}
+	const std::string &rhs() const {return rhs_;}
 
 private:
-	string name_;
+	std::string name_;
 	double value_;
-	string rhs_;
+	std::string rhs_;
 };
 
 class Assignment {
@@ -68,12 +67,12 @@ public:
 	}
 
 	char type() const {return 'v';}
-	const string &name() const {return name_;}
-	const string &rhs() const {return rhs_;}
+	const std::string &name() const {return name_;}
+	const std::string &rhs() const {return rhs_;}
 
 private:
-	string name_;
-	string rhs_;
+	std::string name_;
+	std::string rhs_;
 };
 
 class Compartment {
@@ -88,11 +87,11 @@ public:
 	}
 
 	char type() const {return 's';}
-	const string &name() const {return name_;}
+	const std::string &name() const {return name_;}
 	double value() const {return value_;}
 
 private:
-	string name_;
+	std::string name_;
 	double value_;
 };
 

@@ -25,25 +25,24 @@ using std::ios;
 using std::ostream;
 using std::ofstream;
 using std::ifstream;
-using std::string;
 using std::stringstream;
 using std::vector;
 
 using namespace flint;
 
-void OutputHeader(ostream &ost, size_t num_objs, string &descriptions, string &units);
+void OutputHeader(ostream &ost, size_t num_objs, std::string &descriptions, std::string &units);
 
 int main(int argc, char *argv[]) {
 	po::options_description opts("options");
 	po::positional_options_description popts;
 	po::variables_map vm;
-	string output_file;
+	std::string output_file;
 	int print_help = 0;
 
 	opts.add_options()
 		("help,h", "Show this message")
-		("output,o", po::value<string>(&output_file), "Output file path (default: merged.isd)")
-		("input-files", po::value<vector<string> >(), "List of input files");
+		("output,o", po::value<std::string>(&output_file), "Output file path (default: merged.isd)")
+		("input-files", po::value<vector<std::string> >(), "List of input files");
 	popts.add("input-files", -1);
 
 	try {
@@ -60,7 +59,7 @@ int main(int argc, char *argv[]) {
 	}
 
 	// open files
-	vector<string> input_files = vm["input-files"].as<vector<string> >();
+	vector<std::string> input_files = vm["input-files"].as<vector<std::string> >();
 	std::unique_ptr<ifstream[]> ifs(new ifstream[input_files.size()]);
 	for(size_t i = 0; i < input_files.size(); i++) {
 		ifs[i].open(input_files[i].c_str(), ios::binary|ios::in);
@@ -107,11 +106,11 @@ int main(int argc, char *argv[]) {
 		for(size_t j = 0; j < reader.num_objs(); j++) {
 			std::uint32_t bytes = *reinterpret_cast<const std::uint32_t *>(rd);
 			rd += sizeof(bytes);
-			string name(rd, bytes);
+			std::string name(rd, bytes);
 			rd += bytes;
 			//read unit
 			std::uint32_t bu = 0;
-			string unit;
+			std::string unit;
 			if (has_units) {
 				bu = *reinterpret_cast<const std::uint32_t *>(ru);
 				ru += sizeof(bu);
@@ -134,7 +133,7 @@ int main(int argc, char *argv[]) {
 	}
 
 	// output merged header
-	string str = ss_desc.str();
+	std::string str = ss_desc.str();
 	if (!vm.count("output")) {
 		output_file = "merged.isd";
 	}
@@ -143,7 +142,7 @@ int main(int argc, char *argv[]) {
 		std::cerr << "could not open output file: " << output_file << std::endl;
 		return EXIT_FAILURE;
 	}
-	string ustr = ss_unit.str();
+	std::string ustr = ss_unit.str();
 	OutputHeader(ofs, num_objs, str, ustr);
 
 	// read & write vals
@@ -181,7 +180,7 @@ int main(int argc, char *argv[]) {
 	return EXIT_SUCCESS;
 }
 
-void OutputHeader(ostream &ost, size_t num_objs, string &descriptions, string &units) {
+void OutputHeader(ostream &ost, size_t num_objs, std::string &descriptions, std::string &units) {
 	isdf::ISDFHeader oheader;
 	oheader.num_objs = static_cast<std::uint32_t>(num_objs);
 	oheader.num_bytes_comment = 0; // discard original comments

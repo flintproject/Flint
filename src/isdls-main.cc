@@ -12,7 +12,6 @@ using std::ifstream;
 using std::istream;
 using std::ios;
 using std::memcpy;
-using std::string;
 
 using namespace flint;
 
@@ -92,7 +91,7 @@ int main(int argc, char *argv[])
 	po::options_description opts("options");
 	po::positional_options_description popts;
 	po::variables_map vm;
-	string input_file;
+	std::string input_file;
 	std::uint32_t row = 0;
 	int print_help = 0;
 
@@ -101,7 +100,7 @@ int main(int argc, char *argv[])
 		("data-offset", "Print the offset (in bytes) where the data section starts")
 		("row,r", po::value<std::uint32_t>(&row), "Print the row of given index")
 		("help,h", "Show this message")
-		("input", po::value<string>(&input_file), "Input file name");
+		("input", po::value<std::string>(&input_file), "Input file name");
 	popts.add("input", 1);
 
 	try {

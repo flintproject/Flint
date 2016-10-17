@@ -23,7 +23,6 @@
 #include "flint/sexp/parser.h"
 
 using std::memcpy;
-using std::string;
 
 namespace flint {
 namespace compiler {
@@ -32,8 +31,8 @@ namespace {
 
 class DependencyCollector : public sexp::Visitor<void> {
 public:
-	DependencyCollector(const string &name,
-						const std::unordered_map<string, size_t> &candidates,
+	DependencyCollector(const std::string &name,
+						const std::unordered_map<std::string, size_t> &candidates,
 						std::unordered_set<size_t> *dependencies)
 		: name_(name)
 		, candidates_(candidates)
@@ -53,7 +52,7 @@ public:
 		auto s = x.GetString();
 		if (s == name_)
 			return;
-		std::unordered_map<string, size_t>::const_iterator it = candidates_.find(s);
+		std::unordered_map<std::string, size_t>::const_iterator it = candidates_.find(s);
 		if (it != candidates_.cend())
 			dependencies_->insert(it->second);
 	}
@@ -63,8 +62,8 @@ public:
 	}
 
 private:
-	const string &name_;
-	const std::unordered_map<string, size_t> &candidates_;
+	const std::string &name_;
+	const std::unordered_map<std::string, size_t> &candidates_;
 	std::unordered_set<size_t> *dependencies_;
 };
 
@@ -82,9 +81,9 @@ public:
 	{
 	}
 
-	const string &name() const {return name_;}
+	const std::string &name() const {return name_;}
 
-	size_t CollectDependencies(const std::unordered_map<string, size_t> &candidates, std::unordered_set<size_t> *dependencies) {
+	size_t CollectDependencies(const std::unordered_map<std::string, size_t> &candidates, std::unordered_set<size_t> *dependencies) {
 		DependencyCollector dc(name_, candidates, dependencies);
 		sexp::ApplyVisitor(dc, *expr_);
 		return dependencies->size();
@@ -119,7 +118,7 @@ public:
 
 	bool CalculateLevels(const boost::uuids::uuid &uuid, int *levels) {
 		size_t n = lines_.size();
-		std::unordered_map<string, size_t> nm;
+		std::unordered_map<std::string, size_t> nm;
 		for (size_t i=0;i<n;i++) {
 			auto p = nm.emplace(lines_[i]->name(), i);
 			if (!p.second) {

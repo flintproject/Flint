@@ -16,7 +16,6 @@
 
 using std::printf;
 using std::putchar;
-using std::string;
 using std::strlen;
 
 namespace flint {

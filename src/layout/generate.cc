@@ -29,7 +29,6 @@
 #include "variable.h"
 
 using std::memcpy;
-using std::string;
 
 namespace flint {
 namespace layout {
@@ -37,7 +36,7 @@ namespace layout {
 namespace {
 
 typedef std::unordered_map<boost::uuids::uuid,
-						   string,
+						   std::string,
 						   boost::hash<boost::uuids::uuid>
 						   > ModuleMap;
 
@@ -86,14 +85,14 @@ public:
 	Node &operator=(const Node &) = delete;
 
 	explicit Node(boost::uuids::uuid uuid) : uuid_(uuid), label_() {}
-	Node(boost::uuids::uuid uuid, const string &label) : uuid_(uuid), label_(label) {}
+	Node(boost::uuids::uuid uuid, const std::string &label) : uuid_(uuid), label_(label) {}
 
 	const boost::uuids::uuid &uuid() const {return uuid_;}
-	const string &label() const {return label_;}
+	const std::string &label() const {return label_;}
 
 private:
 	boost::uuids::uuid uuid_;
-	string label_;
+	std::string label_;
 };
 
 typedef std::vector<std::unique_ptr<Node> > NodeVector;
@@ -120,7 +119,7 @@ public:
 			memcpy(&u, uuid, u.size());
 			memcpy(&key, space_id, key.size());
 			if (label) {
-				(*m)[key].emplace_back(new Node(u, string((const char *)label)));
+				(*m)[key].emplace_back(new Node(u, std::string((const char *)label)));
 			} else {
 				(*m)[key].emplace_back(new Node(u));
 			}

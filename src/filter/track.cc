@@ -21,7 +21,6 @@
 #include "filter/filter_loader.h"
 
 using std::memcpy;
-using std::string;
 
 namespace flint {
 namespace filter {
@@ -45,7 +44,7 @@ public:
 		} else {
 			boost::uuids::uuid u;
 			memcpy(&u, column->uuid().data(), u.size());
-			string us = to_string(u);
+			std::string us = to_string(u);
 			st_->add_key(us+":"+column->name());
 		}
 		st_->add_name(column->name());

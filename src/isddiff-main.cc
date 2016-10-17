@@ -20,7 +20,6 @@
 
 namespace po = boost::program_options;
 
-using std::string;
 using std::strncmp;
 
 using namespace flint;
@@ -112,8 +111,8 @@ void PrintDifference(std::uint32_t i, std::uint32_t k,
 
 int CompareBody(std::uint32_t num_objs,
 				double adelta, double rdelta,
-				const string &input_file0, std::istream &is0,
-				const string &input_file1, std::istream &is1)
+				const std::string &input_file0, std::istream &is0,
+				const std::string &input_file1, std::istream &is1)
 {
 	std::uint32_t nb = num_objs * sizeof(double);
 	assert(nb > 0);
@@ -189,7 +188,7 @@ int main(int argc, char *argv[])
 	po::options_description opts("options");
 	po::positional_options_description popts;
 	po::variables_map vm;
-	string input_file0, input_file1;
+	std::string input_file0, input_file1;
 	double adelta = 0, rdelta = 0;
 	int print_help = 0;
 
@@ -202,8 +201,8 @@ int main(int argc, char *argv[])
 		("ignore-timestamp,T", "ignore timestamp")
 		("ignore-units,U", "ignore units")
 		("help,h", "Show this message")
-		("input0", po::value<string>(&input_file0), "the one of input file")
-		("input1", po::value<string>(&input_file1), "the other input file");
+		("input0", po::value<std::string>(&input_file0), "the one of input file")
+		("input1", po::value<std::string>(&input_file1), "the other input file");
 	popts.add("input0", 1).add("input1", 1);
 
 	try {

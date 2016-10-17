@@ -18,8 +18,6 @@
 
 namespace po = boost::program_options;
 
-using std::string;
-
 using namespace flint;
 
 namespace {
@@ -123,15 +121,15 @@ int main(int argc, char *argv[])
 	po::variables_map vm;
 	std::uint32_t num_rows = 0;
 	double eot = 0;
-	string input_file, output_file;
+	std::string input_file, output_file;
 	int print_help = 0;
 
 	opts.add_options()
 		("rows,n", po::value<std::uint32_t>(&num_rows), "Specify the number of rows to be extracted")
 		("eot,t", po::value<double>(&eot), "Specify the end of time")
 		("help,h", "Show this message")
-		("output,o", po::value<string>(&output_file), "Output file name")
-		("input", po::value<string>(&input_file), "Input file name");
+		("output,o", po::value<std::string>(&output_file), "Output file name")
+		("input", po::value<std::string>(&input_file), "Input file name");
 	popts.add("input", 1);
 
 	try {

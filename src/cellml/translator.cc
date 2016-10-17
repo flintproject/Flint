@@ -30,7 +30,6 @@
 using std::sprintf;
 using std::strcmp;
 using std::strcpy;
-using std::string;
 using std::strlen;
 
 namespace flint {
@@ -206,7 +205,7 @@ public:
 
 private:
 	static const size_t kPrefixLength = 25; // length of " (eq (diff (bvar %time) %"
-	typedef std::unordered_map<string, std::unordered_set<string> > DependentVariableMap;
+	typedef std::unordered_map<std::string, std::unordered_set<std::string> > DependentVariableMap;
 
 	EqInserter ei_;
 	const ComponentMap *cm_;

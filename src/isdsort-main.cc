@@ -20,7 +20,6 @@ using std::fopen;
 using std::fwrite;
 using std::perror;
 using std::strcmp;
-using std::string;
 
 using namespace flint;
 
@@ -38,7 +37,7 @@ public:
 
 	void GetDescription(std::uint32_t i, std::uint32_t len, const char *d)
 	{
-		string desc(d, len);
+		std::string desc(d, len);
 		if (i < skip_) {
 			leading_descs_.push_back(desc);
 		} else {
@@ -48,7 +47,7 @@ public:
 
 	void GetUnit(std::uint32_t /*i*/, std::uint32_t len, const char *u)
 	{
-		units_.push_back(string(u, len));
+		units_.push_back(std::string(u, len));
 	}
 
 	int GetStep(size_t size, const char *buf)
@@ -56,7 +55,7 @@ public:
 		if (skip_ > 0) {
 			fwrite(buf, sizeof(double), skip_, fp_);
 		}
-		for (std::map<string, std::uint32_t>::const_iterator it=rest_descs_.begin();it!=rest_descs_.end();++it) {
+		for (std::map<std::string, std::uint32_t>::const_iterator it=rest_descs_.begin();it!=rest_descs_.end();++it) {
 			size_t i = it->second * sizeof(double);
 			assert(i < size);
 			fwrite(buf + i, sizeof(double), 1, fp_);
@@ -68,21 +67,21 @@ public:
 	{
 		for (const auto &desc : leading_descs_)
 			WriteEntry(desc);
-		for (std::map<string, std::uint32_t>::const_iterator it=rest_descs_.begin();it!=rest_descs_.end();++it) {
+		for (std::map<std::string, std::uint32_t>::const_iterator it=rest_descs_.begin();it!=rest_descs_.end();++it) {
 			WriteEntry(it->first);
 		}
 		if (!units_.empty()) {
 			for (std::uint32_t i=0;i<skip_;i++) {
 				WriteEntry(units_[i]);
 			}
-			for (std::map<string, std::uint32_t>::const_iterator it=rest_descs_.begin();it!=rest_descs_.end();++it) {
+			for (std::map<std::string, std::uint32_t>::const_iterator it=rest_descs_.begin();it!=rest_descs_.end();++it) {
 				WriteEntry(units_[it->second]);
 			}
 		}
 	}
 
 private:
-	void WriteEntry(const string &d)
+	void WriteEntry(const std::string &d)
 	{
 		std::uint32_t len = static_cast<std::uint32_t>(d.size());
 		fwrite(&len, sizeof(len), 1, fp_);
@@ -91,9 +90,9 @@ private:
 
 	std::uint32_t skip_;
 	FILE *fp_;
-	std::vector<string> leading_descs_;
-	std::map<string, std::uint32_t> rest_descs_;
-	std::vector<string> units_;
+	std::vector<std::string> leading_descs_;
+	std::map<std::string, std::uint32_t> rest_descs_;
+	std::vector<std::string> units_;
 };
 
 bool CopyFile(const char *source, const char *target)

@@ -21,13 +21,12 @@
 #include "variable.h"
 
 using std::map;
-using std::string;
 using std::strcmp;
 
 namespace flint {
 namespace {
 
-typedef map<string, string> BridgeMap;
+typedef map<std::string, std::string> BridgeMap;
 
 class LineWriter {
 public:
@@ -91,14 +90,14 @@ public:
 		return Insert(math.c_str());
 	}
 
-	bool WriteSet(const char *name, const string &pq_name) {
+	bool WriteSet(const char *name, const std::string &pq_name) {
 		std::ostringstream oss;
 		oss << "(eq %" << name << " %" << pq_name << ')';
 		std::string math = oss.str();
 		return Insert(math.c_str());
 	}
 
-	bool WriteGet(const string &pq_name, const char *name) {
+	bool WriteGet(const std::string &pq_name, const char *name) {
 		std::ostringstream oss;
 		oss << "(eq %" << pq_name << " %sbml:" << name << ')';
 		std::string math = oss.str();
@@ -191,7 +190,7 @@ private:
 	OdeWriter ode_writer_;
 };
 
-typedef map<int, string> PhysicalQuantityMap;
+typedef map<int, std::string> PhysicalQuantityMap;
 
 class PhysicalQuantityHandler {
 public:
@@ -245,7 +244,7 @@ public:
 				std::cerr << "failed to find physical-quantity: " << pq_id << std::endl;
 				return false;
 			}
-			writer_->bm().emplace("sbml:" + string(connector), it->second);
+			writer_->bm().emplace("sbml:" + std::string(connector), it->second);
 		} else {
 			std::cerr << "invalid bridge: " << uuid << ":" << pq_id << std::endl;
 			return false;

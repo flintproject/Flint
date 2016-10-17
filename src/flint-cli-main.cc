@@ -17,8 +17,6 @@
 
 namespace po = boost::program_options;
 
-using std::string;
-
 int main(int argc, char *argv[])
 {
 	GOOGLE_PROTOBUF_VERIFY_VERSION;
@@ -26,12 +24,12 @@ int main(int argc, char *argv[])
 	po::options_description opts("options");
 	po::positional_options_description popts;
 	po::variables_map vm;
-	string model_file, output_file;
+	std::string model_file, output_file;
 	int print_help = 0;
 
 	opts.add_options()
-		("model", po::value<string>(&model_file), "Model file name")
-		("output", po::value<string>(&output_file), "Output file name")
+		("model", po::value<std::string>(&model_file), "Model file name")
+		("output", po::value<std::string>(&output_file), "Output file name")
 		("help,h", "Show this message");
 	popts.add("model", 1).add("output", 1);
 

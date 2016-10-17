@@ -17,7 +17,6 @@
 
 using std::memcpy;
 using std::strcmp;
-using std::string;
 
 namespace flint {
 namespace phml {
@@ -31,20 +30,20 @@ public:
 	Node(const boost::uuids::uuid &uuid, const boost::uuids::uuid &module_id, size_t level)
 		: uuid_(uuid), module_id_(module_id), level_(level), label_()
 	{}
-	Node(const boost::uuids::uuid &uuid, const boost::uuids::uuid &module_id, size_t level, const string &label)
+	Node(const boost::uuids::uuid &uuid, const boost::uuids::uuid &module_id, size_t level, const std::string &label)
 		: uuid_(uuid), module_id_(module_id), level_(level), label_(label)
 	{}
 
 	const boost::uuids::uuid &uuid() const {return uuid_;}
 	const boost::uuids::uuid &module_id() const {return module_id_;}
 	size_t level() const {return level_;}
-	const string &label() const {return label_;}
+	const std::string &label() const {return label_;}
 
 private:
 	boost::uuids::uuid uuid_;
 	boost::uuids::uuid module_id_;
 	size_t level_;
-	string label_;
+	std::string label_;
 };
 
 class Instance {
@@ -55,7 +54,7 @@ public:
 	explicit Instance(const boost::uuids::uuid &uuid)
 		: uuid_(uuid), label_()
 	{}
-	Instance(const boost::uuids::uuid &uuid, const string &label)
+	Instance(const boost::uuids::uuid &uuid, const std::string &label)
 		: uuid_(uuid), label_(label)
 	{}
 
@@ -63,11 +62,11 @@ public:
 	Instance &operator=(Instance &&other) = default;
 
 	const boost::uuids::uuid &uuid() const {return uuid_;}
-	const string &label() const {return label_;}
+	const std::string &label() const {return label_;}
 
 private:
 	boost::uuids::uuid uuid_;
-	string label_;
+	std::string label_;
 };
 
 typedef std::multimap<boost::uuids::uuid, Instance> InstanceMap;
@@ -99,7 +98,7 @@ public:
 			boost::uuids::uuid mu;
 			memcpy(&mu, module_id, mu.size());
 			if (label) {
-				m->emplace(mu, Instance(uu, string((const char *)label)));
+				m->emplace(mu, Instance(uu, std::string((const char *)label)));
 			} else {
 				m->emplace(mu, Instance(uu));
 			}

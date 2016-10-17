@@ -30,7 +30,6 @@
 #include "lo/layout_loader.h"
 
 using std::memcpy;
-using std::string;
 
 namespace flint {
 namespace filter {
@@ -45,7 +44,7 @@ public:
 	{
 	}
 
-	bool Load(string *time_unit) {
+	bool Load(std::string *time_unit) {
 		int e = sqlite3_step(stmt());
 		if (e == SQLITE_DONE) {
 			// nothing to do
@@ -54,7 +53,7 @@ public:
 		}
 		if (e == SQLITE_ROW) {
 			const unsigned char *name = sqlite3_column_text(stmt(), 0);
-			*time_unit = string((const char *)name);
+			*time_unit = std::string((const char *)name);
 			sqlite3_reset(stmt());
 			return true;
 		}
@@ -74,7 +73,7 @@ public:
 		m_[u].insert(name);
 	}
 
-	bool Contains(const boost::uuids::uuid &id, const string &name) const {
+	bool Contains(const boost::uuids::uuid &id, const std::string &name) const {
 		auto it = m_.find(id);
 		if (it == m_.end()) return false;
 		return it->second.find(name) != it->second.end();
@@ -82,7 +81,7 @@ public:
 
 private:
 	std::unordered_map<boost::uuids::uuid,
-					   std::unordered_set<string>,
+					   std::unordered_set<std::string>,
 					   boost::hash<boost::uuids::uuid> > m_;
 };
 
@@ -105,7 +104,7 @@ public:
 		dv_.push_back(std::move(data));
 	}
 
-	int Fill(const string &time_unit, const Spec *spec, std::vector<std::unique_ptr<lo::Column> > *columns) const {
+	int Fill(const std::string &time_unit, const Spec *spec, std::vector<std::unique_ptr<lo::Column> > *columns) const {
 		std::unique_ptr<lo::Column> c(new lo::Column);
 
 		char us0[boost::uuids::uuid::static_size()] = {0};
@@ -170,7 +169,7 @@ private:
 
 bool Create(sqlite3 *db, const char *spec_file, const char *layout_file, const char *output_file)
 {
-	string time_unit;
+	std::string time_unit;
 	{
 		TimeUnitLoader loader(db);
 		if (!loader.Load(&time_unit)) return false;

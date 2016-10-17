@@ -26,7 +26,6 @@ using std::ios;
 using std::memcpy;
 using std::ofstream;
 using std::ostream;
-using std::string;
 using std::vector;
 
 using namespace flint;
@@ -69,11 +68,11 @@ public:
 #endif
 
 	void GetDescription(std::uint32_t i, size_t bytes, const char *desc) {
-		descriptions_[i] = string(desc, bytes);
+		descriptions_[i] = std::string(desc, bytes);
 	}
 
 	void GetUnit(std::uint32_t i, size_t bytes, const char *unit) {
-		units_[i] = string(unit, bytes);
+		units_[i] = std::string(unit, bytes);
 	}
 
 	void WriteFirstLine() const {
@@ -122,8 +121,8 @@ private:
 #endif
 	ostream *os_;
 	std::uint32_t num_objs_;
-	vector<string> descriptions_;
-	vector<string> units_;
+	vector<std::string> descriptions_;
+	vector<std::string> units_;
 };
 
 int Read(isdf::Reader &reader, Converter &converter, istream *is)
@@ -177,20 +176,20 @@ int main(int argc, char *argv[])
 	po::options_description opts("options");
 	po::positional_options_description popts;
 	po::variables_map vm;
-	string input_file, output_file;
+	std::string input_file, output_file;
 	int print_help = 0;
 #ifdef ENABLE_TCP
-	string port;
+	std::string port;
 #endif
 
 	opts.add_options()
 		("help,h", "Show this message")
 #ifdef ENABLE_TCP
-		("progress", po::value<string>(&port), "Send progress in percentage")
+		("progress", po::value<std::string>(&port), "Send progress in percentage")
 #endif
 		("maximum-precision,M", "Request the maximum number of decimal digits to print double-precision floating-point numbers")
-		("output,o", po::value<string>(&output_file), "Output file name")
-		("input", po::value<string>(&input_file), "Input file name");
+		("output,o", po::value<std::string>(&output_file), "Output file name")
+		("input", po::value<std::string>(&input_file), "Input file name");
 	popts.add("input", 1);
 
 	try {

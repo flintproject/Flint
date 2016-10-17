@@ -23,7 +23,6 @@
 
 using std::multimap;
 using std::set;
-using std::string;
 using std::pair;
 
 namespace flint {
@@ -42,7 +41,7 @@ public:
 	{
 	}
 
-	Scope(boost::uuids::uuid uuid, boost::uuids::uuid module_id, string label)
+	Scope(boost::uuids::uuid uuid, boost::uuids::uuid module_id, std::string label)
 		: uuid_(uuid),
 		  module_id_(module_id),
 		  label_(label)
@@ -51,7 +50,7 @@ public:
 
 	const boost::uuids::uuid &uuid() const {return uuid_;}
 	const boost::uuids::uuid &module_id() const {return module_id_;}
-	const string &label() const {return label_;}
+	const std::string &label() const {return label_;}
 
 	// comparison wrt module_id_ & uuid_ (but not label_)
 	bool operator<(const Scope &other) const {
@@ -64,7 +63,7 @@ public:
 private:
 	boost::uuids::uuid uuid_;
 	boost::uuids::uuid module_id_;
-	string label_;
+	std::string label_;
 };
 
 class Port {
@@ -189,7 +188,7 @@ public:
 	bool Handle(boost::uuids::uuid uuid, boost::uuids::uuid space_id, const char *label) {
 		pair<ScopeSet::iterator, bool> p;
 		if (label) {
-			p = scopes_->emplace(uuid, space_id, string(label));
+			p = scopes_->emplace(uuid, space_id, std::string(label));
 		} else {
 			p = scopes_->emplace(uuid, space_id);
 		}

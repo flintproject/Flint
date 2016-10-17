@@ -26,7 +26,6 @@
 #include "lo/layout_loader.h"
 
 using std::memcpy;
-using std::string;
 using std::strlen;
 
 namespace flint {
@@ -122,7 +121,7 @@ private:
 };
 
 typedef std::unordered_map<boost::uuids::uuid,
-						   std::unordered_map<string, double>,
+						   std::unordered_map<std::string, double>,
 						   boost::hash<boost::uuids::uuid> > TargetValueMap;
 
 class TargetLoader : db::StatementDriver {
@@ -202,7 +201,7 @@ public:
 							if (it == tvm.end()) {
 								i += data_size;
 							} else {
-								std::unordered_map<string, double>::const_iterator mit;
+								std::unordered_map<std::string, double>::const_iterator mit;
 								if (strcmp("phml", format) == 0) {
 									sprintf(buf.get(), "%d", dp->id());
 									mit = it->second.find(buf.get());

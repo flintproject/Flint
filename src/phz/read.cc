@@ -24,7 +24,6 @@
 #include "utf8path.h"
 
 using std::perror;
-using std::string;
 
 namespace flint {
 namespace phz {
@@ -80,7 +79,7 @@ bool Read(sqlite3 *db, const char *dir)
 		boost::filesystem::path pp(op.parent_path());
 		boost::filesystem::create_directories(pp);
 
-		string op_s = op.string();
+		std::string op_s = op.string();
 		FILE *ofp = fopen(op_s.c_str(), "wb");
 		if (!ofp) {
 			perror(op_s.c_str());

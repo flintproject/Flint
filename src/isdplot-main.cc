@@ -33,7 +33,6 @@ using std::ifstream;
 using std::istream;
 using std::ios;
 using std::ostringstream;
-using std::string;
 
 using namespace flint;
 
@@ -69,7 +68,7 @@ bool CountColumns(const char *input, std::uint32_t *num_columns)
 	return true;
 }
 
-int CallIsdstrip(const string &isdstrip, const char *input, const char *output)
+int CallIsdstrip(const std::string &isdstrip, const char *input, const char *output)
 {
 	static const char kCommand[] = "%s -o \"%s\" \"%s\"";
 
@@ -80,7 +79,7 @@ int CallIsdstrip(const string &isdstrip, const char *input, const char *output)
 	return r;
 }
 
-int CallIsd2csv(const string &isd2csv, const char *input, const char *output)
+int CallIsd2csv(const std::string &isd2csv, const char *input, const char *output)
 {
 	static const char kCommand[] = "%s -o \"%s\" \"%s\"";
 
@@ -195,7 +194,7 @@ int CallGnuplot(const char *gnuplot,
 	int fd = pipefd[1];
 	ostringstream bss;
 	CreateScript(num_columns, csv_path, output_path, &bss);
-	const string &buf(bss.str());
+	const std::string &buf(bss.str());
 	if (write(fd, buf.c_str(), buf.size()) < 0) {
 		std::cerr << "could not write into pipe; " << strerror(errno);
 		close(fd);
@@ -265,7 +264,7 @@ int CallGnuplot(const char *gnuplot,
 
 	ostringstream bss;
 	CreateScript(num_columns, csv_path, output_path, &bss);
-	const string &buf(bss.str());
+	const std::string &buf(bss.str());
 	WriteFile(hChildInWrite, (LPCVOID)buf.c_str(), (DWORD)buf.size(), nullptr, nullptr);
 	CloseHandle(hChildInWrite);
 
@@ -304,19 +303,19 @@ int main(int argc, char *argv[])
 	po::options_description opts("options");
 	po::positional_options_description popts;
 	po::variables_map vm;
-	string gnuplot, isd2csv, isdstrip, input_file, output_file;
+	std::string gnuplot, isd2csv, isdstrip, input_file, output_file;
 	int print_help = 0;
 
 	opts.add_options()
-		("gnuplot", boost::program_options::value<string>(&gnuplot),
+		("gnuplot", boost::program_options::value<std::string>(&gnuplot),
 		 "Command for gnuplot")
-		("isd2csv", boost::program_options::value<string>(&isd2csv),
+		("isd2csv", boost::program_options::value<std::string>(&isd2csv),
 		 "Command for isd2csv")
-		("isdstrip", boost::program_options::value<string>(&isdstrip),
+		("isdstrip", boost::program_options::value<std::string>(&isdstrip),
 		 "Command for isdstrip")
 		("help,h", "Show this message")
-		("output,o", po::value<string>(&output_file), "Output file name")
-		("input", po::value<string>(&input_file), "Input file name");
+		("output,o", po::value<std::string>(&output_file), "Output file name")
+		("input", po::value<std::string>(&input_file), "Input file name");
 	popts.add("input", 1);
 
 	try {

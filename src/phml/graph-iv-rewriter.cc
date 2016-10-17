@@ -10,7 +10,6 @@
 #include <boost/uuid/uuid_io.hpp>
 
 using std::memcpy;
-using std::string;
 
 namespace flint {
 
@@ -101,8 +100,8 @@ bool GraphIvRewriter::Process(sqlite3_int64 pq_rowid,
 
 	const char *p = math;
 	size_t len = std::strlen(math);
-	string lhs;
-	string rhs;
+	std::string lhs;
+	std::string rhs;
 	bool r = parse(p, math + len,
 				   *char_(' ')
 				   >> "($is %"

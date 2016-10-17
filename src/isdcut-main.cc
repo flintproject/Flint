@@ -19,7 +19,6 @@
 namespace po = boost::program_options;
 
 using std::memcpy;
-using std::string;
 
 using namespace flint;
 
@@ -135,15 +134,15 @@ int main(int argc, char *argv[])
 	po::options_description opts("options");
 	po::positional_options_description popts;
 	po::variables_map vm;
-	string fields;
-	string input_file, output_file;
+	std::string fields;
+	std::string input_file, output_file;
 	int print_help = 0;
 
 	opts.add_options()
-		("fields,f", po::value<string>(&fields), "Select only these fields")
+		("fields,f", po::value<std::string>(&fields), "Select only these fields")
 		("help,h", "Show this message")
-		("output,o", po::value<string>(&output_file), "Output file name")
-		("input", po::value<string>(&input_file), "Input file name");
+		("output,o", po::value<std::string>(&output_file), "Output file name")
+		("input", po::value<std::string>(&input_file), "Input file name");
 	popts.add("input", 1);
 
 	try {

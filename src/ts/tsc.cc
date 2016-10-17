@@ -36,7 +36,6 @@
 #include "variable.h"
 
 using std::strcmp;
-using std::string;
 
 namespace flint {
 namespace ts {
@@ -44,7 +43,7 @@ namespace ts {
 namespace {
 
 typedef std::unordered_map<boost::uuids::uuid,
-						   std::unordered_map<int, string>,
+						   std::unordered_map<int, std::string>,
 						   boost::hash<boost::uuids::uuid> > PqMap;
 
 class PqHandler {
@@ -140,7 +139,7 @@ public:
 	}
 };
 
-typedef std::unordered_map<string, std::uint32_t> ColumnMap;
+typedef std::unordered_map<std::string, std::uint32_t> ColumnMap;
 
 class DescriptionHandler {
 public:
@@ -150,7 +149,7 @@ public:
 	explicit DescriptionHandler(ColumnMap *cm) : cm_(cm) {}
 
 	void GetDescription(std::uint32_t i, std::uint32_t bytes, const char *d) {
-		if (!cm_->emplace(string(d, bytes), i).second) {
+		if (!cm_->emplace(std::string(d, bytes), i).second) {
 			std::cerr << "found duplicate name of columns: " << std::endl;
 		}
 	}
@@ -227,7 +226,7 @@ public:
 				 << std::endl;
 			return false;
 		}
-		std::unordered_map<int, string>::const_iterator qit = pit->second.find(pq_id);
+		std::unordered_map<int, std::string>::const_iterator qit = pit->second.find(pq_id);
 		if (qit == pit->second.end()) {
 			std::cerr << "missing physical-quantity-id: "
 				 << uuid
@@ -241,7 +240,7 @@ public:
 			std::cerr << "missing path: " << *mit->second << std::endl;
 			return false;
 		}
-		string name(element_id);
+		std::string name(element_id);
 		ColumnMap::const_iterator cit = iit->second->find(name);
 		if (cit == iit->second->end()) {
 			std::cerr << "missing element in "

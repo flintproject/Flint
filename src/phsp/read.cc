@@ -29,7 +29,6 @@
 
 using std::perror;
 using std::sprintf;
-using std::string;
 
 namespace flint {
 namespace phsp {
@@ -555,7 +554,7 @@ private:
 				if (d > range->upper()) break;
 				oss << ',' << boost::rational_cast<double>(d);
 			}
-			string s(oss.str());
+			std::string s(oss.str());
 			size_t len = s.size();
 			char *p = static_cast<char *>(malloc(len));
 			if (!p) {
@@ -671,7 +670,7 @@ private:
 			} else if (type == XML_READER_TYPE_END_ELEMENT) {
 				const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
 				if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("target"))) {
-					string s(oss.str());
+					std::string s(oss.str());
 					if (s.empty()) {
 						std::cerr << "missing value of <target>" << std::endl;
 						return -2;
@@ -796,7 +795,7 @@ private:
 bool Read(const char *phsp_file, sqlite3 *db)
 {
 	boost::filesystem::path pp = GetPathFromUtf8(phsp_file);
-	string pp_s = pp.string();
+	std::string pp_s = pp.string();
 
 	xmlTextReaderPtr text_reader = xmlReaderForFile(pp_s.c_str(), nullptr, 0);
 	if (!text_reader) {
