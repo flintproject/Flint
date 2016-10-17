@@ -5,8 +5,6 @@
 #include <cstring>
 #include <iostream>
 
-using std::strcmp;
-
 namespace flint {
 
 bool ConvertStringToReduction(const char *s, Reduction *r)
@@ -15,15 +13,15 @@ bool ConvertStringToReduction(const char *s, Reduction *r)
 		*r = Reduction::kUnspecified;
 		return true;
 	}
-	if (strcmp(s, "sum") == 0) {
+	if (std::strcmp(s, "sum") == 0) {
 		*r = Reduction::kSum;
-	} else if (strcmp(s, "max") == 0) {
+	} else if (std::strcmp(s, "max") == 0) {
 		*r = Reduction::kMax;
-	} else if (strcmp(s, "min") == 0) {
+	} else if (std::strcmp(s, "min") == 0) {
 		*r = Reduction::kMin;
-	} else if (strcmp(s, "mean") == 0) {
+	} else if (std::strcmp(s, "mean") == 0) {
 		*r = Reduction::kMean;
-	} else if (strcmp(s, "degree") == 0) {
+	} else if (std::strcmp(s, "degree") == 0) {
 		*r = Reduction::kDegree;
 	} else {
 		std::cerr << "unknown reduction: " << s << std::endl;

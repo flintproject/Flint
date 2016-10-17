@@ -7,8 +7,6 @@
 #include <cstring>
 #include <iostream>
 
-using std::strcmp;
-
 namespace flint {
 namespace task {
 
@@ -77,9 +75,9 @@ compiler::Method ConfigReader::GetMethod() const
 {
 	if (!method_)
 		return compiler::Method::kRk4;
-	if (strcmp(method_.get(), "euler") == 0)
+	if (std::strcmp(method_.get(), "euler") == 0)
 		return compiler::Method::kEuler;
-	if (strcmp(method_.get(), "ark") == 0)
+	if (std::strcmp(method_.get(), "ark") == 0)
 		return compiler::Method::kArk;
 	return compiler::Method::kRk4;
 }

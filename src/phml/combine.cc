@@ -21,7 +21,6 @@
 #include "variable.h"
 
 using std::map;
-using std::strcmp;
 
 namespace flint {
 namespace {
@@ -231,14 +230,14 @@ public:
 	bool Handle(const boost::uuids::uuid &uuid, int pq_id, const char *direction, const char * /*sub_type*/, const char *connector)
 	{
 		if (uuid_ != uuid) return true;
-		if (strcmp(direction, "get") == 0) {
+		if (std::strcmp(direction, "get") == 0) {
 			PhysicalQuantityMap::const_iterator it = pqm_->find(pq_id);
 			if (it == pqm_->end()) {
 				std::cerr << "failed to find physical-quantity: " << pq_id << std::endl;
 				return false;
 			}
 			writer_->function_writer().WriteGet(it->second, connector);
-		} else if (strcmp(direction, "set") == 0) {
+		} else if (std::strcmp(direction, "set") == 0) {
 			PhysicalQuantityMap::const_iterator it = pqm_->find(pq_id);
 			if (it == pqm_->end()) {
 				std::cerr << "failed to find physical-quantity: " << pq_id << std::endl;

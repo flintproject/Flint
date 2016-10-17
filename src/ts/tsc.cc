@@ -35,8 +35,6 @@
 #include "utf8path.h"
 #include "variable.h"
 
-using std::strcmp;
-
 namespace flint {
 namespace ts {
 
@@ -82,7 +80,7 @@ public:
 
 	bool Handle(const boost::uuids::uuid &uuid, int ts_id, const char *format, const char *ref) {
 		boost::filesystem::path ref_path(GetPathFromUtf8(ref));
-		if (strcmp(format, "csv") == 0) {
+		if (std::strcmp(format, "csv") == 0) {
 			boost::system::error_code ec;
 			boost::filesystem::path temp_path("tsc.%%%%-%%%%-%%%%-%%%%.isd");
 			boost::filesystem::path isd_path = boost::filesystem::unique_path(temp_path, ec);
@@ -100,7 +98,7 @@ public:
 			(*tm_)[uuid].emplace(ts_id, it);
 			return true;
 		}
-		if (strcmp(format, "isd") != 0) {
+		if (std::strcmp(format, "isd") != 0) {
 			std::cerr << "unknown format: " << format << std::endl;
 			return false;
 		}

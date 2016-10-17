@@ -10,8 +10,6 @@
 
 #include "csv/export.h"
 
-using std::strcmp;
-
 using namespace flint;
 
 namespace {
@@ -27,7 +25,7 @@ int main(int argc, char *argv[])
 {
 	if (argc == 2) {
 		usage();
-		if ( strcmp(argv[1], "-h") == 0 || strcmp(argv[1], "--help") ) {
+		if ( std::strcmp(argv[1], "-h") == 0 || std::strcmp(argv[1], "--help") ) {
 			return EXIT_SUCCESS;
 		} else {
 			return EXIT_FAILURE;

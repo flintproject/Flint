@@ -17,7 +17,6 @@ using std::fclose;
 using std::fopen;
 using std::fread;
 using std::perror;
-using std::strncmp;
 
 namespace flint {
 namespace file {
@@ -45,7 +44,7 @@ int CheckPhz(const char *filename)
 			 << std::endl;
 		return -1;
 	}
-	if (strncmp(magic, "PK", 2) == 0) { // looks like zip
+	if (std::strncmp(magic, "PK", 2) == 0) { // looks like zip
 		return 1;
 	}
 	return 0;

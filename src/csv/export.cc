@@ -14,7 +14,6 @@
 #include <boost/interprocess/mapped_region.hpp>
 #include "isdf/isdf.h"
 
-using std::strcmp;
 using std::vector;
 using std::fwrite;
 

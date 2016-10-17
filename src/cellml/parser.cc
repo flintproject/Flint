@@ -20,8 +20,6 @@
 #include "sqlite3.h"
 #include "modelpath.h"
 
-using std::strcmp;
-
 namespace flint {
 namespace {
 
@@ -38,7 +36,7 @@ bool IsInMathMLNamespace(const xmlChar *uri)
 {
 	static const char MATHML_NAMESPACE_URI[] = "http://www.w3.org/1998/Math/MathML";
 	if (!uri) return false;
-	if (strcmp(MATHML_NAMESPACE_URI, reinterpret_cast<const char *>(uri)) == 0) return true;
+	if (std::strcmp(MATHML_NAMESPACE_URI, reinterpret_cast<const char *>(uri)) == 0) return true;
 	return false;
 }
 

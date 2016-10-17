@@ -15,8 +15,6 @@
 #include "db/statement-driver.h"
 #include "uuidgen.h"
 
-using std::strcmp;
-
 namespace flint {
 namespace phml {
 namespace {
@@ -216,7 +214,7 @@ bool Branch(const boost::filesystem::path &path, sqlite3 *db)
 		const unsigned char *template_state = sqlite3_column_text(stmt, 2);
 
 		// include the module if it is a non-template module
-		if (!template_state || strcmp((const char *)template_state, "true") != 0) {
+		if (!template_state || std::strcmp((const char *)template_state, "true") != 0) {
 			result.emplace_back(new Node(uuid, uuid, level));
 			continue;
 		}

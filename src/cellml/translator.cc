@@ -28,7 +28,6 @@
 #include "uuidgen.h"
 
 using std::sprintf;
-using std::strcmp;
 using std::strcpy;
 using std::strlen;
 
@@ -240,7 +239,7 @@ public:
 			}
 			const unsigned char *iv = sqlite3_column_text(stmt(), 3);
 			if (!cm_->Find(reinterpret_cast<const char *>(c), &u)) return false;
-			if (strcmp("time", reinterpret_cast<const char *>(n)) == 0) {
+			if (std::strcmp("time", reinterpret_cast<const char *>(n)) == 0) {
 				// ignore "time", because we suppose all of them are equivalent
 				// to the system "time"
 			} else if (iv) {
@@ -392,16 +391,16 @@ public:
 			if (!cm_->Find(reinterpret_cast<const char *>(c1), &u1)) return false;
 			if (!cm_->Find(reinterpret_cast<const char *>(c2), &u2)) return false;
 
-			if ( ( (pub1 && strcmp(reinterpret_cast<const char *>(pub1), "out") == 0) ||
-				   (pri1 && strcmp(reinterpret_cast<const char *>(pri1), "out") == 0) ) &&
-				 ( (pub2 && strcmp(reinterpret_cast<const char *>(pub2), "in") == 0) ||
-				   (pri2 && strcmp(reinterpret_cast<const char *>(pri2), "in") == 0) ) ) {
+			if ( ( (pub1 && std::strcmp(reinterpret_cast<const char *>(pub1), "out") == 0) ||
+				   (pri1 && std::strcmp(reinterpret_cast<const char *>(pri1), "out") == 0) ) &&
+				 ( (pub2 && std::strcmp(reinterpret_cast<const char *>(pub2), "in") == 0) ||
+				   (pri2 && std::strcmp(reinterpret_cast<const char *>(pri2), "in") == 0) ) ) {
 				if (!driver_->Save(u1, id1, u2, id2, Reduction::kSum))
 					return false;
-			} else if ( ( (pub1 && strcmp(reinterpret_cast<const char *>(pub1), "in") == 0) ||
-						  (pri1 && strcmp(reinterpret_cast<const char *>(pri1), "in") == 0) ) &&
-						( (pub2 && strcmp(reinterpret_cast<const char *>(pub2), "out") == 0) ||
-						  (pri2 && strcmp(reinterpret_cast<const char *>(pri2), "out") == 0) ) ) {
+			} else if ( ( (pub1 && std::strcmp(reinterpret_cast<const char *>(pub1), "in") == 0) ||
+						  (pri1 && std::strcmp(reinterpret_cast<const char *>(pri1), "in") == 0) ) &&
+						( (pub2 && std::strcmp(reinterpret_cast<const char *>(pub2), "out") == 0) ||
+						  (pri2 && std::strcmp(reinterpret_cast<const char *>(pri2), "out") == 0) ) ) {
 				if (!driver_->Save(u2, id2, u1, id1, Reduction::kSum))
 					return false;
 			} else {

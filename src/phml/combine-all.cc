@@ -28,7 +28,6 @@
 #include "system.h"
 
 using std::sprintf;
-using std::strcmp;
 
 namespace flint {
 namespace phml {
@@ -79,7 +78,7 @@ bool CombineAll(sqlite3 *db)
 		const unsigned char *type = sqlite3_column_text(stmt, 1);
 		const unsigned char *ref = sqlite3_column_text(stmt, 2);
 
-		if (strcmp((const char *)type, "external") == 0) {
+		if (std::strcmp((const char *)type, "external") == 0) {
 			if (!SaveFile(uuid, (const char *)ref)) return false;
 		} else {
 			if (!DumpImport(db, uuid)) return false;

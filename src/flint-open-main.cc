@@ -14,8 +14,6 @@
 #include "load.h"
 #include "task.h"
 
-using std::strcmp;
-
 using namespace flint;
 
 namespace {
@@ -31,8 +29,8 @@ int main(int argc, char *argv[])
 {
 	if (argc == 2) {
 		Usage();
-		if ( strcmp(argv[1], "-h") == 0 ||
-			 strcmp(argv[1], "--help") == 0 ) {
+		if ( std::strcmp(argv[1], "-h") == 0 ||
+			 std::strcmp(argv[1], "--help") == 0 ) {
 			return EXIT_SUCCESS;
 		}
 		return EXIT_FAILURE;

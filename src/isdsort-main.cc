@@ -19,7 +19,6 @@ using std::fclose;
 using std::fopen;
 using std::fwrite;
 using std::perror;
-using std::strcmp;
 
 using namespace flint;
 
@@ -175,7 +174,7 @@ int main(int argc, char *argv[])
 		Usage();
 		return EXIT_FAILURE;
 	}
-	if (strcmp("-h", argv[1]) == 0 || strcmp("--help", argv[1]) == 0) {
+	if (std::strcmp("-h", argv[1]) == 0 || std::strcmp("--help", argv[1]) == 0) {
 		Usage();
 		return EXIT_SUCCESS;
 	}
