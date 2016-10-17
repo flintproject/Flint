@@ -21,8 +21,6 @@
 #include "filter/filter_loader.h"
 #include "isdf/isdf.h"
 
-using std::memcpy;
-
 namespace flint {
 namespace filter {
 
@@ -47,7 +45,7 @@ public:
 
 	void ReadColumn(std::unique_ptr<lo::Column> &&column) {
 		boost::uuids::uuid u;
-		memcpy(&u, column->uuid().data(), u.size());
+		std::memcpy(&u, column->uuid().data(), u.size());
 		std::string s;
 		if (u.is_nil()) {
 			s = column->name();
@@ -73,18 +71,18 @@ public:
 		header.num_bytes_units = num_bytes_units_;
 
 		char buf[sizeof(isdf::ISDFHeader)];
-		memcpy(buf, &header, sizeof(header));
+		std::memcpy(buf, &header, sizeof(header));
 		ofs->write(buf, sizeof(header));
 
 		for (const auto &desc : descriptions_) {
 			std::uint32_t len = desc.size();
-			memcpy(buf, &len, sizeof(len));
+			std::memcpy(buf, &len, sizeof(len));
 			ofs->write(buf, sizeof(len));
 			ofs->write(desc.c_str(), len);
 		}
 		for (const auto &u : units_) {
 			std::uint32_t len = u.size();
-			memcpy(buf, &len, sizeof(len));
+			std::memcpy(buf, &len, sizeof(len));
 			ofs->write(buf, sizeof(len));
 			ofs->write(u.c_str(), len);
 		}

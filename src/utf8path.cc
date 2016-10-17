@@ -13,8 +13,6 @@
 #include <windows.h>
 #endif
 
-using std::memcpy;
-
 namespace flint {
 
 boost::filesystem::path GetPathFromUtf8(const char *utf8)
@@ -101,7 +99,7 @@ char *GetUtf8FromPath(const boost::filesystem::path &path)
 	size_t s = path_s.size();
 	char *utf8 = new char[s+1];
 	if (s > 0)
-		memcpy(utf8, path_s.c_str(), s);
+		std::memcpy(utf8, path_s.c_str(), s);
 	utf8[s] = '\0';
 	return utf8;
 #endif

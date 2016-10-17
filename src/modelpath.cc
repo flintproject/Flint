@@ -10,8 +10,6 @@
 #include "database.h"
 #include "utf8path.h"
 
-using std::memcpy;
-
 namespace flint {
 
 namespace {
@@ -29,7 +27,7 @@ char *GetInputFilename(sqlite3 *db, FindFunction f)
 	size_t s = path_s.size();
 	char *filename = new char[s+1]; // FIXME
 	if (s > 0)
-		memcpy(filename, path_s.c_str(), s);
+		std::memcpy(filename, path_s.c_str(), s);
 	filename[s] = '\0';
 	return filename;
 }

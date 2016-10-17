@@ -15,7 +15,6 @@
 #include "isdf/isdf.h"
 
 using std::strcmp;
-using std::memcpy;
 using std::vector;
 using std::fwrite;
 
@@ -111,7 +110,7 @@ bool ExportIsdFromCsv(const boost::filesystem::path &input_path,
 	size_t first_line_len = eol[0];
 	std::unique_ptr<char[]> first_line(new char[first_line_len + 1]);
 	if (first_line_len > 0)
-		memcpy(first_line.get(), addr, first_line_len);
+		std::memcpy(first_line.get(), addr, first_line_len);
 	first_line[first_line_len] = '\0';
 	vector<char *> columns;
 	columns.push_back(first_line.get());

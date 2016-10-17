@@ -29,8 +29,6 @@
 #include "filter/spec_loader.h"
 #include "lo/layout_loader.h"
 
-using std::memcpy;
-
 namespace flint {
 namespace filter {
 
@@ -131,7 +129,7 @@ public:
 			while (si < sie) {
 				const auto &sp = sv_.at(si++);
 				boost::uuids::uuid su;
-				memcpy(&su, sp->id().data(), su.size());
+				std::memcpy(&su, sp->id().data(), su.size());
 				di = dib;
 				while (di < die) {
 					const auto &dp = dv_.at(di++);

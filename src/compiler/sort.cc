@@ -22,8 +22,6 @@
 #include "flint/sexp.h"
 #include "flint/sexp/parser.h"
 
-using std::memcpy;
-
 namespace flint {
 namespace compiler {
 namespace sort {
@@ -209,7 +207,7 @@ int Process(void *data, int argc, char **argv, char **names)
 	assert(argv[1]);
 	assert(argv[2]);
 	boost::uuids::uuid u;
-	memcpy(&u, argv[0], u.size());
+	std::memcpy(&u, argv[0], u.size());
 	std::unique_ptr<char[]> math(new char[std::strlen(argv[2])+1]);
 	std::strcpy(math.get(), argv[2]);
 	std::unique_ptr<sexp::Expression> expr;

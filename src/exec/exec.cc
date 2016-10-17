@@ -27,8 +27,6 @@
 #include "phsp.h"
 #include "sedml.h"
 
-using std::memcpy;
-
 namespace flint {
 namespace exec {
 
@@ -52,7 +50,7 @@ public:
 		size_t len = strlen(path);
 		std::unique_ptr<char[]> p(new char[len+1]);
 		if (len > 0)
-			memcpy(p.get(), path, len);
+			std::memcpy(p.get(), path, len);
 		p[len] = '\0';
 		auto lmbd = [id](char *p){
 			TaskRunner runner(id, p);

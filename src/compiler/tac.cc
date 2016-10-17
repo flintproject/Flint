@@ -25,8 +25,6 @@
 #include "db/tac-inserter.h"
 #include "lexer.h"
 
-using std::memcpy;
-
 using namespace boost::spirit;
 
 namespace flint {
@@ -331,7 +329,7 @@ int Process(void *data, int argc, char **argv, char **names)
 	assert(argc == 3);
 	assert(argv[0]);
 	boost::uuids::uuid uuid;
-	memcpy(&uuid, argv[0], uuid.size());
+	std::memcpy(&uuid, argv[0], uuid.size());
 	int r = parser->Parse(uuid, argv[1], argv[2]);
 	if (r) // aborting ...
 		std::cerr << " in " << uuid << std::endl;

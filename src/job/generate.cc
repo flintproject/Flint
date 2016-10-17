@@ -21,7 +21,6 @@
 using std::fclose;
 using std::fopen;
 using std::fprintf;
-using std::memcpy;
 using std::perror;
 using std::sprintf;
 
@@ -102,7 +101,7 @@ int SaveEquation(void *data, int argc, char **argv, char **names)
 	assert(argc == 2);
 	boost::uuids::uuid uuid;
 	assert(argv[0]);
-	memcpy(&uuid, argv[0], uuid.size());
+	std::memcpy(&uuid, argv[0], uuid.size());
 	return (inserter->Insert(uuid, argv[1])) ? 0 : 1;
 }
 

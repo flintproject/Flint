@@ -11,7 +11,6 @@ namespace po = boost::program_options;
 using std::ifstream;
 using std::istream;
 using std::ios;
-using std::memcpy;
 
 using namespace flint;
 
@@ -47,7 +46,7 @@ public:
 
 	int GetStep(size_t, const char *buf) {
 		double d;
-		memcpy(&d, buf + offset_, sizeof(double));
+		std::memcpy(&d, buf + offset_, sizeof(double));
 		std::cout << d << std::endl;
 		return 1;
 	}

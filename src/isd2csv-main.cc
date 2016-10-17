@@ -23,7 +23,6 @@ namespace po = boost::program_options;
 using std::ifstream;
 using std::istream;
 using std::ios;
-using std::memcpy;
 using std::ofstream;
 using std::ostream;
 using std::vector;
@@ -93,7 +92,7 @@ public:
 		char *b = buf;
 		while (b < eob) {
 			double d;
-			memcpy(&d, b, sizeof(double));
+			std::memcpy(&d, b, sizeof(double));
 			if (b != buf) *os_ << ',';
 			*os_ << d;
 			b += sizeof(double);

@@ -13,7 +13,6 @@
 using std::calloc;
 using std::fprintf;
 using std::malloc;
-using std::memcpy;
 using std::perror;
 using std::realloc;
 using std::sprintf;
@@ -87,7 +86,7 @@ int Enumerate(sqlite3 *db)
 		for (size_t i=0;i<nlen;i++) {
 			*p++ = n[i];
 		}
-		memcpy(p, " REAL, ", 7);
+		std::memcpy(p, " REAL, ", 7);
 		p += 7;
 
 		int num_values = 1;

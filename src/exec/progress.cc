@@ -16,7 +16,6 @@ using std::fclose;
 using std::fopen;
 using std::fputc;
 using std::fseek;
-using std::memcpy;
 using std::perror;
 using std::remove;
 using std::rename;
@@ -80,7 +79,7 @@ void NotifyTaskProgress(size_t n,
 		sum /= n;
 		if (0 <= sum && sum <= 100) {
 			char c = static_cast<char>(sum);
-			memcpy(addr, &c, 1);
+			std::memcpy(addr, &c, 1);
 			if (sum == 100)
 				return;
 		}

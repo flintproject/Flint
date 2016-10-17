@@ -25,7 +25,6 @@
 #include "db/statement-driver.h"
 #include "lo/layout_loader.h"
 
-using std::memcpy;
 using std::strlen;
 
 namespace flint {
@@ -146,7 +145,7 @@ public:
 			}
 			const void *uuid = sqlite3_column_blob(stmt(), 0);
 			assert(uuid);
-			memcpy(&u, uuid, u.size());
+			std::memcpy(&u, uuid, u.size());
 			(*tvm)[u].emplace((const char *)sqlite3_column_text(stmt(), 1), data[it->second]);
 			sqlite3_reset(stmt());
 		}
@@ -188,7 +187,7 @@ public:
 			while (si < sie) {
 				const auto &sp = sv_.at(si++);
 				boost::uuids::uuid su;
-				memcpy(&su, sp->id().data(), su.size());
+				std::memcpy(&su, sp->id().data(), su.size());
 				di = dib;
 				while (di < die) {
 					const auto &dp = dv_.at(di++);

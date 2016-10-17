@@ -15,7 +15,6 @@
 #include "db/statement-driver.h"
 #include "uuidgen.h"
 
-using std::memcpy;
 using std::strcmp;
 
 namespace flint {
@@ -87,7 +86,7 @@ public:
 
 			assert(uuid);
 			boost::uuids::uuid uu;
-			memcpy(&uu, uuid, uu.size());
+			std::memcpy(&uu, uuid, uu.size());
 			if (!module_id) {
 				std::cerr << "template for instance "
 					 << uu
@@ -96,7 +95,7 @@ public:
 				return false;
 			}
 			boost::uuids::uuid mu;
-			memcpy(&mu, module_id, mu.size());
+			std::memcpy(&mu, module_id, mu.size());
 			if (label) {
 				m->emplace(mu, Instance(uu, std::string((const char *)label)));
 			} else {
@@ -212,7 +211,7 @@ bool Branch(const boost::filesystem::path &path, sqlite3 *db)
 	std::vector<std::unique_ptr<Node> > tmp;
 	while ( (e = sqlite3_step(stmt)) == SQLITE_ROW ) {
 		boost::uuids::uuid uuid;
-		memcpy(&uuid, sqlite3_column_blob(stmt, 0), uuid.size());
+		std::memcpy(&uuid, sqlite3_column_blob(stmt, 0), uuid.size());
 		size_t level = static_cast<size_t>(sqlite3_column_int(stmt, 1));
 		const unsigned char *template_state = sqlite3_column_text(stmt, 2);
 

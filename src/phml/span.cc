@@ -13,7 +13,6 @@
 
 #include <boost/uuid/uuid_io.hpp>
 
-using std::memcpy;
 using std::multimap;
 
 namespace flint {
@@ -157,8 +156,8 @@ public:
 			assert(tail_module_id);
 			assert(head_module_id);
 			boost::uuids::uuid tmu, hmu;
-			memcpy(&tmu, tail_module_id, tmu.size());
-			memcpy(&hmu, head_module_id, hmu.size());
+			std::memcpy(&tmu, tail_module_id, tmu.size());
+			std::memcpy(&hmu, head_module_id, hmu.size());
 			AddEdge(edge_set,
 					tmu, tail_port_id,
 					hmu, head_port_id);
@@ -204,7 +203,7 @@ public:
 				return false;
 			}
 			boost::uuids::uuid u;
-			memcpy(&u, uuid, u.size());
+			std::memcpy(&u, uuid, u.size());
 			if (!handler->Handle(indent, u)) return false;
 		}
 		if (e != SQLITE_DONE) {

@@ -9,8 +9,6 @@
 #include <boost/spirit/include/qi.hpp>
 #include <boost/uuid/uuid_io.hpp>
 
-using std::memcpy;
-
 namespace flint {
 
 namespace phml {
@@ -71,7 +69,7 @@ bool GraphIvRewriter::Rewrite(sqlite3 *db)
 		const unsigned char *math = sqlite3_column_text(stmt_graph_, 3);
 		assert(module_id);
 		boost::uuids::uuid u;
-		memcpy(&u, module_id, u.size());
+		std::memcpy(&u, module_id, u.size());
 		if (!Process(pq_rowid,
 					 u,
 					 (const char *)name,

@@ -61,7 +61,6 @@
 #include "ts.h"
 
 using std::atoi;
-using std::memcpy;
 
 namespace flint {
 namespace phml {
@@ -93,8 +92,8 @@ public:
 			assert(module_id);
 			assert(capsulated_by);
 			boost::uuids::uuid mu, cu;
-			memcpy(&mu, module_id, mu.size());
-			memcpy(&cu, capsulated_by, cu.size());
+			std::memcpy(&mu, module_id, mu.size());
+			std::memcpy(&cu, capsulated_by, cu.size());
 			std::cerr << "module of module-id " << mu
 				 << " is capsulated by unknown capsule module: " << cu
 				 << std::endl;
@@ -155,11 +154,11 @@ public:
 			assert(sqlite3_column_bytes(query_stmt_, 0) == boost::uuids::uuid::static_size());
 			const void *capsulated_by = sqlite3_column_blob(query_stmt_, 1);
 			boost::uuids::uuid child;
-			memcpy(&child, module_id, child.size());
+			std::memcpy(&child, module_id, child.size());
 			if (capsulated_by) {
 				assert(sqlite3_column_bytes(query_stmt_, 1) == boost::uuids::uuid::static_size());
 				boost::uuids::uuid parent;
-				memcpy(&parent, capsulated_by, parent.size());
+				std::memcpy(&parent, capsulated_by, parent.size());
 				children_.emplace(parent, child);
 			} else {
 				roots_.push_back(child);

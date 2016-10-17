@@ -28,8 +28,6 @@
 #include "db/variable-loader.h"
 #include "variable.h"
 
-using std::memcpy;
-
 namespace flint {
 namespace layout {
 
@@ -116,8 +114,8 @@ public:
 			assert(uuid);
 			assert(space_id);
 			boost::uuids::uuid u, key;
-			memcpy(&u, uuid, u.size());
-			memcpy(&key, space_id, key.size());
+			std::memcpy(&u, uuid, u.size());
+			std::memcpy(&key, space_id, key.size());
 			if (label) {
 				(*m)[key].emplace_back(new Node(u, std::string((const char *)label)));
 			} else {

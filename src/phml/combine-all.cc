@@ -27,7 +27,6 @@
 
 #include "system.h"
 
-using std::memcpy;
 using std::sprintf;
 using std::strcmp;
 
@@ -76,7 +75,7 @@ bool CombineAll(sqlite3 *db)
 		const void *module_id = sqlite3_column_blob(stmt, 0);
 		assert(module_id);
 		boost::uuids::uuid uuid;
-		memcpy(&uuid, module_id, uuid.size());
+		std::memcpy(&uuid, module_id, uuid.size());
 		const unsigned char *type = sqlite3_column_text(stmt, 1);
 		const unsigned char *ref = sqlite3_column_text(stmt, 2);
 

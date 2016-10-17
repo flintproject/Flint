@@ -20,8 +20,6 @@
 
 #include "filter/filter_loader.h"
 
-using std::memcpy;
-
 namespace flint {
 namespace filter {
 
@@ -43,7 +41,7 @@ public:
 			st_->add_key("time");
 		} else {
 			boost::uuids::uuid u;
-			memcpy(&u, column->uuid().data(), u.size());
+			std::memcpy(&u, column->uuid().data(), u.size());
 			std::string us = to_string(u);
 			st_->add_key(us+":"+column->name());
 		}

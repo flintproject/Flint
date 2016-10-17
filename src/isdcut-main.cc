@@ -18,8 +18,6 @@
 
 namespace po = boost::program_options;
 
-using std::memcpy;
-
 using namespace flint;
 
 namespace {
@@ -85,19 +83,19 @@ public:
 			if (i >= header.num_objs) break;
 
 			do {
-				memcpy(&len, p, sizeof(len));
+				std::memcpy(&len, p, sizeof(len));
 				size_t s = sizeof(len)+len;
 				if (n == i) {
-					memcpy(d, p, s);
+					std::memcpy(d, p, s);
 					d += s;
 					num_bytes_descs += s;
 				}
 				p += s;
 
-				memcpy(&len, pu, sizeof(len));
+				std::memcpy(&len, pu, sizeof(len));
 				s = sizeof(len)+len;
 				if (n == i) {
-					memcpy(u, pu, s);
+					std::memcpy(u, pu, s);
 					u += s;
 					num_bytes_units += s;
 				}
@@ -112,7 +110,7 @@ public:
 		header.num_bytes_descs = num_bytes_descs;
 		header.num_bytes_units = num_bytes_units;
 		char h[sizeof(header)];
-		memcpy(h, &header, sizeof(header));
+		std::memcpy(h, &header, sizeof(header));
 		os->write(h, sizeof(header));
 		os->write(descriptions.get(), num_bytes_descs);
 		os->write(units.get(), num_bytes_units);
@@ -162,7 +160,7 @@ int main(int argc, char *argv[])
 	if (vm.count("fields") > 0) {
 		size_t s = fields.size();
 		std::unique_ptr<char[]> fa(new char[s+1]());
-		memcpy(fa.get(), fields.c_str(), s);
+		std::memcpy(fa.get(), fields.c_str(), s);
 		std::replace(fa.get(), fa.get()+s, ',', '\0');
 		char *p = fa.get();
 		do {

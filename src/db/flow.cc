@@ -13,8 +13,6 @@
 #include "statement-driver.h"
 #include "query.h"
 
-using std::memcpy;
-
 namespace flint {
 namespace db {
 
@@ -73,7 +71,7 @@ int InsertOffset(void *data, int argc, char **argv, char **names)
 	assert(argv[1]);
 	assert(argv[2]);
 	boost::uuids::uuid u;
-	memcpy(&u, argv[0], u.size());
+	std::memcpy(&u, argv[0], u.size());
 	return inserter->Insert(u, argv[1], std::atoi(argv[2])) ? 0 : 1;
 }
 
