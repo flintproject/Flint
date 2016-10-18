@@ -14,9 +14,6 @@
 #include <boost/interprocess/mapped_region.hpp>
 #include "isdf/isdf.h"
 
-using std::vector;
-using std::fwrite;
-
 namespace flint {
 namespace {
 
@@ -80,8 +77,8 @@ bool ExportIsdFromCsv(const boost::filesystem::path &input_path,
 	boost::interprocess::mapped_region imr(ifm, boost::interprocess::read_only);
 	char *addr = static_cast<char *>(imr.get_address());
 	size_t s = imr.get_size();
-	vector<size_t> bol;
-	vector<size_t> eol;
+	std::vector<size_t> bol;
+	std::vector<size_t> eol;
 	bol.push_back(0);
 	for (size_t i=0; i<s; i++) {
 		switch (addr[i]) {
@@ -111,7 +108,7 @@ bool ExportIsdFromCsv(const boost::filesystem::path &input_path,
 	if (first_line_len > 0)
 		std::memcpy(first_line.get(), addr, first_line_len);
 	first_line[first_line_len] = '\0';
-	vector<char *> columns;
+	std::vector<char *> columns;
 	columns.push_back(first_line.get());
 	for (size_t i=0; i<first_line_len; i++) {
 		if (first_line[i] == ',') {
@@ -139,7 +136,7 @@ bool ExportIsdFromCsv(const boost::filesystem::path &input_path,
 	bool no_units = (units.size() == 0);
 
 	std::uint32_t num_bytes_descs = 4 * num_cols;
-	vector<std::uint32_t> desc_len;
+	std::vector<std::uint32_t> desc_len;
 	for (std::uint32_t i=0; i<num_cols; i++) {
 		size_t len = strlen(columns[i]);
 		if (len == 0) {
@@ -173,18 +170,18 @@ bool ExportIsdFromCsv(const boost::filesystem::path &input_path,
 		std::perror(output_file.c_str());
 		return false;
 	}
-	if (fwrite(&header, sizeof(header), 1, ofp) != 1) {
+	if (std::fwrite(&header, sizeof(header), 1, ofp) != 1) {
 		std::cerr << "failed to write header" << std::endl;
 		return false;
 	}
 	// descriptions
 	for (std::uint32_t i=0; i<num_cols; i++) {
 		std::uint32_t u32len = desc_len[i];
-		if (fwrite(&u32len, 4, 1, ofp) != 1) {
+		if (std::fwrite(&u32len, 4, 1, ofp) != 1) {
 			std::cerr << "failed to write length" << std::endl;
 			return false;
 		}
-		if (fwrite(columns[i], u32len, 1, ofp) != 1) {
+		if (std::fwrite(columns[i], u32len, 1, ofp) != 1) {
 			std::cerr << "failed to write description" << std::endl;
 			return false;
 		}
@@ -194,17 +191,17 @@ bool ExportIsdFromCsv(const boost::filesystem::path &input_path,
 			UnitMap::const_iterator it = units.find(i);
 			if (it == units.end()) {
 				std::uint32_t u32len = 0;
-				if (fwrite(&u32len, 4, 1, ofp) != 1) {
+				if (std::fwrite(&u32len, 4, 1, ofp) != 1) {
 					std::cerr << "failed to write unit's length" << std::endl;
 					return false;
 				}
 			} else {
 				std::uint32_t u32len = unit_len[i];
-				if (fwrite(&u32len, 4, 1, ofp) != 1) {
+				if (std::fwrite(&u32len, 4, 1, ofp) != 1) {
 					std::cerr << "failed to write unit's length" << std::endl;
 					return false;
 				}
-				if (fwrite(it->second, u32len, 1, ofp) != 1) {
+				if (std::fwrite(it->second, u32len, 1, ofp) != 1) {
 					std::cerr << "failed to write unit" << std::endl;
 					return false;
 				}
@@ -222,7 +219,7 @@ bool ExportIsdFromCsv(const boost::filesystem::path &input_path,
 				std::cerr << "invalid double: " << (addr + bol[i]) << std::endl;
 				return false;
 			}
-			if (fwrite(&d, sizeof(d), 1, ofp) != 1) {
+			if (std::fwrite(&d, sizeof(d), 1, ofp) != 1) {
 				std::cerr << "failed to write value" << std::endl;
 				return false;
 			}

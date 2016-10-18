@@ -27,8 +27,6 @@
 
 #include "system.h"
 
-using std::sprintf;
-
 namespace flint {
 namespace phml {
 
@@ -38,7 +36,7 @@ db::Driver *GetDriver(const boost::uuids::uuid &uuid)
 {
 	std::unique_ptr<char[]> db_file(new char[64]); // long enough
 	std::string us = boost::uuids::to_string(uuid);
-	sprintf(db_file.get(), "%s.db", us.c_str());
+	std::sprintf(db_file.get(), "%s.db", us.c_str());
 	return new db::Driver(db_file.get());
 }
 
@@ -84,7 +82,7 @@ bool CombineAll(sqlite3 *db)
 			if (!DumpImport(db, uuid)) return false;
 			std::unique_ptr<char[]> xml_file(new char[64]);
 			std::string us = boost::uuids::to_string(uuid);
-			sprintf(xml_file.get(), "%s.xml", us.c_str());
+			std::sprintf(xml_file.get(), "%s.xml", us.c_str());
 			boost::filesystem::path xml_path = boost::filesystem::absolute(xml_file.get());
 			std::unique_ptr<char[]> xml_utf8(GetUtf8FromPath(xml_path));
 			if (!SaveFile(uuid, xml_utf8.get())) return false;

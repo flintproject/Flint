@@ -31,8 +31,6 @@
 #include "load.h"
 #include "task.h"
 
-using std::sprintf;
-
 namespace flint {
 namespace exec {
 
@@ -41,7 +39,7 @@ namespace {
 bool CreateSpec(int id, sqlite3 *db)
 {
 	char spec_file[64]; // large enough
-	sprintf(spec_file, "%d/spec.txt", id);
+	std::sprintf(spec_file, "%d/spec.txt", id);
 	FILE *fp = fopen(spec_file, "w");
 	if (!fp) {
 		perror(spec_file);
@@ -63,9 +61,9 @@ TaskRunner::TaskRunner(int id, char *path)
 	, layout_(new char[kFilenameLength])
 	, generated_layout_(new char[kFilenameLength])
 {
-	sprintf(dir_.get(), "%d", id);
-	sprintf(layout_.get(), "%d/layout", id);
-	sprintf(generated_layout_.get(), "%d/generated-layout", id);
+	std::sprintf(dir_.get(), "%d", id);
+	std::sprintf(layout_.get(), "%d/layout", id);
+	std::sprintf(generated_layout_.get(), "%d/generated-layout", id);
 }
 
 TaskRunner::~TaskRunner() = default;
@@ -119,7 +117,7 @@ bool TaskRunner::Run()
 
 	{
 		char canceled_file[kFilenameLength];
-		sprintf(canceled_file, "%s/canceled", dir_.get());
+		std::sprintf(canceled_file, "%s/canceled", dir_.get());
 		if (boost::filesystem::exists(canceled_file)) {
 			// exit early if file "canceled" exists
 			return true;
@@ -127,21 +125,21 @@ bool TaskRunner::Run()
 	}
 
 	char modeldb_file[kFilenameLength];
-	sprintf(modeldb_file, "%s/model.db", dir_.get());
+	std::sprintf(modeldb_file, "%s/model.db", dir_.get());
 	modeldb_driver_.reset(new db::ReadOnlyDriver(modeldb_file));
 
 	char spec_file[kFilenameLength];
-	sprintf(spec_file, "%s/spec.txt", dir_.get());
+	std::sprintf(spec_file, "%s/spec.txt", dir_.get());
 	char filter_file[kFilenameLength];
-	sprintf(filter_file, "%s/filter", dir_.get());
+	std::sprintf(filter_file, "%s/filter", dir_.get());
 	if (!filter::Create(modeldb_driver_->db(), spec_file, layout_.get(), filter_file))
 		return false;
 	char track_file[kFilenameLength];
-	sprintf(track_file, "%s/track", dir_.get());
+	std::sprintf(track_file, "%s/track", dir_.get());
 	if (!filter::Track(filter_file, track_file))
 		return false;
 	char isdh_file[kFilenameLength];
-	sprintf(isdh_file, "%s/isdh", dir_.get());
+	std::sprintf(isdh_file, "%s/isdh", dir_.get());
 	if (!filter::Isdh(filter_file, isdh_file))
 		return false;
 	reader_.reset(new task::ConfigReader(modeldb_driver_->db()));
@@ -161,7 +159,7 @@ bool TaskRunner::Run()
 	}
 
 	char db_file[kFilenameLength];
-	sprintf(db_file, "%s/task.db", dir_.get());
+	std::sprintf(db_file, "%s/task.db", dir_.get());
 	db_driver_.reset(new db::Driver(db_file));
 	if (!exec::SaveParameters(id_, db_driver_->db()))
 		return false;

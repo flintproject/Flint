@@ -16,10 +16,6 @@
 
 #include "modelpath.h"
 
-using std::fclose;
-using std::fopen;
-using std::sprintf;
-
 namespace flint {
 namespace {
 
@@ -47,7 +43,7 @@ public:
 			return false;
 		}
 		std::unique_ptr<char[]> pattern(new char[128]);
-		sprintf(pattern.get(), "//is:module[@module-id='%s']/is:import/*", uuid_.c_str());
+		std::sprintf(pattern.get(), "//is:module[@module-id='%s']/is:import/*", uuid_.c_str());
 		xmlXPathRegisterNs(context_,
 						   reinterpret_cast<const xmlChar *>("is"),
 						   reinterpret_cast<const xmlChar *>("http://www.physiome.jp/ns/insilicoml"));
@@ -68,13 +64,13 @@ public:
 		}
 		xmlNodePtr node = xmlDocSetRootElement(doc_, object_->nodesetval->nodeTab[0]);
 		if (node) xmlUnlinkNode(node);
-		FILE *fp = fopen(dump_file, "w");
+		FILE *fp = std::fopen(dump_file, "w");
 		if (!fp) {
 			std::cerr << "failed to open dump file: " << dump_file << std::endl;
 			return false;
 		}
 		xmlDocDump(fp, doc_);
-		fclose(fp);
+		std::fclose(fp);
 		if (node) xmlFreeNode(node);
 		return true;
 	}
@@ -98,7 +94,7 @@ bool DumpImport(sqlite3 *db, const boost::uuids::uuid &uuid)
 	}
 	std::unique_ptr<char[]> dump_file(new char[64]);
 	std::string us = boost::uuids::to_string(uuid);
-	sprintf(dump_file.get(), "%s.xml", us.c_str());
+	std::sprintf(dump_file.get(), "%s.xml", us.c_str());
 	std::unique_ptr<Parser> parser(new Parser(us, doc));
 	return parser->Dump(dump_file.get());
 }

@@ -24,8 +24,6 @@ public:
 
 	template<typename TFilter>
 	bool Load(TFilter *filter) {
-		using std::strlen;
-
 		static const size_t kLineSize = 1024; // FIXME
 		static const size_t kUuidSize = 36;
 
@@ -38,7 +36,7 @@ public:
 		std::unique_ptr<char[]> line(new char[kLineSize]);
 		boost::uuids::uuid u;
 		while (ifs_.getline(line.get(), kLineSize)) {
-			if (strlen(line.get()) < kUuidSize + 2) {
+			if (std::strlen(line.get()) < kUuidSize + 2) {
 				std::cerr << "invalid line: " << line.get() << std::endl;
 				return false;
 			}

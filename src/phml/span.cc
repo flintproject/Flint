@@ -13,8 +13,6 @@
 
 #include <boost/uuid/uuid_io.hpp>
 
-using std::multimap;
-
 namespace flint {
 namespace phml {
 namespace {
@@ -254,19 +252,19 @@ public:
 			{
 				const boost::uuids::uuid &template_module_id(journal_uuid);
 
-				multimap<boost::uuids::uuid, std::set<Edge>::iterator> tail_map;
-				multimap<boost::uuids::uuid, std::set<Edge>::iterator> head_map;
+				std::multimap<boost::uuids::uuid, std::set<Edge>::iterator> tail_map;
+				std::multimap<boost::uuids::uuid, std::set<Edge>::iterator> head_map;
 				GenerateMaps(&tail_map, &head_map);
 				// collect all edges connecting to descendants
 				std::set<Edge> inner_edges;
 				for (const auto &uuid : template_descendants_) {
-					multimap<boost::uuids::uuid, std::set<Edge>::iterator>::iterator tit = tail_map.find(uuid);
+					std::multimap<boost::uuids::uuid, std::set<Edge>::iterator>::iterator tit = tail_map.find(uuid);
 					while (tit != tail_map.end()) {
 						inner_edges.insert(*tit->second);
 						tail_map.erase(tit);
 						tit = tail_map.find(uuid);
 					}
-					multimap<boost::uuids::uuid, std::set<Edge>::iterator>::iterator hit = head_map.find(uuid);
+					std::multimap<boost::uuids::uuid, std::set<Edge>::iterator>::iterator hit = head_map.find(uuid);
 					while (hit != head_map.end()) {
 						inner_edges.insert(*hit->second);
 						head_map.erase(hit);
@@ -277,7 +275,7 @@ public:
 				// collect all outer edges connecting to template module
 				std::set<Edge> t_outer_edges;
 				{
-					multimap<boost::uuids::uuid, std::set<Edge>::iterator>::iterator tit = tail_map.find(template_module_id);
+					std::multimap<boost::uuids::uuid, std::set<Edge>::iterator>::iterator tit = tail_map.find(template_module_id);
 					while (tit != tail_map.end()) {
 						if (inner_edges.count(*tit->second) == 0) t_outer_edges.insert(*tit->second);
 						tail_map.erase(tit);
@@ -286,7 +284,7 @@ public:
 				}
 				std::set<Edge> h_outer_edges;
 				{
-					multimap<boost::uuids::uuid, std::set<Edge>::iterator>::iterator hit = head_map.find(template_module_id);
+					std::multimap<boost::uuids::uuid, std::set<Edge>::iterator>::iterator hit = head_map.find(template_module_id);
 					while (hit != head_map.end()) {
 						if (inner_edges.count(*hit->second) == 0) h_outer_edges.insert(*hit->second);
 						head_map.erase(hit);
@@ -366,8 +364,8 @@ public:
 	}
 
 private:
-	void GenerateMaps(multimap<boost::uuids::uuid, std::set<Edge>::iterator> *tail_map,
-					  multimap<boost::uuids::uuid, std::set<Edge>::iterator> *head_map) const
+	void GenerateMaps(std::multimap<boost::uuids::uuid, std::set<Edge>::iterator> *tail_map,
+					  std::multimap<boost::uuids::uuid, std::set<Edge>::iterator> *head_map) const
 	{
 		tail_map->clear();
 		head_map->clear();

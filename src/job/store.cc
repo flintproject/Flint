@@ -25,8 +25,6 @@
 #include "db/statement-driver.h"
 #include "lo/layout_loader.h"
 
-using std::strlen;
-
 namespace flint {
 namespace job {
 
@@ -49,7 +47,7 @@ public:
 			return nullptr;
 		}
 		const char *f = (const char *)sqlite3_column_text(stmt(), 0);
-		size_t len = strlen(f);
+		size_t len = std::strlen(f);
 		char *format = new char[len+1];
 		strcpy(format, f);
 		return format;

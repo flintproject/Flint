@@ -20,21 +20,15 @@
 
 namespace po = boost::program_options;
 
-using std::ifstream;
-using std::ios;
-using std::ofstream;
-using std::ostream;
-using std::vector;
-
 using namespace flint;
 
 namespace {
 
 bool ExtractConstantColumns(const char *input,
 							std::uint32_t *num_columns,
-							vector<std::uint32_t> *cv)
+							std::vector<std::uint32_t> *cv)
 {
-	ifstream ifs(input, ios::in|ios::binary);
+	std::ifstream ifs(input, std::ios::in|std::ios::binary);
 	if (!ifs.is_open()) {
 		std::cerr << "could not open input file: " << input << std::endl;
 		return false;
@@ -85,7 +79,7 @@ bool ExtractConstantColumns(const char *input,
 				return false;
 			}
 		}
-		vector<std::uint32_t>::iterator it = cv->begin();
+		std::vector<std::uint32_t>::iterator it = cv->begin();
 		while (it != cv->end()) {
 			size_t n = (*it) * sizeof(double);
 			// we can ignore endianness by using memcmp()
@@ -104,7 +98,7 @@ bool ExtractConstantColumns(const char *input,
 
 class StepFilter {
 public:
-	StepFilter(std::uint32_t num_objs, const vector<std::uint32_t> &cv, ostream *os)
+	StepFilter(std::uint32_t num_objs, const std::vector<std::uint32_t> &cv, std::ostream *os)
 		: num_objs_(num_objs),
 		  cv_(cv),
 		  os_(os),
@@ -115,7 +109,7 @@ public:
 	int GetStep(size_t, const char *buf) {
 		const char *b0 = buf;
 		char *b1 = buf_.get();
-		vector<std::uint32_t>::const_iterator it = cv_.begin();
+		std::vector<std::uint32_t>::const_iterator it = cv_.begin();
 		for (std::uint32_t i=0;i<num_objs_;i++) {
 			if (it != cv_.end() && i == *it) { // skip this entry
 				++it;
@@ -135,17 +129,17 @@ public:
 
 private:
 	std::uint32_t num_objs_;
-	const vector<std::uint32_t> &cv_;
-	ostream *os_;
+	const std::vector<std::uint32_t> &cv_;
+	std::ostream *os_;
 	size_t buf_size_;
 	std::unique_ptr<char[]> buf_;
 };
 
 int Filter(const char *input,
-		   const vector<std::uint32_t> &cv,
-		   ostream *os)
+		   const std::vector<std::uint32_t> &cv,
+		   std::ostream *os)
 {
-	ifstream ifs(input, ios::in|ios::binary);
+	std::ifstream ifs(input, std::ios::in|std::ios::binary);
 	if (!ifs.is_open()) {
 		std::cerr << "could not open file: " << input << std::endl;
 		return EXIT_FAILURE;
@@ -162,7 +156,7 @@ int Filter(const char *input,
 	const char *rd = reader.descriptions();
 	std::unique_ptr<char[]> descs(new char[reader.num_bytes_descs()]);
 	char *d = descs.get();
-	vector<std::uint32_t>::const_iterator it = cv.begin();
+	std::vector<std::uint32_t>::const_iterator it = cv.begin();
 	for (std::uint32_t i=0;i<reader.num_objs();i++) {
 		std::uint32_t bd = *reinterpret_cast<const std::uint32_t *>(rd);
 		if (it != cv.end() && i == *it) { // skip this entry
@@ -234,7 +228,7 @@ int Filter(const char *input,
 	return EXIT_SUCCESS;
 }
 
-void PrintNumOfColumns(std::uint32_t num_columns, const vector<std::uint32_t> &cv)
+void PrintNumOfColumns(std::uint32_t num_columns, const std::vector<std::uint32_t> &cv)
 {
 	std::cout << num_columns - static_cast<std::uint32_t>(cv.size()) << std::endl;
 }
@@ -277,7 +271,7 @@ int main(int argc, char *argv[])
 			return EXIT_FAILURE;
 		}
 		if (vm.count("output")) {
-			ofstream ofs(output_file.c_str(), ios::out|ios::binary);
+			std::ofstream ofs(output_file.c_str(), std::ios::out|std::ios::binary);
 			if (!ofs.is_open()) {
 				std::cerr << "could not open output file: " << output_file << std::endl;
 				return EXIT_FAILURE;
@@ -296,7 +290,7 @@ int main(int argc, char *argv[])
 					return EXIT_FAILURE;
 				}
 			}
-			ofstream ofs(output_path, ios::out|ios::binary);
+			std::ofstream ofs(output_path, std::ios::out|std::ios::binary);
 			if (!ofs.is_open()) {
 				std::cerr << "could not open output file: " << output_path << std::endl;
 				remove(output_path);

@@ -12,50 +12,40 @@
 #include <iostream>
 #include <memory>
 
-using std::fclose;
-using std::fopen;
-using std::fputc;
-using std::fseek;
-using std::perror;
-using std::remove;
-using std::rename;
-using std::sprintf;
-using std::strlen;
-
 namespace flint {
 namespace exec {
 
 boost::interprocess::file_mapping *CreateProgressFile(int n, const char *dir)
 {
-	size_t len = strlen(dir);
+	size_t len = std::strlen(dir);
 	std::unique_ptr<char[]> filename(new char[len + 32]); // large enough
-	sprintf(filename.get(), "%s/progress.tmp", dir);
-	FILE *fp = fopen(filename.get(), "wb");
+	std::sprintf(filename.get(), "%s/progress.tmp", dir);
+	FILE *fp = std::fopen(filename.get(), "wb");
 	if (!fp) {
-		perror(filename.get());
+		std::perror(filename.get());
 		return nullptr;
 	}
-	int r = fseek(fp, n, SEEK_SET);
+	int r = std::fseek(fp, n, SEEK_SET);
 	if (r != 0) {
 		std::cerr << "failed to seek: " << filename.get() << std::endl;
-		fclose(fp);
+		std::fclose(fp);
 		return nullptr;
 	}
-	if (fputc('\0', fp) == EOF) {
+	if (std::fputc('\0', fp) == EOF) {
 		std::cerr << "failed to write null character: " << filename.get() << std::endl;
-		fclose(fp);
+		std::fclose(fp);
 		return nullptr;
 	}
-	fclose(fp);
+	std::fclose(fp);
 
 	// rename progress.tmp to progress
 	std::unique_ptr<char[]> progress(new char[len + 32]); // large enough
-	sprintf(progress.get(), "%s/progress", dir);
-	if (rename(filename.get(), progress.get()) != 0) {
+	std::sprintf(progress.get(), "%s/progress", dir);
+	if (std::rename(filename.get(), progress.get()) != 0) {
 		std::cerr << "failed to rename " << filename.get()
 			 << " to " << progress.get()
 			 << std::endl;
-		remove(filename.get());
+		std::remove(filename.get());
 		return nullptr;
 	}
 	return new boost::interprocess::file_mapping(progress.get(),

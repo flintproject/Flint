@@ -16,15 +16,11 @@
 #include "db/sprinkle-driver.h"
 #include "db/target-loader.h"
 
-using std::map;
-using std::pair;
-using std::vector;
-
 namespace flint {
 namespace phml {
 namespace {
 
-typedef std::map<pair<boost::uuids::uuid, boost::uuids::uuid>, std::map<int, double> > TargetMap;
+typedef std::map<std::pair<boost::uuids::uuid, boost::uuids::uuid>, std::map<int, double> > TargetMap;
 
 class TargetHandler {
 public:
@@ -42,14 +38,14 @@ private:
 	TargetMap *tm_;
 };
 
-typedef map<pair<boost::uuids::uuid, boost::uuids::uuid>, boost::uuids::uuid> JournalMap;
+typedef std::map<std::pair<boost::uuids::uuid, boost::uuids::uuid>, boost::uuids::uuid> JournalMap;
 
 class JournalHandler {
 public:
 	JournalHandler(const JournalHandler &) = delete;
 	JournalHandler &operator=(const JournalHandler &) = delete;
 
-	explicit JournalHandler(JournalMap *jm) : jm_(jm), instances_(new vector<boost::uuids::uuid>) {}
+	explicit JournalHandler(JournalMap *jm) : jm_(jm), instances_(new std::vector<boost::uuids::uuid>) {}
 
 	bool Handle(int n, boost::uuids::uuid u) {
 		switch (n) {
@@ -63,7 +59,7 @@ public:
 					std::cerr << "duplicate instance id: " << u << std::endl;
 					return false;
 				}
-				instances_.reset(new vector<boost::uuids::uuid>);
+				instances_.reset(new std::vector<boost::uuids::uuid>);
 			}
 			break;
 		case 1:
@@ -101,9 +97,9 @@ public:
 
 private:
 	JournalMap *jm_;
-	std::unique_ptr<vector<boost::uuids::uuid> > instances_;
-	std::map<boost::uuids::uuid, std::unique_ptr<vector<boost::uuids::uuid> > > im_;
-	vector<boost::uuids::uuid> templates_;
+	std::unique_ptr<std::vector<boost::uuids::uuid> > instances_;
+	std::map<boost::uuids::uuid, std::unique_ptr<std::vector<boost::uuids::uuid> > > im_;
+	std::vector<boost::uuids::uuid> templates_;
 };
 
 } // namespace

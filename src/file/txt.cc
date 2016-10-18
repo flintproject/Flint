@@ -4,10 +4,6 @@
 #include <cstdio>
 #include "utf8path.h"
 
-using std::fclose;
-using std::fopen;
-using std::perror;
-
 namespace flint {
 namespace file {
 
@@ -19,14 +15,14 @@ bool Txt(const char *filename, Format *format, int dir)
 		return false;
 	FILE *fp;
 	if (dir == 0) {
-		fp = fopen("file.txt", "w");
+		fp = std::fopen("file.txt", "w");
 	} else {
 		char file_txt[64]; // FIXME
 		std::sprintf(file_txt, "%d/file.txt", dir);
-		fp = fopen(file_txt, "w");
+		fp = std::fopen(file_txt, "w");
 	}
 	if (!fp) {
-		perror(filename);
+		std::perror(filename);
 		return false;
 	}
 	switch (*format) {
@@ -55,7 +51,7 @@ bool Txt(const char *filename, Format *format, int dir)
 		fprintf(fp, "sedml\n");
 		break;
 	}
-	fclose(fp);
+	std::fclose(fp);
 	return true;
 }
 

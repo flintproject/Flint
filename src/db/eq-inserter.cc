@@ -8,9 +8,6 @@
 
 #include <boost/uuid/nil_generator.hpp>
 
-using std::exit;
-using std::sprintf;
-
 namespace flint {
 namespace db {
 
@@ -18,7 +15,7 @@ EqInserter::EqInserter(const char *table, sqlite3 *db)
 	: query_(new char[128]) // long enough
 	, stmt_(nullptr)
 {
-	sprintf(query_.get(),
+	std::sprintf(query_.get(),
 			"INSERT INTO %s VALUES (?, ?)",
 			table);
 	int e;
@@ -27,7 +24,7 @@ EqInserter::EqInserter(const char *table, sqlite3 *db)
 		std::cerr << "failed to prepare statement: " << e
 			 << ": " << query_.get()
 			 << std::endl;
-		exit(EXIT_FAILURE);
+		std::exit(EXIT_FAILURE);
 	}
 }
 

@@ -29,8 +29,6 @@
 #include "sbml.h"
 #include "task.h"
 
-using std::sprintf;
-
 namespace flint {
 namespace load {
 
@@ -85,18 +83,18 @@ public:
 		, var_(new char[kFilenameLength])
 	{
 		if (dir) {
-			sprintf(dir_.get(), "%d", dir);
+			std::sprintf(dir_.get(), "%d", dir);
 		} else {
-			sprintf(dir_.get(), ".");
+			std::sprintf(dir_.get(), ".");
 		}
-		sprintf(layout_.get(), "%s/layout", dir_.get());
-		sprintf(model_.get(), "%s/model", dir_.get());
-		sprintf(modeldb_.get(), "%s/model.db", dir_.get());
-		sprintf(nc_.get(), "%s/nc", dir_.get());
-		sprintf(param_.get(), "%s/param", dir_.get());
-		sprintf(phz_.get(), "%s/phz", dir_.get());
-		sprintf(unitoftime_.get(), "%s/unitoftime", dir_.get());
-		sprintf(var_.get(), "%s/var", dir_.get());
+		std::sprintf(layout_.get(), "%s/layout", dir_.get());
+		std::sprintf(model_.get(), "%s/model", dir_.get());
+		std::sprintf(modeldb_.get(), "%s/model.db", dir_.get());
+		std::sprintf(nc_.get(), "%s/nc", dir_.get());
+		std::sprintf(param_.get(), "%s/param", dir_.get());
+		std::sprintf(phz_.get(), "%s/phz", dir_.get());
+		std::sprintf(unitoftime_.get(), "%s/unitoftime", dir_.get());
+		std::sprintf(var_.get(), "%s/var", dir_.get());
 	}
 
 	const char *model() const {return model_.get();}

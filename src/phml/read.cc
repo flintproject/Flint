@@ -60,8 +60,6 @@
 #include "sqlite3.h"
 #include "ts.h"
 
-using std::atoi;
-
 namespace flint {
 namespace phml {
 
@@ -382,7 +380,7 @@ private:
 			const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
 			if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("unit-id"))) {
 				const xmlChar *value = xmlTextReaderConstValue(text_reader_);
-				int unit_id = atoi(reinterpret_cast<const char *>(value));
+				int unit_id = std::atoi(reinterpret_cast<const char *>(value));
 				if (unit_id > 0) {
 					td->set_unit_id(unit_id);
 				} else {
@@ -531,7 +529,7 @@ private:
 			const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
 			if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("unit-id"))) {
 				const xmlChar *value = xmlTextReaderConstValue(text_reader_);
-				int unit_id = atoi(reinterpret_cast<const char *>(value));
+				int unit_id = std::atoi(reinterpret_cast<const char *>(value));
 				if (unit_id <= 0) {
 					std::cerr << "invalid unit-id of <simulation-time-span>: " << value << std::endl;
 					return -2;
@@ -605,7 +603,7 @@ private:
 			std::cerr << "missing unit-id of <unit>" << std::endl;
 			return -2;
 		}
-		int unit_id = atoi(reinterpret_cast<const char *>(value));
+		int unit_id = std::atoi(reinterpret_cast<const char *>(value));
 		xmlFree(value);
 		if (unit_id < 0) {
 			std::cerr << "invalid unit-id " << unit_id << std::endl;
@@ -679,7 +677,7 @@ private:
 			if (!value) continue;
 
 			if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("unit-id"))) {
-				int unit_id = atoi(reinterpret_cast<const char *>(value));
+				int unit_id = std::atoi(reinterpret_cast<const char *>(value));
 				if (unit_id < 0) {
 					std::cerr << "invalid unit-id of <element>" << std::endl;
 					return -2;
@@ -997,7 +995,7 @@ private:
 			const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
 			if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("physical-quantity-id"))) {
 				const xmlChar *value = xmlTextReaderConstValue(text_reader_);
-				int pq_id = atoi(reinterpret_cast<const char *>(value));
+				int pq_id = std::atoi(reinterpret_cast<const char *>(value));
 				if (pq_id <= 0) {
 					std::cerr << "invalid physical-quantity-id of <physical-quantity>: " << value << std::endl;
 					return -2;
@@ -1492,7 +1490,7 @@ private:
 			const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
 			if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("port-id"))) {
 				const xmlChar *value = xmlTextReaderConstValue(text_reader_);
-				int port_id = atoi(reinterpret_cast<const char *>(value));
+				int port_id = std::atoi(reinterpret_cast<const char *>(value));
 				if (port_id <= 0) {
 					std::cerr << "invalid port-id of <reference>: " << value << std::endl;
 					return -2;
@@ -1500,7 +1498,7 @@ private:
 				ref_->set_port_id(port_id);
 			} else if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("timeseries-id"))) {
 				const xmlChar *value = xmlTextReaderConstValue(text_reader_);
-				int timeseries_id = atoi(reinterpret_cast<const char *>(value));
+				int timeseries_id = std::atoi(reinterpret_cast<const char *>(value));
 				if (timeseries_id <= 0) {
 					std::cerr << "invalid timeseries-id of <reference>: " << value << std::endl;
 					return -2;
@@ -2032,7 +2030,7 @@ private:
 			const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
 			if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("physical-quantity-id"))) {
 				const xmlChar *value = xmlTextReaderConstValue(text_reader_);
-				pq_id = atoi(reinterpret_cast<const char *>(value));
+				pq_id = std::atoi(reinterpret_cast<const char *>(value));
 				if (pq_id <= 0) {
 					std::cerr << "invalid physical-quantity-id of <target-physical-quantity>: " << tm->module_id() << std::endl;
 					return -2;

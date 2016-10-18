@@ -27,10 +27,6 @@
 #include "sqlite3.h"
 #include "uuidgen.h"
 
-using std::sprintf;
-using std::strcpy;
-using std::strlen;
-
 namespace flint {
 namespace {
 
@@ -96,7 +92,7 @@ public:
 		std::unique_ptr<UuidGenerator> gen(new UuidGenerator(path));
 		for (e = sqlite3_step(query_stmt_); e == SQLITE_ROW; e = sqlite3_step(query_stmt_)) {
 			const unsigned char *c = sqlite3_column_text(query_stmt_, 0);
-			size_t clen = strlen(reinterpret_cast<const char *>(c));
+			size_t clen = std::strlen(reinterpret_cast<const char *>(c));
 			if (clen == 0) {
 				std::cerr << "empty component name" << std::endl;
 				return false;
@@ -163,13 +159,13 @@ public:
 		boost::uuids::uuid u;
 		for (e = sqlite3_step(stmt()); e == SQLITE_ROW; e = sqlite3_step(stmt())) {
 			const unsigned char *c = sqlite3_column_text(stmt(), 0);
-			size_t clen = strlen(reinterpret_cast<const char *>(c));
+			size_t clen = std::strlen(reinterpret_cast<const char *>(c));
 			if (clen == 0) {
 				std::cerr << "empty component name" << std::endl;
 				return false;
 			}
 			const unsigned char *body = sqlite3_column_text(stmt(), 1);
-			size_t nlen = strlen(reinterpret_cast<const char *>(body));
+			size_t nlen = std::strlen(reinterpret_cast<const char *>(body));
 			if (nlen == 0) {
 				std::cerr << "empty body" << std::endl;
 				return false;
@@ -180,7 +176,7 @@ public:
 
 			// register it as a dependent variable
 			std::unique_ptr<char[]> tail(new char[nlen+1]);
-			strcpy(tail.get(), reinterpret_cast<const char *>(&body[kPrefixLength]));
+			std::strcpy(tail.get(), reinterpret_cast<const char *>(&body[kPrefixLength]));
 			for (size_t i=0;i<nlen-kPrefixLength;i++) {
 				if (tail[i] == ')') {
 					tail[i] = '\0';
@@ -226,13 +222,13 @@ public:
 		for (e = sqlite3_step(stmt()); e == SQLITE_ROW; e = sqlite3_step(stmt())) {
 			int id = static_cast<int>(sqlite3_column_int64(stmt(), 0));
 			const unsigned char *c = sqlite3_column_text(stmt(), 1);
-			size_t clen = strlen(reinterpret_cast<const char *>(c));
+			size_t clen = std::strlen(reinterpret_cast<const char *>(c));
 			if (clen == 0) {
 				std::cerr << "empty component name" << std::endl;
 				return false;
 			}
 			const unsigned char *n = sqlite3_column_text(stmt(), 2);
-			size_t nlen = strlen(reinterpret_cast<const char *>(n));
+			size_t nlen = std::strlen(reinterpret_cast<const char *>(n));
 			if (nlen == 0) {
 				std::cerr << "empty variable name" << std::endl;
 				return false;
@@ -279,13 +275,13 @@ public:
 		boost::uuids::uuid u;
 		for (e = sqlite3_step(stmt()); e == SQLITE_ROW; e = sqlite3_step(stmt())) {
 			const unsigned char *c = sqlite3_column_text(stmt(), 0);
-			size_t clen = strlen(reinterpret_cast<const char *>(c));
+			size_t clen = std::strlen(reinterpret_cast<const char *>(c));
 			if (clen == 0) {
 				std::cerr << "empty component name" << std::endl;
 				return false;
 			}
 			const unsigned char *n = sqlite3_column_text(stmt(), 1);
-			size_t nlen = strlen(reinterpret_cast<const char *>(n));
+			size_t nlen = std::strlen(reinterpret_cast<const char *>(n));
 			if (nlen == 0) {
 				std::cerr << "empty variable name" << std::endl;
 				return false;
@@ -293,9 +289,9 @@ public:
 			const unsigned char *iv = sqlite3_column_text(stmt(), 2);
 			if (!cm_->Find(reinterpret_cast<const char *>(c), &u)) return false;
 
-			size_t blen = strlen(reinterpret_cast<const char *>(n)) + strlen(reinterpret_cast<const char *>(iv));
+			size_t blen = std::strlen(reinterpret_cast<const char *>(n)) + std::strlen(reinterpret_cast<const char *>(iv));
 			std::unique_ptr<char[]> buf(new char[blen+8]);
-			sprintf(buf.get(), "(eq %%%s %s)", reinterpret_cast<const char *>(n), reinterpret_cast<const char *>(iv));
+			std::sprintf(buf.get(), "(eq %%%s %s)", reinterpret_cast<const char *>(n), reinterpret_cast<const char *>(iv));
 			if (!ii_.Insert(u, buf.get())) return false;
 		}
 		if (e != SQLITE_DONE) {
@@ -327,13 +323,13 @@ public:
 		boost::uuids::uuid u;
 		for (e = sqlite3_step(stmt()); e == SQLITE_ROW; e = sqlite3_step(stmt())) {
 			const unsigned char *c = sqlite3_column_text(stmt(), 0);
-			size_t clen = strlen(reinterpret_cast<const char *>(c));
+			size_t clen = std::strlen(reinterpret_cast<const char *>(c));
 			if (clen == 0) {
 				std::cerr << "empty component name" << std::endl;
 				return false;
 			}
 			const unsigned char *body = sqlite3_column_text(stmt(), 1);
-			size_t nlen = strlen(reinterpret_cast<const char *>(body));
+			size_t nlen = std::strlen(reinterpret_cast<const char *>(body));
 			if (nlen == 0) {
 				std::cerr << "empty body" << std::endl;
 				return false;

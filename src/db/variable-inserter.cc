@@ -8,8 +8,6 @@
 
 #include <boost/uuid/nil_generator.hpp>
 
-using std::exit;
-
 namespace flint {
 namespace db {
 
@@ -27,7 +25,7 @@ VariableInserter::VariableInserter(const char *table, bool independent, sqlite3 
 		std::cerr << "failed to prepare statement: " << e
 			 << ": " << query_.get()
 			 << std::endl;
-		exit(EXIT_FAILURE);
+		std::exit(EXIT_FAILURE);
 	}
 }
 

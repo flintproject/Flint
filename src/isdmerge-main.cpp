@@ -21,16 +21,9 @@
 
 namespace po = boost::program_options;
 
-using std::ios;
-using std::ostream;
-using std::ofstream;
-using std::ifstream;
-using std::stringstream;
-using std::vector;
-
 using namespace flint;
 
-void OutputHeader(ostream &ost, size_t num_objs, std::string &descriptions, std::string &units);
+void OutputHeader(std::ostream &ost, size_t num_objs, std::string &descriptions, std::string &units);
 
 int main(int argc, char *argv[]) {
 	po::options_description opts("options");
@@ -42,7 +35,7 @@ int main(int argc, char *argv[]) {
 	opts.add_options()
 		("help,h", "Show this message")
 		("output,o", po::value<std::string>(&output_file), "Output file path (default: merged.isd)")
-		("input-files", po::value<vector<std::string> >(), "List of input files");
+		("input-files", po::value<std::vector<std::string> >(), "List of input files");
 	popts.add("input-files", -1);
 
 	try {
@@ -59,10 +52,10 @@ int main(int argc, char *argv[]) {
 	}
 
 	// open files
-	vector<std::string> input_files = vm["input-files"].as<vector<std::string> >();
-	std::unique_ptr<ifstream[]> ifs(new ifstream[input_files.size()]);
+	std::vector<std::string> input_files = vm["input-files"].as<std::vector<std::string> >();
+	std::unique_ptr<std::ifstream[]> ifs(new std::ifstream[input_files.size()]);
 	for(size_t i = 0; i < input_files.size(); i++) {
-		ifs[i].open(input_files[i].c_str(), ios::binary|ios::in);
+		ifs[i].open(input_files[i].c_str(), std::ios::binary|std::ios::in);
 		if (!ifs[i]) {
 			std::cerr << "error. can't open file " << input_files[i].c_str();
 			std::cerr << ". ignore this file." << std::endl;
@@ -71,10 +64,10 @@ int main(int argc, char *argv[]) {
 
 	// read headers to gather all object descriptions
 	size_t num_objs = 0;
-	vector<size_t> vals_in_file;
-	vector<size_t> pos_of_time; // 0: "time" doesnot exist
+	std::vector<size_t> vals_in_file;
+	std::vector<size_t> pos_of_time; // 0: "time" doesnot exist
 	bool has_units = true;
-	stringstream ss_desc,ss_unit;
+	std::stringstream ss_desc,ss_unit;
 	for(size_t i = 0; i < input_files.size(); i++) {
 		if (!ifs[i]) continue;
 		isdf::Reader reader;
@@ -137,7 +130,7 @@ int main(int argc, char *argv[]) {
 	if (!vm.count("output")) {
 		output_file = "merged.isd";
 	}
-	ofstream ofs(output_file.c_str(), ios::binary|ios::out);
+	std::ofstream ofs(output_file.c_str(), std::ios::binary|std::ios::out);
 	if (!ofs.is_open()) {
 		std::cerr << "could not open output file: " << output_file << std::endl;
 		return EXIT_FAILURE;
@@ -180,7 +173,7 @@ int main(int argc, char *argv[]) {
 	return EXIT_SUCCESS;
 }
 
-void OutputHeader(ostream &ost, size_t num_objs, std::string &descriptions, std::string &units) {
+void OutputHeader(std::ostream &ost, size_t num_objs, std::string &descriptions, std::string &units) {
 	isdf::ISDFHeader oheader;
 	oheader.num_objs = static_cast<std::uint32_t>(num_objs);
 	oheader.num_bytes_comment = 0; // discard original comments

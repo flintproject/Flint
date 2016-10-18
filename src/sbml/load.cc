@@ -20,8 +20,6 @@
 #include "db/statement-driver.h"
 #include "db/variable-inserter.h"
 
-using std::strtod;
-
 namespace flint {
 namespace {
 
@@ -29,7 +27,7 @@ class Ode {
 public:
 	Ode(const char *name, const char *value, const char *rhs)
 		: name_(name),
-		  value_(strtod(value, nullptr)),
+		  value_(std::strtod(value, nullptr)),
 		  rhs_(rhs)
 	{}
 
@@ -76,7 +74,7 @@ private:
 
 class Compartment {
 public:
-	Compartment(const char *name, const char *value) : name_(name), value_(strtod(value, nullptr)) {}
+	Compartment(const char *name, const char *value) : name_(name), value_(std::strtod(value, nullptr)) {}
 
 	static Compartment *Parse(char *rest) {
 		size_t s = 1;

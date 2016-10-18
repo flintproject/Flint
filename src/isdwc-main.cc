@@ -11,17 +11,11 @@
 
 namespace po = boost::program_options;
 
-using std::ifstream;
-using std::istream;
-using std::ios;
-using std::ofstream;
-using std::ostream;
-
 using namespace flint;
 
 namespace {
 
-int ReadAndCount(bool columns, istream *is, ostream *os)
+int ReadAndCount(bool columns, std::istream *is, std::ostream *os)
 {
 	isdf::Reader reader;
 	if (!reader.ReadHeader(is)) return EXIT_FAILURE;
@@ -73,13 +67,13 @@ int main(int argc, char *argv[])
 	bool columns = (vm.count("columns") > 0);
 	int r;
 	if (vm.count("output")) {
-		ofstream ofs(output_file.c_str(), ios::out|ios::binary);
+		std::ofstream ofs(output_file.c_str(), std::ios::out|std::ios::binary);
 		if (!ofs.is_open()) {
 			std::cerr << "could not open output file: " << output_file << std::endl;
 			return EXIT_FAILURE;
 		}
 		if (vm.count("input")) {
-			ifstream ifs(input_file.c_str(), ios::in|ios::binary);
+			std::ifstream ifs(input_file.c_str(), std::ios::in|std::ios::binary);
 			if (!ifs.is_open()) {
 				std::cerr << "could not open input file: " << input_file << std::endl;
 				return EXIT_FAILURE;
@@ -92,7 +86,7 @@ int main(int argc, char *argv[])
 		ofs.close();
 	} else {
 		if (vm.count("input")) {
-			ifstream ifs(input_file.c_str(), ios::in|ios::binary);
+			std::ifstream ifs(input_file.c_str(), std::ios::in|std::ios::binary);
 			if (!ifs.is_open()) {
 				std::cerr << "could not open input file: " << input_file << std::endl;
 				return EXIT_FAILURE;

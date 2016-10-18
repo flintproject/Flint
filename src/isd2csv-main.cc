@@ -20,13 +20,6 @@
 
 namespace po = boost::program_options;
 
-using std::ifstream;
-using std::istream;
-using std::ios;
-using std::ofstream;
-using std::ostream;
-using std::vector;
-
 using namespace flint;
 
 namespace {
@@ -42,7 +35,7 @@ void RequestMaxNumOfDigits(std::ostream *os)
 class Converter {
 public:
 #ifdef ENABLE_TCP
-	Converter(ostream *os, std::uint32_t num_objs, size_t length = 0,
+	Converter(std::ostream *os, std::uint32_t num_objs, size_t length = 0,
 			  boost::asio::ip::udp::endpoint *endpoint = nullptr,
 			  boost::asio::ip::udp::socket *socket = nullptr)
 		: length_(length),
@@ -63,7 +56,7 @@ public:
 		if (socket_ && socket_->is_open()) socket_->close();
 	}
 #else
-	explicit Converter(ostream *os) : os_(os) {}
+	explicit Converter(std::ostream *os) : os_(os) {}
 #endif
 
 	void GetDescription(std::uint32_t i, size_t bytes, const char *desc) {
@@ -118,13 +111,13 @@ private:
 	boost::asio::ip::udp::socket *socket_;
 	char progress_;
 #endif
-	ostream *os_;
+	std::ostream *os_;
 	std::uint32_t num_objs_;
-	vector<std::string> descriptions_;
-	vector<std::string> units_;
+	std::vector<std::string> descriptions_;
+	std::vector<std::string> units_;
 };
 
-int Read(isdf::Reader &reader, Converter &converter, istream *is)
+int Read(isdf::Reader &reader, Converter &converter, std::istream *is)
 {
 	if (!reader.SkipComment(is)) return EXIT_FAILURE;
 	if (!reader.ReadDescriptions(converter, is)) return EXIT_FAILURE;
@@ -135,9 +128,9 @@ int Read(isdf::Reader &reader, Converter &converter, istream *is)
 }
 
 #ifdef ENABLE_TCP
-int Convert(const std::string &port, istream *is, ostream *os)
+int Convert(const std::string &port, std::istream *is, std::ostream *os)
 #else
-int Convert(istream *is, ostream *os)
+int Convert(std::istream *is, std::ostream *os)
 #endif
 {
 	isdf::Reader reader;
@@ -145,10 +138,10 @@ int Convert(istream *is, ostream *os)
 #ifdef ENABLE_TCP
 	if (!port.empty()) {
 		size_t p = is->tellg();
-		is->seekg(0, ios::end);
+		is->seekg(0, std::ios::end);
 		size_t q = is->tellg();
 		if (q <= p) return EXIT_FAILURE;
-		is->seekg(p, ios::beg);
+		is->seekg(p, std::ios::beg);
 		size_t length = q - p;
 
 		boost::asio::io_service service;
@@ -206,7 +199,7 @@ int main(int argc, char *argv[])
 
 	int r;
 	if (vm.count("output")) {
-		ofstream ofs(output_file.c_str(), ios::out|ios::binary);
+		std::ofstream ofs(output_file.c_str(), std::ios::out|std::ios::binary);
 		if (!ofs.is_open()) {
 			std::cerr << "could not open output file: " << output_file << std::endl;
 			return EXIT_FAILURE;
@@ -214,7 +207,7 @@ int main(int argc, char *argv[])
 		if (vm.count("maximum-precision"))
 			RequestMaxNumOfDigits(&ofs);
 		if (vm.count("input")) {
-			ifstream ifs(input_file.c_str(), ios::in|ios::binary);
+			std::ifstream ifs(input_file.c_str(), std::ios::in|std::ios::binary);
 			if (!ifs.is_open()) {
 				std::cerr << "could not open input file: " << input_file << std::endl;
 				return EXIT_FAILURE;
@@ -237,7 +230,7 @@ int main(int argc, char *argv[])
 		if (vm.count("maximum-precision"))
 			RequestMaxNumOfDigits(&std::cout);
 		if (vm.count("input")) {
-			ifstream ifs(input_file.c_str(), ios::in|ios::binary);
+			std::ifstream ifs(input_file.c_str(), std::ios::in|std::ios::binary);
 			if (!ifs.is_open()) {
 				std::cerr << "could not open input file: " << input_file << std::endl;
 				return EXIT_FAILURE;

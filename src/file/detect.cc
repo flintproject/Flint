@@ -13,11 +13,6 @@
 
 #include <libxml/xmlreader.h>
 
-using std::fclose;
-using std::fopen;
-using std::fread;
-using std::perror;
-
 namespace flint {
 namespace file {
 
@@ -30,14 +25,14 @@ int CheckPhz(const char *filename)
 {
 	assert(filename);
 
-	FILE *fp = fopen(filename, "rb");
+	FILE *fp = std::fopen(filename, "rb");
 	if (!fp) {
-		perror(filename);
+		std::perror(filename);
 		return -1;
 	}
 	char magic[2];
-	int r = fread(magic, 2, 1, fp);
-	fclose(fp);
+	int r = std::fread(magic, 2, 1, fp);
+	std::fclose(fp);
 	if (r != 1) {
 		std::cerr << "failed to read magic in model file: "
 			 << filename

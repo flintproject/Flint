@@ -14,10 +14,6 @@
 #include "db/query.h"
 #include "modelpath.h"
 
-using std::printf;
-using std::putchar;
-using std::strlen;
-
 namespace flint {
 namespace {
 
@@ -426,7 +422,7 @@ public:
 				break;
 			}
 			const char *name = VariableIndex_getName(vi, model_);
-			sbml_name.reset(new char[6+strlen(name)]);
+			sbml_name.reset(new char[6+std::strlen(name)]);
 			sprintf(sbml_name.get(), "sbml:%s", name);
 			VariableIndex_free(vi);
 			std::ostringstream oss;
@@ -444,7 +440,7 @@ public:
 				break;
 			}
 			const char *name = VariableIndex_getName(vi, model_);
-			sbml_name.reset(new char[6+strlen(name)]);
+			sbml_name.reset(new char[6+std::strlen(name)]);
 			sprintf(sbml_name.get(), "sbml:%s", name);
 			VariableIndex_free(vi);
 			std::ostringstream oss;
@@ -457,7 +453,7 @@ public:
 			variableIndex_t *vi = ODEModel_getConstantIndex(model_, i);
 			if (!vi) break;
 			const char *name = VariableIndex_getName(vi, model_);
-			sbml_name.reset(new char[6+strlen(name)]);
+			sbml_name.reset(new char[6+std::strlen(name)]);
 			sprintf(sbml_name.get(), "sbml:%s", name);
 			VariableIndex_free(vi);
 			if (!InsertConstant(sbml_name.get(), model_->values[neq+nass+i]))

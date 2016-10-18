@@ -29,22 +29,17 @@
 
 namespace po = boost::program_options;
 
-using std::ifstream;
-using std::istream;
-using std::ios;
-using std::ostringstream;
-
 using namespace flint;
 
 namespace {
 
-bool ReadHeader(istream *is, char *header)
+bool ReadHeader(std::istream *is, char *header)
 {
 	is->read(header, sizeof(isdf::ISDFHeader));
 	return is->good();
 }
 
-bool ReadDescriptions(std::uint32_t num_bytes_descs, istream *is, char *rest)
+bool ReadDescriptions(std::uint32_t num_bytes_descs, std::istream *is, char *rest)
 {
 	is->read(rest, num_bytes_descs);
 	return is->good();
@@ -52,7 +47,7 @@ bool ReadDescriptions(std::uint32_t num_bytes_descs, istream *is, char *rest)
 
 bool CountColumns(const char *input, std::uint32_t *num_columns)
 {
-	ifstream ifs(input, ios::in|ios::binary);
+	std::ifstream ifs(input, std::ios::in|std::ios::binary);
 	if (!ifs.is_open()) {
 		std::cerr << "could not open input file: " << input << std::endl;
 		return false;
@@ -90,7 +85,7 @@ int CallIsd2csv(const std::string &isd2csv, const char *input, const char *outpu
 	return r;
 }
 
-void PutQuotedPath(const char *path, ostringstream *bss)
+void PutQuotedPath(const char *path, std::ostringstream *bss)
 {
 	*bss << "\"";
 	char c;
@@ -110,7 +105,7 @@ void PutQuotedPath(const char *path, ostringstream *bss)
 void CreateScript(std::uint32_t num_columns,
 				  const char *csv_path,
 				  const char *output_path,
-				  ostringstream *bss)
+				  std::ostringstream *bss)
 {
 	unsigned int row = 1, col = 1;
 	unsigned int w = 640, h = 480;
@@ -192,7 +187,7 @@ int CallGnuplot(const char *gnuplot,
 	// parent
 	close(pipefd[0]); // close unused read end
 	int fd = pipefd[1];
-	ostringstream bss;
+	std::ostringstream bss;
 	CreateScript(num_columns, csv_path, output_path, &bss);
 	const std::string &buf(bss.str());
 	if (write(fd, buf.c_str(), buf.size()) < 0) {
@@ -262,7 +257,7 @@ int CallGnuplot(const char *gnuplot,
 	}
 	CloseHandle(hChildInRead); // close unused read end
 
-	ostringstream bss;
+	std::ostringstream bss;
 	CreateScript(num_columns, csv_path, output_path, &bss);
 	const std::string &buf(bss.str());
 	WriteFile(hChildInWrite, (LPCVOID)buf.c_str(), (DWORD)buf.size(), nullptr, nullptr);

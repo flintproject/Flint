@@ -18,12 +18,6 @@
 #include "db/query.h"
 #include "db/statement-driver.h"
 
-using std::fclose;
-using std::fopen;
-using std::fprintf;
-using std::perror;
-using std::sprintf;
-
 namespace flint {
 namespace job {
 
@@ -66,7 +60,7 @@ public:
 
 	bool Insert(const char *name, const char *rhs)
 	{
-		fprintf(fp_, "%s=%s\n", name, rhs);
+		std::fprintf(fp_, "%s=%s\n", name, rhs);
 
 		std::ostringstream oss;
 		oss << "(eq %" << name << ' ' << rhs << ')';
@@ -118,7 +112,7 @@ public:
 		int e;
 
 		/* print equations */
-		sprintf(query, "SELECT * FROM enum WHERE rowid = '%d'", enum_id);
+		std::sprintf(query, "SELECT * FROM enum WHERE rowid = '%d'", enum_id);
 		e = sqlite3_exec(input_, query, SaveParameter, &inserter_, &em);
 		if (e != SQLITE_OK) {
 			if (e != SQLITE_ABORT)
@@ -135,10 +129,10 @@ public:
 		}
 
 		/* mark it generated */
-		sprintf(query, "UPDATE jobs SET status = 'generated' WHERE rowid = '%d'", rowid);
+		std::sprintf(query, "UPDATE jobs SET status = 'generated' WHERE rowid = '%d'", rowid);
 		e = sqlite3_exec(input_, query, nullptr, nullptr, &em);
 		if (e != SQLITE_OK) {
-			fprintf(stderr, "failed to update jobs: %d: %s\n", e, em);
+			std::fprintf(stderr, "failed to update jobs: %d: %s\n", e, em);
 			sqlite3_free(em);
 			return false;
 		}
@@ -175,35 +169,35 @@ bool Generate(sqlite3 *input, const char *dir, int *job_id)
 		return false;
 	}
 	char filename[96];
-	sprintf(filename, "%s/generated.db", path.get());
+	std::sprintf(filename, "%s/generated.db", path.get());
 	db::Driver driver(filename);
 	sqlite3 *output = driver.db();
 	if (!BeginTransaction(output))
 		return false;
 	if (!CreateTable(output, "parameter_eqs", "(uuid BLOB, math TEXT)"))
 		return false;
-	sprintf(filename, "%s/values.txt.tmp", path.get());
-	FILE *fp = fopen(filename, "w");
+	std::sprintf(filename, "%s/values.txt.tmp", path.get());
+	FILE *fp = std::fopen(filename, "w");
 	if (!fp) {
-		perror(filename);
+		std::perror(filename);
 		return false;
 	}
 	if (!BeginTransaction(input)) {
-		fclose(fp);
+		std::fclose(fp);
 		return false;
 	}
 	Generator g(input, output, fp);
 	if (!g.Generate(rowid, enum_id)) {
-		fclose(fp);
+		std::fclose(fp);
 		return false;
 	}
 	if (!CommitTransaction(input)) {
-		fclose(fp);
+		std::fclose(fp);
 		return false;
 	}
-	fclose(fp);
+	std::fclose(fp);
 	char values_file[96]; // large enough
-	sprintf(values_file, "%s/values.txt", path.get());
+	std::sprintf(values_file, "%s/values.txt", path.get());
 	if (std::rename(filename, values_file) != 0) {
 		std::cerr << "failed to rename " << filename
 			 << " to " << values_file

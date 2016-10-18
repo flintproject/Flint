@@ -8,10 +8,6 @@
 
 namespace po = boost::program_options;
 
-using std::ifstream;
-using std::istream;
-using std::ios;
-
 using namespace flint;
 
 namespace {
@@ -23,7 +19,7 @@ struct ColumnPrinter {
 	}
 };
 
-int ListColumns(istream *is)
+int ListColumns(std::istream *is)
 {
 	isdf::Reader reader;
 	if (!reader.ReadHeader(is)) return EXIT_FAILURE;
@@ -56,7 +52,7 @@ private:
 	size_t offset_;
 };
 
-int ListRow(std::uint32_t row, istream *is)
+int ListRow(std::uint32_t row, std::istream *is)
 {
 	isdf::Reader reader;
 	if (!reader.ReadHeader(is)) return EXIT_FAILURE;
@@ -75,7 +71,7 @@ int ListRow(std::uint32_t row, istream *is)
 	return EXIT_SUCCESS;
 }
 
-int PrintDataOffset(istream *is)
+int PrintDataOffset(std::istream *is)
 {
 	isdf::Reader reader;
 	if (!reader.ReadHeader(is)) return EXIT_FAILURE;
@@ -117,7 +113,7 @@ int main(int argc, char *argv[])
 
 	int r;
 	if (vm.count("input")) {
-		ifstream ifs(input_file.c_str(), ios::in|ios::binary);
+		std::ifstream ifs(input_file.c_str(), std::ios::in|std::ios::binary);
 		if (!ifs.is_open()) {
 			std::cerr << "could not open input file: " << input_file << std::endl;
 			return EXIT_FAILURE;

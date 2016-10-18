@@ -28,8 +28,6 @@
 #include "task/config-reader.h"
 #include "utf8path.h"
 
-using std::perror;
-
 namespace flint {
 namespace run {
 
@@ -67,7 +65,7 @@ bool Run(const cli::RunOption &option)
 		boost::filesystem::path error_path = GetPathFromUtf8(option.error_filename().c_str());
 		std::string error_file = error_path.string();
 		if (!std::freopen(error_file.c_str(), "w", stderr)) {
-			perror(error_file.c_str());
+			std::perror(error_file.c_str());
 			return false;
 		}
 	}
@@ -103,7 +101,7 @@ bool Run(const cli::RunOption &option)
 		// create the list of all variables
 		FILE *fp = fopen("spec.txt", "w");
 		if (!fp) {
-			perror("spec.txt");
+			std::perror("spec.txt");
 			return false;
 		}
 		bool r = Spec(db, fp);

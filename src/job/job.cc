@@ -28,10 +28,6 @@
 #include "task.h"
 #include "task/config-reader.h"
 
-using std::fclose;
-using std::fopen;
-using std::perror;
-
 namespace flint {
 namespace job {
 
@@ -60,16 +56,16 @@ bool Job(const char *task_dir,
 
 	char control_file[kLong];
 	sprintf(control_file, "%s/control", job_dir);
-	FILE *fp = fopen(control_file, "w");
+	FILE *fp = std::fopen(control_file, "w");
 	if (!fp) {
-		perror(control_file);
+		std::perror(control_file);
 		return false;
 	}
 	if (fputc('0', fp) == EOF) {
-		fclose(fp);
+		std::fclose(fp);
 		return false;
 	}
-	fclose(fp);
+	std::fclose(fp);
 
 	char output_data_file[kLong];
 	sprintf(output_data_file, "%s/output-data", job_dir);
@@ -106,15 +102,15 @@ bool Job(const char *task_dir,
 			 << ": " << ec << std::endl;
 		return false;
 	}
-	FILE *ofp = fopen(output_file, "ab");
+	FILE *ofp = std::fopen(output_file, "ab");
 	if (!ofp) {
-		perror(output_file);
+		std::perror(output_file);
 		return false;
 	}
 	// write initial values only when output_start_time is 0.
 	if (option.output_start_time == 0) {
 		if (!filter::Cut(filter_file, data->data(), ofp)) {
-			fclose(ofp);
+			std::fclose(ofp);
 			return false;
 		}
 	}
@@ -141,7 +137,7 @@ bool Job(const char *task_dir,
 		r = job::Evolve(db, task, option);
 	}
 	std::fclose(sfp);
-	fclose(ofp);
+	std::fclose(ofp);
 	return r;
 }
 

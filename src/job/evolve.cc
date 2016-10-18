@@ -38,10 +38,6 @@
 #include "task.h"
 #include "ts.h"
 
-using std::fclose;
-using std::fopen;
-using std::fwrite;
-
 namespace flint {
 namespace job {
 
@@ -232,17 +228,17 @@ private:
 
 bool SaveData(const char *output_data_file, size_t layer_size, double *data)
 {
-	FILE *fp = fopen(output_data_file, "wb");
+	FILE *fp = std::fopen(output_data_file, "wb");
 	if (!fp) {
 		std::cerr << "could not open " << output_data_file << std::endl;
 		return false;
 	}
-	if (fwrite(data, sizeof(double), layer_size, fp) != layer_size) {
-		fclose(fp);
+	if (std::fwrite(data, sizeof(double), layer_size, fp) != layer_size) {
+		std::fclose(fp);
 		std::cerr << "failed to write output data" << std::endl;
 		return false;
 	}
-	fclose(fp);
+	std::fclose(fp);
 	return true;
 }
 
@@ -501,7 +497,7 @@ bool Evolve(sqlite3 *db,
 					}
 				} else {
 					// output the first layer of data
-					if (fwrite(data.get(), sizeof(double), layer_size, output_fp) != layer_size) {
+					if (std::fwrite(data.get(), sizeof(double), layer_size, output_fp) != layer_size) {
 						std::cerr << "failed to write output" << std::endl;
 						return false;
 					}

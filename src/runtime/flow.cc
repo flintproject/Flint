@@ -8,8 +8,6 @@
 
 #include "reduction.h"
 
-using std::atoi;
-
 namespace flint {
 namespace {
 
@@ -47,9 +45,9 @@ int Process(void *data, int argc, char **argv, char **names)
 	assert(argv[1]);
 	// argv[2] can be null
 	assert(argv[3]);
-	int source = atoi(argv[0]);
-	int target = atoi(argv[1]);
-	Reduction reduction = (argv[2]) ? static_cast<Reduction>(atoi(argv[2])) : Reduction::kUnspecified;
+	int source = std::atoi(argv[0]);
+	int target = std::atoi(argv[1]);
+	Reduction reduction = (argv[2]) ? static_cast<Reduction>(std::atoi(argv[2])) : Reduction::kUnspecified;
 	int size = std::atoi(argv[3]);
 	return h->Handle(source, target, reduction, size) ? 0 : 1;
 }

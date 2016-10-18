@@ -23,8 +23,6 @@
 #include "modelpath.h"
 #include "utf8path.h"
 
-using std::perror;
-
 namespace flint {
 namespace phz {
 
@@ -82,7 +80,7 @@ bool Read(sqlite3 *db, const char *dir)
 		std::string op_s = op.string();
 		FILE *ofp = fopen(op_s.c_str(), "wb");
 		if (!ofp) {
-			perror(op_s.c_str());
+			std::perror(op_s.c_str());
 			return false;
 		}
 

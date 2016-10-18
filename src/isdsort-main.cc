@@ -15,11 +15,6 @@
 
 #include "isdf/reader.h"
 
-using std::fclose;
-using std::fopen;
-using std::fwrite;
-using std::perror;
-
 using namespace flint;
 
 namespace {
@@ -52,12 +47,12 @@ public:
 	int GetStep(size_t size, const char *buf)
 	{
 		if (skip_ > 0) {
-			fwrite(buf, sizeof(double), skip_, fp_);
+			std::fwrite(buf, sizeof(double), skip_, fp_);
 		}
 		for (std::map<std::string, std::uint32_t>::const_iterator it=rest_descs_.begin();it!=rest_descs_.end();++it) {
 			size_t i = it->second * sizeof(double);
 			assert(i < size);
-			fwrite(buf + i, sizeof(double), 1, fp_);
+			std::fwrite(buf + i, sizeof(double), 1, fp_);
 		}
 		return 1;
 	}
@@ -83,8 +78,8 @@ private:
 	void WriteEntry(const std::string &d)
 	{
 		std::uint32_t len = static_cast<std::uint32_t>(d.size());
-		fwrite(&len, sizeof(len), 1, fp_);
-		if (len > 0) fwrite(d.c_str(), len, 1, fp_);
+		std::fwrite(&len, sizeof(len), 1, fp_);
+		if (len > 0) std::fwrite(d.c_str(), len, 1, fp_);
 	}
 
 	std::uint32_t skip_;
@@ -98,33 +93,33 @@ bool CopyFile(const char *source, const char *target)
 {
 	static const size_t kLength = 4096;
 
-	FILE *ifp = fopen(source, "rb");
+	FILE *ifp = std::fopen(source, "rb");
 	if (!ifp) {
-		perror(source);
+		std::perror(source);
 		return false;
 	}
-	FILE *ofp = fopen(target, "wb");
+	FILE *ofp = std::fopen(target, "wb");
 	if (!ofp) {
-		perror(target);
-		fclose(ifp);
+		std::perror(target);
+		std::fclose(ifp);
 		return false;
 	}
 	std::unique_ptr<char[]> buf(new char[kLength]);
 	size_t s;
 	do {
 		if ( (s = fread(buf.get(), 1, kLength, ifp)) == 0) {
-			fclose(ofp);
+			std::fclose(ofp);
 			if (feof(ifp)) {
-				fclose(ifp);
+				std::fclose(ifp);
 				return true;
 			}
-			fclose(ifp);
+			std::fclose(ifp);
 			std::cerr << "failed to read file: " << source << std::endl;
 			return false;
 		}
-	} while (fwrite(buf.get(), s, 1, ofp) == 1);
-	fclose(ofp);
-	fclose(ifp);
+	} while (std::fwrite(buf.get(), s, 1, ofp) == 1);
+	std::fclose(ofp);
+	std::fclose(ifp);
 	std::cerr << "failed to write file: " << target << std::endl;
 	return false;
 }
@@ -141,14 +136,14 @@ public:
 	}
 
 	~Writer() {
-		fclose(fp_);
+		std::fclose(fp_);
 	}
 
 	bool Write(std::uint32_t skip, isdf::Reader *reader, std::istream *is) {
-		fwrite(&reader->header(), sizeof(isdf::ISDFHeader), 1, fp_);
+		std::fwrite(&reader->header(), sizeof(isdf::ISDFHeader), 1, fp_);
 
 		if (!reader->ReadComment(is)) return false;
-		fwrite(reader->comment(), reader->num_bytes_comment(), 1, fp_);
+		std::fwrite(reader->comment(), reader->num_bytes_comment(), 1, fp_);
 
 		std::unique_ptr<ColumnHandler> handler(new ColumnHandler(skip, fp_));
 		if ( !reader->ReadDescriptions(*handler, is) ||
@@ -208,9 +203,9 @@ int main(int argc, char *argv[])
 		return (CopyFile(argv[1], argv[2])) ? EXIT_SUCCESS : EXIT_FAILURE;
 	}
 
-	FILE *fp = fopen(argv[2], "wb");
+	FILE *fp = std::fopen(argv[2], "wb");
 	if (!fp) {
-		perror(argv[2]);
+		std::perror(argv[2]);
 		return EXIT_FAILURE;
 	}
 	{

@@ -8,8 +8,6 @@
 #include <cstdlib>
 #include <cstring>
 
-using std::fprintf;
-
 namespace flint {
 namespace task {
 
@@ -22,12 +20,12 @@ bool Spec(int id, sqlite3 *db, FILE *fp)
 	e = sqlite3_prepare_v2(db, "SELECT variable FROM dgs WHERE task_id = ?",
 						   -1, &stmt, nullptr);
 	if (e != SQLITE_OK) {
-		fprintf(stderr, "failed to prepare statement: %d\n", e);
+		std::fprintf(stderr, "failed to prepare statement: %d\n", e);
 		return false;
 	}
 	e = sqlite3_bind_int64(stmt, 1, id);
 	if (e != SQLITE_OK) {
-		fprintf(stderr, "failed to bind id: %d\n", e);
+		std::fprintf(stderr, "failed to bind id: %d\n", e);
 		goto bail;
 	}
 	for (;;) {
@@ -37,10 +35,10 @@ bool Spec(int id, sqlite3 *db, FILE *fp)
 			goto bail;
 		}
 		if (e != SQLITE_ROW) {
-			fprintf(stderr, "failed to step statement: %d\n", e);
+			std::fprintf(stderr, "failed to step statement: %d\n", e);
 			goto bail;
 		}
-		fprintf(fp, "%s\n", sqlite3_column_text(stmt, 0));
+		std::fprintf(fp, "%s\n", sqlite3_column_text(stmt, 0));
 	}
 
  bail:

@@ -16,8 +16,6 @@
 
 #include "filter/filter_loader.h"
 
-using std::map;
-
 namespace flint {
 namespace filter {
 
@@ -43,7 +41,7 @@ public:
 			std::cerr << "size is zero" << std::endl;
 			return false;
 		}
-		for (map<int, int>::const_iterator it=columns_.begin();it!=columns_.end();++it) {
+		for (std::map<int, int>::const_iterator it=columns_.begin();it!=columns_.end();++it) {
 			size_t p = static_cast<size_t>(it->first);
 			size_t s = static_cast<size_t>(it->second);
 			if (std::fwrite(data+p, sizeof(double), s, ofp) != s) {
@@ -56,7 +54,7 @@ public:
 
 private:
 	size_t size_;
-	map<int, int> columns_;
+	std::map<int, int> columns_;
 };
 
 }

@@ -20,12 +20,10 @@
 #include "db/variable-loader.h"
 #include "variable.h"
 
-using std::map;
-
 namespace flint {
 namespace {
 
-typedef map<std::string, std::string> BridgeMap;
+typedef std::map<std::string, std::string> BridgeMap;
 
 class LineWriter {
 public:
@@ -189,7 +187,7 @@ private:
 	OdeWriter ode_writer_;
 };
 
-typedef map<int, std::string> PhysicalQuantityMap;
+typedef std::map<int, std::string> PhysicalQuantityMap;
 
 class PhysicalQuantityHandler {
 public:

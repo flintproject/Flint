@@ -27,9 +27,6 @@
 #include "sqlite3.h"
 #include "utf8path.h"
 
-using std::perror;
-using std::sprintf;
-
 namespace flint {
 namespace phsp {
 
@@ -288,7 +285,7 @@ private:
 
 		// create a task directory
 		char dir_path[1024];
-		sprintf(dir_path, "%d", rowid);
+		std::sprintf(dir_path, "%d", rowid);
 		boost::filesystem::path dp(dir_path);
 		if (!boost::filesystem::is_directory(dp) && !boost::filesystem::create_directory(dp)) {
 			std::cerr << "failed to create a directory: "
@@ -329,7 +326,7 @@ private:
 
 		// attach a task database for the model
 		char query[1024];
-		sprintf(query, "ATTACH DATABASE '%d/task.db' AS 'db%d'", rowid, rowid);
+		std::sprintf(query, "ATTACH DATABASE '%d/task.db' AS 'db%d'", rowid, rowid);
 		char *em;
 		e = sqlite3_exec(db_, query, nullptr, nullptr, &em);
 		if (e != SQLITE_OK) {
@@ -345,10 +342,10 @@ private:
 
 		char table_name[64]; // long enough
 		// save model's format
-		sprintf(table_name, "db%d.model", rowid);
+		std::sprintf(table_name, "db%d.model", rowid);
 		if (!CreateTable(db_, table_name, "(format TEXT)"))
 			return -2;
-		sprintf(query, "INSERT INTO db%d.model VALUES (?)", rowid);
+		std::sprintf(query, "INSERT INTO db%d.model VALUES (?)", rowid);
 		e = sqlite3_prepare_v2(db_, query, -1, &stmt, nullptr);
 		if (e != SQLITE_OK) {
 			std::cerr << "failed to prepare statement: "
@@ -369,10 +366,10 @@ private:
 		sqlite3_finalize(stmt);
 
 		// prepare schemas
-		sprintf(table_name, "db%d.phsp_parameters", rowid);
+		std::sprintf(table_name, "db%d.phsp_parameters", rowid);
 		if (!CreateTable(db_, table_name, "(name TEXT, range TEXT)"))
 			return -2;
-		sprintf(table_name, "db%d.phsp_targets", rowid);
+		std::sprintf(table_name, "db%d.phsp_targets", rowid);
 		if (!CreateTable(db_, table_name, "(uuid BLOB, id TEXT, math TEXT)"))
 			return -2;
 
@@ -397,7 +394,7 @@ private:
 					if (!CommitTransaction(db_))
 						return -2;
 					// detach the database after the transaction
-					sprintf(query, "DETACH DATABASE 'db%d'", rowid);
+					std::sprintf(query, "DETACH DATABASE 'db%d'", rowid);
 					e = sqlite3_exec(db_, query, nullptr, nullptr, &em);
 					if (e != SQLITE_OK) {
 						std::cerr << "failed to detach database: " << e
@@ -531,7 +528,7 @@ private:
 
 		sqlite3_stmt *stmt;
 		char query[1024];
-		sprintf(query, "INSERT INTO db%d.phsp_parameters VALUES (?, ?)", rowid);
+		std::sprintf(query, "INSERT INTO db%d.phsp_parameters VALUES (?, ?)", rowid);
 		int e = sqlite3_prepare_v2(db_, query, -1, &stmt, nullptr);
 		if (e != SQLITE_OK) {
 			std::cerr << "failed to prepare statement: "
@@ -676,7 +673,7 @@ private:
 						return -2;
 					} else {
 						char query[1024];
-						sprintf(query, "INSERT INTO db%d.phsp_targets values (?, ?, ?)", rowid);
+						std::sprintf(query, "INSERT INTO db%d.phsp_targets values (?, ?, ?)", rowid);
 						sqlite3_stmt *stmt;
 						int e = sqlite3_prepare_v2(db_, query, -1, &stmt, nullptr);
 						if (e != SQLITE_OK) {
@@ -716,7 +713,7 @@ private:
 								std::cerr << "failed to malloc" << std::endl;
 								return -2;
 							}
-							sprintf(buf, "sbml:%s", id);
+							std::sprintf(buf, "sbml:%s", id);
 							e = sqlite3_bind_text(stmt, 2, buf, -1, free);
 							if (e != SQLITE_OK) {
 								std::cerr << "failed to bind parameter: " << e << std::endl;

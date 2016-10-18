@@ -9,9 +9,6 @@
 #include <cstdio>
 #include <cstring>
 
-using std::sprintf;
-using std::strlen;
-
 namespace flint {
 namespace job {
 
@@ -20,7 +17,7 @@ char *BuildPath(const char *dir, int id)
 	assert(dir);
 	assert(id >= 0);
 
-	size_t len = strlen(dir);
+	size_t len = std::strlen(dir);
 	char *path = new char[len+13];
 	unsigned int u = static_cast<unsigned int>(id);
 	unsigned int a, b, c, d;
@@ -28,7 +25,7 @@ char *BuildPath(const char *dir, int id)
 	b = (u>>16)&0xFF;
 	c = (u>> 8)&0xFF;
 	d = (u    )&0xFF;
-	sprintf(path, "%s/%02x/%02x/%02x/%02x", dir, a, b, c, d);
+	std::sprintf(path, "%s/%02x/%02x/%02x/%02x", dir, a, b, c, d);
 	return path;
 }
 

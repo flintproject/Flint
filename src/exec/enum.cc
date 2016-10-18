@@ -10,15 +10,6 @@
 
 #include "db/query.h"
 
-using std::calloc;
-using std::fprintf;
-using std::malloc;
-using std::perror;
-using std::realloc;
-using std::sprintf;
-using std::strcat;
-using std::strlen;
-
 namespace flint {
 namespace exec {
 
@@ -39,17 +30,17 @@ int Enumerate(sqlite3 *db)
 	/* get parameters as well as their values */
 	e = sqlite3_prepare_v2(db, SQL, -1, &stmt, nullptr);
 	if (e != SQLITE_OK) {
-		fprintf(stderr, "failed to parepare statement: %s\n", SQL);
+		std::fprintf(stderr, "failed to parepare statement: %s\n", SQL);
 		return 0;
 	}
 
 	size_t qlen = 1024;
-	char *q = static_cast<char *>(malloc(qlen));
+	char *q = static_cast<char *>(std::malloc(qlen));
 	if (!q) {
-		perror(nullptr);
+		std::perror(nullptr);
 		return 0;
 	}
-	sprintf(q, "CREATE TABLE enum (");
+	std::sprintf(q, "CREATE TABLE enum (");
 	char *p = q;
 	while (*p) p++; /* move to '\0' */
 
@@ -62,23 +53,23 @@ int Enumerate(sqlite3 *db)
 
 		const unsigned char *n, *r;
 		n = sqlite3_column_text(stmt, 0);
-		size_t nlen = strlen((const char *)n);
+		size_t nlen = std::strlen((const char *)n);
 		if (nlen == 0) {
-			fprintf(stderr, "empty parameter name\n");
+			std::fprintf(stderr, "empty parameter name\n");
 			/* TODO */
 			return 0;
 		}
 		r = sqlite3_column_text(stmt, 1);
-		size_t rlen = strlen((const char *)r);
+		size_t rlen = std::strlen((const char *)r);
 		if (rlen == 0) {
-			fprintf(stderr, "empty value\n");
+			std::fprintf(stderr, "empty value\n");
 			/* TODO */
 			return 0;
 		}
 
 		if ( (p - q) + nlen + 10 >= qlen) {
 			qlen *= 2;
-			char *qq = static_cast<char *>(realloc(q, qlen));
+			char *qq = static_cast<char *>(std::realloc(q, qlen));
 			if (!qq) return 0; /* TODO */
 			p = qq + (p - q);
 			q = qq;
@@ -94,14 +85,14 @@ int Enumerate(sqlite3 *db)
 			if (r[i] == ',') num_values++;
 		}
 		size_ranges += sizeof(struct Range);
-		void *rr = realloc(ranges, size_ranges);
+		void *rr = std::realloc(ranges, size_ranges);
 		if (!rr) {
 			/* TODO */
 			return 0;
 		}
 		ranges = static_cast<Range *>(rr);
 		ranges[num_params].num_values = num_values;
-		void *vv = calloc(num_values, sizeof(double));
+		void *vv = std::calloc(num_values, sizeof(double));
 		if (!vv) {
 			/* TODO */
 			return 0;
@@ -113,14 +104,14 @@ int Enumerate(sqlite3 *db)
 			errno = 0;
 			double d = strtod(s, &t);
 			if (t == s) {
-				fprintf(stderr, "failed to read a double value: %s\n", s);
+				std::fprintf(stderr, "failed to read a double value: %s\n", s);
 				/* TODO */
 				return 0;
 			} else if (errno == ERANGE) {
 				if (d == HUGE_VAL || d == -HUGE_VAL) {
-					fprintf(stderr, "invalid range: overflow: %s\n", s);
+					std::fprintf(stderr, "invalid range: overflow: %s\n", s);
 				} else {
-					fprintf(stderr, "invalid range: underflow: %s\n", s);
+					std::fprintf(stderr, "invalid range: underflow: %s\n", s);
 				}
 				/* TODO */
 				return 0;
@@ -141,7 +132,7 @@ int Enumerate(sqlite3 *db)
 
 	e = sqlite3_exec(db, q, nullptr, nullptr, &em);
 	if (e != SQLITE_OK) {
-		fprintf(stderr, "failed to create table: %d: %s\n", e, em);
+		std::fprintf(stderr, "failed to create table: %d: %s\n", e, em);
 		sqlite3_free(em);
 		return 0;
 	}
@@ -149,24 +140,24 @@ int Enumerate(sqlite3 *db)
 	sqlite3_finalize(stmt);
 
 	/* insert rows */
-	sprintf(q, "INSERT INTO enum VALUES (?");
+	std::sprintf(q, "INSERT INTO enum VALUES (?");
 	for (int i=1;i<num_params;i++) {
-		strcat(q, ", ?");
+		std::strcat(q, ", ?");
 	}
-	strcat(q, ")");
+	std::strcat(q, ")");
 	e = sqlite3_prepare_v2(db, q, -1, &stmt, nullptr);
 	if (e != SQLITE_OK) {
-		fprintf(stderr, "failed to parepare statement: %s\n", q);
+		std::fprintf(stderr, "failed to parepare statement: %s\n", q);
 		/* TODO */
 		return 0;
 	}
 
 	/* prepare to insert corresponding entries in jobs */
 	sqlite3_stmt *job_stmt;
-	sprintf(q, "INSERT INTO jobs VALUES (?, 'pending')");
+	std::sprintf(q, "INSERT INTO jobs VALUES (?, 'pending')");
 	e = sqlite3_prepare_v2(db, q, -1, &job_stmt, nullptr);
 	if (e != SQLITE_OK) {
-		fprintf(stderr, "failed to prepare statement: %s\n", q);
+		std::fprintf(stderr, "failed to prepare statement: %s\n", q);
 		/* TODO */
 		return 0;
 	}
@@ -182,7 +173,7 @@ int Enumerate(sqlite3 *db)
 			d0 *= ranges[k].num_values;
 			e = sqlite3_bind_double(stmt, k+1, ranges[k].values[(i%d0)/d1]);
 			if (e != SQLITE_OK) {
-				fprintf(stderr, "failed to bind parameter: %d\n", e);
+				std::fprintf(stderr, "failed to bind parameter: %d\n", e);
 				/* TODO */
 				return 0;
 			}
@@ -190,20 +181,20 @@ int Enumerate(sqlite3 *db)
 		}
 		e = sqlite3_step(stmt);
 		if (e != SQLITE_DONE) {
-			fprintf(stderr, "failed to insert row: %d\n", e);
+			std::fprintf(stderr, "failed to insert row: %d\n", e);
 			/* TODO */
 			return 0;
 		}
 		sqlite3_int64 rowid = sqlite3_last_insert_rowid(db);
 		e = sqlite3_bind_int64(job_stmt, 1, rowid);
 		if (e != SQLITE_OK) {
-			fprintf(stderr, "failed to bind parameter: %d\n", e);
+			std::fprintf(stderr, "failed to bind parameter: %d\n", e);
 			/* TODO */
 			return 0;
 		}
 		e = sqlite3_step(job_stmt);
 		if (e != SQLITE_DONE) {
-			fprintf(stderr, "failed to insert row: %d\n", e);
+			std::fprintf(stderr, "failed to insert row: %d\n", e);
 			/* TODO */
 			return 0;
 		}

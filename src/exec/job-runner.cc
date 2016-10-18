@@ -20,8 +20,6 @@
 #include "runtime.h"
 #include "task.h"
 
-using std::sprintf;
-
 namespace flint {
 namespace exec {
 
@@ -36,8 +34,8 @@ JobRunner::JobRunner(TaskRunner *tr, int id)
 	, generated_db_(new char[kFilenameLength])
 	, isd_(new char[kFilenameLength])
 {
-	sprintf(generated_db_.get(), "%s/generated.db", dir_.get());
-	sprintf(isd_.get(), "%s/out.isd", dir_.get());
+	std::sprintf(generated_db_.get(), "%s/generated.db", dir_.get());
+	std::sprintf(isd_.get(), "%s/out.isd", dir_.get());
 }
 
 bool JobRunner::Run()

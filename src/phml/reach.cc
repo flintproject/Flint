@@ -21,10 +21,6 @@
 #include "db/span-loader.h"
 #include "reduction.h"
 
-using std::multimap;
-using std::set;
-using std::pair;
-
 namespace flint {
 namespace phml {
 namespace {
@@ -168,7 +164,7 @@ bool LoadOutputPorts(sqlite3 *db, std::map<Node, Port> *ports)
 }
 
 typedef std::set<Scope> ScopeSet;
-typedef multimap<boost::uuids::uuid, ScopeSet::iterator> Mmap;
+typedef std::multimap<boost::uuids::uuid, ScopeSet::iterator> Mmap;
 typedef std::unordered_map<boost::uuids::uuid,
 						   ScopeSet::iterator,
 						   boost::hash<boost::uuids::uuid>
@@ -186,7 +182,7 @@ public:
 	{}
 
 	bool Handle(boost::uuids::uuid uuid, boost::uuids::uuid space_id, const char *label) {
-		pair<ScopeSet::iterator, bool> p;
+		std::pair<ScopeSet::iterator, bool> p;
 		if (label) {
 			p = scopes_->emplace(uuid, space_id, std::string(label));
 		} else {
@@ -219,7 +215,7 @@ public:
 	SpanHandler(const SpanHandler &) = delete;
 	SpanHandler &operator=(const SpanHandler &) = delete;
 
-	explicit SpanHandler(multimap<Node, Node> *spans) : spans_(spans) {}
+	explicit SpanHandler(std::multimap<Node, Node> *spans) : spans_(spans) {}
 
 	bool Handle(boost::uuids::uuid tail_uuid, int tail_port_id,
 				boost::uuids::uuid head_uuid, int head_port_id) {
@@ -230,26 +226,26 @@ public:
 	}
 
 private:
-	multimap<Node, Node> *spans_;
+	std::multimap<Node, Node> *spans_;
 };
 
-bool LoadEdges(sqlite3 *db, multimap<Node, Node> *edges)
+bool LoadEdges(sqlite3 *db, std::multimap<Node, Node> *edges)
 {
 	std::unique_ptr<db::SpanLoader> loader(new db::SpanLoader(db));
 	std::unique_ptr<SpanHandler> handler(new SpanHandler(edges));
 	return loader->Load(handler.get());
 }
 
-void Lookup(const Node &p, multimap<Node, Node> &edges, set<Node> *q)
+void Lookup(const Node &p, std::multimap<Node, Node> &edges, std::set<Node> *q)
 {
-	pair<multimap<Node, Node>::iterator, multimap<Node, Node>::iterator> r;
+	std::pair<std::multimap<Node, Node>::iterator, std::multimap<Node, Node>::iterator> r;
 	r = edges.equal_range(p);
 	if (r.first == r.second) {
 		q->insert(p);
 		return;
 	}
-	set<Node> s;
-	for (multimap<Node, Node>::iterator it=r.first;it!=r.second;++it) {
+	std::set<Node> s;
+	for (std::multimap<Node, Node>::iterator it=r.first;it!=r.second;++it) {
 		const Node &tail = it->second;
 		s.insert(tail);
 	}
@@ -282,7 +278,7 @@ bool Reach(sqlite3 *db)
 	Umap umap;
 	if (!LoadScopes(db, &scopes, &mmap, &umap)) return false;
 
-	multimap<Node, Node> edges;
+	std::multimap<Node, Node> edges;
 	if (!LoadEdges(db, &edges)) return false;
 
 	std::unique_ptr<db::ReachDriver> driver(new db::ReachDriver(db));
@@ -291,12 +287,12 @@ bool Reach(sqlite3 *db)
 		const boost::uuids::uuid &module_id = it->first;
 		const Port &inport = it->second;
 
-		pair<Mmap::iterator, Mmap::iterator> r;
+		std::pair<Mmap::iterator, Mmap::iterator> r;
 		r = mmap.equal_range(module_id);
 		for (Mmap::iterator rit=r.first;rit!=r.second;++rit) {
 			const boost::uuids::uuid &uuid = rit->second->uuid();
 			Node p(uuid, inport.port_id());
-			set<Node> t;
+			std::set<Node> t;
 			Lookup(p, edges, &t);
 			for (const auto &o : t) {
 				if (o.port_id() <= 0) {
