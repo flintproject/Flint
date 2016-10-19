@@ -60,7 +60,7 @@ public:
 						  << std::endl;
 				return false;
 			}
-			std::unique_ptr<Variable> var(new Variable((char)type[0],
+			std::unique_ptr<Variable> var(new Variable(reinterpret_cast<const char *>(type)[0],
 													   id,
 													   reinterpret_cast<const char *>(name),
 													   reinterpret_cast<const char *>(unit),

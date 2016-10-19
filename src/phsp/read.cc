@@ -708,7 +708,7 @@ private:
 							if (target->reaction_id()) id = reinterpret_cast<const char *>(target->reaction_id());
 							assert(id);
 							size_t len = strlen(id);
-							char *buf = (char *)malloc(len + 6);
+							char *buf = static_cast<char *>(malloc(len + 6));
 							if (!buf) {
 								std::cerr << "failed to malloc" << std::endl;
 								return -2;

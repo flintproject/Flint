@@ -27,7 +27,7 @@ char *MakeTemporaryFile(const std::string &name, int *fd)
 	}
 	p /= name + ".XXXXXX";
 	const char *pc = p.c_str();
-	char *filepath = (char *)malloc(strlen(pc) + 1);
+	char *filepath = static_cast<char *>(malloc(strlen(pc) + 1));
 	if (!filepath) {
 		std::cerr << "could not allocate filepath" << std::endl;
 		return nullptr;
