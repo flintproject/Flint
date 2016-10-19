@@ -39,7 +39,7 @@ public:
 			std::memcpy(&u0, uuid0, u0.size());
 			std::memcpy(&u1, uuid1, u1.size());
 			double val;
-			if (!Parse((const char *)math, &val)) return false;
+			if (!Parse(reinterpret_cast<const char *>(math), &val)) return false;
 			if (!handler->Handle(u0, u1, pq_id, val))
 				return false;
 		}

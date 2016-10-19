@@ -46,7 +46,7 @@ public:
 			std::cerr << "failed to step statement: " << e << std::endl;
 			return nullptr;
 		}
-		const char *f = (const char *)sqlite3_column_text(stmt(), 0);
+		const char *f = reinterpret_cast<const char *>(sqlite3_column_text(stmt(), 0));
 		size_t len = std::strlen(f);
 		char *format = new char[len+1];
 		strcpy(format, f);
@@ -144,7 +144,8 @@ public:
 			const void *uuid = sqlite3_column_blob(stmt(), 0);
 			assert(uuid);
 			std::memcpy(&u, uuid, u.size());
-			(*tvm)[u].emplace((const char *)sqlite3_column_text(stmt(), 1), data[it->second]);
+			(*tvm)[u].emplace(reinterpret_cast<const char *>(sqlite3_column_text(stmt(), 1)),
+							  data[it->second]);
 			sqlite3_reset(stmt());
 		}
 		return true;

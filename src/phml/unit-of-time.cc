@@ -81,7 +81,7 @@ public:
 			const unsigned char *name = sqlite3_column_text(stmt(), 2);
 			std::unique_ptr<unit::Unit> unit(new unit::Unit);
 			unit->set_id(unit_id);
-			unit->set_name(std::string((const char *)name));
+			unit->set_name(std::string(reinterpret_cast<const char *>(name)));
 			if (!loader_.Load(rowid, unit.get()))
 				return false;
 			units->emplace(unit_id, std::move(unit));

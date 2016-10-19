@@ -40,12 +40,12 @@ public:
 
 	boost::uuids::uuid GetUuidOfModuleId() const {
 		boost::uuids::string_generator gen;
-		return gen((const char *)module_id_);
+		return gen(reinterpret_cast<const char *>(module_id_));
 	}
 
 	boost::uuids::uuid GetUuidOfTemplateId() const {
 		boost::uuids::string_generator gen;
-		return gen((const char *)template_id_);
+		return gen(reinterpret_cast<const char *>(template_id_));
 	}
 
 	bool IsSaved() const {

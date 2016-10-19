@@ -48,13 +48,13 @@ public:
 
 	boost::uuids::uuid GetUuid() const {
 		boost::uuids::string_generator gen;
-		return gen((const char *)module_id_);
+		return gen(reinterpret_cast<const char *>(module_id_));
 	}
 
 	boost::uuids::uuid GetCapsulatedBy() const {
 		assert(capsulated_by_);
 		boost::uuids::string_generator gen;
-		return gen((const char *)capsulated_by_);
+		return gen(reinterpret_cast<const char *>(capsulated_by_));
 	}
 
 	bool IsValid() const {

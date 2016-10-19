@@ -51,7 +51,7 @@ public:
 		}
 		if (e == SQLITE_ROW) {
 			const unsigned char *name = sqlite3_column_text(stmt(), 0);
-			*time_unit = std::string((const char *)name);
+			*time_unit = std::string(reinterpret_cast<const char *>(name));
 			sqlite3_reset(stmt());
 			return true;
 		}

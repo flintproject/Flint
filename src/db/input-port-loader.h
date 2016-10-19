@@ -36,7 +36,7 @@ public:
 			boost::uuids::uuid u;
 			std::memcpy(&u, module_id, u.size());
 			if (!handler->Handle(u, port_id, pq_id,
-								 *((const char *)pq_type),
+								 *reinterpret_cast<const char *>(pq_type),
 								 static_cast<Reduction>(reduction)))
 				return false;
 		}

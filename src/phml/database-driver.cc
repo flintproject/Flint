@@ -53,7 +53,7 @@ bool GetAbsolutePathFromReference(const TElement *element,
 								  boost::filesystem::path *output_path)
 {
 	if (element->iref()) {
-		boost::filesystem::path iref_path = GetPathFromUtf8((const char *)element->iref());
+		boost::filesystem::path iref_path = GetPathFromUtf8(reinterpret_cast<const char *>(element->iref()));
 		if (iref_path.is_absolute()) {
 			*output_path = iref_path;
 			return true;
@@ -63,7 +63,7 @@ bool GetAbsolutePathFromReference(const TElement *element,
 		return true;
 	}
 	if (element->zref()) {
-		boost::filesystem::path zref_path = GetPathFromUtf8((const char *)element->zref());
+		boost::filesystem::path zref_path = GetPathFromUtf8(reinterpret_cast<const char *>(element->zref()));
 		if (zref_path.is_absolute()) {
 			std::cerr << "found an absolute zref: "
 				 << element->zref()
@@ -316,17 +316,17 @@ bool DatabaseDriver::Initialize()
 bool DatabaseDriver::SaveNumericalConfiguration(const NumericalConfiguration *nc)
 {
 	int e;
-	e = sqlite3_bind_text(nc_stmt_, 1, (const char *)nc->rg_name(), -1, SQLITE_STATIC);
+	e = sqlite3_bind_text(nc_stmt_, 1, reinterpret_cast<const char *>(nc->rg_name()), -1, SQLITE_STATIC);
 	if (e != SQLITE_OK) {
 		std::cerr << "failed to bind rg_name: " << e << std::endl;
 		return false;
 	}
-	e = sqlite3_bind_text(nc_stmt_, 2, (const char *)nc->rg_seed(), -1, SQLITE_STATIC);
+	e = sqlite3_bind_text(nc_stmt_, 2, reinterpret_cast<const char *>(nc->rg_seed()), -1, SQLITE_STATIC);
 	if (e != SQLITE_OK) {
 		std::cerr << "failed to bind rg_seed: " << e << std::endl;
 		return false;
 	}
-	e = sqlite3_bind_text(nc_stmt_, 3, (const char *)nc->integration(), -1, SQLITE_STATIC);
+	e = sqlite3_bind_text(nc_stmt_, 3, reinterpret_cast<const char *>(nc->integration()), -1, SQLITE_STATIC);
 	if (e != SQLITE_OK) {
 		std::cerr << "failed to bind integration: " << e << std::endl;
 		return false;
@@ -336,7 +336,7 @@ bool DatabaseDriver::SaveNumericalConfiguration(const NumericalConfiguration *nc
 		std::cerr << "failed to bind sts_unit_id: " << e << std::endl;
 		return false;
 	}
-	e = sqlite3_bind_text(nc_stmt_, 5, (const char *)nc->sts_value(), -1, SQLITE_STATIC);
+	e = sqlite3_bind_text(nc_stmt_, 5, reinterpret_cast<const char *>(nc->sts_value()), -1, SQLITE_STATIC);
 	if (e != SQLITE_OK) {
 		std::cerr << "failed to bind sts_value: " << e << std::endl;
 		return false;
@@ -358,7 +358,7 @@ bool DatabaseDriver::SaveTimeDiscretization(const TimeDiscretization *td, const 
 		std::cerr << "failed to bind unit_id: " << e << std::endl;
 		return false;
 	}
-	e = sqlite3_bind_text(td_stmt_, 2, (const char *)td->step(), -1, SQLITE_STATIC);
+	e = sqlite3_bind_text(td_stmt_, 2, reinterpret_cast<const char *>(td->step()), -1, SQLITE_STATIC);
 	if (e != SQLITE_OK) {
 		std::cerr << "failed to bind step: " << e << std::endl;
 		return false;
@@ -391,7 +391,7 @@ bool DatabaseDriver::SaveUnit(Unit *unit)
 		std::cerr << "failed to bind unit_id: " << e << std::endl;
 		return false;
 	}
-	e = sqlite3_bind_text(unit_stmt_, 2, (const char *)unit->name(), -1, SQLITE_STATIC);
+	e = sqlite3_bind_text(unit_stmt_, 2, reinterpret_cast<const char *>(unit->name()), -1, SQLITE_STATIC);
 	if (e != SQLITE_OK) {
 		std::cerr << "failed to bind name: " << e << std::endl;
 		return false;
@@ -496,12 +496,12 @@ bool DatabaseDriver::SaveModule(Module *module)
 		std::cerr << "failed to bind module_id: " << e << std::endl;
 		return false;
 	}
-	e = sqlite3_bind_text(module_stmt_, 2, (const char *)module->type(), -1, SQLITE_STATIC);
+	e = sqlite3_bind_text(module_stmt_, 2, reinterpret_cast<const char *>(module->type()), -1, SQLITE_STATIC);
 	if (e != SQLITE_OK) {
 		std::cerr << "failed to bind type: " << e << std::endl;
 		return false;
 	}
-	e = sqlite3_bind_text(module_stmt_, 3, (const char *)module->name(), -1, SQLITE_STATIC);
+	e = sqlite3_bind_text(module_stmt_, 3, reinterpret_cast<const char *>(module->name()), -1, SQLITE_STATIC);
 	if (e != SQLITE_OK) {
 		std::cerr << "failed to bind name: " << e << std::endl;
 		return false;
@@ -517,7 +517,7 @@ bool DatabaseDriver::SaveModule(Module *module)
 		std::cerr << "failed to bind capsulated_by: " << e << std::endl;
 		return false;
 	}
-	e = sqlite3_bind_text(module_stmt_, 5, (const char *)module->template_state(), -1, SQLITE_STATIC);
+	e = sqlite3_bind_text(module_stmt_, 5, reinterpret_cast<const char *>(module->template_state()), -1, SQLITE_STATIC);
 	if (e != SQLITE_OK) {
 		std::cerr << "failed to bind template_state: " << e << std::endl;
 		return false;
@@ -554,7 +554,7 @@ bool DatabaseDriver::SavePq(const Module *module, PQ *pq)
 		std::cerr << "failed to bind module_rowid: " << e << std::endl;
 		return false;
 	}
-	e = sqlite3_bind_text(pq_stmt_, 2, (const char *)pq->GetType(), -1, SQLITE_STATIC);
+	e = sqlite3_bind_text(pq_stmt_, 2, reinterpret_cast<const char *>(pq->GetType()), -1, SQLITE_STATIC);
 	if (e != SQLITE_OK) {
 		std::cerr << "failed to bind type: " << e << std::endl;
 		return false;
@@ -582,12 +582,12 @@ bool DatabaseDriver::UpdatePq(const PQ *pq, bool independent)
 	assert(pq->IsSaved());
 	sqlite3_stmt *stmt = update_stmt_[kPq];
 	int e;
-	e = sqlite3_bind_text(stmt, 1, (const char *)pq->unit_id(), -1, SQLITE_STATIC);
+	e = sqlite3_bind_text(stmt, 1, reinterpret_cast<const char *>(pq->unit_id()), -1, SQLITE_STATIC);
 	if (e != SQLITE_OK) {
 		std::cerr << "failed to bind unit_id: " << e << std::endl;
 		return false;
 	}
-	e = sqlite3_bind_text(stmt, 2, (const char *)pq->name(), -1, SQLITE_STATIC);
+	e = sqlite3_bind_text(stmt, 2, reinterpret_cast<const char *>(pq->name()), -1, SQLITE_STATIC);
 	if (e != SQLITE_OK) {
 		std::cerr << "failed to bind name: " << e << std::endl;
 		return false;
@@ -602,7 +602,7 @@ bool DatabaseDriver::UpdatePq(const PQ *pq, bool independent)
 		std::cerr << "failed to bind nrows: " << e << std::endl;
 		return false;
 	}
-	e = sqlite3_bind_text(stmt, 5, (const char *)pq->max_delay(), -1, SQLITE_STATIC);
+	e = sqlite3_bind_text(stmt, 5, reinterpret_cast<const char *>(pq->max_delay()), -1, SQLITE_STATIC);
 	if (e != SQLITE_OK) {
 		std::cerr << "failed to bind max_delay: " << e << std::endl;
 		return false;
@@ -708,7 +708,7 @@ bool DatabaseDriver::SaveNode(const PQ *pq, const Node *node)
 		std::cerr << "failed to bind node_id: " << e << std::endl;
 		return false;
 	}
-	e = sqlite3_bind_text(node_stmt_, 3, (const char *)node->name(), -1, SQLITE_STATIC);
+	e = sqlite3_bind_text(node_stmt_, 3, reinterpret_cast<const char *>(node->name()), -1, SQLITE_STATIC);
 	if (e != SQLITE_OK) {
 		std::cerr << "failed to bind name: " << e << std::endl;
 		return false;
@@ -779,7 +779,7 @@ bool DatabaseDriver::SaveReference(const PQ *pq, const Reference *reference, con
 			 extra->definition() &&
 			 xmlStrEqual(extra->definition()->type(), reinterpret_cast<const xmlChar *>("reduction")) ) {
 			Reduction reduction;
-			if (!ConvertStringToReduction((const char *)extra->definition()->sub_type(),
+			if (!ConvertStringToReduction(reinterpret_cast<const char *>(extra->definition()->sub_type()),
 										  &reduction))
 				return false;
 			e = sqlite3_bind_int(refport_stmt_, 3, static_cast<int>(reduction));
@@ -804,7 +804,7 @@ bool DatabaseDriver::SaveReference(const PQ *pq, const Reference *reference, con
 			std::cerr << "failed to bind timeseries_id: " << e << std::endl;
 			return false;
 		}
-		e = sqlite3_bind_text(refts_stmt_, 3, (const char *)reference->element_id(), -1, SQLITE_STATIC);
+		e = sqlite3_bind_text(refts_stmt_, 3, reinterpret_cast<const char *>(reference->element_id()), -1, SQLITE_STATIC);
 		if (e != SQLITE_OK) {
 			std::cerr << "failed to bind element_id: " << e << std::endl;
 			return false;
@@ -827,7 +827,7 @@ bool DatabaseDriver::SaveExtraImplementation(const PQ *pq, const ExtraImplementa
 		std::cerr << "failed to bind pq_rowid: " << e << std::endl;
 		return false;
 	}
-	e = sqlite3_bind_text(extra_stmt_, 2, (const char *)extra->order(), -1, SQLITE_STATIC);
+	e = sqlite3_bind_text(extra_stmt_, 2, reinterpret_cast<const char *>(extra->order()), -1, SQLITE_STATIC);
 	if (e != SQLITE_OK) {
 		std::cerr << "failed to bind order_type: " << e << std::endl;
 		return false;
@@ -857,7 +857,7 @@ bool DatabaseDriver::SaveEdge(const Edge *edge)
 		std::cerr << "failed to bind tail_module_id: " << e << std::endl;
 		return false;
 	}
-	e = sqlite3_bind_text(edge_stmt_, 2, (const char *)edge->tail_port_id(), -1, SQLITE_STATIC);
+	e = sqlite3_bind_text(edge_stmt_, 2, reinterpret_cast<const char *>(edge->tail_port_id()), -1, SQLITE_STATIC);
 	if (e != SQLITE_OK) {
 		std::cerr << "failed to bind tail_port_id: " << e << std::endl;
 		return false;
@@ -867,7 +867,7 @@ bool DatabaseDriver::SaveEdge(const Edge *edge)
 		std::cerr << "failed to bind head_module_id: " << e << std::endl;
 		return false;
 	}
-	e = sqlite3_bind_text(edge_stmt_, 4, (const char *)edge->head_port_id(), -1, SQLITE_STATIC);
+	e = sqlite3_bind_text(edge_stmt_, 4, reinterpret_cast<const char *>(edge->head_port_id()), -1, SQLITE_STATIC);
 	if (e != SQLITE_OK) {
 		std::cerr << "failed to bind head_port_id: " << e << std::endl;
 		return false;
@@ -889,17 +889,17 @@ bool DatabaseDriver::SaveBridge(const PQ *pq, const Bridge *bridge)
 		std::cerr << "failed to bind pq_rowid: " << e << std::endl;
 		return false;
 	}
-	e = sqlite3_bind_text(bridge_stmt_, 2, (const char *)bridge->direction(), -1, SQLITE_STATIC);
+	e = sqlite3_bind_text(bridge_stmt_, 2, reinterpret_cast<const char *>(bridge->direction()), -1, SQLITE_STATIC);
 	if (e != SQLITE_OK) {
 		std::cerr << "failed to bind direction: " << e << std::endl;
 		return false;
 	}
-	e = sqlite3_bind_text(bridge_stmt_, 3, (const char *)bridge->sub_type(), -1, SQLITE_STATIC);
+	e = sqlite3_bind_text(bridge_stmt_, 3, reinterpret_cast<const char *>(bridge->sub_type()), -1, SQLITE_STATIC);
 	if (e != SQLITE_OK) {
 		std::cerr << "failed to bind sub_type: " << e << std::endl;
 		return false;
 	}
-	e = sqlite3_bind_text(bridge_stmt_, 4, (const char *)bridge->connector(), -1, SQLITE_STATIC);
+	e = sqlite3_bind_text(bridge_stmt_, 4, reinterpret_cast<const char *>(bridge->connector()), -1, SQLITE_STATIC);
 	if (e != SQLITE_OK) {
 		std::cerr << "failed to bind connector: " << e << std::endl;
 		return false;
@@ -930,7 +930,7 @@ bool DatabaseDriver::SaveImport(const Module *module, const Import *import,
 		std::cerr << "failed to bind module_rowid: " << e << std::endl;
 		return false;
 	}
-	e = sqlite3_bind_text(import_stmt_, 2, (const char *)import->type(), -1, SQLITE_STATIC);
+	e = sqlite3_bind_text(import_stmt_, 2, reinterpret_cast<const char *>(import->type()), -1, SQLITE_STATIC);
 	if (e != SQLITE_OK) {
 		std::cerr << "failed to bind type: " << e << std::endl;
 		return false;
@@ -977,7 +977,7 @@ bool DatabaseDriver::SaveInstance(Instance *instance)
 		std::cerr << "failed to bind template_id: " << e << std::endl;
 		return false;
 	}
-	e = sqlite3_bind_text(instance_stmt_, 3, (const char *)instance->label(), -1, SQLITE_STATIC);
+	e = sqlite3_bind_text(instance_stmt_, 3, reinterpret_cast<const char *>(instance->label()), -1, SQLITE_STATIC);
 	if (e != SQLITE_OK) {
 		std::cerr << "failed to bind label: " << e << std::endl;
 		return false;
@@ -1043,7 +1043,7 @@ bool DatabaseDriver::SaveTargetPq(const TargetModule *tm, const TargetPq *tpq)
 		return false;
 	}
 	std::string math = tpq->GetString();
-	e = sqlite3_bind_text(tpq_stmt_, 3, (const char *)math.c_str(), -1, SQLITE_STATIC);
+	e = sqlite3_bind_text(tpq_stmt_, 3, reinterpret_cast<const char *>(math.c_str()), -1, SQLITE_STATIC);
 	if (e != SQLITE_OK) {
 		std::cerr << "failed to bind math: " << e << std::endl;
 		return false;
@@ -1096,22 +1096,22 @@ bool DatabaseDriver::SavePort(const Module *module, const Port *port)
 		std::cerr << "failed to bind module_rowid: " << e << std::endl;
 		return false;
 	}
-	e = sqlite3_bind_text(port_stmt_, 2, (const char *)port->port_id(), -1, SQLITE_STATIC);
+	e = sqlite3_bind_text(port_stmt_, 2, reinterpret_cast<const char *>(port->port_id()), -1, SQLITE_STATIC);
 	if (e != SQLITE_OK) {
 		std::cerr << "failed to bind port_id: " << e << std::endl;
 		return false;
 	}
-	e = sqlite3_bind_text(port_stmt_, 3, (const char *)port->direction(), -1, SQLITE_STATIC);
+	e = sqlite3_bind_text(port_stmt_, 3, reinterpret_cast<const char *>(port->direction()), -1, SQLITE_STATIC);
 	if (e != SQLITE_OK) {
 		std::cerr << "failed to bind direction: " << e << std::endl;
 		return false;
 	}
-	e = sqlite3_bind_text(port_stmt_, 4, (const char *)port->ref_pq_id(), -1, SQLITE_STATIC);
+	e = sqlite3_bind_text(port_stmt_, 4, reinterpret_cast<const char *>(port->ref_pq_id()), -1, SQLITE_STATIC);
 	if (e != SQLITE_OK) {
 		std::cerr << "failed to bind ref_pq_id: " << e << std::endl;
 		return false;
 	}
-	e = sqlite3_bind_text(port_stmt_, 5, (const char *)port->multiple(), -1, SQLITE_STATIC);
+	e = sqlite3_bind_text(port_stmt_, 5, reinterpret_cast<const char *>(port->multiple()), -1, SQLITE_STATIC);
 	if (e != SQLITE_OK) {
 		std::cerr << "failed to bind multiple: " << e << std::endl;
 		return false;
@@ -1142,12 +1142,12 @@ bool DatabaseDriver::SaveTimeseries(const Module *module, const Timeseries *ts,
 		std::cerr << "failed to bind module_rowid: " << e << std::endl;
 		return false;
 	}
-	e = sqlite3_bind_text(timeseries_stmt_, 2, (const char *)ts->timeseries_id(), -1, SQLITE_STATIC);
+	e = sqlite3_bind_text(timeseries_stmt_, 2, reinterpret_cast<const char *>(ts->timeseries_id()), -1, SQLITE_STATIC);
 	if (e != SQLITE_OK) {
 		std::cerr << "failed to bind timeseries_id: " << e << std::endl;
 		return false;
 	}
-	e = sqlite3_bind_text(timeseries_stmt_, 3, (const char *)ts->format(), -1, SQLITE_STATIC);
+	e = sqlite3_bind_text(timeseries_stmt_, 3, reinterpret_cast<const char *>(ts->format()), -1, SQLITE_STATIC);
 	if (e != SQLITE_OK) {
 		std::cerr << "failed to bind format: " << e << std::endl;
 		return false;

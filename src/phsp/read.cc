@@ -160,7 +160,7 @@ public:
 	boost::uuids::uuid GetUuid() const {
 		assert(uuid_);
 		boost::uuids::string_generator gen;
-		return gen((const char *)uuid_);
+		return gen(reinterpret_cast<const char *>(uuid_));
 	}
 
 private:
@@ -222,7 +222,7 @@ private:
 				model->set_format(xmlTextReaderValue(text_reader_));
 				if ( !xmlStrEqual(model->format(), reinterpret_cast<const xmlChar *>("phml")) &&
 					 !xmlStrEqual(model->format(), reinterpret_cast<const xmlChar *>("sbml")) ) {
-					std::cerr << "unknown format of <model>: " << (const char *)model->format() << std::endl;
+					std::cerr << "unknown format of <model>: " << reinterpret_cast<const char *>(model->format()) << std::endl;
 					return -2;
 				}
 			} else if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("iref"))) {
@@ -253,7 +253,7 @@ private:
 				 << std::endl;
 			return -2;
 		}
-		e = sqlite3_bind_text(stmt, 1, (const char *)model->iref(), -1, SQLITE_STATIC);
+		e = sqlite3_bind_text(stmt, 1, reinterpret_cast<const char *>(model->iref()), -1, SQLITE_STATIC);
 		if (e != SQLITE_OK) {
 			std::cerr << "failed to bind parameter: " << e << std::endl;
 			return -2;
@@ -276,7 +276,7 @@ private:
 		}
 		if (e != SQLITE_ROW) {
 			std::cerr << "failed to find a corresponding model: "
-				 << (const char *)model->iref()
+					  << reinterpret_cast<const char *>(model->iref())
 				 << std::endl;
 			return -2;
 		}
@@ -294,7 +294,7 @@ private:
 			return -2;
 		}
 
-		boost::filesystem::path mp = GetPathFromUtf8((const char *)model->iref());
+		boost::filesystem::path mp = GetPathFromUtf8(reinterpret_cast<const char *>(model->iref()));
 		boost::filesystem::path amp = boost::filesystem::absolute(mp, cp);
 		std::unique_ptr<char[]> utf8amp(GetUtf8FromPath(amp));
 
@@ -353,7 +353,7 @@ private:
 				 << std::endl;
 			return -2;
 		}
-		e = sqlite3_bind_text(stmt, 1, (const char *)model->format(), -1, SQLITE_STATIC);
+		e = sqlite3_bind_text(stmt, 1, reinterpret_cast<const char *>(model->format()), -1, SQLITE_STATIC);
 		if (e != SQLITE_OK) {
 			std::cerr << "failed to bind parameter: " << e << std::endl;
 			return -2;
@@ -492,7 +492,7 @@ private:
 				}
 			} else if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("lower"))) {
 				boost::rational<long> lower;
-				bool b = base::Rational<long>::FromString((const char *)xmlTextReaderConstValue(text_reader_), lower);
+				bool b = base::Rational<long>::FromString(reinterpret_cast<const char *>(xmlTextReaderConstValue(text_reader_)), lower);
 				if (!b) {
 					std::cerr << "failed to parse lower" << std::endl;
 					return -2;
@@ -500,7 +500,7 @@ private:
 				range->set_lower(lower);
 			} else if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("upper"))) {
 				boost::rational<long> upper;
-				bool b = base::Rational<long>::FromString((const char *)xmlTextReaderConstValue(text_reader_), upper);
+				bool b = base::Rational<long>::FromString(reinterpret_cast<const char *>(xmlTextReaderConstValue(text_reader_)), upper);
 				if (!b) {
 					std::cerr << "failed to parse upper" << std::endl;
 					return -2;
@@ -508,7 +508,7 @@ private:
 				range->set_upper(upper);
 			} else if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("step"))) {
 				boost::rational<long> step;
-				bool b = base::Rational<long>::FromString((const char *)xmlTextReaderConstValue(text_reader_), step);
+				bool b = base::Rational<long>::FromString(reinterpret_cast<const char *>(xmlTextReaderConstValue(text_reader_)), step);
 				if (!b) {
 					std::cerr << "failed to parse step" << std::endl;
 					return -2;
@@ -536,7 +536,7 @@ private:
 				 << std::endl;
 			return -2;
 		}
-		e = sqlite3_bind_text(stmt, 1, (const char *)parameter->name(), -1, SQLITE_STATIC);
+		e = sqlite3_bind_text(stmt, 1, reinterpret_cast<const char *>(parameter->name()), -1, SQLITE_STATIC);
 		if (e != SQLITE_OK) {
 			std::cerr << "failed to bind parameter: " << e << std::endl;
 			return -2;
@@ -567,7 +567,7 @@ private:
 		} else { // enum
 			i = xmlTextReaderMoveToElement(text_reader_);
 			if (i < 0) return i;
-			e = sqlite3_bind_text(stmt, 2, (const char *)xmlTextReaderReadString(text_reader_), -1, xmlFree);
+			e = sqlite3_bind_text(stmt, 2, reinterpret_cast<const char *>(xmlTextReaderReadString(text_reader_)), -1, xmlFree);
 			if (e != SQLITE_OK) {
 				std::cerr << "failed to bind parameter: " << e << std::endl;
 				return -2;
@@ -620,7 +620,7 @@ private:
 			if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("module-id"))) {
 				target->set_uuid(xmlTextReaderValue(text_reader_));
 			} else if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("physical-quantity-id"))) {
-				int id = atoi((const char *)xmlTextReaderConstValue(text_reader_));
+				int id = atoi(reinterpret_cast<const char *>(xmlTextReaderConstValue(text_reader_)));
 				if (id <= 0) {
 					std::cerr << "invalid physical-quantity-id: " << id << std::endl;
 					return -2;
@@ -703,9 +703,9 @@ private:
 								return -2;
 							}
 							const char *id = nullptr;
-							if (target->species_id()) id = (const char *)target->species_id();
-							if (target->parameter_id()) id = (const char *)target->parameter_id();
-							if (target->reaction_id()) id = (const char *)target->reaction_id();
+							if (target->species_id()) id = reinterpret_cast<const char *>(target->species_id());
+							if (target->parameter_id()) id = reinterpret_cast<const char *>(target->parameter_id());
+							if (target->reaction_id()) id = reinterpret_cast<const char *>(target->reaction_id());
 							assert(id);
 							size_t len = strlen(id);
 							char *buf = (char *)malloc(len + 6);

@@ -95,7 +95,7 @@ public:
 			boost::uuids::uuid mu;
 			std::memcpy(&mu, module_id, mu.size());
 			if (label) {
-				m->emplace(mu, Instance(uu, std::string((const char *)label)));
+				m->emplace(mu, Instance(uu, std::string(reinterpret_cast<const char *>(label))));
 			} else {
 				m->emplace(mu, Instance(uu));
 			}
@@ -214,7 +214,7 @@ bool Branch(const boost::filesystem::path &path, sqlite3 *db)
 		const unsigned char *template_state = sqlite3_column_text(stmt, 2);
 
 		// include the module if it is a non-template module
-		if (!template_state || std::strcmp((const char *)template_state, "true") != 0) {
+		if (!template_state || std::strcmp(reinterpret_cast<const char *>(template_state), "true") != 0) {
 			result.emplace_back(new Node(uuid, uuid, level));
 			continue;
 		}

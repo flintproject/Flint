@@ -31,7 +31,7 @@ public:
 
 	boost::uuids::uuid GetUuid() const {
 		boost::uuids::string_generator gen;
-		return gen((const char *)module_id_);
+		return gen(reinterpret_cast<const char *>(module_id_));
 	}
 
 	bool IsSaved() const {

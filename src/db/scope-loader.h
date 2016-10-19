@@ -35,7 +35,7 @@ public:
 			boost::uuids::uuid uu, su;
 			std::memcpy(&uu, uuid, uu.size());
 			std::memcpy(&su, space_id, su.size());
-			if (!handler->Handle(uu, su, (const char *)label))
+			if (!handler->Handle(uu, su, reinterpret_cast<const char *>(label)))
 				return false;
 		}
 		if (e != SQLITE_DONE) {

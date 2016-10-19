@@ -32,7 +32,7 @@ public:
 			assert(uuid);
 			boost::uuids::uuid u;
 			std::memcpy(&u, uuid, u.size());
-			if (!handler->Handle(u, (const char *)name))
+			if (!handler->Handle(u, reinterpret_cast<const char *>(name)))
 				return false;
 		}
 		if (e != SQLITE_DONE) {

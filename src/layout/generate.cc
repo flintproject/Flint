@@ -117,7 +117,7 @@ public:
 			std::memcpy(&u, uuid, u.size());
 			std::memcpy(&key, space_id, key.size());
 			if (label) {
-				(*m)[key].emplace_back(new Node(u, std::string((const char *)label)));
+				(*m)[key].emplace_back(new Node(u, std::string(reinterpret_cast<const char *>(label))));
 			} else {
 				(*m)[key].emplace_back(new Node(u));
 			}

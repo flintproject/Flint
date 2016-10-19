@@ -72,8 +72,8 @@ bool GraphIvRewriter::Rewrite(sqlite3 *db)
 		std::memcpy(&u, module_id, u.size());
 		if (!Process(pq_rowid,
 					 u,
-					 (const char *)name,
-					 (const char *)math)) return false;
+					 reinterpret_cast<const char *>(name),
+					 reinterpret_cast<const char *>(math))) return false;
 	}
 	if (e != SQLITE_DONE) {
 		std::cerr << "failed to step statement: " << kQueryGraph << ": " << e << std::endl;

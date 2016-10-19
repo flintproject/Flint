@@ -163,7 +163,7 @@ bool GraphMathRewriter::Rewrite(sqlite3 *db)
 		sqlite3_int64 rowid = sqlite3_column_int64(stmt_select_, 0);
 		sqlite3_int64 pq_rowid = sqlite3_column_int64(stmt_select_, 1);
 		const unsigned char *math = sqlite3_column_text(stmt_select_, 2);
-		if (!Process(rowid, pq_rowid, (const char *)math)) return false;
+		if (!Process(rowid, pq_rowid, reinterpret_cast<const char *>(math))) return false;
 	}
 	if (e != SQLITE_DONE) {
 		std::cerr << "failed to step statement: " << query_select_ << ": " << e << std::endl;

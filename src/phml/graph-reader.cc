@@ -157,7 +157,7 @@ int GraphReader::ReadNode()
 		const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
 		if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("node-id"))) {
 			const xmlChar *value = xmlTextReaderConstValue(text_reader_);
-			node_id = atoi((const char *)value);
+			node_id = atoi(reinterpret_cast<const char *>(value));
 			if (node_id <= 0) {
 				std::cerr << "invalid value of node-id of <node>: " << value << std::endl;
 				return -2;
@@ -269,7 +269,7 @@ int GraphReader::ReadArc()
 		const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
 		if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("arc-id"))) {
 			const xmlChar *value = xmlTextReaderConstValue(text_reader_);
-			arc_id = atoi((const char *)value);
+			arc_id = atoi(reinterpret_cast<const char *>(value));
 			if (arc_id <= 0) {
 				std::cerr << "invalid value of arc-id of <arc>: " << value << std::endl;
 				return -2;

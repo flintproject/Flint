@@ -27,12 +27,12 @@ public:
 
 	boost::uuids::uuid GetUuidOfTemplateId() const {
 		boost::uuids::string_generator gen;
-		return gen((const char *)template_id_);
+		return gen(reinterpret_cast<const char *>(template_id_));
 	}
 
 	boost::uuids::uuid GetUuidOfRefModuleId() const {
 		boost::uuids::string_generator gen;
-		return gen((const char *)ref_module_id_);
+		return gen(reinterpret_cast<const char *>(ref_module_id_));
 	}
 
 private:

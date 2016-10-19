@@ -62,8 +62,8 @@ public:
 			}
 			std::unique_ptr<Variable> var(new Variable((char)type[0],
 													   id,
-													   (const char *)name,
-													   (const char *)unit,
+													   reinterpret_cast<const char *>(name),
+													   reinterpret_cast<const char *>(unit),
 													   col,
 													   row,
 													   capacity,

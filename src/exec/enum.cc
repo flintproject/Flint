@@ -53,14 +53,14 @@ int Enumerate(sqlite3 *db)
 
 		const unsigned char *n, *r;
 		n = sqlite3_column_text(stmt, 0);
-		size_t nlen = std::strlen((const char *)n);
+		size_t nlen = std::strlen(reinterpret_cast<const char *>(n));
 		if (nlen == 0) {
 			std::fprintf(stderr, "empty parameter name\n");
 			/* TODO */
 			return 0;
 		}
 		r = sqlite3_column_text(stmt, 1);
-		size_t rlen = std::strlen((const char *)r);
+		size_t rlen = std::strlen(reinterpret_cast<const char *>(r));
 		if (rlen == 0) {
 			std::fprintf(stderr, "empty value\n");
 			/* TODO */
@@ -98,7 +98,7 @@ int Enumerate(sqlite3 *db)
 			return 0;
 		}
 		ranges[num_params].values = static_cast<double *>(vv);
-		const char *s = (const char *)r;
+		const char *s = reinterpret_cast<const char *>(r);
 		char *t;
 		for (int i=0;i<num_values;i++) {
 			errno = 0;

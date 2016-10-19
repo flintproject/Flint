@@ -127,7 +127,7 @@ public:
 			if (independent_ && !xmlStrEqual(name, name_))
 				independent_ = false;
 		}
-		*os_ << "%" << (const char *)name;
+		*os_ << "%" << reinterpret_cast<const char *>(name);
 		xmlFree(s);
 		return xmlTextReaderRead(text_reader_);
 	}
@@ -179,7 +179,7 @@ public:
 				xmlChar *t;
 				i = Trim(s, &t);
 				if (i == 0) return -2;
-				*os_ << (const char *)t;
+				*os_ << reinterpret_cast<const char *>(t);
 				xmlFree(s);
 			} else if (type == XML_READER_TYPE_ELEMENT) {
 				const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
@@ -216,7 +216,7 @@ public:
 		xmlChar *name;
 		int i = Trim(s, &name);
 		if (i == 0) return -2;
-		*os_ << "$" << (const char *)name;
+		*os_ << "$" << reinterpret_cast<const char *>(name);
 		xmlFree(s);
 		return xmlTextReaderRead(text_reader_);
 	}
@@ -420,12 +420,12 @@ int CompareElementEntry(const void *x, const void *y)
 int MathDumper::ReadElement(int space) {
 	const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
 	ElementEntry key, *result;
-	key.local_name = (const char *)local_name;
+	key.local_name = reinterpret_cast<const char *>(local_name);
 	result = static_cast<ElementEntry *>(std::bsearch(&key, kElementTable, NUM_OF_ELEMENT_ENTRIES,
 													  sizeof(ElementEntry), CompareElementEntry));
 	if (space) os_->put(' ');
 	if (result) return (this->*(result->reader))();
-	*os_ << (const char *)local_name;
+	*os_ << reinterpret_cast<const char *>(local_name);
 	return xmlTextReaderRead(text_reader_);
 }
 

@@ -44,12 +44,12 @@ public:
 
 	boost::uuids::uuid GetUuidOfTailModuleId() const {
 		boost::uuids::string_generator gen;
-		return gen((const char *)tail_module_id_);
+		return gen(reinterpret_cast<const char *>(tail_module_id_));
 	}
 
 	boost::uuids::uuid GetUuidOfHeadModuleId() const {
 		boost::uuids::string_generator gen;
-		return gen((const char *)head_module_id_);
+		return gen(reinterpret_cast<const char *>(head_module_id_));
 	}
 
 private:

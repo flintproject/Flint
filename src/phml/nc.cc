@@ -73,16 +73,16 @@ private:
 
 		if (rg_name) {
 			::phml::RandomGenerator *rg = nc_->mutable_rg();
-			rg->set_name((const char *)rg_name);
-			if (rg_seed) rg->set_seed((const char *)rg_seed);
+			rg->set_name(reinterpret_cast<const char *>(rg_name));
+			if (rg_seed) rg->set_seed(reinterpret_cast<const char *>(rg_seed));
 		}
 		if (integration) {
-			nc_->set_integration((const char *)integration);
+			nc_->set_integration(reinterpret_cast<const char *>(integration));
 		}
 		if (sts_unit_id > 0 && sts_value) {
 			::phml::SimulationTimeSpan *sts = nc_->mutable_sts();
 			sts->set_unit_id(sts_unit_id);
-			sts->set_value((const char *)sts_value);
+			sts->set_value(reinterpret_cast<const char *>(sts_value));
 		}
 		return true;
 	}
@@ -102,7 +102,7 @@ private:
 		if (unit_id > 0 && step) {
 			::phml::TimeDiscretization *td = nc_->mutable_td();
 			td->set_unit_id(unit_id);
-			td->set_step((const char *)step);
+			td->set_step(reinterpret_cast<const char *>(step));
 		}
 		return true;
 	}
