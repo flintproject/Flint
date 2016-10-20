@@ -2,7 +2,6 @@
 #include "driver.h"
 
 #include <cstdio>
-#include <cstdlib>
 #include <iostream>
 
 namespace flint {
@@ -13,7 +12,6 @@ Driver::Driver(const char *filename)
 {
 	if (sqlite3_open(filename, &db_) != SQLITE_OK) {
 		std::cerr << "failed to open database: " << filename << std::endl;
-		std::exit(EXIT_FAILURE);
 	}
 }
 

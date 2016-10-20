@@ -2,7 +2,6 @@
 #include "variable-inserter.h"
 
 #include <cstdio>
-#include <cstdlib>
 #include <cstring>
 #include <iostream>
 
@@ -25,7 +24,6 @@ VariableInserter::VariableInserter(const char *table, bool independent, sqlite3 
 		std::cerr << "failed to prepare statement: " << e
 			 << ": " << query_.get()
 			 << std::endl;
-		std::exit(EXIT_FAILURE);
 	}
 }
 

@@ -2,7 +2,6 @@
 #include "eq-inserter.h"
 
 #include <cstdio>
-#include <cstdlib>
 #include <cstring>
 #include <iostream>
 
@@ -24,7 +23,6 @@ EqInserter::EqInserter(const char *table, sqlite3 *db)
 		std::cerr << "failed to prepare statement: " << e
 			 << ": " << query_.get()
 			 << std::endl;
-		std::exit(EXIT_FAILURE);
 	}
 }
 

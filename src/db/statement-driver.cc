@@ -2,7 +2,6 @@
 #include "statement-driver.h"
 
 #include <cstdio>
-#include <cstdlib>
 #include <iostream>
 
 namespace flint {
@@ -16,7 +15,6 @@ StatementDriver::StatementDriver(sqlite3 *db, const char *query)
 	if (e != SQLITE_OK) {
 		std::cerr << "failed to prepare statement: " << e
 			 << ": " << query << std::endl;
-		exit(EXIT_FAILURE);
 	}
 }
 
