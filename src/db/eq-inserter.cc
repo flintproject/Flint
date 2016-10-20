@@ -38,17 +38,20 @@ bool EqInserter::Insert(const boost::uuids::uuid &uuid, const char *math)
 	int e;
 	e = sqlite3_bind_blob(stmt_, 1, &uuid, uuid.size(), SQLITE_STATIC);
 	if (e != SQLITE_OK) {
-		std::cerr << "failed to bind uuid: " << e << std::endl;
+		std::cerr << "failed to bind uuid: " << query_.get()
+				  << ": " << e << std::endl;
 		return false;
 	}
 	e = sqlite3_bind_text(stmt_, 2, math, -1, SQLITE_STATIC);
 	if (e != SQLITE_OK) {
-		std::cerr << "failed to bind math: " << e << std::endl;
+		std::cerr << "failed to bind math: " << query_.get()
+				  << ": " << e << std::endl;
 		return false;
 	}
 	e = sqlite3_step(stmt_);
 	if (e != SQLITE_DONE) {
-		std::cerr << "failed to step statement: " << e << std::endl;
+		std::cerr << "failed to step statement: " << query_.get()
+				  << ": " << e << std::endl;
 		return false;
 	}
 	sqlite3_reset(stmt_);
