@@ -2,7 +2,6 @@
 #include "uuidgen.h"
 
 #include <cstdio>
-#include <cstdlib>
 #include <iostream>
 #include <memory>
 #include <string>
@@ -61,7 +60,8 @@ UuidGenerator::UuidGenerator(const boost::filesystem::path &path)
 	std::string path_s = path.string();
 	std::uint32_t value;
 	std::unique_ptr<Adler32Loader> loader(new Adler32Loader(path_s.c_str()));
-	if (!loader->Load(&value)) exit(EXIT_FAILURE);
+	if (!loader->Load(&value))
+		value = 0; // fallback to seed zero
 	ran_.seed(value);
 }
 
