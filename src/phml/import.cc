@@ -87,6 +87,8 @@ private:
 bool DumpImport(sqlite3 *db, const boost::uuids::uuid &uuid)
 {
 	std::unique_ptr<char[]> model_file(GetModelFilename(db));
+	if (!model_file)
+		return false;
 	xmlDocPtr doc = xmlParseFile(model_file.get());
 	if (!doc) {
 		std::cerr << "xml file seems malformed: " << model_file.get() << std::endl;

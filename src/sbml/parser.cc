@@ -548,6 +548,8 @@ namespace sbml {
 bool Parse(sqlite3 *db)
 {
 	std::unique_ptr<char[]> model_file(GetModelFilename(db));
+	if (!model_file)
+		return false;
 	odeModel_t *model = ODEModel_createFromFile(model_file.get());
 	if (!model) {
 		std::cerr << "could not create ODE system from an SBML model: " << model_file.get() << std::endl;

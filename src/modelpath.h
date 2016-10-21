@@ -9,6 +9,7 @@ namespace flint {
 /*
  * Read the input file, and return an internal C string, which the client
  * code is responsible for freeing by delete [] after use.
+ * Returns null in case of errors.
  * Note that db is for read only.
  */
 char *GetGivenFilename(sqlite3 *db);

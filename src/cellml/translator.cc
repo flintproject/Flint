@@ -425,6 +425,8 @@ private:
 bool TranslateCellml(sqlite3 *db)
 {
 	std::unique_ptr<char[]> filename(GetModelFilename(db));
+	if (!filename)
+		return false;
 	boost::filesystem::path path(filename.get());
 
 	if (!BeginTransaction(db))

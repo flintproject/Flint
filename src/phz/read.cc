@@ -29,6 +29,8 @@ namespace phz {
 bool Read(sqlite3 *db, const char *dir)
 {
 	std::unique_ptr<char[]> filename(GetGivenFilename(db));
+	if (!filename)
+		return false;
 	int ze;
 	struct zip *zp = zip_open(filename.get(), 0, &ze);
 	if (!zp) {

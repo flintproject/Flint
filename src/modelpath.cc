@@ -2,7 +2,6 @@
 #include "modelpath.h"
 
 #include <cstdio>
-#include <cstdlib>
 #include <cstring>
 #include <memory>
 #include <string>
@@ -19,9 +18,8 @@ typedef int (*FindFunction)(sqlite3 *, char *);
 char *GetInputFilename(sqlite3 *db, FindFunction f)
 {
 	std::unique_ptr<char[]> utf8(new char[1024]); // FIXME
-	if (!f(db, utf8.get())) {
-		std::exit(EXIT_FAILURE);
-	}
+	if (!f(db, utf8.get()))
+		return nullptr;
 	boost::filesystem::path path = GetPathFromUtf8(utf8.get());
 	std::string path_s = path.string();
 	size_t s = path_s.size();

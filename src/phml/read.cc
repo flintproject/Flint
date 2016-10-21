@@ -2349,8 +2349,12 @@ bool CreateViews(sqlite3 *db, const View *views, size_t n)
 bool Read(sqlite3 *db)
 {
 	std::unique_ptr<char[]> given_filename(GetGivenFilename(db));
+	if (!given_filename)
+		return false;
 	boost::filesystem::path given_path(given_filename.get());
 	std::unique_ptr<char[]> model_filename(GetModelFilename(db));
+	if (!model_filename)
+		return false;
 	boost::filesystem::path model_path(model_filename.get());
 
 	// prepare database; create tables

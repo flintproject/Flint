@@ -740,6 +740,8 @@ public:
 
 	bool Parse() {
 		std::unique_ptr<char[]> model_file(GetModelFilename(db_));
+		if (!model_file)
+			return false;
 		if (!BeginTransaction(db_)) return false;
 		if (!CreateTables()) return false;
 		if (!PrepareStatements()) return false;
