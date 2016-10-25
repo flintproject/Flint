@@ -4,6 +4,7 @@ all: seed0.isd seed1.isd
 
 check: seed0.isd seed1.isd
 	isddiff -T $^
+	isddiff -T -N $^
 
 clean:
 	-rm -f seed0.isd seed1.isd

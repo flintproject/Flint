@@ -109,6 +109,7 @@ void PrintDifference(std::uint32_t i, std::uint32_t k,
 
 int CompareBody(std::uint32_t num_objs,
 				double adelta, double rdelta,
+				bool skip_nan,
 				const std::string &input_file0, std::istream &is0,
 				const std::string &input_file1, std::istream &is1)
 {
@@ -161,20 +162,34 @@ int CompareBody(std::uint32_t num_objs,
 			return kExitFailure;
 		}
 
-		if (std::strncmp(buf0.get(), buf1.get(), nb) == 0) continue;
+		if ( skip_nan &&
+			 std::memcmp(buf0.get(), buf1.get(), nb) == 0 )
+			continue;
 
 		for (std::uint32_t k=0;k<num_objs;k++) {
 			double v0, v1;
 			memcpy(&v0, &buf0[k * sizeof(double)], sizeof(double));
 			memcpy(&v1, &buf1[k * sizeof(double)], sizeof(double));
+			if ( std::isnan(v0) || std::isnan(v1) ) {
+				if (!skip_nan) {
+					r = kExitDifferent;
+					PrintDifference(i, k, v0, v1);
+				}
+				continue;
+			}
+			if (v0 == v1)
+				continue;
+			double ad = std::fabs(v0 - v1);
+			if (ad <= adelta)
+				continue;
 			double av0 = std::fabs(v0);
 			double av1 = std::fabs(v1);
-			if (av0 < av1) std::swap(av0, av1);
-			if ( (av0 - av1) > adelta &&
-				 (1 - av1/av0) > rdelta ) {
-				r = kExitDifferent;
-				PrintDifference(i, k, v0, v1);
-			}
+			if (av0 < av1)
+				std::swap(av0, av1);
+			if (ad/av0 <= rdelta)
+				continue;
+			r = kExitDifferent;
+			PrintDifference(i, k, v0, v1);
 		}
 	}
 }
@@ -198,6 +213,7 @@ int main(int argc, char *argv[])
 		("ignore-descriptions,D", "ignore descriptions")
 		("ignore-timestamp,T", "ignore timestamp")
 		("ignore-units,U", "ignore units")
+		("skip-nan,N", "give up comparing NaN if any")
 		("help,h", "Show this message")
 		("input0", po::value<std::string>(&input_file0), "the one of input file")
 		("input1", po::value<std::string>(&input_file1), "the other input file");
@@ -325,6 +341,7 @@ int main(int argc, char *argv[])
 
 	int r = CompareBody(no0,
 						adelta, rdelta,
+						vm.count("skip-nan"),
 						input_file0, ifs0,
 						input_file1, ifs1);
 

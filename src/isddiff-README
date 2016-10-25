@@ -4,7 +4,7 @@
 
 = Synopsis
 
-isddiff [-a delta] [-r delta] [-B] [-C] [-D] [-T] [-U] input0 input1
+isddiff [-a delta] [-r delta] [-B] [-C] [-D] [-T] [-U] [-N] input0 input1
 isddiff --help
 
 
@@ -30,6 +30,9 @@ isddiff --help
 
 --ignore-units, -U
     ignore units.
+
+--skip-nan, -N
+    give up comparing NaN if any.
 
 --help, -h
     show help.

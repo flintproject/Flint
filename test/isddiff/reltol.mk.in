@@ -1,0 +1,20 @@
+.PHONY: all clean check
+
+all: reltol0.isd reltol1.isd
+
+check: reltol0.isd reltol1.isd
+	! isddiff -T $^
+	! isddiff -T -N $^
+	! isddiff -T -r 0.05 $^
+	! isddiff -T -r 0.05 -N $^
+	isddiff -T -r 0.2 $^
+	isddiff -T -r 0.2 -N $^
+
+clean:
+	-rm -f reltol0.isd reltol1.isd
+
+reltol0.isd: DATADIR/reltol0.csv
+	csv2isd $< $@
+
+reltol1.isd: DATADIR/reltol1.csv
+	csv2isd $< $@

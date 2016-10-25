@@ -4,6 +4,7 @@ all: TEST-0.isd TEST-1.isd
 
 check: TEST-0.isd TEST-1.isd
 	isddiff -T $^
+	isddiff -T -N $^
 
 clean:
 	-rm -rf TEST-0.isd TEST-1.isd
