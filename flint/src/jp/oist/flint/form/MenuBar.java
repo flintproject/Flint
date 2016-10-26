@@ -105,22 +105,20 @@ public class MenuBar extends JMenuBar
         mMenuRecentModels = new JMenu("Recent Models...");
         mMenuRecentModels.setName(RECENT_MODELS);
 
-        if (ExperimentalFeatures.enabled()) {
-            mMenuExport = new JMenu("Export...");
-            mMenuExport.setName(EXPORT);
-            mMenuExport.setEnabled(false);
+        mMenuExport = new JMenu("Export...");
+        mMenuExport.setName(EXPORT);
+        mMenuExport.setEnabled(false);
 
-            mItemExportC = new JMenuItem("C");
-            mItemExportC.setName(EXPORT_C);
-            mItemExportC.setToolTipText("Export simulation code into C");
-            mItemExportC.addActionListener(new ActionListener() {
+        mItemExportC = new JMenuItem("C");
+        mItemExportC.setName(EXPORT_C);
+        mItemExportC.setToolTipText("Export simulation code into C");
+        mItemExportC.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     mFrame.exportIntoC();
                 }
             });
-            mMenuExport.add(mItemExportC);
-        }
+        mMenuExport.add(mItemExportC);
 
         mItemClose        = new JMenuItem("Close");
         mItemClose.setName(CLOSE);

@@ -390,6 +390,40 @@ To submit a model to Flint K3,
 \FigureOfImage{new-job-to-k3}{The ``New job to K3'' dialog.}
 Then a dialog will appear to tell whether it is done successfully or not.
 
+\section{Exporting C source code from model}
+Not only running online simulation, but also Flint can export simulation code
+as a C99 source file from a loaded model. So far it works only for pure ODE models.
+
+\subsection{From menu}
+To export C code from a model,
+\begin{enumerate}
+\item Load a model
+\item Select the menu ``File''$\rightarrow$``Export''$\rightarrow$``C''
+\item Choose a target filename via the file dialog that follows.
+\end{enumerate}
+\FigureOfImage{export-to-c}{The menu ``File''$\rightarrow$``Export''$\rightarrow$``C''.}
+Then a dialog will appear to tell whether it is done successfully or not.
+
+Please note that the numerical method used in the exported code is the one
+specified in the original model, e.g., Euler or Runge-Kutta 4th-order method;
+the ARKode solver of SUNDIALS has not been supported yet.
+
+\subsection{How to build a program from exported code}
+Once a C source file exported, what to do next is building the program by a C compiler
+conforming C99 standard.
+
+If, for example, gcc is available, then invoking the following code
+\begin{verbatim}
+$ gcc -O3 -std=c99 -o simulate exported.c
+\end{verbatim}
+will produce an executable named {\tt simulate} from the C source file {\tt exported.c}.
+
+Finally,
+\begin{verbatim}
+$ ./simulate output.isd
+\end{verbatim}
+will run a simulation, writing the whole output into {\tt output.isd}.
+
 \section{Preference}
 \label{sec:preference}
 Users can customize Flint's preference.
