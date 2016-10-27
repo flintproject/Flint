@@ -63,6 +63,8 @@ bool Run(const cli::RunOption &option)
 	// redirect errors if requested
 	if (option.has_error_filename()) {
 		boost::filesystem::path error_path = GetPathFromUtf8(option.error_filename().c_str());
+		if (error_path.empty())
+			return false;
 		std::string error_file = error_path.string();
 		if (!std::freopen(error_file.c_str(), "w", stderr)) {
 			std::perror(error_file.c_str());
@@ -83,6 +85,8 @@ bool Run(const cli::RunOption &option)
 	// prepare spec.txt in both cases
 	if (option.has_spec_filename()) {
 		boost::filesystem::path spec_path = GetPathFromUtf8(option.spec_filename().c_str());
+		if (spec_path.empty())
+			return false;
 		boost::system::error_code ec;
 		if (!boost::filesystem::is_regular_file(spec_path, ec) || ec) {
 			std::cerr << ec.message() << std::endl;
@@ -134,6 +138,8 @@ bool Run(const cli::RunOption &option)
 			return false;
 	}
 	boost::filesystem::path output_path = GetPathFromUtf8(option.output_filename().c_str());
+	if (output_path.empty())
+		return false;
 	std::string output_file = output_path.string();
 	return job::Job(".", "0", task.get(), nullptr, &data, output_file.c_str(), reader, db);
 }

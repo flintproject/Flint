@@ -132,6 +132,8 @@ bool Read(sqlite3 *db, const char *dir)
 
 	boost::filesystem::path amp = boost::filesystem::absolute(tp);
 	std::unique_ptr<char[]> mf(GetUtf8FromPath(amp));
+	if (!mf)
+		return false;
 	if (strlen(mf.get()) >= 1024) {
 		std::cerr << "resulting filename is too long: "
 			 << mf.get()

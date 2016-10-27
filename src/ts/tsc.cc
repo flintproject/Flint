@@ -80,6 +80,8 @@ public:
 
 	bool Handle(const boost::uuids::uuid &uuid, int ts_id, const char *format, const char *ref) {
 		boost::filesystem::path ref_path(GetPathFromUtf8(ref));
+		if (ref_path.empty())
+			return false;
 		if (std::strcmp(format, "csv") == 0) {
 			boost::system::error_code ec;
 			boost::filesystem::path temp_path("tsc.%%%%-%%%%-%%%%-%%%%.isd");
@@ -121,6 +123,8 @@ public:
 	bool Insert(const boost::filesystem::path &path)
 	{
 		std::unique_ptr<char[]> filename(GetUtf8FromPath(path));
+		if (!filename)
+			return false;
 		int e;
 		e = sqlite3_bind_text(stmt(), 1, filename.get(), -1, nullptr);
 		if (e != SQLITE_OK) {

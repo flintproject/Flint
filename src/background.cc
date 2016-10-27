@@ -19,9 +19,11 @@ namespace flint {
 
 namespace {
 
-bool WaitForLockAndDie(const char *filename)
+void WaitForLockAndDie(const char *filename)
 {
 	boost::filesystem::path lock_path = GetPathFromUtf8(filename);
+	if (lock_path.empty())
+		std::_Exit(EXIT_FAILURE);
 	std::string lock_file = lock_path.string();
 	boost::interprocess::file_lock lock(lock_file.c_str());
 	boost::interprocess::scoped_lock<boost::interprocess::file_lock> sl(lock);

@@ -54,6 +54,8 @@ bool GetAbsolutePathFromReference(const TElement *element,
 {
 	if (element->iref()) {
 		boost::filesystem::path iref_path = GetPathFromUtf8(reinterpret_cast<const char *>(element->iref()));
+		if (iref_path.empty())
+			return false;
 		if (iref_path.is_absolute()) {
 			*output_path = iref_path;
 			return true;
@@ -64,6 +66,8 @@ bool GetAbsolutePathFromReference(const TElement *element,
 	}
 	if (element->zref()) {
 		boost::filesystem::path zref_path = GetPathFromUtf8(reinterpret_cast<const char *>(element->zref()));
+		if (zref_path.empty())
+			return false;
 		if (zref_path.is_absolute()) {
 			std::cerr << "found an absolute zref: "
 				 << element->zref()
@@ -944,6 +948,8 @@ bool DatabaseDriver::SaveImport(const Module *module, const Import *import,
 			return false;
 		}
 		utf8.reset(GetUtf8FromPath(path));
+		if (!utf8)
+			return false;
 		e = sqlite3_bind_text(import_stmt_, 3, utf8.get(), -1, SQLITE_STATIC);
 	} else {
 		e = sqlite3_bind_null(import_stmt_, 3);
@@ -1159,6 +1165,8 @@ bool DatabaseDriver::SaveTimeseries(const Module *module, const Timeseries *ts,
 		return false;
 	}
 	std::unique_ptr<char[]> utf8(GetUtf8FromPath(path));
+	if (!utf8)
+		return false;
 	e = sqlite3_bind_text(timeseries_stmt_, 4, utf8.get(), -1, SQLITE_STATIC);
 	if (e != SQLITE_OK) {
 		std::cerr << "failed to bind ref: " << e << std::endl;

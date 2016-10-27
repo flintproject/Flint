@@ -295,8 +295,12 @@ private:
 		}
 
 		boost::filesystem::path mp = GetPathFromUtf8(reinterpret_cast<const char *>(model->iref()));
+		if (mp.empty())
+			return -2;
 		boost::filesystem::path amp = boost::filesystem::absolute(mp, cp);
 		std::unique_ptr<char[]> utf8amp(GetUtf8FromPath(amp));
+		if (!utf8amp)
+			return -2;
 
 		// update the model entry
 		e = sqlite3_prepare_v2(db_, "UPDATE models SET absolute_path = ? WHERE rowid = ?",
@@ -792,6 +796,8 @@ private:
 bool Read(const char *phsp_file, sqlite3 *db)
 {
 	boost::filesystem::path pp = GetPathFromUtf8(phsp_file);
+	if (pp.empty())
+		return false;
 	std::string pp_s = pp.string();
 
 	xmlTextReaderPtr text_reader = xmlReaderForFile(pp_s.c_str(), nullptr, 0);

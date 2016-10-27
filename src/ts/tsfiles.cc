@@ -16,7 +16,10 @@ int Process(void *data, int argc, char **argv, char **names)
 	(void)names;
 	assert(argc == 1);
 	TimeseriesVector *tv = static_cast<TimeseriesVector *>(data);
-	std::unique_ptr<TimeseriesData> td(new TimeseriesData(GetPathFromUtf8(argv[0])));
+	boost::filesystem::path path = GetPathFromUtf8(argv[0]);
+	if (path.empty())
+		return 1;
+	std::unique_ptr<TimeseriesData> td(new TimeseriesData(path));
 	tv->push_back(std::move(td));
 	return 0;
 }

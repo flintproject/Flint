@@ -112,6 +112,8 @@ bool Read(const char *sedml_file, sqlite3 *db)
 {
 	bool r = false;
 	boost::filesystem::path sedml_path = GetPathFromUtf8(sedml_file);
+	if (sedml_path.empty())
+		return false;
 	std::string sedml_path_s = sedml_path.string();
 
 	struct sedml_document *doc = sedml_create_document();

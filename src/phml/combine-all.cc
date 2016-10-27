@@ -85,6 +85,8 @@ bool CombineAll(sqlite3 *db)
 			std::sprintf(xml_file.get(), "%s.xml", us.c_str());
 			boost::filesystem::path xml_path = boost::filesystem::absolute(xml_file.get());
 			std::unique_ptr<char[]> xml_utf8(GetUtf8FromPath(xml_path));
+			if (!xml_utf8)
+				return false;
 			if (!SaveFile(uuid, xml_utf8.get())) return false;
 		}
 		uv.push_back(uuid);

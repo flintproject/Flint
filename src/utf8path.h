@@ -9,13 +9,15 @@ namespace flint {
 
 /*
  * Get a path from a filename encoded in UTF-8.
+ * Returns the empty path if failed.
  */
 boost::filesystem::path GetPathFromUtf8(const char *utf8);
 
 /*
  * Get the filename encoded in UTF-8 from a path.
- * The return value is a null-terminated string, which the client code is
- * responsible for freeing by delete [] after use.
+ * If succeeded, the return value is a null-terminated string, which the client
+ * code is responsible for freeing by delete [] after use.
+ * Returns null in case of failure.
  */
 char *GetUtf8FromPath(const boost::filesystem::path &path);
 

@@ -21,6 +21,8 @@ char *GetInputFilename(sqlite3 *db, FindFunction f)
 	if (!f(db, utf8.get()))
 		return nullptr;
 	boost::filesystem::path path = GetPathFromUtf8(utf8.get());
+	if (path.empty())
+		return nullptr;
 	std::string path_s = path.string();
 	size_t s = path_s.size();
 	char *filename = new char[s+1]; // FIXME

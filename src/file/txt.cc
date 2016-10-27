@@ -10,6 +10,8 @@ namespace file {
 bool Txt(const char *filename, Format *format, int dir)
 {
 	boost::filesystem::path path = GetPathFromUtf8(filename);
+	if (path.empty())
+		return false;
 	std::string path_s = path.string();
 	if (!DetectFormat(path_s.c_str(), format))
 		return false;

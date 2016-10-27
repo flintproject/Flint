@@ -1,11 +1,11 @@
 /* -*- Mode: C++; tab-width: 4; indent-tabs-mode: t; c-basic-offset: 4 -*- vim:set ts=4 sw=4 sts=4 noet: */
 #include "utf8path.h"
 
+#include <cassert>
 #include <cstring>
 #include <iostream>
 
 #ifdef _WIN32
-#include <cassert>
 #include <cstdio>
 #include <cstdlib>
 #include <memory>
@@ -17,6 +17,8 @@ namespace flint {
 
 boost::filesystem::path GetPathFromUtf8(const char *utf8)
 {
+	if (!utf8)
+		return {};
 #ifdef _WIN32
 	int len = MultiByteToWideChar(CP_UTF8,
 								  MB_ERR_INVALID_CHARS,
@@ -30,7 +32,7 @@ boost::filesystem::path GetPathFromUtf8(const char *utf8)
 				  << ": "
 				  << __FILE__ ":" << __LINE__
 				  << std::endl;
-		std::exit(EXIT_FAILURE);
+		return {};
 	}
 	std::unique_ptr<wchar_t[]> buf(new wchar_t[len]);
 	int r = MultiByteToWideChar(CP_UTF8,
@@ -45,7 +47,7 @@ boost::filesystem::path GetPathFromUtf8(const char *utf8)
 				  << ": "
 				  << __FILE__ ":" << __LINE__
 				  << std::endl;
-		std::exit(EXIT_FAILURE);
+		return {};
 	}
 	boost::filesystem::path path(buf.get());
 	return path;
@@ -57,6 +59,8 @@ boost::filesystem::path GetPathFromUtf8(const char *utf8)
 
 char *GetUtf8FromPath(const boost::filesystem::path &path)
 {
+	if (path.empty())
+		return nullptr;
 #ifdef _WIN32
 	const std::wstring &path_ws(path.wstring());
 	int len = WideCharToMultiByte(CP_UTF8,
@@ -73,7 +77,7 @@ char *GetUtf8FromPath(const boost::filesystem::path &path)
 				  << ": "
 				  << __FILE__ ":" << __LINE__
 				  << std::endl;
-		std::exit(EXIT_FAILURE);
+		return nullptr;
 	}
 	char *utf8 = new char[len+1];
 	int r = WideCharToMultiByte(CP_UTF8,
@@ -90,16 +94,16 @@ char *GetUtf8FromPath(const boost::filesystem::path &path)
 				  << ": "
 				  << __FILE__ ":" << __LINE__
 				  << std::endl;
-		std::exit(EXIT_FAILURE);
+		return nullptr;
 	}
 	utf8[len] = '\0';
 	return utf8;
 #else
 	const std::string &path_s(path.string());
 	size_t s = path_s.size();
+	assert(s > 0);
 	char *utf8 = new char[s+1];
-	if (s > 0)
-		std::memcpy(utf8, path_s.c_str(), s);
+	std::memcpy(utf8, path_s.c_str(), s);
 	utf8[s] = '\0';
 	return utf8;
 #endif

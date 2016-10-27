@@ -115,6 +115,8 @@ bool Translate(const cli::RunOption &option)
 	// prepare spec.txt in both cases
 	if (option.has_spec_filename()) {
 		boost::filesystem::path spec_path = GetPathFromUtf8(option.spec_filename().c_str());
+		if (spec_path.empty())
+			return false;
 		boost::system::error_code ec;
 		if (!boost::filesystem::is_regular_file(spec_path, ec) || ec) {
 			std::cerr << ec.message() << std::endl;
@@ -157,6 +159,8 @@ bool Translate(const cli::RunOption &option)
 			return false;
 	}
 	boost::filesystem::path output_path = GetPathFromUtf8(option.output_filename().c_str());
+	if (output_path.empty())
+		return false;
 	std::string output_file = output_path.string();
 
 	// load layout at first
