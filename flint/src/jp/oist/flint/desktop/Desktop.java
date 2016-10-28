@@ -189,7 +189,7 @@ public class Desktop implements IPhspConfiguration {
         final PhspProgressMonitor monitor = new PhspProgressMonitor(simulator.getSimulationDao(),
                                                                     mainFrame,
                                                                     mProgressPane);
-        ParametrizationMonitor pm = new ParametrizationMonitor(simulator, mProgressPane, monitor);
+        final ParametrizationMonitor pm = new ParametrizationMonitor(simulator, mProgressPane, monitor);
         simulator.addPropertyChangeListener(new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent e) {
@@ -198,6 +198,7 @@ public class Desktop implements IPhspConfiguration {
                 if ("state".equals(propertyName)) {
                     if (SwingWorker.StateValue.DONE.equals(nv)) {
                         try {
+                            pm.get(); // to wait until the detail window has been prepared
                             monitor.stop();
                             //TODO
                             Boolean result = simulator.get();
