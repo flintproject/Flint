@@ -66,7 +66,7 @@
               <File Id='protobuf_java.jar' Name='protobuf-java-3.1.0.jar' DiskId='1' Source='lib/protobuf-java-3.1.0.jar' />
             </Component>
             <Component Id='sqlite_jdbc' Guid='7a65beae-bef5-11e3-8a59-a7cc068a8766'>
-              <File Id='sqlite_jdbc.jar' Name='sqlite-jdbc-3.8.11.2.jar' DiskId='1' Source='lib/sqlite-jdbc-3.8.11.2.jar' />
+              <File Id='sqlite_jdbc.jar' Name='sqlite-jdbc-3.14.2.1.jar' DiskId='1' Source='lib/sqlite-jdbc-3.14.2.1.jar' />
             </Component>
           </Directory>
 

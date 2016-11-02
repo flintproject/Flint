@@ -18,7 +18,7 @@ JARS := \
     jfreechart-1.0.19 \
     log4j-1.2.17 \
     protobuf-java-$(PROTOBUF_VERSION) \
-    sqlite-jdbc-3.8.11.2
+    sqlite-jdbc-3.14.2.1
 BOOST_DYLIBS := \
     filesystem \
     program_options \
