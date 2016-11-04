@@ -2,6 +2,8 @@
 #ifndef FLINT_DB_STATEMENT_DRIVER_H_
 #define FLINT_DB_STATEMENT_DRIVER_H_
 
+#include <cstdio>
+#include <iostream>
 #include "sqlite3.h"
 
 namespace flint {
@@ -12,7 +14,16 @@ public:
 	StatementDriver(const StatementDriver &) = delete;
 	StatementDriver &operator=(const StatementDriver &) = delete;
 
-	StatementDriver(sqlite3 *db, const char *query);
+	template<int N>
+	StatementDriver(sqlite3 *db, const char (&query)[N])
+		: stmt_(nullptr)
+	{
+		int e = sqlite3_prepare_v2(db, query, N, &stmt_, nullptr);
+		if (e != SQLITE_OK) {
+			std::cerr << "failed to prepare statement: " << e
+					  << ": " << query << std::endl;
+		}
+	}
 
 	~StatementDriver();
 
