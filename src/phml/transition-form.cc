@@ -10,6 +10,8 @@
 #include <map>
 #include <unordered_map>
 
+#include "db/utility.h"
+
 namespace flint {
 namespace {
 
@@ -92,17 +94,17 @@ bool TransitionForm::operator()(sqlite3 *db)
 	ConditionMap cm;
 	PqArcMap pam;
 	int e;
-	e = sqlite3_prepare_v2(db, kQuerySelect, -1, &stmt_select_, nullptr);
+	e = db::PrepareStatement(db, kQuerySelect, &stmt_select_);
 	if (e != SQLITE_OK) {
 		std::cerr << "failed to prepare statement: " << kQuerySelect << ": " << e << std::endl;
 		return false;
 	}
-	e = sqlite3_prepare_v2(db, kQueryExtras, -1, &stmt_extras_, nullptr);
+	e = db::PrepareStatement(db, kQueryExtras, &stmt_extras_);
 	if (e != SQLITE_OK) {
 		std::cerr << "failed to prepare statement: " << kQueryExtras << ": " << e << std::endl;
 		return false;
 	}
-	e = sqlite3_prepare_v2(db, kQueryImpls, -1, &stmt_impls_, nullptr);
+	e = db::PrepareStatement(db, kQueryImpls, &stmt_impls_);
 	if (e != SQLITE_OK) {
 		std::cerr << "failed to prepare statement: " << kQueryImpls << ": " << e << std::endl;
 		return false;

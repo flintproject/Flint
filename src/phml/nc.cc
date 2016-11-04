@@ -13,6 +13,7 @@
 #include <memory>
 
 #include "db/statement-driver.h"
+#include "db/utility.h"
 #include "phml.pb.h"
 
 namespace flint {
@@ -39,14 +40,12 @@ public:
 
 	bool Drive(sqlite3 *db) {
 		int e;
-		e = sqlite3_prepare_v2(db, "SELECT * FROM ncs",
-							   -1, &nc_stmt_, nullptr);
+		e = db::PrepareStatement(db, "SELECT * FROM ncs", &nc_stmt_);
 		if (e != SQLITE_OK) {
 			std::cerr << "failed to prepare statement: " << e << std::endl;
 			return false;
 		}
-		e = sqlite3_prepare_v2(db, "SELECT unit_id, step FROM tds WHERE module_id IS NULL",
-							   -1, &td_stmt_, nullptr);
+		e = db::PrepareStatement(db, "SELECT unit_id, step FROM tds WHERE module_id IS NULL", &td_stmt_);
 		if (e != SQLITE_OK) {
 			std::cerr << "failed to prepare statement: " << e << std::endl;
 			return false;

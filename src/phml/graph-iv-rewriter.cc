@@ -9,6 +9,8 @@
 #include <boost/spirit/include/qi.hpp>
 #include <boost/uuid/uuid_io.hpp>
 
+#include "db/utility.h"
+
 namespace flint {
 
 namespace phml {
@@ -43,19 +45,19 @@ const char kQueryUpdate[] = "UPDATE ivs SET math = ? WHERE pq_rowid = ?";
 
 bool GraphIvRewriter::Rewrite(sqlite3 *db)
 {
-	int e = sqlite3_prepare_v2(db, kQueryGraph, -1, &stmt_graph_, nullptr);
+	int e = db::PrepareStatement(db, kQueryGraph, &stmt_graph_);
 	if (e != SQLITE_OK) {
 		std::cerr << "failed to prepare statement: " << kQueryGraph
 			 << ": " << e << std::endl;
 		return false;
 	}
-	e = sqlite3_prepare_v2(db, kQueryNode, -1, &stmt_node_, nullptr);
+	e = db::PrepareStatement(db, kQueryNode, &stmt_node_);
 	if (e != SQLITE_OK) {
 		std::cerr << "failed to prepare statement: " << kQueryNode
 			 << ": " << e << std::endl;
 		return false;
 	}
-	e = sqlite3_prepare_v2(db, kQueryUpdate, -1, &stmt_update_, nullptr);
+	e = db::PrepareStatement(db, kQueryUpdate, &stmt_update_);
 	if (e != SQLITE_OK) {
 		std::cerr << "failed to prepare statement: " << kQueryUpdate
 			 << ": " << e << std::endl;

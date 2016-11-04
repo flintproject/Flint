@@ -15,6 +15,7 @@
 
 #include <boost/uuid/string_generator.hpp>
 
+#include "db/utility.h"
 #include "utf8path.h"
 #include "phml/arc.h"
 #include "phml/bridge.h"
@@ -147,169 +148,169 @@ bool DatabaseDriver::Initialize()
 	int e;
 
 	// prepare statements
-	e = sqlite3_prepare_v2(db_, "INSERT INTO ncs VALUES (?, ?, ?, ?, ?)",
-						   -1, &nc_stmt_, nullptr);
+	e = db::PrepareStatement(db_, "INSERT INTO ncs VALUES (?, ?, ?, ?, ?)",
+							 &nc_stmt_);
 	if (e != SQLITE_OK) {
 		std::cerr << "failed to prepare statement: " << e << std::endl;
 		return false;
 	}
 
-	e = sqlite3_prepare_v2(db_, "INSERT INTO tds VALUES (?, ?, ?)",
-						   -1, &td_stmt_, nullptr);
+	e = db::PrepareStatement(db_, "INSERT INTO tds VALUES (?, ?, ?)",
+						     &td_stmt_);
 	if (e != SQLITE_OK) {
 		std::cerr << "failed to prepare statement: " << e << std::endl;
 		return false;
 	}
 
-	e = sqlite3_prepare_v2(db_, "INSERT INTO units VALUES (?, ?)",
-						   -1, &unit_stmt_, nullptr);
+	e = db::PrepareStatement(db_, "INSERT INTO units VALUES (?, ?)",
+						     &unit_stmt_);
 	if (e != SQLITE_OK) {
 		std::cerr << "failed to prepare statement: " << e << std::endl;
 		return false;
 	}
 
-	e = sqlite3_prepare_v2(db_, "INSERT INTO elements VALUES (?, ?, ?, ?, ?, ?)",
-						   -1, &element_stmt_, nullptr);
+	e = db::PrepareStatement(db_, "INSERT INTO elements VALUES (?, ?, ?, ?, ?, ?)",
+						     &element_stmt_);
 	if (e != SQLITE_OK) {
 		std::cerr << "failed to prepare statement: " << e << std::endl;
 		return false;
 	}
 
-	e = sqlite3_prepare_v2(db_, "INSERT INTO modules VALUES (?, ?, ?, ?, ?)",
-						   -1, &module_stmt_, nullptr);
+	e = db::PrepareStatement(db_, "INSERT INTO modules VALUES (?, ?, ?, ?, ?)",
+						     &module_stmt_);
 	if (e != SQLITE_OK) {
 		std::cerr << "failed to prepare statement: " << e << std::endl;
 		return false;
 	}
 
-	e = sqlite3_prepare_v2(db_, "INSERT INTO pqs (module_rowid, type, pq_id) VALUES (?, ?, ?)",
-						   -1, &pq_stmt_, nullptr);
+	e = db::PrepareStatement(db_, "INSERT INTO pqs (module_rowid, type, pq_id) VALUES (?, ?, ?)",
+						     &pq_stmt_);
 	if (e != SQLITE_OK) {
 		std::cerr << "failed to prepare statement: " << e << std::endl;
 		return false;
 	}
 
-	e = sqlite3_prepare_v2(db_, "INSERT INTO ivs VALUES (?, ?)",
-						   -1, &iv_stmt_, nullptr);
+	e = db::PrepareStatement(db_, "INSERT INTO ivs VALUES (?, ?)",
+						     &iv_stmt_);
 	if (e != SQLITE_OK) {
 		std::cerr << "failed to prepare statement: " << e << std::endl;
 		return false;
 	}
 
-	e = sqlite3_prepare_v2(db_, "INSERT INTO impls VALUES (?, ?)",
-						   -1, &impl_stmt_, nullptr);
+	e = db::PrepareStatement(db_, "INSERT INTO impls VALUES (?, ?)",
+						     &impl_stmt_);
 	if (e != SQLITE_OK) {
 		std::cerr << "failed to prepare statement: " << e << std::endl;
 		return false;
 	}
 
-	e = sqlite3_prepare_v2(db_, "INSERT INTO ecs VALUES (?, ?)",
-						   -1, &event_condition_stmt_, nullptr);
+	e = db::PrepareStatement(db_, "INSERT INTO ecs VALUES (?, ?)",
+						     &event_condition_stmt_);
 	if (e != SQLITE_OK) {
 		std::cerr << "failed to prepare statement: " << e << std::endl;
 		return false;
 	}
 
-	e = sqlite3_prepare_v2(db_, "INSERT INTO nodes VALUES (?, ?, ?)",
-						   -1, &node_stmt_, nullptr);
+	e = db::PrepareStatement(db_, "INSERT INTO nodes VALUES (?, ?, ?)",
+						     &node_stmt_);
 	if (e != SQLITE_OK) {
 		std::cerr << "failed to prepare statement: " << e << std::endl;
 		return false;
 	}
 
-	e = sqlite3_prepare_v2(db_, "INSERT INTO arcs VALUES (?, ?, ?, ?, ?)",
-						   -1, &arc_stmt_, nullptr);
+	e = db::PrepareStatement(db_, "INSERT INTO arcs VALUES (?, ?, ?, ?, ?)",
+						     &arc_stmt_);
 	if (e != SQLITE_OK) {
 		std::cerr << "failed to prepare statement: " << e << std::endl;
 		return false;
 	}
 
-	e = sqlite3_prepare_v2(db_, "INSERT INTO refports VALUES (?, ?, ?)",
-						   -1, &refport_stmt_, nullptr);
+	e = db::PrepareStatement(db_, "INSERT INTO refports VALUES (?, ?, ?)",
+						     &refport_stmt_);
 	if (e != SQLITE_OK) {
 		std::cerr << "failed to prepare statement: " << e << std::endl;
 		return false;
 	}
 
-	e = sqlite3_prepare_v2(db_, "INSERT INTO refts VALUES (?, ?, ?)",
-						   -1, &refts_stmt_, nullptr);
+	e = db::PrepareStatement(db_, "INSERT INTO refts VALUES (?, ?, ?)",
+						     &refts_stmt_);
 	if (e != SQLITE_OK) {
 		std::cerr << "failed to prepare statement: " << e << std::endl;
 		return false;
 	}
 
-	e = sqlite3_prepare_v2(db_, "INSERT INTO extras VALUES (?, ?, ?)",
-						   -1, &extra_stmt_, nullptr);
+	e = db::PrepareStatement(db_, "INSERT INTO extras VALUES (?, ?, ?)",
+						     &extra_stmt_);
 	if (e != SQLITE_OK) {
 		std::cerr << "failed to prepare statement: " << e << std::endl;
 		return false;
 	}
 
-	e = sqlite3_prepare_v2(db_, "INSERT INTO edges VALUES (?, ?, ?, ?)",
-						   -1, &edge_stmt_, nullptr);
+	e = db::PrepareStatement(db_, "INSERT INTO edges VALUES (?, ?, ?, ?)",
+						     &edge_stmt_);
 	if (e != SQLITE_OK) {
 		std::cerr << "failed to prepare statement: " << e << std::endl;
 		return false;
 	}
 
-	e = sqlite3_prepare_v2(db_, "INSERT INTO bridges VALUES (?, ?, ?, ?)",
-						   -1, &bridge_stmt_, nullptr);
+	e = db::PrepareStatement(db_, "INSERT INTO bridges VALUES (?, ?, ?, ?)",
+						     &bridge_stmt_);
 	if (e != SQLITE_OK) {
 		std::cerr << "failed to prepare statement: " << e << std::endl;
 		return false;
 	}
 
-	e = sqlite3_prepare_v2(db_, "INSERT INTO imports VALUES (?, ?, ?)",
-						   -1, &import_stmt_, nullptr);
+	e = db::PrepareStatement(db_, "INSERT INTO imports VALUES (?, ?, ?)",
+						     &import_stmt_);
 	if (e != SQLITE_OK) {
 		std::cerr << "failed to prepare statement: " << e << std::endl;
 		return false;
 	}
 
-	e = sqlite3_prepare_v2(db_, "INSERT INTO instances VALUES (?, ?, ?)",
-						   -1, &instance_stmt_, nullptr);
+	e = db::PrepareStatement(db_, "INSERT INTO instances VALUES (?, ?, ?)",
+						     &instance_stmt_);
 	if (e != SQLITE_OK) {
 		std::cerr << "failed to prepare statement: " << e << std::endl;
 		return false;
 	}
 
-	e = sqlite3_prepare_v2(db_, "INSERT INTO tms VALUES (?, ?)",
-						   -1, &tm_stmt_, nullptr);
+	e = db::PrepareStatement(db_, "INSERT INTO tms VALUES (?, ?)",
+						     &tm_stmt_);
 	if (e != SQLITE_OK) {
 		std::cerr << "failed to prepare statement: " << e << std::endl;
 		return false;
 	}
 
-	e = sqlite3_prepare_v2(db_, "INSERT INTO tpqs VALUES (?, ?, ?)",
-						   -1, &tpq_stmt_, nullptr);
+	e = db::PrepareStatement(db_, "INSERT INTO tpqs VALUES (?, ?, ?)",
+						     &tpq_stmt_);
 	if (e != SQLITE_OK) {
 		std::cerr << "failed to prepare statement: " << e << std::endl;
 		return false;
 	}
 
-	e = sqlite3_prepare_v2(db_, "INSERT INTO templates VALUES (?, ?)",
-						   -1, &template_stmt_, nullptr);
+	e = db::PrepareStatement(db_, "INSERT INTO templates VALUES (?, ?)",
+						     &template_stmt_);
 	if (e != SQLITE_OK) {
 		std::cerr << "failed to prepare statement: " << e << std::endl;
 		return false;
 	}
 
-	e = sqlite3_prepare_v2(db_, "INSERT INTO ports VALUES (?, ?, ?, ?, ?)",
-						   -1, &port_stmt_, nullptr);
+	e = db::PrepareStatement(db_, "INSERT INTO ports VALUES (?, ?, ?, ?, ?)",
+						     &port_stmt_);
 	if (e != SQLITE_OK) {
 		std::cerr << "failed to prepare statement: " << e << std::endl;
 		return false;
 	}
 
-	e = sqlite3_prepare_v2(db_, "INSERT INTO timeseries VALUES (?, ?, ?, ?)",
-						   -1, &timeseries_stmt_, nullptr);
+	e = db::PrepareStatement(db_, "INSERT INTO timeseries VALUES (?, ?, ?, ?)",
+						     &timeseries_stmt_);
 	if (e != SQLITE_OK) {
 		std::cerr << "failed to prepare statement: " << e << std::endl;
 		return false;
 	}
 
-	e = sqlite3_prepare_v2(db_, "UPDATE pqs SET unit_id = ?, name = ?, ncols = ?, nrows = ?, max_delay = ?, independent = ? WHERE rowid = ?",
-						   -1, &update_stmt_[kPq], nullptr);
+	e = db::PrepareStatement(db_, "UPDATE pqs SET unit_id = ?, name = ?, ncols = ?, nrows = ?, max_delay = ?, independent = ? WHERE rowid = ?",
+						     &update_stmt_[kPq]);
 	if (e != SQLITE_OK) {
 		std::cerr << "failed to prepare statement: " << e << std::endl;
 		return false;

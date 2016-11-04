@@ -23,6 +23,7 @@
 
 #include "base/rational.h"
 #include "db/query.h"
+#include "db/utility.h"
 #include "mathml/math_dumper.h"
 #include "sqlite3.h"
 #include "utf8path.h"
@@ -241,12 +242,12 @@ private:
 		// search corresponding tasks to the model
 		sqlite3_stmt *stmt;
 		int e;
-		e = sqlite3_prepare_v2(db_,
-							   "SELECT tasks.rowid FROM tasks"
-							   " LEFT JOIN models ON tasks.model_id = models.rowid"
-							   " WHERE models.model_path = ?"
-							   " ORDER BY tasks.rowid DESC",
-							   -1, &stmt, nullptr);
+		e = db::PrepareStatement(db_,
+								 "SELECT tasks.rowid FROM tasks"
+								 " LEFT JOIN models ON tasks.model_id = models.rowid"
+								 " WHERE models.model_path = ?"
+								 " ORDER BY tasks.rowid DESC",
+								 &stmt);
 		if (e != SQLITE_OK) {
 			std::cerr << "failed to prepare statement: "
 				 << e << " (" << __FILE__ << ":" << __LINE__ << ")"
@@ -303,8 +304,8 @@ private:
 			return -2;
 
 		// update the model entry
-		e = sqlite3_prepare_v2(db_, "UPDATE models SET absolute_path = ? WHERE rowid = ?",
-							   -1, &stmt, nullptr);
+		e = db::PrepareStatement(db_, "UPDATE models SET absolute_path = ? WHERE rowid = ?",
+								 &stmt);
 		if (e != SQLITE_OK) {
 			std::cerr << "failed to prepare statement: "
 				 << e << " (" << __FILE__ << ":" << __LINE__ << ")"

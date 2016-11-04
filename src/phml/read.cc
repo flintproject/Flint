@@ -24,6 +24,7 @@
 #include "db.h"
 #include "db/helper.h"
 #include "db/query.h"
+#include "db/utility.h"
 #include "flint/utf8string.h"
 #include "modelpath.h"
 #include "phml/bridge.h"
@@ -77,8 +78,13 @@ public:
 	}
 
 	bool Validate(sqlite3 *db) {
+		static const char kQuery[] =
+			"SELECT m0.module_id, m0.capsulated_by FROM modules AS m0 WHERE"
+			" m0.capsulated_by IS NOT NULL AND"
+			" NOT EXISTS (SELECT * FROM modules AS m1 WHERE m1.module_id = m0.capsulated_by)";
+
 		bool r = true;
-		int e = sqlite3_prepare_v2(db, kQuery, -1, &query_stmt_, nullptr);
+		int e = db::PrepareStatement(db, kQuery, &query_stmt_);
 		if (e != SQLITE_OK) {
 			std::cerr << "failed to prepare statement: " << kQuery << ": " << e << std::endl;
 			return false;
@@ -105,14 +111,8 @@ public:
 	}
 
 private:
-	static const char kQuery[];
-
 	sqlite3_stmt *query_stmt_;
 };
-
-const char CapsulatedByValidator::kQuery[] = "SELECT m0.module_id, m0.capsulated_by FROM modules AS m0 WHERE"
-											 " m0.capsulated_by IS NOT NULL AND"
-											 " NOT EXISTS (SELECT * FROM modules AS m1 WHERE m1.module_id = m0.capsulated_by)";
 
 class TreeWriter {
 public:
@@ -134,14 +134,14 @@ public:
 
 	bool Write(sqlite3 *db) {
 		int e;
-		e = sqlite3_prepare_v2(db, "SELECT module_id, capsulated_by FROM modules WHERE type = 'capsule' OR type = 'functional-unit'",
-							   -1, &query_stmt_, nullptr);
+		e = db::PrepareStatement(db, "SELECT module_id, capsulated_by FROM modules WHERE type = 'capsule' OR type = 'functional-unit'",
+								 &query_stmt_);
 		if (e != SQLITE_OK) {
 			std::cerr << "failed to prepare statement: " << e << std::endl;
 			return false;
 		}
-		e = sqlite3_prepare_v2(db, "INSERT INTO trees VALUES (?, ?)",
-							   -1, &tree_stmt_, nullptr);
+		e = db::PrepareStatement(db, "INSERT INTO trees VALUES (?, ?)",
+								 &tree_stmt_);
 		if (e != SQLITE_OK) {
 			std::cerr << "failed to prepare statement: " << e << std::endl;
 			return false;

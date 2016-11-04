@@ -13,6 +13,8 @@
 
 #include <boost/uuid/uuid_io.hpp>
 
+#include "db/utility.h"
+
 namespace flint {
 namespace phml {
 namespace {
@@ -140,8 +142,7 @@ public:
 
 	bool Load(sqlite3 *db, std::set<Edge> *edge_set)
 	{
-		int e = sqlite3_prepare_v2(db, "SELECT * FROM edges",
-								   -1, &stmt_, nullptr);
+		int e = db::PrepareStatement(db, "SELECT * FROM edges", &stmt_);
 		if (e != SQLITE_OK) {
 			std::cerr << "failed to prepare statement: " << e << std::endl;
 			return false;
@@ -187,8 +188,7 @@ public:
 
 	template<typename THandler>
 	bool Load(sqlite3 *db, THandler *handler) {
-		int e = sqlite3_prepare_v2(db, "SELECT * FROM journals",
-								   -1, &stmt_, nullptr);
+		int e = db::PrepareStatement(db, "SELECT * FROM journals", &stmt_);
 		if (e != SQLITE_OK) {
 			std::cerr << "failed to prepare statement: " << e << std::endl;
 			return false;
@@ -396,8 +396,7 @@ public:
 	}
 
 	bool Initialize(sqlite3 *db) {
-		int e = sqlite3_prepare_v2(db, "INSERT INTO spans VALUES (?, ?, ?, ?)",
-								   -1, &stmt_, nullptr);
+		int e = db::PrepareStatement(db, "INSERT INTO spans VALUES (?, ?, ?, ?)", &stmt_);
 		if (e != SQLITE_OK) {
 			std::cerr << "failed to prepare statement: "
 				 << e

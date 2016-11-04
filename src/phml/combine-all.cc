@@ -20,6 +20,7 @@
 
 #include "database.h"
 #include "db/driver.h"
+#include "db/utility.h"
 #include "phml/combine.h"
 #include "phml/import.h"
 #include "sbml.h"
@@ -60,9 +61,9 @@ bool CombineAll(sqlite3 *db)
 {
 	UuidVector uv;
 	sqlite3_stmt *stmt;
-	int e = sqlite3_prepare_v2(db,
-							   "SELECT m.module_id, i.type, i.ref FROM imports AS i LEFT JOIN modules AS m ON i.module_rowid = m.rowid",
-							   -1, &stmt, nullptr);
+	int e = db::PrepareStatement(db,
+								 "SELECT m.module_id, i.type, i.ref FROM imports AS i LEFT JOIN modules AS m ON i.module_rowid = m.rowid",
+								 &stmt);
 	if (e != SQLITE_OK) {
 		std::cerr << "failed to prepare statement: " << e << std::endl;
 		return false;

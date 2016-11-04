@@ -8,6 +8,8 @@
 #include <cstdlib>
 #include <cstring>
 
+#include "db/utility.h"
+
 namespace flint {
 namespace task {
 
@@ -17,8 +19,7 @@ bool Spec(int id, sqlite3 *db, FILE *fp)
 
 	int e;
 	sqlite3_stmt *stmt;
-	e = sqlite3_prepare_v2(db, "SELECT variable FROM dgs WHERE task_id = ?",
-						   -1, &stmt, nullptr);
+	e = db::PrepareStatement(db, "SELECT variable FROM dgs WHERE task_id = ?", &stmt);
 	if (e != SQLITE_OK) {
 		std::fprintf(stderr, "failed to prepare statement: %d\n", e);
 		return false;

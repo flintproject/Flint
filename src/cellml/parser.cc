@@ -16,6 +16,7 @@
 #include <libxml/xmlreader.h>
 
 #include "db/query.h"
+#include "db/utility.h"
 #include "mathml/math_dumper.h"
 #include "sqlite3.h"
 #include "modelpath.h"
@@ -771,45 +772,45 @@ private:
 		int e;
 		sqlite3_stmt *stmt;
 
-		e = sqlite3_prepare_v2(db_,
-							   "INSERT INTO cellml_units VALUES (?, ?, ?, ?, ?, ?)",
-							   -1, &stmt, nullptr);
+		e = db::PrepareStatement(db_,
+								 "INSERT INTO cellml_units VALUES (?, ?, ?, ?, ?, ?)",
+								 &stmt);
 		if (e != SQLITE_OK) {
 			std::cerr << "failed to prepare statement: " << e << std::endl;
 			return false;
 		}
 		stmt_units_ = stmt;
 
-		e = sqlite3_prepare_v2(db_,
-							   "INSERT INTO cellml_variables VALUES (?, ?, ?, ?, ?, ?)",
-							   -1, &stmt, nullptr);
+		e = db::PrepareStatement(db_,
+								 "INSERT INTO cellml_variables VALUES (?, ?, ?, ?, ?, ?)",
+								 &stmt);
 		if (e != SQLITE_OK) {
 			std::cerr << "failed to prepare statement: " << e << std::endl;
 			return false;
 		}
 		stmt_variables_ = stmt;
 
-		e = sqlite3_prepare_v2(db_,
-							   "INSERT INTO cellml_maths VALUES (?, ?)",
-							   -1, &stmt, nullptr);
+		e = db::PrepareStatement(db_,
+								 "INSERT INTO cellml_maths VALUES (?, ?)",
+								 &stmt);
 		if (e != SQLITE_OK) {
 			std::cerr << "failed to prepare statement: " << e << std::endl;
 			return false;
 		}
 		stmt_maths_ = stmt;
 
-		e = sqlite3_prepare_v2(db_,
-							   "INSERT INTO cellml_connections VALUES (?, ?)",
-							   -1, &stmt, nullptr);
+		e = db::PrepareStatement(db_,
+								 "INSERT INTO cellml_connections VALUES (?, ?)",
+								 &stmt);
 		if (e != SQLITE_OK) {
 			std::cerr << "failed to prepare statement: " << e << std::endl;
 			return false;
 		}
 		stmt_connections_ = stmt;
 
-		e = sqlite3_prepare_v2(db_,
-							   "INSERT INTO cellml_map_variables VALUES (?, ?, ?)",
-							   -1, &stmt, nullptr);
+		e = db::PrepareStatement(db_,
+								 "INSERT INTO cellml_map_variables VALUES (?, ?, ?)",
+								 &stmt);
 		if (e != SQLITE_OK) {
 			std::cerr << "failed to prepare statement: " << e << std::endl;
 			return false;
