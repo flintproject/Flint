@@ -10,6 +10,7 @@
 #include <string>
 #include <vector>
 
+#include "db/utility.h"
 #include "flint/sexp.h"
 #include "flint/sexp/parser.h"
 
@@ -148,7 +149,7 @@ bool GraphMathRewriter::Rewrite(sqlite3 *db)
 		std::cerr << "failed to prepare statement: " << query_select_ << ": " << e << std::endl;
 		return false;
 	}
-	e = sqlite3_prepare_v2(db, kQueryNode, -1, &stmt_node_, nullptr);
+	e = db::PrepareStatement(db, kQueryNode, &stmt_node_);
 	if (e != SQLITE_OK) {
 		std::cerr << "failed to prepare statement: " << kQueryNode << ": " << e << std::endl;
 		return false;

@@ -15,6 +15,7 @@
 #include <sedml/reader.h>
 
 #include "db/query.h"
+#include "db/utility.h"
 #include "sqlite3.h"
 #include "utf8path.h"
 
@@ -179,8 +180,7 @@ bool Read(const char *sedml_file, sqlite3 *db)
 
 		sqlite3_stmt *stmt;
 		int e;
-		e = sqlite3_prepare_v2(db, "INSERT INTO models VALUES (?, NULL)",
-							   -1, &stmt, nullptr);
+		e = db::PrepareStatement(db, "INSERT INTO models VALUES (?, NULL)", &stmt);
 		if (e != SQLITE_OK) {
 			fprintf(stderr, "failed to prepare statement: %d\n", e);
 			goto bail;
@@ -225,8 +225,7 @@ bool Read(const char *sedml_file, sqlite3 *db)
 		const struct sedml_uniformtimecourse *utc;
 		utc = (const struct sedml_uniformtimecourse *)simulation;
 
-		e = sqlite3_prepare_v2(db, "INSERT INTO sims VALUES (?, ?, ?, ?, ?)",
-							   -1, &stmt, nullptr);
+		e = db::PrepareStatement(db, "INSERT INTO sims VALUES (?, ?, ?, ?, ?)", &stmt);
 		if (e != SQLITE_OK) {
 			fprintf(stderr, "failed to prepare statement: %d\n", e);
 			goto bail;
@@ -263,8 +262,7 @@ bool Read(const char *sedml_file, sqlite3 *db)
 
 		sqlite3_int64 sim_id = sqlite3_last_insert_rowid(db);
 
-		e = sqlite3_prepare_v2(db, "INSERT INTO tasks VALUES (?, ?)",
-							   -1, &stmt, nullptr);
+		e = db::PrepareStatement(db, "INSERT INTO tasks VALUES (?, ?)", &stmt);
 		if (e != SQLITE_OK) {
 			std::cerr << "failed to prepare statement: " << e << std::endl;
 			goto bail;
@@ -304,8 +302,7 @@ bool Read(const char *sedml_file, sqlite3 *db)
 				if (strcmp(task->id, variable->taskReference) != 0) continue;
 				if (!variable->target) continue;
 
-				e = sqlite3_prepare_v2(db, "INSERT INTO dgs VALUES (?, ?)",
-									   -1, &stmt, nullptr);
+				e = db::PrepareStatement(db, "INSERT INTO dgs VALUES (?, ?)", &stmt);
 				if (e != SQLITE_OK) {
 					std::cerr << "failed to prepare statement: " << e << std::endl;
 					goto bail;

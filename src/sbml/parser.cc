@@ -12,6 +12,7 @@
 #include <sbmlsolver/solverError.h>
 
 #include "db/query.h"
+#include "db/utility.h"
 #include "modelpath.h"
 
 namespace flint {
@@ -388,20 +389,17 @@ public:
 			return false;
 
 		int e;
-		e = sqlite3_prepare_v2(db_, "INSERT INTO assignments VALUES (?, ?)",
-							   -1, &stmt_a_, nullptr);
+		e = db::PrepareStatement(db_, "INSERT INTO assignments VALUES (?, ?)", &stmt_a_);
 		if (e != SQLITE_OK) {
 			std::cerr << "failed to prepare statement: " << e << std::endl;
 			return false;
 		}
-		e = sqlite3_prepare_v2(db_, "INSERT INTO constants VALUES (?, ?)",
-							   -1, &stmt_c_, nullptr);
+		e = db::PrepareStatement(db_, "INSERT INTO constants VALUES (?, ?)", &stmt_c_);
 		if (e != SQLITE_OK) {
 			std::cerr << "failed to prepare statement: " << e << std::endl;
 			return false;
 		}
-		e = sqlite3_prepare_v2(db_, "INSERT INTO odes VALUES (?, ?, ?)",
-							   -1, &stmt_o_, nullptr);
+		e = db::PrepareStatement(db_, "INSERT INTO odes VALUES (?, ?, ?)", &stmt_o_);
 		if (e != SQLITE_OK) {
 			std::cerr << "failed to prepare statement: " << e << std::endl;
 			return false;

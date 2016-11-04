@@ -9,6 +9,7 @@
 #include <cstring>
 
 #include "db/query.h"
+#include "db/utility.h"
 
 namespace flint {
 namespace exec {
@@ -22,13 +23,13 @@ struct Range {
 
 int Enumerate(sqlite3 *db)
 {
-	static char SQL[] = "SELECT name, range FROM phsp_parameters";
+	static const char SQL[] = "SELECT name, range FROM phsp_parameters";
 
 	sqlite3_stmt *stmt;
 	char *em;
 	int e;
 	/* get parameters as well as their values */
-	e = sqlite3_prepare_v2(db, SQL, -1, &stmt, nullptr);
+	e = db::PrepareStatement(db, SQL, &stmt);
 	if (e != SQLITE_OK) {
 		std::fprintf(stderr, "failed to parepare statement: %s\n", SQL);
 		return 0;

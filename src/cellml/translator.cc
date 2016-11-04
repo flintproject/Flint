@@ -20,6 +20,7 @@
 #include "db/eq-inserter.h"
 #include "db/helper.h"
 #include "db/query.h"
+#include "db/utility.h"
 #include "db/reach-driver.h"
 #include "db/statement-driver.h"
 #include "db/variable-inserter.h"
@@ -77,13 +78,12 @@ public:
 			return false;
 		if (!CreateView(db, "scopes", "SELECT space_id AS uuid, space_id, NULL AS label FROM spaces"))
 			return false;
-		e = sqlite3_prepare_v2(db, kTreeQuery, -1, &query_stmt_, nullptr);
+		e = db::PrepareStatement(db, kTreeQuery, &query_stmt_);
 		if (e != SQLITE_OK) {
 			std::cerr << "failed to prepare statement: " << kTreeQuery << std::endl;
 			return false;
 		}
-		e = sqlite3_prepare_v2(db, "INSERT INTO spaces VALUES (?, ?)",
-							   -1, &insert_stmt_, nullptr);
+		e = db::PrepareStatement(db, "INSERT INTO spaces VALUES (?, ?)", &insert_stmt_);
 		if (e != SQLITE_OK) {
 			std::cerr << "failed to prepare statement: " << e << std::endl;
 			return false;

@@ -13,6 +13,7 @@
 #include <boost/uuid/uuid_io.hpp>
 
 #include "db/statement-driver.h"
+#include "db/utility.h"
 #include "uuidgen.h"
 
 namespace flint {
@@ -192,8 +193,8 @@ bool Branch(const boost::filesystem::path &path, sqlite3 *db)
 	std::unique_ptr<JournalDriver> jd(new JournalDriver(db));
 
 	sqlite3_stmt *stmt;
-	int e = sqlite3_prepare_v2(db, "SELECT t.module_id, t.level, m.template_state FROM trees AS t LEFT JOIN modules AS m ON t.module_id = m.module_id",
-							   -1, &stmt, nullptr);
+	int e = db::PrepareStatement(db, "SELECT t.module_id, t.level, m.template_state FROM trees AS t LEFT JOIN modules AS m ON t.module_id = m.module_id",
+								 &stmt);
 	if (e != SQLITE_OK) {
 		std::cerr << "failed to prepare statement: "
 			 << e
