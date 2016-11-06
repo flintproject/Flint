@@ -153,12 +153,13 @@ int Enumerate(sqlite3 *db)
 		return 0;
 	}
 
+	static const char kQueryInsert[] = "INSERT INTO jobs VALUES (?, 'pending')";
+
 	/* prepare to insert corresponding entries in jobs */
 	sqlite3_stmt *job_stmt;
-	std::sprintf(q, "INSERT INTO jobs VALUES (?, 'pending')");
-	e = sqlite3_prepare_v2(db, q, -1, &job_stmt, nullptr);
+	e = db::PrepareStatement(db, kQueryInsert, &job_stmt);
 	if (e != SQLITE_OK) {
-		std::fprintf(stderr, "failed to prepare statement: %s\n", q);
+		std::fprintf(stderr, "failed to prepare statement: %s\n", kQueryInsert);
 		/* TODO */
 		return 0;
 	}
