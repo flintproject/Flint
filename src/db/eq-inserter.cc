@@ -1,6 +1,7 @@
 /* -*- Mode: C++; tab-width: 4; indent-tabs-mode: t; c-basic-offset: 4 -*- vim:set ts=4 sw=4 sts=4 noet: */
 #include "eq-inserter.h"
 
+#include <cassert>
 #include <cstdio>
 #include <cstring>
 #include <iostream>
@@ -14,11 +15,11 @@ EqInserter::EqInserter(const char *table, sqlite3 *db)
 	: query_(new char[128]) // long enough
 	, stmt_(nullptr)
 {
-	std::sprintf(query_.get(),
+	int n_bytes = std::sprintf(query_.get(),
 			"INSERT INTO %s VALUES (?, ?)",
 			table);
-	int e;
-	e = sqlite3_prepare_v2(db, query_.get(), -1, &stmt_, nullptr);
+	assert(n_bytes > 0);
+	int e = sqlite3_prepare_v2(db, query_.get(), n_bytes+1, &stmt_, nullptr);
 	if (e != SQLITE_OK) {
 		std::cerr << "failed to prepare statement: " << e
 			 << ": " << query_.get()

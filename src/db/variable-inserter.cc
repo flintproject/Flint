@@ -1,6 +1,7 @@
 /* -*- Mode: C++; tab-width: 4; indent-tabs-mode: t; c-basic-offset: 4 -*- vim:set ts=4 sw=4 sts=4 noet: */
 #include "variable-inserter.h"
 
+#include <cassert>
 #include <cstdio>
 #include <cstring>
 #include <iostream>
@@ -15,11 +16,11 @@ VariableInserter::VariableInserter(const char *table, bool independent, sqlite3 
 	, stmt_(nullptr)
 	, independent_(independent)
 {
-	sprintf(query_.get(),
+	int n_bytes = std::sprintf(query_.get(),
 			"INSERT INTO %s VALUES (?, ?, ?, ?, 'dimensionless', ?, ?, NULL, ?)",
 			table);
-	int e;
-	e = sqlite3_prepare_v2(db, query_.get(), -1, &stmt_, nullptr);
+	assert(n_bytes > 0);
+	int e = sqlite3_prepare_v2(db, query_.get(), n_bytes+1, &stmt_, nullptr);
 	if (e != SQLITE_OK) {
 		std::cerr << "failed to prepare statement: " << e
 			 << ": " << query_.get()
