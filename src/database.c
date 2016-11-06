@@ -18,9 +18,10 @@ static int FindInputFile(sqlite3 *db,
 	int r = 0;
 	int e;
 	sqlite3_stmt *stmt;
-	char query[32]; /* long enough */
-	sprintf(query, "SELECT %s FROM input", column_name);
-	e = sqlite3_prepare_v2(db, query, -1, &stmt, NULL);
+	char query[64]; /* long enough */
+	int n_bytes = sprintf(query, "SELECT %s FROM input", column_name);
+	assert(n_bytes > 0);
+	e = sqlite3_prepare_v2(db, query, n_bytes+1, &stmt, NULL);
 	if (e != SQLITE_OK) {
 		fprintf(stderr, "failed to prepare statement: %d\n", e);
 		goto bail0;

@@ -5,6 +5,7 @@
 
 #include "phsp.h"
 
+#include <cassert>
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
@@ -350,8 +351,9 @@ private:
 		std::sprintf(table_name, "db%d.model", rowid);
 		if (!CreateTable(db_, table_name, "(format TEXT)"))
 			return -2;
-		std::sprintf(query, "INSERT INTO db%d.model VALUES (?)", rowid);
-		e = sqlite3_prepare_v2(db_, query, -1, &stmt, nullptr);
+		int n_bytes = std::sprintf(query, "INSERT INTO db%d.model VALUES (?)", rowid);
+		assert(n_bytes > 0);
+		e = sqlite3_prepare_v2(db_, query, n_bytes+1, &stmt, nullptr);
 		if (e != SQLITE_OK) {
 			std::cerr << "failed to prepare statement: "
 				 << e << " (" << __FILE__ << ":" << __LINE__ << ")"
@@ -533,8 +535,9 @@ private:
 
 		sqlite3_stmt *stmt;
 		char query[1024];
-		std::sprintf(query, "INSERT INTO db%d.phsp_parameters VALUES (?, ?)", rowid);
-		int e = sqlite3_prepare_v2(db_, query, -1, &stmt, nullptr);
+		int n_bytes = std::sprintf(query, "INSERT INTO db%d.phsp_parameters VALUES (?, ?)", rowid);
+		assert(n_bytes > 0);
+		int e = sqlite3_prepare_v2(db_, query, n_bytes+1, &stmt, nullptr);
 		if (e != SQLITE_OK) {
 			std::cerr << "failed to prepare statement: "
 				 << e << " (" << __FILE__ << ":" << __LINE__ << ")"
@@ -678,9 +681,10 @@ private:
 						return -2;
 					} else {
 						char query[1024];
-						std::sprintf(query, "INSERT INTO db%d.phsp_targets values (?, ?, ?)", rowid);
+						int n_bytes = std::sprintf(query, "INSERT INTO db%d.phsp_targets values (?, ?, ?)", rowid);
+						assert(n_bytes > 0);
 						sqlite3_stmt *stmt;
-						int e = sqlite3_prepare_v2(db_, query, -1, &stmt, nullptr);
+						int e = sqlite3_prepare_v2(db_, query, n_bytes+1, &stmt, nullptr);
 						if (e != SQLITE_OK) {
 							std::cerr << "failed to prepare statement: "
 								 << e << " (" << __FILE__ << ":" << __LINE__ << ")"

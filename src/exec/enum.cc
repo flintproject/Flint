@@ -141,12 +141,15 @@ int Enumerate(sqlite3 *db)
 	sqlite3_finalize(stmt);
 
 	/* insert rows */
-	std::sprintf(q, "INSERT INTO enum VALUES (?");
+	int n_bytes = std::sprintf(q, "INSERT INTO enum VALUES (?");
+	assert(n_bytes > 0);
 	for (int i=1;i<num_params;i++) {
 		std::strcat(q, ", ?");
+		n_bytes += 3;
 	}
 	std::strcat(q, ")");
-	e = sqlite3_prepare_v2(db, q, -1, &stmt, nullptr);
+	n_bytes++;
+	e = sqlite3_prepare_v2(db, q, n_bytes+1, &stmt, nullptr);
 	if (e != SQLITE_OK) {
 		std::fprintf(stderr, "failed to parepare statement: %s\n", q);
 		/* TODO */
