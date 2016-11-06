@@ -67,12 +67,13 @@ int FindModelFile(sqlite3 *db, char *model_file)
 
 int SaveGivenFile(sqlite3 *db, const char *given_file)
 {
+	static const char kQuery[] = "INSERT INTO input VALUES (?, ?)";
 	int r = 0;
 	int e;
 	if (!CreateTable(db, "input", "(given_file BLOB, model_file BLOB)"))
 		goto bail0;
 	sqlite3_stmt *stmt;
-	e = sqlite3_prepare_v2(db, "INSERT INTO input VALUES (?, ?)", -1, &stmt, NULL);
+	e = sqlite3_prepare_v2(db, kQuery, (int)(sizeof(kQuery)/sizeof(kQuery[0])), &stmt, NULL);
 	if (e != SQLITE_OK) {
 		fprintf(stderr, "failed to prepare statement: %d\n", e);
 		goto bail0;
@@ -103,10 +104,10 @@ int SaveGivenFile(sqlite3 *db, const char *given_file)
 
 int SaveModelFile(sqlite3 *db, const char *model_file)
 {
+	static const char kQuery[] = "UPDATE input SET model_file = ?";
 	int r = 0;
-	int e;
 	sqlite3_stmt *stmt;
-	e = sqlite3_prepare_v2(db, "UPDATE input SET model_file = ?", -1, &stmt, NULL);
+	int e = sqlite3_prepare_v2(db, kQuery, (int)(sizeof(kQuery)/sizeof(kQuery[0])), &stmt, NULL);
 	if (e != SQLITE_OK) {
 		fprintf(stderr, "failed to prepare statement: %d\n", e);
 		goto bail0;

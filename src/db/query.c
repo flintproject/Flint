@@ -133,7 +133,7 @@ int SaveNol(int nol, sqlite3 *db)
 
 	if (!CreateTable(db, "nol", "(nol INTEGER)"))
 		return 0;
-	e = sqlite3_prepare_v2(db, kQuery, -1, &stmt, NULL);
+	e = sqlite3_prepare_v2(db, kQuery, (int)(sizeof(kQuery)/sizeof(kQuery[0])), &stmt, NULL);
 	if (e != SQLITE_OK) {
 		fprintf(stderr, "failed to prepare statement: %d\n", e);
 		ReportFilename(db);
