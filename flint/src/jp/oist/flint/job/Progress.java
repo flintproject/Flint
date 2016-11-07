@@ -2,8 +2,6 @@
 package jp.oist.flint.job;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
 
 public class Progress {
 

@@ -7,7 +7,6 @@ import jp.oist.flint.desktop.IDesktopListener;
 import jp.oist.flint.desktop.ILoadingListener;
 import jp.oist.flint.desktop.ISimulationListener;
 import jp.oist.flint.executor.PhspSimulator;
-import jp.oist.flint.preference.ExperimentalFeatures;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
