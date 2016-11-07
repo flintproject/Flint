@@ -257,10 +257,6 @@ public class JobWindow extends javax.swing.JFrame
         }
     }//GEN-LAST:event_btn_ExportAllActionPerformed
 
-    private void showMessageDialog (String msg, String title) {
-        JOptionPane.showMessageDialog(this, msg, title, JOptionPane.INFORMATION_MESSAGE);
-    }
-
     private void showErrorDialog (String msg, String title) {
         JOptionPane.showMessageDialog(this, msg, title, JOptionPane.ERROR_MESSAGE);
     }
