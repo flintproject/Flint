@@ -2,8 +2,6 @@
 #ifndef FLINT_DB_VARIABLE_INSERTER_H_
 #define FLINT_DB_VARIABLE_INSERTER_H_
 
-#include <memory>
-
 #include <boost/uuid/uuid.hpp>
 
 #include "sqlite3.h"
@@ -30,7 +28,6 @@ public:
 				int col = 1, int row = 1);
 
 private:
-	std::unique_ptr<char[]> query_;
 	sqlite3_stmt *stmt_;
 	bool independent_;
 };

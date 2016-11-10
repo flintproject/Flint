@@ -5,6 +5,7 @@
 #include <cstdio>
 #include <cstring>
 #include <iostream>
+#include <memory>
 
 #include <boost/uuid/nil_generator.hpp>
 
@@ -12,18 +13,18 @@ namespace flint {
 namespace db {
 
 VariableInserter::VariableInserter(const char *table, bool independent, sqlite3 *db)
-	: query_(new char[128]) // long enough
-	, stmt_(nullptr)
+	: stmt_(nullptr)
 	, independent_(independent)
 {
-	int n_bytes = std::sprintf(query_.get(),
+	std::unique_ptr<char[]> query(new char[128]); // long enough
+	int n_bytes = std::sprintf(query.get(),
 			"INSERT INTO %s VALUES (?, ?, ?, ?, 'dimensionless', ?, ?, NULL, ?)",
 			table);
 	assert(n_bytes > 0);
-	int e = sqlite3_prepare_v2(db, query_.get(), n_bytes+1, &stmt_, nullptr);
+	int e = sqlite3_prepare_v2(db, query.get(), n_bytes+1, &stmt_, nullptr);
 	if (e != SQLITE_OK) {
 		std::cerr << "failed to prepare statement: " << e
-			 << ": " << query_.get()
+			 << ": " << query.get()
 			 << std::endl;
 	}
 }

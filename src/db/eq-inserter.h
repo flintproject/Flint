@@ -2,8 +2,6 @@
 #ifndef FLINT_DB_EQ_INSERTER_H_
 #define FLINT_DB_EQ_INSERTER_H_
 
-#include <memory>
-
 #include <boost/uuid/uuid.hpp>
 
 #include "sqlite3.h"
@@ -28,7 +26,6 @@ public:
 	bool Insert(const char *math);
 
 private:
-	std::unique_ptr<char[]> query_;
 	sqlite3_stmt *stmt_;
 };
 
