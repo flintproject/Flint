@@ -2419,15 +2419,15 @@ bool Read(sqlite3 *db)
 	{
 		static const char kImplSelectQuery[] = "SELECT rowid, pq_rowid, math FROM impls";
 		static const char kImplUpdateQuery[] = "UPDATE impls SET math = ? WHERE rowid = ?";
-		phml::GraphMathRewriter rewriter(kImplSelectQuery, kImplUpdateQuery);
-		if (!rewriter.Rewrite(db))
+		phml::GraphMathRewriter rewriter(kImplSelectQuery, kImplUpdateQuery, db);
+		if (!rewriter.Rewrite())
 			return false;
 	}
 	{
 		static const char kExtraSelectQuery[] = "SELECT rowid, pq_rowid, math FROM extras";
 		static const char kExtraUpdateQuery[] = "UPDATE extras SET math = ? WHERE rowid = ?";
-		phml::GraphMathRewriter rewriter(kExtraSelectQuery, kExtraUpdateQuery);
-		if (!rewriter.Rewrite(db))
+		phml::GraphMathRewriter rewriter(kExtraSelectQuery, kExtraUpdateQuery, db);
+		if (!rewriter.Rewrite())
 			return false;
 	}
 	{
@@ -2438,8 +2438,8 @@ bool Read(sqlite3 *db)
 			" LEFT JOIN pqs ON modules.rowid = pqs.module_rowid"
 			" WHERE tpqs.pq_id = pqs.pq_id";
 		static const char kTpqUpdateQuery[] = "UPDATE tpqs SET math = ? WHERE rowid = ?";
-		phml::GraphMathRewriter rewriter(kTpqSelectQuery, kTpqUpdateQuery);
-		if (!rewriter.Rewrite(db))
+		phml::GraphMathRewriter rewriter(kTpqSelectQuery, kTpqUpdateQuery, db);
+		if (!rewriter.Rewrite())
 			return false;
 	}
 	{
