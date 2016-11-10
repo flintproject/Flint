@@ -1,4 +1,4 @@
-This directory contains packaging script for OS X version of Flint.
+This directory contains packaging script for macOS version of Flint.
 The script requires Xcode as well as autoconf, automake, cmake, libtool,
 and pkg-config.
 
@@ -7,4 +7,4 @@ directory before packaging.
 Put config.mk in this directory in order to specify PKG_CONFIG Make
 variable See config.mk.example for example.
 Then running `make` will produce flint-*.dmg for all supported version
-of OS X in case of success.
+of macOS in case of success.
