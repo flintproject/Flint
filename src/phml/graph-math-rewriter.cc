@@ -4,13 +4,11 @@
 #include <cassert>
 #include <cstdlib>
 #include <cstring>
-#include <iostream>
 #include <memory>
 #include <sstream>
 #include <string>
 #include <vector>
 
-#include "db/utility.h"
 #include "flint/sexp.h"
 #include "flint/sexp/parser.h"
 
@@ -114,26 +112,9 @@ private:
 	std::ostringstream *oss_;
 };
 
-const char kQueryNode[] = \
-	"SELECT n.node_id FROM nodes AS n"
-	" LEFT JOIN pqs AS p ON n.pq_rowid = p.rowid"
-	" LEFT JOIN modules AS m ON p.module_rowid = m.rowid"
-	" WHERE n.name = ?"
-	" AND EXISTS (SELECT * FROM pqs WHERE rowid = ? AND module_rowid = m.rowid)";
-
 } // namespace
 
 namespace phml {
-
-GraphMathRewriter::GraphMathRewriter(const char *query_select,
-									 const char *query_update)
-	: query_select_(query_select)
-	, query_update_(query_update)
-	, stmt_select_(nullptr)
-	, stmt_node_(nullptr)
-	, stmt_update_(nullptr)
-{
-}
 
 GraphMathRewriter::~GraphMathRewriter()
 {
@@ -142,24 +123,9 @@ GraphMathRewriter::~GraphMathRewriter()
 	sqlite3_finalize(stmt_update_);
 }
 
-bool GraphMathRewriter::Rewrite(sqlite3 *db)
+bool GraphMathRewriter::Rewrite()
 {
-	int e = sqlite3_prepare_v2(db, query_select_, -1, &stmt_select_, nullptr);
-	if (e != SQLITE_OK) {
-		std::cerr << "failed to prepare statement: " << query_select_ << ": " << e << std::endl;
-		return false;
-	}
-	e = db::PrepareStatement(db, kQueryNode, &stmt_node_);
-	if (e != SQLITE_OK) {
-		std::cerr << "failed to prepare statement: " << kQueryNode << ": " << e << std::endl;
-		return false;
-	}
-	e = sqlite3_prepare_v2(db, query_update_, -1, &stmt_update_, nullptr);
-	if (e != SQLITE_OK) {
-		std::cerr << "failed to prepare statement: " << query_update_ << ": " << e << std::endl;
-		return false;
-	}
-
+	int e;
 	for (e = sqlite3_step(stmt_select_); e == SQLITE_ROW; e = sqlite3_step(stmt_select_)) {
 		sqlite3_int64 rowid = sqlite3_column_int64(stmt_select_, 0);
 		sqlite3_int64 pq_rowid = sqlite3_column_int64(stmt_select_, 1);
@@ -167,7 +133,8 @@ bool GraphMathRewriter::Rewrite(sqlite3 *db)
 		if (!Process(rowid, pq_rowid, reinterpret_cast<const char *>(math))) return false;
 	}
 	if (e != SQLITE_DONE) {
-		std::cerr << "failed to step statement: " << query_select_ << ": " << e << std::endl;
+		std::cerr << "failed to step statement: " << sqlite3_sql(stmt_select_)
+				  << ": " << e << std::endl;
 		return false;
 	}
 	return true;
@@ -197,13 +164,13 @@ bool GraphMathRewriter::FindNode(sqlite3_int64 pq_rowid, const char *node_name, 
 	int e;
 	e = sqlite3_bind_text(stmt_node_, 1, node_name, -1, SQLITE_STATIC);
 	if (e != SQLITE_OK) {
-		std::cerr << "failed to bind name: " << kQueryNode
+		std::cerr << "failed to bind name: " << sqlite3_sql(stmt_node_)
 			 << ": " << e << std::endl;
 		return false;
 	}
 	e = sqlite3_bind_int64(stmt_node_, 2, pq_rowid);
 	if (e != SQLITE_OK) {
-		std::cerr << "failed to bind pq_rowid: " << kQueryNode
+		std::cerr << "failed to bind pq_rowid: " << sqlite3_sql(stmt_node_)
 			 << ": " << e << std::endl;
 		return false;
 	}
@@ -211,7 +178,7 @@ bool GraphMathRewriter::FindNode(sqlite3_int64 pq_rowid, const char *node_name, 
 	if (e != SQLITE_ROW) {
 		std::cerr << "failed to find node with pq_rowid/named: "
 			 << pq_rowid << '/' << node_name
-			 << ": " << kQueryNode
+			 << ": " << sqlite3_sql(stmt_node_)
 			 << ": " << e << std::endl;
 		return false;
 	}
@@ -226,19 +193,19 @@ bool GraphMathRewriter::Update(sqlite3_int64 rowid, const char *math)
 {
 	int e = sqlite3_bind_text(stmt_update_, 1, math, -1, SQLITE_STATIC);
 	if (e != SQLITE_OK) {
-		std::cerr << "failed to bind math: " << query_update_
+		std::cerr << "failed to bind math: " << sqlite3_sql(stmt_update_)
 			 << ": " << e << std::endl;
 		return false;
 	}
 	e = sqlite3_bind_int64(stmt_update_, 2, rowid);
 	if (e != SQLITE_OK) {
-		std::cerr << "failed to bind rowid: " << query_update_
+		std::cerr << "failed to bind rowid: " << sqlite3_sql(stmt_update_)
 			 << ": " << e << std::endl;
 		return false;
 	}
 	e = sqlite3_step(stmt_update_);
 	if (e != SQLITE_DONE) {
-		std::cerr << "failed to step statement: " << query_update_
+		std::cerr << "failed to step statement: " << sqlite3_sql(stmt_update_)
 			 << ": " << e << std::endl;
 		return false;
 	}
