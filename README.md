@@ -5,7 +5,7 @@ Flint is a simulator for biological and physiological models written in
 PHML and SBML.
 
 * It can solve ordinary differential equations numerically, and more.
-* It runs on Windows, Mac OS X, Linux etc.
+* It runs on Windows, macOS, Linux etc.
 * It provides graphical user interface on top of command-line interface.
 
 See INSTALL to build and install Flint from source.
@@ -13,8 +13,8 @@ See INSTALL to build and install Flint from source.
 Download
 --------
 
-Binary installers of Flint's official releases for Windows and Mac OS X
-are freely available at
+Binary installers of Flint's official releases for Windows and macOS are
+freely available at
 
 https://flintproject.github.io/
 
