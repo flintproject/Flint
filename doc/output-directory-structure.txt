@@ -13,7 +13,7 @@ Flint gives every job a non-negative integer, called job-id, unique modulo
 the task. Based on the job-ids, Flint also creates a number of fixed-depth
 subdirectories in the task directory.
 
-Let's say a task with task-id '7' for example. Assume tht the task has
+Let's say a task with task-id '7' for example. Assume that the task has
 3,000 jobs with job-id '1' to '3000'.
 Then, in the simulation, Flint makes the following directories eventually:
 
