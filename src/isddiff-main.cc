@@ -30,7 +30,7 @@ const int kExitFailure = 2; // do not use EXIT_FAILURE, use this instead.
 int CompareTimestamp(const isdf::ISDFHeader &header0,
 					 const isdf::ISDFHeader &header1)
 {
-	if (std::strncmp(header0.timestamp, header1.timestamp, 20) != 0) {
+	if (std::memcmp(header0.timestamp, header1.timestamp, 20) != 0) {
 		std::unique_ptr<char[]> ts0(new char[21]);
 		std::unique_ptr<char[]> ts1(new char[21]);
 		memcpy(ts0.get(), header0.timestamp, 20);
@@ -57,7 +57,7 @@ int CompareComment(const isdf::Reader &reader0,
 		return kExitDifferent;
 	}
 	if (nb0 == 0) return EXIT_SUCCESS; // no comment
-	if (std::strncmp(reader0.comment(), reader1.comment(), nb0) != 0) {
+	if (std::memcmp(reader0.comment(), reader1.comment(), nb0) != 0) {
 		std::cout << "comment" << std::endl;
 		return kExitDifferent;
 	}
@@ -73,7 +73,7 @@ int CompareDescriptions(const isdf::Reader &reader0,
 		std::cout << "descriptions" << std::endl;
 		return kExitDifferent;
 	}
-	if (std::strncmp(reader0.descriptions(), reader1.descriptions(), nb0) != 0) {
+	if (std::memcmp(reader0.descriptions(), reader1.descriptions(), nb0) != 0) {
 		std::cout << "descriptions" << std::endl;
 		return kExitDifferent;
 	}
@@ -90,7 +90,7 @@ int CompareUnits(const isdf::Reader &reader0,
 		return kExitDifferent;
 	}
 	if (nb0 == 0) return EXIT_SUCCESS; // no units
-	if (std::strncmp(reader0.units(), reader1.units(), nb0) != 0) {
+	if (std::memcmp(reader0.units(), reader1.units(), nb0) != 0) {
 		std::cout << "units" << std::endl;
 		return kExitDifferent;
 	}
