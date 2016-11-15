@@ -12,7 +12,6 @@ flint-exec -h
 
 = Description
 
-It takes a couple of input parameters from stdin, which consist of:
-* a SED-ML filename encoded in UTF-8, null-terminated
-and immediately followed by
-* a PHSP filename encoded in UTF-8, null-terminated
+It takes a binary message as input from stdin. The message, named
+ExecOption, is encoded in Protobuf's wire format. Please read pb/cli.proto
+for ExecOption's definition.
