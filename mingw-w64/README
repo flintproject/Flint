@@ -37,7 +37,7 @@ This step requires the following tools:
 * WiX 3.x
   http://wixtoolset.org/
   in order to create .msi installer package
-The packaging script assumes that both are in PATH.
+The packaging script assumes that the above utilities are in PATH.
 
 Unzip flint.zip and cd flint/.
 Then running `make` will produce flint.msi in case of success.
