@@ -42,7 +42,7 @@ mostlyclean:
 	ant -f ../flint/build.xml clean
 
 clean: mostlyclean
-	-rm -rf opt usr var/$(BOOST_UNDERSCORE) var/clibsedml-$(CLIBSEDML_COMMIT) var/libsbml-$(LIBSBML_VERSION) var/libxml2-$(LIBXML2_VERSION) var/libzip-$(LIBZIP_VERSION) var/protobuf-$(PROTOBUF_VERSION) var/SBML_odeSolver-$(SOSLIB_COMMIT) var/sundials-$(SUNDIALS_VERSION) var/zlib-$(ZLIB_VERSION) tmp/*.installed tmp/$(BOOST_UNDERSCORE) tmp/clibsedml-$(CLIBSEDML_COMMIT) tmp/libsbml-$(LIBSBML_VERSION) tmp/libxml2-$(LIBXML2_VERSION) tmp/libzip-$(LIBZIP_VERSION) tmp/protobuf-$(PROTOBUF_VERSION) tmp/SBML_odeSolver-$(SOSLIB_COMMIT) tmp/sundials-$(SUNDIALS_VERSION) tmp/zlib-$(ZLIB_VERSION) build/protobuf-$(PROTOBUF_VERSION)
+	-rm -rf opt usr var/$(BOOST_UNDERSCORE) var/clibsedml-$(CLIBSEDML_COMMIT) var/libsbml-$(LIBSBML_VERSION) var/libxml2-$(LIBXML2_VERSION) var/libzip-$(LIBZIP_VERSION) var/protobuf-$(PROTOBUF_VERSION) var/SBML_odeSolver-$(SOSLIB_COMMIT) var/sundials-$(SUNDIALS_VERSION) var/zlib-$(ZLIB_VERSION) var/toolchain.cmake tmp/*.installed tmp/$(BOOST_UNDERSCORE) tmp/clibsedml-$(CLIBSEDML_COMMIT) tmp/libsbml-$(LIBSBML_VERSION) tmp/libxml2-$(LIBXML2_VERSION) tmp/libzip-$(LIBZIP_VERSION) tmp/protobuf-$(PROTOBUF_VERSION) tmp/SBML_odeSolver-$(SOSLIB_COMMIT) tmp/sundials-$(SUNDIALS_VERSION) tmp/zlib-$(ZLIB_VERSION) build/protobuf-$(PROTOBUF_VERSION)
 
 distclean: clean
 	-rm -f src/*.zip src/*.tar.bz2 src/*.tar.gz
@@ -52,7 +52,7 @@ download: $(foreach lib,$(EXTERNAL_LIBRARIES),src/$(lib))
 build var:
 	install -d $@
 
-var/toolchain.cmake: toolchain.cmake.in | var
+var/toolchain.cmake: toolchain.cmake.in config.mk | var
 	echo 'set(COMPILER_PREFIX "$(HOST)")' > $@
 	cat $< >> $@
 
