@@ -179,37 +179,37 @@ tmp/sundials-$(SUNDIALS_VERSION): src/sundials-$(SUNDIALS_VERSION).tar.gz | tmp
 	touch $@
 
 tmp/$(BOOST_UNDERSCORE).installed: tmp/$(BOOST_UNDERSCORE)
-	(cd var/$(BOOST_UNDERSCORE) && export MACOSX_DEPLOYMENT_TARGET=10.7 && ./bootstrap.sh --with-toolset=clang && ./b2 -d0 --prefix=$(PREFIX) --without-atomic --without-chrono --without-container --without-mpi --without-python --without-serialization --without-type_erasure --layout=tagged toolset=clang cflags='-arch x86_64 -mmacosx-version-min=10.7' cxxflags='-std=c++11 -stdlib=libc++ -arch x86_64 -mmacosx-version-min=10.7' linkflags='-stdlib=libc++ -arch x86_64 -mmacosx-version-min=10.7' link=shared variant=release threading=multi install)
+	(cd var/$(BOOST_UNDERSCORE) && export MACOSX_DEPLOYMENT_TARGET=10.8 && ./bootstrap.sh --with-toolset=clang && ./b2 -d0 --prefix=$(PREFIX) --without-atomic --without-chrono --without-container --without-mpi --without-python --without-serialization --without-type_erasure --layout=tagged toolset=clang cflags='-arch x86_64 -mmacosx-version-min=10.8' cxxflags='-std=c++11 -stdlib=libc++ -arch x86_64 -mmacosx-version-min=10.8' linkflags='-stdlib=libc++ -arch x86_64 -mmacosx-version-min=10.8' link=shared variant=release threading=multi install)
 	touch $@
 
 tmp/clibsedml-$(CLIBSEDML_COMMIT).installed: tmp/clibsedml-$(CLIBSEDML_COMMIT) tmp/libxml2-$(LIBXML2_VERSION).installed
-	(cd var/clibsedml-$(CLIBSEDML_COMMIT) && autoreconf -i -f && export MACOSX_DEPLOYMENT_TARGET=10.7 && ./configure --prefix=$(PREFIX) --with-xml-prefix=$(PREFIX) CC='clang' CFLAGS='-Wall -W -arch x86_64 -mmacosx-version-min=10.7' LDFLAGS='-arch x86_64 -mmacosx-version-min=10.7' && $(MAKE) all install)
+	(cd var/clibsedml-$(CLIBSEDML_COMMIT) && autoreconf -i -f && export MACOSX_DEPLOYMENT_TARGET=10.8 && ./configure --prefix=$(PREFIX) --with-xml-prefix=$(PREFIX) CC='clang' CFLAGS='-Wall -W -arch x86_64 -mmacosx-version-min=10.8' LDFLAGS='-arch x86_64 -mmacosx-version-min=10.8' && $(MAKE) all install)
 	touch $@
 
 tmp/protobuf-$(PROTOBUF_VERSION).installed: tmp/protobuf-$(PROTOBUF_VERSION)
-	(cd var/protobuf-$(PROTOBUF_VERSION) && export MACOSX_DEPLOYMENT_TARGET=10.7 && ./configure --prefix=$(PREFIX) CC='clang' CXX='clang++' CFLAGS='-arch x86_64 -mmacosx-version-min=10.7' CXXFLAGS='-std=c++11 -stdlib=libc++ -arch x86_64 -mmacosx-version-min=10.7' LDFLAGS='-stdlib=libc++ -arch x86_64 -mmacosx-version-min=10.7' LIBS='-lc++ -lc++abi' && $(MAKE) all install)
+	(cd var/protobuf-$(PROTOBUF_VERSION) && export MACOSX_DEPLOYMENT_TARGET=10.8 && ./configure --prefix=$(PREFIX) CC='clang' CXX='clang++' CFLAGS='-arch x86_64 -mmacosx-version-min=10.8' CXXFLAGS='-std=c++11 -stdlib=libc++ -arch x86_64 -mmacosx-version-min=10.8' LDFLAGS='-stdlib=libc++ -arch x86_64 -mmacosx-version-min=10.8' LIBS='-lc++ -lc++abi' && $(MAKE) all install)
 	touch $@
 
 tmp/libxml2-$(LIBXML2_VERSION).installed: tmp/libxml2-$(LIBXML2_VERSION)
-	(cd var/libxml2-$(LIBXML2_VERSION) && export MACOSX_DEPLOYMENT_TARGET=10.7 && ./configure --prefix=$(PREFIX) --without-python CC='clang' CXX='clang++' CFLAGS='-arch x86_64 -mmacosx-version-min=10.7' CXXFLAGS='-std=c++11 -stdlib=libc++ -arch x86_64 -mmacosx-version-min=10.7' LDFLAGS='-stdlib=libc++ -arch x86_64 -mmacosx-version-min=10.7' && $(MAKE) all install)
+	(cd var/libxml2-$(LIBXML2_VERSION) && export MACOSX_DEPLOYMENT_TARGET=10.8 && ./configure --prefix=$(PREFIX) --without-python CC='clang' CXX='clang++' CFLAGS='-arch x86_64 -mmacosx-version-min=10.8' CXXFLAGS='-std=c++11 -stdlib=libc++ -arch x86_64 -mmacosx-version-min=10.8' LDFLAGS='-stdlib=libc++ -arch x86_64 -mmacosx-version-min=10.8' && $(MAKE) all install)
 	touch $@
 
 tmp/libzip-$(LIBZIP_VERSION).installed: tmp/libzip-$(LIBZIP_VERSION)
-	(cd var/libzip-$(LIBZIP_VERSION) && export MACOSX_DEPLOYMENT_TARGET=10.7 && ./configure --prefix=$(PREFIX) CC='clang' CXX='clang++' CFLAGS='-arch x86_64 -mmacosx-version-min=10.7' CXXFLAGS='-std=c++11 -stdlib=libc++ -arch x86_64 -mmacosx-version-min=10.7' LDFLAGS='-stdlib=libc++ -arch x86_64 -mmacosx-version-min=10.7' && $(MAKE) all install)
+	(cd var/libzip-$(LIBZIP_VERSION) && export MACOSX_DEPLOYMENT_TARGET=10.8 && ./configure --prefix=$(PREFIX) CC='clang' CXX='clang++' CFLAGS='-arch x86_64 -mmacosx-version-min=10.8' CXXFLAGS='-std=c++11 -stdlib=libc++ -arch x86_64 -mmacosx-version-min=10.8' LDFLAGS='-stdlib=libc++ -arch x86_64 -mmacosx-version-min=10.8' && $(MAKE) all install)
 	touch $@
 
 tmp/sundials-$(SUNDIALS_VERSION).installed: tmp/sundials-$(SUNDIALS_VERSION)
 	install -d var/sundials-$(SUNDIALS_VERSION)/build
-	(cd var/sundials-$(SUNDIALS_VERSION)/build && export MACOSX_DEPLOYMENT_TARGET=10.7 && CC='clang' CXX='clang++' CFLAGS='-arch x86_64 -mmacosx-version-min=10.7' CXXFLAGS='-std=c++11 -stdlib=libc++ -arch x86_64 -mmacosx-version-min=10.7' LDFLAGS='-stdlib=libc++ -arch x86_64 -mmacosx-version-min=10.7' cmake -DCMAKE_INSTALL_PREFIX=$(PREFIX) -DBUILD_STATIC_LIBS=OFF -DBUILD_SHARED_LIBS=ON .. && $(MAKE) all install)
+	(cd var/sundials-$(SUNDIALS_VERSION)/build && export MACOSX_DEPLOYMENT_TARGET=10.8 && CC='clang' CXX='clang++' CFLAGS='-arch x86_64 -mmacosx-version-min=10.8' CXXFLAGS='-std=c++11 -stdlib=libc++ -arch x86_64 -mmacosx-version-min=10.8' LDFLAGS='-stdlib=libc++ -arch x86_64 -mmacosx-version-min=10.8' cmake -DCMAKE_INSTALL_PREFIX=$(PREFIX) -DBUILD_STATIC_LIBS=OFF -DBUILD_SHARED_LIBS=ON .. && $(MAKE) all install)
 	touch $@
 
 tmp/libsbml-$(LIBSBML_VERSION).installed: tmp/libsbml-$(LIBSBML_VERSION) tmp/libxml2-$(LIBXML2_VERSION).installed
-	(cd var/libsbml-$(LIBSBML_VERSION) && export MACOSX_DEPLOYMENT_TARGET=10.7 && ./configure --prefix=$(PREFIX) --with-xerces=no --with-libxml=$(PREFIX) CC='clang' CXX='clang++' CFLAGS='-arch x86_64 -mmacosx-version-min=10.7' CXXFLAGS='-std=c++11 -stdlib=libc++ -arch x86_64 -mmacosx-version-min=10.7' LDFLAGS='-stdlib=libc++ -arch x86_64 -mmacosx-version-min=10.7' && $(MAKE) all install)
+	(cd var/libsbml-$(LIBSBML_VERSION) && export MACOSX_DEPLOYMENT_TARGET=10.8 && ./configure --prefix=$(PREFIX) --with-xerces=no --with-libxml=$(PREFIX) CC='clang' CXX='clang++' CFLAGS='-arch x86_64 -mmacosx-version-min=10.8' CXXFLAGS='-std=c++11 -stdlib=libc++ -arch x86_64 -mmacosx-version-min=10.8' LDFLAGS='-stdlib=libc++ -arch x86_64 -mmacosx-version-min=10.8' && $(MAKE) all install)
 	install_name_tool -id $(PREFIX)/lib/libsbml.$(LIBSBML_VERSION).dylib $(PREFIX)/lib/libsbml.$(LIBSBML_VERSION).dylib
 	touch $@
 
 tmp/SBML_odeSolver-$(SOSLIB_COMMIT).installed: tmp/SBML_odeSolver-$(SOSLIB_COMMIT) tmp/sundials-$(SUNDIALS_VERSION).installed tmp/libsbml-$(LIBSBML_VERSION).installed
-	(cd var/SBML_odeSolver-$(SOSLIB_COMMIT) && autoreconf -i && export MACOSX_DEPLOYMENT_TARGET=10.7 && ./configure --prefix=$(PREFIX) --with-libsbml=$(PREFIX) --with-libxml2=$(PREFIX) --with-sundials=$(PREFIX) --without-grace --without-graphviz CC='clang' CFLAGS='-arch x86_64 -mmacosx-version-min=10.7 -Wl,-headerpad_max_install_names' LDFLAGS='-arch x86_64 -mmacosx-version-min=10.7' && $(MAKE) all install)
+	(cd var/SBML_odeSolver-$(SOSLIB_COMMIT) && autoreconf -i && export MACOSX_DEPLOYMENT_TARGET=10.8 && ./configure --prefix=$(PREFIX) --with-libsbml=$(PREFIX) --with-libxml2=$(PREFIX) --with-sundials=$(PREFIX) --without-grace --without-graphviz CC='clang' CFLAGS='-arch x86_64 -mmacosx-version-min=10.8 -Wl,-headerpad_max_install_names' LDFLAGS='-arch x86_64 -mmacosx-version-min=10.8' && $(MAKE) all install)
 	touch $@
 
 # for Flint
@@ -225,7 +225,7 @@ build.xml: build.xml.in
 
 build/Makefile: ../configure
 	install -d $(dir $@)
-	(cd $(dir $@) && ../../configure --prefix=$(CURDIR)/opt --with-boost=$(PREFIX) --with-protoc=$(PREFIX)/bin/protoc --with-xml-prefix=$(PREFIX) --with-protoc=$(PREFIX)/bin/protoc --with-sundials=$(PREFIX) --enable-release --enable-silent-rules CC='clang' CXX='clang++' CFLAGS='-arch x86_64 -mmacosx-version-min=10.7' CXXFLAGS='-stdlib=libc++ -arch x86_64 -mmacosx-version-min=10.7' LDFLAGS='-stdlib=libc++ -arch x86_64 -mmacosx-version-min=10.7 -headerpad_max_install_names' PKG_CONFIG=$(PKG_CONFIG) PKG_CONFIG_PATH=$(PKG_CONFIG_PATH))
+	(cd $(dir $@) && ../../configure --prefix=$(CURDIR)/opt --with-boost=$(PREFIX) --with-protoc=$(PREFIX)/bin/protoc --with-xml-prefix=$(PREFIX) --with-protoc=$(PREFIX)/bin/protoc --with-sundials=$(PREFIX) --enable-release --enable-silent-rules CC='clang' CXX='clang++' CFLAGS='-arch x86_64 -mmacosx-version-min=10.8' CXXFLAGS='-stdlib=libc++ -arch x86_64 -mmacosx-version-min=10.8' LDFLAGS='-stdlib=libc++ -arch x86_64 -mmacosx-version-min=10.8 -headerpad_max_install_names' PKG_CONFIG=$(PKG_CONFIG) PKG_CONFIG_PATH=$(PKG_CONFIG_PATH))
 
 $(foreach p,$(PROGRAMS),opt/bin/$(p)): build/Makefile
 	$(MAKE) -C build all install-exec

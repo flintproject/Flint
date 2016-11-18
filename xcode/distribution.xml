@@ -18,7 +18,7 @@ return false;
   </script>
   <volume-check>
     <allowed-os-versions>
-      <os-version min="10.7"/>
+      <os-version min="10.8"/>
     </allowed-os-versions>
     <required-bundles all="true">
       <bundle id="com.oracle.jre" path="/Library/Internet Plug-Ins/JavaAppletPlugin.plugin" search="false"/>
