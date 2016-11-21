@@ -494,7 +494,7 @@ private:
 				} else if (xmlStrEqual(type, reinterpret_cast<const xmlChar *>("enum"))) {
 					range->set_type(Range::kEnum);
 				} else {
-					std::cerr << "unkown type of <range>: " << type << std::endl;
+					std::cerr << "unknown type of <range>: " << type << std::endl;
 					return -2;
 				}
 			} else if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("lower"))) {
