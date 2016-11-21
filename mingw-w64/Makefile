@@ -136,7 +136,7 @@ tmp/libzip-$(LIBZIP_VERSION).installed: tmp/libzip-$(LIBZIP_VERSION) tmp/zlib-$(
 	(cd var/libzip-$(LIBZIP_VERSION) && ./configure --host=$(HOST) --prefix=$(PREFIX) --with-zlib=$(PREFIX) && $(MAKE) all install)
 	touch $@
 
-tmp/sundials-$(SUNDIALS_VERSION).installed: tmp/sundials-$(SUNDIALS_VERSION)
+tmp/sundials-$(SUNDIALS_VERSION).installed: tmp/sundials-$(SUNDIALS_VERSION) var/toolchain.cmake
 	install -d var/sundials-$(SUNDIALS_VERSION)/build
 	(cd var/sundials-$(SUNDIALS_VERSION)/build && cmake --host=$(HOST) -DCMAKE_INSTALL_PREFIX=$(PREFIX) -DCMAKE_TOOLCHAIN_FILE=$(CURDIR)/var/toolchain.cmake -DBUILD_STATIC_LIBS=OFF -DBUILD_SHARED_LIBS=ON ..)
 	$(MAKE) -C var/sundials-$(SUNDIALS_VERSION)/build all install
