@@ -21,6 +21,7 @@
 #include "compiler.h"
 #include "db/driver.h"
 #include "db/read-only-driver.h"
+#include "db/statement-driver.h"
 #include "exec.h"
 #include "exec/job-runner.h"
 #include "exec/parameter.h"
@@ -48,6 +49,17 @@ bool CreateSpec(int id, sqlite3 *db)
 	bool r = task::Spec(id, db, fp);
 	fclose(fp);
 	return r;
+}
+
+int CountParameterSamples(sqlite3 *db)
+{
+	db::StatementDriver sd(db, "SELECT COUNT(*) FROM parameter_samples");
+	int e = sqlite3_step(sd.stmt());
+	if (e != SQLITE_ROW) {
+		std::cerr << "failed to step statement: " << e << std::endl;
+		return -1;
+	}
+	return sqlite3_column_int(sd.stmt(), 0);
 }
 
 const int kFilenameLength = 64;
@@ -163,8 +175,8 @@ bool TaskRunner::Run()
 	db_driver_.reset(new db::Driver(db_file));
 	if (!exec::SaveParameters(id_, db_driver_->db()))
 		return false;
-	int n = exec::Enum(db_driver_->db());
-	if (n == 0)
+	int n = CountParameterSamples(db_driver_->db());
+	if (n <= 0)
 		return false;
 	std::unique_ptr<boost::interprocess::file_mapping> fm(exec::CreateProgressFile(n, dir_.get()));
 	if (!fm)

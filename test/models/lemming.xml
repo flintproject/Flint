@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sedML xmlns='http://sed-ml.org/' xmlns:math='http://www.w3.org/1998/Math/MathML' xmlns:flint='http://flintk3.org/namespace/flint' version='1' level='1'>
+  <listOfSimulations>
+    <uniformTimeCourse id='sim0' name='Simulation 0' initialTime='0' outputStartTime='0' outputEndTime='50' numberOfPoints='5000' flint:granularity='1'>
+      <algorithm kisaoID='KISAO:0000030'/>
+    </uniformTimeCourse>
+  </listOfSimulations>
+  <listOfModels>
+    <model id='model0' name='Model 0' language='urn:sedml:language:phml' source='lemming.phml'/>
+  </listOfModels>
+  <listOfTasks>
+    <task id='task0' name='Task 0' modelReference='model0' simulationReference='sim0'/>
+  </listOfTasks>
+  <listOfDataGenerators>
+    <dataGenerator id='dg0' name='x'>
+      <listOfVariables>
+        <variable id='v0' taskReference='task0' target='6e0768d7-660a-4574-8bc1-9ea8a28693d2:x'/>
+      </listOfVariables>
+      <math:math>
+        <math:ci>v0</math:ci>
+      </math:math>
+    </dataGenerator>
+    <dataGenerator id='dg1' name='lag'>
+      <listOfVariables>
+        <variable id='v1' taskReference='task0' target='6e0768d7-660a-4574-8bc1-9ea8a28693d2:lag'/>
+      </listOfVariables>
+      <math:math>
+        <math:ci>v1</math:ci>
+      </math:math>
+    </dataGenerator>
+    <dataGenerator id='dg2' name='r'>
+      <listOfVariables>
+        <variable id='v2' taskReference='task0' target='6e0768d7-660a-4574-8bc1-9ea8a28693d2:r'/>
+      </listOfVariables>
+      <math:math>
+        <math:ci>v2</math:ci>
+      </math:math>
+    </dataGenerator>
+    <dataGenerator id='dg3' name='m'>
+      <listOfVariables>
+        <variable id='v3' taskReference='task0' target='6e0768d7-660a-4574-8bc1-9ea8a28693d2:m'/>
+      </listOfVariables>
+      <math:math>
+        <math:ci>v3</math:ci>
+      </math:math>
+    </dataGenerator>
+  </listOfDataGenerators>
+</sedML>

@@ -6,6 +6,7 @@
 #include "phsp.h"
 
 #include <cassert>
+#include <cerrno>
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
@@ -24,8 +25,10 @@
 
 #include "base/rational.h"
 #include "db/query.h"
+#include "db/statement-driver.h"
 #include "db/utility.h"
 #include "mathml/math_dumper.h"
+#include "phsp/sample-builder.h"
 #include "sqlite3.h"
 #include "utf8path.h"
 
@@ -172,6 +175,138 @@ private:
 	xmlChar *parameter_id_;
 	xmlChar *reaction_id_;
 };
+
+bool ParseEnum(const char *text, std::vector<double> *values)
+{
+	auto len = std::strlen(text);
+	std::unique_ptr<char[]> buf(new char[len+1]());
+	std::strcpy(buf.get(), text);
+	for (size_t i=0;i<len;i++) {
+		if (buf[i] == ',')
+			buf[i] = ' ';
+	}
+	char *p = buf.get();
+	while (*p) {
+		errno = 0;
+		char *q;
+		auto d = std::strtod(p, &q);
+		if (d == 0) {
+			if (p == q) { // no conversion
+				// done
+				return true;
+			}
+			if (errno == ERANGE) {
+				std::cerr << "failed to convert enum value: "
+						  << p << std::endl;
+				return false;
+			}
+		} else if (d == HUGE_VAL || d == -HUGE_VAL) {
+			assert(errno == ERANGE);
+			std::cerr << "failed to convert enum value: "
+					  << p << std::endl;
+			return false;
+		}
+		values->push_back(d);
+		p = q;
+	}
+	return true;
+}
+
+bool SaveParameterSamples(int rowid, const SampleElement &se, sqlite3 *db)
+{
+	std::vector<std::string> names;
+	se.GetColumns(&names);
+
+	std::ostringstream oss_c, oss_i;
+	oss_c << '(';
+	oss_i << "INSERT INTO db" << rowid << ".parameter_samples VALUES (";
+	bool first = true;
+	for (const auto &name : names) {
+		if (first) {
+			first = false;
+		} else {
+			oss_c << ", ";
+			oss_i << ", ";
+		}
+		oss_c << name << " REAL";
+		oss_i << '?';
+	}
+	oss_c << ')';
+	oss_i << ')';
+
+	std::string columns = oss_c.str();
+	char table_name[64]; // long enough
+	std::sprintf(table_name, "db%d.parameter_samples", rowid);
+	if (!CreateTable(db, table_name, columns.c_str()))
+		return false;
+
+	std::string query = oss_i.str();
+	int n_bytes = static_cast<int>(query.size());
+	assert(n_bytes > 0);
+	sqlite3_stmt *stmt;
+	int e = sqlite3_prepare_v2(db, query.c_str(), n_bytes+1, &stmt, nullptr);
+	if (e != SQLITE_OK) {
+		std::cerr << "failed to prepare statement: "
+				  << query << ": "
+				  << e << std::endl;
+		return false;
+	}
+
+	db::StatementDriver job_sd(db, "INSERT INTO jobs VALUES (?, 'pending')");
+
+	size_t count = se.GetCount();
+	size_t n_cols = se.GetNumOfCols();
+	bool result;
+	std::unique_ptr<double[]> vals(new double[n_cols]);
+	for (size_t i=0;i<count;i++) {
+		se.Fill(i, vals.get());
+		for (size_t j=0;j<n_cols;j++) {
+			e = sqlite3_bind_double(stmt, j+1, vals[j]);
+			if (e != SQLITE_OK) {
+				std::cerr << "failed to bind " << names.at(j)
+						  << ": " << e << std::endl;
+				result = false;
+				goto bail;
+			}
+		}
+		e = sqlite3_step(stmt);
+		if (e != SQLITE_DONE) {
+			std::cerr << "failed to step statement: " << e << std::endl;
+			result = false;
+			goto bail;
+		}
+		e = sqlite3_reset(stmt);
+		if (e != SQLITE_OK) {
+			std::cerr << "failed to reset statement: " << e << std::endl;
+			result = false;
+			goto bail;
+		}
+
+		sqlite3_int64 ps_id = sqlite3_last_insert_rowid(db);
+		e = sqlite3_bind_int64(job_sd.stmt(), 1, ps_id);
+		if (e != SQLITE_OK) {
+			std::cerr << "failed to bind parameter: " << e << std::endl;
+			result = false;
+			goto bail;
+		}
+		e = sqlite3_step(job_sd.stmt());
+		if (e != SQLITE_DONE) {
+			std::cerr << "failed to step statement: " << e << std::endl;
+			result = false;
+			goto bail;
+		}
+		e = sqlite3_reset(job_sd.stmt());
+		if (e != SQLITE_OK) {
+			std::cerr << "failed to reset statement: " << e << std::endl;
+			result = false;
+			goto bail;
+		}
+	}
+	result = true;
+ bail:
+	sqlite3_finalize(stmt);
+	return result;
+}
 
 class Reader {
 public:
@@ -379,6 +514,9 @@ private:
 		std::sprintf(table_name, "db%d.phsp_targets", rowid);
 		if (!CreateTable(db_, table_name, "(uuid BLOB, id TEXT, math TEXT)"))
 			return -2;
+		std::sprintf(table_name, "db%d.jobs", rowid);
+		if (!CreateTable(db_, table_name, "(ps_id INTEGER, status TEXT)"))
+			return -2;
 
 		i = xmlTextReaderRead(text_reader_);
 		while (i > 0) {
@@ -418,14 +556,25 @@ private:
 	}
 
 	int ReadParameterSet(int rowid) {
+		SampleBuilder sb;
 		int i = xmlTextReaderRead(text_reader_);
 		while (i > 0) {
 			int type = xmlTextReaderNodeType(text_reader_);
 			if (type == XML_READER_TYPE_ELEMENT) {
 				const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
 				if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("parameter"))) {
-					i = ReadParameter(rowid);
+					i = ReadParameter(rowid, &sb);
 					if (i <= 0) return i;
+					continue;
+				} if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("product"))) {
+					i = ReadProduct(rowid, &sb);
+					if (i <= 0)
+						return i;
+					continue;
+				} if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("zip"))) {
+					i = ReadZip(rowid, &sb);
+					if (i <= 0)
+						return i;
 					continue;
 				} else {
 					std::cerr << "unknown child of <parameter-set>: " << local_name << std::endl;
@@ -434,6 +583,9 @@ private:
 			} else if (type == XML_READER_TYPE_END_ELEMENT) {
 				const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
 				if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("parameter-set"))) {
+					std::unique_ptr<SampleElement> se(sb.Build());
+					if (!SaveParameterSamples(rowid, *se, db_))
+						return -2;
 					return 1;
 				}
 			}
@@ -442,7 +594,7 @@ private:
 		return i;
 	}
 
-	int ReadParameter(int rowid) {
+	int ReadParameter(int rowid, SampleBuilder *sb) {
 		std::unique_ptr<Parameter> parameter;
 		int i;
 		while ( (i = xmlTextReaderMoveToNextAttribute(text_reader_)) > 0) {
@@ -465,7 +617,7 @@ private:
 			if (type == XML_READER_TYPE_ELEMENT) {
 				const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
 				if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("range"))) {
-					i = ReadRange(rowid, parameter.get());
+					i = ReadRange(rowid, sb, parameter.get());
 					if (i <= 0) return i;
 					continue;
 				}
@@ -480,7 +632,7 @@ private:
 		return i;
 	}
 
-	int ReadRange(int rowid, Parameter *parameter) {
+	int ReadRange(int rowid, SampleBuilder *sb, Parameter *parameter) {
 		std::unique_ptr<Range> range(new Range);
 		int i;
 		while ( (i = xmlTextReaderMoveToNextAttribute(text_reader_)) > 0) {
@@ -550,14 +702,17 @@ private:
 			return -2;
 		}
 
+		std::vector<double> values;
 		if (range->type() == Range::kInterval) {
 			std::ostringstream oss;
 			boost::rational<long> d = range->lower();
 			oss << boost::rational_cast<double>(d);
+			values.push_back(boost::rational_cast<double>(d));
 			for (;;) {
 				d += range->step();
 				if (d > range->upper()) break;
 				oss << ',' << boost::rational_cast<double>(d);
+				values.push_back(boost::rational_cast<double>(d));
 			}
 			std::string s(oss.str());
 			size_t len = s.size();
@@ -575,7 +730,12 @@ private:
 		} else { // enum
 			i = xmlTextReaderMoveToElement(text_reader_);
 			if (i < 0) return i;
-			e = sqlite3_bind_text(stmt, 2, reinterpret_cast<const char *>(xmlTextReaderReadString(text_reader_)), -1, xmlFree);
+			xmlChar *enum_text = xmlTextReaderReadString(text_reader_);
+			if (!ParseEnum(reinterpret_cast<char *>(enum_text), &values)) {
+				xmlFree(enum_text);
+				return false;
+			}
+			e = sqlite3_bind_text(stmt, 2, reinterpret_cast<char *>(enum_text), -1, xmlFree);
 			if (e != SQLITE_OK) {
 				std::cerr << "failed to bind parameter: " << e << std::endl;
 				return -2;
@@ -588,7 +748,85 @@ private:
 		}
 		sqlite3_finalize(stmt);
 
+		sb->PushParameter(reinterpret_cast<const char *>(parameter->name()), std::move(values));
+
 		return xmlTextReaderRead(text_reader_);
+	}
+
+	int ReadProduct(int rowid, SampleBuilder *sb) {
+		sb->PushProduct();
+		int i = xmlTextReaderRead(text_reader_);
+		while (i > 0) {
+			int type = xmlTextReaderNodeType(text_reader_);
+			if (type == XML_READER_TYPE_ELEMENT) {
+				const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
+				if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("parameter"))) {
+					i = ReadParameter(rowid, sb);
+					if (i <= 0)
+						return i;
+					continue;
+				} if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("product"))) {
+					i = ReadProduct(rowid, sb);
+					if (i <= 0)
+						return i;
+					continue;
+				} if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("zip"))) {
+					i = ReadZip(rowid, sb);
+					if (i <= 0)
+						return i;
+					continue;
+				} else {
+					std::cerr << "unknown child of <product>: " << local_name << std::endl;
+					return -2;
+				}
+			} else if (type == XML_READER_TYPE_END_ELEMENT) {
+				const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
+				if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("product"))) {
+					sb->Pop();
+					return 1;
+				}
+			}
+			i = xmlTextReaderRead(text_reader_);
+		}
+		return i;
+	}
+
+	int ReadZip(int rowid, SampleBuilder *sb) {
+		sb->PushZip();
+		int i = xmlTextReaderRead(text_reader_);
+		while (i > 0) {
+			int type = xmlTextReaderNodeType(text_reader_);
+			if (type == XML_READER_TYPE_ELEMENT) {
+				const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
+				if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("parameter"))) {
+					i = ReadParameter(rowid, sb);
+					if (i <= 0)
+						return i;
+					continue;
+				} if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("product"))) {
+					i = ReadProduct(rowid, sb);
+					if (i <= 0)
+						return i;
+					continue;
+				} if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("zip"))) {
+					i = ReadZip(rowid, sb);
+					if (i <= 0)
+						return i;
+					continue;
+				} else {
+					std::cerr << "unknown child of <zip>: " << local_name << std::endl;
+					return -2;
+				}
+			} else if (type == XML_READER_TYPE_END_ELEMENT) {
+				const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
+				if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("zip"))) {
+					sb->Pop();
+					return 1;
+				}
+			}
+			i = xmlTextReaderRead(text_reader_);
+		}
+		return i;
 	}
 
 	int ReadTargetSet(int rowid) {

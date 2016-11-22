@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phsp version="1.0" xmlns="http://www.physiodesigner.org/2013/ns/phsp/1.0" xmlns:m="http://www.w3.org/1998/Math/MathML">
+  <model iref="lemming.phml" format="phml">
+    <target-set>
+      <target module-id="6e0768d7-660a-4574-8bc1-9ea8a28693d2" physical-quantity-id="1">
+        <value><m:math><m:ci>a</m:ci></m:math></value>
+      </target>
+      <target module-id="6e0768d7-660a-4574-8bc1-9ea8a28693d2" physical-quantity-id="2">
+        <value><m:math><m:ci>b</m:ci></m:math></value>
+      </target>
+      <target module-id="6e0768d7-660a-4574-8bc1-9ea8a28693d2" physical-quantity-id="3">
+        <value><m:math><m:ci>c</m:ci></m:math></value>
+      </target>
+      <target module-id="6e0768d7-660a-4574-8bc1-9ea8a28693d2" physical-quantity-id="4">
+        <value><m:math><m:ci>d</m:ci></m:math></value>
+      </target>
+    </target-set>
+    <parameter-set>
+      <zip>
+        <parameter name="a">
+          <range type="interval" lower="16.001" upper="25.001" step="1" />
+        </parameter>
+        <parameter name="b">
+          <range type="interval" lower="16" upper="25" step="1" />
+        </parameter>
+        <product>
+          <parameter name="c">
+            <range type="enum">2,3,4</range>
+          </parameter>
+          <parameter name="d">
+            <range type="enum">10,19,28</range>
+          </parameter>
+        </product>
+      </zip>
+    </parameter-set>
+  </model>
+</phsp>

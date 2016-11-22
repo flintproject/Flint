@@ -21,6 +21,7 @@ bool init_unit_test(); // to avoid uninteresting -Wmissing-declarations
 #include <boost/test/unit_test.hpp>
 
 #include "db/driver.h"
+#include "db/read-only-driver.h"
 #include "sqlite3.h"
 
 using namespace flint;

@@ -10,12 +10,6 @@ namespace flint {
 namespace exec {
 
 /*
- * Return the number of possible combination of parameter values
- * in case of success, 0 otherwise.
- */
-int Enum(sqlite3 *db);
-
-/*
  * Return true in case of success, false otherwise.
  */
 bool Exec(const cli::ExecOption &option);

@@ -126,8 +126,8 @@ public class TaskDao extends DaoObject {
     public int indexOf(Map<String, Number> combination)
         throws IOException, SQLException {
         String sql = "SELECT js.rowid AS rowid FROM jobs AS js "
-            + "LEFT JOIN enum AS e "
-            + "ON js.enum_id = e.rowid ";
+            + "LEFT JOIN parameter_samples AS ps "
+            + "ON js.ps_id = ps.rowid ";
         StringBuilder sb = new StringBuilder();
         Number[] params = new Number[combination.size()];
         String[] names = combination.keySet()
@@ -135,7 +135,7 @@ public class TaskDao extends DaoObject {
         for (int i=0; i<combination.size(); i++) {
             String name = names[i];
             params[i] = combination.get(names[i]);
-            sb.append(String.format("e.%s = ? AND ", name));
+            sb.append(String.format("ps.%s = ? AND ", name));
         }
 
         String where = sb.substring(0, sb.length() - "AND ".length()) + " ";

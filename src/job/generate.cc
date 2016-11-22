@@ -26,14 +26,14 @@ namespace {
 class NextJob : db::StatementDriver {
 public:
 	explicit NextJob(sqlite3 *db)
-		: db::StatementDriver(db, "SELECT rowid, enum_id FROM jobs WHERE status = 'pending' LIMIT 1")
+		: db::StatementDriver(db, "SELECT rowid, ps_id FROM jobs WHERE status = 'pending' LIMIT 1")
 	{
 	}
 
 	/*
 	 * Return 1 if a pending job is found, 0 if no more pending one, or -1 otherwise.
 	 */
-	int Get(int *rowid, int *enum_id)
+	int Get(int *rowid, int *ps_id)
 	{
 		int e;
 		e = sqlite3_step(stmt());
@@ -46,7 +46,7 @@ public:
 			return -1;
 		}
 		*rowid = sqlite3_column_int(stmt(), 0);
-		*enum_id = sqlite3_column_int(stmt(), 1);
+		*ps_id = sqlite3_column_int(stmt(), 1);
 		return 1;
 	}
 };
@@ -106,17 +106,18 @@ public:
 		, inserter_(output, fp)
 	{}
 
-	bool Generate(int rowid, int enum_id) {
+	bool Generate(int rowid, int ps_id) {
 		char query[1024];
 		char *em;
 		int e;
 
 		/* print equations */
-		std::sprintf(query, "SELECT * FROM enum WHERE rowid = '%d'", enum_id);
+		std::sprintf(query, "SELECT * FROM parameter_samples WHERE rowid = '%d'", ps_id);
 		e = sqlite3_exec(input_, query, SaveParameter, &inserter_, &em);
 		if (e != SQLITE_OK) {
 			if (e != SQLITE_ABORT)
-				std::cerr << "failed to select enum: " << e << ": " << em << std::endl;
+				std::cerr << "failed to select parameter_samples: " << e
+						  << ": " << em << std::endl;
 			sqlite3_free(em);
 			return false;
 		}
@@ -150,10 +151,10 @@ private:
 bool Generate(sqlite3 *input, const char *dir, int *job_id)
 {
 	int rowid;
-	int enum_id;
+	int ps_id;
 	{
 		NextJob nj(input);
-		int r = nj.Get(&rowid, &enum_id);
+		int r = nj.Get(&rowid, &ps_id);
 		if (r == 0) {
 			*job_id = 0;
 			return true;
@@ -187,7 +188,7 @@ bool Generate(sqlite3 *input, const char *dir, int *job_id)
 		return false;
 	}
 	Generator g(input, output, fp);
-	if (!g.Generate(rowid, enum_id)) {
+	if (!g.Generate(rowid, ps_id)) {
 		std::fclose(fp);
 		return false;
 	}

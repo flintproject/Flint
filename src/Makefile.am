@@ -50,6 +50,7 @@ bin_PROGRAMS = \
 	isdwc
 
 noinst_PROGRAMS = \
+	test-exec \
 	test-run
 
 # Dependency comes first
@@ -103,7 +104,6 @@ libflintxx_la_SOURCES = \
     db/statement-driver.cc \
     db/tac-inserter.cc \
     db/variable-inserter.cc \
-    exec/enum.cc \
     exec/exec.cc \
     exec/job-runner.cc \
     exec/parameter.cc \
@@ -157,6 +157,7 @@ libflintxx_la_SOURCES = \
     phml/unit-of-time.cc \
     phml/validator.cc \
     phsp/read.cc \
+    phsp/sample-builder.cc \
     phz/read.cc \
     reduction.cc \
     run/run.cc \
@@ -300,6 +301,10 @@ isdwc_CPPFLAGS = $(BOOST_CPPFLAGS)
 isdwc_LDFLAGS = $(BOOST_PROGRAM_OPTIONS_LDFLAGS)
 isdwc_LDADD = $(BOOST_PROGRAM_OPTIONS_LIBS)
 isdwc_SOURCES = isdwc-main.cc
+
+test_exec_CPPFLAGS = $(PROTOBUF_CFLAGS) $(BOOST_CPPFLAGS)
+test_exec_LDADD = libflintxx.la libflint.la libsqlite3.la $(PROTOBUF_LIBS)
+test_exec_SOURCES = test-exec-main.cc
 
 test_run_CPPFLAGS = $(PROTOBUF_CFLAGS) $(BOOST_CPPFLAGS)
 test_run_LDADD = libflintxx.la libflint.la libsqlite3.la $(PROTOBUF_LIBS)
