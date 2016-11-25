@@ -48,7 +48,7 @@ public class TargetSet {
 
         private String mPhysicalQuantityName;
 
-        private String mSpeciesId;
+        private String mId;
 
         private String mValue;
 
@@ -57,7 +57,7 @@ public class TargetSet {
             mModuleName = "";
             mPhysicalQuantityId = "";
             mPhysicalQuantityName = "";
-            mSpeciesId = "";
+            mId = "";
             mValue = "";
         }
 
@@ -93,12 +93,12 @@ public class TargetSet {
             mPhysicalQuantityName = pqName;
         }
 
-        public String getSpeciesId() {
-            return mSpeciesId;
+        public String getId() {
+            return mId;
         }
 
-        public void setSpeciesId (String sId) {
-            mSpeciesId = sId;
+        public void setId (String sId) {
+            mId = sId;
         }
 
         public String getValue() {

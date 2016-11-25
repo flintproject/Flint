@@ -233,7 +233,7 @@ public class PhspReader extends SwingWorker <IPhspConfiguration, Model> {
             target.setModuleId(element.getAttribute("module-id"));
             target.setPhysicalQuantityId(element.getAttribute("physical-quantity-id"));
         } else {
-            target.setSpeciesId(element.getAttribute("species-id"));
+            target.setId(element.getAttribute("id"));
         }
         int length = element.getChildNodes().getLength();
         for (int i=0; i<length; i++) {

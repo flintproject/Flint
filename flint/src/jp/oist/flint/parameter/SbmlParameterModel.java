@@ -6,13 +6,13 @@ import java.io.IOException;
 
 public class SbmlParameterModel extends ParameterModel {
 
-    public final static int INDEX_SPECIES_ID = 0;
+    public final static int INDEX_ID = 0;
 
     public final static int INDEX_EXPRESSION = 1;
 
     SbmlParameterModel(File paramFile, File dataFile) throws IOException {
         super(paramFile, dataFile);
-mColumns = new Object[] {"Species Id", "Expression"};
+mColumns = new Object[] {"Id", "Expression"};
     }
 
     @Override
@@ -24,7 +24,7 @@ mColumns = new Object[] {"Species Id", "Expression"};
     public Object getValueAt (int row, int column) {
         Parameter p = mParameterList.get(row);
         switch (column) {
-        case INDEX_SPECIES_ID: return p.getName();
+        case INDEX_ID: return p.getName();
         case INDEX_EXPRESSION: return p.getValue();
         }
         return null;
@@ -37,8 +37,8 @@ mColumns = new Object[] {"Species Id", "Expression"};
         if (column == 1) p.setValue(v);
     }
 
-    public String getSpeciesIdAt (int row) {
-        return (String)getValueAt(row, INDEX_SPECIES_ID);
+    public String getIdAt (int row) {
+        return (String)getValueAt(row, INDEX_ID);
     }
 
     public String getExpressionAt (int row) {

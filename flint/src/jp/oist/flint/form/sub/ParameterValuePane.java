@@ -286,14 +286,14 @@ public class ParameterValuePane extends JPanel
                     break;
                 case SBML:
                     for (int row=0; row<rowCount; row++) {
-                        String speciesId = (String)tbl_Parameter.getModel().getValueAt(row, 0);
+                        String id = (String)tbl_Parameter.getModel().getValueAt(row, 0);
                         String value  = (String)tbl_Parameter.getModel().getValueAt(row, 1);
-                        if (speciesId.contains("sbml:")) {
-                            int index = speciesId.indexOf("sbml:");
-                            speciesId = speciesId.substring(index+"sbml:".length());
+                        if (id.contains("sbml:")) {
+                            int index = id.indexOf("sbml:");
+                            id = id.substring(index+"sbml:".length());
                         }
                         TargetSet.Target tt = new TargetSet.Target();
-                        tt.setSpeciesId(speciesId);
+                        tt.setId(id);
                         tt.setValue(value);
                         ts.add(tt);
                     }
@@ -326,11 +326,11 @@ public class ParameterValuePane extends JPanel
                     }
                     break;
                 case SBML:
-                    String speciesId1 = "sbml:"+tt.getSpeciesId();
+                    String id1 = "sbml:"+tt.getId();
                     SbmlParameterModel sbmlModel = (SbmlParameterModel)tbl_Parameter.getModel();
                     for (int row=0; row<rowCount; row++) {
-                        String speciesId2 = sbmlModel.getSpeciesIdAt(row);
-                        if (speciesId1.equals(speciesId2))
+                        String id2 = sbmlModel.getIdAt(row);
+                        if (id1.equals(id2))
                             sbmlModel.setExpressionAt(row, value);
                     }
                     break;

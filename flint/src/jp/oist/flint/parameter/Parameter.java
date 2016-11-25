@@ -36,7 +36,7 @@ public class Parameter {
     /**
      * 
      * @return physical-quantity-name if phml, 
-     *         species-id if sbml other null
+     *         id if sbml other null
      */
     public String getName() {
         return mColumn.getName();
