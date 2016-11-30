@@ -5,7 +5,7 @@
  # -----------------------------------------------------------------------------
  
 -base-libs = -lstdc++ -lm
-+base-libs = -lc++ -lm
++base-libs = -lm
  
  COMPRESS_CPFLAGS    = ${ZLIB_CPPFLAGS} ${BZ2_CPPFLAGS}
  COMPRESS_LDFLAGS    = ${ZLIB_LDFLAGS} ${BZ2_LDFLAGS}
