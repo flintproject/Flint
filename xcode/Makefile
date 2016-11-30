@@ -147,9 +147,10 @@ tmp/clibsedml-$(CLIBSEDML_COMMIT): src/clibsedml-$(CLIBSEDML_COMMIT).tar.gz | tm
 	tar -C var -zxf $<
 	touch $@
 
-tmp/libsbml-$(LIBSBML_VERSION): src/libSBML-$(LIBSBML_VERSION)-core-src.zip | tmp
+tmp/libsbml-$(LIBSBML_VERSION): src/libSBML-$(LIBSBML_VERSION)-core-src.zip libsbml-$(LIBSBML_VERSION).patch | tmp
 	-rm -rf var/libsbml-$(LIBSBML_VERSION)
 	(cd var && unzip -qq ../$<)
+	patch var/libsbml-$(LIBSBML_VERSION)/Makefile.in libsbml-$(LIBSBML_VERSION).patch
 	touch $@
 
 tmp/libxml2-$(LIBXML2_VERSION): src/libxml2-sources-$(LIBXML2_VERSION).tar.gz | tmp
