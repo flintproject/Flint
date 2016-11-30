@@ -1,0 +1,11 @@
+--- Makefile.in.orig	2016-04-05 00:59:24.000000000 +0900
++++ Makefile.in	2016-11-30 14:02:43.216237269 +0900
+@@ -656,7 +656,7 @@
+ # libsbml.pc.
+ # -----------------------------------------------------------------------------
+ 
+-base-libs = -lstdc++ -lm
++base-libs = -lc++ -lm
+ 
+ COMPRESS_CPFLAGS    = ${ZLIB_CPPFLAGS} ${BZ2_CPPFLAGS}
+ COMPRESS_LDFLAGS    = ${ZLIB_LDFLAGS} ${BZ2_LDFLAGS}
