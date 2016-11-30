@@ -1,4 +1,9 @@
 language: cpp
+
+os:
+  - linux
+  - osx
+
 compiler:
   - gcc
   - clang
@@ -14,9 +19,15 @@ addons:
     - g++-4.8
     - clang-3.7
 
-install:
-  - if [ "$CXX" = "g++" ]; then export CXX="g++-4.8" CC="gcc-4.8"; fi
-  - if [ "$CXX" = "clang++" ]; then export CXX="clang++-3.7" CC="clang-3.7"; fi
-  - cd posix && make -s
+before_install:
+  - if [ "$TRAVIS_OS_NAME" = osx ]; then brew update; fi
+  - if [ "$TRAVIS_OS_NAME" = osx ]; then brew install pkg-config; fi
 
-script: make check # in posix
+install:
+  - if [ "$TRAVIS_OS_NAME" = linux -a "$CXX" = "g++" ]; then export CXX="g++-4.8" CC="gcc-4.8"; fi
+  - if [ "$TRAVIS_OS_NAME" = linux -a "$CXX" = "clang++" ]; then export CXX="clang++-3.7" CC="clang-3.7"; fi
+  - if [ "$TRAVIS_OS_NAME" = linux ]; then cd posix; else cd xcode; fi
+  - if [ "$TRAVIS_OS_NAME" = osx ]; then echo "PKG_CONFIG = /usr/local/bin/pkg-config" > config.mk; fi
+  - make -s
+
+script: make check # in posix/ or xcode/
