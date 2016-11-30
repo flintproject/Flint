@@ -106,7 +106,7 @@
   </xsd:attributeGroup>
 
   <xsd:attributeGroup name="sbml-target-attrs">
-      <xsd:attribute name="id" type="xsd:string" use="optional" />
+      <xsd:attribute name="species-id" type="xsd:string" use="optional" />
   </xsd:attributeGroup>
 
   <xsd:element name="target">

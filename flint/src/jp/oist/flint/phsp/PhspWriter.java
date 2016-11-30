@@ -74,7 +74,7 @@ public class PhspWriter {
                         break;
                     case SBML:
                         sb.append("<target")
-                        .append(String.format(" id='%s'", t.getId()))
+                        .append(String.format(" species-id='%s'", t.getSpeciesId()))
                         .append(">");
                         break;
                     default:
