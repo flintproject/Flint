@@ -16,6 +16,7 @@
 #include <boost/asio.hpp>
 #endif
 #include <boost/program_options.hpp>
+#include "flint/numeric.h"
 #include "isdf/reader.h"
 
 namespace po = boost::program_options;
@@ -23,14 +24,6 @@ namespace po = boost::program_options;
 using namespace flint;
 
 namespace {
-
-void RequestMaxNumOfDigits(std::ostream *os)
-{
-	// choose the defaultfloat
-	os->unsetf(std::ios::floatfield);
-	// See Theorem 15 of <http://docs.oracle.com/cd/E19957-01/806-3568/ncg_goldberg.html>.
-	os->precision(17);
-}
 
 class Converter {
 public:
@@ -205,7 +198,7 @@ int main(int argc, char *argv[])
 			return EXIT_FAILURE;
 		}
 		if (vm.count("maximum-precision"))
-			RequestMaxNumOfDigits(&ofs);
+			RequestMaxNumOfDigitsForDouble(ofs);
 		if (vm.count("input")) {
 			std::ifstream ifs(input_file.c_str(), std::ios::in|std::ios::binary);
 			if (!ifs.is_open()) {
@@ -228,7 +221,7 @@ int main(int argc, char *argv[])
 		ofs.close();
 	} else {
 		if (vm.count("maximum-precision"))
-			RequestMaxNumOfDigits(&std::cout);
+			RequestMaxNumOfDigitsForDouble(std::cout);
 		if (vm.count("input")) {
 			std::ifstream ifs(input_file.c_str(), std::ios::in|std::ios::binary);
 			if (!ifs.is_open()) {

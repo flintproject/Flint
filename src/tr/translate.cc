@@ -28,6 +28,7 @@
 #include "filter/cutter.h"
 #include "flint/background.h"
 #include "flint/bc.h"
+#include "flint/numeric.h"
 #include "job.h"
 #include "lo/layout.h"
 #include "lo/layout_loader.h"
@@ -208,10 +209,7 @@ bool Translate(const cli::RunOption &option)
 	translator->PrintHeader(layer_size, reader.length(), reader.step());
 
 	// TODO: use std::hexfloat once GCC 5 is supposed to be available
-	// choose the defaultfloat
-	ofs.unsetf(std::ios::floatfield);
-	// See Theorem 15 of <http://docs.oracle.com/cd/E19957-01/806-3568/ncg_goldberg.html>.
-	ofs.precision(17);
+	RequestMaxNumOfDigitsForDouble(ofs);
 	translator->PrintFunctions();
 	translator->PrintReductionFunctions();
 	if (!PrintFileAsByteArray("isdh", "isdh", &ofs))

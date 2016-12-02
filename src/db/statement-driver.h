@@ -25,6 +25,8 @@ public:
 		}
 	}
 
+	explicit StatementDriver(sqlite3_stmt *stmt);
+
 	~StatementDriver();
 
 	sqlite3_stmt *stmt() const {return stmt_;}

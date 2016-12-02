@@ -20,15 +20,15 @@
         <parameter name="a">
           <range type="interval" lower="16.001" upper="25.001" step="1" />
         </parameter>
-        <parameter name="b">
+        <parameter type="sequence" name="b">
           <range type="interval" lower="16" upper="25" step="1" />
         </parameter>
         <product>
-          <parameter name="c">
-            <range type="enum">2,3,4</range>
+          <parameter type="random" name="c">
+            <gaussian mean="3.5" stddev="1" count="3" />
           </parameter>
-          <parameter name="d">
-            <range type="enum">10,19,28</range>
+          <parameter type="random" name="d">
+            <gaussian mean="19" stddev="5.5" count="3" />
           </parameter>
         </product>
       </zip>
