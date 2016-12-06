@@ -12,7 +12,7 @@ public class SbmlParameterModel extends ParameterModel {
 
     SbmlParameterModel(File paramFile, File dataFile) throws IOException {
         super(paramFile, dataFile);
-mColumns = new Object[] {"Species Id", "Expression"};
+        mColumns = new Object[] {"Id", "Expression"};
     }
 
     @Override
