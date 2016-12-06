@@ -28,7 +28,7 @@
             <gaussian mean="3.5" stddev="1" count="3" />
           </parameter>
           <parameter type="random" name="d">
-            <gaussian mean="19" stddev="5.5" count="3" />
+            <uniform min="15" max="23" count="3" />
           </parameter>
         </product>
       </zip>

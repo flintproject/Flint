@@ -692,6 +692,17 @@ private:
 					i = ReadRange(sb, parameter.get());
 					if (i <= 0) return i;
 					continue;
+				} else if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("uniform"))) {
+					if (parameter->type() != Parameter::Type::kRandom) {
+						std::cerr << "found <uniform> for <parameter> of type ";
+						parameter->PrintType(std::cerr);
+						std::cerr << std::endl;
+						return -2;
+					}
+					i = ReadUniform(sb, parameter.get());
+					if (i <= 0)
+						return i;
+					continue;
 				} else {
 					std::cerr << "unknown child of <parameter>: " << local_name << std::endl;
 					return -2;
@@ -894,6 +905,99 @@ private:
 				std::cerr << "failed to bind parameter: " << e << std::endl;
 				return -2;
 			}
+		}
+		e = sqlite3_step(sd_param_->stmt());
+		if (e != SQLITE_DONE) {
+			std::cerr << "failed to step statement: " << e << std::endl;
+			return -2;
+		}
+		sqlite3_reset(sd_param_->stmt());
+
+		sb->PushParameter(reinterpret_cast<const char *>(parameter->name()), std::move(values));
+
+		return xmlTextReaderRead(text_reader_);
+	}
+
+	int ReadUniform(SampleBuilder *sb, Parameter *parameter) {
+		bool count_found = false, min_found = false, max_found = false;
+		int count = 0;
+		double minimum, maximum;
+		int i;
+		while ( (i = xmlTextReaderMoveToNextAttribute(text_reader_)) > 0) {
+			if (xmlTextReaderIsNamespaceDecl(text_reader_))
+				continue;
+			const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
+			if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("count"))) {
+				if (count_found) {
+					std::cerr << "duplicate count of <uniform>" << std::endl;
+					return -2;
+				}
+				count_found = true;
+				count = std::atoi(reinterpret_cast<const char *>(xmlTextReaderConstValue(text_reader_)));
+			} else if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("min"))) {
+				if (min_found) {
+					std::cerr << "duplicate min of <uniform>" << std::endl;
+					return -2;
+				}
+				min_found = true;
+				minimum = std::atof(reinterpret_cast<const char *>(xmlTextReaderConstValue(text_reader_)));
+			} else if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("max"))) {
+				if (max_found) {
+					std::cerr << "duplicate max of <uniform>" << std::endl;
+					return -2;
+				}
+				max_found = true;
+				maximum = std::atof(reinterpret_cast<const char *>(xmlTextReaderConstValue(text_reader_)));
+			} else {
+				std::cerr << "unknown attribute of <uniform>: " << local_name << std::endl;
+				return -2;
+			}
+		}
+		if (!count_found) {
+			std::cerr << "missing count of <uniform>" << std::endl;
+			return -2;
+		}
+		if (count < 0) {
+			std::cerr << "invalid count of <uniform>" << count << std::endl;
+			return -2;
+		}
+		if (!min_found) {
+			std::cerr << "missing min of <uniform>" << std::endl;
+			return -2;
+		}
+		if (!max_found) {
+			std::cerr << "missing max of <uniform>" << std::endl;
+			return -2;
+		}
+		if (maximum <= minimum) {
+			std::cerr << "<uniform>'s max must be larger than its min, but: "
+					  << maximum << " vs " << minimum << std::endl;
+			return -2;
+		}
+
+		assert(sd_param_);
+		int e = sqlite3_bind_text(sd_param_->stmt(), 1, reinterpret_cast<const char *>(parameter->name()), -1, SQLITE_STATIC);
+		if (e != SQLITE_OK) {
+			std::cerr << "failed to bind parameter: " << e << std::endl;
+			return -2;
+		}
+
+		std::uniform_real_distribution<> urd(minimum, maximum);
+		std::vector<double> values;
+		std::ostringstream oss;
+		RequestMaxNumOfDigitsForDouble(oss);
+		for (int i=0;i<count;i++) {
+			double d = urd(gen_);
+			if (i > 0)
+				oss << ',';
+			oss << d;
+			values.push_back(d);
+		}
+		std::string s = oss.str();
+		e = sqlite3_bind_text(sd_param_->stmt(), 2, s.c_str(), -1, nullptr);
+		if (e != SQLITE_OK) {
+			std::cerr << "failed to bind parameter: " << e << std::endl;
+			return -2;
 		}
 		e = sqlite3_step(sd_param_->stmt());
 		if (e != SQLITE_DONE) {
