@@ -1,0 +1,35 @@
+* Purpose
+  Flint simulates a model as a dynamical system, in which time is the unique parameter determining its state.
+  The state at an arbitrary time t consists of variables.
+  The number of variables may change during the time course of simulation.
+  Often two or more threads in a simulation process involves in writing the values of variables at t.
+  The wall-clock time at which a thread reaches simulation time t can differ from the one of other threads.
+  But algorithms of time evolution usually requires that all of variables at time t have been ready before a thread starts calculation for next time t'.
+  In other words, leading threads, which have already reached t, must wait for other behind threads to reach t.
+  Thus Flint needs facilities to synchronize them.
+* Design
+  Create a thread and call it monitor when starting a simulation process.
+  Create another thread called coordinator.
+  Then, create participating threads.
+  The number of participants should not be limited.
+  There are two buffers, Br and Bw, allocated to store values of variables.
+  Participants read the state at time 0 from Br, and go to next time t.
+  A participant may write the values at time t of variables for which it is responsible into Bw.
+  Another participant may write the state into an output file.
+  Then it sends a signal to the coordinator and waits for the coordinator's signal.
+  Once all signals from participants has been delivered, the coordinator swaps Bw with Br and sends a signal to participants.
+  When the signal from the coordinator arrives, every participant reads the state (and time) from Br again, and go to next time t'.
+  Continue the loop until the simulation finishes.
+  The coordinator dies immediately after the simulation finishes.
+  Each participant may or may not die by itself.
+  To avoid a dead lock, the monitor will kill other threads if it finds any other thread stopped or dead.
+  The monitor tells whether the simulation is done successfully or not by the coordinator's status.
+  It is also possible to have several observer threads.
+  An observer may notify progress to user.
+  The coordinator sends a signal to observers, but it does not wait for signals from them.
+  The monitor ignores any observer's status, but kills them when necessary.
+* Example
+  Suppose that, for a simulation of a given PHML model, a participating thread simulates an SBML model embedded in it via libsbmlsim.
+  Thus there are more threads than the number of SBML models embedded in the whole model.
+  The remaining part of the model is simulated by other participants.
+  The callback function passed to simulateSBMLModelWithFlint() will write the values of SBML variables, signal to the coordinator, and then wait for an signal.
