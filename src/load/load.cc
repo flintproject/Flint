@@ -67,10 +67,14 @@ public:
 	}
 };
 
+namespace {
+
+const int kFilenameLength = 64;
+
+}
+
 class Loader {
 public:
-	static const int kFilenameLength = 64;
-
 	explicit Loader(int dir)
 		: dir_(new char[kFilenameLength])
 		, layout_(new char[kFilenameLength])

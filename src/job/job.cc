@@ -40,8 +40,8 @@ bool Job(const char *task_dir,
 		 const task::ConfigReader &reader,
 		 sqlite3 *db)
 {
-	static const int kShort = 64;
-	static const int kLong = 96;
+	const int kShort = 64;
+	const int kLong = 96;
 
 	boost::system::error_code ec;
 	// ensure the job directory

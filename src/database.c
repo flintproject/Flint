@@ -13,7 +13,7 @@ static int FindInputFile(sqlite3 *db,
 						 const char column_name[],
 						 char *input_file)
 {
-	static const int kMaxBytes = 1023;
+	const int kMaxBytes = 1023;
 
 	int r = 0;
 	int e;

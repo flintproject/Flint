@@ -19,7 +19,7 @@ namespace flint {
 template<typename TMessage>
 bool PackToOstream(const TMessage &message, std::ostream *os)
 {
-	static const size_t kHeadSize = 4;
+	const size_t kHeadSize = 4;
 	char buffer[kHeadSize];
 
 	uint32_t byte_size = static_cast<uint32_t>(message.ByteSize());
@@ -33,7 +33,7 @@ bool PackToOstream(const TMessage &message, std::ostream *os)
 template<typename TMessage>
 bool UnpackFromIstream(TMessage &message, std::istream *is)
 {
-	static const size_t kHeadSize = 4;
+	const size_t kHeadSize = 4;
 	char buffer[kHeadSize];
 
 	if (!is->read(buffer, kHeadSize).good()) return false;
