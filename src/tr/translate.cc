@@ -48,7 +48,7 @@ namespace {
 bool PrintFileAsByteArray(const char *filename, const char *name,
 						  std::ostream *os)
 {
-	static const int kBufferSize = 1024;
+	const int kBufferSize = 1024;
 
 	boost::filesystem::path path(filename);
 	size_t size = static_cast<size_t>(boost::filesystem::file_size(path));

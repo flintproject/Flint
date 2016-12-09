@@ -25,6 +25,8 @@ public:
 	}
 
 	bool Load(std::uint32_t *value) {
+		const int kMod = 65521;
+
 		void *addr = mr_.get_address();
 		size_t size = mr_.get_size();
 		if (size == 0) {
@@ -45,8 +47,6 @@ public:
 	}
 
 private:
-	static const int kMod = 65521;
-
 	boost::interprocess::file_mapping fm_;
 	boost::interprocess::mapped_region mr_;
 };

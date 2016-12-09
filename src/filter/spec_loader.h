@@ -24,8 +24,8 @@ public:
 
 	template<typename TFilter>
 	bool Load(TFilter *filter) {
-		static const size_t kLineSize = 1024; // FIXME
-		static const size_t kUuidSize = 36;
+		const size_t kLineSize = 1024; // FIXME
+		const size_t kUuidSize = 36;
 
 		if (!ifs_.is_open()) {
 			std::cerr << "failed to open spec file" << std::endl;

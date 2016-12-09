@@ -91,7 +91,7 @@ private:
 
 bool CopyFile(const char *source, const char *target)
 {
-	static const size_t kLength = 4096;
+	const size_t kLength = 4096;
 
 	FILE *ifp = std::fopen(source, "rb");
 	if (!ifp) {

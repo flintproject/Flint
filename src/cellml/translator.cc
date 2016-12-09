@@ -155,6 +155,7 @@ public:
 	}
 
 	bool Dump() {
+		const size_t kPrefixLength = 25; // length of " (eq (diff (bvar %time) %"
 		int e;
 		boost::uuids::uuid u;
 		for (e = sqlite3_step(stmt()); e == SQLITE_ROW; e = sqlite3_step(stmt())) {
@@ -199,7 +200,6 @@ public:
 	}
 
 private:
-	static const size_t kPrefixLength = 25; // length of " (eq (diff (bvar %time) %"
 	typedef std::unordered_map<std::string, std::unordered_set<std::string> > DependentVariableMap;
 
 	EqInserter ei_;
