@@ -26,9 +26,9 @@ boost::interprocess::file_mapping *CreateProgressFile(int n, const char *dir);
  * the 0th byte of the file "progress".
  * Return the thread in case of success, null otherwise.
  */
-std::thread *CreateTaskProgressThread(size_t n,
-									  boost::interprocess::mapped_region *mr,
-									  std::atomic<size_t> *done);
+std::thread CreateTaskProgressThread(size_t n,
+									 boost::interprocess::mapped_region *mr,
+									 std::atomic<size_t> *done);
 
 }
 }

@@ -78,11 +78,11 @@ void NotifyTaskProgress(size_t n,
 
 }
 
-std::thread *CreateTaskProgressThread(size_t n,
-									  boost::interprocess::mapped_region *mr,
-									  std::atomic<size_t> *done)
+std::thread CreateTaskProgressThread(size_t n,
+									 boost::interprocess::mapped_region *mr,
+									 std::atomic<size_t> *done)
 {
-	return new std::thread(NotifyTaskProgress, n, mr, done);
+	return std::thread(NotifyTaskProgress, n, mr, done);
 }
 
 }
