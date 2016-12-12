@@ -2,8 +2,8 @@
 #ifndef FLINT_EXEC_PROGRESS_H_
 #define FLINT_EXEC_PROGRESS_H_
 
-#include <atomic>
-#include <thread>
+#include <future>
+#include <vector>
 
 #define BOOST_DATE_TIME_NO_LIB
 #include <boost/interprocess/file_mapping.hpp>
@@ -21,14 +21,12 @@ namespace exec {
 boost::interprocess::file_mapping *CreateProgressFile(int n, const char *dir);
 
 /*
- * Given the same n as above and the resulting mapped_region,
- * create a new thread for summarizing the task's progress at
+ * Given a vector of futures, report the task's progress at
  * the 0th byte of the file "progress".
- * Return the thread in case of success, null otherwise.
+ * Return true in case of success, false otherwise.
  */
-std::thread CreateTaskProgressThread(size_t n,
-									 boost::interprocess::mapped_region *mr,
-									 std::atomic<size_t> *done);
+bool MonitorTaskProgress(std::vector<std::future<bool> > &v,
+						 boost::interprocess::mapped_region *mr);
 
 }
 }
