@@ -205,9 +205,9 @@ bool TaskRunner::Run()
 	}
 	assert(static_cast<size_t>(n) == v.size());
 	std::atomic<size_t> done(0);
-	std::unique_ptr<std::thread> th(exec::CreateTaskProgressThread(n,
-																   progress_region_.get(),
-																   &done));
+	std::thread th(exec::CreateTaskProgressThread(n,
+												  progress_region_.get(),
+												  &done));
 	bool result = true;
 	// wait for all threads finishing regardless of their results
 	for (auto &f : v) {
@@ -215,7 +215,7 @@ bool TaskRunner::Run()
 			result = false;
 		done++;
 	}
-	th->join();
+	th.join();
 	return result;
 }
 
