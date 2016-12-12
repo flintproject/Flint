@@ -5,12 +5,14 @@
 
 #include "exec/progress.h"
 
+#include <cassert>
 #include <chrono>
-#include <cstdint>
 #include <cstdio>
 #include <cstring>
 #include <iostream>
 #include <memory>
+#include <numeric>
+#include <set>
 
 namespace flint {
 namespace exec {
@@ -52,37 +54,49 @@ boost::interprocess::file_mapping *CreateProgressFile(int n, const char *dir)
 												 boost::interprocess::read_write);
 }
 
-namespace {
-
-void NotifyTaskProgress(size_t n,
-						boost::interprocess::mapped_region *mr,
-						std::atomic<size_t> *done)
+bool MonitorTaskProgress(std::vector<std::future<bool> > &v,
+						 boost::interprocess::mapped_region *mr)
 {
-	while (n != *done) {
-		std::this_thread::sleep_for(std::chrono::milliseconds(250));
+	bool result = true;
+	size_t n = v.size();
+	assert(n > 0);
+	std::vector<size_t> progress(n, 0);
+	std::set<size_t> running;
+	for (size_t i=0;i<n;i++)
+		running.insert(i);
+	char *addr = static_cast<char *>(mr->get_address());
+	for (;;) {
+		std::this_thread::sleep_for(std::chrono::milliseconds(500));
 
-		int64_t sum = 0;
-		char *addr = static_cast<char *>(mr->get_address());
-		for (size_t i=1;i<=n;i++) { // 1-based
-			sum += addr[i];
+		auto it = running.begin();
+		while (it != running.end()) {
+			auto i = *it;
+			auto &f = v.at(i);
+			std::future_status s = f.wait_for(std::chrono::milliseconds(0));
+			switch (s) {
+			case std::future_status::deferred:
+				assert(false);
+				return false;
+			case std::future_status::timeout:
+				progress[i] = addr[i+1]; // 0-based vs 1-based
+				++it;
+				break;
+			case std::future_status::ready:
+				progress[i] = addr[i+1]; // 0-based vs 1-based
+				if (!f.get())
+					result = false;
+				it = running.erase(it);
+				break;
+			}
 		}
-		sum /= n;
-		if (0 <= sum && sum <= 100) {
-			char c = static_cast<char>(sum);
-			std::memcpy(addr, &c, 1);
-			if (sum == 100)
-				return;
-		}
+		char c = static_cast<char>(std::accumulate(progress.begin(), progress.end(), 0)/n);
+		assert(0 <= c && c <= 100);
+		*addr = c;
+		if (running.empty())
+			return result;
 	}
-}
-
-}
-
-std::thread CreateTaskProgressThread(size_t n,
-									 boost::interprocess::mapped_region *mr,
-									 std::atomic<size_t> *done)
-{
-	return std::thread(NotifyTaskProgress, n, mr, done);
+	assert(false);
+	return false;
 }
 
 }

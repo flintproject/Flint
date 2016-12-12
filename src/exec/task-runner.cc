@@ -5,14 +5,12 @@
 
 #include "exec/task-runner.h"
 
-#include <atomic>
 #include <cassert>
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
 #include <iostream>
 #include <future>
-#include <thread>
 
 #define BOOST_FILESYSTEM_NO_DEPRECATED
 #include <boost/filesystem.hpp>
@@ -204,19 +202,7 @@ bool TaskRunner::Run()
 		v.emplace_back(std::async(std::launch::async, lmbd, this, job_id));
 	}
 	assert(static_cast<size_t>(n) == v.size());
-	std::atomic<size_t> done(0);
-	std::thread th(exec::CreateTaskProgressThread(n,
-												  progress_region_.get(),
-												  &done));
-	bool result = true;
-	// wait for all threads finishing regardless of their results
-	for (auto &f : v) {
-		if (!f.get())
-			result = false;
-		done++;
-	}
-	th.join();
-	return result;
+	return MonitorTaskProgress(v, progress_region_.get());
 }
 
 }
