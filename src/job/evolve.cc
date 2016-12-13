@@ -493,13 +493,15 @@ bool Evolve(sqlite3 *db,
 			if (granularity <= 1 || ++g == granularity) {
 				if (with_filter) {
 					if (!writer->Write(data.get(), output_fp)) {
-						return false;
+						result = false;
+						break;
 					}
 				} else {
 					// output the first layer of data
 					if (std::fwrite(data.get(), sizeof(double), layer_size, output_fp) != layer_size) {
 						std::cerr << "failed to write output" << std::endl;
-						return false;
+						result = false;
+						break;
 					}
 				}
 				g = 0;
