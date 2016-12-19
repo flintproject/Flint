@@ -48,8 +48,12 @@ public class ControlPane extends PeripheralPane
         mBtnSimulationRun.addActionListener(new ActionListener () {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (mFrame != null)
-                    mFrame.simulationRunPerformed(e);
+                if (mFrame == null)
+                    return;
+                if (!mFrame.simulationRunPerformed(e)) {
+                    // enable the button again if launching simulation fails
+                    mBtnSimulationRun.setEnabled(true);
+                }
             }
         });
         contentPane.add(mBtnSimulationRun, BorderLayout.CENTER);
