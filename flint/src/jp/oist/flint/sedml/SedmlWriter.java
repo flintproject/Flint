@@ -39,11 +39,9 @@ public class SedmlWriter {
         writer.append("  <listOfSimulations>\n");
         for (int i=0; i<modelCount; i++) {
             ISimulationConfiguration config = configs.getConfiguration(i);
-            BigDecimal nop = new BigDecimal(config.getLength()).divide(new BigDecimal(config.getStep()));
-            int numberOfPoints = nop.intValueExact();
-
+            UniformTimeCourse utc = new UniformTimeCourse(config);
             writer.append(String.format("    <uniformTimeCourse id='sim%s' name='Simulation %s' initialTime='0' outputStartTime='%s' outputEndTime='%s' numberOfPoints='%s' flint:granularity='%s'>\n", 
-                                        i, i, config.getOutputStartTime(), config.getLength(), numberOfPoints, config.getGranularity()));
+                                        i, i, config.getOutputStartTime(), config.getLength(), utc.getNumberOfPoints(), config.getGranularity()));
             writer.append("      <algorithm kisaoID='KISAO:");
             String kisaoId = IntegrationMethodFormat.kisaoId(config.getIntegrationMethod());
             if (kisaoId == null)
@@ -97,9 +95,7 @@ public class SedmlWriter {
 
     public void writeSimulationConfiguration(final ISimulationConfiguration config, final OutputStream os)
         throws ArithmeticException, IOException, SedmlException {
-        BigDecimal nop = new BigDecimal(config.getLength()).divide(new BigDecimal(config.getStep()));
-        int numberOfPoints = nop.intValueExact();
-
+        UniformTimeCourse utc = new UniformTimeCourse(config);
         try (OutputStreamWriter osw = new OutputStreamWriter(os, StandardCharsets.UTF_8);
              BufferedWriter writer = new BufferedWriter(osw)) {
         writer.append("<?xml version='1.0' encoding='UTF-8'?>\n");
@@ -112,7 +108,7 @@ public class SedmlWriter {
         writer.append("  <listOfSimulations>\n");
         writer.append("    <uniformTimeCourse id='sim0' name='Simulation 0' initialTime='0' outputStartTime='");
         writer.append(config.getOutputStartTime());
-        writer.append("' outputEndTime='" + config.getLength() + "' numberOfPoints='" + numberOfPoints + "' flint:granularity='" + config.getGranularity() + "'>\n");
+        writer.append("' outputEndTime='" + config.getLength() + "' numberOfPoints='" + utc.getNumberOfPoints() + "' flint:granularity='" + config.getGranularity() + "'>\n");
         writer.append("      <algorithm kisaoID='KISAO:");
         String kisaoId = IntegrationMethodFormat.kisaoId(config.getIntegrationMethod());
         if (kisaoId == null)

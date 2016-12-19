@@ -371,9 +371,10 @@ public class MainFrame extends javax.swing.JFrame
         ad.setVisible(true);
     }
 
-    public void simulationRunPerformed(Object source) {
+    public boolean simulationRunPerformed(Object source) {
         try {
             mSimulator = mDesktop.runSimulation(this);
+            return true;
         } catch (IOException |
                  ParseException |
                  ParserConfigurationException |
@@ -382,6 +383,7 @@ public class MainFrame extends javax.swing.JFrame
                  SedmlException |
                  TransformerException ex) {
             showErrorDialog(ex.getMessage(), "ERROR");
+            return false;
         }
     }
 
