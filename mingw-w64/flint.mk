@@ -2,7 +2,7 @@
 MSI_DEPENDENCY = \
     flint.jar \
     $(foreach j,$(JARS),$(j).jar) \
-    $(foreach d,$(BIN_DLLS) $(BOOST_DLLS),lib/$(d).dll) \
+    $(foreach d,$(BIN_DLLS) $(BOOST_DLLS) wxmsw310u_gcc_custom,lib/$(d).dll) \
     $(foreach e,$(EXES),$(e).exe)
 
 .PHONY: all clean install uninstall timestamp
