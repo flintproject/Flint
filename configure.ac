@@ -97,6 +97,20 @@ fi
 AC_SUBST([SUNDIALS_CFLAGS])
 AC_SUBST([SUNDIALS_LIBS])
 
+AC_ARG_WITH([wxWidgets],
+        [AS_HELP_STRING([--with-wxWidgets],
+                [Specify prefix of wxWidgets])])
+WXWIDGETS_CXXFLAGS=
+WXWIDGETS_LIBS=
+if test -d "$with_wxWidgets"; then
+    WXWIDGETS_CXXFLAGS="`$with_wxWidgets/bin/wx-config --cxxflags`"
+    WXWIDGETS_LIBS="`$with_wxWidgets/bin/wx-config --libs`"
+elif test ! -z "$with_wxWidgets"; then
+    AC_MSG_ERROR([$with_wxWidgets is not a directory, please specify valid location of wxWidgets])
+fi
+AC_SUBST([WXWIDGETS_CXXFLAGS])
+AC_SUBST([WXWIDGETS_LIBS])
+
 AM_PATH_XML2([2.7.6])
 
 # Checks for header files.

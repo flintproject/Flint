@@ -71,6 +71,11 @@ tmp/sundials-$(SUNDIALS_VERSION): src/sundials-$(SUNDIALS_VERSION).tar.gz | tmp
 	tar -C src -zxf $<
 	touch $@
 
+tmp/wxWidgets-$(WXWIDGETS_VERSION): src/wxWidgets-$(WXWIDGETS_VERSION).tar.bz2 | tmp
+	-rm -rf src/wxWidgets-$(WXWIDGETS_VERSION)
+	tar -C var -jxf $<
+	touch $@
+
 tmp/$(BOOST_UNDERSCORE).installed: tmp/$(BOOST_UNDERSCORE)
 	-(cd var/$(BOOST_UNDERSCORE) && ./bootstrap.sh --prefix=$(PREFIX)/$(BOOST_UNDERSCORE) && ./b2 --layout=tagged --without-atomic --without-chrono --without-container --without-mpi --without-python --without-serialization --without-type_erasure install)
 	touch $@
@@ -97,6 +102,10 @@ tmp/sundials-$(SUNDIALS_VERSION).installed: tmp/sundials-$(SUNDIALS_VERSION)
 	(cd var/sundials-$(SUNDIALS_VERSION) && cmake -DCMAKE_INSTALL_PREFIX=$(PREFIX)/sundials-$(SUNDIALS_VERSION) -DBUILD_STATIC_LIBS=OFF -DBUILD_SHARED_LIBS=ON ../../src/sundials-$(SUNDIALS_VERSION) && $(MAKE) all install)
 	touch $@
 
+tmp/wxWidgets-$(WXWIDGETS_VERSION).installed: tmp/wxWidgets-$(WXWIDGETS_VERSION)
+	(cd var/wxWidgets-$(WXWIDGETS_VERSION) && ./configure --prefix=$(PREFIX)/wxWidgets-$(WXWIDGETS_VERSION) --enable-cxx11 --disable-compat30 --enable-monolithic && $(MAKE) all install)
+	touch $@
+
 tmp/libsbml-$(LIBSBML_VERSION).installed: tmp/libsbml-$(LIBSBML_VERSION) tmp/libxml2-$(LIBXML2_VERSION).installed
 	(cd var/libsbml-$(LIBSBML_VERSION) && ./configure --prefix=$(PREFIX)/libsbml-$(LIBSBML_VERSION) --with-xerces=no --with-libxml=$(PREFIX)/libxml2-$(LIBXML2_VERSION) && $(MAKE) all install)
 	touch $@
@@ -105,10 +114,10 @@ tmp/SBML_odeSolver-$(SOSLIB_COMMIT).installed: tmp/SBML_odeSolver-$(SOSLIB_COMMI
 	(cd var/SBML_odeSolver-$(SOSLIB_COMMIT) && autoreconf -i && ./configure --prefix=$(PREFIX)/SBML_odeSolver-$(SOSLIB_COMMIT) --with-libsbml=$(PREFIX)/libsbml-$(LIBSBML_VERSION) --with-libxml2=$(PREFIX)/libxml2-$(LIBXML2_VERSION) --with-sundials=$(PREFIX)/sundials-$(SUNDIALS_VERSION) --without-grace --without-graphviz && $(MAKE) all install)
 	touch $@
 
-tmp/sequential-version.installed: tmp/$(BOOST_UNDERSCORE).installed tmp/clibsedml-$(CLIBSEDML_COMMIT).installed tmp/libzip-$(LIBZIP_VERSION).installed tmp/protobuf-$(PROTOBUF_VERSION).installed tmp/SBML_odeSolver-$(SOSLIB_COMMIT).installed
+tmp/sequential-version.installed: tmp/$(BOOST_UNDERSCORE).installed tmp/clibsedml-$(CLIBSEDML_COMMIT).installed tmp/wxWidgets-$(WXWIDGETS_VERSION).installed tmp/libzip-$(LIBZIP_VERSION).installed tmp/protobuf-$(PROTOBUF_VERSION).installed tmp/SBML_odeSolver-$(SOSLIB_COMMIT).installed
 	(cd .. && autoreconf -i -f)
 	install -d var/sequential-version
-	(cd var/sequential-version && env LDFLAGS='-Wl,-rpath -Wl,$(PREFIX)/libsbml-$(LIBSBML_VERSION)/lib -Wl,-rpath -Wl,$(PREFIX)/sundials-$(SUNDIALS_VERSION)/lib' PKG_CONFIG_PATH=$(PKG_CONFIG_PATH) ../../../configure --prefix=$(PREFIX)/sequential-version --with-boost=$(PREFIX)/$(BOOST_UNDERSCORE) --with-xml-prefix=$(PREFIX)/libxml2-$(LIBXML2_VERSION) --with-protoc=$(PREFIX)/protobuf-$(PROTOBUF_VERSION)/bin/protoc --with-sundials=$(PREFIX)/sundials-$(SUNDIALS_VERSION) --enable-silent-rules && $(MAKE) all install)
+	(cd var/sequential-version && env LDFLAGS='-Wl,-rpath -Wl,$(PREFIX)/libsbml-$(LIBSBML_VERSION)/lib -Wl,-rpath -Wl,$(PREFIX)/sundials-$(SUNDIALS_VERSION)/lib' PKG_CONFIG_PATH=$(PKG_CONFIG_PATH) ../../../configure --prefix=$(PREFIX)/sequential-version --with-boost=$(PREFIX)/$(BOOST_UNDERSCORE) --with-xml-prefix=$(PREFIX)/libxml2-$(LIBXML2_VERSION) --with-protoc=$(PREFIX)/protobuf-$(PROTOBUF_VERSION)/bin/protoc --with-sundials=$(PREFIX)/sundials-$(SUNDIALS_VERSION) --with-wxWidgets=$(PREFIX)/wxWidgets-$(WXWIDGETS_VERSION) --enable-silent-rules && $(MAKE) all install)
 	touch $@
 
 .DEFAULT_GOAL := all

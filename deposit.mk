@@ -9,6 +9,7 @@ LIBXML2_VERSION = 2.7.8
 LIBZIP_VERSION = 1.1.1
 PROTOBUF_VERSION = 3.1.0
 SUNDIALS_VERSION = 2.7.0
+WXWIDGETS_VERSION = 3.1.0
 ZLIB_VERSION = 1.2.8
 
 BOOST_UNDERSCORE = boost_$(subst .,_,$(BOOST_VERSION))
@@ -22,6 +23,7 @@ EXTERNAL_LIBRARIES = \
 	protobuf-java-$(PROTOBUF_VERSION).tar.gz \
 	SBML_odeSolver-$(SOSLIB_COMMIT).tar.gz \
 	sundials-$(SUNDIALS_VERSION).tar.gz \
+	wxWidgets-$(WXWIDGETS_VERSION).tar.bz2 \
 	zlib-$(ZLIB_VERSION).tar.gz
 
 EXTERNAL_LIBRARY_DIRS = \
@@ -33,6 +35,7 @@ EXTERNAL_LIBRARY_DIRS = \
 	protobuf-$(PROTOBUF_VERSION) \
 	SBML_odeSolver-$(SOSLIB_COMMIT) \
 	sundials-$(SUNDIALS_VERSION) \
+	wxWidgets-$(WXWIDGETS_VERSION) \
 	zlib-$(ZLIB_VERSION)
 
 OS := $(shell uname -s)
@@ -74,4 +77,5 @@ $(eval $(call external_library_source,http://www.nih.at/libzip,libzip-$(LIBZIP_V
 $(eval $(call external_library_source,https://github.com/google/protobuf/releases/download/v$(PROTOBUF_VERSION),protobuf-java-$(PROTOBUF_VERSION).tar.gz,d8bfa09d3235a6f7a72ab3830176d579))
 $(eval $(call external_library_source,$(DEPOSIT_URL),SBML_odeSolver-$(SOSLIB_COMMIT).tar.gz,c44cf16d5c7aab2176faeafa8cacb62d))
 $(eval $(call external_library_source,http://pkgs.fedoraproject.org/repo/extras/sundials/sundials-$(SUNDIALS_VERSION).tar.gz/c304631b9bc82877d7b0e9f4d4fd94d3,sundials-$(SUNDIALS_VERSION).tar.gz,c304631b9bc82877d7b0e9f4d4fd94d3))
+$(eval $(call external_library_source,https://github.com/wxWidgets/wxWidgets/releases/download/v$(WXWIDGETS_VERSION),wxWidgets-$(WXWIDGETS_VERSION).tar.bz2,e20c14bb9bf5d4ec0979a3cd7510dece))
 $(eval $(call external_library_source,http://zlib.net,zlib-$(ZLIB_VERSION).tar.gz,44d667c142d7cda120332623eab69f40))

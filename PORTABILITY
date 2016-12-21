@@ -14,12 +14,15 @@ $ sudo yum install rhscl-devtoolset-3-*.noarch.rpm
 $ sudo yum install devtoolset-3-gcc-c++
 $ scl enable devtoolset-3 bash
 
+Moreover, some packages are necessary:
+$ sudo yum install gtk2-devel
+
 
 == RHEL/CentOS 7
 
 Install necessary tools for building and installing Flint with:
 $ sudo yum install gcc gcc-c++ autoconf automake libtool cmake java-1.7.0-openjdk \
-    wget zlib-devel
+    wget zlib-devel gtk3-devel
 
 
 == Debian jessie/stretch/sid
@@ -35,7 +38,7 @@ $ sudo apt-get install gcc g++ autoconf automake libtool cmake openjdk-7-jdk \
 
 Use dnf(8) to install required packages for building Flint:
 $ sudo dnf install gcc gcc-c++ autoconf automake libtool cmake java-1.8.0-openjdk \
-    wget zlib-devel
+    wget zlib-devel gtk3-devel
 
 
 == Ubuntu 16.04 LTS (Xenial Xerus)

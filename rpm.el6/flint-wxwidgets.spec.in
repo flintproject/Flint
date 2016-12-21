@@ -1,0 +1,51 @@
+Summary: wxWidgets for Flint
+Name: flint-wxwidgets
+Version: wxwidgets_VERSION
+Release: wxwidgets_RELEASE%{?dist}
+License: wxWindows Library Licence
+URL: https://www.wxwidgets.org/
+Source0: %{name}-%{version}.tar.gz
+BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
+BuildRequires: gcc-c++
+BuildRequires: GTK_PACKAGE_NAME-devel
+BuildRequires: make
+Requires: GTK_PACKAGE_NAME
+
+%description
+This is a wxWidgets package for Flint.
+
+%prep
+%setup -q
+
+%build
+./configure --prefix=/opt/flint --enable-cxx11 --disable-compat30 --enable-monolithic
+make
+
+%install
+rm -rf %{buildroot}
+make install DESTDIR=%{buildroot}
+mkdir -p %{buildroot}/etc/ld.so.conf.d
+echo '/opt/flint/lib' > %{buildroot}/etc/ld.so.conf.d/%{name}.conf
+
+%clean
+rm -rf %{buildroot}
+
+%post
+/sbin/ldconfig
+
+%postun
+/sbin/ldconfig
+
+%files
+%defattr(-,root,root,-)
+%doc
+/etc/ld.so.conf.d/%{name}.conf
+/opt/flint/bin/wx*
+/opt/flint/include/wx-*/*
+/opt/flint/lib/libwx*
+/opt/flint/lib/wx/*
+/opt/flint/share/aclocal/wxwin.m4
+/opt/flint/share/bakefile/presets/wx*
+/opt/flint/share/locale/*/LC_MESSAGES/wx*.mo
+
+%changelog

@@ -13,11 +13,13 @@ BuildRequires: flint-boost >= 1.62.0
 BuildRequires: flint-clibsedml
 BuildRequires: flint-protobuf >= 3.1.0
 BuildRequires: flint-soslib
+BuildRequires: flint-wxwidgets >= 3.1.0
 BuildRequires: libxml2-devel >= 2.7
 Requires: flint-boost >= 1.62.0
 Requires: flint-clibsedml
 Requires: flint-protobuf >= 3.1.0
 Requires: flint-soslib
+Requires: flint-wxwidgets >= 3.1.0
 Requires: libxml2 >= 2.7
 Requires: make
 
@@ -41,7 +43,7 @@ This is the GUI part of Flint.
 
 %build
 autoreconf -i -f
-PKG_CONFIG_PATH=/opt/flint/lib/pkgconfig ./configure --prefix=/opt/flint --with-boost=/opt/flint --with-protoc=/opt/flint/bin/protoc --with-sundials=/opt/flint --enable-release --enable-silent-rules --enable-thread=posix
+PKG_CONFIG_PATH=/opt/flint/lib/pkgconfig ./configure --prefix=/opt/flint --with-boost=/opt/flint --with-protoc=/opt/flint/bin/protoc --with-sundials=/opt/flint --with-wxWidgets=/opt/flint --enable-release --enable-silent-rules --enable-thread=posix
 make
 ant -f flint/build.xml jar
 

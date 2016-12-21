@@ -29,6 +29,7 @@ DYLIBS := \
     libsedml.0 \
     libxml2.2 \
     libprotobuf.11 \
+    libwx_osx_cocoau-3.1.0.0.0 \
     libzip.4
 SUNDIALS_DYLIBS := \
     arkode.1 \
@@ -114,7 +115,7 @@ endef
 
 .PHONY: all check mostlyclean clean distclean download
 
-all: download $(foreach lib,$(BOOST_UNDERSCORE) clibsedml-$(CLIBSEDML_COMMIT) libsbml-$(LIBSBML_VERSION) libxml2-$(LIBXML2_VERSION) libzip-$(LIBZIP_VERSION) protobuf-$(PROTOBUF_VERSION) SBML_odeSolver-$(SOSLIB_COMMIT) sundials-$(SUNDIALS_VERSION),tmp/$(lib).installed) $(DMGS)
+all: download $(foreach lib,$(BOOST_UNDERSCORE) clibsedml-$(CLIBSEDML_COMMIT) libsbml-$(LIBSBML_VERSION) libxml2-$(LIBXML2_VERSION) libzip-$(LIBZIP_VERSION) protobuf-$(PROTOBUF_VERSION) SBML_odeSolver-$(SOSLIB_COMMIT) sundials-$(SUNDIALS_VERSION) wxWidgets-$(WXWIDGETS_VERSION),tmp/$(lib).installed) $(DMGS)
 
 check:
 	env DYLD_LIBRARY_PATH=$(PREFIX)/lib $(MAKE) -C build check
@@ -178,6 +179,11 @@ tmp/sundials-$(SUNDIALS_VERSION): src/sundials-$(SUNDIALS_VERSION).tar.gz | tmp
 	tar -C var -zxf $<
 	touch $@
 
+tmp/wxWidgets-$(WXWIDGETS_VERSION): src/wxWidgets-$(WXWIDGETS_VERSION).tar.bz2 | tmp
+	-rm -rf var/wxWidgets-$(WXWIDGETS_VERSION)
+	tar -C var -jxf $<
+	touch $@
+
 tmp/$(BOOST_UNDERSCORE).installed: tmp/$(BOOST_UNDERSCORE)
 	(cd var/$(BOOST_UNDERSCORE) && export MACOSX_DEPLOYMENT_TARGET=10.8 && ./bootstrap.sh --with-toolset=clang && ./b2 -d0 --prefix=$(PREFIX) --without-atomic --without-chrono --without-container --without-mpi --without-python --without-serialization --without-type_erasure --layout=tagged toolset=clang cflags='-arch x86_64 -mmacosx-version-min=10.8' cxxflags='-std=c++11 -stdlib=libc++ -arch x86_64 -mmacosx-version-min=10.8' linkflags='-stdlib=libc++ -arch x86_64 -mmacosx-version-min=10.8' link=shared variant=release threading=multi install)
 	touch $@
@@ -203,6 +209,10 @@ tmp/sundials-$(SUNDIALS_VERSION).installed: tmp/sundials-$(SUNDIALS_VERSION)
 	(cd var/sundials-$(SUNDIALS_VERSION)/build && export MACOSX_DEPLOYMENT_TARGET=10.8 && CC='clang' CXX='clang++' CFLAGS='-arch x86_64 -mmacosx-version-min=10.8' CXXFLAGS='-std=c++11 -stdlib=libc++ -arch x86_64 -mmacosx-version-min=10.8' LDFLAGS='-stdlib=libc++ -arch x86_64 -mmacosx-version-min=10.8' cmake -DCMAKE_INSTALL_PREFIX=$(PREFIX) -DBUILD_STATIC_LIBS=OFF -DBUILD_SHARED_LIBS=ON .. && $(MAKE) all install)
 	touch $@
 
+tmp/wxWidgets-$(WXWIDGETS_VERSION).installed: tmp/wxWidgets-$(WXWIDGETS_VERSION)
+	(cd var/wxWidgets-$(WXWIDGETS_VERSION) && export MACOSX_DEPLOYMENT_TARGET=10.8 && ./configure --prefix=$(PREFIX) --enable-cxx11 --disable-compat30 --enable-monolithic CC='clang' CXX='clang++' CFLAGS='-arch x86_64 -mmacosx-version-min=10.8' CXXFLAGS='-std=c++11 -stdlib=libc++ -arch x86_64 -mmacosx-version-min=10.8' LDFLAGS='-stdlib=libc++ -arch x86_64 -mmacosx-version-min=10.8' && $(MAKE) all install)
+	touch $@
+
 tmp/libsbml-$(LIBSBML_VERSION).installed: tmp/libsbml-$(LIBSBML_VERSION) tmp/libxml2-$(LIBXML2_VERSION).installed
 	(cd var/libsbml-$(LIBSBML_VERSION) && export MACOSX_DEPLOYMENT_TARGET=10.8 && ./configure --prefix=$(PREFIX) --with-xerces=no --with-libxml=$(PREFIX) CC='clang' CXX='clang++' CFLAGS='-arch x86_64 -mmacosx-version-min=10.8' CXXFLAGS='-std=c++11 -stdlib=libc++ -arch x86_64 -mmacosx-version-min=10.8' LDFLAGS='-stdlib=libc++ -arch x86_64 -mmacosx-version-min=10.8' LIBS='-lc++' && $(MAKE) all install)
 	install_name_tool -id $(PREFIX)/lib/libsbml.$(LIBSBML_VERSION).dylib $(PREFIX)/lib/libsbml.$(LIBSBML_VERSION).dylib
@@ -225,7 +235,7 @@ build.xml: build.xml.in
 
 build/Makefile: ../configure
 	install -d $(dir $@)
-	(cd $(dir $@) && ../../configure --prefix=$(CURDIR)/opt --with-boost=$(PREFIX) --with-protoc=$(PREFIX)/bin/protoc --with-xml-prefix=$(PREFIX) --with-protoc=$(PREFIX)/bin/protoc --with-sundials=$(PREFIX) --enable-release --enable-silent-rules CC='clang' CXX='clang++' CFLAGS='-arch x86_64 -mmacosx-version-min=10.8' CXXFLAGS='-stdlib=libc++ -arch x86_64 -mmacosx-version-min=10.8' LDFLAGS='-stdlib=libc++ -arch x86_64 -mmacosx-version-min=10.8 -headerpad_max_install_names' PKG_CONFIG=$(PKG_CONFIG) PKG_CONFIG_PATH=$(PKG_CONFIG_PATH))
+	(cd $(dir $@) && ../../configure --prefix=$(CURDIR)/opt --with-boost=$(PREFIX) --with-protoc=$(PREFIX)/bin/protoc --with-xml-prefix=$(PREFIX) --with-protoc=$(PREFIX)/bin/protoc --with-sundials=$(PREFIX) --with-wxWidgets=$(PREFIX) --enable-release --enable-silent-rules CC='clang' CXX='clang++' CFLAGS='-arch x86_64 -mmacosx-version-min=10.8' CXXFLAGS='-stdlib=libc++ -arch x86_64 -mmacosx-version-min=10.8' LDFLAGS='-stdlib=libc++ -arch x86_64 -mmacosx-version-min=10.8 -headerpad_max_install_names' PKG_CONFIG=$(PKG_CONFIG) PKG_CONFIG_PATH=$(PKG_CONFIG_PATH))
 
 $(foreach p,$(PROGRAMS),opt/bin/$(p)): build/Makefile
 	$(MAKE) -C build all install-exec

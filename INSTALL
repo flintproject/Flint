@@ -25,6 +25,8 @@ In order to build Flint, the following libraries are required:
   http://clibsedml.sourceforge.net/
 - libzip 1.1.1 or later
   http://www.nih.at/libzip/
+- wxWidgets 3.1.0
+  https://www.wxwidgets.org/
 
 Also, please read PORTABILITY for platform-specific details.
 
