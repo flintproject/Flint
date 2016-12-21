@@ -293,6 +293,9 @@ $(APP)/Contents/Resources/third-party-licenses.txt: tmp/libsbml-$(LIBSBML_VERSIO
 	echo ';; SUNDIALS $(SUNDIALS_VERSION)' >> $@
 	echo >> $@
 	cat var/sundials-$(SUNDIALS_VERSION)/LICENSE >> $@
+	echo ';; wxWidgets $(WXWIDGETS_VERSION)' >> $@
+	echo >> $@
+	cat var/wxWidgets-$(WXWIDGETS_VERSION)/docs/licence.txt >> $@
 
 $(APP)/Contents/Resources/icon.png: ../flint/src/jp/oist/flint/image/icon.png
 	install -d $(dir $@)
