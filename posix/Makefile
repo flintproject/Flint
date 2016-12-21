@@ -1,5 +1,7 @@
+# -*- Mode: makefile-gmake; tab-width: 4; indent-tabs-mode: t -*-
 -include config.mk
 include ../deposit.mk
+include ../option.mk
 
 PREFIX ?= $(abspath opt)
 
@@ -77,7 +79,7 @@ tmp/wxWidgets-$(WXWIDGETS_VERSION): src/wxWidgets-$(WXWIDGETS_VERSION).tar.bz2 |
 	touch $@
 
 tmp/$(BOOST_UNDERSCORE).installed: tmp/$(BOOST_UNDERSCORE)
-	-(cd var/$(BOOST_UNDERSCORE) && ./bootstrap.sh --prefix=$(PREFIX)/$(BOOST_UNDERSCORE) && ./b2 --layout=tagged --without-atomic --without-chrono --without-container --without-mpi --without-python --without-serialization --without-type_erasure install)
+	-(cd var/$(BOOST_UNDERSCORE) && ./bootstrap.sh --prefix=$(PREFIX)/$(BOOST_UNDERSCORE) --without-icu && ./b2 $(B2_WITHOUT_OPTIONS) --layout=tagged link=shared install)
 	touch $@
 
 tmp/clibsedml-$(CLIBSEDML_COMMIT).installed: tmp/clibsedml-$(CLIBSEDML_COMMIT) tmp/libxml2-$(LIBXML2_VERSION).installed

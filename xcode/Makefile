@@ -1,6 +1,7 @@
 # -*- Mode: makefile-gmake; tab-width: 4; indent-tabs-mode: t -*-
 include config.mk
 include ../deposit.mk
+include ../option.mk
 include ../version.mk
 
 PREFIX = $(abspath usr)
@@ -185,7 +186,7 @@ tmp/wxWidgets-$(WXWIDGETS_VERSION): src/wxWidgets-$(WXWIDGETS_VERSION).tar.bz2 |
 	touch $@
 
 tmp/$(BOOST_UNDERSCORE).installed: tmp/$(BOOST_UNDERSCORE)
-	(cd var/$(BOOST_UNDERSCORE) && export MACOSX_DEPLOYMENT_TARGET=10.8 && ./bootstrap.sh --with-toolset=clang && ./b2 -d0 --prefix=$(PREFIX) --without-atomic --without-chrono --without-container --without-mpi --without-python --without-serialization --without-type_erasure --layout=tagged toolset=clang cflags='-arch x86_64 -mmacosx-version-min=10.8' cxxflags='-std=c++11 -stdlib=libc++ -arch x86_64 -mmacosx-version-min=10.8' linkflags='-stdlib=libc++ -arch x86_64 -mmacosx-version-min=10.8' link=shared variant=release threading=multi install)
+	(cd var/$(BOOST_UNDERSCORE) && export MACOSX_DEPLOYMENT_TARGET=10.8 && ./bootstrap.sh --with-toolset=clang --without-icu && ./b2 -d0 --prefix=$(PREFIX) $(B2_WITHOUT_OPTIONS) --layout=tagged toolset=clang cflags='-arch x86_64 -mmacosx-version-min=10.8' cxxflags='-std=c++11 -stdlib=libc++ -arch x86_64 -mmacosx-version-min=10.8' linkflags='-stdlib=libc++ -arch x86_64 -mmacosx-version-min=10.8' link=shared variant=release threading=multi install)
 	touch $@
 
 tmp/clibsedml-$(CLIBSEDML_COMMIT).installed: tmp/clibsedml-$(CLIBSEDML_COMMIT) tmp/libxml2-$(LIBXML2_VERSION).installed
