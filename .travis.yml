@@ -29,7 +29,7 @@ install:
   - if [ "$TRAVIS_OS_NAME" = linux -a "$CXX" = "clang++" ]; then export CXX="clang++-3.7" CC="clang-3.7"; fi
   - if [ "$TRAVIS_OS_NAME" = linux ]; then cd posix; else cd xcode; fi
   - if [ "$TRAVIS_OS_NAME" = osx ]; then echo "PKG_CONFIG = /usr/local/bin/pkg-config" > config.mk; fi
-  - travis_wait 100 make -s
+  - travis_wait 180 make -s
 
 script:
   - if [ "$TRAVIS_OS_NAME" = linux ]; then make check; else make; fi # in posix/ or xcode/
