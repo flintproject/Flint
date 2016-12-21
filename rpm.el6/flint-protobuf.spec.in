@@ -16,7 +16,7 @@ This is a protobuf package for Flint.
 %setup -q
 
 %build
-./configure --prefix=/opt/flint --enable-shared
+./configure --prefix=/opt/flint --enable-silent-rules
 make
 
 %install

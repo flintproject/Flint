@@ -25,3 +25,32 @@ BOOST_UNUSED_COMPONENTS = \
 	wave
 
 B2_WITHOUT_OPTIONS = $(foreach c,$(BOOST_UNUSED_COMPONENTS),--without-$(c))
+
+CLIBSEDML_CONFIGURE_OPTIONS = --enable-silent-rules --disable-static
+
+SOSLIB_CONFIGURE_OPTIONS = \
+	--disable-static \
+	--without-grace \
+	--without-graphviz \
+	--without-xerces
+
+LIBSBML_CONFIGURE_OPTIONS = --with-xerces=no
+
+LIBXML2_CONFIGURE_OPTIONS = \
+	--disable-static \
+	--without-debug \
+	--without-ftp \
+	--without-http \
+	--without-python \
+	--without-threads
+
+LIBZIP_CONFIGURE_OPTIONS = --enable-silent-rules --disable-static
+
+PROTOBUF_CONFIGURE_OPTONS = --enable-silent-rules --disable-static
+
+SUNDIALS_CMAKE_OPTIONS = -DBUILD_STATIC_LIBS=OFF -DBUILD_SHARED_LIBS=ON
+
+WXWIDGETS_CONFIGURE_OPTIONS = \
+	--enable-cxx11 \
+	--disable-compat30 \
+	--enable-monolithic

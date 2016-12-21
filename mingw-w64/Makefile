@@ -121,35 +121,35 @@ tmp/$(BOOST_UNDERSCORE).installed: tmp/$(BOOST_UNDERSCORE)
 	touch $@
 
 tmp/clibsedml-$(CLIBSEDML_COMMIT).installed: tmp/clibsedml-$(CLIBSEDML_COMMIT) tmp/libxml2-$(LIBXML2_VERSION).installed
-	(cd var/clibsedml-$(CLIBSEDML_COMMIT) && autoreconf -i -f && env CFLAGS='-std=c99 -Wall -W -Werror' ./configure --host=$(HOST) --prefix=$(PREFIX) --with-xml-prefix=$(PREFIX) --disable-xmltest && $(MAKE) all install)
+	(cd var/clibsedml-$(CLIBSEDML_COMMIT) && autoreconf -i -f && env CFLAGS='-std=c99 -Wall -W -Werror' ./configure --host=$(HOST) --prefix=$(PREFIX) --with-xml-prefix=$(PREFIX) --disable-xmltest $(CLIBSEDML_CONFIGURE_OPTIONS) && $(MAKE) all install)
 	touch $@
 
 usr/bin/protoc: src/protobuf-java-$(PROTOBUF_VERSION).tar.gz | build
 	-rm -rf build/protobuf-$(PROTOBUF_VERSION)
 	tar -C build -zxf $<
-	(cd build/protobuf-$(PROTOBUF_VERSION) && ./configure --prefix=$(abspath usr) && $(MAKE) all install)
+	(cd build/protobuf-$(PROTOBUF_VERSION) && ./configure --prefix=$(abspath usr) $(PROTOBUF_CONFIGURE_OPTONS) && $(MAKE) all install)
 
 tmp/protobuf-$(PROTOBUF_VERSION).installed: tmp/protobuf-$(PROTOBUF_VERSION) | usr/bin/protoc
-	(cd var/protobuf-$(PROTOBUF_VERSION) && ./configure --host=$(HOST) --prefix=$(PREFIX) --with-protoc=$(abspath usr/bin/protoc) --enable-shared --disable-static)
+	(cd var/protobuf-$(PROTOBUF_VERSION) && ./configure --host=$(HOST) --prefix=$(PREFIX) --with-protoc=$(abspath usr/bin/protoc) $(PROTOBUF_CONFIGURE_OPTONS))
 	$(MAKE) -C var/protobuf-$(PROTOBUF_VERSION) all install
 	touch $@
 
 tmp/libxml2-$(LIBXML2_VERSION).installed: tmp/libxml2-$(LIBXML2_VERSION)
-	(cd var/libxml2-$(LIBXML2_VERSION) && ./configure --host=$(HOST) --prefix=$(PREFIX) --without-python --without-threads && $(MAKE) all install)
+	(cd var/libxml2-$(LIBXML2_VERSION) && ./configure --host=$(HOST) --prefix=$(PREFIX) $(LIBXML2_CONFIGURE_OPTIONS) && $(MAKE) all install)
 	touch $@
 
 tmp/libzip-$(LIBZIP_VERSION).installed: tmp/libzip-$(LIBZIP_VERSION) tmp/zlib-$(ZLIB_VERSION).installed
-	(cd var/libzip-$(LIBZIP_VERSION) && ./configure --host=$(HOST) --prefix=$(PREFIX) --with-zlib=$(PREFIX) && $(MAKE) all install)
+	(cd var/libzip-$(LIBZIP_VERSION) && ./configure --host=$(HOST) --prefix=$(PREFIX) --with-zlib=$(PREFIX) $(LIBZIP_CONFIGURE_OPTIONS) && $(MAKE) all install)
 	touch $@
 
 tmp/sundials-$(SUNDIALS_VERSION).installed: tmp/sundials-$(SUNDIALS_VERSION) var/toolchain.cmake
 	install -d var/sundials-$(SUNDIALS_VERSION)/build
-	(cd var/sundials-$(SUNDIALS_VERSION)/build && cmake --host=$(HOST) -DCMAKE_INSTALL_PREFIX=$(PREFIX) -DCMAKE_TOOLCHAIN_FILE=$(CURDIR)/var/toolchain.cmake -DBUILD_STATIC_LIBS=OFF -DBUILD_SHARED_LIBS=ON ..)
+	(cd var/sundials-$(SUNDIALS_VERSION)/build && cmake --host=$(HOST) -DCMAKE_INSTALL_PREFIX=$(PREFIX) -DCMAKE_TOOLCHAIN_FILE=$(CURDIR)/var/toolchain.cmake $(SUNDIALS_CMAKE_OPTIONS) ..)
 	$(MAKE) -C var/sundials-$(SUNDIALS_VERSION)/build all install
 	touch $@
 
 tmp/wxWidgets-$(WXWIDGETS_VERSION).installed: tmp/wxWidgets-$(WXWIDGETS_VERSION)
-	(cd var/wxWidgets-$(WXWIDGETS_VERSION) && ./configure --host=$(HOST) --prefix=$(PREFIX) --enable-cxx11 --disable-compat30 --enable-monolithic)
+	(cd var/wxWidgets-$(WXWIDGETS_VERSION) && ./configure --host=$(HOST) --prefix=$(PREFIX) $(WXWIDGETS_CONFIGURE_OPTIONS))
 	$(MAKE) -C var/wxWidgets-$(WXWIDGETS_VERSION) all install
 	touch $@
 
@@ -160,7 +160,7 @@ tmp/libsbml-$(LIBSBML_VERSION).installed: var/toolchain.cmake tmp/libsbml-$(LIBS
 	touch $@
 
 tmp/SBML_odeSolver-$(SOSLIB_COMMIT).installed: tmp/SBML_odeSolver-$(SOSLIB_COMMIT) tmp/sundials-$(SUNDIALS_VERSION).installed tmp/libsbml-$(LIBSBML_VERSION).installed
-	(cd var/SBML_odeSolver-$(SOSLIB_COMMIT) && autoreconf -i -f && ./configure --host=$(HOST) --prefix=$(PREFIX) --enable-shared --disable-static --with-libsbml=$(PREFIX) --with-libxml2=$(PREFIX) --without-xerces --with-sundials=$(PREFIX) --without-grace --without-graphviz CPPFLAGS='-DSBML_ODESOLVER_EXPORTS=1')
+	(cd var/SBML_odeSolver-$(SOSLIB_COMMIT) && autoreconf -i -f && ./configure --host=$(HOST) --prefix=$(PREFIX) --with-libsbml=$(PREFIX) --with-libxml2=$(PREFIX) --with-sundials=$(PREFIX) $(SOSLIB_CONFIGURE_OPTIONS) CPPFLAGS='-DSBML_ODESOLVER_EXPORTS=1')
 	-$(MAKE) -C var/SBML_odeSolver-$(SOSLIB_COMMIT) install
 	touch $@
 

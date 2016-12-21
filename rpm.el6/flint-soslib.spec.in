@@ -24,7 +24,7 @@ This is a SOSlib package for Flint.
 
 %build
 autoreconf -i
-./configure --prefix=/opt/flint --with-libsbml=/opt/flint --with-libxml2 --with-sundials=/opt/flint --without-grace --without-graphviz
+./configure --prefix=/opt/flint --with-libsbml=/opt/flint --with-libxml2 --with-sundials=/opt/flint --without-grace --without-graphviz --without-xerces
 make
 
 %install

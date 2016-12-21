@@ -19,7 +19,7 @@ This is a clibsedml package for Flint.
 
 %build
 autoreconf -i -f
-./configure --prefix=/opt/flint
+./configure --prefix=/opt/flint --enable-silent-rules
 make
 
 %install
