@@ -53,4 +53,5 @@ SUNDIALS_CMAKE_OPTIONS = -DBUILD_STATIC_LIBS=OFF -DBUILD_SHARED_LIBS=ON
 WXWIDGETS_CONFIGURE_OPTIONS = \
 	--enable-cxx11 \
 	--disable-compat30 \
+	--disable-mediactrl \
 	--enable-monolithic
