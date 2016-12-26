@@ -51,9 +51,33 @@ PROTOBUF_CONFIGURE_OPTONS = --enable-silent-rules --disable-static
 SUNDIALS_CMAKE_OPTIONS = -DBUILD_STATIC_LIBS=OFF -DBUILD_SHARED_LIBS=ON
 
 WXWIDGETS_CONFIGURE_OPTIONS = \
+	--enable-aui \
 	--enable-cxx11 \
+	--enable-dnd \
 	--enable-monolithic \
+	--disable-arcstream \
 	--disable-compat30 \
+	--disable-constraints \
+	--disable-ftp \
+	--disable-help \
+	--disable-html \
+	--disable-htmlhelp \
 	--disable-mediactrl \
+	--disable-mshtmlhelp \
+	--disable-postscript \
 	--disable-printarch \
-	--disable-static
+	--disable-propgrid \
+	--disable-protocol-ftp \
+	--disable-ribbon \
+	--disable-richtext \
+	--disable-sound \
+	--disable-static \
+	--disable-svg \
+	--disable-webkit \
+	--disable-webview \
+	--disable-xrc \
+	--without-expat \
+	--without-gtkprint \
+	--without-opengl \
+	--without-sdl \
+	--without-zlib

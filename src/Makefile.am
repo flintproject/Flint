@@ -36,6 +36,7 @@ bin_PROGRAMS = \
 	flint-resume \
 	flint-run \
 	flint-tr \
+	flint2 \
 	isd2csv \
 	isdbswap \
 	isdcut \
@@ -244,6 +245,13 @@ flint_tr_CPPFLAGS = $(PROTOBUF_CFLAGS) $(BOOST_CPPFLAGS)
 flint_tr_LDFLAGS = $(BOOST_FILESYSTEM_LDFLAGS) $(BOOST_SYSTEM_LDFLAGS)
 flint_tr_LDADD = libflintxx.la libflint.la libsqlite3.la $(PROTOBUF_LIBS) $(BOOST_FILESYSTEM_LIBS) $(BOOST_SYSTEM_LIBS)
 flint_tr_SOURCES = flint-tr-main.cc
+
+flint2_CPPFLAGS = $(WXWIDGETS_CXXFLAGS)
+flint2_LDADD = libflintxx.la libflint.la libsqlite3.la $(WXWIDGETS_LIBS)
+flint2_SOURCES = \
+    gui/app.cc \
+    gui/main-frame.cc \
+    gui/sub-frame.cc
 
 isd2csv_CPPFLAGS = $(BOOST_CPPFLAGS)
 isd2csv_LDFLAGS = $(BOOST_PROGRAM_OPTIONS_LDFLAGS)
