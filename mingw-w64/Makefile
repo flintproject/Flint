@@ -121,13 +121,15 @@ tmp/$(BOOST_UNDERSCORE).installed: tmp/$(BOOST_UNDERSCORE)
 	touch $@
 
 tmp/clibsedml-$(CLIBSEDML_COMMIT).installed: tmp/clibsedml-$(CLIBSEDML_COMMIT) tmp/libxml2-$(LIBXML2_VERSION).installed
-	(cd var/clibsedml-$(CLIBSEDML_COMMIT) && autoreconf -i -f && env CFLAGS='-std=c99 -Wall -W -Werror' ./configure --host=$(HOST) --prefix=$(PREFIX) --with-xml-prefix=$(PREFIX) --disable-xmltest $(CLIBSEDML_CONFIGURE_OPTIONS) && $(MAKE) all install)
+	(cd var/clibsedml-$(CLIBSEDML_COMMIT) && autoreconf -i -f && env CFLAGS='-std=c99 -Wall -W -Werror' ./configure --host=$(HOST) --prefix=$(PREFIX) --with-xml-prefix=$(PREFIX) --disable-xmltest $(CLIBSEDML_CONFIGURE_OPTIONS))
+	$(MAKE) -C var/clibsedml-$(CLIBSEDML_COMMIT) all install
 	touch $@
 
 usr/bin/protoc: src/protobuf-java-$(PROTOBUF_VERSION).tar.gz | build
 	-rm -rf build/protobuf-$(PROTOBUF_VERSION)
 	tar -C build -zxf $<
-	(cd build/protobuf-$(PROTOBUF_VERSION) && ./configure --prefix=$(abspath usr) $(PROTOBUF_CONFIGURE_OPTONS) && $(MAKE) all install)
+	(cd build/protobuf-$(PROTOBUF_VERSION) && ./configure --prefix=$(abspath usr) $(PROTOBUF_CONFIGURE_OPTONS))
+	$(MAKE) -C build/protobuf-$(PROTOBUF_VERSION) all install
 
 tmp/protobuf-$(PROTOBUF_VERSION).installed: tmp/protobuf-$(PROTOBUF_VERSION) | usr/bin/protoc
 	(cd var/protobuf-$(PROTOBUF_VERSION) && ./configure --host=$(HOST) --prefix=$(PREFIX) --with-protoc=$(abspath usr/bin/protoc) $(PROTOBUF_CONFIGURE_OPTONS))
@@ -135,11 +137,13 @@ tmp/protobuf-$(PROTOBUF_VERSION).installed: tmp/protobuf-$(PROTOBUF_VERSION) | u
 	touch $@
 
 tmp/libxml2-$(LIBXML2_VERSION).installed: tmp/libxml2-$(LIBXML2_VERSION)
-	(cd var/libxml2-$(LIBXML2_VERSION) && ./configure --host=$(HOST) --prefix=$(PREFIX) $(LIBXML2_CONFIGURE_OPTIONS) && $(MAKE) all install)
+	(cd var/libxml2-$(LIBXML2_VERSION) && ./configure --host=$(HOST) --prefix=$(PREFIX) $(LIBXML2_CONFIGURE_OPTIONS))
+	$(MAKE) -C var/libxml2-$(LIBXML2_VERSION) all install
 	touch $@
 
 tmp/libzip-$(LIBZIP_VERSION).installed: tmp/libzip-$(LIBZIP_VERSION) tmp/zlib-$(ZLIB_VERSION).installed
-	(cd var/libzip-$(LIBZIP_VERSION) && ./configure --host=$(HOST) --prefix=$(PREFIX) --with-zlib=$(PREFIX) $(LIBZIP_CONFIGURE_OPTIONS) && $(MAKE) all install)
+	(cd var/libzip-$(LIBZIP_VERSION) && ./configure --host=$(HOST) --prefix=$(PREFIX) --with-zlib=$(PREFIX) $(LIBZIP_CONFIGURE_OPTIONS))
+	$(MAKE) -C var/libzip-$(LIBZIP_VERSION) all install
 	touch $@
 
 tmp/sundials-$(SUNDIALS_VERSION).installed: tmp/sundials-$(SUNDIALS_VERSION) var/toolchain.cmake
