@@ -41,6 +41,7 @@ EXES := \
     flint-resume \
     flint-run \
     flint-tr \
+    flint2 \
     isd2csv \
     isdcut \
     isddiff \
