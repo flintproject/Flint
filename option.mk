@@ -79,5 +79,4 @@ WXWIDGETS_CONFIGURE_OPTIONS = \
 	--without-expat \
 	--without-gtkprint \
 	--without-opengl \
-	--without-sdl \
-	--without-zlib
+	--without-sdl
