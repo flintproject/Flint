@@ -1,3 +1,9 @@
+* Flint 1.7.1 (2016-12-28)
+
+** Bug fixes
+   - Fixed a GUI hang occurring when e.g. invalid time step is specified in
+     general setting.
+
 * Flint 1.7 (2016-10-31)
 
 ** New features
