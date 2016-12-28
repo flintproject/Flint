@@ -10,6 +10,7 @@
 #include <wx/bookctrl.h>
 #include <wx/config.h>
 #include <wx/dnd.h>
+#include <wx/filename.h>
 
 #include "gui/sub-frame.h"
 
