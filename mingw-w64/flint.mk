@@ -1,8 +1,10 @@
 # -*- Mode: makefile-gmake; tab-width: 4; indent-tabs-mode: t -*-
+include header.mk
+
 MSI_DEPENDENCY = \
     flint.jar \
-    $(foreach j,$(JARS),$(j).jar) \
-    $(foreach d,$(BIN_DLLS) $(BOOST_DLLS) wxmsw310u_gcc_custom,lib/$(d).dll) \
+    $(foreach j,$(JARS),lib/$(j).jar) \
+    $(foreach d,$(BIN_DLLS) $(BOOST_DLLS) wxmsw310u_gcc_custom,$(d).dll) \
     $(foreach e,$(EXES),$(e).exe)
 
 .PHONY: all clean install uninstall timestamp
