@@ -27,6 +27,8 @@ In order to build Flint, the following libraries are required:
   http://www.nih.at/libzip/
 - wxWidgets 3.1.0
   https://www.wxwidgets.org/
+- zlib 1.2.3 or later
+  http://zlib.net/
 
 Also, please read PORTABILITY for platform-specific details.
 
