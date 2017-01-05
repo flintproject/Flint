@@ -9,13 +9,13 @@ BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
 #BuildRequires: autoconf >= 2.60
 BuildRequires: gcc-c++
 BuildRequires: make
-BuildRequires: flint-boost >= 1.62.0
+BuildRequires: flint-boost >= 1.63.0
 BuildRequires: flint-clibsedml
 BuildRequires: flint-protobuf >= 3.1.0
 BuildRequires: flint-soslib
 BuildRequires: flint-wxwidgets >= 3.1.0
 BuildRequires: libxml2-devel >= 2.7
-Requires: flint-boost >= 1.62.0
+Requires: flint-boost >= 1.63.0
 Requires: flint-clibsedml
 Requires: flint-protobuf >= 3.1.0
 Requires: flint-soslib

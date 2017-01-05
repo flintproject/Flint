@@ -3,7 +3,7 @@ DEPOSIT_URL = http://www.physiodesigner.org/developer/sources
 CLIBSEDML_COMMIT = d8596b56
 SOSLIB_COMMIT = 87bfbc8d
 
-BOOST_VERSION = 1.62.0
+BOOST_VERSION = 1.63.0
 LIBSBML_VERSION = 5.13.0
 LIBXML2_VERSION = 2.7.8
 LIBZIP_VERSION = 1.1.1
@@ -69,7 +69,7 @@ endef
 
 endif
 
-$(eval $(call external_library_source,http://downloads.sourceforge.net/project/boost/boost/$(BOOST_VERSION),$(BOOST_UNDERSCORE).tar.bz2,5fb94629535c19e48703bdb2b2e9490f))
+$(eval $(call external_library_source,http://downloads.sourceforge.net/project/boost/boost/$(BOOST_VERSION),$(BOOST_UNDERSCORE).tar.bz2,1c837ecd990bb022d07e7aab32b09847))
 $(eval $(call external_library_source,$(DEPOSIT_URL),clibsedml-$(CLIBSEDML_COMMIT).tar.gz,d780b4f02d5272e3c0b2d4610e6d6c3f))
 $(eval $(call external_library_source,http://downloads.sourceforge.net/project/sbml/libsbml/$(LIBSBML_VERSION)/stable,libSBML-$(LIBSBML_VERSION)-core-src.zip,6581723e894eee8058b95fa80df7aad4))
 $(eval $(call external_library_source,http://xmlsoft.org/sources,libxml2-sources-$(LIBXML2_VERSION).tar.gz,a78857dd73a8784776d7f9625ccf7a39))
