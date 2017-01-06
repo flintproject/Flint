@@ -1,0 +1,18 @@
+%struct-type
+%language=C++
+%define initializer-suffix ,Token::Type::kUnspecified
+%define class-name ProcedureHash
+%compare-strncmp
+%readonly-tables
+%enum
+struct ProcedureEntry { const char *name; Token::Type type; };
+%%
+Mod,Token::Type::kMod
+exponential_variate,Token::Type::kExponentialVariate
+gamma_variate,Token::Type::kGammaVariate
+gauss_variate,Token::Type::kGaussVariate
+lognormal_variate,Token::Type::kLognormalVariate
+poisson_variate,Token::Type::kPoissonVariate
+uniform_variate,Token::Type::kUniformVariate
+weibull_variate,Token::Type::kWeibullVariate
+%%

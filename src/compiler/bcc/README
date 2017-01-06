@@ -1,0 +1,4 @@
+Note that function.cc and procedure.cc is generated from function.txt and
+procedure.txt respectively by gperf(1).
+Do not modify these .cc directly; instead, modify correspoinding .txt and
+use gperf.

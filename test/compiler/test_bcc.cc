@@ -1,5 +1,7 @@
 /* -*- Mode: C++; tab-width: 4; indent-tabs-mode: t; c-basic-offset: 4 -*- vim:set ts=4 sw=4 sts=4 noet: */
 #include "compiler/bcc.h"
+#include "compiler/bcc/token.h"
+#include "compiler/bcc/tokenizer.h"
 
 #include <boost/uuid/string_generator.hpp>
 
@@ -287,6 +289,16 @@ BOOST_AUTO_TEST_CASE(Min) {
 	DoCheck();
 }
 
+BOOST_AUTO_TEST_CASE(Minus1) {
+	SetupCall1("minus");
+	DoCheck();
+}
+
+BOOST_AUTO_TEST_CASE(Minus2) {
+	SetupCall2("minus");
+	DoCheck();
+}
+
 BOOST_AUTO_TEST_CASE(Neq) {
 	SetupCall2("neq");
 	DoCheck();
@@ -294,6 +306,16 @@ BOOST_AUTO_TEST_CASE(Neq) {
 
 BOOST_AUTO_TEST_CASE(Plus) {
 	SetupCall2("plus");
+	DoCheck();
+}
+
+BOOST_AUTO_TEST_CASE(Root1) {
+	SetupCall1("root");
+	DoCheck();
+}
+
+BOOST_AUTO_TEST_CASE(Root2) {
+	SetupCall2("root");
 	DoCheck();
 }
 
@@ -540,6 +562,54 @@ BOOST_AUTO_TEST_CASE(Mult) {
 BOOST_AUTO_TEST_CASE(Mmul) {
 	Setup("%c", 3, 0, "  mmul $i0 1 2 3 $i1 $i2\n");
 	DoCheck();
+}
+
+BOOST_AUTO_TEST_CASE(tokenizer) {
+	compiler::bcc::Tokenizer lex("  $0 = (arccot $1 $2)\n");
+	compiler::bcc::Token t;
+	BOOST_CHECK_EQUAL(lex(&t), 1);
+	BOOST_CHECK(t.type == compiler::bcc::Token::Type::kSpace);
+	BOOST_CHECK_EQUAL(t.size, 1);
+	BOOST_CHECK_EQUAL(lex(&t), 1);
+	BOOST_CHECK(t.type == compiler::bcc::Token::Type::kSpace);
+	BOOST_CHECK_EQUAL(t.size, 1);
+	BOOST_CHECK_EQUAL(lex(&t), 1);
+	BOOST_CHECK(t.type == compiler::bcc::Token::Type::kAddress);
+	BOOST_CHECK_EQUAL(t.size, 2);
+	BOOST_CHECK_EQUAL(lex(&t), 1);
+	BOOST_CHECK(t.type == compiler::bcc::Token::Type::kSpace);
+	BOOST_CHECK_EQUAL(t.size, 1);
+	BOOST_CHECK_EQUAL(lex(&t), 1);
+	BOOST_CHECK(t.type == compiler::bcc::Token::Type::kEqualSign);
+	BOOST_CHECK_EQUAL(t.size, 1);
+	BOOST_CHECK_EQUAL(lex(&t), 1);
+	BOOST_CHECK(t.type == compiler::bcc::Token::Type::kSpace);
+	BOOST_CHECK_EQUAL(t.size, 1);
+	BOOST_CHECK_EQUAL(lex(&t), 1);
+	BOOST_CHECK(t.type == compiler::bcc::Token::Type::kParenOpen);
+	BOOST_CHECK_EQUAL(t.size, 1);
+	BOOST_CHECK_EQUAL(lex(&t), 1);
+	BOOST_CHECK(t.type == compiler::bcc::Token::Type::kArccot);
+	BOOST_CHECK_EQUAL(t.size, 6);
+	BOOST_CHECK_EQUAL(lex(&t), 1);
+	BOOST_CHECK(t.type == compiler::bcc::Token::Type::kSpace);
+	BOOST_CHECK_EQUAL(t.size, 1);
+	BOOST_CHECK_EQUAL(lex(&t), 1);
+	BOOST_CHECK(t.type == compiler::bcc::Token::Type::kAddress);
+	BOOST_CHECK_EQUAL(t.size, 2);
+	BOOST_CHECK_EQUAL(lex(&t), 1);
+	BOOST_CHECK(t.type == compiler::bcc::Token::Type::kSpace);
+	BOOST_CHECK_EQUAL(t.size, 1);
+	BOOST_CHECK_EQUAL(lex(&t), 1);
+	BOOST_CHECK(t.type == compiler::bcc::Token::Type::kAddress);
+	BOOST_CHECK_EQUAL(t.size, 2);
+	BOOST_CHECK_EQUAL(lex(&t), 1);
+	BOOST_CHECK(t.type == compiler::bcc::Token::Type::kParenClose);
+	BOOST_CHECK_EQUAL(t.size, 1);
+	BOOST_CHECK_EQUAL(lex(&t), 1);
+	BOOST_CHECK(t.type == compiler::bcc::Token::Type::kEol);
+	BOOST_CHECK_EQUAL(t.size, 1);
+	BOOST_CHECK_EQUAL(lex(&t), 0);
 }
 
 BOOST_AUTO_TEST_SUITE_END()

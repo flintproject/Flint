@@ -92,6 +92,9 @@ libflintxx_la_SOURCES = \
     cellml/translator.cc \
     compiler.cc \
     compiler/bcc.cc \
+    compiler/bcc/parser.cc \
+    compiler/bcc/token.cc \
+    compiler/bcc/tokenizer.cc \
     compiler/sort.cc \
     compiler/tac.cc \
     compiler/tac/context.cc \
