@@ -12,6 +12,8 @@ ReadOnlyDriver::ReadOnlyDriver(const char *filename)
 {
 	if (sqlite3_open_v2(filename, &db_, SQLITE_OPEN_READONLY, nullptr) != SQLITE_OK) {
 		std::cerr << "failed to open database for read-only: " << filename << std::endl;
+		sqlite3_close(db_);
+		db_ = nullptr;
 	}
 }
 
