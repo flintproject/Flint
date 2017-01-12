@@ -47,6 +47,10 @@ int CreateTable(sqlite3 *db, const char *name, const char *columns)
 	len += strlen(columns);
 
 	char *buf = malloc(len);
+	if (!buf) {
+		fprintf(stderr, "failed to malloc");
+		return 0;
+	}
 	sprintf(buf, "CREATE TABLE IF NOT EXISTS %s %s", name, columns);
 
 	char *em;
