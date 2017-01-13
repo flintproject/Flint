@@ -173,6 +173,8 @@ bool Generate(sqlite3 *input, const char *dir, int *job_id)
 	std::sprintf(filename, "%s/generated.db", path.get());
 	db::Driver driver(filename);
 	sqlite3 *output = driver.db();
+	if (!output)
+		return false;
 	if (!BeginTransaction(output))
 		return false;
 	if (!CreateTable(output, "parameter_eqs", "(uuid BLOB, math TEXT)"))

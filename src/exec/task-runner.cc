@@ -113,11 +113,17 @@ bool TaskRunner::Setup(int id, const char *path, std::vector<double> *data)
 		return false;
 	{
 		db::Driver driver("x.db");
-		if (!task::Config(id, driver.db()))
+		auto db = driver.db();
+		if (!db)
+			return false;
+		if (!task::Config(id, db))
 			return false;
 	}
 	db::ReadOnlyDriver driver("x.db");
-	return CreateSpec(id, driver.db());
+	auto db = driver.db();
+	if (!db)
+		return false;
+	return CreateSpec(id, db);
 }
 
 bool TaskRunner::Run()

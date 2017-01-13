@@ -82,6 +82,8 @@ bool Run(const cli::RunOption &option)
 
 	db::Driver driver("model.db");
 	sqlite3 *db = driver.db();
+	if (!db)
+		return false;
 	// prepare spec.txt in both cases
 	if (option.has_spec_filename()) {
 		boost::filesystem::path spec_path = GetPathFromUtf8(option.spec_filename().c_str());

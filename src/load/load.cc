@@ -203,6 +203,8 @@ task::Task *Load(const char *given_file, ConfigMode mode, int dir, std::vector<d
 	Loader loader(dir);
 	db::Driver driver(loader.modeldb());
 	sqlite3 *db = driver.db();
+	if (!db)
+		return nullptr;
 	if (!SaveGivenFile(db, given_file))
 		return nullptr;
 	file::Format format;

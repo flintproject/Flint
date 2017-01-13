@@ -107,6 +107,8 @@ bool ReadInput(const cli::ExecOption &option)
 {
 	db::Driver driver("exec.db");
 	sqlite3 *db = driver.db();
+	if (!db)
+		return false;
 	return sedml::Read(option.sedml_filename().c_str(), db) &&
 		phsp::Read(option.phsp_filename().c_str(), db);
 }
@@ -135,6 +137,8 @@ bool RunTasks()
 {
 	db::ReadOnlyDriver driver("input.db");
 	sqlite3 *db = driver.db();
+	if (!db)
+		return false;
 	FutureTaskPool pool;
 	if (!CollectTasks(db, &pool))
 		return false;
