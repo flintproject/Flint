@@ -2,7 +2,7 @@ This directory contains header libraries developed by third parties.
 
 Eigen/
 
-from Eigen 3.3.1.
+from Eigen 3.3.2.
 Its COPYING.README says:
 ---
 Eigen is primarily MPL2 licensed. See COPYING.MPL2 and these links:
