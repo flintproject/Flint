@@ -75,7 +75,7 @@ bool Writer::operator()()
 bool WritePhsp(const Simulation *sim, const wxFileName &filename)
 {
 	auto path = filename.GetFullPath();
-	Writer writer(sim, path.fn_str());
+	Writer writer(sim, path.c_str()); // TODO: check locale-dependency
 	return writer();
 }
 
