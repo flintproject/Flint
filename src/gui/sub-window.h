@@ -4,25 +4,38 @@
 
 #include <wx/wx.h>
 
+#include "gui/document.h"
+
 namespace flint {
 namespace gui {
 
 class GeneralSetttingsWindow : public wxWindow
 {
 public:
-	explicit GeneralSetttingsWindow(wxWindow *);
+	GeneralSetttingsWindow(wxWindow *parent, Document *doc);
+
+	Document *doc() {return doc_;}
+
+private:
+	Document *doc_;
 };
 
 class OutputVariablesWindow : public wxWindow
 {
 public:
-	explicit OutputVariablesWindow(wxWindow *);
+	OutputVariablesWindow(wxWindow *parent, Document *doc);
+
+private:
+	Document *doc_;
 };
 
 class ParametersWindow : public wxWindow
 {
 public:
-	explicit ParametersWindow(wxWindow *);
+	ParametersWindow(wxWindow *parent, Document *doc);
+
+private:
+	Document *doc_;
 };
 
 }

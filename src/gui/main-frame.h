@@ -9,6 +9,8 @@
 namespace flint {
 namespace gui {
 
+class Document;
+
 class MainFrame : public wxFrame
 {
 public:
@@ -17,16 +19,23 @@ public:
 
 	bool OpenFile(const wxString &path);
 
+	void OpenSubFrame(Document *document);
+
 private:
 	void OnOpen(wxCommandEvent &event);
 	void OnRecentFile(wxCommandEvent &event);
 	void OnClose(wxCommandEvent &event);
 	void OnAbout(wxCommandEvent &event);
 	void OnExit(wxCommandEvent &event);
+	void OnRun(wxCommandEvent &event);
+	void OnIdle(wxIdleEvent &event);
 
 	wxAuiManager manager_;
 	wxAuiNotebook *notebook_;
 	wxFileHistory history_;
+
+	int next_open_id_;
+	int next_simulation_id_;
 };
 
 }

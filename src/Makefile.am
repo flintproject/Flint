@@ -249,12 +249,21 @@ flint_tr_LDFLAGS = $(BOOST_FILESYSTEM_LDFLAGS) $(BOOST_SYSTEM_LDFLAGS)
 flint_tr_LDADD = libflintxx.la libflint.la libsqlite3.la $(PROTOBUF_LIBS) $(BOOST_FILESYSTEM_LIBS) $(BOOST_SYSTEM_LIBS)
 flint_tr_SOURCES = flint-tr-main.cc
 
-flint2_CPPFLAGS = $(WXWIDGETS_CXXFLAGS)
-flint2_LDADD = libflintxx.la libflint.la libsqlite3.la $(WXWIDGETS_LIBS)
+flint2_CPPFLAGS = $(WXWIDGETS_CXXFLAGS) $(PROTOBUF_CFLAGS) $(BOOST_CPPFLAGS)
+flint2_LDADD = libflintxx.la libflint.la libsqlite3.la $(WXWIDGETS_LIBS) $(PROTOBUF_LIBS)
 flint2_SOURCES = \
     gui/app.cc \
+    gui/configuration.cc \
+    gui/desktop.cc \
+    gui/document.cc \
+    gui/document/unit-of-time.cc \
     gui/main-frame.cc \
-    gui/sub-frame.cc
+    gui/phsp.cc \
+    gui/sedml.cc \
+    gui/sim-frame.cc \
+    gui/simulation.cc \
+    gui/sub-window.cc \
+    gui/task-gauge.cc
 
 isd2csv_CPPFLAGS = $(BOOST_CPPFLAGS)
 isd2csv_LDFLAGS = $(BOOST_PROGRAM_OPTIONS_LDFLAGS)

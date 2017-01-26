@@ -3,65 +3,67 @@
 #include "config.h"
 #endif
 
-#include "gui/sub-frame.h"
+#include "gui/sub-window.h"
+
+#include <cassert>
+#include <sstream>
 
 #include <wx/listctrl.h>
 #include <wx/spinctrl.h>
 
+#include "flint/numeric.h"
+
 namespace flint {
 namespace gui {
 
-GeneralSetttingsWindow::GeneralSetttingsWindow(wxWindow *parent)
+GeneralSetttingsWindow::GeneralSetttingsWindow(wxWindow *parent, Document *doc)
 	: wxWindow(parent, wxID_ANY)
+	, doc_(doc)
 {
+	bool b;
 	auto panel = new wxPanel(this);
 
 	// controls
-	const wxString choicesMethod[] = {"method 1", "method 2"};
 	auto choiceMethod = new wxChoice(panel,
 									 wxID_ANY,
 									 wxDefaultPosition,
 									 wxDefaultSize,
-									 WXSIZEOF(choicesMethod),
-									 choicesMethod);
-	choiceMethod->SetSelection(0);
+									 doc_->choices_method());
+	b = choiceMethod->SetStringSelection(doc_->initial_config().method);
+	assert(b);
 
 	auto textLength = new wxTextCtrl(panel, wxID_ANY);
+	*textLength << doc_->initial_config().length;
 
-	const wxString choicesLength[] = {"second", "millisecond"};
 	auto choiceLength = new wxChoice(panel,
 									 wxID_ANY,
 									 wxDefaultPosition,
 									 wxDefaultSize,
-									 WXSIZEOF(choicesLength),
-									 choicesLength);
-	choiceLength->SetSelection(0);
+									 doc_->choices_time());
+	choiceLength->SetSelection(doc_->initial_config().length_unit);
 
 	auto textStep = new wxTextCtrl(panel, wxID_ANY);
+	*textStep << doc_->initial_config().step;
 
-	const wxString choicesStep[] = {"second", "millisecond"};
 	auto choiceStep = new wxChoice(panel,
 									 wxID_ANY,
 									 wxDefaultPosition,
 									 wxDefaultSize,
-									 WXSIZEOF(choicesStep),
-									 choicesStep);
-	choiceStep->SetSelection(0);
+									 doc_->choices_time());
+	choiceStep->SetSelection(doc_->initial_config().step_unit);
 
 	auto spinStart = new wxSpinCtrlDouble(panel);
-	spinStart->SetValue(0.0);
+	spinStart->SetValue(doc_->initial_config().start);
 
-	const wxString choicesStart[] = {"second", "millisecond"};
 	auto choiceStart = new wxChoice(panel,
 									 wxID_ANY,
 									 wxDefaultPosition,
 									 wxDefaultSize,
-									 WXSIZEOF(choicesStart),
-									 choicesStart);
-	choiceStart->SetSelection(0);
+									 doc_->choices_time());
+	choiceStart->SetSelection(doc_->initial_config().start_unit);
 
 	auto sampling = new wxSpinCtrl(panel);
-	sampling->SetValue(0);
+	sampling->SetValue(doc_->initial_config().granularity);
 
 	// sizers
 	auto grid0 = new wxGridSizer(3, 3, 5, 5);
@@ -93,19 +95,34 @@ GeneralSetttingsWindow::GeneralSetttingsWindow(wxWindow *parent)
 	panel->SetSizerAndFit(topSizer);
 }
 
-OutputVariablesWindow::OutputVariablesWindow(wxWindow *parent)
+OutputVariablesWindow::OutputVariablesWindow(wxWindow *parent, Document *doc)
 	: wxWindow(parent, wxID_ANY)
+	, doc_(doc)
 {
+	bool b;
+	long i;
 	auto panel = new wxPanel(this);
 
 	// controls
 	auto availableVariables = new wxListView(panel);
 	availableVariables->AppendColumn("Physical Quantity");
 	availableVariables->AppendColumn("Module");
+	i = 0;
+	for (auto &column : doc->var()) {
+		availableVariables->InsertItem(i, column.name());
+		availableVariables->SetItem(i, 1, column.track_name());
+		++i;
+	}
 
 	auto enabledVariables = new wxListView(panel);
 	enabledVariables->AppendColumn("Physical Quantity");
 	enabledVariables->AppendColumn("Module");
+	i = 0;
+	for (auto &column : doc->var()) {
+		enabledVariables->InsertItem(i, column.name());
+		enabledVariables->SetItem(i, 1, column.track_name());
+		++i;
+	}
 
 	const wxString choicesPattern[] = {"Regular expression", "Wildcard", "Fixed string"};
 	auto choicePattern = new wxChoice(panel,
@@ -114,9 +131,11 @@ OutputVariablesWindow::OutputVariablesWindow(wxWindow *parent)
 									 wxDefaultSize,
 									 WXSIZEOF(choicesPattern),
 									 choicesPattern);
-	choicePattern->SetSelection(1);
+	b = choicePattern->SetStringSelection(doc->initial_config().filter_pattern);
+	assert(b);
 
 	auto textPattern = new wxTextCtrl(panel, wxID_ANY);
+	*textPattern << doc->initial_config().filter_value;
 
 	const wxString choicesColumn[] = {"Physical Quantity", "Module"};
 	auto choiceColumn = new wxChoice(panel,
@@ -147,8 +166,9 @@ OutputVariablesWindow::OutputVariablesWindow(wxWindow *parent)
 	panel->SetSizerAndFit(topSizer);
 }
 
-ParametersWindow::ParametersWindow(wxWindow *parent)
+ParametersWindow::ParametersWindow(wxWindow *parent, Document *doc)
 	: wxWindow(parent, wxID_ANY)
+	, doc_(doc)
 {
 	auto panel = new wxPanel(this);
 
@@ -160,6 +180,19 @@ ParametersWindow::ParametersWindow(wxWindow *parent)
 	parameters->AppendColumn("PQ");
 	parameters->AppendColumn("Type");
 	parameters->AppendColumn("Expression");
+
+	long i = 0;
+	std::ostringstream oss;
+	RequestMaxNumOfDigitsForDouble(oss);
+	for (auto &column : doc->param()) {
+		parameters->InsertItem(i, column.track_name());
+		parameters->SetItem(i, 1, column.name());
+		parameters->SetItem(i, 2, (column.type() == lo::Type::S) ? "static-parameter" : "initial-value");
+		oss << doc->GetData(column.position());
+		parameters->SetItem(i, 3, oss.str()); // FIXME
+		oss.str("");
+		++i;
+	}
 
 	// sizers
 	auto hbox = new wxBoxSizer(wxHORIZONTAL);

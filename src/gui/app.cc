@@ -6,16 +6,12 @@
 #include "gui/app.h"
 
 #include <wx/config.h>
+#include <wx/filename.h>
 
 #include "gui/main-frame.h"
 
 namespace flint {
 namespace gui {
-
-App::App()
-	: wxApp()
-{
-}
 
 bool App::OnInit()
 {
@@ -25,11 +21,29 @@ bool App::OnInit()
 	SetAppDisplayName("Flint");
 	SetVendorDisplayName("Flint project");
 
+	wxFileName fileName;
+	fileName.AssignHomeDir();
+	fileName.AppendDir(".flint");
+	fileName.Mkdir(wxS_DIR_DEFAULT, wxPATH_MKDIR_FULL); // make sure that it exists
+	fileName.SetCwd();
+
 	auto frame = new MainFrame;
 	frame->CentreOnScreen();
 	frame->Show();
 
 	return true;
+}
+
+int App::OnExit()
+{
+	// clean up working directory
+	wxFileName fileName;
+	fileName.AssignHomeDir();
+	fileName.SetCwd(); // change directory at first
+	fileName.AppendDir(".flint");
+	fileName.Rmdir(wxPATH_RMDIR_RECURSIVE);
+
+	return wxApp::OnExit();
 }
 
 }

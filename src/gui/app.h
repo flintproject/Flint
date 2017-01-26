@@ -5,15 +5,19 @@
 #include <wx/wx.h>
 #include <wx/aui/aui.h>
 
+#include "gui/desktop.h"
+
 namespace flint {
 namespace gui {
 
-class App: public wxApp
+class App : public wxApp
 {
 public:
-	App();
-
 	virtual bool OnInit() override;
+	virtual int OnExit() override;
+
+private:
+	Desktop desktop_;
 };
 
 }

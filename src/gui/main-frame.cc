@@ -11,11 +11,24 @@
 #include <wx/config.h>
 #include <wx/dnd.h>
 #include <wx/filename.h>
+#include <wx/progdlg.h>
 
-#include "gui/sub-frame.h"
+#include "flint/bc.h"
+#include "flint/error.h"
+#include "gui/document.h"
+#include "gui/sim-frame.h"
+#include "gui/simulation.h"
+#include "gui/sub-window.h"
+#include "load.h"
+#include "task.h"
+
+#include <memory>
+#include <vector>
 
 namespace flint {
 namespace gui {
+
+namespace {
 
 class ModelFileDropTarget : public wxFileDropTarget
 {
@@ -49,11 +62,13 @@ enum {
 	kIdSendToFlintK3
 };
 
+}
+
 MainFrame::MainFrame()
 	: wxFrame(nullptr, wxID_ANY, wxTheApp->GetAppDisplayName())
-	, manager_()
 	, notebook_(nullptr)
-	, history_()
+	, next_open_id_(1)
+	, next_simulation_id_(1)
 {
 	manager_.SetManagedWindow(this);
 
@@ -97,7 +112,8 @@ MainFrame::MainFrame()
 	SetMinSize(wxSize(600, 400));
 
 	// panes
-	auto buttonRun = new wxButton(this, wxID_ANY, "&Run");
+	auto buttonRun = new wxButton(this, wxID_ABOUT, "&Run");
+	buttonRun->Bind(wxEVT_BUTTON, &MainFrame::OnRun, this);
 	manager_.AddPane(buttonRun,
 					 wxAuiPaneInfo().Name("simulation").Caption("Simulation").Bottom().Layer(1).Position(1));
 	notebook_ = new wxAuiNotebook(this, wxID_ANY);
@@ -114,7 +130,9 @@ MainFrame::MainFrame()
 	Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::OnClose, this, wxID_CLOSE);
 	Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::OnAbout, this, wxID_ABOUT);
 	Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::OnExit, this, wxID_EXIT);
+	Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::OnRun, this, kIdRun);
 	Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::OnRecentFile, this, wxID_FILE1, wxID_FILE9);
+	Bind(wxEVT_IDLE, &MainFrame::OnIdle, this);
 }
 
 MainFrame::~MainFrame()
@@ -122,20 +140,106 @@ MainFrame::~MainFrame()
 	manager_.UnInit();
 }
 
+namespace {
+
+class OpenFileHelper : public wxProgressDialog, public wxThreadHelper {
+public:
+	OpenFileHelper(int id, const wxString &path, MainFrame *frame);
+
+	bool Start();
+
+	void OnThreadUpdate(wxThreadEvent &event);
+
+protected:
+	virtual wxThread::ExitCode Entry() override;
+
+private:
+	int id_;
+	const wxString path_;
+	MainFrame *frame_;
+	wxCriticalSection cs_;
+	Document *doc_;
+	StderrCapture ec_;
+};
+
+OpenFileHelper::OpenFileHelper(int id, const wxString &path, MainFrame *frame)
+	: wxProgressDialog("Loading file", path, 100, frame, wxPD_APP_MODAL|wxPD_AUTO_HIDE)
+	, id_(id)
+	, path_(path)
+	, frame_(frame)
+	, doc_(nullptr)
+{
+	Bind(wxEVT_THREAD, &OpenFileHelper::OnThreadUpdate, this);
+}
+
+bool OpenFileHelper::Start()
+{
+	if (CreateThread(wxTHREAD_DETACHED) != wxTHREAD_NO_ERROR) {
+		wxLogError("failed to create the helper thread");
+		return false;
+	}
+	if (GetThread()->Run() != wxTHREAD_NO_ERROR) {
+		wxLogError("failed to run the helper thread");
+		return false;
+	}
+	return true;
+}
+
+void OpenFileHelper::OnThreadUpdate(wxThreadEvent &)
+{
+	if (doc_) {
+		frame_->OpenSubFrame(doc_);
+	} else {
+		std::unique_ptr<wxMessageDialog> dialog(new wxMessageDialog(frame_, ec_.Get(), "Failed to open file"));
+		dialog->ShowModal();
+	}
+	Destroy();
+}
+
+wxThread::ExitCode OpenFileHelper::Entry()
+{
+	auto utf8path = path_.utf8_str();
+
+	wxFileName dir;
+	dir.AssignCwd();
+	dir.AppendDir(wxString::Format("%d", id_));
+	dir.Mkdir();
+
+	std::vector<double> data;
+	std::unique_ptr<task::Task> task(load::Load(utf8path.data(), load::ConfigMode::kOpen, id_, &data));
+	if (task) {
+		wxCriticalSectionLocker lock(cs_);
+		doc_ = new Document(id_, path_, data);
+		if (!doc_->Load()) {
+			delete doc_;
+			doc_ = nullptr;
+		}
+	}
+	wxQueueEvent(this, new wxThreadEvent);
+	return static_cast<wxThread::ExitCode>(0);
+}
+
+}
+
 bool MainFrame::OpenFile(const wxString &path)
 {
-	auto page = new wxNotebook(notebook_, wxID_ANY);
-	page->AddPage(new GeneralSetttingsWindow(page), "General Settings", true);
-	page->AddPage(new OutputVariablesWindow(page), "Output Variables");
-	page->AddPage(new ParametersWindow(page), "Parameters");
-	notebook_->AddPage(page, wxFileName(path).GetName(), true, 0);
+	auto helper = new OpenFileHelper(next_open_id_++, path, this);
+	return helper->Start();
+}
 
-	history_.AddFileToHistory(path);
+void MainFrame::OpenSubFrame(Document *doc)
+{
+	auto page = new wxNotebook(notebook_, wxID_ANY);
+	page->AddPage(new GeneralSetttingsWindow(page, doc), "General Settings", true);
+	page->AddPage(new OutputVariablesWindow(page, doc), "Output Variables");
+	page->AddPage(new ParametersWindow(page, doc), "Parameters");
+	notebook_->AddPage(page, wxFileName(doc->path()).GetName(), true, 0);
+
+	history_.AddFileToHistory(doc->path());
 
 	wxString text("Opened ");
-	text += path;
+	text += doc->path();
 	SetStatusText(text);
-	return true;
 }
 
 void MainFrame::OnOpen(wxCommandEvent &)
@@ -185,6 +289,30 @@ void MainFrame::OnExit(wxCommandEvent &)
 {
 	history_.Save(*wxConfig::Get());
 	Close(true);
+}
+
+void MainFrame::OnRun(wxCommandEvent &)
+{
+	auto count = notebook_->GetPageCount();
+	if (count == 0)
+		return;
+	auto sim = new Simulation;
+	sim->id = next_simulation_id_++;
+	for (size_t i=0;i<count;i++) {
+		auto page = notebook_->GetPage(i);
+		auto notebook = wxStaticCast(page, wxNotebook);
+		auto p = notebook->GetPage(0);
+		auto gs = wxStaticCast(p, GeneralSetttingsWindow);
+		auto doc = gs->doc();
+		sim->entries.emplace_back(doc, &doc->initial_config());
+	}
+	auto frame = new SimFrame(this, sim);
+	frame->Start();
+}
+
+void MainFrame::OnIdle(wxIdleEvent &)
+{
+	SetStatusText("");
 }
 
 }
