@@ -7,6 +7,7 @@
 
 #include <cassert>
 #include <cmath>
+#include <cstring>
 #include <regex>
 
 #include <boost/uuid/uuid_io.hpp>
