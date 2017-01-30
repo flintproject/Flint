@@ -89,6 +89,7 @@ bool Writer::operator()()
 	std::fprintf(fp_, "  </listOfTasks>\n");
 	std::fprintf(fp_, "  <listOfDataGenerators>\n");
 	i = 0;
+	int j = 0;
 	for (const auto &p : sim_->entries) {
 		const auto *doc = p.first;
 		const auto *config = p.second;
@@ -96,17 +97,18 @@ bool Writer::operator()()
 		config->GetOutputVariables(doc, &v);
 		for (const auto &name : v) {
 			std::fprintf(fp_, "    <dataGenerator id='dg%d' name='%s'>\n",
-						 i, name.c_str());
+						 j, name.c_str());
 			std::fprintf(fp_, "      <listOfVariables>\n");
-			std::fprintf(fp_, "        <variable id='v%d' taskReference='task' target='%s'/>\n",
-						 i, name.c_str());
+			std::fprintf(fp_, "        <variable id='v%d' taskReference='task%d' target='%s'/>\n",
+						 j, i, name.c_str());
 			std::fprintf(fp_, "      </listOfVariables>\n");
 			std::fprintf(fp_, "      <m:math>\n");
-			std::fprintf(fp_, "        <m:ci>v%d</m:ci>\n", i);
+			std::fprintf(fp_, "        <m:ci>v%d</m:ci>\n", j);
 			std::fprintf(fp_, "      </m:math>\n");
 			std::fprintf(fp_, "    </dataGenerator>\n");
-			++i;
+			++j;
 		}
+		++i;
 	}
 	std::fprintf(fp_, "  </listOfDataGenerators>\n");
 	std::fprintf(fp_, "</sedML>\n");
