@@ -30,16 +30,15 @@ private:
 TaskWindow::TaskWindow(wxWindow *parent, Simulation *sim, int i)
 	: wxWindow(parent, wxID_ANY)
 {
-	auto panel = new wxPanel(this);
-	gauge_ = new TaskGauge(panel, sim->GetProgressFileName(i));
-	auto x = new wxButton(panel, wxID_ANY, "x");
+	gauge_ = new TaskGauge(this, sim->GetProgressFileName(i));
+	auto x = new wxButton(this, wxID_ANY, "x");
 	auto hbox = new wxBoxSizer(wxHORIZONTAL);
 	hbox->Add(gauge_, 0, wxEXPAND);
 	hbox->Add(x, 0, wxEXPAND);
-	auto vbox = new wxStaticBoxSizer(wxVERTICAL, panel, wxString::Format("Task %d", i));
+	auto vbox = new wxStaticBoxSizer(wxVERTICAL, this, wxString::Format("Task %d", i));
 	vbox->Add(hbox, 0, wxEXPAND);
-	vbox->Add(new wxButton(panel, wxID_ANY, "Detail"), wxEXPAND);
-	panel->SetSizerAndFit(vbox);
+	vbox->Add(new wxButton(this, wxID_ANY, "Detail"), wxEXPAND);
+	SetSizerAndFit(vbox);
 }
 
 }
@@ -48,16 +47,15 @@ SimFrame::SimFrame(MainFrame *parent, Simulation *sim)
 	: wxFrame(parent, wxID_ANY, wxString::Format("Simulation %d", sim->id))
 	, sim_(sim)
 {
-	auto panel = new wxPanel(this);
 	auto vbox = new wxBoxSizer(wxVERTICAL);
 	int i = 0;
 	for (auto &p : sim_->entries) {
-		auto window = new TaskWindow(panel, sim, ++i);
+		auto window = new TaskWindow(this, sim, ++i);
 		vbox->Add(window, 0, wxEXPAND);
 		gauges_.push_back(window->gauge());
 	}
-	panel->SetSizerAndFit(vbox);
-	SetClientSize(panel->GetSize());
+	SetSizerAndFit(vbox);
+	SetClientSize(GetSize());
 
 	Bind(wxEVT_THREAD, &SimFrame::OnThreadUpdate, this);
 }
