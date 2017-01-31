@@ -8,6 +8,7 @@
 #include <cassert>
 #include <sstream>
 
+#include <wx/dataview.h>
 #include <wx/listctrl.h>
 #include <wx/spinctrl.h>
 
@@ -170,38 +171,39 @@ ParametersWindow::ParametersWindow(wxWindow *parent, Document *doc)
 	: wxWindow(parent, wxID_ANY)
 	, doc_(doc)
 {
-	auto panel = new wxPanel(this);
-
 	// controls
-	auto button = new wxButton(panel, wxID_ANY, "Define value set");
+	auto button = new wxButton(this, wxID_ANY, "Define value set");
 
-	auto parameters = new wxListView(panel);
-	parameters->AppendColumn("Module");
-	parameters->AppendColumn("PQ");
-	parameters->AppendColumn("Type");
-	parameters->AppendColumn("Expression");
+	auto parameters = new wxDataViewListCtrl(this, wxID_ANY);
+	parameters->AppendTextColumn("Module");
+	parameters->AppendTextColumn("PQ");
+	parameters->AppendTextColumn("Type");
+	parameters->AppendTextColumn("Expression", wxDATAVIEW_CELL_EDITABLE);
 
-	long i = 0;
 	std::ostringstream oss;
 	RequestMaxNumOfDigitsForDouble(oss);
+	wxVector<wxVariant> data;
 	for (auto &column : doc->param()) {
-		parameters->InsertItem(i, column.track_name());
-		parameters->SetItem(i, 1, column.name());
-		parameters->SetItem(i, 2, (column.type() == lo::Type::S) ? "static-parameter" : "initial-value");
+		data.push_back(wxVariant(column.track_name()));
+		data.push_back(wxVariant(column.name()));
+		data.push_back(wxVariant((column.type() == lo::Type::S) ? "static-parameter" : "initial-value"));
 		oss << doc->GetData(column.position());
-		parameters->SetItem(i, 3, oss.str()); // FIXME
+		data.push_back(wxVariant(oss.str())); // FIXME
 		oss.str("");
-		++i;
+		parameters->AppendItem(data);
+		data.clear();
 	}
 
 	// sizers
 	auto hbox = new wxBoxSizer(wxHORIZONTAL);
-	hbox->Add(new wxStaticText(panel, wxID_ANY, ""), 1, wxEXPAND);
+	hbox->Add(new wxStaticText(this, wxID_ANY, ""), 1, wxEXPAND);
 	hbox->Add(button, 0, wxFIXED_MINSIZE);
 	auto topSizer = new wxBoxSizer(wxVERTICAL);
 	topSizer->Add(hbox, 0, wxEXPAND);
-	topSizer->Add(parameters, 0, wxEXPAND);
-	panel->SetSizerAndFit(topSizer);
+	topSizer->Add(parameters,
+				  1, // vertically stretchable
+				  wxEXPAND);
+	SetSizerAndFit(topSizer);
 }
 
 }
