@@ -217,6 +217,7 @@ tmp/wxWidgets-$(WXWIDGETS_VERSION).installed: tmp/wxWidgets-$(WXWIDGETS_VERSION)
 
 tmp/libsbml-$(LIBSBML_VERSION).installed: tmp/libsbml-$(LIBSBML_VERSION) tmp/libxml2-$(LIBXML2_VERSION).installed
 	(cd var/libsbml-$(LIBSBML_VERSION) && export MACOSX_DEPLOYMENT_TARGET=10.8 && ./configure --prefix=$(PREFIX) --with-libxml=$(PREFIX) $(LIBSBML_CONFIGURE_OPTIONS) CC='clang' CXX='clang++' CFLAGS='-arch x86_64 -mmacosx-version-min=10.8' CXXFLAGS='-std=c++11 -stdlib=libc++ -arch x86_64 -mmacosx-version-min=10.8' LDFLAGS='-stdlib=libc++ -arch x86_64 -mmacosx-version-min=10.8' LIBS='-lc++' && $(MAKE) all install)
+	unlink $(PREFIX)/lib/libsbml.5.dylib # remove the alias to make the dylib name unique
 	install_name_tool -id $(PREFIX)/lib/libsbml.$(LIBSBML_VERSION).dylib $(PREFIX)/lib/libsbml.$(LIBSBML_VERSION).dylib
 	touch $@
 
