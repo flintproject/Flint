@@ -5,7 +5,7 @@ include ../option.mk
 
 PREFIX ?= $(abspath opt)
 
-PKG_CONFIG_PATH = $(PREFIX)/clibsedml-$(CLIBSEDML_COMMIT)/lib/pkgconfig:$(PREFIX)/libsbml-$(LIBSBML_VERSION)/lib/pkgconfig:$(PREFIX)/libxml2-$(LIBXML2_VERSION)/lib/pkgconfig:$(PREFIX)/libzip-$(LIBZIP_VERSION)/lib/pkgconfig:$(PREFIX)/protobuf-$(PROTOBUF_VERSION)/lib/pkgconfig:$(PREFIX)/SBML_odeSolver-$(SOSLIB_COMMIT)/lib/pkgconfig
+PKG_CONFIG_PATH = $(PREFIX)/clibsedml-$(CLIBSEDML_COMMIT)/lib/pkgconfig:$(PREFIX)/libsbml-$(LIBSBML_VERSION)/lib/pkgconfig:$(PREFIX)/libxml2-$(LIBXML2_VERSION)/lib/pkgconfig:$(PREFIX)/libzip-$(LIBZIP_VERSION)/lib/pkgconfig:$(PREFIX)/protobuf-$(PROTOBUF_VERSION)/lib/pkgconfig:$(PREFIX)/SBML_odeSolver-$(SOSLIB_VERSION)/lib/pkgconfig
 
 .PHONY: all check check-sequential-version download mostlyclean clean distclean install
 
@@ -63,8 +63,8 @@ tmp/protobuf-$(PROTOBUF_VERSION): src/protobuf-java-$(PROTOBUF_VERSION).tar.gz |
 	tar -C var -zxf $<
 	touch $@
 
-tmp/SBML_odeSolver-$(SOSLIB_COMMIT): src/SBML_odeSolver-$(SOSLIB_COMMIT).tar.gz | tmp
-	-rm -rf var/SBML_odeSolver-$(SOSLIB_COMMIT)
+tmp/SBML_odeSolver-$(SOSLIB_VERSION): src/SBML_odeSolver-$(SOSLIB_VERSION).tar.gz | tmp
+	-rm -rf var/SBML_odeSolver-$(SOSLIB_VERSION)
 	tar -C var -zxf $<
 	touch $@
 
@@ -133,14 +133,14 @@ tmp/libsbml-$(LIBSBML_VERSION).installed: tmp/libsbml-$(LIBSBML_VERSION) tmp/lib
 	$(MAKE) -C var/libsbml-$(LIBSBML_VERSION) install
 	touch $@
 
-tmp/SBML_odeSolver-$(SOSLIB_COMMIT).installed: tmp/SBML_odeSolver-$(SOSLIB_COMMIT) tmp/sundials-$(SUNDIALS_VERSION).installed tmp/libsbml-$(LIBSBML_VERSION).installed
-	(cd var/SBML_odeSolver-$(SOSLIB_COMMIT) && autoreconf -i && ./configure --prefix=$(PREFIX)/SBML_odeSolver-$(SOSLIB_COMMIT) --with-libsbml=$(PREFIX)/libsbml-$(LIBSBML_VERSION) --with-libxml2=$(PREFIX)/libxml2-$(LIBXML2_VERSION) --with-sundials=$(PREFIX)/sundials-$(SUNDIALS_VERSION) $(SOSLIB_CONFIGURE_OPTIONS))
-	$(MAKE) -C var/SBML_odeSolver-$(SOSLIB_COMMIT) all
-	-rm -rf $(PREFIX)/SBML_odeSolver-$(SOSLIB_COMMIT)
-	$(MAKE) -C var/SBML_odeSolver-$(SOSLIB_COMMIT) install
+tmp/SBML_odeSolver-$(SOSLIB_VERSION).installed: tmp/SBML_odeSolver-$(SOSLIB_VERSION) tmp/sundials-$(SUNDIALS_VERSION).installed tmp/libsbml-$(LIBSBML_VERSION).installed
+	(cd var/SBML_odeSolver-$(SOSLIB_VERSION) && autoreconf -i && ./configure --prefix=$(PREFIX)/SBML_odeSolver-$(SOSLIB_VERSION) --with-libsbml=$(PREFIX)/libsbml-$(LIBSBML_VERSION) --with-libxml2=$(PREFIX)/libxml2-$(LIBXML2_VERSION) --with-sundials=$(PREFIX)/sundials-$(SUNDIALS_VERSION) $(SOSLIB_CONFIGURE_OPTIONS))
+	$(MAKE) -C var/SBML_odeSolver-$(SOSLIB_VERSION) all
+	-rm -rf $(PREFIX)/SBML_odeSolver-$(SOSLIB_VERSION)
+	$(MAKE) -C var/SBML_odeSolver-$(SOSLIB_VERSION) install
 	touch $@
 
-tmp/sequential-version.installed: tmp/$(BOOST_UNDERSCORE).installed tmp/clibsedml-$(CLIBSEDML_COMMIT).installed tmp/wxWidgets-$(WXWIDGETS_VERSION).installed tmp/libzip-$(LIBZIP_VERSION).installed tmp/protobuf-$(PROTOBUF_VERSION).installed tmp/SBML_odeSolver-$(SOSLIB_COMMIT).installed
+tmp/sequential-version.installed: tmp/$(BOOST_UNDERSCORE).installed tmp/clibsedml-$(CLIBSEDML_COMMIT).installed tmp/wxWidgets-$(WXWIDGETS_VERSION).installed tmp/libzip-$(LIBZIP_VERSION).installed tmp/protobuf-$(PROTOBUF_VERSION).installed tmp/SBML_odeSolver-$(SOSLIB_VERSION).installed
 	(cd .. && autoreconf -i -f)
 	install -d var/sequential-version
 	(cd var/sequential-version && env LDFLAGS='-Wl,-rpath -Wl,$(PREFIX)/libsbml-$(LIBSBML_VERSION)/lib -Wl,-rpath -Wl,$(PREFIX)/sundials-$(SUNDIALS_VERSION)/lib' PKG_CONFIG_PATH=$(PKG_CONFIG_PATH) ../../../configure --prefix=$(PREFIX)/sequential-version --with-boost=$(PREFIX)/$(BOOST_UNDERSCORE) --with-xml-prefix=$(PREFIX)/libxml2-$(LIBXML2_VERSION) --with-protoc=$(PREFIX)/protobuf-$(PROTOBUF_VERSION)/bin/protoc --with-sundials=$(PREFIX)/sundials-$(SUNDIALS_VERSION) --with-wxWidgets=$(PREFIX)/wxWidgets-$(WXWIDGETS_VERSION) --enable-silent-rules)

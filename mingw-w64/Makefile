@@ -43,7 +43,7 @@ mostlyclean:
 	ant -f ../flint/build.xml clean
 
 clean: mostlyclean
-	-rm -rf opt usr var/$(BOOST_UNDERSCORE) var/clibsedml-$(CLIBSEDML_COMMIT) var/libsbml-$(LIBSBML_VERSION) var/libxml2-$(LIBXML2_VERSION) var/libzip-$(LIBZIP_VERSION) var/protobuf-$(PROTOBUF_VERSION) var/SBML_odeSolver-$(SOSLIB_COMMIT) var/sundials-$(SUNDIALS_VERSION) var/wxWidgets-$(WXWIDGETS_VERSION) var/zlib-$(ZLIB_VERSION) var/toolchain.cmake tmp/*.installed tmp/$(BOOST_UNDERSCORE) tmp/clibsedml-$(CLIBSEDML_COMMIT) tmp/libsbml-$(LIBSBML_VERSION) tmp/libxml2-$(LIBXML2_VERSION) tmp/libzip-$(LIBZIP_VERSION) tmp/protobuf-$(PROTOBUF_VERSION) tmp/SBML_odeSolver-$(SOSLIB_COMMIT) tmp/sundials-$(SUNDIALS_VERSION) tmp/wxWidgets-$(WXWIDGETS_VERSION) tmp/zlib-$(ZLIB_VERSION) build/protobuf-$(PROTOBUF_VERSION)
+	-rm -rf opt usr var/$(BOOST_UNDERSCORE) var/clibsedml-$(CLIBSEDML_COMMIT) var/libsbml-$(LIBSBML_VERSION) var/libxml2-$(LIBXML2_VERSION) var/libzip-$(LIBZIP_VERSION) var/protobuf-$(PROTOBUF_VERSION) var/SBML_odeSolver-$(SOSLIB_VERSION) var/sundials-$(SUNDIALS_VERSION) var/wxWidgets-$(WXWIDGETS_VERSION) var/zlib-$(ZLIB_VERSION) var/toolchain.cmake tmp/*.installed tmp/$(BOOST_UNDERSCORE) tmp/clibsedml-$(CLIBSEDML_COMMIT) tmp/libsbml-$(LIBSBML_VERSION) tmp/libxml2-$(LIBXML2_VERSION) tmp/libzip-$(LIBZIP_VERSION) tmp/protobuf-$(PROTOBUF_VERSION) tmp/SBML_odeSolver-$(SOSLIB_VERSION) tmp/sundials-$(SUNDIALS_VERSION) tmp/wxWidgets-$(WXWIDGETS_VERSION) tmp/zlib-$(ZLIB_VERSION) build/protobuf-$(PROTOBUF_VERSION)
 
 distclean: clean
 	-rm -f src/*.zip src/*.tar.bz2 src/*.tar.gz
@@ -96,8 +96,8 @@ tmp/protobuf-$(PROTOBUF_VERSION): src/protobuf-java-$(PROTOBUF_VERSION).tar.gz |
 	tar -C var -zxf $<
 	touch $@
 
-tmp/SBML_odeSolver-$(SOSLIB_COMMIT): src/SBML_odeSolver-$(SOSLIB_COMMIT).tar.gz | tmp
-	-rm -rf var/SBML_odeSolver-$(SOSLIB_COMMIT)
+tmp/SBML_odeSolver-$(SOSLIB_VERSION): src/SBML_odeSolver-$(SOSLIB_VERSION).tar.gz | tmp
+	-rm -rf var/SBML_odeSolver-$(SOSLIB_VERSION)
 	tar -C var -zxf $<
 	touch $@
 
@@ -163,9 +163,9 @@ tmp/libsbml-$(LIBSBML_VERSION).installed: var/toolchain.cmake tmp/libsbml-$(LIBS
 	$(MAKE) -C var/libsbml-$(LIBSBML_VERSION)/build all install
 	touch $@
 
-tmp/SBML_odeSolver-$(SOSLIB_COMMIT).installed: tmp/SBML_odeSolver-$(SOSLIB_COMMIT) tmp/sundials-$(SUNDIALS_VERSION).installed tmp/libsbml-$(LIBSBML_VERSION).installed
-	(cd var/SBML_odeSolver-$(SOSLIB_COMMIT) && autoreconf -i -f && ./configure --host=$(HOST) --prefix=$(PREFIX) --with-libsbml=$(PREFIX) --with-libxml2=$(PREFIX) --with-sundials=$(PREFIX) $(SOSLIB_CONFIGURE_OPTIONS) CPPFLAGS='-DSBML_ODESOLVER_EXPORTS=1')
-	-$(MAKE) -C var/SBML_odeSolver-$(SOSLIB_COMMIT) install
+tmp/SBML_odeSolver-$(SOSLIB_VERSION).installed: tmp/SBML_odeSolver-$(SOSLIB_VERSION) tmp/sundials-$(SUNDIALS_VERSION).installed tmp/libsbml-$(LIBSBML_VERSION).installed
+	(cd var/SBML_odeSolver-$(SOSLIB_VERSION) && autoreconf -i -f && ./configure --host=$(HOST) --prefix=$(PREFIX) --with-libsbml=$(PREFIX) --with-libxml2=$(PREFIX) --with-sundials=$(PREFIX) $(SOSLIB_CONFIGURE_OPTIONS) CPPFLAGS='-DSBML_ODESOLVER_EXPORTS=1')
+	-$(MAKE) -C var/SBML_odeSolver-$(SOSLIB_VERSION) install
 	touch $@
 
 tmp/zlib-$(ZLIB_VERSION).installed: tmp/zlib-$(ZLIB_VERSION)
@@ -184,10 +184,10 @@ flint opt usr var/flint:
 flint/lib: | flint
 	install -d $@
 
-var/flint/Makefile: tmp/$(BOOST_UNDERSCORE).installed tmp/clibsedml-$(CLIBSEDML_COMMIT).installed tmp/protobuf-$(PROTOBUF_VERSION).installed tmp/libzip-$(LIBZIP_VERSION).installed tmp/SBML_odeSolver-$(SOSLIB_COMMIT).installed tmp/wxWidgets-$(WXWIDGETS_VERSION).installed ../configure | usr/bin/protoc var/flint
+var/flint/Makefile: tmp/$(BOOST_UNDERSCORE).installed tmp/clibsedml-$(CLIBSEDML_COMMIT).installed tmp/protobuf-$(PROTOBUF_VERSION).installed tmp/libzip-$(LIBZIP_VERSION).installed tmp/SBML_odeSolver-$(SOSLIB_VERSION).installed tmp/wxWidgets-$(WXWIDGETS_VERSION).installed ../configure | usr/bin/protoc var/flint
 	(cd var/flint && env CPPFLAGS='-DWIN32_LEAN_AND_MEAN -D_WIN32_WINNT=0x0600 -DWIN32 -DSBML_ODESOLVER_EXPORTS=1' LIBS='-lole32 -loleaut32 -lmswsock -lws2_32' PKG_CONFIG_PATH=$(PKG_CONFIG_PATH) LIBSBML_CFLAGS=$(PREFIX)/include LIBSBML_LIBS='-lsbml' SOSLIB_CFLAGS=$(PREFIX)/include SOSLIB_LIBS='-lODES' ../../../configure --host=$(HOST) --prefix=$(PREFIX) --with-boost=$(PREFIX) --with-xml-prefix=$(PREFIX) --disable-xmltest --with-protoc=$(abspath usr/bin/protoc) --with-sundials=$(PREFIX) --with-wxWidgets=$(PREFIX) --enable-release --enable-silent-rules --enable-shared --disable-static)
 
-$(foreach d,$(FLINT_DLLS),opt/bin/$(d).dll) $(foreach e,$(EXES),opt/bin/$(e).exe): $(foreach d,$(BIN_DLLS) $(BOOST_DLLS),$(call flint_dll_name,$(d))) tmp/sundials-$(SUNDIALS_VERSION).installed tmp/SBML_odeSolver-$(SOSLIB_COMMIT).installed var/flint/Makefile
+$(foreach d,$(FLINT_DLLS),opt/bin/$(d).dll) $(foreach e,$(EXES),opt/bin/$(e).exe): $(foreach d,$(BIN_DLLS) $(BOOST_DLLS),$(call flint_dll_name,$(d))) tmp/sundials-$(SUNDIALS_VERSION).installed tmp/SBML_odeSolver-$(SOSLIB_VERSION).installed var/flint/Makefile
 	$(MAKE) -C var/flint all install-exec
 
 flint/flint.jar: ../flint/dist/flint.jar | flint
@@ -195,7 +195,7 @@ flint/flint.jar: ../flint/dist/flint.jar | flint
 
 $(foreach j,$(JARS),$(eval $(call flint_jar,$(j))))
 
-opt/bin/libODES-0.dll: tmp/SBML_odeSolver-$(SOSLIB_COMMIT).installed
+opt/bin/libODES-0.dll: tmp/SBML_odeSolver-$(SOSLIB_VERSION).installed
 
 opt/bin/libprotobuf-11.dll: tmp/protobuf-$(PROTOBUF_VERSION).installed
 
@@ -253,7 +253,7 @@ flint/icon.png: ../flint/src/jp/oist/flint/image/icon.png | flint
 flint/license.rtf: ../doc/license.rtf | flint
 	install -p -m 0644 $< $@
 
-flint/third-party-licenses.txt: tmp/libsbml-$(LIBSBML_VERSION) tmp/libxml2-$(LIBXML2_VERSION) tmp/libzip-$(LIBZIP_VERSION) tmp/protobuf-$(PROTOBUF_VERSION) tmp/SBML_odeSolver-$(SOSLIB_COMMIT) tmp/sundials-$(SUNDIALS_VERSION) tmp/wxWidgets-$(WXWIDGETS_VERSION) | flint
+flint/third-party-licenses.txt: tmp/libsbml-$(LIBSBML_VERSION) tmp/libxml2-$(LIBXML2_VERSION) tmp/libzip-$(LIBZIP_VERSION) tmp/protobuf-$(PROTOBUF_VERSION) tmp/SBML_odeSolver-$(SOSLIB_VERSION) tmp/sundials-$(SUNDIALS_VERSION) tmp/wxWidgets-$(WXWIDGETS_VERSION) | flint
 	echo ';;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;' > $@
 	echo ';; Licenses of third-party libraries' >> $@
 	echo ';;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;' >> $@
@@ -274,9 +274,9 @@ flint/third-party-licenses.txt: tmp/libsbml-$(LIBSBML_VERSION) tmp/libxml2-$(LIB
 	echo >> $@
 	cat var/protobuf-$(PROTOBUF_VERSION)/LICENSE >> $@
 	echo >> $@
-	echo ';; SOSlib' >> $@
+	echo ';; The SBML ODE Solver Library (SOSlib) $(SOSLIB_VERSION)' >> $@
 	echo >> $@
-	cat var/SBML_odeSolver-$(SOSLIB_COMMIT)/COPYING >> $@
+	cat var/SBML_odeSolver-$(SOSLIB_VERSION)/COPYING >> $@
 	echo >> $@
 	echo ';; SUNDIALS $(SUNDIALS_VERSION)' >> $@
 	echo >> $@

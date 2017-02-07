@@ -22,7 +22,7 @@ clibsedml_VERSION = 0.1.0
 libsbml_VERSION = $(LIBSBML_VERSION)
 libzip_VERSION = $(LIBZIP_VERSION)
 protobuf_VERSION = $(PROTOBUF_VERSION)
-soslib_VERSION = 1.6.99
+soslib_VERSION = $(SOSLIB_VERSION)
 sundials_VERSION = $(SUNDIALS_VERSION)
 wxwidgets_VERSION = $(WXWIDGETS_VERSION)
 
@@ -31,7 +31,7 @@ clibsedml_RELEASE = 1
 libsbml_RELEASE = 1
 libzip_RELEASE = 1
 protobuf_RELEASE = 1
-soslib_RELEASE = 2
+soslib_RELEASE = 1
 sundials_RELEASE = 1
 wxwidgets_RELEASE = 1
 
@@ -142,7 +142,7 @@ maintainer-clean: distclean
 	-sudo rpm -e flint
 	-sudo rpm -e $(DEPNAMES)
 
-download: $(foreach lib,$(BOOST_UNDERSCORE).tar.bz2 clibsedml-$(CLIBSEDML_COMMIT).tar.gz libSBML-$(LIBSBML_VERSION)-core-src.zip libzip-$(LIBZIP_VERSION).tar.gz protobuf-java-$(PROTOBUF_VERSION).tar.gz SBML_odeSolver-$(SOSLIB_COMMIT).tar.gz sundials-$(SUNDIALS_VERSION).tar.gz wxWidgets-$(WXWIDGETS_VERSION).tar.bz2,src/$(lib))
+download: $(foreach lib,$(BOOST_UNDERSCORE).tar.bz2 clibsedml-$(CLIBSEDML_COMMIT).tar.gz libSBML-$(LIBSBML_VERSION)-core-src.zip libzip-$(LIBZIP_VERSION).tar.gz protobuf-java-$(PROTOBUF_VERSION).tar.gz SBML_odeSolver-$(SOSLIB_VERSION).tar.gz sundials-$(SUNDIALS_VERSION).tar.gz wxWidgets-$(WXWIDGETS_VERSION).tar.bz2,src/$(lib))
 
 Flint-$(VERSION)-$(DIST).$(ARCH):
 	install -d $@
@@ -202,9 +202,9 @@ $(eval $(call flint_expand_tar_gz,protobuf-$(PROTOBUF_VERSION),protobuf-java-$(P
 
 $(eval $(call flint_setup_dir,protobuf,protobuf-$(PROTOBUF_VERSION)))
 
-$(eval $(call flint_expand_tar_gz,SBML_odeSolver-$(SOSLIB_COMMIT),SBML_odeSolver-$(SOSLIB_COMMIT)))
+$(eval $(call flint_expand_tar_gz,SBML_odeSolver-$(SOSLIB_VERSION),SBML_odeSolver-$(SOSLIB_VERSION)))
 
-$(eval $(call flint_setup_dir,soslib,SBML_odeSolver-$(SOSLIB_COMMIT)))
+$(eval $(call flint_setup_dir,soslib,SBML_odeSolver-$(SOSLIB_VERSION)))
 
 $(eval $(call flint_expand_tar_bz2,wxWidgets-$(WXWIDGETS_VERSION),wxWidgets-$(WXWIDGETS_VERSION)))
 
