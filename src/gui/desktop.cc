@@ -5,6 +5,8 @@
 
 #include "gui/desktop.h"
 
+#include "gui/document.h"
+
 namespace flint {
 namespace gui {
 
@@ -12,6 +14,8 @@ Desktop::Desktop()
 	: next_id_(0)
 {
 }
+
+Desktop::~Desktop() = default;
 
 int Desktop::AddDocument(const wxString &path)
 {

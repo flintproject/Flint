@@ -301,10 +301,18 @@ void MainFrame::OnRun(wxCommandEvent &)
 	for (size_t i=0;i<count;i++) {
 		auto page = notebook_->GetPage(i);
 		auto notebook = wxStaticCast(page, wxNotebook);
-		auto p = notebook->GetPage(0);
-		auto gs = wxStaticCast(p, GeneralSetttingsWindow);
-		auto doc = gs->doc();
-		sim->entries.emplace_back(doc, &doc->initial_config());
+		auto p0 = notebook->GetPage(0);
+		auto gsw = wxStaticCast(p0, GeneralSetttingsWindow);
+		auto doc = gsw->doc();
+		auto p1 = notebook->GetPage(1);
+		auto ovw = wxStaticCast(p1, OutputVariablesWindow);
+		auto p2 = notebook->GetPage(2);
+		auto pw = wxStaticCast(p2, ParametersWindow);
+		std::unique_ptr<Configuration> config(new Configuration(doc->initial_config()));
+		gsw->Write(config.get());
+		ovw->Write(config.get());
+		config->parameters = pw->GetParameters();
+		sim->entries.emplace_back(doc, config.release());
 	}
 	auto frame = new SimFrame(this, sim);
 	frame->Start();

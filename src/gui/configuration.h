@@ -3,9 +3,13 @@
 #define FLINT_GUI_CONFIGURATION_H_
 
 #include <string>
+#include <utility>
+#include <unordered_map>
 #include <vector>
 
 #include <wx/wx.h>
+
+#include "lo.pb.h"
 
 namespace flint {
 namespace gui {
@@ -20,13 +24,15 @@ struct Configuration
 	int length_unit; // index
 	wxString step;
 	int step_unit; // index
-	wxString start;
+	double start;
 	int start_unit; // index
 	int granularity;
 	// Output Variables
 	wxString filter_pattern;
 	wxString filter_value;
 	int filter_column; // index
+	// Parameters
+	std::unordered_map<int, std::string> parameters;
 
 	// Get 7-digit KISAO ID for the method
 	const char *GetKisaoId() const;
@@ -41,6 +47,9 @@ struct Configuration
 	int GetNumberOfPoints(const Document *doc) const;
 
 	void GetOutputVariables(const Document *doc, std::vector<std::string> *v) const;
+
+	// the content of the string is in UTF-8.
+	std::vector<std::pair<lo::Column, std::string> > GetTargets(const Document *doc) const;
 };
 
 }

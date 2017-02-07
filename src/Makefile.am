@@ -57,6 +57,8 @@ noinst_PROGRAMS = \
 # Dependency comes first
 lib_LTLIBRARIES = libsqlite3.la libflint.la libflintxx.la
 
+lib_LIBRARIES = libflint2.a
+
 libflint_la_CPPFLAGS = $(AM_CFLAGS) -std=c99 -pedantic-errors
 libflint_la_LIBADD = libsqlite3.la
 libflint_la_LDFLAGS = -no-undefined
@@ -208,6 +210,13 @@ libflintxx_la_SOURCES = \
     variable.cc \
     variable-map.cc
 
+libflint2_a_SOURCES = \
+    gui/formula.cc \
+    gui/formula/lexer.cc \
+    gui/formula/parser.cc \
+    gui/formula/token.cc \
+    gui/formula/tree.cc
+
 libsqlite3_la_CPPFLAGS = -DSQLITE_THREADSAFE=1 -DSQLITE_OMIT_LOAD_EXTENSION
 libsqlite3_la_LDFLAGS = -no-undefined
 libsqlite3_la_SOURCES = sqlite3.c
@@ -250,7 +259,7 @@ flint_tr_LDADD = libflintxx.la libflint.la libsqlite3.la $(PROTOBUF_LIBS) $(BOOS
 flint_tr_SOURCES = flint-tr-main.cc
 
 flint2_CPPFLAGS = $(WXWIDGETS_CXXFLAGS) $(PROTOBUF_CFLAGS) $(BOOST_CPPFLAGS)
-flint2_LDADD = libflintxx.la libflint.la libsqlite3.la $(WXWIDGETS_LIBS) $(PROTOBUF_LIBS)
+flint2_LDADD = libflint2.a libflintxx.la libflint.la libsqlite3.la $(WXWIDGETS_LIBS) $(PROTOBUF_LIBS)
 flint2_SOURCES = \
     gui/app.cc \
     gui/configuration.cc \

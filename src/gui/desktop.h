@@ -7,15 +7,16 @@
 
 #include <wx/wx.h>
 
-#include "gui/document.h"
-
 namespace flint {
 namespace gui {
+
+class Document;
 
 class Desktop
 {
 public:
 	Desktop();
+	~Desktop();
 
 	void OpenFile();
 

@@ -28,14 +28,23 @@ const char *Configuration::GetKisaoId() const
 
 namespace {
 
+/*
+ * Return the scalar value of time length in the initial step unit
+ */
+double Convert(double d, int i, const Document *doc)
+{
+	int k = doc->initial_config().step_unit;
+	d *= doc->GetNumerator(i) * doc->GetDenominator(k);
+	d /= doc->GetDenominator(i) * doc->GetNumerator(k);
+	return d;
+}
+
 double Convert(const wxString &s, int i, const Document *doc)
 {
 	double d;
 	auto b = s.ToCDouble(&d);
 	assert(b);
-	d *= doc->GetNumerator(i);
-	d /= doc->GetDenominator(i);
-	return d;
+	return Convert(d, i, doc);
 }
 
 }
@@ -61,7 +70,7 @@ namespace {
 
 const std::string &GetTargetString(const lo::Column &column, int filter_column)
 {
-	return (filter_column == 0) ? column.name() : column.name();
+	return (filter_column == 0) ? column.name() : column.track_name();
 }
 
 std::string GetKey(const lo::Column &column)
@@ -94,6 +103,18 @@ void Configuration::GetOutputVariables(const Document *doc,
 				v->push_back(GetKey(column));
 		}
 	}
+}
+
+std::vector<std::pair<lo::Column, std::string> > Configuration::GetTargets(const Document *doc) const
+{
+	std::vector<std::pair<lo::Column, std::string> > v;
+	int i = 0;
+	for (const auto &column : doc->param()) {
+		auto it = parameters.find(i++);
+		if (it != parameters.end())
+			v.emplace_back(column, it->second);
+	}
+	return v;
 }
 
 }

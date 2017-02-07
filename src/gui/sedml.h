@@ -4,10 +4,10 @@
 
 #include <wx/filename.h>
 
-#include "gui/simulation.h"
-
 namespace flint {
 namespace gui {
+
+struct Simulation;
 
 bool WriteSedml(const Simulation *sim, const wxFileName &filename);
 

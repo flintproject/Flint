@@ -9,8 +9,11 @@
 #include <wx/filename.h>
 
 #include "exec.h"
-#include "gui/sedml.h"
+#include "gui/main-frame.h"
 #include "gui/phsp.h"
+#include "gui/sedml.h"
+#include "gui/simulation.h"
+#include "gui/task-gauge.h"
 
 namespace flint {
 namespace gui {

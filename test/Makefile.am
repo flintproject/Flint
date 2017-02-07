@@ -5,6 +5,7 @@ SUBDIRS = \
 	compiler \
 	file \
 	flint \
+	gui \
 	job \
 	layout \
 	load \

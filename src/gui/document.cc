@@ -67,7 +67,7 @@ bool Document::Load()
 	initial_config_.length_unit = 0;
 	initial_config_.step = "0.01";
 	initial_config_.step_unit = 0;
-	initial_config_.start = "0";
+	initial_config_.start = 0;
 	initial_config_.start_unit = 0;
 	initial_config_.granularity = 1;
 	initial_config_.filter_pattern = "Wildcard";

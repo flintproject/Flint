@@ -7,11 +7,11 @@
 
 #include <wx/filename.h>
 
-#include "gui/configuration.h"
-#include "gui/document.h"
-
 namespace flint {
 namespace gui {
+
+struct Configuration;
+class Document;
 
 struct Simulation {
 	int id;

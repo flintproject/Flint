@@ -1,0 +1,2 @@
+Note that function.cc is generated from function.txt by gperf(1).
+Do not modify .cc directly; instead, modify correspoinding .txt and use gperf.

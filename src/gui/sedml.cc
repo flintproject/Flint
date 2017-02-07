@@ -9,6 +9,10 @@
 
 #include <wx/wx.h>
 
+#include "gui/configuration.h"
+#include "gui/document.h"
+#include "gui/simulation.h"
+
 namespace flint {
 namespace gui {
 

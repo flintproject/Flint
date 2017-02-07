@@ -5,6 +5,9 @@
 
 #include "gui/simulation.h"
 
+#include "gui/configuration.h"
+#include "gui/document.h"
+
 namespace flint {
 namespace gui {
 

@@ -8,11 +8,10 @@
 #include <cassert>
 #include <sstream>
 
-#include <wx/dataview.h>
 #include <wx/listctrl.h>
-#include <wx/spinctrl.h>
 
 #include "flint/numeric.h"
+#include "gui/document.h"
 
 namespace flint {
 namespace gui {
@@ -20,72 +19,63 @@ namespace gui {
 GeneralSetttingsWindow::GeneralSetttingsWindow(wxWindow *parent, Document *doc)
 	: wxWindow(parent, wxID_ANY)
 	, doc_(doc)
+	, choice_method_(new wxChoice(this,
+								  wxID_ANY,
+								  wxDefaultPosition,
+								  wxDefaultSize,
+								  doc_->choices_method()))
+	, text_length_(new wxTextCtrl(this, wxID_ANY))
+	, choice_length_(new wxChoice(this,
+								  wxID_ANY,
+								  wxDefaultPosition,
+								  wxDefaultSize,
+								  doc_->choices_time()))
+	, text_step_(new wxTextCtrl(this, wxID_ANY))
+	, choice_step_(new wxChoice(this,
+								wxID_ANY,
+								wxDefaultPosition,
+								wxDefaultSize,
+								doc_->choices_time()))
+	, spin_start_(new wxSpinCtrlDouble(this))
+	, choice_start_(new wxChoice(this,
+								 wxID_ANY,
+								 wxDefaultPosition,
+								 wxDefaultSize,
+								 doc_->choices_time()))
+	, spin_granularity_(new wxSpinCtrl(this))
 {
-	bool b;
-
 	// controls
-	auto choiceMethod = new wxChoice(this,
-									 wxID_ANY,
-									 wxDefaultPosition,
-									 wxDefaultSize,
-									 doc_->choices_method());
-	b = choiceMethod->SetStringSelection(doc_->initial_config().method);
+	bool b = choice_method_->SetStringSelection(doc_->initial_config().method);
 	assert(b);
-
-	auto textLength = new wxTextCtrl(this, wxID_ANY);
-	*textLength << doc_->initial_config().length;
-
-	auto choiceLength = new wxChoice(this,
-									 wxID_ANY,
-									 wxDefaultPosition,
-									 wxDefaultSize,
-									 doc_->choices_time());
-	choiceLength->SetSelection(doc_->initial_config().length_unit);
-
-	auto textStep = new wxTextCtrl(this, wxID_ANY);
-	*textStep << doc_->initial_config().step;
-
-	auto choiceStep = new wxChoice(this,
-									 wxID_ANY,
-									 wxDefaultPosition,
-									 wxDefaultSize,
-									 doc_->choices_time());
-	choiceStep->SetSelection(doc_->initial_config().step_unit);
-
-	auto spinStart = new wxSpinCtrlDouble(this);
-	spinStart->SetValue(doc_->initial_config().start);
-
-	auto choiceStart = new wxChoice(this,
-									 wxID_ANY,
-									 wxDefaultPosition,
-									 wxDefaultSize,
-									 doc_->choices_time());
-	choiceStart->SetSelection(doc_->initial_config().start_unit);
-
-	auto sampling = new wxSpinCtrl(this);
-	sampling->SetValue(doc_->initial_config().granularity);
+	*text_length_ << doc_->initial_config().length;
+	choice_length_->SetSelection(doc_->initial_config().length_unit);
+	*text_step_ << doc_->initial_config().step;
+	choice_step_->SetSelection(doc_->initial_config().step_unit);
+	spin_start_->SetValue(doc_->initial_config().start);
+	choice_start_->SetSelection(doc_->initial_config().start_unit);
+	spin_granularity_->SetValue(doc_->initial_config().granularity);
 
 	// sizers
 	auto grid0 = new wxGridSizer(3, 3, 5, 5);
 	grid0->Add(new wxStaticText(this, wxID_ANY, "Integration Method"), 0, wxEXPAND|wxALIGN_CENTER_VERTICAL);
-	grid0->Add(choiceMethod, 0, wxEXPAND|wxALIGN_CENTER_VERTICAL);
+	grid0->Add(choice_method_, 0, wxEXPAND|wxALIGN_CENTER_VERTICAL);
 	grid0->Add(new wxStaticText(this, wxID_ANY, ""), 0, wxEXPAND|wxALIGN_CENTER_VERTICAL);
 	grid0->Add(new wxStaticText(this, wxID_ANY, "Simulation Length"), 0, wxEXPAND|wxALIGN_CENTER_VERTICAL);
-	grid0->Add(textLength, 0, wxEXPAND|wxALIGN_CENTER_VERTICAL);
-	grid0->Add(choiceLength, 0, wxEXPAND|wxALIGN_CENTER_VERTICAL);
+	grid0->Add(text_length_, 0, wxEXPAND|wxALIGN_CENTER_VERTICAL);
+	grid0->Add(choice_length_, 0, wxEXPAND|wxALIGN_CENTER_VERTICAL);
 	grid0->Add(new wxStaticText(this, wxID_ANY, "Simulation Time Step"), 0, wxEXPAND|wxALIGN_CENTER_VERTICAL);
-	grid0->Add(textStep, 0, wxEXPAND);
-	grid0->Add(choiceStep, 0, wxEXPAND);
+	grid0->Add(text_step_, 0, wxEXPAND);
+	grid0->Add(choice_step_, 0, wxEXPAND);
 	auto vbox0 = new wxStaticBoxSizer(wxVERTICAL, this, "Numerical Integration");
 	vbox0->Add(grid0, 0, wxEXPAND);
 	auto grid1 = new wxGridSizer(2, 4, 5, 5);
 	grid1->Add(new wxStaticText(this, wxID_ANY, "Starting from"), 0, wxEXPAND|wxALIGN_CENTER_VERTICAL);
-	grid1->Add(spinStart, 0, wxEXPAND|wxALIGN_CENTER_VERTICAL);
-	grid1->Add(choiceStart, 0, wxEXPAND|wxALIGN_CENTER_VERTICAL);
+	grid1->Add(spin_start_, 0, wxEXPAND|wxALIGN_CENTER_VERTICAL);
+	grid1->Add(choice_start_, 0, wxEXPAND|wxALIGN_CENTER_VERTICAL);
 	grid1->Add(new wxStaticText(this, wxID_ANY, ""), 0, wxEXPAND|wxALIGN_CENTER_VERTICAL);
 	grid1->Add(new wxStaticText(this, wxID_ANY, "Data Sampling"), 0, wxEXPAND|wxALIGN_CENTER_VERTICAL);
 	grid1->Add(new wxStaticText(this, wxID_ANY, "1 data per"), 0, wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL);
-	grid1->Add(sampling, 0, wxEXPAND|wxALIGN_CENTER_VERTICAL);
+	grid1->Add(spin_granularity_, 0, wxEXPAND|wxALIGN_CENTER_VERTICAL);
 	grid1->Add(new wxStaticText(this, wxID_ANY, "step(s)"), 0, wxEXPAND|wxALIGN_CENTER_VERTICAL);
 	auto vbox1 = new wxStaticBoxSizer(wxVERTICAL, this, "Output");
 	vbox1->Add(grid1, 0, wxEXPAND);
@@ -95,11 +85,43 @@ GeneralSetttingsWindow::GeneralSetttingsWindow(wxWindow *parent, Document *doc)
 	SetSizerAndFit(topSizer);
 }
 
-OutputVariablesWindow::OutputVariablesWindow(wxWindow *parent, Document *doc)
-	: wxWindow(parent, wxID_ANY)
-	, doc_(doc)
+void GeneralSetttingsWindow::Write(Configuration *config) const
 {
-	bool b;
+	config->method = choice_method_->GetString(choice_method_->GetSelection());
+	config->length = text_length_->GetValue();
+	config->length_unit = choice_length_->GetSelection();
+	config->step = text_step_->GetValue();
+	config->step_unit = choice_step_->GetSelection();
+	config->start = spin_start_->GetValue();
+	config->start_unit = choice_step_->GetSelection();
+	config->granularity = spin_granularity_->GetValue();
+}
+
+
+namespace {
+
+const wxString choicesPattern[] = {"Regular expression", "Wildcard", "Fixed string"};
+
+const wxString choicesColumn[] = {"Physical Quantity", "Module"};
+
+}
+
+OutputVariablesWindow::OutputVariablesWindow(wxWindow *parent, const Document *doc)
+	: wxWindow(parent, wxID_ANY)
+	, choice_pattern_(new wxChoice(this,
+								   wxID_ANY,
+								   wxDefaultPosition,
+								   wxDefaultSize,
+								   WXSIZEOF(choicesPattern),
+								   choicesPattern))
+	, text_pattern_(new wxTextCtrl(this, wxID_ANY))
+	, choice_column_(new wxChoice(this,
+								  wxID_ANY,
+								  wxDefaultPosition,
+								  wxDefaultSize,
+								  WXSIZEOF(choicesColumn),
+								  choicesColumn))
+{
 	long i;
 
 	// controls
@@ -123,60 +145,56 @@ OutputVariablesWindow::OutputVariablesWindow(wxWindow *parent, Document *doc)
 		++i;
 	}
 
-	const wxString choicesPattern[] = {"Regular expression", "Wildcard", "Fixed string"};
-	auto choicePattern = new wxChoice(this,
-									 wxID_ANY,
-									 wxDefaultPosition,
-									 wxDefaultSize,
-									 WXSIZEOF(choicesPattern),
-									 choicesPattern);
-	b = choicePattern->SetStringSelection(doc->initial_config().filter_pattern);
+	auto b = choice_pattern_->SetStringSelection(doc->initial_config().filter_pattern);
 	assert(b);
 
-	auto textPattern = new wxTextCtrl(this, wxID_ANY);
-	*textPattern << doc->initial_config().filter_value;
+	*text_pattern_ << doc->initial_config().filter_value;
 
-	const wxString choicesColumn[] = {"Physical Quantity", "Module"};
-	auto choiceColumn = new wxChoice(this,
-									 wxID_ANY,
-									 wxDefaultPosition,
-									 wxDefaultSize,
-									 WXSIZEOF(choicesColumn),
-									 choicesColumn);
-	choiceColumn->SetSelection(0);
+	choice_column_->SetSelection(0);
 
 	// sizers
 	auto vbox0 = new wxStaticBoxSizer(wxVERTICAL, this, "Enabled Variables");
 	vbox0->Add(enabledVariables, 0, wxEXPAND);
 	auto hbox0 = new wxBoxSizer(wxHORIZONTAL);
 	hbox0->Add(new wxStaticText(this, wxID_ANY, "Filter Pattern:"), 0, wxALIGN_CENTER_VERTICAL);
-	hbox0->Add(choicePattern, 0, wxALIGN_CENTER_VERTICAL);
+	hbox0->Add(choice_pattern_, 0, wxALIGN_CENTER_VERTICAL);
 	auto hbox1 = new wxBoxSizer(wxHORIZONTAL);
 	hbox1->Add(new wxStaticText(this, wxID_ANY, "Filter Column:"), 0, wxALIGN_CENTER_VERTICAL);
-	hbox1->Add(choiceColumn, 0, wxALIGN_CENTER_VERTICAL);
+	hbox1->Add(choice_column_, 0, wxALIGN_CENTER_VERTICAL);
 	auto vbox = new wxBoxSizer(wxVERTICAL);
 	vbox->Add(vbox0, 0, wxEXPAND);
 	vbox->Add(hbox0, 0, wxEXPAND);
-	vbox->Add(textPattern, 0, wxEXPAND);
+	vbox->Add(text_pattern_, 0, wxEXPAND);
 	vbox->Add(hbox1, 0, wxEXPAND);
 	auto topSizer = new wxBoxSizer(wxHORIZONTAL);
-	topSizer->Add(availableVariables, 0, wxEXPAND);
-	topSizer->Add(vbox, 0, wxEXPAND);
+	topSizer->Add(availableVariables,
+				  1, // horizontally stretchable
+				  wxEXPAND);
+	topSizer->Add(vbox,
+				  1, // horizontally stretchable
+				  wxEXPAND);
 	SetSizerAndFit(topSizer);
 }
 
-ParametersWindow::ParametersWindow(wxWindow *parent, Document *doc)
+void OutputVariablesWindow::Write(Configuration *config) const
+{
+	config->filter_pattern = choice_pattern_->GetString(choice_pattern_->GetSelection());
+	config->filter_value = text_pattern_->GetValue();
+	config->filter_column = choice_column_->GetSelection();
+}
+
+
+ParametersWindow::ParametersWindow(wxWindow *parent, const Document *doc)
 	: wxWindow(parent, wxID_ANY)
-	, doc_(doc)
+	, parameters_(new wxDataViewListCtrl(this, wxID_ANY))
 {
 	// controls
 	auto button = new wxButton(this, wxID_ANY, "Define value set");
 
-	auto parameters = new wxDataViewListCtrl(this, wxID_ANY);
-	parameters->AppendTextColumn("Module");
-	parameters->AppendTextColumn("PQ");
-	parameters->AppendTextColumn("Type");
-	parameters->AppendTextColumn("Expression", wxDATAVIEW_CELL_EDITABLE);
+	parameters_->AppendTextColumn("Module");
+	parameters_->AppendTextColumn("PQ");
+	parameters_->AppendTextColumn("Type");
+	parameters_->AppendTextColumn("Expression", wxDATAVIEW_CELL_EDITABLE);
 
 	std::ostringstream oss;
 	RequestMaxNumOfDigitsForDouble(oss);
@@ -186,9 +204,10 @@ ParametersWindow::ParametersWindow(wxWindow *parent, Document *doc)
 		data.push_back(wxVariant(column.name()));
 		data.push_back(wxVariant((column.type() == lo::Type::S) ? "static-parameter" : "initial-value"));
 		oss << doc->GetData(column.position());
-		data.push_back(wxVariant(oss.str())); // FIXME
+		data.push_back(wxVariant(oss.str()));
+		original_values_.push_back(oss.str());
 		oss.str("");
-		parameters->AppendItem(data);
+		parameters_->AppendItem(data);
 		data.clear();
 	}
 
@@ -198,10 +217,25 @@ ParametersWindow::ParametersWindow(wxWindow *parent, Document *doc)
 	hbox->Add(button, 0, wxFIXED_MINSIZE);
 	auto topSizer = new wxBoxSizer(wxVERTICAL);
 	topSizer->Add(hbox, 0, wxEXPAND);
-	topSizer->Add(parameters,
+	topSizer->Add(parameters_,
 				  1, // vertically stretchable
 				  wxEXPAND);
 	SetSizerAndFit(topSizer);
+}
+
+std::unordered_map<int, std::string> ParametersWindow::GetParameters() const
+{
+	unsigned int n = parameters_->GetItemCount();
+	assert(n == static_cast<unsigned int>(original_values_.size()));
+	std::unordered_map<int, std::string> m;
+	for (unsigned int i=0;i<n;i++) {
+		auto value = parameters_->GetTextValue(i, 3);
+		auto buf = value.utf8_str();
+		std::string s(buf.data(), buf.length());
+		if (s != original_values_.at(i))
+			m.emplace(static_cast<int>(i), s);
+	}
+	return m;
 }
 
 }

@@ -1,0 +1,32 @@
+The following ABNF in the flavor of [RFC5234] defines the syntax for a
+formula formally:
+
+  formula = product / [formula] op1 product
+
+  op1 = "+" / "-"
+
+  product = factor / product op2 factor
+
+  op2 = "%" / "*" / "/"
+
+  factor = number / identifier / group / call
+
+  group = "(" formula ")"
+
+  call = identifier "(" arguments ")"
+
+  arguments = formula *("," formula)
+
+  identifier = ("_" / ALPHA) *("_" / ALPHA / DIGIT)
+
+where
+
+  number is the same one defined in [RFC7159].
+
+Note that a number of whitespaces can appear between tokens but not in
+an identifier.
+
+= References
+
+[RFC5234] https://tools.ietf.org/html/rfc5234
+[RFC7159] https://tools.ietf.org/html/rfc7159

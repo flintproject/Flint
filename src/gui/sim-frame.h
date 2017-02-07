@@ -6,12 +6,13 @@
 
 #include "cli.pb.h"
 #include "flint/error.h"
-#include "gui/main-frame.h"
-#include "gui/simulation.h"
-#include "gui/task-gauge.h"
 
 namespace flint {
 namespace gui {
+
+class MainFrame;
+struct Simulation;
+class TaskGauge;
 
 class SimFrame : public wxFrame, public wxThreadHelper {
 public:

@@ -2,12 +2,19 @@
 #ifndef FLINT_GUI_SUB_FRAME_H_
 #define FLINT_GUI_SUB_FRAME_H_
 
-#include <wx/wx.h>
+#include <string>
+#include <unordered_map>
+#include <vector>
 
-#include "gui/document.h"
+#include <wx/dataview.h>
+#include <wx/spinctrl.h>
+#include <wx/wx.h>
 
 namespace flint {
 namespace gui {
+
+struct Configuration;
+class Document;
 
 class GeneralSetttingsWindow : public wxWindow
 {
@@ -16,26 +23,46 @@ public:
 
 	Document *doc() {return doc_;}
 
+	void Write(Configuration *config) const;
+
 private:
 	Document *doc_;
+	wxChoice *choice_method_;
+	wxTextCtrl *text_length_;
+	wxChoice *choice_length_;
+	wxTextCtrl *text_step_;
+	wxChoice *choice_step_;
+	wxSpinCtrlDouble *spin_start_;
+	wxChoice *choice_start_;
+	wxSpinCtrl *spin_granularity_;
 };
 
 class OutputVariablesWindow : public wxWindow
 {
 public:
-	OutputVariablesWindow(wxWindow *parent, Document *doc);
+	OutputVariablesWindow(wxWindow *parent, const Document *doc);
+
+	void Write(Configuration *config) const;
 
 private:
-	Document *doc_;
+	wxChoice *choice_pattern_;
+	wxTextCtrl *text_pattern_;
+	wxChoice *choice_column_;
 };
 
 class ParametersWindow : public wxWindow
 {
 public:
-	ParametersWindow(wxWindow *parent, Document *doc);
+	ParametersWindow(wxWindow *parent, const Document *doc);
+
+	/*
+	 * Return modified entries only.
+	 */
+	std::unordered_map<int, std::string> GetParameters() const;
 
 private:
-	Document *doc_;
+	wxDataViewListCtrl *parameters_;
+	std::vector<std::string> original_values_;
 };
 
 }
