@@ -43,7 +43,7 @@ mostlyclean:
 	ant -f ../flint/build.xml clean
 
 clean: mostlyclean
-	-rm -rf opt usr var/$(BOOST_UNDERSCORE) var/clibsedml-$(CLIBSEDML_COMMIT) var/libsbml-$(LIBSBML_VERSION) var/libxml2-$(LIBXML2_VERSION) var/libzip-$(LIBZIP_VERSION) var/protobuf-$(PROTOBUF_VERSION) var/SBML_odeSolver-$(SOSLIB_VERSION) var/sundials-$(SUNDIALS_VERSION) var/wxWidgets-$(WXWIDGETS_VERSION) var/zlib-$(ZLIB_VERSION) var/toolchain.cmake tmp/*.installed tmp/$(BOOST_UNDERSCORE) tmp/clibsedml-$(CLIBSEDML_COMMIT) tmp/libsbml-$(LIBSBML_VERSION) tmp/libxml2-$(LIBXML2_VERSION) tmp/libzip-$(LIBZIP_VERSION) tmp/protobuf-$(PROTOBUF_VERSION) tmp/SBML_odeSolver-$(SOSLIB_VERSION) tmp/sundials-$(SUNDIALS_VERSION) tmp/wxWidgets-$(WXWIDGETS_VERSION) tmp/zlib-$(ZLIB_VERSION) build/protobuf-$(PROTOBUF_VERSION)
+	-rm -rf opt usr var/$(BOOST_UNDERSCORE) var/clibsedml-$(CLIBSEDML_COMMIT) var/czmq-$(CZMQ_VERSION) var/libsbml-$(LIBSBML_VERSION) var/libxml2-$(LIBXML2_VERSION) var/libzip-$(LIBZIP_VERSION) var/protobuf-$(PROTOBUF_VERSION) var/SBML_odeSolver-$(SOSLIB_VERSION) var/sundials-$(SUNDIALS_VERSION) var/wxWidgets-$(WXWIDGETS_VERSION) var/zlib-$(ZLIB_VERSION) var/zeromq-$(ZEROMQ_VERSION) var/toolchain.cmake tmp/*.installed tmp/$(BOOST_UNDERSCORE) tmp/clibsedml-$(CLIBSEDML_COMMIT) tmp/czmq-$(CZMQ_VERSION) tmp/libsbml-$(LIBSBML_VERSION) tmp/libxml2-$(LIBXML2_VERSION) tmp/libzip-$(LIBZIP_VERSION) tmp/protobuf-$(PROTOBUF_VERSION) tmp/SBML_odeSolver-$(SOSLIB_VERSION) tmp/sundials-$(SUNDIALS_VERSION) tmp/wxWidgets-$(WXWIDGETS_VERSION) tmp/zeromq-$(ZEROMQ_VERSION) tmp/zlib-$(ZLIB_VERSION) build/protobuf-$(PROTOBUF_VERSION)
 
 distclean: clean
 	-rm -f src/*.zip src/*.tar.bz2 src/*.tar.gz
@@ -68,6 +68,12 @@ tmp/$(BOOST_UNDERSCORE): src/$(BOOST_UNDERSCORE).tar.bz2 | tmp
 tmp/clibsedml-$(CLIBSEDML_COMMIT): src/clibsedml-$(CLIBSEDML_COMMIT).tar.gz | tmp
 	-rm -rf var/clibsedml-$(CLIBSEDML_COMMIT)
 	tar -C var -zxf $<
+	touch $@
+
+tmp/czmq-$(CZMQ_VERSION): src/czmq-$(CZMQ_VERSION).tar.gz | tmp
+	-rm -rf var/czmq-$(CZMQ_VERSION)
+	tar -C var -zxf $<
+	patch var/czmq-$(CZMQ_VERSION)/configure czmq-$(CZMQ_VERSION)-configure.patch
 	touch $@
 
 tmp/libsbml-$(LIBSBML_VERSION): src/libSBML-$(LIBSBML_VERSION)-core-src.zip | tmp
@@ -111,6 +117,12 @@ tmp/wxWidgets-$(WXWIDGETS_VERSION): src/wxWidgets-$(WXWIDGETS_VERSION).tar.bz2 |
 	tar -C var -jxf $<
 	touch $@
 
+tmp/zeromq-$(ZEROMQ_VERSION): src/zeromq-$(ZEROMQ_VERSION).tar.gz | tmp
+	-rm -rf var/zeromq-$(ZEROMQ_VERSION)
+	tar -C var -zxf $<
+	patch var/zeromq-$(ZEROMQ_VERSION)/src/windows.hpp zeromq-$(ZEROMQ_VERSION)-windows.patch
+	touch $@
+
 tmp/$(BOOST_UNDERSCORE).installed: tmp/$(BOOST_UNDERSCORE)
 	(cd var/$(BOOST_UNDERSCORE) && ./bootstrap.sh --prefix=$(PREFIX) --with-toolset=gcc --without-icu)
 	echo "using gcc : : $(HOST)-g++" > var/$(BOOST_UNDERSCORE)/user-config.jam
@@ -123,6 +135,11 @@ tmp/$(BOOST_UNDERSCORE).installed: tmp/$(BOOST_UNDERSCORE)
 tmp/clibsedml-$(CLIBSEDML_COMMIT).installed: tmp/clibsedml-$(CLIBSEDML_COMMIT) tmp/libxml2-$(LIBXML2_VERSION).installed
 	(cd var/clibsedml-$(CLIBSEDML_COMMIT) && autoreconf -i -f && env CFLAGS='-std=c99 -Wall -W -Werror' ./configure --host=$(HOST) --prefix=$(PREFIX) --with-xml-prefix=$(PREFIX) --disable-xmltest $(CLIBSEDML_CONFIGURE_OPTIONS))
 	$(MAKE) -C var/clibsedml-$(CLIBSEDML_COMMIT) all install
+	touch $@
+
+tmp/czmq-$(CZMQ_VERSION).installed: tmp/czmq-$(CZMQ_VERSION) tmp/zeromq-$(ZEROMQ_VERSION).installed
+	(cd var/czmq-$(CZMQ_VERSION) && ./configure --host=$(HOST) --prefix=$(PREFIX) $(CZMQ_CONFIGURE_OPTIONS) PKG_CONFIG_PATH=$(PKG_CONFIG_PATH) LIBS='-liphlpapi -lrpcrt4 -lws2_32')
+	$(MAKE) -C var/czmq-$(CZMQ_VERSION) all install
 	touch $@
 
 usr/bin/protoc: src/protobuf-java-$(PROTOBUF_VERSION).tar.gz | build
@@ -168,6 +185,11 @@ tmp/SBML_odeSolver-$(SOSLIB_VERSION).installed: tmp/SBML_odeSolver-$(SOSLIB_VERS
 	-$(MAKE) -C var/SBML_odeSolver-$(SOSLIB_VERSION) install
 	touch $@
 
+tmp/zeromq-$(ZEROMQ_VERSION).installed: tmp/zeromq-$(ZEROMQ_VERSION)
+	(cd var/zeromq-$(ZEROMQ_VERSION) && ./configure --host=$(HOST) --prefix=$(PREFIX) $(ZEROMQ_CONFIGURE_OPTIONS))
+	$(MAKE) -C var/zeromq-$(ZEROMQ_VERSION) all install
+	touch $@
+
 tmp/zlib-$(ZLIB_VERSION).installed: tmp/zlib-$(ZLIB_VERSION)
 	(cd var/zlib-$(ZLIB_VERSION) && $(MAKE) -fwin32/Makefile.gcc all install PREFIX=$(HOST)- DESTDIR=$(PREFIX)/ INCLUDE_PATH=include LIBRARY_PATH=lib BINARY_PATH=bin SHARED_MODE=1)
 	touch $@
@@ -184,7 +206,7 @@ flint opt usr var/flint:
 flint/lib: | flint
 	install -d $@
 
-var/flint/Makefile: tmp/$(BOOST_UNDERSCORE).installed tmp/clibsedml-$(CLIBSEDML_COMMIT).installed tmp/protobuf-$(PROTOBUF_VERSION).installed tmp/libzip-$(LIBZIP_VERSION).installed tmp/SBML_odeSolver-$(SOSLIB_VERSION).installed tmp/wxWidgets-$(WXWIDGETS_VERSION).installed ../configure | usr/bin/protoc var/flint
+var/flint/Makefile: tmp/$(BOOST_UNDERSCORE).installed tmp/clibsedml-$(CLIBSEDML_COMMIT).installed tmp/czmq-$(CZMQ_VERSION).installed tmp/protobuf-$(PROTOBUF_VERSION).installed tmp/libzip-$(LIBZIP_VERSION).installed tmp/SBML_odeSolver-$(SOSLIB_VERSION).installed tmp/wxWidgets-$(WXWIDGETS_VERSION).installed ../configure | usr/bin/protoc var/flint
 	(cd var/flint && env CPPFLAGS='-DWIN32_LEAN_AND_MEAN -D_WIN32_WINNT=0x0600 -DWIN32 -DSBML_ODESOLVER_EXPORTS=1' LIBS='-lole32 -loleaut32 -lmswsock -lws2_32' PKG_CONFIG_PATH=$(PKG_CONFIG_PATH) LIBSBML_CFLAGS=$(PREFIX)/include LIBSBML_LIBS='-lsbml' SOSLIB_CFLAGS=$(PREFIX)/include SOSLIB_LIBS='-lODES' ../../../configure --host=$(HOST) --prefix=$(PREFIX) --with-boost=$(PREFIX) --with-xml-prefix=$(PREFIX) --disable-xmltest --with-protoc=$(abspath usr/bin/protoc) --with-sundials=$(PREFIX) --with-wxWidgets=$(PREFIX) --enable-release --enable-silent-rules --enable-shared --disable-static)
 
 $(foreach d,$(FLINT_DLLS),opt/bin/$(d).dll) $(foreach e,$(EXES),opt/bin/$(e).exe): $(foreach d,$(BIN_DLLS) $(BOOST_DLLS),$(call flint_dll_name,$(d))) tmp/sundials-$(SUNDIALS_VERSION).installed tmp/SBML_odeSolver-$(SOSLIB_VERSION).installed var/flint/Makefile
@@ -197,6 +219,8 @@ $(foreach j,$(JARS),$(eval $(call flint_jar,$(j))))
 
 opt/bin/libODES-0.dll: tmp/SBML_odeSolver-$(SOSLIB_VERSION).installed
 
+opt/bin/libczmq.dll: tmp/czmq-$(CZMQ_VERSION).installed
+
 opt/bin/libprotobuf-$(PROTOBUF_CURRENT).dll: tmp/protobuf-$(PROTOBUF_VERSION).installed
 
 opt/bin/libsedml-0.dll: tmp/clibsedml-$(CLIBSEDML_COMMIT).installed
@@ -204,6 +228,8 @@ opt/bin/libsedml-0.dll: tmp/clibsedml-$(CLIBSEDML_COMMIT).installed
 opt/bin/libsbml.all: tmp/libsbml-$(LIBSBML_VERSION).installed
 
 opt/bin/libxml2-2.dll: tmp/libxml2-$(LIBXML2_VERSION).installed
+
+opt/bin/libzmq.dll: tmp/zeromq-$(ZEROMQ_VERSION).installed
 
 opt/bin/libzip-4.dll: tmp/libzip-$(LIBZIP_VERSION).installed
 
@@ -258,6 +284,10 @@ flint/third-party-licenses.txt: tmp/libsbml-$(LIBSBML_VERSION) tmp/libxml2-$(LIB
 	echo ';; Licenses of third-party libraries' >> $@
 	echo ';;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;' >> $@
 	echo >> $@
+	echo ';; CZMQ $(CZMQ_VERSION)' >> $@
+	echo >> $@
+	cat var/czmq-$(CZMQ_VERSION)/LICENSE >> $@
+	echo >> $@
 	echo ';; libSBML $(LIBSBML_VERSION)' >> $@
 	echo >> $@
 	cat var/libsbml-$(LIBSBML_VERSION)/LICENSE.txt >> $@
@@ -284,6 +314,10 @@ flint/third-party-licenses.txt: tmp/libsbml-$(LIBSBML_VERSION) tmp/libxml2-$(LIB
 	echo ';; wxWidgets $(WXWIDGETS_VERSION)' >> $@
 	echo >> $@
 	cat var/wxWidgets-$(WXWIDGETS_VERSION)/docs/licence.txt >> $@
+	echo >> $@
+	echo ';; ZeroMQ $(ZEROMQ_VERSION)' >> $@
+	echo >> $@
+	cat var/zeromq-$(ZEROMQ_VERSION)/COPYING.LESSER >> $@
 
 flint.zip: $(foreach e,$(EXES),$(call flint_exe_name,$(e))) $(foreach d,$(BOOST_DLLS) $(SUNDIALS_DLLS) wxmsw310u_gcc_custom $(FLINT_DLLS),$(call flint_dll_name,$(d))) flint/$(LIBGCC_DLL) flint/$(LIBSTDCXX_DLL) flint/$(LIBWINPTHREAD_DLL) flint/flint.jar $(foreach j,$(JARS),$(call flint_jar_name,$(j))) flint/Makefile flint/header.mk flint/flint.ico flint/flint.xml flint/flint.wxs flint/icon.png flint/license.rtf flint/third-party-licenses.txt
 	zip -r flint flint

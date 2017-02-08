@@ -82,6 +82,8 @@ PKG_CHECK_MODULES([LIBSBML],[libsbml])
 PKG_CHECK_MODULES([LIBZIP],[libzip >= 1.1.1])
 PKG_CHECK_MODULES([SOSLIB],[libODES])
 PKG_CHECK_MODULES([PROTOBUF],[protobuf])
+PKG_CHECK_MODULES([ZEROMQ],[libzmq >= 4.2.1])
+PKG_CHECK_MODULES([CZMQ],[libczmq >= 4.0.2])
 
 AC_ARG_WITH([sundials],
         [AS_HELP_STRING([--with-sundials],

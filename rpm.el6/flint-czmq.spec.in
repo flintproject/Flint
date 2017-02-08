@@ -1,0 +1,87 @@
+Summary: CZMQ for Flint
+Name: flint-czmq
+Version: czmq_VERSION
+Release: czmq_RELEASE%{?dist}
+License: MPLv2
+URL: http://czmq.zeromq.org/
+Source0: %{name}-%{version}.tar.gz
+BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
+BuildRequires: gcc
+BuildRequires: make
+BuildRequires: flint-zeromq >= 4.2.1
+BuildRequires: libuuid-devel
+Requires: flint-zeromq >= 4.2.1
+Requires: libuuid
+
+%description
+This is a CZMQ package for Flint.
+
+%prep
+%setup -q
+
+%build
+./configure --prefix=/opt/flint --enable-silent-rules PKG_CONFIG_PATH=/opt/flint/lib/pkgconfig
+make
+
+%install
+rm -rf %{buildroot}
+make install DESTDIR=%{buildroot}
+mkdir -p %{buildroot}/etc/ld.so.conf.d
+echo '/opt/flint/lib' > %{buildroot}/etc/ld.so.conf.d/%{name}.conf
+
+%clean
+rm -rf %{buildroot}
+
+%post
+/sbin/ldconfig
+
+%postun
+/sbin/ldconfig
+
+%files
+%defattr(-,root,root,-)
+%doc
+/etc/ld.so.conf.d/%{name}.conf
+/opt/flint/bin/zmakecert
+/opt/flint/include/czmq.h
+/opt/flint/include/czmq_library.h
+/opt/flint/include/czmq_prelude.h
+/opt/flint/include/zactor.h
+/opt/flint/include/zarmour.h
+/opt/flint/include/zauth.h
+/opt/flint/include/zbeacon.h
+/opt/flint/include/zcert.h
+/opt/flint/include/zcertstore.h
+/opt/flint/include/zchunk.h
+/opt/flint/include/zclock.h
+/opt/flint/include/zconfig.h
+/opt/flint/include/zdigest.h
+/opt/flint/include/zdir.h
+/opt/flint/include/zdir_patch.h
+/opt/flint/include/zfile.h
+/opt/flint/include/zframe.h
+/opt/flint/include/zgossip.h
+/opt/flint/include/zhash.h
+/opt/flint/include/zhashx.h
+/opt/flint/include/ziflist.h
+/opt/flint/include/zlist.h
+/opt/flint/include/zlistx.h
+/opt/flint/include/zloop.h
+/opt/flint/include/zmonitor.h
+/opt/flint/include/zmsg.h
+/opt/flint/include/zpoller.h
+/opt/flint/include/zproxy.h
+/opt/flint/include/zrex.h
+/opt/flint/include/zsock.h
+/opt/flint/include/zstr.h
+/opt/flint/include/zsys.h
+/opt/flint/include/zuuid.h
+/opt/flint/lib/libczmq.a
+/opt/flint/lib/libczmq.la
+/opt/flint/lib/libczmq.so
+/opt/flint/lib/libczmq.so.CZMQ_CURRENT
+/opt/flint/lib/libczmq.so.CZMQ_VERSION_INFO
+/opt/flint/lib/pkgconfig/libczmq.pc
+/opt/flint/share/zproject/czmq/*
+
+%changelog

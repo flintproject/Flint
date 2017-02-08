@@ -28,6 +28,11 @@ B2_WITHOUT_OPTIONS = $(foreach c,$(BOOST_UNUSED_COMPONENTS),--without-$(c))
 
 CLIBSEDML_CONFIGURE_OPTIONS = --enable-silent-rules --disable-static
 
+CZMQ_CONFIGURE_OPTIONS = \
+	--enable-silent-rules \
+	--disable-static \
+	--disable-Werror
+
 SOSLIB_CONFIGURE_OPTIONS = \
 	--disable-static \
 	--without-grace \
@@ -80,3 +85,5 @@ WXWIDGETS_CONFIGURE_OPTIONS = \
 	--without-gtkprint \
 	--without-opengl \
 	--without-sdl
+
+ZEROMQ_CONFIGURE_OPTIONS = --enable-silent-rules --disable-static

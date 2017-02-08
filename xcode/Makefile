@@ -26,11 +26,13 @@ BOOST_DYLIBS := \
     system
 DYLIBS := \
     libODES.0 \
+    libczmq.$(CZMQ_CURRENT) \
     libsbml.$(LIBSBML_VERSION) \
     libsedml.0 \
     libxml2.2 \
     libprotobuf.$(PROTOBUF_CURRENT) \
     libwx_osx_cocoau-3.1.0.0.0 \
+    libzmq.$(ZEROMQ_CURRENT) \
     libzip.4
 SUNDIALS_DYLIBS := \
     arkode.1 \
@@ -88,6 +90,7 @@ $(call flint_frameworks_dylib_name,$(1)): $(PREFIX)/lib/$(1).dylib tmp/bundled
 	install_name_tool -change $(PREFIX)/lib/libxml2.2.dylib @executable_path/../Frameworks/libxml2.2.dylib $$@
 	install_name_tool -change $(PREFIX)/lib/libsbml.$(LIBSBML_VERSION).dylib @executable_path/../Frameworks/libsbml.$(LIBSBML_VERSION).dylib $$@
 	for name in $(SUNDIALS_DYLIBS); do install_name_tool -change libsundials_$$$$name.dylib @executable_path/../Frameworks/libsundials_$$$$name.dylib $$@; done
+	install_name_tool -change $(PREFIX)/lib/libzmq.$(ZEROMQ_CURRENT).dylib @executable_path/../Frameworks/libzmq.$(ZEROMQ_CURRENT).dylib $$@
 endef
 
 define flint_frameworks_sundials_dylib
@@ -117,7 +120,7 @@ endef
 
 .PHONY: all check mostlyclean clean distclean download
 
-all: download $(foreach lib,$(BOOST_UNDERSCORE) clibsedml-$(CLIBSEDML_COMMIT) libsbml-$(LIBSBML_VERSION) libxml2-$(LIBXML2_VERSION) libzip-$(LIBZIP_VERSION) protobuf-$(PROTOBUF_VERSION) SBML_odeSolver-$(SOSLIB_VERSION) sundials-$(SUNDIALS_VERSION) wxWidgets-$(WXWIDGETS_VERSION),tmp/$(lib).installed) $(DMGS)
+all: download $(foreach lib,$(BOOST_UNDERSCORE) clibsedml-$(CLIBSEDML_COMMIT) czmq-$(CZMQ_VERSION) libsbml-$(LIBSBML_VERSION) libxml2-$(LIBXML2_VERSION) libzip-$(LIBZIP_VERSION) protobuf-$(PROTOBUF_VERSION) SBML_odeSolver-$(SOSLIB_VERSION) sundials-$(SUNDIALS_VERSION) wxWidgets-$(WXWIDGETS_VERSION) zeromq-$(ZEROMQ_VERSION),tmp/$(lib).installed) $(DMGS)
 
 check:
 	env DYLD_LIBRARY_PATH=$(PREFIX)/lib $(MAKE) -C build check
@@ -147,6 +150,11 @@ tmp/$(BOOST_UNDERSCORE): src/$(BOOST_UNDERSCORE).tar.bz2 | tmp
 
 tmp/clibsedml-$(CLIBSEDML_COMMIT): src/clibsedml-$(CLIBSEDML_COMMIT).tar.gz | tmp
 	-rm -rf var/clibsedml-$(CLIBSEDML_COMMIT)
+	tar -C var -zxf $<
+	touch $@
+
+tmp/czmq-$(CZMQ_VERSION): src/czmq-$(CZMQ_VERSION).tar.gz | tmp
+	-rm -rf var/czmq-$(CZMQ_VERSION)
 	tar -C var -zxf $<
 	touch $@
 
@@ -186,12 +194,21 @@ tmp/wxWidgets-$(WXWIDGETS_VERSION): src/wxWidgets-$(WXWIDGETS_VERSION).tar.bz2 |
 	tar -C var -jxf $<
 	touch $@
 
+tmp/zeromq-$(ZEROMQ_VERSION): src/zeromq-$(ZEROMQ_VERSION).tar.gz | tmp
+	-rm -rf var/zeromq-$(ZEROMQ_VERSION)
+	tar -C var -zxf $<
+	touch $@
+
 tmp/$(BOOST_UNDERSCORE).installed: tmp/$(BOOST_UNDERSCORE)
 	(cd var/$(BOOST_UNDERSCORE) && export MACOSX_DEPLOYMENT_TARGET=10.8 && ./bootstrap.sh --with-toolset=clang --without-icu && ./b2 -d0 --prefix=$(PREFIX) $(B2_WITHOUT_OPTIONS) --layout=tagged toolset=clang cflags='-arch x86_64 -mmacosx-version-min=10.8' cxxflags='-std=c++11 -stdlib=libc++ -arch x86_64 -mmacosx-version-min=10.8' linkflags='-stdlib=libc++ -arch x86_64 -mmacosx-version-min=10.8' link=shared variant=release threading=multi install)
 	touch $@
 
 tmp/clibsedml-$(CLIBSEDML_COMMIT).installed: tmp/clibsedml-$(CLIBSEDML_COMMIT) tmp/libxml2-$(LIBXML2_VERSION).installed
 	(cd var/clibsedml-$(CLIBSEDML_COMMIT) && autoreconf -i -f && export MACOSX_DEPLOYMENT_TARGET=10.8 && ./configure --prefix=$(PREFIX) --with-xml-prefix=$(PREFIX) $(CLIBSEDML_CONFIGURE_OPTIONS) CC='clang' CFLAGS='-Wall -W -arch x86_64 -mmacosx-version-min=10.8' LDFLAGS='-arch x86_64 -mmacosx-version-min=10.8' && $(MAKE) all install)
+	touch $@
+
+tmp/czmq-$(CZMQ_VERSION).installed: tmp/czmq-$(CZMQ_VERSION) tmp/zeromq-$(ZEROMQ_VERSION).installed
+	(cd var/czmq-$(CZMQ_VERSION) && export MACOSX_DEPLOYMENT_TARGET=10.8 && ./configure --prefix=$(PREFIX) $(CZMQ_CONFIGURE_OPTIONS) CC='clang' CFLAGS='-arch x86_64 -mmacosx-version-min=10.8' LDFLAGS='-arch x86_64 -mmacosx-version-min=10.8 -Wl,-headerpad_max_install_names' PKG_CONFIG=$(PKG_CONFIG) PKG_CONFIG_PATH=$(PKG_CONFIG_PATH) && $(MAKE) all install)
 	touch $@
 
 tmp/protobuf-$(PROTOBUF_VERSION).installed: tmp/protobuf-$(PROTOBUF_VERSION)
@@ -223,6 +240,10 @@ tmp/libsbml-$(LIBSBML_VERSION).installed: tmp/libsbml-$(LIBSBML_VERSION) tmp/lib
 
 tmp/SBML_odeSolver-$(SOSLIB_VERSION).installed: tmp/SBML_odeSolver-$(SOSLIB_VERSION) tmp/sundials-$(SUNDIALS_VERSION).installed tmp/libsbml-$(LIBSBML_VERSION).installed
 	(cd var/SBML_odeSolver-$(SOSLIB_VERSION) && autoreconf -i && export MACOSX_DEPLOYMENT_TARGET=10.8 && ./configure --prefix=$(PREFIX) --with-libsbml=$(PREFIX) --with-libxml2=$(PREFIX) --with-sundials=$(PREFIX) $(SOSLIB_CONFIGURE_OPTIONS) CC='clang' CFLAGS='-arch x86_64 -mmacosx-version-min=10.8 -Wl,-headerpad_max_install_names' LDFLAGS='-arch x86_64 -mmacosx-version-min=10.8' && $(MAKE) all install)
+	touch $@
+
+tmp/zeromq-$(ZEROMQ_VERSION).installed: tmp/zeromq-$(ZEROMQ_VERSION)
+	(cd var/zeromq-$(ZEROMQ_VERSION) && export MACOSX_DEPLOYMENT_TARGET=10.8 && ./configure --prefix=$(PREFIX) $(ZEROMQ_CONFIGURE_OPTIONS) CC='clang' CXX='clang++' CFLAGS='-Wall -W -arch x86_64 -mmacosx-version-min=10.8' CXXFLAGS='-Wall -W -stdlib=libc++ -arch x86_64 -mmacosx-version-min=10.8' LDFLAGS='-arch x86_64 -mmacosx-version-min=10.8' && $(MAKE) all install)
 	touch $@
 
 # for Flint
@@ -273,6 +294,10 @@ $(APP)/Contents/Resources/third-party-licenses.txt: tmp/libsbml-$(LIBSBML_VERSIO
 	echo ';; Licenses of third-party libraries' >> $@
 	echo ';;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;' >> $@
 	echo >> $@
+	echo ';; CZMQ $(CZMQ_VERSION)' >> $@
+	echo >> $@
+	cat var/czmq-$(CZMQ_VERSION)/LICENSE >> $@
+	echo >> $@
 	echo ';; libSBML $(LIBSBML_VERSION)' >> $@
 	echo >> $@
 	cat var/libsbml-$(LIBSBML_VERSION)/LICENSE.txt >> $@
@@ -299,6 +324,9 @@ $(APP)/Contents/Resources/third-party-licenses.txt: tmp/libsbml-$(LIBSBML_VERSIO
 	echo ';; wxWidgets $(WXWIDGETS_VERSION)' >> $@
 	echo >> $@
 	cat var/wxWidgets-$(WXWIDGETS_VERSION)/docs/licence.txt >> $@
+	echo ';; ZeroMQ $(ZEROMQ_VERSION)' >> $@
+	echo >> $@
+	cat var/zeromq-$(ZEROMQ_VERSION)/COPYING.LESSER >> $@
 
 $(APP)/Contents/Resources/icon.png: ../flint/src/jp/oist/flint/image/icon.png
 	install -d $(dir $@)

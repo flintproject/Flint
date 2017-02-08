@@ -158,6 +158,9 @@
           <Component Id='clibsedml' Guid='72d89bf4-8921-11e1-8be9-8ffa90143fcb'>
             <File Id='libsedml' Name='libsedml-0.dll' DiskId='1' Source='libsedml-0.dll' />
           </Component>
+          <Component Id='czmq' Guid='f1a4e0aa-f1b3-11e6-bb96-137b1a1cb289'>
+            <File Id='libczmq' Name='libczmq.dll' DiskId='1' Source='libczmq.dll' />
+          </Component>
           <Component Id='protobuf' Guid='233d044c-ff5f-11e4-bcee-2f0a32a0ce0d'>
             <File Id='libprotobuf' Name='libprotobuf-PROTOBUF_CURRENT.dll' DiskId='1' Source='libprotobuf-PROTOBUF_CURRENT.dll' />
           </Component>
@@ -178,6 +181,9 @@
           </Component>
           <Component Id='xml2' Guid='d02ce240-1a7e-11e1-8c5d-b793ab03d5f9'>
             <File Id='libxml2' Name='libxml2-2.dll' DiskId='1' Source='libxml2-2.dll' />
+          </Component>
+          <Component Id='zeromq' Guid='f3c4adfc-f1b3-11e6-9632-afb37b5e1b1b'>
+            <File Id='libzmq' Name='libzmq.dll' DiskId='1' Source='libzmq.dll' />
           </Component>
           <Component Id='zip' Guid='80567758-6491-11e4-9265-8740267a2adb'>
             <File Id='libzip' Name='libzip-4.dll' DiskId='1' Source='libzip-4.dll' />
@@ -270,6 +276,7 @@
       <ComponentRef Id='sundials.nvecserial' />
       <ComponentRef Id='wxmsw' />
       <ComponentRef Id='clibsedml' />
+      <ComponentRef Id='czmq' />
       <ComponentRef Id='protobuf' />
       <ComponentRef Id='sbml' />
       <ComponentRef Id='soslib' />
@@ -277,6 +284,7 @@
       <ComponentRef Id='libflintxx' />
       <ComponentRef Id='libsqlite3' />
       <ComponentRef Id='xml2' />
+      <ComponentRef Id='zeromq' />
       <ComponentRef Id='zip' />
       <ComponentRef Id='zlib' />
       <ComponentRef Id='libgcc' />

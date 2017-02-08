@@ -10,6 +10,8 @@ pkg-config is helpful but not required.
 In order to build Flint, the following libraries are required:
 - Boost 1.63.0
   http://www.boost.org/
+- CZMQ 4.0.2
+  http://czmq.zeromq.org/
 - Protocol buffers 3.2.0
   https://developers.google.com/protocol-buffers/
 - The SBML ODE Solver Library (SOSlib) 1.9.0
@@ -27,6 +29,8 @@ In order to build Flint, the following libraries are required:
   http://www.nih.at/libzip/
 - wxWidgets 3.1.0
   https://www.wxwidgets.org/
+- ZeroMQ 4.2.1
+  http://zeromq.org/
 - zlib 1.2.3 or later
   http://zlib.net/
 

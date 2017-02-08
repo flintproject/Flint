@@ -51,13 +51,15 @@ bin_PROGRAMS = \
 	isdwc
 
 noinst_PROGRAMS = \
+	fppp-isd \
+	fppp-rtm \
 	test-exec \
 	test-run
 
 # Dependency comes first
 lib_LTLIBRARIES = libsqlite3.la libflint.la libflintxx.la
 
-lib_LIBRARIES = libflint2.a
+lib_LIBRARIES = libflint2.a libfppp.a
 
 libflint_la_CPPFLAGS = $(AM_CFLAGS) -std=c99 -pedantic-errors
 libflint_la_LIBADD = libsqlite3.la
@@ -217,6 +219,10 @@ libflint2_a_SOURCES = \
     gui/formula/token.cc \
     gui/formula/tree.cc
 
+libfppp_a_CPPFLAGS = $(BOOST_CPPFLAGS) $(CZMQ_CFLAGS)
+libfppp_a_SOURCES = \
+    fppp.cc
+
 libsqlite3_la_CPPFLAGS = -DSQLITE_THREADSAFE=1 -DSQLITE_OMIT_LOAD_EXTENSION
 libsqlite3_la_LDFLAGS = -no-undefined
 libsqlite3_la_SOURCES = sqlite3.c
@@ -330,6 +336,14 @@ isdwc_CPPFLAGS = $(BOOST_CPPFLAGS)
 isdwc_LDFLAGS = $(BOOST_PROGRAM_OPTIONS_LDFLAGS)
 isdwc_LDADD = $(BOOST_PROGRAM_OPTIONS_LIBS)
 isdwc_SOURCES = isdwc-main.cc
+
+fppp_isd_CPPFLAGS = $(BOOST_CPPFLAGS) $(CZMQ_CFLAGS)
+fppp_isd_LDADD = libfppp.a libflintxx.la libflint.la libsqlite3.la $(CZMQ_LIBS)
+fppp_isd_SOURCES = fppp/isd/main.cc
+
+fppp_rtm_CPPFLAGS = $(BOOST_CPPFLAGS) $(CZMQ_CFLAGS) $(ZEROMQ_CFLAGS)
+fppp_rtm_LDADD = libfppp.a libflintxx.la libflint.la libsqlite3.la $(CZMQ_LIBS) $(ZEROMQ_LIBS)
+fppp_rtm_SOURCES = fppp/rtm/main.cc
 
 test_exec_CPPFLAGS = $(PROTOBUF_CFLAGS) $(BOOST_CPPFLAGS)
 test_exec_LDADD = libflintxx.la libflint.la libsqlite3.la $(PROTOBUF_LIBS)

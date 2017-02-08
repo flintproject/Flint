@@ -1,0 +1,51 @@
+Summary: ZeroMQ for Flint
+Name: flint-zeromq
+Version: zeromq_VERSION
+Release: zeromq_RELEASE%{?dist}
+License: LGPLv3 plus a static linking exception
+URL: http://zeromq.org/
+Source0: %{name}-%{version}.tar.gz
+BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
+BuildRequires: gcc-c++
+BuildRequires: make
+
+%description
+This is a ZeroMQ package for Flint.
+
+%prep
+%setup -q
+
+%build
+./configure --prefix=/opt/flint --enable-silent-rules
+make
+
+%install
+rm -rf %{buildroot}
+make install DESTDIR=%{buildroot}
+mkdir -p %{buildroot}/etc/ld.so.conf.d
+echo '/opt/flint/lib' > %{buildroot}/etc/ld.so.conf.d/%{name}.conf
+
+%clean
+rm -rf %{buildroot}
+
+%post
+/sbin/ldconfig
+
+%postun
+/sbin/ldconfig
+
+%files
+%defattr(-,root,root,-)
+%doc
+/etc/ld.so.conf.d/%{name}.conf
+/opt/flint/bin/curve_keygen
+/opt/flint/include/zmq.h
+/opt/flint/include/zmq_utils.h
+/opt/flint/lib/libzmq.a
+/opt/flint/lib/libzmq.la
+/opt/flint/lib/libzmq.so
+/opt/flint/lib/libzmq.so.ZEROMQ_CURRENT
+/opt/flint/lib/libzmq.so.ZEROMQ_VERSION_INFO
+/opt/flint/lib/pkgconfig/libzmq.pc
+
+%changelog

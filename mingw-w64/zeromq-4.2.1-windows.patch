@@ -1,0 +1,18 @@
+--- src/windows.hpp.orig	2017-01-01 00:25:47.000000000 +0900
++++ src/windows.hpp	2017-02-13 18:43:24.208789629 +0900
+@@ -55,6 +55,7 @@
+ #include <winsock2.h>
+ #include <windows.h>
+ #include <mswsock.h>
++#include <ws2tcpip.h>
+ #include <iphlpapi.h>
+ 
+ #if !defined __MINGW32__
+@@ -73,7 +74,6 @@
+ #define SIO_KEEPALIVE_VALS _WSAIOW(IOC_VENDOR,4)
+ #endif
+ 
+-#include <ws2tcpip.h>
+ #include <ipexport.h>
+ #if !defined _WIN32_WCE
+ #include <process.h>

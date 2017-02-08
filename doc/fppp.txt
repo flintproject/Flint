@@ -1,0 +1,22 @@
+Fppp is an application layer protocol for ditributed processes to communicate
+with named multidimensional data between them.
+The protocol is designed to be
+- of low latency,
+- scalable, and
+- safe against communication failure.
+
+Every process involving communication through fppp can broadcast data to other
+processes, and can receive data from others.
+
+Every process should have a "speaker" thread to send data as well as "listener"
+one to receive data. For example, there may be a thread of a simulator process
+to advance steps, which sends data at every step. On the other hand, a listener
+thread of a device's controller process may feed back according to incoming data.
+
+A data message consists of
+- uuid (16 bytes),
+- name (32 bytes),
+- time (8 bytes), and
+- value (8 bytes).
+
+[ZeroMQ] http://zeromq.org/

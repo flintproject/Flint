@@ -3,6 +3,7 @@ DEPOSIT_URL = http://www.physiodesigner.org/developer/sources
 CLIBSEDML_COMMIT = d8596b56
 
 BOOST_VERSION = 1.63.0
+CZMQ_VERSION = 4.0.2
 LIBSBML_VERSION = 5.13.0
 LIBXML2_VERSION = 2.7.8
 LIBZIP_VERSION = 1.1.1
@@ -11,14 +12,21 @@ SOSLIB_VERSION = 1.9.0
 SUNDIALS_VERSION = 2.7.0
 WXWIDGETS_VERSION = 3.1.0
 ZLIB_VERSION = 1.2.11
+ZEROMQ_VERSION = 4.2.1
 
+CZMQ_CURRENT = 4
 PROTOBUF_CURRENT = 12
+ZEROMQ_CURRENT = 5
+
+CZMQ_VERSION_INFO = $(CZMQ_CURRENT).0.2
+ZEROMQ_VERSION_INFO = $(ZEROMQ_CURRENT).1.1
 
 BOOST_UNDERSCORE = boost_$(subst .,_,$(BOOST_VERSION))
 
 EXTERNAL_LIBRARIES = \
 	$(BOOST_UNDERSCORE).tar.bz2 \
 	clibsedml-$(CLIBSEDML_COMMIT).tar.gz \
+	czmq-$(CZMQ_VERSION).tar.gz \
 	libSBML-$(LIBSBML_VERSION)-core-src.zip \
 	libxml2-sources-$(LIBXML2_VERSION).tar.gz \
 	libzip-$(LIBZIP_VERSION).tar.gz \
@@ -26,11 +34,13 @@ EXTERNAL_LIBRARIES = \
 	SBML_odeSolver-$(SOSLIB_VERSION).tar.gz \
 	sundials-$(SUNDIALS_VERSION).tar.gz \
 	wxWidgets-$(WXWIDGETS_VERSION).tar.bz2 \
+	zeromq-$(ZEROMQ_VERSION).tar.gz \
 	zlib-$(ZLIB_VERSION).tar.gz
 
 EXTERNAL_LIBRARY_DIRS = \
 	$(BOOST_UNDERSCORE) \
 	clibsedml-$(CLIBSEDML_COMMIT) \
+	czmq-$(CZMQ_VERSION) \
 	libsbml-$(LIBSBML_VERSION) \
 	libxml2-$(LIBXML2_VERSION) \
 	libzip-$(LIBZIP_VERSION) \
@@ -38,6 +48,7 @@ EXTERNAL_LIBRARY_DIRS = \
 	SBML_odeSolver-$(SOSLIB_VERSION) \
 	sundials-$(SUNDIALS_VERSION) \
 	wxWidgets-$(WXWIDGETS_VERSION) \
+	zeromq-$(ZEROMQ_VERSION) \
 	zlib-$(ZLIB_VERSION)
 
 OS := $(shell uname -s)
@@ -91,6 +102,7 @@ endif
 
 $(eval $(call external_library_source,http://downloads.sourceforge.net/project/boost/boost/$(BOOST_VERSION),$(BOOST_UNDERSCORE).tar.bz2,1c837ecd990bb022d07e7aab32b09847))
 $(eval $(call external_library_source,$(DEPOSIT_URL),clibsedml-$(CLIBSEDML_COMMIT).tar.gz,d780b4f02d5272e3c0b2d4610e6d6c3f))
+$(eval $(call external_library_source,https://github.com/zeromq/czmq/releases/download/v$(CZMQ_VERSION),czmq-$(CZMQ_VERSION).tar.gz,b27cb5a23c472949b1e37765e404dc98))
 $(eval $(call external_library_source,http://downloads.sourceforge.net/project/sbml/libsbml/$(LIBSBML_VERSION)/stable,libSBML-$(LIBSBML_VERSION)-core-src.zip,6581723e894eee8058b95fa80df7aad4))
 $(eval $(call external_library_source,http://xmlsoft.org/sources,libxml2-sources-$(LIBXML2_VERSION).tar.gz,a78857dd73a8784776d7f9625ccf7a39))
 $(eval $(call external_library_source,http://www.nih.at/libzip,libzip-$(LIBZIP_VERSION).tar.gz,133aefc4c7e45a1b7d168a617e289ef6))
@@ -98,4 +110,5 @@ $(eval $(call external_library_source,https://github.com/google/protobuf/release
 $(eval $(call external_library_source3,https://github.com/raim/SBML_odeSolver/archive/$(SOSLIB_VERSION).tar.gz,SBML_odeSolver-$(SOSLIB_VERSION).tar.gz,a2223179576e33eff110065d4481e306))
 $(eval $(call external_library_source,http://pkgs.fedoraproject.org/repo/extras/sundials/sundials-$(SUNDIALS_VERSION).tar.gz/c304631b9bc82877d7b0e9f4d4fd94d3,sundials-$(SUNDIALS_VERSION).tar.gz,c304631b9bc82877d7b0e9f4d4fd94d3))
 $(eval $(call external_library_source,https://github.com/wxWidgets/wxWidgets/releases/download/v$(WXWIDGETS_VERSION),wxWidgets-$(WXWIDGETS_VERSION).tar.bz2,e20c14bb9bf5d4ec0979a3cd7510dece))
+$(eval $(call external_library_source,https://github.com/zeromq/libzmq/releases/download/v$(ZEROMQ_VERSION),zeromq-$(ZEROMQ_VERSION).tar.gz,820cec2860a72c3257881a394d83bfc0))
 $(eval $(call external_library_source,http://zlib.net,zlib-$(ZLIB_VERSION).tar.gz,1c9f62f0778697a09d36121ead88e08e))

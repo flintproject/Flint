@@ -12,10 +12,12 @@ JARS := \
     sqlite-jdbc-3.14.2.1
 BIN_DLLS := \
     libODES-0 \
+    libczmq \
     libprotobuf-$(PROTOBUF_CURRENT) \
     libsbml \
     libsedml-0 \
     libxml2-2 \
+    libzmq \
     libzip-4 \
     zlib1
 BOOST_DLLS := \
