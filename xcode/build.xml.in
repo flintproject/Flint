@@ -26,7 +26,7 @@
 	<classpath file="../flint/lib/jfreechart-1.0.19.jar"/>
 	<classpath file="../flint/lib/log4j-1.2.17.jar"/>
 	<classpath file="../flint/lib/jfreechart-1.0.19.jar"/>
-	<classpath file="../flint/lib/protobuf-java-3.1.0.jar"/>
+	<classpath file="../flint/lib/protobuf-java-3.2.0.jar"/>
 	<classpath file="../flint/lib/sqlite-jdbc-3.14.2.1.jar"/>
 
 	<option value="-Xdock:name=Flint" />

@@ -6,7 +6,7 @@ BOOST_VERSION = 1.63.0
 LIBSBML_VERSION = 5.13.0
 LIBXML2_VERSION = 2.7.8
 LIBZIP_VERSION = 1.1.1
-PROTOBUF_VERSION = 3.1.0
+PROTOBUF_VERSION = 3.2.0
 SOSLIB_VERSION = 1.9.0
 SUNDIALS_VERSION = 2.7.0
 WXWIDGETS_VERSION = 3.1.0
@@ -92,7 +92,7 @@ $(eval $(call external_library_source,$(DEPOSIT_URL),clibsedml-$(CLIBSEDML_COMMI
 $(eval $(call external_library_source,http://downloads.sourceforge.net/project/sbml/libsbml/$(LIBSBML_VERSION)/stable,libSBML-$(LIBSBML_VERSION)-core-src.zip,6581723e894eee8058b95fa80df7aad4))
 $(eval $(call external_library_source,http://xmlsoft.org/sources,libxml2-sources-$(LIBXML2_VERSION).tar.gz,a78857dd73a8784776d7f9625ccf7a39))
 $(eval $(call external_library_source,http://www.nih.at/libzip,libzip-$(LIBZIP_VERSION).tar.gz,133aefc4c7e45a1b7d168a617e289ef6))
-$(eval $(call external_library_source,https://github.com/google/protobuf/releases/download/v$(PROTOBUF_VERSION),protobuf-java-$(PROTOBUF_VERSION).tar.gz,d8bfa09d3235a6f7a72ab3830176d579))
+$(eval $(call external_library_source,https://github.com/google/protobuf/releases/download/v$(PROTOBUF_VERSION),protobuf-java-$(PROTOBUF_VERSION).tar.gz,74da013866efbb8850ceca981917c63a))
 $(eval $(call external_library_source3,https://github.com/raim/SBML_odeSolver/archive/$(SOSLIB_VERSION).tar.gz,SBML_odeSolver-$(SOSLIB_VERSION).tar.gz,a2223179576e33eff110065d4481e306))
 $(eval $(call external_library_source,http://pkgs.fedoraproject.org/repo/extras/sundials/sundials-$(SUNDIALS_VERSION).tar.gz/c304631b9bc82877d7b0e9f4d4fd94d3,sundials-$(SUNDIALS_VERSION).tar.gz,c304631b9bc82877d7b0e9f4d4fd94d3))
 $(eval $(call external_library_source,https://github.com/wxWidgets/wxWidgets/releases/download/v$(WXWIDGETS_VERSION),wxWidgets-$(WXWIDGETS_VERSION).tar.bz2,e20c14bb9bf5d4ec0979a3cd7510dece))

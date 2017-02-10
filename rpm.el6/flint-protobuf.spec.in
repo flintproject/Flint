@@ -43,18 +43,18 @@ rm -rf %{buildroot}
 /opt/flint/lib/libprotobuf-lite.a
 /opt/flint/lib/libprotobuf-lite.la
 /opt/flint/lib/libprotobuf-lite.so
-/opt/flint/lib/libprotobuf-lite.so.11
-/opt/flint/lib/libprotobuf-lite.so.11.0.0
+/opt/flint/lib/libprotobuf-lite.so.12
+/opt/flint/lib/libprotobuf-lite.so.12.0.0
 /opt/flint/lib/libprotobuf.a
 /opt/flint/lib/libprotobuf.la
 /opt/flint/lib/libprotobuf.so
-/opt/flint/lib/libprotobuf.so.11
-/opt/flint/lib/libprotobuf.so.11.0.0
+/opt/flint/lib/libprotobuf.so.12
+/opt/flint/lib/libprotobuf.so.12.0.0
 /opt/flint/lib/libprotoc.a
 /opt/flint/lib/libprotoc.la
 /opt/flint/lib/libprotoc.so
-/opt/flint/lib/libprotoc.so.11
-/opt/flint/lib/libprotoc.so.11.0.0
+/opt/flint/lib/libprotoc.so.12
+/opt/flint/lib/libprotoc.so.12.0.0
 /opt/flint/lib/pkgconfig/protobuf-lite.pc
 /opt/flint/lib/pkgconfig/protobuf.pc
 
