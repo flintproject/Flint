@@ -197,7 +197,7 @@ $(foreach j,$(JARS),$(eval $(call flint_jar,$(j))))
 
 opt/bin/libODES-0.dll: tmp/SBML_odeSolver-$(SOSLIB_VERSION).installed
 
-opt/bin/libprotobuf-11.dll: tmp/protobuf-$(PROTOBUF_VERSION).installed
+opt/bin/libprotobuf-$(PROTOBUF_CURRENT).dll: tmp/protobuf-$(PROTOBUF_VERSION).installed
 
 opt/bin/libsedml-0.dll: tmp/clibsedml-$(CLIBSEDML_COMMIT).installed
 
@@ -245,7 +245,7 @@ flint/flint.xml: flint.xml | flint
 	install -p -m 0644 $< $@
 
 flint/flint.wxs: flint.wxs.in | flint
-	m4 -DVERSION=$(VERSION) -DLIBGCC_DLL=$(LIBGCC_DLL) -DLIBSTDCXX_DLL=$(LIBSTDCXX_DLL) -DLIBWINPTHREAD_DLL=$(LIBWINPTHREAD_DLL) $< > $@
+	m4 -DVERSION=$(VERSION) -DLIBGCC_DLL=$(LIBGCC_DLL) -DLIBSTDCXX_DLL=$(LIBSTDCXX_DLL) -DLIBWINPTHREAD_DLL=$(LIBWINPTHREAD_DLL) -DPROTOBUF_CURRENT=$(PROTOBUF_CURRENT)$< > $@
 
 flint/icon.png: ../flint/src/jp/oist/flint/image/icon.png | flint
 	install -p -m 0644 $< $@

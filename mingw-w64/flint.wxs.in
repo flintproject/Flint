@@ -159,7 +159,7 @@
             <File Id='libsedml' Name='libsedml-0.dll' DiskId='1' Source='libsedml-0.dll' />
           </Component>
           <Component Id='protobuf' Guid='233d044c-ff5f-11e4-bcee-2f0a32a0ce0d'>
-            <File Id='libprotobuf' Name='libprotobuf-11.dll' DiskId='1' Source='libprotobuf-11.dll' />
+            <File Id='libprotobuf' Name='libprotobuf-PROTOBUF_CURRENT.dll' DiskId='1' Source='libprotobuf-PROTOBUF_CURRENT.dll' />
           </Component>
           <Component Id='sbml' Guid='e23853ca-ff5e-11e4-a61d-873a99f64190'>
             <File Id='libsbml' Name='libsbml.dll' DiskId='1' Source='libsbml.dll' />

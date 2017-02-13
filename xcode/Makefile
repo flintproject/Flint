@@ -29,7 +29,7 @@ DYLIBS := \
     libsbml.$(LIBSBML_VERSION) \
     libsedml.0 \
     libxml2.2 \
-    libprotobuf.11 \
+    libprotobuf.$(PROTOBUF_CURRENT) \
     libwx_osx_cocoau-3.1.0.0.0 \
     libzip.4
 SUNDIALS_DYLIBS := \

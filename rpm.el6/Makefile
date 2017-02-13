@@ -72,7 +72,7 @@ endef
 
 define flint_spec
 flint-$(1).spec: flint-$(1).spec.in
-	m4 -D$(1)_VERSION=$($(1)_VERSION) -D$(1)_RELEASE=$($(1)_RELEASE) -DGTK_PACKAGE_NAME=$(GTK_PACKAGE_NAME) $$< > $$@
+	m4 -D$(1)_VERSION=$($(1)_VERSION) -D$(1)_RELEASE=$($(1)_RELEASE) -DGTK_PACKAGE_NAME=$(GTK_PACKAGE_NAME) -DPROTOBUF_CURRENT=$(PROTOBUF_CURRENT) $$< > $$@
 endef
 
 define flint_rpmbuild
