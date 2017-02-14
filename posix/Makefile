@@ -145,7 +145,7 @@ tmp/SBML_odeSolver-$(SOSLIB_VERSION).installed: tmp/SBML_odeSolver-$(SOSLIB_VERS
 	$(MAKE) -C var/SBML_odeSolver-$(SOSLIB_VERSION) install
 	touch $@
 
-tmp/zeromq-$(ZEROMQ_VERSION).installed: tmp/zeromq-$(ZEROMQ_VERSION) tmp/zeromq-$(ZEROMQ_VERSION).installed
+tmp/zeromq-$(ZEROMQ_VERSION).installed: tmp/zeromq-$(ZEROMQ_VERSION)
 	(cd var/zeromq-$(ZEROMQ_VERSION) && ./configure --prefix=$(PREFIX)/zeromq-$(ZEROMQ_VERSION) $(ZEROMQ_CONFIGURE_OPTIONS))
 	$(MAKE) -C var/zeromq-$(ZEROMQ_VERSION) all
 	-rm -rf $(PREFIX)/zeromq-$(ZEROMQ_VERSION)
