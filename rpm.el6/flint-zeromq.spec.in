@@ -47,5 +47,7 @@ rm -rf %{buildroot}
 /opt/flint/lib/libzmq.so.ZEROMQ_CURRENT
 /opt/flint/lib/libzmq.so.ZEROMQ_VERSION_INFO
 /opt/flint/lib/pkgconfig/libzmq.pc
+/opt/flint/share/man/man3/zmq*.3
+/opt/flint/share/man/man7/zmq*.7
 
 %changelog
