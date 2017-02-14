@@ -196,7 +196,7 @@ $(eval $(call flint_setup_dir,clibsedml,clibsedml-$(CLIBSEDML_COMMIT)))
 
 $(eval $(call flint_expand_tar_gz,czmq-$(CZMQ_VERSION),czmq-$(CZMQ_VERSION)))
 
-$(eval $(call flint_setup_dir,czmq-$(CZMQ_VERSION),czmq-$(CZMQ_VERSION)))
+$(eval $(call flint_setup_dir,czmq,czmq-$(CZMQ_VERSION)))
 
 $(eval $(call flint_expand_tar_gz,sundials-$(SUNDIALS_VERSION),sundials-$(SUNDIALS_VERSION)))
 
@@ -224,6 +224,6 @@ $(eval $(call flint_setup_dir,wxwidgets,wxWidgets-$(WXWIDGETS_VERSION)))
 
 $(eval $(call flint_expand_tar_gz,zeromq-$(ZEROMQ_VERSION),zeromq-$(ZEROMQ_VERSION)))
 
-$(eval $(call flint_setup_dir,zeromq-$(ZEROMQ_VERSION),zeromq-$(ZEROMQ_VERSION)))
+$(eval $(call flint_setup_dir,zeromq,zeromq-$(ZEROMQ_VERSION)))
 
 .DEFAULT_GOAL := all
