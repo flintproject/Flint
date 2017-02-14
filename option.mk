@@ -46,6 +46,7 @@ LIBXML2_CONFIGURE_OPTIONS = \
 	--without-debug \
 	--without-ftp \
 	--without-http \
+	--without-lzma \
 	--without-python \
 	--without-threads
 
