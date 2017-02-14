@@ -5,7 +5,7 @@ CLIBSEDML_COMMIT = d8596b56
 BOOST_VERSION = 1.63.0
 CZMQ_VERSION = 4.0.2
 LIBSBML_VERSION = 5.13.0
-LIBXML2_VERSION = 2.7.8
+LIBXML2_VERSION = 2.9.4
 LIBZIP_VERSION = 1.1.1
 PROTOBUF_VERSION = 3.2.0
 SOSLIB_VERSION = 1.9.0
@@ -28,7 +28,7 @@ EXTERNAL_LIBRARIES = \
 	clibsedml-$(CLIBSEDML_COMMIT).tar.gz \
 	czmq-$(CZMQ_VERSION).tar.gz \
 	libSBML-$(LIBSBML_VERSION)-core-src.zip \
-	libxml2-sources-$(LIBXML2_VERSION).tar.gz \
+	libxml2-$(LIBXML2_VERSION).tar.gz \
 	libzip-$(LIBZIP_VERSION).tar.gz \
 	protobuf-java-$(PROTOBUF_VERSION).tar.gz \
 	SBML_odeSolver-$(SOSLIB_VERSION).tar.gz \
@@ -104,7 +104,7 @@ $(eval $(call external_library_source,http://downloads.sourceforge.net/project/b
 $(eval $(call external_library_source,$(DEPOSIT_URL),clibsedml-$(CLIBSEDML_COMMIT).tar.gz,d780b4f02d5272e3c0b2d4610e6d6c3f))
 $(eval $(call external_library_source,https://github.com/zeromq/czmq/releases/download/v$(CZMQ_VERSION),czmq-$(CZMQ_VERSION).tar.gz,b27cb5a23c472949b1e37765e404dc98))
 $(eval $(call external_library_source,http://downloads.sourceforge.net/project/sbml/libsbml/$(LIBSBML_VERSION)/stable,libSBML-$(LIBSBML_VERSION)-core-src.zip,6581723e894eee8058b95fa80df7aad4))
-$(eval $(call external_library_source,http://xmlsoft.org/sources,libxml2-sources-$(LIBXML2_VERSION).tar.gz,a78857dd73a8784776d7f9625ccf7a39))
+$(eval $(call external_library_source,ftp://xmlsoft.org/libxml2,libxml2-$(LIBXML2_VERSION).tar.gz,ae249165c173b1ff386ee8ad676815f5))
 $(eval $(call external_library_source,http://www.nih.at/libzip,libzip-$(LIBZIP_VERSION).tar.gz,133aefc4c7e45a1b7d168a617e289ef6))
 $(eval $(call external_library_source,https://github.com/google/protobuf/releases/download/v$(PROTOBUF_VERSION),protobuf-java-$(PROTOBUF_VERSION).tar.gz,74da013866efbb8850ceca981917c63a))
 $(eval $(call external_library_source3,https://github.com/raim/SBML_odeSolver/archive/$(SOSLIB_VERSION).tar.gz,SBML_odeSolver-$(SOSLIB_VERSION).tar.gz,a2223179576e33eff110065d4481e306))

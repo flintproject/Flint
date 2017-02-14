@@ -164,7 +164,7 @@ tmp/libsbml-$(LIBSBML_VERSION): src/libSBML-$(LIBSBML_VERSION)-core-src.zip libs
 	patch var/libsbml-$(LIBSBML_VERSION)/Makefile.in libsbml-$(LIBSBML_VERSION).patch
 	touch $@
 
-tmp/libxml2-$(LIBXML2_VERSION): src/libxml2-sources-$(LIBXML2_VERSION).tar.gz | tmp
+tmp/libxml2-$(LIBXML2_VERSION): src/libxml2-$(LIBXML2_VERSION).tar.gz | tmp
 	-rm -rf var/libxml2-$(LIBXML2_VERSION)
 	tar -C var -zxf $<
 	touch $@
