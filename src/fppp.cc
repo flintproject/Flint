@@ -27,13 +27,21 @@ Publisher::Publisher(void *ctx, const char *hostname)
 	assert(sock_);
 	std::sprintf(endpoint_, "tcp://%s:*", hostname);
 	int r = zmq_bind(sock_, endpoint_);
-	if (r == 0) {
-		size_t len;
-		zmq_getsockopt(sock_, ZMQ_LAST_ENDPOINT, &endpoint_, &len);
-		std::cerr << "endpoint: " << endpoint_ << std::endl;
-	} else {
-		std::cerr << "failed to bind socket: " << zmq_strerror(errno) << std::endl;
+	if (r != 0) {
+		std::cerr << "failed to bind socket: "
+				  << zmq_strerror(errno)
+				  << std::endl;
+		return;
 	}
+	size_t len = 64;
+	r = zmq_getsockopt(sock_, ZMQ_LAST_ENDPOINT, &endpoint_, &len);
+	if (r != 0) {
+		std::cerr << "failed to get last endpoint: "
+				  << zmq_strerror(errno)
+				  << std::endl;
+		return;
+	}
+	std::cerr << "endpoint: " << endpoint_ << std::endl;
 }
 
 Publisher::~Publisher()
