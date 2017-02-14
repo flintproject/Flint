@@ -192,66 +192,64 @@ struct Grammar : qi::grammar<TIterator, Compound()> {
 		using boost::phoenix::push_back;
 		using boost::phoenix::val;
 
-		statement = equation | conditional;
+		statement = '(' >> bare_statement >> ')';
 
-		equation = '(' >> td.eq_ [at_c<0>(_val) = _1]
-					   >> ' ' >> expr [push_back(at_c<1>(_val), _1)]
-					   >> ' ' >> expr [push_back(at_c<1>(_val), _1)]
-					   >> ')';
+		bare_statement = equation | conditional;
 
-		conditional = '(' >> td.case_set_
-						  >> cseq
-						  >> ')';
+		equation = td.eq_ [at_c<0>(_val) = _1]
+			>> ' ' >> expr [push_back(at_c<1>(_val), _1)]
+			>> ' ' >> expr [push_back(at_c<1>(_val), _1)];
 
-		cseq = +(' ' >> cexp [push_back(_val, _1)]);
+		conditional = td.case_set_ >> cseq;
 
-		cexp = ('(' >> td.case_ [at_c<0>(_val) = _1]
-				>> ' ' >> '(' >> td.condition_
-				>> ' ' >> expr [push_back(at_c<1>(_val), _1)]
-				>> ')'
-				>> ' '
-				>> statement [push_back(at_c<1>(_val), _1)]
-				>> ')')
-			| ('(' >> td.case_ [at_c<0>(_val) = _1]
-			   >> ' '
-			   >> statement [push_back(at_c<1>(_val), _1)]
-			   >> ')');
+		cseq = +(' ' >> celem);
 
-		expr = delay_expr
-			| delta_time_expr
-			| eq_expr
-			| general_expr
+		celem = '(' >> cexp >> ')';
+
+		cexp = conditioned_case | unconditioned_case;
+
+		conditioned_case = td.case_ [at_c<0>(_val) = _1]
+			>> ' ' >> '(' >> td.condition_
+			>> ' ' >> expr [push_back(at_c<1>(_val), _1)]
+			>> ')'
+			>> ' '
+			>> statement [push_back(at_c<1>(_val), _1)];
+
+		unconditioned_case = td.case_ [at_c<0>(_val) = _1]
+			>> ' '
+			>> statement [push_back(at_c<1>(_val), _1)];
+
+		expr = comp_expr
 			| td.real
 			| td.integer
 			| td.id
 			| td.keyword;
 
-		delay_expr = '(' >> td.delay_ [at_c<0>(_val) = val("$lookback")]
-						 >> ' ' >> expr [push_back(at_c<1>(_val), _1)]
-						 >> ' ' >> expr [bind(&RewriteDelayParam, _val, _1)]
-						 >> ')';
+		comp_expr = '(' >> bare_expr >> ')';
 
-		delta_time_expr = '(' >> td.delta_time_
-							  >> ' ' >> td.id [bind(&RewriteDeltaTime, _val, _1)]
-							  >> ')';
+		bare_expr = delay_expr | delta_time_expr | eq_expr | general_expr;
 
-		eq_expr = '(' >> td.eq_
-					  >> seq1
-					  >> ')';
+		delay_expr = td.delay_ [at_c<0>(_val) = val("$lookback")]
+			>> ' ' >> expr [push_back(at_c<1>(_val), _1)]
+			>> ' ' >> expr [bind(&RewriteDelayParam, _val, _1)];
 
-		general_expr = '(' >> td.keyword
-						   >> seq0
-						   >> ')';
+		delta_time_expr = td.delta_time_ >> ' ' >> td.id [bind(&RewriteDeltaTime, _val, _1)];
+
+		eq_expr = td.eq_ >> seq1;
+
+		general_expr = td.keyword >> seq0;
 
 		seq0 = *rest;
 
 		seq1 = +rest;
 
-		rest = ' ' >> expr [_val = _1];
+		rest = ' ' >> expr;
 	}
 
 	qi::rule<TIterator, Expr()> expr, rest;
-	qi::rule<TIterator, Compound()> statement, equation, conditional, cexp, delay_expr, delta_time_expr, eq_expr, general_expr;
+	qi::rule<TIterator, Compound()> statement, bare_statement, equation,
+		conditional, celem, cexp, conditioned_case, unconditioned_case,
+		comp_expr, bare_expr, delay_expr, delta_time_expr, eq_expr, general_expr;
 	qi::rule<TIterator, std::deque<Expr>()> cseq, seq0, seq1;
 };
 

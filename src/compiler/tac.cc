@@ -223,54 +223,111 @@ struct Grammar : qi::grammar<TIterator, cas::Expr()> {
 			| td.keyword
 			| '(' >> compound >> ')';
 
-		compound = td.log_ [at_c<0>(_val) = _1] >> ' '
-												>> '(' >> td.logbase_ >> ' ' >> expr [push_back(at_c<1>(_val), _1)] >> ')'
-												>> ' ' >> expr [push_back(at_c<1>(_val), _1)]
-			| td.log_ [at_c<0>(_val) = val("log10")] >> ' ' >> expr [push_back(at_c<1>(_val), _1)]
-			| td.piecewise_ [at_c<0>(_val) = _1] >> pseq1 [at_c<1>(_val) = _1]
-			| td.max_ [at_c<0>(_val) = _1] >> seq1 [bind(&ReduceR, _val, _1)]
-			| td.mean_ >> seq1 [bind(&Mean, _val, _1)]
-			| td.min_ [at_c<0>(_val) = _1] >> seq1 [bind(&ReduceR, _val, _1)]
-			| td.plus_ [at_c<0>(_val) = _1] >> seq1 [bind(&ReduceR, _val, _1)]
-			| td.times_ [at_c<0>(_val) = _1] >> seq1 [bind(&ReduceR, _val, _1)]
-			| td.uniform_variate_ [at_c<0>(_val) = _1]
+		compound = log_compound
+			| log10_compound
+			| piecewise_compound
+			| max_compound
+			| mean_compound
+			| min_compound
+			| plus_compound
+			| times_compound
+			| uv_compound
+			| other_compound;
+
+		log_compound = td.log_ [at_c<0>(_val) = _1] >> ' '
+													>> '(' >> td.logbase_ >> ' ' >> expr [push_back(at_c<1>(_val), _1)] >> ')'
+													>> ' ' >> expr [push_back(at_c<1>(_val), _1)];
+
+		log10_compound = td.log_ [at_c<0>(_val) = val("log10")] >> ' ' >> expr [push_back(at_c<1>(_val), _1)];
+
+		piecewise_compound = td.piecewise_ [at_c<0>(_val) = _1] >> pseq1 [at_c<1>(_val) = _1];
+
+		max_compound = td.max_ [at_c<0>(_val) = _1] >> seq1 [bind(&ReduceR, _val, _1)];
+
+		mean_compound = td.mean_ >> seq1 [bind(&Mean, _val, _1)];
+
+		min_compound = td.min_ [at_c<0>(_val) = _1] >> seq1 [bind(&ReduceR, _val, _1)];
+
+		plus_compound = td.plus_ [at_c<0>(_val) = _1] >> seq1 [bind(&ReduceR, _val, _1)];
+
+		times_compound = td.times_ [at_c<0>(_val) = _1] >> seq1 [bind(&ReduceR, _val, _1)];
+
+		uv_compound = td.uniform_variate_ [at_c<0>(_val) = _1]
 						   >> ' ' >> expr [push_back(at_c<1>(_val), _1)]
 						   >> ' ' >> expr [push_back(at_c<1>(_val), _1)]
 						   >> ' ' >> expr
-						   >> ' ' >> expr
-			| td.keyword [at_c<0>(_val) = _1] >> seq0 [at_c<1>(_val) = _1];
+						   >> ' ' >> expr;
+
+		other_compound = td.keyword >> seq0;
 
 		pseq1 = +prest;
 
-		prest = ' ' >> pexp [_val = _1];
+		prest = ' ' >> pexp;
 
-		pexp = '(' >> pcomp [_val = _1] >> ')';
+		pexp = '(' >> pcomp >> ')';
 
-		pcomp = td.piece_ [at_c<0>(_val) = _1] >> ' ' >> expr [push_back(at_c<1>(_val), _1)] >> ' ' >> lexp [push_back(at_c<1>(_val), _1)]
-			| td.otherwise_ [at_c<0>(_val) = _1] >> ' ' >> expr [push_back(at_c<1>(_val), _1)];
+		pcomp = piece_compound | otherwise_compound;
 
-		lexp = '(' >> lcomp [_val = _1] >> ')';
+		piece_compound = td.piece_ [at_c<0>(_val) = _1] >> ' ' >> expr [push_back(at_c<1>(_val), _1)] >> ' ' >> lexp [push_back(at_c<1>(_val), _1)];
 
-		lcomp = td.and_ [at_c<0>(_val) = _1] >> lseq1 [bind(&ReduceL, _val, _1)]
-			| td.or_ [at_c<0>(_val) = _1] >> lseq1 [bind(&ReduceL, _val, _1)]
-			| td.xor_ [at_c<0>(_val) = val("neq")] >> lseq1 [bind(&ReduceL, _val, _1)] // logical XOR can be considered as NEQ
-			| td.not_ >> ' ' >> lexp [bind(&Negate, _val, _1)]
-			| (td.eq_ | td.geq_ | td.gt_ | td.leq_ | td.lt_ | td.neq_) [at_c<0>(_val) = _1] >> ' ' >> expr [push_back(at_c<1>(_val), _1)] >> ' ' >> expr [push_back(at_c<1>(_val), _1)];
+		otherwise_compound = td.otherwise_ [at_c<0>(_val) = _1] >> ' ' >> expr [push_back(at_c<1>(_val), _1)];
+
+		lexp = '(' >> lcomp >> ')';
+
+		lcomp = and_compound
+			| or_compound
+			| xor_compound
+			| not_compound
+			| rel_compound;
+
+		and_compound = td.and_ [at_c<0>(_val) = _1] >> lseq1 [bind(&ReduceL, _val, _1)];
+
+		or_compound = td.or_ [at_c<0>(_val) = _1] >> lseq1 [bind(&ReduceL, _val, _1)];
+
+		xor_compound = td.xor_ [at_c<0>(_val) = val("neq")] >> lseq1 [bind(&ReduceL, _val, _1)]; // logical XOR can be considered as NEQ
+
+		not_compound = td.not_ >> ' ' >> lexp [bind(&Negate, _val, _1)];
+
+		rel_compound = eq_compound
+			| geq_compound
+			| gt_compound
+			| leq_compound
+			| lt_compound
+			| neq_compound;
+
+		eq_compound = td.eq_ >> twin;
+
+		geq_compound = td.geq_ >> twin;
+
+		gt_compound = td.gt_ >> twin;
+
+		leq_compound = td.leq_ >> twin;
+
+		lt_compound = td.lt_ >> twin;
+
+		neq_compound = td.neq_ >> twin;
+
+		twin = ' ' >> expr >> ' ' >> expr;
 
 		lseq1 = +lrest;
 
-		lrest = ' ' >> lexp [_val = _1];
+		lrest = ' ' >> lexp;
 
 		seq0 = *rest;
 
 		seq1 = +rest;
 
-		rest = ' ' >> expr [_val = _1];
+		rest = ' ' >> expr;
 	}
 
 	qi::rule<TIterator, cas::Expr()> expr, pexp, lexp, rest, prest, lrest;
-	qi::rule<TIterator, cas::Compound()> compound, pcomp, lcomp;
-	qi::rule<TIterator, std::deque<cas::Expr>()> seq0, seq1, pseq1, lseq1;
+	qi::rule<TIterator, cas::Compound()> compound, pcomp, lcomp,
+		log_compound, log10_compound, piecewise_compound, max_compound, mean_compound,
+		min_compound, plus_compound, times_compound, uv_compound, other_compound,
+		piece_compound, otherwise_compound, and_compound, or_compound, xor_compound,
+		not_compound, rel_compound, eq_compound, geq_compound, gt_compound,
+		leq_compound, lt_compound, neq_compound;
+	qi::rule<TIterator, std::deque<cas::Expr>()> seq0, seq1, pseq1, lseq1, twin;
 };
 
 /*
