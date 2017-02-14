@@ -94,10 +94,12 @@ rm -rf %{buildroot}
 /opt/flint/lib/libflint.so
 /opt/flint/lib/libflint.so.0
 /opt/flint/lib/libflint.so.0.0.0
+/opt/flint/lib/libflint2.a
 /opt/flint/lib/libflintxx.la
 /opt/flint/lib/libflintxx.so
 /opt/flint/lib/libflintxx.so.0
 /opt/flint/lib/libflintxx.so.0.0.0
+/opt/flint/lib/libfppp.a
 /opt/flint/lib/libsqlite3.la
 /opt/flint/lib/libsqlite3.so
 /opt/flint/lib/libsqlite3.so.0
