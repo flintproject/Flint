@@ -19,6 +19,7 @@
 #include <zmq.h>
 
 #include "fppp.h"
+#include "fppp/utility.h"
 #include "isdf/reader.h"
 
 namespace {
@@ -71,16 +72,14 @@ struct Handler
 
 void Usage()
 {
-	std::cerr << "usage: fppp-isd FILE" << std::endl;
+	std::cerr << "usage: fppp-isd FILE HOST IN [...]" << std::endl;
 }
 
 }
 
 int main(int argc, char *argv[])
 {
-	int status = EXIT_FAILURE;
-
-	if (argc < 2) {
+	if (argc < 4) {
 		Usage();
 		return EXIT_FAILURE;
 	}
@@ -99,23 +98,31 @@ int main(int argc, char *argv[])
 		return EXIT_FAILURE;
 	if (!reader.ReadUnits(&ifs))
 		return EXIT_FAILURE;
+
 	void *ctx = zmq_ctx_new();
-	assert(ctx);
-	if (!flint::fppp::ShakeHands(ctx, handler.kdv, &handler.pub, &handler.sub))
-		goto bail;
+	flint::fppp::ContextGuard g(ctx);
+	// FIXME
+	std::set<flint::fppp::KeyData> in;
+	boost::uuids::string_generator gen;
+	for (int i=3;i<argc;i++) {
+		flint::fppp::KeyData kd;
+		kd.uuid = gen(std::string(argv[i], 36));
+		kd.name = std::string(argv[i]+37);
+		in.insert(kd);
+	}
+	zactor_t *peer = flint::fppp::ShakeHands(ctx, argv[2], in, handler.kdv, &handler.pub, &handler.sub);
+	if (!peer)
+		return EXIT_FAILURE;
 	assert(handler.pub && handler.sub);
 	{
 		std::thread th([&handler]{(*handler.sub)(&Print);});
 		th.detach();
 		handler.t = zclock_mono();
 		if (!reader.ReadSteps(handler, &ifs))
-			goto bail;
+			return EXIT_FAILURE;
 		delete handler.pub;
 		ifs.close();
-		status = EXIT_SUCCESS;
 	}
- bail:
-	zmq_ctx_shutdown(ctx);
-	zmq_ctx_term(ctx);
-	return status;
+	zactor_destroy(&peer);
+	return EXIT_SUCCESS;
 }

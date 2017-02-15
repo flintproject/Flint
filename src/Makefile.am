@@ -53,6 +53,7 @@ bin_PROGRAMS = \
 noinst_PROGRAMS = \
 	fppp-isd \
 	fppp-rtm \
+	fppp-sup \
 	test-exec \
 	test-run
 
@@ -344,6 +345,10 @@ fppp_isd_SOURCES = fppp/isd/main.cc
 fppp_rtm_CPPFLAGS = $(BOOST_CPPFLAGS) $(CZMQ_CFLAGS) $(ZEROMQ_CFLAGS)
 fppp_rtm_LDADD = libfppp.a libflintxx.la libflint.la libsqlite3.la $(CZMQ_LIBS) $(ZEROMQ_LIBS)
 fppp_rtm_SOURCES = fppp/rtm/main.cc
+
+fppp_sup_CPPFLAGS = $(BOOST_CPPFLAGS) $(CZMQ_CFLAGS) $(ZEROMQ_CFLAGS)
+fppp_sup_LDADD = libfppp.a libflintxx.la libflint.la libsqlite3.la $(CZMQ_LIBS) $(ZEROMQ_LIBS)
+fppp_sup_SOURCES = fppp/sup/main.cc
 
 test_exec_CPPFLAGS = $(PROTOBUF_CFLAGS) $(BOOST_CPPFLAGS)
 test_exec_LDADD = libflintxx.la libflint.la libsqlite3.la $(PROTOBUF_LIBS)

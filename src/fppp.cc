@@ -14,12 +14,22 @@
 #include <memory>
 #include <unordered_set>
 
+#include <boost/uuid/string_generator.hpp>
 #include <boost/uuid/uuid_io.hpp>
 #include <czmq.h>
 #include <zmq.h>
 
 namespace flint {
 namespace fppp {
+
+bool KeyData::operator<(const KeyData &other) const
+{
+	if (uuid < other.uuid)
+		return true;
+	if (uuid == other.uuid)
+		return name < other.name;
+	return false;
+}
 
 Publisher::Publisher(void *ctx, const char *hostname)
 	: sock_(zmq_socket(ctx, ZMQ_PUB))
@@ -61,15 +71,30 @@ void Publisher::operator()(boost::uuids::uuid uuid, std::string name, const char
 }
 
 
-Subscriber::Subscriber(void *ctx, const char *endpoint)
+Subscriber::Subscriber(void *ctx,
+					   const std::unordered_set<std::string> &endpoints,
+					   const std::set<KeyData> &v)
 	: sock_(zmq_socket(ctx, ZMQ_SUB))
 {
+	const size_t kPrefixSize = 48;
 	assert(sock_);
-	int r = zmq_setsockopt(sock_, ZMQ_SUBSCRIBE, "", 0);
-	assert(r == 0);
-	r = zmq_connect(sock_, endpoint);
-	if (r != 0)
-		std::cerr << "failed to connect socket: " << zmq_strerror(errno) << std::endl;
+	char prefix[kPrefixSize];
+	for (auto &kd : v) {
+		std::memset(prefix, 0, sizeof(prefix));
+		std::memcpy(prefix, &kd.uuid, 16);
+		std::memcpy(prefix+16, kd.name.c_str(), kd.name.size());
+		int r = zmq_setsockopt(sock_, ZMQ_SUBSCRIBE, prefix, kPrefixSize);
+		assert(r == 0);
+	}
+	for (auto &ep : endpoints) {
+		int r = zmq_connect(sock_, ep.c_str());
+		if (r != 0) {
+			std::cerr << "failed to connect socket: "
+					  << zmq_strerror(errno)
+					  << std::endl;
+			break;
+		}
+	}
 }
 
 
@@ -94,116 +119,81 @@ void Subscriber::operator()(void (*f)(boost::uuids::uuid uuid, std::string name,
 	}
 }
 
-bool ShakeHands(void *ctx,
-				std::vector<KeyData> kdv,
-				Publisher **pub,
-				Subscriber **sub)
+zactor_t *ShakeHands(void *ctx,
+					 const char *host,
+					 std::set<KeyData> &in,
+					 const std::vector<KeyData> &out,
+					 Publisher **pub,
+					 Subscriber **sub)
 {
+	const size_t kLength = 128;
+
 	assert(ctx);
 
-	zactor_t *beacon = zactor_new(zbeacon, nullptr);
-	assert(beacon);
-	//zstr_send(beacon, "VERBOSE");
-	zsock_send(beacon, "si", "CONFIGURE", 5670);
-	char *hostname = zstr_recv(beacon);
-	if (!*hostname) {
-		std::cerr << "failed to configure beacon" << std::endl;
-		zstr_free(&hostname);
-		zactor_destroy(&beacon);
-		return false;
+	// get available address
+	char address[64];
+	auto *iflist = ziflist_new();
+	assert(iflist);
+	const char *name = ziflist_first(iflist);
+	if (!name) {
+		std::cerr << "failed to get interface name" << std::endl;
+		ziflist_destroy(&iflist);
+		return nullptr;
+	}
+	std::sprintf(address, "%s", ziflist_address(iflist));
+	ziflist_destroy(&iflist);
+
+	std::unique_ptr<Publisher> p(new Publisher(ctx, address));
+
+	// register output
+	zactor_t *peer = zactor_new(zgossip, p->endpoint());
+	assert(peer);
+	char endpoint[kLength];
+	std::sprintf(endpoint, "tcp://%s:20010", host);
+	zstr_sendx(peer, "CONNECT", endpoint, nullptr);
+	std::cerr << "the number of out: " << out.size() << std::endl;
+	for (const auto &kd : out) {
+		char key[256];
+		std::sprintf(key, "%s:%s", boost::uuids::to_string(kd.uuid).c_str(), kd.name.c_str());
+		zstr_sendx(peer, "PUBLISH", key, p->endpoint(), nullptr);
 	}
 
-	std::unique_ptr<Publisher> p(new Publisher(ctx, hostname));
-
-	int n = std::rand();
-	char peer_name[16];
-	std::sprintf(peer_name, "fppp%d", n);
-	std::cerr << "peer_name: " << peer_name << std::endl;
-	zactor_t *peer = zactor_new(zgossip, peer_name);
-	assert(peer);
-	//zstr_send(peer, "VERBOSE");
-	char endpoint[64];
-	std::sprintf(endpoint, "tcp://%s:*", hostname);
-	zstr_free(&hostname);
-	zstr_sendx(peer, "BIND", endpoint, nullptr);
-	zstr_sendx(peer, "PORT", nullptr);
-	char *command, *port_str;
-	zstr_recvx(peer, &command, &port_str, nullptr);
-	assert(std::strcmp(command, "PORT") == 0);
-	zstr_free(&command);
-
-	zsock_send(beacon, "sbi", "PUBLISH", port_str, std::strlen(port_str), 250);
-	zsock_send(beacon, "sb", "SUBSCRIBE", "", 0);
-
-	char *received;
-	// Poll on three API sockets at once
-	zpoller_t *poller = zpoller_new(beacon, nullptr);
+	std::unordered_set<std::string> endpoints;
+	std::set<KeyData> data;
+	zpoller_t *poller = zpoller_new(peer, nullptr);
 	assert(poller);
-	std::int64_t stop_at = zclock_mono() + 100000;
-	while (zclock_mono() < stop_at) {
-		long timeout = static_cast<long>(stop_at - zclock_mono());
-		if (timeout < 0)
-			timeout = 0;
-		void *which = zpoller_wait(poller, timeout * ZMQ_POLL_MSEC);
-		if (which) {
-			assert(which == beacon);
-			char *ipaddress;
-			zstr_recvx(beacon, &ipaddress, &received, nullptr);
-			std::cerr << "ipaddress: " << ipaddress << std::endl;
-			std::cerr << "received: " << received << std::endl;
-
-			std::sprintf(endpoint, "tcp://%s:%s", ipaddress, received);
-			zstr_free(&ipaddress);
-			zstr_free(&received);
-			break;
+	boost::uuids::string_generator gen;
+	// poll until all of input become registered
+	while (!in.empty()) {
+		void *which = zpoller_wait(poller, -1); // no timeout
+		if (!which) {
+			zpoller_destroy(&poller);
+			zactor_destroy(&peer);
+			return nullptr;
 		}
+		assert(which == peer);
+		char *command, *key, *value;
+		zstr_recvx(peer, &command, &key, &value, nullptr);
+		if (std::strcmp(command, "DELIVER") == 0) {
+			KeyData kd;
+			kd.uuid = gen(std::string(key, 36));
+			kd.name = std::string(key+37);
+			auto it = in.find(kd);
+			if (it != in.end()) {
+				data.insert(kd);
+				endpoints.emplace(value);
+				in.erase(it);
+			}
+		}
+		zstr_free(&command);
+		zstr_free(&key);
+		zstr_free(&value);
 	}
 	zpoller_destroy(&poller);
 
-	zactor_t *speaker = zactor_new(zgossip, received);
-	assert(speaker);
-	//zstr_send(speaker, "VERBOSE");
-	zstr_sendx(speaker, "CONNECT", endpoint, nullptr);
-
-	std::cerr << "count: " << kdv.size() << std::endl;
-	for (const auto &kd : kdv) {
-		char key[256];
-		std::sprintf(key, "%s:%s", boost::uuids::to_string(kd.uuid).c_str(), kd.name.c_str());
-		zstr_sendx(speaker, "PUBLISH", key, p->endpoint(), nullptr);
-	}
-
-	zclock_sleep(1000);
-	zstr_sendx(beacon, "SILENCE", nullptr); // stop broadcasting
-	zactor_destroy(&beacon);
-
-	zstr_sendx(peer, "STATUS", nullptr);
-	std::unordered_set<std::string> endpoints;
-	for (;;) {
-		char *x, *y;
-		zstr_recvx(peer, &command, &x, &y, nullptr);
-		if (std::strcmp(command, "STATUS") == 0) {
-			std::cerr << "status: " << x << std::endl;
-			break;
-		} else if (std::strcmp(command, "DELIVER") == 0) {
-			std::cerr << "deliver: " << y << std::endl;
-			endpoints.emplace(y);
-		}
-		zstr_free(&command);
-		zstr_free(&x);
-		zstr_free(&y);
-	}
-
-	zactor_destroy(&speaker);
-	zactor_destroy(&peer);
-
 	*pub = p.release();
-	if (sub) {
-		if (endpoints.empty())
-			*sub = nullptr;
-		else
-			*sub = new Subscriber(ctx, endpoints.begin()->c_str());
-	}
-	return true;
+	*sub = (endpoints.empty()) ? nullptr : new Subscriber(ctx, endpoints, data);
+	return peer;
 }
 
 }
