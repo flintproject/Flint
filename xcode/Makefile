@@ -325,9 +325,11 @@ $(APP)/Contents/Resources/third-party-licenses.txt: tmp/libsbml-$(LIBSBML_VERSIO
 	echo ';; SUNDIALS $(SUNDIALS_VERSION)' >> $@
 	echo >> $@
 	cat var/sundials-$(SUNDIALS_VERSION)/LICENSE >> $@
+	echo >> $@
 	echo ';; wxWidgets $(WXWIDGETS_VERSION)' >> $@
 	echo >> $@
 	cat var/wxWidgets-$(WXWIDGETS_VERSION)/docs/licence.txt >> $@
+	echo >> $@
 	echo ';; ZeroMQ $(ZEROMQ_VERSION)' >> $@
 	echo >> $@
 	cat var/zeromq-$(ZEROMQ_VERSION)/COPYING.LESSER >> $@

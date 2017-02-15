@@ -314,6 +314,7 @@ flint/third-party-licenses.txt: tmp/libsbml-$(LIBSBML_VERSION) tmp/libxml2-$(LIB
 	echo ';; SUNDIALS $(SUNDIALS_VERSION)' >> $@
 	echo >> $@
 	cat var/sundials-$(SUNDIALS_VERSION)/LICENSE >> $@
+	echo >> $@
 	echo ';; wxWidgets $(WXWIDGETS_VERSION)' >> $@
 	echo >> $@
 	cat var/wxWidgets-$(WXWIDGETS_VERSION)/docs/licence.txt >> $@
