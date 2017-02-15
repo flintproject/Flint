@@ -48,7 +48,8 @@ LIBXML2_CONFIGURE_OPTIONS = \
 	--without-http \
 	--without-lzma \
 	--without-python \
-	--without-threads
+	--without-threads \
+	--without-zlib
 
 LIBZIP_CONFIGURE_OPTIONS = --enable-silent-rules --disable-static
 
