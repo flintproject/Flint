@@ -3,6 +3,10 @@
 include ../deposit.mk
 include ../option.mk
 
+UNNECESSARY_LIBRARIES = libxml2-% zlib-%
+EXTERNAL_LIBRARIES = $(filter-out $(UNNECESSARY_LIBRARIES),$(ALL_EXTERNAL_LIBRARIES))
+EXTERNAL_LIBRARY_DIRS = $(filter-out $(UNNECESSARY_LIBRARIES),$(ALL_EXTERNAL_LIBRARY_DIRS))
+
 PREFIX ?= $(abspath opt)
 
 PKG_CONFIG_PATH = $(PREFIX)/clibsedml-$(CLIBSEDML_COMMIT)/lib/pkgconfig:$(PREFIX)/czmq-$(CZMQ_VERSION)/lib/pkgconfig:$(PREFIX)/libsbml-$(LIBSBML_VERSION)/lib/pkgconfig:$(PREFIX)/libzip-$(LIBZIP_VERSION)/lib/pkgconfig:$(PREFIX)/protobuf-$(PROTOBUF_VERSION)/lib/pkgconfig:$(PREFIX)/SBML_odeSolver-$(SOSLIB_VERSION)/lib/pkgconfig:$(PREFIX)/zeromq-$(ZEROMQ_VERSION)/lib/pkgconfig

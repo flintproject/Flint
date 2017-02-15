@@ -4,6 +4,10 @@ include ../deposit.mk
 include ../option.mk
 include ../version.mk
 
+UNNECESSARY_LIBRARIES = zlib-%
+EXTERNAL_LIBRARIES = $(filter-out $(UNNECESSARY_LIBRARIES),$(ALL_EXTERNAL_LIBRARIES))
+EXTERNAL_LIBRARY_DIRS = $(filter-out $(UNNECESSARY_LIBRARIES),$(ALL_EXTERNAL_LIBRARY_DIRS))
+
 PREFIX = $(abspath usr)
 
 PKG_CONFIG_PATH = $(PREFIX)/lib/pkgconfig
