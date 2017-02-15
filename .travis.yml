@@ -12,12 +12,12 @@ addons:
   apt:
     sources:
     - ubuntu-toolchain-r-test
-    - llvm-toolchain-precise-3.7
+    - llvm-toolchain-precise-3.8
     packages:
     - libtool
     - gcc-4.9
     - g++-4.9
-    - clang-3.7
+    - clang-3.8
     - libgtk2.0-dev
     - libxml2-dev
     - uuid-dev
@@ -29,7 +29,7 @@ before_install:
 
 install:
   - if [ "$TRAVIS_OS_NAME" = linux -a "$CXX" = "g++" ]; then export CC="gcc-4.9" CXX="g++-4.9" CFLAGS="-g0 -O0" CXXFLAGS="-g0 -O0"; fi
-  - if [ "$TRAVIS_OS_NAME" = linux -a "$CXX" = "clang++" ]; then export CC="clang-3.7" CXX="clang++-3.7" CFLAGS="-g0 -O0" CXXFLAGS="-g0 -O0"; fi
+  - if [ "$TRAVIS_OS_NAME" = linux -a "$CXX" = "clang++" ]; then export CC="clang-3.8" CXX="clang++-3.8" CFLAGS="-g0 -O0" CXXFLAGS="-g0 -O0"; fi
   - if [ "$TRAVIS_OS_NAME" = linux ]; then cd posix; else cd xcode; fi
   - if [ "$TRAVIS_OS_NAME" = osx ]; then echo "PKG_CONFIG = /usr/local/bin/pkg-config" > config.mk; fi
   - make -s
