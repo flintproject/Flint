@@ -39,11 +39,18 @@ SOSLIB_CONFIGURE_OPTIONS = \
 	--without-graphviz \
 	--without-xerces
 
-LIBSBML_CONFIGURE_OPTIONS = --with-xerces=no
+LIBSBML_CONFIGURE_OPTIONS = \
+	--disable-static \
+	--without-bzip2 \
+	--without-expat \
+	--without-xerces \
+	--without-zlib
 
 LIBXML2_CONFIGURE_OPTIONS = \
 	--disable-static \
 	--without-debug \
+	--without-iconv \
+	--without-icu \
 	--without-ftp \
 	--without-http \
 	--without-lzma \
@@ -53,7 +60,10 @@ LIBXML2_CONFIGURE_OPTIONS = \
 
 LIBZIP_CONFIGURE_OPTIONS = --enable-silent-rules --disable-static
 
-PROTOBUF_CONFIGURE_OPTONS = --enable-silent-rules --disable-static
+PROTOBUF_CONFIGURE_OPTONS = \
+	--enable-silent-rules \
+	--disable-static \
+	--without-zlib
 
 SUNDIALS_CMAKE_OPTIONS = -DBUILD_STATIC_LIBS=OFF -DBUILD_SHARED_LIBS=ON
 
