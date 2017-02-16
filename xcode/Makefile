@@ -93,7 +93,7 @@ $(call flint_frameworks_dylib_name,$(1)): $(PREFIX)/lib/$(1).dylib tmp/bundled
 	install_name_tool -id @executable_path/../Frameworks/$(1).dylib $$@
 	install_name_tool -change $(PREFIX)/lib/libxml2.2.dylib @executable_path/../Frameworks/libxml2.2.dylib $$@
 	install_name_tool -change $(PREFIX)/lib/libsbml.$(LIBSBML_VERSION).dylib @executable_path/../Frameworks/libsbml.$(LIBSBML_VERSION).dylib $$@
-	for name in $(SUNDIALS_DYLIBS); do install_name_tool -change libsundials_$$$$name.dylib @executable_path/../Frameworks/libsundials_$$$$name.dylib $$@; done
+	for name in $(SUNDIALS_DYLIBS); do install_name_tool -change $(PREFIX)/lib/libsundials_$$$$name.dylib @executable_path/../Frameworks/libsundials_$$$$name.dylib $$@; done
 	install_name_tool -change $(PREFIX)/lib/libzmq.$(ZEROMQ_CURRENT).dylib @executable_path/../Frameworks/libzmq.$(ZEROMQ_CURRENT).dylib $$@
 endef
 
@@ -109,7 +109,7 @@ $(call flint_frameworks_dylib_name,$(1)): opt/lib/$(1).dylib tmp/bundled
 	install_name_tool -id @executable_path/../Frameworks/$(1).dylib $$@
 	for name in $(BOOST_DYLIBS); do install_name_tool -change @rpath/libboost_$$$$name-mt.dylib @executable_path/../Frameworks/libboost_$$$$name-mt.dylib $$@; done
 	for name in $(DYLIBS); do install_name_tool -change $(PREFIX)/lib/$$$$name.dylib @executable_path/../Frameworks/$$$$name.dylib $$@; done
-	for name in $(SUNDIALS_DYLIBS); do install_name_tool -change libsundials_$$$$name.dylib @executable_path/../Frameworks/libsundials_$$$$name.dylib $$@; done
+	for name in $(SUNDIALS_DYLIBS); do install_name_tool -change $(PREFIX)/lib/libsundials_$$$$name.dylib @executable_path/../Frameworks/libsundials_$$$$name.dylib $$@; done
 	for name in $(FLINT_DYLIBS); do install_name_tool -change $(CURDIR)/opt/lib/$$$$name.dylib @executable_path/../Frameworks/$$$$name.dylib $$@; done
 endef
 
@@ -118,7 +118,7 @@ $(call flint_macos_program_name,$(1)): opt/bin/$(1) tmp/bundled
 	install -p $$< $$@
 	for name in $(BOOST_DYLIBS); do install_name_tool -change @rpath/libboost_$$$$name-mt.dylib @executable_path/../Frameworks/libboost_$$$$name-mt.dylib $$@; done
 	for name in $(DYLIBS); do install_name_tool -change $(PREFIX)/lib/$$$$name.dylib @executable_path/../Frameworks/$$$$name.dylib $$@; done
-	for name in $(SUNDIALS_DYLIBS); do install_name_tool -change libsundials_$$$$name.dylib @executable_path/../Frameworks/libsundials_$$$$name.dylib $$@; done
+	for name in $(SUNDIALS_DYLIBS); do install_name_tool -change $(PREFIX)/lib/libsundials_$$$$name.dylib @executable_path/../Frameworks/libsundials_$$$$name.dylib $$@; done
 	for name in $(FLINT_DYLIBS); do install_name_tool -change $(CURDIR)/opt/lib/$$$$name.dylib @executable_path/../Frameworks/$$$$name.dylib $$@; done
 endef
 
