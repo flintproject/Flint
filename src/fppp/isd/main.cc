@@ -46,7 +46,7 @@ struct Handler
 		} else {
 			std::memcpy(buf, d, 36);
 			kd.uuid = g(std::string(buf, 36));
-			kd.name = std::string(d[37], num_bytes-37);
+			kd.name = std::string(d+37, num_bytes-37);
 		}
 		kdv.push_back(kd);
 		iv.push_back(i * sizeof(double));
