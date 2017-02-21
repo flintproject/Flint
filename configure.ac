@@ -18,7 +18,7 @@ AC_LANG([C++])
 AC_PROG_CC
 : ${WARNINGCFLAGS=""}
 AS_IF([test "$GCC" = yes],
-      [WARNINGCFLAGS="-Wall -Wextra -Wcast-align -Wcast-qual -Wpointer-arith -Wmissing-prototypes -Wstrict-prototypes -Wnested-externs -Wwrite-strings"])
+      [WARNINGCFLAGS="-Wall -Wextra -Wc++-compat -Wcast-align -Wcast-qual -Wpointer-arith -Wmissing-prototypes -Wstrict-prototypes -Wnested-externs -Wwrite-strings"])
 AC_SUBST([WARNINGCFLAGS])
 AC_PROG_CXX
 : ${WARNINGCXXFLAGS=""}
