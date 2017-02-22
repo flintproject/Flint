@@ -7,7 +7,7 @@
 #include <memory>
 
 #include "flint/utf8string.h"
-#include "mathml/math_dumper.h"
+#include "mathml/math-dumper.h"
 #include "phml/arc.h"
 #include "phml/database-driver.h"
 #include "phml/event-condition.h"

@@ -30,7 +30,7 @@
 #include "db/statement-driver.h"
 #include "db/utility.h"
 #include "flint/numeric.h"
-#include "mathml/math_dumper.h"
+#include "mathml/math-dumper.h"
 #include "phsp/sample-builder.h"
 #include "sqlite3.h"
 #include "utf8path.h"

@@ -8,7 +8,7 @@
 #include <memory>
 #include <libxml/xmlreader.h>
 
-#include "mathml/math_dumper.h"
+#include "mathml/math-dumper.h"
 
 namespace flint {
 namespace phml {

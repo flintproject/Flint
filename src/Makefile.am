@@ -135,6 +135,7 @@ libflintxx_la_SOURCES = \
     load/load.cc \
     load/param.cc \
     load/var.cc \
+    mathml/math-dumper.cc \
     mathml/mathml.cc \
     method/assign.cc \
     method/euler.cc \

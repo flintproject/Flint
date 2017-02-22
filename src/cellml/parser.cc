@@ -17,7 +17,7 @@
 
 #include "db/query.h"
 #include "db/utility.h"
-#include "mathml/math_dumper.h"
+#include "mathml/math-dumper.h"
 #include "sqlite3.h"
 #include "modelpath.h"
 

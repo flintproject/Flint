@@ -1,5 +1,5 @@
 /* -*- Mode: C++; tab-width: 4; indent-tabs-mode: t; c-basic-offset: 4 -*- vim:set ts=4 sw=4 sts=4 noet: */
-#include "mathml/math_dumper.h"
+#include "mathml/math-dumper.h"
 
 #include <sstream>
 #define BOOST_TEST_MODULE test_math_dumper
