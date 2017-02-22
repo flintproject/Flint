@@ -182,6 +182,7 @@ libflintxx_la_SOURCES = \
     runtime/matrix.cc \
     runtime/reduction-unit.cc \
     runtime/section-context.cc \
+    runtime/timeseries.cc \
     sbml/load.cc \
     sbml/parser.cc \
     sbml/read.cc \

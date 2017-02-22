@@ -3,6 +3,7 @@
 
 #include <cassert>
 #include <cstdio>
+#include <iostream>
 
 #include "utf8path.h"
 
