@@ -1376,7 +1376,7 @@ private:
 			if (type == XML_READER_TYPE_ELEMENT) {
 				const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
 				if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("definition"))) {
-					iv_dumper_.reset(new phml::DefinitionDumper<InitialValue>(text_reader_,
+					iv_dumper_.reset(new DefinitionDumper<InitialValue>(text_reader_,
 																			  pq_->name(),
 																			  iv_.get()));
 					i = iv_dumper_->Read(0);
@@ -1471,11 +1471,11 @@ private:
 			}
 		} else if (xmlStrEqual(definition->type(), reinterpret_cast<const xmlChar *>("graph"))) {
 			pq_->set_unit_id(xmlCharStrdup("0")); // unit: dimensionless
-			phml::GraphReader graph_reader(pq_.get(), text_reader_, dd_.get());
+			GraphReader graph_reader(pq_.get(), text_reader_, dd_.get());
 			return graph_reader.Read();
 		}
 		// expect definition in MathML
-		impl_dumper_.reset(new phml::DefinitionDumper<Implementation>(text_reader_,
+		impl_dumper_.reset(new DefinitionDumper<Implementation>(text_reader_,
 																	  pq_->name(),
 																	  impl_.get()));
 		return impl_dumper_->Read(0);
@@ -1623,7 +1623,7 @@ private:
 			return -2;
 		}
 		// expect definition in MathML
-		extra_dumper_.reset(new phml::DefinitionDumper<ExtraImplementation>(text_reader_,
+		extra_dumper_.reset(new DefinitionDumper<ExtraImplementation>(text_reader_,
 																			pq_->name(),
 																			extra_.get()));
 		return extra_dumper_->Read(0);
@@ -2042,7 +2042,7 @@ private:
 			return -2;
 		}
 		std::unique_ptr<TargetPq> tpq(new TargetPq(pq_id));
-		std::unique_ptr<phml::DefinitionDumper<TargetPq> > tpq_dumper(new phml::DefinitionDumper<TargetPq>(text_reader_, tpq.get()));
+		std::unique_ptr<DefinitionDumper<TargetPq> > tpq_dumper(new DefinitionDumper<TargetPq>(text_reader_, tpq.get()));
 		i = xmlTextReaderRead(text_reader_);
 		while (i > 0) {
 			int type = xmlTextReaderNodeType(text_reader_);
@@ -2232,9 +2232,9 @@ private:
 	std::unique_ptr<Bridge> bridge_;
 	std::unique_ptr<Instance> instance_;
 
-	std::unique_ptr<phml::DefinitionDumper<InitialValue> > iv_dumper_;
-	std::unique_ptr<phml::DefinitionDumper<Implementation> > impl_dumper_;
-	std::unique_ptr<phml::DefinitionDumper<ExtraImplementation> > extra_dumper_;
+	std::unique_ptr<DefinitionDumper<InitialValue> > iv_dumper_;
+	std::unique_ptr<DefinitionDumper<Implementation> > impl_dumper_;
+	std::unique_ptr<DefinitionDumper<ExtraImplementation> > extra_dumper_;
 };
 
 struct Schema {
@@ -2412,21 +2412,21 @@ bool Read(sqlite3 *db)
 
 	// then, rewrite the model
 	{
-		std::unique_ptr<phml::GraphIvRewriter> rewriter(new phml::GraphIvRewriter);
+		std::unique_ptr<GraphIvRewriter> rewriter(new GraphIvRewriter);
 		if (!rewriter->Rewrite(db))
 			return false;
 	}
 	{
 		static const char kImplSelectQuery[] = "SELECT rowid, pq_rowid, math FROM impls";
 		static const char kImplUpdateQuery[] = "UPDATE impls SET math = ? WHERE rowid = ?";
-		phml::GraphMathRewriter rewriter(kImplSelectQuery, kImplUpdateQuery, db);
+		GraphMathRewriter rewriter(kImplSelectQuery, kImplUpdateQuery, db);
 		if (!rewriter.Rewrite())
 			return false;
 	}
 	{
 		static const char kExtraSelectQuery[] = "SELECT rowid, pq_rowid, math FROM extras";
 		static const char kExtraUpdateQuery[] = "UPDATE extras SET math = ? WHERE rowid = ?";
-		phml::GraphMathRewriter rewriter(kExtraSelectQuery, kExtraUpdateQuery, db);
+		GraphMathRewriter rewriter(kExtraSelectQuery, kExtraUpdateQuery, db);
 		if (!rewriter.Rewrite())
 			return false;
 	}
@@ -2438,12 +2438,12 @@ bool Read(sqlite3 *db)
 			" LEFT JOIN pqs ON modules.rowid = pqs.module_rowid"
 			" WHERE tpqs.pq_id = pqs.pq_id";
 		static const char kTpqUpdateQuery[] = "UPDATE tpqs SET math = ? WHERE rowid = ?";
-		phml::GraphMathRewriter rewriter(kTpqSelectQuery, kTpqUpdateQuery, db);
+		GraphMathRewriter rewriter(kTpqSelectQuery, kTpqUpdateQuery, db);
 		if (!rewriter.Rewrite())
 			return false;
 	}
 	{
-		phml::TransitionForm form;
+		TransitionForm form;
 		if (!form(db))
 			return false;
 	}
@@ -2462,7 +2462,7 @@ bool Read(sqlite3 *db)
 	if (!CommitTransaction(db))
 		return false;
 
-	if (!phml::CombineAll(db))
+	if (!CombineAll(db))
 		return false;
 	if (!ts::Tsc(db))
 		return false;
