@@ -1,8 +1,5 @@
-DEPOSIT_URL = http://www.physiodesigner.org/developer/sources
-
-CLIBSEDML_COMMIT = d8596b56
-
 BOOST_VERSION = 1.63.0
+CLIBSEDML_VERSION = 0.1.0
 CZMQ_VERSION = 4.0.2
 LIBSBML_VERSION = 5.13.0
 LIBXML2_VERSION = 2.9.4
@@ -25,7 +22,7 @@ BOOST_UNDERSCORE = boost_$(subst .,_,$(BOOST_VERSION))
 
 ALL_EXTERNAL_LIBRARIES = \
 	$(BOOST_UNDERSCORE).tar.bz2 \
-	clibsedml-$(CLIBSEDML_COMMIT).tar.gz \
+	clibsedml-$(CLIBSEDML_VERSION).tar.gz \
 	czmq-$(CZMQ_VERSION).tar.gz \
 	libSBML-$(LIBSBML_VERSION)-core-src.zip \
 	libxml2-$(LIBXML2_VERSION).tar.gz \
@@ -39,7 +36,7 @@ ALL_EXTERNAL_LIBRARIES = \
 
 ALL_EXTERNAL_LIBRARY_DIRS = \
 	$(BOOST_UNDERSCORE) \
-	clibsedml-$(CLIBSEDML_COMMIT) \
+	clibsedml-$(CLIBSEDML_VERSION) \
 	czmq-$(CZMQ_VERSION) \
 	libsbml-$(LIBSBML_VERSION) \
 	libxml2-$(LIBXML2_VERSION) \
@@ -101,7 +98,7 @@ endef
 endif
 
 $(eval $(call external_library_source,http://downloads.sourceforge.net/project/boost/boost/$(BOOST_VERSION),$(BOOST_UNDERSCORE).tar.bz2,1c837ecd990bb022d07e7aab32b09847))
-$(eval $(call external_library_source,$(DEPOSIT_URL),clibsedml-$(CLIBSEDML_COMMIT).tar.gz,d780b4f02d5272e3c0b2d4610e6d6c3f))
+$(eval $(call external_library_source3,https://github.com/flintproject/clibsedml/archive/v$(CLIBSEDML_VERSION).tar.gz,clibsedml-$(CLIBSEDML_VERSION).tar.gz,72a4c7ddfd2cdf5c3716c08b422dc7d8))
 $(eval $(call external_library_source,https://github.com/zeromq/czmq/releases/download/v$(CZMQ_VERSION),czmq-$(CZMQ_VERSION).tar.gz,b27cb5a23c472949b1e37765e404dc98))
 $(eval $(call external_library_source,http://downloads.sourceforge.net/project/sbml/libsbml/$(LIBSBML_VERSION)/stable,libSBML-$(LIBSBML_VERSION)-core-src.zip,6581723e894eee8058b95fa80df7aad4))
 $(eval $(call external_library_source,ftp://xmlsoft.org/libxml2,libxml2-$(LIBXML2_VERSION).tar.gz,ae249165c173b1ff386ee8ad676815f5))

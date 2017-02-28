@@ -20,7 +20,7 @@ DEPS := \
     zeromq
 
 boost_VERSION = $(BOOST_VERSION)
-clibsedml_VERSION = 0.1.0
+clibsedml_VERSION = $(CLIBSEDML_VERSION)
 czmq_VERSION = $(CZMQ_VERSION)
 libsbml_VERSION = $(LIBSBML_VERSION)
 libzip_VERSION = $(LIBZIP_VERSION)
@@ -159,7 +159,7 @@ maintainer-clean: distclean
 	-sudo rpm -e flint
 	-sudo rpm -e $(DEPNAMES)
 
-download: $(foreach lib,$(BOOST_UNDERSCORE).tar.bz2 clibsedml-$(CLIBSEDML_COMMIT).tar.gz czmq-$(CZMQ_VERSION).tar.gz libSBML-$(LIBSBML_VERSION)-core-src.zip libzip-$(LIBZIP_VERSION).tar.gz protobuf-java-$(PROTOBUF_VERSION).tar.gz SBML_odeSolver-$(SOSLIB_VERSION).tar.gz sundials-$(SUNDIALS_VERSION).tar.gz wxWidgets-$(WXWIDGETS_VERSION).tar.bz2 zeromq-$(ZEROMQ_VERSION).tar.gz,src/$(lib))
+download: $(foreach lib,$(BOOST_UNDERSCORE).tar.bz2 clibsedml-$(CLIBSEDML_VERSION).tar.gz czmq-$(CZMQ_VERSION).tar.gz libSBML-$(LIBSBML_VERSION)-core-src.zip libzip-$(LIBZIP_VERSION).tar.gz protobuf-java-$(PROTOBUF_VERSION).tar.gz SBML_odeSolver-$(SOSLIB_VERSION).tar.gz sundials-$(SUNDIALS_VERSION).tar.gz wxWidgets-$(WXWIDGETS_VERSION).tar.bz2 zeromq-$(ZEROMQ_VERSION).tar.gz,src/$(lib))
 
 Flint-$(VERSION)-$(DIST).$(ARCH):
 	install -d $@
@@ -199,9 +199,9 @@ $(eval $(call flint_expand_tar_bz2,$(BOOST_UNDERSCORE),$(BOOST_UNDERSCORE)))
 
 $(eval $(call flint_setup_dir,boost,$(BOOST_UNDERSCORE)))
 
-$(eval $(call flint_expand_tar_gz,clibsedml-$(CLIBSEDML_COMMIT),clibsedml-$(CLIBSEDML_COMMIT)))
+$(eval $(call flint_expand_tar_gz,clibsedml-$(CLIBSEDML_VERSION),clibsedml-$(CLIBSEDML_VERSION)))
 
-$(eval $(call flint_setup_dir,clibsedml,clibsedml-$(CLIBSEDML_COMMIT)))
+$(eval $(call flint_setup_dir,clibsedml,clibsedml-$(CLIBSEDML_VERSION)))
 
 $(eval $(call flint_expand_tar_gz,czmq-$(CZMQ_VERSION),czmq-$(CZMQ_VERSION)))
 

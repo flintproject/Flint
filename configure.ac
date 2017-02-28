@@ -77,7 +77,7 @@ AS_IF([test "x$enable_tcp" != xno],[BOOST_ASIO])
 AS_IF([test "x$enable_tcp" != xno],[AC_DEFINE([ENABLE_TCP],[1],[Define to 1 if TCP support is enabled])])
 AM_CONDITIONAL([ENABLE_TCP],[test "x$enable_tcp" != xno])
 
-PKG_CHECK_MODULES([CLIBSEDML],[clibsedml])
+PKG_CHECK_MODULES([CLIBSEDML],[clibsedml >= 0.1.0])
 PKG_CHECK_MODULES([LIBSBML],[libsbml])
 PKG_CHECK_MODULES([LIBZIP],[libzip >= 1.1.1])
 PKG_CHECK_MODULES([SOSLIB],[libODES])
