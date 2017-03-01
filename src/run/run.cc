@@ -20,6 +20,7 @@
 #include "file.h"
 #include "filter.h"
 #include "flint/background.h"
+#include "fppp.h"
 #include "job.h"
 #include "load.h"
 #include "run/spec.h"
@@ -139,11 +140,34 @@ bool Run(const cli::RunOption &option)
 		if (!task->bc)
 			return false;
 	}
+	std::unique_ptr<fppp::Option> fppp_option;
+	if (option.has_fppp_host()) {
+		fppp_option.reset(new fppp::Option);
+		fppp_option->host = option.fppp_host().c_str();
+		for (int i=0;i<option.fppp_output_size();i++) {
+			fppp::KeyData kd;
+			if (!fppp::KeyData::FromString(option.fppp_output(i), &kd)) {
+				std::cerr << "invalid output name: "
+						  << option.fppp_output(i)
+						  << std::endl;
+				return false;
+			}
+			fppp_option->output.emplace(kd, 0);
+		}
+	}
 	boost::filesystem::path output_path = GetPathFromUtf8(option.output_filename().c_str());
 	if (output_path.empty())
 		return false;
 	std::string output_file = output_path.string();
-	return job::Job(".", "0", task.get(), nullptr, &data, output_file.c_str(), reader, db);
+	return job::Job(".",
+					"0",
+					task.get(),
+					nullptr,
+					fppp_option.get(),
+					&data,
+					output_file.c_str(),
+					reader,
+					db);
 }
 
 }

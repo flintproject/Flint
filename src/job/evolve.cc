@@ -30,8 +30,10 @@
 #include "db/read-only-driver.h"
 #include "filter/cutter.h"
 #include "flint/bc.h"
+#include "fppp.h"
 #include "lo/layout.h"
 #include "lo/layout_loader.h"
+#include "runtime/channel.h"
 #include "runtime/history.h"
 #include "runtime/processor.h"
 #include "runtime/timeseries.h"
@@ -323,6 +325,20 @@ bool Evolve(sqlite3 *db,
 	if (with_pre) preprocessor->CalculateCodeOffset();
 	if (with_post) postprocessor->CalculateCodeOffset();
 
+	std::unique_ptr<runtime::Channel> channel;
+	if (option.fppp_option) {
+		std::map<fppp::KeyData, size_t> fppp_output = option.fppp_option->output; // copy
+		if (!layout->SelectByKeyData(&fppp_output))
+			return false;
+		if (!runtime::LoadChannel(db, option.fppp_option->host, fppp_output, channel))
+			return false;
+	}
+	processor->set_channel(channel.get());
+	if (with_pre)
+		preprocessor->set_channel(channel.get());
+	if (with_post)
+		postprocessor->set_channel(channel.get());
+
 	// arrange input timeseries data
 	std::unique_ptr<TimeseriesVector> tv(new TimeseriesVector);
 	if (!ts::LoadTimeseriesVector(db, tv.get()))
@@ -504,6 +520,8 @@ bool Evolve(sqlite3 *db,
 						break;
 					}
 				}
+				if (channel)
+					channel->Send(data.get());
 				g = 0;
 			}
 		}

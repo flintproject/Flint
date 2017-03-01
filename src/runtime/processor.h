@@ -23,6 +23,7 @@
 #include "flint/ct.h"
 #include "lo/layout.h"
 #include "numeric/prng.h"
+#include "runtime/channel.h"
 #include "runtime/flow.h"
 #include "runtime/matrix.h"
 #include "runtime/section-context.h"
@@ -295,12 +296,14 @@ public:
 		: ct::DataFlowAnalyzer(layout, layer_size, bytecode)
 		, ir_(nullptr)
 		, tmp_(nullptr)
+		, channel_(nullptr)
 		, tv_(nullptr)
 		, rng_(nullptr)
 	{}
 
 	void set_ir(intptr_t *ir) {ir_ = ir;}
 	void set_tmp(double *tmp) {tmp_ = tmp;}
+	void set_channel(runtime::Channel *channel) {channel_ = channel;}
 	void set_tv(TimeseriesVector *tv) {tv_ = tv;}
 	void set_rng(std::mt19937 *rng) {rng_ = rng;}
 
@@ -342,6 +345,17 @@ public:
 						if (executor->Lb(code.lb(), offset)) {
 							ci++;
 						} else {
+							int si = cu.section_index();
+							const bc::SectionHeader &sh(GetShv().at(si));
+							runtime::ReportSectionContext(sh);
+							return false;
+						}
+						break;
+					case bc::Code::kLc:
+						if (DoLc(code.lc())) {
+							ci++;
+						} else {
+							std::cerr << "failed to load chunk: " << ci << std::endl;
 							int si = cu.section_index();
 							const bc::SectionHeader &sh(GetShv().at(si));
 							runtime::ReportSectionContext(sh);
@@ -564,6 +578,13 @@ public:
 	}
 
 private:
+	bool DoLc(const bc::Lc &lc) {
+		if (channel_)
+			return channel_->Lookup(lc.i0(), tmp_[lc.d()], tmp_+lc.a());
+		tmp_[lc.a()] = 0; // FIXME
+		return true;
+	}
+
 	bool DoLd(const bc::Ld &ld) {
 		assert(tv_);
 		return tv_->at(ld.i0())->Lookup(ld.i1(), tmp_[ld.d()], tmp_+ld.a());
@@ -571,6 +592,7 @@ private:
 
 	intptr_t *ir_;
 	double *tmp_;
+	runtime::Channel *channel_;
 	TimeseriesVector *tv_;
 	std::mt19937 *rng_;
 	std::vector<std::unique_ptr<double[]> > heap_;

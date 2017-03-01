@@ -5,6 +5,7 @@
 #include <cassert>
 #include <cstring>
 #include <iostream>
+#include <map>
 #include <memory>
 #include <set>
 #include <string>
@@ -15,6 +16,7 @@
 #include <boost/uuid/uuid_io.hpp>
 
 #include "bc/index.h"
+#include "fppp.h"
 #include "lo.pb.h"
 
 namespace flint {
@@ -115,6 +117,8 @@ public:
 	 * Return its total size i.e. the number of scalar states.
 	 */
 	long SelectStates(std::vector<std::pair<int, int> > *states = nullptr) const;
+
+	bool SelectByKeyData(std::map<fppp::KeyData, size_t> *output) const;
 
 	/*
 	 * Generate mass-matrix data map.

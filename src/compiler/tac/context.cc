@@ -34,6 +34,11 @@ bool IsAt(const cas::Compound &c)
 	return c.keyword == "$At";
 }
 
+bool IsData(const cas::Compound &c)
+{
+	return c.keyword == "$Data";
+}
+
 bool IsLookback(const cas::Compound &c)
 {
 	return c.keyword == "$lookback";
@@ -481,6 +486,34 @@ bool Context::EmitAt(int n, std::deque<cas::Expr> &children)
 	return bool(*os_);
 }
 
+bool Context::EmitData(int n, std::deque<cas::Expr> &children)
+{
+	size_t len = children.size();
+	if (len > 2) {
+		std::cerr << "error: more than 2 arguments: " << uuid_ << ' ' << id_ << std::endl;
+		return false;
+	}
+	if (len < 2) {
+		std::cerr << "error: EmitData: missing arguments: " << uuid_ << ' ' << id_ << std::endl;
+		return false;
+	}
+	if (children.at(0).which() != cas::kExprIsInteger) {
+		std::cerr << "error: invalid 1st argument of Data: " << uuid_ << ' ' << id_ << std::endl;
+		return false;
+	}
+	int m = fr_++;
+	if (!Assign(RegisterType::kFloat, m, children.at(1))) // TODO: RegisterType::kInteger
+		return false;
+	*os_ << "  lc $"
+		 << n
+		 << ' '
+		 << boost::get<int>(children.at(0))
+		 << " $"
+		 << m
+		 << std::endl;
+	return bool(*os_);
+}
+
 bool Context::EmitLookback(int n, std::deque<cas::Expr> &children)
 {
 	size_t len = children.size();
@@ -626,6 +659,8 @@ bool Context::Assign(RegisterType rt, int n, cas::Compound &c)
 {
 	if (IsAt(c))
 		return EmitAt(n, c.children);
+	if (IsData(c))
+		return EmitData(n, c.children);
 	if (IsLookback(c))
 		return EmitLookback(n, c.children);
 	if (IsPiecewise(c))

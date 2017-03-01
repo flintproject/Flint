@@ -32,4 +32,7 @@ message RunOption {
    */
   optional string lock_filename = 6;
 
+  optional string fppp_host = 7;
+  repeated string fppp_output = 8;
+
 }

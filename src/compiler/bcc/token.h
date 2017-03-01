@@ -61,6 +61,7 @@ struct Token {
 		kGt,
 		kJmp,
 		kLb,
+		kLc,
 		kLd,
 		kLeq,
 		kLn,

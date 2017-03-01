@@ -258,6 +258,38 @@ long Layout::SelectStates(std::vector<std::pair<int, int> > *states) const
 	return total;
 }
 
+bool Layout::SelectByKeyData(std::map<fppp::KeyData, size_t> *output) const
+{
+	assert(output);
+	fppp::KeyData kd;
+	size_t offset = kOffsetBase;
+	int si = 0;
+	int di = 0;
+	for (const auto &tp : tv_) {
+		int nos = tp->nos();
+		int nod = tp->nod();
+		int dib = di;
+		int die = di + nod;
+		for (int i=0;i<nos;i++) {
+			const char *sector_id = sv_[si++]->id().data();
+			std::memcpy(&kd.uuid, sector_id, kd.uuid.size());
+			di = dib;
+			while (di < die) {
+				const auto &dp = dv_.at(di++);
+				int data_size = dp->col() * dp->row();
+				if (dp->name().size() <= 32) {
+					kd.name = dp->name();
+					auto it = output->find(kd);
+					if (it != output->end())
+						it->second = offset; // TODO: vector/matrix case
+				}
+				offset += data_size;
+			}
+		}
+	}
+	return true;
+}
+
 void Layout::Debug(size_t size) const
 {
 	size_t offset = kOffsetBase;

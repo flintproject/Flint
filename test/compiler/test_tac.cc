@@ -82,6 +82,16 @@ BOOST_AUTO_TEST_CASE(Literal) {
 		  );
 }
 
+BOOST_AUTO_TEST_CASE(Data) {
+	Setup("($Data 7 %time)");
+	BOOST_CHECK(compiler::tac::Tac(da.get(), db));
+	Check(0, 2,
+		  "  load $1 %time\n"
+		  "  lc $0 7 $1\n"
+		  "  store %Q $0\n"
+		  );
+}
+
 BOOST_AUTO_TEST_CASE(Delay) {
 	Setup("($lookback %y (minus %time %z))");
 	BOOST_CHECK(compiler::tac::Tac(da.get(), db));

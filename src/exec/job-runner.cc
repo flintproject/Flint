@@ -67,6 +67,7 @@ bool JobRunner::Run()
 	return job::Job(tr_->dir(), dir_.get(),
 					tr_->GetTask(),
 					progress_address_,
+					nullptr,
 					&init,
 					isd_.get(), tr_->reader(), tr_->GetModelDatabase());
 }

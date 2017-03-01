@@ -115,6 +115,15 @@ message Lb {
 
 }
 
+/* "Load chunk" */
+message Lc {
+
+  required int32 a  = 1;
+  required int32 i0 = 2; /* channel index */
+  required int32 d  = 3;
+
+}
+
 message Ld {
 
   required int32 a  = 1;
@@ -333,6 +342,7 @@ message Code {
     kGen2 = 6;
     kJmp = 2;
     kLb = 10;
+    kLc = 28;
     kLd = 12;
     kLoad = 7;
     kLoadi = 8;
@@ -364,6 +374,7 @@ message Code {
   optional Gen2 gen2 = 7;
   optional Jmp jmp = 3;
   optional Lb lb = 11;
+  optional Lc lc = 28;
   optional Ld ld = 12;
   optional Load load = 8;
   optional Loadi loadi = 9;

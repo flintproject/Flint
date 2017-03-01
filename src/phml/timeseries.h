@@ -10,14 +10,22 @@ namespace phml {
 
 class Timeseries {
 public:
+	enum class Type {
+		kUnspecified,
+		kFile,
+		kIpc
+	};
+
 	Timeseries(const Timeseries &) = delete;
 	Timeseries &operator=(const Timeseries &) = delete;
 
 	Timeseries()
-		: timeseries_id_(nullptr)
+		: type_(Type::kUnspecified)
+		, timeseries_id_(nullptr)
 		, format_(nullptr)
 		, iref_(nullptr)
 		, zref_(nullptr)
+		, url_(nullptr)
 	{}
 
 	~Timeseries() {
@@ -25,8 +33,11 @@ public:
 		if (format_) xmlFree(format_);
 		if (iref_) xmlFree(iref_);
 		if (zref_) xmlFree(zref_);
+		if (url_) xmlFree(url_);
 	}
 
+	Type type() const {return type_;}
+	void set_type(Type type) {type_ = type;}
 	const xmlChar *timeseries_id() const {return timeseries_id_;}
 	void set_timeseries_id(xmlChar *timeseries_id) {timeseries_id_ = timeseries_id;}
 	const xmlChar *format() const {return format_;}
@@ -35,12 +46,16 @@ public:
 	void set_iref(xmlChar *iref) {iref_ = iref;}
 	const xmlChar *zref() const {return zref_;}
 	void set_zref(xmlChar *zref) {zref_ = zref;}
+	const xmlChar *url() const {return url_;}
+	void set_url(xmlChar *url) {url_ = url;}
 
 private:
+	Type type_;
 	xmlChar *timeseries_id_;
 	xmlChar *format_;
 	xmlChar *iref_;
 	xmlChar *zref_;
+	xmlChar *url_;
 };
 
 }

@@ -12,7 +12,6 @@
 #include <utility>
 #include <vector>
 
-#include <boost/uuid/string_generator.hpp>
 #include <boost/uuid/nil_generator.hpp>
 #include <boost/uuid/uuid_io.hpp>
 #include <czmq.h>
@@ -27,8 +26,8 @@ namespace {
 void Print(boost::uuids::uuid uuid, std::string name, const char *time, const char *value)
 {
 	std::cout << uuid
-			  << ", " << name
-			  << ", " << *reinterpret_cast<const double *>(time)
+			  << ":" << name
+			  << "| " << *reinterpret_cast<const double *>(time)
 			  << ", " << *reinterpret_cast<const double *>(value)
 			  << std::endl;
 }
@@ -44,15 +43,14 @@ struct Handler
 			kd.uuid = boost::uuids::nil_uuid();
 			kd.name = std::string(d, num_bytes);
 		} else {
-			std::memcpy(buf, d, 36);
-			kd.uuid = g(std::string(buf, 36));
-			kd.name = std::string(d+37, num_bytes-37);
+			// TODO: check returned value
+			(void)flint::fppp::KeyData::FromString(std::string(d, num_bytes), &kd);
 		}
 		kdv.push_back(kd);
 		iv.push_back(i * sizeof(double));
 	}
 
-	int GetStep(size_t size, const char *buf) {
+	int GetStep(size_t /*size*/, const char *buf) const {
 		std::int64_t td = static_cast<std::int64_t>(*reinterpret_cast<const double *>(buf) * 1000)+t-zclock_mono();
 		zclock_sleep(td);
 		for (size_t i=0;i<kdv.size();i++) {
@@ -63,8 +61,6 @@ struct Handler
 
 	std::vector<flint::fppp::KeyData> kdv;
 	std::vector<size_t> iv;
-	char buf[36];
-	boost::uuids::string_generator g;
 	flint::fppp::Publisher *pub;
 	flint::fppp::Subscriber *sub;
 	std::int64_t t;
@@ -103,11 +99,12 @@ int main(int argc, char *argv[])
 	flint::fppp::ContextGuard g(ctx);
 	// FIXME
 	std::set<flint::fppp::KeyData> in;
-	boost::uuids::string_generator gen;
 	for (int i=3;i<argc;i++) {
 		flint::fppp::KeyData kd;
-		kd.uuid = gen(std::string(argv[i], 36));
-		kd.name = std::string(argv[i]+37);
+		if (!flint::fppp::KeyData::FromString(argv[i], &kd)) {
+			std::cerr << "invalid input name: " << argv[i] << std::endl;
+			return false;
+		}
 		in.insert(kd);
 	}
 	zactor_t *peer = flint::fppp::ShakeHands(ctx, argv[2], in, handler.kdv, &handler.pub, &handler.sub);
@@ -116,12 +113,13 @@ int main(int argc, char *argv[])
 	assert(handler.pub && handler.sub);
 	{
 		std::thread th([&handler]{(*handler.sub)(&Print);});
-		th.detach();
 		handler.t = zclock_mono();
 		if (!reader.ReadSteps(handler, &ifs))
 			return EXIT_FAILURE;
 		delete handler.pub;
 		ifs.close();
+		std::cerr << "read all steps." << std::endl;
+		th.join();
 	}
 	zactor_destroy(&peer);
 	return EXIT_SUCCESS;

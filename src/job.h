@@ -3,6 +3,7 @@
 #define FLINT_JOB_H_
 
 #include <cstdio>
+#include <map>
 #include <vector>
 #include "sqlite3.h"
 
@@ -13,6 +14,10 @@ struct Bytecode;
 namespace task {
 class ConfigReader;
 struct Task;
+}
+
+namespace fppp {
+struct Option;
 }
 
 namespace job {
@@ -50,6 +55,7 @@ struct Option {
 	FILE *output_fp;
 	FILE *stats_fp;
 	void *progress_address;
+	const fppp::Option *fppp_option;
 };
 
 /*
@@ -68,6 +74,7 @@ bool Job(const char *task_dir,
 		 const char *job_dir,
 		 task::Task *task,
 		 void *progress_address,
+		 const fppp::Option *fppp_option,
 		 std::vector<double> *data,
 		 const char *output_file,
 		 const task::ConfigReader &reader,

@@ -98,6 +98,7 @@ private:
 	bool ParseLabel(int *n);
 	bool ParseInstJmp(bc::Code *code);
 	bool ParseInstLb(bc::Code *code);
+	bool ParseInstLc(bc::Code *code);
 	bool ParseInstLd(bc::Code *code);
 	bool ParseInstLoad(bc::Code *code);
 	bool ParseInstLoadi(bc::Code *code);
@@ -240,6 +241,8 @@ bool ParserImpl::ParseInst(bc::Code *code)
 		return ParseInstJmp(code);
 	case Token::Type::kLb:
 		return ParseInstLb(code);
+	case Token::Type::kLc:
+		return ParseInstLc(code);
 	case Token::Type::kLd:
 		return ParseInstLd(code);
 	case Token::Type::kLoad:
@@ -550,6 +553,22 @@ bool ParserImpl::ParseInstLb(bc::Code *code)
 		lb->set_a(a);
 		lb->set_v(t.lexeme, t.size);
 		lb->set_d(d);
+		return true;
+	}
+	return false;
+}
+
+bool ParserImpl::ParseInstLc(bc::Code *code)
+{
+	int a, i0, d;
+	if ( ParseFr(&a) &&
+		 SkipSpace() && ReadInteger(&i0) &&
+		 ParseFr(&d) ) {
+		code->set_type(bc::Code::kLc);
+		auto *lc = code->mutable_lc();
+		lc->set_a(a);
+		lc->set_i0(i0);
+		lc->set_d(d);
 		return true;
 	}
 	return false;

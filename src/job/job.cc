@@ -35,6 +35,7 @@ bool Job(const char *task_dir,
 		 const char *job_dir,
 		 task::Task *task,
 		 void *progress_address,
+		 const fppp::Option *fppp_option,
 		 std::vector<double> *data,
 		 const char *output_file,
 		 const task::ConfigReader &reader,
@@ -90,6 +91,7 @@ bool Job(const char *task_dir,
 	option.output_data_file = output_data_file;
 	option.output_history_file = output_history_file;
 	option.progress_address = progress_address;
+	option.fppp_option = fppp_option;
 
 	char isdh_file[kShort];
 	sprintf(isdh_file, "%s/isdh", task_dir);

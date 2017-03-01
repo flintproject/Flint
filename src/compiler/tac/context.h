@@ -46,6 +46,7 @@ public:
 private:
 	bool EmitCondition(int n, int l, cas::Expr &sexp);
 	bool EmitAt(int n, std::deque<cas::Expr> &children);
+	bool EmitData(int n, std::deque<cas::Expr> &children);
 	bool EmitLookback(int n, std::deque<cas::Expr> &children);
 	bool Piecewise(RegisterType rt, int n, std::deque<cas::Expr> &children);
 	bool EmitTrial(int n, std::deque<cas::Expr> &children);

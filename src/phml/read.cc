@@ -53,6 +53,7 @@
 #include "phml/time-discretization.h"
 #include "phml/timeseries.h"
 #include "phml/transition-form.h"
+#include "phml/tsipc.h"
 #include "phml/unit.h"
 #include "phml/validator.h"
 #include "reach.h"
@@ -1804,7 +1805,17 @@ private:
 			if (xmlTextReaderIsNamespaceDecl(text_reader_)) continue;
 
 			const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
-			if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("timeseries-id"))) {
+			if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("type"))) {
+				const xmlChar *value = xmlTextReaderConstValue(text_reader_);
+				if (xmlStrEqual(value, reinterpret_cast<const xmlChar *>("file"))) {
+					ts->set_type(Timeseries::Type::kFile);
+				} else if (xmlStrEqual(value, reinterpret_cast<const xmlChar *>("ipc"))) {
+					ts->set_type(Timeseries::Type::kIpc);
+				} else {
+					std::cerr << "unknown type of <timeseries>: " << value << std::endl;
+					return -2;
+				}
+			} else if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("timeseries-id"))) {
 				ts->set_timeseries_id(xmlTextReaderValue(text_reader_));
 			} else if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("name"))) {
 				// we can ignore the name
@@ -1822,6 +1833,8 @@ private:
 				ts->set_iref(xmlTextReaderValue(text_reader_));
 			} else if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("zref"))) {
 				ts->set_zref(xmlTextReaderValue(text_reader_));
+			} else if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("url"))) {
+				ts->set_url(xmlTextReaderValue(text_reader_));
 			} else {
 				std::cerr << "unknown attribute of <timeseries>: " << local_name << std::endl;
 				return -2;
@@ -1831,15 +1844,35 @@ private:
 			std::cerr << "missing timeseries-id of <timeseries>" << std::endl;
 			return -2;
 		}
-		if (!ts->format()) {
-			std::cerr << "missing format of <timeseries>" << std::endl;
-			return -2;
+		if (ts->type() == Timeseries::Type::kUnspecified) {
+			// for backward compatibility
+			ts->set_type(Timeseries::Type::kFile);
 		}
-		if (!ts->iref() && !ts->zref()) {
-			std::cerr << "missing iref/zref of <timeseries>" << std::endl;
-			return -2;
+		switch (ts->type()) {
+		case Timeseries::Type::kUnspecified:
+			assert(false);
+			break;
+		case Timeseries::Type::kFile:
+			if (!ts->format()) {
+				std::cerr << "missing format of <timeseries>" << std::endl;
+				return -2;
+			}
+			if (!ts->iref() && !ts->zref()) {
+				std::cerr << "missing iref/zref of <timeseries>" << std::endl;
+				return -2;
+			}
+			if (!dd_->SaveTimeseries(module_.get(), ts.get(), given_path_, model_path_))
+				return -2;
+			break;
+		case Timeseries::Type::kIpc:
+			if (!ts->url()) {
+				std::cerr << "missing url of <timeseries>" << std::endl;
+				return -2;
+			}
+			if (!dd_->SaveTsipc(*module_, *ts))
+				return -2;
+			break;
 		}
-		if (!dd_->SaveTimeseries(module_.get(), ts.get(), given_path_, model_path_)) return -2;
 		return xmlTextReaderNext(text_reader_);
 	}
 
@@ -2265,7 +2298,8 @@ const Schema kModelTables[] = {
 	{"bridges", "(pq_rowid INTEGER, direction TEXT, sub_type TEXT, connector TEXT)"},
 	{"imports", "(module_rowid INTEGER, type TEXT, ref TEXT)"},
 	{"ports", "(module_rowid INTEGER, port_id INTEGER, direction TEXT, ref_pq_id INTEGER, multiple TEXT)"},
-	{"timeseries", "(module_rowid INTEGER, timeseries_id INTEGER, format TEXT, ref TEXT)"}
+	{"timeseries", "(module_rowid INTEGER, timeseries_id INTEGER, format TEXT, ref TEXT)"},
+	{"tsipc", "(module_rowid INTEGER, timeseries_id INTEGER, url TEXT)"}
 };
 
 const Schema kSubsequentTables[] = {
@@ -2278,7 +2312,8 @@ const Schema kSubsequentTables[] = {
 	{"combined_values", "(uuid BLOB, math TEXT)"},
 	{"combined_functions", "(uuid BLOB, math TEXT)"},
 	{"combined_odes", "(uuid BLOB, math TEXT)"},
-	{"tscs", "(uuid BLOB, math TEXT)"}
+	{"tscs", "(uuid BLOB, math TEXT)"},
+	{"tsipcforms", "(uuid BLOB, math TEXT)"}
 };
 
 bool CreateTables(sqlite3 *db, const Schema *tables, size_t n)
@@ -2308,8 +2343,8 @@ const View kViews[] = {
 	{"sv_eqs", "m.module_id, ltrim(i.math) FROM impls AS i LEFT JOIN pqs AS p ON i.pq_rowid = p.rowid LEFT JOIN modules AS m ON p.module_rowid = m.rowid WHERE p.type = 's' OR p.type = 'v'"},
 	{"vx_eqs", "m.module_id, ltrim(i.math) FROM impls AS i LEFT JOIN pqs AS p ON i.pq_rowid = p.rowid LEFT JOIN modules AS m ON p.module_rowid = m.rowid WHERE p.type = 'v' OR p.type = 'x'"},
 	{"iv_eqs", "m.module_id, ltrim(i.math) FROM ivs AS i LEFT JOIN pqs AS p ON i.pq_rowid = p.rowid LEFT JOIN modules AS m ON p.module_rowid = m.rowid"},
-	{"input_ivs", "* FROM sv_eqs UNION ALL SELECT * FROM iv_eqs UNION ALL SELECT * FROM tscs UNION ALL SELECT * FROM combined_values UNION ALL SELECT * FROM combined_functions"},
-	{"input_eqs", "* FROM vx_eqs UNION ALL SELECT * FROM tscs UNION ALL SELECT * FROM combined_functions UNION ALL SELECT * FROM combined_odes"},
+	{"input_ivs", "* FROM sv_eqs UNION ALL SELECT * FROM iv_eqs UNION ALL SELECT * FROM tscs UNION ALL SELECT * FROM tsipcforms UNION ALL SELECT * FROM combined_values UNION ALL SELECT * FROM combined_functions"},
+	{"input_eqs", "* FROM vx_eqs UNION ALL SELECT * FROM tscs UNION ALL SELECT * FROM tsipcforms UNION ALL SELECT * FROM combined_functions UNION ALL SELECT * FROM combined_odes"},
 	{"si_eqs", "m.module_id, ltrim(i.math) FROM impls AS i LEFT JOIN pqs AS p ON i.pq_rowid = p.rowid LEFT JOIN modules AS m ON p.module_rowid = m.rowid WHERE p.type = 's' AND p.independent = '1'"},
 	{"ivi_eqs", "m.module_id, ltrim(i.math) FROM ivs AS i LEFT JOIN pqs AS p ON i.pq_rowid = p.rowid LEFT JOIN modules AS m ON p.module_rowid = m.rowid WHERE p.independent = '1'"},
 	{"independent_ivs", "* FROM si_eqs UNION ALL SELECT * FROM ivi_eqs"},
@@ -2369,6 +2404,8 @@ bool Read(sqlite3 *db)
 	if (!CreateSprinkles(db))
 		return false;
 	if (!CreateTsfiles(db))
+		return false;
+	if (!CreateChannels(db))
 		return false;
 	if (!CreateConfig(db))
 		return false;
@@ -2465,6 +2502,8 @@ bool Read(sqlite3 *db)
 	if (!CombineAll(db))
 		return false;
 	if (!ts::Tsc(db))
+		return false;
+	if (!Tsipc(db))
 		return false;
 	if (!db::Flow(db))
 		return false;

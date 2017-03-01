@@ -2,6 +2,7 @@
 #ifndef FLINT_FPPP_H_
 #define FLINT_FPPP_H_
 
+#include <map>
 #include <set>
 #include <string>
 #include <unordered_set>
@@ -19,6 +20,17 @@ struct KeyData
 	std::string name;
 
 	bool operator<(const KeyData &other) const;
+
+	std::string GetReadableString() const;
+
+	std::string GetPrefixString() const;
+
+	static bool FromString(const std::string &s, KeyData *kd);
+};
+
+struct Option {
+	const char *host;
+	std::map<KeyData, size_t> output;
 };
 
 class Publisher {
@@ -48,6 +60,10 @@ public:
 private:
 	void *sock_;
 };
+
+bool IsValidUrl(const char *url);
+
+boost::uuids::uuid GetUuidFromUrl(const char *url);
 
 zactor_t *ShakeHands(void *ctx,
 					 const char *host,

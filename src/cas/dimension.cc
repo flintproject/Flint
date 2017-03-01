@@ -73,6 +73,19 @@ public:
 		return true;
 	}
 
+	// TODO: support matrix/vector
+	bool Data(Compound *c)
+	{
+		assert(c->children.size() == 2);
+		if (!Scalar(&c->children[0]))
+			return false;
+		if (!Scalar(&c->children[1]))
+			return false;
+		c->col = 1;
+		c->row = 1;
+		return true;
+	}
+
 	bool Diff(Compound *c)
 	{
 		assert(c->children.size() == 2);
@@ -616,6 +629,7 @@ struct KeyFun {
 const KeyFun kKeyFun[] = {
 	// Keep the following entries in bibliographical order.
 	{"$At", &Context::At},
+	{"$Data", &Context::Data},
 	{"$Mod", &Context::BinaryScalar},
 	{"$exponential_variate", &Context::UnaryScalar},
 	{"$gamma_variate", &Context::BinaryScalar},

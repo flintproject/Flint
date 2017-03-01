@@ -188,6 +188,11 @@ int CreateTsfiles(sqlite3 *db)
 	return CreateTable(db, "tsfiles", "(filename TEXT)");
 }
 
+int CreateChannels(sqlite3 *db)
+{
+	return CreateTable(db, "channels", "(uuid BLOB, name TEXT)");
+}
+
 int CreateConfig(sqlite3 *db)
 {
 	if (!CreateTable(db, "config", "(method TEXT, length REAL, step REAL, granularity INTEGER, output_start_time REAL)"))

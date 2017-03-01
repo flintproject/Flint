@@ -3,6 +3,7 @@
 #include "config.h"
 #endif
 
+#include <cerrno>
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
@@ -34,8 +35,12 @@ bool Prepare()
 
 	for (int i=0;i<2;i++) {
 		int fd = open(kFile[i], O_WRONLY);
-		if (!fd)
+		if (fd == -1) {
+			std::cerr << "failed to open " << kFile[i]
+					  << ": " << std::strerror(errno)
+					  << std::endl;
 			return false;
+		}
 		feed_fd[i] = fd;
 	}
 	return true;
@@ -83,22 +88,32 @@ bool Sense(double t, flint::fppp::Publisher *pub)
 
 	std::memcpy(time_buf, &t, sizeof(double));
 	int fd = open("/dev/rtlightsensor0", O_RDONLY);
-	if (!fd)
+	if (fd == -1) {
+		std::cerr << "failed to open /dev/rtlightsensor0: "
+				  << std::strerror(errno)
+				  << std::endl;
 		return false;
+	}
 	ssize_t r = read(fd, sensor_buf, kSensorBufferSize);
 	close(fd);
-	if (r <= 6)
+	if (r <= 6) {
+		std::cerr << "failed to read sensor input" << std::endl;
 		return false;
+	}
 	sensor_buf[r] = '\0';
 	int i = 0;
 	char *p = sensor_buf, *q;
 	do {
 		q = nullptr;
 		auto n = std::strtol(p, &q, 10);
-		if (n == LONG_MIN)
+		if (n == LONG_MIN) {
+			std::cerr << "got LONG_MIN" << std::endl;
 			return false;
-		if (n == LONG_MAX)
+		}
+		if (n == LONG_MAX) {
+			std::cerr << "got LONG_MAX" << std::endl;
 			return false;
+		}
 		double d = static_cast<double>(n);
 		std::memcpy(value_buf, &d, sizeof(double));
 		(*pub)(uuid, kVariableNames[i], time_buf, value_buf);
@@ -127,8 +142,10 @@ int main(int argc, char *argv[])
 	boost::uuids::string_generator gen;
 	for (int i=2;i<4;i++) {
 		flint::fppp::KeyData kd;
-		kd.uuid = gen(std::string(argv[i], 36));
-		kd.name = std::string(argv[i]+37);
+		if (!flint::fppp::KeyData::FromString(argv[i], &kd)) {
+			std::cerr << "invalid input name: " << argv[i] << std::endl;
+			return EXIT_FAILURE;
+		}
 		in.insert(kd);
 		feed_data[i-2] = kd;
 	}

@@ -53,6 +53,7 @@ bin_PROGRAMS = \
 noinst_PROGRAMS = \
 	fppp-isd \
 	fppp-rtm \
+	fppp-sim \
 	fppp-sup \
 	test-exec \
 	test-run
@@ -60,7 +61,7 @@ noinst_PROGRAMS = \
 # Dependency comes first
 lib_LTLIBRARIES = libsqlite3.la libflint.la libflintxx.la
 
-lib_LIBRARIES = libflint2.a libfppp.a
+lib_LIBRARIES = libflint2.a
 
 libflint_la_CPPFLAGS = $(AM_CFLAGS) -std=c99 -pedantic-errors
 libflint_la_LIBADD = libsqlite3.la
@@ -71,8 +72,8 @@ libflint_la_SOURCES = \
     process.c \
     system.c
 
-libflintxx_la_CPPFLAGS = -I$(top_srcdir)/include $(SOSLIB_CFLAGS) $(LIBSBML_CFLAGS) $(PROTOBUF_CFLAGS) $(BOOST_CPPFLAGS) $(SUNDIALS_CFLAGS) $(CLIBSEDML_CFLAGS) $(XML_CPPFLAGS) $(LIBZIP_CFLAGS)
-libflintxx_la_LIBADD = libflint.la libsqlite3.la $(SOSLIB_LIBS) $(LIBSBML_LIBS) $(PROTOBUF_LIBS) $(BOOST_FILESYSTEM_LIBS) $(BOOST_SYSTEM_LIBS) $(SUNDIALS_LIBS) $(CLIBSEDML_LIBS) $(XML_LIBS) $(LIBZIP_LIBS)
+libflintxx_la_CPPFLAGS = -I$(top_srcdir)/include $(SOSLIB_CFLAGS) $(LIBSBML_CFLAGS) $(PROTOBUF_CFLAGS) $(BOOST_CPPFLAGS) $(SUNDIALS_CFLAGS) $(CLIBSEDML_CFLAGS) $(CZMQ_CFLAGS) $(ZEROMQ_CFLAGS) $(XML_CPPFLAGS) $(LIBZIP_CFLAGS)
+libflintxx_la_LIBADD = libflint.la libsqlite3.la $(SOSLIB_LIBS) $(LIBSBML_LIBS) $(PROTOBUF_LIBS) $(BOOST_FILESYSTEM_LIBS) $(BOOST_SYSTEM_LIBS) $(SUNDIALS_LIBS) $(CLIBSEDML_LIBS) $(CZMQ_LIBS) $(ZEROMQ_LIBS) $(XML_LIBS) $(LIBZIP_LIBS)
 libflintxx_la_LDFLAGS = -no-undefined $(BOOST_FILESYSTEM_LDFLAGS) $(BOOST_SYSTEM_LDFLAGS)
 libflintxx_la_SOURCES = \
     bc.pb.cc \
@@ -125,6 +126,8 @@ libflintxx_la_SOURCES = \
     filter/isdh.cc \
     filter/track.cc \
     filter/writer.cc \
+    fppp.cc \
+    fppp/url.cc \
     job/evolve.cc \
     job/generate.cc \
     job/job.cc \
@@ -164,6 +167,7 @@ libflintxx_la_SOURCES = \
     phml/sprinkle.cc \
     phml/target-pq.cc \
     phml/transition-form.cc \
+    phml/tsipc.cc \
     phml/unit-of-time.cc \
     phml/validator.cc \
     phsp/read.cc \
@@ -174,6 +178,7 @@ libflintxx_la_SOURCES = \
     run/spec.cc \
     runtime/calculation-dependency.cc \
     runtime/calculation-unit.cc \
+    runtime/channel.cc \
     runtime/eval.cc \
     runtime/evaluator.cc \
     runtime/flow.cc \
@@ -222,10 +227,6 @@ libflint2_a_SOURCES = \
     gui/formula/token.cc \
     gui/formula/tree.cc
 
-libfppp_a_CPPFLAGS = $(BOOST_CPPFLAGS) $(CZMQ_CFLAGS)
-libfppp_a_SOURCES = \
-    fppp.cc
-
 libsqlite3_la_CPPFLAGS = -DSQLITE_THREADSAFE=1 -DSQLITE_OMIT_LOAD_EXTENSION
 libsqlite3_la_LDFLAGS = -no-undefined
 libsqlite3_la_SOURCES = sqlite3.c
@@ -245,8 +246,8 @@ flint_exec_LDFLAGS = $(BOOST_FILESYSTEM_LDFLAGS) $(BOOST_SYSTEM_LDFLAGS)
 flint_exec_LDADD = libflintxx.la libflint.la libsqlite3.la $(PROTOBUF_LIBS) $(BOOST_FILESYSTEM_LIBS) $(BOOST_SYSTEM_LIBS)
 flint_exec_SOURCES = flint-exec-main.cc
 
-flint_lodbg_CPPFLAGS = $(PROTOBUF_CFLAGS) $(BOOST_CPPFLAGS)
-flint_lodbg_LDADD = libflintxx.la libflint.la libsqlite3.la $(PROTOBUF_LIBS)
+flint_lodbg_CPPFLAGS = $(PROTOBUF_CFLAGS) $(BOOST_CPPFLAGS) $(CZMQ_CFLAGS)
+flint_lodbg_LDADD = libflintxx.la libflint.la libsqlite3.la $(PROTOBUF_LIBS) $(CZMQ_LIBS)
 flint_lodbg_SOURCES = flint-lodbg-main.cc
 
 flint_open_CPPFLAGS = $(PROTOBUF_CFLAGS) $(BOOST_CPPFLAGS)
@@ -341,15 +342,19 @@ isdwc_LDADD = $(BOOST_PROGRAM_OPTIONS_LIBS)
 isdwc_SOURCES = isdwc-main.cc
 
 fppp_isd_CPPFLAGS = $(BOOST_CPPFLAGS) $(CZMQ_CFLAGS)
-fppp_isd_LDADD = libfppp.a libflintxx.la libflint.la libsqlite3.la $(CZMQ_LIBS)
+fppp_isd_LDADD = libflintxx.la libflint.la libsqlite3.la $(CZMQ_LIBS)
 fppp_isd_SOURCES = fppp/isd/main.cc
 
 fppp_rtm_CPPFLAGS = $(BOOST_CPPFLAGS) $(CZMQ_CFLAGS) $(ZEROMQ_CFLAGS)
-fppp_rtm_LDADD = libfppp.a libflintxx.la libflint.la libsqlite3.la $(CZMQ_LIBS) $(ZEROMQ_LIBS)
+fppp_rtm_LDADD = libflintxx.la libflint.la libsqlite3.la $(CZMQ_LIBS)
 fppp_rtm_SOURCES = fppp/rtm/main.cc
 
+fppp_sim_CPPFLAGS = $(PROTOBUF_CFLAGS) $(BOOST_CPPFLAGS) $(CZMQ_CFLAGS) $(ZEROMQ_CFLAGS)
+fppp_sim_LDADD = libflintxx.la libflint.la libsqlite3.la $(PROTOBUF_LIBS) $(CZMQ_LIBS)
+fppp_sim_SOURCES = fppp/sim/main.cc
+
 fppp_sup_CPPFLAGS = $(BOOST_CPPFLAGS) $(CZMQ_CFLAGS) $(ZEROMQ_CFLAGS)
-fppp_sup_LDADD = libfppp.a libflintxx.la libflint.la libsqlite3.la $(CZMQ_LIBS) $(ZEROMQ_LIBS)
+fppp_sup_LDADD = libflintxx.la libflint.la libsqlite3.la $(CZMQ_LIBS)
 fppp_sup_SOURCES = fppp/sup/main.cc
 
 test_exec_CPPFLAGS = $(PROTOBUF_CFLAGS) $(BOOST_CPPFLAGS)

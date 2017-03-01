@@ -43,6 +43,7 @@ geq,Token::Type::kGeq
 gt,Token::Type::kGt
 jmp,Token::Type::kJmp
 lb,Token::Type::kLb
+lc,Token::Type::kLc
 ld,Token::Type::kLd
 leq,Token::Type::kLeq
 ln,Token::Type::kLn

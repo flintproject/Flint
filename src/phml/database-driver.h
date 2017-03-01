@@ -93,6 +93,8 @@ public:
 						const boost::filesystem::path &given_path,
 						const boost::filesystem::path &model_path);
 
+	bool SaveTsipc(const Module &module, const Timeseries &ts);
+
 private:
 	enum UpdateStatementIndex {
 		kPq,
@@ -123,6 +125,7 @@ private:
 	sqlite3_stmt *template_stmt_;
 	sqlite3_stmt *port_stmt_;
 	sqlite3_stmt *timeseries_stmt_;
+	sqlite3_stmt *tsipc_stmt_;
 	sqlite3_stmt *update_stmt_[kNumOfUpdateStatements];
 };
 

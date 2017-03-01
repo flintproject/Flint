@@ -109,6 +109,7 @@ DatabaseDriver::DatabaseDriver(sqlite3 *db)
 	, template_stmt_(nullptr)
 	, port_stmt_(nullptr)
 	, timeseries_stmt_(nullptr)
+	, tsipc_stmt_(nullptr)
 {
 	for (int i=0;i<kNumOfUpdateStatements;i++) {
 		update_stmt_[i] = nullptr;
@@ -140,6 +141,7 @@ DatabaseDriver::~DatabaseDriver()
 	sqlite3_finalize(template_stmt_);
 	sqlite3_finalize(port_stmt_);
 	sqlite3_finalize(timeseries_stmt_);
+	sqlite3_finalize(tsipc_stmt_);
 	sqlite3_finalize(update_stmt_[kPq]);
 }
 
@@ -304,6 +306,13 @@ bool DatabaseDriver::Initialize()
 
 	e = db::PrepareStatement(db_, "INSERT INTO timeseries VALUES (?, ?, ?, ?)",
 						     &timeseries_stmt_);
+	if (e != SQLITE_OK) {
+		std::cerr << "failed to prepare statement: " << e << std::endl;
+		return false;
+	}
+
+	e = db::PrepareStatement(db_, "INSERT INTO tsipc VALUES (?, ?, ?)",
+						     &tsipc_stmt_);
 	if (e != SQLITE_OK) {
 		std::cerr << "failed to prepare statement: " << e << std::endl;
 		return false;
@@ -1179,6 +1188,40 @@ bool DatabaseDriver::SaveTimeseries(const Module *module, const Timeseries *ts,
 		return false;
 	}
 	sqlite3_reset(timeseries_stmt_);
+	return true;
+}
+
+bool DatabaseDriver::SaveTsipc(const Module &module, const Timeseries &ts)
+{
+	if (!module.IsSaved()) {
+		std::cerr << "module is not saved yet: "
+			 << module.module_id()
+			 << std::endl;
+		return false;
+	}
+
+	int e;
+	e = sqlite3_bind_int64(tsipc_stmt_, 1, module.rowid());
+	if (e != SQLITE_OK) {
+		std::cerr << "failed to bind module_rowid: " << e << std::endl;
+		return false;
+	}
+	e = sqlite3_bind_text(tsipc_stmt_, 2, reinterpret_cast<const char *>(ts.timeseries_id()), -1, SQLITE_STATIC);
+	if (e != SQLITE_OK) {
+		std::cerr << "failed to bind timeseries_id: " << e << std::endl;
+		return false;
+	}
+	e = sqlite3_bind_text(tsipc_stmt_, 3, reinterpret_cast<const char *>(ts.url()), -1, SQLITE_STATIC);
+	if (e != SQLITE_OK) {
+		std::cerr << "failed to bind url: " << e << std::endl;
+		return false;
+	}
+	e = sqlite3_step(tsipc_stmt_);
+	if (e != SQLITE_DONE) {
+		std::cerr << "failed to step statement: " << e << std::endl;
+		return false;
+	}
+	sqlite3_reset(tsipc_stmt_);
 	return true;
 }
 
