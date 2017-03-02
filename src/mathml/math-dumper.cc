@@ -1,7 +1,9 @@
 /* -*- Mode: C++; tab-width: 4; indent-tabs-mode: t; c-basic-offset: 4 -*- vim:set ts=4 sw=4 sts=4 noet: */
 #include "mathml/math-dumper.h"
 
+#include <cassert>
 #include <cctype>
+#include <cmath>
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
@@ -130,6 +132,33 @@ int MathDumper::ReadBvar()
 	return i;
 }
 
+namespace {
+
+bool IsValidInitial(char c)
+{
+	return ('A' <= c && c <= 'Z') || c == '_' || ('a' <= c && c <= 'z');
+}
+
+bool IsValidIdChar(char c)
+{
+	return IsValidInitial(c) || ('0' <= c && c <= '9');
+}
+
+bool IsValidCiBody(const char *body)
+{
+	size_t len = std::strlen(body);
+	assert(len > 0);
+	char c = body[0];
+	if (!IsValidInitial(c))
+		return false;
+	for (size_t i=1;i<len;i++)
+		if (!IsValidIdChar(body[i]))
+			return false;
+	return true;
+}
+
+}
+
 int MathDumper::ReadCi()
 {
 	xmlChar *s = xmlTextReaderReadString(text_reader_);
@@ -140,6 +169,16 @@ int MathDumper::ReadCi()
 	xmlChar *name;
 	int i = Trim(s, &name);
 	if (i == 0) return -2;
+	if (xmlStrlen(name) == 0) {
+		std::cerr << "empty body of <ci>" << std::endl;
+		xmlFree(s);
+		return -2;
+	}
+	if (!IsValidCiBody(reinterpret_cast<const char *>(name))) {
+		std::cerr << "invalid body of <ci>: " << name << std::endl;
+		xmlFree(s);
+		return -2;
+	}
 	if (name_) {
 		// check whether it is the name or not
 		if (!found_ && xmlStrEqual(name, name_))
@@ -150,6 +189,33 @@ int MathDumper::ReadCi()
 	*os_ << "%" << reinterpret_cast<const char *>(name);
 	xmlFree(s);
 	return xmlTextReaderRead(text_reader_);
+}
+
+namespace {
+
+/*
+ * TODO: it varies with type attribute of <cn> for MathML 3
+ * https://www.w3.org/TR/MathML3/chapter4.html#contm.cn
+ */
+bool IsValidCnBody(const char *body)
+{
+	char *endp;
+	auto d = std::strtod(body, &endp);
+	if ( d == 0 && body == endp )
+		return false;
+	if (d == HUGE_VAL)
+		return false;
+	if (d == -HUGE_VAL)
+		return false;
+	if (std::isinf(d))
+		return false;
+	if (std::isnan(d))
+		return false;
+	if (*endp != '\0')
+		return false;
+	return true;
+}
+
 }
 
 int MathDumper::ReadCn()
@@ -199,6 +265,16 @@ int MathDumper::ReadCn()
 			xmlChar *t;
 			i = Trim(s, &t);
 			if (i == 0) return -2;
+			if (xmlStrlen(t) == 0) {
+				std::cerr << "empty body of <cn>" << std::endl;
+				xmlFree(s);
+				return -2;
+			}
+			if (!IsValidCnBody(reinterpret_cast<const char *>(t))) {
+				std::cerr << "invalid body of <cn>: " << t << std::endl;
+				xmlFree(s);
+				return -2;
+			}
 			*os_ << reinterpret_cast<const char *>(t);
 			xmlFree(s);
 		} else if (type == XML_READER_TYPE_ELEMENT) {

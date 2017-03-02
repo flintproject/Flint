@@ -43,6 +43,18 @@ struct F {
 		BOOST_CHECK_EQUAL(os_.str().c_str(), expected);
 	}
 
+	void ReadAndError(const char *filename, const char *expected)
+	{
+		text_reader_ = xmlReaderForFile(filename, nullptr, 0);
+		BOOST_REQUIRE(text_reader_);
+		Handler handler;
+		mathml::MathDumper dumper(text_reader_, &os_);
+		test::StderrCapture capture;
+		int i = dumper.Read(&handler);
+		BOOST_CHECK(i < 0);
+		BOOST_CHECK_EQUAL(capture.Get(), expected);
+	}
+
 	xmlTextReaderPtr text_reader_;
 	std::ostringstream os_;
 };
@@ -83,6 +95,18 @@ BOOST_AUTO_TEST_CASE(mathml_vector)
 {
 	ReadAndDump(TEST_MODELS("mathml_vector.xml"),
 				" math (eq %V (vector 1 2.34e-10 3/4 %x))");
+}
+
+BOOST_AUTO_TEST_CASE(x_mathml_ci)
+{
+	ReadAndError(TEST_MODELS("x-mathml-ci.xml"),
+				 "invalid body of <ci>: 42\n");
+}
+
+BOOST_AUTO_TEST_CASE(x_mathml_cn)
+{
+	ReadAndError(TEST_MODELS("x-mathml-cn.xml"),
+				 "invalid body of <cn>: 1!?\n");
 }
 
 BOOST_AUTO_TEST_SUITE_END()
