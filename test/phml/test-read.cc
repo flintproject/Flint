@@ -239,6 +239,11 @@ BOOST_AUTO_TEST_CASE(damped_system)
 	CheckIvs(ivs);
 }
 
+BOOST_AUTO_TEST_CASE(duffing)
+{
+	ReadAndCheck(TEST_MODELS("duffing.phml"));
+}
+
 BOOST_AUTO_TEST_CASE(fem1ode)
 {
 	ReadAndCheck(TEST_MODELS("fem1ode.phml"));

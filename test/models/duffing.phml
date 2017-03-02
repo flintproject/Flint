@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<is:insilico-model xmlns:m="http://www.w3.org/1998/Math/MathML" xmlns:is="http://www.physiome.jp/ns/insilicoml" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemalocation="http://www.physiome.jp/ns/insilicoml-1.0 insilicoml.xsd" version="1.0">
+  <is:header>
+    <is:numerical-configuration>
+      <is:time-discretization unit-id="3" evolution="true">
+        <is:step>0.01</is:step>
+      </is:time-discretization>
+      <is:simulation-time-span unit-id="3">300</is:simulation-time-span>
+      <is:algorithm>
+        <is:integration name="4th-rungekutta"/>
+      </is:algorithm>
+    </is:numerical-configuration>
+  </is:header>
+  <is:unit-set>
+    <is:unit unit-id="0">
+      <is:name>dimensionless</is:name>
+    </is:unit>
+    <is:unit unit-id="1">
+      <is:name>meter</is:name>
+    </is:unit>
+    <is:unit unit-id="2">
+      <is:name>kilogram</is:name>
+    </is:unit>
+    <is:unit unit-id="3">
+      <is:name>second</is:name>
+    </is:unit>
+    <is:unit unit-id="4">
+      <is:name>ampere</is:name>
+    </is:unit>
+    <is:unit unit-id="5">
+      <is:name>kelvin</is:name>
+    </is:unit>
+    <is:unit unit-id="6">
+      <is:name>mole</is:name>
+    </is:unit>
+    <is:unit unit-id="7">
+      <is:name>candela</is:name>
+    </is:unit>
+  </is:unit-set>
+  <is:module-set>
+    <is:module module-id="b173a002-ff1e-11e6-83b6-2bde74c64e0b" type="functional-unit">
+      <is:property>
+        <is:name>Duffing oscillator</is:name>
+        <is:capsulation state="false"/>
+        <is:template state="false"/>
+      </is:property>
+
+      <is:physical-quantity-set>
+        <is:physical-quantity type="state" physical-quantity-id="1">
+          <is:name>x</is:name>
+          <is:implementation>
+            <is:definition format="mathml" type="ode">
+              <m:math>
+                <m:apply>
+                  <m:eq />
+                  <m:apply><m:diff/><m:bvar><m:ci>time</m:ci></m:bvar><m:ci>x</m:ci></m:apply>
+                  <m:ci>v</m:ci>
+                </m:apply>
+              </m:math>
+            </is:definition>
+          </is:implementation>
+          <is:initial-value>
+            <is:definition type="ae" format="mathml">
+              <m:math><m:apply><m:eq/><m:ci>x</m:ci><m:cn>0</m:cn></m:apply></m:math>
+            </is:definition>
+          </is:initial-value>
+          <is:dimension type="scalar" />
+          <is:value-type-set>
+            <is:value-type unit-id="0" precision="double" />
+          </is:value-type-set>
+          <is:description>The state</is:description>
+        </is:physical-quantity>
+
+        <is:physical-quantity type="state" physical-quantity-id="2">
+          <is:name>v</is:name>
+          <is:implementation>
+            <is:definition format="mathml" type="ode">
+              <m:math>
+                <m:apply>
+                  <m:eq />
+                  <m:apply><m:diff/><m:bvar><m:ci>time</m:ci></m:bvar><m:ci>v</m:ci></m:apply>
+                  <m:apply>
+                    <m:minus />
+                    <m:apply>
+                      <m:times />
+                      <m:ci>gamma</m:ci>
+                      <m:apply>
+                        <m:cos />
+                        <m:apply>
+                          <m:times />
+                          <m:ci>omega</m:ci>
+                          <m:ci>time</m:ci>
+                        </m:apply>
+                      </m:apply>
+                    </m:apply>
+                    <m:apply>
+                      <m:plus />
+                      <m:apply>
+                        <m:times />
+                        <m:ci>delta</m:ci>
+                        <m:ci>v</m:ci>
+                      </m:apply>
+                      <m:apply>
+                        <m:times />
+                        <m:ci>alpha</m:ci>
+                        <m:ci>x</m:ci>
+                      </m:apply>
+                      <m:apply>
+                        <m:times />
+                        <m:ci>beta</m:ci>
+                        <m:apply>
+                          <m:power />
+                          <m:ci>x</m:ci>
+                          <m:cn>3</m:cn>
+                        </m:apply>
+                      </m:apply>
+                    </m:apply>
+                  </m:apply>
+                </m:apply>
+              </m:math>
+            </is:definition>
+          </is:implementation>
+          <is:initial-value>
+            <is:definition type="ae" format="mathml">
+              <m:math><m:apply><m:eq/><m:ci>v</m:ci><m:cn>0</m:cn></m:apply></m:math>
+            </is:definition>
+          </is:initial-value>
+          <is:dimension type="scalar" />
+          <is:value-type-set>
+            <is:value-type unit-id="0" precision="double" />
+          </is:value-type-set>
+          <is:description>The velocity</is:description>
+        </is:physical-quantity>
+
+        <is:physical-quantity type="static-parameter" physical-quantity-id="3">
+          <is:name>alpha</is:name>
+          <is:implementation>
+            <is:definition format="mathml" type="ae">
+              <m:math><m:apply><m:eq /><m:ci>alpha</m:ci><m:cn>-1</m:cn></m:apply></m:math>
+            </is:definition>
+          </is:implementation>
+          <is:dimension type="scalar" />
+          <is:value-type-set>
+            <is:value-type unit-id="0" precision="double" />
+          </is:value-type-set>
+          <is:description>The linear stiffness</is:description>
+        </is:physical-quantity>
+
+        <is:physical-quantity type="static-parameter" physical-quantity-id="4">
+          <is:name>beta</is:name>
+          <is:implementation>
+            <is:definition format="mathml" type="ae">
+              <m:math><m:apply><m:eq /><m:ci>beta</m:ci><m:cn>1</m:cn></m:apply></m:math>
+            </is:definition>
+          </is:implementation>
+          <is:dimension type="scalar" />
+          <is:value-type-set>
+            <is:value-type unit-id="0" precision="double" />
+          </is:value-type-set>
+          <is:description>The non-linearity coefficient of the restoring force</is:description>
+        </is:physical-quantity>
+
+        <is:physical-quantity type="static-parameter" physical-quantity-id="5">
+          <is:name>gamma</is:name>
+          <is:implementation>
+            <is:definition format="mathml" type="ae">
+              <m:math><m:apply><m:eq /><m:ci>gamma</m:ci><m:cn>0.5</m:cn></m:apply></m:math>
+            </is:definition>
+          </is:implementation>
+          <is:dimension type="scalar" />
+          <is:value-type-set>
+            <is:value-type unit-id="0" precision="double" />
+          </is:value-type-set>
+          <is:description>The amplitude of the periodic forcing</is:description>
+        </is:physical-quantity>
+
+        <is:physical-quantity type="static-parameter" physical-quantity-id="6">
+          <is:name>delta</is:name>
+          <is:implementation>
+            <is:definition format="mathml" type="ae">
+              <m:math><m:apply><m:eq /><m:ci>delta</m:ci><m:cn>0.3</m:cn></m:apply></m:math>
+            </is:definition>
+          </is:implementation>
+          <is:dimension type="scalar" />
+          <is:value-type-set>
+            <is:value-type unit-id="0" precision="double" />
+          </is:value-type-set>
+          <is:description>The amount of damping</is:description>
+        </is:physical-quantity>
+
+        <is:physical-quantity type="static-parameter" physical-quantity-id="7">
+          <is:name>omega</is:name>
+          <is:implementation>
+            <is:definition format="mathml" type="ae">
+              <m:math><m:apply><m:eq /><m:ci>omega</m:ci><m:cn>1.2</m:cn></m:apply></m:math>
+            </is:definition>
+          </is:implementation>
+          <is:dimension type="scalar" />
+          <is:value-type-set>
+            <is:value-type unit-id="0" precision="double" />
+          </is:value-type-set>
+          <is:description>The angular frequency of the periodic forcing</is:description>
+        </is:physical-quantity>
+      </is:physical-quantity-set>
+    </is:module>
+  </is:module-set>
+</is:insilico-model>
