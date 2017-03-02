@@ -139,6 +139,12 @@ public:
 			std::cerr << "empty arguments of <minus>" << std::endl;
 			return false;
 		}
+		if (c->children.size() > 2) {
+			std::cerr << "<minus> has too many arguments: "
+					  << c->children.size()
+					  << std::endl;
+			return false;
+		}
 		int col, row;
 		if (!HaveSameDimension(&c->children, &col, &row))
 			return false;
