@@ -807,28 +807,46 @@ private:
 			std::cerr << "missing type of <module>: " << module_->module_id() << std::endl;
 			return -2;
 		}
+		bool property_found = false;
 		i = xmlTextReaderRead(text_reader_);
 		while (i > 0) {
 			int type = xmlTextReaderNodeType(text_reader_);
 			if (type == XML_READER_TYPE_ELEMENT) {
 				const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
 				if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("property"))) {
+					property_found = true;
 					i = ReadProperty();
 					if (i <= 0) return i;
 					continue;
 				} else if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("port"))) {
+					if (!property_found) {
+						ReportNoLeadingProperty();
+						return -2;
+					}
 					i = ReadPort();
 					if (i <= 0) return i;
 					continue;
 				} else if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("physical-quantity"))) {
+					if (!property_found) {
+						ReportNoLeadingProperty();
+						return -2;
+					}
 					i = ReadPQ();
 					if (i <= 0) return i;
 					continue;
 				} else if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("import"))) {
+					if (!property_found) {
+						ReportNoLeadingProperty();
+						return -2;
+					}
 					i = ReadImport();
 					if (i <= 0) return i;
 					continue;
 				} else if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("timeseries"))) {
+					if (!property_found) {
+						ReportNoLeadingProperty();
+						return -2;
+					}
 					i = ReadTimeseries();
 					if (i <= 0) return i;
 					continue;
@@ -843,6 +861,10 @@ private:
 			i = xmlTextReaderRead(text_reader_);
 		}
 		return i;
+	}
+
+	void ReportNoLeadingProperty() {
+		std::cerr << "<property> must come first in <module>: " << module_->module_id() << std::endl;
 	}
 
 	int ReadProperty() {

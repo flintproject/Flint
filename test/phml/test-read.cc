@@ -634,6 +634,11 @@ BOOST_AUTO_TEST_CASE(x_missing_edge) {
 				 "  uuid: 99894d9c-4d11-4e4e-8877-a64ade7007ed\n");
 }
 
+BOOST_AUTO_TEST_CASE(x_module_property) {
+	ReadAndError(TEST_MODELS("x-module-property.phml"),
+				 "<property> must come first in <module>: 05211064-ff23-11e6-8797-d366d322411b\n");
+}
+
 BOOST_AUTO_TEST_CASE(x_variable_defined_by_ode) {
 	ReadAndError(TEST_MODELS("x-variable-defined-by-ode.phml"),
 				 "physical-quantity \"v\" (1) of module \"M\" (b3dee97b-99ff-435e-ada0-fe0861272757) is of type variable-parameter, but defined with <diff>\n");
