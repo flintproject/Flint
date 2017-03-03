@@ -159,7 +159,7 @@ struct Lexer : lex::lexer<TLexer> {
 			("DIGIT", "[0-9]")
 			("SIGN", "[-+]")
 			("EXPONENT", "[eE]{SIGN}?{DIGIT}+")
-			("FLOAT", "{SIGN}?({DIGIT}*\".\"{DIGIT}+{EXPONENT}?|{DIGIT}+{EXPONENT})")
+			("FLOAT", "(\".\"\\d+|\\d+\".\"\\d*){EXPONENT}?|\\d+{EXPONENT}")
 			;
 
 		and_ = "and";
@@ -184,7 +184,7 @@ struct Lexer : lex::lexer<TLexer> {
 		xor_ = "xor";
 		uniform_variate_ = "$uniform_variate";
 
-		real = "{FLOAT}";
+		real = "{SIGN}?{FLOAT}";
 		integer = "{SIGN}?{DIGIT}+";
 		id = "[%@][a-zA-Z_][a-zA-Z_0-9:#]*";
 		keyword = "[$]?[a-zA-Z_][a-zA-Z_0-9]*";

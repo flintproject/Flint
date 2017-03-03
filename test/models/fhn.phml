@@ -107,7 +107,7 @@
 </is:value-type-set>
 <is:initial-value>
 <is:definition type="ae" format="mathml">
-<m:math><m:apply><m:eq/><m:ci>x</m:ci><m:cn>-2</m:cn></m:apply></m:math>
+<m:math><m:apply><m:eq/><m:ci>x</m:ci><m:cn>-2.</m:cn></m:apply></m:math>
 </is:definition>
 </is:initial-value>
 <is:implementation>

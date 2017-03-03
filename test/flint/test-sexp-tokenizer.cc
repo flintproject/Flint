@@ -121,6 +121,10 @@ BOOST_AUTO_TEST_CASE(Real) {
 	Tokenizer t6("2e+8");
 	BOOST_CHECK_EQUAL(t6(&token), 1);
 	CHECK_TOKEN(Token::Type::kReal, 4);
+
+	Tokenizer t7("7."); // ending with "." is valid
+	BOOST_CHECK_EQUAL(t7(&token), 1);
+	CHECK_TOKEN(Token::Type::kReal, 2);
 }
 
 BOOST_AUTO_TEST_CASE(Compound) {

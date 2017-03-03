@@ -146,7 +146,7 @@ struct Lexer : lex::lexer<TLexer> {
 			("DIGIT", "[0-9]")
 			("SIGN", "[-+]")
 			("EXPONENT", "[eE]{SIGN}?{DIGIT}+")
-			("FLOAT", "{SIGN}?({DIGIT}*\".\"{DIGIT}+{EXPONENT}?|{DIGIT}+{EXPONENT})")
+			("FLOAT", "(\".\"\\d+|\\d+\".\"\\d*){EXPONENT}?|\\d+{EXPONENT}")
 			;
 
 		case_set_ = "case-set";
@@ -156,7 +156,7 @@ struct Lexer : lex::lexer<TLexer> {
 		delay_ = "\"$\"Delay";
 		delta_time_ = "\"$\"DeltaTime";
 
-		real = "{FLOAT}";
+		real = "{SIGN}?{FLOAT}";
 		integer = "{SIGN}?{DIGIT}+";
 		id = "\"%\"[a-zA-Z_][a-zA-Z_0-9:]*";
 		keyword = "[$]?[a-zA-Z_][a-zA-Z_0-9]*";
