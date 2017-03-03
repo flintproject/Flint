@@ -16,6 +16,7 @@ class F : public test::MemoryFixture {
 public:
 	F()
 		: sql_(driver_.db())
+		, path_(boost::filesystem::current_path())
 	{
 		// start working at the temporary directory
 		boost::filesystem::create_directory("tmp");
@@ -211,7 +212,7 @@ private:
 	std::vector<std::string> FromFile(const char *name)
 	{
 		boost::filesystem::path sp(__FILE__);
-		boost::filesystem::path fp = sp.parent_path();
+		auto fp = boost::filesystem::absolute(sp.parent_path(), path_);
 		fp /= "read";
 		fp /= name;
 		boost::filesystem::ifstream ifs(fp);
@@ -225,6 +226,7 @@ private:
 	}
 
 	test::Sql sql_;
+	boost::filesystem::path path_;
 };
 
 BOOST_FIXTURE_TEST_SUITE(test_read, F)
