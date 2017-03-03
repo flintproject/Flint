@@ -18,9 +18,8 @@ struct AssignmentLexer : lex::lexer<TLexer> {
 
 	AssignmentLexer() {
 		this->self.add_pattern
-			("DIGIT", "[0-9]")
 			("SIGN", "[-+]")
-			("EXPONENT", "[eE]{SIGN}?{DIGIT}+")
+			("EXPONENT", "[eE]{SIGN}?\\d+")
 			("FLOAT", "(\".\"\\d+|\\d+\".\"\\d*){EXPONENT}?|\\d+{EXPONENT}")
 			;
 
@@ -32,9 +31,9 @@ struct AssignmentLexer : lex::lexer<TLexer> {
 		delta_time_ = "\"$\"DeltaTime";
 
 		real = "{SIGN}?{FLOAT}";
-		integer = "{SIGN}?{DIGIT}+";
+		integer = "{SIGN}?\\d+";
 		id = "\"%\"[a-zA-Z_][a-zA-Z_0-9:]*";
-		keyword = "[$]?[a-zA-Z_][a-zA-Z_0-9]*";
+		keyword = "[$]?[a-zA-Z_]\\w*";
 
 		this->self = lex::token_def<>('\n') | '\r' | '(' | ')' | ' ';
 		this->self += case_set_ | case_ | condition_ | eq_ | delay_ | delta_time_;

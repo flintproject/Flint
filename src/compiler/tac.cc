@@ -156,9 +156,8 @@ struct Lexer : lex::lexer<TLexer> {
 
 	Lexer() {
 		this->self.add_pattern
-			("DIGIT", "[0-9]")
 			("SIGN", "[-+]")
-			("EXPONENT", "[eE]{SIGN}?{DIGIT}+")
+			("EXPONENT", "[eE]{SIGN}?\\d+")
 			("FLOAT", "(\".\"\\d+|\\d+\".\"\\d*){EXPONENT}?|\\d+{EXPONENT}")
 			;
 
@@ -185,9 +184,9 @@ struct Lexer : lex::lexer<TLexer> {
 		uniform_variate_ = "$uniform_variate";
 
 		real = "{SIGN}?{FLOAT}";
-		integer = "{SIGN}?{DIGIT}+";
+		integer = "{SIGN}?\\d+";
 		id = "[%@][a-zA-Z_][a-zA-Z_0-9:#]*";
-		keyword = "[$]?[a-zA-Z_][a-zA-Z_0-9]*";
+		keyword = "[$]?[a-zA-Z_]\\w*";
 
 		this->self = lex::token_def<>('\n') | '\r' | '(' | ')' | ' ';
 		this->self += and_ | eq_ | geq_ | gt_ | leq_ | log_ | logbase_;
