@@ -275,6 +275,7 @@ Tree *ParserImpl::ParseFactor()
 		es_ << "found invalid /" << std::endl;
 		return nullptr;
 	}
+	assert(false);
 }
 
 Tree *ParserImpl::ParseGroup()
