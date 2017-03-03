@@ -42,7 +42,6 @@ rm -rf %{buildroot}
 %doc
 /etc/ld.so.conf.d/%{name}.conf
 /opt/flint/include/sedml
-/opt/flint/lib/libsedml.a
 /opt/flint/lib/libsedml.la
 /opt/flint/lib/libsedml.so
 /opt/flint/lib/libsedml.so.0
