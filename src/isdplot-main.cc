@@ -3,6 +3,8 @@
 #include "config.h"
 #endif
 
+#include <cerrno>
+#include <cstdio>
 #include <cstdlib>
 #include <cstring>
 #include <iostream>
@@ -12,11 +14,7 @@
 #include <string>
 #include <sstream>
 
-#ifdef HAVE_FORK
-#include <errno.h>
-#include <sys/wait.h>
-#include <unistd.h>
-#else
+#ifdef _WIN32
 #include <process.h>
 #include <windows.h>
 #endif
@@ -148,63 +146,7 @@ void CreateScript(std::uint32_t num_columns,
 	*bss << "unset multiplot" << std::endl;
 }
 
-#ifdef HAVE_FORK
-
-// POSIX
-
-int CallGnuplot(const char *gnuplot,
-				std::uint32_t num_columns,
-				const char *csv_path,
-				const char *output_path)
-{
-	// prepare arguments of execv() before fork
-	std::unique_ptr<char[]> arg0(new char[std::strlen(gnuplot)+1]);
-	std::strcpy(arg0.get(), gnuplot);
-	char *args[2];
-	args[0] = arg0.get();
-	args[1] = nullptr;
-
-	int pipefd[2];
-	if (pipe(pipefd) == -1) {
-		std::cerr << "could not create pipe; " << strerror(errno);
-		return EXIT_FAILURE;
-	}
-	pid_t pid = fork();
-	if (pid == -1) { // fork failed
-		close(pipefd[1]);
-		close(pipefd[0]);
-		std::cerr << "could not fork; " << strerror(errno);
-		return EXIT_FAILURE;
-	}
-	if (pid == 0) { // child
-		close(pipefd[1]); // close unused write end
-		int r = dup2(pipefd[0], STDIN_FILENO); // replace starndard input
-		if (r == -1) _Exit(EXIT_FAILURE);
-		close(pipefd[0]);
-		execv(args[0], args); // should not return
-		_Exit(EXIT_FAILURE);
-	}
-	// parent
-	close(pipefd[0]); // close unused read end
-	int fd = pipefd[1];
-	std::ostringstream bss;
-	CreateScript(num_columns, csv_path, output_path, &bss);
-	const std::string &buf(bss.str());
-	if (write(fd, buf.c_str(), buf.size()) < 0) {
-		std::cerr << "could not write into pipe; " << strerror(errno);
-		close(fd);
-		waitpid(pid, nullptr, 0);
-		return EXIT_FAILURE;
-	}
-	close(fd);
-
-	int s;
-	waitpid(pid, &s, 0);
-	if (WIFEXITED(s) && WEXITSTATUS(s) == 0) return EXIT_SUCCESS;
-	return EXIT_FAILURE;
-}
-
-#else
+#ifdef _WIN32
 
 // Windows
 
@@ -280,6 +222,38 @@ int CallGnuplot(const char *gnuplot,
 	return EXIT_FAILURE;
 }
 
+#elif defined(HAVE_POPEN)
+
+// POSIX
+
+int CallGnuplot(const char *gnuplot,
+				std::uint32_t num_columns,
+				const char *csv_path,
+				const char *output_path)
+{
+	FILE *fp = popen(gnuplot, "w");
+	if (!fp) {
+		std::cerr << "failed to popen: "  << gnuplot << std::endl;
+		return EXIT_FAILURE;
+	}
+	std::ostringstream bss;
+	CreateScript(num_columns, csv_path, output_path, &bss);
+	auto buf = bss.str();
+	int result = EXIT_SUCCESS;
+	if (std::fwrite(buf.c_str(), buf.size(), 1, fp) <= 0) {
+		std::cerr << "failed to write script into pipe" << std::endl;
+		result = EXIT_FAILURE;
+	}
+	int r = pclose(fp);
+	if (r == -1) {
+		std::cerr << "failed to pclose: " << std::strerror(errno) << std::endl;
+		result = EXIT_FAILURE;
+	}
+	return result;
+}
+
+#else
+#error "unavailability of popen is fatal."
 #endif
 
 char *stripped_path = nullptr;
@@ -302,7 +276,7 @@ int main(int argc, char *argv[])
 	int print_help = 0;
 
 	opts.add_options()
-		("gnuplot", boost::program_options::value<std::string>(&gnuplot),
+		("gnuplot", boost::program_options::value<std::string>(&gnuplot)->default_value("gnuplot"),
 		 "Command for gnuplot")
 		("isd2csv", boost::program_options::value<std::string>(&isd2csv),
 		 "Command for isd2csv")
@@ -317,7 +291,6 @@ int main(int argc, char *argv[])
 		po::store(po::command_line_parser(argc, argv).options(opts).positional(popts).run(), vm);
 		po::notify(vm);
 		if (vm.count("help")) print_help = 1;
-		if (vm.count("gnuplot") == 0) print_help = 2;
 		if (vm.count("isd2csv") == 0) print_help = 2;
 		if (vm.count("output") == 0) print_help = 2;
 		if (vm.count("input") == 0) print_help = 2;

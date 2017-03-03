@@ -130,11 +130,10 @@ AC_TYPE_UINT32_T
 
 # Checks for library functions.
 AC_FUNC_ERROR_AT_LINE
-AC_FUNC_FORK
 # The following 2 macros prevent cross-compilation with MinGW
 #AC_FUNC_MALLOC
 #AC_FUNC_REALLOC
-AC_CHECK_FUNCS([floor gethostname gettimeofday memset mkstemp pow putenv socket sqrt strerror strstr])
+AC_CHECK_FUNCS([floor gethostname gettimeofday memset mkstemp popen pow putenv socket sqrt strerror strstr])
 
 AC_CONFIG_FILES([Makefile
                  src/Makefile
