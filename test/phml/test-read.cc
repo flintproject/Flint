@@ -212,7 +212,7 @@ private:
 	{
 		boost::filesystem::path sp(__FILE__);
 		boost::filesystem::path fp = sp.parent_path();
-		fp /= "test-read";
+		fp /= "read";
 		fp /= name;
 		boost::filesystem::ifstream ifs(fp);
 		BOOST_REQUIRE(ifs.is_open());
