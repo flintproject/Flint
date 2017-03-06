@@ -41,68 +41,14 @@
   <is:module-set>
     <is:module module-id="af893ee2-fa72-11e6-a961-5fa38883b1e9" type="functional-unit">
       <is:property>
-        <is:name>a</is:name>
+        <is:name>m</is:name>
         <is:capsulation state="false" />
         <is:template state="false" />
         <is:instance state="false" />
-        <is:keyword-set />
-        <is:track />
-        <is:frame-coordinate />
-        <is:description>a</is:description>
       </is:property>
       <is:port-set />
       <is:physical-quantity-set>
-        <is:physical-quantity type="variable-parameter" physical-quantity-id="1">
-          <is:name>a</is:name>
-          <is:implementation>
-            <is:definition format="mathml" type="ae">
-              <m:math>
-                <m:apply>
-                  <m:eq />
-                  <m:ci>a</m:ci>
-                  <m:apply>
-                    <m:plus />
-                    <m:apply>
-                      <m:sin />
-                      <m:ci>time</m:ci>
-                    </m:apply>
-                    <m:cn>1</m:cn>
-                  </m:apply>
-                </m:apply>
-              </m:math>
-            </is:definition>
-          </is:implementation>
-          <is:max-delay>1</is:max-delay>
-          <is:dimension type="scalar" />
-          <is:value-type-set>
-            <is:value-type unit-id="0" precision="double" />
-          </is:value-type-set>
-          <is:description>An oscillation</is:description>
-        </is:physical-quantity>
-        <is:physical-quantity type="variable-parameter" physical-quantity-id="2">
-          <is:name>b</is:name>
-          <is:implementation>
-            <is:definition format="mathml" type="ae">
-              <m:math>
-                <m:apply>
-                  <m:eq />
-                  <m:ci>b</m:ci>
-                  <m:apply>
-                    <m:csymbol>Delay</m:csymbol>
-                    <m:ci>a</m:ci>
-                    <m:cn>1</m:cn>
-                  </m:apply>
-                </m:apply>
-              </m:math>
-            </is:definition>
-          </is:implementation>
-          <is:dimension type="scalar" />
-          <is:value-type-set>
-            <is:value-type unit-id="0" precision="double" />
-          </is:value-type-set>
-          <is:description>Another oscillation</is:description>
-        </is:physical-quantity>
-        <is:physical-quantity type="timeseries" physical-quantity-id="3">
+        <is:physical-quantity type="timeseries" physical-quantity-id="1">
           <is:name>sensor0</is:name>
           <is:implementation>
             <is:definition type="assign" sub-type="timeseries" format="reference">
@@ -115,7 +61,7 @@
           </is:value-type-set>
           <is:description>Sensor input 0</is:description>
         </is:physical-quantity>
-        <is:physical-quantity type="timeseries" physical-quantity-id="4">
+        <is:physical-quantity type="timeseries" physical-quantity-id="2">
           <is:name>sensor1</is:name>
           <is:implementation>
             <is:definition type="assign" sub-type="timeseries" format="reference">
@@ -128,7 +74,7 @@
           </is:value-type-set>
           <is:description>Sensor input 1</is:description>
         </is:physical-quantity>
-        <is:physical-quantity type="timeseries" physical-quantity-id="5">
+        <is:physical-quantity type="timeseries" physical-quantity-id="3">
           <is:name>sensor2</is:name>
           <is:implementation>
             <is:definition type="assign" sub-type="timeseries" format="reference">
@@ -141,7 +87,7 @@
           </is:value-type-set>
           <is:description>Sensor input 2</is:description>
         </is:physical-quantity>
-        <is:physical-quantity type="timeseries" physical-quantity-id="6">
+        <is:physical-quantity type="timeseries" physical-quantity-id="4">
           <is:name>sensor3</is:name>
           <is:implementation>
             <is:definition type="assign" sub-type="timeseries" format="reference">
@@ -154,7 +100,7 @@
           </is:value-type-set>
           <is:description>Sensor input 3</is:description>
         </is:physical-quantity>
-        <is:physical-quantity type="state" physical-quantity-id="7">
+        <is:physical-quantity type="state" physical-quantity-id="5">
           <is:name>l0</is:name>
           <is:implementation>
             <is:definition type="ode" format="mathml">
@@ -168,7 +114,6 @@
                   </m:apply>
                   <m:apply>
                     <m:plus/>
-                    <m:ci>a</m:ci>
                     <m:cn>800</m:cn>
                     <m:apply>
                       <m:times/>
@@ -210,7 +155,7 @@
           </is:value-type-set>
           <is:description>Angular velocity of the left wheel</is:description>
         </is:physical-quantity>
-        <is:physical-quantity type="state" physical-quantity-id="8">
+        <is:physical-quantity type="state" physical-quantity-id="6">
           <is:name>r0</is:name>
           <is:implementation>
             <is:definition type="ode" format="mathml">
@@ -224,7 +169,6 @@
                   </m:apply>
                   <m:apply>
                     <m:plus/>
-                    <m:ci>b</m:ci>
                     <m:cn>800</m:cn>
                     <m:apply>
                       <m:times/>
@@ -266,7 +210,7 @@
           </is:value-type-set>
           <is:description>Angular velocity of the right wheel</is:description>
         </is:physical-quantity>
-        <is:physical-quantity type="static-parameter" physical-quantity-id="9">
+        <is:physical-quantity type="static-parameter" physical-quantity-id="7">
           <is:name>c0</is:name>
           <is:implementation>
             <is:definition format="mathml" type="ae">
@@ -274,7 +218,7 @@
                 <m:apply>
                   <m:eq />
                   <m:ci>c0</m:ci>
-                  <m:cn>-4</m:cn>
+                  <m:cn>-10</m:cn>
                 </m:apply>
               </m:math>
             </is:definition>
@@ -285,7 +229,7 @@
           </is:value-type-set>
           <is:description>Coefficient 0</is:description>
         </is:physical-quantity>
-        <is:physical-quantity type="static-parameter" physical-quantity-id="10">
+        <is:physical-quantity type="static-parameter" physical-quantity-id="8">
           <is:name>c1</is:name>
           <is:implementation>
             <is:definition format="mathml" type="ae">
@@ -293,7 +237,7 @@
                 <m:apply>
                   <m:eq />
                   <m:ci>c1</m:ci>
-                  <m:cn>-6</m:cn>
+                  <m:cn>-10</m:cn>
                 </m:apply>
               </m:math>
             </is:definition>
@@ -304,7 +248,7 @@
           </is:value-type-set>
           <is:description>Coefficient 1</is:description>
         </is:physical-quantity>
-        <is:physical-quantity type="static-parameter" physical-quantity-id="11">
+        <is:physical-quantity type="static-parameter" physical-quantity-id="9">
           <is:name>c2</is:name>
           <is:implementation>
             <is:definition format="mathml" type="ae">
@@ -323,7 +267,7 @@
           </is:value-type-set>
           <is:description>Coefficient 2</is:description>
         </is:physical-quantity>
-        <is:physical-quantity type="static-parameter" physical-quantity-id="12">
+        <is:physical-quantity type="static-parameter" physical-quantity-id="10">
           <is:name>c3</is:name>
           <is:implementation>
             <is:definition format="mathml" type="ae">
@@ -331,7 +275,7 @@
                 <m:apply>
                   <m:eq />
                   <m:ci>c3</m:ci>
-                  <m:cn>-4</m:cn>
+                  <m:cn>-10</m:cn>
                 </m:apply>
               </m:math>
             </is:definition>
