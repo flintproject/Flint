@@ -35,7 +35,7 @@ DYLIBS := \
     libsedml.0 \
     libxml2.2 \
     libprotobuf.$(PROTOBUF_CURRENT) \
-    libwx_osx_cocoau-3.1.0.0.0 \
+    libwx_osx_cocoau-3.1 \
     libzmq.$(ZEROMQ_CURRENT) \
     libzip.4
 SUNDIALS_DYLIBS := \
