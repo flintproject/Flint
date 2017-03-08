@@ -79,7 +79,6 @@ AM_CONDITIONAL([ENABLE_TCP],[test "x$enable_tcp" != xno])
 
 PKG_CHECK_MODULES([CLIBSEDML],[clibsedml >= 0.1.0])
 PKG_CHECK_MODULES([LIBSBML],[libsbml])
-PKG_CHECK_MODULES([LIBZIP],[libzip >= 1.1.1])
 PKG_CHECK_MODULES([SOSLIB],[libODES])
 PKG_CHECK_MODULES([PROTOBUF],[protobuf])
 PKG_CHECK_MODULES([ZEROMQ],[libzmq >= 4.2.1])

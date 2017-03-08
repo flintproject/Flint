@@ -89,17 +89,6 @@ tmp/libxml2-$(LIBXML2_VERSION): src/libxml2-$(LIBXML2_VERSION).tar.gz | tmp
 	tar -C var -zxf $<
 	touch $@
 
-tmp/libzip-$(LIBZIP_VERSION): src/libzip-$(LIBZIP_VERSION).tar.gz libzip-$(LIBZIP_VERSION)-regress.patch | tmp
-	-rm -rf var/libzip-$(LIBZIP_VERSION)
-	tar -C var -zxf $<
-	patch var/libzip-$(LIBZIP_VERSION)/Makefile.in libzip-$(LIBZIP_VERSION)-regress.patch
-	touch $@
-
-tmp/zlib-$(ZLIB_VERSION): src/zlib-$(ZLIB_VERSION).tar.gz | tmp
-	-rm -rf var/zlib-$(ZLIB_VERSION)
-	tar -C var -zxf $<
-	touch $@
-
 tmp/protobuf-$(PROTOBUF_VERSION): src/protobuf-java-$(PROTOBUF_VERSION).tar.gz | tmp
 	-rm -rf var/protobuf-$(PROTOBUF_VERSION)
 	tar -C var -zxf $<
@@ -161,11 +150,6 @@ tmp/libxml2-$(LIBXML2_VERSION).installed: tmp/libxml2-$(LIBXML2_VERSION)
 	$(MAKE) -C var/libxml2-$(LIBXML2_VERSION) all install
 	touch $@
 
-tmp/libzip-$(LIBZIP_VERSION).installed: tmp/libzip-$(LIBZIP_VERSION) tmp/zlib-$(ZLIB_VERSION).installed
-	(cd var/libzip-$(LIBZIP_VERSION) && ./configure --host=$(HOST) --prefix=$(PREFIX) --with-zlib=$(PREFIX) $(LIBZIP_CONFIGURE_OPTIONS))
-	$(MAKE) -C var/libzip-$(LIBZIP_VERSION) all install
-	touch $@
-
 tmp/sundials-$(SUNDIALS_VERSION).installed: tmp/sundials-$(SUNDIALS_VERSION) var/toolchain.cmake
 	install -d var/sundials-$(SUNDIALS_VERSION)/build
 	(cd var/sundials-$(SUNDIALS_VERSION)/build && cmake --host=$(HOST) -DCMAKE_INSTALL_PREFIX=$(PREFIX) -DCMAKE_TOOLCHAIN_FILE=$(CURDIR)/var/toolchain.cmake $(SUNDIALS_CMAKE_OPTIONS) ..)
@@ -193,10 +177,6 @@ tmp/zeromq-$(ZEROMQ_VERSION).installed: tmp/zeromq-$(ZEROMQ_VERSION)
 	$(MAKE) -C var/zeromq-$(ZEROMQ_VERSION) all install
 	touch $@
 
-tmp/zlib-$(ZLIB_VERSION).installed: tmp/zlib-$(ZLIB_VERSION)
-	(cd var/zlib-$(ZLIB_VERSION) && $(MAKE) -fwin32/Makefile.gcc all install PREFIX=$(HOST)- DESTDIR=$(PREFIX)/ INCLUDE_PATH=include LIBRARY_PATH=lib BINARY_PATH=bin SHARED_MODE=1)
-	touch $@
-
 ../flint/dist/flint.jar: $(foreach e,$(EXES),opt/bin/$(e).exe)
 	ant -f ../flint/build.xml jar
 
@@ -209,7 +189,7 @@ flint opt usr var/flint:
 flint/lib: | flint
 	install -d $@
 
-var/flint/Makefile: tmp/$(BOOST_UNDERSCORE).installed tmp/clibsedml-$(CLIBSEDML_VERSION).installed tmp/czmq-$(CZMQ_VERSION).installed tmp/protobuf-$(PROTOBUF_VERSION).installed tmp/libzip-$(LIBZIP_VERSION).installed tmp/SBML_odeSolver-$(SOSLIB_VERSION).installed tmp/wxWidgets-$(WXWIDGETS_VERSION).installed ../configure | usr/bin/protoc var/flint
+var/flint/Makefile: tmp/$(BOOST_UNDERSCORE).installed tmp/clibsedml-$(CLIBSEDML_VERSION).installed tmp/czmq-$(CZMQ_VERSION).installed tmp/protobuf-$(PROTOBUF_VERSION).installed tmp/SBML_odeSolver-$(SOSLIB_VERSION).installed tmp/wxWidgets-$(WXWIDGETS_VERSION).installed ../configure | usr/bin/protoc var/flint
 	(cd var/flint && env CPPFLAGS='-DWIN32_LEAN_AND_MEAN -D_WIN32_WINNT=0x0600 -DWIN32 -DSBML_ODESOLVER_EXPORTS=1' LIBS='-lole32 -loleaut32 -lmswsock -lws2_32' PKG_CONFIG_PATH=$(PKG_CONFIG_PATH) LIBSBML_CFLAGS=$(PREFIX)/include LIBSBML_LIBS='-lsbml' SOSLIB_CFLAGS=$(PREFIX)/include SOSLIB_LIBS='-lODES' ../../../configure --host=$(HOST) --prefix=$(PREFIX) --with-boost=$(PREFIX) --with-xml-prefix=$(PREFIX) --disable-xmltest --with-protoc=$(abspath usr/bin/protoc) --with-sundials=$(PREFIX) --with-wxWidgets=$(PREFIX) --enable-release --enable-silent-rules --enable-shared --disable-static)
 
 $(foreach d,$(FLINT_DLLS),opt/bin/$(d).dll) $(foreach e,$(EXES),opt/bin/$(e).exe): $(foreach d,$(BIN_DLLS) $(BOOST_DLLS),$(call flint_dll_name,$(d))) tmp/sundials-$(SUNDIALS_VERSION).installed tmp/SBML_odeSolver-$(SOSLIB_VERSION).installed var/flint/Makefile
@@ -233,10 +213,6 @@ opt/bin/libsbml.all: tmp/libsbml-$(LIBSBML_VERSION).installed
 opt/bin/libxml2-2.dll: tmp/libxml2-$(LIBXML2_VERSION).installed
 
 opt/bin/libzmq.dll: tmp/zeromq-$(ZEROMQ_VERSION).installed
-
-opt/bin/libzip-4.dll: tmp/libzip-$(LIBZIP_VERSION).installed
-
-opt/bin/zlib1.dll: tmp/zlib-$(ZLIB_VERSION).installed
 
 $(foreach d,$(BIN_DLLS) $(FLINT_DLLS),$(eval $(call flint_bin_dll,$(d))))
 
@@ -282,7 +258,7 @@ flint/icon.png: ../flint/src/jp/oist/flint/image/icon.png | flint
 flint/license.rtf: ../doc/license.rtf | flint
 	install -p -m 0644 $< $@
 
-flint/third-party-licenses.txt: tmp/libsbml-$(LIBSBML_VERSION) tmp/libxml2-$(LIBXML2_VERSION) tmp/libzip-$(LIBZIP_VERSION) tmp/protobuf-$(PROTOBUF_VERSION) tmp/SBML_odeSolver-$(SOSLIB_VERSION) tmp/sundials-$(SUNDIALS_VERSION) tmp/wxWidgets-$(WXWIDGETS_VERSION) | flint
+flint/third-party-licenses.txt: tmp/libsbml-$(LIBSBML_VERSION) tmp/libxml2-$(LIBXML2_VERSION) tmp/protobuf-$(PROTOBUF_VERSION) tmp/SBML_odeSolver-$(SOSLIB_VERSION) tmp/sundials-$(SUNDIALS_VERSION) tmp/wxWidgets-$(WXWIDGETS_VERSION) | flint
 	echo ';;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;' > $@
 	echo ';; Licenses of third-party libraries' >> $@
 	echo ';;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;' >> $@
@@ -298,10 +274,6 @@ flint/third-party-licenses.txt: tmp/libsbml-$(LIBSBML_VERSION) tmp/libxml2-$(LIB
 	echo ';; libxml2 $(LIBXML2_VERSION)' >> $@
 	echo >> $@
 	cat var/libxml2-$(LIBXML2_VERSION)/Copyright >> $@
-	echo >> $@
-	echo ';; libzip $(LIBZIP_VERSION)' >> $@
-	echo >> $@
-	cat var/libzip-$(LIBZIP_VERSION)/LICENSE >> $@
 	echo >> $@
 	echo ';; Protocol Buffers $(PROTOBUF_VERSION)' >> $@
 	echo >> $@

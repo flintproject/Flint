@@ -4,9 +4,8 @@ include ../deposit.mk
 include ../option.mk
 include ../version.mk
 
-UNNECESSARY_LIBRARIES = zlib-%
-EXTERNAL_LIBRARIES = $(filter-out $(UNNECESSARY_LIBRARIES),$(ALL_EXTERNAL_LIBRARIES))
-EXTERNAL_LIBRARY_DIRS = $(filter-out $(UNNECESSARY_LIBRARIES),$(ALL_EXTERNAL_LIBRARY_DIRS))
+EXTERNAL_LIBRARIES = $(ALL_EXTERNAL_LIBRARIES)
+EXTERNAL_LIBRARY_DIRS = $(ALL_EXTERNAL_LIBRARY_DIRS)
 
 PREFIX = $(abspath usr)
 
@@ -36,8 +35,7 @@ DYLIBS := \
     libxml2.2 \
     libprotobuf.$(PROTOBUF_CURRENT) \
     libwx_osx_cocoau-3.1 \
-    libzmq.$(ZEROMQ_CURRENT) \
-    libzip.4
+    libzmq.$(ZEROMQ_CURRENT)
 SUNDIALS_DYLIBS := \
     arkode.1 \
     cvode.2 \
@@ -125,7 +123,7 @@ endef
 
 .PHONY: all check mostlyclean clean distclean download
 
-all: download $(foreach lib,$(BOOST_UNDERSCORE) clibsedml-$(CLIBSEDML_VERSION) czmq-$(CZMQ_VERSION) libsbml-$(LIBSBML_VERSION) libxml2-$(LIBXML2_VERSION) libzip-$(LIBZIP_VERSION) protobuf-$(PROTOBUF_VERSION) SBML_odeSolver-$(SOSLIB_VERSION) sundials-$(SUNDIALS_VERSION) wxWidgets-$(WXWIDGETS_VERSION) zeromq-$(ZEROMQ_VERSION),tmp/$(lib).installed) $(DMGS)
+all: download $(foreach lib,$(BOOST_UNDERSCORE) clibsedml-$(CLIBSEDML_VERSION) czmq-$(CZMQ_VERSION) libsbml-$(LIBSBML_VERSION) libxml2-$(LIBXML2_VERSION) protobuf-$(PROTOBUF_VERSION) SBML_odeSolver-$(SOSLIB_VERSION) sundials-$(SUNDIALS_VERSION) wxWidgets-$(WXWIDGETS_VERSION) zeromq-$(ZEROMQ_VERSION),tmp/$(lib).installed) $(DMGS)
 
 check:
 	env DYLD_LIBRARY_PATH=$(PREFIX)/lib $(MAKE) -C build check
@@ -174,11 +172,6 @@ tmp/libxml2-$(LIBXML2_VERSION): src/libxml2-$(LIBXML2_VERSION).tar.gz | tmp
 	tar -C var -zxf $<
 	touch $@
 
-tmp/libzip-$(LIBZIP_VERSION): src/libzip-$(LIBZIP_VERSION).tar.gz | tmp
-	-rm -rf var/libzip-$(LIBZIP_VERSION)
-	tar -C var -zxf $<
-	touch $@
-
 tmp/protobuf-$(PROTOBUF_VERSION): src/protobuf-java-$(PROTOBUF_VERSION).tar.gz | tmp
 	-rm -rf var/protobuf-$(PROTOBUF_VERSION)
 	tar -C var -zxf $<
@@ -222,10 +215,6 @@ tmp/protobuf-$(PROTOBUF_VERSION).installed: tmp/protobuf-$(PROTOBUF_VERSION)
 
 tmp/libxml2-$(LIBXML2_VERSION).installed: tmp/libxml2-$(LIBXML2_VERSION)
 	(cd var/libxml2-$(LIBXML2_VERSION) && export MACOSX_DEPLOYMENT_TARGET=10.8 && ./configure --prefix=$(PREFIX) $(LIBXML2_CONFIGURE_OPTIONS) CC='clang' CXX='clang++' CFLAGS='-arch x86_64 -mmacosx-version-min=10.8' CXXFLAGS='-std=c++11 -stdlib=libc++ -arch x86_64 -mmacosx-version-min=10.8' LDFLAGS='-stdlib=libc++ -arch x86_64 -mmacosx-version-min=10.8' && $(MAKE) all install)
-	touch $@
-
-tmp/libzip-$(LIBZIP_VERSION).installed: tmp/libzip-$(LIBZIP_VERSION)
-	(cd var/libzip-$(LIBZIP_VERSION) && export MACOSX_DEPLOYMENT_TARGET=10.8 && ./configure --prefix=$(PREFIX) $(LIBZIP_CONFIGURE_OPTIONS) CC='clang' CXX='clang++' CFLAGS='-arch x86_64 -mmacosx-version-min=10.8' CXXFLAGS='-std=c++11 -stdlib=libc++ -arch x86_64 -mmacosx-version-min=10.8' LDFLAGS='-stdlib=libc++ -arch x86_64 -mmacosx-version-min=10.8' && $(MAKE) all install)
 	touch $@
 
 tmp/sundials-$(SUNDIALS_VERSION).installed: tmp/sundials-$(SUNDIALS_VERSION)
@@ -310,10 +299,6 @@ $(APP)/Contents/Resources/third-party-licenses.txt: tmp/libsbml-$(LIBSBML_VERSIO
 	echo ';; libxml2 $(LIBXML2_VERSION)' >> $@
 	echo >> $@
 	cat var/libxml2-$(LIBXML2_VERSION)/Copyright >> $@
-	echo >> $@
-	echo ';; libzip $(LIBZIP_VERSION)' >> $@
-	echo >> $@
-	cat var/libzip-$(LIBZIP_VERSION)/LICENSE >> $@
 	echo >> $@
 	echo ';; Protocol Buffers $(PROTOBUF_VERSION)' >> $@
 	echo >> $@

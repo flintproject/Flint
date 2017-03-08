@@ -16,14 +16,14 @@ $ scl enable devtoolset-3 bash
 
 Moreover, some packages are necessary:
 $ sudo yum install wget \
-    java-1.7.0-openjdk gtk2-devel libuuid-devel libxml2-devel zlib-devel
+    java-1.7.0-openjdk gtk2-devel libuuid-devel libxml2-devel
 
 
 == RHEL/CentOS 7
 
 Install necessary tools for building and installing Flint with:
 $ sudo yum install gcc gcc-c++ autoconf automake libtool cmake wget \
-    java-1.7.0-openjdk gtk3-devel libuuid-devel libxml2-devel zlib-devel
+    java-1.7.0-openjdk gtk3-devel libuuid-devel libxml2-devel
 
 
 == Debian jessie/stretch/sid
@@ -32,26 +32,26 @@ We do not have a Debian package (.deb) for Flint yet.
 Before building Flint, you will want to install prerequisite Debian packages
 as follows:
 $ sudo apt-get install gcc g++ autoconf automake libtool cmake openjdk-7-jdk \
-    pkgconf zlib1g-dev libgtk2.0-dev libxml2-dev uuid-dev
+    pkgconf libgtk2.0-dev libxml2-dev uuid-dev
 
 
 == Fedora 24
 
 Use dnf(8) to install required packages for building Flint:
 $ sudo dnf install gcc gcc-c++ autoconf automake libtool cmake wget \
-    java-1.8.0-openjdk libuuid-devel libxml2-devel zlib-devel gtk3-devel
+    java-1.8.0-openjdk libuuid-devel libxml2-devel gtk3-devel
 
 
 == Ubuntu 16.04 LTS (Xenial Xerus)
 
-$ sudo apt install g++ autoconf automake libtool cmake openjdk-8-jdk zlib1g-dev \
+$ sudo apt install g++ autoconf automake libtool cmake openjdk-8-jdk \
     libgtk2.0-dev libxml2-dev uuid-dev
 
 
 == Ubuntu 14.04.3 LTS (Trusty Tahr)
 
 All you have to do for installing necessary tools is:
-$ sudo apt-get install g++ autoconf automake libtool cmake openjdk-7-jdk zlib1g-dev \
+$ sudo apt-get install g++ autoconf automake libtool cmake openjdk-7-jdk \
     libgtk2.0-dev libxml2-dev uuid-dev
 
 

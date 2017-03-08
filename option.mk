@@ -58,8 +58,6 @@ LIBXML2_CONFIGURE_OPTIONS = \
 	--without-threads \
 	--without-zlib
 
-LIBZIP_CONFIGURE_OPTIONS = --enable-silent-rules --disable-static
-
 PROTOBUF_CONFIGURE_OPTONS = \
 	--enable-silent-rules \
 	--disable-static \

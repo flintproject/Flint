@@ -12,7 +12,6 @@ DEPS := \
     clibsedml \
     czmq \
     libsbml \
-    libzip \
     protobuf \
     soslib \
     sundials \
@@ -23,7 +22,6 @@ boost_VERSION = $(BOOST_VERSION)
 clibsedml_VERSION = $(CLIBSEDML_VERSION)
 czmq_VERSION = $(CZMQ_VERSION)
 libsbml_VERSION = $(LIBSBML_VERSION)
-libzip_VERSION = $(LIBZIP_VERSION)
 protobuf_VERSION = $(PROTOBUF_VERSION)
 soslib_VERSION = $(SOSLIB_VERSION)
 sundials_VERSION = $(SUNDIALS_VERSION)
@@ -34,7 +32,6 @@ boost_RELEASE = 1
 clibsedml_RELEASE = 1
 czmq_RELEASE = 1
 libsbml_RELEASE = 1
-libzip_RELEASE = 1
 protobuf_RELEASE = 1
 soslib_RELEASE = 1
 sundials_RELEASE = 1
@@ -45,7 +42,6 @@ boost_DEPENDS =
 clibsedml_DEPENDS =
 czmq_DEPENDS = zeromq
 libsbml_DEPENDS = 
-libzip_DEPENDS = 
 protobuf_DEPENDS =
 soslib_DEPENDS = libsbml sundials
 sundials_DEPENDS =
@@ -159,7 +155,7 @@ maintainer-clean: distclean
 	-sudo rpm -e flint
 	-sudo rpm -e $(DEPNAMES)
 
-download: $(foreach lib,$(BOOST_UNDERSCORE).tar.bz2 clibsedml-$(CLIBSEDML_VERSION).tar.gz czmq-$(CZMQ_VERSION).tar.gz libSBML-$(LIBSBML_VERSION)-core-src.zip libzip-$(LIBZIP_VERSION).tar.gz protobuf-java-$(PROTOBUF_VERSION).tar.gz SBML_odeSolver-$(SOSLIB_VERSION).tar.gz sundials-$(SUNDIALS_VERSION).tar.gz wxWidgets-$(WXWIDGETS_VERSION).tar.bz2 zeromq-$(ZEROMQ_VERSION).tar.gz,src/$(lib))
+download: $(foreach lib,$(BOOST_UNDERSCORE).tar.bz2 clibsedml-$(CLIBSEDML_VERSION).tar.gz czmq-$(CZMQ_VERSION).tar.gz libSBML-$(LIBSBML_VERSION)-core-src.zip protobuf-java-$(PROTOBUF_VERSION).tar.gz SBML_odeSolver-$(SOSLIB_VERSION).tar.gz sundials-$(SUNDIALS_VERSION).tar.gz wxWidgets-$(WXWIDGETS_VERSION).tar.bz2 zeromq-$(ZEROMQ_VERSION).tar.gz,src/$(lib))
 
 Flint-$(VERSION)-$(DIST).$(ARCH):
 	install -d $@
@@ -214,10 +210,6 @@ $(eval $(call flint_setup_dir,sundials,sundials-$(SUNDIALS_VERSION)))
 $(eval $(call flint_unzip,libsbml-$(LIBSBML_VERSION),libSBML-$(LIBSBML_VERSION)-core-src))
 
 $(eval $(call flint_setup_dir,libsbml,libsbml-$(LIBSBML_VERSION)))
-
-$(eval $(call flint_expand_tar_gz,libzip-$(LIBZIP_VERSION),libzip-$(LIBZIP_VERSION)))
-
-$(eval $(call flint_setup_dir,libzip,libzip-$(LIBZIP_VERSION)))
 
 $(eval $(call flint_expand_tar_gz,protobuf-$(PROTOBUF_VERSION),protobuf-java-$(PROTOBUF_VERSION)))
 

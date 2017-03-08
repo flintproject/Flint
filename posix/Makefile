@@ -3,13 +3,13 @@
 include ../deposit.mk
 include ../option.mk
 
-UNNECESSARY_LIBRARIES = libxml2-% zlib-%
+UNNECESSARY_LIBRARIES = libxml2-%
 EXTERNAL_LIBRARIES = $(filter-out $(UNNECESSARY_LIBRARIES),$(ALL_EXTERNAL_LIBRARIES))
 EXTERNAL_LIBRARY_DIRS = $(filter-out $(UNNECESSARY_LIBRARIES),$(ALL_EXTERNAL_LIBRARY_DIRS))
 
 PREFIX ?= $(abspath opt)
 
-PKG_CONFIG_PATH = $(PREFIX)/clibsedml-$(CLIBSEDML_VERSION)/lib/pkgconfig:$(PREFIX)/czmq-$(CZMQ_VERSION)/lib/pkgconfig:$(PREFIX)/libsbml-$(LIBSBML_VERSION)/lib/pkgconfig:$(PREFIX)/libzip-$(LIBZIP_VERSION)/lib/pkgconfig:$(PREFIX)/protobuf-$(PROTOBUF_VERSION)/lib/pkgconfig:$(PREFIX)/SBML_odeSolver-$(SOSLIB_VERSION)/lib/pkgconfig:$(PREFIX)/zeromq-$(ZEROMQ_VERSION)/lib/pkgconfig
+PKG_CONFIG_PATH = $(PREFIX)/clibsedml-$(CLIBSEDML_VERSION)/lib/pkgconfig:$(PREFIX)/czmq-$(CZMQ_VERSION)/lib/pkgconfig:$(PREFIX)/libsbml-$(LIBSBML_VERSION)/lib/pkgconfig:$(PREFIX)/protobuf-$(PROTOBUF_VERSION)/lib/pkgconfig:$(PREFIX)/SBML_odeSolver-$(SOSLIB_VERSION)/lib/pkgconfig:$(PREFIX)/zeromq-$(ZEROMQ_VERSION)/lib/pkgconfig
 
 .PHONY: all check check-sequential-version download mostlyclean clean distclean install
 
@@ -55,11 +55,6 @@ tmp/czmq-$(CZMQ_VERSION): src/czmq-$(CZMQ_VERSION).tar.gz | tmp
 tmp/libsbml-$(LIBSBML_VERSION): src/libSBML-$(LIBSBML_VERSION)-core-src.zip | tmp
 	-rm -rf var/libsbml-$(LIBSBML_VERSION)
 	(cd var && unzip -qq ../$<)
-	touch $@
-
-tmp/libzip-$(LIBZIP_VERSION): src/libzip-$(LIBZIP_VERSION).tar.gz | tmp
-	-rm -rf var/libzip-$(LIBZIP_VERSION)
-	tar -C var -zxf $<
 	touch $@
 
 tmp/protobuf-$(PROTOBUF_VERSION): src/protobuf-java-$(PROTOBUF_VERSION).tar.gz | tmp
@@ -112,13 +107,6 @@ tmp/protobuf-$(PROTOBUF_VERSION).installed: tmp/protobuf-$(PROTOBUF_VERSION)
 	$(MAKE) -C var/protobuf-$(PROTOBUF_VERSION) install
 	touch $@
 
-tmp/libzip-$(LIBZIP_VERSION).installed: tmp/libzip-$(LIBZIP_VERSION)
-	(cd var/libzip-$(LIBZIP_VERSION) && ./configure --prefix=$(PREFIX)/libzip-$(LIBZIP_VERSION) $(LIBZIP_CONFIGURE_OPTIONS))
-	$(MAKE) -C var/libzip-$(LIBZIP_VERSION) all
-	-rm -rf $(PREFIX)/libzip-$(LIBZIP_VERSION)
-	$(MAKE) -C var/libzip-$(LIBZIP_VERSION) install
-	touch $@
-
 tmp/sundials-$(SUNDIALS_VERSION).installed: tmp/sundials-$(SUNDIALS_VERSION)
 	-rm -rf var/sundials-$(SUNDIALS_VERSION)
 	install -d var/sundials-$(SUNDIALS_VERSION)
@@ -156,7 +144,7 @@ tmp/zeromq-$(ZEROMQ_VERSION).installed: tmp/zeromq-$(ZEROMQ_VERSION)
 	$(MAKE) -C var/zeromq-$(ZEROMQ_VERSION) install
 	touch $@
 
-tmp/sequential-version.installed: tmp/$(BOOST_UNDERSCORE).installed tmp/clibsedml-$(CLIBSEDML_VERSION).installed tmp/czmq-$(CZMQ_VERSION).installed tmp/wxWidgets-$(WXWIDGETS_VERSION).installed tmp/libzip-$(LIBZIP_VERSION).installed tmp/protobuf-$(PROTOBUF_VERSION).installed tmp/SBML_odeSolver-$(SOSLIB_VERSION).installed
+tmp/sequential-version.installed: tmp/$(BOOST_UNDERSCORE).installed tmp/clibsedml-$(CLIBSEDML_VERSION).installed tmp/czmq-$(CZMQ_VERSION).installed tmp/wxWidgets-$(WXWIDGETS_VERSION).installed tmp/protobuf-$(PROTOBUF_VERSION).installed tmp/SBML_odeSolver-$(SOSLIB_VERSION).installed
 	(cd .. && autoreconf -i -f)
 	install -d var/sequential-version
 	(cd var/sequential-version && env LDFLAGS='-Wl,-rpath -Wl,$(PREFIX)/libsbml-$(LIBSBML_VERSION)/lib -Wl,-rpath -Wl,$(PREFIX)/sundials-$(SUNDIALS_VERSION)/lib' PKG_CONFIG_PATH=$(PKG_CONFIG_PATH) ../../../configure --prefix=$(PREFIX)/sequential-version --with-boost=$(PREFIX)/$(BOOST_UNDERSCORE) --with-protoc=$(PREFIX)/protobuf-$(PROTOBUF_VERSION)/bin/protoc --with-sundials=$(PREFIX)/sundials-$(SUNDIALS_VERSION) --with-wxWidgets=$(PREFIX)/wxWidgets-$(WXWIDGETS_VERSION) --enable-silent-rules)

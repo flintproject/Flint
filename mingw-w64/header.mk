@@ -17,9 +17,7 @@ BIN_DLLS := \
     libsbml \
     libsedml-0 \
     libxml2-2 \
-    libzmq \
-    libzip-4 \
-    zlib1
+    libzmq
 BOOST_DLLS := \
     libboost_filesystem-mt \
     libboost_program_options-mt \

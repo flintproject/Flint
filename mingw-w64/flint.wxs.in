@@ -185,12 +185,6 @@
           <Component Id='zeromq' Guid='f3c4adfc-f1b3-11e6-9632-afb37b5e1b1b'>
             <File Id='libzmq' Name='libzmq.dll' DiskId='1' Source='libzmq.dll' />
           </Component>
-          <Component Id='zip' Guid='80567758-6491-11e4-9265-8740267a2adb'>
-            <File Id='libzip' Name='libzip-4.dll' DiskId='1' Source='libzip-4.dll' />
-          </Component>
-          <Component Id='zlib' Guid='82944adc-649f-11e4-a994-f79c5de7eacb'>
-            <File Id='zlib1' Name='zlib1.dll' DiskId='1' Source='zlib1.dll' />
-          </Component>
           <Component Id='libgcc' Guid='095f925e-fd04-11e4-aeb4-33aa8a8ff1dc'>
             <File Id='libgcc_dll' Name='LIBGCC_DLL' DiskId='1' Source='LIBGCC_DLL' />
           </Component>
@@ -285,8 +279,6 @@
       <ComponentRef Id='libsqlite3' />
       <ComponentRef Id='xml2' />
       <ComponentRef Id='zeromq' />
-      <ComponentRef Id='zip' />
-      <ComponentRef Id='zlib' />
       <ComponentRef Id='libgcc' />
       <ComponentRef Id='libstdcxx' />
       <ComponentRef Id='libwinpthread' />
