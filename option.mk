@@ -66,11 +66,14 @@ PROTOBUF_CONFIGURE_OPTONS = \
 SUNDIALS_CMAKE_OPTIONS = -DBUILD_STATIC_LIBS=OFF -DBUILD_SHARED_LIBS=ON
 
 WXWIDGETS_CONFIGURE_OPTIONS = \
+	--enable-arcstream \
 	--enable-aui \
 	--enable-cxx11 \
 	--enable-dnd \
 	--enable-monolithic \
-	--disable-arcstream \
+	--enable-streams \
+	--enable-zipstream \
+	--with-zlib \
 	--disable-compat30 \
 	--disable-constraints \
 	--disable-ftp \
