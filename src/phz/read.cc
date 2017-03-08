@@ -17,7 +17,11 @@
 #define BOOST_FILESYSTEM_NO_DEPRECATED
 #include <boost/filesystem.hpp>
 
-#include <zip.h>
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wcast-qual"
+#include <wx/wfstream.h>
+#include <wx/zipstrm.h>
+#pragma GCC diagnostic pop
 
 #include "database.h"
 #include "modelpath.h"
@@ -31,96 +35,68 @@ bool Read(sqlite3 *db, const char *dir)
 	std::unique_ptr<char[]> filename(GetGivenFilename(db));
 	if (!filename)
 		return false;
-	int ze;
-	struct zip *zp = zip_open(filename.get(), 0, &ze);
-	if (!zp) {
-		char buf[1024];
-		int len = zip_error_to_str(buf, 1023, ze, errno);
-		assert(len < 1024);
-		buf[len] = '\0';
-		std::cerr << buf << std::endl;
+	wxFileInputStream fis(filename.get()); // TODO: locale-dependency?
+	if (!fis) {
+		std::cerr << "failed to open " << filename.get() << std::endl;
 		return false;
 	}
-	zip_int64_t ne = zip_get_num_entries(zp, 0);
-	if (ne < 0) {
-		std::cerr << "the zip archive is null: "
-			 << filename.get()
-			 << std::endl;
-		return false;
-	}
-	if (ne == 0) {
-		std::cerr << "the zip archive is empty: "
-			 << filename.get()
-			 << std::endl;
-		return false;
-	}
+	wxZipInputStream zis(fis);
 
 	boost::filesystem::path tp(dir);
 
-	for (zip_int64_t i=0;i<ne;i++) {
-		const char *name = zip_get_name(zp, i, 0);
-		if (!name) {
-			std::cerr << zip_strerror(zp) << std::endl;
+	std::unique_ptr<wxZipEntry> entry;
+	while (entry.reset(zis.GetNextEntry()), entry) {
+		if (entry->IsDir()) {
+			// skip a directory entry
+			continue;
+		}
+		wxString name = entry->GetName();
+		if (name.empty()) {
+			std::cerr << "found empty name in the zip archive" << std::endl;
+			continue;
+		}
+		if (!zis.OpenEntry(*entry)) {
+			std::cerr << "failed to open a zip entry: " << name << std::endl;
 			return false;
 		}
-		size_t nlen = strlen(name);
-		if (nlen <= 1) {
-			std::cerr << "unexpected entry in the zip archive: "
-				 << name
-				 << std::endl;
-			continue;
-		} else if (name[nlen-1] == '/') {
-			// skip a directory entry
+		auto name_s = name.ToStdString();
+		if (name_s.empty()) {
+			std::cerr << "data loss in converting to std::string: "
+					  << name
+					  << std::endl;
 			continue;
 		}
 
 		boost::filesystem::path op(tp);
-		op /= name;
+		op /= name_s;
 		boost::filesystem::path pp(op.parent_path());
 		boost::filesystem::create_directories(pp);
 
 		std::string op_s = op.string();
-		FILE *ofp = fopen(op_s.c_str(), "wb");
+		FILE *ofp = std::fopen(op_s.c_str(), "wb");
 		if (!ofp) {
 			std::perror(op_s.c_str());
 			return false;
 		}
 
-		struct zip_file *zfp = zip_fopen_index(zp, i, 0);
-		if (!zfp) {
-			std::cerr << zip_strerror(zp) << std::endl;
-			fclose(ofp);
+		size_t size = static_cast<size_t>(entry->GetSize());
+		std::unique_ptr<char[]> buf(new char[size]);
+		if (!zis.Read(buf.get(), size)) {
+			std::cerr << "failed to read zip entry of name " << name << std::endl;
+			std::fclose(ofp);
 			return false;
 		}
-
-		char buf[1024];
-		int len;
-		while ( (len = zip_fread(zfp, buf, 1024)) ) {
-			if (len < 0) {
-				std::cerr << "failed to read entry of index "
-					 << i
-					 << " in the zip archive: "
-					 << filename.get()
-					 << std::endl;
-				fclose(ofp);
-				return false;
-			}
-			assert(len <= 1024);
-			if (fwrite(buf, len, 1, ofp) != 1) {
-				std::cerr << "failed to write entry of index "
-					 << i
-					 << " in the zip archive: "
-					 << filename.get()
-					 << std::endl;
-				fclose(ofp);
-				return false;
-			}
+		if (std::fwrite(buf.get(), size, 1, ofp) != 1) {
+			std::cerr << "failed to write entry of name "
+					  << name
+					  << " in the zip archive: "
+					  << filename.get()
+					  << std::endl;
+			std::fclose(ofp);
+			return false;
 		}
-		zip_fclose(zfp);
-
-		fclose(ofp);
+		std::fclose(ofp);
 	}
-	zip_close(zp);
 
 	tp /= "model.phml";
 	if (!boost::filesystem::is_regular_file(tp)) {
