@@ -240,9 +240,6 @@ flint/$(LIBWINPTHREAD_DLL): $(LIBWINPTHREAD_DIR)/$(LIBWINPTHREAD_DLL) | flint
 flint/Makefile: flint.mk | flint
 	install -p -m 0644 $< $@
 
-flint/header.mk: header.mk | flint
-	install -p -m 0644 $< $@
-
 flint/flint.ico: flint.ico | flint
 	install -p -m 0644 $< $@
 
@@ -295,7 +292,7 @@ flint/third-party-licenses.txt: tmp/libsbml-$(LIBSBML_VERSION) tmp/libxml2-$(LIB
 	echo >> $@
 	cat var/zeromq-$(ZEROMQ_VERSION)/COPYING.LESSER >> $@
 
-flint.zip: $(foreach e,$(EXES),$(call flint_exe_name,$(e))) $(foreach d,$(BOOST_DLLS) $(SUNDIALS_DLLS) wxmsw310u_gcc_custom $(FLINT_DLLS),$(call flint_dll_name,$(d))) flint/$(LIBGCC_DLL) flint/$(LIBSTDCXX_DLL) flint/$(LIBWINPTHREAD_DLL) flint/flint.jar $(foreach j,$(JARS),$(call flint_jar_name,$(j))) flint/Makefile flint/header.mk flint/flint.ico flint/flint.xml flint/flint.wxs flint/icon.png flint/license.rtf flint/third-party-licenses.txt
+flint.zip: $(foreach e,$(EXES),$(call flint_exe_name,$(e))) $(foreach d,$(BOOST_DLLS) $(SUNDIALS_DLLS) wxmsw310u_gcc_custom $(FLINT_DLLS),$(call flint_dll_name,$(d))) flint/$(LIBGCC_DLL) flint/$(LIBSTDCXX_DLL) flint/$(LIBWINPTHREAD_DLL) flint/flint.jar $(foreach j,$(JARS),$(call flint_jar_name,$(j))) flint/Makefile flint/flint.ico flint/flint.xml flint/flint.wxs flint/icon.png flint/license.rtf flint/third-party-licenses.txt
 	zip -r flint flint
 
 .DEFAULT_GOAL := all
