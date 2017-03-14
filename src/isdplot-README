@@ -4,7 +4,7 @@
 
 = Synopsis
 
-isdplot [--gnuplot gnuplot] [--isd2csv isd2csv] [--isdstrip isdstrip] [-o output] path
+isdplot [--gnuplot gnuplot] [--isd2csv isd2csv] [--isdstrip isdstrip] [-o output] [-P] [-U] path
 isdplot --help
 
 
@@ -18,6 +18,12 @@ isdplot --help
 
 --isdstrip
     command for isdstrip.
+
+--ignore-prefixes, -P
+    ignore variable prefixes.
+
+--ignore-units, -U
+    ignore units.
 
 --output, -o
     write to file at `output` instead of stdout.

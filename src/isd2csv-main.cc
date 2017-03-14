@@ -16,6 +16,7 @@
 #include <boost/asio.hpp>
 #endif
 #include <boost/program_options.hpp>
+#include <boost/uuid/string_generator.hpp>
 #include "flint/numeric.h"
 #include "isdf/reader.h"
 
@@ -24,6 +25,22 @@ namespace po = boost::program_options;
 using namespace flint;
 
 namespace {
+
+bool ignore_prefixes = false;
+bool ignore_units = false;
+
+const size_t kPrefixLength = 36u;
+
+bool ValidatePrefix(const std::string &name)
+{
+	boost::uuids::string_generator gen;
+	try {
+		gen(name.substr(0, kPrefixLength));
+	} catch (boost::exception &e) {
+		return false;
+	}
+	return true;
+}
 
 class Converter {
 public:
@@ -61,10 +78,21 @@ public:
 	}
 
 	void WriteFirstLine() const {
+		size_t p;
 		for (std::uint32_t i=0;i<num_objs_;i++) {
 			if (i > 0) *os_ << ',';
-			os_->write(descriptions_[i].c_str(), descriptions_[i].size());
-			if (!units_[i].empty()) {
+			const std::string &name = descriptions_[i];
+			const size_t s = name.size();
+			if ( ignore_prefixes &&
+				 ( (p = name.find(':')) != std::string::npos) &&
+				 p + 1 < s &&
+				 p == kPrefixLength &&
+				 ValidatePrefix(name) ) {
+				os_->write(name.substr(p+1).c_str(), s-p-1);
+			} else {
+				os_->write(name.c_str(), s);
+			}
+			if (!ignore_units && !units_[i].empty()) {
 				*os_ << " (";
 				os_->write(units_[i].c_str(), units_[i].size());
 				*os_ << ")";
@@ -172,6 +200,8 @@ int main(int argc, char *argv[])
 #ifdef ENABLE_TCP
 		("progress", po::value<std::string>(&port), "Send progress in percentage")
 #endif
+		("ignore-prefixes,P", "Ignore variable prefixes")
+		("ignore-units,U", "Ignore units")
 		("maximum-precision,M", "Request the maximum number of decimal digits to print double-precision floating-point numbers")
 		("output,o", po::value<std::string>(&output_file), "Output file name")
 		("input", po::value<std::string>(&input_file), "Input file name");
@@ -191,6 +221,10 @@ int main(int argc, char *argv[])
 	}
 
 	int r;
+	if (vm.count("ignore-prefixes"))
+		ignore_prefixes = true;
+	if (vm.count("ignore-units"))
+		ignore_units = true;
 	if (vm.count("output")) {
 		std::ofstream ofs(output_file.c_str(), std::ios::out|std::ios::binary);
 		if (!ofs.is_open()) {

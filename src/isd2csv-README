@@ -4,7 +4,7 @@
 
 = Synopsis
 
-isd2csv [-o output] [path]
+isd2csv [-o output] [-P] [-U] [path]
 isd2csv --help
 
 
@@ -12,6 +12,12 @@ isd2csv --help
 
 --output, -o
     write to file at `output` instead of stdout.
+
+--ignore-prefixes, -P
+    ignore variable prefixes.
+
+--ignore-units, -U
+    ignore units.
 
 --maximum-precision, -M
     request the maximum number of decimal digits to print double-precision

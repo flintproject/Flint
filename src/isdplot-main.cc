@@ -31,6 +31,9 @@ using namespace flint;
 
 namespace {
 
+bool ignore_prefixes = false;
+bool ignore_units = false;
+
 bool ReadHeader(std::istream *is, char *header)
 {
 	is->read(header, sizeof(isdf::ISDFHeader));
@@ -74,13 +77,15 @@ int CallIsdstrip(const std::string &isdstrip, const char *input, const char *out
 
 int CallIsd2csv(const std::string &isd2csv, const char *input, const char *output)
 {
-	static const char kCommand[] = "%s -o \"%s\" \"%s\"";
-
-	size_t cmd_len = isd2csv.size() + strlen(input) + strlen(output) + 64;
-	std::unique_ptr<char[]> cmd(new char[cmd_len]);
-	sprintf(cmd.get(), kCommand, isd2csv.c_str(), output, input);
-	int r = RunSystem(cmd.get());
-	return r;
+	std::ostringstream oss;
+	oss << isd2csv;
+	if (ignore_prefixes)
+		oss << " -P";
+	if (ignore_units)
+		oss << " -U";
+	oss << " -o \"" << output << "\" \"" << input << "\"";
+	std::string cmd = oss.str();
+	return RunSystem(cmd.c_str());
 }
 
 void PutQuotedPath(const char *path, std::ostringstream *bss)
@@ -282,6 +287,8 @@ int main(int argc, char *argv[])
 		 "Command for isd2csv")
 		("isdstrip", boost::program_options::value<std::string>(&isdstrip),
 		 "Command for isdstrip")
+		("ignore-prefixes,P", "Ignore variable prefixes")
+		("ignore-units,U", "Ignore units")
 		("help,h", "Show this message")
 		("output,o", po::value<std::string>(&output_file), "Output file name")
 		("input", po::value<std::string>(&input_file), "Input file name");
@@ -308,6 +315,10 @@ int main(int argc, char *argv[])
 	std::unique_ptr<TemporaryPath> temp_path(new TemporaryPath("isdplot"));
 	const char *input_path = input_file.c_str();
 
+	if (vm.count("ignore-prefixes"))
+		ignore_prefixes = true;
+	if (vm.count("ignore-units"))
+		ignore_units = true;
 	if (vm.count("isdstrip")) {
 		stripped_path = temp_path->Touch();
 		if (!stripped_path) {
