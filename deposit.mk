@@ -3,6 +3,7 @@ CLIBSEDML_VERSION = 0.1.0
 CZMQ_VERSION = 4.0.2
 LIBSBML_VERSION = 5.13.0
 LIBXML2_VERSION = 2.9.4
+PLPLOT_VERSION = 5.12.0
 PROTOBUF_VERSION = 3.2.0
 SOSLIB_VERSION = 1.9.0
 SUNDIALS_VERSION = 2.7.0
@@ -24,6 +25,7 @@ ALL_EXTERNAL_LIBRARIES = \
 	czmq-$(CZMQ_VERSION).tar.gz \
 	libSBML-$(LIBSBML_VERSION)-core-src.zip \
 	libxml2-$(LIBXML2_VERSION).tar.gz \
+	plplot-$(PLPLOT_VERSION).tar.gz \
 	protobuf-java-$(PROTOBUF_VERSION).tar.gz \
 	SBML_odeSolver-$(SOSLIB_VERSION).tar.gz \
 	sundials-$(SUNDIALS_VERSION).tar.gz \
@@ -36,6 +38,7 @@ ALL_EXTERNAL_LIBRARY_DIRS = \
 	czmq-$(CZMQ_VERSION) \
 	libsbml-$(LIBSBML_VERSION) \
 	libxml2-$(LIBXML2_VERSION) \
+	plplot-$(PLPLOT_VERSION) \
 	protobuf-$(PROTOBUF_VERSION) \
 	SBML_odeSolver-$(SOSLIB_VERSION) \
 	sundials-$(SUNDIALS_VERSION) \
@@ -96,6 +99,7 @@ $(eval $(call external_library_source3,https://github.com/flintproject/clibsedml
 $(eval $(call external_library_source,https://github.com/zeromq/czmq/releases/download/v$(CZMQ_VERSION),czmq-$(CZMQ_VERSION).tar.gz,b27cb5a23c472949b1e37765e404dc98))
 $(eval $(call external_library_source,http://downloads.sourceforge.net/project/sbml/libsbml/$(LIBSBML_VERSION)/stable,libSBML-$(LIBSBML_VERSION)-core-src.zip,6581723e894eee8058b95fa80df7aad4))
 $(eval $(call external_library_source,ftp://xmlsoft.org/libxml2,libxml2-$(LIBXML2_VERSION).tar.gz,ae249165c173b1ff386ee8ad676815f5))
+$(eval $(call external_library_source,https://downloads.sourceforge.net/project/plplot/plplot/$(PLPLOT_VERSION)%20Source,plplot-$(PLPLOT_VERSION).tar.gz,998a05be218e5de8f2faf988b8dbdc51))
 $(eval $(call external_library_source,https://github.com/google/protobuf/releases/download/v$(PROTOBUF_VERSION),protobuf-java-$(PROTOBUF_VERSION).tar.gz,74da013866efbb8850ceca981917c63a))
 $(eval $(call external_library_source3,https://github.com/raim/SBML_odeSolver/archive/$(SOSLIB_VERSION).tar.gz,SBML_odeSolver-$(SOSLIB_VERSION).tar.gz,a2223179576e33eff110065d4481e306))
 $(eval $(call external_library_source,http://pkgs.fedoraproject.org/repo/extras/sundials/sundials-$(SUNDIALS_VERSION).tar.gz/c304631b9bc82877d7b0e9f4d4fd94d3,sundials-$(SUNDIALS_VERSION).tar.gz,c304631b9bc82877d7b0e9f4d4fd94d3))

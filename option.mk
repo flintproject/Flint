@@ -58,6 +58,14 @@ LIBXML2_CONFIGURE_OPTIONS = \
 	--without-threads \
 	--without-zlib
 
+PLPLOT_CMAKE_OPTIONS = \
+	-DENABLE_cxx=ON \
+	-DDEFAULT_NO_BINDINGS=ON \
+	-DDEFAULT_NO_CAIRO_DEVICES=ON \
+	-DDEFAULT_NO_QT_DEVICES=ON \
+	-DENABLE_wxwidgets=ON \
+	-DPLD_wxwidgets=ON
+
 PROTOBUF_CONFIGURE_OPTONS = \
 	--enable-silent-rules \
 	--disable-static \

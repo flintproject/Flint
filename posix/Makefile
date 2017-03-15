@@ -9,7 +9,7 @@ EXTERNAL_LIBRARY_DIRS = $(filter-out $(UNNECESSARY_LIBRARIES),$(ALL_EXTERNAL_LIB
 
 PREFIX ?= $(abspath opt)
 
-PKG_CONFIG_PATH = $(PREFIX)/clibsedml-$(CLIBSEDML_VERSION)/lib/pkgconfig:$(PREFIX)/czmq-$(CZMQ_VERSION)/lib/pkgconfig:$(PREFIX)/libsbml-$(LIBSBML_VERSION)/lib/pkgconfig:$(PREFIX)/protobuf-$(PROTOBUF_VERSION)/lib/pkgconfig:$(PREFIX)/SBML_odeSolver-$(SOSLIB_VERSION)/lib/pkgconfig:$(PREFIX)/zeromq-$(ZEROMQ_VERSION)/lib/pkgconfig
+PKG_CONFIG_PATH = $(PREFIX)/clibsedml-$(CLIBSEDML_VERSION)/lib/pkgconfig:$(PREFIX)/czmq-$(CZMQ_VERSION)/lib/pkgconfig:$(PREFIX)/libsbml-$(LIBSBML_VERSION)/lib/pkgconfig:$(PREFIX)/plplot-$(PLPLOT_VERSION)/lib/pkgconfig:$(PREFIX)/protobuf-$(PROTOBUF_VERSION)/lib/pkgconfig:$(PREFIX)/SBML_odeSolver-$(SOSLIB_VERSION)/lib/pkgconfig:$(PREFIX)/zeromq-$(ZEROMQ_VERSION)/lib/pkgconfig
 
 .PHONY: all check check-sequential-version download mostlyclean clean distclean install
 
@@ -57,6 +57,11 @@ tmp/libsbml-$(LIBSBML_VERSION): src/libSBML-$(LIBSBML_VERSION)-core-src.zip | tm
 	(cd var && unzip -qq ../$<)
 	touch $@
 
+tmp/plplot-$(PLPLOT_VERSION): src/plplot-$(PLPLOT_VERSION).tar.gz | tmp
+	-rm -rf var/plplot-$(PLPLOT_VERSION)
+	tar -C var -zxf $<
+	touch $@
+
 tmp/protobuf-$(PROTOBUF_VERSION): src/protobuf-java-$(PROTOBUF_VERSION).tar.gz | tmp
 	-rm -rf var/protobuf-$(PROTOBUF_VERSION)
 	tar -C var -zxf $<
@@ -98,6 +103,13 @@ tmp/czmq-$(CZMQ_VERSION).installed: tmp/czmq-$(CZMQ_VERSION) tmp/zeromq-$(ZEROMQ
 	$(MAKE) -C var/czmq-$(CZMQ_VERSION) all
 	-rm -rf $(PREFIX)/czmq-$(CZMQ_VERSION)
 	$(MAKE) -C var/czmq-$(CZMQ_VERSION) install
+	touch $@
+
+tmp/plplot-$(PLPLOT_VERSION).installed: tmp/plplot-$(PLPLOT_VERSION) tmp/wxWidgets-$(WXWIDGETS_VERSION).installed
+	(cd var/plplot-$(PLPLOT_VERSION) && env CMAKE_PROGRAM_PATH=$(PREFIX)/wxWidgets-$(WXWIDGETS_VERSION)/bin cmake -DCMAKE_INSTALL_PREFIX=$(PREFIX)/plplot-$(PLPLOT_VERSION) $(PLPLOT_CMAKE_OPTIONS))
+	$(MAKE) -C var/plplot-$(PLPLOT_VERSION) all
+	-rm -rf $(PREFIX)/plplot-$(PLPLOT_VERSION)
+	$(MAKE) -C var/plplot-$(PLPLOT_VERSION) install
 	touch $@
 
 tmp/protobuf-$(PROTOBUF_VERSION).installed: tmp/protobuf-$(PROTOBUF_VERSION)
@@ -144,7 +156,7 @@ tmp/zeromq-$(ZEROMQ_VERSION).installed: tmp/zeromq-$(ZEROMQ_VERSION)
 	$(MAKE) -C var/zeromq-$(ZEROMQ_VERSION) install
 	touch $@
 
-tmp/sequential-version.installed: tmp/$(BOOST_UNDERSCORE).installed tmp/clibsedml-$(CLIBSEDML_VERSION).installed tmp/czmq-$(CZMQ_VERSION).installed tmp/wxWidgets-$(WXWIDGETS_VERSION).installed tmp/protobuf-$(PROTOBUF_VERSION).installed tmp/SBML_odeSolver-$(SOSLIB_VERSION).installed
+tmp/sequential-version.installed: tmp/$(BOOST_UNDERSCORE).installed tmp/clibsedml-$(CLIBSEDML_VERSION).installed tmp/czmq-$(CZMQ_VERSION).installed tmp/plplot-$(PLPLOT_VERSION).installed tmp/protobuf-$(PROTOBUF_VERSION).installed tmp/SBML_odeSolver-$(SOSLIB_VERSION).installed
 	(cd .. && autoreconf -i -f)
 	install -d var/sequential-version
 	(cd var/sequential-version && env LDFLAGS='-Wl,-rpath -Wl,$(PREFIX)/libsbml-$(LIBSBML_VERSION)/lib -Wl,-rpath -Wl,$(PREFIX)/sundials-$(SUNDIALS_VERSION)/lib -Wl,-rpath -Wl,$(PREFIX)/wxWidgets-$(WXWIDGETS_VERSION)/lib' PKG_CONFIG_PATH=$(PKG_CONFIG_PATH) ../../../configure --prefix=$(PREFIX)/sequential-version --with-boost=$(PREFIX)/$(BOOST_UNDERSCORE) --with-protoc=$(PREFIX)/protobuf-$(PROTOBUF_VERSION)/bin/protoc --with-sundials=$(PREFIX)/sundials-$(SUNDIALS_VERSION) --with-wxWidgets=$(PREFIX)/wxWidgets-$(WXWIDGETS_VERSION) --enable-silent-rules)
