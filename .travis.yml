@@ -16,6 +16,7 @@ addons:
     - llvm-toolchain-precise-3.8
     packages:
     - cmake
+    - cmake-data
     - libtool
     - gcc-4.9
     - g++-4.9
