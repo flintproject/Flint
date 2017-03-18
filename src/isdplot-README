@@ -4,7 +4,7 @@
 
 = Synopsis
 
-isdplot [--gnuplot gnuplot] [--isd2csv isd2csv] [--isdstrip isdstrip] [-o output] [-P] [-U] path
+isdplot [--gnuplot gnuplot] [--isdstrip isdstrip] [-o output] [-P] [-U] path
 isdplot --help
 
 
@@ -12,9 +12,6 @@ isdplot --help
 
 --gnuplot
     command for gnuplot.
-
---isd2csv
-    command for isd2csv.
 
 --isdstrip
     command for isdstrip.

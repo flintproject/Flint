@@ -20,6 +20,7 @@
 #endif
 
 #include <boost/program_options.hpp>
+#include "isd2csv.h"
 #include "isdf/isdf.h"
 #include "sys/temporary_path.h"
 
@@ -30,9 +31,6 @@ namespace po = boost::program_options;
 using namespace flint;
 
 namespace {
-
-bool ignore_prefixes = false;
-bool ignore_units = false;
 
 bool ReadHeader(std::istream *is, char *header)
 {
@@ -75,17 +73,23 @@ int CallIsdstrip(const std::string &isdstrip, const char *input, const char *out
 	return r;
 }
 
-int CallIsd2csv(const std::string &isd2csv, const char *input, const char *output)
+int CallIsd2csv(const isd2csv::Option &option, const char *input, const char *output)
 {
-	std::ostringstream oss;
-	oss << isd2csv;
-	if (ignore_prefixes)
-		oss << " -P";
-	if (ignore_units)
-		oss << " -U";
-	oss << " -o \"" << output << "\" \"" << input << "\"";
-	std::string cmd = oss.str();
-	return RunSystem(cmd.c_str());
+	std::ifstream ifs(input, std::ios::in|std::ios::binary);
+	if (!ifs) {
+		std::cerr << "failed to open input file: " << input << std::endl;
+		return EXIT_FAILURE;
+	}
+	std::ofstream ofs(output, std::ios::out|std::ios::binary);
+	if (!ofs) {
+		std::cerr << "failed to open output file: " << output << std::endl;
+		ifs.close();
+		return EXIT_FAILURE;
+	}
+	int r = isd2csv::Convert(option, &ifs, &ofs);
+	ofs.close();
+	ifs.close();
+	return r;
 }
 
 void PutQuotedPath(const char *path, std::ostringstream *bss)
@@ -277,14 +281,12 @@ int main(int argc, char *argv[])
 	po::options_description opts("options");
 	po::positional_options_description popts;
 	po::variables_map vm;
-	std::string gnuplot, isd2csv, isdstrip, input_file, output_file;
+	std::string gnuplot, isdstrip, input_file, output_file;
 	int print_help = 0;
 
 	opts.add_options()
 		("gnuplot", boost::program_options::value<std::string>(&gnuplot)->default_value("gnuplot"),
 		 "Command for gnuplot")
-		("isd2csv", boost::program_options::value<std::string>(&isd2csv),
-		 "Command for isd2csv")
 		("isdstrip", boost::program_options::value<std::string>(&isdstrip),
 		 "Command for isdstrip")
 		("ignore-prefixes,P", "Ignore variable prefixes")
@@ -298,7 +300,6 @@ int main(int argc, char *argv[])
 		po::store(po::command_line_parser(argc, argv).options(opts).positional(popts).run(), vm);
 		po::notify(vm);
 		if (vm.count("help")) print_help = 1;
-		if (vm.count("isd2csv") == 0) print_help = 2;
 		if (vm.count("output") == 0) print_help = 2;
 		if (vm.count("input") == 0) print_help = 2;
 	} catch (const po::error &) {
@@ -315,10 +316,9 @@ int main(int argc, char *argv[])
 	std::unique_ptr<TemporaryPath> temp_path(new TemporaryPath("isdplot"));
 	const char *input_path = input_file.c_str();
 
-	if (vm.count("ignore-prefixes"))
-		ignore_prefixes = true;
-	if (vm.count("ignore-units"))
-		ignore_units = true;
+	isd2csv::Option isd2csv_option;
+	isd2csv_option.ignore_prefixes = (vm.count("ignore-prefixes") > 0);
+	isd2csv_option.ignore_units = (vm.count("ignore-units") > 0);
 	if (vm.count("isdstrip")) {
 		stripped_path = temp_path->Touch();
 		if (!stripped_path) {
@@ -344,11 +344,9 @@ int main(int argc, char *argv[])
 		std::cerr << "could not create temporary path" << std::endl;
 		return EXIT_FAILURE;
 	}
-	int r = CallIsd2csv(isd2csv, input_path, csv_path);
-	if (r != EXIT_SUCCESS) {
-		std::cerr << "isd2csv exit abnormally: " << r << std::endl;
+	int r = CallIsd2csv(isd2csv_option, input_path, csv_path);
+	if (r != EXIT_SUCCESS)
 		return r;
-	}
 	r = CallGnuplot(gnuplot.c_str(), num_columns, csv_path, output_file.c_str());
 	return r;
 }

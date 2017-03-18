@@ -128,6 +128,7 @@ libflintxx_la_SOURCES = \
     filter/writer.cc \
     fppp.cc \
     fppp/url.cc \
+    isd2csv.cc \
     job/evolve.cc \
     job/generate.cc \
     job/job.cc \
@@ -286,7 +287,7 @@ flint2_SOURCES = \
 
 isd2csv_CPPFLAGS = $(BOOST_CPPFLAGS)
 isd2csv_LDFLAGS = $(BOOST_PROGRAM_OPTIONS_LDFLAGS)
-isd2csv_LDADD = $(BOOST_PROGRAM_OPTIONS_LIBS)
+isd2csv_LDADD = libflintxx.la $(BOOST_PROGRAM_OPTIONS_LIBS)
 if ENABLE_TCP
 isd2csv_LDFLAGS += $(BOOST_SYSTEM_LDFLAGS)
 isd2csv_LDADD += $(BOOST_SYSTEM_LIBS)
