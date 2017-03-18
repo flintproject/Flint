@@ -60,48 +60,48 @@ int main(int argc, char *argv[])
 
 	std::vector<std::uint32_t> cv;
 	std::uint32_t num_columns = 0;
-		const char *input_path = input_file.c_str();
-		if (!isdstrip::ExtractConstantColumns(input_path, &num_columns, &cv)) {
+	const char *input_path = input_file.c_str();
+	if (!isdstrip::ExtractConstantColumns(input_path, &num_columns, &cv)) {
+		return EXIT_FAILURE;
+	}
+	if (vm.count("output")) {
+		std::ofstream ofs(output_file.c_str(), std::ios::out|std::ios::binary);
+		if (!ofs.is_open()) {
+			std::cerr << "could not open output file: " << output_file << std::endl;
 			return EXIT_FAILURE;
 		}
-		if (vm.count("output")) {
-			std::ofstream ofs(output_file.c_str(), std::ios::out|std::ios::binary);
-			if (!ofs.is_open()) {
-				std::cerr << "could not open output file: " << output_file << std::endl;
+		int r = isdstrip::Filter(input_path, cv, &ofs);
+		ofs.close();
+		if (r == EXIT_SUCCESS && vm.count("columns")) PrintNumOfColumns(num_columns, cv);
+		return r;
+	} else {
+		char *output_path = nullptr;
+		{
+			std::unique_ptr<TemporaryPath> temp_path(new TemporaryPath("isdstrip"));
+			output_path = temp_path->Touch();
+			if (!output_path) {
+				std::cerr << "could not create temporary path" << std::endl;
 				return EXIT_FAILURE;
 			}
-			int r = isdstrip::Filter(input_path, cv, &ofs);
-			ofs.close();
-			if (r == EXIT_SUCCESS && vm.count("columns")) PrintNumOfColumns(num_columns, cv);
-			return r;
-		} else {
-			char *output_path = nullptr;
-			{
-				std::unique_ptr<TemporaryPath> temp_path(new TemporaryPath("isdstrip"));
-				output_path = temp_path->Touch();
-				if (!output_path) {
-					std::cerr << "could not create temporary path" << std::endl;
-					return EXIT_FAILURE;
-				}
-			}
-			std::ofstream ofs(output_path, std::ios::out|std::ios::binary);
-			if (!ofs.is_open()) {
-				std::cerr << "could not open output file: " << output_path << std::endl;
-				remove(output_path);
-				free(output_path);
-				return EXIT_FAILURE;
-			}
-			int r = isdstrip::Filter(input_path, cv, &ofs);
-			ofs.close();
-			if (r == EXIT_SUCCESS) {
-				// FIXME: thin possibility to fail to rename()
-				remove(input_path);
-				rename(output_path, input_path);
-				if (vm.count("columns")) PrintNumOfColumns(num_columns, cv);
-			} else {
-				remove(output_path);
-			}
-			free(output_path);
-			return r;
 		}
+		std::ofstream ofs(output_path, std::ios::out|std::ios::binary);
+		if (!ofs.is_open()) {
+			std::cerr << "could not open output file: " << output_path << std::endl;
+			remove(output_path);
+			free(output_path);
+			return EXIT_FAILURE;
+		}
+		int r = isdstrip::Filter(input_path, cv, &ofs);
+		ofs.close();
+		if (r == EXIT_SUCCESS) {
+			// FIXME: thin possibility to fail to rename()
+			remove(input_path);
+			rename(output_path, input_path);
+			if (vm.count("columns")) PrintNumOfColumns(num_columns, cv);
+		} else {
+			remove(output_path);
+		}
+		free(output_path);
+		return r;
+	}
 }
