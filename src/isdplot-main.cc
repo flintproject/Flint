@@ -21,10 +21,9 @@
 
 #include <boost/program_options.hpp>
 #include "isd2csv.h"
+#include "isdstrip.h"
 #include "isdf/isdf.h"
 #include "sys/temporary_path.h"
-
-#include "system.h"
 
 namespace po = boost::program_options;
 
@@ -60,17 +59,6 @@ bool CountColumns(const char *input, std::uint32_t *num_columns)
 	*num_columns = reinterpret_cast<isdf::ISDFHeader *>(header.get())->num_objs;
 	ifs.close();
 	return true;
-}
-
-int CallIsdstrip(const std::string &isdstrip, const char *input, const char *output)
-{
-	static const char kCommand[] = "%s -o \"%s\" \"%s\"";
-
-	size_t cmd_len = isdstrip.size() + strlen(input) + strlen(output) + 64;
-	std::unique_ptr<char[]> cmd(new char[cmd_len]);
-	sprintf(cmd.get(), kCommand, isdstrip.c_str(), output, input);
-	int r = RunSystem(cmd.get());
-	return r;
 }
 
 int CallIsd2csv(const isd2csv::Option &option, const char *input, const char *output)
@@ -281,14 +269,12 @@ int main(int argc, char *argv[])
 	po::options_description opts("options");
 	po::positional_options_description popts;
 	po::variables_map vm;
-	std::string gnuplot, isdstrip, input_file, output_file;
+	std::string gnuplot, input_file, output_file;
 	int print_help = 0;
 
 	opts.add_options()
 		("gnuplot", boost::program_options::value<std::string>(&gnuplot)->default_value("gnuplot"),
 		 "Command for gnuplot")
-		("isdstrip", boost::program_options::value<std::string>(&isdstrip),
-		 "Command for isdstrip")
 		("ignore-prefixes,P", "Ignore variable prefixes")
 		("ignore-units,U", "Ignore units")
 		("help,h", "Show this message")
@@ -319,17 +305,25 @@ int main(int argc, char *argv[])
 	isd2csv::Option isd2csv_option;
 	isd2csv_option.ignore_prefixes = (vm.count("ignore-prefixes") > 0);
 	isd2csv_option.ignore_units = (vm.count("ignore-units") > 0);
-	if (vm.count("isdstrip")) {
+
+	std::vector<std::uint32_t> cv;
+	if (!isdstrip::ExtractConstantColumns(input_path, nullptr, &cv))
+		return EXIT_FAILURE;
+	if (!cv.empty()) { // create a stripped file
 		stripped_path = temp_path->Touch();
 		if (!stripped_path) {
 			std::cerr << "could not create temporary path" << std::endl;
 			return EXIT_FAILURE;
 		}
-		int r = CallIsdstrip(isdstrip, input_path, stripped_path);
+		std::ofstream ofs(stripped_path, std::ios::out|std::ios::binary);
+		if (!ofs) {
+			std::cerr << "failed to open temporary file: " << stripped_path << std::endl;
+			return EXIT_FAILURE;
+		}
+		int r = isdstrip::Filter(input_path, cv, &ofs);
+		ofs.close();
 		if (r != EXIT_SUCCESS) {
-			std::cerr << "isdstrip exit abnormally: " << r << std::endl;
-			remove(stripped_path);
-			free(stripped_path);
+			std::cerr << "failed to filter constant columns: " << r << std::endl;
 			return r;
 		}
 		input_path = stripped_path;

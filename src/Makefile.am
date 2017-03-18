@@ -129,6 +129,7 @@ libflintxx_la_SOURCES = \
     fppp.cc \
     fppp/url.cc \
     isd2csv.cc \
+    isdstrip.cc \
     job/evolve.cc \
     job/generate.cc \
     job/job.cc \
