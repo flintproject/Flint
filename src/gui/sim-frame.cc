@@ -36,14 +36,12 @@ TaskWindow::TaskWindow(wxWindow *parent, Simulation *sim, int i)
 	: wxWindow(parent, wxID_ANY)
 {
 	gauge_ = new TaskGauge(this, sim->GetProgressFileName(i));
-	auto x = new wxButton(this, wxID_ANY, "x");
-	auto hbox = new wxBoxSizer(wxHORIZONTAL);
-	hbox->Add(gauge_, 0, wxEXPAND);
-	hbox->Add(x, 0, wxEXPAND);
-	auto vbox = new wxStaticBoxSizer(wxVERTICAL, this, wxString::Format("Task %d", i));
-	vbox->Add(hbox, 0, wxEXPAND);
-	vbox->Add(new wxButton(this, wxID_ANY, "Detail"), wxEXPAND);
-	SetSizerAndFit(vbox);
+	auto x = new wxButton(this, wxID_ANY, "x", wxDefaultPosition, wxDefaultSize, wxBU_EXACTFIT);
+	auto hbox = new wxStaticBoxSizer(wxHORIZONTAL, this, wxString::Format("Task %d", i));
+	hbox->Add(new wxButton(this, wxID_ANY, "Detail"));
+	hbox->Add(gauge_, 1 /* horizontally stretchable */);
+	hbox->Add(x);
+	SetSizerAndFit(hbox);
 }
 
 }
@@ -56,7 +54,7 @@ SimFrame::SimFrame(MainFrame *parent, Simulation *sim)
 	int i = 0;
 	for (auto &p : sim_->entries) {
 		auto window = new TaskWindow(this, sim, ++i);
-		vbox->Add(window, 0, wxEXPAND);
+		vbox->Add(window, 0, wxEXPAND /* horizontally stretchable */);
 		gauges_.push_back(window->gauge());
 	}
 	SetSizerAndFit(vbox);
