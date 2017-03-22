@@ -8,7 +8,10 @@
 #include <cassert>
 #include <sstream>
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wcast-qual"
 #include <wx/listctrl.h>
+#pragma GCC diagnostic pop
 
 #include "flint/numeric.h"
 #include "gui/document.h"

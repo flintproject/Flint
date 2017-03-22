@@ -5,8 +5,11 @@
 
 #include "gui/app.h"
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wcast-qual"
 #include <wx/config.h>
 #include <wx/filename.h>
+#pragma GCC diagnostic pop
 
 #include "gui/main-frame.h"
 

@@ -5,13 +5,15 @@
 
 #include "gui/main-frame.h"
 
-#include <wx/wx.h>
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wcast-qual"
 #include <wx/aboutdlg.h>
 #include <wx/bookctrl.h>
 #include <wx/config.h>
 #include <wx/dnd.h>
 #include <wx/filename.h>
 #include <wx/progdlg.h>
+#pragma GCC diagnostic pop
 
 #include "flint/bc.h"
 #include "flint/error.h"

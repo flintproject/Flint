@@ -5,7 +5,10 @@
 #include <utility>
 #include <vector>
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wcast-qual"
 #include <wx/filename.h>
+#pragma GCC diagnostic pop
 
 namespace flint {
 namespace gui {

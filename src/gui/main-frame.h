@@ -2,9 +2,12 @@
 #ifndef FLINT_GUI_MAIN_FRAME_H_
 #define FLINT_GUI_MAIN_FRAME_H_
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wcast-qual"
 #include <wx/wx.h>
 #include <wx/aui/aui.h>
 #include <wx/filehistory.h>
+#pragma GCC diagnostic pop
 
 namespace flint {
 namespace gui {

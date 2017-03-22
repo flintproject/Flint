@@ -7,7 +7,10 @@
 
 #include <cstdio>
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wcast-qual"
 #include <wx/wx.h>
+#pragma GCC diagnostic pop
 
 #include "gui/configuration.h"
 #include "gui/document.h"

@@ -7,7 +7,10 @@
 #include <unordered_map>
 #include <vector>
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wcast-qual"
 #include <wx/wx.h>
+#pragma GCC diagnostic pop
 
 #include "lo.pb.h"
 

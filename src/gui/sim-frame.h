@@ -2,7 +2,10 @@
 #ifndef FLINT_GUI_SIM_FRAME_H_
 #define FLINT_GUI_SIM_FRAME_H_
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wcast-qual"
 #include <wx/wx.h>
+#pragma GCC diagnostic pop
 
 #include "cli.pb.h"
 #include "flint/error.h"

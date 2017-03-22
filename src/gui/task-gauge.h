@@ -2,8 +2,11 @@
 #ifndef FLINT_GUI_TASK_GAUGE_H_
 #define FLINT_GUI_TASK_GAUGE_H_
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wcast-qual"
 #include <wx/filename.h>
 #include <wx/wx.h>
+#pragma GCC diagnostic pop
 
 namespace flint {
 namespace gui {

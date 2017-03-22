@@ -6,9 +6,12 @@
 #include <unordered_map>
 #include <vector>
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wcast-qual"
 #include <wx/dataview.h>
 #include <wx/spinctrl.h>
 #include <wx/wx.h>
+#pragma GCC diagnostic pop
 
 namespace flint {
 namespace gui {

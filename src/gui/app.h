@@ -2,8 +2,11 @@
 #ifndef FLINT_GUI_APP_H_
 #define FLINT_GUI_APP_H_
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wcast-qual"
 #include <wx/wx.h>
 #include <wx/aui/aui.h>
+#pragma GCC diagnostic pop
 
 #include "gui/desktop.h"
 

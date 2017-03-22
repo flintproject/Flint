@@ -5,8 +5,10 @@
 
 #include "gui/sim-frame.h"
 
-#include <wx/wx.h>
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wcast-qual"
 #include <wx/filename.h>
+#pragma GCC diagnostic pop
 
 #include "exec.h"
 #include "gui/main-frame.h"
