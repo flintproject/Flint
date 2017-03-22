@@ -114,7 +114,7 @@ MainFrame::MainFrame()
 	SetMinSize(wxSize(600, 400));
 
 	// panes
-	auto buttonRun = new wxButton(this, wxID_ABOUT, "&Run");
+	auto buttonRun = new wxButton(this, wxID_ANY, "&Run");
 	buttonRun->Bind(wxEVT_BUTTON, &MainFrame::OnRun, this);
 	manager_.AddPane(buttonRun,
 					 wxAuiPaneInfo().Name("simulation").Caption("Simulation").Bottom().Layer(1).Position(1));
