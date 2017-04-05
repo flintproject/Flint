@@ -64,6 +64,8 @@ public:
 	std::unordered_map<int, std::string> GetParameters() const;
 
 private:
+	void OnEditParameterSet(wxCommandEvent &event);
+
 	wxDataViewListCtrl *parameters_;
 	std::vector<std::string> original_values_;
 };

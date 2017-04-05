@@ -279,6 +279,7 @@ flint2_SOURCES = \
     gui/document.cc \
     gui/document/unit-of-time.cc \
     gui/main-frame.cc \
+    gui/phsp-editor-dialog.cc \
     gui/phsp.cc \
     gui/sedml.cc \
     gui/sim-frame.cc \

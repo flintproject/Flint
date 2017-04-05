@@ -15,6 +15,7 @@
 
 #include "flint/numeric.h"
 #include "gui/document.h"
+#include "gui/phsp-editor-dialog.h"
 
 namespace flint {
 namespace gui {
@@ -192,7 +193,8 @@ ParametersWindow::ParametersWindow(wxWindow *parent, const Document *doc)
 	, parameters_(new wxDataViewListCtrl(this, wxID_ANY))
 {
 	// controls
-	auto button = new wxButton(this, wxID_ANY, "Define value set");
+	auto button = new wxButton(this, wxID_ANY, "Edit parameter set");
+	button->Bind(wxEVT_BUTTON, &ParametersWindow::OnEditParameterSet, this);
 
 	parameters_->AppendTextColumn("Module");
 	parameters_->AppendTextColumn("PQ");
@@ -239,6 +241,14 @@ std::unordered_map<int, std::string> ParametersWindow::GetParameters() const
 			m.emplace(static_cast<int>(i), s);
 	}
 	return m;
+}
+
+void ParametersWindow::OnEditParameterSet(wxCommandEvent &)
+{
+	PhspEditorDialog dialog(this);
+	if (dialog.ShowModal() == wxID_OK) {
+		// TODO
+	}
 }
 
 }
