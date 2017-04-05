@@ -71,6 +71,7 @@ WXWIDGETS_CONFIGURE_OPTIONS = \
 	--enable-cxx11 \
 	--enable-dnd \
 	--enable-monolithic \
+	--enable-propgrid \
 	--enable-streams \
 	--enable-zipstream \
 	--with-zlib \
@@ -84,7 +85,6 @@ WXWIDGETS_CONFIGURE_OPTIONS = \
 	--disable-mshtmlhelp \
 	--disable-postscript \
 	--disable-printarch \
-	--disable-propgrid \
 	--disable-protocol-ftp \
 	--disable-ribbon \
 	--disable-richtext \
