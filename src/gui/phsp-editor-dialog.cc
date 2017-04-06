@@ -19,43 +19,215 @@
 namespace flint {
 namespace gui {
 
+namespace {
+
+enum {
+	kPageInterval = 1,
+	kPageEnum,
+	kPageGaussian,
+	kPageUniform
+};
+
+class ParamValues {
+public:
+	unsigned int page() const {return page_;}
+
+	virtual wxString GetText() const = 0;
+
+protected:
+	explicit ParamValues(size_t page);
+
+private:
+	unsigned int page_;
+};
+
+ParamValues::ParamValues(size_t page)
+	: page_(page)
+{}
+
+class ParamInterval : public ParamValues {
+public:
+	ParamInterval(double lower = 0,
+				  double upper = 4,
+				  double step = 1);
+
+	virtual wxString GetText() const override;
+
+	double lower() const {return lower_;}
+	double upper() const {return upper_;}
+	double step() const {return step_;}
+
+private:
+	double lower_;
+	double upper_;
+	double step_;
+};
+
+ParamInterval::ParamInterval(double lower, double upper, double step)
+	: ParamValues(kPageInterval)
+	, lower_(lower)
+	, upper_(upper)
+	, step_(step)
+{}
+
+wxString ParamInterval::GetText() const
+{
+	return wxString::Format("[interval] lower: %g, upper: %g, step: %g", lower_, upper_, step_);
+}
+
+class ParamEnum : public ParamValues {
+public:
+	explicit ParamEnum(const wxString &body);
+
+	virtual wxString GetText() const override;
+
+	const wxString &body() const {return body_;}
+
+private:
+	wxString body_;
+};
+
+ParamEnum::ParamEnum(const wxString &body)
+	: ParamValues(kPageEnum)
+	, body_(body)
+{}
+
+wxString ParamEnum::GetText() const
+{
+	return wxString::Format("[enum] %s", body_);
+}
+
+class ParamGaussian : public ParamValues {
+public:
+	ParamGaussian(double mean = 0, double stddev = 1, int count = 5);
+
+	virtual wxString GetText() const override;
+
+	double mean() const {return mean_;}
+	double stddev() const {return stddev_;}
+	int count() const {return count_;}
+
+private:
+	double mean_;
+	double stddev_;
+	int count_;
+};
+
+ParamGaussian::ParamGaussian(double mean, double stddev, int count)
+	: ParamValues(kPageGaussian)
+	, mean_(mean)
+	, stddev_(stddev)
+	, count_(count)
+{}
+
+wxString ParamGaussian::GetText() const
+{
+	return wxString::Format("[Gaussian] mean: %g, stddev: %g, count: %d",
+							mean_, stddev_, count_);
+}
+
+class ParamUniform : public ParamValues {
+public:
+	ParamUniform(double min = 0, double max = 1, int count = 5);
+
+	virtual wxString GetText() const override;
+
+	double min() const {return min_;}
+	double max() const {return max_;}
+	int count() const {return count_;}
+
+private:
+	double min_;
+	double max_;
+	int count_;
+};
+
+ParamUniform::ParamUniform(double min, double max, int count)
+	: ParamValues(kPageUniform)
+	, min_(min)
+	, max_(max)
+	, count_(count)
+{}
+
+wxString ParamUniform::GetText() const
+{
+	return wxString::Format("[uniform] min: %g, max: %g, count: %d",
+							min_, max_, count_);
+}
+
 class ParamTreeNode {
 public:
 	virtual wxString GetType() const = 0;
 	virtual wxString GetName() const = 0;
-	virtual wxString GetValues() const = 0;
+	virtual wxString GetSummary() const = 0;
 };
 
 class ParamTreeParameter : public ParamTreeNode {
 public:
+	ParamTreeParameter();
+
 	virtual wxString GetType() const override {return "parameter";}
 	virtual wxString GetName() const override {return name_;}
-	virtual wxString GetValues() const override;
+	virtual wxString GetSummary() const override;
 
 	void set_name(const wxString &name) {name_ = name;}
 
+	unsigned int GetPage() const;
+	ParamValues *GetValues() const;
+	void SetValues(ParamValues *values);
+
 private:
 	wxString name_;
+	std::unique_ptr<ParamValues> values_;
 };
 
-wxString ParamTreeParameter::GetValues() const
+ParamTreeParameter::ParamTreeParameter()
+	: values_(new ParamInterval)
+{}
+
+wxString ParamTreeParameter::GetSummary() const
 {
-	return ""; // FIXME
+	return values_->GetText();
+}
+
+unsigned int ParamTreeParameter::GetPage() const
+{
+	return values_->page();
+}
+
+ParamValues *ParamTreeParameter::GetValues() const
+{
+	return values_.get();
+}
+
+void ParamTreeParameter::SetValues(ParamValues *values)
+{
+	values_.reset(values);
+}
+
+ParamTreeParameter *GetParameterFromItem(const wxDataViewItem &item)
+{
+	auto *node = reinterpret_cast<ParamTreeNode *>(item.GetID());
+	if (!node)
+		return nullptr;
+	return dynamic_cast<ParamTreeParameter *>(node);
 }
 
 class ParamTreeProduct : public ParamTreeNode {
 public:
 	virtual wxString GetType() const override {return "product";}
 	virtual wxString GetName() const override {return "";}
-	virtual wxString GetValues() const override {return "";}
+	virtual wxString GetSummary() const override {return "";}
 };
 
 class ParamTreeZip : public ParamTreeNode {
 public:
 	virtual wxString GetType() const override {return "zip";}
 	virtual wxString GetName() const override {return "";}
-	virtual wxString GetValues() const override {return "";}
+	virtual wxString GetSummary() const override {return "";}
 };
+
+}
 
 /*
  * This is the data model to be displayed by wxDataViewCtrl.
@@ -125,27 +297,21 @@ void ParamTreeViewModel::GetValue(wxVariant &variant, const wxDataViewItem &item
 		variant = node->GetName();
 		break;
 	default:
-		variant = node->GetValues();
+		variant = node->GetSummary();
 		break;
 	}
 }
 
 bool ParamTreeViewModel::IsContainer(const wxDataViewItem &item) const
 {
-	auto *node = reinterpret_cast<ParamTreeNode *>(item.GetID());
-	if (!node)
-		return true;
-	return !dynamic_cast<ParamTreeParameter *>(node);
+	return !GetParameterFromItem(item);
 }
 
 bool ParamTreeViewModel::SetValue(const wxVariant &variant, const wxDataViewItem &item, unsigned int col)
 {
 	if (col != 1)
 		return false;
-	auto *node = reinterpret_cast<ParamTreeNode *>(item.GetID());
-	if (!node)
-		return false;
-	auto *parameter = dynamic_cast<ParamTreeParameter *>(node);
+	auto *parameter = GetParameterFromItem(item);
 	if (!parameter)
 		return false;
 	parameter->set_name(variant.GetString());
@@ -215,78 +381,167 @@ void ParamTreeViewModel::DeleteItem(const wxDataViewItem &item)
 	}
 }
 
-
 class ParamIntervalCtrl : public wxPropertyGrid {
 public:
 	explicit ParamIntervalCtrl(wxWindow *parent);
+
+	void ImportValues(const ParamTreeParameter *parameter);
+	void ExportValues(ParamTreeParameter *parameter);
+
 private:
+	wxFloatProperty *lower_prop_;
+	wxFloatProperty *upper_prop_;
+	wxFloatProperty *step_prop_;
 };
 
 ParamIntervalCtrl::ParamIntervalCtrl(wxWindow *parent)
 	: wxPropertyGrid(parent)
+	, lower_prop_(new wxFloatProperty("lower", wxPG_LABEL, 0))
+	, upper_prop_(new wxFloatProperty("upper", wxPG_LABEL, 4))
+	, step_prop_(new wxFloatProperty("step", wxPG_LABEL, 1))
 {
-	Append(new wxFloatProperty("lower", wxPG_LABEL, 0.0));
-	Append(new wxFloatProperty("upper", wxPG_LABEL, 10.0));
-	Append(new wxFloatProperty("step", wxPG_LABEL, 1.0));
+	Append(lower_prop_);
+	Append(upper_prop_);
+	Append(step_prop_);
 	SetMinSize(wxSize(300, 300));
 	SetSplitterLeft();
+}
+
+void ParamIntervalCtrl::ImportValues(const ParamTreeParameter *parameter)
+{
+	auto *pi = dynamic_cast<const ParamInterval *>(parameter->GetValues());
+	assert(pi);
+	lower_prop_->SetValue(pi->lower());
+	upper_prop_->SetValue(pi->upper());
+	step_prop_->SetValue(pi->step());
+}
+
+void ParamIntervalCtrl::ExportValues(ParamTreeParameter *parameter)
+{
+	parameter->SetValues(new ParamInterval(lower_prop_->GetValue().GetDouble(),
+										   upper_prop_->GetValue().GetDouble(),
+										   step_prop_->GetValue().GetDouble()));
 }
 
 class ParamEnumCtrl : public wxTextCtrl {
 public:
 	explicit ParamEnumCtrl(wxWindow *parent);
-private:
+
+	void ImportValues(const ParamTreeParameter *parameter);
+	void ExportValues(ParamTreeParameter *parameter);
 };
 
 ParamEnumCtrl::ParamEnumCtrl(wxWindow *parent)
-	: wxTextCtrl(parent, wxID_ANY, "0,0.1,0.2", wxDefaultPosition, wxDefaultSize, wxTE_MULTILINE)
+	: wxTextCtrl(parent, wxID_ANY, "", wxDefaultPosition, wxDefaultSize, wxTE_MULTILINE)
 {
 	SetMinSize(wxSize(300, 300));
+}
+
+void ParamEnumCtrl::ImportValues(const ParamTreeParameter *parameter)
+{
+	auto *pe = dynamic_cast<const ParamEnum *>(parameter->GetValues());
+	assert(pe);
+	*this << pe->body();
+}
+
+void ParamEnumCtrl::ExportValues(ParamTreeParameter *parameter)
+{
+	parameter->SetValues(new ParamEnum(GetValue()));
 }
 
 class ParamGaussianCtrl : public wxPropertyGrid {
 public:
 	explicit ParamGaussianCtrl(wxWindow *parent);
 
+	void ImportValues(const ParamTreeParameter *parameter);
+	void ExportValues(ParamTreeParameter *parameter);
+
 private:
+	wxFloatProperty *mean_prop_;
+	wxFloatProperty *stddev_prop_;
+	wxIntProperty *count_prop_;
 };
 
 ParamGaussianCtrl::ParamGaussianCtrl(wxWindow *parent)
 	: wxPropertyGrid(parent)
+	, mean_prop_(new wxFloatProperty("mean", wxPG_LABEL, 0))
+	, stddev_prop_(new wxFloatProperty("stddev", wxPG_LABEL, 1))
+	, count_prop_(new wxIntProperty("count", wxPG_LABEL, 10))
 {
-	Append(new wxFloatProperty("mean", wxPG_LABEL, 0));
-	Append(new wxFloatProperty("standard deviation", wxPG_LABEL, 1));
-	Append(new wxFloatProperty("count", wxPG_LABEL, 10));
+	Append(mean_prop_);
+	Append(stddev_prop_);
+	Append(count_prop_);
 	SetMinSize(wxSize(300, 300));
 	SetSplitterLeft();
+}
+
+void ParamGaussianCtrl::ImportValues(const ParamTreeParameter *parameter)
+{
+	auto *pg = dynamic_cast<const ParamGaussian *>(parameter->GetValues());
+	assert(pg);
+	mean_prop_->SetValue(pg->mean());
+	stddev_prop_->SetValue(pg->stddev());
+	count_prop_->SetValue(pg->count());
+}
+
+void ParamGaussianCtrl::ExportValues(ParamTreeParameter *parameter)
+{
+	parameter->SetValues(new ParamGaussian(mean_prop_->GetValue().GetDouble(),
+										   stddev_prop_->GetValue().GetDouble(),
+										   static_cast<int>(count_prop_->GetValue().GetLong())));
 }
 
 class ParamUniformCtrl : public wxPropertyGrid {
 public:
 	explicit ParamUniformCtrl(wxWindow *parent);
 
+	void ImportValues(const ParamTreeParameter *parameter);
+	void ExportValues(ParamTreeParameter *parameter);
+
 private:
+	wxFloatProperty *min_prop_;
+	wxFloatProperty *max_prop_;
+	wxIntProperty *count_prop_;
 };
 
 ParamUniformCtrl::ParamUniformCtrl(wxWindow *parent)
 	: wxPropertyGrid(parent)
+	, min_prop_(new wxFloatProperty("minimum", wxPG_LABEL, 0))
+	, max_prop_(new wxFloatProperty("maximum", wxPG_LABEL, 1))
+	, count_prop_(new wxIntProperty("count", wxPG_LABEL, 10))
 {
-	Append(new wxFloatProperty("minimum", wxPG_LABEL, 0));
-	Append(new wxFloatProperty("maximum", wxPG_LABEL, 1));
-	Append(new wxFloatProperty("count", wxPG_LABEL, 10));
+	Append(min_prop_);
+	Append(max_prop_);
+	Append(count_prop_);
 	SetMinSize(wxSize(300, 300));
 	SetSplitterLeft();
 }
 
-enum {
-	kIdParamTreeViewCtrl = wxID_HIGHEST + 1
-};
+void ParamUniformCtrl::ImportValues(const ParamTreeParameter *parameter)
+{
+	auto *pu = dynamic_cast<const ParamUniform *>(parameter->GetValues());
+	assert(pu);
+	min_prop_->SetValue(pu->min());
+	max_prop_->SetValue(pu->max());
+	count_prop_->SetValue(pu->count());
+}
+
+void ParamUniformCtrl::ExportValues(ParamTreeParameter *parameter)
+{
+	parameter->SetValues(new ParamUniform(min_prop_->GetValue().GetDouble(),
+										  max_prop_->GetValue().GetDouble(),
+										  static_cast<int>(count_prop_->GetValue().GetLong())));
+}
 
 PhspEditorDialog::PhspEditorDialog(wxWindow *parent)
 	: wxDialog(parent, wxID_ANY, "Edit parameter set")
 	, model_(new ParamTreeViewModel)
-	, tree_view_(new wxDataViewCtrl(this, kIdParamTreeViewCtrl))
+	, tree_view_(new wxDataViewCtrl(this, wxID_ANY))
 	, book_(new wxChoicebook(this, wxID_ANY))
+	, interval_ctrl_(new ParamIntervalCtrl(book_))
+	, enum_ctrl_(new ParamEnumCtrl(book_))
+	, gaussian_ctrl_(new ParamGaussianCtrl(book_))
+	, uniform_ctrl_(new ParamUniformCtrl(book_))
 {
 	tree_view_->AssociateModel(model_);
 	model_->DecRef(); // avoid memory leak, see wxDataViewModel's documentation
@@ -305,10 +560,10 @@ PhspEditorDialog::PhspEditorDialog(wxWindow *parent)
 	button_minus->Bind(wxEVT_BUTTON, &PhspEditorDialog::OnMinus, this);
 
 	book_->AddPage(new wxPanel(book_), "-");
-	book_->AddPage(new ParamEnumCtrl(book_), "range - enum");
-	book_->AddPage(new ParamIntervalCtrl(book_), "range - interval");
-	book_->AddPage(new ParamGaussianCtrl(book_), "random - Gaussian");
-	book_->AddPage(new ParamUniformCtrl(book_), "random - uniform");
+	book_->AddPage(interval_ctrl_, "interval");
+	book_->AddPage(enum_ctrl_, "enum");
+	book_->AddPage(gaussian_ctrl_, "random - Gaussian");
+	book_->AddPage(uniform_ctrl_, "random - uniform");
 	book_->Disable();
 
 	// sizer
@@ -329,11 +584,11 @@ PhspEditorDialog::PhspEditorDialog(wxWindow *parent)
 	top_sizer->Add(upper_sizer, 1 /* vertically stretchable */, wxEXPAND);
 	top_sizer->Add(lower_sizer, 0, wxALIGN_RIGHT /* preserving its original size */);
 	SetSizerAndFit(top_sizer);
-}
 
-wxBEGIN_EVENT_TABLE(PhspEditorDialog, wxDialog)
-EVT_DATAVIEW_SELECTION_CHANGED(kIdParamTreeViewCtrl, PhspEditorDialog::OnSelectionChanged)
-wxEND_EVENT_TABLE()
+	// events
+	tree_view_->Bind(wxEVT_DATAVIEW_SELECTION_CHANGED, &PhspEditorDialog::OnSelectionChanged, this);
+	book_->Bind(wxEVT_CHOICEBOOK_PAGE_CHANGED, &PhspEditorDialog::OnChoicebookPageChanged, this);
+}
 
 void PhspEditorDialog::OnApply(wxCommandEvent &)
 {
@@ -357,13 +612,16 @@ void PhspEditorDialog::OnPlus(wxCommandEvent &)
 		item = (r == 1) ? model_->AddProduct(item) : model_->AddZip(item);
 	item = model_->AddParameter(item);
 	tree_view_->Select(item);
+	book_->Enable();
+	book_->ChangeSelection(1);
 }
 
 void PhspEditorDialog::OnMinus(wxCommandEvent &)
 {
 	auto item = tree_view_->GetCurrentItem();
 	if (item.IsOk()) {
-		auto message = wxString::Format("Are you sure to delete %s?", model_->GetItemText(item));
+		auto name = model_->GetItemText(item);
+		auto message = wxString::Format("Are you sure to delete %s?", name.empty() ? "it" : name);
 		wxMessageDialog dialog(this, message, "Delete it?", wxYES_NO|wxNO_DEFAULT);
 		if (dialog.ShowModal() == wxID_YES)
 			model_->DeleteItem(item);
@@ -373,14 +631,63 @@ void PhspEditorDialog::OnMinus(wxCommandEvent &)
 void PhspEditorDialog::OnSelectionChanged(wxDataViewEvent &event)
 {
 	auto item = event.GetItem();
-	auto *node = reinterpret_cast<ParamTreeNode *>(item.GetID());
-	if (dynamic_cast<ParamTreeParameter *>(node)) {
+	auto *parameter = GetParameterFromItem(item);
+	if (parameter) {
+		auto page = parameter->GetPage();
+		switch (page) {
+		case kPageInterval:
+			interval_ctrl_->ImportValues(parameter);
+			break;
+		case kPageEnum:
+			enum_ctrl_->ImportValues(parameter);
+			break;
+		case kPageGaussian:
+			gaussian_ctrl_->ImportValues(parameter);
+			break;
+		case kPageUniform:
+			uniform_ctrl_->ImportValues(parameter);
+			break;
+		default:
+			assert(false);
+			break;
+		}
+		book_->ChangeSelection(page);
 		book_->Enable();
-		book_->ChangeSelection(1);
 	} else {
 		book_->ChangeSelection(0);
 		book_->Disable();
 	}
+}
+
+void PhspEditorDialog::OnChoicebookPageChanged(wxBookCtrlEvent &event)
+{
+	int selected = event.GetSelection();
+	if (selected == 0)
+		return;
+	auto item = tree_view_->GetSelection();
+	if (!item.IsOk())
+		return;
+	auto *parameter = GetParameterFromItem(item);
+	if (!parameter)
+		return;
+	switch (selected) {
+	case kPageInterval:
+		interval_ctrl_->ExportValues(parameter);
+		break;
+	case kPageEnum:
+		enum_ctrl_->ExportValues(parameter);
+		break;
+	case kPageGaussian:
+		gaussian_ctrl_->ExportValues(parameter);
+		break;
+	case kPageUniform:
+		uniform_ctrl_->ExportValues(parameter);
+		break;
+	default:
+		assert(false);
+		break;
+	}
+	model_->ItemChanged(item);
 }
 
 }
