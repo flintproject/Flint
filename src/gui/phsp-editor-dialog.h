@@ -9,9 +9,6 @@
 #include <wx/dataview.h>
 #pragma GCC diagnostic pop
 
-#include "cli.pb.h"
-#include "flint/error.h"
-
 namespace flint {
 namespace gui {
 
