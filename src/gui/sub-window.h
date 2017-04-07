@@ -13,6 +13,8 @@
 #include <wx/wx.h>
 #pragma GCC diagnostic pop
 
+#include "gui/param-tree.h"
+
 namespace flint {
 namespace gui {
 
@@ -68,6 +70,7 @@ private:
 
 	wxDataViewListCtrl *parameters_;
 	std::vector<std::string> original_values_;
+	ParamTree param_tree_;
 };
 
 }

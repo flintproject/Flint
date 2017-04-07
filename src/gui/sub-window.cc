@@ -245,10 +245,9 @@ std::unordered_map<int, std::string> ParametersWindow::GetParameters() const
 
 void ParametersWindow::OnEditParameterSet(wxCommandEvent &)
 {
-	PhspEditorDialog dialog(this);
-	if (dialog.ShowModal() == wxID_OK) {
-		// TODO
-	}
+	PhspEditorDialog dialog(this, param_tree_);
+	if (dialog.ShowModal() == wxID_OK)
+		dialog.Save();
 }
 
 }

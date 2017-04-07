@@ -12,6 +12,7 @@
 namespace flint {
 namespace gui {
 
+struct ParamTree;
 class ParamTreeViewModel;
 class ParamIntervalCtrl;
 class ParamEnumCtrl;
@@ -20,7 +21,9 @@ class ParamUniformCtrl;
 
 class PhspEditorDialog : public wxDialog {
 public:
-	explicit PhspEditorDialog(wxWindow *parent);
+	PhspEditorDialog(wxWindow *parent, ParamTree &param_tree);
+
+	void Save();
 
 private:
 	void OnApply(wxCommandEvent &event);
@@ -30,6 +33,7 @@ private:
 	void OnSelectionChanged(wxDataViewEvent &event);
 	void OnChoicebookPageChanged(wxBookCtrlEvent &event);
 
+	ParamTree &param_tree_;
 	ParamTreeViewModel *model_;
 	wxDataViewCtrl *tree_view_;
 	wxChoicebook *book_;

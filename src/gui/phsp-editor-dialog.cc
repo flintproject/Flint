@@ -16,13 +16,16 @@
 #include <wx/propgrid/propgrid.h>
 #pragma GCC diagnostic pop
 
+#include "gui/param-tree.h"
+
 namespace flint {
 namespace gui {
 
 namespace {
 
 enum {
-	kPageInterval = 1,
+	kPageNA,
+	kPageInterval,
 	kPageEnum,
 	kPageGaussian,
 	kPageUniform
@@ -32,6 +35,7 @@ class ParamValues {
 public:
 	unsigned int page() const {return page_;}
 
+	virtual ParamValues *Copy() const = 0;
 	virtual wxString GetText() const = 0;
 
 protected:
@@ -51,6 +55,9 @@ public:
 				  double upper = 4,
 				  double step = 1);
 
+	virtual ~ParamInterval() = default;
+
+	virtual ParamValues *Copy() const override;
 	virtual wxString GetText() const override;
 
 	double lower() const {return lower_;}
@@ -70,6 +77,11 @@ ParamInterval::ParamInterval(double lower, double upper, double step)
 	, step_(step)
 {}
 
+ParamValues *ParamInterval::Copy() const
+{
+	return new ParamInterval(*this);
+}
+
 wxString ParamInterval::GetText() const
 {
 	return wxString::Format("[interval] lower: %g, upper: %g, step: %g", lower_, upper_, step_);
@@ -79,6 +91,9 @@ class ParamEnum : public ParamValues {
 public:
 	explicit ParamEnum(const wxString &body);
 
+	virtual ~ParamEnum() = default;
+
+	virtual ParamValues *Copy() const override;
 	virtual wxString GetText() const override;
 
 	const wxString &body() const {return body_;}
@@ -92,6 +107,11 @@ ParamEnum::ParamEnum(const wxString &body)
 	, body_(body)
 {}
 
+ParamValues *ParamEnum::Copy() const
+{
+	return new ParamEnum(*this);
+}
+
 wxString ParamEnum::GetText() const
 {
 	return wxString::Format("[enum] %s", body_);
@@ -101,6 +121,9 @@ class ParamGaussian : public ParamValues {
 public:
 	ParamGaussian(double mean = 0, double stddev = 1, int count = 5);
 
+	virtual ~ParamGaussian() = default;
+
+	virtual ParamValues *Copy() const override;
 	virtual wxString GetText() const override;
 
 	double mean() const {return mean_;}
@@ -120,6 +143,11 @@ ParamGaussian::ParamGaussian(double mean, double stddev, int count)
 	, count_(count)
 {}
 
+ParamValues *ParamGaussian::Copy() const
+{
+	return new ParamGaussian(*this);
+}
+
 wxString ParamGaussian::GetText() const
 {
 	return wxString::Format("[Gaussian] mean: %g, stddev: %g, count: %d",
@@ -130,6 +158,9 @@ class ParamUniform : public ParamValues {
 public:
 	ParamUniform(double min = 0, double max = 1, int count = 5);
 
+	virtual ~ParamUniform() = default;
+
+	virtual ParamValues *Copy() const override;
 	virtual wxString GetText() const override;
 
 	double min() const {return min_;}
@@ -149,22 +180,22 @@ ParamUniform::ParamUniform(double min, double max, int count)
 	, count_(count)
 {}
 
+ParamValues *ParamUniform::Copy() const
+{
+	return new ParamUniform(*this);
+}
+
 wxString ParamUniform::GetText() const
 {
 	return wxString::Format("[uniform] min: %g, max: %g, count: %d",
 							min_, max_, count_);
 }
 
-class ParamTreeNode {
-public:
-	virtual wxString GetType() const = 0;
-	virtual wxString GetName() const = 0;
-	virtual wxString GetSummary() const = 0;
-};
-
 class ParamTreeParameter : public ParamTreeNode {
 public:
 	ParamTreeParameter();
+
+	virtual ParamTreeNode *Copy() const override;
 
 	virtual wxString GetType() const override {return "parameter";}
 	virtual wxString GetName() const override {return name_;}
@@ -184,6 +215,14 @@ private:
 ParamTreeParameter::ParamTreeParameter()
 	: values_(new ParamInterval)
 {}
+
+ParamTreeNode *ParamTreeParameter::Copy() const
+{
+	std::unique_ptr<ParamTreeParameter> copied(new ParamTreeParameter);
+	copied->set_name(GetName());
+	copied->SetValues(values_->Copy());
+	return copied.release();
+}
 
 wxString ParamTreeParameter::GetSummary() const
 {
@@ -215,17 +254,31 @@ ParamTreeParameter *GetParameterFromItem(const wxDataViewItem &item)
 
 class ParamTreeProduct : public ParamTreeNode {
 public:
+	virtual ParamTreeNode *Copy() const override;
+
 	virtual wxString GetType() const override {return "product";}
 	virtual wxString GetName() const override {return "";}
 	virtual wxString GetSummary() const override {return "";}
 };
 
+ParamTreeNode *ParamTreeProduct::Copy() const
+{
+	return new ParamTreeProduct;
+}
+
 class ParamTreeZip : public ParamTreeNode {
 public:
+	virtual ParamTreeNode *Copy() const override;
+
 	virtual wxString GetType() const override {return "zip";}
 	virtual wxString GetName() const override {return "";}
 	virtual wxString GetSummary() const override {return "";}
 };
+
+ParamTreeNode *ParamTreeZip::Copy() const
+{
+	return new ParamTreeZip;
+}
 
 }
 
@@ -234,6 +287,8 @@ public:
  */
 class ParamTreeViewModel : public wxDataViewModel {
 public:
+	explicit ParamTreeViewModel(const ParamTree &param_tree);
+
 	virtual unsigned int GetChildren(const wxDataViewItem &item, wxDataViewItemArray &children) const override;
 	virtual unsigned int GetColumnCount() const override;
 	virtual wxString GetColumnType(unsigned int col) const override;
@@ -250,10 +305,35 @@ public:
 
 	void DeleteItem(const wxDataViewItem &item);
 
+	const std::unordered_set<std::unique_ptr<ParamTreeNode> > &nodes() const {return nodes_;}
+	const std::unordered_map<std::uintptr_t, std::uintptr_t> &pm() const {return pm_;}
+
 private:
 	std::unordered_set<std::unique_ptr<ParamTreeNode> > nodes_;
 	std::unordered_map<std::uintptr_t, std::uintptr_t> pm_; // parent map: id to parent id
 };
+
+ParamTreeViewModel::ParamTreeViewModel(const ParamTree &param_tree)
+{
+	std::unordered_map<std::uintptr_t, std::uintptr_t> m; // old to new
+	for (auto nit=param_tree.nodes.begin();nit!=param_tree.nodes.end();++nit) {
+		auto p = nodes_.emplace((*nit)->Copy());
+		assert(p.second);
+		m.emplace(reinterpret_cast<std::uintptr_t>(nit->get()),
+				  reinterpret_cast<std::uintptr_t>(p.first->get()));
+	}
+	for (auto p : param_tree.pm) {
+		auto it1 = m.find(p.first);
+		assert(it1 != m.end());
+		if (p.second) {
+			auto it2 = m.find(p.second);
+			assert(it2 != m.end());
+			pm_.emplace(it1->second, it2->second);
+		} else {
+			pm_.emplace(it1->second, 0);
+		}
+	}
+}
 
 unsigned int ParamTreeViewModel::GetChildren(const wxDataViewItem &item, wxDataViewItemArray &children) const
 {
@@ -373,12 +453,30 @@ void ParamTreeViewModel::DeleteItem(const wxDataViewItem &item)
 	auto parent = wxDataViewItem(reinterpret_cast<void *>(pit->second));
 	ItemDeleted(parent, item); // to inform that the item is deleted
 	pm_.erase(pit);
-	for (auto nit=nodes_.begin();nit!=nodes_.end();++nit) {
-		if (nit->get() == node) {
-			nodes_.erase(nit);
-			return;
+
+	// remove the subtree having the deleted one as its root
+	std::unordered_set<std::uintptr_t> descendants;
+	descendants.insert(reinterpret_cast<std::uintptr_t>(node));
+	do {
+		auto dit = descendants.begin();
+		std::uintptr_t d = *dit;
+		descendants.erase(dit);
+		for (auto nit=nodes_.begin();nit!=nodes_.end();++nit) {
+			if (d == reinterpret_cast<std::uintptr_t>(nit->get())) {
+				nodes_.erase(nit);
+				break;
+			}
 		}
-	}
+		auto pit = pm_.begin();
+		while (pit != pm_.end()) {
+			if (d == pit->second) {
+				descendants.insert(pit->first);
+				pit = pm_.erase(pit);
+			} else {
+				++pit;
+			}
+		}
+	} while (!descendants.empty());
 }
 
 class ParamIntervalCtrl : public wxPropertyGrid {
@@ -533,9 +631,10 @@ void ParamUniformCtrl::ExportValues(ParamTreeParameter *parameter)
 										  static_cast<int>(count_prop_->GetValue().GetLong())));
 }
 
-PhspEditorDialog::PhspEditorDialog(wxWindow *parent)
+PhspEditorDialog::PhspEditorDialog(wxWindow *parent, ParamTree &param_tree)
 	: wxDialog(parent, wxID_ANY, "Edit parameter set")
-	, model_(new ParamTreeViewModel)
+	, param_tree_(param_tree)
+	, model_(new ParamTreeViewModel(param_tree))
 	, tree_view_(new wxDataViewCtrl(this, wxID_ANY))
 	, book_(new wxChoicebook(this, wxID_ANY))
 	, interval_ctrl_(new ParamIntervalCtrl(book_))
@@ -590,9 +689,14 @@ PhspEditorDialog::PhspEditorDialog(wxWindow *parent)
 	book_->Bind(wxEVT_CHOICEBOOK_PAGE_CHANGED, &PhspEditorDialog::OnChoicebookPageChanged, this);
 }
 
+void PhspEditorDialog::Save()
+{
+	param_tree_.Import(model_->nodes(), model_->pm());
+}
+
 void PhspEditorDialog::OnApply(wxCommandEvent &)
 {
-	// TODO
+	Save();
 }
 
 void PhspEditorDialog::OnPlus(wxCommandEvent &)
@@ -613,7 +717,7 @@ void PhspEditorDialog::OnPlus(wxCommandEvent &)
 	item = model_->AddParameter(item);
 	tree_view_->Select(item);
 	book_->Enable();
-	book_->ChangeSelection(1);
+	book_->ChangeSelection(kPageInterval);
 }
 
 void PhspEditorDialog::OnMinus(wxCommandEvent &)
@@ -654,7 +758,7 @@ void PhspEditorDialog::OnSelectionChanged(wxDataViewEvent &event)
 		book_->ChangeSelection(page);
 		book_->Enable();
 	} else {
-		book_->ChangeSelection(0);
+		book_->ChangeSelection(kPageNA);
 		book_->Disable();
 	}
 }
@@ -662,7 +766,7 @@ void PhspEditorDialog::OnSelectionChanged(wxDataViewEvent &event)
 void PhspEditorDialog::OnChoicebookPageChanged(wxBookCtrlEvent &event)
 {
 	int selected = event.GetSelection();
-	if (selected == 0)
+	if (selected == kPageNA)
 		return;
 	auto item = tree_view_->GetSelection();
 	if (!item.IsOk())
