@@ -7,6 +7,7 @@
 #include <wx/wx.h>
 #include <wx/choicebk.h>
 #include <wx/dataview.h>
+#include <wx/propgrid/propgrid.h>
 #pragma GCC diagnostic pop
 
 namespace flint {
@@ -32,6 +33,12 @@ private:
 
 	void OnSelectionChanged(wxDataViewEvent &event);
 	void OnChoicebookPageChanged(wxBookCtrlEvent &event);
+	void OnIntervalPgChanged(wxPropertyGridEvent &event);
+	void OnEnumText(wxCommandEvent &event);
+	void OnGaussianPgChanged(wxPropertyGridEvent &event);
+	void OnUniformPgChanged(wxPropertyGridEvent &event);
+
+	void SpecifyValues(int selected);
 
 	ParamTree &param_tree_;
 	ParamTreeViewModel *model_;

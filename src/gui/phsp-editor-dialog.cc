@@ -11,11 +11,6 @@
 #include <unordered_map>
 #include <unordered_set>
 
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wcast-qual"
-#include <wx/propgrid/propgrid.h>
-#pragma GCC diagnostic pop
-
 #include "gui/param-tree.h"
 
 namespace flint {
@@ -539,6 +534,7 @@ void ParamEnumCtrl::ImportValues(const ParamTreeParameter *parameter)
 {
 	auto *pe = dynamic_cast<const ParamEnum *>(parameter->GetValues());
 	assert(pe);
+	Clear();
 	*this << pe->body();
 }
 
@@ -687,6 +683,10 @@ PhspEditorDialog::PhspEditorDialog(wxWindow *parent, ParamTree &param_tree)
 	// events
 	tree_view_->Bind(wxEVT_DATAVIEW_SELECTION_CHANGED, &PhspEditorDialog::OnSelectionChanged, this);
 	book_->Bind(wxEVT_CHOICEBOOK_PAGE_CHANGED, &PhspEditorDialog::OnChoicebookPageChanged, this);
+	interval_ctrl_->Bind(wxEVT_PG_CHANGED, &PhspEditorDialog::OnIntervalPgChanged, this);
+	enum_ctrl_->Bind(wxEVT_TEXT, &PhspEditorDialog::OnEnumText, this);
+	gaussian_ctrl_->Bind(wxEVT_PG_CHANGED, &PhspEditorDialog::OnGaussianPgChanged, this);
+	uniform_ctrl_->Bind(wxEVT_PG_CHANGED, &PhspEditorDialog::OnUniformPgChanged, this);
 }
 
 void PhspEditorDialog::Save()
@@ -702,8 +702,9 @@ void PhspEditorDialog::OnApply(wxCommandEvent &)
 void PhspEditorDialog::OnPlus(wxCommandEvent &)
 {
 	auto item = tree_view_->GetCurrentItem();
+	// If a parameter is selected, take its parent
 	if (item.IsOk() && !model_->IsContainer(item))
-		return; // give up
+		item = model_->GetParent(item);
 
 	wxArrayString array;
 	array.Add("parameter");
@@ -716,8 +717,12 @@ void PhspEditorDialog::OnPlus(wxCommandEvent &)
 		item = (r == 1) ? model_->AddProduct(item) : model_->AddZip(item);
 	item = model_->AddParameter(item);
 	tree_view_->Select(item);
+
 	book_->Enable();
-	book_->ChangeSelection(kPageInterval);
+	int selected = book_->GetSelection();
+	if (selected == kPageNA)
+		book_->ChangeSelection(kPageInterval);
+	SpecifyValues(book_->GetSelection());
 }
 
 void PhspEditorDialog::OnMinus(wxCommandEvent &)
@@ -765,7 +770,59 @@ void PhspEditorDialog::OnSelectionChanged(wxDataViewEvent &event)
 
 void PhspEditorDialog::OnChoicebookPageChanged(wxBookCtrlEvent &event)
 {
-	int selected = event.GetSelection();
+	SpecifyValues(event.GetSelection());
+}
+
+void PhspEditorDialog::OnIntervalPgChanged(wxPropertyGridEvent &)
+{
+	auto item = tree_view_->GetSelection();
+	if (!item.IsOk())
+		return;
+	auto *parameter = GetParameterFromItem(item);
+	if (!parameter)
+		return;
+	interval_ctrl_->ExportValues(parameter);
+	model_->ItemChanged(item);
+}
+
+void PhspEditorDialog::OnEnumText(wxCommandEvent &)
+{
+	auto item = tree_view_->GetSelection();
+	if (!item.IsOk())
+		return;
+	auto *parameter = GetParameterFromItem(item);
+	if (!parameter)
+		return;
+	enum_ctrl_->ExportValues(parameter);
+	model_->ItemChanged(item);
+}
+
+void PhspEditorDialog::OnGaussianPgChanged(wxPropertyGridEvent &)
+{
+	auto item = tree_view_->GetSelection();
+	if (!item.IsOk())
+		return;
+	auto *parameter = GetParameterFromItem(item);
+	if (!parameter)
+		return;
+	gaussian_ctrl_->ExportValues(parameter);
+	model_->ItemChanged(item);
+}
+
+void PhspEditorDialog::OnUniformPgChanged(wxPropertyGridEvent &)
+{
+	auto item = tree_view_->GetSelection();
+	if (!item.IsOk())
+		return;
+	auto *parameter = GetParameterFromItem(item);
+	if (!parameter)
+		return;
+	uniform_ctrl_->ExportValues(parameter);
+	model_->ItemChanged(item);
+}
+
+void PhspEditorDialog::SpecifyValues(int selected)
+{
 	if (selected == kPageNA)
 		return;
 	auto item = tree_view_->GetSelection();
