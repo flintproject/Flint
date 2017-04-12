@@ -5,6 +5,7 @@
 
 #include "gui/phsp.h"
 
+#include <cassert>
 #include <cstdio>
 #include <cstring>
 #include <iostream>
@@ -55,6 +56,56 @@ Writer::~Writer()
 		std::fclose(fp_);
 }
 
+void PrintLnWithIndent(const char *s, int indent, FILE *fp)
+{
+	for (int i=0;i<indent;i++)
+		std::fputc(' ', fp);
+	std::fputs(s, fp);
+	std::fputc('\n', fp);
+}
+
+void WriteSubtreeOfParameterSet(const ParamMap &param_map,
+								std::uintptr_t n,
+								int indent,
+								FILE *fp)
+{
+	auto *node = reinterpret_cast<ParamTreeNode *>(n);
+	assert(node);
+	const auto *parameter = dynamic_cast<const ParamTreeParameter *>(node);
+	if (parameter) {
+		auto xml = parameter->GetXml(indent);
+		std::fputs(xml.ToAscii(), fp); // TODO: UTF-8?
+	} else if (dynamic_cast<ParamTreeProduct *>(node)) {
+		PrintLnWithIndent("<product>", indent, fp);
+		auto p = param_map.equal_range(n);
+		for (auto it=p.first;it!=p.second;++it)
+			WriteSubtreeOfParameterSet(param_map, it->second, indent+2, fp);
+		PrintLnWithIndent("</product>", indent, fp);
+	} else if (dynamic_cast<ParamTreeZip *>(node)) {
+		PrintLnWithIndent("<zip>", indent, fp);
+		auto p = param_map.equal_range(n);
+		for (auto it=p.first;it!=p.second;++it)
+			WriteSubtreeOfParameterSet(param_map, it->second, indent+2, fp);
+		PrintLnWithIndent("</zip>", indent, fp);
+	} else {
+		assert(false);
+	}
+}
+
+void WriteParameterSet(const ParamMap &param_map, FILE *fp)
+{
+	if (param_map.empty()) {
+		std::fprintf(fp, "      <parameter name='defaultValue'>\n");
+		std::fprintf(fp, "        <range type='enum'>0</range>\n");
+		std::fprintf(fp, "      </parameter>\n");
+		return;
+	}
+	auto p = param_map.equal_range(0);
+	assert(p.first != param_map.end());
+	for (auto it=p.first;it!=p.second;++it)
+		WriteSubtreeOfParameterSet(param_map, it->second, 6, fp);
+}
+
 bool Writer::operator()()
 {
 	if (!fp_)
@@ -93,10 +144,7 @@ bool Writer::operator()()
 		}
 		std::fprintf(fp_, "    </target-set>\n");
 		std::fprintf(fp_, "    <parameter-set>\n");
-		// TODO: parametrization
-		std::fprintf(fp_, "      <parameter name='defaultValue'>\n");
-		std::fprintf(fp_, "        <range type='enum'>0</range>\n");
-		std::fprintf(fp_, "      </parameter>\n");
+		WriteParameterSet(config->param_map, fp_);
 		std::fprintf(fp_, "    </parameter-set>\n");
 		std::fprintf(fp_, "  </model>\n");
 	}

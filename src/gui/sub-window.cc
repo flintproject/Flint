@@ -228,6 +228,12 @@ ParametersWindow::ParametersWindow(wxWindow *parent, const Document *doc)
 	SetSizerAndFit(topSizer);
 }
 
+void ParametersWindow::Write(Configuration *config) const
+{
+	config->parameters = GetParameters();
+	config->param_map = GetParamMap();
+}
+
 std::unordered_map<int, std::string> ParametersWindow::GetParameters() const
 {
 	unsigned int n = parameters_->GetItemCount();
@@ -240,6 +246,14 @@ std::unordered_map<int, std::string> ParametersWindow::GetParameters() const
 		if (s != original_values_.at(i))
 			m.emplace(static_cast<int>(i), s);
 	}
+	return m;
+}
+
+ParamMap ParametersWindow::GetParamMap() const
+{
+	ParamMap m;
+	for (auto p : param_tree_.pm)
+		m.emplace(p.second, p.first);
 	return m;
 }
 

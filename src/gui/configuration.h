@@ -13,6 +13,7 @@
 #pragma GCC diagnostic pop
 
 #include "lo.pb.h"
+#include "gui/param-tree.h"
 
 namespace flint {
 namespace gui {
@@ -36,6 +37,7 @@ struct Configuration
 	int filter_column; // index
 	// Parameters
 	std::unordered_map<int, std::string> parameters;
+	ParamMap param_map;
 
 	// Get 7-digit KISAO ID for the method
 	const char *GetKisaoId() const;

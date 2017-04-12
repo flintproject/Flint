@@ -313,7 +313,7 @@ void MainFrame::OnRun(wxCommandEvent &)
 		std::unique_ptr<Configuration> config(new Configuration(doc->initial_config()));
 		gsw->Write(config.get());
 		ovw->Write(config.get());
-		config->parameters = pw->GetParameters();
+		pw->Write(config.get());
 		sim->entries.emplace_back(doc, config.release());
 	}
 	auto frame = new SimFrame(this, sim);

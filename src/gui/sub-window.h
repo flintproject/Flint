@@ -60,12 +60,16 @@ class ParametersWindow : public wxWindow
 public:
 	ParametersWindow(wxWindow *parent, const Document *doc);
 
+	void Write(Configuration *config) const;
+
+private:
 	/*
 	 * Return modified entries only.
 	 */
 	std::unordered_map<int, std::string> GetParameters() const;
 
-private:
+	ParamMap GetParamMap() const;
+
 	void OnEditParameterSet(wxCommandEvent &event);
 
 	wxDataViewListCtrl *parameters_;
