@@ -139,7 +139,8 @@ OutputVariablesWindow::OutputVariablesWindow(wxWindow *parent, const Document *d
 		++i;
 	}
 
-	auto enabledVariables = new wxListView(this);
+	auto vbox0 = new wxStaticBoxSizer(wxVERTICAL, this, "Enabled Variables");
+	auto enabledVariables = new wxListView(vbox0->GetStaticBox());
 	enabledVariables->AppendColumn("Physical Quantity");
 	enabledVariables->AppendColumn("Module");
 	i = 0;
@@ -157,7 +158,6 @@ OutputVariablesWindow::OutputVariablesWindow(wxWindow *parent, const Document *d
 	choice_column_->SetSelection(0);
 
 	// sizers
-	auto vbox0 = new wxStaticBoxSizer(wxVERTICAL, this, "Enabled Variables");
 	vbox0->Add(enabledVariables, 0, wxEXPAND);
 	auto hbox0 = new wxBoxSizer(wxHORIZONTAL);
 	hbox0->Add(new wxStaticText(this, wxID_ANY, "Filter Pattern:"), 0, wxALIGN_CENTER_VERTICAL);

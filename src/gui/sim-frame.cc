@@ -15,7 +15,9 @@
 #include "gui/phsp.h"
 #include "gui/sedml.h"
 #include "gui/simulation.h"
+#include "gui/task-frame.h"
 #include "gui/task-gauge.h"
+#include "gui/task.h"
 
 namespace flint {
 namespace gui {
@@ -29,19 +31,34 @@ public:
 	TaskGauge *gauge() {return gauge_;}
 
 private:
+	void OnDetail(wxCommandEvent &event);
+
 	TaskGauge *gauge_;
+	Task task_;
 };
 
 TaskWindow::TaskWindow(wxWindow *parent, Simulation *sim, int i)
 	: wxWindow(parent, wxID_ANY)
+	, task_(sim, i)
 {
-	gauge_ = new TaskGauge(this, sim->GetProgressFileName(i));
-	auto x = new wxButton(this, wxID_ANY, "x", wxDefaultPosition, wxDefaultSize, wxBU_EXACTFIT);
 	auto hbox = new wxStaticBoxSizer(wxHORIZONTAL, this, wxString::Format("Task %d", i));
-	hbox->Add(new wxButton(this, wxID_ANY, "Detail"));
+	gauge_ = new TaskGauge(hbox->GetStaticBox(), sim->GetProgressFileName(i));
+	auto x = new wxButton(hbox->GetStaticBox(), wxID_ANY, "x", wxDefaultPosition, wxDefaultSize, wxBU_EXACTFIT);
+	auto detail = new wxButton(hbox->GetStaticBox(), wxID_ANY, "Detail");
+	hbox->Add(detail);
 	hbox->Add(gauge_, 1 /* horizontally stretchable */);
 	hbox->Add(x);
 	SetSizerAndFit(hbox);
+
+	detail->Bind(wxEVT_BUTTON, &TaskWindow::OnDetail, this);
+}
+
+void TaskWindow::OnDetail(wxCommandEvent &)
+{
+	auto *frame = new TaskFrame(GetParent(), task_);
+	frame->CentreOnParent();
+	frame->Show();
+	frame->Start();
 }
 
 }
@@ -58,7 +75,6 @@ SimFrame::SimFrame(MainFrame *parent, Simulation *sim)
 		gauges_.push_back(window->gauge());
 	}
 	SetSizerAndFit(vbox);
-	SetClientSize(GetSize());
 
 	Bind(wxEVT_THREAD, &SimFrame::OnThreadUpdate, this);
 }

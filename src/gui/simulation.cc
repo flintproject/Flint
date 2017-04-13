@@ -11,7 +11,7 @@
 namespace flint {
 namespace gui {
 
-wxFileName Simulation::GetDirectoryName()
+wxFileName Simulation::GetDirectoryName() const
 {
 	wxFileName filename;
 	filename.AssignHomeDir();
@@ -21,7 +21,7 @@ wxFileName Simulation::GetDirectoryName()
 	return filename;
 }
 
-wxFileName Simulation::GetProgressFileName(int i)
+wxFileName Simulation::GetProgressFileName(int i) const
 {
 	wxFileName filename = GetDirectoryName();
 	filename.AppendDir(wxString::Format("%d", i));

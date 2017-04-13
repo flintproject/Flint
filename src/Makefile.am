@@ -278,6 +278,8 @@ flint2_SOURCES = \
     gui/desktop.cc \
     gui/document.cc \
     gui/document/unit-of-time.cc \
+    gui/job-gauge.cc \
+    gui/job.cc \
     gui/main-frame.cc \
     gui/param-tree.cc \
     gui/phsp-editor-dialog.cc \
@@ -286,7 +288,9 @@ flint2_SOURCES = \
     gui/sim-frame.cc \
     gui/simulation.cc \
     gui/sub-window.cc \
-    gui/task-gauge.cc
+    gui/task-frame.cc \
+    gui/task-gauge.cc \
+    gui/task.cc
 
 isd2csv_CPPFLAGS = $(BOOST_CPPFLAGS)
 isd2csv_LDFLAGS = $(BOOST_PROGRAM_OPTIONS_LDFLAGS)

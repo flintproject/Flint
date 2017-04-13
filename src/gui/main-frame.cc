@@ -22,7 +22,7 @@
 #include "gui/simulation.h"
 #include "gui/sub-window.h"
 #include "load.h"
-#include "task.h"
+#include "../task.h" // TODO: fix collision between 2 task.h
 
 #include <memory>
 #include <vector>
