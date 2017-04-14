@@ -20,6 +20,8 @@ struct Task {
 
 	wxFileName GetDirectoryName() const;
 	int GetNumberOfJobs() const;
+
+	bool RequestCancel() const;
 };
 
 }

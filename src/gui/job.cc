@@ -19,12 +19,59 @@ Job::Job(const Task &given_task, int given_id)
 	, id(given_id)
 {}
 
+wxFileName Job::GetDirectoryName() const
+{
+	auto filename = task.GetDirectoryName();
+	unsigned int u = static_cast<unsigned int>(id);
+	unsigned int a, b, c, d;
+	a = (u>>24)&0xFF;
+	b = (u>>16)&0xFF;
+	c = (u>> 8)&0xFF;
+	d = (u    )&0xFF;
+	filename.AppendDir(wxString::Format("%02x", a));
+	filename.AppendDir(wxString::Format("%02x", b));
+	filename.AppendDir(wxString::Format("%02x", c));
+	filename.AppendDir(wxString::Format("%02x", d));
+	return filename;
+}
+
 boost::interprocess::mapped_region Job::GetProgressRegion() const
 {
 	auto filename = task.simulation->GetProgressFileName(task.id);
 	boost::interprocess::file_mapping fm(filename.GetFullPath().utf8_str().data(),
 										 boost::interprocess::read_only);
 	return boost::interprocess::mapped_region(fm, boost::interprocess::read_only, 0, id);
+}
+
+namespace {
+
+wxString GetControlFullPath(const Job *job)
+{
+	auto filename = job->GetDirectoryName();
+	filename.SetFullName("control");
+	return filename.GetFullPath();
+}
+
+}
+
+bool Job::IsCanceled() const
+{
+	wxFile file(GetControlFullPath(this));
+	if (!file.IsOpened())
+		return false;
+	char c;
+	if (file.Read(&c, 1) == 0)
+		return false;
+	file.Close();
+	return c == 1;
+}
+
+bool Job::RequestCancel() const
+{
+	wxFile file(GetControlFullPath(this), wxFile::write);
+	if (!file.IsOpened())
+		return false;
+	return file.Write("\1", 1) == 1u && file.Close();
 }
 
 }

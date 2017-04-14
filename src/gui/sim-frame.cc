@@ -32,6 +32,7 @@ public:
 
 private:
 	void OnDetail(wxCommandEvent &event);
+	void OnX(wxCommandEvent &event);
 
 	TaskGauge *gauge_;
 	Task task_;
@@ -51,6 +52,7 @@ TaskWindow::TaskWindow(wxWindow *parent, Simulation *sim, int i)
 	SetSizerAndFit(hbox);
 
 	detail->Bind(wxEVT_BUTTON, &TaskWindow::OnDetail, this);
+	x->Bind(wxEVT_BUTTON, &TaskWindow::OnX, this);
 }
 
 void TaskWindow::OnDetail(wxCommandEvent &)
@@ -59,6 +61,14 @@ void TaskWindow::OnDetail(wxCommandEvent &)
 	frame->CentreOnParent();
 	frame->Show();
 	frame->Start();
+}
+
+void TaskWindow::OnX(wxCommandEvent &event)
+{
+	if (task_.RequestCancel()) {
+		auto x = wxDynamicCast(event.GetEventObject(), wxButton);
+		x->Disable();
+	}
 }
 
 }

@@ -5,6 +5,7 @@
 
 #include "gui/task.h"
 
+#include "gui/job.h"
 #include "gui/simulation.h"
 
 namespace flint {
@@ -25,6 +26,20 @@ wxFileName Task::GetDirectoryName() const
 int Task::GetNumberOfJobs() const
 {
 	return static_cast<int>(simulation->GetProgressFileName(id).GetSize().ToULong()-1);
+}
+
+bool Task::RequestCancel() const
+{
+	auto filename = GetDirectoryName();
+	filename.SetFullName("canceled");
+	wxFile file;
+	if (!file.Create(filename.GetFullPath(), true))
+		return false;
+	for (int i=GetNumberOfJobs();i>0;i--) {
+		Job job(*this, i); // base 1
+		job.RequestCancel();
+	}
+	return true;
 }
 
 }

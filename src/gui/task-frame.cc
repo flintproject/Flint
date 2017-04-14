@@ -20,14 +20,20 @@ public:
 	JobGauge *gauge() {return gauge_;}
 
 private:
+	void OnX(wxCommandEvent &event);
+
+	Job job_;
 	JobGauge *gauge_;
 };
 
 JobWindow::JobWindow(wxWindow *parent, const Task &task, int id)
 	: wxWindow(parent, wxID_ANY)
-	, gauge_(new JobGauge(this, Job(task, id)))
+	, job_(task, id)
+	, gauge_(new JobGauge(this, job_))
 {
 	auto x = new wxButton(this, wxID_ANY, "x", wxDefaultPosition, wxDefaultSize, wxBU_EXACTFIT);
+	if (job_.IsCanceled())
+		x->Disable();
 
 	auto hbox0 = new wxBoxSizer(wxHORIZONTAL);
 	hbox0->Add(gauge_, 1 /* horizontally stretchable */);
@@ -39,6 +45,16 @@ JobWindow::JobWindow(wxWindow *parent, const Task &task, int id)
 	vbox->Add(hbox0, 0, wxEXPAND);
 	vbox->Add(hbox1, 0, wxALIGN_RIGHT);
 	SetSizerAndFit(vbox);
+
+	x->Bind(wxEVT_BUTTON, &JobWindow::OnX, this);
+}
+
+void JobWindow::OnX(wxCommandEvent &event)
+{
+	if (job_.RequestCancel()) {
+		auto x = wxDynamicCast(event.GetEventObject(), wxButton);
+		x->Disable();
+	}
 }
 
 TaskFrame::TaskFrame(wxWindow *parent, const Task &task)
