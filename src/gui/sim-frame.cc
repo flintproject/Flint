@@ -22,13 +22,13 @@
 namespace flint {
 namespace gui {
 
-namespace {
-
 class TaskWindow : public wxWindow {
 public:
 	TaskWindow(wxWindow *parent, Simulation *sim, int i);
 
 	TaskGauge *gauge() {return gauge_;}
+
+	void NotifyClose();
 
 private:
 	void OnDetail(wxCommandEvent &event);
@@ -37,6 +37,13 @@ private:
 	TaskGauge *gauge_;
 	Task task_;
 };
+
+void TaskWindow::NotifyClose()
+{
+	gauge_->Stop();
+	if (!task_.IsFinished())
+		task_.RequestCancel();
+}
 
 TaskWindow::TaskWindow(wxWindow *parent, Simulation *sim, int i)
 	: wxWindow(parent, wxID_ANY)
@@ -65,12 +72,10 @@ void TaskWindow::OnDetail(wxCommandEvent &)
 
 void TaskWindow::OnX(wxCommandEvent &event)
 {
-	if (task_.RequestCancel()) {
+	if (task_.IsFinished() || task_.RequestCancel()) {
 		auto x = wxDynamicCast(event.GetEventObject(), wxButton);
 		x->Disable();
 	}
-}
-
 }
 
 SimFrame::SimFrame(MainFrame *parent, Simulation *sim)
@@ -82,11 +87,12 @@ SimFrame::SimFrame(MainFrame *parent, Simulation *sim)
 	for (auto &p : sim_->entries) {
 		auto window = new TaskWindow(this, sim, ++i);
 		vbox->Add(window, 0, wxEXPAND /* horizontally stretchable */);
-		gauges_.push_back(window->gauge());
+		windows_.push_back(window);
 	}
 	SetSizerAndFit(vbox);
 
 	Bind(wxEVT_THREAD, &SimFrame::OnThreadUpdate, this);
+	Bind(wxEVT_CLOSE_WINDOW, &SimFrame::OnClose, this);
 }
 
 bool SimFrame::Start()
@@ -117,8 +123,8 @@ bool SimFrame::Start()
 	CentreOnParent();
 	Show();
 
-	for (auto *gauge : gauges_)
-		if (!gauge->Start())
+	for (auto *window : windows_)
+		if (!window->gauge()->Start())
 			return false;
 	return true;
 }
@@ -150,8 +156,14 @@ wxThread::ExitCode SimFrame::Entry()
 	return static_cast<wxThread::ExitCode>(0);
 }
 
-void SimFrame::OnClose(wxCommandEvent &)
+void SimFrame::OnClose(wxCloseEvent &)
 {
+	for (auto *window : windows_)
+		window->NotifyClose();
+	if ( GetThread() &&
+		 GetThread()->IsRunning() )
+		GetThread()->Delete();
+	Destroy();
 }
 
 }

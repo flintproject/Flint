@@ -5,17 +5,15 @@
 
 #include "gui/job-gauge.h"
 
-#define BOOST_DATE_TIME_NO_LIB
-#include <boost/interprocess/file_mapping.hpp>
-
 #include "gui/job.h"
+#include "gui/task.h"
 
 namespace flint {
 namespace gui {
 
-JobGauge::JobGauge(wxWindow *parent, const Job &job)
+JobGauge::JobGauge(wxWindow *parent, Job &job)
 	: wxGauge(parent, wxID_ANY, 100)
-	, mr_(job.GetProgressRegion())
+	, job_(job)
 {
 	Bind(wxEVT_THREAD, &JobGauge::OnThreadUpdate, this);
 }
@@ -34,25 +32,30 @@ bool JobGauge::Start()
 	return true;
 }
 
+void JobGauge::Stop()
+{
+	if ( GetThread() &&
+		 GetThread()->IsRunning() )
+		GetThread()->Delete();
+}
+
 void JobGauge::OnThreadUpdate(wxThreadEvent &event)
 {
 	int i = event.GetInt();
-	if (0 < i && i <= 100) {
-		Pulse(); // TODO
+	if (0 <= i && i <= 100)
 		SetValue(i);
-	}
 }
 
 wxThread::ExitCode JobGauge::Entry()
 {
     while (!GetThread()->TestDestroy()) {
-		int p = static_cast<int>(*reinterpret_cast<char *>(mr_.get_address()));
+		int p = job_.GetProgress();
 
 		auto *event = new wxThreadEvent;
 		event->SetInt(p);
 		wxQueueEvent(this, event);
 
-		if (p == 100)
+		if (job_.task.IsFinished())
 			break;
 		wxThread::Sleep(1000);
 	}

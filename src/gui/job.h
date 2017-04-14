@@ -2,9 +2,6 @@
 #ifndef FLINT_GUI_JOB_H_
 #define FLINT_GUI_JOB_H_
 
-#define BOOST_DATE_TIME_NO_LIB
-#include <boost/interprocess/mapped_region.hpp>
-
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wcast-qual"
 #include <wx/filename.h>
@@ -22,8 +19,9 @@ struct Job {
 	Job(const Task &given_task, int given_id);
 
 	wxFileName GetDirectoryName() const;
-	boost::interprocess::mapped_region GetProgressRegion() const;
+	int GetProgress() const;
 	bool IsCanceled() const;
+	bool IsFinished() const;
 
 	bool RequestCancel() const;
 };

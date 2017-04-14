@@ -7,6 +7,7 @@
 
 #define BOOST_DATE_TIME_NO_LIB
 #include <boost/interprocess/file_mapping.hpp>
+#include <boost/interprocess/mapped_region.hpp>
 
 #include "gui/simulation.h"
 #include "gui/task.h"
@@ -35,12 +36,17 @@ wxFileName Job::GetDirectoryName() const
 	return filename;
 }
 
-boost::interprocess::mapped_region Job::GetProgressRegion() const
+int Job::GetProgress() const
 {
-	auto filename = task.simulation->GetProgressFileName(task.id);
-	boost::interprocess::file_mapping fm(filename.GetFullPath().utf8_str().data(),
-										 boost::interprocess::read_only);
-	return boost::interprocess::mapped_region(fm, boost::interprocess::read_only, 0, id);
+	try {
+		auto filename = task.simulation->GetProgressFileName(task.id);
+		boost::interprocess::file_mapping fm(filename.GetFullPath().utf8_str().data(),
+											 boost::interprocess::read_only);
+		boost::interprocess::mapped_region mr(fm, boost::interprocess::read_only, id, 1);
+		return static_cast<int>(*reinterpret_cast<char *>(mr.get_address()));
+	} catch (const boost::interprocess::interprocess_exception &) {
+		return 0;
+	}
 }
 
 namespace {
@@ -64,6 +70,11 @@ bool Job::IsCanceled() const
 		return false;
 	file.Close();
 	return c == 1;
+}
+
+bool Job::IsFinished() const
+{
+	return IsCanceled() || GetProgress() == 100;
 }
 
 bool Job::RequestCancel() const

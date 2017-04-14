@@ -20,7 +20,8 @@ public:
 	void Start();
 
 private:
-	void OnClose(wxCommandEvent &event);
+	void OnChoice(wxCommandEvent &event);
+	void OnClose(wxCloseEvent &event);
 
 	const Task &task_;
 	JobWindow *job_window_;

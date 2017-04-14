@@ -19,25 +19,28 @@ public:
 
 	JobGauge *gauge() {return gauge_;}
 
+	void SwitchJobId(int id);
+
 private:
 	void OnX(wxCommandEvent &event);
 
 	Job job_;
 	JobGauge *gauge_;
+	wxButton *x_;
 };
 
 JobWindow::JobWindow(wxWindow *parent, const Task &task, int id)
 	: wxWindow(parent, wxID_ANY)
 	, job_(task, id)
 	, gauge_(new JobGauge(this, job_))
+	, x_(new wxButton(this, wxID_ANY, "x", wxDefaultPosition, wxDefaultSize, wxBU_EXACTFIT))
 {
-	auto x = new wxButton(this, wxID_ANY, "x", wxDefaultPosition, wxDefaultSize, wxBU_EXACTFIT);
-	if (job_.IsCanceled())
-		x->Disable();
+	if (job_.IsFinished())
+		x_->Disable();
 
 	auto hbox0 = new wxBoxSizer(wxHORIZONTAL);
 	hbox0->Add(gauge_, 1 /* horizontally stretchable */);
-	hbox0->Add(x);
+	hbox0->Add(x_);
 	auto hbox1 = new wxBoxSizer(wxHORIZONTAL);
 	hbox1->Add(new wxButton(this, wxID_ANY, "Export"));
 	hbox1->Add(new wxButton(this, wxID_ANY, "View"));
@@ -46,12 +49,18 @@ JobWindow::JobWindow(wxWindow *parent, const Task &task, int id)
 	vbox->Add(hbox1, 0, wxALIGN_RIGHT);
 	SetSizerAndFit(vbox);
 
-	x->Bind(wxEVT_BUTTON, &JobWindow::OnX, this);
+	x_->Bind(wxEVT_BUTTON, &JobWindow::OnX, this);
+}
+
+void JobWindow::SwitchJobId(int id)
+{
+	job_.id = id;
+	x_->Enable(!job_.IsFinished());
 }
 
 void JobWindow::OnX(wxCommandEvent &event)
 {
-	if (job_.RequestCancel()) {
+	if (job_.IsFinished() || job_.RequestCancel()) {
 		auto x = wxDynamicCast(event.GetEventObject(), wxButton);
 		x->Disable();
 	}
@@ -75,6 +84,9 @@ TaskFrame::TaskFrame(wxWindow *parent, const Task &task)
 	vbox->Add(job_window_, 0, wxEXPAND /* horizontally stretchable */);
 	vbox->Add(choice, 0, wxALIGN_CENTER);
 	SetSizerAndFit(vbox);
+
+	choice->Bind(wxEVT_CHOICE, &TaskFrame::OnChoice, this);
+	Bind(wxEVT_CLOSE_WINDOW, &TaskFrame::OnClose, this);
 }
 
 void TaskFrame::Start()
@@ -82,8 +94,19 @@ void TaskFrame::Start()
 	job_window_->gauge()->Start();
 }
 
-void TaskFrame::OnClose(wxCommandEvent &)
+void TaskFrame::OnChoice(wxCommandEvent &event)
 {
+	auto choice = wxDynamicCast(event.GetEventObject(), wxChoice);
+	int i = choice->GetSelection();
+	if (i == wxNOT_FOUND)
+		return;
+	job_window_->SwitchJobId(i+1);
+}
+
+void TaskFrame::OnClose(wxCloseEvent &)
+{
+	job_window_->gauge()->Stop();
+	Destroy();
 }
 
 }

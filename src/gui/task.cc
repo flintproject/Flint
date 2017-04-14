@@ -28,12 +28,42 @@ int Task::GetNumberOfJobs() const
 	return static_cast<int>(simulation->GetProgressFileName(id).GetSize().ToULong()-1);
 }
 
+namespace {
+
+wxFileName GetCanceledFileName(const Task *task)
+{
+	auto filename = task->GetDirectoryName();
+	filename.SetFullName("canceled");
+	return filename;
+}
+
+}
+
+bool Task::IsCanceled() const
+{
+	auto filename = GetCanceledFileName(this);
+	return filename.FileExists();
+}
+
+bool Task::IsFinished() const
+{
+	if (IsCanceled())
+		return true;
+	auto filename = simulation->GetProgressFileName(id);
+	wxFile file(filename.GetFullPath());
+	if (!file.IsOpened())
+		return false;
+	char c;
+	if (file.Read(&c, 1) == 0)
+		return false;
+	file.Close();
+	return c == 100; // TODO: is it better to check if all of jobs are finished too?
+}
+
 bool Task::RequestCancel() const
 {
-	auto filename = GetDirectoryName();
-	filename.SetFullName("canceled");
 	wxFile file;
-	if (!file.Create(filename.GetFullPath(), true))
+	if (!file.Create(GetCanceledFileName(this).GetFullPath(), true))
 		return false;
 	for (int i=GetNumberOfJobs();i>0;i--) {
 		Job job(*this, i); // base 1

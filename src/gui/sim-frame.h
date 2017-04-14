@@ -15,7 +15,7 @@ namespace gui {
 
 class MainFrame;
 struct Simulation;
-class TaskGauge;
+class TaskWindow;
 
 class SimFrame : public wxFrame, public wxThreadHelper {
 public:
@@ -29,11 +29,11 @@ protected:
 	virtual wxThread::ExitCode Entry() override;
 
 private:
-	void OnClose(wxCommandEvent &event);
+	void OnClose(wxCloseEvent &event);
 
 	Simulation *sim_;
 	cli::ExecOption option_;
-	std::vector<TaskGauge *> gauges_;
+	std::vector<TaskWindow *> windows_;
 	bool result_;
 	wxCriticalSection cs_;
 	StderrCapture ec_;

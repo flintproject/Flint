@@ -2,9 +2,6 @@
 #ifndef FLINT_GUI_TASK_GAUGE_H_
 #define FLINT_GUI_TASK_GAUGE_H_
 
-#define BOOST_DATE_TIME_NO_LIB
-#include <boost/interprocess/mapped_region.hpp>
-
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wcast-qual"
 #include <wx/wx.h>
@@ -18,9 +15,10 @@ struct Job;
 class JobGauge : public wxGauge, public wxThreadHelper
 {
 public:
-	explicit JobGauge(wxWindow *parent, const Job &job);
+	explicit JobGauge(wxWindow *parent, Job &job);
 
 	bool Start();
+	void Stop();
 
 	void OnThreadUpdate(wxThreadEvent &event);
 
@@ -28,7 +26,7 @@ protected:
 	virtual wxThread::ExitCode Entry() override;
 
 private:
-	boost::interprocess::mapped_region mr_;
+	Job &job_;
 };
 
 }

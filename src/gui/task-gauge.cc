@@ -33,11 +33,19 @@ bool TaskGauge::Start()
 	return true;
 }
 
+void TaskGauge::Stop()
+{
+	if ( GetThread() &&
+		 GetThread()->IsRunning() )
+		GetThread()->Delete();
+}
+
 void TaskGauge::OnThreadUpdate(wxThreadEvent &event)
 {
 	int i = event.GetInt();
-	if (0 < i && i <= 100) {
-		Pulse(); // TODO
+	if (i <= 0) {
+		Pulse();
+	} else if (i <= 100) {
 		SetValue(i);
 	}
 }

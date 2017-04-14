@@ -17,6 +17,7 @@ public:
 	explicit TaskGauge(wxWindow *parent, wxFileName filename);
 
 	bool Start();
+	void Stop();
 
 	void OnThreadUpdate(wxThreadEvent &event);
 
