@@ -5,10 +5,16 @@
 
 #include "gui/task-frame.h"
 
+#include <cstdlib>
+#include <iostream>
+#include <fstream>
+
+#include "flint/error.h"
 #include "gui/job-gauge.h"
 #include "gui/job.h"
 #include "gui/sim-frame.h"
 #include "gui/task.h"
+#include "isd2csv.h"
 
 namespace flint {
 namespace gui {
@@ -23,10 +29,17 @@ public:
 
 private:
 	void OnX(wxCommandEvent &event);
+	void OnExport(wxCommandEvent &event);
+
+	void ShowErrorOnExporting(const wxString &message)
+	{
+		wxMessageBox(message, "Error on exporting", wxOK|wxICON_ERROR, this);
+	}
 
 	Job job_;
 	JobGauge *gauge_;
 	wxButton *x_;
+	wxButton *export_;
 };
 
 JobWindow::JobWindow(wxWindow *parent, const Task &task, int id)
@@ -34,15 +47,17 @@ JobWindow::JobWindow(wxWindow *parent, const Task &task, int id)
 	, job_(task, id)
 	, gauge_(new JobGauge(this, job_))
 	, x_(new wxButton(this, wxID_ANY, "x", wxDefaultPosition, wxDefaultSize, wxBU_EXACTFIT))
+	, export_(new wxButton(this, wxID_ANY, "Export"))
 {
-	if (job_.IsFinished())
-		x_->Disable();
+	bool finished = job_.IsFinished();
+	x_->Enable(!finished);
+	export_->Enable(finished);
 
 	auto hbox0 = new wxBoxSizer(wxHORIZONTAL);
 	hbox0->Add(gauge_, 1 /* horizontally stretchable */);
 	hbox0->Add(x_);
 	auto hbox1 = new wxBoxSizer(wxHORIZONTAL);
-	hbox1->Add(new wxButton(this, wxID_ANY, "Export"));
+	hbox1->Add(export_);
 	hbox1->Add(new wxButton(this, wxID_ANY, "View"));
 	auto vbox = new wxBoxSizer(wxVERTICAL);
 	vbox->Add(hbox0, 0, wxEXPAND);
@@ -50,12 +65,15 @@ JobWindow::JobWindow(wxWindow *parent, const Task &task, int id)
 	SetSizerAndFit(vbox);
 
 	x_->Bind(wxEVT_BUTTON, &JobWindow::OnX, this);
+	export_->Bind(wxEVT_BUTTON, &JobWindow::OnExport, this);
 }
 
 void JobWindow::SwitchJobId(int id)
 {
 	job_.id = id;
-	x_->Enable(!job_.IsFinished());
+	bool finished = job_.IsFinished();
+	x_->Enable(!finished);
+	export_->Enable(finished);
 }
 
 void JobWindow::OnX(wxCommandEvent &event)
@@ -64,6 +82,62 @@ void JobWindow::OnX(wxCommandEvent &event)
 		auto x = wxDynamicCast(event.GetEventObject(), wxButton);
 		x->Disable();
 	}
+}
+
+void JobWindow::OnExport(wxCommandEvent &)
+{
+	if (!job_.IsFinished())
+		return;
+	auto source_file = job_.GetOutputFileName();
+	if (!source_file.FileExists()) {
+		ShowErrorOnExporting(wxString::Format("missing output file of job %d", job_.id));
+		return;
+	}
+	wxArrayString arr;
+	arr.Add("CSV");
+	arr.Add("ISD");
+	int r = wxGetSingleChoiceIndex("Choose a file format", "Export to", arr, this);
+	if (r == -1) // cancelled
+		return;
+	wxFileDialog saveFileDialog(this,
+								"Target file",
+								"",
+								"",
+								"*.*",
+								wxFD_SAVE|wxFD_OVERWRITE_PROMPT);
+	if (saveFileDialog.ShowModal() == wxID_CANCEL)
+		return;
+	auto target_path = saveFileDialog.GetPath();
+	if (r == 0) { // CSV
+		std::ifstream ifs(source_file.GetFullPath().c_str(), std::ios::in|std::ios::binary);
+		if (!ifs.is_open()) {
+			ShowErrorOnExporting(wxString::Format("failed to open %s", source_file.GetFullPath()));
+			return;
+		}
+		std::ofstream ofs(target_path.c_str(), std::ios::out);
+		if (!ofs.is_open()) {
+			ShowErrorOnExporting(wxString::Format("failed to open %s", target_path));
+			return;
+		}
+		wxFile input_file();
+		isd2csv::Option option;
+		option.ignore_prefixes = false;
+		option.ignore_units = false;
+		StderrCapture ec;
+		int b = isd2csv::Convert(option, &ifs, &ofs) == EXIT_SUCCESS;
+		ofs.close();
+		ifs.close();
+		if (!b) {
+			ShowErrorOnExporting(wxString::Format("failed to export %s: %s", target_path, ec.Get()));
+			return;
+		}
+	} else { // ISD
+		if (!wxCopyFile(source_file.GetFullPath(), target_path)) {
+			ShowErrorOnExporting(wxString::Format("failed to export %s", target_path));
+			return;
+		}
+	}
+	wxMessageBox(wxString::Format("exported to %s successuflly", target_path), "Exported");
 }
 
 TaskFrame::TaskFrame(wxWindow *parent, const Task &task)

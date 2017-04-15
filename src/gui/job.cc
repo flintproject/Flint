@@ -36,6 +36,13 @@ wxFileName Job::GetDirectoryName() const
 	return filename;
 }
 
+wxFileName Job::GetOutputFileName() const
+{
+	auto filename = GetDirectoryName();
+	filename.SetFullName("out.isd");
+	return filename;
+}
+
 int Job::GetProgress() const
 {
 	try {

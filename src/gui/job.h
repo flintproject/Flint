@@ -19,6 +19,7 @@ struct Job {
 	Job(const Task &given_task, int given_id);
 
 	wxFileName GetDirectoryName() const;
+	wxFileName GetOutputFileName() const;
 	int GetProgress() const;
 	bool IsCanceled() const;
 	bool IsFinished() const;
