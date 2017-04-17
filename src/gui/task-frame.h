@@ -17,10 +17,13 @@ class TaskFrame : public wxFrame {
 public:
 	TaskFrame(wxWindow *parent, const Task &task);
 
+	const Task &task() const {return task_;}
+
 	void Start();
 
 private:
 	void OnChoice(wxCommandEvent &event);
+	void OnExportAll(wxCommandEvent &event);
 	void OnClose(wxCloseEvent &event);
 
 	const Task &task_;

@@ -278,6 +278,7 @@ flint2_SOURCES = \
     gui/desktop.cc \
     gui/document.cc \
     gui/document/unit-of-time.cc \
+    gui/export-all-dialog.cc \
     gui/job-gauge.cc \
     gui/job.cc \
     gui/main-frame.cc \

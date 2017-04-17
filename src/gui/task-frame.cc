@@ -10,6 +10,7 @@
 #include <fstream>
 
 #include "flint/error.h"
+#include "gui/export-all-dialog.h"
 #include "gui/job-gauge.h"
 #include "gui/job.h"
 #include "gui/sim-frame.h"
@@ -116,10 +117,10 @@ void JobWindow::OnExport(wxCommandEvent &)
 		}
 		std::ofstream ofs(target_path.c_str(), std::ios::out);
 		if (!ofs.is_open()) {
+			ifs.close();
 			ShowErrorOnExporting(wxString::Format("failed to open %s", target_path));
 			return;
 		}
-		wxFile input_file();
 		isd2csv::Option option;
 		option.ignore_prefixes = false;
 		option.ignore_units = false;
@@ -154,12 +155,14 @@ TaskFrame::TaskFrame(wxWindow *parent, const Task &task)
 	if (n > 0)
 		choice->SetSelection(0);
 	auto vbox = new wxBoxSizer(wxVERTICAL);
-	vbox->Add(new wxButton(this, wxID_ANY, "Export All"), 0, wxALIGN_RIGHT);
+	auto export_all = new wxButton(this, wxID_ANY, "Export All");
+	vbox->Add(export_all, 0, wxALIGN_RIGHT);
 	vbox->Add(job_window_, 0, wxEXPAND /* horizontally stretchable */);
 	vbox->Add(choice, 0, wxALIGN_CENTER);
 	SetSizerAndFit(vbox);
 
 	choice->Bind(wxEVT_CHOICE, &TaskFrame::OnChoice, this);
+	export_all->Bind(wxEVT_BUTTON, &TaskFrame::OnExportAll, this);
 	Bind(wxEVT_CLOSE_WINDOW, &TaskFrame::OnClose, this);
 }
 
@@ -175,6 +178,27 @@ void TaskFrame::OnChoice(wxCommandEvent &event)
 	if (i == wxNOT_FOUND)
 		return;
 	job_window_->SwitchJobId(i+1);
+}
+
+void TaskFrame::OnExportAll(wxCommandEvent &)
+{
+	if (!task_.IsFinished())
+		return;
+	wxArrayString arr;
+	arr.Add("CSV");
+	arr.Add("ISD");
+	int r = wxGetSingleChoiceIndex("Choose a file format", "Export to", arr, this);
+	if (r == -1) // cancelled
+		return;
+	wxDirDialog saveDirDialog(this,
+							  "Target directory",
+							  "", // TODO: defaultPath
+							  wxDD_DEFAULT_STYLE|wxDD_DIR_MUST_EXIST);
+	if (saveDirDialog.ShowModal() == wxID_CANCEL)
+		return;
+	ExportAllDialog *dialog = new ExportAllDialog(this, saveDirDialog.GetPath(), r);
+	dialog->Show();
+	dialog->Start();
 }
 
 void TaskFrame::OnClose(wxCloseEvent &)
