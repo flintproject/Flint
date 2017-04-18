@@ -10,8 +10,10 @@
 namespace flint {
 namespace gui {
 
+struct Job;
 class JobWindow;
 struct Task;
+class ViewFrame;
 
 class TaskFrame : public wxFrame {
 public:
@@ -20,6 +22,7 @@ public:
 	const Task &task() const {return task_;}
 
 	void Start();
+	void View(const Job &job);
 
 private:
 	void OnChoice(wxCommandEvent &event);
@@ -28,6 +31,7 @@ private:
 
 	const Task &task_;
 	JobWindow *job_window_;
+	ViewFrame *view_frame_;
 };
 
 }

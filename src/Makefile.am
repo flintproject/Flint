@@ -291,7 +291,8 @@ flint2_SOURCES = \
     gui/sub-window.cc \
     gui/task-frame.cc \
     gui/task-gauge.cc \
-    gui/task.cc
+    gui/task.cc \
+    gui/view-frame.cc
 
 isd2csv_CPPFLAGS = $(BOOST_CPPFLAGS)
 isd2csv_LDFLAGS = $(BOOST_PROGRAM_OPTIONS_LDFLAGS)

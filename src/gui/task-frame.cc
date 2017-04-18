@@ -15,6 +15,7 @@
 #include "gui/job.h"
 #include "gui/sim-frame.h"
 #include "gui/task.h"
+#include "gui/view-frame.h"
 #include "isd2csv.h"
 
 namespace flint {
@@ -31,6 +32,7 @@ public:
 private:
 	void OnX(wxCommandEvent &event);
 	void OnExport(wxCommandEvent &event);
+	void OnView(wxCommandEvent &event);
 
 	void ShowErrorOnExporting(const wxString &message)
 	{
@@ -58,8 +60,9 @@ JobWindow::JobWindow(wxWindow *parent, const Task &task, int id)
 	hbox0->Add(gauge_, 1 /* horizontally stretchable */);
 	hbox0->Add(x_);
 	auto hbox1 = new wxBoxSizer(wxHORIZONTAL);
+	auto view = new wxButton(this, wxID_ANY, "View");
 	hbox1->Add(export_);
-	hbox1->Add(new wxButton(this, wxID_ANY, "View"));
+	hbox1->Add(view);
 	auto vbox = new wxBoxSizer(wxVERTICAL);
 	vbox->Add(hbox0, 0, wxEXPAND);
 	vbox->Add(hbox1, 0, wxALIGN_RIGHT);
@@ -67,6 +70,7 @@ JobWindow::JobWindow(wxWindow *parent, const Task &task, int id)
 
 	x_->Bind(wxEVT_BUTTON, &JobWindow::OnX, this);
 	export_->Bind(wxEVT_BUTTON, &JobWindow::OnExport, this);
+	view->Bind(wxEVT_BUTTON, &JobWindow::OnView, this);
 }
 
 void JobWindow::SwitchJobId(int id)
@@ -141,10 +145,17 @@ void JobWindow::OnExport(wxCommandEvent &)
 	wxMessageBox(wxString::Format("exported to %s successuflly", target_path), "Exported");
 }
 
+void JobWindow::OnView(wxCommandEvent &)
+{
+	auto task_frame = wxDynamicCast(GetParent(), TaskFrame);
+	task_frame->View(job_);
+}
+
 TaskFrame::TaskFrame(wxWindow *parent, const Task &task)
 	: wxFrame(parent, wxID_ANY, wxString::Format("Task %d", task.id))
 	, task_(task)
 	, job_window_(new JobWindow(this, task, 1))
+	, view_frame_(new ViewFrame(this))
 {
 	int n = task.GetNumberOfJobs();
 	if (n < 0)
@@ -169,6 +180,12 @@ TaskFrame::TaskFrame(wxWindow *parent, const Task &task)
 void TaskFrame::Start()
 {
 	job_window_->gauge()->Start();
+}
+
+void TaskFrame::View(const Job &job)
+{
+	view_frame_->Centre();
+	view_frame_->Show();
 }
 
 void TaskFrame::OnChoice(wxCommandEvent &event)
