@@ -25,6 +25,7 @@ class JobWindow : public wxWindow {
 public:
 	JobWindow(wxWindow *parent, const Task &task, int id);
 
+	const Job &job() const {return job_;}
 	JobGauge *gauge() {return gauge_;}
 
 	void SwitchJobId(int id);
@@ -148,14 +149,14 @@ void JobWindow::OnExport(wxCommandEvent &)
 void JobWindow::OnView(wxCommandEvent &)
 {
 	auto task_frame = wxDynamicCast(GetParent(), TaskFrame);
-	task_frame->View(job_);
+	task_frame->View();
 }
 
 TaskFrame::TaskFrame(wxWindow *parent, const Task &task)
 	: wxFrame(parent, wxID_ANY, wxString::Format("Task %d", task.id))
 	, task_(task)
 	, job_window_(new JobWindow(this, task, 1))
-	, view_frame_(new ViewFrame(this))
+	, view_frame_(new ViewFrame(this, job_window_->job()))
 {
 	int n = task.GetNumberOfJobs();
 	if (n < 0)
@@ -182,7 +183,7 @@ void TaskFrame::Start()
 	job_window_->gauge()->Start();
 }
 
-void TaskFrame::View(const Job &job)
+void TaskFrame::View()
 {
 	view_frame_->Centre();
 	view_frame_->Show();
