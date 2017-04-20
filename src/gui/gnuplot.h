@@ -17,7 +17,7 @@ struct LineGraphOption {
 	wxString input_file;
 	unsigned int num_variables;
 	unsigned int skip;
-	unsigned int x;
+	int x;
 	std::map<unsigned int, wxString> y1;
 	std::map<unsigned int, wxString> y2;
 };

@@ -28,16 +28,23 @@ void PrintSingleQuoted(const char *filename, FILE *fp)
 
 bool PlotLineGraph(const LineGraphOption &option, FILE *fp)
 {
-	int n = 0;
-	if (option.y1.empty())
+	if (option.x < 0) // nothing to do
+		return false;
+	bool y1_empty = option.y1.empty();
+	bool y2_empty = option.y2.empty();
+	if (y1_empty && y2_empty) // nothing to do
+		return false;
+
+	if (y1_empty)
 		std::fputs("unset ytics\n", fp);
 	else
 		std::fputs("set ytics nomirror\n", fp);
-	if (option.y2.empty())
+	if (y2_empty)
 		std::fputs("unset y2tics\n", fp);
 	else
 		std::fputs("set y2tics nomirror\n", fp);
 	std::fputs("plot", fp);
+	int n = 0;
 	for (auto p : option.y1) {
 		auto i = p.first;
 		if (n == 0) {
@@ -47,7 +54,7 @@ bool PlotLineGraph(const LineGraphOption &option, FILE *fp)
 			std::fputs(", ''", fp);
 		}
 		std::fprintf(fp,
-					 " binary format='%%%udouble' skip=%u using %u:%u axes x1y1 with lines",
+					 " binary format='%%%udouble' skip=%u using %d:%u axes x1y1 with lines",
 					 option.num_variables,
 					 option.skip,
 					 option.x+1,
@@ -65,7 +72,7 @@ bool PlotLineGraph(const LineGraphOption &option, FILE *fp)
 			std::fputs(", ''", fp);
 		}
 		std::fprintf(fp,
-					 " binary format='%%%udouble' skip=%u using %u:%u axes x1y2 with lines",
+					 " binary format='%%%udouble' skip=%u using %d:%u axes x1y2 with lines",
 					 option.num_variables,
 					 option.skip,
 					 option.x+1,

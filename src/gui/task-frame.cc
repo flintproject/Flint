@@ -187,6 +187,7 @@ void TaskFrame::View()
 {
 	view_frame_->Centre();
 	view_frame_->Show();
+	view_frame_->Plot();
 }
 
 void TaskFrame::OnChoice(wxCommandEvent &event)

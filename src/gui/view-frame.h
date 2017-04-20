@@ -20,16 +20,16 @@ class ViewFrame : public wxFrame {
 public:
 	ViewFrame(TaskFrame *parent, const Job &job);
 
+	void Plot();
+
 private:
 	void OnItemValueChanged(wxDataViewEvent &event);
-	void OnPlot(wxCommandEvent &event);
 	void OnClose(wxCloseEvent &event);
 
 	bool LoadVariables();
 
 	const Job &job_;
 	wxDataViewListCtrl *data_view_;
-	wxButton *plot_;
 	unsigned int num_variables_;
 	unsigned int skip_;
 	FILE *fp_;

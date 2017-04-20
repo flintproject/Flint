@@ -38,7 +38,6 @@ ViewFrame::ViewFrame(TaskFrame *parent, const Job &job)
 	: wxFrame(parent, wxID_ANY, "View" /* FIXME */)
 	, job_(job)
 	, data_view_(new wxDataViewListCtrl(this, wxID_ANY))
-	, plot_(new wxButton(this, wxID_ANY, "Plot"))
 	, num_variables_(0)
 	, skip_(0)
 	, fp_(nullptr)
@@ -54,50 +53,17 @@ ViewFrame::ViewFrame(TaskFrame *parent, const Job &job)
 
 	auto vbox = new wxBoxSizer(wxVERTICAL);
 	vbox->Add(data_view_, 1 /* vertically stretchable */, wxEXPAND /* horizontally stretchable */);
-	vbox->Add(plot_, 0, wxEXPAND /* horizontally stretchable */);
 	data_view_->SetMinSize(wxSize(600, 300));
 	SetSizerAndFit(vbox);
 
-	plot_->Bind(wxEVT_BUTTON, &ViewFrame::OnPlot, this);
 	Bind(wxEVT_DATAVIEW_ITEM_VALUE_CHANGED, &ViewFrame::OnItemValueChanged, this);
 	Bind(wxEVT_CLOSE_WINDOW, &ViewFrame::OnClose, this);
 }
 
-void ViewFrame::OnItemValueChanged(wxDataViewEvent &event)
-{
-	int col = event.GetColumn();
-	int row = data_view_->ItemToRow(event.GetItem());
-	switch (col) {
-	case kColumnX:
-		if (data_view_->GetToggleValue(row, col)) {
-			data_view_->SetToggleValue(false, row, kColumnY1);
-			data_view_->SetToggleValue(false, row, kColumnY2);
-			for (int i=0;i<data_view_->GetItemCount();i++) {
-				if (i != row)
-					data_view_->SetToggleValue(false, i, kColumnX);
-			}
-		}
-		break;
-	case kColumnY1:
-		if (data_view_->GetToggleValue(row, col)) {
-			data_view_->SetToggleValue(false, row, kColumnX);
-			data_view_->SetToggleValue(false, row, kColumnY2);
-		}
-		break;
-	case kColumnY2:
-		if (data_view_->GetToggleValue(row, col)) {
-			data_view_->SetToggleValue(false, row, kColumnX);
-			data_view_->SetToggleValue(false, row, kColumnY1);
-		}
-		break;
-	default:
-		break;
-	}
-}
-
-void ViewFrame::OnPlot(wxCommandEvent &)
+void ViewFrame::Plot()
 {
 	LineGraphOption option;
+	option.x = -1;
 	option.num_variables = num_variables_;
 	option.skip = skip_;
 	auto *store = data_view_->GetStore();
@@ -105,7 +71,7 @@ void ViewFrame::OnPlot(wxCommandEvent &)
 	for (unsigned int i=0;i<store->GetItemCount();i++) {
 		store->GetValueByRow(v, i, kColumnX);
 		if (v.GetBool()) {
-			option.x = i;
+			option.x = static_cast<int>(i);
 			continue;
 		}
 		store->GetValueByRow(v, i, kColumnY1);
@@ -140,14 +106,56 @@ void ViewFrame::OnPlot(wxCommandEvent &)
 	}
 	option.input_file = filename.GetFullPath();
 	PlotLineGraph(option, fp_);
-#else
-#error "unavailability of popen is fatal."
 #endif
+}
+
+void ViewFrame::OnItemValueChanged(wxDataViewEvent &event)
+{
+	Unbind(wxEVT_DATAVIEW_ITEM_VALUE_CHANGED, &ViewFrame::OnItemValueChanged, this);
+	int col = event.GetColumn();
+	int row = data_view_->ItemToRow(event.GetItem());
+	switch (col) {
+	case kColumnX:
+		if (data_view_->GetToggleValue(row, col)) {
+			data_view_->SetToggleValue(false, row, kColumnY1);
+			data_view_->SetToggleValue(false, row, kColumnY2);
+			for (int i=0;i<data_view_->GetItemCount();i++) {
+				if (i != row)
+					data_view_->SetToggleValue(false, i, kColumnX);
+			}
+		}
+		break;
+	case kColumnY1:
+		if (data_view_->GetToggleValue(row, col)) {
+			data_view_->SetToggleValue(false, row, kColumnX);
+			data_view_->SetToggleValue(false, row, kColumnY2);
+		}
+		break;
+	case kColumnY2:
+		if (data_view_->GetToggleValue(row, col)) {
+			data_view_->SetToggleValue(false, row, kColumnX);
+			data_view_->SetToggleValue(false, row, kColumnY1);
+		}
+		break;
+	default:
+		break;
+	}
+	Bind(wxEVT_DATAVIEW_ITEM_VALUE_CHANGED, &ViewFrame::OnItemValueChanged, this);
+
+	Plot();
 }
 
 void ViewFrame::OnClose(wxCloseEvent &)
 {
 	Show(false);
+#ifdef _WIN32
+	// TODO
+#elif defined(HAVE_POPEN)
+	if (fp_) {
+		pclose(fp_);
+		fp_ = nullptr;
+	}
+#endif
 }
 
 namespace {
