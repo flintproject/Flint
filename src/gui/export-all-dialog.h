@@ -2,6 +2,8 @@
 #ifndef FLINT_GUI_EXPORT_ALL_DIALOG_H_
 #define FLINT_GUI_EXPORT_ALL_DIALOG_H_
 
+#include <vector>
+
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wcast-qual"
 #include <wx/progdlg.h>
@@ -15,7 +17,8 @@ class TaskFrame;
 
 class ExportAllDialog : public wxProgressDialog, public wxThreadHelper {
 public:
-	ExportAllDialog(TaskFrame *frame, const wxString &target_path, int type);
+	ExportAllDialog(TaskFrame *frame, const wxString &target_path, int type,
+					std::vector<int> &&indice);
 
 	bool Start();
 
@@ -30,6 +33,7 @@ private:
 	TaskFrame *frame_;
 	wxString target_path_;
 	int type_;
+	std::vector<int> indice_;
 };
 
 }

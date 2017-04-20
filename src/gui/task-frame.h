@@ -2,14 +2,19 @@
 #ifndef FLINT_GUI_TASK_FRAME_H_
 #define FLINT_GUI_TASK_FRAME_H_
 
+#define BOOST_DATE_TIME_NO_LIB
+#include <boost/interprocess/mapped_region.hpp>
+
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wcast-qual"
+#include <wx/dataview.h>
 #include <wx/wx.h>
 #pragma GCC diagnostic pop
 
 namespace flint {
 namespace gui {
 
+struct Job;
 class JobWindow;
 struct Task;
 class ViewFrame;
@@ -20,16 +25,28 @@ public:
 
 	const Task &task() const {return task_;}
 
+	int AddParameterSample(int argc, char **argv, char **names);
 	void Start();
 	void View();
 
 private:
-	void OnChoice(wxCommandEvent &event);
-	void OnExportAll(wxCommandEvent &event);
+	void OnCancel(wxCommandEvent &event);
+	void OnItemContextMenu(wxDataViewEvent &event);
+	void OnSelectionChanged(wxDataViewEvent &event);
+	void OnExport(wxCommandEvent &event);
+	void OnView(wxCommandEvent &event);
 	void OnClose(wxCloseEvent &event);
 
+	void Export(const Job &job);
+	void ExportAll();
+	void LoadItems();
+	void ShowErrorOnExporting(const wxString &message);
+
 	const Task &task_;
-	JobWindow *job_window_;
+	boost::interprocess::mapped_region mr_;
+	wxDataViewListCtrl *data_view_;
+	wxButton *export_;
+	wxButton *view_;
 	ViewFrame *view_frame_;
 };
 

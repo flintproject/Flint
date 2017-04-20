@@ -14,7 +14,7 @@ namespace flint {
 namespace gui {
 
 struct LineGraphOption {
-	wxString input_file;
+	std::map<unsigned int, wxString> input_files;
 	unsigned int num_variables;
 	unsigned int skip;
 	int x;

@@ -280,7 +280,6 @@ flint2_SOURCES = \
     gui/document/unit-of-time.cc \
     gui/export-all-dialog.cc \
     gui/gnuplot.cc \
-    gui/job-gauge.cc \
     gui/job.cc \
     gui/main-frame.cc \
     gui/param-tree.cc \

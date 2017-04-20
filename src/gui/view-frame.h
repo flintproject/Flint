@@ -18,7 +18,7 @@ class TaskFrame;
 
 class ViewFrame : public wxFrame {
 public:
-	ViewFrame(TaskFrame *parent, const Job &job);
+	ViewFrame(TaskFrame *parent, wxDataViewListCtrl &job_list);
 
 	void Plot();
 
@@ -28,7 +28,7 @@ private:
 
 	bool LoadVariables();
 
-	const Job &job_;
+	wxDataViewListCtrl &job_list_;
 	wxDataViewListCtrl *data_view_;
 	unsigned int num_variables_;
 	unsigned int skip_;

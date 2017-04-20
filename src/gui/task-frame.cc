@@ -5,98 +5,132 @@
 
 #include "gui/task-frame.h"
 
+#include <cassert>
 #include <cstdlib>
 #include <iostream>
 #include <fstream>
+#include <vector>
 
+#define BOOST_DATE_TIME_NO_LIB
+#include <boost/interprocess/file_mapping.hpp>
+
+#include "db/read-only-driver.h"
 #include "flint/error.h"
 #include "gui/export-all-dialog.h"
-#include "gui/job-gauge.h"
 #include "gui/job.h"
-#include "gui/sim-frame.h"
+#include "gui/simulation.h"
 #include "gui/task.h"
 #include "gui/view-frame.h"
 #include "isd2csv.h"
+#include "sqlite3.h"
 
 namespace flint {
 namespace gui {
 
-class JobWindow : public wxWindow {
-public:
-	JobWindow(wxWindow *parent, const Task &task, int id);
-
-	const Job &job() const {return job_;}
-	JobGauge *gauge() {return gauge_;}
-
-	void SwitchJobId(int id);
-
-private:
-	void OnX(wxCommandEvent &event);
-	void OnExport(wxCommandEvent &event);
-	void OnView(wxCommandEvent &event);
-
-	void ShowErrorOnExporting(const wxString &message)
-	{
-		wxMessageBox(message, "Error on exporting", wxOK|wxICON_ERROR, this);
-	}
-
-	Job job_;
-	JobGauge *gauge_;
-	wxButton *x_;
-	wxButton *export_;
-};
-
-JobWindow::JobWindow(wxWindow *parent, const Task &task, int id)
-	: wxWindow(parent, wxID_ANY)
-	, job_(task, id)
-	, gauge_(new JobGauge(this, job_))
-	, x_(new wxButton(this, wxID_ANY, "x", wxDefaultPosition, wxDefaultSize, wxBU_EXACTFIT))
+TaskFrame::TaskFrame(wxWindow *parent, const Task &task)
+	: wxFrame(parent, wxID_ANY, wxString::Format("Task %d", task.id))
+	, task_(task)
+	, data_view_(new wxDataViewListCtrl(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxDV_MULTIPLE|wxDV_ROW_LINES))
 	, export_(new wxButton(this, wxID_ANY, "Export"))
+	, view_(new wxButton(this, wxID_ANY, "View"))
+	, view_frame_(new ViewFrame(this, *data_view_))
 {
-	bool finished = job_.IsFinished();
-	x_->Enable(!finished);
-	export_->Enable(finished);
+	LoadItems();
 
-	auto hbox0 = new wxBoxSizer(wxHORIZONTAL);
-	hbox0->Add(gauge_, 1 /* horizontally stretchable */);
-	hbox0->Add(x_);
-	auto hbox1 = new wxBoxSizer(wxHORIZONTAL);
-	auto view = new wxButton(this, wxID_ANY, "View");
-	hbox1->Add(export_);
-	hbox1->Add(view);
+	auto hbox = new wxBoxSizer(wxHORIZONTAL);
+	hbox->Add(export_);
+	hbox->Add(view_);
 	auto vbox = new wxBoxSizer(wxVERTICAL);
-	vbox->Add(hbox0, 0, wxEXPAND);
-	vbox->Add(hbox1, 0, wxALIGN_RIGHT);
+	vbox->Add(data_view_, 1 /* vertically stretchable */, wxEXPAND /* horizontally stretchable */);
+	vbox->Add(hbox, 0, wxALIGN_RIGHT);
+	data_view_->SetMinSize(wxSize(300, 200));
 	SetSizerAndFit(vbox);
 
-	x_->Bind(wxEVT_BUTTON, &JobWindow::OnX, this);
-	export_->Bind(wxEVT_BUTTON, &JobWindow::OnExport, this);
-	view->Bind(wxEVT_BUTTON, &JobWindow::OnView, this);
+	export_->Bind(wxEVT_BUTTON, &TaskFrame::OnExport, this);
+	view_->Bind(wxEVT_BUTTON, &TaskFrame::OnView, this);
+	Bind(wxEVT_DATAVIEW_ITEM_CONTEXT_MENU, &TaskFrame::OnItemContextMenu, this);
+	Bind(wxEVT_DATAVIEW_SELECTION_CHANGED, &TaskFrame::OnSelectionChanged, this);
+	Bind(wxEVT_CLOSE_WINDOW, &TaskFrame::OnClose, this);
 }
 
-void JobWindow::SwitchJobId(int id)
+void TaskFrame::Start()
 {
-	job_.id = id;
-	bool finished = job_.IsFinished();
-	x_->Enable(!finished);
-	export_->Enable(finished);
+	// TODO
 }
 
-void JobWindow::OnX(wxCommandEvent &event)
+void TaskFrame::View()
 {
-	if (job_.IsFinished() || job_.RequestCancel()) {
-		auto x = wxDynamicCast(event.GetEventObject(), wxButton);
-		x->Disable();
+	view_frame_->Centre();
+	view_frame_->Show();
+	view_frame_->Plot();
+}
+
+void TaskFrame::OnExport(wxCommandEvent &)
+{
+	if (data_view_->GetSelectedItemsCount() == 0)
+		return;
+	if (data_view_->GetSelectedItemsCount() == 1) {
+		Job job(task_, data_view_->GetSelectedRow()+1);
+		Export(job);
+	} else {
+		ExportAll();
 	}
 }
 
-void JobWindow::OnExport(wxCommandEvent &)
+void TaskFrame::OnCancel(wxCommandEvent &event)
 {
-	if (!job_.IsFinished())
+	auto *menu = wxDynamicCast(event.GetEventObject(), wxMenu);
+	wxDataViewItem item(menu->GetClientData());
+	if (!item.IsOk())
 		return;
-	auto source_file = job_.GetOutputFileName();
+	int row = data_view_->ItemToRow(item);
+	Job job(task_, row+1);
+	job.RequestCancel();
+}
+
+void TaskFrame::OnItemContextMenu(wxDataViewEvent &event)
+{
+	auto item = event.GetItem();
+	if (!item.IsOk())
+		return;
+	int row = data_view_->ItemToRow(item);
+	Job job(task_, row+1);
+	if (job.IsFinished())
+		return;
+
+	wxMenu menu;
+	menu.SetClientData(item.GetID());
+	menu.Append(wxID_ANY, "Cancel");
+	menu.Bind(wxEVT_COMMAND_MENU_SELECTED, &TaskFrame::OnCancel, this);
+	PopupMenu(&menu);
+}
+
+void TaskFrame::OnSelectionChanged(wxDataViewEvent &)
+{
+	bool b = data_view_->GetSelectedItemsCount() > 0;
+	export_->Enable(b);
+	view_->Enable(b);
+}
+
+void TaskFrame::OnView(wxCommandEvent &)
+{
+	if (data_view_->GetSelectedItemsCount() == 0)
+		return;
+	View();
+}
+
+void TaskFrame::OnClose(wxCloseEvent &)
+{
+	Destroy();
+}
+
+void TaskFrame::Export(const Job &job)
+{
+	if (!job.IsFinished())
+		return;
+	auto source_file = job.GetOutputFileName();
 	if (!source_file.FileExists()) {
-		ShowErrorOnExporting(wxString::Format("missing output file of job %d", job_.id));
+		ShowErrorOnExporting(wxString::Format("missing output file of job %d", job.id));
 		return;
 	}
 	wxArrayString arr;
@@ -146,63 +180,12 @@ void JobWindow::OnExport(wxCommandEvent &)
 	wxMessageBox(wxString::Format("exported to %s successuflly", target_path), "Exported");
 }
 
-void JobWindow::OnView(wxCommandEvent &)
+void TaskFrame::ExportAll()
 {
-	auto task_frame = wxDynamicCast(GetParent(), TaskFrame);
-	task_frame->View();
-}
+	wxDataViewItemArray selected;
+	data_view_->GetSelections(selected);
+	assert(!selected.empty());
 
-TaskFrame::TaskFrame(wxWindow *parent, const Task &task)
-	: wxFrame(parent, wxID_ANY, wxString::Format("Task %d", task.id))
-	, task_(task)
-	, job_window_(new JobWindow(this, task, 1))
-	, view_frame_(new ViewFrame(this, job_window_->job()))
-{
-	int n = task.GetNumberOfJobs();
-	if (n < 0)
-		n = 0;
-	auto choice = new wxChoice(this, wxID_ANY);
-	for (int i=0;i<n;i++)
-		choice->Append(wxString::Format("%d", i+1));
-	if (n > 0)
-		choice->SetSelection(0);
-	auto vbox = new wxBoxSizer(wxVERTICAL);
-	auto export_all = new wxButton(this, wxID_ANY, "Export All");
-	vbox->Add(export_all, 0, wxALIGN_RIGHT);
-	vbox->Add(job_window_, 0, wxEXPAND /* horizontally stretchable */);
-	vbox->Add(choice, 0, wxALIGN_CENTER);
-	SetSizerAndFit(vbox);
-
-	choice->Bind(wxEVT_CHOICE, &TaskFrame::OnChoice, this);
-	export_all->Bind(wxEVT_BUTTON, &TaskFrame::OnExportAll, this);
-	Bind(wxEVT_CLOSE_WINDOW, &TaskFrame::OnClose, this);
-}
-
-void TaskFrame::Start()
-{
-	job_window_->gauge()->Start();
-}
-
-void TaskFrame::View()
-{
-	view_frame_->Centre();
-	view_frame_->Show();
-	view_frame_->Plot();
-}
-
-void TaskFrame::OnChoice(wxCommandEvent &event)
-{
-	auto choice = wxDynamicCast(event.GetEventObject(), wxChoice);
-	int i = choice->GetSelection();
-	if (i == wxNOT_FOUND)
-		return;
-	job_window_->SwitchJobId(i+1);
-}
-
-void TaskFrame::OnExportAll(wxCommandEvent &)
-{
-	if (!task_.IsFinished())
-		return;
 	wxArrayString arr;
 	arr.Add("CSV");
 	arr.Add("ISD");
@@ -215,15 +198,85 @@ void TaskFrame::OnExportAll(wxCommandEvent &)
 							  wxDD_DEFAULT_STYLE|wxDD_DIR_MUST_EXIST);
 	if (saveDirDialog.ShowModal() == wxID_CANCEL)
 		return;
-	ExportAllDialog *dialog = new ExportAllDialog(this, saveDirDialog.GetPath(), r);
+
+	std::vector<int> indice;
+	for (const auto &item : selected)
+		indice.push_back(data_view_->ItemToRow(item));
+	ExportAllDialog *dialog = new ExportAllDialog(this, saveDirDialog.GetPath(), r, std::move(indice));
 	dialog->Show();
 	dialog->Start();
 }
 
-void TaskFrame::OnClose(wxCloseEvent &)
+int TaskFrame::AddParameterSample(int argc, char **argv, char **names)
 {
-	job_window_->gauge()->Stop();
-	Destroy();
+	assert(argc > 1);
+
+	if (data_view_->GetItemCount() == 0) {
+		for (int i=1;i<argc;i++)
+			data_view_->AppendTextColumn(names[i]);
+	}
+
+	int id = std::atoi(argv[0]);
+	assert(id > 0);
+	if (mr_.get_size() <= static_cast<size_t>(id))
+		return 1;
+	int progress = *(reinterpret_cast<char *>(mr_.get_address())+id);
+	wxString param;
+	wxVector<wxVariant> data;
+	data.push_back(wxString::Format("%d", id));
+	data.push_back(progress);
+	data.push_back(wxString::Format("%d%%", progress));
+	for (int i=1;i<argc;i++)
+		data.push_back(argv[i]);
+	data_view_->AppendItem(data);
+	return 0;
+}
+
+namespace {
+
+int Process(void *data, int argc, char **argv, char **names)
+{
+	auto *task_frame = static_cast<TaskFrame *>(data);
+	return task_frame->AddParameterSample(argc, argv, names);
+}
+
+}
+
+void TaskFrame::LoadItems()
+{
+	data_view_->AppendTextColumn("ID");
+	data_view_->AppendProgressColumn("Progress");
+	data_view_->AppendTextColumn("Status");
+
+	try {
+		auto filename = task_.simulation->GetProgressFileName(task_.id);
+		boost::interprocess::file_mapping fm(filename.GetFullPath().c_str(),
+											 boost::interprocess::read_only);
+		mr_ = boost::interprocess::mapped_region(fm, boost::interprocess::read_only);
+	} catch (const boost::interprocess::interprocess_exception &) {
+		return;
+	}
+
+	// FIXME: the database can be busy
+	auto filename = task_.GetDirectoryName();
+	filename.SetFullName("task.db");
+	auto full_path = filename.GetFullPath();
+	db::ReadOnlyDriver driver(full_path.c_str());
+	if (!driver.db())
+		return;
+	char *em;
+	int e = sqlite3_exec(driver.db(), "SELECT rowid, * FROM parameter_samples", &Process, this, &em);
+	if (e != SQLITE_OK)
+		if (e != SQLITE_ABORT)
+			wxLogError(em);
+
+	if (data_view_->GetItemCount() > 0)
+		data_view_->SelectRow(0);
+}
+
+void TaskFrame::ShowErrorOnExporting(const wxString &message)
+{
+	wxMessageBox(message, "Error on exporting", wxOK|wxICON_ERROR, this);
 }
 
 }

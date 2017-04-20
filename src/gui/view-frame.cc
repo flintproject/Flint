@@ -34,9 +34,9 @@ enum {
 
 }
 
-ViewFrame::ViewFrame(TaskFrame *parent, const Job &job)
+ViewFrame::ViewFrame(TaskFrame *parent, wxDataViewListCtrl &job_list)
 	: wxFrame(parent, wxID_ANY, "View" /* FIXME */)
-	, job_(job)
+	, job_list_(job_list)
 	, data_view_(new wxDataViewListCtrl(this, wxID_ANY))
 	, num_variables_(0)
 	, skip_(0)
@@ -63,6 +63,15 @@ ViewFrame::ViewFrame(TaskFrame *parent, const Job &job)
 void ViewFrame::Plot()
 {
 	LineGraphOption option;
+
+	wxDataViewItemArray arr;
+	job_list_.GetSelections(arr);
+	for (const auto &item : arr) {
+		auto task_frame = wxDynamicCast(GetParent(), TaskFrame);
+		Job job(task_frame->task(), job_list_.ItemToRow(item)+1);
+		option.input_files.emplace(job.id, job.GetOutputFileName().GetFullPath());
+	}
+
 	option.x = -1;
 	option.num_variables = num_variables_;
 	option.skip = skip_;
@@ -88,7 +97,6 @@ void ViewFrame::Plot()
 		}
 	}
 
-	auto filename = job_.GetOutputFileName();
 #ifdef _WIN32
 	// TODO
 #elif defined(HAVE_POPEN)
@@ -104,7 +112,6 @@ void ViewFrame::Plot()
 			return;
 		}
 	}
-	option.input_file = filename.GetFullPath();
 	PlotLineGraph(option, fp_);
 #endif
 }

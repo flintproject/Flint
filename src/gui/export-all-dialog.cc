@@ -18,7 +18,8 @@
 namespace flint {
 namespace gui {
 
-ExportAllDialog::ExportAllDialog(TaskFrame *frame, const wxString &target_path, int type)
+ExportAllDialog::ExportAllDialog(TaskFrame *frame, const wxString &target_path, int type,
+								 std::vector<int> &&indice)
 	: wxProgressDialog("Exporting files", // title
 					   "Exporting files", // message
 					   100, // maximum
@@ -26,6 +27,7 @@ ExportAllDialog::ExportAllDialog(TaskFrame *frame, const wxString &target_path, 
 	, frame_(frame)
 	, target_path_(target_path)
 	, type_(type)
+	, indice_(std::move(indice))
 {
 	Bind(wxEVT_THREAD, &ExportAllDialog::OnThreadUpdate, this);
 }
@@ -58,13 +60,13 @@ void ExportAllDialog::OnThreadUpdate(wxThreadEvent &event)
 wxThread::ExitCode ExportAllDialog::Entry()
 {
 	wxThreadEvent *event;
-	int n = frame_->task().GetNumberOfJobs();
-	for (int i=0;i<n;i++) {
+	int k = 0;
+	for (int i : indice_) {
 		if (GetThread()->TestDestroy())
 			break;
 
 		event = new wxThreadEvent;
-		event->SetInt((i * 100)/n);
+		event->SetInt((k++ * 100)/indice_.size());
 		wxQueueEvent(this, event);
 
 		Job job(frame_->task(), i+1);
