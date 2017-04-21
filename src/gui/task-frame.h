@@ -35,6 +35,7 @@ private:
 	void OnSelectionChanged(wxDataViewEvent &event);
 	void OnExport(wxCommandEvent &event);
 	void OnView(wxCommandEvent &event);
+	void OnTimer(wxTimerEvent &event);
 	void OnClose(wxCloseEvent &event);
 
 	void Export(const Job &job);
@@ -48,6 +49,7 @@ private:
 	wxButton *export_;
 	wxButton *view_;
 	ViewFrame *view_frame_;
+	wxTimer timer_;
 };
 
 }

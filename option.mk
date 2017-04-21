@@ -73,6 +73,7 @@ WXWIDGETS_CONFIGURE_OPTIONS = \
 	--enable-monolithic \
 	--enable-propgrid \
 	--enable-streams \
+	--enable-timer \
 	--enable-zipstream \
 	--with-zlib \
 	--disable-compat30 \

@@ -27,6 +27,16 @@
 namespace flint {
 namespace gui {
 
+namespace {
+
+enum {
+	kColumnId,
+	kColumnProgress,
+	kColumnStatus
+};
+
+}
+
 TaskFrame::TaskFrame(wxWindow *parent, const Task &task)
 	: wxFrame(parent, wxID_ANY, wxString::Format("Task %d", task.id))
 	, task_(task)
@@ -34,6 +44,7 @@ TaskFrame::TaskFrame(wxWindow *parent, const Task &task)
 	, export_(new wxButton(this, wxID_ANY, "Export"))
 	, view_(new wxButton(this, wxID_ANY, "View"))
 	, view_frame_(new ViewFrame(this, *data_view_))
+	, timer_(this)
 {
 	LoadItems();
 
@@ -48,6 +59,7 @@ TaskFrame::TaskFrame(wxWindow *parent, const Task &task)
 
 	export_->Bind(wxEVT_BUTTON, &TaskFrame::OnExport, this);
 	view_->Bind(wxEVT_BUTTON, &TaskFrame::OnView, this);
+	Bind(wxEVT_TIMER, &TaskFrame::OnTimer, this);
 	Bind(wxEVT_DATAVIEW_ITEM_CONTEXT_MENU, &TaskFrame::OnItemContextMenu, this);
 	Bind(wxEVT_DATAVIEW_SELECTION_CHANGED, &TaskFrame::OnSelectionChanged, this);
 	Bind(wxEVT_CLOSE_WINDOW, &TaskFrame::OnClose, this);
@@ -55,7 +67,11 @@ TaskFrame::TaskFrame(wxWindow *parent, const Task &task)
 
 void TaskFrame::Start()
 {
-	// TODO
+	unsigned int n = data_view_->GetItemCount();
+	if (n == 0)
+		return;
+	if (!timer_.Start(1000+n*10))
+		wxLogError("failed to start timer");
 }
 
 void TaskFrame::View()
@@ -63,6 +79,20 @@ void TaskFrame::View()
 	view_frame_->Centre();
 	view_frame_->Show();
 	view_frame_->Plot();
+}
+
+void TaskFrame::OnTimer(wxTimerEvent &)
+{
+	unsigned int n = data_view_->GetItemCount();
+	for (unsigned int i=0;i<n;i++) {
+		if (mr_.get_size() <= static_cast<size_t>(i+1))
+			return;
+		int progress = *(reinterpret_cast<char *>(mr_.get_address())+i+1);
+		data_view_->SetValue(progress, i, kColumnProgress);
+		data_view_->SetTextValue(wxString::Format("%d%%", progress), i, kColumnStatus);
+	}
+	if (*(reinterpret_cast<char *>(mr_.get_address())) == 100 || task_.IsCanceled())
+		timer_.Stop();
 }
 
 void TaskFrame::OnExport(wxCommandEvent &)
@@ -121,6 +151,8 @@ void TaskFrame::OnView(wxCommandEvent &)
 
 void TaskFrame::OnClose(wxCloseEvent &)
 {
+	if (timer_.IsRunning())
+		timer_.Stop();
 	Destroy();
 }
 
