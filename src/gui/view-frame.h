@@ -23,6 +23,7 @@ public:
 	void Plot();
 
 private:
+	void OnCheckBox(wxCommandEvent &event);
 	void OnItemValueChanged(wxDataViewEvent &event);
 	void OnClose(wxCloseEvent &event);
 
@@ -30,6 +31,10 @@ private:
 
 	wxDataViewListCtrl &job_list_;
 	wxDataViewListCtrl *data_view_;
+	wxCheckBox *legend_;
+	wxCheckBox *log_x_;
+	wxCheckBox *log_y1_;
+	wxCheckBox *log_y2_;
 	unsigned int num_variables_;
 	unsigned int skip_;
 	FILE *fp_;

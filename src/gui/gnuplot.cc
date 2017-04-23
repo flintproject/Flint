@@ -39,6 +39,20 @@ bool PlotLineGraph(const LineGraphOption &option, FILE *fp)
 
 	bool with_id = option.input_files.size() > 1;
 
+	if (!option.log_x)
+		std::fputs("un", fp);
+	std::fputs("set logscale x\n", fp);
+	if (!y1_empty) {
+		if (!option.log_y1)
+			std::fputs("un", fp);
+		std::fputs("set logscale y\n", fp);
+	}
+	if (!y2_empty) {
+		if (!option.log_y2)
+			std::fputs("un", fp);
+		std::fputs("set logscale y2\n", fp);
+	}
+
 	if (y1_empty)
 		std::fputs("unset ytics\n", fp);
 	else
@@ -65,13 +79,17 @@ bool PlotLineGraph(const LineGraphOption &option, FILE *fp)
 						 option.skip,
 						 option.x+1,
 						 i+1);
-			std::fputs(" title ", fp);
-			if (with_id) {
-				wxString title;
-				title << id << ' ' << p.second;
-				PrintSingleQuoted(title.c_str(), fp);
-			} else
-				PrintSingleQuoted(p.second.c_str(), fp);
+			if (option.legend) {
+				std::fputs(" title ", fp);
+				if (with_id) {
+					wxString title;
+					title << id << ' ' << p.second;
+					PrintSingleQuoted(title.c_str(), fp);
+				} else
+					PrintSingleQuoted(p.second.c_str(), fp);
+			} else {
+				std::fputs(" notitle", fp);
+			}
 			++n;
 		}
 		for (auto p : option.y2) {
@@ -84,13 +102,17 @@ bool PlotLineGraph(const LineGraphOption &option, FILE *fp)
 						 option.skip,
 						 option.x+1,
 						 i+1);
-			std::fputs(" title ", fp);
-			if (with_id) {
-				wxString title;
-				title << id << ' ' << p.second;
-				PrintSingleQuoted(title.c_str(), fp);
-			} else
-				PrintSingleQuoted(p.second.c_str(), fp);
+			if (option.legend) {
+				std::fputs(" title ", fp);
+				if (with_id) {
+					wxString title;
+					title << id << ' ' << p.second;
+					PrintSingleQuoted(title.c_str(), fp);
+				} else
+					PrintSingleQuoted(p.second.c_str(), fp);
+			} else {
+				std::fputs(" notitle", fp);
+			}
 			++n;
 		}
 		std::fputc(',', fp);

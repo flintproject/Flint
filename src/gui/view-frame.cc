@@ -38,6 +38,10 @@ ViewFrame::ViewFrame(TaskFrame *parent, wxDataViewListCtrl &job_list)
 	: wxFrame(parent, wxID_ANY, "View" /* FIXME */)
 	, job_list_(job_list)
 	, data_view_(new wxDataViewListCtrl(this, wxID_ANY))
+	, legend_(new wxCheckBox(this, wxID_ANY, "Legend"))
+	, log_x_(new wxCheckBox(this, wxID_ANY, "Log X"))
+	, log_y1_(new wxCheckBox(this, wxID_ANY, "Log Y1"))
+	, log_y2_(new wxCheckBox(this, wxID_ANY, "Log Y2"))
 	, num_variables_(0)
 	, skip_(0)
 	, fp_(nullptr)
@@ -51,11 +55,23 @@ ViewFrame::ViewFrame(TaskFrame *parent, wxDataViewListCtrl &job_list)
 
 	LoadVariables();
 
+	legend_->SetValue(true);
+
+	auto hbox = new wxBoxSizer(wxHORIZONTAL);
+	hbox->Add(legend_);
+	hbox->Add(log_x_);
+	hbox->Add(log_y1_);
+	hbox->Add(log_y2_);
 	auto vbox = new wxBoxSizer(wxVERTICAL);
 	vbox->Add(data_view_, 1 /* vertically stretchable */, wxEXPAND /* horizontally stretchable */);
+	vbox->Add(hbox);
 	data_view_->SetMinSize(wxSize(600, 300));
 	SetSizerAndFit(vbox);
 
+	legend_->Bind(wxEVT_CHECKBOX, &ViewFrame::OnCheckBox, this);
+	log_x_->Bind(wxEVT_CHECKBOX, &ViewFrame::OnCheckBox, this);
+	log_y1_->Bind(wxEVT_CHECKBOX, &ViewFrame::OnCheckBox, this);
+	log_y2_->Bind(wxEVT_CHECKBOX, &ViewFrame::OnCheckBox, this);
 	Bind(wxEVT_DATAVIEW_ITEM_VALUE_CHANGED, &ViewFrame::OnItemValueChanged, this);
 	Bind(wxEVT_CLOSE_WINDOW, &ViewFrame::OnClose, this);
 }
@@ -63,6 +79,10 @@ ViewFrame::ViewFrame(TaskFrame *parent, wxDataViewListCtrl &job_list)
 void ViewFrame::Plot()
 {
 	LineGraphOption option;
+	option.legend = legend_->IsChecked();
+	option.log_x = log_x_->IsChecked();
+	option.log_y1 = log_y1_->IsChecked();
+	option.log_y2 = log_y2_->IsChecked();
 
 	wxDataViewItemArray arr;
 	job_list_.GetSelections(arr);
@@ -114,6 +134,11 @@ void ViewFrame::Plot()
 	}
 	PlotLineGraph(option, fp_);
 #endif
+}
+
+void ViewFrame::OnCheckBox(wxCommandEvent &)
+{
+	Plot();
 }
 
 void ViewFrame::OnItemValueChanged(wxDataViewEvent &event)

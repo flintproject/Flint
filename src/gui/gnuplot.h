@@ -20,6 +20,10 @@ struct LineGraphOption {
 	int x;
 	std::map<unsigned int, wxString> y1;
 	std::map<unsigned int, wxString> y2;
+	bool legend;
+	bool log_x;
+	bool log_y1;
+	bool log_y2;
 };
 
 bool PlotLineGraph(const LineGraphOption &option, FILE *fp);
