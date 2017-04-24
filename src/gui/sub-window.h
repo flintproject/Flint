@@ -9,10 +9,12 @@
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wcast-qual"
 #include <wx/dataview.h>
+#include <wx/listctrl.h>
 #include <wx/spinctrl.h>
 #include <wx/wx.h>
 #pragma GCC diagnostic pop
 
+#include "lo.pb.h"
 #include "gui/param-tree.h"
 
 namespace flint {
@@ -50,6 +52,12 @@ public:
 	void Write(Configuration *config) const;
 
 private:
+	void OnChoice(wxCommandEvent &event);
+
+	void Choose(const std::vector<lo::Column> &v);
+
+	const Document *doc_;
+	wxListView *enabled_variables_;
 	wxChoice *choice_pattern_;
 	wxTextCtrl *text_pattern_;
 	wxChoice *choice_column_;

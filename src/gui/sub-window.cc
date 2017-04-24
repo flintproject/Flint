@@ -6,12 +6,8 @@
 #include "gui/sub-window.h"
 
 #include <cassert>
+#include <memory>
 #include <sstream>
-
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wcast-qual"
-#include <wx/listctrl.h>
-#pragma GCC diagnostic pop
 
 #include "flint/numeric.h"
 #include "gui/document.h"
@@ -112,6 +108,8 @@ const wxString choicesColumn[] = {"Physical Quantity", "Module"};
 
 OutputVariablesWindow::OutputVariablesWindow(wxWindow *parent, const Document *doc)
 	: wxWindow(parent, wxID_ANY)
+	, doc_(doc)
+	, enabled_variables_(nullptr)
 	, choice_pattern_(new wxChoice(this,
 								   wxID_ANY,
 								   wxDefaultPosition,
@@ -138,17 +136,16 @@ OutputVariablesWindow::OutputVariablesWindow(wxWindow *parent, const Document *d
 		availableVariables->SetItem(i, 1, column.track_name());
 		++i;
 	}
+	availableVariables->SetColumnWidth(0, wxLIST_AUTOSIZE_USEHEADER);
+	availableVariables->SetColumnWidth(1, wxLIST_AUTOSIZE);
 
 	auto vbox0 = new wxStaticBoxSizer(wxVERTICAL, this, "Enabled Variables");
-	auto enabledVariables = new wxListView(vbox0->GetStaticBox());
-	enabledVariables->AppendColumn("Physical Quantity");
-	enabledVariables->AppendColumn("Module");
-	i = 0;
-	for (auto &column : doc->var()) {
-		enabledVariables->InsertItem(i, column.name());
-		enabledVariables->SetItem(i, 1, column.track_name());
-		++i;
-	}
+	enabled_variables_ = new wxListView(vbox0->GetStaticBox());
+	enabled_variables_->AppendColumn("Physical Quantity");
+	enabled_variables_->AppendColumn("Module");
+	Choose(doc->var());
+	enabled_variables_->SetColumnWidth(0, wxLIST_AUTOSIZE_USEHEADER);
+	enabled_variables_->SetColumnWidth(1, wxLIST_AUTOSIZE);
 
 	auto b = choice_pattern_->SetStringSelection(doc->initial_config().filter_pattern);
 	assert(b);
@@ -158,7 +155,7 @@ OutputVariablesWindow::OutputVariablesWindow(wxWindow *parent, const Document *d
 	choice_column_->SetSelection(0);
 
 	// sizers
-	vbox0->Add(enabledVariables, 0, wxEXPAND);
+	vbox0->Add(enabled_variables_, 1 /* vertically stretchable */, wxEXPAND);
 	auto hbox0 = new wxBoxSizer(wxHORIZONTAL);
 	hbox0->Add(new wxStaticText(this, wxID_ANY, "Filter Pattern:"), 0, wxALIGN_CENTER_VERTICAL);
 	hbox0->Add(choice_pattern_, 0, wxALIGN_CENTER_VERTICAL);
@@ -166,7 +163,7 @@ OutputVariablesWindow::OutputVariablesWindow(wxWindow *parent, const Document *d
 	hbox1->Add(new wxStaticText(this, wxID_ANY, "Filter Column:"), 0, wxALIGN_CENTER_VERTICAL);
 	hbox1->Add(choice_column_, 0, wxALIGN_CENTER_VERTICAL);
 	auto vbox = new wxBoxSizer(wxVERTICAL);
-	vbox->Add(vbox0, 0, wxEXPAND);
+	vbox->Add(vbox0, 1 /* vertically stretchable */, wxEXPAND);
 	vbox->Add(hbox0, 0, wxEXPAND);
 	vbox->Add(text_pattern_, 0, wxEXPAND);
 	vbox->Add(hbox1, 0, wxEXPAND);
@@ -178,6 +175,10 @@ OutputVariablesWindow::OutputVariablesWindow(wxWindow *parent, const Document *d
 				  1, // horizontally stretchable
 				  wxEXPAND);
 	SetSizerAndFit(topSizer);
+
+	choice_pattern_->Bind(wxEVT_CHOICE, &OutputVariablesWindow::OnChoice, this);
+	text_pattern_->Bind(wxEVT_TEXT, &OutputVariablesWindow::OnChoice, this);
+	choice_column_->Bind(wxEVT_CHOICE, &OutputVariablesWindow::OnChoice, this);
 }
 
 void OutputVariablesWindow::Write(Configuration *config) const
@@ -185,6 +186,28 @@ void OutputVariablesWindow::Write(Configuration *config) const
 	config->filter_pattern = choice_pattern_->GetString(choice_pattern_->GetSelection());
 	config->filter_value = text_pattern_->GetValue();
 	config->filter_column = choice_column_->GetSelection();
+}
+
+void OutputVariablesWindow::OnChoice(wxCommandEvent &)
+{
+	// TODO: as this procedure takes some time, it would be nicer
+	// to show an indicator until finished.
+	std::unique_ptr<Configuration> config(new Configuration(doc_->initial_config()));
+	Write(config.get());
+	std::vector<lo::Column> v;
+	config->GetOutputVariables(doc_, &v);
+	enabled_variables_->DeleteAllItems();
+	Choose(v);
+}
+
+void OutputVariablesWindow::Choose(const std::vector<lo::Column> &v)
+{
+	long i = 0;
+	for (auto &column : v) {
+		enabled_variables_->InsertItem(i, column.name());
+		enabled_variables_->SetItem(i, 1, column.track_name());
+		++i;
+	}
 }
 
 

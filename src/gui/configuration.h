@@ -51,6 +51,7 @@ struct Configuration
 	// For NumberOfPoints attribute of SED-ML's uniformTimeCourse
 	int GetNumberOfPoints(const Document *doc) const;
 
+	void GetOutputVariables(const Document *doc, std::vector<lo::Column> *v) const;
 	void GetOutputVariables(const Document *doc, std::vector<std::string> *v) const;
 
 	// the content of the string is in UTF-8.

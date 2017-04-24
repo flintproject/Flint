@@ -83,26 +83,39 @@ std::string GetKey(const lo::Column &column)
 }
 
 void Configuration::GetOutputVariables(const Document *doc,
-									   std::vector<std::string> *v) const
+									   std::vector<lo::Column> *v) const
 {
 	if (filter_pattern == "Regular expression") {
-		std::regex r(filter_value);
-		for (auto &column : doc->var()) {
-			if (std::regex_search(GetTargetString(column, filter_column), r))
-				v->push_back(GetKey(column));
+		try {
+			std::regex r(filter_value);
+			for (auto &column : doc->var()) {
+				if (std::regex_search(GetTargetString(column, filter_column), r))
+					v->push_back(column);
+			}
+		} catch (const std::regex_error &e) {
+			// ignore columns if given regexp is invalid
 		}
 	} else if (filter_pattern == "Wildcard") {
 		for (auto &column : doc->var()) {
 			// TODO
-			v->push_back(GetKey(column));
+			v->push_back(column);
 		}
 	} else { // Fixed string
 		for (auto &column : doc->var()) {
 			auto found = GetTargetString(column, filter_column).find(filter_value);
 			if (found != std::string::npos)
-				v->push_back(GetKey(column));
+				v->push_back(column);
 		}
 	}
+}
+
+void Configuration::GetOutputVariables(const Document *doc,
+									   std::vector<std::string> *v) const
+{
+	std::vector<lo::Column> columns;
+	GetOutputVariables(doc, &columns);
+	for (auto &column : columns)
+		v->push_back(GetKey(column));
 }
 
 std::vector<std::pair<lo::Column, std::string> > Configuration::GetTargets(const Document *doc) const
