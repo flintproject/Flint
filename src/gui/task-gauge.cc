@@ -57,7 +57,7 @@ wxThread::ExitCode TaskGauge::Entry()
 	// wait until progress files are ready
 	for (;;) {
 		try {
-			boost::interprocess::file_mapping fm(filename_.GetFullPath().utf8_str().data(),
+			boost::interprocess::file_mapping fm(filename_.GetFullPath().c_str(), // TODO: check locale-dependency
 												 boost::interprocess::read_only);
 			mr = boost::interprocess::mapped_region(fm, boost::interprocess::read_only, 0, 1);
 			break;
