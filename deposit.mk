@@ -1,4 +1,4 @@
-BOOST_VERSION = 1.63.0
+BOOST_VERSION = 1.64.0
 CLIBSEDML_VERSION = 0.1.0
 CZMQ_VERSION = 4.0.2
 LIBSBML_VERSION = 5.13.0
@@ -91,7 +91,7 @@ endef
 
 endif
 
-$(eval $(call external_library_source,http://downloads.sourceforge.net/project/boost/boost/$(BOOST_VERSION),$(BOOST_UNDERSCORE).tar.bz2,1c837ecd990bb022d07e7aab32b09847))
+$(eval $(call external_library_source,http://downloads.sourceforge.net/project/boost/boost/$(BOOST_VERSION),$(BOOST_UNDERSCORE).tar.bz2,93eecce2abed9d2442c9676914709349))
 $(eval $(call external_library_source3,https://github.com/flintproject/clibsedml/archive/v$(CLIBSEDML_VERSION).tar.gz,clibsedml-$(CLIBSEDML_VERSION).tar.gz,72a4c7ddfd2cdf5c3716c08b422dc7d8))
 $(eval $(call external_library_source,https://github.com/zeromq/czmq/releases/download/v$(CZMQ_VERSION),czmq-$(CZMQ_VERSION).tar.gz,b27cb5a23c472949b1e37765e404dc98))
 $(eval $(call external_library_source,http://downloads.sourceforge.net/project/sbml/libsbml/$(LIBSBML_VERSION)/stable,libSBML-$(LIBSBML_VERSION)-core-src.zip,6581723e894eee8058b95fa80df7aad4))
