@@ -69,8 +69,7 @@ libflint_la_LDFLAGS = -no-undefined
 libflint_la_SOURCES = \
     database.c \
     db/query.c \
-    process.c \
-    system.c
+    process.c
 
 libflintxx_la_CPPFLAGS = -I$(top_srcdir)/include $(SOSLIB_CFLAGS) $(LIBSBML_CFLAGS) $(WXWIDGETS_CXXFLAGS) $(PROTOBUF_CFLAGS) $(BOOST_CPPFLAGS) $(SUNDIALS_CFLAGS) $(CLIBSEDML_CFLAGS) $(CZMQ_CFLAGS) $(ZEROMQ_CFLAGS) $(XML_CPPFLAGS)
 libflintxx_la_LIBADD = libflint.la libsqlite3.la $(SOSLIB_LIBS) $(LIBSBML_LIBS) $(WXWIDGETS_LIBS) $(PROTOBUF_LIBS) $(BOOST_FILESYSTEM_LIBS) $(BOOST_SYSTEM_LIBS) $(SUNDIALS_LIBS) $(CLIBSEDML_LIBS) $(CZMQ_LIBS) $(ZEROMQ_LIBS) $(XML_LIBS)

@@ -24,7 +24,6 @@
 #include "job.h"
 #include "load.h"
 #include "run/spec.h"
-#include "system.h"
 #include "task.h"
 #include "task/config-reader.h"
 #include "utf8path.h"

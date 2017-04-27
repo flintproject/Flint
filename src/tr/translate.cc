@@ -35,7 +35,6 @@
 #include "load.h"
 #include "run/spec.h"
 #include "runtime/flow.h"
-#include "system.h"
 #include "task.h"
 #include "task/config-reader.h"
 #include "utf8path.h"

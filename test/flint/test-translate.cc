@@ -1,8 +1,9 @@
 /* -*- Mode: C++; tab-width: 4; indent-tabs-mode: t; c-basic-offset: 4 -*- vim:set ts=4 sw=4 sts=4 noet: */
 #include "flint/tr.h"
 
+#include <boost/process/system.hpp>
+
 #include "cli.pb.h"
-#include "system.h"
 
 #define BOOST_TEST_MODULE test_translate
 #include "test.h"
@@ -33,7 +34,7 @@ BOOST_FIXTURE_TEST_SUITE(test_translate, F)
 		std::unique_ptr<cli::RunOption> option(GenerateOption(TEST_MODELS(filename), filename ".c")); \
 		test::StderrCapture sc;											\
 		BOOST_CHECK(tr::Translate(*option));							\
-		BOOST_CHECK_EQUAL(RunSystem(CC " -std=c99 -Wall -W " filename ".c -lm"), EXIT_SUCCESS);	\
+		BOOST_CHECK_EQUAL(boost::process::system(CC " -std=c99 -Wall -W " filename ".c -lm"), EXIT_SUCCESS); \
 		BOOST_CHECK(sc.Get().empty());									\
 		PopWorkingDirectory();											\
 	}

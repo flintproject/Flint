@@ -26,8 +26,6 @@
 #include "sbml.h"
 #include "utf8path.h"
 
-#include "system.h"
-
 namespace flint {
 namespace phml {
 
