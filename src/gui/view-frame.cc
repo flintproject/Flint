@@ -10,6 +10,8 @@
 #include <iostream>
 #include <vector>
 
+#include <boost/process/io.hpp>
+
 #include "gui/gnuplot.h"
 #include "gui/job.h"
 #include "gui/task-frame.h"
@@ -44,7 +46,6 @@ ViewFrame::ViewFrame(TaskFrame *parent, wxDataViewListCtrl &job_list)
 	, log_y2_(new wxCheckBox(this, wxID_ANY, "Log Y2"))
 	, num_variables_(0)
 	, skip_(0)
-	, fp_(nullptr)
 {
 	data_view_->AppendToggleColumn("X");
 	data_view_->AppendToggleColumn("Y1");
@@ -117,23 +118,21 @@ void ViewFrame::Plot()
 		}
 	}
 
-#ifdef _WIN32
-	// TODO
-#elif defined(HAVE_POPEN)
-	if (fp_) {
-		if (std::fputs("clear\n", fp_) == EOF) {
+	if (child_ && child_->valid() && child_->running()) {
+		pipe_ << "clear" << std::endl;
+		if (!pipe_) {
 			wxLogError("failed to clear gnuplot window");
 			return;
 		}
 	} else {
-		fp_ = popen("gnuplot", "w"); // FIXME
-		if (!fp_) {
-			wxLogError("failed to popen gnuplot");
+		// TODO: get gnuplot executable name from preference
+		child_.reset(new boost::process::child("gnuplot", boost::process::std_in < pipe_));
+		if (!child_->valid()) {
+			wxLogError("failed to call gnuplot");
 			return;
 		}
 	}
-	PlotLineGraph(option, fp_);
-#endif
+	PlotLineGraph(option, pipe_);
 }
 
 void ViewFrame::OnCheckBox(wxCommandEvent &)
@@ -180,14 +179,6 @@ void ViewFrame::OnItemValueChanged(wxDataViewEvent &event)
 void ViewFrame::OnClose(wxCloseEvent &)
 {
 	Show(false);
-#ifdef _WIN32
-	// TODO
-#elif defined(HAVE_POPEN)
-	if (fp_) {
-		pclose(fp_);
-		fp_ = nullptr;
-	}
-#endif
 }
 
 namespace {

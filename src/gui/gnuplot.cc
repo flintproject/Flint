@@ -3,6 +3,8 @@
 #include "config.h"
 #endif
 
+#include <cstdio>
+
 #include "gui/gnuplot.h"
 
 namespace flint {
@@ -10,23 +12,23 @@ namespace gui {
 
 namespace {
 
-void PrintSingleQuoted(const char *s, FILE *fp)
+void PrintSingleQuoted(const char *s, std::ostream &os)
 {
-	std::fputc('\'', fp);
+	os.put('\'');
 	const char *p = s;
 	char c;
 	while ( (c = *p++) != '\0') {
 		if (c == '\'')
-			std::fputs("''", fp);
+			os << "''";
 		else
-			std::fputc(c, fp);
+			os.put(c);
 	}
-	std::fputc('\'', fp);
+	os.put('\'');
 }
 
 }
 
-bool PlotLineGraph(const LineGraphOption &option, FILE *fp)
+bool PlotLineGraph(const LineGraphOption &option, std::ostream &os)
 {
 	if (option.input_files.empty())
 		return false;
@@ -40,85 +42,78 @@ bool PlotLineGraph(const LineGraphOption &option, FILE *fp)
 	bool with_id = option.input_files.size() > 1;
 
 	if (!option.log_x)
-		std::fputs("un", fp);
-	std::fputs("set logscale x\n", fp);
+		os << "un";
+	os << "set logscale x" << std::endl;
 	if (!y1_empty) {
 		if (!option.log_y1)
-			std::fputs("un", fp);
-		std::fputs("set logscale y\n", fp);
+			os << "un";
+		os << "set logscale y" << std::endl;
 	}
 	if (!y2_empty) {
 		if (!option.log_y2)
-			std::fputs("un", fp);
-		std::fputs("set logscale y2\n", fp);
+			os << "un";
+		os << "set logscale y2" << std::endl;
 	}
 
 	if (y1_empty)
-		std::fputs("unset ytics\n", fp);
+		os << "unset ytics" << std::endl;
 	else
-		std::fputs("set ytics nomirror\n", fp);
+		os << "set ytics nomirror" << std::endl;
 	if (y2_empty)
-		std::fputs("unset y2tics\n", fp);
+		os << "unset y2tics" << std::endl;
 	else
-		std::fputs("set y2tics nomirror\n", fp);
+		os << "set y2tics nomirror" << std::endl;
 
-	std::fputs("plot", fp);
+	os << "plot";
 	for (const auto &ifp : option.input_files) {
 		unsigned int id = ifp.first;
 		const auto &input_file = ifp.second;
-		std::fputc(' ', fp);
-		PrintSingleQuoted(input_file.c_str(), fp);
+		os.put(' ');
+		PrintSingleQuoted(input_file.c_str(), os);
 		int n = 0;
 		for (auto p : option.y1) {
 			auto i = p.first;
 			if (n > 0)
-				std::fputs(", ''", fp);
-			std::fprintf(fp,
-						 " binary format='%%%udouble' skip=%u using %d:%u axes x1y1 with lines",
-						 option.num_variables,
-						 option.skip,
-						 option.x+1,
-						 i+1);
+				os << ", ''";
+			os << " binary format='%" << option.num_variables << "double' skip=" << option.skip
+			   << " using " << option.x+1 << ':' << i+1
+			   << " axes x1y1 with lines";
 			if (option.legend) {
-				std::fputs(" title ", fp);
+				os << " title ";
 				if (with_id) {
 					wxString title;
 					title << id << ' ' << p.second;
-					PrintSingleQuoted(title.c_str(), fp);
+					PrintSingleQuoted(title.c_str(), os);
 				} else
-					PrintSingleQuoted(p.second.c_str(), fp);
+					PrintSingleQuoted(p.second.c_str(), os);
 			} else {
-				std::fputs(" notitle", fp);
+				os << " notitle";
 			}
 			++n;
 		}
 		for (auto p : option.y2) {
 			auto i = p.first;
 			if (n > 0)
-				std::fputs(", ''", fp);
-			std::fprintf(fp,
-						 " binary format='%%%udouble' skip=%u using %d:%u axes x1y2 with lines",
-						 option.num_variables,
-						 option.skip,
-						 option.x+1,
-						 i+1);
+				os << ", ''";
+			os << " binary format='%" << option.num_variables << "double' skip=" << option.skip
+			   << " using " << option.x+1 << ':' << i+1
+			   << " axes x1y2 with lines";
 			if (option.legend) {
-				std::fputs(" title ", fp);
+				os << " title ";
 				if (with_id) {
 					wxString title;
 					title << id << ' ' << p.second;
-					PrintSingleQuoted(title.c_str(), fp);
+					PrintSingleQuoted(title.c_str(), os);
 				} else
-					PrintSingleQuoted(p.second.c_str(), fp);
+					PrintSingleQuoted(p.second.c_str(), os);
 			} else {
-				std::fputs(" notitle", fp);
+				os << " notitle";
 			}
 			++n;
 		}
-		std::fputc(',', fp);
+		os.put(',');
 	}
-	std::fputc('\n', fp);
-	std::fflush(fp);
+	os << std::endl;
 	return true;
 }
 

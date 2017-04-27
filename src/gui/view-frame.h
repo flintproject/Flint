@@ -3,6 +3,10 @@
 #define FLINT_GUI_VIEW_FRAME_H_
 
 #include <cstdio>
+#include <memory>
+
+#include <boost/process/child.hpp>
+#include <boost/process/pipe.hpp>
 
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wcast-qual"
@@ -37,7 +41,8 @@ private:
 	wxCheckBox *log_y2_;
 	unsigned int num_variables_;
 	unsigned int skip_;
-	FILE *fp_;
+	std::unique_ptr<boost::process::child> child_;
+	boost::process::opstream pipe_;
 };
 
 }

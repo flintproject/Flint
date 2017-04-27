@@ -2,7 +2,7 @@
 #ifndef FLINT_GUI_GNUPLOT_H_
 #define FLINT_GUI_GNUPLOT_H_
 
-#include <cstdio>
+#include <iostream>
 #include <map>
 
 #pragma GCC diagnostic push
@@ -26,7 +26,7 @@ struct LineGraphOption {
 	bool log_y2;
 };
 
-bool PlotLineGraph(const LineGraphOption &option, FILE *fp);
+bool PlotLineGraph(const LineGraphOption &option, std::ostream &os);
 
 }
 }
