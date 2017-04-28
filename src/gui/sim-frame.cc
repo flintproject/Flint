@@ -89,6 +89,7 @@ SimFrame::SimFrame(MainFrame *parent, Simulation *sim)
 		vbox->Add(window, 0, wxEXPAND /* horizontally stretchable */);
 		windows_.push_back(window);
 	}
+	CreateStatusBar(1, wxSTB_DEFAULT_STYLE, wxID_ANY);
 	SetSizerAndFit(vbox);
 
 	Bind(wxEVT_THREAD, &SimFrame::OnThreadUpdate, this);
@@ -132,7 +133,7 @@ bool SimFrame::Start()
 void SimFrame::OnThreadUpdate(wxThreadEvent &)
 {
 	if (result_)
-		wxLogInfo("simulation finished successfully");
+		SetStatusText("finished successfully.");
 	else
 		wxLogError("simulation failed: %s", ec_.Get());
 }
