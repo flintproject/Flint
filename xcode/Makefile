@@ -146,9 +146,10 @@ var:
 tmp: | var
 	install -d $@
 
-tmp/$(BOOST_UNDERSCORE): src/$(BOOST_UNDERSCORE).tar.bz2 | tmp
+tmp/$(BOOST_UNDERSCORE): src/$(BOOST_UNDERSCORE).tar.bz2 boost-$(BOOST_VERSION).patch | tmp
 	-rm -rf var/$(BOOST_UNDERSCORE)
 	tar -C var -jxf $<
+	patch var/$(BOOST_UNDERSCORE)/boost/process/detail/config.hpp boost-$(BOOST_VERSION).patch
 	touch $@
 
 tmp/clibsedml-$(CLIBSEDML_VERSION): src/clibsedml-$(CLIBSEDML_VERSION).tar.gz | tmp
