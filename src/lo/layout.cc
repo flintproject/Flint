@@ -6,6 +6,9 @@
 
 #include "bc/locater.h"
 #include "bc/mounter.h"
+#include "cas.h"
+#include "runtime/history.h"
+#include "solver/ark/mmdm.h"
 
 namespace flint {
 
@@ -83,6 +86,38 @@ const Mounter &Layout::GetMounter(const std::string &id) const
 	std::memcpy(&u, id.data(), u.size());
 	assert(mm_.find(u) != mm_.end());
 	return *mm_.at(u);
+}
+
+bool Layout::SpecifyCapacity(size_t size, History *history) const
+{
+	size_t offset = kOffsetBase;
+	int di = 0;
+	for (const auto &tp : tv_) {
+		int nos = tp->nos();
+		int nod = tp->nod();
+		int dib = di;
+		int die = di + nod;
+
+		for (int i=0;i<nos;i++) {
+			di = dib;
+			while (di < die) {
+				const auto &dp = dv_.at(di++);
+				if (offset >= size) {
+					std::cerr << "exceed history size: " << size << std::endl;
+					return false;
+				}
+				if (dp->has_capacity()) {
+					history[offset].set_capacity(dp->capacity());
+				}
+				offset += dp->col() * dp->row();
+			}
+		}
+	}
+	if (offset != size) {
+		std::cerr << "failed to specify capacity at the end" << std::endl;
+		return false;
+	}
+	return true;
 }
 
 void Layout::DetectRed(size_t size, const size_t *color) const
@@ -282,6 +317,83 @@ bool Layout::SelectByKeyData(std::map<fppp::KeyData, size_t> *output) const
 					auto it = output->find(kd);
 					if (it != output->end())
 						it->second = offset; // TODO: vector/matrix case
+				}
+				offset += data_size;
+			}
+		}
+	}
+	return true;
+}
+
+bool Layout::GenerateMmdm(const cas::System &system, solver::ark::Mmdm *mmdm) const
+{
+	long index = 0; // in global mass matrix
+	size_t offset = kOffsetBase;
+	int di = 0;
+	boost::uuids::uuid track_id;
+	for (const auto &tp : tv_) {
+		memcpy(&track_id, tp->id().data(), track_id.size());
+
+		int nos = tp->nos();
+		int nod = tp->nod();
+		int dib = di;
+		int die = di + nod;
+
+		int pos = 0;
+		std::unordered_map<std::string, int> am;
+		std::unordered_map<std::string, std::string> xm;
+		for (int i=0;i<nod;i++) {
+			const auto &dp = dv_.at(di++);
+			switch (dp->type()) {
+			case lo::X:
+				{
+					std::string m;
+					if (!system.FindMass(track_id, dp->name(), &m))
+						return false;
+					xm.emplace(dp->name(), m);
+				}
+				break;
+			default:
+				break;
+			}
+			am.emplace(dp->name(), pos);
+			pos += dp->col() * dp->row();
+		}
+		assert(di == die);
+
+		int bot = offset; // begin of track
+		for (int i=0;i<nos;i++) {
+			di = dib;
+			while (di < die) {
+				const auto &dp = dv_.at(di++);
+				int data_size = dp->col() * dp->row();
+				switch (dp->type()) {
+				case lo::X:
+					{
+						const std::string &name = xm.at(dp->name());
+						if (name.empty()) { // identity
+							// column-major
+							for (int col=0;col<data_size;col++) {
+								for (int row=0;row<data_size;row++) {
+									if (row == col)
+										mmdm->Add(index + row, index + col, 1);
+								}
+							}
+						} else {
+							int m = am.at(name);
+							// column-major
+							for (int col=0;col<data_size;col++) {
+								for (int row=0;row<data_size;row++) {
+									mmdm->Add(index + row, index + col,
+											  bot + (pos * i) + m + (col * data_size) + row);
+								}
+							}
+						}
+					}
+					index += data_size;
+					break;
+				default:
+					break;
 				}
 				offset += data_size;
 			}
