@@ -25,6 +25,11 @@ public:
 
 	compiler::Method GetMethod() const;
 
+	/*
+	 * Return a UTF-8 path.
+	 */
+	const char *GetDpsPath() const;
+
 private:
 	/*
 	 * possible values:
@@ -37,6 +42,7 @@ private:
 	double step_;
 	int granularity_;
 	double output_start_time_;
+	std::unique_ptr<char[]> dps_path_; // in UTF-8
 };
 
 }

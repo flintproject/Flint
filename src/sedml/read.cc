@@ -107,6 +107,35 @@ bool BindOutputStartTime(const struct sedml_uniformtimecourse *utc,
 	return true;
 }
 
+bool BindDpsPath(const struct sedml_uniformtimecourse *utc,
+			sqlite3_stmt *stmt)
+{
+	int e;
+	if (utc->num_xml_attributes > 0 && utc->xml_attributes) {
+		for (int i=0;i<utc->num_xml_attributes;i++) {
+			struct sedml_xml_attribute *attr = utc->xml_attributes[i];
+			if (!attr || !attr->local_name) continue;
+			if (strcmp(attr->local_name, "dpsPath") == 0) {
+				if (!attr->value)
+					continue;
+				e = sqlite3_bind_text(stmt, 6, attr->value, -1, SQLITE_STATIC);
+				if (e != SQLITE_OK) {
+					std::cerr << "failed to bind dps_path: " << e << std::endl;
+					return false;
+				}
+				return true;
+			}
+		}
+	}
+	/* default */
+	e = sqlite3_bind_null(stmt, 6);
+	if (e != SQLITE_OK) {
+		std::cerr << "failed to bind dps_path: " << e << std::endl;
+		return false;
+	}
+	return true;
+}
+
 }
 
 bool Read(const char *sedml_file, sqlite3 *db)
@@ -151,7 +180,7 @@ bool Read(const char *sedml_file, sqlite3 *db)
 		goto bail;
 	if (!CreateTable(db, "models", "(model_path TEXT, absolute_path TEXT)"))
 		goto bail;
-	if (!CreateTable(db, "sims", "(algorithm TEXT, length REAL, step REAL, granularity INTEGER, output_start_time REAL)"))
+	if (!CreateTable(db, "sims", "(algorithm TEXT, length REAL, step REAL, granularity INTEGER, output_start_time REAL, dps_path TEXT)"))
 		goto bail;
 	if (!CreateTable(db, "dgs", "(task_id INTEGER, variable TEXT)"))
 		goto bail;
@@ -225,7 +254,7 @@ bool Read(const char *sedml_file, sqlite3 *db)
 		const struct sedml_uniformtimecourse *utc;
 		utc = (const struct sedml_uniformtimecourse *)simulation;
 
-		e = db::PrepareStatement(db, "INSERT INTO sims VALUES (?, ?, ?, ?, ?)", &stmt);
+		e = db::PrepareStatement(db, "INSERT INTO sims VALUES (?, ?, ?, ?, ?, ?)", &stmt);
 		if (e != SQLITE_OK) {
 			fprintf(stderr, "failed to prepare statement: %d\n", e);
 			goto bail;
@@ -250,8 +279,14 @@ bool Read(const char *sedml_file, sqlite3 *db)
 			sqlite3_finalize(stmt);
 			goto bail;
 		}
-		if (!BindOutputStartTime(utc, stmt))
+		if (!BindOutputStartTime(utc, stmt)) {
+			sqlite3_finalize(stmt);
 			goto bail;
+		}
+		if (!BindDpsPath(utc, stmt)) {
+			sqlite3_finalize(stmt);
+			goto bail;
+		}
 		e = sqlite3_step(stmt);
 		if (e != SQLITE_DONE) {
 			fprintf(stderr, "failed to step statement: %d\n", e);

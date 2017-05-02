@@ -38,6 +38,8 @@ struct Configuration
 	// Parameters
 	std::unordered_map<int, std::string> parameters;
 	ParamMap param_map;
+	// Objective
+	wxString dps_path;
 
 	// Get 7-digit KISAO ID for the method
 	const char *GetKisaoId() const;

@@ -9,6 +9,7 @@
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wcast-qual"
 #include <wx/dataview.h>
+#include <wx/filepicker.h>
 #include <wx/listctrl.h>
 #include <wx/spinctrl.h>
 #include <wx/wx.h>
@@ -83,6 +84,20 @@ private:
 	wxDataViewListCtrl *parameters_;
 	std::vector<std::string> original_values_;
 	ParamTree param_tree_;
+};
+
+class ObjectiveWindow : public wxWindow
+{
+public:
+	explicit ObjectiveWindow(wxWindow *parent);
+
+	void Write(Configuration *config) const;
+
+private:
+	void OnCheck(wxCommandEvent &event);
+
+	wxCheckBox *check_box_;
+	wxFilePickerCtrl *file_picker_;
 };
 
 }

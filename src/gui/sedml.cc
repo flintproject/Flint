@@ -60,13 +60,18 @@ bool Writer::operator()()
 	for (const auto &p : sim_->entries) {
 		const auto *doc = p.first;
 		const auto *config = p.second;
-		std::fprintf(fp_, "    <uniformTimeCourse id='sim%d' name='Simulation %d' initialTime='0' outputStartTime='%f' outputEndTime='%f' numberOfPoints='%d' flint:granularity='%d'>\n",
+		std::fprintf(fp_, "    <uniformTimeCourse id='sim%d' name='Simulation %d' initialTime='0' outputStartTime='%f' outputEndTime='%f' numberOfPoints='%d' flint:granularity='%d'",
 					 i,
 					 i,
 					 config->GetOutputStartTime(doc),
 					 config->GetOutputEndTime(doc),
 					 config->GetNumberOfPoints(doc),
 					 config->granularity);
+		if (!config->dps_path.empty()) {
+			const auto &dps_path_u = config->dps_path.utf8_str();
+			std::fprintf(fp_, " flint:dpsPath='%s'", dps_path_u.data());
+		}
+		std::fputs(">\n", fp_);
 		std::fprintf(fp_, "      <algorithm kisaoID='KISAO:%s'/>\n",
 					 config->GetKisaoId());
 		std::fprintf(fp_, "    </uniformTimeCourse>\n");

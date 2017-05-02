@@ -36,7 +36,7 @@ bool Config(int id, sqlite3 *db)
 
 	std::sprintf(query,
 			"INSERT INTO m%d.config"
-			" SELECT sims.algorithm, sims.length, sims.step, sims.granularity, sims.output_start_time"
+			" SELECT sims.algorithm, sims.length, sims.step, sims.granularity, sims.output_start_time, sims.dps_path"
 			" FROM tasks LEFT JOIN sims ON tasks.sim_id = sims.rowid"
 			" WHERE tasks.rowid = '%d'",
 			id, id);

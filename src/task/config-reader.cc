@@ -11,7 +11,7 @@ namespace flint {
 namespace task {
 
 ConfigReader::ConfigReader(sqlite3 *db)
-	: db::StatementDriver(db, "SELECT method, length, step, granularity, output_start_time FROM config")
+	: db::StatementDriver(db, "SELECT method, length, step, granularity, output_start_time, dps_path FROM config")
 	, length_(0)
 	, step_(0)
 	, granularity_(0)
@@ -68,6 +68,16 @@ bool ConfigReader::Read()
 		return false;
 	}
 
+	const unsigned char *dps_path = sqlite3_column_text(stmt(), 5);
+	if (!dps_path)
+		return true; // NULL is OK for dps_path
+	int len_d = sqlite3_column_bytes(stmt(), 5);
+	if (len_d == 0)
+		return true; // empty dps_path is the same as NULL
+	dps_path_.reset(new char[len_d+1]);
+	std::memcpy(dps_path_.get(), dps_path, len_d);
+	dps_path_[len_d] = '\0';
+
 	return true;
 }
 
@@ -80,6 +90,11 @@ compiler::Method ConfigReader::GetMethod() const
 	if (std::strcmp(method_.get(), "ark") == 0)
 		return compiler::Method::kArk;
 	return compiler::Method::kRk4;
+}
+
+const char *ConfigReader::GetDpsPath() const
+{
+	return dps_path_.get();
 }
 
 }

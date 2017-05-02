@@ -235,6 +235,7 @@ void MainFrame::OpenSubFrame(Document *doc)
 	page->AddPage(new GeneralSetttingsWindow(page, doc), "General Settings", true);
 	page->AddPage(new OutputVariablesWindow(page, doc), "Output Variables");
 	page->AddPage(new ParametersWindow(page, doc), "Parameters");
+	page->AddPage(new ObjectiveWindow(page), "Objective");
 	notebook_->AddPage(page, wxFileName(doc->path()).GetName(), true, 0);
 
 	history_.AddFileToHistory(doc->path());
@@ -310,10 +311,13 @@ void MainFrame::OnRun(wxCommandEvent &)
 		auto ovw = wxStaticCast(p1, OutputVariablesWindow);
 		auto p2 = notebook->GetPage(2);
 		auto pw = wxStaticCast(p2, ParametersWindow);
+		auto p3 = notebook->GetPage(3);
+		auto ow = wxStaticCast(p3, ObjectiveWindow);
 		std::unique_ptr<Configuration> config(new Configuration(doc->initial_config()));
 		gsw->Write(config.get());
 		ovw->Write(config.get());
 		pw->Write(config.get());
+		ow->Write(config.get());
 		sim->entries.emplace_back(doc, config.release());
 	}
 	auto frame = new SimFrame(this, sim);

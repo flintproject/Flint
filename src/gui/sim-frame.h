@@ -35,7 +35,6 @@ private:
 	cli::ExecOption option_;
 	std::vector<TaskWindow *> windows_;
 	bool result_;
-	wxCriticalSection cs_;
 	StderrCapture ec_;
 };
 

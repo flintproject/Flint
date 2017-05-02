@@ -287,5 +287,33 @@ void ParametersWindow::OnEditParameterSet(wxCommandEvent &)
 		dialog.Save();
 }
 
+ObjectiveWindow::ObjectiveWindow(wxWindow *parent)
+	: wxWindow(parent, wxID_ANY)
+	, check_box_(new wxCheckBox(this, wxID_ANY, "Enable parameter fitting by the method of least-squares"))
+	, file_picker_(new wxFilePickerCtrl(this, wxID_ANY))
+{
+	// controls
+	file_picker_->Disable();
+
+	auto topSizer = new wxBoxSizer(wxVERTICAL);
+	topSizer->Add(check_box_);
+	topSizer->Add(file_picker_);
+	SetSizerAndFit(topSizer);
+
+	// signals
+	check_box_->Bind(wxEVT_CHECKBOX, &ObjectiveWindow::OnCheck, this);
+}
+
+void ObjectiveWindow::Write(Configuration *config) const
+{
+	if (check_box_->IsChecked())
+		config->dps_path = file_picker_->GetPath();
+}
+
+void ObjectiveWindow::OnCheck(wxCommandEvent &)
+{
+	file_picker_->Enable(check_box_->IsChecked());
+}
+
 }
 }
