@@ -1,7 +1,7 @@
 * Purpose
-  Flint simulates a model as a dynamical system, in which time is the unique parameter determining its state.
-  The state at an arbitrary time t consists of variables.
-  The number of variables may change during the time course of simulation.
+  Flint simulates a model as a dynamical system, in which time is an independent variable determining its state.
+  I.e. the state at an arbitrary time t is determined by values of dependent variables.
+  The number of dependent variables may change during the time course of simulation.
   Often two or more threads in a simulation process involves in writing the values of variables at t.
   The wall-clock time at which a thread reaches simulation time t can differ from the one of other threads.
   But algorithms of time evolution usually requires that all of variables at time t have been ready before a thread starts calculation for next time t'.
