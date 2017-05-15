@@ -4,12 +4,14 @@
 
 #include <cstdio>
 #include <map>
+#include <memory>
 #include <vector>
 #include "sqlite3.h"
 
 namespace flint {
 
 struct Bytecode;
+class Layout;
 
 namespace task {
 class ConfigReader;
@@ -45,7 +47,8 @@ struct Option {
 	size_t granularity;
 	double output_start_time;
 	const char *task_dir;
-	const char *layout_file;
+	std::unique_ptr<Layout> layout;
+	size_t layer_size;
 	const char *filter_file;
 	std::vector<double> *input_data;
 	const char *input_history_file;

@@ -16,6 +16,8 @@
 #include "db/variable-inserter.h"
 #include "flint/bc.h"
 #include "layout.h"
+#include "lo/layout.h"
+#include "lo/layout_loader.h"
 #include "task.h"
 
 #define BOOST_TEST_MODULE test_evolve
@@ -56,6 +58,13 @@ struct F : public test::MemoryFixture {
 		BOOST_REQUIRE_EQUAL(SaveNol(1, driver_.db()), 1);
 
 		std::memset(&option_, 0, sizeof(option_));
+
+		std::unique_ptr<Layout> layout(new Layout);
+		LayoutLoader loader("layout");
+		BOOST_REQUIRE(loader.Load(layout.get()));
+		size_t layer_size = layout->Calculate();
+		option_.layout.swap(layout);
+		option_.layer_size = layer_size;
 	}
 
 	~F()
@@ -95,7 +104,6 @@ struct F : public test::MemoryFixture {
 		BOOST_REQUIRE(task_.bc);										\
 		FILE *fp = std::fopen("output", "wb");							\
 		BOOST_REQUIRE(fp);												\
-		option_.layout_file = "layout";									\
 		option_.output_fp = fp;											\
 		BOOST_REQUIRE(job::Evolve(driver_.db(), &task_, option_));		\
 		std::fclose(fp);												\
@@ -112,7 +120,6 @@ struct F : public test::MemoryFixture {
 		task_.bc.reset(compiler::bcc::Bcc(driver_.db()));				\
 		FILE *fp = std::fopen("output", "wb");							\
 		BOOST_REQUIRE(fp);												\
-		option_.layout_file = "layout";									\
 		option_.output_fp = fp;											\
 		BOOST_REQUIRE(job::Evolve(driver_.db(), &task_, option_));		\
 		std::fclose(fp);												\

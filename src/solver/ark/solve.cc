@@ -14,7 +14,6 @@
 #include "flint/bc.h"
 #include "job.h"
 #include "lo/layout.h"
-#include "lo/layout_loader.h"
 #include "runtime/flow.h"
 #include "runtime/processor.h"
 #include "solver.h"
@@ -56,14 +55,6 @@ bool Solve(sqlite3 *db, const job::Option &option)
 	if (!LoadFlows(db, inbound.get()))
 		return false;
 
-	std::unique_ptr<Layout> layout(new Layout);
-	{
-		LayoutLoader loader(option.layout_file);
-		if (!loader.Load(layout.get()))
-			return false;
-	}
-	size_t layer_size = layout->Calculate();
-
 	size_t dirname_size = std::strlen(option.task_dir);
 	assert(dirname_size > 0);
 	std::unique_ptr<Bytecode> auxv_bc(system->GenerateAuxVarBc());
@@ -76,28 +67,28 @@ bool Solve(sqlite3 *db, const job::Option &option)
 	if (!rhs_bc)
 		return false;
 
-	std::unique_ptr<Processor> auxv_proc(CreateProcessor(layout.get(), layer_size,
+	std::unique_ptr<Processor> auxv_proc(CreateProcessor(option.layout.get(), option.layer_size,
 														 inbound.get(), auxv_bc.get()));
 	if (!auxv_proc)
 		return false;
 	std::unique_ptr<Auxv> auxv(new Auxv(auxv_proc.get()));
 
-	std::unique_ptr<Processor> mass_proc(CreateProcessor(layout.get(), layer_size,
+	std::unique_ptr<Processor> mass_proc(CreateProcessor(option.layout.get(), option.layer_size,
 														 inbound.get(), mass_bc.get()));
 	if (!mass_proc)
 		return false;
-	std::unique_ptr<Mmdm> mmdm(new Mmdm(layout->SelectStates()));
-	if (!layout->GenerateMmdm(*system, mmdm.get()))
+	std::unique_ptr<Mmdm> mmdm(new Mmdm(option.layout->SelectStates()));
+	if (!option.layout->GenerateMmdm(*system, mmdm.get()))
 		return false;
 	std::unique_ptr<Mass> mass(new Mass(mass_proc.get(), mmdm.get()));
 
-	std::unique_ptr<Processor> rhs_proc(CreateProcessor(layout.get(), layer_size,
+	std::unique_ptr<Processor> rhs_proc(CreateProcessor(option.layout.get(), option.layer_size,
 														inbound.get(), rhs_bc.get()));
 	if (!rhs_proc)
 		return false;
-	std::unique_ptr<Rhs> rhs(new Rhs(layer_size, rhs_proc.get()));
+	std::unique_ptr<Rhs> rhs(new Rhs(option.layer_size, rhs_proc.get()));
 
-	std::unique_ptr<Ark> ark(new Ark(layout.get(), layer_size,
+	std::unique_ptr<Ark> ark(new Ark(option.layout.get(), option.layer_size,
 									 auxv.get(), mass.get(), rhs.get()));
 	return ark->Solve(option);
 }

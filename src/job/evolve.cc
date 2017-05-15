@@ -32,7 +32,6 @@
 #include "flint/bc.h"
 #include "fppp.h"
 #include "lo/layout.h"
-#include "lo/layout_loader.h"
 #include "runtime/channel.h"
 #include "runtime/history.h"
 #include "runtime/processor.h"
@@ -252,6 +251,7 @@ bool Evolve(sqlite3 *db,
 {
 	size_t granularity = option.granularity;
 	double output_start_time = option.output_start_time;
+	size_t layer_size = option.layer_size;
 	FILE *output_fp = option.output_fp;
 	FILE *stats_fp = option.stats_fp;
 
@@ -259,15 +259,6 @@ bool Evolve(sqlite3 *db,
 	bool with_pre = bool(task->pre_bc);
 	bool with_post = bool(task->post_bc);
 	bool with_control = option.control_file != nullptr;
-
-	// load layout at first
-	std::unique_ptr<Layout> layout(new Layout);
-	{
-		std::unique_ptr<LayoutLoader> loader(new LayoutLoader(option.layout_file));
-		if (!loader->Load(layout.get())) return false;
-	}
-	size_t layer_size = layout->Calculate();
-	assert(layer_size > kOffsetBase);
 
 	// load filter next
 	std::unique_ptr<filter::Writer> writer;
@@ -278,7 +269,7 @@ bool Evolve(sqlite3 *db,
 	}
 
 	std::unique_ptr<Executor> executor(new Executor(layer_size));
-	std::unique_ptr<Processor> processor(new Processor(layout.get(), layer_size, task->bc.get()));
+	std::unique_ptr<Processor> processor(new Processor(option.layout.get(), layer_size, task->bc.get()));
 	std::unique_ptr<PExecutor> preexecutor;
 	std::unique_ptr<Processor> preprocessor;
 	std::unique_ptr<PExecutor> postexecutor;
@@ -291,7 +282,7 @@ bool Evolve(sqlite3 *db,
 	}
 	if (with_pre) {
 		preexecutor.reset(new PExecutor(layer_size));
-		preprocessor.reset(new Processor(layout.get(), layer_size, task->pre_bc.get()));
+		preprocessor.reset(new Processor(option.layout.get(), layer_size, task->pre_bc.get()));
 		// ignore preprocess if empty
 		if (preprocessor->IsEmpty()) {
 			preexecutor.reset();
@@ -301,7 +292,7 @@ bool Evolve(sqlite3 *db,
 	}
 	if (with_post) {
 		postexecutor.reset(new PExecutor(layer_size));
-		postprocessor.reset(new Processor(layout.get(), layer_size, task->post_bc.get()));
+		postprocessor.reset(new Processor(option.layout.get(), layer_size, task->post_bc.get()));
 		// ignore postprocess if empty
 		if (postprocessor->IsEmpty()) {
 			postexecutor.reset();
@@ -328,7 +319,7 @@ bool Evolve(sqlite3 *db,
 	std::unique_ptr<runtime::Channel> channel;
 	if (option.fppp_option) {
 		std::map<fppp::KeyData, size_t> fppp_output = option.fppp_option->output; // copy
-		if (!layout->SelectByKeyData(&fppp_output))
+		if (!option.layout->SelectByKeyData(&fppp_output))
 			return false;
 		if (!runtime::LoadChannel(db, option.fppp_option->host, fppp_output, channel))
 			return false;
@@ -380,7 +371,7 @@ bool Evolve(sqlite3 *db,
 	// constant disposition
 	{
 		std::set<int> constants;
-		layout->CollectConstant(1, layer_size, &constants);
+		option.layout->CollectConstant(1, layer_size, &constants);
 		for (auto offset : constants) {
 			double val = prev[offset];
 			for (int i=1;i<nol;i++) { // except the 1st layer
@@ -408,7 +399,7 @@ bool Evolve(sqlite3 *db,
 
 	// arrange history
 	std::unique_ptr<History[]> history(new History[layer_size]);
-	if (!layout->SpecifyCapacity(layer_size, history.get())) {
+	if (!option.layout->SpecifyCapacity(layer_size, history.get())) {
 		return false;
 	}
 	if (option.input_history_file != nullptr) {
