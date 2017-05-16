@@ -6,16 +6,17 @@
 #include "solver.h"
 
 #include "job.h"
+#include "task.h"
 #include "solver/ark.h"
 
 namespace flint {
 namespace solver {
 
-bool Solve(sqlite3 *db, Method method, const job::Option &option)
+bool Solve(sqlite3 *db, Method method, task::Task &task, const job::Option &option)
 {
 	switch (method) {
 	case Method::kArk:
-		return ark::Solve(db, option);
+		return ark::Solve(db, task, option);
 	}
 	// TODO
 	return false;

@@ -22,6 +22,7 @@
 #include "solver/ark/mass.h"
 #include "solver/ark/mmdm.h"
 #include "solver/ark/rhs.h"
+#include "task.h"
 
 namespace flint {
 namespace solver {
@@ -44,7 +45,7 @@ Processor *CreateProcessor(const Layout *layout, size_t layer_size,
 
 }
 
-bool Solve(sqlite3 *db, const job::Option &option)
+bool Solve(sqlite3 *db, task::Task &task, const job::Option &option)
 {
 	std::unique_ptr<cas::System> system(new cas::System);
 	if (!system->Load(db))
@@ -67,28 +68,28 @@ bool Solve(sqlite3 *db, const job::Option &option)
 	if (!rhs_bc)
 		return false;
 
-	std::unique_ptr<Processor> auxv_proc(CreateProcessor(option.layout.get(), option.layer_size,
+	std::unique_ptr<Processor> auxv_proc(CreateProcessor(task.layout.get(), task.layer_size,
 														 inbound.get(), auxv_bc.get()));
 	if (!auxv_proc)
 		return false;
 	std::unique_ptr<Auxv> auxv(new Auxv(auxv_proc.get()));
 
-	std::unique_ptr<Processor> mass_proc(CreateProcessor(option.layout.get(), option.layer_size,
+	std::unique_ptr<Processor> mass_proc(CreateProcessor(task.layout.get(), task.layer_size,
 														 inbound.get(), mass_bc.get()));
 	if (!mass_proc)
 		return false;
-	std::unique_ptr<Mmdm> mmdm(new Mmdm(option.layout->SelectStates()));
-	if (!option.layout->GenerateMmdm(*system, mmdm.get()))
+	std::unique_ptr<Mmdm> mmdm(new Mmdm(task.layout->SelectStates()));
+	if (!task.layout->GenerateMmdm(*system, mmdm.get()))
 		return false;
 	std::unique_ptr<Mass> mass(new Mass(mass_proc.get(), mmdm.get()));
 
-	std::unique_ptr<Processor> rhs_proc(CreateProcessor(option.layout.get(), option.layer_size,
+	std::unique_ptr<Processor> rhs_proc(CreateProcessor(task.layout.get(), task.layer_size,
 														inbound.get(), rhs_bc.get()));
 	if (!rhs_proc)
 		return false;
-	std::unique_ptr<Rhs> rhs(new Rhs(option.layer_size, rhs_proc.get()));
+	std::unique_ptr<Rhs> rhs(new Rhs(task.layer_size, rhs_proc.get()));
 
-	std::unique_ptr<Ark> ark(new Ark(option.layout.get(), option.layer_size,
+	std::unique_ptr<Ark> ark(new Ark(task.layout.get(), task.layer_size,
 									 auxv.get(), mass.get(), rhs.get()));
 	return ark->Solve(option);
 }

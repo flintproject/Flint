@@ -23,6 +23,7 @@
 #include "exec.h"
 #include "filter.h"
 #include "flint/bc.h"
+#include "flint/ls.h"
 #include "job.h"
 #include "lo/layout.h"
 #include "lo/layout_loader.h"
@@ -37,7 +38,7 @@ namespace job {
 
 bool Job(const char *task_dir,
 		 const char *job_dir,
-		 task::Task *task,
+		 task::Task &task,
 		 void *progress_address,
 		 const fppp::Option *fppp_option,
 		 std::vector<double> *data,
@@ -132,22 +133,9 @@ bool Job(const char *task_dir,
 	}
 	option.stats_fp = sfp;
 
-	{
-		char layout_file[kShort];
-		sprintf(layout_file, "%s/layout", task_dir);
-		std::unique_ptr<Layout> layout(new Layout);
-		std::unique_ptr<LayoutLoader> loader(new LayoutLoader(layout_file));
-		if (!loader->Load(layout.get()))
-			return false;
-		size_t layer_size = layout->Calculate();
-		assert(layer_size > kOffsetBase);
-		option.layout.swap(layout);
-		option.layer_size = layer_size;
-	}
-
 	bool r;
 	if (reader.GetMethod() == compiler::Method::kArk) {
-		r = solver::Solve(db, solver::Method::kArk, option);
+		r = solver::Solve(db, solver::Method::kArk, task, option);
 	} else {
 		r = job::Evolve(db, task, option);
 	}

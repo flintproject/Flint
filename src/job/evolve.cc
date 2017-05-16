@@ -30,6 +30,7 @@
 #include "db/read-only-driver.h"
 #include "filter/cutter.h"
 #include "flint/bc.h"
+#include "flint/ls.h"
 #include "fppp.h"
 #include "lo/layout.h"
 #include "runtime/channel.h"
@@ -246,18 +247,19 @@ bool SaveData(const char *output_data_file, size_t layer_size, double *data)
 }
 
 bool Evolve(sqlite3 *db,
-			task::Task *task,
+			task::Task &task,
 			const Option &option)
 {
+	size_t layer_size = task.layer_size;
+
 	size_t granularity = option.granularity;
 	double output_start_time = option.output_start_time;
-	size_t layer_size = option.layer_size;
 	FILE *output_fp = option.output_fp;
 	FILE *stats_fp = option.stats_fp;
 
 	bool with_filter = option.filter_file != nullptr;
-	bool with_pre = bool(task->pre_bc);
-	bool with_post = bool(task->post_bc);
+	bool with_pre = bool(task.pre_bc);
+	bool with_post = bool(task.post_bc);
 	bool with_control = option.control_file != nullptr;
 
 	// load filter next
@@ -269,20 +271,20 @@ bool Evolve(sqlite3 *db,
 	}
 
 	std::unique_ptr<Executor> executor(new Executor(layer_size));
-	std::unique_ptr<Processor> processor(new Processor(option.layout.get(), layer_size, task->bc.get()));
+	std::unique_ptr<Processor> processor(new Processor(task.layout.get(), layer_size, task.bc.get()));
 	std::unique_ptr<PExecutor> preexecutor;
 	std::unique_ptr<Processor> preprocessor;
 	std::unique_ptr<PExecutor> postexecutor;
 	std::unique_ptr<Processor> postprocessor;
 
-	int nol = task->bc->nol;
+	int nol = task.bc->nol;
 	if (nol <= 0) {
 		std::cerr << "invalid nol: " << nol << std::endl;
 		return false;
 	}
 	if (with_pre) {
 		preexecutor.reset(new PExecutor(layer_size));
-		preprocessor.reset(new Processor(option.layout.get(), layer_size, task->pre_bc.get()));
+		preprocessor.reset(new Processor(task.layout.get(), layer_size, task.pre_bc.get()));
 		// ignore preprocess if empty
 		if (preprocessor->IsEmpty()) {
 			preexecutor.reset();
@@ -292,7 +294,7 @@ bool Evolve(sqlite3 *db,
 	}
 	if (with_post) {
 		postexecutor.reset(new PExecutor(layer_size));
-		postprocessor.reset(new Processor(option.layout.get(), layer_size, task->post_bc.get()));
+		postprocessor.reset(new Processor(task.layout.get(), layer_size, task.post_bc.get()));
 		// ignore postprocess if empty
 		if (postprocessor->IsEmpty()) {
 			postexecutor.reset();
@@ -319,7 +321,7 @@ bool Evolve(sqlite3 *db,
 	std::unique_ptr<runtime::Channel> channel;
 	if (option.fppp_option) {
 		std::map<fppp::KeyData, size_t> fppp_output = option.fppp_option->output; // copy
-		if (!option.layout->SelectByKeyData(&fppp_output))
+		if (!task.layout->SelectByKeyData(&fppp_output))
 			return false;
 		if (!runtime::LoadChannel(db, option.fppp_option->host, fppp_output, channel))
 			return false;
@@ -371,7 +373,7 @@ bool Evolve(sqlite3 *db,
 	// constant disposition
 	{
 		std::set<int> constants;
-		option.layout->CollectConstant(1, layer_size, &constants);
+		task.layout->CollectConstant(1, layer_size, &constants);
 		for (auto offset : constants) {
 			double val = prev[offset];
 			for (int i=1;i<nol;i++) { // except the 1st layer
@@ -399,7 +401,7 @@ bool Evolve(sqlite3 *db,
 
 	// arrange history
 	std::unique_ptr<History[]> history(new History[layer_size]);
-	if (!option.layout->SpecifyCapacity(layer_size, history.get())) {
+	if (!task.layout->SpecifyCapacity(layer_size, history.get())) {
 		return false;
 	}
 	if (option.input_history_file != nullptr) {
@@ -460,6 +462,10 @@ bool Evolve(sqlite3 *db,
 		control_region.reset(new boost::interprocess::mapped_region(*control_fm, boost::interprocess::read_only));
 	}
 	char control;
+
+	std::unique_ptr<ls::Accumulator> accum;
+	if (task.ls_config)
+		accum.reset(new ls::Accumulator(*task.ls_config));
 
 	size_t g = (output_start_time == 0) ? 0 : granularity-1;
 
@@ -524,6 +530,14 @@ bool Evolve(sqlite3 *db,
 			}
 			char c = static_cast<char>(100 * (data[kIndexTime] / data[kIndexEnd]));
 			memcpy(option.progress_address, &c, 1);
+		}
+
+		if (accum) {
+			auto state = (*accum)(data.get());
+			if (state == ls::Accumulator::State::kGt)
+				break;
+			if (state == ls::Accumulator::State::kDone)
+				accum.reset();
 		}
 
 		if (with_control) {

@@ -10,11 +10,15 @@ namespace job {
 struct Option;
 }
 
+namespace task {
+struct Task;
+}
+
 namespace solver {
 
 namespace ark {
 
-bool Solve(sqlite3 *db, const job::Option &option);
+bool Solve(sqlite3 *db, task::Task &task, const job::Option &option);
 
 }
 }

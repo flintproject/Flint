@@ -5,6 +5,7 @@
 
 #include "run.h"
 
+#include <cassert>
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
@@ -20,8 +21,11 @@
 #include "file.h"
 #include "filter.h"
 #include "flint/background.h"
+#include "flint/ls.h"
 #include "fppp.h"
 #include "job.h"
+#include "lo/layout.h"
+#include "lo/layout_loader.h"
 #include "load.h"
 #include "run/spec.h"
 #include "task.h"
@@ -130,6 +134,16 @@ bool Run(const cli::RunOption &option)
 		return false;
 	if (!filter::Isdh("filter", "isdh"))
 		return false;
+	{
+		std::unique_ptr<Layout> layout(new Layout);
+		LayoutLoader loader("layout");
+		if (!loader.Load(layout.get()))
+			return false;
+		size_t layer_size = layout->Calculate();
+		assert(layer_size > kOffsetBase);
+		task->layout.swap(layout);
+		task->layer_size = layer_size;
+	}
 	if (reader.GetMethod() != compiler::Method::kArk) {
 		cas::DimensionAnalyzer da;
 		if (!da.Load(db))
@@ -160,7 +174,7 @@ bool Run(const cli::RunOption &option)
 	std::string output_file = output_path.string();
 	return job::Job(".",
 					"0",
-					task.get(),
+					*task,
 					nullptr,
 					fppp_option.get(),
 					&data,

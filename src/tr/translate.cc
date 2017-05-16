@@ -28,6 +28,7 @@
 #include "filter/cutter.h"
 #include "flint/background.h"
 #include "flint/bc.h"
+#include "flint/ls.h"
 #include "flint/numeric.h"
 #include "job.h"
 #include "lo/layout.h"

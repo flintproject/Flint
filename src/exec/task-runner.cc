@@ -15,6 +15,7 @@
 #define BOOST_FILESYSTEM_NO_DEPRECATED
 #include <boost/filesystem.hpp>
 
+#include "bc/index.h"
 #include "cas/dimension.h"
 #include "compiler.h"
 #include "db/driver.h"
@@ -24,9 +25,12 @@
 #include "exec/job-runner.h"
 #include "exec/parameter.h"
 #include "exec/progress.h"
+#include "flint/ls.h"
 #include "filter.h"
 #include "job.h"
 #include "layout.h"
+#include "lo/layout.h"
+#include "lo/layout_loader.h"
 #include "load.h"
 #include "task.h"
 
@@ -161,6 +165,19 @@ bool TaskRunner::Run()
 	reader_.reset(new task::ConfigReader(modeldb_driver_->db()));
 	if (!reader_->Read())
 		return false;
+	{
+		std::unique_ptr<Layout> layout(new Layout);
+		LayoutLoader loader(layout_.get());
+		if (!loader.Load(layout.get()))
+			return false;
+		size_t layer_size = layout->Calculate();
+		assert(layer_size > kOffsetBase);
+		task_->layout.swap(layout);
+		task_->layer_size = layer_size;
+
+		if (reader_->GetDpsPath())
+			task_->ls_config = ls::CreateConfiguration(reader_->GetDpsPath(), *task_->layout);
+	}
 	if (reader_->GetMethod() != compiler::Method::kArk) {
 		cas::DimensionAnalyzer da;
 		if (!da.Load(modeldb_driver_->db()))

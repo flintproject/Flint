@@ -19,6 +19,7 @@
 #include "database.h"
 #include "db/driver.h"
 #include "db/statement-driver.h"
+#include "flint/ls.h"
 #include "file.h"
 #include "layout.h"
 #include "load/param.h"

@@ -11,6 +11,7 @@
 
 #include "bc/binary.h"
 #include "flint/bc.h"
+#include "flint/ls.h"
 #include "load.h"
 #include "task.h"
 

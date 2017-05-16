@@ -10,6 +10,11 @@
 namespace flint {
 
 struct Bytecode;
+class Layout;
+
+namespace ls {
+struct Configuration;
+}
 
 namespace task {
 
@@ -18,6 +23,9 @@ struct Task {
 	std::unique_ptr<Bytecode> pre_bc;
 	std::unique_ptr<Bytecode> post_bc;
 	std::unique_ptr<Bytecode> reinit_bc;
+	std::unique_ptr<Layout> layout;
+	size_t layer_size;
+	std::unique_ptr<ls::Configuration> ls_config;
 };
 
 /*

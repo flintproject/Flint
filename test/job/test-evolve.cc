@@ -15,6 +15,7 @@
 #include "db/tac-inserter.h"
 #include "db/variable-inserter.h"
 #include "flint/bc.h"
+#include "flint/ls.h"
 #include "layout.h"
 #include "lo/layout.h"
 #include "lo/layout_loader.h"
@@ -63,8 +64,8 @@ struct F : public test::MemoryFixture {
 		LayoutLoader loader("layout");
 		BOOST_REQUIRE(loader.Load(layout.get()));
 		size_t layer_size = layout->Calculate();
-		option_.layout.swap(layout);
-		option_.layer_size = layer_size;
+		task_.layout.swap(layout);
+		task_.layer_size = layer_size;
 	}
 
 	~F()
@@ -105,7 +106,7 @@ struct F : public test::MemoryFixture {
 		FILE *fp = std::fopen("output", "wb");							\
 		BOOST_REQUIRE(fp);												\
 		option_.output_fp = fp;											\
-		BOOST_REQUIRE(job::Evolve(driver_.db(), &task_, option_));		\
+		BOOST_REQUIRE(job::Evolve(driver_.db(), task_, option_));		\
 		std::fclose(fp);												\
 		CheckOutput(expected);											\
 	} while (0)
@@ -121,7 +122,7 @@ struct F : public test::MemoryFixture {
 		FILE *fp = std::fopen("output", "wb");							\
 		BOOST_REQUIRE(fp);												\
 		option_.output_fp = fp;											\
-		BOOST_REQUIRE(job::Evolve(driver_.db(), &task_, option_));		\
+		BOOST_REQUIRE(job::Evolve(driver_.db(), task_, option_));		\
 		std::fclose(fp);												\
 		CheckOutput(expected);											\
 	} while (0)

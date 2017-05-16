@@ -113,6 +113,7 @@ libflintxx_la_SOURCES = \
     db/statement-driver.cc \
     db/tac-inserter.cc \
     db/variable-inserter.cc \
+    dps.cc \
     exec/exec.cc \
     exec/job-runner.cc \
     exec/parameter.cc \
@@ -139,6 +140,7 @@ libflintxx_la_SOURCES = \
     load/load.cc \
     load/param.cc \
     load/var.cc \
+    ls.cc \
     mathml/math-dumper.cc \
     mathml/mathml.cc \
     method/assign.cc \
@@ -251,8 +253,8 @@ flint_lodbg_CPPFLAGS = $(PROTOBUF_CFLAGS) $(BOOST_CPPFLAGS) $(CZMQ_CFLAGS)
 flint_lodbg_LDADD = libflintxx.la libflint.la libsqlite3.la $(PROTOBUF_LIBS) $(CZMQ_LIBS)
 flint_lodbg_SOURCES = flint-lodbg-main.cc
 
-flint_open_CPPFLAGS = $(PROTOBUF_CFLAGS) $(BOOST_CPPFLAGS)
-flint_open_LDADD = libflintxx.la libflint.la libsqlite3.la $(PROTOBUF_LIBS)
+flint_open_CPPFLAGS = $(PROTOBUF_CFLAGS) $(BOOST_CPPFLAGS) $(CZMQ_CFLAGS)
+flint_open_LDADD = libflintxx.la libflint.la libsqlite3.la $(PROTOBUF_LIBS) $(CZMQ_LIBS)
 flint_open_SOURCES = flint-open-main.cc
 
 flint_pause_SOURCES = flint-pause-main.c
@@ -269,9 +271,9 @@ flint_tr_LDFLAGS = $(BOOST_FILESYSTEM_LDFLAGS) $(BOOST_SYSTEM_LDFLAGS)
 flint_tr_LDADD = libflintxx.la libflint.la libsqlite3.la $(PROTOBUF_LIBS) $(BOOST_FILESYSTEM_LIBS) $(BOOST_SYSTEM_LIBS)
 flint_tr_SOURCES = flint-tr-main.cc
 
-flint2_CPPFLAGS = $(WXWIDGETS_CXXFLAGS) $(PROTOBUF_CFLAGS) $(BOOST_CPPFLAGS)
+flint2_CPPFLAGS = $(WXWIDGETS_CXXFLAGS) $(PROTOBUF_CFLAGS) $(BOOST_CPPFLAGS) $(CZMQ_CFLAGS)
 flint2_LDFLAGS = $(BOOST_SYSTEM_LDFLAGS)
-flint2_LDADD = libflint2.a libflintxx.la libflint.la libsqlite3.la $(WXWIDGETS_LIBS) $(PROTOBUF_LIBS) $(BOOST_SYSTEM_LIBS)
+flint2_LDADD = libflint2.a libflintxx.la libflint.la libsqlite3.la $(WXWIDGETS_LIBS) $(PROTOBUF_LIBS) $(BOOST_SYSTEM_LIBS) $(CZMQ_LIBS)
 flint2_SOURCES = \
     gui/app.cc \
     gui/configuration.cc \

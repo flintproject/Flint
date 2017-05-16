@@ -12,6 +12,10 @@ namespace job {
 struct Option;
 }
 
+namespace task {
+struct Task;
+}
+
 namespace solver {
 
 enum class Method {
@@ -22,7 +26,7 @@ enum class Method {
  * Note that db is for read only.
  * Return true in case of success, false otherwise.
  */
-bool Solve(sqlite3 *db, Method method, const job::Option &option);
+bool Solve(sqlite3 *db, Method method, task::Task &task, const job::Option &option);
 
 }
 }

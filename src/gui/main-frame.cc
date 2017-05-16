@@ -17,6 +17,7 @@
 
 #include "flint/bc.h"
 #include "flint/error.h"
+#include "flint/ls.h"
 #include "gui/document.h"
 #include "gui/sim-frame.h"
 #include "gui/simulation.h"

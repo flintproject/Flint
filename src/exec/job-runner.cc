@@ -65,7 +65,7 @@ bool JobRunner::Run()
 			return false;
 	}
 	return job::Job(tr_->dir(), dir_.get(),
-					tr_->GetTask(),
+					*tr_->GetTask(),
 					progress_address_,
 					nullptr,
 					&init,

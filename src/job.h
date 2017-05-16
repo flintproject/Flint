@@ -11,7 +11,6 @@
 namespace flint {
 
 struct Bytecode;
-class Layout;
 
 namespace task {
 class ConfigReader;
@@ -47,8 +46,6 @@ struct Option {
 	size_t granularity;
 	double output_start_time;
 	const char *task_dir;
-	std::unique_ptr<Layout> layout;
-	size_t layer_size;
 	const char *filter_file;
 	std::vector<double> *input_data;
 	const char *input_history_file;
@@ -66,7 +63,7 @@ struct Option {
  * Return true in case of success, false otherwise.
  */
 bool Evolve(sqlite3 *db,
-			task::Task *task,
+			task::Task &task,
 			const Option &option);
 
 /*
@@ -75,7 +72,7 @@ bool Evolve(sqlite3 *db,
  */
 bool Job(const char *task_dir,
 		 const char *job_dir,
-		 task::Task *task,
+		 task::Task &task,
 		 void *progress_address,
 		 const fppp::Option *fppp_option,
 		 std::vector<double> *data,
