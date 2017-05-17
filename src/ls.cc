@@ -23,6 +23,7 @@
 #include "flint/dps.h"
 #include "flint/key.h"
 #include "isdf/reader.h"
+#include "lo/layout.h"
 #include "utf8path.h"
 
 namespace flint {

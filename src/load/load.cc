@@ -22,6 +22,7 @@
 #include "flint/ls.h"
 #include "file.h"
 #include "layout.h"
+#include "lo/layout.h"
 #include "load/param.h"
 #include "load/var.h"
 #include "phml.h"

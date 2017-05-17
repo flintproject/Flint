@@ -22,6 +22,7 @@
 #include "gui/sim-frame.h"
 #include "gui/simulation.h"
 #include "gui/sub-window.h"
+#include "lo/layout.h"
 #include "load.h"
 #include "../task.h" // TODO: fix collision between 2 task.h
 

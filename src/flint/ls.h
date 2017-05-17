@@ -7,9 +7,11 @@
 #include <unordered_map>
 
 #include "flint/dps.h"
-#include "lo/layout.h"
 
 namespace flint {
+
+class Layout;
+
 namespace ls {
 
 // For the method of least-squares
