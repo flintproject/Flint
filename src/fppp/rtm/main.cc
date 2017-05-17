@@ -25,7 +25,7 @@
 
 namespace {
 
-flint::fppp::KeyData feed_data[2];
+flint::key::Data feed_data[2];
 
 int feed_fd[2];
 
@@ -138,20 +138,20 @@ int main(int argc, char *argv[])
 
 	void *ctx = zmq_ctx_new();
 	flint::fppp::ContextGuard g(ctx);
-	std::set<flint::fppp::KeyData> in;
+	std::set<flint::key::Data> in;
 	boost::uuids::string_generator gen;
 	for (int i=2;i<4;i++) {
-		flint::fppp::KeyData kd;
-		if (!flint::fppp::KeyData::FromString(argv[i], &kd)) {
+		flint::key::Data kd;
+		if (!flint::key::Data::FromString(argv[i], &kd)) {
 			std::cerr << "invalid input name: " << argv[i] << std::endl;
 			return EXIT_FAILURE;
 		}
 		in.insert(kd);
 		feed_data[i-2] = kd;
 	}
-	std::vector<flint::fppp::KeyData> out;
+	std::vector<flint::key::Data> out;
 	for (const auto &name : kVariableNames) {
-		flint::fppp::KeyData kd;
+		flint::key::Data kd;
 		kd.uuid = gen(kUuid);
 		kd.name = name;
 		out.push_back(kd);

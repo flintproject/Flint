@@ -11,26 +11,14 @@
 #include <boost/uuid/uuid.hpp>
 #include <czmq.h>
 
+#include "flint/key.h"
+
 namespace flint {
 namespace fppp {
 
-struct KeyData
-{
-	boost::uuids::uuid uuid;
-	std::string name;
-
-	bool operator<(const KeyData &other) const;
-
-	std::string GetReadableString() const;
-
-	std::string GetPrefixString() const;
-
-	static bool FromString(const std::string &s, KeyData *kd);
-};
-
 struct Option {
 	const char *host;
-	std::map<KeyData, size_t> output;
+	std::map<key::Data, size_t> output;
 };
 
 class Publisher {
@@ -52,7 +40,7 @@ class Subscriber {
 public:
 	Subscriber(void *ctx,
 			   const std::unordered_set<std::string> &endpoints,
-			   const std::set<KeyData> &data);
+			   const std::set<key::Data> &data);
 	~Subscriber();
 
 	void operator()(void (*f)(boost::uuids::uuid uuid, std::string name, const char *time, const char *value));
@@ -67,8 +55,8 @@ boost::uuids::uuid GetUuidFromUrl(const char *url);
 
 zactor_t *ShakeHands(void *ctx,
 					 const char *host,
-					 std::set<KeyData> &in,
-					 const std::vector<KeyData> &out,
+					 std::set<key::Data> &in,
+					 const std::vector<key::Data> &out,
 					 Publisher **pub,
 					 Subscriber **sub);
 

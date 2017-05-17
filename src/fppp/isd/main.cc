@@ -38,13 +38,13 @@ struct Handler
 	{
 		if (i == 0) // skip the first column
 			return;
-		flint::fppp::KeyData kd;
+		flint::key::Data kd;
 		if (num_bytes < 38) {
 			kd.uuid = boost::uuids::nil_uuid();
 			kd.name = std::string(d, num_bytes);
 		} else {
 			// TODO: check returned value
-			(void)flint::fppp::KeyData::FromString(std::string(d, num_bytes), &kd);
+			(void)flint::key::Data::FromString(std::string(d, num_bytes), &kd);
 		}
 		kdv.push_back(kd);
 		iv.push_back(i * sizeof(double));
@@ -59,7 +59,7 @@ struct Handler
 		return 1;
 	}
 
-	std::vector<flint::fppp::KeyData> kdv;
+	std::vector<flint::key::Data> kdv;
 	std::vector<size_t> iv;
 	flint::fppp::Publisher *pub;
 	flint::fppp::Subscriber *sub;
@@ -98,10 +98,10 @@ int main(int argc, char *argv[])
 	void *ctx = zmq_ctx_new();
 	flint::fppp::ContextGuard g(ctx);
 	// FIXME
-	std::set<flint::fppp::KeyData> in;
+	std::set<flint::key::Data> in;
 	for (int i=3;i<argc;i++) {
-		flint::fppp::KeyData kd;
-		if (!flint::fppp::KeyData::FromString(argv[i], &kd)) {
+		flint::key::Data kd;
+		if (!flint::key::Data::FromString(argv[i], &kd)) {
 			std::cerr << "invalid input name: " << argv[i] << std::endl;
 			return false;
 		}

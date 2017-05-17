@@ -16,7 +16,7 @@
 #include <boost/uuid/uuid_io.hpp>
 
 #include "bc/index.h"
-#include "fppp.h"
+#include "flint/key.h"
 #include "lo.pb.h"
 
 namespace flint {
@@ -99,7 +99,7 @@ public:
 	 */
 	long SelectStates(std::vector<std::pair<int, int> > *states = nullptr) const;
 
-	bool SelectByKeyData(std::map<fppp::KeyData, size_t> *output) const;
+	bool SelectByKeyData(std::map<key::Data, size_t> *output) const;
 
 	/*
 	 * Generate mass-matrix data map.

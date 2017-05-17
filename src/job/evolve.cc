@@ -320,7 +320,7 @@ bool Evolve(sqlite3 *db,
 
 	std::unique_ptr<runtime::Channel> channel;
 	if (option.fppp_option) {
-		std::map<fppp::KeyData, size_t> fppp_output = option.fppp_option->output; // copy
+		std::map<key::Data, size_t> fppp_output = option.fppp_option->output; // copy
 		if (!task.layout->SelectByKeyData(&fppp_output))
 			return false;
 		if (!runtime::LoadChannel(db, option.fppp_option->host, fppp_output, channel))

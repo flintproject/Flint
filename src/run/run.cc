@@ -158,8 +158,8 @@ bool Run(const cli::RunOption &option)
 		fppp_option.reset(new fppp::Option);
 		fppp_option->host = option.fppp_host().c_str();
 		for (int i=0;i<option.fppp_output_size();i++) {
-			fppp::KeyData kd;
-			if (!fppp::KeyData::FromString(option.fppp_output(i), &kd)) {
+			key::Data kd;
+			if (!key::Data::FromString(option.fppp_output(i), &kd)) {
 				std::cerr << "invalid output name: "
 						  << option.fppp_output(i)
 						  << std::endl;

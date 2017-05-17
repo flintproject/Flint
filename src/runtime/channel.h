@@ -25,7 +25,7 @@ public:
 
 	~Channel();
 
-	bool Connect(const char *host, const std::map<fppp::KeyData, size_t> &output);
+	bool Connect(const char *host, const std::map<key::Data, size_t> &output);
 
 	bool Lookup(int index, double t, double *d);
 
@@ -37,7 +37,7 @@ private:
 
 bool LoadChannel(sqlite3 *db,
 				 const char *host,
-				 const std::map<fppp::KeyData, size_t> &output,
+				 const std::map<key::Data, size_t> &output,
 				 std::unique_ptr<Channel> &channel);
 
 }

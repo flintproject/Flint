@@ -293,10 +293,10 @@ long Layout::SelectStates(std::vector<std::pair<int, int> > *states) const
 	return total;
 }
 
-bool Layout::SelectByKeyData(std::map<fppp::KeyData, size_t> *output) const
+bool Layout::SelectByKeyData(std::map<key::Data, size_t> *output) const
 {
 	assert(output);
-	fppp::KeyData kd;
+	key::Data kd;
 	size_t offset = kOffsetBase;
 	int si = 0;
 	int di = 0;

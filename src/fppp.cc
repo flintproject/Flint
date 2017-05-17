@@ -22,43 +22,6 @@
 namespace flint {
 namespace fppp {
 
-bool KeyData::operator<(const KeyData &other) const
-{
-	if (uuid < other.uuid)
-		return true;
-	if (uuid == other.uuid)
-		return name < other.name;
-	return false;
-}
-
-std::string KeyData::GetReadableString() const
-{
-	size_t len = 36+1+name.size();
-	std::unique_ptr<char[]> buf(new char[len+1]);
-	std::sprintf(buf.get(), "%s:%s", boost::uuids::to_string(uuid).c_str(), name.c_str());
-	return std::string(buf.get(), len);
-}
-
-std::string KeyData::GetPrefixString() const
-{
-	const int kPrefixSize = 48;
-	char prefix[kPrefixSize];
-	std::memset(prefix, 0, kPrefixSize);
-	std::memcpy(prefix, &uuid, uuid.size());
-	std::memcpy(prefix+uuid.size(), name.c_str(), name.size());
-	return std::string(prefix, kPrefixSize);
-}
-
-bool KeyData::FromString(const std::string &s, KeyData *kd)
-{
-	if (s.size() > 36+1+32) // too long name
-		return false;
-	boost::uuids::string_generator gen;
-	kd->uuid = gen(s.substr(0, 36));
-	kd->name = s.substr(37);
-	return true;
-}
-
 Publisher::Publisher(void *ctx, const char *hostname)
 	: sock_(zmq_socket(ctx, ZMQ_PUB))
 {
@@ -101,7 +64,7 @@ void Publisher::operator()(boost::uuids::uuid uuid, std::string name, const char
 
 Subscriber::Subscriber(void *ctx,
 					   const std::unordered_set<std::string> &endpoints,
-					   const std::set<KeyData> &v)
+					   const std::set<key::Data> &v)
 	: sock_(zmq_socket(ctx, ZMQ_SUB))
 {
 	const size_t kPrefixSize = 48;
@@ -149,8 +112,8 @@ void Subscriber::operator()(void (*f)(boost::uuids::uuid uuid, std::string name,
 
 zactor_t *ShakeHands(void *ctx,
 					 const char *host,
-					 std::set<KeyData> &in,
-					 const std::vector<KeyData> &out,
+					 std::set<key::Data> &in,
+					 const std::vector<key::Data> &out,
 					 Publisher **pub,
 					 Subscriber **sub)
 {
@@ -187,7 +150,7 @@ zactor_t *ShakeHands(void *ctx,
 	}
 
 	std::unordered_set<std::string> endpoints;
-	std::set<KeyData> data;
+	std::set<key::Data> data;
 	zpoller_t *poller = zpoller_new(peer, nullptr);
 	assert(poller);
 	boost::uuids::string_generator gen;
@@ -203,7 +166,7 @@ zactor_t *ShakeHands(void *ctx,
 		char *command, *key, *value;
 		zstr_recvx(peer, &command, &key, &value, nullptr);
 		if (std::strcmp(command, "DELIVER") == 0) {
-			KeyData kd;
+			key::Data kd;
 			kd.uuid = gen(std::string(key, 36));
 			kd.name = std::string(key+37);
 			auto it = in.find(kd);

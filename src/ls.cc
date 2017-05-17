@@ -21,7 +21,7 @@
 
 #include "bc/index.h"
 #include "flint/dps.h"
-#include "fppp.h"
+#include "flint/key.h"
 #include "isdf/reader.h"
 #include "utf8path.h"
 
@@ -36,26 +36,26 @@ namespace {
 
 class Handler {
 public:
-	explicit Handler(std::map<int, fppp::KeyData> &m)
+	explicit Handler(std::map<int, key::Data> &m)
 		: m_(m)
 	{}
 
 	void GetDescription(std::uint32_t i, std::uint32_t num_bytes, const char *d) {
 		if (i == 0) // skip the first column
 			return;
-		flint::fppp::KeyData kd;
+		key::Data kd;
 		if (num_bytes < 38) {
 			kd.uuid = boost::uuids::nil_uuid();
 			kd.name = std::string(d, num_bytes);
 		} else {
 			// TODO: check returned value
-			(void)flint::fppp::KeyData::FromString(std::string(d, num_bytes), &kd);
+			(void)key::Data::FromString(std::string(d, num_bytes), &kd);
 		}
 		m_.emplace(i, kd);
 	}
 
 private:
-	std::map<int, fppp::KeyData> &m_;
+	std::map<int, key::Data> &m_;
 };
 
 }
@@ -82,13 +82,13 @@ std::unique_ptr<Configuration> CreateConfiguration(const char *dps_path, const L
 		config.reset();
 		return config;
 	}
-	std::map<int, fppp::KeyData> m_dps;
+	std::map<int, key::Data> m_dps;
 	Handler handler(m_dps);
 	if (!reader.ReadDescriptions(handler, &ifs)) {
 		config.reset();
 		return config;
 	}
-	std::map<fppp::KeyData, size_t> m_data;
+	std::map<key::Data, size_t> m_data;
 	for (const auto &p : m_dps)
 		m_data.emplace(p.second, 0);
 	if (!layout.SelectByKeyData(&m_data)) {

@@ -49,7 +49,7 @@ public:
 
 	~ChannelImpl();
 
-	bool Connect(const char *host, const std::map<fppp::KeyData, size_t> &output);
+	bool Connect(const char *host, const std::map<key::Data, size_t> &output);
 
 	bool Lookup(int index, double t, double *d);
 
@@ -91,7 +91,7 @@ ChannelImpl::~ChannelImpl()
 	}
 }
 
-bool ChannelImpl::Connect(const char *host, const std::map<fppp::KeyData, size_t> &output)
+bool ChannelImpl::Connect(const char *host, const std::map<key::Data, size_t> &output)
 {
 	const size_t kLength = 128;
 
@@ -158,8 +158,8 @@ bool ChannelImpl::Connect(const char *host, const std::map<fppp::KeyData, size_t
 		zstr_recvx(peer, &command, &key, &value, nullptr);
 		if (std::strcmp(command, "DELIVER") == 0) {
 			std::cerr << "key: " << key << std::endl;
-			fppp::KeyData kd;
-			if (!fppp::KeyData::FromString(key, &kd)) {
+			key::Data kd;
+			if (!key::Data::FromString(key, &kd)) {
 				zstr_free(&command);
 				zstr_free(&key);
 				zstr_free(&value);
@@ -257,7 +257,7 @@ Channel::Channel(const std::vector<std::string> &cv)
 
 Channel::~Channel() = default;
 
-bool Channel::Connect(const char *host, const std::map<fppp::KeyData, size_t> &output)
+bool Channel::Connect(const char *host, const std::map<key::Data, size_t> &output)
 {
 	return impl_->Connect(host, output);
 }
@@ -274,7 +274,7 @@ void Channel::Send(const double *data)
 
 bool LoadChannel(sqlite3 *db,
 				 const char *host,
-				 const std::map<fppp::KeyData, size_t> &output,
+				 const std::map<key::Data, size_t> &output,
 				 std::unique_ptr<Channel> &channel)
 {
 	std::vector<std::string> v;
