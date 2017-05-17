@@ -175,8 +175,12 @@ bool TaskRunner::Run()
 		task_->layout.swap(layout);
 		task_->layer_size = layer_size;
 
-		if (reader_->GetDpsPath())
-			task_->ls_config = ls::CreateConfiguration(reader_->GetDpsPath(), *task_->layout);
+		if (reader_->GetDpsPath()) {
+			auto ls_config = ls::CreateConfiguration(reader_->GetDpsPath(), *task_->layout);
+			if (!ls_config)
+				return false;
+			task_->ls_config.swap(ls_config);
+		}
 	}
 	if (reader_->GetMethod() != compiler::Method::kArk) {
 		cas::DimensionAnalyzer da;
