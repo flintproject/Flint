@@ -13,7 +13,7 @@ namespace dps {
 
 class Cursor {
 public:
-	Cursor(boost::interprocess::file_mapping fm, size_t offset, size_t row_size);
+	Cursor(boost::interprocess::file_mapping &fm, size_t offset, size_t row_size);
 
 	enum class Position {
 		kGt,

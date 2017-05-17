@@ -29,10 +29,6 @@
 namespace flint {
 namespace ls {
 
-Configuration::Configuration()
-	: bound(std::numeric_limits<double>::max())
-{}
-
 namespace {
 
 class Handler {
@@ -63,31 +59,25 @@ private:
 
 std::unique_ptr<Configuration> CreateConfiguration(const char *dps_path, const Layout &layout)
 {
-	std::unique_ptr<Configuration> config(new Configuration); // FIXME
-	config->filename = dps_path; // FIXME: UTF-8 to native
-
+	std::unique_ptr<Configuration> config;
 	boost::filesystem::path path = GetPathFromUtf8(dps_path);
-	boost::filesystem::ifstream ifs(path, std::ios::in|std::ios::binary);
-	if (!ifs) {
-		config.reset();
-		return config;
-	}
-	isdf::Reader reader;
-	if (!reader.ReadHeader(&ifs)) {
-		config.reset();
-		return config;
-	}
-	config->data_offset = reader.GetDataOffset();
-	config->row_size = reader.num_objs() * sizeof(double);
-	if (!reader.SkipComment(&ifs)) {
-		config.reset();
-		return config;
-	}
 	std::map<int, key::Data> m_dps;
-	Handler handler(m_dps);
-	if (!reader.ReadDescriptions(handler, &ifs)) {
-		config.reset();
-		return config;
+	{
+		boost::filesystem::ifstream ifs(path, std::ios::in|std::ios::binary);
+		if (!ifs)
+			return config;
+		isdf::Reader reader;
+		if (!reader.ReadHeader(&ifs))
+			return config;
+		if (!reader.SkipComment(&ifs))
+			return config;
+		Handler handler(m_dps);
+		if (!reader.ReadDescriptions(handler, &ifs))
+			return config;
+		ifs.close();
+		config.reset(new Configuration);
+		config->data_offset = reader.GetDataOffset();
+		config->row_size = reader.num_objs() * sizeof(double);
 	}
 	std::map<key::Data, size_t> m_data;
 	for (const auto &p : m_dps)
@@ -105,12 +95,16 @@ std::unique_ptr<Configuration> CreateConfiguration(const char *dps_path, const L
 		auto r = config->indice.emplace(p.first, it->second);
 		assert(r.second);
 	}
+	auto path_s = path.string();
+	boost::interprocess::file_mapping fm(path_s.c_str(), boost::interprocess::read_only);
+	config->fm = std::move(fm);
+	config->bound = std::numeric_limits<double>::max();
 	return config;
 }
 
 Accumulator::Accumulator(Configuration &config)
 	: config_(config)
-	, cursor_(boost::interprocess::file_mapping(config.filename, boost::interprocess::read_only), config.data_offset, config.row_size)
+	, cursor_(config.fm, config.data_offset, config.row_size)
 	, sum_(0)
 {}
 
@@ -122,6 +116,7 @@ Accumulator::State Accumulator::operator()(const double *data)
 		return State::kLeq;
 	case dps::Cursor::Position::kLeq:
 		{
+			// access the mapped region sequentially
 			for (const auto &idx : config_.indice)
 				sum_ += std::pow(p[idx.first] - data[idx.second], 2);
 			std::lock_guard<std::mutex> g(config_.mutex);

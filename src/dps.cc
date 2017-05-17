@@ -8,11 +8,13 @@
 namespace flint {
 namespace dps {
 
-Cursor::Cursor(boost::interprocess::file_mapping fm, size_t offset, size_t row_size)
+Cursor::Cursor(boost::interprocess::file_mapping &fm, size_t offset, size_t row_size)
 	: mr_(fm, boost::interprocess::read_only, offset)
 	, row_size_(row_size)
 	, position_(0)
-{}
+{
+	mr_.advise(boost::interprocess::mapped_region::advice_sequential);
+}
 
 Cursor::Position Cursor::operator()(double t, double **p)
 {

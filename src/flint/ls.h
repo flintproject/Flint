@@ -2,9 +2,12 @@
 #ifndef FLINT_LS_H_
 #define FLINT_LS_H_
 
+#include <map>
 #include <memory>
 #include <mutex>
-#include <unordered_map>
+
+#define BOOST_DATE_TIME_NO_LIB
+#include <boost/interprocess/file_mapping.hpp>
 
 #include "flint/dps.h"
 
@@ -20,12 +23,10 @@ namespace ls {
  * Shared with every job in the task.
  */
 struct Configuration {
-	Configuration();
-
-	const char *filename;
+	boost::interprocess::file_mapping fm;
 	size_t data_offset; // unit: in bytes
 	size_t row_size;    // unit: in bytes
-	std::unordered_map<int, size_t> indice; // the index in datapoints to the index in data
+	std::map<int, size_t> indice; // the index in datapoints to the index in data
 	double bound;
 	std::mutex mutex;
 };
