@@ -3,9 +3,12 @@
 #define FLINT_JOB_H_
 
 #include <cstdio>
-#include <map>
 #include <memory>
 #include <vector>
+
+#define BOOST_DATE_TIME_NO_LIB
+#include <boost/interprocess/mapped_region.hpp>
+
 #include "sqlite3.h"
 
 namespace flint {
@@ -55,6 +58,7 @@ struct Option {
 	FILE *output_fp;
 	FILE *stats_fp;
 	void *progress_address;
+	void *rss_address;
 	const fppp::Option *fppp_option;
 };
 
@@ -74,6 +78,7 @@ bool Job(const char *task_dir,
 		 const char *job_dir,
 		 task::Task &task,
 		 void *progress_address,
+		 void *rss_address,
 		 const fppp::Option *fppp_option,
 		 std::vector<double> *data,
 		 const char *output_file,

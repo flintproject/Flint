@@ -39,7 +39,7 @@ std::unique_ptr<Configuration> CreateConfiguration(const char *dps_path, const L
  */
 class Accumulator {
 public:
-	explicit Accumulator(Configuration &config);
+	Accumulator(Configuration &config, double &sum);
 
 	enum class State {
 		kLeq,
@@ -57,7 +57,7 @@ public:
 private:
 	Configuration &config_;
 	dps::Cursor cursor_;
-	double sum_;
+	double &sum_;
 };
 
 }

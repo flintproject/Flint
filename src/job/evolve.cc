@@ -464,8 +464,10 @@ bool Evolve(sqlite3 *db,
 	char control;
 
 	std::unique_ptr<ls::Accumulator> accum;
-	if (task.ls_config)
-		accum.reset(new ls::Accumulator(*task.ls_config));
+	if (task.ls_config) {
+		assert(option.rss_address);
+		accum.reset(new ls::Accumulator(*task.ls_config, *reinterpret_cast<double *>(option.rss_address)));
+	}
 
 	size_t g = (output_start_time == 0) ? 0 : granularity-1;
 

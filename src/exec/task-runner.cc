@@ -110,6 +110,57 @@ void *TaskRunner::GetProgressAddress(int job_id)
 	return addr + job_id;
 }
 
+bool TaskRunner::CreateRssFile(int num_samples)
+{
+	char tmp_filename[kFilenameLength];
+	std::sprintf(tmp_filename, "%d/rss.tmp", id_);
+	FILE *fp = std::fopen(tmp_filename, "wb");
+	if (!fp) {
+		std::perror(tmp_filename);
+		return false;
+	}
+	long n = (num_samples + 1) * sizeof(double);
+	int r = std::fseek(fp, n-1, SEEK_SET);
+	if (r != 0) {
+		std::cerr << "failed to seek: " << tmp_filename << std::endl;
+		std::fclose(fp);
+		return false;
+	}
+	if (std::fputc('\0', fp) == EOF) {
+		std::cerr << "failed to write null character: " << tmp_filename << std::endl;
+		std::fclose(fp);
+		return false;
+	}
+	std::fclose(fp);
+
+	// rename rss.tmp to rss
+	char filename[kFilenameLength];
+	std::sprintf(filename, "%d/rss", id_);
+	if (std::rename(tmp_filename, filename) != 0) {
+		std::cerr << "failed to rename " << tmp_filename
+				  << " to " << filename
+				  << std::endl;
+		return false;
+	}
+	try {
+		boost::interprocess::file_mapping fm(filename, boost::interprocess::read_write);
+		rss_mr_.reset(new boost::interprocess::mapped_region(fm, boost::interprocess::read_write));
+	} catch (const boost::interprocess::interprocess_exception &e) {
+		std::cerr << "failed to map file: " << e.what() << std::endl;
+		return false;
+	}
+	return true;
+}
+
+void *TaskRunner::GetRssAddress(int job_id) const
+{
+	if (!rss_mr_)
+		return nullptr;
+	size_t offset = job_id * sizeof(double);
+	assert(offset + sizeof(double) <= rss_mr_->get_size());
+	return reinterpret_cast<char *>(rss_mr_->get_address()) + offset;
+}
+
 bool TaskRunner::Setup(int id, const char *path, std::vector<double> *data)
 {
 	task_.reset(load::Load(path, load::kExec, id, data));
@@ -207,6 +258,8 @@ bool TaskRunner::Run()
 	if (!fm)
 		return false;
 	progress_region_.reset(new boost::interprocess::mapped_region(*fm, boost::interprocess::read_write));
+	if (task_->ls_config && !CreateRssFile(n))
+		return false;
 	if (!task::Form(db_driver_->db()))
 		return false;
 	dimension_analyzer_.reset(new cas::DimensionAnalyzer);

@@ -102,10 +102,10 @@ std::unique_ptr<Configuration> CreateConfiguration(const char *dps_path, const L
 	return config;
 }
 
-Accumulator::Accumulator(Configuration &config)
+Accumulator::Accumulator(Configuration &config, double &sum)
 	: config_(config)
 	, cursor_(config.fm, config.data_offset, config.row_size)
-	, sum_(0)
+	, sum_(sum)
 {}
 
 Accumulator::State Accumulator::operator()(const double *data)

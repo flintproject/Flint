@@ -5,6 +5,7 @@
 #include <memory>
 
 #define BOOST_DATE_TIME_NO_LIB
+#include <boost/interprocess/file_mapping.hpp>
 #include <boost/interprocess/mapped_region.hpp>
 
 #include "db/driver.h"
@@ -46,9 +47,16 @@ public:
 
 	void *GetProgressAddress(int job_id);
 
+	/*
+	 * Return nullptr unless the method of least-squares is used.
+	 */
+	void *GetRssAddress(int job_id) const;
+
 	bool Run();
 
 private:
+	bool CreateRssFile(int num_samples);
+
 	bool Setup(int id, const char *path, std::vector<double> *data);
 
 	int id_;
@@ -61,6 +69,7 @@ private:
 	std::unique_ptr<db::Driver> db_driver_;
 	std::unique_ptr<db::ReadOnlyDriver> modeldb_driver_;
 	std::unique_ptr<boost::interprocess::mapped_region> progress_region_;
+	std::unique_ptr<boost::interprocess::mapped_region> rss_mr_;
 	std::unique_ptr<task::ConfigReader> reader_;
 	std::unique_ptr<cas::DimensionAnalyzer> dimension_analyzer_;
 };

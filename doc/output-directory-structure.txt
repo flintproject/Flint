@@ -55,3 +55,9 @@ directory, as follows:
 * progress
   A binary file of length (max job-id)+1; the byte at index (job-id)
   represents the current progress (0 to 100) of the job.
+
+* rss
+  Generated only when using the method of least-squares.
+  Contains an array of type double; the value at index (job-id) represents
+  the residual sum of squares (RSS) when comparing the job's result with
+  given data.

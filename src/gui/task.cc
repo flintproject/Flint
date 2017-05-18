@@ -5,6 +5,7 @@
 
 #include "gui/task.h"
 
+#include "gui/configuration.h"
 #include "gui/job.h"
 #include "gui/simulation.h"
 
@@ -21,6 +22,11 @@ wxFileName Task::GetDirectoryName() const
 	auto filename = simulation->GetDirectoryName();
 	filename.AppendDir(wxString::Format("%d", id));
 	return filename;
+}
+
+bool Task::HasObjective() const
+{
+	return !simulation->entries[id-1].second->dps_path.empty();
 }
 
 int Task::GetNumberOfJobs() const

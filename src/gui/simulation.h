@@ -22,6 +22,7 @@ struct Simulation {
 
 	wxFileName GetDirectoryName() const;
 	wxFileName GetProgressFileName(int i) const;
+	wxFileName GetRssFileName(int i) const;
 };
 
 }

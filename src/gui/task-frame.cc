@@ -32,7 +32,8 @@ namespace {
 enum {
 	kColumnId,
 	kColumnProgress,
-	kColumnStatus
+	kColumnStatus,
+	kColumnRss // optional
 };
 
 }
@@ -90,6 +91,8 @@ void TaskFrame::OnTimer(wxTimerEvent &)
 		int progress = *(reinterpret_cast<char *>(mr_.get_address())+i+1);
 		data_view_->SetValue(progress, i, kColumnProgress);
 		data_view_->SetTextValue(wxString::Format("%d%%", progress), i, kColumnStatus);
+		if (task_.HasObjective())
+			data_view_->SetTextValue(GetRss(i+1), i, kColumnRss);
 	}
 	if (*(reinterpret_cast<char *>(mr_.get_address())) == 100 || task_.IsCanceled())
 		timer_.Stop();
@@ -154,6 +157,14 @@ void TaskFrame::OnClose(wxCloseEvent &)
 	if (timer_.IsRunning())
 		timer_.Stop();
 	Destroy();
+}
+
+wxString TaskFrame::GetRss(int job_id)
+{
+	size_t offset = job_id * sizeof(double);
+	assert(offset + sizeof(double) <= rss_mr_.get_size());
+	double *p = reinterpret_cast<double *>(reinterpret_cast<char *>(rss_mr_.get_address())+ offset);
+	return wxString::Format("%g", *p);
 }
 
 void TaskFrame::Export(const Job &job)
@@ -258,6 +269,8 @@ int TaskFrame::AddParameterSample(int argc, char **argv, char **names)
 	data.push_back(wxString::Format("%d", id));
 	data.push_back(progress);
 	data.push_back(wxString::Format("%d%%", progress));
+	if (task_.HasObjective())
+		data.push_back(GetRss(id));
 	for (int i=1;i<argc;i++)
 		data.push_back(argv[i]);
 	data_view_->AppendItem(data);
@@ -279,6 +292,17 @@ void TaskFrame::LoadItems()
 	data_view_->AppendTextColumn("ID");
 	data_view_->AppendProgressColumn("Progress");
 	data_view_->AppendTextColumn("Status");
+	if (task_.HasObjective()) {
+		data_view_->AppendTextColumn("RSS");
+		try {
+			auto rss_filename = task_.simulation->GetRssFileName(task_.id);
+			boost::interprocess::file_mapping rss_fm(rss_filename.GetFullPath().c_str(),
+													 boost::interprocess::read_only);
+			rss_mr_ = boost::interprocess::mapped_region(rss_fm, boost::interprocess::read_only);
+		} catch (const boost::interprocess::interprocess_exception &) {
+			return;
+		}
+	}
 
 	try {
 		auto filename = task_.simulation->GetProgressFileName(task_.id);

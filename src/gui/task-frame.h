@@ -38,6 +38,7 @@ private:
 	void OnTimer(wxTimerEvent &event);
 	void OnClose(wxCloseEvent &event);
 
+	wxString GetRss(int job_id);
 	void Export(const Job &job);
 	void ExportAll();
 	void LoadItems();
@@ -45,6 +46,7 @@ private:
 
 	const Task &task_;
 	boost::interprocess::mapped_region mr_;
+	boost::interprocess::mapped_region rss_mr_;
 	wxDataViewListCtrl *data_view_;
 	wxButton *export_;
 	wxButton *view_;
