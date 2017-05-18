@@ -289,9 +289,9 @@ int Process(void *data, int argc, char **argv, char **names)
 
 void TaskFrame::LoadItems()
 {
-	data_view_->AppendTextColumn("ID");
+	data_view_->AppendTextColumn("ID", wxDATAVIEW_CELL_INERT, -1, wxALIGN_RIGHT);
 	data_view_->AppendProgressColumn("Progress");
-	data_view_->AppendTextColumn("Status");
+	data_view_->AppendTextColumn("Status", wxDATAVIEW_CELL_INERT, -1, wxALIGN_RIGHT);
 	if (task_.HasObjective()) {
 		data_view_->AppendTextColumn("RSS");
 		try {
