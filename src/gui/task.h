@@ -19,6 +19,7 @@ struct Task {
 	Task(Simulation *given_simulation, int given_id);
 
 	wxFileName GetDirectoryName() const;
+	wxString GetDpsPath() const;
 	bool HasObjective() const;
 	int GetNumberOfJobs() const;
 	bool IsCanceled() const;

@@ -26,7 +26,16 @@ struct LineGraphOption {
 	bool log_y2;
 };
 
-bool PlotLineGraph(const LineGraphOption &option, std::ostream &os);
+struct DpsGraphOption {
+	wxString dps_path;
+	unsigned int num_variables;
+	unsigned int skip;
+	std::map<unsigned int, unsigned int> m;
+};
+
+bool PlotLineGraph(const LineGraphOption &option,
+				   const DpsGraphOption *dgo,
+				   std::ostream &os);
 
 }
 }

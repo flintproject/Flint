@@ -17,6 +17,7 @@
 namespace flint {
 namespace gui {
 
+struct DpsGraphOption;
 struct Job;
 class TaskFrame;
 
@@ -41,6 +42,7 @@ private:
 	wxCheckBox *log_y2_;
 	unsigned int num_variables_;
 	unsigned int skip_;
+	std::unique_ptr<DpsGraphOption> dgo_;
 	std::unique_ptr<boost::process::child> child_;
 	boost::process::opstream pipe_;
 };

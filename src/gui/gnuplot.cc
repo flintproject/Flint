@@ -28,7 +28,9 @@ void PrintSingleQuoted(const char *s, std::ostream &os)
 
 }
 
-bool PlotLineGraph(const LineGraphOption &option, std::ostream &os)
+bool PlotLineGraph(const LineGraphOption &option,
+				   const DpsGraphOption *dpo,
+				   std::ostream &os)
 {
 	if (option.input_files.empty())
 		return false;
@@ -113,6 +115,74 @@ bool PlotLineGraph(const LineGraphOption &option, std::ostream &os)
 		}
 		os.put(',');
 	}
+
+	if (option.x == 0 && dpo) {
+		const auto &m = dpo->m;
+
+		bool found = false;
+		for (auto p : option.y1) {
+			auto i = p.first;
+			auto it = m.find(i);
+			if (it != m.end()) {
+				found = true;
+				break;
+			}
+		}
+		if (!found) {
+			for (auto p : option.y2) {
+				auto i = p.first;
+				auto it = m.find(i);
+				if (it != m.end()) {
+					found = true;
+					break;
+				}
+			}
+		}
+		if (!found)
+			goto done; // do nothing if no variable in m is selected
+
+		os.put(' ');
+		PrintSingleQuoted(dpo->dps_path.c_str(), os);
+		int n = 0;
+		for (auto p : option.y1) {
+			auto i = p.first;
+			auto it = m.find(i);
+			if (it == m.end())
+				continue;
+			if (n > 0)
+				os << ", ''";
+			os << " binary format='%" << dpo->num_variables << "double' skip=" << dpo->skip
+			   << " using 1:" << it->second+1
+			   << " axes x1y1 with points";
+			if (option.legend) {
+				os << " title ";
+				PrintSingleQuoted(p.second.c_str(), os);
+			} else {
+				os << " notitle";
+			}
+			++n;
+		}
+		for (auto p : option.y2) {
+			auto i = p.first;
+			auto it = m.find(i);
+			if (it == m.end())
+				continue;
+			if (n > 0)
+				os << ", ''";
+			os << " binary format='%" << dpo->num_variables << "double' skip=" << dpo->skip
+			   << " using 1:" << it->second+1
+			   << " axes x1y2 with points";
+			if (option.legend) {
+				os << " title ";
+				PrintSingleQuoted(p.second.c_str(), os);
+			} else {
+				os << " notitle";
+			}
+			++n;
+		}
+	}
+
+ done:
 	os << std::endl;
 	return true;
 }

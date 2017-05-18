@@ -24,9 +24,14 @@ wxFileName Task::GetDirectoryName() const
 	return filename;
 }
 
+wxString Task::GetDpsPath() const
+{
+	return simulation->entries[id-1].second->dps_path;
+}
+
 bool Task::HasObjective() const
 {
-	return !simulation->entries[id-1].second->dps_path.empty();
+	return !GetDpsPath().empty();
 }
 
 int Task::GetNumberOfJobs() const

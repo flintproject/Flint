@@ -8,6 +8,9 @@
 #include <cstring>
 #include <fstream>
 #include <iostream>
+#include <map>
+#include <memory>
+#include <string>
 
 #include <boost/process/io.hpp>
 
@@ -131,7 +134,7 @@ void ViewFrame::Plot()
 			return;
 		}
 	}
-	PlotLineGraph(option, pipe_);
+	PlotLineGraph(option, dgo_.get(), pipe_);
 }
 
 void ViewFrame::OnCheckBox(wxCommandEvent &)
@@ -184,16 +187,21 @@ namespace {
 
 class Handler {
 public:
-	Handler(wxDataViewListCtrl &data_view);
+	Handler(wxDataViewListCtrl &data_view, bool dps_enabled);
+
+	std::map<std::string, unsigned int> &m() {return m_;}
 
 	void GetDescription(std::uint32_t i, std::uint32_t bytes, const char *d);
 
 private:
 	wxDataViewListCtrl &data_view_;
+	bool dps_enabled_;
+	std::map<std::string, unsigned int> m_;
 };
 
-Handler::Handler(wxDataViewListCtrl &data_view)
+Handler::Handler(wxDataViewListCtrl &data_view, bool dps_enabled)
 	: data_view_(data_view)
+	, dps_enabled_(dps_enabled)
 {}
 
 void Handler::GetDescription(std::uint32_t i, std::uint32_t bytes, const char *d)
@@ -222,6 +230,32 @@ void Handler::GetDescription(std::uint32_t i, std::uint32_t bytes, const char *d
 	data.push_back(label);
 	data.push_back(wxString(original_d, original_bytes));
 	data_view_.AppendItem(data);
+
+	if (dps_enabled_ && i > 0)
+		m_.emplace(std::string(original_d, original_bytes), i);
+}
+
+struct DpsHandler {
+	explicit DpsHandler(Handler &handler);
+
+	void GetDescription(std::uint32_t i, std::uint32_t bytes, const char *d);
+
+	std::map<std::string, unsigned int> &hm;
+	std::map<unsigned int, unsigned int> m;
+};
+
+DpsHandler::DpsHandler(Handler &handler)
+	: hm(handler.m())
+{}
+
+void DpsHandler::GetDescription(std::uint32_t i, std::uint32_t bytes, const char *d)
+{
+	if (i == 0)
+		return;
+	auto it = hm.find(std::string(d, bytes));
+	if (it == hm.end())
+		return;
+	m.emplace(it->second, i);
 }
 
 }
@@ -238,7 +272,7 @@ bool ViewFrame::LoadVariables()
 		return false;
 	}
 	isdf::Reader reader;
-	Handler handler(*data_view_);
+	Handler handler(*data_view_, task_frame->task().HasObjective());
 	bool b = reader.ReadHeader(&ifs) && reader.SkipComment(&ifs) && reader.ReadDescriptions(handler, &ifs);
 	if (!b) {
 		ifs.close();
@@ -248,6 +282,30 @@ bool ViewFrame::LoadVariables()
 	ifs.close();
 	num_variables_ = reader.num_objs();
 	skip_ = reader.GetDataOffset();
+
+	if (task_frame->task().HasObjective()) {
+		wxString dps_path = task_frame->task().GetDpsPath();
+		ifs.open(dps_path.c_str(), std::ios::in|std::ios::binary);
+		if (!ifs.is_open()) {
+			wxLogError("failed to open %s", dps_path);
+			return false;
+		}
+		isdf::Reader dr;
+		DpsHandler dh(handler);
+		b = dr.ReadHeader(&ifs) && dr.SkipComment(&ifs) && dr.ReadDescriptions(dh, &ifs);
+		if (!b) {
+			ifs.close();
+			wxLogError("failed to read %s", dps_path);
+			return false;
+		}
+		ifs.close();
+		std::unique_ptr<DpsGraphOption> dgo(new DpsGraphOption);
+		dgo->dps_path = dps_path;
+		dgo->num_variables = dr.num_objs();
+		dgo->skip = dr.GetDataOffset();
+		dgo->m = std::move(dh.m);
+		dgo_ = std::move(dgo);
+	}
 	return true;
 }
 
