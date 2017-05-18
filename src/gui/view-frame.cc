@@ -248,7 +248,7 @@ bool ViewFrame::LoadVariables()
 	}
 	ifs.close();
 	num_variables_ = reader.num_objs();
-	skip_ = sizeof(isdf::ISDFHeader) + reader.num_bytes_comment() + reader.num_bytes_descs() + reader.num_bytes_units();
+	skip_ = reader.GetDataOffset();
 	return true;
 }
 
