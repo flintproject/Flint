@@ -8,8 +8,6 @@
 #include <wx/aui/aui.h>
 #pragma GCC diagnostic pop
 
-#include "gui/desktop.h"
-
 namespace flint {
 namespace gui {
 
@@ -18,9 +16,6 @@ class App : public wxApp
 public:
 	virtual bool OnInit() override;
 	virtual int OnExit() override;
-
-private:
-	Desktop desktop_;
 };
 
 }

@@ -14,16 +14,7 @@
 #include <boost/uuid/uuid_io.hpp>
 #include <czmq.h>
 
-namespace {
-
-void Usage()
-{
-	std::cerr << "usage: fppp-sup" << std::endl;
-}
-
-}
-
-int main(int argc, char *argv[])
+int main()
 {
 	char name[32];
 	std::sprintf(name, "fppp-sup");

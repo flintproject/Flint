@@ -278,7 +278,6 @@ flint2_LDADD = libflint2.a libflintxx.la libflint.la libsqlite3.la $(WXWIDGETS_L
 flint2_SOURCES = \
     gui/app.cc \
     gui/configuration.cc \
-    gui/desktop.cc \
     gui/document.cc \
     gui/document/unit-of-time.cc \
     gui/export-all-dialog.cc \
