@@ -250,10 +250,10 @@ bool Evolve(sqlite3 *db,
 			task::Task &task,
 			const Option &option)
 {
+	size_t granularity = task.granularity;
+	double output_start_time = task.output_start_time;
 	size_t layer_size = task.layer_size;
 
-	size_t granularity = option.granularity;
-	double output_start_time = option.output_start_time;
 	FILE *output_fp = option.output_fp;
 	FILE *stats_fp = option.stats_fp;
 

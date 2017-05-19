@@ -80,13 +80,6 @@ bool Job(const char *task_dir,
 	sprintf(output_history_file, "%s/output-history", job_dir);
 
 	job::Option option;
-	{
-		task::ConfigReader reader(db);
-		if (!reader.Read())
-			return false;
-		option.granularity = reader.granularity();
-		option.output_start_time = reader.output_start_time();
-	}
 	option.task_dir = task_dir;
 	char filter_file[kShort];
 	sprintf(filter_file, "%s/filter", task_dir);
@@ -117,7 +110,7 @@ bool Job(const char *task_dir,
 		return false;
 	}
 	// write initial values only when output_start_time is 0.
-	if (option.output_start_time == 0) {
+	if (task.output_start_time == 0) {
 		if (!filter::Cut(filter_file, data->data(), ofp)) {
 			std::fclose(ofp);
 			return false;

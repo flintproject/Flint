@@ -32,6 +32,7 @@
 #include "solver/ark/mass.h"
 #include "solver/ark/rhs.h"
 #include "solver/ark/user-supplied.h"
+#include "task.h"
 
 namespace flint {
 namespace solver {
@@ -114,7 +115,7 @@ void Ark::WriteData(int lo, N_Vector y)
 	assert(i == dim_);
 }
 
-bool Ark::Solve(const job::Option &option)
+bool Ark::Solve(const task::Task &task, const job::Option &option)
 {
 	bool with_filter = option.filter_file != nullptr;
 	FILE *output_fp = option.output_fp;
@@ -175,8 +176,8 @@ bool Ark::Solve(const job::Option &option)
 	/* skeleton: 11. Set mass matrix linear solver optional inputs */
 	/* skeleton: 12. Specify rootfinding problem */
 	/* skeleton: 13. Advance solution in time */
-	size_t granularity = option.granularity;
-	double output_start_time = option.output_start_time;
+	size_t granularity = task.granularity;
+	double output_start_time = task.output_start_time;
 
 	bool with_control = option.control_file != nullptr;
 	std::unique_ptr<boost::interprocess::file_mapping> control_fm;

@@ -43,8 +43,6 @@ bool Store(sqlite3 *db,
 		   const char *target_layout_file, double *target_data);
 
 struct Option {
-	size_t granularity;
-	double output_start_time;
 	const char *task_dir;
 	const char *filter_file;
 	std::vector<double> *input_data;

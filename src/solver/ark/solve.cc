@@ -91,7 +91,7 @@ bool Solve(sqlite3 *db, task::Task &task, const job::Option &option)
 
 	std::unique_ptr<Ark> ark(new Ark(task.layout.get(), task.layer_size,
 									 auxv.get(), mass.get(), rhs.get()));
-	return ark->Solve(option);
+	return ark->Solve(task, option);
 }
 
 }

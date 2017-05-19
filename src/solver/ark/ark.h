@@ -17,6 +17,10 @@ namespace job {
 struct Option;
 }
 
+namespace task {
+struct Task;
+};
+
 namespace solver {
 
 namespace ark {
@@ -44,7 +48,7 @@ public:
 
 	void WriteData(int lo, N_Vector ydot);
 
-	bool Solve(const job::Option &option);
+	bool Solve(const task::Task &task, const job::Option &option);
 
 private:
 	bool SetProblemDimensions();

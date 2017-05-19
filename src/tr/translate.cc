@@ -152,6 +152,7 @@ bool Translate(const cli::RunOption &option)
 		return false;
 	if (!filter::Isdh("filter", "isdh"))
 		return false;
+	// TODO: granularity and output_start_time
 	if (reader.GetMethod() != compiler::Method::kArk) {
 		cas::DimensionAnalyzer da;
 		if (!da.Load(db))

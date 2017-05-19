@@ -24,6 +24,8 @@ struct Task {
 	std::unique_ptr<Bytecode> post_bc;
 	std::unique_ptr<Bytecode> reinit_bc;
 	std::unique_ptr<Layout> layout;
+	size_t granularity;
+	double output_start_time;
 	size_t layer_size;
 	std::unique_ptr<ls::Configuration> ls_config;
 };

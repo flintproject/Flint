@@ -60,6 +60,8 @@ struct F : public test::MemoryFixture {
 
 		std::memset(&option_, 0, sizeof(option_));
 
+		task_.granularity = 1;
+		task_.output_start_time = 0;
 		std::unique_ptr<Layout> layout(new Layout);
 		LayoutLoader loader("layout");
 		BOOST_REQUIRE(loader.Load(layout.get()));

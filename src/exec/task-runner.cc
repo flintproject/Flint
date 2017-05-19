@@ -216,6 +216,9 @@ bool TaskRunner::Run()
 	reader_.reset(new task::ConfigReader(modeldb_driver_->db()));
 	if (!reader_->Read())
 		return false;
+	// fill task's rest of fields
+	task_->granularity = reader_->granularity();
+	task_->output_start_time = reader_->output_start_time();
 	{
 		std::unique_ptr<Layout> layout(new Layout);
 		LayoutLoader loader(layout_.get());

@@ -134,6 +134,8 @@ bool Run(const cli::RunOption &option)
 		return false;
 	if (!filter::Isdh("filter", "isdh"))
 		return false;
+	task->granularity = option.granularity();
+	task->output_start_time = 0; // by default
 	{
 		std::unique_ptr<Layout> layout(new Layout);
 		LayoutLoader loader("layout");
