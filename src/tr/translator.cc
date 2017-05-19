@@ -224,11 +224,13 @@ void PrintCall2(const bc::Call2 &c2, std::ostream &os)
 
 void PrintGen1(const bc::Gen1 &c1, std::ostream &os)
 {
+	(void)c1;
 	os << "\tassert(0); /* TODO: Gen1 */" << std::endl;
 }
 
 void PrintGen2(const bc::Gen2 &c2, std::ostream &os)
 {
+	(void)c2;
 	os << "\tassert(0); /* TODO: Gen2 */" << std::endl;
 }
 
