@@ -208,6 +208,7 @@ libflintxx_la_SOURCES = \
     solver/ark/solve.cc \
     solver/ark/user-supplied.cc \
     solver/solve.cc \
+    stats.cc \
     sys/temporary_path.cc \
     task/config-reader.cc \
     task/config.cc \

@@ -4,6 +4,7 @@
 
 #include <cstdio>
 #include <memory>
+#include <string>
 #include <vector>
 
 #include "sqlite3.h"
@@ -43,7 +44,7 @@ bool Store(sqlite3 *db,
 		   const char *target_layout_file, double *target_data);
 
 struct Option {
-	const char *task_dir;
+	std::string dir;
 	const char *filter_file;
 	std::vector<double> *input_data;
 	const char *input_history_file;
@@ -51,7 +52,6 @@ struct Option {
 	const char *output_data_file;
 	const char *output_history_file;
 	FILE *output_fp;
-	FILE *stats_fp;
 	void *progress_address;
 	void *rss_address;
 	const fppp::Option *fppp_option;

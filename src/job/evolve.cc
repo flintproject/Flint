@@ -8,7 +8,6 @@
 #include <algorithm>
 #include <cassert>
 #include <chrono>
-#include <cinttypes>
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
@@ -31,6 +30,7 @@
 #include "filter/cutter.h"
 #include "flint/bc.h"
 #include "flint/ls.h"
+#include "flint/stats.h"
 #include "fppp.h"
 #include "lo/layout.h"
 #include "runtime/channel.h"
@@ -255,7 +255,6 @@ bool Evolve(sqlite3 *db,
 	size_t layer_size = task.layer_size;
 
 	FILE *output_fp = option.output_fp;
-	FILE *stats_fp = option.stats_fp;
 
 	bool with_filter = option.filter_file != nullptr;
 	bool with_pre = bool(task.pre_bc);
@@ -559,14 +558,7 @@ bool Evolve(sqlite3 *db,
 		++num_steps;
 	} while (data[kIndexTime] < data[kIndexEnd]);
 
-	if (stats_fp) {
-		auto rt_end = std::chrono::steady_clock::now();
-		auto duration = std::chrono::duration_cast<std::chrono::microseconds>(rt_end - rt_start).count();
-		std::fprintf(stats_fp, "number of steps: %d\n", num_steps);
-		std::fprintf(stats_fp, "duration (microseconds): %" PRId64 "\n", duration);
-		if (num_steps > 0)
-			std::fprintf(stats_fp, "mean (microseconds): %" PRId64 "\n", duration/num_steps);
-	}
+	(void)stats::Record(rt_start, num_steps, option.dir);
 
 	fflush(output_fp);
 

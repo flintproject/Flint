@@ -58,7 +58,15 @@ struct F : public test::MemoryFixture {
 		BOOST_REQUIRE_EQUAL(CreateTable(driver_.db(), "tacs", TACS_SCHEMA), 1);
 		BOOST_REQUIRE_EQUAL(SaveNol(1, driver_.db()), 1);
 
-		std::memset(&option_, 0, sizeof(option_));
+		option_.filter_file = nullptr;
+		option_.input_data = nullptr;
+		option_.input_history_file = nullptr;
+		option_.control_file = nullptr;
+		option_.output_data_file = nullptr;
+		option_.output_history_file = nullptr;
+		option_.progress_address = nullptr;
+		option_.rss_address = nullptr;
+		option_.fppp_option = nullptr;
 
 		task_.granularity = 1;
 		task_.output_start_time = 0;

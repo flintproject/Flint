@@ -56,8 +56,6 @@ bool Solve(sqlite3 *db, task::Task &task, const job::Option &option)
 	if (!LoadFlows(db, inbound.get()))
 		return false;
 
-	size_t dirname_size = std::strlen(option.task_dir);
-	assert(dirname_size > 0);
 	std::unique_ptr<Bytecode> auxv_bc(system->GenerateAuxVarBc());
 	if (!auxv_bc)
 		return false;

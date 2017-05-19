@@ -80,7 +80,7 @@ bool Job(const char *task_dir,
 	sprintf(output_history_file, "%s/output-history", job_dir);
 
 	job::Option option;
-	option.task_dir = task_dir;
+	option.dir = job_dir;
 	char filter_file[kShort];
 	sprintf(filter_file, "%s/filter", task_dir);
 	option.filter_file = filter_file;
@@ -118,23 +118,12 @@ bool Job(const char *task_dir,
 	}
 	option.output_fp = ofp;
 
-	char stats_file[kLong];
-	std::sprintf(stats_file, "%s/stats", job_dir);
-	FILE *sfp = std::fopen(stats_file, "w");
-	if (!sfp) {
-		std::fclose(ofp);
-		std::perror(stats_file);
-		return false;
-	}
-	option.stats_fp = sfp;
-
 	bool r;
 	if (reader.GetMethod() == compiler::Method::kArk) {
 		r = solver::Solve(db, solver::Method::kArk, task, option);
 	} else {
 		r = job::Evolve(db, task, option);
 	}
-	std::fclose(sfp);
 	std::fclose(ofp);
 	return r;
 }
