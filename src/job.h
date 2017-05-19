@@ -6,9 +6,6 @@
 #include <memory>
 #include <vector>
 
-#define BOOST_DATE_TIME_NO_LIB
-#include <boost/interprocess/mapped_region.hpp>
-
 #include "sqlite3.h"
 
 namespace flint {
