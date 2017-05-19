@@ -7,6 +7,7 @@
 
 #include <algorithm>
 #include <cassert>
+#include <chrono>
 #include <cstdio>
 #include <cstring>
 #include <iostream>
@@ -25,6 +26,7 @@
 #include "bc/index.h"
 #include "filter/cutter.h"
 #include "filter/writer.h"
+#include "flint/stats.h"
 #include "job.h"
 #include "lo/layout.h"
 #include "solver.h"
@@ -189,8 +191,11 @@ bool Ark::Solve(const task::Task &task, const job::Option &option)
 	char control;
 
 	size_t g = (output_start_time == 0) ? 0 : granularity-1;
+
 	realtype tout = 0;
 	realtype tret;
+	int num_steps = 0;
+	auto rt_start = std::chrono::steady_clock::now();
 	do {
 		tout += data_[kIndexDt];
 		tout = std::min(tout, data_[kIndexEnd]);
@@ -236,7 +241,11 @@ bool Ark::Solve(const task::Task &task, const job::Option &option)
 				break;
 			}
 		}
+
+		++num_steps;
 	} while (tret < data_[kIndexEnd]);
+
+	(void)stats::Record(rt_start, num_steps, option.dir);
 
 	/* skeleton: 14. Get optional outputs */
 	return true;
