@@ -93,6 +93,7 @@ bool Writer::operator()()
 	std::fprintf(fp_, "  <listOfTasks>\n");
 	i = 0;
 	for (const auto &p : sim_->entries) {
+		(void)p;
 		std::fprintf(fp_,
 					 "    <task id='task%d' name='Task %d' modelReference='model%d' simulationReference='sim%d'/>\n",
 					 i, i, i, i);

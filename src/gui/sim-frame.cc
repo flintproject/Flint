@@ -85,6 +85,7 @@ SimFrame::SimFrame(MainFrame *parent, Simulation *sim)
 	auto vbox = new wxBoxSizer(wxVERTICAL);
 	int i = 0;
 	for (auto &p : sim_->entries) {
+		(void)p;
 		auto window = new TaskWindow(this, sim, ++i);
 		vbox->Add(window, 0, wxEXPAND /* horizontally stretchable */);
 		windows_.push_back(window);
