@@ -21,8 +21,6 @@ struct Simulation {
 	std::vector<std::pair<Document *, const Configuration *> > entries;
 
 	wxFileName GetDirectoryName() const;
-	wxFileName GetProgressFileName(int i) const;
-	wxFileName GetRssFileName(int i) const;
 };
 
 }

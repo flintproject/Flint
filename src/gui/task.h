@@ -19,6 +19,9 @@ struct Task {
 	Task(Simulation *given_simulation, int given_id);
 
 	wxFileName GetDirectoryName() const;
+	wxFileName GetProgressFileName() const;
+	wxFileName GetRssFileName() const;
+
 	wxString GetDpsPath() const;
 	bool HasObjective() const;
 	int GetNumberOfJobs() const;

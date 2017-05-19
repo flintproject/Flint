@@ -46,7 +46,7 @@ wxFileName Job::GetOutputFileName() const
 int Job::GetProgress() const
 {
 	try {
-		auto filename = task.simulation->GetProgressFileName(task.id);
+		auto filename = task.GetProgressFileName();
 		boost::interprocess::file_mapping fm(filename.GetFullPath().c_str(), // TODO: check locale-dependency
 											 boost::interprocess::read_only);
 		boost::interprocess::mapped_region mr(fm, boost::interprocess::read_only, id, 1);

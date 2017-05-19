@@ -24,6 +24,20 @@ wxFileName Task::GetDirectoryName() const
 	return filename;
 }
 
+wxFileName Task::GetProgressFileName() const
+{
+	auto filename = GetDirectoryName();
+	filename.SetFullName("progress");
+	return filename;
+}
+
+wxFileName Task::GetRssFileName() const
+{
+	auto filename = GetDirectoryName();
+	filename.SetFullName("rss");
+	return filename;
+}
+
 wxString Task::GetDpsPath() const
 {
 	return simulation->entries[id-1].second->dps_path;
@@ -36,7 +50,7 @@ bool Task::HasObjective() const
 
 int Task::GetNumberOfJobs() const
 {
-	return static_cast<int>(simulation->GetProgressFileName(id).GetSize().ToULong()-1);
+	return static_cast<int>(GetProgressFileName().GetSize().ToULong()-1);
 }
 
 namespace {
@@ -60,7 +74,7 @@ bool Task::IsFinished() const
 {
 	if (IsCanceled())
 		return true;
-	auto filename = simulation->GetProgressFileName(id);
+	auto filename = GetProgressFileName();
 	wxFile file(filename.GetFullPath());
 	if (!file.IsOpened())
 		return false;

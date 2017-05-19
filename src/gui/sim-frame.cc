@@ -50,7 +50,7 @@ TaskWindow::TaskWindow(wxWindow *parent, Simulation *sim, int i)
 	, task_(sim, i)
 {
 	auto hbox = new wxStaticBoxSizer(wxHORIZONTAL, this, wxString::Format("Task %d", i));
-	gauge_ = new TaskGauge(hbox->GetStaticBox(), sim->GetProgressFileName(i));
+	gauge_ = new TaskGauge(hbox->GetStaticBox(), task_.GetProgressFileName());
 	auto x = new wxButton(hbox->GetStaticBox(), wxID_ANY, "x", wxDefaultPosition, wxDefaultSize, wxBU_EXACTFIT);
 	auto detail = new wxButton(hbox->GetStaticBox(), wxID_ANY, "Detail");
 	hbox->Add(detail);

@@ -295,7 +295,7 @@ void TaskFrame::LoadItems()
 	if (task_.HasObjective()) {
 		data_view_->AppendTextColumn("RSS");
 		try {
-			auto rss_filename = task_.simulation->GetRssFileName(task_.id);
+			auto rss_filename = task_.GetRssFileName();
 			boost::interprocess::file_mapping rss_fm(rss_filename.GetFullPath().c_str(),
 													 boost::interprocess::read_only);
 			rss_mr_ = boost::interprocess::mapped_region(rss_fm, boost::interprocess::read_only);
@@ -305,7 +305,7 @@ void TaskFrame::LoadItems()
 	}
 
 	try {
-		auto filename = task_.simulation->GetProgressFileName(task_.id);
+		auto filename = task_.GetProgressFileName();
 		boost::interprocess::file_mapping fm(filename.GetFullPath().c_str(),
 											 boost::interprocess::read_only);
 		mr_ = boost::interprocess::mapped_region(fm, boost::interprocess::read_only);

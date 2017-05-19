@@ -21,21 +21,5 @@ wxFileName Simulation::GetDirectoryName() const
 	return filename;
 }
 
-wxFileName Simulation::GetProgressFileName(int i) const
-{
-	wxFileName filename = GetDirectoryName();
-	filename.AppendDir(wxString::Format("%d", i));
-	filename.SetFullName("progress");
-	return filename;
-}
-
-wxFileName Simulation::GetRssFileName(int i) const
-{
-	wxFileName filename = GetDirectoryName();
-	filename.AppendDir(wxString::Format("%d", i));
-	filename.SetFullName("rss");
-	return filename;
-}
-
 }
 }
