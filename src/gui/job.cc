@@ -86,7 +86,7 @@ bool Job::IsFinished() const
 
 bool Job::RequestCancel() const
 {
-	wxFile file(GetControlFullPath(this), wxFile::write);
+	wxFile file(GetControlFullPath(this), wxFile::read_write);
 	if (!file.IsOpened())
 		return false;
 	return file.Write("\1", 1) == 1u && file.Close();

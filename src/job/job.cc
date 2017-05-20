@@ -68,7 +68,7 @@ bool Job(const char *task_dir,
 		std::perror(control_file);
 		return false;
 	}
-	if (fputc('0', fp) == EOF) {
+	if (fputc('\0', fp) == EOF) {
 		std::fclose(fp);
 		return false;
 	}
