@@ -45,6 +45,9 @@ A non-exhaustive summary of output files for each job:
 * values.txt
   The list of parameters with their values specified in the job.
 
+* stats.txt
+  Contains a summary of performance measured for the job.
+
 
 Flint also generates some of files for informational purposes in the task
 directory, as follows:

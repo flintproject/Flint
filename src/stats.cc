@@ -24,7 +24,7 @@ bool Record(const std::chrono::time_point<std::chrono::steady_clock> &rt_start,
 	if (len == 0)
 		return true; // do nothing if dir is empty
 	std::unique_ptr<char[]> filename(new char[len+6+1]);
-	std::sprintf(filename.get(), "%s/stats", dir.c_str());
+	std::sprintf(filename.get(), "%s/stats.txt", dir.c_str());
 	FILE *fp = std::fopen(filename.get(), "w");
 	if (!fp) {
 		std::perror(filename.get());

@@ -9,7 +9,7 @@ namespace flint {
 namespace stats {
 
 /*
- * Write stats information into file "stats" in given directory.
+ * Write stats information into file "stats.txt" in given directory.
  */
 bool Record(const std::chrono::time_point<std::chrono::steady_clock> &rt_start,
 			int num_steps,
