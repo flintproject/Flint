@@ -5,6 +5,8 @@
 
 #include "gui/app.h"
 
+#include <boost/process/search_path.hpp>
+
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wcast-qual"
 #include <wx/config.h>
@@ -12,6 +14,8 @@
 #pragma GCC diagnostic pop
 
 #include "gui/main-frame.h"
+#include "gui/pref-page-general.h"
+#include "utf8path.h"
 
 namespace flint {
 namespace gui {
@@ -34,6 +38,8 @@ bool App::OnInit()
 	frame->CentreOnScreen();
 	frame->Show();
 
+	pref_editor_ = nullptr;
+
 	return true;
 }
 
@@ -47,6 +53,30 @@ int App::OnExit()
 	fileName.Rmdir(wxPATH_RMDIR_RECURSIVE);
 
 	return wxApp::OnExit();
+}
+
+boost::filesystem::path App::GetGnuplotExecutable() const
+{
+	boost::filesystem::path p(gnuplot_executable_.ToStdString());
+	if (p.empty()) {
+		// search executable from PATH
+		p = boost::process::search_path("gnuplot");
+	}
+	return p;
+}
+
+void App::OnGnuplotExecutable(wxFileDirPickerEvent &event)
+{
+	gnuplot_executable_ = event.GetPath();
+}
+
+void App::ShowPreferencesEditor(wxWindow *parent)
+{
+	if (!pref_editor_) {
+		pref_editor_ = new wxPreferencesEditor;
+		pref_editor_->AddPage(new PrefPageGeneral);
+	}
+	pref_editor_->Show(parent);
 }
 
 }

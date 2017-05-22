@@ -31,6 +31,7 @@ private:
 	void OnAbout(wxCommandEvent &event);
 	void OnExit(wxCommandEvent &event);
 	void OnRun(wxCommandEvent &event);
+	void OnPreferences(wxCommandEvent &event);
 	void OnIdle(wxIdleEvent &event);
 
 	wxAuiManager manager_;

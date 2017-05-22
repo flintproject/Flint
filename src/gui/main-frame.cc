@@ -18,6 +18,7 @@
 #include "flint/bc.h"
 #include "flint/error.h"
 #include "flint/ls.h"
+#include "gui/app.h"
 #include "gui/document.h"
 #include "gui/sim-frame.h"
 #include "gui/simulation.h"
@@ -136,6 +137,7 @@ MainFrame::MainFrame()
 	Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::OnExit, this, wxID_EXIT);
 	Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::OnRun, this, kIdRun);
 	Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::OnRecentFile, this, wxID_FILE1, wxID_FILE9);
+	Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::OnPreferences, this, wxID_PREFERENCES);
 	Bind(wxEVT_IDLE, &MainFrame::OnIdle, this);
 }
 
@@ -324,6 +326,11 @@ void MainFrame::OnRun(wxCommandEvent &)
 	}
 	auto frame = new SimFrame(this, sim);
 	frame->Start();
+}
+
+void MainFrame::OnPreferences(wxCommandEvent &)
+{
+	wxGetApp().ShowPreferencesEditor(this);
 }
 
 void MainFrame::OnIdle(wxIdleEvent &)

@@ -274,8 +274,8 @@ flint_tr_LDADD = libflintxx.la libflint.la libsqlite3.la $(PROTOBUF_LIBS) $(BOOS
 flint_tr_SOURCES = flint-tr-main.cc
 
 flint2_CPPFLAGS = $(WXWIDGETS_CXXFLAGS) $(PROTOBUF_CFLAGS) $(BOOST_CPPFLAGS)
-flint2_LDFLAGS = $(BOOST_SYSTEM_LDFLAGS)
-flint2_LDADD = libflint2.a libflintxx.la libflint.la libsqlite3.la $(WXWIDGETS_LIBS) $(PROTOBUF_LIBS) $(BOOST_SYSTEM_LIBS)
+flint2_LDFLAGS = $(BOOST_FILESYSTEM_LDFLAGS) $(BOOST_SYSTEM_LDFLAGS)
+flint2_LDADD = libflint2.a libflintxx.la libflint.la libsqlite3.la $(WXWIDGETS_LIBS) $(PROTOBUF_LIBS) $(BOOST_FILESYSTEM_LIBS) $(BOOST_SYSTEM_LIBS)
 flint2_SOURCES = \
     gui/app.cc \
     gui/configuration.cc \
@@ -288,6 +288,7 @@ flint2_SOURCES = \
     gui/param-tree.cc \
     gui/phsp-editor-dialog.cc \
     gui/phsp.cc \
+    gui/pref-page-general.cc \
     gui/sedml.cc \
     gui/sim-frame.cc \
     gui/simulation.cc \

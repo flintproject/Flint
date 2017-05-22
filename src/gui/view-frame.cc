@@ -14,6 +14,7 @@
 
 #include <boost/process/io.hpp>
 
+#include "gui/app.h"
 #include "gui/gnuplot.h"
 #include "gui/job.h"
 #include "gui/task-frame.h"
@@ -129,8 +130,7 @@ void ViewFrame::Plot()
 			return;
 		}
 	} else {
-		// TODO: get gnuplot executable name from preference
-		child_.reset(new boost::process::child("gnuplot", boost::process::std_in < pipe_));
+		child_.reset(new boost::process::child(wxGetApp().GetGnuplotExecutable(), boost::process::std_in < pipe_));
 		if (!child_->valid()) {
 			wxLogError("failed to call gnuplot");
 			return;
