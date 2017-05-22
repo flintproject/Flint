@@ -130,7 +130,7 @@ void ViewFrame::Plot()
 			return;
 		}
 	} else {
-		child_.reset(new boost::process::child(wxGetApp().GetGnuplotExecutable(), boost::process::std_in < pipe_));
+		child_.reset(new boost::process::child(wxGetApp().GetGnuplotExecutable(), "-persist", boost::process::std_in < pipe_));
 		if (!child_->valid()) {
 			wxLogError("failed to call gnuplot");
 			return;
