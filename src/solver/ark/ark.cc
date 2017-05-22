@@ -26,6 +26,7 @@
 #include "bc/index.h"
 #include "filter/cutter.h"
 #include "filter/writer.h"
+#include "flint/ls.h"
 #include "flint/stats.h"
 #include "job.h"
 #include "lo/layout.h"
@@ -190,6 +191,12 @@ bool Ark::Solve(const task::Task &task, const job::Option &option)
 	}
 	char control;
 
+	std::unique_ptr<ls::Accumulator> accum;
+	if (task.ls_config) {
+		assert(option.rss_address);
+		accum.reset(new ls::Accumulator(*task.ls_config, *reinterpret_cast<double *>(option.rss_address)));
+	}
+
 	size_t g = (output_start_time == 0) ? 0 : granularity-1;
 
 	realtype tout = 0;
@@ -233,6 +240,14 @@ bool Ark::Solve(const task::Task &task, const job::Option &option)
 			}
 			char c = static_cast<char>(100 * (data_[kIndexTime] / data_[kIndexEnd]));
 			std::memcpy(option.progress_address, &c, 1);
+		}
+
+		if (accum) {
+			auto state = (*accum)(data_.get());
+			if (state == ls::Accumulator::State::kGt)
+				break;
+			if (state == ls::Accumulator::State::kDone)
+				accum.reset();
 		}
 
 		if (with_control) {
