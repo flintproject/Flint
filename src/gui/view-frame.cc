@@ -79,6 +79,8 @@ ViewFrame::ViewFrame(TaskFrame *parent, wxDataViewListCtrl &job_list)
 	Bind(wxEVT_CLOSE_WINDOW, &ViewFrame::OnClose, this);
 }
 
+ViewFrame::~ViewFrame() = default;
+
 void ViewFrame::Plot()
 {
 	LineGraphOption option;

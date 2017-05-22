@@ -24,6 +24,7 @@ class TaskFrame;
 class ViewFrame : public wxFrame {
 public:
 	ViewFrame(TaskFrame *parent, wxDataViewListCtrl &job_list);
+	~ViewFrame();
 
 	void Plot();
 
