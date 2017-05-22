@@ -45,7 +45,6 @@ bool Store(sqlite3 *db,
 
 struct Option {
 	std::string dir;
-	const char *filter_file;
 	std::vector<double> *input_data;
 	const char *input_history_file;
 	const char *control_file;

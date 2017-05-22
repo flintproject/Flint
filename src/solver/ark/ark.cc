@@ -24,7 +24,6 @@
 #include <nvector/nvector_serial.h>
 
 #include "bc/index.h"
-#include "filter/cutter.h"
 #include "filter/writer.h"
 #include "flint/ls.h"
 #include "flint/stats.h"
@@ -120,20 +119,12 @@ void Ark::WriteData(int lo, N_Vector y)
 
 bool Ark::Solve(const task::Task &task, const job::Option &option)
 {
-	bool with_filter = option.filter_file != nullptr;
+	filter::Writer *writer = task.writer.get();
 	FILE *output_fp = option.output_fp;
 
 	/* skeleton: 2. Set problem dimensions */
 	if (!SetProblemDimensions())
 		return false;
-
-	std::unique_ptr<filter::Writer> writer;
-	if (with_filter) {
-		filter::Cutter cutter;
-		if (!cutter.Load(option.filter_file, layer_size_))
-			return false;
-		writer.reset(cutter.CreateWriter());
-	}
 
 	/* skeleton: 3. Set vector of initial values */
 	if (!SetVectorOfInitialValues(option.input_data->data()))
@@ -220,7 +211,7 @@ bool Ark::Solve(const task::Task &task, const job::Option &option)
 
 		if (output_start_time <= data_[kIndexTime]) {
 			if (granularity <= 1 || ++g == granularity) {
-				if (with_filter) {
+				if (writer) {
 					if (!writer->Write(data_.get(), output_fp))
 						return false;
 				} else {

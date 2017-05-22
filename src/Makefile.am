@@ -122,7 +122,6 @@ libflintxx_la_SOURCES = \
     file/detect.cc \
     file/txt.cc \
     filter/create.cc \
-    filter/cut.cc \
     filter/isdh.cc \
     filter/track.cc \
     filter/writer.cc \

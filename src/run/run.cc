@@ -20,6 +20,7 @@
 #include "db/statement-driver.h"
 #include "file.h"
 #include "filter.h"
+#include "filter/cutter.h"
 #include "flint/background.h"
 #include "flint/ls.h"
 #include "fppp.h"
@@ -145,6 +146,13 @@ bool Run(const cli::RunOption &option)
 		assert(layer_size > kOffsetBase);
 		task->layout.swap(layout);
 		task->layer_size = layer_size;
+
+		{
+			filter::Cutter cutter;
+			if (!cutter.Load("filter", layer_size))
+				return false;
+			task->writer.reset(cutter.CreateWriter());
+		}
 	}
 	if (reader.GetMethod() != compiler::Method::kArk) {
 		cas::DimensionAnalyzer da;

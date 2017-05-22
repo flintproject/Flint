@@ -25,8 +25,9 @@
 #include "exec/job-runner.h"
 #include "exec/parameter.h"
 #include "exec/progress.h"
-#include "flint/ls.h"
 #include "filter.h"
+#include "filter/cutter.h"
+#include "flint/ls.h"
 #include "job.h"
 #include "layout.h"
 #include "lo/layout.h"
@@ -228,6 +229,13 @@ bool TaskRunner::Run()
 		assert(layer_size > kOffsetBase);
 		task_->layout.swap(layout);
 		task_->layer_size = layer_size;
+
+		{
+			filter::Cutter cutter;
+			if (!cutter.Load(filter_file, layer_size))
+				return false;
+			task_->writer.reset(cutter.CreateWriter());
+		}
 
 		if (reader_->GetDpsPath()) {
 			auto ls_config = ls::CreateConfiguration(reader_->GetDpsPath(), *task_->layout);

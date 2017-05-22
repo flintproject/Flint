@@ -17,11 +17,6 @@ bool Create(sqlite3 *db, const char *spec_file, const char *layout_file, const c
 /*
  * Return true in case of success, false otherwise.
  */
-bool Cut(const char *filter_file, const double *data, FILE *ofp);
-
-/*
- * Return true in case of success, false otherwise.
- */
 bool Track(const char *filter_file, const char *output_file);
 
 /*

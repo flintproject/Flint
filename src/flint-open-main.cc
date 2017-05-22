@@ -10,6 +10,7 @@
 #include <memory>
 
 #include "bc/binary.h"
+#include "filter/writer.h"
 #include "flint/bc.h"
 #include "flint/ls.h"
 #include "lo/layout.h"

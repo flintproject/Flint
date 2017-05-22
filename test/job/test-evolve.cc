@@ -14,6 +14,7 @@
 #include "db/query.h"
 #include "db/tac-inserter.h"
 #include "db/variable-inserter.h"
+#include "filter/writer.h"
 #include "flint/bc.h"
 #include "flint/ls.h"
 #include "layout.h"
@@ -58,7 +59,6 @@ struct F : public test::MemoryFixture {
 		BOOST_REQUIRE_EQUAL(CreateTable(driver_.db(), "tacs", TACS_SCHEMA), 1);
 		BOOST_REQUIRE_EQUAL(SaveNol(1, driver_.db()), 1);
 
-		option_.filter_file = nullptr;
 		option_.input_data = nullptr;
 		option_.input_history_file = nullptr;
 		option_.control_file = nullptr;

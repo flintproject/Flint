@@ -21,7 +21,7 @@
 #include "db/driver.h"
 #include "db/read-only-driver.h"
 #include "exec.h"
-#include "filter.h"
+#include "filter/writer.h"
 #include "flint/bc.h"
 #include "flint/ls.h"
 #include "job.h"
@@ -81,9 +81,6 @@ bool Job(const char *task_dir,
 
 	job::Option option;
 	option.dir = job_dir;
-	char filter_file[kShort];
-	sprintf(filter_file, "%s/filter", task_dir);
-	option.filter_file = filter_file;
 	option.input_data = data;
 	option.input_history_file = nullptr;
 	option.control_file = control_file;
@@ -111,7 +108,7 @@ bool Job(const char *task_dir,
 	}
 	// write initial values only when output_start_time is 0.
 	if (task.output_start_time == 0) {
-		if (!filter::Cut(filter_file, data->data(), ofp)) {
+		if (!task.writer->Write(data->data(), ofp)) {
 			std::fclose(ofp);
 			return false;
 		}

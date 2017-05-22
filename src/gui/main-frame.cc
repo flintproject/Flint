@@ -15,6 +15,7 @@
 #include <wx/progdlg.h>
 #pragma GCC diagnostic pop
 
+#include "filter/writer.h"
 #include "flint/bc.h"
 #include "flint/error.h"
 #include "flint/ls.h"

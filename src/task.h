@@ -12,6 +12,10 @@ namespace flint {
 struct Bytecode;
 class Layout;
 
+namespace filter {
+class Writer;
+}
+
 namespace ls {
 struct Configuration;
 }
@@ -27,6 +31,7 @@ struct Task {
 	size_t granularity;
 	double output_start_time;
 	size_t layer_size;
+	std::unique_ptr<filter::Writer> writer;
 	std::unique_ptr<ls::Configuration> ls_config;
 };
 

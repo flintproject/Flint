@@ -253,21 +253,13 @@ bool Evolve(sqlite3 *db,
 	size_t granularity = task.granularity;
 	double output_start_time = task.output_start_time;
 	size_t layer_size = task.layer_size;
+	filter::Writer *writer = task.writer.get();
 
 	FILE *output_fp = option.output_fp;
 
-	bool with_filter = option.filter_file != nullptr;
 	bool with_pre = bool(task.pre_bc);
 	bool with_post = bool(task.post_bc);
 	bool with_control = option.control_file != nullptr;
-
-	// load filter next
-	std::unique_ptr<filter::Writer> writer;
-	if (with_filter) {
-		filter::Cutter cutter;
-		if (!cutter.Load(option.filter_file, layer_size)) return false;
-		writer.reset(cutter.CreateWriter());
-	}
 
 	std::unique_ptr<Executor> executor(new Executor(layer_size));
 	std::unique_ptr<Processor> processor(new Processor(task.layout.get(), layer_size, task.bc.get()));
@@ -505,7 +497,7 @@ bool Evolve(sqlite3 *db,
 
 		if (output_start_time <= data[kIndexTime]) {
 			if (granularity <= 1 || ++g == granularity) {
-				if (with_filter) {
+				if (writer) {
 					if (!writer->Write(data.get(), output_fp)) {
 						result = false;
 						break;
