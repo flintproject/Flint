@@ -222,7 +222,8 @@ libflintxx_la_SOURCES = \
     utf8string.c \
     uuidgen.cc \
     variable.cc \
-    variable-map.cc
+    variable-map.cc \
+    workspace.cc
 
 libflint2_a_SOURCES = \
     gui/formula.cc \

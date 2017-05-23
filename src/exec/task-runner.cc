@@ -28,6 +28,7 @@
 #include "filter.h"
 #include "filter/cutter.h"
 #include "flint/ls.h"
+#include "flint/workspace.h"
 #include "job.h"
 #include "layout.h"
 #include "lo/layout.h"
@@ -103,6 +104,23 @@ const cas::DimensionAnalyzer *TaskRunner::GetDimensionAnalyzer() const
 	return dimension_analyzer_.get();
 }
 
+bool TaskRunner::CreateProgressFile(int num_samples)
+{
+	char filename[kFilenameLength];
+	std::sprintf(filename, "%d/progress", id_);
+	size_t size = num_samples + 1;
+	if (!workspace::CreateSparseFileAtomically(filename, size))
+		return false;
+	try {
+		boost::interprocess::file_mapping fm(filename, boost::interprocess::read_write);
+		progress_region_.reset(new boost::interprocess::mapped_region(fm, boost::interprocess::read_write));
+	} catch (const boost::interprocess::interprocess_exception &e) {
+		std::cerr << "failed to map file: " << e.what() << std::endl;
+		return false;
+	}
+	return true;
+}
+
 void *TaskRunner::GetProgressAddress(int job_id)
 {
 	assert(progress_region_);
@@ -113,36 +131,11 @@ void *TaskRunner::GetProgressAddress(int job_id)
 
 bool TaskRunner::CreateRssFile(int num_samples)
 {
-	char tmp_filename[kFilenameLength];
-	std::sprintf(tmp_filename, "%d/rss.tmp", id_);
-	FILE *fp = std::fopen(tmp_filename, "wb");
-	if (!fp) {
-		std::perror(tmp_filename);
-		return false;
-	}
-	long n = (num_samples + 1) * sizeof(double);
-	int r = std::fseek(fp, n-1, SEEK_SET);
-	if (r != 0) {
-		std::cerr << "failed to seek: " << tmp_filename << std::endl;
-		std::fclose(fp);
-		return false;
-	}
-	if (std::fputc('\0', fp) == EOF) {
-		std::cerr << "failed to write null character: " << tmp_filename << std::endl;
-		std::fclose(fp);
-		return false;
-	}
-	std::fclose(fp);
-
-	// rename rss.tmp to rss
 	char filename[kFilenameLength];
 	std::sprintf(filename, "%d/rss", id_);
-	if (std::rename(tmp_filename, filename) != 0) {
-		std::cerr << "failed to rename " << tmp_filename
-				  << " to " << filename
-				  << std::endl;
+	size_t size = (num_samples + 1) * sizeof(double);
+	if (!workspace::CreateSparseFileAtomically(filename, size))
 		return false;
-	}
 	try {
 		boost::interprocess::file_mapping fm(filename, boost::interprocess::read_write);
 		rss_mr_.reset(new boost::interprocess::mapped_region(fm, boost::interprocess::read_write));
@@ -265,10 +258,8 @@ bool TaskRunner::Run()
 	int n = CountParameterSamples(db_driver_->db());
 	if (n <= 0)
 		return false;
-	std::unique_ptr<boost::interprocess::file_mapping> fm(exec::CreateProgressFile(n, dir_.get()));
-	if (!fm)
+	if (!CreateProgressFile(n))
 		return false;
-	progress_region_.reset(new boost::interprocess::mapped_region(*fm, boost::interprocess::read_write));
 	if (task_->ls_config && !CreateRssFile(n))
 		return false;
 	if (!task::Form(db_driver_->db()))

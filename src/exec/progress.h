@@ -6,19 +6,10 @@
 #include <vector>
 
 #define BOOST_DATE_TIME_NO_LIB
-#include <boost/interprocess/file_mapping.hpp>
 #include <boost/interprocess/mapped_region.hpp>
 
 namespace flint {
 namespace exec {
-
-/*
- * Given the number of possible combinations of parameter values,
- * create a new file with name "progress" of byte-length (n + 1)
- * in the directory dir.
- * Return its file mapping in case of success, null otherwise.
- */
-boost::interprocess::file_mapping *CreateProgressFile(int n, const char *dir);
 
 /*
  * Given a vector of futures, report the task's progress at

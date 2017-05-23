@@ -7,52 +7,12 @@
 
 #include <cassert>
 #include <chrono>
-#include <cstdio>
 #include <cstring>
-#include <iostream>
-#include <memory>
 #include <numeric>
 #include <set>
 
 namespace flint {
 namespace exec {
-
-boost::interprocess::file_mapping *CreateProgressFile(int n, const char *dir)
-{
-	size_t len = std::strlen(dir);
-	std::unique_ptr<char[]> filename(new char[len + 32]); // large enough
-	std::sprintf(filename.get(), "%s/progress.tmp", dir);
-	FILE *fp = std::fopen(filename.get(), "wb");
-	if (!fp) {
-		std::perror(filename.get());
-		return nullptr;
-	}
-	int r = std::fseek(fp, n, SEEK_SET);
-	if (r != 0) {
-		std::cerr << "failed to seek: " << filename.get() << std::endl;
-		std::fclose(fp);
-		return nullptr;
-	}
-	if (std::fputc('\0', fp) == EOF) {
-		std::cerr << "failed to write null character: " << filename.get() << std::endl;
-		std::fclose(fp);
-		return nullptr;
-	}
-	std::fclose(fp);
-
-	// rename progress.tmp to progress
-	std::unique_ptr<char[]> progress(new char[len + 32]); // large enough
-	std::sprintf(progress.get(), "%s/progress", dir);
-	if (std::rename(filename.get(), progress.get()) != 0) {
-		std::cerr << "failed to rename " << filename.get()
-			 << " to " << progress.get()
-			 << std::endl;
-		std::remove(filename.get());
-		return nullptr;
-	}
-	return new boost::interprocess::file_mapping(progress.get(),
-												 boost::interprocess::read_write);
-}
 
 bool MonitorTaskProgress(std::vector<std::future<bool> > &v,
 						 boost::interprocess::mapped_region *mr)
