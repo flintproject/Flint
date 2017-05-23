@@ -182,7 +182,8 @@ bool Run(const cli::RunOption &option)
 	if (output_path.empty())
 		return false;
 	std::string output_file = output_path.string();
-	return job::Job(".",
+	return job::Job(0,
+					".",
 					"0",
 					*task,
 					nullptr,

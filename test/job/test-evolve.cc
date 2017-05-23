@@ -59,9 +59,9 @@ struct F : public test::MemoryFixture {
 		BOOST_REQUIRE_EQUAL(CreateTable(driver_.db(), "tacs", TACS_SCHEMA), 1);
 		BOOST_REQUIRE_EQUAL(SaveNol(1, driver_.db()), 1);
 
+		option_.id = 0;
 		option_.input_data = nullptr;
 		option_.input_history_file = nullptr;
-		option_.control_file = nullptr;
 		option_.output_data_file = nullptr;
 		option_.output_history_file = nullptr;
 		option_.progress_address = nullptr;

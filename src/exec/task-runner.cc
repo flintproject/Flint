@@ -104,6 +104,26 @@ const cas::DimensionAnalyzer *TaskRunner::GetDimensionAnalyzer() const
 	return dimension_analyzer_.get();
 }
 
+bool TaskRunner::CreateControlFile(int num_samples)
+{
+	assert(task_);
+
+	char filename[kFilenameLength];
+	std::sprintf(filename, "%d/control", id_);
+	size_t size = num_samples + 1;
+	if (!workspace::CreateSparseFileAtomically(filename, size))
+		return false;
+	try {
+		boost::interprocess::file_mapping fm(filename, boost::interprocess::read_write);
+		boost::interprocess::mapped_region mr(fm, boost::interprocess::read_write);
+		task_->control_mr = std::move(mr);
+	} catch (const boost::interprocess::interprocess_exception &e) {
+		std::cerr << "failed to map file: " << e.what() << std::endl;
+		return false;
+	}
+	return true;
+}
+
 bool TaskRunner::CreateProgressFile(int num_samples)
 {
 	char filename[kFilenameLength];
@@ -257,6 +277,8 @@ bool TaskRunner::Run()
 		return false;
 	int n = CountParameterSamples(db_driver_->db());
 	if (n <= 0)
+		return false;
+	if (!CreateControlFile(n))
 		return false;
 	if (!CreateProgressFile(n))
 		return false;

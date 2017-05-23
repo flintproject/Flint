@@ -14,10 +14,6 @@
 #include <memory>
 #include <vector>
 
-#define BOOST_DATE_TIME_NO_LIB
-#include <boost/interprocess/file_mapping.hpp>
-#include <boost/interprocess/mapped_region.hpp>
-
 #include <arkode/arkode.h>
 #include <arkode/arkode_dense.h>
 #include <arkode/arkode_direct.h>
@@ -120,6 +116,9 @@ void Ark::WriteData(int lo, N_Vector y)
 bool Ark::Solve(const task::Task &task, const job::Option &option)
 {
 	filter::Writer *writer = task.writer.get();
+	char *control_address = reinterpret_cast<char *>(task.control_mr.get_address());
+	if (control_address)
+		control_address += option.id;
 	FILE *output_fp = option.output_fp;
 
 	/* skeleton: 2. Set problem dimensions */
@@ -172,15 +171,6 @@ bool Ark::Solve(const task::Task &task, const job::Option &option)
 	/* skeleton: 13. Advance solution in time */
 	size_t granularity = task.granularity;
 	double output_start_time = task.output_start_time;
-
-	bool with_control = option.control_file != nullptr;
-	std::unique_ptr<boost::interprocess::file_mapping> control_fm;
-	std::unique_ptr<boost::interprocess::mapped_region> control_region;
-	if (with_control) {
-		control_fm.reset(new boost::interprocess::file_mapping(option.control_file, boost::interprocess::read_only));
-		control_region.reset(new boost::interprocess::mapped_region(*control_fm, boost::interprocess::read_only));
-	}
-	char control;
 
 	std::unique_ptr<ls::Accumulator> accum;
 	if (task.ls_config) {
@@ -241,12 +231,8 @@ bool Ark::Solve(const task::Task &task, const job::Option &option)
 				accum.reset();
 		}
 
-		if (with_control) {
-			memcpy(&control, control_region->get_address(), 1);
-			if (control == 1) {
-				break;
-			}
-		}
+		if (control_address && *control_address == 1)
+			break;
 
 		++num_steps;
 	} while (tret < data_[kIndexEnd]);

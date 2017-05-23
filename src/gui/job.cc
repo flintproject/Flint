@@ -56,27 +56,17 @@ int Job::GetProgress() const
 	}
 }
 
-namespace {
-
-wxString GetControlFullPath(const Job *job)
-{
-	auto filename = job->GetDirectoryName();
-	filename.SetFullName("control");
-	return filename.GetFullPath();
-}
-
-}
-
 bool Job::IsCanceled() const
 {
-	wxFile file(GetControlFullPath(this));
-	if (!file.IsOpened())
+	try {
+		auto filename = task.GetControlFileName();
+		boost::interprocess::file_mapping fm(filename.GetFullPath().c_str(), // TODO: check locale-dependency
+											 boost::interprocess::read_only);
+		boost::interprocess::mapped_region mr(fm, boost::interprocess::read_only, id, 1);
+		return *reinterpret_cast<char *>(mr.get_address()) == 1;
+	} catch (const boost::interprocess::interprocess_exception &) {
 		return false;
-	char c;
-	if (file.Read(&c, 1) == 0)
-		return false;
-	file.Close();
-	return c == 1;
+	}
 }
 
 bool Job::IsFinished() const
@@ -86,10 +76,11 @@ bool Job::IsFinished() const
 
 bool Job::RequestCancel() const
 {
-	wxFile file(GetControlFullPath(this), wxFile::read_write);
-	if (!file.IsOpened())
-		return false;
-	return file.Write("\1", 1) == 1u && file.Close();
+	wxFile file(task.GetControlFileName().GetFullPath(), wxFile::read_write);
+	return file.IsOpened() &&
+		file.Seek(id) == id &&
+		file.Write("\1", 1) == 1u &&
+		file.Close();
 }
 
 }

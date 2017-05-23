@@ -24,6 +24,13 @@ wxFileName Task::GetDirectoryName() const
 	return filename;
 }
 
+wxFileName Task::GetControlFileName() const
+{
+	auto filename = GetDirectoryName();
+	filename.SetFullName("control");
+	return filename;
+}
+
 wxFileName Task::GetProgressFileName() const
 {
 	auto filename = GetDirectoryName();

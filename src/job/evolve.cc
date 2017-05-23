@@ -16,10 +16,6 @@
 #include <random>
 #include <string>
 
-#define BOOST_DATE_TIME_NO_LIB
-#include <boost/interprocess/file_mapping.hpp>
-#include <boost/interprocess/mapped_region.hpp>
-
 #include "bc.pb.h"
 
 #include "bc/index.h"
@@ -254,12 +250,14 @@ bool Evolve(sqlite3 *db,
 	double output_start_time = task.output_start_time;
 	size_t layer_size = task.layer_size;
 	filter::Writer *writer = task.writer.get();
+	char *control_address = reinterpret_cast<char *>(task.control_mr.get_address());
+	if (control_address)
+		control_address += option.id;
 
 	FILE *output_fp = option.output_fp;
 
 	bool with_pre = bool(task.pre_bc);
 	bool with_post = bool(task.post_bc);
-	bool with_control = option.control_file != nullptr;
 
 	std::unique_ptr<Executor> executor(new Executor(layer_size));
 	std::unique_ptr<Processor> processor(new Processor(task.layout.get(), layer_size, task.bc.get()));
@@ -446,14 +444,6 @@ bool Evolve(sqlite3 *db,
 	if (with_pre) preprocessor->set_rng(rng.get());
 	if (with_post) postprocessor->set_rng(rng.get());
 
-	std::unique_ptr<boost::interprocess::file_mapping> control_fm;
-	std::unique_ptr<boost::interprocess::mapped_region> control_region;
-	if (with_control) {
-		control_fm.reset(new boost::interprocess::file_mapping(option.control_file, boost::interprocess::read_only));
-		control_region.reset(new boost::interprocess::mapped_region(*control_fm, boost::interprocess::read_only));
-	}
-	char control;
-
 	std::unique_ptr<ls::Accumulator> accum;
 	if (task.ls_config) {
 		assert(option.rss_address);
@@ -533,12 +523,8 @@ bool Evolve(sqlite3 *db,
 				accum.reset();
 		}
 
-		if (with_control) {
-			memcpy(&control, control_region->get_address(), 1);
-			if (control == 1) {
-				break;
-			}
-		}
+		if (control_address && *control_address == 1)
+			break;
 
 		// update prev via double buffering
 		data.swap(prev);

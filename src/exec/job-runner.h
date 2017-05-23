@@ -17,6 +17,7 @@ public:
 
 private:
 	TaskRunner *tr_;
+	int id_;
 	void *progress_address_;
 	void *rss_address_;
 	std::unique_ptr<char[]> dir_;

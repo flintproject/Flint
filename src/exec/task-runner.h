@@ -55,6 +55,7 @@ public:
 	bool Run();
 
 private:
+	bool CreateControlFile(int num_samples);
 	bool CreateProgressFile(int num_samples);
 	bool CreateRssFile(int num_samples);
 

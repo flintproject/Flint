@@ -44,10 +44,10 @@ bool Store(sqlite3 *db,
 		   const char *target_layout_file, double *target_data);
 
 struct Option {
+	int id;
 	std::string dir;
 	std::vector<double> *input_data;
 	const char *input_history_file;
-	const char *control_file;
 	const char *output_data_file;
 	const char *output_history_file;
 	FILE *output_fp;
@@ -68,7 +68,8 @@ bool Evolve(sqlite3 *db,
  * Note that output_file is in the native encoding.
  * Return true in case of success, false otherwise.
  */
-bool Job(const char *task_dir,
+bool Job(int id,
+		 const char *task_dir,
 		 const char *job_dir,
 		 task::Task &task,
 		 void *progress_address,

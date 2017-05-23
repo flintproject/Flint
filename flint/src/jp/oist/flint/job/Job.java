@@ -38,17 +38,13 @@ public class Job {
      * Return true if cancellation succeeded, otherwise false.
      */
     public boolean cancel() throws IOException {
-        File controlFile = getControlFile();
-        File jobDir = controlFile.getParentFile();
-        if (!jobDir.exists())
-            return false;
-        if ( !controlFile.exists() &&
-             !controlFile.createNewFile() )
-            return false;
         if (getProgress().isCompleted())
             return false;
-        try (RandomAccessFile raf = new RandomAccessFile(controlFile, "rws")) {
+        try (RandomAccessFile raf = new RandomAccessFile(getControlFile(), "rw")) {
+            raf.seek(mJobId);
             raf.write(CANCEL_OPEARTION);
+        } catch (IOException ex) {
+            return false;
         }
         return true;
     }
@@ -73,7 +69,7 @@ public class Job {
     }
 
     public File getControlFile() {
-        return new File(mWorkingDir, "control");
+        return new File(mWorkingDir.getParentFile().getParentFile().getParentFile().getParentFile(), "control");
     }
 
     public File getIsdFile() {
@@ -81,15 +77,10 @@ public class Job {
     }
 
     public boolean isCancelled() {
-        File controlFile = getControlFile();
-
-        if (!controlFile.exists() || !controlFile.canWrite())
-            return false;
-
         if (getProgress().isCompleted())
             return false;
-
-        try (RandomAccessFile raf = new RandomAccessFile(controlFile, "rws")) {
+        try (RandomAccessFile raf = new RandomAccessFile(getControlFile(), "r")) {
+            raf.seek(mJobId);
             int operation = raf.read();
             return CANCEL_OPEARTION == operation;
         } catch (IOException ex) {

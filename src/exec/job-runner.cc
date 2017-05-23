@@ -29,6 +29,7 @@ const int kFilenameLength = 96;
 
 JobRunner::JobRunner(TaskRunner *tr, int id)
 	: tr_(tr)
+	, id_(id)
 	, progress_address_(tr->GetProgressAddress(id))
 	, rss_address_(tr->GetRssAddress(id))
 	, dir_(job::BuildPath(tr->dir(), id))
@@ -65,7 +66,9 @@ bool JobRunner::Run()
 						   tr_->layout(), tr_->GetTask()->reinit_bc.get(), &init))
 			return false;
 	}
-	return job::Job(tr_->dir(), dir_.get(),
+	return job::Job(id_,
+					tr_->dir(),
+					dir_.get(),
 					*tr_->GetTask(),
 					progress_address_,
 					rss_address_,

@@ -19,6 +19,7 @@ struct Task {
 	Task(Simulation *given_simulation, int given_id);
 
 	wxFileName GetDirectoryName() const;
+	wxFileName GetControlFileName() const;
 	wxFileName GetProgressFileName() const;
 	wxFileName GetRssFileName() const;
 

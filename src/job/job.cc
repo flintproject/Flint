@@ -36,7 +36,8 @@
 namespace flint {
 namespace job {
 
-bool Job(const char *task_dir,
+bool Job(int id,
+		 const char *task_dir,
 		 const char *job_dir,
 		 task::Task &task,
 		 void *progress_address,
@@ -61,29 +62,16 @@ bool Job(const char *task_dir,
 	if (!task::Timer(reader.length(), reader.step(), data->data()))
 		return false;
 
-	char control_file[kLong];
-	sprintf(control_file, "%s/control", job_dir);
-	FILE *fp = std::fopen(control_file, "w");
-	if (!fp) {
-		std::perror(control_file);
-		return false;
-	}
-	if (fputc('\0', fp) == EOF) {
-		std::fclose(fp);
-		return false;
-	}
-	std::fclose(fp);
-
 	char output_data_file[kLong];
 	sprintf(output_data_file, "%s/output-data", job_dir);
 	char output_history_file[kLong];
 	sprintf(output_history_file, "%s/output-history", job_dir);
 
 	job::Option option;
+	option.id = id;
 	option.dir = job_dir;
 	option.input_data = data;
 	option.input_history_file = nullptr;
-	option.control_file = control_file;
 	option.output_data_file = output_data_file;
 	option.output_history_file = output_history_file;
 	option.progress_address = progress_address;

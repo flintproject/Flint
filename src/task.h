@@ -7,6 +7,9 @@
 #include <cstdio>
 #include <memory>
 
+#define BOOST_DATE_TIME_NO_LIB
+#include <boost/interprocess/mapped_region.hpp>
+
 namespace flint {
 
 struct Bytecode;
@@ -31,6 +34,7 @@ struct Task {
 	size_t granularity;
 	double output_start_time;
 	size_t layer_size;
+	boost::interprocess::mapped_region control_mr;
 	std::unique_ptr<filter::Writer> writer;
 	std::unique_ptr<ls::Configuration> ls_config;
 };
