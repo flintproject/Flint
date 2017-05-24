@@ -42,6 +42,9 @@ JobRunner::JobRunner(TaskRunner *tr, int id)
 
 bool JobRunner::Run()
 {
+	if (tr_->GetTask()->IsCanceled())
+		return true;
+
 	std::vector<double> generated_init;
 	{
 		std::unique_ptr<Bytecode> generated_bc;

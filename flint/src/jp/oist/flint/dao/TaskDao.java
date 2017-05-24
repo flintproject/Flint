@@ -4,6 +4,7 @@ package jp.oist.flint.dao;
 import jp.oist.flint.job.Job;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
@@ -18,6 +19,8 @@ public class TaskDao extends DaoObject {
     private final int mTaskId;
 
     private final String mModelPath;
+
+    private final File mControlFile;
 
     private final File mProgressFile;
 
@@ -37,6 +40,7 @@ public class TaskDao extends DaoObject {
 
         mTaskId = taskId;
         mModelPath = modelPath;
+        mControlFile = new File(new File(dir, String.valueOf(taskId)), "control");
         mProgressFile = new File(new File(dir, String.valueOf(taskId)), "progress");
     }
 
@@ -53,8 +57,11 @@ public class TaskDao extends DaoObject {
     }
 
     public boolean isCancelled() {
-        File cancelFile = new File(mWorkingDir, "canceled");
-        return cancelFile.exists();
+        try (FileInputStream fis = new FileInputStream(mControlFile)) {
+            return fis.read() == 1;
+        } catch (IOException ioe) {
+            return false;
+        }
     }
 
     public boolean isStarted() {
@@ -82,22 +89,17 @@ public class TaskDao extends DaoObject {
     /*
      * Return true if cancellation succeeded, otherwise false.
      */
-    public boolean cancel() throws DaoException, IOException, SQLException {
-        if (!mWorkingDir.exists())
+    public boolean cancel() {
+        long length = mControlFile.length();
+        if (length == 0) // it does not exist
             return false;
-        File cancelFile = new File(mWorkingDir, "canceled");
-        if ( !cancelFile.exists() &&
-             !cancelFile.createNewFile() )
+        try (FileOutputStream fos = new FileOutputStream(mControlFile, false)) {
+            for (long i=0;i<length;i++)
+                fos.write(1);
+            return true;
+        } catch (IOException ioe) {
             return false;
-
-        boolean result = true;
-        int jobCount = getCount();
-        for (int i=1; i<=jobCount; i++) {
-            Job job = obtainJob(i);
-            if (!job.cancel())
-                result = false;
         }
-        return result;
     }
 
     public Job obtainJob(int jobId) throws DaoException, IOException {

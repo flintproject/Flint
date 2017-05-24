@@ -37,6 +37,8 @@ struct Task {
 	boost::interprocess::mapped_region control_mr;
 	std::unique_ptr<filter::Writer> writer;
 	std::unique_ptr<ls::Configuration> ls_config;
+
+	bool IsCanceled() const;
 };
 
 /*

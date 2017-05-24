@@ -200,14 +200,8 @@ bool TaskRunner::Run()
 	if (!Setup(id_, path_.get(), &data_))
 		return false;
 
-	{
-		char canceled_file[kFilenameLength];
-		std::sprintf(canceled_file, "%s/canceled", dir_.get());
-		if (boost::filesystem::exists(canceled_file)) {
-			// exit early if file "canceled" exists
-			return true;
-		}
-	}
+	if (task_->IsCanceled())
+		return true;
 
 	char modeldb_file[kFilenameLength];
 	std::sprintf(modeldb_file, "%s/model.db", dir_.get());

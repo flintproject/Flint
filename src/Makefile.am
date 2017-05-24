@@ -209,6 +209,7 @@ libflintxx_la_SOURCES = \
     solver/solve.cc \
     stats.cc \
     sys/temporary_path.cc \
+    task.cc \
     task/config-reader.cc \
     task/config.cc \
     task/form.cc \

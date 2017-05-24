@@ -5,6 +5,10 @@
 
 #include "gui/task.h"
 
+#define BOOST_DATE_TIME_NO_LIB
+#include <boost/interprocess/file_mapping.hpp>
+#include <boost/interprocess/mapped_region.hpp>
+
 #include "gui/configuration.h"
 #include "gui/job.h"
 #include "gui/simulation.h"
@@ -60,21 +64,11 @@ int Task::GetNumberOfJobs() const
 	return static_cast<int>(GetProgressFileName().GetSize().ToULong()-1);
 }
 
-namespace {
-
-wxFileName GetCanceledFileName(const Task *task)
-{
-	auto filename = task->GetDirectoryName();
-	filename.SetFullName("canceled");
-	return filename;
-}
-
-}
-
 bool Task::IsCanceled() const
 {
-	auto filename = GetCanceledFileName(this);
-	return filename.FileExists();
+	wxFile file(GetControlFileName().GetFullPath(), wxFile::read);
+	char c = '\0';
+	return file.IsOpened() && file.Read(&c, 1) == 1u && c == '\1' && file.Close();
 }
 
 bool Task::IsFinished() const
@@ -94,14 +88,18 @@ bool Task::IsFinished() const
 
 bool Task::RequestCancel() const
 {
-	wxFile file;
-	if (!file.Create(GetCanceledFileName(this).GetFullPath(), true))
+	try {
+		auto filename = GetControlFileName();
+		boost::interprocess::file_mapping fm(filename.GetFullPath().c_str(), // TODO: check locale-dependency
+											 boost::interprocess::read_write);
+		boost::interprocess::mapped_region mr(fm, boost::interprocess::read_write);
+		char *p = static_cast<char *>(mr.get_address());
+		for (size_t i=0;i<mr.get_size();i++)
+			p[i] = '\1';
+		return true;
+	} catch (const boost::interprocess::interprocess_exception &) {
 		return false;
-	for (int i=GetNumberOfJobs();i>0;i--) {
-		Job job(*this, i); // base 1
-		job.RequestCancel();
 	}
-	return true;
 }
 
 }
