@@ -171,34 +171,41 @@ bool Generate(sqlite3 *input, const char *dir, int *job_id)
 	}
 	char filename[96];
 	std::sprintf(filename, "%s/generated.db", path.get());
-	db::Driver driver(filename);
-	sqlite3 *output = driver.db();
-	if (!output)
-		return false;
-	if (!BeginTransaction(output))
-		return false;
-	if (!CreateTable(output, "parameter_eqs", "(uuid BLOB, math TEXT)"))
-		return false;
-	std::sprintf(filename, "%s/values.txt.tmp", path.get());
-	FILE *fp = std::fopen(filename, "w");
-	if (!fp) {
-		std::perror(filename);
-		return false;
-	}
-	if (!BeginTransaction(input)) {
+	{
+		db::Driver driver(filename);
+		sqlite3 *output = driver.db();
+		if (!output)
+			return false;
+		if (!BeginTransaction(output))
+			return false;
+		if (!CreateTable(output, "parameter_eqs", "(uuid BLOB, math TEXT)"))
+			return false;
+		std::sprintf(filename, "%s/values.txt.tmp", path.get());
+		FILE *fp = std::fopen(filename, "w");
+		if (!fp) {
+			std::perror(filename);
+			return false;
+		}
+		if (!BeginTransaction(input)) {
+			std::fclose(fp);
+			return false;
+		}
+		{
+			Generator g(input, output, fp);
+			if (!g.Generate(rowid, ps_id)) {
+				std::fclose(fp);
+				return false;
+			}
+		}
+		if (!CommitTransaction(input)) {
+			std::fclose(fp);
+			return false;
+		}
 		std::fclose(fp);
-		return false;
+		if (!CommitTransaction(output))
+			return false;
 	}
-	Generator g(input, output, fp);
-	if (!g.Generate(rowid, ps_id)) {
-		std::fclose(fp);
-		return false;
-	}
-	if (!CommitTransaction(input)) {
-		std::fclose(fp);
-		return false;
-	}
-	std::fclose(fp);
+
 	char values_file[96]; // large enough
 	std::sprintf(values_file, "%s/values.txt", path.get());
 	if (std::rename(filename, values_file) != 0) {
@@ -209,8 +216,6 @@ bool Generate(sqlite3 *input, const char *dir, int *job_id)
 		return false;
 	}
 
-	if (!CommitTransaction(output))
-		return false;
 	*job_id = rowid;
 	return true;
 }
