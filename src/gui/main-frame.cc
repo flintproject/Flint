@@ -115,7 +115,7 @@ MainFrame::MainFrame()
 	CreateStatusBar();
 	SetStatusText("Ready");
 
-	SetMinSize(wxSize(600, 400));
+	SetMinSize(wxSize(960, 600));
 
 	// panes
 	auto buttonRun = new wxButton(this, wxID_ANY, "&Run");
