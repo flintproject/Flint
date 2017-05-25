@@ -160,9 +160,9 @@ bool TaskRunner::CreateRssFile(int num_samples)
 	return true;
 }
 
-bool TaskRunner::Setup(int id, const char *path, std::vector<double> *data)
+bool TaskRunner::Run()
 {
-	task_.reset(load::Load(path, load::kExec, id, data));
+	task_.reset(load::Load(path_.get(), load::kExec, id_, &data_));
 	if (!task_)
 		return false;
 	{
@@ -170,23 +170,17 @@ bool TaskRunner::Setup(int id, const char *path, std::vector<double> *data)
 		auto db = driver.db();
 		if (!db)
 			return false;
-		if (!task::Config(id, db))
+		if (!task::Config(id_, db))
 			return false;
 	}
-	db::ReadOnlyDriver driver("x.db");
-	auto db = driver.db();
-	if (!db)
-		return false;
-	return CreateSpec(id, db);
-}
-
-bool TaskRunner::Run()
-{
-	if (!Setup(id_, path_.get(), &data_))
-		return false;
-
-	if (task_->IsCanceled())
-		return true;
+	{
+		db::ReadOnlyDriver driver("x.db");
+		auto db = driver.db();
+		if (!db)
+			return false;
+		if (!CreateSpec(id_, db))
+			return false;
+	}
 
 	char modeldb_file[kFilenameLength];
 	std::sprintf(modeldb_file, "%s/model.db", dir_.get());

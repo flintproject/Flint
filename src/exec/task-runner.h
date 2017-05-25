@@ -52,8 +52,6 @@ private:
 	bool CreateProgressFile(int num_samples);
 	bool CreateRssFile(int num_samples);
 
-	bool Setup(int id, const char *path, std::vector<double> *data);
-
 	int id_;
 	std::unique_ptr<char[]> path_;
 	std::unique_ptr<char[]> dir_;
