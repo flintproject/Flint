@@ -51,8 +51,6 @@ struct Option {
 	const char *output_data_file;
 	const char *output_history_file;
 	FILE *output_fp;
-	void *progress_address;
-	void *rss_address;
 	const fppp::Option *fppp_option;
 };
 
@@ -72,8 +70,6 @@ bool Job(int id,
 		 const char *task_dir,
 		 const char *job_dir,
 		 task::Task &task,
-		 void *progress_address,
-		 void *rss_address,
 		 const fppp::Option *fppp_option,
 		 std::vector<double> *data,
 		 const char *output_file,

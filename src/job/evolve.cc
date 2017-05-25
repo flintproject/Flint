@@ -250,9 +250,7 @@ bool Evolve(sqlite3 *db,
 	double output_start_time = task.output_start_time;
 	size_t layer_size = task.layer_size;
 	filter::Writer *writer = task.writer.get();
-	char *control_address = reinterpret_cast<char *>(task.control_mr.get_address());
-	if (control_address)
-		control_address += option.id;
+	char *control_address = task.GetControlAddress(option.id);
 
 	FILE *output_fp = option.output_fp;
 
@@ -444,10 +442,13 @@ bool Evolve(sqlite3 *db,
 	if (with_pre) preprocessor->set_rng(rng.get());
 	if (with_post) postprocessor->set_rng(rng.get());
 
+	char *progress_address = task.GetProgressAddress(option.id);
+
 	std::unique_ptr<ls::Accumulator> accum;
 	if (task.ls_config) {
-		assert(option.rss_address);
-		accum.reset(new ls::Accumulator(*task.ls_config, *reinterpret_cast<double *>(option.rss_address)));
+		double *rss_address = task.GetRssAddress(option.id);
+		assert(rss_address);
+		accum.reset(new ls::Accumulator(*task.ls_config, *rss_address));
 	}
 
 	size_t g = (output_start_time == 0) ? 0 : granularity-1;
@@ -506,13 +507,12 @@ bool Evolve(sqlite3 *db,
 			}
 		}
 
-		if (option.progress_address) {
+		if (progress_address) {
 			if (data[kIndexEnd] <= 0) {
 				std::cerr << "non-positive end time: " << data[kIndexEnd] << std::endl;
 				return false;
 			}
-			char c = static_cast<char>(100 * (data[kIndexTime] / data[kIndexEnd]));
-			memcpy(option.progress_address, &c, 1);
+			*progress_address = static_cast<char>(100 * (data[kIndexTime] / data[kIndexEnd]));
 		}
 
 		if (accum) {

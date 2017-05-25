@@ -45,13 +45,6 @@ public:
 
 	const cas::DimensionAnalyzer *GetDimensionAnalyzer() const;
 
-	void *GetProgressAddress(int job_id);
-
-	/*
-	 * Return nullptr unless the method of least-squares is used.
-	 */
-	void *GetRssAddress(int job_id) const;
-
 	bool Run();
 
 private:
@@ -70,8 +63,6 @@ private:
 	std::vector<double> data_;
 	std::unique_ptr<db::Driver> db_driver_;
 	std::unique_ptr<db::ReadOnlyDriver> modeldb_driver_;
-	std::unique_ptr<boost::interprocess::mapped_region> progress_region_;
-	std::unique_ptr<boost::interprocess::mapped_region> rss_mr_;
 	std::unique_ptr<task::ConfigReader> reader_;
 	std::unique_ptr<cas::DimensionAnalyzer> dimension_analyzer_;
 };

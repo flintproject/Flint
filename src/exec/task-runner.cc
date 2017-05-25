@@ -133,20 +133,13 @@ bool TaskRunner::CreateProgressFile(int num_samples)
 		return false;
 	try {
 		boost::interprocess::file_mapping fm(filename, boost::interprocess::read_write);
-		progress_region_.reset(new boost::interprocess::mapped_region(fm, boost::interprocess::read_write));
+		boost::interprocess::mapped_region mr(fm, boost::interprocess::read_write);
+		task_->progress_mr = std::move(mr);
 	} catch (const boost::interprocess::interprocess_exception &e) {
 		std::cerr << "failed to map file: " << e.what() << std::endl;
 		return false;
 	}
 	return true;
-}
-
-void *TaskRunner::GetProgressAddress(int job_id)
-{
-	assert(progress_region_);
-	assert(static_cast<size_t>(job_id) < progress_region_->get_size());
-	char *addr = static_cast<char *>(progress_region_->get_address());
-	return addr + job_id;
 }
 
 bool TaskRunner::CreateRssFile(int num_samples)
@@ -158,21 +151,13 @@ bool TaskRunner::CreateRssFile(int num_samples)
 		return false;
 	try {
 		boost::interprocess::file_mapping fm(filename, boost::interprocess::read_write);
-		rss_mr_.reset(new boost::interprocess::mapped_region(fm, boost::interprocess::read_write));
+		boost::interprocess::mapped_region mr(fm, boost::interprocess::read_write);
+		task_->rss_mr = std::move(mr);
 	} catch (const boost::interprocess::interprocess_exception &e) {
 		std::cerr << "failed to map file: " << e.what() << std::endl;
 		return false;
 	}
 	return true;
-}
-
-void *TaskRunner::GetRssAddress(int job_id) const
-{
-	if (!rss_mr_)
-		return nullptr;
-	size_t offset = job_id * sizeof(double);
-	assert(offset + sizeof(double) <= rss_mr_->get_size());
-	return reinterpret_cast<char *>(rss_mr_->get_address()) + offset;
 }
 
 bool TaskRunner::Setup(int id, const char *path, std::vector<double> *data)
@@ -300,7 +285,7 @@ bool TaskRunner::Run()
 		v.emplace_back(std::async(std::launch::async, lmbd, this, job_id));
 	}
 	assert(static_cast<size_t>(n) == v.size());
-	return MonitorTaskProgress(v, progress_region_.get());
+	return MonitorTaskProgress(v, &task_->progress_mr);
 }
 
 }

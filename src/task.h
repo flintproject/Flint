@@ -35,10 +35,21 @@ struct Task {
 	double output_start_time;
 	size_t layer_size;
 	boost::interprocess::mapped_region control_mr;
+	boost::interprocess::mapped_region progress_mr;
+	boost::interprocess::mapped_region rss_mr;
 	std::unique_ptr<filter::Writer> writer;
 	std::unique_ptr<ls::Configuration> ls_config;
 
 	bool IsCanceled() const;
+
+	char *GetControlAddress(int job_id) const;
+
+	char *GetProgressAddress(int job_id) const;
+
+	/*
+	 * Return nullptr unless the method of least-squares is used.
+	 */
+	double *GetRssAddress(int job_id) const;
 };
 
 /*

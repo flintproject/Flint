@@ -30,8 +30,6 @@ const int kFilenameLength = 96;
 JobRunner::JobRunner(TaskRunner *tr, int id)
 	: tr_(tr)
 	, id_(id)
-	, progress_address_(tr->GetProgressAddress(id))
-	, rss_address_(tr->GetRssAddress(id))
 	, dir_(job::BuildPath(tr->dir(), id))
 	, generated_db_(new char[kFilenameLength])
 	, isd_(new char[kFilenameLength])
@@ -73,8 +71,6 @@ bool JobRunner::Run()
 					tr_->dir(),
 					dir_.get(),
 					*tr_->GetTask(),
-					progress_address_,
-					rss_address_,
 					nullptr,
 					&init,
 					isd_.get(), tr_->reader(), tr_->GetModelDatabase());

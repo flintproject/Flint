@@ -64,8 +64,6 @@ struct F : public test::MemoryFixture {
 		option_.input_history_file = nullptr;
 		option_.output_data_file = nullptr;
 		option_.output_history_file = nullptr;
-		option_.progress_address = nullptr;
-		option_.rss_address = nullptr;
 		option_.fppp_option = nullptr;
 
 		task_.granularity = 1;

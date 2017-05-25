@@ -186,8 +186,6 @@ bool Run(const cli::RunOption &option)
 					".",
 					"0",
 					*task,
-					nullptr,
-					nullptr,
 					fppp_option.get(),
 					&data,
 					output_file.c_str(),

@@ -116,9 +116,7 @@ void Ark::WriteData(int lo, N_Vector y)
 bool Ark::Solve(const task::Task &task, const job::Option &option)
 {
 	filter::Writer *writer = task.writer.get();
-	char *control_address = reinterpret_cast<char *>(task.control_mr.get_address());
-	if (control_address)
-		control_address += option.id;
+	char *control_address = task.GetControlAddress(option.id);
 	FILE *output_fp = option.output_fp;
 
 	/* skeleton: 2. Set problem dimensions */
@@ -172,10 +170,13 @@ bool Ark::Solve(const task::Task &task, const job::Option &option)
 	size_t granularity = task.granularity;
 	double output_start_time = task.output_start_time;
 
+	char *progress_address = task.GetProgressAddress(option.id);
+
 	std::unique_ptr<ls::Accumulator> accum;
 	if (task.ls_config) {
-		assert(option.rss_address);
-		accum.reset(new ls::Accumulator(*task.ls_config, *reinterpret_cast<double *>(option.rss_address)));
+		double *rss_address = task.GetRssAddress(option.id);
+		assert(rss_address);
+		accum.reset(new ls::Accumulator(*task.ls_config, *rss_address));
 	}
 
 	size_t g = (output_start_time == 0) ? 0 : granularity-1;
@@ -214,13 +215,12 @@ bool Ark::Solve(const task::Task &task, const job::Option &option)
 			}
 		}
 
-		if (option.progress_address) {
+		if (progress_address) {
 			if (data_[kIndexEnd] <= 0) {
 				std::cerr << "non-positive end time: " << data_[kIndexEnd] << std::endl;
 				return false;
 			}
-			char c = static_cast<char>(100 * (data_[kIndexTime] / data_[kIndexEnd]));
-			std::memcpy(option.progress_address, &c, 1);
+			*progress_address = static_cast<char>(100 * (data_[kIndexTime] / data_[kIndexEnd]));
 		}
 
 		if (accum) {
