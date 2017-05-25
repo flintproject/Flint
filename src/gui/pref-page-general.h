@@ -12,9 +12,12 @@ namespace gui {
 
 class PrefPageGeneral : public wxStockPreferencesPage {
 public:
-	PrefPageGeneral();
+	explicit PrefPageGeneral(wxString &gnuplot_executable);
 
 	virtual wxWindow *CreateWindow(wxWindow *parent) override;
+
+private:
+	wxString &gnuplot_executable_;
 };
 
 }

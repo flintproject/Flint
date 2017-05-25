@@ -74,7 +74,7 @@ void App::ShowPreferencesEditor(wxWindow *parent)
 {
 	if (!pref_editor_) {
 		pref_editor_ = new wxPreferencesEditor;
-		pref_editor_->AddPage(new PrefPageGeneral);
+		pref_editor_->AddPage(new PrefPageGeneral(gnuplot_executable_));
 	}
 	pref_editor_->Show(parent);
 }

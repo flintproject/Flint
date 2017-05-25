@@ -16,8 +16,9 @@
 namespace flint {
 namespace gui {
 
-PrefPageGeneral::PrefPageGeneral()
+PrefPageGeneral::PrefPageGeneral(wxString &gnuplot_executable)
 	: wxStockPreferencesPage(wxStockPreferencesPage::Kind_General)
+	, gnuplot_executable_(gnuplot_executable)
 {}
 
 wxWindow *PrefPageGeneral::CreateWindow(wxWindow *parent)
@@ -26,7 +27,7 @@ wxWindow *PrefPageGeneral::CreateWindow(wxWindow *parent)
 	auto box = new wxStaticBoxSizer(wxHORIZONTAL, panel, "Plotter");
 	auto ctrl = new wxFilePickerCtrl(box->GetStaticBox(),
 									 wxID_ANY,
-									 wxEmptyString,
+									 gnuplot_executable_,
 									 "gnuplot");
 	auto text = new wxStaticText(box->GetStaticBox(),
 								 wxID_ANY,
