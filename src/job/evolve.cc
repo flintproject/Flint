@@ -22,7 +22,6 @@
 #include "bc/locater.h"
 #include "bc/mounter.h"
 #include "bc/pack.h"
-#include "db/read-only-driver.h"
 #include "filter/cutter.h"
 #include "flint/bc.h"
 #include "flint/ls.h"
