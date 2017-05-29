@@ -19,7 +19,6 @@ private:
 	TaskRunner *tr_;
 	int id_;
 	std::unique_ptr<char[]> dir_;
-	std::unique_ptr<char[]> generated_db_;
 	std::unique_ptr<char[]> isd_;
 };
 

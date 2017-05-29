@@ -31,10 +31,8 @@ JobRunner::JobRunner(TaskRunner *tr, int id)
 	: tr_(tr)
 	, id_(id)
 	, dir_(job::BuildPath(tr->dir(), id))
-	, generated_db_(new char[kFilenameLength])
 	, isd_(new char[kFilenameLength])
 {
-	std::sprintf(generated_db_.get(), "%s/generated.db", dir_.get());
 	std::sprintf(isd_.get(), "%s/out.isd", dir_.get());
 }
 
@@ -43,24 +41,25 @@ bool JobRunner::Run()
 	if (tr_->GetTask()->IsCanceled())
 		return true;
 
-	std::vector<double> generated_init;
+	std::vector<double> init(tr_->data()); // copy data
 	{
-		std::unique_ptr<Bytecode> generated_bc;
+		std::vector<double> generated_init;
 		{
 			compiler::Compiler c(tr_->GetDimensionAnalyzer());
-			db::ReadOnlyDriver g(generated_db_.get());
-			generated_bc.reset(c.Compile(g.db(), "parameter_eqs", compiler::Method::kAssign));
+			std::unique_ptr<char[]> generated_db(new char[kFilenameLength]);
+			std::sprintf(generated_db.get(), "%s/generated.db", dir_.get());
+			db::ReadOnlyDriver g(generated_db.get());
+			std::unique_ptr<Bytecode> generated_bc(c.Compile(g.db(), "parameter_eqs", compiler::Method::kAssign));
 			if (!generated_bc)
 				return false;
+			// TODO: give a proper seed if desired
+			if (!runtime::Eval(tr_->GetDatabase(), ct::Availability::kNone, 0,
+							   tr_->generated_layout(), generated_bc.get(), &generated_init))
+				return false;
 		}
-		// TODO: give a proper seed if desired
-		if (!runtime::Eval(tr_->GetDatabase(), ct::Availability::kNone, 0,
-						   tr_->generated_layout(), generated_bc.get(), &generated_init))
+		if (!job::Store(tr_->GetDatabase(), tr_->generated_layout(), generated_init.data(), tr_->layout(), init.data()))
 			return false;
 	}
-	std::vector<double> init(tr_->data()); // copy data
-	if (!job::Store(tr_->GetDatabase(), tr_->generated_layout(), generated_init.data(), tr_->layout(), init.data()))
-		return false;
 	if (tr_->GetTask()->reinit_bc) {
 		// Re-calculate the rest of initial values
 		if (!runtime::Eval(tr_->GetModelDatabase(), ct::Availability::kLiteral, 0,
