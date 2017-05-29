@@ -135,13 +135,15 @@ bool CopyInput()
 
 bool RunTasks()
 {
-	db::ReadOnlyDriver driver("input.db");
-	sqlite3 *db = driver.db();
-	if (!db)
-		return false;
 	FutureTaskPool pool;
-	if (!CollectTasks(db, &pool))
-		return false;
+	{
+		db::ReadOnlyDriver driver("input.db");
+		sqlite3 *db = driver.db();
+		if (!db)
+			return false;
+		if (!CollectTasks(db, &pool))
+			return false;
+	}
 	return pool.Wait();
 }
 
