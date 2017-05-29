@@ -77,10 +77,9 @@ int TimeseriesData::GetStep(size_t, const char *buf)
 	return 1;
 }
 
-bool TimeseriesData::Lookup(int i, double t, double *d)
+bool TimeseriesData::Lookup(int i, double t, double *d) const
 {
-	std::pair<TimestampSet::iterator, TimestampSet::iterator> r;
-	r = ts_.equal_range(t);
+	auto r = ts_.equal_range(t);
 	if (r.first != r.second) { // found the exact data
 		Store(i, r.first, d);
 		return true;
@@ -92,18 +91,18 @@ bool TimeseriesData::Lookup(int i, double t, double *d)
 	}
 	if (r.first == ts_.end()) { // larger than every existing data
 		// take the last
-		TimestampSet::iterator it = ts_.end();
+		auto it = ts_.end();
 		--it;
 		Store(i, it, d);
 		return true;
 	}
-	TimestampSet::iterator it = r.first;
+	auto it = r.first;
 	--it;
 	Store(i, it, r.first, t, d);
 	return true;
 }
 
-void TimeseriesData::Store(int i, TimestampSet::iterator it, double *d)
+void TimeseriesData::Store(int i, TimestampSet::const_iterator it, double *d) const
 {
 	size_t o = offset_;
 	o += step_size_ * std::distance(ts_.begin(), it);
@@ -111,7 +110,7 @@ void TimeseriesData::Store(int i, TimestampSet::iterator it, double *d)
 	std::memcpy(d, static_cast<char *>(mr_.get_address()) + o, sizeof(*d));
 }
 
-void TimeseriesData::Store(int i, TimestampSet::iterator it0, TimestampSet::iterator it1, double t, double *d)
+void TimeseriesData::Store(int i, TimestampSet::const_iterator it0, TimestampSet::const_iterator it1, double t, double *d) const
 {
 	double d0, d1;
 	Store(i, it0, &d0);

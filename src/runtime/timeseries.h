@@ -24,15 +24,15 @@ public:
 
 	int GetStep(size_t, const char *buf);
 
-	bool Lookup(int i, double t, double *d);
+	bool Lookup(int i, double t, double *d) const;
 
 private:
 	bool IsValid() const;
 
 	typedef std::set<double> TimestampSet;
 
-	void Store(int i, TimestampSet::iterator it, double *d);
-	void Store(int i, TimestampSet::iterator it0, TimestampSet::iterator it1, double t, double *d);
+	void Store(int i, TimestampSet::const_iterator it, double *d) const;
+	void Store(int i, TimestampSet::const_iterator it0, TimestampSet::const_iterator it1, double t, double *d) const;
 
 	boost::filesystem::path path_;
 	boost::interprocess::mapped_region mr_;
