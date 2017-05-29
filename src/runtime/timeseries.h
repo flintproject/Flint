@@ -9,7 +9,7 @@
 #define BOOST_FILESYSTEM_NO_DEPRECATED
 #include <boost/filesystem.hpp>
 #define BOOST_DATE_TIME_NO_LIB
-#include <boost/interprocess/file_mapping.hpp>
+#include <boost/interprocess/mapped_region.hpp>
 
 namespace flint {
 
@@ -27,13 +27,15 @@ public:
 	bool Lookup(int i, double t, double *d);
 
 private:
+	bool IsValid() const;
+
 	typedef std::set<double> TimestampSet;
 
 	void Store(int i, TimestampSet::iterator it, double *d);
 	void Store(int i, TimestampSet::iterator it0, TimestampSet::iterator it1, double t, double *d);
 
 	boost::filesystem::path path_;
-	boost::interprocess::file_mapping fm_;
+	boost::interprocess::mapped_region mr_;
 	size_t offset_;
 	std::uint32_t step_size_;
 	TimestampSet ts_;

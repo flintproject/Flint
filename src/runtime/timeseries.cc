@@ -13,7 +13,7 @@
 #define BOOST_FILESYSTEM_NO_DEPRECATED
 #include <boost/filesystem/fstream.hpp>
 #define BOOST_DATE_TIME_NO_LIB
-#include <boost/interprocess/mapped_region.hpp>
+#include <boost/interprocess/file_mapping.hpp>
 
 #include "isdf/reader.h"
 
@@ -23,11 +23,26 @@ TimeseriesData::TimeseriesData(boost::filesystem::path path)
 	: path_(path)
 {
 	std::string path_s = path_.string();
-	fm_ = boost::interprocess::file_mapping(path_s.c_str(), boost::interprocess::read_only);
+	try {
+		boost::interprocess::file_mapping fm(path_s.c_str(), boost::interprocess::read_only);
+		boost::interprocess::mapped_region mr(fm, boost::interprocess::read_only);
+		mr_ = std::move(mr);
+	} catch (const boost::interprocess::interprocess_exception &e) {
+		// nothing to do
+	}
+}
+
+bool TimeseriesData::IsValid() const
+{
+	return mr_.get_size() > 0;
 }
 
 bool TimeseriesData::Load()
 {
+	if (!IsValid()) {
+		std::cerr << "failed to map file: " << path_ << std::endl;
+		return false;
+	}
 	boost::filesystem::ifstream ifs(path_, std::ios::in|std::ios::binary);
 	if (!ifs.is_open()) {
 		std::cerr << "failed to open timeseries data: "
@@ -93,9 +108,7 @@ void TimeseriesData::Store(int i, TimestampSet::iterator it, double *d)
 	size_t o = offset_;
 	o += step_size_ * std::distance(ts_.begin(), it);
 	o += i * sizeof(double);
-	boost::interprocess::mapped_region mr(fm_, boost::interprocess::read_only,
-										  o, sizeof(*d));
-	std::memcpy(d, mr.get_address(), sizeof(*d));
+	std::memcpy(d, static_cast<char *>(mr_.get_address()) + o, sizeof(*d));
 }
 
 void TimeseriesData::Store(int i, TimestampSet::iterator it0, TimestampSet::iterator it1, double t, double *d)
