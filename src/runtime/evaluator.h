@@ -7,6 +7,7 @@
 
 #include "flint/ct.h"
 #include "lo/layout.h"
+#include "runtime/flow.h"
 #include "runtime/timeseries.h"
 #include "sqlite3.h"
 
@@ -23,6 +24,7 @@ public:
 				  ct::Availability availability,
 				  int seed,
 				  Bytecode *bytecode,
+				  const FlowInboundMap *inbound,
 				  const TimeseriesVector *tv,
 				  std::vector<double> *data);
 

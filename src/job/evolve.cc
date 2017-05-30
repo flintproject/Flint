@@ -319,15 +319,12 @@ bool Evolve(sqlite3 *db,
 		postprocessor->set_channel(channel.get());
 
 	{
-		FlowInboundMap inbound;
-		if (!LoadFlows(db, &inbound))
-			return false;
-		if (!processor->SolveDependencies(&inbound))
+		if (!processor->SolveDependencies(&task.inbound))
 			return false;
 		if (with_pre)
-			preprocessor->ScheduleEvents(inbound);
+			preprocessor->ScheduleEvents(task.inbound);
 		if (with_post)
-			postprocessor->ScheduleEvents(inbound);
+			postprocessor->ScheduleEvents(task.inbound);
 	}
 
 	// arrange previous data space

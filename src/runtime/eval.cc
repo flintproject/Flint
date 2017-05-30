@@ -17,12 +17,13 @@ bool Eval(sqlite3 *db,
 		  int seed,
 		  const char *layout_file,
 		  Bytecode *bytecode,
+		  const FlowInboundMap *inbound,
 		  const TimeseriesVector *tv,
 		  std::vector<double> *data)
 {
 	std::unique_ptr<Evaluator> e(new Evaluator);
 	return e->Load(layout_file) &&
-		e->Evaluate(db, availability, seed, bytecode, tv, data);
+		e->Evaluate(db, availability, seed, bytecode, inbound, tv, data);
 }
 
 }

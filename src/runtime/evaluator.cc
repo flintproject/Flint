@@ -207,6 +207,7 @@ bool Evaluator::Evaluate(sqlite3 *db,
 						 ct::Availability availability,
 						 int seed,
 						 Bytecode *bytecode,
+						 const FlowInboundMap *inbound,
 						 const TimeseriesVector *tv,
 						 std::vector<double> *data)
 {
@@ -224,8 +225,6 @@ bool Evaluator::Evaluate(sqlite3 *db,
 	std::unique_ptr<bool[]> target(new bool[layer_size_]()); // default-initialized
 	executor->set_target(target.get());
 
-	std::unique_ptr<FlowInboundMap> inbound(new FlowInboundMap);
-
 	// read targets from database, if any
 	{
 		db::SprinkleLoader loader(db);
@@ -234,9 +233,6 @@ bool Evaluator::Evaluate(sqlite3 *db,
 			return false;
 		}
 	}
-
-	if (!LoadFlows(db, inbound.get()))
-		return false;
 
 	int nol = bytecode->nol;
 	if (nol != 1) { // nol should be always 1
@@ -251,7 +247,7 @@ bool Evaluator::Evaluate(sqlite3 *db,
 
 	processor->CalculateCodeOffset();
 
-	if (!processor->SolveDependencies(inbound.get(), availability, color.get()))
+	if (!processor->SolveDependencies(inbound, availability, color.get()))
 		return false;
 
 	int max_noir = processor->GetMaxNoir();

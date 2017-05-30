@@ -54,7 +54,8 @@ bool JobRunner::Run()
 				return false;
 			// TODO: give a proper seed if desired
 			if (!runtime::Eval(tr_->GetDatabase(), ct::Availability::kNone, 0,
-							   tr_->generated_layout(), generated_bc.get(), nullptr, &generated_init))
+							   tr_->generated_layout(), generated_bc.get(),
+							   nullptr, nullptr, &generated_init))
 				return false;
 		}
 		if (!job::Store(tr_->GetDatabase(), tr_->generated_layout(), generated_init.data(), tr_->layout(), init.data()))
@@ -64,7 +65,7 @@ bool JobRunner::Run()
 		// Re-calculate the rest of initial values
 		if (!runtime::Eval(tr_->GetModelDatabase(), ct::Availability::kLiteral, 0,
 						   tr_->layout(), tr_->GetTask()->reinit_bc.get(),
-						   &tr_->GetTask()->tv, &init))
+						   &tr_->GetTask()->inbound, &tr_->GetTask()->tv, &init))
 			return false;
 	}
 	return job::Job(id_,

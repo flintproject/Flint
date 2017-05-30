@@ -174,7 +174,8 @@ bool DataFlowAnalyzer::SolveDependencies(const FlowInboundMap *inbound,
 	CollectCalculationDependencies(cdv.get());
 
 	std::unique_ptr<ReductionUnitVector> ruv(new ReductionUnitVector);
-	CollectReductionUnits(inbound, ruv.get());
+	if (inbound)
+		CollectReductionUnits(inbound, ruv.get());
 
 	std::unique_ptr<int[]> levels(new int[GetNol() * layer_size_]());
 	switch (availability) {

@@ -3,6 +3,7 @@
 #define FLINT_RUNTIME_H_
 
 #include "flint/ct.h"
+#include "runtime/flow.h"
 #include "runtime/timeseries.h"
 #include "sqlite3.h"
 
@@ -19,6 +20,7 @@ bool Eval(sqlite3 *db,
 		  int seed,
 		  const char *layout_file,
 		  Bytecode *bytecode,
+		  const FlowInboundMap *inbound,
 		  const TimeseriesVector *tv,
 		  std::vector<double> *data);
 
@@ -29,6 +31,7 @@ bool Init(sqlite3 *db,
 		  int seed,
 		  const char *layout_file,
 		  Bytecode *bytecode,
+		  const FlowInboundMap *inbound,
 		  const TimeseriesVector *tv,
 		  std::vector<double> *data);
 

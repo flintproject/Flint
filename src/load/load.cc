@@ -127,9 +127,12 @@ public:
 			if (!init_bc)
 				return nullptr;
 		}
-		if (!runtime::Init(db, 0, layout_.get(), init_bc.get(), nullptr, data))
+		std::unique_ptr<task::Task> task(new task::Task);
+		if (!LoadFlows(db, &task->inbound))
 			return nullptr;
-		return new task::Task;
+		if (!runtime::Init(db, 0, layout_.get(), init_bc.get(), &task->inbound, nullptr, data))
+			return nullptr;
+		return task.release();
 	}
 
 	task::Task *LoadPhml(sqlite3 *db, std::vector<double> *data)
@@ -162,9 +165,11 @@ public:
 			if (!task->pre_bc)
 				return nullptr;
 		}
+		if (!LoadFlows(db, &task->inbound))
+			return nullptr;
 		if (!ts::LoadTimeseriesVector(db, &task->tv))
-			return false;
-		if (!runtime::Init(db, seed, layout_.get(), init_bc.get(), &task->tv, data))
+			return nullptr;
+		if (!runtime::Init(db, seed, layout_.get(), init_bc.get(), &task->inbound, &task->tv, data))
 			return nullptr;
 		return task.release();
 	}
@@ -185,9 +190,10 @@ public:
 			if (!init_bc)
 				return nullptr;
 		}
-		if (!runtime::Init(db, 0, layout_.get(), init_bc.get(), nullptr, data))
+		std::unique_ptr<task::Task> task(new task::Task);
+		if (!runtime::Init(db, 0, layout_.get(), init_bc.get(), &task->inbound, nullptr, data))
 			return nullptr;
-		return new task::Task;
+		return task.release();
 	}
 
 private:

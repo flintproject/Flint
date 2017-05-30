@@ -30,15 +30,14 @@ namespace ark {
 
 namespace {
 
-Processor *CreateProcessor(const task::Task &task,
-						   FlowInboundMap *inbound, Bytecode *bytecode)
+Processor *CreateProcessor(const task::Task &task, Bytecode *bytecode)
 {
 	std::unique_ptr<Processor> processor(new Processor(task.layout.get(), task.layer_size, bytecode, &task.tv));
 	assert(bytecode->nol <= 2);
 	if (!processor->SolveLocation())
 		return nullptr;
 	processor->CalculateCodeOffset();
-	if (!processor->SolveDependencies(inbound))
+	if (!processor->SolveDependencies(&task.inbound))
 		return nullptr;
 	return processor.release();
 }
@@ -52,9 +51,6 @@ bool Solve(sqlite3 *db, task::Task &task, const job::Option &option)
 		return false;
 	if (!cas::AnnotateEquations(db, "input_eqs", system.get()))
 		return false;
-	std::unique_ptr<FlowInboundMap> inbound(new FlowInboundMap);
-	if (!LoadFlows(db, inbound.get()))
-		return false;
 
 	std::unique_ptr<Bytecode> auxv_bc(system->GenerateAuxVarBc());
 	if (!auxv_bc)
@@ -66,14 +62,12 @@ bool Solve(sqlite3 *db, task::Task &task, const job::Option &option)
 	if (!rhs_bc)
 		return false;
 
-	std::unique_ptr<Processor> auxv_proc(CreateProcessor(task,
-														 inbound.get(), auxv_bc.get()));
+	std::unique_ptr<Processor> auxv_proc(CreateProcessor(task, auxv_bc.get()));
 	if (!auxv_proc)
 		return false;
 	std::unique_ptr<Auxv> auxv(new Auxv(auxv_proc.get()));
 
-	std::unique_ptr<Processor> mass_proc(CreateProcessor(task,
-														 inbound.get(), mass_bc.get()));
+	std::unique_ptr<Processor> mass_proc(CreateProcessor(task, mass_bc.get()));
 	if (!mass_proc)
 		return false;
 	std::unique_ptr<Mmdm> mmdm(new Mmdm(task.layout->SelectStates()));
@@ -81,8 +75,7 @@ bool Solve(sqlite3 *db, task::Task &task, const job::Option &option)
 		return false;
 	std::unique_ptr<Mass> mass(new Mass(mass_proc.get(), mmdm.get()));
 
-	std::unique_ptr<Processor> rhs_proc(CreateProcessor(task,
-														inbound.get(), rhs_bc.get()));
+	std::unique_ptr<Processor> rhs_proc(CreateProcessor(task, rhs_bc.get()));
 	if (!rhs_proc)
 		return false;
 	std::unique_ptr<Rhs> rhs(new Rhs(task.layer_size, rhs_proc.get()));

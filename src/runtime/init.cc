@@ -18,6 +18,7 @@ bool Init(sqlite3 *db,
 		  int seed,
 		  const char *layout_file,
 		  Bytecode *bytecode,
+		  const FlowInboundMap *inbound,
 		  const TimeseriesVector *tv,
 		  std::vector<double> *data)
 {
@@ -28,7 +29,7 @@ bool Init(sqlite3 *db,
 		std::cerr << "no dependent variables found" << std::endl;
 		return false;
 	}
-	return e->Evaluate(db, ct::Availability::kNone, seed, bytecode, tv, data);
+	return e->Evaluate(db, ct::Availability::kNone, seed, bytecode, inbound, tv, data);
 }
 
 }

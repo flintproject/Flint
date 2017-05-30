@@ -10,6 +10,7 @@
 #define BOOST_DATE_TIME_NO_LIB
 #include <boost/interprocess/mapped_region.hpp>
 
+#include "runtime/flow.h"
 #include "runtime/timeseries.h"
 
 namespace flint {
@@ -28,6 +29,7 @@ struct Configuration;
 namespace task {
 
 struct Task {
+	FlowInboundMap inbound;
 	TimeseriesVector tv;
 	std::unique_ptr<Bytecode> bc;
 	std::unique_ptr<Bytecode> pre_bc;

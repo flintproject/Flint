@@ -203,10 +203,7 @@ bool Translate(const cli::RunOption &option)
 		return false;
 	translator->CalculateCodeOffset();
 
-	std::unique_ptr<FlowInboundMap> inbound(new FlowInboundMap);
-	if (!LoadFlows(db, inbound.get()))
-		return false;
-	if (!translator->SolveDependencies(inbound.get()))
+	if (!translator->SolveDependencies(&task->inbound))
 		return false;
 
 	translator->PrintHeader(layer_size, reader.length(), reader.step());
