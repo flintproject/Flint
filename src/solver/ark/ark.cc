@@ -220,7 +220,7 @@ bool Ark::Solve(const task::Task &task, const job::Option &option)
 				std::cerr << "non-positive end time: " << data_[kIndexEnd] << std::endl;
 				return false;
 			}
-			*progress_address = static_cast<char>(100 * (data_[kIndexTime] / data_[kIndexEnd]));
+			*progress_address = static_cast<char>(100 * std::min(1.0, data_[kIndexTime] / data_[kIndexEnd]));
 		}
 
 		if (accum) {

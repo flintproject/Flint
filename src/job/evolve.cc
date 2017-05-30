@@ -498,7 +498,7 @@ bool Evolve(task::Task &task,
 				std::cerr << "non-positive end time: " << data[kIndexEnd] << std::endl;
 				return false;
 			}
-			*progress_address = static_cast<char>(100 * (data[kIndexTime] / data[kIndexEnd]));
+			*progress_address = static_cast<char>(100 * std::min(1.0, data[kIndexTime] / data[kIndexEnd]));
 		}
 
 		if (accum) {
