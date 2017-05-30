@@ -14,8 +14,12 @@
 
 #define BOOST_FILESYSTEM_NO_DEPRECATED
 #include <boost/filesystem.hpp>
+#define BOOST_DATE_TIME_NO_LIB
+#include <boost/interprocess/file_mapping.hpp>
+#include <boost/interprocess/mapped_region.hpp>
 
 #include "bc/index.h"
+#include "cas.h"
 #include "cas/dimension.h"
 #include "compiler.h"
 #include "db/driver.h"
@@ -35,6 +39,7 @@
 #include "lo/layout_loader.h"
 #include "load.h"
 #include "task.h"
+#include "task/config-reader.h"
 
 namespace flint {
 namespace exec {
@@ -200,37 +205,49 @@ bool TaskRunner::Run()
 	std::sprintf(isdh_file, "%s/isdh", dir_.get());
 	if (!filter::Isdh(filter_file, isdh_file))
 		return false;
-	reader_.reset(new task::ConfigReader(modeldb_driver_->db()));
-	if (!reader_->Read())
-		return false;
-	// fill task's rest of fields
-	task_->granularity = reader_->granularity();
-	task_->output_start_time = reader_->output_start_time();
 	{
-		std::unique_ptr<Layout> layout(new Layout);
-		LayoutLoader loader(layout_.get());
-		if (!loader.Load(layout.get()))
+		task::ConfigReader reader(modeldb_driver_->db());
+		if (!reader.Read())
 			return false;
-		size_t layer_size = layout->Calculate();
-		assert(layer_size > kOffsetBase);
-		task_->layout.swap(layout);
-		task_->layer_size = layer_size;
-
+		// fill task's rest of fields
+		task_->method = reader.GetMethod();
+		task_->length = reader.length();
+		task_->step = reader.step();
+		task_->granularity = reader.granularity();
+		task_->output_start_time = reader.output_start_time();
 		{
-			filter::Cutter cutter;
-			if (!cutter.Load(filter_file, layer_size))
+			std::unique_ptr<Layout> layout(new Layout);
+			LayoutLoader loader(layout_.get());
+			if (!loader.Load(layout.get()))
 				return false;
-			task_->writer.reset(cutter.CreateWriter());
-		}
+			size_t layer_size = layout->Calculate();
+			assert(layer_size > kOffsetBase);
+			task_->layout.swap(layout);
+			task_->layer_size = layer_size;
 
-		if (reader_->GetDpsPath()) {
-			auto ls_config = ls::CreateConfiguration(reader_->GetDpsPath(), *task_->layout);
-			if (!ls_config)
-				return false;
-			task_->ls_config.swap(ls_config);
+			{
+				filter::Cutter cutter;
+				if (!cutter.Load(filter_file, layer_size))
+					return false;
+				task_->writer.reset(cutter.CreateWriter());
+			}
+
+			if (reader.GetDpsPath()) {
+				auto ls_config = ls::CreateConfiguration(reader.GetDpsPath(), *task_->layout);
+				if (!ls_config)
+					return false;
+				task_->ls_config.swap(ls_config);
+			}
 		}
 	}
-	if (reader_->GetMethod() != compiler::Method::kArk) {
+	if (task_->method == compiler::Method::kArk) {
+		std::unique_ptr<cas::System> system(new cas::System);
+		if (!system->Load(modeldb_driver_->db()))
+			return false;
+		if (!cas::AnnotateEquations(modeldb_driver_->db(), "input_eqs", system.get()))
+			return false;
+		task_->system = std::move(system);
+	} else {
 		cas::DimensionAnalyzer da;
 		if (!da.Load(modeldb_driver_->db()))
 			return false;
@@ -238,7 +255,7 @@ bool TaskRunner::Run()
 		task_->reinit_bc.reset(c.Compile(modeldb_driver_->db(), "dependent_ivs", compiler::Method::kAssign));
 		if (!task_->reinit_bc)
 			return false;
-		task_->bc.reset(c.Compile(modeldb_driver_->db(), "input_eqs", reader_->GetMethod()));
+		task_->bc.reset(c.Compile(modeldb_driver_->db(), "input_eqs", task_->method));
 		if (!task_->bc)
 			return false;
 	}

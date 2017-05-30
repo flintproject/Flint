@@ -4,13 +4,8 @@
 
 #include <memory>
 
-#define BOOST_DATE_TIME_NO_LIB
-#include <boost/interprocess/file_mapping.hpp>
-#include <boost/interprocess/mapped_region.hpp>
-
 #include "db/driver.h"
 #include "db/read-only-driver.h"
-#include "task/config-reader.h"
 #include "sqlite3.h"
 
 #include <vector>
@@ -37,7 +32,6 @@ public:
 	const char *layout() const {return layout_.get();}
 	const char *generated_layout() const {return generated_layout_.get();}
 	const std::vector<double> &data() const {return data_;}
-	const task::ConfigReader &reader() const {return *reader_;}
 
 	task::Task *GetTask();
 	sqlite3 *GetDatabase();
@@ -61,7 +55,6 @@ private:
 	std::vector<double> data_;
 	std::unique_ptr<db::Driver> db_driver_;
 	std::unique_ptr<db::ReadOnlyDriver> modeldb_driver_;
-	std::unique_ptr<task::ConfigReader> reader_;
 	std::unique_ptr<cas::DimensionAnalyzer> dimension_analyzer_;
 };
 

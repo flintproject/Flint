@@ -12,11 +12,11 @@
 namespace flint {
 namespace solver {
 
-bool Solve(sqlite3 *db, Method method, task::Task &task, const job::Option &option)
+bool Solve(Method method, task::Task &task, const job::Option &option)
 {
 	switch (method) {
 	case Method::kArk:
-		return ark::Solve(db, task, option);
+		return ark::Solve(task, option);
 	}
 	// TODO
 	return false;

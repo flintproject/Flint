@@ -74,7 +74,7 @@ bool JobRunner::Run()
 					*tr_->GetTask(),
 					nullptr,
 					&init,
-					isd_.get(), tr_->reader(), tr_->GetModelDatabase());
+					isd_.get());
 }
 
 }

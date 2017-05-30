@@ -44,21 +44,15 @@ Processor *CreateProcessor(const task::Task &task, Bytecode *bytecode)
 
 }
 
-bool Solve(sqlite3 *db, task::Task &task, const job::Option &option)
+bool Solve(task::Task &task, const job::Option &option)
 {
-	std::unique_ptr<cas::System> system(new cas::System);
-	if (!system->Load(db))
-		return false;
-	if (!cas::AnnotateEquations(db, "input_eqs", system.get()))
-		return false;
-
-	std::unique_ptr<Bytecode> auxv_bc(system->GenerateAuxVarBc());
+	std::unique_ptr<Bytecode> auxv_bc(task.system->GenerateAuxVarBc());
 	if (!auxv_bc)
 		return false;
-	std::unique_ptr<Bytecode> mass_bc(system->GenerateOdeMassBc());
+	std::unique_ptr<Bytecode> mass_bc(task.system->GenerateOdeMassBc());
 	if (!mass_bc)
 		return false;
-	std::unique_ptr<Bytecode> rhs_bc(system->GenerateOdeRhsBc());
+	std::unique_ptr<Bytecode> rhs_bc(task.system->GenerateOdeRhsBc());
 	if (!rhs_bc)
 		return false;
 
@@ -71,7 +65,7 @@ bool Solve(sqlite3 *db, task::Task &task, const job::Option &option)
 	if (!mass_proc)
 		return false;
 	std::unique_ptr<Mmdm> mmdm(new Mmdm(task.layout->SelectStates()));
-	if (!task.layout->GenerateMmdm(*system, mmdm.get()))
+	if (!task.layout->GenerateMmdm(*task.system, mmdm.get()))
 		return false;
 	std::unique_ptr<Mass> mass(new Mass(mass_proc.get(), mmdm.get()));
 

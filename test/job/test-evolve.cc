@@ -7,7 +7,9 @@
 
 #define BOOST_FILESYSTEM_NO_DEPRECATED
 #include <boost/filesystem.hpp>
+
 #include "bc/index.h"
+#include "cas.h"
 #include "compiler/bcc.h"
 #include "database.h"
 #include "db/helper.h"
@@ -49,8 +51,6 @@ struct F : public test::MemoryFixture {
 	F()
 	{
 		BOOST_REQUIRE_EQUAL(CreateSingleton(driver_.db()), 1);
-		test::Sql sql(driver_.db());
-		sql.Exec("UPDATE config SET method = 'euler', length = '0.01', step = '0.01', granularity = '1'");
 		db::VariableInserter vi("variables", false, driver_.db());
 		BOOST_REQUIRE(vi.Insert('v', 1, "a"));
 		BOOST_REQUIRE(vi.Insert('v', 2, "b"));
@@ -66,6 +66,8 @@ struct F : public test::MemoryFixture {
 		option_.output_history_file = nullptr;
 		option_.fppp_option = nullptr;
 
+		task_.method = compiler::Method::kEuler;
+		task_.length = task_.step = 0.01;
 		task_.granularity = 1;
 		task_.output_start_time = 0;
 		std::unique_ptr<Layout> layout(new Layout);

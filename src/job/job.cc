@@ -18,8 +18,6 @@
 #include "bc/index.h"
 #include "compiler.h"
 #include "database.h"
-#include "db/driver.h"
-#include "db/read-only-driver.h"
 #include "exec.h"
 #include "filter/writer.h"
 #include "flint/bc.h"
@@ -31,7 +29,6 @@
 #include "sedml.h"
 #include "solver.h"
 #include "task.h"
-#include "task/config-reader.h"
 
 namespace flint {
 namespace job {
@@ -42,9 +39,7 @@ bool Job(int id,
 		 task::Task &task,
 		 const fppp::Option *fppp_option,
 		 std::vector<double> *data,
-		 const char *output_file,
-		 const task::ConfigReader &reader,
-		 sqlite3 *db)
+		 const char *output_file)
 {
 	const int kShort = 64;
 	const int kLong = 96;
@@ -57,7 +52,7 @@ bool Job(int id,
 		return false;
 	}
 
-	if (!task::Timer(reader.length(), reader.step(), data->data()))
+	if (!task::Timer(task.length, task.step, data->data()))
 		return false;
 
 	char output_data_file[kLong];
@@ -100,8 +95,8 @@ bool Job(int id,
 	option.output_fp = ofp;
 
 	bool r;
-	if (reader.GetMethod() == compiler::Method::kArk) {
-		r = solver::Solve(db, solver::Method::kArk, task, option);
+	if (task.method == compiler::Method::kArk) {
+		r = solver::Solve(solver::Method::kArk, task, option);
 	} else {
 		r = job::Evolve(task, option);
 	}

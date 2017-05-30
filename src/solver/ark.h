@@ -2,8 +2,6 @@
 #ifndef FLINT_SOLVER_ARK_H_
 #define FLINT_SOLVER_ARK_H_
 
-#include "sqlite3.h"
-
 namespace flint {
 
 namespace job {
@@ -18,7 +16,7 @@ namespace solver {
 
 namespace ark {
 
-bool Solve(sqlite3 *db, task::Task &task, const job::Option &option);
+bool Solve(task::Task &task, const job::Option &option);
 
 }
 }

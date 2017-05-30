@@ -9,6 +9,7 @@
 #include <iostream>
 #include <memory>
 
+#include "cas.h"
 #include "bc/binary.h"
 #include "filter/writer.h"
 #include "flint/bc.h"

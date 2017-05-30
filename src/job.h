@@ -71,9 +71,7 @@ bool Job(int id,
 		 task::Task &task,
 		 const fppp::Option *fppp_option,
 		 std::vector<double> *data,
-		 const char *output_file,
-		 const task::ConfigReader &reader,
-		 sqlite3 *db);
+		 const char *output_file);
 
 }
 }

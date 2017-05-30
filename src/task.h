@@ -10,6 +10,7 @@
 #define BOOST_DATE_TIME_NO_LIB
 #include <boost/interprocess/mapped_region.hpp>
 
+#include "compiler.h"
 #include "runtime/flow.h"
 #include "runtime/timeseries.h"
 
@@ -17,6 +18,10 @@ namespace flint {
 
 struct Bytecode;
 class Layout;
+
+namespace cas {
+class System;
+}
 
 namespace filter {
 class Writer;
@@ -35,9 +40,13 @@ struct Task {
 	std::unique_ptr<Bytecode> pre_bc;
 	std::unique_ptr<Bytecode> post_bc;
 	std::unique_ptr<Bytecode> reinit_bc;
-	std::unique_ptr<Layout> layout;
+	std::unique_ptr<cas::System> system;
+	compiler::Method method;
+	double length;
+	double step;
 	size_t granularity;
 	double output_start_time;
+	std::unique_ptr<Layout> layout;
 	size_t layer_size;
 	boost::interprocess::mapped_region control_mr;
 	boost::interprocess::mapped_region progress_mr;

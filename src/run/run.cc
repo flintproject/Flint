@@ -14,6 +14,7 @@
 #define BOOST_FILESYSTEM_NO_DEPRECATED
 #include <boost/filesystem.hpp>
 
+#include "cas.h"
 #include "cas/dimension.h"
 #include "compiler.h"
 #include "db/driver.h"
@@ -129,40 +130,52 @@ bool Run(const cli::RunOption &option)
 				return false;
 		}
 	}
-	task::ConfigReader reader(db);
-	if (!reader.Read())
-		return false;
-	if (!filter::Create(db, "spec.txt", "layout", "filter"))
-		return false;
-	if (!filter::Isdh("filter", "isdh"))
-		return false;
-	task->granularity = option.granularity();
-	task->output_start_time = 0; // by default
 	{
-		std::unique_ptr<Layout> layout(new Layout);
-		LayoutLoader loader("layout");
-		if (!loader.Load(layout.get()))
+		task::ConfigReader reader(db);
+		if (!reader.Read())
 			return false;
-		size_t layer_size = layout->Calculate();
-		assert(layer_size > kOffsetBase);
-		task->layout.swap(layout);
-		task->layer_size = layer_size;
-
+		if (!filter::Create(db, "spec.txt", "layout", "filter"))
+			return false;
+		if (!filter::Isdh("filter", "isdh"))
+			return false;
+		task->method = reader.GetMethod();
+		task->length = reader.length();
+		task->step = reader.step();
+		task->granularity = option.granularity();
+		task->output_start_time = 0; // by default
 		{
-			filter::Cutter cutter;
-			if (!cutter.Load("filter", layer_size))
+			std::unique_ptr<Layout> layout(new Layout);
+			LayoutLoader loader("layout");
+			if (!loader.Load(layout.get()))
 				return false;
-			task->writer.reset(cutter.CreateWriter());
+			size_t layer_size = layout->Calculate();
+			assert(layer_size > kOffsetBase);
+			task->layout.swap(layout);
+			task->layer_size = layer_size;
+
+			{
+				filter::Cutter cutter;
+				if (!cutter.Load("filter", layer_size))
+					return false;
+				task->writer.reset(cutter.CreateWriter());
+			}
 		}
-	}
-	if (reader.GetMethod() != compiler::Method::kArk) {
-		cas::DimensionAnalyzer da;
-		if (!da.Load(db))
-			return false;
-		compiler::Compiler c(&da);
-		task->bc.reset(c.Compile(db, "input_eqs", reader.GetMethod()));
-		if (!task->bc)
-			return false;
+		if (task->method == compiler::Method::kArk) {
+			std::unique_ptr<cas::System> system(new cas::System);
+			if (!system->Load(db))
+				return false;
+			if (!cas::AnnotateEquations(db, "input_eqs", system.get()))
+				return false;
+			task->system = std::move(system);
+		} else {
+			cas::DimensionAnalyzer da;
+			if (!da.Load(db))
+				return false;
+			compiler::Compiler c(&da);
+			task->bc.reset(c.Compile(db, "input_eqs", task->method));
+			if (!task->bc)
+				return false;
+		}
 	}
 	std::unique_ptr<fppp::Option> fppp_option;
 	if (option.has_fppp_host()) {
@@ -191,9 +204,7 @@ bool Run(const cli::RunOption &option)
 					*task,
 					fppp_option.get(),
 					&data,
-					output_file.c_str(),
-					reader,
-					db);
+					output_file.c_str());
 }
 
 }
