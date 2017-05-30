@@ -3,6 +3,7 @@
 #define FLINT_FPPP_H_
 
 #include <map>
+#include <memory>
 #include <set>
 #include <string>
 #include <unordered_set>
@@ -14,9 +15,15 @@
 #include "flint/key.h"
 
 namespace flint {
+
+namespace runtime {
+class Channel;
+}
+
 namespace fppp {
 
 struct Option {
+	std::unique_ptr<runtime::Channel> channel;
 	const char *host;
 	std::map<key::Data, size_t> output;
 };

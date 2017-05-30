@@ -58,8 +58,7 @@ struct Option {
  * Note that db is for read only.
  * Return true in case of success, false otherwise.
  */
-bool Evolve(sqlite3 *db,
-			task::Task &task,
+bool Evolve(task::Task &task,
 			const Option &option);
 
 /*

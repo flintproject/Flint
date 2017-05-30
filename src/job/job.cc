@@ -103,7 +103,7 @@ bool Job(int id,
 	if (reader.GetMethod() == compiler::Method::kArk) {
 		r = solver::Solve(db, solver::Method::kArk, task, option);
 	} else {
-		r = job::Evolve(db, task, option);
+		r = job::Evolve(task, option);
 	}
 	std::fclose(ofp);
 	return r;

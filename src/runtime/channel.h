@@ -9,7 +9,7 @@
 
 #include "sqlite3.h"
 
-#include "fppp.h"
+#include "flint/key.h"
 
 namespace flint {
 namespace runtime {
@@ -36,8 +36,6 @@ private:
 };
 
 bool LoadChannel(sqlite3 *db,
-				 const char *host,
-				 const std::map<key::Data, size_t> &output,
 				 std::unique_ptr<Channel> &channel);
 
 }

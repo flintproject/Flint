@@ -29,6 +29,7 @@
 #include "lo/layout_loader.h"
 #include "load.h"
 #include "run/spec.h"
+#include "runtime/channel.h"
 #include "task.h"
 #include "task/config-reader.h"
 #include "utf8path.h"
@@ -177,6 +178,8 @@ bool Run(const cli::RunOption &option)
 			}
 			fppp_option->output.emplace(kd, 0);
 		}
+		if (!runtime::LoadChannel(db, fppp_option->channel))
+			return false;
 	}
 	boost::filesystem::path output_path = GetPathFromUtf8(option.output_filename().c_str());
 	if (output_path.empty())

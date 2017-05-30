@@ -241,8 +241,7 @@ bool SaveData(const char *output_data_file, size_t layer_size, double *data)
 
 }
 
-bool Evolve(sqlite3 *db,
-			task::Task &task,
+bool Evolve(task::Task &task,
 			const Option &option)
 {
 	size_t granularity = task.granularity;
@@ -304,19 +303,20 @@ bool Evolve(sqlite3 *db,
 	if (with_pre) preprocessor->CalculateCodeOffset();
 	if (with_post) postprocessor->CalculateCodeOffset();
 
-	std::unique_ptr<runtime::Channel> channel;
+	runtime::Channel *channel = nullptr;
 	if (option.fppp_option) {
+		channel = option.fppp_option->channel.get();
 		std::map<key::Data, size_t> fppp_output = option.fppp_option->output; // copy
 		if (!task.layout->SelectByKeyData(&fppp_output))
 			return false;
-		if (!runtime::LoadChannel(db, option.fppp_option->host, fppp_output, channel))
+		if (!channel->Connect(option.fppp_option->host, fppp_output))
 			return false;
 	}
-	processor->set_channel(channel.get());
+	processor->set_channel(channel);
 	if (with_pre)
-		preprocessor->set_channel(channel.get());
+		preprocessor->set_channel(channel);
 	if (with_post)
-		postprocessor->set_channel(channel.get());
+		postprocessor->set_channel(channel);
 
 	{
 		if (!processor->SolveDependencies(&task.inbound))

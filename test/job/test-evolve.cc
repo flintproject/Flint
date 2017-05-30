@@ -114,7 +114,7 @@ struct F : public test::MemoryFixture {
 		FILE *fp = std::fopen("output", "wb");							\
 		BOOST_REQUIRE(fp);												\
 		option_.output_fp = fp;											\
-		BOOST_REQUIRE(job::Evolve(driver_.db(), task_, option_));		\
+		BOOST_REQUIRE(job::Evolve(task_, option_));						\
 		std::fclose(fp);												\
 		CheckOutput(expected);											\
 	} while (0)
@@ -130,7 +130,7 @@ struct F : public test::MemoryFixture {
 		FILE *fp = std::fopen("output", "wb");							\
 		BOOST_REQUIRE(fp);												\
 		option_.output_fp = fp;											\
-		BOOST_REQUIRE(job::Evolve(driver_.db(), task_, option_));		\
+		BOOST_REQUIRE(job::Evolve(task_, option_));						\
 		std::fclose(fp);												\
 		CheckOutput(expected);											\
 	} while (0)

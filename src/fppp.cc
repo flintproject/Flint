@@ -19,6 +19,8 @@
 #include <czmq.h>
 #include <zmq.h>
 
+#include "runtime/channel.h"
+
 namespace flint {
 namespace fppp {
 

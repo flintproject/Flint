@@ -273,8 +273,6 @@ void Channel::Send(const double *data)
 }
 
 bool LoadChannel(sqlite3 *db,
-				 const char *host,
-				 const std::map<key::Data, size_t> &output,
 				 std::unique_ptr<Channel> &channel)
 {
 	std::vector<std::string> v;
@@ -291,7 +289,7 @@ bool LoadChannel(sqlite3 *db,
 		return true;
 	}
 	channel.reset(new Channel(v));
-	return channel->Connect(host, output);
+	return true;
 }
 
 }
