@@ -7,6 +7,7 @@
 
 #include "flint/ct.h"
 #include "lo/layout.h"
+#include "runtime/timeseries.h"
 #include "sqlite3.h"
 
 namespace flint {
@@ -22,6 +23,7 @@ public:
 				  ct::Availability availability,
 				  int seed,
 				  Bytecode *bytecode,
+				  const TimeseriesVector *tv,
 				  std::vector<double> *data);
 
 private:

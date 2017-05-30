@@ -257,7 +257,7 @@ bool Evolve(sqlite3 *db,
 	bool with_post = bool(task.post_bc);
 
 	std::unique_ptr<Executor> executor(new Executor(layer_size));
-	std::unique_ptr<Processor> processor(new Processor(task.layout.get(), layer_size, task.bc.get()));
+	std::unique_ptr<Processor> processor(new Processor(task.layout.get(), layer_size, task.bc.get(), &task.tv));
 	std::unique_ptr<PExecutor> preexecutor;
 	std::unique_ptr<Processor> preprocessor;
 	std::unique_ptr<PExecutor> postexecutor;
@@ -270,7 +270,7 @@ bool Evolve(sqlite3 *db,
 	}
 	if (with_pre) {
 		preexecutor.reset(new PExecutor(layer_size));
-		preprocessor.reset(new Processor(task.layout.get(), layer_size, task.pre_bc.get()));
+		preprocessor.reset(new Processor(task.layout.get(), layer_size, task.pre_bc.get(), &task.tv));
 		// ignore preprocess if empty
 		if (preprocessor->IsEmpty()) {
 			preexecutor.reset();
@@ -280,7 +280,7 @@ bool Evolve(sqlite3 *db,
 	}
 	if (with_post) {
 		postexecutor.reset(new PExecutor(layer_size));
-		postprocessor.reset(new Processor(task.layout.get(), layer_size, task.post_bc.get()));
+		postprocessor.reset(new Processor(task.layout.get(), layer_size, task.post_bc.get(), &task.tv));
 		// ignore postprocess if empty
 		if (postprocessor->IsEmpty()) {
 			postexecutor.reset();
@@ -317,16 +317,6 @@ bool Evolve(sqlite3 *db,
 		preprocessor->set_channel(channel.get());
 	if (with_post)
 		postprocessor->set_channel(channel.get());
-
-	// arrange input timeseries data
-	std::unique_ptr<TimeseriesVector> tv(new TimeseriesVector);
-	if (!ts::LoadTimeseriesVector(db, tv.get()))
-		return false;
-	processor->set_tv(tv.get());
-	if (with_pre)
-		preprocessor->set_tv(tv.get());
-	if (with_post)
-		postprocessor->set_tv(tv.get());
 
 	{
 		FlowInboundMap inbound;

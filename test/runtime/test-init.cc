@@ -75,7 +75,7 @@ struct F : public test::MemoryFixture {
 		bytecode.reset(compiler::bcc::Bcc(driver_.db()));				\
 		BOOST_REQUIRE(bytecode);										\
 		std::vector<double> data;										\
-		BOOST_CHECK(runtime::Init(driver_.db(), 0, "layout", bytecode.get(), &data)); \
+		BOOST_CHECK(runtime::Init(driver_.db(), 0, "layout", bytecode.get(), nullptr, &data)); \
 		CheckOutput(data, expected);									\
 	} while (0)
 
@@ -89,7 +89,7 @@ struct F : public test::MemoryFixture {
 		bytecode.reset(compiler::bcc::Bcc(driver_.db()));				\
 		BOOST_REQUIRE(bytecode);										\
 		std::vector<double> data;										\
-		BOOST_CHECK(runtime::Init(driver_.db(), 0, "layout", bytecode.get(), &data)); \
+		BOOST_CHECK(runtime::Init(driver_.db(), 0, "layout", bytecode.get(), nullptr, &data)); \
 		CheckOutput(data, expected);									\
 	} while (0)
 
@@ -107,9 +107,9 @@ BOOST_AUTO_TEST_CASE(same_seed)
 	bytecode.reset(compiler::bcc::Bcc(driver_.db()));
 	BOOST_REQUIRE(bytecode);
 	std::vector<double> data0;
-	BOOST_CHECK(runtime::Init(driver_.db(), 42, "layout", bytecode.get(), &data0));
+	BOOST_CHECK(runtime::Init(driver_.db(), 42, "layout", bytecode.get(), nullptr, &data0));
 	std::vector<double> data1;
-	BOOST_CHECK(runtime::Init(driver_.db(), 42, "layout", bytecode.get(), &data1));
+	BOOST_CHECK(runtime::Init(driver_.db(), 42, "layout", bytecode.get(), nullptr, &data1));
 	BOOST_TEST(data0 == data1);
 }
 
@@ -124,9 +124,9 @@ BOOST_AUTO_TEST_CASE(different_seed)
 	bytecode.reset(compiler::bcc::Bcc(driver_.db()));
 	BOOST_REQUIRE(bytecode);
 	std::vector<double> data0;
-	BOOST_CHECK(runtime::Init(driver_.db(), 0, "layout", bytecode.get(), &data0));
+	BOOST_CHECK(runtime::Init(driver_.db(), 0, "layout", bytecode.get(), nullptr, &data0));
 	std::vector<double> data1;
-	BOOST_CHECK(runtime::Init(driver_.db(), 1, "layout", bytecode.get(), &data1));
+	BOOST_CHECK(runtime::Init(driver_.db(), 1, "layout", bytecode.get(), nullptr, &data1));
 	BOOST_CHECK_EQUAL(data0.size(), data1.size());
 	BOOST_TEST(data0 != data1);
 }

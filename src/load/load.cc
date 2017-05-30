@@ -31,6 +31,7 @@
 #include "runtime.h"
 #include "sbml.h"
 #include "task.h"
+#include "ts.h"
 
 namespace flint {
 namespace load {
@@ -126,7 +127,7 @@ public:
 			if (!init_bc)
 				return nullptr;
 		}
-		if (!runtime::Init(db, 0, layout_.get(), init_bc.get(), data))
+		if (!runtime::Init(db, 0, layout_.get(), init_bc.get(), nullptr, data))
 			return nullptr;
 		return new task::Task;
 	}
@@ -161,7 +162,9 @@ public:
 			if (!task->pre_bc)
 				return nullptr;
 		}
-		if (!runtime::Init(db, seed, layout_.get(), init_bc.get(), data))
+		if (!ts::LoadTimeseriesVector(db, &task->tv))
+			return false;
+		if (!runtime::Init(db, seed, layout_.get(), init_bc.get(), &task->tv, data))
 			return nullptr;
 		return task.release();
 	}
@@ -182,7 +185,7 @@ public:
 			if (!init_bc)
 				return nullptr;
 		}
-		if (!runtime::Init(db, 0, layout_.get(), init_bc.get(), data))
+		if (!runtime::Init(db, 0, layout_.get(), init_bc.get(), nullptr, data))
 			return nullptr;
 		return new task::Task;
 	}

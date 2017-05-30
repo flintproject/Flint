@@ -30,10 +30,10 @@ namespace ark {
 
 namespace {
 
-Processor *CreateProcessor(const Layout *layout, size_t layer_size,
+Processor *CreateProcessor(const task::Task &task,
 						   FlowInboundMap *inbound, Bytecode *bytecode)
 {
-	std::unique_ptr<Processor> processor(new Processor(layout, layer_size, bytecode));
+	std::unique_ptr<Processor> processor(new Processor(task.layout.get(), task.layer_size, bytecode, &task.tv));
 	assert(bytecode->nol <= 2);
 	if (!processor->SolveLocation())
 		return nullptr;
@@ -66,13 +66,13 @@ bool Solve(sqlite3 *db, task::Task &task, const job::Option &option)
 	if (!rhs_bc)
 		return false;
 
-	std::unique_ptr<Processor> auxv_proc(CreateProcessor(task.layout.get(), task.layer_size,
+	std::unique_ptr<Processor> auxv_proc(CreateProcessor(task,
 														 inbound.get(), auxv_bc.get()));
 	if (!auxv_proc)
 		return false;
 	std::unique_ptr<Auxv> auxv(new Auxv(auxv_proc.get()));
 
-	std::unique_ptr<Processor> mass_proc(CreateProcessor(task.layout.get(), task.layer_size,
+	std::unique_ptr<Processor> mass_proc(CreateProcessor(task,
 														 inbound.get(), mass_bc.get()));
 	if (!mass_proc)
 		return false;
@@ -81,7 +81,7 @@ bool Solve(sqlite3 *db, task::Task &task, const job::Option &option)
 		return false;
 	std::unique_ptr<Mass> mass(new Mass(mass_proc.get(), mmdm.get()));
 
-	std::unique_ptr<Processor> rhs_proc(CreateProcessor(task.layout.get(), task.layer_size,
+	std::unique_ptr<Processor> rhs_proc(CreateProcessor(task,
 														inbound.get(), rhs_bc.get()));
 	if (!rhs_proc)
 		return false;

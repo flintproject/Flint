@@ -207,10 +207,11 @@ bool Evaluator::Evaluate(sqlite3 *db,
 						 ct::Availability availability,
 						 int seed,
 						 Bytecode *bytecode,
+						 const TimeseriesVector *tv,
 						 std::vector<double> *data)
 {
 	std::unique_ptr<Executor> executor(new Executor(layer_size_));
-	std::unique_ptr<Processor> processor(new Processor(&layout_, layer_size_, bytecode));
+	std::unique_ptr<Processor> processor(new Processor(&layout_, layer_size_, bytecode, tv));
 
 	// arrange data space
 	data->resize(layer_size_);
@@ -223,9 +224,6 @@ bool Evaluator::Evaluate(sqlite3 *db,
 	std::unique_ptr<bool[]> target(new bool[layer_size_]()); // default-initialized
 	executor->set_target(target.get());
 
-	// arrange input timeseries data
-	std::unique_ptr<TimeseriesVector> tv;
-
 	std::unique_ptr<FlowInboundMap> inbound(new FlowInboundMap);
 
 	// read targets from database, if any
@@ -235,12 +233,6 @@ bool Evaluator::Evaluate(sqlite3 *db,
 		if (!loader.Load(handler.get())) {
 			return false;
 		}
-	}
-	{
-		tv.reset(new TimeseriesVector);
-		if (!ts::LoadTimeseriesVector(db, tv.get()))
-			return false;
-		processor->set_tv(tv.get());
 	}
 
 	if (!LoadFlows(db, inbound.get()))

@@ -18,6 +18,7 @@ bool Init(sqlite3 *db,
 		  int seed,
 		  const char *layout_file,
 		  Bytecode *bytecode,
+		  const TimeseriesVector *tv,
 		  std::vector<double> *data)
 {
 	std::unique_ptr<Evaluator> e(new Evaluator);
@@ -27,7 +28,7 @@ bool Init(sqlite3 *db,
 		std::cerr << "no dependent variables found" << std::endl;
 		return false;
 	}
-	return e->Evaluate(db, ct::Availability::kNone, seed, bytecode, data);
+	return e->Evaluate(db, ct::Availability::kNone, seed, bytecode, tv, data);
 }
 
 }

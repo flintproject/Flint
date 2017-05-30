@@ -292,19 +292,18 @@ public:
 	Processor(const Processor &) = delete;
 	Processor &operator=(const Processor &) = delete;
 
-	Processor(const Layout *layout, int layer_size, Bytecode *bytecode)
+	Processor(const Layout *layout, int layer_size, Bytecode *bytecode, const TimeseriesVector *tv)
 		: ct::DataFlowAnalyzer(layout, layer_size, bytecode)
 		, ir_(nullptr)
 		, tmp_(nullptr)
 		, channel_(nullptr)
-		, tv_(nullptr)
+		, tv_(tv)
 		, rng_(nullptr)
 	{}
 
 	void set_ir(intptr_t *ir) {ir_ = ir;}
 	void set_tmp(double *tmp) {tmp_ = tmp;}
 	void set_channel(runtime::Channel *channel) {channel_ = channel;}
-	void set_tv(TimeseriesVector *tv) {tv_ = tv;}
 	void set_rng(std::mt19937 *rng) {rng_ = rng;}
 
 	template<typename TExecutor>
@@ -593,7 +592,7 @@ private:
 	intptr_t *ir_;
 	double *tmp_;
 	runtime::Channel *channel_;
-	TimeseriesVector *tv_;
+	const TimeseriesVector *tv_;
 	std::mt19937 *rng_;
 	std::vector<std::unique_ptr<double[]> > heap_;
 };
