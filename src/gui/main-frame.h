@@ -40,6 +40,7 @@ private:
 
 	int next_open_id_;
 	int next_simulation_id_;
+	wxString last_dir_;
 };
 
 }

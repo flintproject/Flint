@@ -5,6 +5,9 @@
 
 #include "gui/main-frame.h"
 
+#define BOOST_FILESYSTEM_NO_DEPRECATED
+#include <boost/filesystem.hpp>
+
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wcast-qual"
 #include <wx/aboutdlg.h>
@@ -76,6 +79,7 @@ MainFrame::MainFrame()
 	, notebook_(nullptr)
 	, next_open_id_(1)
 	, next_simulation_id_(1)
+	, last_dir_(wxFileName::GetHomeDir())
 {
 	manager_.SetManagedWindow(this);
 
@@ -231,6 +235,11 @@ wxThread::ExitCode OpenFileHelper::Entry()
 
 bool MainFrame::OpenFile(const wxString &path)
 {
+	auto path_s = path.ToStdString();
+	boost::filesystem::path p(path_s);
+	auto pp = p.parent_path();
+	last_dir_ = wxString(pp.string());
+
 	auto helper = new OpenFileHelper(next_open_id_++, path, this);
 	return helper->Start();
 }
@@ -255,7 +264,7 @@ void MainFrame::OnOpen(wxCommandEvent &)
 {
 	wxFileDialog openFileDialog(this,
 								"Model file",
-								"",
+								last_dir_,
 								"",
 								"PHML files (*.phml)|*.phml",
 								wxFD_OPEN|wxFD_FILE_MUST_EXIST);
