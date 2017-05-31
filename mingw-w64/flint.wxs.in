@@ -155,6 +155,9 @@
           <Component Id='wxmsw' Guid='80ff1e98-c791-11e6-9786-dfa231e0a1a7'>
             <File Id='wxmsw310u_gcc_custom' Name='wxmsw310u_gcc_custom.dll' DiskId='1' Source='wxmsw310u_gcc_custom.dll' />
           </Component>
+          <Component Id='ceres' Guid='f54f071a-45d4-11e7-b347-bb7df618a1d5'>
+            <File Id='libceres' Name='libceres.dll' DiskId='1' Source='libceres.dll' />
+          </Component>
           <Component Id='clibsedml' Guid='72d89bf4-8921-11e1-8be9-8ffa90143fcb'>
             <File Id='libsedml' Name='libsedml-0.dll' DiskId='1' Source='libsedml-0.dll' />
           </Component>
@@ -269,6 +272,7 @@
       <ComponentRef Id='sundials.kinsol' />
       <ComponentRef Id='sundials.nvecserial' />
       <ComponentRef Id='wxmsw' />
+      <ComponentRef Id='ceres' />
       <ComponentRef Id='clibsedml' />
       <ComponentRef Id='czmq' />
       <ComponentRef Id='protobuf' />

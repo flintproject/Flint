@@ -68,6 +68,11 @@ tmp/$(BOOST_UNDERSCORE): src/$(BOOST_UNDERSCORE).tar.bz2 | tmp
 	tar -C var -jxf $<
 	touch $@
 
+tmp/ceres-solver-$(CERES_VERSION): src/ceres-solver-$(CERES_VERSION).tar.gz | tmp
+	-rm -rf var/ceres-solver-$(CERES_VERSION)
+	tar -C var -zxf $<
+	touch $@
+
 tmp/clibsedml-$(CLIBSEDML_VERSION): src/clibsedml-$(CLIBSEDML_VERSION).tar.gz | tmp
 	-rm -rf var/clibsedml-$(CLIBSEDML_VERSION)
 	tar -C var -zxf $<
@@ -122,6 +127,12 @@ tmp/$(BOOST_UNDERSCORE).installed: tmp/$(BOOST_UNDERSCORE)
 	echo "        <rc>$(HOST)-windres" >> var/$(BOOST_UNDERSCORE)/user-config.jam
 	echo ";" >> var/$(BOOST_UNDERSCORE)/user-config.jam
 	(cd var/$(BOOST_UNDERSCORE) && ./b2 -d0 --prefix=$(PREFIX) $(B2_WITHOUT_OPTIONS) --layout=tagged --user-config=user-config.jam -j 2 -sNO_BZIP2=1 -q toolset=gcc target-os=windows variant=release threading=multi threadapi=pthread link=shared runtime-link=shared install)
+	touch $@
+
+tmp/ceres-solver-$(CERES_VERSION).installed: tmp/ceres-solver-$(CERES_VERSION) var/toolchain.cmake
+	install -d var/ceres-solver-$(CERES_VERSION)/build
+	(cd var/ceres-solver-$(CERES_VERSION)/build && cmake --host=$(HOST) -DCMAKE_INSTALL_PREFIX=$(PREFIX) -DCMAKE_TOOLCHAIN_FILE=$(CURDIR)/var/toolchain.cmake -DEIGEN_INCLUDE_DIR=$(abspath ../include) $(CERES_CMAKE_OPTIONS) ..)
+	$(MAKE) -C var/ceres-solver-$(CERES_VERSION)/build all install
 	touch $@
 
 tmp/clibsedml-$(CLIBSEDML_VERSION).installed: tmp/clibsedml-$(CLIBSEDML_VERSION) tmp/libxml2-$(LIBXML2_VERSION).installed
@@ -189,8 +200,8 @@ flint opt usr var/flint:
 flint/lib: | flint
 	install -d $@
 
-var/flint/Makefile: tmp/$(BOOST_UNDERSCORE).installed tmp/clibsedml-$(CLIBSEDML_VERSION).installed tmp/czmq-$(CZMQ_VERSION).installed tmp/protobuf-$(PROTOBUF_VERSION).installed tmp/SBML_odeSolver-$(SOSLIB_VERSION).installed tmp/wxWidgets-$(WXWIDGETS_VERSION).installed ../configure | usr/bin/protoc var/flint
-	(cd var/flint && env CPPFLAGS='-DWIN32_LEAN_AND_MEAN -D_WIN32_WINNT=0x0600 -DWIN32 -DSBML_ODESOLVER_EXPORTS=1' LIBS='-lole32 -loleaut32 -lmswsock -lws2_32' PKG_CONFIG_PATH=$(PKG_CONFIG_PATH) LIBSBML_CFLAGS=$(PREFIX)/include LIBSBML_LIBS='-lsbml' SOSLIB_CFLAGS=$(PREFIX)/include SOSLIB_LIBS='-lODES' ../../../configure --host=$(HOST) --prefix=$(PREFIX) --with-boost=$(PREFIX) --with-xml-prefix=$(PREFIX) --disable-xmltest --with-protoc=$(abspath usr/bin/protoc) --with-sundials=$(PREFIX) --with-wxWidgets=$(PREFIX) --enable-release --enable-silent-rules --enable-shared --disable-static)
+var/flint/Makefile: tmp/$(BOOST_UNDERSCORE).installed tmp/ceres-solver-$(CERES_VERSION).installed tmp/clibsedml-$(CLIBSEDML_VERSION).installed tmp/czmq-$(CZMQ_VERSION).installed tmp/protobuf-$(PROTOBUF_VERSION).installed tmp/SBML_odeSolver-$(SOSLIB_VERSION).installed tmp/wxWidgets-$(WXWIDGETS_VERSION).installed ../configure | usr/bin/protoc var/flint
+	(cd var/flint && env CPPFLAGS='-DWIN32_LEAN_AND_MEAN -D_WIN32_WINNT=0x0600 -DWIN32 -DSBML_ODESOLVER_EXPORTS=1' LIBS='-lole32 -loleaut32 -lmswsock -lws2_32' PKG_CONFIG_PATH=$(PKG_CONFIG_PATH) LIBSBML_CFLAGS=$(PREFIX)/include LIBSBML_LIBS='-lsbml' SOSLIB_CFLAGS=$(PREFIX)/include SOSLIB_LIBS='-lODES' ../../../configure --host=$(HOST) --prefix=$(PREFIX) --with-boost=$(PREFIX) --with-ceres-solver=$(PREFIX) --with-xml-prefix=$(PREFIX) --disable-xmltest --with-protoc=$(abspath usr/bin/protoc) --with-sundials=$(PREFIX) --with-wxWidgets=$(PREFIX) --enable-release --enable-silent-rules --enable-shared --disable-static)
 
 $(foreach d,$(FLINT_DLLS),opt/bin/$(d).dll) $(foreach e,$(EXES),opt/bin/$(e).exe): $(foreach d,$(BIN_DLLS) $(BOOST_DLLS),$(call flint_dll_name,$(d))) tmp/sundials-$(SUNDIALS_VERSION).installed tmp/SBML_odeSolver-$(SOSLIB_VERSION).installed var/flint/Makefile
 	$(MAKE) -C var/flint all install-exec
@@ -199,6 +210,8 @@ flint/flint.jar: ../flint/dist/flint.jar | flint
 	install -p -m 0644 $< $@
 
 $(foreach j,$(JARS),$(eval $(call flint_jar,$(j))))
+
+opt/bin/libceres.dll: tmp/ceres-solver-$(CERES_VERSION).installed
 
 opt/bin/libODES-0.dll: tmp/SBML_odeSolver-$(SOSLIB_VERSION).installed
 
@@ -255,10 +268,14 @@ flint/icon.png: ../flint/src/jp/oist/flint/image/icon.png | flint
 flint/license.rtf: ../doc/license.rtf | flint
 	install -p -m 0644 $< $@
 
-flint/third-party-licenses.txt: tmp/libsbml-$(LIBSBML_VERSION) tmp/libxml2-$(LIBXML2_VERSION) tmp/protobuf-$(PROTOBUF_VERSION) tmp/SBML_odeSolver-$(SOSLIB_VERSION) tmp/sundials-$(SUNDIALS_VERSION) tmp/wxWidgets-$(WXWIDGETS_VERSION) | flint
+flint/third-party-licenses.txt: tmp/ceres-solver-$(CERES_VERSION) tmp/libsbml-$(LIBSBML_VERSION) tmp/libxml2-$(LIBXML2_VERSION) tmp/protobuf-$(PROTOBUF_VERSION) tmp/SBML_odeSolver-$(SOSLIB_VERSION) tmp/sundials-$(SUNDIALS_VERSION) tmp/wxWidgets-$(WXWIDGETS_VERSION) | flint
 	echo ';;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;' > $@
 	echo ';; Licenses of third-party libraries' >> $@
 	echo ';;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;' >> $@
+	echo >> $@
+	echo ';; Ceres Solver $(CERES_VERSION)' >> $@
+	echo >> $@
+	cat var/ceres-solver-$(CERES_VERSION)/LICENSE >> $@
 	echo >> $@
 	echo ';; CZMQ $(CZMQ_VERSION)' >> $@
 	echo >> $@

@@ -29,6 +29,7 @@ BOOST_DYLIBS := \
     system
 DYLIBS := \
     libODES.0 \
+    libceres.$(CERES_CURRENT) \
     libczmq.$(CZMQ_CURRENT) \
     libsbml.$(LIBSBML_VERSION) \
     libsedml.0 \
@@ -152,6 +153,11 @@ tmp/$(BOOST_UNDERSCORE): src/$(BOOST_UNDERSCORE).tar.bz2 boost-$(BOOST_VERSION).
 	patch var/$(BOOST_UNDERSCORE)/boost/process/detail/config.hpp boost-$(BOOST_VERSION).patch
 	touch $@
 
+tmp/ceres-solver-$(CERES_VERSION): src/ceres-solver-$(CERES_VERSION).tar.gz | tmp
+	-rm -rf var/ceres-solver-$(CERES_VERSION)
+	tar -C var -zxf $<
+	touch $@
+
 tmp/clibsedml-$(CLIBSEDML_VERSION): src/clibsedml-$(CLIBSEDML_VERSION).tar.gz | tmp
 	-rm -rf var/clibsedml-$(CLIBSEDML_VERSION)
 	tar -C var -zxf $<
@@ -200,6 +206,11 @@ tmp/zeromq-$(ZEROMQ_VERSION): src/zeromq-$(ZEROMQ_VERSION).tar.gz | tmp
 
 tmp/$(BOOST_UNDERSCORE).installed: tmp/$(BOOST_UNDERSCORE)
 	(cd var/$(BOOST_UNDERSCORE) && export MACOSX_DEPLOYMENT_TARGET=10.8 && ./bootstrap.sh --with-toolset=clang --without-icu && ./b2 -d0 --prefix=$(PREFIX) $(B2_WITHOUT_OPTIONS) --layout=tagged toolset=clang cflags='-arch x86_64 -mmacosx-version-min=10.8' cxxflags='-std=c++11 -stdlib=libc++ -arch x86_64 -mmacosx-version-min=10.8' linkflags='-stdlib=libc++ -arch x86_64 -mmacosx-version-min=10.8' link=shared variant=release threading=multi install)
+	touch $@
+
+tmp/ceres-solver-$(CERES_VERSION).installed: tmp/ceres-solver-$(CERES_VERSION)
+	install -d var/ceres-solver-$(CERES_VERSION)/build
+	(cd var/ceres-solver-$(CERES_VERSION)/build && export MACOSX_DEPLOYMENT_TARGET=10.8 && CC='clang' CXX='clang++' CFLAGS='-arch x86_64 -mmacosx-version-min=10.8' CXXFLAGS='-std=c++11 -stdlib=libc++ -arch x86_64 -mmacosx-version-min=10.8' LDFLAGS='-stdlib=libc++ -arch x86_64 -mmacosx-version-min=10.8' cmake -DCMAKE_INSTALL_PREFIX=$(PREFIX) -DEIGEN_INCLUDE_DIR=$(abspath ../include) $(CERES_CMAKE_OPTIONS) .. && $(MAKE) all install)
 	touch $@
 
 tmp/clibsedml-$(CLIBSEDML_VERSION).installed: tmp/clibsedml-$(CLIBSEDML_VERSION) tmp/libxml2-$(LIBXML2_VERSION).installed
@@ -254,7 +265,7 @@ build.xml: build.xml.in
 
 build/Makefile: ../configure
 	install -d $(dir $@)
-	(cd $(dir $@) && ../../configure --prefix=$(CURDIR)/opt --with-boost=$(PREFIX) --with-protoc=$(PREFIX)/bin/protoc --with-xml-prefix=$(PREFIX) --with-protoc=$(PREFIX)/bin/protoc --with-sundials=$(PREFIX) --with-wxWidgets=$(PREFIX) --enable-release --enable-silent-rules CC='clang' CXX='clang++' CFLAGS='-arch x86_64 -mmacosx-version-min=10.8' CXXFLAGS='-stdlib=libc++ -arch x86_64 -mmacosx-version-min=10.8' LDFLAGS='-stdlib=libc++ -arch x86_64 -mmacosx-version-min=10.8 -headerpad_max_install_names' PKG_CONFIG=$(PKG_CONFIG) PKG_CONFIG_PATH=$(PKG_CONFIG_PATH))
+	(cd $(dir $@) && ../../configure --prefix=$(CURDIR)/opt --with-boost=$(PREFIX) --with-ceres-solver=$(PREFIX) --with-protoc=$(PREFIX)/bin/protoc --with-xml-prefix=$(PREFIX) --with-protoc=$(PREFIX)/bin/protoc --with-sundials=$(PREFIX) --with-wxWidgets=$(PREFIX) --enable-release --enable-silent-rules CC='clang' CXX='clang++' CFLAGS='-arch x86_64 -mmacosx-version-min=10.8' CXXFLAGS='-stdlib=libc++ -arch x86_64 -mmacosx-version-min=10.8' LDFLAGS='-stdlib=libc++ -arch x86_64 -mmacosx-version-min=10.8 -headerpad_max_install_names' PKG_CONFIG=$(PKG_CONFIG) PKG_CONFIG_PATH=$(PKG_CONFIG_PATH))
 
 $(foreach p,$(PROGRAMS),opt/bin/$(p)): build/Makefile
 	$(MAKE) -C build all install-exec
@@ -283,11 +294,15 @@ $(APP)/Contents/Info.plist $(APP)/Contents/Java/flint.jar $(foreach j,$(JARS),$(
 
 $(foreach p,$(PROGRAMS),$(eval $(call flint_macos_program,$(p))))
 
-$(APP)/Contents/Resources/third-party-licenses.txt: tmp/libsbml-$(LIBSBML_VERSION) tmp/libxml2-$(LIBXML2_VERSION) tmp/protobuf-$(PROTOBUF_VERSION) tmp/SBML_odeSolver-$(SOSLIB_VERSION) tmp/sundials-$(SUNDIALS_VERSION)
+$(APP)/Contents/Resources/third-party-licenses.txt: tmp/ceres-solver-$(CERES_VERSION) tmp/libsbml-$(LIBSBML_VERSION) tmp/libxml2-$(LIBXML2_VERSION) tmp/protobuf-$(PROTOBUF_VERSION) tmp/SBML_odeSolver-$(SOSLIB_VERSION) tmp/sundials-$(SUNDIALS_VERSION)
 	install -d $(dir $@)
 	echo ';;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;' > $@
 	echo ';; Licenses of third-party libraries' >> $@
 	echo ';;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;' >> $@
+	echo >> $@
+	echo ';; Ceres Solver $(CERES_VERSION)' >> $@
+	echo >> $@
+	cat var/ceres-solver-$(CERES_VERSION)/LICENSE >> $@
 	echo >> $@
 	echo ';; CZMQ $(CZMQ_VERSION)' >> $@
 	echo >> $@

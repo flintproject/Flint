@@ -1,4 +1,5 @@
 BOOST_VERSION = 1.64.0
+CERES_VERSION = 1.12.0
 CLIBSEDML_VERSION = 0.1.0
 CZMQ_VERSION = 4.0.2
 LIBSBML_VERSION = 5.13.0
@@ -9,6 +10,7 @@ SUNDIALS_VERSION = 2.7.0
 WXWIDGETS_VERSION = 3.1.0
 ZEROMQ_VERSION = 4.2.2
 
+CERES_CURRENT = 1
 CZMQ_CURRENT = 4
 PROTOBUF_CURRENT = 12
 ZEROMQ_CURRENT = 5
@@ -20,6 +22,7 @@ BOOST_UNDERSCORE = boost_$(subst .,_,$(BOOST_VERSION))
 
 ALL_EXTERNAL_LIBRARIES = \
 	$(BOOST_UNDERSCORE).tar.bz2 \
+	ceres-solver-$(CERES_VERSION).tar.gz \
 	clibsedml-$(CLIBSEDML_VERSION).tar.gz \
 	czmq-$(CZMQ_VERSION).tar.gz \
 	libSBML-$(LIBSBML_VERSION)-core-src.zip \
@@ -32,6 +35,7 @@ ALL_EXTERNAL_LIBRARIES = \
 
 ALL_EXTERNAL_LIBRARY_DIRS = \
 	$(BOOST_UNDERSCORE) \
+	ceres-solver-$(CERES_VERSION) \
 	clibsedml-$(CLIBSEDML_VERSION) \
 	czmq-$(CZMQ_VERSION) \
 	libsbml-$(LIBSBML_VERSION) \
@@ -92,6 +96,7 @@ endef
 endif
 
 $(eval $(call external_library_source,http://downloads.sourceforge.net/project/boost/boost/$(BOOST_VERSION),$(BOOST_UNDERSCORE).tar.bz2,93eecce2abed9d2442c9676914709349))
+$(eval $(call external_library_source,http://ceres-solver.org/,ceres-solver-$(CERES_VERSION).tar.gz,278a7b366881cc45e258da71464114d9))
 $(eval $(call external_library_source3,https://github.com/flintproject/clibsedml/archive/v$(CLIBSEDML_VERSION).tar.gz,clibsedml-$(CLIBSEDML_VERSION).tar.gz,72a4c7ddfd2cdf5c3716c08b422dc7d8))
 $(eval $(call external_library_source,https://github.com/zeromq/czmq/releases/download/v$(CZMQ_VERSION),czmq-$(CZMQ_VERSION).tar.gz,b27cb5a23c472949b1e37765e404dc98))
 $(eval $(call external_library_source,http://downloads.sourceforge.net/project/sbml/libsbml/$(LIBSBML_VERSION)/stable,libSBML-$(LIBSBML_VERSION)-core-src.zip,6581723e894eee8058b95fa80df7aad4))

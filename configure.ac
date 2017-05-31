@@ -84,6 +84,20 @@ PKG_CHECK_MODULES([PROTOBUF],[protobuf])
 PKG_CHECK_MODULES([ZEROMQ],[libzmq >= 4.2.2])
 PKG_CHECK_MODULES([CZMQ],[libczmq >= 4.0.2])
 
+AC_ARG_WITH([ceres-solver],
+        [AS_HELP_STRING([--with-ceres-solver],
+                [Specify prefix of Ceres Solver])])
+CERES_CPPFLAGS=
+CERES_LIBS=-lceres
+if test -d "$with_ceres_solver"; then
+   CERES_CPPFLAGS="-I$with_ceres_solver/include"
+   CERES_LIBS="-L$with_ceres_solver/lib $CERES_LIBS"
+elif test ! -z "$with_ceres_solver"; then
+    AC_MSG_ERROR([$with_ceres_solver is not a directory, please specify valid location of Ceres Solver])
+fi
+AC_SUBST([CERES_CPPFLAGS])
+AC_SUBST([CERES_LIBS])
+
 AC_ARG_WITH([sundials],
         [AS_HELP_STRING([--with-sundials],
                 [Specify prefix of SUNDIALS])])
