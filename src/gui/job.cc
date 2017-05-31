@@ -50,7 +50,7 @@ int Job::GetProgress() const
 		boost::interprocess::file_mapping fm(filename.GetFullPath().c_str(), // TODO: check locale-dependency
 											 boost::interprocess::read_only);
 		boost::interprocess::mapped_region mr(fm, boost::interprocess::read_only, id, 1);
-		return static_cast<int>(*reinterpret_cast<char *>(mr.get_address()));
+		return static_cast<int>(*static_cast<char *>(mr.get_address()));
 	} catch (const boost::interprocess::interprocess_exception &) {
 		return 0;
 	}
@@ -63,7 +63,7 @@ bool Job::IsCanceled() const
 		boost::interprocess::file_mapping fm(filename.GetFullPath().c_str(), // TODO: check locale-dependency
 											 boost::interprocess::read_only);
 		boost::interprocess::mapped_region mr(fm, boost::interprocess::read_only, id, 1);
-		return *reinterpret_cast<char *>(mr.get_address()) == 1;
+		return *static_cast<char *>(mr.get_address()) == 1;
 	} catch (const boost::interprocess::interprocess_exception &) {
 		return false;
 	}

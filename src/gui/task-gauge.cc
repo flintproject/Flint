@@ -68,7 +68,7 @@ wxThread::ExitCode TaskGauge::Entry()
 	}
 
     while (!GetThread()->TestDestroy()) {
-		int p = static_cast<int>(*reinterpret_cast<char *>(mr.get_address()));
+		int p = static_cast<int>(*static_cast<char *>(mr.get_address()));
 
 		auto *event = new wxThreadEvent;
 		event->SetInt(p);

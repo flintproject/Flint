@@ -88,13 +88,13 @@ void TaskFrame::OnTimer(wxTimerEvent &)
 	for (unsigned int i=0;i<n;i++) {
 		if (mr_.get_size() <= static_cast<size_t>(i+1))
 			return;
-		int progress = *(reinterpret_cast<char *>(mr_.get_address())+i+1);
+		int progress = *(static_cast<char *>(mr_.get_address())+i+1);
 		data_view_->SetValue(progress, i, kColumnProgress);
 		data_view_->SetTextValue(wxString::Format("%d%%", progress), i, kColumnStatus);
 		if (task_.HasObjective())
 			data_view_->SetTextValue(GetRss(i+1), i, kColumnRss);
 	}
-	if (*(reinterpret_cast<char *>(mr_.get_address())) == 100 || task_.IsCanceled())
+	if (*(static_cast<char *>(mr_.get_address())) == 100 || task_.IsCanceled())
 		timer_.Stop();
 }
 
@@ -163,7 +163,7 @@ wxString TaskFrame::GetRss(int job_id)
 {
 	size_t offset = job_id * sizeof(double);
 	assert(offset + sizeof(double) <= rss_mr_.get_size());
-	double *p = reinterpret_cast<double *>(reinterpret_cast<char *>(rss_mr_.get_address())+ offset);
+	double *p = reinterpret_cast<double *>(static_cast<char *>(rss_mr_.get_address())+ offset);
 	return wxString::Format("%g", *p);
 }
 
@@ -263,7 +263,7 @@ int TaskFrame::AddParameterSample(int argc, char **argv, char **names)
 	assert(id > 0);
 	if (mr_.get_size() <= static_cast<size_t>(id))
 		return 1;
-	int progress = *(reinterpret_cast<char *>(mr_.get_address())+id);
+	int progress = *(static_cast<char *>(mr_.get_address())+id);
 	wxString param;
 	wxVector<wxVariant> data;
 	data.push_back(wxString::Format("%d", id));

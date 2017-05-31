@@ -20,7 +20,7 @@ Cursor::Position Cursor::operator()(double t, double **p)
 {
 	if (position_ >= mr_.get_size())
 		return Position::kEnd;
-	double *h = reinterpret_cast<double *>(reinterpret_cast<char *>(mr_.get_address()) + position_);
+	double *h = reinterpret_cast<double *>(static_cast<char *>(mr_.get_address()) + position_);
 	double t0 = *h;
 	if (t < t0)
 		return Position::kGt;
