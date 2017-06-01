@@ -124,7 +124,7 @@ endef
 
 .PHONY: all check mostlyclean clean distclean download
 
-all: download $(foreach lib,$(BOOST_UNDERSCORE) clibsedml-$(CLIBSEDML_VERSION) czmq-$(CZMQ_VERSION) libsbml-$(LIBSBML_VERSION) libxml2-$(LIBXML2_VERSION) protobuf-$(PROTOBUF_VERSION) SBML_odeSolver-$(SOSLIB_VERSION) sundials-$(SUNDIALS_VERSION) wxWidgets-$(WXWIDGETS_VERSION) zeromq-$(ZEROMQ_VERSION),tmp/$(lib).installed) $(DMGS)
+all: download $(foreach lib,$(BOOST_UNDERSCORE) ceres-solver-$(CERES_VERSION) clibsedml-$(CLIBSEDML_VERSION) czmq-$(CZMQ_VERSION) libsbml-$(LIBSBML_VERSION) libxml2-$(LIBXML2_VERSION) protobuf-$(PROTOBUF_VERSION) SBML_odeSolver-$(SOSLIB_VERSION) sundials-$(SUNDIALS_VERSION) wxWidgets-$(WXWIDGETS_VERSION) zeromq-$(ZEROMQ_VERSION),tmp/$(lib).installed) $(DMGS)
 
 check:
 	env DYLD_LIBRARY_PATH=$(PREFIX)/lib $(MAKE) -C build check
