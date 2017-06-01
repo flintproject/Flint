@@ -15,7 +15,8 @@ wxFileName Simulation::GetDirectoryName() const
 {
 	wxFileName filename;
 	filename.AssignHomeDir();
-	filename.AppendDir(".flint2");
+	filename.AppendDir(".flint");
+	filename.AppendDir("2");
 	filename.AppendDir("simulation");
 	filename.AppendDir(wxString::Format("%d", id));
 	return filename;
