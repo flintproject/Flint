@@ -30,7 +30,7 @@ bool App::OnInit()
 
 	wxFileName fileName;
 	fileName.AssignHomeDir();
-	fileName.AppendDir(".flint");
+	fileName.AppendDir(".flint2");
 	fileName.Mkdir(wxS_DIR_DEFAULT, wxPATH_MKDIR_FULL); // make sure that it exists
 	fileName.SetCwd();
 
@@ -49,7 +49,7 @@ int App::OnExit()
 	wxFileName fileName;
 	fileName.AssignHomeDir();
 	fileName.SetCwd(); // change directory at first
-	fileName.AppendDir(".flint");
+	fileName.AppendDir(".flint2");
 	fileName.Rmdir(wxPATH_RMDIR_RECURSIVE);
 
 	return wxApp::OnExit();
