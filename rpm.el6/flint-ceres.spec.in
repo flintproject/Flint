@@ -38,7 +38,7 @@ rm -rf %{buildroot}
 %defattr(-,root,root,-)
 %doc
 /opt/flint/include/ceres/*
-/opt/flint/lib/cmake/*
-/opt/flint/lib/libceres.*
+/opt/flint/lib64/cmake/Ceres/*
+/opt/flint/lib64/libceres.*
 
 %changelog
