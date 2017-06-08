@@ -52,10 +52,10 @@ ViewFrame::ViewFrame(TaskFrame *parent, wxDataViewListCtrl &job_list)
 	, num_variables_(0)
 	, skip_(0)
 {
-	data_view_->AppendToggleColumn("X");
-	data_view_->AppendToggleColumn("Y1");
-	data_view_->AppendToggleColumn("Y2");
-	data_view_->AppendTextColumn("Name");
+	data_view_->AppendToggleColumn("X", wxDATAVIEW_CELL_ACTIVATABLE, wxDVC_TOGGLE_DEFAULT_WIDTH);
+	data_view_->AppendToggleColumn("Y1", wxDATAVIEW_CELL_ACTIVATABLE, wxDVC_TOGGLE_DEFAULT_WIDTH);
+	data_view_->AppendToggleColumn("Y2", wxDATAVIEW_CELL_ACTIVATABLE, wxDVC_TOGGLE_DEFAULT_WIDTH);
+	data_view_->AppendTextColumn("Name", wxDATAVIEW_CELL_INERT, wxDVC_DEFAULT_WIDTH);
 	data_view_->AppendTextColumn("UUID");
 	data_view_->AppendTextColumn("Label");
 
