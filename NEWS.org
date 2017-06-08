@@ -1,3 +1,24 @@
+* Flint 1.8 (2017-06-09)
+
+** Supported platforms
+   - OS X Lion (10.7) is no longer supported.
+   - OS X Mountain Lion (10.8) support is now deprecated; it will be dropped
+     with incoming v1.9 release.
+   - Java 7 support is also deprecated.
+** New features
+   - Added a program called flint2 as an experimental feature, a prototype
+     of next-generation simulator, currently only supporting PHML models.
+     Please note that it is unstable and still under heavy development.
+** Improvements
+   - Loading a model got faster with more efficient parser.
+   - Allow floating-point number literals to end with "."; for example,
+     "-2." is now a valid representation of a negative two.
+   - isdplot's command options --isdstrip and --isd2csv have been dropped;
+     user no longer has to specify either. In addition, --gnuplot option
+     is optional now; gnuplot in PATH is chosen by default.
+   - isdplot and isd2csv now accept two new options: --ignore-prefixes (-P)
+     and --ignore-units (-U).
+
 * Flint 1.7.1 (2016-12-28)
 
 ** Bug fixes
