@@ -25,7 +25,7 @@ In order to build Flint, the following libraries are required:
   http://xmlsoft.org/
 - libSBML 3.4.1 or later
   http://sbml.org/Software/libSBML
-- clibsedml 0.1.0
+- clibsedml 0.1.2
   https://github.com/flintproject/clibsedml
 - wxWidgets 3.1.0
   https://www.wxwidgets.org/
