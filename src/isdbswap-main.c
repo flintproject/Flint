@@ -8,7 +8,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#if defined(_WIN32) && defined(__MINGW32__)
+#if defined(_WIN32)
 #define le32toh(x) (x)
 #define be32toh(x) BSWAP_32(x)
 
