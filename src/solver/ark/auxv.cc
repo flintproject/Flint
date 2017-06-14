@@ -34,6 +34,7 @@ public:
 
 	bool Lb(const bc::Lb &/*lb*/, int /*offset*/) {
 		assert(false);
+		return false;
 	}
 
 	bool Load(const bc::Load &load, int offset) {
