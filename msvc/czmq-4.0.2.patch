@@ -1,0 +1,11 @@
+--- Findlibzmq.cmake.orig	2017-01-01 04:57:21.000000000 +0900
++++ Findlibzmq.cmake	2017-06-13 09:50:56.496310700 +0900
+@@ -28,7 +28,7 @@
+ 
+ find_library (
+     LIBZMQ_LIBRARIES
+-    NAMES zmq
++    NAMES libzmq-v140-mt-4_2_2
+     HINTS ${PC_LIBZMQ_LIBRARY_HINTS}
+ )
+ 

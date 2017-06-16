@@ -1,0 +1,7 @@
+all.proj
+config.mk
+msbuild.log
+opt/
+src/
+tmp/
+var/

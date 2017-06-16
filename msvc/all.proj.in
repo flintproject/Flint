@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns='http://schemas.microsoft.com/developer/msbuild/2003' DefaultTargets='Build'>
+
+  <PropertyGroup>
+
+    <PREFIX>$(MSBuildProjectDirectory)\opt</PREFIX>
+    <VARDIR>$(MSBuildProjectDirectory)\var</VARDIR>
+    <PBDIR>$(MSBuildProjectDirectory)\..\pb</PBDIR>
+    <EIGEN_INCLUDE_DIR>$(MSBuildProjectDirectory)\..\include</EIGEN_INCLUDE_DIR>
+
+    <BOOST_UNDERSCORE>__BOOST_UNDERSCORE</BOOST_UNDERSCORE>
+    <B2_WITHOUT_OPTIONS>__B2_WITHOUT_OPTIONS</B2_WITHOUT_OPTIONS>
+    <CERES_VERSION>__CERES_VERSION</CERES_VERSION>
+    <CLIBSEDML_VERSION>__CLIBSEDML_VERSION</CLIBSEDML_VERSION>
+    <CZMQ_VERSION>__CZMQ_VERSION</CZMQ_VERSION>
+    <LIBSBML_VERSION>__LIBSBML_VERSION</LIBSBML_VERSION>
+    <LIBXML2_VERSION>__LIBXML2_VERSION</LIBXML2_VERSION>
+    <PROTOBUF_VERSION>__PROTOBUF_VERSION</PROTOBUF_VERSION>
+    <SOSLIB_VERSION>__SOSLIB_VERSION</SOSLIB_VERSION>
+    <SUNDIALS_VERSION>__SUNDIALS_VERSION</SUNDIALS_VERSION>
+    <ZEROMQ_VERSION>__ZEROMQ_VERSION</ZEROMQ_VERSION>
+
+  </PropertyGroup>
+
+  <ItemGroup>
+    <wxWidgetsLibraryFiles Include="$(VARDIR)\lib\**\*.*"/>
+    <wxWidgetsHeaderFiles Include="$(VARDIR)\include\**\*.*"/>
+  </ItemGroup>
+
+  <Target Name='Build' DependsOnTargets='boost;ceres-solver;libxml2;clibsedml;libsbml;sundials;SBML_odeSolver;zeromq;czmq;wxWidgets;protobuf;flint'>
+  </Target>
+
+  <Target Name='boost'>
+    <Exec Command='bootstrap' WorkingDirectory='$(VARDIR)\$(BOOST_UNDERSCORE)'/>
+    <Exec Command='.\b2 -d0 --prefix="$(PREFIX)" $(B2_WITHOUT_OPTIONS) variant=release threading=multi link=shared runtime-link=shared install' WorkingDirectory='$(VARDIR)\$(BOOST_UNDERSCORE)'/>
+  </Target>
+
+  <Target Name='ceres-solver' Outputs='tmp\ceres-solver-$(CERES_VERSION).installed'>
+    <MakeDir Directories='$(VARDIR)\ceres-solver-$(CERES_VERSION)\build'/>
+    <Exec Command='cmake -DCMAKE_INSTALL_PREFIX="$(PREFIX)" -DEIGEN_INCLUDE_DIR="$(EIGEN_INCLUDE_DIR)" -DMINIGLOG=ON -DBUILD_SHARED_LIBS=ON ..' WorkingDirectory='$(VARDIR)\ceres-solver-$(CERES_VERSION)\build'/>
+    <Exec Command='cmake --build "$(VARDIR)\ceres-solver-$(CERES_VERSION)\build" --target install --config Release --clean-first'/>
+    <Touch AlwaysCreate='true' Files='tmp\ceres-solver-$(CERES_VERSION).installed'/>
+  </Target>
+
+  <Target Name='clibsedml' Outputs='tmp\clibsedml-$(CLIBSEDML_VERSION).installed'>
+    <MakeDir Directories='$(VARDIR)\clibsedml-$(CLIBSEDML_VERSION)\build'/>
+    <Exec Command='cmake -DCMAKE_INSTALL_PREFIX="$(PREFIX)" -DBUILD_SHARED_LIBS=ON ..' WorkingDirectory='$(VARDIR)\clibsedml-$(CLIBSEDML_VERSION)\build'/>
+    <Exec Command='cmake --build "$(VARDIR)\clibsedml-$(CLIBSEDML_VERSION)\build" --target install --config Release --clean-first'/>
+    <Touch AlwaysCreate='true' Files='tmp\clibsedml-$(CLIBSEDML_VERSION).installed'/>
+  </Target>
+
+  <Target Name='czmq' Inputs='tmp\zeromq-$(ZEROMQ_VERSION).installed' Outputs='tmp\czmq-$(CZMQ_VERSION).installed'>
+    <MakeDir Directories='$(VARDIR)\czmq-$(CZMQ_VERSION)\build'/>
+    <Exec Command='cmake -DCMAKE_INSTALL_PREFIX="$(PREFIX)" -DBUILD_SHARED_LIBS=ON ..' WorkingDirectory='$(VARDIR)\czmq-$(CZMQ_VERSION)\build'/>
+    <Exec Command='cmake --build "$(VARDIR)\czmq-$(CZMQ_VERSION)\build" --target install --config Release --clean-first'/>
+    <Touch AlwaysCreate='true' Files='tmp\czmq-$(CZMQ_VERSION).installed'/>
+  </Target>
+
+  <Target Name='libsbml' DependsOnTargets='libxml2' Inputs='$(PREFIX)\bin\libxml2.dll' Outputs='tmp\libsbml-$(LIBSBML_VERSION).installed'>
+    <MakeDir Directories='$(VARDIR)\libsbml-$(LIBSBML_VERSION)\build'/>
+    <Exec Command='cmake -DCMAKE_INSTALL_PREFIX="$(PREFIX)" -DLIBXML_INCLUDE_DIR="$(PREFIX)\include\libxml2" -DWITH_SWIG=OFF -DBUILD_SHARED_LIBS=ON ..' WorkingDirectory='$(VARDIR)\libsbml-$(LIBSBML_VERSION)\build'/>
+    <Exec Command='cmake --build "$(VARDIR)\libsbml-$(LIBSBML_VERSION)\build" --target install --config Release --clean-first'/>
+    <Touch AlwaysCreate='true' Files='tmp\libsbml-$(LIBSBML_VERSION).installed'/>
+  </Target>
+
+  <Target Name='libxml2' Outputs='$(PREFIX)\bin\libxml2.dll'>
+    <Exec Command='cscript configure.js prefix="$(PREFIX)" static=no debug=no iconv=no icu=no ftp=no http=no lzma=no python=no threads=no zlib=no' WorkingDirectory='$(VARDIR)/libxml2-$(LIBXML2_VERSION)/win32'/>
+    <Exec Command='nmake /f Makefile.msvc rebuild install' WorkingDirectory='$(VARDIR)/libxml2-$(LIBXML2_VERSION)/win32'/>
+  </Target>
+
+  <Target Name='protobuf' Outputs='tmp\protobuf-$(PROTOBUF_VERSION).installed'>
+    <MakeDir Directories='$(VARDIR)\protobuf-$(PROTOBUF_VERSION)\cmake\build'/>
+    <Exec Command='cmake -DCMAKE_INSTALL_PREFIX="$(PREFIX)" -DBUILD_SHARED_LIBS=ON -Dprotobuf_BUILD_TESTS=OFF ..' WorkingDirectory='$(VARDIR)\protobuf-$(PROTOBUF_VERSION)\cmake\build'/>
+    <Exec Command='cmake --build "$(VARDIR)\protobuf-$(PROTOBUF_VERSION)\cmake\build" --target install --config Release --clean-first'/>
+    <Touch AlwaysCreate='true' Files='tmp\protobuf-$(PROTOBUF_VERSION).installed'/>
+  </Target>
+
+  <Target Name='SBML_odeSolver' Outputs='tmp\SBML_odeSolver-$(SOSLIB_VERSION).installed'>
+    <MakeDir Directories='$(VARDIR)\SBML_odeSolver-$(SOSLIB_VERSION)\build'/>
+    <Exec Command='cmake -DCMAKE_INSTALL_PREFIX="$(PREFIX)" -DBUILD_SHARED_LIBS=ON ..' WorkingDirectory='$(VARDIR)\SBML_odeSolver-$(SOSLIB_VERSION)\build'/>
+    <Exec Command='cmake --build "$(VARDIR)\SBML_odeSolver-$(SOSLIB_VERSION)\build" --target install --config Release --clean-first'/>
+    <Touch AlwaysCreate='true' Files='tmp\SBML_odeSolver-$(SOSLIB_VERSION).installed'/>
+  </Target>
+
+  <Target Name='sundials' Outputs='tmp\sundials-$(SUNDIALS_VERSION).installed'>
+    <MakeDir Directories='$(VARDIR)\sundials-$(SUNDIALS_VERSION)\build'/>
+    <Exec Command='cmake -DCMAKE_INSTALL_PREFIX="$(PREFIX)" -DBUILD_SHARED_LIBS=OFF -DBUILD_STATIC_LIBS=ON ..' WorkingDirectory='$(VARDIR)\sundials-$(SUNDIALS_VERSION)\build'/>
+    <Exec Command='cmake --build "$(VARDIR)\sundials-$(SUNDIALS_VERSION)\build" --target install --config Release --clean-first'/>
+    <Touch AlwaysCreate='true' Files='tmp\sundials-$(SUNDIALS_VERSION).installed'/>
+  </Target>
+
+  <Target Name='zeromq' Outputs='tmp\zeromq-$(ZEROMQ_VERSION).installed'>
+    <MakeDir Directories='$(VARDIR)\zeromq-$(ZEROMQ_VERSION)\build'/>
+    <Exec Command='cmake -DCMAKE_INSTALL_PREFIX="$(PREFIX)" -DBUILD_SHARED_LIBS=ON -DWITH_PERF_TOOL=OFF -DZMQ_BUILD_TESTS=OFF -DENABLE_CPACK=OFF ..' WorkingDirectory='$(VARDIR)\zeromq-$(ZEROMQ_VERSION)\build'/>
+    <Exec Command='cmake --build "$(VARDIR)\zeromq-$(ZEROMQ_VERSION)\build" --target install --config Release --clean-first'/>
+    <Touch AlwaysCreate='true' Files='tmp\zeromq-$(ZEROMQ_VERSION).installed'/>
+  </Target>
+
+  <Target Name='wxWidgets'>
+    <Copy SourceFiles='@(wxWidgetsLibraryFiles)' DestinationFiles="@(wxWidgetsLibraryFiles->'$(PREFIX)\lib\%(RecursiveDir)%(Filename)%(Extension)')"/>
+    <Copy SourceFiles='@(wxWidgetsHeaderFiles)' DestinationFiles="@(wxWidgetsHeaderFiles->'$(PREFIX)\include\%(RecursiveDir)%(Filename)%(Extension)')"/>
+  </Target>
+
+  <Target Name='bc-pb' Inputs='tmp\protobuf-$(PROTOBUF_VERSION).installed' Outputs='..\src\bc.pb.cc'>
+    <Exec Command='protoc -I"$(PBDIR)" --cpp_out="$(MSBuildProjectDirectory)\..\src" "$(PBDIR)\bc.proto"' WorkingDirectory='$(PREFIX)\bin'/>
+  </Target>
+
+  <Target Name='cli-pb' Inputs='tmp\protobuf-$(PROTOBUF_VERSION).installed' Outputs='..\src\cli.pb.cc'>
+    <Exec Command='protoc -I"$(PBDIR)" --cpp_out="$(MSBuildProjectDirectory)\..\src" "$(PBDIR)\cli.proto"' WorkingDirectory='$(PREFIX)\bin'/>
+  </Target>
+
+  <Target Name='ipc-pb' Inputs='tmp\protobuf-$(PROTOBUF_VERSION).installed' Outputs='..\src\ipc.pb.cc'>
+    <Exec Command='protoc -I"$(PBDIR)" --cpp_out="$(MSBuildProjectDirectory)\..\src" "$(PBDIR)\ipc.proto"' WorkingDirectory='$(PREFIX)\bin'/>
+  </Target>
+
+  <Target Name='lo-pb' Inputs='tmp\protobuf-$(PROTOBUF_VERSION).installed' Outputs='..\src\lo.pb.cc'>
+    <Exec Command='protoc -I"$(PBDIR)" --cpp_out="$(MSBuildProjectDirectory)\..\src" "$(PBDIR)\lo.proto"' WorkingDirectory='$(PREFIX)\bin'/>
+  </Target>
+
+  <Target Name='phml-pb' Inputs='tmp\protobuf-$(PROTOBUF_VERSION).installed' Outputs='..\src\phml.pb.cc'>
+    <Exec Command='protoc -I"$(PBDIR)" --cpp_out="$(MSBuildProjectDirectory)\..\src" "$(PBDIR)\phml.proto"' WorkingDirectory='$(PREFIX)\bin'/>
+  </Target>
+
+  <Target Name='unit-pb' Inputs='tmp\protobuf-$(PROTOBUF_VERSION).installed' Outputs='..\src\unit.pb.cc'>
+    <Exec Command='protoc -I"$(PBDIR)" --cpp_out="$(MSBuildProjectDirectory)\..\src" "$(PBDIR)\unit.proto"' WorkingDirectory='$(PREFIX)\bin'/>
+  </Target>
+
+  <Target Name='flint'
+          DependsOnTargets='bc-pb;cli-pb;ipc-pb;lo-pb;phml-pb;unit-pb'
+          Inputs='..\src\bc.pb.cc;..\src\cli.pb.cc;..\src\ipc.pb.cc;..\src\lo.pb.cc;..\src\phml.pb.cc;..\src\unit.pb.cc'
+          Outputs='tmp\flint.installed'>
+    <MakeDir Directories='$(VARDIR)\build'/>
+    <Exec Command='cmake -DCMAKE_INSTALL_PREFIX="$(PREFIX)" ..\..\..' WorkingDirectory='$(VARDIR)\build'/>
+    <Exec Command='cmake --build "$(VARDIR)\build" --target install --config Release --clean-first'/>
+    <Touch AlwaysCreate='true' Files='tmp\flint.installed'/>
+  </Target>
+
+</Project>

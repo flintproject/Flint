@@ -1,0 +1,32 @@
+diff -urp clibsedml-0.1.2.orig/src/CMakeLists.txt clibsedml-0.1.2/src/CMakeLists.txt
+--- clibsedml-0.1.2.orig/src/CMakeLists.txt	2017-06-15 15:52:05.663386300 +0900
++++ clibsedml-0.1.2/src/CMakeLists.txt	2017-06-15 15:45:49.190741600 +0900
+@@ -5,6 +5,9 @@ add_library(sedml
+   writer.c
+   xhtml.c
+   )
++if(MSVC AND BUILD_SHARED_LIBS) 
++target_compile_definitions(sedml PRIVATE SEDML_DLLEXPORT)
++endif(MSVC AND BUILD_SHARED_LIBS)
+ 
+ target_link_libraries(sedml PRIVATE "${LIBXML2_LIBRARIES}")
+ 
+diff -urp clibsedml-0.1.2.orig/src/sedml/common.h clibsedml-0.1.2/src/sedml/common.h
+--- clibsedml-0.1.2.orig/src/sedml/common.h	2017-06-13 14:10:51.000000000 +0900
++++ clibsedml-0.1.2/src/sedml/common.h	2017-06-15 15:40:08.222978000 +0900
+@@ -10,7 +10,15 @@
+ #define SEDML_C_DECL_END
+ #endif
+ 
++#ifdef _WIN32
++#ifdef SEDML_DLLEXPORT
++#define SEDML_FUNCTION __declspec(dllexport)
++#else
++#define SEDML_FUNCTION __declspec(dllimport)
++#endif
++#else
+ #define SEDML_FUNCTION
++#endif
+ 
+ #define SEDML_NAMESPACE "http://sed-ml.org/"
+ #define SEDML_LEVEL 1

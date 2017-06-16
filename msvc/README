@@ -1,0 +1,47 @@
+This directory contains scripts for building Flint with Microsoft Visual C++
+(MSVC) and packaging a Windows installer.
+
+We have tested our procedure on Windows 10.
+
+
+= Prerequistites
+
+* CMake 3.8 or later
+  http://cmake.org/
+
+* Cygwin
+  http://www.cygwin.com/
+  Besides the default installation, the following programs are needed:
+  - 7z
+  - wget
+
+* Visual Studio 2015 or later
+  https://www.visualstudio.com/
+  Do not forget to install the Visual C++ component:
+  https://msdn.microsoft.com/en-us/library/e2h7fzkw.aspx
+
+* WiX 3.x
+  http://wixtoolset.org/
+  in order to create .msi installer package.
+
+
+= Steps
+
+0. Please make sure that the following programs are in your PATH:
+   - cmake
+
+1. Choose a target architecture i.e. x86 or x86-64;
+   create and edit config.mk accordingly.
+   See config.mk.* for example.
+
+2. Start Cygwin Terminal;
+   change directory to this directory;
+   and run GNU Make:
+   $ make
+   Then it will download and unpack dependency libraries.
+
+3. Launch "VS2015 x86 Native Tools Command Prompt" (or "VS2015 x64 Native Tools
+   Command Prompt" if you choose x86-64 in the above step);
+   change directory to this directory;
+   and run MSBuild with a project file:
+   > msbuild all.proj /fl

@@ -1,0 +1,215 @@
+From 2b6aa29d32abd07ffdf29c773e1e336e5e14f1e9 Mon Sep 17 00:00:00 2001
+From: Julien Schueller <schueller@phimeca.com>
+Date: Thu, 3 Nov 2016 17:51:13 +0100
+Subject: [PATCH] mingw: install dlls into prefix/bin
+
+---
+ src/arkode/CMakeLists.txt        | 2 +-
+ src/cvode/CMakeLists.txt         | 2 +-
+ src/cvodes/CMakeLists.txt        | 2 +-
+ src/ida/CMakeLists.txt           | 2 +-
+ src/idas/CMakeLists.txt          | 2 +-
+ src/kinsol/CMakeLists.txt        | 2 +-
+ src/nvec_openmp/CMakeLists.txt   | 4 ++--
+ src/nvec_par/CMakeLists.txt      | 4 ++--
+ src/nvec_parhyp/CMakeLists.txt   | 2 +-
+ src/nvec_petsc/CMakeLists.txt    | 2 +-
+ src/nvec_pthreads/CMakeLists.txt | 4 ++--
+ src/nvec_ser/CMakeLists.txt      | 4 ++--
+ 12 files changed, 16 insertions(+), 16 deletions(-)
+
+diff --git a/src/arkode/CMakeLists.txt b/src/arkode/CMakeLists.txt
+index cfed8e6..5e266ba 100644
+--- a/src/arkode/CMakeLists.txt
++++ b/src/arkode/CMakeLists.txt
+@@ -147,7 +147,7 @@ IF(BUILD_SHARED_LIBS)
+     PROPERTIES VERSION ${arkodelib_VERSION} SOVERSION ${arkodelib_SOVERSION})
+ 
+   # Install the ARKODE library
+-  INSTALL(TARGETS sundials_arkode_shared DESTINATION lib)
++  INSTALL(TARGETS sundials_arkode_shared LIBRARY DESTINATION lib ARCHIVE DESTINATION lib RUNTIME DESTINATION bin)
+ 
+ ENDIF(BUILD_SHARED_LIBS)
+ 
+diff --git a/src/cvode/CMakeLists.txt b/src/cvode/CMakeLists.txt
+index d47cccc..c866031 100644
+--- a/src/cvode/CMakeLists.txt
++++ b/src/cvode/CMakeLists.txt
+@@ -154,7 +154,7 @@ IF(BUILD_SHARED_LIBS)
+     PROPERTIES VERSION ${cvodelib_VERSION} SOVERSION ${cvodelib_SOVERSION})
+ 
+   # Install the CVODE library
+-  INSTALL(TARGETS sundials_cvode_shared DESTINATION lib)
++  INSTALL(TARGETS sundials_cvode_shared LIBRARY DESTINATION lib ARCHIVE DESTINATION lib RUNTIME DESTINATION bin)
+ 
+ ENDIF(BUILD_SHARED_LIBS)
+ 
+diff --git a/src/cvodes/CMakeLists.txt b/src/cvodes/CMakeLists.txt
+index 38229df..a28695d 100644
+--- a/src/cvodes/CMakeLists.txt
++++ b/src/cvodes/CMakeLists.txt
+@@ -141,7 +141,7 @@ IF(BUILD_SHARED_LIBS)
+     PROPERTIES VERSION ${cvodeslib_VERSION} SOVERSION ${cvodeslib_SOVERSION})
+ 
+   # Install the CVODES library
+-  INSTALL(TARGETS sundials_cvodes_shared DESTINATION lib)
++  INSTALL(TARGETS sundials_cvodes_shared LIBRARY DESTINATION lib ARCHIVE DESTINATION lib RUNTIME DESTINATION bin)
+ 
+ ENDIF(BUILD_SHARED_LIBS)
+ 
+diff --git a/src/ida/CMakeLists.txt b/src/ida/CMakeLists.txt
+index 7aa8c84..3be1858 100644
+--- a/src/ida/CMakeLists.txt
++++ b/src/ida/CMakeLists.txt
+@@ -144,7 +144,7 @@ IF(BUILD_SHARED_LIBS)
+     PROPERTIES VERSION ${idalib_VERSION} SOVERSION ${idalib_SOVERSION})
+ 
+   # Install the IDA library
+-  INSTALL(TARGETS sundials_ida_shared DESTINATION lib)
++  INSTALL(TARGETS sundials_ida_shared LIBRARY DESTINATION lib ARCHIVE DESTINATION lib RUNTIME DESTINATION bin)
+ 
+ ENDIF(BUILD_SHARED_LIBS)
+ 
+diff --git a/src/idas/CMakeLists.txt b/src/idas/CMakeLists.txt
+index 400a228..739a08e 100644
+--- a/src/idas/CMakeLists.txt
++++ b/src/idas/CMakeLists.txt
+@@ -146,7 +146,7 @@ IF(BUILD_SHARED_LIBS)
+     PROPERTIES VERSION ${idaslib_VERSION} SOVERSION ${idaslib_SOVERSION})
+ 
+   # Install the IDAS library
+-  INSTALL(TARGETS sundials_idas_shared DESTINATION lib)
++  INSTALL(TARGETS sundials_idas_shared LIBRARY DESTINATION lib ARCHIVE DESTINATION lib RUNTIME DESTINATION bin)
+ 
+ ENDIF(BUILD_SHARED_LIBS)
+ 
+diff --git a/src/kinsol/CMakeLists.txt b/src/kinsol/CMakeLists.txt
+index d22ed62..0c2a3dc 100644
+--- a/src/kinsol/CMakeLists.txt
++++ b/src/kinsol/CMakeLists.txt
+@@ -154,7 +154,7 @@ IF(BUILD_SHARED_LIBS)
+     PROPERTIES VERSION ${kinsollib_VERSION} SOVERSION ${kinsollib_SOVERSION})
+ 
+   # Install the KINSOL library
+-  INSTALL(TARGETS sundials_kinsol_shared DESTINATION lib)
++  INSTALL(TARGETS sundials_kinsol_shared LIBRARY DESTINATION lib ARCHIVE DESTINATION lib RUNTIME DESTINATION bin)
+ 
+ ENDIF(BUILD_SHARED_LIBS)
+ 
+diff --git a/src/nvec_openmp/CMakeLists.txt b/src/nvec_openmp/CMakeLists.txt
+index eab8451..abd8166 100644
+--- a/src/nvec_openmp/CMakeLists.txt
++++ b/src/nvec_openmp/CMakeLists.txt
+@@ -65,7 +65,7 @@ IF(BUILD_SHARED_LIBS)
+     PROPERTIES OUTPUT_NAME sundials_nvecopenmp CLEAN_DIRECT_OUTPUT 1)
+   SET_TARGET_PROPERTIES(sundials_nvecopenmp_shared
+     PROPERTIES VERSION ${nveclib_VERSION} SOVERSION ${nveclib_SOVERSION})
+-  INSTALL(TARGETS sundials_nvecopenmp_shared DESTINATION lib)
++  INSTALL(TARGETS sundials_nvecopenmp_shared LIBRARY DESTINATION lib ARCHIVE DESTINATION lib RUNTIME DESTINATION bin)
+ ENDIF(BUILD_SHARED_LIBS)
+ 
+ # Install the NVECOPENMP header files
+@@ -86,7 +86,7 @@ IF(FCMIX_ENABLE AND F77_FOUND)
+       PROPERTIES OUTPUT_NAME sundials_fnvecopenmp CLEAN_DIRECT_OUTPUT 1)
+     SET_TARGET_PROPERTIES(sundials_fnvecopenmp_shared 
+       PROPERTIES VERSION ${nveclib_VERSION} SOVERSION ${nveclib_SOVERSION})
+-    INSTALL(TARGETS sundials_fnvecopenmp_shared DESTINATION lib)
++    INSTALL(TARGETS sundials_fnvecopenmp_shared LIBRARY DESTINATION lib ARCHIVE DESTINATION lib RUNTIME DESTINATION bin)
+   ENDIF(BUILD_SHARED_LIBS)
+ ENDIF(FCMIX_ENABLE AND F77_FOUND)
+ 
+diff --git a/src/nvec_par/CMakeLists.txt b/src/nvec_par/CMakeLists.txt
+index 8477fb4..b6787bb 100644
+--- a/src/nvec_par/CMakeLists.txt
++++ b/src/nvec_par/CMakeLists.txt
+@@ -66,7 +66,7 @@ IF(BUILD_SHARED_LIBS)
+     PROPERTIES OUTPUT_NAME sundials_nvecparallel CLEAN_DIRECT_OUTPUT 1)
+   SET_TARGET_PROPERTIES(sundials_nvecparallel_shared 
+     PROPERTIES VERSION ${nveclib_VERSION} SOVERSION ${nveclib_SOVERSION})
+-  INSTALL(TARGETS sundials_nvecparallel_shared DESTINATION lib)
++  INSTALL(TARGETS sundials_nvecparallel_shared LIBRARY DESTINATION lib ARCHIVE DESTINATION lib RUNTIME DESTINATION bin)
+ ENDIF(BUILD_SHARED_LIBS)
+ 
+ # Install the NVECPARALLEL header files
+@@ -87,7 +87,7 @@ IF(FCMIX_ENABLE AND MPIF_FOUND)
+       PROPERTIES OUTPUT_NAME sundials_fnvecparallel CLEAN_DIRECT_OUTPUT 1)
+     SET_TARGET_PROPERTIES(sundials_fnvecparallel_shared
+       PROPERTIES VERSION ${nveclib_VERSION} SOVERSION ${nveclib_SOVERSION})
+-    INSTALL(TARGETS sundials_fnvecparallel_shared DESTINATION lib)
++    INSTALL(TARGETS sundials_fnvecparallel_shared LIBRARY DESTINATION lib ARCHIVE DESTINATION lib RUNTIME DESTINATION bin)
+   ENDIF(BUILD_SHARED_LIBS)
+ ENDIF(FCMIX_ENABLE AND MPIF_FOUND)
+ #
+diff --git a/src/nvec_parhyp/CMakeLists.txt b/src/nvec_parhyp/CMakeLists.txt
+index 9255489..41c814e 100644
+--- a/src/nvec_parhyp/CMakeLists.txt
++++ b/src/nvec_parhyp/CMakeLists.txt
+@@ -67,7 +67,7 @@ IF(BUILD_SHARED_LIBS)
+     PROPERTIES OUTPUT_NAME sundials_nvecparhyp CLEAN_DIRECT_OUTPUT 1)
+   SET_TARGET_PROPERTIES(sundials_nvecparhyp_shared 
+     PROPERTIES VERSION ${nveclib_VERSION} SOVERSION ${nveclib_SOVERSION})
+-  INSTALL(TARGETS sundials_nvecparhyp_shared DESTINATION lib)
++  INSTALL(TARGETS sundials_nvecparhyp_shared LIBRARY DESTINATION lib ARCHIVE DESTINATION lib RUNTIME DESTINATION bin)
+ ENDIF(BUILD_SHARED_LIBS)
+ 
+ # Install the NVECPARHYP header files
+diff --git a/src/nvec_petsc/CMakeLists.txt b/src/nvec_petsc/CMakeLists.txt
+index a98867c..dcc6573 100644
+--- a/src/nvec_petsc/CMakeLists.txt
++++ b/src/nvec_petsc/CMakeLists.txt
+@@ -67,7 +67,7 @@ IF(BUILD_SHARED_LIBS)
+     PROPERTIES OUTPUT_NAME sundials_nvecpetsc CLEAN_DIRECT_OUTPUT 1)
+   SET_TARGET_PROPERTIES(sundials_nvecpetsc_shared 
+     PROPERTIES VERSION ${nveclib_VERSION} SOVERSION ${nveclib_SOVERSION})
+-  INSTALL(TARGETS sundials_nvecpetsc_shared DESTINATION lib)
++  INSTALL(TARGETS sundials_nvecpetsc_shared LIBRARY DESTINATION lib ARCHIVE DESTINATION lib RUNTIME DESTINATION bin)
+ ENDIF(BUILD_SHARED_LIBS)
+ 
+ # Install the NVECPARHYP header files
+diff --git a/src/nvec_pthreads/CMakeLists.txt b/src/nvec_pthreads/CMakeLists.txt
+index b711d3a..4b1d7e3 100644
+--- a/src/nvec_pthreads/CMakeLists.txt
++++ b/src/nvec_pthreads/CMakeLists.txt
+@@ -58,7 +58,7 @@ IF(BUILD_SHARED_LIBS)
+     PROPERTIES OUTPUT_NAME sundials_nvecpthreads CLEAN_DIRECT_OUTPUT 1)
+   SET_TARGET_PROPERTIES(sundials_nvecpthreads_shared
+     PROPERTIES VERSION ${nveclib_VERSION} SOVERSION ${nveclib_SOVERSION})
+-  INSTALL(TARGETS sundials_nvecpthreads_shared DESTINATION lib)
++  INSTALL(TARGETS sundials_nvecpthreads_shared LIBRARY DESTINATION lib ARCHIVE DESTINATION lib RUNTIME DESTINATION bin)
+ ENDIF(BUILD_SHARED_LIBS)
+ 
+ # Install the NVECPTHREADS header files
+@@ -79,7 +79,7 @@ IF(FCMIX_ENABLE AND F77_FOUND)
+       PROPERTIES OUTPUT_NAME sundials_fnvecpthreads CLEAN_DIRECT_OUTPUT 1)
+     SET_TARGET_PROPERTIES(sundials_fnvecpthreads_shared 
+       PROPERTIES VERSION ${nveclib_VERSION} SOVERSION ${nveclib_SOVERSION})
+-    INSTALL(TARGETS sundials_fnvecpthreads_shared DESTINATION lib)
++    INSTALL(TARGETS sundials_fnvecpthreads_shared LIBRARY DESTINATION lib ARCHIVE DESTINATION lib RUNTIME DESTINATION bin)
+   ENDIF(BUILD_SHARED_LIBS)
+ ENDIF(FCMIX_ENABLE AND F77_FOUND)
+ 
+diff --git a/src/nvec_ser/CMakeLists.txt b/src/nvec_ser/CMakeLists.txt
+index de9fb12..b4ed670 100644
+--- a/src/nvec_ser/CMakeLists.txt
++++ b/src/nvec_ser/CMakeLists.txt
+@@ -58,7 +58,7 @@ IF(BUILD_SHARED_LIBS)
+     PROPERTIES OUTPUT_NAME sundials_nvecserial CLEAN_DIRECT_OUTPUT 1)
+   SET_TARGET_PROPERTIES(sundials_nvecserial_shared
+     PROPERTIES VERSION ${nveclib_VERSION} SOVERSION ${nveclib_SOVERSION})
+-  INSTALL(TARGETS sundials_nvecserial_shared DESTINATION lib)
++  INSTALL(TARGETS sundials_nvecserial_shared LIBRARY DESTINATION lib ARCHIVE DESTINATION lib RUNTIME DESTINATION bin)
+ ENDIF(BUILD_SHARED_LIBS)
+ 
+ # Install the NVECSERIAL header files
+@@ -79,7 +79,7 @@ IF(FCMIX_ENABLE AND F77_FOUND)
+       PROPERTIES OUTPUT_NAME sundials_fnvecserial CLEAN_DIRECT_OUTPUT 1)
+     SET_TARGET_PROPERTIES(sundials_fnvecserial_shared 
+       PROPERTIES VERSION ${nveclib_VERSION} SOVERSION ${nveclib_SOVERSION})
+-    INSTALL(TARGETS sundials_fnvecserial_shared DESTINATION lib)
++    INSTALL(TARGETS sundials_fnvecserial_shared LIBRARY DESTINATION lib ARCHIVE DESTINATION lib RUNTIME DESTINATION bin)
+   ENDIF(BUILD_SHARED_LIBS)
+ ENDIF(FCMIX_ENABLE AND F77_FOUND)
+ 
+-- 
+2.7.4
+

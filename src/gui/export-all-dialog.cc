@@ -80,7 +80,7 @@ wxThread::ExitCode ExportAllDialog::Entry()
 		auto target_path = filename.GetFullPath();
 
 		if (type_ == 0) { // CSV
-			std::ifstream ifs(source_file.GetFullPath().c_str(), std::ios::in|std::ios::binary);
+			std::ifstream ifs(static_cast<const char *>(source_file.GetFullPath().c_str()), std::ios::in|std::ios::binary);
 			if (!ifs.is_open()) {
 				event = new wxThreadEvent;
 				event->SetInt(-1);
@@ -88,7 +88,7 @@ wxThread::ExitCode ExportAllDialog::Entry()
 				wxQueueEvent(this, event);
 				continue;
 			}
-			std::ofstream ofs(target_path.c_str(), std::ios::out);
+			std::ofstream ofs(static_cast<const char *>(target_path.c_str()), std::ios::out);
 			if (!ofs.is_open()) {
 				ifs.close();
 				event = new wxThreadEvent;

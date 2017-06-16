@@ -192,12 +192,12 @@ void TaskFrame::Export(const Job &job)
 		return;
 	auto target_path = saveFileDialog.GetPath();
 	if (r == 0) { // CSV
-		std::ifstream ifs(source_file.GetFullPath().c_str(), std::ios::in|std::ios::binary);
+		std::ifstream ifs(static_cast<const char *>(source_file.GetFullPath().c_str()), std::ios::in|std::ios::binary);
 		if (!ifs.is_open()) {
 			ShowErrorOnExporting(wxString::Format("failed to open %s", source_file.GetFullPath()));
 			return;
 		}
-		std::ofstream ofs(target_path.c_str(), std::ios::out);
+		std::ofstream ofs(static_cast<const char *>(target_path.c_str()), std::ios::out);
 		if (!ofs.is_open()) {
 			ifs.close();
 			ShowErrorOnExporting(wxString::Format("failed to open %s", target_path));

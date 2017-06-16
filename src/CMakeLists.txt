@@ -1,0 +1,472 @@
+include_directories(".")
+
+add_definitions(-DSQLITE_THREADSAFE=1 -DSQLITE_OMIT_LOAD_EXTENSION)
+
+add_library(sqlite3 STATIC
+    sqlite3.c
+    )
+
+add_library(libflint STATIC
+    database.c
+    db/query.c
+    process.c
+    )
+target_link_libraries(libflint
+    sqlite3
+    )
+
+add_library(libflintxx STATIC
+    bc.pb.cc
+    cli.pb.cc
+    ipc.pb.cc
+    lo.pb.cc
+    phml.pb.cc
+    unit.pb.cc
+    background.cc
+    bc.cc
+    cas/dimension.cc
+    cas/eq.cc
+    cas/equation.cc
+    cas/helper.cc
+    cas/icg/aux-var.cc
+    cas/icg/ode-mass.cc
+    cas/icg/ode-rhs.cc
+    cas/printer.cc
+    cas/system.cc
+    cellml/parser.cc
+    cellml/read.cc
+    cellml/translator.cc
+    compiler.cc
+    compiler/bcc.cc
+    compiler/bcc/parser.cc
+    compiler/bcc/token.cc
+    compiler/bcc/tokenizer.cc
+    compiler/sort.cc
+    compiler/tac.cc
+    compiler/tac/context.cc
+    csv/export.cc
+    ct/dfa.cc
+    db/ast-inserter.cc
+    db/driver.cc
+    db/eq-inserter.cc
+    db/flow.cc
+    db/read-only-driver.cc
+    db/statement-driver.cc
+    db/tac-inserter.cc
+    db/variable-inserter.cc
+    dps.cc
+    exec/exec.cc
+    exec/job-runner.cc
+    exec/parameter.cc
+    exec/progress.cc
+    exec/task-runner.cc
+    file/detect.cc
+    file/txt.cc
+    filter/create.cc
+    filter/isdh.cc
+    filter/track.cc
+    filter/writer.cc
+    fppp.cc
+    fppp/url.cc
+    isd2csv.cc
+    isdstrip.cc
+    job/evolve.cc
+    job/generate.cc
+    job/job.cc
+    job/path.cc
+    job/store.cc
+    key.cc
+    layout/generate.cc
+    lo/layout.cc
+    load/load.cc
+    load/param.cc
+    load/var.cc
+    ls.cc
+    mathml/math-dumper.cc
+    mathml/mathml.cc
+    method/assign.cc
+    method/euler.cc
+    method/event.cc
+    method/helper.cc
+    method/printer.cc
+    method/rk4.cc
+    modelpath.cc
+    phml/branch.cc
+    phml/combine-all.cc
+    phml/combine.cc
+    phml/database-driver.cc
+    phml/delay-arg-validator.cc
+    phml/extra-implementation.cc
+    phml/graph-iv-rewriter.cc
+    phml/graph-math-rewriter.cc
+    phml/graph-reader.cc
+    phml/implementation.cc
+    phml/import.cc
+    phml/initial-value.cc
+    phml/lands.cc
+    phml/nc.cc
+    phml/reach.cc
+    phml/read.cc
+    phml/span.cc
+    phml/sprinkle.cc
+    phml/target-pq.cc
+    phml/transition-form.cc
+    phml/tsipc.cc
+    phml/unit-of-time.cc
+    phml/validator.cc
+    phsp/read.cc
+    phsp/sample-builder.cc
+    phz/read.cc
+    reduction.cc
+    run/run.cc
+    run/spec.cc
+    runtime/calculation-dependency.cc
+    runtime/calculation-unit.cc
+    runtime/channel.cc
+    runtime/eval.cc
+    runtime/evaluator.cc
+    runtime/flow.cc
+    runtime/history.cc
+    runtime/init.cc
+    runtime/matrix.cc
+    runtime/reduction-unit.cc
+    runtime/section-context.cc
+    runtime/timeseries.cc
+    sbml/load.cc
+    sbml/parser.cc
+    sbml/read.cc
+    sedml/read.cc
+    sexp.cc
+    sexp/parser.cc
+    sexp/token.cc
+    sexp/tokenizer.cc
+    solver/ark/ark.cc
+    solver/ark/auxv.cc
+    solver/ark/mass.cc
+    solver/ark/mmdm.cc
+    solver/ark/rhs.cc
+    solver/ark/solve.cc
+    solver/ark/user-supplied.cc
+    solver/solve.cc
+    stats.cc
+    sys/temporary_path.cc
+    task.cc
+    task/config-reader.cc
+    task/config.cc
+    task/form.cc
+    task/spec.cc
+    task/timer.cc
+    tr/translate.cc
+    tr/translator.cc
+    ts/tsc.cc
+    ts/tsfiles.cc
+    utf8path.cc
+    utf8string.c
+    uuidgen.cc
+    variable.cc
+    variable-map.cc
+    workspace.cc
+    )
+target_link_libraries(libflintxx
+    libflint
+    sqlite3
+    ${wxWidgets_LIBRARIES}
+    ${Protobuf_LIBRARIES}
+    Boost::filesystem
+    ${CZMQ}
+    ${LIBZMQ}
+    ${SOSLIB}
+    ${LIBSBML}
+    ${SUNDIALS_ARKODE}
+    ${SUNDIALS_CVODE}
+    ${SUNDIALS_CVODES}
+    ${SUNDIALS_IDA}
+    ${SUNDIALS_IDAS}
+    ${SUNDIALS_KINSOL}
+    ${SUNDIALS_NVECSERIAL}
+    ${CERES_LIBRARIES}
+    ${CLIBSEDML}
+    ${LIBXML2_LIBRARIES}
+    )
+
+add_library(libflint2 STATIC
+    gui/formula.cc
+    gui/formula/lexer.cc
+    gui/formula/parser.cc
+    gui/formula/token.cc
+    gui/formula/tree.cc
+    )
+target_link_libraries(libflint2
+    ${wxWidgets_LIBRARIES}
+    )
+
+add_executable(csv2isd
+    csv2isd-main.cc
+    )
+target_link_libraries(csv2isd
+    libflintxx
+    libflint
+    sqlite3
+    Boost::filesystem
+    )
+
+add_executable(flint-cli
+    flint-cli-main.cc
+    )
+target_link_libraries(flint-cli
+    libflintxx
+    libflint
+    sqlite3
+    ${Protobuf_LIBRARIES}
+    Boost::program_options
+    )
+
+add_executable(flint-exec
+    flint-exec-main.cc
+    )
+target_link_libraries(flint-exec
+    libflintxx
+    libflint
+    sqlite3
+    ${Protobuf_LIBRARIES}
+    Boost::filesystem
+    )
+
+add_executable(flint-lodbg
+    flint-lodbg-main.cc
+    )
+target_link_libraries(flint-lodbg
+    libflintxx
+    libflint
+    sqlite3
+    ${Protobuf_LIBRARIES}
+    )
+
+add_executable(flint-open
+    flint-open-main.cc
+    )
+target_link_libraries(flint-open
+    libflintxx
+    libflint
+    sqlite3
+    ${Protobuf_LIBRARIES}
+    Boost::filesystem
+    )
+
+add_executable(flint-pause
+    flint-pause-main.c
+    )
+
+add_executable(flint-resume
+    flint-resume-main.c
+    )
+
+add_executable(flint-run
+    flint-run-main.cc
+    )
+target_link_libraries(flint-run
+    libflintxx
+    libflint
+    sqlite3
+    ${Protobuf_LIBRARIES}
+    Boost::filesystem
+    )
+
+add_executable(flint-tr
+    flint-tr-main.cc
+    )
+target_link_libraries(flint-tr
+    libflintxx
+    libflint
+    sqlite3
+    ${Protobuf_LIBRARIES}
+    Boost::filesystem
+    )
+
+add_executable(flint2 WIN32
+    gui/app.cc
+    gui/configuration.cc
+    gui/document.cc
+    gui/document/unit-of-time.cc
+    gui/export-all-dialog.cc
+    gui/gnuplot.cc
+    gui/job.cc
+    gui/main-frame.cc
+    gui/param-tree.cc
+    gui/phsp-editor-dialog.cc
+    gui/phsp.cc
+    gui/pref-page-general.cc
+    gui/sedml.cc
+    gui/sim-frame.cc
+    gui/simulation.cc
+    gui/sub-window.cc
+    gui/task-frame.cc
+    gui/task-gauge.cc
+    gui/task.cc
+    gui/view-frame.cc
+    )
+target_link_libraries(flint2
+    libflint2
+    libflintxx
+    libflint
+    sqlite3
+    ${Protobuf_LIBRARIES}
+    Boost::filesystem
+    )
+
+add_executable(isd2csv
+    isd2csv-main.cc
+    )
+target_link_libraries(isd2csv
+    libflintxx
+    Boost::program_options
+    Boost::system
+    )
+
+add_executable(isdbswap
+    isdbswap-main.c
+    )
+
+add_executable(isdcut
+    isdcut-main.cc
+    )
+target_link_libraries(isdcut
+    Boost::program_options
+    )
+
+add_executable(isddiff
+    isddiff-main.cc
+    )
+target_link_libraries(isddiff
+    Boost::program_options
+    )
+
+add_executable(isdhead
+    isdhead-main.cc
+    )
+target_link_libraries(isdhead
+    Boost::program_options
+    )
+
+add_executable(isdls
+    isdls-main.cc
+    )
+target_link_libraries(isdls
+    Boost::program_options
+    )
+
+add_executable(isdmerge
+    isdmerge-main.cpp
+    )
+target_link_libraries(isdmerge
+    Boost::program_options
+    )
+
+if(NOT WIN32)
+add_executable(isdplot
+    isdplot-main.cc
+    )
+target_link_libraries(isdplot
+    libflintxx
+    libflint
+    sqlite3
+    Boost::filesystem
+    Boost::program_options
+    )
+endif(NOT WIN32)
+
+add_executable(isdrand
+    isdrand-main.c
+    )
+
+add_executable(isdsort
+    isdsort-main.cc
+    )
+
+add_executable(isdstrip
+    isdstrip-main.cc
+    )
+target_link_libraries(isdstrip
+    libflintxx
+    libflint
+    sqlite3
+    Boost::filesystem
+    Boost::program_options
+    )
+
+add_executable(isdwc
+    isdwc-main.cc
+    )
+target_link_libraries(isdwc
+    Boost::program_options
+    )
+
+add_executable(fppp-isd
+    fppp/isd/main.cc
+    )
+target_link_libraries(fppp-isd
+    libflintxx
+    libflint
+    sqlite3
+    )
+
+if(UNIX)
+add_executable(fppp-rtm
+    fppp/rtm/main.cc
+    )
+target_link_libraries(fppp-rtm
+    libflintxx
+    libflint
+    sqlite3
+    )
+endif(UNIX)
+
+add_executable(fppp-sim
+    fppp/sim/main.cc
+    )
+target_link_libraries(fppp-sim
+    libflintxx
+    libflint
+    sqlite3
+    ${Protobuf_LIBRARIES}
+    )
+
+add_executable(fppp-sup
+    fppp/sup/main.cc
+    )
+target_link_libraries(fppp-sup
+    libflintxx
+    libflint
+    sqlite3
+    )
+
+install(TARGETS
+    csv2isd
+    flint-cli
+    flint-exec
+    flint-open
+    flint-pause
+    flint-resume
+    flint-run
+    flint-tr
+    flint2
+    isd2csv
+    isdbswap
+    isdcut
+    isddiff
+    isdhead
+    isdls
+    isdmerge
+    isdrand
+    isdsort
+    isdstrip
+    isdwc
+    RUNTIME DESTINATION bin
+    )
+
+if(NOT WIN32)
+install(TARGETS
+    isdplot
+    RUNTIME DESTINATION bin
+    )
+endif(NOT WIN32)

@@ -1,0 +1,9 @@
+--- examples/CMakeLists.txt.orig	2016-12-06 00:45:15.000000000 +0900
++++ examples/CMakeLists.txt	2017-06-06 16:46:01.441394500 +0900
+@@ -109,5 +109,5 @@
+ 
+ endif (GFLAGS)
+ 
+-add_subdirectory(sampled_function)
++#add_subdirectory(sampled_function)
+ add_subdirectory(slam)

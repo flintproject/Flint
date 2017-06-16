@@ -1,0 +1,313 @@
+From bdb61b73550e53bb6c2ba03fff712083a2aacec4 Mon Sep 17 00:00:00 2001
+From: Takeshi Abe <takeshi.abe@oist.jp>
+Date: Tue, 13 Jun 2017 16:32:31 +0900
+Subject: [PATCH] Skeletal support for CMake build
+
+---
+ CMakeLists.txt        |  63 ++++++++++++++++++++
+ src/CMakeLists.txt    |  46 +++++++++++++++
+ src/config.h.in.cmake | 155 ++++++++++++++++++++++++++++++++++++++++++++++++++
+ src/solverError.c     |   2 +-
+ 4 files changed, 265 insertions(+), 1 deletion(-)
+ create mode 100644 CMakeLists.txt
+ create mode 100644 src/CMakeLists.txt
+ create mode 100644 src/config.h.in.cmake
+
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+new file mode 100644
+index 0000000..d371813
+--- /dev/null
++++ b/CMakeLists.txt
+@@ -0,0 +1,63 @@
++cmake_minimum_required(VERSION 3.6)
++
++project(SOSlib
++  VERSION 1.9.0
++  LANGUAGES C)
++
++set(VERSION ${SOSlib_VERSION})
++
++include(CheckIncludeFiles)
++
++check_include_files(dlfcn.h HAVE_DLFCN_H)
++check_include_files(errno.h HAVE_ERRNO_H)
++check_include_files(inttypes.h HAVE_INTTYPES_H)
++check_include_files(math.h HAVE_MATH_H)
++check_include_files(memory.h HAVE_MEMORY_H)
++check_include_files(stdint.h HAVE_STDINT_H)
++check_include_files(stdlib.h HAVE_STDLIB_H)
++check_include_files(strings.h HAVE_STRINGS_H)
++check_include_files(string.h HAVE_STRING_H)
++check_include_files(sys/stat.h HAVE_SYS_STAT_H)
++check_include_files(sys/types.h HAVE_SYS_TYPES_H)
++check_include_files(unistd.h HAVE_UNISTD_H)
++
++include(FindPackageHandleStandardArgs)
++
++find_path(LIBSBML_INCLUDE_DIR sbml/common/libsbml-version.h)
++find_library(LIBSBML_LIBRARY NAMES sbml libsbml)
++find_package_handle_standard_args(LIBSBML DEFAULT_MSG
++  LIBSBML_INCLUDE_DIR LIBSBML_LIBRARY)
++if(LIBSBML_FOUND)
++  include_directories("${LIBSBML_INCLUDE_DIR}")
++else(LIBSBML_FOUND)
++  message(FATAL_ERROR "failed to find LibSBML")
++endif(LIBSBML_FOUND)
++
++find_path(SUNDIALS_INCLUDE_DIR sundials/sundials_types.h)
++find_library(SUNDIALS_ARKODE_LIBRARY NAMES sundials_arkode libsundials_arkode)
++find_library(SUNDIALS_CVODE_LIBRARY NAMES sundials_cvode libsundials_cvode)
++find_library(SUNDIALS_CVODES_LIBRARY NAMES sundials_cvodes libsundials_cvodes)
++find_library(SUNDIALS_IDA_LIBRARY NAMES sundials_ida libsundials_ida)
++find_library(SUNDIALS_IDAS_LIBRARY NAMES sundials_idas libsundials_idas)
++find_library(SUNDIALS_KINSOL_LIBRARY NAMES sundials_kinsol libsundials_kinsol)
++find_library(SUNDIALS_NVECSERIAL_LIBRARY NAMES sundials_nvecserial libsundials_nvecserial)
++find_package_handle_standard_args(SUNDIALS DEFAULT_MSG
++  SUNDIALS_INCLUDE_DIR
++  SUNDIALS_ARKODE_LIBRARY
++  SUNDIALS_CVODE_LIBRARY
++  SUNDIALS_CVODES_LIBRARY
++  SUNDIALS_IDA_LIBRARY
++  SUNDIALS_IDAS_LIBRARY
++  SUNDIALS_KINSOL_LIBRARY
++  SUNDIALS_NVECSERIAL_LIBRARY
++  )
++if(SUNDIALS_FOUND)
++  set(USE_SUNDIALS ON)
++  include_directories("${SUNDIALS_INCLUDE_DIR}")
++else(SUNDIALS_FOUND)
++  message(FATAL_ERROR "failed to find SUNDIALS")
++endif(SUNDIALS_FOUND)
++
++include_directories(src)
++
++add_subdirectory(src)
+diff --git a/src/CMakeLists.txt b/src/CMakeLists.txt
+new file mode 100644
+index 0000000..c4bc96a
+--- /dev/null
++++ b/src/CMakeLists.txt
+@@ -0,0 +1,46 @@
++configure_file(config.h.in.cmake "${CMAKE_CURRENT_BINARY_DIR}/config.h")
++include_directories("${CMAKE_CURRENT_BINARY_DIR}")
++
++add_definitions(-DHAVE_CONFIG_H -DSBML_ODESOLVER_EXPORTS)
++
++add_library(ODES
++  arithmeticCompiler.c
++  ASTIndexNameNode.c
++  charBuffer.c
++  compiler.c
++  cvodeData.c
++  cvodeSolver.c
++  daeSolver.c
++  drawGraph.c
++  evaluateAST.c
++  integratorInstance.c
++  integratorSettings.c
++  interpol.c
++  modelSimplify.c
++  nullSolver.c
++  odeConstruct.c
++  odeModel.c
++  odeSolver.c
++  private/data.c
++  private/error.c
++  processAST.c
++  sbml.c
++  sbmlResults.c
++  sensSolver.c
++  solverError.c
++  util.c
++  )
++target_link_libraries(ODES
++  PRIVATE "${LIBSBML_LIBRARY}"
++  PRIVATE "${SUNDIALS_CVODES_LIBRARY}"
++  PRIVATE "${SUNDIALS_IDA_LIBRARY}"
++  PRIVATE "${SUNDIALS_KINSOL_LIBRARY}"
++  PRIVATE "${SUNDIALS_NVECSERIAL_LIBRARY}"
++  )
++
++install(TARGETS ODES
++  ARCHIVE DESTINATION lib
++  LIBRARY DESTINATION lib
++  RUNTIME DESTINATION bin)
++
++install(DIRECTORY sbmlsolver DESTINATION "${CMAKE_INSTALL_PREFIX}/include")
+diff --git a/src/config.h.in.cmake b/src/config.h.in.cmake
+new file mode 100644
+index 0000000..b3d5ba6
+--- /dev/null
++++ b/src/config.h.in.cmake
+@@ -0,0 +1,155 @@
++/* src/config.h.in.  Generated from configure.ac by autoheader.  */
++
++/* Define if building universal (internal helper macro) */
++#cmakedefine AC_APPLE_UNIVERSAL_BUILD
++
++/* Major Version of GRAPHVIZ Library */
++#cmakedefine GRAPHVIZ_MAJOR_VERSION
++
++/* Minor Version of GRAPHVIZ Library */
++#cmakedefine GRAPHVIZ_MINOR_VERSION
++
++/* Define to 1 if you have the <dlfcn.h> header file. */
++#cmakedefine01 HAVE_DLFCN_H
++
++/* Define to 1 if you have the <errno.h> header file. */
++#cmakedefine01 HAVE_ERRNO_H
++
++/* Define to 1 if you have the <inttypes.h> header file. */
++#cmakedefine01 HAVE_INTTYPES_H
++
++/* Define to 1 if you have the `m' library (-lm). */
++#cmakedefine01 HAVE_LIBM
++
++/* Define to 1 if you have the <math.h> header file. */
++#cmakedefine01 HAVE_MATH_H
++
++/* Define to 1 if you have the <memory.h> header file. */
++#cmakedefine01 HAVE_MEMORY_H
++
++/* Define to 1 if you have the <stdint.h> header file. */
++#cmakedefine01 HAVE_STDINT_H
++
++/* Define to 1 if you have the <stdlib.h> header file. */
++#cmakedefine01 HAVE_STDLIB_H
++
++/* Define to 1 if you have the <strings.h> header file. */
++#cmakedefine01 HAVE_STRINGS_H
++
++/* Define to 1 if you have the <string.h> header file. */
++#cmakedefine01 HAVE_STRING_H
++
++/* Define to 1 if you have the <sys/stat.h> header file. */
++#cmakedefine01 HAVE_SYS_STAT_H
++
++/* Define to 1 if you have the <sys/types.h> header file. */
++#cmakedefine01 HAVE_SYS_TYPES_H
++
++/* Define to 1 if you have the <unistd.h> header file. */
++#cmakedefine01 HAVE_UNISTD_H
++
++/* Define to the sub-directory in which libtool stores uninstalled libraries.
++   */
++#cmakedefine LT_OBJDIR
++
++/* Name of package */
++#cmakedefine PACKAGE
++
++/* Define to the address where bug reports for this package should be sent. */
++#cmakedefine PACKAGE_BUGREPORT
++
++/* Define to the full name of this package. */
++#cmakedefine PACKAGE_NAME
++
++/* Define to the full name and version of this package. */
++#cmakedefine PACKAGE_STRING
++
++/* Define to the one symbol short name of this package. */
++#cmakedefine PACKAGE_TARNAME
++
++/* Define to the home page for this package. */
++#cmakedefine PACKAGE_URL
++
++/* Define to the version of this package. */
++#cmakedefine PACKAGE_VERSION
++
++/* SBML include directories */
++#cmakedefine SBML_CPPFLAGS
++
++/* SBML include directories */
++#cmakedefine SBML_CPPFLAGS2
++
++/* SBML lib directories */
++#cmakedefine SBML_LDFLAGS
++
++/* SBML libs */
++#cmakedefine SBML_LIBS
++
++/* shared library extrension */
++#cmakedefine SHAREDLIBEXT
++
++/* SOSLIB include directories */
++#cmakedefine SOSLIB_CPPFLAGS
++
++/* SOSLIB lib directories */
++#cmakedefine SOSLIB_LDFLAGS
++
++/* SOSLIB libs */
++#cmakedefine SOSLIB_LIBS
++
++/* Define to 1 if you have the ANSI C header files. */
++#cmakedefine01 STDC_HEADERS
++
++/* SUNDIALS include directories */
++#cmakedefine SUNDIALS_CPPFLAGS
++
++/* SUNDIALS lib directories */
++#cmakedefine SUNDIALS_LDFLAGS
++
++/* SUNDIALS libs */
++#cmakedefine SUNDIALS_LIB1
++
++/* SUNDIALS libs */
++#cmakedefine SUNDIALS_LIB2
++
++/* SUNDIALS libs */
++#cmakedefine SUNDIALS_LIB3
++
++/* SUNDIALS libs */
++#cmakedefine SUNDIALS_LIB4
++
++/* SUNDIALS libs */
++#cmakedefine SUNDIALS_LIB5
++
++/* SUNDIALS libs */
++#cmakedefine SUNDIALS_LIB6
++
++/* Define to 1 to use the GRACE Library */
++#cmakedefine01 USE_GRACE
++
++/* Define to 1 to use the GRAPHVIZ Library */
++#cmakedefine01 USE_GRAPHVIZ
++
++/* Define to 1 to use the SUNDIALS Library */
++#cmakedefine01 USE_SUNDIALS
++
++/* Version number of package */
++#cmakedefine VERSION
++
++/* Define WORDS_BIGENDIAN to 1 if your processor stores words with the most
++   significant byte first (like Motorola and SPARC, unlike Intel). */
++#if defined AC_APPLE_UNIVERSAL_BUILD
++# if defined __BIG_ENDIAN__
++#  define WORDS_BIGENDIAN 1
++# endif
++#else
++# ifndef WORDS_BIGENDIAN
++#  undef WORDS_BIGENDIAN
++# endif
++#endif
++
++/* Define to empty if `const' does not conform to ANSI C. */
++#cmakedefine const
++
++/* Define to `unsigned int' if <sys/types.h> does not define. */
++#cmakedefine size_t
+diff --git a/src/solverError.c b/src/solverError.c
+index 50d914e..31c47c6 100644
+--- a/src/solverError.c
++++ b/src/solverError.c
+@@ -160,7 +160,7 @@ SBML_ODESOLVER_API void SolverError_dumpAndClearErrors(void)
+ SBML_ODESOLVER_API void SolverError_error(errorType_t type, errorCode_t errorCode,
+ 										  const char *fmt, ...)
+ {
+-  static const size_t BUFFER_SIZE = 2000;
++#define BUFFER_SIZE 2000
+   List_t *errors = solverErrors[type];
+   char buffer[BUFFER_SIZE], *variableLengthBuffer;
+   va_list args;
+-- 
+2.1.4
+

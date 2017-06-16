@@ -275,7 +275,7 @@ bool ViewFrame::LoadVariables()
 	auto filename = task_frame->task().GetDirectoryName();
 	filename.SetFullName("isdh");
 	wxString full_path = filename.GetFullPath();
-	std::ifstream ifs(full_path.c_str(), std::ios::in|std::ios::binary);
+	std::ifstream ifs(static_cast<const char *>(full_path.c_str()), std::ios::in|std::ios::binary);
 	if (!ifs.is_open()) {
 		wxLogError("failed to open %s", full_path);
 		return false;
@@ -294,7 +294,7 @@ bool ViewFrame::LoadVariables()
 
 	if (task_frame->task().HasObjective()) {
 		wxString dps_path = task_frame->task().GetDpsPath();
-		ifs.open(dps_path.c_str(), std::ios::in|std::ios::binary);
+		ifs.open(static_cast<const char *>(dps_path.c_str()), std::ios::in|std::ios::binary);
 		if (!ifs.is_open()) {
 			wxLogError("failed to open %s", dps_path);
 			return false;
