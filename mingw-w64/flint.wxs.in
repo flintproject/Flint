@@ -63,7 +63,7 @@
               <File Id='log4j.jar' Name='log4j-1.2.17.jar' DiskId='1' Source='lib/log4j-1.2.17.jar' />
             </Component>
             <Component Id='protobuf_java' Guid='e62bbfaa-1fae-11e1-a3c7-c705326b6d6c'>
-              <File Id='protobuf_java.jar' Name='protobuf-java-3.2.0.jar' DiskId='1' Source='lib/protobuf-java-3.2.0.jar' />
+              <File Id='protobuf_java.jar' Name='protobuf-java-3.3.0.jar' DiskId='1' Source='lib/protobuf-java-3.3.0.jar' />
             </Component>
             <Component Id='sqlite_jdbc' Guid='7a65beae-bef5-11e3-8a59-a7cc068a8766'>
               <File Id='sqlite_jdbc.jar' Name='sqlite-jdbc-3.14.2.1.jar' DiskId='1' Source='lib/sqlite-jdbc-3.14.2.1.jar' />
