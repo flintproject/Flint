@@ -444,6 +444,7 @@ install(TARGETS
     csv2isd
     flint-cli
     flint-exec
+    flint-lodbg
     flint-open
     flint-pause
     flint-resume
