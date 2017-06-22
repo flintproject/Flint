@@ -1,7 +1,9 @@
 all.proj
 config.mk
 msbuild.log
+flint/
 opt/
+release-dll/
 src/
 tmp/
 var/

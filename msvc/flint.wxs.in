@@ -1,0 +1,215 @@
+<?xml version='1.0'?>
+<Wix xmlns='http://schemas.microsoft.com/wix/2006/wi'>
+  <Product Id='f6d0d912-1a72-11e1-8967-9344df455682' Name='Flint' Language='1033'
+           Version='VERSION' Manufacturer='Flint project' UpgradeCode='0223581c-1a73-11e1-b0fd-1f82e9961ce5'>
+    <Package Description='Flint is a simulator for physiome.'
+             Comments='Flint is a simulator for physiome.'
+             Manufacturer='Flint project'
+             InstallScope='perMachine' InstallerVersion='405' Compressed='yes' />
+
+    <Media Id='1' Cabinet='product.cab' EmbedCab='yes' />
+
+    <Directory Id='TARGETDIR' Name='SourceDir'>
+
+      <Component Id='Environment' Guid='f8b61b0c-ea1d-11e3-9d71-0b54cc44b48d'>
+        <Environment Id='PATH' Name='PATH' Value='[FLINTDIR]' Permanent='no' Part='last' Action='set' System='yes' />
+      </Component>
+
+      <Directory Id='ProgramFilesFolder' Name='PFiles'>
+        <Directory Id='FLINTDIR' Name='Flint'>
+
+          <Component Id='flint_exe' Guid='b3759fa0-220f-11e1-95b8-8fcafecb7541'>
+            <File Id='flint2.exe' Name='flint2.exe' DiskId='1' Source='flint2.exe' />
+            <Shortcut Id='flint_desktop_shortcut' Name='Flint'
+                      Directory='DesktopFolder'
+                      Description='Flint is a simulator for physiome.'
+                      Icon='flint.ico'
+                      WorkingDirectory='FLINTDIR'
+                      Advertise='yes' />
+          </Component>
+
+          <Component Id='csv2isd' Guid='f4b4b0b8-823f-11e3-8e59-bf8a1e617bcf'>
+            <File Id='csv2isd.exe' Name='csv2isd.exe' DiskId='1' Source='csv2isd.exe' />
+          </Component>
+          <Component Id='flint_exec' Guid='86688738-5d69-11e3-9595-f317fcf3e8c5'>
+            <File Id='flint_exec.exe' Name='flint-exec.exe' DiskId='1' Source='flint-exec.exe' />
+          </Component>
+          <Component Id='flint_lodbg' Guid='a4b2f908-bd93-11e5-b1e0-0f2dd21ca26a'>
+            <File Id='flint_lodbg.exe' Name='flint-lodbg.exe' DiskId='1' Source='flint-lodbg.exe' />
+          </Component>
+          <Component Id='flint_open' Guid='33c60296-e7f0-11e3-9c8e-efa5bd532490'>
+            <File Id='flint_open.exe' Name='flint-open.exe' DiskId='1' Source='flint-open.exe' />
+          </Component>
+          <Component Id='flint_pause' Guid='df5497a8-5b76-11e5-ae27-d7789c1a7c7c'>
+            <File Id='flint_pause.exe' Name='flint-pause.exe' DiskId='1' Source='flint-pause.exe' />
+          </Component>
+          <Component Id='flint_resume' Guid='dff9d6d2-5b76-11e5-86b2-af7c494b40c8'>
+            <File Id='flint_resume.exe' Name='flint-resume.exe' DiskId='1' Source='flint-resume.exe' />
+          </Component>
+          <Component Id='flint_run' Guid='c7541b2a-9d03-11e3-9698-b745a2cde4a7'>
+            <File Id='flint_run.exe' Name='flint-run.exe' DiskId='1' Source='flint-run.exe' />
+          </Component>
+          <Component Id='flint_tr' Guid='cc9b2224-1d79-11e6-aa6a-1771aef9e319'>
+            <File Id='flint_tr.exe' Name='flint-tr.exe' DiskId='1' Source='flint-tr.exe' />
+          </Component>
+          <Component Id='isd2csv' Guid='b87afd3a-a54d-11e1-bac1-b759ca208b40'>
+            <File Id='isd2csv.exe' Name='isd2csv.exe' DiskId='1' Source='isd2csv.exe' />
+          </Component>
+          <Component Id='isdcut' Guid='618f435c-bd93-11e5-b3d0-43d21c517313'>
+            <File Id='isdcut.exe' Name='isdcut.exe' DiskId='1' Source='isdcut.exe' />
+          </Component>
+          <Component Id='isddiff' Guid='deae862e-6013-11e4-8154-07aaccd8efa4'>
+            <File Id='isddiff.exe' Name='isddiff.exe' DiskId='1' Source='isddiff.exe' />
+          </Component>
+          <Component Id='isdhead' Guid='6f9b2830-bd93-11e5-b075-7f0ee60abc93'>
+            <File Id='isdhead.exe' Name='isdhead.exe' DiskId='1' Source='isdhead.exe' />
+          </Component>
+          <Component Id='isdls' Guid='8e0f3b62-bd93-11e5-9295-bb028661720b'>
+            <File Id='isdls.exe' Name='isdls.exe' DiskId='1' Source='isdls.exe' />
+          </Component>
+          <Component Id='isdmerge' Guid='98ce50f6-bd93-11e5-b382-97170bc292fa'>
+            <File Id='isdmerge.exe' Name='isdmerge.exe' DiskId='1' Source='isdmerge.exe' />
+          </Component>
+          <Component Id='isdsort' Guid='35c7b978-5b17-11e4-b3fe-072b6829c30e'>
+            <File Id='isdsort.exe' Name='isdsort.exe' DiskId='1' Source='isdsort.exe' />
+          </Component>
+          <Component Id='isdstrip' Guid='71b6563e-adf3-11e1-a6e8-2f343d01eb33'>
+            <File Id='isdstrip.exe' Name='isdstrip.exe' DiskId='1' Source='isdstrip.exe' />
+          </Component>
+          <Component Id='isdwc' Guid='10d5565a-ae0a-11e1-8274-9334251cf9ca'>
+            <File Id='isdwc.exe' Name='isdwc.exe' DiskId='1' Source='isdwc.exe' />
+          </Component>
+
+          <Component Id='boost.filesystem' Guid='d02c19b4-1a7e-11e1-846e-4f0b3849c594'>
+            <File Id='libboost_filesystem' Name='boost_filesystem-vc140-mt-1_64.dll' DiskId='1' Source='boost_filesystem-vc140-mt-1_64.dll' />
+          </Component>
+          <Component Id='boost.program_options' Guid='d02c4c7c-1a7e-11e1-bd00-4fe26f314427'>
+            <File Id='libboost_program_options' Name='boost_program_options-vc140-mt-1_64.dll' DiskId='1' Source='boost_program_options-vc140-mt-1_64.dll' />
+          </Component>
+          <Component Id='boost.system' Guid='d02c802a-1a7e-11e1-8142-7b383aa4b0d4'>
+            <File Id='libboost_system' Name='boost_system-vc140-mt-1_64.dll' DiskId='1' Source='boost_system-vc140-mt-1_64.dll' />
+          </Component>
+          <Component Id='wxmsw' Guid='80ff1e98-c791-11e6-9786-dfa231e0a1a7'>
+            <File Id='wxbase310u' Name='wxbase310u_vc140.dll' DiskId='1' Source='wxbase310u_vc140.dll' />
+            <File Id='wxbase310u_net' Name='wxbase310u_net_vc140.dll' DiskId='1' Source='wxbase310u_net_vc140.dll' />
+            <File Id='wxbase310u_xml' Name='wxbase310u_xml_vc140.dll' DiskId='1' Source='wxbase310u_xml_vc140.dll' />
+            <File Id='wxmsw310u_adv' Name='wxmsw310u_adv_vc140.dll' DiskId='1' Source='wxmsw310u_adv_vc140.dll' />
+            <File Id='wxmsw310u_aui' Name='wxmsw310u_aui_vc140.dll' DiskId='1' Source='wxmsw310u_aui_vc140.dll' />
+            <File Id='wxmsw310u_core' Name='wxmsw310u_core_vc140.dll' DiskId='1' Source='wxmsw310u_core_vc140.dll' />
+            <File Id='wxmsw310u_propgrid' Name='wxmsw310u_propgrid_vc140.dll' DiskId='1' Source='wxmsw310u_propgrid_vc140.dll' />
+          </Component>
+          <Component Id='ceres' Guid='f54f071a-45d4-11e7-b347-bb7df618a1d5'>
+            <File Id='libceres' Name='ceres.dll' DiskId='1' Source='ceres.dll' />
+          </Component>
+          <Component Id='clibsedml' Guid='72d89bf4-8921-11e1-8be9-8ffa90143fcb'>
+            <File Id='libsedml' Name='sedml.dll' DiskId='1' Source='sedml.dll' />
+          </Component>
+          <Component Id='czmq' Guid='f1a4e0aa-f1b3-11e6-bb96-137b1a1cb289'>
+            <File Id='libczmq' Name='czmq.dll' DiskId='1' Source='czmq.dll' />
+          </Component>
+          <Component Id='protobuf' Guid='233d044c-ff5f-11e4-bcee-2f0a32a0ce0d'>
+            <File Id='libprotobuf' Name='libprotobuf.dll' DiskId='1' Source='libprotobuf.dll' />
+          </Component>
+          <Component Id='sbml' Guid='e23853ca-ff5e-11e4-a61d-873a99f64190'>
+            <File Id='libsbml' Name='libsbml.dll' DiskId='1' Source='libsbml.dll' />
+          </Component>
+          <Component Id='soslib' Guid='fe0ea6b2-ff5e-11e4-9eff-3f83ebaed478'>
+            <File Id='libODES' Name='ODES.dll' DiskId='1' Source='ODES.dll' />
+          </Component>
+          <Component Id='xml2' Guid='d02ce240-1a7e-11e1-8c5d-b793ab03d5f9'>
+            <File Id='libxml2' Name='libxml2.dll' DiskId='1' Source='libxml2.dll' />
+          </Component>
+          <Component Id='zeromq' Guid='f3c4adfc-f1b3-11e6-9632-afb37b5e1b1b'>
+            <File Id='libzmq' Name='libzmq-v140-mt-4_2_2.dll' DiskId='1' Source='libzmq-v140-mt-4_2_2.dll' />
+          </Component>
+
+          <Component Id='third_party_licenses' Guid='6699ad54-8e3f-11e3-ae53-e3655a982178'>
+            <File Id='third_party_licenses.txt' Name='third-party-licenses.txt' DiskId='1' Source='third-party-licenses.txt' />
+          </Component>
+        </Directory>
+      </Directory>
+
+      <Directory Id='ProgramMenuFolder'>
+        <Directory Id='ApplicationProgramsFolder' Name='Flint'>
+          <Component Id='flint_startmenu' Guid='d02d13fa-1a7e-11e1-8d61-5f7cc3fac917'>
+            <Shortcut Id='flint_startmenu_shortcut' Name='Flint'
+                      Description='Flint is a simulator for physiome.'
+                      Icon='flint.ico'
+                      Target='[FLINTDIR]flint.exe'
+                      WorkingDirectory='FLINTDIR' />
+            <Shortcut Id='UninstallProduct' Name='uninstall'
+                      Description='Uninstall Flint.'
+                      Target='[SystemFolder]msiexec.exe'
+                      Arguments='/x [ProductCode]' />
+            <RemoveFolder Id='ApplicationProgramsFolder' On='uninstall' />
+            <RegistryValue Root='HKCU' Key='Software\oist.jp\Flint' Name='installed' Type='integer' Value='1' KeyPath='yes' />
+          </Component>
+        </Directory>
+      </Directory>
+
+      <Directory Id='DesktopFolder' Name='Desktop' />
+    </Directory>
+
+    <Feature Id='GuiFeature' Title='GUI Feature' Level='1'>
+      <ComponentRef Id='flint_exe' />
+      <ComponentRef Id='flint_startmenu' />
+    </Feature>
+    <Feature Id='BaseFeature' Title='Base Feature' Level='1'>
+      <ComponentRef Id='Environment' />
+      <ComponentRef Id='csv2isd' />
+      <ComponentRef Id='flint_exec' />
+      <ComponentRef Id='flint_lodbg' />
+      <ComponentRef Id='flint_open' />
+      <ComponentRef Id='flint_pause' />
+      <ComponentRef Id='flint_resume' />
+      <ComponentRef Id='flint_run' />
+      <ComponentRef Id='flint_tr' />
+      <ComponentRef Id='isd2csv' />
+      <ComponentRef Id='isdcut' />
+      <ComponentRef Id='isddiff' />
+      <ComponentRef Id='isdhead' />
+      <ComponentRef Id='isdls' />
+      <ComponentRef Id='isdmerge' />
+      <ComponentRef Id='isdsort' />
+      <ComponentRef Id='isdstrip' />
+      <ComponentRef Id='isdwc' />
+      <ComponentRef Id='boost.filesystem' />
+      <ComponentRef Id='boost.program_options' />
+      <ComponentRef Id='boost.system' />
+      <ComponentRef Id='wxmsw' />
+      <ComponentRef Id='ceres' />
+      <ComponentRef Id='clibsedml' />
+      <ComponentRef Id='czmq' />
+      <ComponentRef Id='protobuf' />
+      <ComponentRef Id='sbml' />
+      <ComponentRef Id='soslib' />
+      <ComponentRef Id='xml2' />
+      <ComponentRef Id='zeromq' />
+      <ComponentRef Id='third_party_licenses' />
+    </Feature>
+    <Feature Id='VCRedist' Title='Visual C++ Redistributable' AllowAdvertise='no' Display='hidden' Level='1'>
+      <?if $(sys.BUILDARCH) = x64 ?>
+      <MergeRef Id='VC140_CRT_x64' />
+      <?elseif $(sys.BUILDARCH) = x86 ?>
+      <MergeRef Id='VC140_CRT_x86' />
+      <?endif ?>
+    </Feature>
+
+    <Icon Id="flint.ico" SourceFile="flint.ico"/>
+
+    <Property Id="ARPPRODUCTICON" Value="flint.ico" />
+    <Property Id="WIXUI_INSTALLDIR" Value="FLINTDIR" />
+    <UIRef Id="WixUI_InstallDir" />
+    <WixVariable Id="WixUILicenseRtf" Value="license.rtf" />
+  </Product>
+
+  <Fragment>
+    <DirectoryRef Id='TARGETDIR'>
+      <?if $(sys.BUILDARCH) = x64 ?>
+      <Merge Id='VC140_CRT_x64' SourceFile='$(env.CommonProgramFiles)\Merge Modules\Microsoft_VC140_CRT_x64.msm' DiskId='1' Language='0' />
+      <?elseif $(sys.BUILDARCH) = x86 ?>
+      <Merge Id='VC140_CRT_x86' SourceFile='$(env.CommonProgramFiles(x86))\Merge Modules\Microsoft_VC140_CRT_x86.msm' DiskId='1' Language='0' />
+      <?endif ?>
+    </DirectoryRef>
+  </Fragment>
+</Wix>

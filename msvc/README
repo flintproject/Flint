@@ -28,7 +28,9 @@ We have tested our procedure on Windows 10.
 = Steps
 
 0. Please make sure that the following programs are in your PATH:
+   - candle
    - cmake
+   - light
 
 1. Choose a target architecture i.e. x86 or x86-64;
    create and edit config.mk accordingly.
