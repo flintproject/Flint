@@ -20,7 +20,7 @@ Put config.mk in this directory to specify some Make variables as follows:
   The dirname and basename to locate the libgcc's dll for the host.
 * LIBSTDCXX_DIR / LIBSTDCXX_DLL
   The dirname and basename to locate the libstdc++'s dll for the host.
-See config.mk.example for example.
+See config.mk.example.* for example.
 
 Then running `make` will produce flint.zip in case of success, which contains
 all you need at the next step.
