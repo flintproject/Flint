@@ -1,6 +1,5 @@
 BOOST_UNUSED_COMPONENTS = \
 	atomic \
-	chrono \
 	container \
 	context \
 	coroutine \
@@ -20,7 +19,6 @@ BOOST_UNUSED_COMPONENTS = \
 	serialization \
 	signals \
 	thread \
-	timer \
 	type_erasure \
 	wave
 

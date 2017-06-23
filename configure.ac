@@ -49,6 +49,7 @@ AS_IF([test "x$enable_thread" = "xposix"],[AC_DEFINE([USING_PTHREAD],[1],['Using
       [test "x$enable_thread" != "xno"],[AC_MSG_ERROR([unknown type of thread: $enable_thread])])
 
 BOOST_REQUIRE([1.64.0])
+BOOST_CHRONO
 BOOST_FILESYSTEM
 BOOST_HASH
 BOOST_MATH
@@ -56,6 +57,7 @@ BOOST_PROGRAM_OPTIONS
 BOOST_UUID
 BOOST_XPRESSIVE
 BOOST_TEST
+BOOST_FIND_LIBS([timer],[timer],[],[boost/timer.hpp],[boost::timer t;])
 
 # Boost.Interprocess uses pthread system calls in POSIX systems;
 # see <http://www.boost.org/doc/libs/1_64_0/doc/html/interprocess.html>.
