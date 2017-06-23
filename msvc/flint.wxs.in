@@ -135,7 +135,7 @@
             <Shortcut Id='flint_startmenu_shortcut' Name='Flint'
                       Description='Flint is a simulator for physiome.'
                       Icon='flint.ico'
-                      Target='[FLINTDIR]flint.exe'
+                      Target='[FLINTDIR]flint2.exe'
                       WorkingDirectory='FLINTDIR' />
             <Shortcut Id='UninstallProduct' Name='uninstall'
                       Description='Uninstall Flint.'
