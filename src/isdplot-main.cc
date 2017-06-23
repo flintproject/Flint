@@ -20,10 +20,11 @@
 #endif
 
 #include <boost/program_options.hpp>
+
+#include "flint/temporary-file.h"
 #include "isd2csv.h"
 #include "isdstrip.h"
 #include "isdf/isdf.h"
-#include "sys/temporary_path.h"
 
 namespace po = boost::program_options;
 
@@ -43,9 +44,9 @@ bool ReadDescriptions(std::uint32_t num_bytes_descs, std::istream *is, char *res
 	return is->good();
 }
 
-bool CountColumns(const char *input, std::uint32_t *num_columns)
+bool CountColumns(const boost::filesystem::path &input, std::uint32_t *num_columns)
 {
-	std::ifstream ifs(input, std::ios::in|std::ios::binary);
+	boost::filesystem::ifstream ifs(input, std::ios::in|std::ios::binary);
 	if (!ifs.is_open()) {
 		std::cerr << "could not open input file: " << input << std::endl;
 		return false;
@@ -61,29 +62,23 @@ bool CountColumns(const char *input, std::uint32_t *num_columns)
 	return true;
 }
 
-int CallIsd2csv(const isd2csv::Option &option, const char *input, const char *output)
+int CallIsd2csv(const isd2csv::Option &option, const boost::filesystem::path &input, std::ostream *os)
 {
-	std::ifstream ifs(input, std::ios::in|std::ios::binary);
+	boost::filesystem::ifstream ifs(input, std::ios::in|std::ios::binary);
 	if (!ifs) {
 		std::cerr << "failed to open input file: " << input << std::endl;
 		return EXIT_FAILURE;
 	}
-	std::ofstream ofs(output, std::ios::out|std::ios::binary);
-	if (!ofs) {
-		std::cerr << "failed to open output file: " << output << std::endl;
-		ifs.close();
-		return EXIT_FAILURE;
-	}
-	int r = isd2csv::Convert(option, &ifs, &ofs);
-	ofs.close();
+	int r = isd2csv::Convert(option, &ifs, os);
 	ifs.close();
 	return r;
 }
 
-void PutQuotedPath(const char *path, std::ostringstream *bss)
+template<typename TChar>
+void PutQuotedPath(const TChar *path, std::ostringstream *bss)
 {
 	*bss << "\"";
-	char c;
+	TChar c;
 	while ( (c = *path++) ) {
 		switch (c) {
 		case '\\':
@@ -97,8 +92,9 @@ void PutQuotedPath(const char *path, std::ostringstream *bss)
 	*bss << "\"";
 }
 
+template<typename TChar>
 void CreateScript(std::uint32_t num_columns,
-				  const char *csv_path,
+				  const TChar *csv_path,
 				  const char *output_path,
 				  std::ostringstream *bss)
 {
@@ -147,9 +143,10 @@ void CreateScript(std::uint32_t num_columns,
 
 // Windows
 
+template<typename TChar>
 int CallGnuplot(const char *gnuplot,
 				std::uint32_t num_columns,
-				const char *csv_path,
+				const TChar *csv_path,
 				const char *output_path)
 {
 	SECURITY_ATTRIBUTES saAttr;
@@ -223,9 +220,10 @@ int CallGnuplot(const char *gnuplot,
 
 // POSIX
 
+template<typename TChar>
 int CallGnuplot(const char *gnuplot,
 				std::uint32_t num_columns,
-				const char *csv_path,
+				const TChar *csv_path,
 				const char *output_path)
 {
 	FILE *fp = popen(gnuplot, "w");
@@ -252,15 +250,6 @@ int CallGnuplot(const char *gnuplot,
 #else
 #error "unavailability of popen is fatal."
 #endif
-
-char *stripped_path = nullptr;
-char *csv_path = nullptr;
-
-void Cleanup(void)
-{
-	if (stripped_path) remove(stripped_path);
-	if (csv_path) remove(csv_path);
-}
 
 } // namespace
 
@@ -297,50 +286,43 @@ int main(int argc, char *argv[])
 		return (print_help == 1) ? EXIT_SUCCESS : EXIT_FAILURE;
 	}
 
-	std::atexit(Cleanup);
-
-	std::unique_ptr<TemporaryPath> temp_path(new TemporaryPath("isdplot"));
-	const char *input_path = input_file.c_str();
-
 	isd2csv::Option isd2csv_option;
 	isd2csv_option.ignore_prefixes = (vm.count("ignore-prefixes") > 0);
 	isd2csv_option.ignore_units = (vm.count("ignore-units") > 0);
 
 	std::vector<std::uint32_t> cv;
-	if (!isdstrip::ExtractConstantColumns(input_path, nullptr, &cv))
+	if (!isdstrip::ExtractConstantColumns(input_file.c_str(), nullptr, &cv))
 		return EXIT_FAILURE;
+	boost::filesystem::path input_path(input_file.c_str());
+	std::unique_ptr<TemporaryFile> temp_file;
 	if (!cv.empty()) { // create a stripped file
-		stripped_path = temp_path->Touch();
-		if (!stripped_path) {
-			std::cerr << "could not create temporary path" << std::endl;
+		temp_file.reset(new TemporaryFile);
+		if (!temp_file->ofs()) {
+			std::cerr << "failed to open temporary file: " << temp_file->path() << std::endl;
 			return EXIT_FAILURE;
 		}
-		std::ofstream ofs(stripped_path, std::ios::out|std::ios::binary);
-		if (!ofs) {
-			std::cerr << "failed to open temporary file: " << stripped_path << std::endl;
-			return EXIT_FAILURE;
-		}
-		int r = isdstrip::Filter(input_path, cv, &ofs);
-		ofs.close();
+		int r = isdstrip::Filter(input_file.c_str(), cv, &temp_file->ofs());
+		temp_file->Close();
 		if (r != EXIT_SUCCESS) {
 			std::cerr << "failed to filter constant columns: " << r << std::endl;
 			return r;
 		}
-		input_path = stripped_path;
+		input_path = temp_file->path();
 	}
 
 	std::uint32_t num_columns = 0;
 	if (!CountColumns(input_path, &num_columns)) {
 		return EXIT_FAILURE;
 	}
-	csv_path = temp_path->Touch();
-	if (!csv_path) {
-		std::cerr << "could not create temporary path" << std::endl;
+	TemporaryFile csv_file;
+	if (!csv_file.ofs()) {
+		std::cerr << "could not create temporary path: " << csv_file.path() << std::endl;
 		return EXIT_FAILURE;
 	}
-	int r = CallIsd2csv(isd2csv_option, input_path, csv_path);
+	int r = CallIsd2csv(isd2csv_option, input_path, &csv_file.ofs());
+	csv_file.Close();
 	if (r != EXIT_SUCCESS)
 		return r;
-	r = CallGnuplot(gnuplot.c_str(), num_columns, csv_path, output_file.c_str());
+	r = CallGnuplot(gnuplot.c_str(), num_columns, csv_file.path().c_str(), output_file.c_str());
 	return r;
 }

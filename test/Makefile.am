@@ -18,7 +18,6 @@ SUBDIRS = \
 	runtime \
 	sbml \
 	sedml \
-	sys \
 	csv2isd \
 	isd2csv \
 	isdbswap \

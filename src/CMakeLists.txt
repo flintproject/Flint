@@ -149,7 +149,6 @@ add_library(libflintxx STATIC
     solver/ark/user-supplied.cc
     solver/solve.cc
     stats.cc
-    sys/temporary_path.cc
     task.cc
     task/config-reader.cc
     task/config.cc

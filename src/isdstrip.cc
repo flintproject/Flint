@@ -17,7 +17,6 @@
 #include <vector>
 #include "isdf/isdf.h"
 #include "isdf/reader.h"
-#include "sys/temporary_path.h"
 
 namespace flint {
 namespace isdstrip {

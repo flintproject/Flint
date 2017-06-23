@@ -170,7 +170,6 @@ AC_CONFIG_FILES([Makefile
                  test/runtime/Makefile
                  test/sbml/Makefile
                  test/sedml/Makefile
-                 test/sys/Makefile
                  test/csv2isd/Makefile
                  test/isd2csv/Makefile
                  test/isdbswap/Makefile
