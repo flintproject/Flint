@@ -11,10 +11,6 @@
 
     <Directory Id='TARGETDIR' Name='SourceDir'>
 
-      <Component Id='Environment' Guid='f8b61b0c-ea1d-11e3-9d71-0b54cc44b48d'>
-        <Environment Id='PATH' Name='PATH' Value='[FLINTDIR]' Permanent='no' Part='last' Action='set' System='yes' />
-      </Component>
-
       <Directory Id='ProgramFilesFolder' Name='PFiles'>
         <Directory Id='FLINTDIR' Name='Flint'>
 
