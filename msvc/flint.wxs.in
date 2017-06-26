@@ -151,7 +151,6 @@
       <ComponentRef Id='flint_startmenu' />
     </Feature>
     <Feature Id='BaseFeature' Title='Base Feature' Level='1'>
-      <ComponentRef Id='Environment' />
       <ComponentRef Id='csv2isd' />
       <ComponentRef Id='flint_exec' />
       <ComponentRef Id='flint_lodbg' />
