@@ -161,6 +161,7 @@ flint/third-party-licenses.txt: tmp/ceres-solver-$(CERES_VERSION) tmp/czmq-$(CZM
 
 all.proj: all.proj.in
 	m4 \
+		-D__TARGET_ARCH="$(TARGET_ARCH)" \
 		-D__BOOST_UNDERSCORE="$(BOOST_UNDERSCORE)" \
 		-D__B2_WITHOUT_OPTIONS="$(B2_WITHOUT_OPTIONS)" \
 		-D__CERES_VERSION="$(CERES_VERSION)" \

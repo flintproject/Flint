@@ -11,7 +11,15 @@
 
     <Directory Id='TARGETDIR' Name='SourceDir'>
 
-      <Directory Id='ProgramFilesFolder' Name='PFiles'>
+      <?if $(sys.BUILDARCH) = x64 ?>
+      <?define MsvcVariant = "vc140_x64" ?>
+      <?define ProgramFilesFolderId = "ProgramFiles64Folder" ?>
+      <?elseif $(sys.BUILDARCH) = x86 ?>
+      <?define MsvcVariant = "vc140" ?>
+      <?define ProgramFilesFolderId = "ProgramFilesFolder" ?>
+      <?endif ?>
+
+      <Directory Id='$(var.ProgramFilesFolderId)' Name='PFiles'>
         <Directory Id='FLINTDIR' Name='Flint'>
 
           <Component Id='flint_exe' Guid='b3759fa0-220f-11e1-95b8-8fcafecb7541'>
@@ -86,13 +94,13 @@
             <File Id='libboost_system' Name='boost_system-vc140-mt-1_64.dll' DiskId='1' Source='boost_system-vc140-mt-1_64.dll' />
           </Component>
           <Component Id='wxmsw' Guid='80ff1e98-c791-11e6-9786-dfa231e0a1a7'>
-            <File Id='wxbase310u' Name='wxbase310u_vc140.dll' DiskId='1' Source='wxbase310u_vc140.dll' />
-            <File Id='wxbase310u_net' Name='wxbase310u_net_vc140.dll' DiskId='1' Source='wxbase310u_net_vc140.dll' />
-            <File Id='wxbase310u_xml' Name='wxbase310u_xml_vc140.dll' DiskId='1' Source='wxbase310u_xml_vc140.dll' />
-            <File Id='wxmsw310u_adv' Name='wxmsw310u_adv_vc140.dll' DiskId='1' Source='wxmsw310u_adv_vc140.dll' />
-            <File Id='wxmsw310u_aui' Name='wxmsw310u_aui_vc140.dll' DiskId='1' Source='wxmsw310u_aui_vc140.dll' />
-            <File Id='wxmsw310u_core' Name='wxmsw310u_core_vc140.dll' DiskId='1' Source='wxmsw310u_core_vc140.dll' />
-            <File Id='wxmsw310u_propgrid' Name='wxmsw310u_propgrid_vc140.dll' DiskId='1' Source='wxmsw310u_propgrid_vc140.dll' />
+            <File Id='wxbase310u' Name='wxbase310u_$(var.MsvcVariant).dll' DiskId='1' Source='wxbase310u_$(var.MsvcVariant).dll' />
+            <File Id='wxbase310u_net' Name='wxbase310u_net_$(var.MsvcVariant).dll' DiskId='1' Source='wxbase310u_net_$(var.MsvcVariant).dll' />
+            <File Id='wxbase310u_xml' Name='wxbase310u_xml_$(var.MsvcVariant).dll' DiskId='1' Source='wxbase310u_xml_$(var.MsvcVariant).dll' />
+            <File Id='wxmsw310u_adv' Name='wxmsw310u_adv_$(var.MsvcVariant).dll' DiskId='1' Source='wxmsw310u_adv_$(var.MsvcVariant).dll' />
+            <File Id='wxmsw310u_aui' Name='wxmsw310u_aui_$(var.MsvcVariant).dll' DiskId='1' Source='wxmsw310u_aui_$(var.MsvcVariant).dll' />
+            <File Id='wxmsw310u_core' Name='wxmsw310u_core_$(var.MsvcVariant).dll' DiskId='1' Source='wxmsw310u_core_$(var.MsvcVariant).dll' />
+            <File Id='wxmsw310u_propgrid' Name='wxmsw310u_propgrid_$(var.MsvcVariant).dll' DiskId='1' Source='wxmsw310u_propgrid_$(var.MsvcVariant).dll' />
           </Component>
           <Component Id='ceres' Guid='f54f071a-45d4-11e7-b347-bb7df618a1d5'>
             <File Id='libceres' Name='ceres.dll' DiskId='1' Source='ceres.dll' />
