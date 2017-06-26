@@ -57,7 +57,14 @@ BOOST_PROGRAM_OPTIONS
 BOOST_UUID
 BOOST_XPRESSIVE
 BOOST_TEST
+boost_timer_save_LIBS=$LIBS
+boost_timer_save_LDFLAGS=$LDFLAGS
+LIBS="$LIBS $BOOST_CHRONO_LIBS"
+LDFLAGS="$LDFLAGS $BOOST_CHRONO_LDFLAGS"
 BOOST_FIND_LIBS([timer],[timer],[],[boost/timer.hpp],[boost::timer t;])
+BOOST_TIMER_LIBS="$BOOST_TIMER_LIBS $BOOST_CHRONO_LIBS"
+LIBS=$boost_timer_save_LIBS
+LDFLAGS=$boost_timer_save_LDFLAGS
 
 # Boost.Interprocess uses pthread system calls in POSIX systems;
 # see <http://www.boost.org/doc/libs/1_64_0/doc/html/interprocess.html>.
