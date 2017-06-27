@@ -36,6 +36,16 @@ public:
 			ofs_.close();
 		boost::system::error_code ec;
 		boost::filesystem::rename(path_, target, ec);
+		if (!ec) {
+			own_ = false;
+			return;
+		}
+		// renaming a file can fail due to invalid cross-device link;
+		// try copy&remove in such a case.
+		boost::filesystem::copy_file(path_, target, ec);
+		if (ec)
+			return;
+		boost::filesystem::remove(path_, ec);
 		own_ = ec;
 	}
 
