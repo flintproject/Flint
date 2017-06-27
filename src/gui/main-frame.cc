@@ -85,10 +85,10 @@ MainFrame::MainFrame()
 
 	// menus
 	auto menuFile = new wxMenu;
-	menuFile->Append(wxID_OPEN);
-	menuFile->Append(wxID_CLOSE);
+	menuFile->Append(wxID_OPEN, "Open\tCTRL+O");
+	menuFile->Append(wxID_CLOSE, "Close\tCTRL+W");
 	menuFile->AppendSeparator();
-	menuFile->Append(wxID_EXIT);
+	menuFile->Append(wxID_EXIT, "Quit\tCTRL+Q");
 
 	history_.Load(*wxConfig::Get());
 	history_.UseMenu(menuFile);
