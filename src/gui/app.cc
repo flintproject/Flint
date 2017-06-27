@@ -11,6 +11,7 @@
 #pragma GCC diagnostic ignored "-Wcast-qual"
 #include <wx/config.h>
 #include <wx/filename.h>
+#include <wx/persist.h>
 #pragma GCC diagnostic pop
 
 #include "gui/main-frame.h"
@@ -20,6 +21,50 @@
 namespace flint {
 namespace gui {
 
+namespace {
+
+class PersistentApp : public wxPersistentObject
+{
+public:
+	PersistentApp(App *, wxString &gnuplot_executable);
+
+	virtual void Save() const override;
+	virtual bool Restore() override;
+	virtual wxString GetKind() const override;
+	virtual wxString GetName() const override;
+
+private:
+	wxString &gnuplot_executable_;
+};
+
+PersistentApp::PersistentApp(App *obj, wxString &gnuplot_executable)
+	: wxPersistentObject(obj)
+	, gnuplot_executable_(gnuplot_executable)
+{
+}
+
+void PersistentApp::Save() const
+{
+	SaveValue("gnuplot_executable", gnuplot_executable_);
+}
+
+bool PersistentApp::Restore()
+{
+	return RestoreValue("gnuplot_executable", &gnuplot_executable_);
+}
+
+wxString PersistentApp::GetKind() const
+{
+	return "Preference";
+}
+
+wxString PersistentApp::GetName() const
+{
+	return "File";
+}
+
+}
+
 bool App::OnInit()
 {
 	if (!wxApp::OnInit())
@@ -27,6 +72,8 @@ bool App::OnInit()
 
 	SetAppDisplayName("Flint");
 	SetVendorDisplayName("Flint project");
+
+	wxPersistenceManager::Get().RegisterAndRestore(this, new PersistentApp(this, gnuplot_executable_));
 
 	wxFileName fileName;
 	fileName.AssignHomeDir();
@@ -46,6 +93,8 @@ bool App::OnInit()
 
 int App::OnExit()
 {
+	wxPersistenceManager::Get().SaveAndUnregister(this);
+
 	// clean up working directory
 	wxFileName fileName;
 	fileName.AssignHomeDir();
