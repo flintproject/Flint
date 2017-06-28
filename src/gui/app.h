@@ -6,9 +6,10 @@
 
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wcast-qual"
-#include <wx/filepicker.h>
 #include <wx/wx.h>
+#include <wx/filepicker.h>
 #include <wx/preferences.h>
+#include <wx/snglinst.h>
 #pragma GCC diagnostic pop
 
 namespace flint {
@@ -27,6 +28,7 @@ public:
 	void ShowPreferencesEditor(wxWindow *parent);
 
 private:
+	wxSingleInstanceChecker *checker_;
 	wxPreferencesEditor *pref_editor_;
 	wxString gnuplot_executable_;
 };

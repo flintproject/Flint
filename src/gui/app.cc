@@ -70,6 +70,13 @@ bool App::OnInit()
 	if (!wxApp::OnInit())
 		return false;
 
+	checker_ = new wxSingleInstanceChecker;
+	if (checker_->IsAnotherRunning()) {
+		wxLogError("Another instance of this program is already running, aborting.");
+		delete checker_;
+		return false;
+	}
+
 	SetAppDisplayName("Flint");
 	SetVendorDisplayName("Flint project");
 
@@ -102,6 +109,8 @@ int App::OnExit()
 	fileName.AppendDir(".flint");
 	fileName.AppendDir("2");
 	fileName.Rmdir(wxPATH_RMDIR_RECURSIVE);
+
+	delete checker_;
 
 	return wxApp::OnExit();
 }
