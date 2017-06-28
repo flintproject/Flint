@@ -86,6 +86,7 @@ bool App::OnInit()
 	fileName.AssignHomeDir();
 	fileName.AppendDir(".flint");
 	fileName.AppendDir("2");
+	fileName.Rmdir(wxPATH_RMDIR_RECURSIVE); // clean up working directory at first
 	fileName.Mkdir(wxS_DIR_DEFAULT, wxPATH_MKDIR_FULL); // make sure that it exists
 	fileName.SetCwd();
 
@@ -101,14 +102,6 @@ bool App::OnInit()
 int App::OnExit()
 {
 	wxPersistenceManager::Get().SaveAndUnregister(this);
-
-	// clean up working directory
-	wxFileName fileName;
-	fileName.AssignHomeDir();
-	fileName.SetCwd(); // change directory at first
-	fileName.AppendDir(".flint");
-	fileName.AppendDir("2");
-	fileName.Rmdir(wxPATH_RMDIR_RECURSIVE);
 
 	delete checker_;
 
