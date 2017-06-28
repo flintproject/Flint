@@ -44,13 +44,13 @@
     <wxWidgetsHeaderFiles Include="$(VARDIR)\include\**\*.*"/>
   </ItemGroup>
 
-  <Target Name='boost' Outputs='tmp\$(BOOST_UNDERSCORE).installed'>
+  <Target Name='boost' Inputs='tmp\$(BOOST_UNDERSCORE)' Outputs='tmp\$(BOOST_UNDERSCORE).installed'>
     <Exec Command='bootstrap' WorkingDirectory='$(VARDIR)\$(BOOST_UNDERSCORE)'/>
     <Exec Command='.\b2 -d0 --prefix="$(PREFIX)" $(B2_WITHOUT_OPTIONS) $(BoostAddressModelOption) variant=release threading=multi link=shared runtime-link=shared install' WorkingDirectory='$(VARDIR)\$(BOOST_UNDERSCORE)'/>
     <Touch AlwaysCreate='true' Files='tmp\$(BOOST_UNDERSCORE).installed'/>
   </Target>
 
-  <Target Name='ceres-solver' Outputs='tmp\ceres-solver-$(CERES_VERSION).installed'>
+  <Target Name='ceres-solver' Inputs='tmp\ceres-solver-$(CERES_VERSION)' Outputs='tmp\ceres-solver-$(CERES_VERSION).installed'>
     <MakeDir Directories='$(VARDIR)\ceres-solver-$(CERES_VERSION)\build'/>
     <Exec Command='cmake $(CMakeGeneratorOption) -DCMAKE_INSTALL_PREFIX="$(PREFIX)" -DEIGEN_INCLUDE_DIR="$(EIGEN_INCLUDE_DIR)" -DMINIGLOG=ON -DBUILD_SHARED_LIBS=ON ..' WorkingDirectory='$(VARDIR)\ceres-solver-$(CERES_VERSION)\build'/>
     <Exec Command='cmake --build "$(VARDIR)\ceres-solver-$(CERES_VERSION)\build" --target install --config Release --clean-first'/>
@@ -59,7 +59,7 @@
 
   <Target Name='clibsedml'
           DependsOnTargets='libxml2'
-          Inputs='tmp\libxml2-$(LIBXML2_VERSION).installed'
+          Inputs='tmp\clibsedml-$(CLIBSEDML_VERSION)'
           Outputs='tmp\clibsedml-$(CLIBSEDML_VERSION).installed'>
     <MakeDir Directories='$(VARDIR)\clibsedml-$(CLIBSEDML_VERSION)\build'/>
     <Exec Command='cmake $(CMakeGeneratorOption) -DCMAKE_INSTALL_PREFIX="$(PREFIX)" -DBUILD_SHARED_LIBS=ON ..' WorkingDirectory='$(VARDIR)\clibsedml-$(CLIBSEDML_VERSION)\build'/>
@@ -69,7 +69,7 @@
 
   <Target Name='czmq'
           DependsOnTargets='zeromq'
-          Inputs='tmp\zeromq-$(ZEROMQ_VERSION).installed'
+          Inputs='tmp\czmq-$(CZMQ_VERSION).installed'
           Outputs='tmp\czmq-$(CZMQ_VERSION).installed'>
     <MakeDir Directories='$(VARDIR)\czmq-$(CZMQ_VERSION)\build'/>
     <Exec Command='cmake $(CMakeGeneratorOption) -DCMAKE_INSTALL_PREFIX="$(PREFIX)" -DBUILD_SHARED_LIBS=ON ..' WorkingDirectory='$(VARDIR)\czmq-$(CZMQ_VERSION)\build'/>
@@ -79,7 +79,7 @@
 
   <Target Name='libsbml'
           DependsOnTargets='libxml2'
-          Inputs='$(PREFIX)\bin\libxml2.dll'
+          Inputs='tmp\libsbml-$(LIBSBML_VERSION)'
           Outputs='tmp\libsbml-$(LIBSBML_VERSION).installed'>
     <MakeDir Directories='$(VARDIR)\libsbml-$(LIBSBML_VERSION)\build'/>
     <Exec Command='cmake $(CMakeGeneratorOption) -DCMAKE_INSTALL_PREFIX="$(PREFIX)" -DLIBXML_INCLUDE_DIR="$(PREFIX)\include\libxml2" -DWITH_SWIG=OFF -DBUILD_SHARED_LIBS=ON ..' WorkingDirectory='$(VARDIR)\libsbml-$(LIBSBML_VERSION)\build'/>
@@ -87,13 +87,13 @@
     <Touch AlwaysCreate='true' Files='tmp\libsbml-$(LIBSBML_VERSION).installed'/>
   </Target>
 
-  <Target Name='libxml2' Outputs='tmp\libxml2-$(LIBXML2_VERSION).installed'>
+  <Target Name='libxml2' Inputs='tmp\libxml2-$(LIBXML2_VERSION)' Outputs='tmp\libxml2-$(LIBXML2_VERSION).installed'>
     <Exec Command='cscript configure.js prefix="$(PREFIX)" static=no debug=no iconv=no icu=no ftp=no http=no lzma=no python=no threads=no zlib=no' WorkingDirectory='$(VARDIR)/libxml2-$(LIBXML2_VERSION)/win32'/>
     <Exec Command='nmake /f Makefile.msvc rebuild install' WorkingDirectory='$(VARDIR)/libxml2-$(LIBXML2_VERSION)/win32'/>
     <Touch AlwaysCreate='true' Files='tmp\libxml2-$(LIBXML2_VERSION).installed'/>
   </Target>
 
-  <Target Name='protobuf' Outputs='tmp\protobuf-$(PROTOBUF_VERSION).installed'>
+  <Target Name='protobuf' Inputs='tmp\protobuf-$(PROTOBUF_VERSION)' Outputs='tmp\protobuf-$(PROTOBUF_VERSION).installed'>
     <MakeDir Directories='$(VARDIR)\protobuf-$(PROTOBUF_VERSION)\cmake\build'/>
     <Exec Command='cmake $(CMakeGeneratorOption) -DCMAKE_INSTALL_PREFIX="$(PREFIX)" -DBUILD_SHARED_LIBS=ON -Dprotobuf_BUILD_TESTS=OFF ..' WorkingDirectory='$(VARDIR)\protobuf-$(PROTOBUF_VERSION)\cmake\build'/>
     <Exec Command='cmake --build "$(VARDIR)\protobuf-$(PROTOBUF_VERSION)\cmake\build" --target install --config Release --clean-first'/>
@@ -102,7 +102,7 @@
 
   <Target Name='SBML_odeSolver'
           DependsOnTargets='libsbml'
-          Inputs='tmp\libsbml-$(LIBSBML_VERSION).installed'
+          Inputs='tmp\SBML_odeSolver-$(SOSLIB_VERSION)'
           Outputs='tmp\SBML_odeSolver-$(SOSLIB_VERSION).installed'>
     <MakeDir Directories='$(VARDIR)\SBML_odeSolver-$(SOSLIB_VERSION)\build'/>
     <Exec Command='cmake $(CMakeGeneratorOption) -DCMAKE_INSTALL_PREFIX="$(PREFIX)" -DBUILD_SHARED_LIBS=ON ..' WorkingDirectory='$(VARDIR)\SBML_odeSolver-$(SOSLIB_VERSION)\build'/>
@@ -110,14 +110,14 @@
     <Touch AlwaysCreate='true' Files='tmp\SBML_odeSolver-$(SOSLIB_VERSION).installed'/>
   </Target>
 
-  <Target Name='sundials' Outputs='tmp\sundials-$(SUNDIALS_VERSION).installed'>
+  <Target Name='sundials' Inputs='tmp\sundials-$(SUNDIALS_VERSION)' Outputs='tmp\sundials-$(SUNDIALS_VERSION).installed'>
     <MakeDir Directories='$(VARDIR)\sundials-$(SUNDIALS_VERSION)\build'/>
     <Exec Command='cmake $(CMakeGeneratorOption) -DCMAKE_INSTALL_PREFIX="$(PREFIX)" -DBUILD_SHARED_LIBS=OFF -DBUILD_STATIC_LIBS=ON ..' WorkingDirectory='$(VARDIR)\sundials-$(SUNDIALS_VERSION)\build'/>
     <Exec Command='cmake --build "$(VARDIR)\sundials-$(SUNDIALS_VERSION)\build" --target install --config Release --clean-first'/>
     <Touch AlwaysCreate='true' Files='tmp\sundials-$(SUNDIALS_VERSION).installed'/>
   </Target>
 
-  <Target Name='zeromq' Outputs='tmp\zeromq-$(ZEROMQ_VERSION).installed'>
+  <Target Name='zeromq' Inputs='tmp\zeromq-$(ZEROMQ_VERSION)' Outputs='tmp\zeromq-$(ZEROMQ_VERSION).installed'>
     <MakeDir Directories='$(VARDIR)\zeromq-$(ZEROMQ_VERSION)\build'/>
     <Exec Command='cmake $(CMakeGeneratorOption) -DCMAKE_INSTALL_PREFIX="$(PREFIX)" -DBUILD_SHARED_LIBS=ON -DWITH_PERF_TOOL=OFF -DZMQ_BUILD_TESTS=OFF -DENABLE_CPACK=OFF ..' WorkingDirectory='$(VARDIR)\zeromq-$(ZEROMQ_VERSION)\build'/>
     <Exec Command='cmake --build "$(VARDIR)\zeromq-$(ZEROMQ_VERSION)\build" --target install --config Release --clean-first'/>
@@ -131,49 +131,42 @@
 
   <Target Name='bc-pb'
           DependsOnTargets='protobuf'
-          Inputs='tmp\protobuf-$(PROTOBUF_VERSION).installed'
           Outputs='..\src\bc.pb.cc'>
     <Exec Command='protoc -I"$(PBDIR)" --cpp_out="$(MSBuildProjectDirectory)\..\src" "$(PBDIR)\bc.proto"' WorkingDirectory='$(PREFIX)\bin'/>
   </Target>
 
   <Target Name='cli-pb'
           DependsOnTargets='protobuf'
-          Inputs='tmp\protobuf-$(PROTOBUF_VERSION).installed'
           Outputs='..\src\cli.pb.cc'>
     <Exec Command='protoc -I"$(PBDIR)" --cpp_out="$(MSBuildProjectDirectory)\..\src" "$(PBDIR)\cli.proto"' WorkingDirectory='$(PREFIX)\bin'/>
   </Target>
 
   <Target Name='ipc-pb'
           DependsOnTargets='protobuf'
-          Inputs='tmp\protobuf-$(PROTOBUF_VERSION).installed'
           Outputs='..\src\ipc.pb.cc'>
     <Exec Command='protoc -I"$(PBDIR)" --cpp_out="$(MSBuildProjectDirectory)\..\src" "$(PBDIR)\ipc.proto"' WorkingDirectory='$(PREFIX)\bin'/>
   </Target>
 
   <Target Name='lo-pb'
           DependsOnTargets='protobuf'
-          Inputs='tmp\protobuf-$(PROTOBUF_VERSION).installed'
           Outputs='..\src\lo.pb.cc'>
     <Exec Command='protoc -I"$(PBDIR)" --cpp_out="$(MSBuildProjectDirectory)\..\src" "$(PBDIR)\lo.proto"' WorkingDirectory='$(PREFIX)\bin'/>
   </Target>
 
   <Target Name='phml-pb'
           DependsOnTargets='protobuf'
-          Inputs='tmp\protobuf-$(PROTOBUF_VERSION).installed'
           Outputs='..\src\phml.pb.cc'>
     <Exec Command='protoc -I"$(PBDIR)" --cpp_out="$(MSBuildProjectDirectory)\..\src" "$(PBDIR)\phml.proto"' WorkingDirectory='$(PREFIX)\bin'/>
   </Target>
 
   <Target Name='unit-pb'
           DependsOnTargets='protobuf'
-          Inputs='tmp\protobuf-$(PROTOBUF_VERSION).installed'
           Outputs='..\src\unit.pb.cc'>
     <Exec Command='protoc -I"$(PBDIR)" --cpp_out="$(MSBuildProjectDirectory)\..\src" "$(PBDIR)\unit.proto"' WorkingDirectory='$(PREFIX)\bin'/>
   </Target>
 
   <Target Name='build'
           DependsOnTargets='boost;ceres-solver;clibsedml;sundials;SBML_odeSolver;czmq;wxWidgets;bc-pb;cli-pb;ipc-pb;lo-pb;phml-pb;unit-pb'
-          Inputs='tmp\$(BOOST_UNDERSCORE).installed;tmp\ceres-solver-$(CERES_VERSION).installed;tmp\clibsedml-$(CLIBSEDML_VERSION).installed;tmp\sundials-$(SUNDIALS_VERSION).installed;tmp\SBML_odeSolver-$(SOSLIB_VERSION).installed;tmp\czmq-$(CZMQ_VERSION).installed;..\src\bc.pb.cc;..\src\cli.pb.cc;..\src\ipc.pb.cc;..\src\lo.pb.cc;..\src\phml.pb.cc;..\src\unit.pb.cc'
           Outputs='tmp\build'>
     <MakeDir Directories='$(VARDIR)\build'/>
     <Exec Command='cmake $(CMakeGeneratorOption) -DCMAKE_INSTALL_PREFIX="$(PREFIX)" ..\..\..' WorkingDirectory='$(VARDIR)\build'/>
@@ -183,7 +176,6 @@
 
   <Target Name='flint'
           DependsOnTargets='build'
-          Inputs='tmp\build'
           Outputs='tmp\flint'>
     <ItemGroup>
       <DLLFiles Include='opt\bin\ceres.dll'/>
@@ -213,7 +205,7 @@
 
   <Target Name='Package'
           DependsOnTargets='flint'
-          Inputs='tmp\flint'
+          Inputs='flint\flint.wxs'
           Outputs='flint\flint.msi'>
     <Exec Command='candle -arch $(TargetArch) flint.wxs' WorkingDirectory='flint'/>
     <Exec Command='light -ext WixUIExtension flint.wixobj' WorkingDirectory='flint'/>
