@@ -124,43 +124,52 @@
     <Touch AlwaysCreate='true' Files='tmp\zeromq-$(ZEROMQ_VERSION).installed'/>
   </Target>
 
-  <Target Name='wxWidgets'>
+  <Target Name='wxWidgets'
+          Inputs='tmp\include;tmp\lib'
+          Outputs='tmp\wxWidgets.installed'>
     <Copy SourceFiles='@(wxWidgetsLibraryFiles)' DestinationFiles="@(wxWidgetsLibraryFiles->'$(PREFIX)\lib\%(RecursiveDir)%(Filename)%(Extension)')"/>
     <Copy SourceFiles='@(wxWidgetsHeaderFiles)' DestinationFiles="@(wxWidgetsHeaderFiles->'$(PREFIX)\include\%(RecursiveDir)%(Filename)%(Extension)')"/>
+    <Touch AlwaysCreate='true' Files='tmp\wxWidgets.installed'/>
   </Target>
 
   <Target Name='bc-pb'
           DependsOnTargets='protobuf'
+          Inputs='$(PBDIR)\bc.proto'
           Outputs='..\src\bc.pb.cc'>
     <Exec Command='protoc -I"$(PBDIR)" --cpp_out="$(MSBuildProjectDirectory)\..\src" "$(PBDIR)\bc.proto"' WorkingDirectory='$(PREFIX)\bin'/>
   </Target>
 
   <Target Name='cli-pb'
           DependsOnTargets='protobuf'
+          Inputs='$(PBDIR)\cli.proto'
           Outputs='..\src\cli.pb.cc'>
     <Exec Command='protoc -I"$(PBDIR)" --cpp_out="$(MSBuildProjectDirectory)\..\src" "$(PBDIR)\cli.proto"' WorkingDirectory='$(PREFIX)\bin'/>
   </Target>
 
   <Target Name='ipc-pb'
           DependsOnTargets='protobuf'
+          Inputs='$(PBDIR)\ipc.proto'
           Outputs='..\src\ipc.pb.cc'>
     <Exec Command='protoc -I"$(PBDIR)" --cpp_out="$(MSBuildProjectDirectory)\..\src" "$(PBDIR)\ipc.proto"' WorkingDirectory='$(PREFIX)\bin'/>
   </Target>
 
   <Target Name='lo-pb'
           DependsOnTargets='protobuf'
+          Inputs='$(PBDIR)\lo.proto'
           Outputs='..\src\lo.pb.cc'>
     <Exec Command='protoc -I"$(PBDIR)" --cpp_out="$(MSBuildProjectDirectory)\..\src" "$(PBDIR)\lo.proto"' WorkingDirectory='$(PREFIX)\bin'/>
   </Target>
 
   <Target Name='phml-pb'
           DependsOnTargets='protobuf'
+          Inputs='$(PBDIR)\phml.proto'
           Outputs='..\src\phml.pb.cc'>
     <Exec Command='protoc -I"$(PBDIR)" --cpp_out="$(MSBuildProjectDirectory)\..\src" "$(PBDIR)\phml.proto"' WorkingDirectory='$(PREFIX)\bin'/>
   </Target>
 
   <Target Name='unit-pb'
           DependsOnTargets='protobuf'
+          Inputs='$(PBDIR)\unit.proto'
           Outputs='..\src\unit.pb.cc'>
     <Exec Command='protoc -I"$(PBDIR)" --cpp_out="$(MSBuildProjectDirectory)\..\src" "$(PBDIR)\unit.proto"' WorkingDirectory='$(PREFIX)\bin'/>
   </Target>

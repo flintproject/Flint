@@ -19,7 +19,7 @@ EXTERNAL_LIBRARY_DIRS = $(filter-out $(UNNECESSARY_LIBRARIES),$(ALL_EXTERNAL_LIB
 all: download all.proj $(foreach lib,$(EXTERNAL_LIBRARY_DIRS),tmp/$(lib)) tmp/release-dll flint/flint.ico flint/flint.wxs flint/license.rtf flint/third-party-licenses.txt
 
 mostlyclean:
-	-rm -rf all.proj var/build flint
+	-rm -rf all.proj tmp/build var/build flint
 
 clean: mostlyclean
 	-rm -rf opt usr release-dll tmp var
