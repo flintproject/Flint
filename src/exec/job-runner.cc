@@ -38,9 +38,6 @@ JobRunner::JobRunner(TaskRunner *tr, int id)
 
 bool JobRunner::Run()
 {
-	if (tr_->GetTask()->IsCanceled())
-		return true;
-
 	std::vector<double> init(tr_->data()); // copy data
 	{
 		std::vector<double> generated_init;

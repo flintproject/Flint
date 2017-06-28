@@ -282,7 +282,7 @@ bool TaskRunner::Run()
 	if (!layout::Generate(db_driver_->db(), generated_layout_.get()))
 		return false;
 	std::vector<std::future<bool> > v;
-	for (;;) {
+	do {
 		int job_id;
 		if (!job::Generate(db_driver_->db(), dir_.get(), &job_id))
 			return false;
@@ -294,8 +294,8 @@ bool TaskRunner::Run()
 			return runner.Run();
 		};
 		v.emplace_back(std::async(std::launch::async, lmbd, this, job_id));
-	}
-	assert(static_cast<size_t>(n) == v.size());
+	} while (!task_->IsCanceled()); // at least one job runs
+	assert(v.size() <= static_cast<size_t>(n));
 	return MonitorTaskProgress(v, &task_->progress_mr);
 }
 
