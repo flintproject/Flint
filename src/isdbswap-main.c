@@ -122,7 +122,11 @@ static int read_header(FILE *ifp, FILE *ofp,
 static int copy_comment(FILE *ifp, FILE *ofp,
 						uint32_t num_bytes_comment)
 {
-	char *buf = malloc(num_bytes_comment);
+	char *buf;
+
+	if (num_bytes_comment == 0) // nothing to do
+		return 1;
+	buf = malloc(num_bytes_comment);
 	if (!buf) {
 		fprintf(stderr, "malloc failed\n");
 		return 0;
