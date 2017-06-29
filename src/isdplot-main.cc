@@ -314,6 +314,10 @@ int main(int argc, char *argv[])
 	if (!CountColumns(input_path, &num_columns)) {
 		return EXIT_FAILURE;
 	}
+	if (num_columns == 0) {
+		std::cerr << "there seems no variable columns in: " << input_file.c_str() << std::endl;
+		return EXIT_FAILURE;
+	}
 	TemporaryFile csv_file;
 	if (!csv_file.ofs()) {
 		std::cerr << "could not create temporary path: " << csv_file.path() << std::endl;
