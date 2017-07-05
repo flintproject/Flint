@@ -13,7 +13,7 @@
 #include <future>
 
 #define BOOST_FILESYSTEM_NO_DEPRECATED
-#include <boost/filesystem.hpp>
+#include <boost/filesystem/fstream.hpp>
 #define BOOST_DATE_TIME_NO_LIB
 #include <boost/interprocess/file_mapping.hpp>
 #include <boost/interprocess/mapped_region.hpp>
@@ -46,20 +46,6 @@ namespace exec {
 
 namespace {
 
-bool CreateSpec(int id, sqlite3 *db)
-{
-	char spec_file[64]; // large enough
-	std::sprintf(spec_file, "%d/spec.txt", id);
-	FILE *fp = fopen(spec_file, "w");
-	if (!fp) {
-		perror(spec_file);
-		return false;
-	}
-	bool r = task::Spec(id, db, fp);
-	fclose(fp);
-	return r;
-}
-
 int CountParameterSamples(sqlite3 *db)
 {
 	db::StatementDriver sd(db, "SELECT COUNT(*) FROM parameter_samples");
@@ -71,20 +57,22 @@ int CountParameterSamples(sqlite3 *db)
 	return sqlite3_column_int(sd.stmt(), 0);
 }
 
-const int kFilenameLength = 64;
-
 }
 
-TaskRunner::TaskRunner(int id, char *path)
+TaskRunner::TaskRunner(int id, char *path, const boost::filesystem::path &dir)
 	: id_(id)
 	, path_(path)
-	, dir_(new char[kFilenameLength])
-	, layout_(new char[kFilenameLength])
-	, generated_layout_(new char[kFilenameLength])
+	, dir_(dir)
+	, layout_(dir)
+	, generated_layout_(dir)
 {
-	std::sprintf(dir_.get(), "%d", id);
-	std::sprintf(layout_.get(), "%d/layout", id);
-	std::sprintf(generated_layout_.get(), "%d/generated-layout", id);
+	char buf[64];
+	std::sprintf(buf, "%d", id);
+	dir_ /= buf;
+	std::sprintf(buf, "%d/layout", id);
+	layout_ /= buf;
+	std::sprintf(buf, "%d/generated-layout", id);
+	generated_layout_ /= buf;
 }
 
 TaskRunner::~TaskRunner() = default;
@@ -109,17 +97,29 @@ const cas::DimensionAnalyzer *TaskRunner::GetDimensionAnalyzer() const
 	return dimension_analyzer_.get();
 }
 
+bool TaskRunner::CreateSpec(int id, sqlite3 *db)
+{
+	auto spec_file = dir_ / "spec.txt";
+	boost::filesystem::ofstream ofs(spec_file, std::ios::out);
+	if (!ofs) {
+		std::cerr << "failed to open " << spec_file << std::endl;
+		return false;
+	}
+	bool r = task::Spec(id, db, ofs);
+	ofs.close();
+	return r;
+}
+
 bool TaskRunner::CreateControlFile(int num_samples)
 {
 	assert(task_);
 
-	char filename[kFilenameLength];
-	std::sprintf(filename, "%d/control", id_);
+	auto control_file = dir_ / "control";
 	size_t size = num_samples + 1;
-	if (!workspace::CreateSparseFileAtomically(filename, size))
+	if (!workspace::CreateSparseFileAtomically(control_file, size))
 		return false;
 	try {
-		boost::interprocess::file_mapping fm(filename, boost::interprocess::read_write);
+		boost::interprocess::file_mapping fm(control_file.string().c_str(), boost::interprocess::read_write);
 		boost::interprocess::mapped_region mr(fm, boost::interprocess::read_write);
 		task_->control_mr = std::move(mr);
 	} catch (const boost::interprocess::interprocess_exception &e) {
@@ -131,13 +131,12 @@ bool TaskRunner::CreateControlFile(int num_samples)
 
 bool TaskRunner::CreateProgressFile(int num_samples)
 {
-	char filename[kFilenameLength];
-	std::sprintf(filename, "%d/progress", id_);
+	auto progress_file = dir_ / "progress";
 	size_t size = num_samples + 1;
-	if (!workspace::CreateSparseFileAtomically(filename, size))
+	if (!workspace::CreateSparseFileAtomically(progress_file, size))
 		return false;
 	try {
-		boost::interprocess::file_mapping fm(filename, boost::interprocess::read_write);
+		boost::interprocess::file_mapping fm(progress_file.string().c_str(), boost::interprocess::read_write);
 		boost::interprocess::mapped_region mr(fm, boost::interprocess::read_write);
 		task_->progress_mr = std::move(mr);
 	} catch (const boost::interprocess::interprocess_exception &e) {
@@ -149,13 +148,12 @@ bool TaskRunner::CreateProgressFile(int num_samples)
 
 bool TaskRunner::CreateRssFile(int num_samples)
 {
-	char filename[kFilenameLength];
-	std::sprintf(filename, "%d/rss", id_);
+	auto rss_file = dir_ / "rss";
 	size_t size = (num_samples + 1) * sizeof(double);
-	if (!workspace::CreateSparseFileAtomically(filename, size))
+	if (!workspace::CreateSparseFileAtomically(rss_file, size))
 		return false;
 	try {
-		boost::interprocess::file_mapping fm(filename, boost::interprocess::read_write);
+		boost::interprocess::file_mapping fm(rss_file.string().c_str(), boost::interprocess::read_write);
 		boost::interprocess::mapped_region mr(fm, boost::interprocess::read_write);
 		task_->rss_mr = std::move(mr);
 	} catch (const boost::interprocess::interprocess_exception &e) {
@@ -167,42 +165,35 @@ bool TaskRunner::CreateRssFile(int num_samples)
 
 bool TaskRunner::Run()
 {
-	task_.reset(load::Load(path_.get(), load::kExec, id_, &data_));
+	task_.reset(load::Load(path_.get(), load::kExec, dir_, &data_));
 	if (!task_)
 		return false;
 	{
-		db::Driver driver("x.db");
-		auto db = driver.db();
+		auto driver = db::Driver::Create(dir_.parent_path() / "x.db");
+		auto db = driver->db();
 		if (!db)
 			return false;
-		if (!task::Config(id_, db))
+		if (!task::Config(id_, db, dir_))
 			return false;
 	}
 	{
-		db::ReadOnlyDriver driver("x.db");
-		auto db = driver.db();
+		auto driver = db::ReadOnlyDriver::Create(dir_.parent_path() / "x.db");
+		auto db = driver->db();
 		if (!db)
 			return false;
 		if (!CreateSpec(id_, db))
 			return false;
 	}
 
-	char modeldb_file[kFilenameLength];
-	std::sprintf(modeldb_file, "%s/model.db", dir_.get());
-	modeldb_driver_.reset(new db::ReadOnlyDriver(modeldb_file));
-
-	char spec_file[kFilenameLength];
-	std::sprintf(spec_file, "%s/spec.txt", dir_.get());
-	char filter_file[kFilenameLength];
-	std::sprintf(filter_file, "%s/filter", dir_.get());
-	if (!filter::Create(modeldb_driver_->db(), spec_file, layout_.get(), filter_file))
+	modeldb_driver_ = db::ReadOnlyDriver::Create(dir_ / "model.db");
+	auto spec_file = dir_ / "spec.txt";
+	auto filter_file = dir_ / "filter";
+	if (!filter::Create(modeldb_driver_->db(), spec_file, layout_, filter_file))
 		return false;
-	char track_file[kFilenameLength];
-	std::sprintf(track_file, "%s/track", dir_.get());
+	auto track_file = dir_ / "track";
 	if (!filter::Track(filter_file, track_file))
 		return false;
-	char isdh_file[kFilenameLength];
-	std::sprintf(isdh_file, "%s/isdh", dir_.get());
+	auto isdh_file = dir_ / "isdh";
 	if (!filter::Isdh(filter_file, isdh_file))
 		return false;
 	{
@@ -217,7 +208,7 @@ bool TaskRunner::Run()
 		task_->output_start_time = reader.output_start_time();
 		{
 			std::unique_ptr<Layout> layout(new Layout);
-			LayoutLoader loader(layout_.get());
+			LayoutLoader loader(layout_);
 			if (!loader.Load(layout.get()))
 				return false;
 			size_t layer_size = layout->Calculate();
@@ -260,10 +251,8 @@ bool TaskRunner::Run()
 			return false;
 	}
 
-	char db_file[kFilenameLength];
-	std::sprintf(db_file, "%s/task.db", dir_.get());
-	db_driver_.reset(new db::Driver(db_file));
-	if (!exec::SaveParameters(id_, db_driver_->db()))
+	db_driver_ = db::Driver::Create(dir_ / "task.db");
+	if (!exec::SaveParameters(dir_, db_driver_->db()))
 		return false;
 	int n = CountParameterSamples(db_driver_->db());
 	if (n <= 0)
@@ -279,12 +268,12 @@ bool TaskRunner::Run()
 	dimension_analyzer_.reset(new cas::DimensionAnalyzer);
 	if (!dimension_analyzer_->Load(db_driver_->db()))
 		return false;
-	if (!layout::Generate(db_driver_->db(), generated_layout_.get()))
+	if (!layout::Generate(db_driver_->db(), generated_layout_))
 		return false;
 	std::vector<std::future<bool> > v;
 	do {
 		int job_id;
-		if (!job::Generate(db_driver_->db(), dir_.get(), &job_id))
+		if (!job::Generate(db_driver_->db(), dir_, &job_id))
 			return false;
 		if (job_id == 0)
 			break; // all jobs has been generated

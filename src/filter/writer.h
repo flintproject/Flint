@@ -2,7 +2,6 @@
 #ifndef FLINT_FILTER_WRITER_H_
 #define FLINT_FILTER_WRITER_H_
 
-#include <cstdio>
 #include <map>
 #include <ostream>
 #include <vector>
@@ -17,7 +16,7 @@ public:
 
 	explicit Writer(const std::map<int, int> &m);
 
-	bool Write(const double *data, FILE *fp) const;
+	bool Write(const double *data, std::ostream &os) const;
 
 	bool PrintCode(std::ostream *os) const;
 

@@ -9,10 +9,9 @@
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
-#include <iostream>
 
 #define BOOST_FILESYSTEM_NO_DEPRECATED
-#include <boost/filesystem.hpp>
+#include <boost/filesystem/fstream.hpp>
 
 #include "bc/binary.h"
 #include "bc/index.h"
@@ -34,16 +33,13 @@ namespace flint {
 namespace job {
 
 bool Job(int id,
-		 const char *task_dir,
-		 const char *job_dir,
+		 const boost::filesystem::path &task_dir,
+		 const boost::filesystem::path &job_dir,
 		 task::Task &task,
 		 const fppp::Option *fppp_option,
 		 std::vector<double> *data,
-		 const char *output_file)
+		 const boost::filesystem::path &output_file)
 {
-	const int kShort = 64;
-	const int kLong = 96;
-
 	boost::system::error_code ec;
 	// ensure the job directory
 	boost::filesystem::create_directories(job_dir, ec);
@@ -55,22 +51,15 @@ bool Job(int id,
 	if (!task::Timer(task.length, task.step, data->data()))
 		return false;
 
-	char output_data_file[kLong];
-	sprintf(output_data_file, "%s/output-data", job_dir);
-	char output_history_file[kLong];
-	sprintf(output_history_file, "%s/output-history", job_dir);
-
 	job::Option option;
 	option.id = id;
 	option.dir = job_dir;
 	option.input_data = data;
-	option.input_history_file = nullptr;
-	option.output_data_file = output_data_file;
-	option.output_history_file = output_history_file;
+	option.output_data_file = job_dir / "output-data";
+	option.output_history_file = job_dir / "output-history";
 	option.fppp_option = fppp_option;
 
-	char isdh_file[kShort];
-	sprintf(isdh_file, "%s/isdh", task_dir);
+	auto isdh_file = task_dir / "isdh";
 	boost::filesystem::copy_file(isdh_file, output_file, ec);
 	if (ec) {
 		std::cerr << "failed to copy "
@@ -80,19 +69,19 @@ bool Job(int id,
 			 << ": " << ec << std::endl;
 		return false;
 	}
-	FILE *ofp = std::fopen(output_file, "ab");
-	if (!ofp) {
-		std::perror(output_file);
+	boost::filesystem::ofstream ofs(output_file, std::ios::out|std::ios::binary|std::ios::app);
+	if (!ofs) {
+		std::cerr << "failed to open " << output_file << std::endl;
 		return false;
 	}
 	// write initial values only when output_start_time is 0.
 	if (task.output_start_time == 0) {
-		if (!task.writer->Write(data->data(), ofp)) {
-			std::fclose(ofp);
+		if (!task.writer->Write(data->data(), ofs)) {
+			ofs.close();
 			return false;
 		}
 	}
-	option.output_fp = ofp;
+	option.output_stream = &ofs;
 
 	bool r;
 	if (task.method == compiler::Method::kArk) {
@@ -100,7 +89,7 @@ bool Job(int id,
 	} else {
 		r = job::Evolve(task, option);
 	}
-	std::fclose(ofp);
+	ofs.close();
 	return r;
 }
 

@@ -4,12 +4,15 @@
 
 #include <cstddef>
 
+#define BOOST_FILESYSTEM_NO_DEPRECATED
+#include <boost/filesystem.hpp>
+
 namespace flint {
 namespace workspace {
 
-bool CreateSparseFile(const char *filename, size_t size);
+bool CreateSparseFile(const boost::filesystem::path &filename, size_t size);
 
-bool CreateSparseFileAtomically(const char *filename, size_t size);
+bool CreateSparseFileAtomically(const boost::filesystem::path &filename, size_t size);
 
 }
 }

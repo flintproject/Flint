@@ -13,7 +13,7 @@
 namespace flint {
 namespace task {
 
-bool Spec(int id, sqlite3 *db, FILE *fp)
+bool Spec(int id, sqlite3 *db, std::ostream &os)
 {
 	int r = false;
 
@@ -39,7 +39,7 @@ bool Spec(int id, sqlite3 *db, FILE *fp)
 			std::fprintf(stderr, "failed to step statement: %d\n", e);
 			goto bail;
 		}
-		std::fprintf(fp, "%s\n", sqlite3_column_text(stmt, 0));
+		os << sqlite3_column_text(stmt, 0) << std::endl;
 	}
 
  bail:

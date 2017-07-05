@@ -15,7 +15,7 @@ namespace runtime {
 bool Eval(sqlite3 *db,
 		  ct::Availability availability,
 		  int seed,
-		  const char *layout_file,
+		  const boost::filesystem::path &layout_file,
 		  Bytecode *bytecode,
 		  const FlowInboundMap *inbound,
 		  const TimeseriesVector *tv,

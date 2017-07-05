@@ -2,8 +2,10 @@
 #ifndef FLINT_RUNTIME_HISTORY_H_
 #define FLINT_RUNTIME_HISTORY_H_
 
-#include <cstdio>
 #include <map>
+
+#define BOOST_FILESYSTEM_NO_DEPRECATED
+#include <boost/filesystem.hpp>
 
 #include "bc.pb.h"
 
@@ -18,7 +20,7 @@ public:
 
 	void set_capacity(double capacity) {capacity_ = capacity;}
 
-	bool Dump(FILE *fp) const;
+	bool Dump(std::ostream &os) const;
 
 	void Insert(double t, double v);
 
@@ -38,12 +40,12 @@ public:
 	HistoryDumper(const HistoryDumper &) = delete;
 	HistoryDumper &operator=(const HistoryDumper &) = delete;
 
-	explicit HistoryDumper(const char *file);
+	explicit HistoryDumper(const boost::filesystem::path &file);
 
 	bool Dump(size_t size, const History *history);
 
 private:
-	const char *file_;
+	const boost::filesystem::path &file_;
 };
 
 class HistoryLoader {
@@ -51,12 +53,12 @@ public:
 	HistoryLoader(const HistoryLoader &) = delete;
 	HistoryLoader &operator=(const HistoryLoader &) = delete;
 
-	explicit HistoryLoader(const char *file);
+	explicit HistoryLoader(const boost::filesystem::path &file);
 
 	bool Load(size_t size, History *history);
 
 private:
-	const char *file_;
+	const boost::filesystem::path &file_;
 };
 
 }

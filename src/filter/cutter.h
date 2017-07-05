@@ -6,6 +6,9 @@
 #include <map>
 #include <memory>
 
+#define BOOST_FILESYSTEM_NO_DEPRECATED
+#include <boost/filesystem.hpp>
+
 #include "lo.pb.h"
 
 #include "filter/filter_loader.h"
@@ -21,7 +24,7 @@ public:
 
 	Cutter() : size_(), columns_() {}
 
-	bool Load(const char *filter_file, size_t layer_size) {
+	bool Load(const boost::filesystem::path &filter_file, size_t layer_size) {
 		std::unique_ptr<FilterLoader> loader(new FilterLoader(filter_file));
 		if (!loader->Load(this)) return false;
 		if (size_ != layer_size) {

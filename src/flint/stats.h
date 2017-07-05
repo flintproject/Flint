@@ -3,7 +3,9 @@
 #define FLINT_STATS_H_
 
 #include <chrono>
-#include <string>
+
+#define BOOST_FILESYSTEM_NO_DEPRECATED
+#include <boost/filesystem.hpp>
 
 namespace flint {
 namespace stats {
@@ -13,7 +15,7 @@ namespace stats {
  */
 bool Record(const std::chrono::time_point<std::chrono::steady_clock> &rt_start,
 			int num_steps,
-			const std::string &dir);
+			const boost::filesystem::path &dir);
 
 }
 }

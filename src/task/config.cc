@@ -7,25 +7,34 @@
 
 #include <cstdlib>
 #include <cstring>
-#include <iostream>
+#include <sstream>
+
+#include "utf8path.h"
 
 namespace flint {
 namespace task {
 
-bool Config(int id, sqlite3 *db)
+bool Config(int id, sqlite3 *db, const boost::filesystem::path &dir)
 {
-	char query[1028]; // long enough
 	char *em;
 	int e;
 
-	std::sprintf(query, "ATTACH DATABASE '%d/model.db' AS m%d", id, id);
-	e = sqlite3_exec(db, query, nullptr, nullptr, &em);
+	std::ostringstream oss;
+	{
+		std::unique_ptr<char[]> dir_u(GetUtf8FromPath(dir));
+		oss << "ATTACH DATABASE '"
+			<< dir_u.get()
+			<< "/model.db' AS m"
+			<< id;
+	}
+	e = sqlite3_exec(db, oss.str().c_str(), nullptr, nullptr, &em);
 	if (e != SQLITE_OK) {
 		std::cerr << "failed to attach database: " << e
 			 << ": " << em << std::endl;
 		return false;
 	}
 
+	char query[1028]; // long enough
 	std::sprintf(query, "DELETE FROM m%d.config", id);
 	e = sqlite3_exec(db, query, nullptr, nullptr, &em);
 	if (e != SQLITE_OK) {

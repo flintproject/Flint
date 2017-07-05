@@ -212,13 +212,21 @@ wxThread::ExitCode OpenFileHelper::Entry()
 {
 	auto utf8path = path_.utf8_str();
 
-	wxFileName dir;
-	dir.AssignCwd();
-	dir.AppendDir(wxString::Format("%d", id_));
-	dir.Mkdir();
+	auto dir = boost::filesystem::current_path();
+	{
+		char buf[64];
+		std::sprintf(buf, "%d", id_);
+		dir /= buf;
+		boost::system::error_code ec;
+		boost::filesystem::create_directory(dir, ec);
+		if (ec) {
+			wxQueueEvent(this, new wxThreadEvent);
+			return static_cast<wxThread::ExitCode>(0);
+		}
+	}
 
 	std::vector<double> data;
-	std::unique_ptr<task::Task> task(load::Load(utf8path.data(), load::ConfigMode::kOpen, id_, &data));
+	std::unique_ptr<task::Task> task(load::Load(utf8path.data(), load::ConfigMode::kOpen, dir, &data));
 	if (task) {
 		wxCriticalSectionLocker lock(cs_);
 		doc_ = new Document(id_, path_, data);

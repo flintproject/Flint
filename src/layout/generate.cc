@@ -17,6 +17,8 @@
 #include <unordered_map>
 #include <vector>
 
+#define BOOST_FILESYSTEM_NO_DEPRECATED
+#include <boost/filesystem/fstream.hpp>
 #include <boost/functional/hash.hpp>
 #include <boost/uuid/uuid.hpp>
 
@@ -133,7 +135,7 @@ public:
 
 }
 
-bool Generate(sqlite3 *db, const char *filename)
+bool Generate(sqlite3 *db, const boost::filesystem::path &filename)
 {
 	std::unique_ptr<ModuleMap> mm(new ModuleMap);
 	{
@@ -155,7 +157,7 @@ bool Generate(sqlite3 *db, const char *filename)
 		if (!loader.Load(&tm)) return false;
 	}
 
-	std::ofstream ofs(filename, std::ios::out|std::ios::binary);
+	boost::filesystem::ofstream ofs(filename, std::ios::out|std::ios::binary);
 	if (!ofs.is_open()) {
 		std::cerr << "could not open output file: " << filename << std::endl;
 		return false;

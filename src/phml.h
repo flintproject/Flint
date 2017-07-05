@@ -4,6 +4,9 @@
 
 #include "sqlite3.h"
 
+#define BOOST_FILESYSTEM_NO_DEPRECATED
+#include <boost/filesystem.hpp>
+
 namespace flint {
 namespace phml {
 
@@ -11,18 +14,18 @@ namespace phml {
  * Return true in case of success, false otherwise.
  * Also, return given integer-valued seed as `seed' if requested.
  */
-bool Nc(sqlite3 *db, const char *output, int *seed = nullptr);
+bool Nc(sqlite3 *db, const boost::filesystem::path &output, int *seed = nullptr);
 
 /*
  * Note that db is for read only.
  * Return true in case of success, false otherwise.
  */
-bool UnitOfTime(sqlite3 *db, const char *output);
+bool UnitOfTime(sqlite3 *db, const boost::filesystem::path &output);
 
 /*
  * Return true in case of success, false otherwise.
  */
-bool LengthAndStep(sqlite3 *db, const char *nc_file, const char *uot_file);
+bool LengthAndStep(sqlite3 *db, const boost::filesystem::path &nc_file, const boost::filesystem::path &uot_file);
 
 bool CombineAll(sqlite3 *db);
 

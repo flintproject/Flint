@@ -8,11 +8,12 @@
 #include <cassert>
 #include <cstdio>
 #include <cstdlib>
-#include <fstream>
 #include <iostream>
 #include <memory>
 #include <unordered_map>
 
+#define BOOST_FILESYSTEM_NO_DEPRECATED
+#include <boost/filesystem/fstream.hpp>
 #include <boost/rational.hpp>
 
 #include "db/statement-driver.h"
@@ -30,7 +31,9 @@ public:
 	UnitOfTimeLoader(const UnitOfTimeLoader &) = delete;
 	UnitOfTimeLoader &operator=(const UnitOfTimeLoader &) = delete;
 
-	explicit UnitOfTimeLoader(const char *file) : ifs_(file, std::ios::in|std::ios::binary) {}
+	explicit UnitOfTimeLoader(const boost::filesystem::path &file)
+		: ifs_(file, std::ios::in|std::ios::binary)
+	{}
 
 	~UnitOfTimeLoader() {
 		if (ifs_.is_open()) ifs_.close();
@@ -54,7 +57,7 @@ public:
 	}
 
 private:
-	std::ifstream ifs_;
+	boost::filesystem::ifstream ifs_;
 };
 
 typedef std::unordered_map<int, std::unique_ptr<ipc::TimeUnit> > TimeUnitMap;
@@ -80,7 +83,9 @@ public:
 	NumericalConfigurationLoader(const NumericalConfigurationLoader &) = delete;
 	NumericalConfigurationLoader &operator=(const NumericalConfigurationLoader &) = delete;
 
-	explicit NumericalConfigurationLoader(const char *file) : ifs_(file, std::ios::in|std::ios::binary) {}
+	explicit NumericalConfigurationLoader(const boost::filesystem::path &file)
+		: ifs_(file, std::ios::in|std::ios::binary)
+	{}
 
 	~NumericalConfigurationLoader() {
 		if (ifs_.is_open()) ifs_.close();
@@ -95,7 +100,7 @@ public:
 	}
 
 private:
-	std::ifstream ifs_;
+	boost::filesystem::ifstream ifs_;
 };
 
 class LengthAndStepWriter : db::StatementDriver {
@@ -128,7 +133,7 @@ public:
 
 }
 
-bool LengthAndStep(sqlite3 *db, const char *nc_file, const char *uot_file)
+bool LengthAndStep(sqlite3 *db, const boost::filesystem::path &nc_file, const boost::filesystem::path &uot_file)
 {
 	::phml::NumericalConfiguration nc;
 	{

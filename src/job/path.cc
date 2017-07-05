@@ -12,21 +12,19 @@
 namespace flint {
 namespace job {
 
-char *BuildPath(const char *dir, int id)
+boost::filesystem::path BuildPath(const boost::filesystem::path &dir, int id)
 {
-	assert(dir);
 	assert(id >= 0);
 
-	size_t len = std::strlen(dir);
-	char *path = new char[len+13];
+	char path[12];
 	unsigned int u = static_cast<unsigned int>(id);
 	unsigned int a, b, c, d;
 	a = (u>>24)&0xFF;
 	b = (u>>16)&0xFF;
 	c = (u>> 8)&0xFF;
 	d = (u    )&0xFF;
-	std::sprintf(path, "%s/%02x/%02x/%02x/%02x", dir, a, b, c, d);
-	return path;
+	std::sprintf(path, "%02x/%02x/%02x/%02x", a, b, c, d);
+	return dir / path;
 }
 
 }

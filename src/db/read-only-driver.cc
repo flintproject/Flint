@@ -4,8 +4,17 @@
 #include <cstdio>
 #include <iostream>
 
+#include "utf8path.h"
+
 namespace flint {
 namespace db {
+
+std::unique_ptr<ReadOnlyDriver> ReadOnlyDriver::Create(const boost::filesystem::path &path)
+{
+	std::unique_ptr<char[]> path_u(GetUtf8FromPath(path));
+	std::unique_ptr<ReadOnlyDriver> driver(new ReadOnlyDriver(path_u.get()));
+	return driver;
+}
 
 ReadOnlyDriver::ReadOnlyDriver(const char *filename)
 	: db_(nullptr)

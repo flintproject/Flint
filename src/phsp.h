@@ -2,7 +2,9 @@
 #ifndef FLINT_PHSP_H_
 #define FLINT_PHSP_H_
 
-#include <cstdio>
+#define BOOST_FILESYSTEM_NO_DEPRECATED
+#include <boost/filesystem.hpp>
+
 #include "sqlite3.h"
 
 namespace flint {
@@ -13,7 +15,7 @@ namespace phsp {
  * phsp_file is encoded in UTF-8.
  * Return true in case of success, false otherwise.
  */
-bool Read(const char *phsp_file, sqlite3 *db);
+bool Read(const char *phsp_file, sqlite3 *db, const boost::filesystem::path &dir);
 
 }
 }

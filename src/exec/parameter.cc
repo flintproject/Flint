@@ -11,7 +11,6 @@
 #include <iostream>
 
 #define BOOST_FILESYSTEM_NO_DEPRECATED
-#include <boost/filesystem.hpp>
 #include <boost/filesystem/fstream.hpp>
 
 namespace flint {
@@ -33,12 +32,9 @@ int WriteParameter(void *data, int argc, char **argv, char **names)
 
 }
 
-bool SaveParameters(int id, sqlite3 *db)
+bool SaveParameters(const boost::filesystem::path &dir, sqlite3 *db)
 {
-	boost::system::error_code ec;
-	char filename[64]; // long enough
-	std::sprintf(filename, "%d/parameters.txt.tmp", id);
-	boost::filesystem::path path(filename);
+	auto path = dir / "parameters.txt.tmp";
 	boost::filesystem::ofstream ofs(path);
 	if (!ofs.is_open()) {
 		std::cerr << "failed to open " << path << std::endl;
@@ -56,7 +52,8 @@ bool SaveParameters(int id, sqlite3 *db)
 	}
 
 	// rename the file to parameters.txt
-	std::sprintf(filename, "%d/parameters.txt", id);
+	auto filename = dir / "parameters.txt";
+	boost::system::error_code ec;
 	boost::filesystem::rename(path, filename, ec);
 	if (ec) {
 		std::cerr << "failed to rename " << path

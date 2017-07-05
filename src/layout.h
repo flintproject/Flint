@@ -2,6 +2,9 @@
 #ifndef FLINT_LAYOUT_H_
 #define FLINT_LAYOUT_H_
 
+#define BOOST_FILESYSTEM_NO_DEPRECATED
+#include <boost/filesystem.hpp>
+
 #include "sqlite3.h"
 
 namespace flint {
@@ -10,7 +13,7 @@ namespace layout {
 /*
  * Return true in case of success, otherwise false.
  */
-bool Generate(sqlite3 *db, const char *filename);
+bool Generate(sqlite3 *db, const boost::filesystem::path &filename);
 
 }
 }

@@ -2,13 +2,15 @@
 #ifndef FLINT_EXEC_TASK_RUNNER_H_
 #define FLINT_EXEC_TASK_RUNNER_H_
 
-#include <memory>
-
 #include "db/driver.h"
 #include "db/read-only-driver.h"
 #include "sqlite3.h"
 
+#include <memory>
 #include <vector>
+
+#define BOOST_FILESYSTEM_NO_DEPRECATED
+#include <boost/filesystem.hpp>
 
 namespace flint {
 
@@ -24,13 +26,13 @@ namespace exec {
 
 class TaskRunner {
 public:
-	TaskRunner(int id, char *path);
+	TaskRunner(int id, char *path, const boost::filesystem::path &dir);
 
 	~TaskRunner();
 
-	const char *dir() const {return dir_.get();}
-	const char *layout() const {return layout_.get();}
-	const char *generated_layout() const {return generated_layout_.get();}
+	const boost::filesystem::path &dir() const {return dir_;}
+	const boost::filesystem::path &layout() const {return layout_;}
+	const boost::filesystem::path &generated_layout() const {return generated_layout_;}
 	const std::vector<double> &data() const {return data_;}
 
 	task::Task *GetTask();
@@ -42,15 +44,16 @@ public:
 	bool Run();
 
 private:
+	bool CreateSpec(int id, sqlite3 *db);
 	bool CreateControlFile(int num_samples);
 	bool CreateProgressFile(int num_samples);
 	bool CreateRssFile(int num_samples);
 
 	int id_;
 	std::unique_ptr<char[]> path_;
-	std::unique_ptr<char[]> dir_;
-	std::unique_ptr<char[]> layout_;
-	std::unique_ptr<char[]> generated_layout_;
+	boost::filesystem::path dir_;
+	boost::filesystem::path layout_;
+	boost::filesystem::path generated_layout_;
 	std::unique_ptr<task::Task> task_;
 	std::vector<double> data_;
 	std::unique_ptr<db::Driver> db_driver_;

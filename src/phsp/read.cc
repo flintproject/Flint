@@ -336,9 +336,10 @@ bool SaveParameterSamples(int rowid, const SampleElement &se, sqlite3 *db)
 
 class Reader {
 public:
-	Reader(xmlTextReaderPtr &text_reader, sqlite3 *db)
+	Reader(xmlTextReaderPtr &text_reader, sqlite3 *db, const boost::filesystem::path &dir)
 		: text_reader_(text_reader)
 		, db_(db)
+		, dir_(dir)
 		, sd_param_()
 		, rd_()
 		, gen_(rd_())
@@ -450,9 +451,9 @@ private:
 		sqlite3_finalize(stmt);
 
 		// create a task directory
-		char dir_path[1024];
+		char dir_path[64];
 		std::sprintf(dir_path, "%d", rowid);
-		boost::filesystem::path dp(dir_path);
+		boost::filesystem::path dp = dir_ / dir_path;
 		if (!boost::filesystem::is_directory(dp) && !boost::filesystem::create_directory(dp)) {
 			std::cerr << "failed to create a directory: "
 				 << dir_path
@@ -495,10 +496,17 @@ private:
 		sqlite3_finalize(stmt);
 
 		// attach a task database for the model
-		char query[1024];
-		std::sprintf(query, "ATTACH DATABASE '%d/task.db' AS 'db%d'", rowid, rowid);
+		std::ostringstream oss;
+		{
+			std::unique_ptr<char[]> dp_u(GetUtf8FromPath(dp));
+			oss << "ATTACH DATABASE '"
+				<< dp_u.get()
+				<< "/task.db' AS 'db"
+				<< rowid
+				<< "'";
+		}
 		char *em;
-		e = sqlite3_exec(db_, query, nullptr, nullptr, &em);
+		e = sqlite3_exec(db_, oss.str().c_str(), nullptr, nullptr, &em);
 		if (e != SQLITE_OK) {
 			std::cerr << "failed to attach database: " << e
 				 << ": " << em << std::endl;
@@ -515,6 +523,7 @@ private:
 		std::sprintf(table_name, "db%d.model", rowid);
 		if (!CreateTable(db_, table_name, "(format TEXT)"))
 			return -2;
+		char query[1024];
 		int n_bytes = std::sprintf(query, "INSERT INTO db%d.model VALUES (?)", rowid);
 		assert(n_bytes > 0);
 		e = sqlite3_prepare_v2(db_, query, n_bytes+1, &stmt, nullptr);
@@ -1290,6 +1299,7 @@ private:
 
 	xmlTextReaderPtr &text_reader_;
 	sqlite3 *db_;
+	const boost::filesystem::path &dir_;
 	std::unique_ptr<db::StatementDriver> sd_param_;
 	std::random_device rd_;
 	std::mt19937 gen_;
@@ -1297,7 +1307,7 @@ private:
 
 }
 
-bool Read(const char *phsp_file, sqlite3 *db)
+bool Read(const char *phsp_file, sqlite3 *db, const boost::filesystem::path &dir)
 {
 	boost::filesystem::path pp = GetPathFromUtf8(phsp_file);
 	if (pp.empty())
@@ -1310,7 +1320,7 @@ bool Read(const char *phsp_file, sqlite3 *db)
 		return false;
 	}
 
-	std::unique_ptr<Reader> reader(new Reader(text_reader, db));
+	std::unique_ptr<Reader> reader(new Reader(text_reader, db, dir));
 	boost::filesystem::path cp = pp.parent_path();
 	if (reader->Read(cp) < 0) return false;
 

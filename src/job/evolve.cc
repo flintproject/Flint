@@ -16,6 +16,9 @@
 #include <random>
 #include <string>
 
+#define BOOST_FILESYSTEM_NO_DEPRECATED
+#include <boost/filesystem/fstream.hpp>
+
 #include "bc.pb.h"
 
 #include "bc/index.h"
@@ -223,19 +226,19 @@ private:
 	History *history_;
 };
 
-bool SaveData(const char *output_data_file, size_t layer_size, double *data)
+bool SaveData(const boost::filesystem::path &output_data_file, size_t layer_size, double *data)
 {
-	FILE *fp = std::fopen(output_data_file, "wb");
-	if (!fp) {
+	boost::filesystem::ofstream ofs(output_data_file, std::ios::out|std::ios::binary);
+	if (!ofs) {
 		std::cerr << "could not open " << output_data_file << std::endl;
 		return false;
 	}
-	if (std::fwrite(data, sizeof(double), layer_size, fp) != layer_size) {
-		std::fclose(fp);
+	if (!ofs.write(reinterpret_cast<const char *>(data), sizeof(double) * layer_size)) {
+		ofs.close();
 		std::cerr << "failed to write output data" << std::endl;
 		return false;
 	}
-	std::fclose(fp);
+	ofs.close();
 	return true;
 }
 
@@ -250,7 +253,7 @@ bool Evolve(task::Task &task,
 	filter::Writer *writer = task.writer.get();
 	char *control_address = task.GetControlAddress(option.id);
 
-	FILE *output_fp = option.output_fp;
+	std::ostream *output_stream = option.output_stream;
 
 	bool with_pre = bool(task.pre_bc);
 	bool with_post = bool(task.post_bc);
@@ -377,7 +380,7 @@ bool Evolve(task::Task &task,
 	if (!task.layout->SpecifyCapacity(layer_size, history.get())) {
 		return false;
 	}
-	if (option.input_history_file != nullptr) {
+	if (!option.input_history_file.empty()) {
 		HistoryLoader loader(option.input_history_file);
 		if (!loader.Load(layer_size, history.get())) return false;
 	}
@@ -475,13 +478,13 @@ bool Evolve(task::Task &task,
 		if (output_start_time <= data[kIndexTime]) {
 			if (granularity <= 1 || ++g == granularity) {
 				if (writer) {
-					if (!writer->Write(data.get(), output_fp)) {
+					if (!writer->Write(data.get(), *output_stream)) {
 						result = false;
 						break;
 					}
 				} else {
 					// output the first layer of data
-					if (std::fwrite(data.get(), sizeof(double), layer_size, output_fp) != layer_size) {
+					if (!output_stream->write(reinterpret_cast<const char *>(data.get()), sizeof(double) * layer_size)) {
 						std::cerr << "failed to write output" << std::endl;
 						result = false;
 						break;
@@ -524,12 +527,12 @@ bool Evolve(task::Task &task,
 
 	(void)stats::Record(rt_start, num_steps, option.dir);
 
-	fflush(output_fp);
+	output_stream->flush();
 
-	if (option.output_data_file != nullptr) {
+	if (!option.output_data_file.empty()) {
 		if (!SaveData(option.output_data_file, layer_size, data.get())) return false;
 	}
-	if (option.output_history_file != nullptr) {
+	if (!option.output_history_file.empty()) {
 		HistoryDumper dumper(option.output_history_file);
 		if (!dumper.Dump(layer_size, history.get())) return false;
 	}

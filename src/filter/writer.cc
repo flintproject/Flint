@@ -33,10 +33,10 @@ Writer::Writer(const std::map<int, int> &m)
 	Compact(m, &v_);
 }
 
-bool Writer::Write(const double *data, FILE *fp) const
+bool Writer::Write(const double *data, std::ostream &os) const
 {
 	for (auto const &p : v_) {
-		if (fwrite(data + p.first, sizeof(double), p.second, fp) != p.second) {
+		if (!os.write(reinterpret_cast<const char *>(data + p.first), sizeof(double) * p.second)) {
 			std::cerr << "failed to filter output" << std::endl;
 			return false;
 		}

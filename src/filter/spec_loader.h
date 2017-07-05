@@ -7,6 +7,9 @@
 #include <string>
 #include <fstream>
 
+#define BOOST_FILESYSTEM_NO_DEPRECATED
+#include <boost/filesystem.hpp>
+#include <boost/filesystem/fstream.hpp>
 #include <boost/uuid/string_generator.hpp>
 
 namespace flint {
@@ -16,7 +19,9 @@ public:
 	SpecLoader(const SpecLoader &) = delete;
 	SpecLoader &operator=(const SpecLoader &) = delete;
 
-	explicit SpecLoader(const std::string &file) : ifs_(file.c_str(), std::ios::in) {}
+	explicit SpecLoader(const boost::filesystem::path &file)
+		: ifs_(file, std::ios::in)
+	{}
 
 	~SpecLoader() {
 		if (ifs_.is_open()) ifs_.close();
@@ -48,7 +53,7 @@ public:
 	}
 
 private:
-	std::ifstream ifs_;
+	boost::filesystem::ifstream ifs_;
 };
 
 }

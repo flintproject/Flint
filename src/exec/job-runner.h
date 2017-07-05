@@ -2,7 +2,8 @@
 #ifndef FLINT_EXEC_JOB_RUNNER_H_
 #define FLINT_EXEC_JOB_RUNNER_H_
 
-#include <memory>
+#define BOOST_FILESYSTEM_NO_DEPRECATED
+#include <boost/filesystem.hpp>
 
 namespace flint {
 namespace exec {
@@ -18,8 +19,8 @@ public:
 private:
 	TaskRunner *tr_;
 	int id_;
-	std::unique_ptr<char[]> dir_;
-	std::unique_ptr<char[]> isd_;
+	boost::filesystem::path dir_;
+	boost::filesystem::path isd_;
 };
 
 }

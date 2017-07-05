@@ -240,8 +240,8 @@ private:
 }
 
 bool Store(sqlite3 *db,
-		   const char *source_layout_file, double *source_data,
-		   const char *target_layout_file, double *target_data)
+		   const boost::filesystem::path &source_layout_file, double *source_data,
+		   const boost::filesystem::path &target_layout_file, double *target_data)
 {
 	SourceLayout source_layout;
 	{

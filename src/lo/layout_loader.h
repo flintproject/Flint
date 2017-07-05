@@ -4,7 +4,10 @@
 
 #include <memory>
 #include <string>
-#include <fstream>
+
+#define BOOST_FILESYSTEM_NO_DEPRECATED
+#include <boost/filesystem.hpp>
+#include <boost/filesystem/fstream.hpp>
 
 #include "bc/pack.h"
 
@@ -15,7 +18,9 @@ public:
 	LayoutLoader(const LayoutLoader &) = delete;
 	LayoutLoader &operator=(const LayoutLoader &) = delete;
 
-	explicit LayoutLoader(const std::string &file) : ifs_(file.c_str(), std::ios::in|std::ios::binary) {}
+	explicit LayoutLoader(const boost::filesystem::path &file)
+		: ifs_(file, std::ios::in|std::ios::binary)
+	{}
 
 	~LayoutLoader() {
 		if (ifs_.is_open()) ifs_.close();
@@ -63,7 +68,7 @@ public:
 	}
 
 private:
-	std::ifstream ifs_;
+	boost::filesystem::ifstream ifs_;
 };
 
 }

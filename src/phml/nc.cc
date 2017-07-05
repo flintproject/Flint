@@ -8,9 +8,11 @@
 #include <cassert>
 #include <cstdlib>
 #include <cstring>
-#include <fstream>
 #include <iostream>
 #include <memory>
+
+#define BOOST_FILESYSTEM_NO_DEPRECATED
+#include <boost/filesystem/fstream.hpp>
 
 #include "db/statement-driver.h"
 #include "db/utility.h"
@@ -137,7 +139,7 @@ public:
 
 }
 
-bool Nc(sqlite3 *db, const char *output, int *seed)
+bool Nc(sqlite3 *db, const boost::filesystem::path &output, int *seed)
 {
 	std::unique_ptr<::phml::NumericalConfiguration> nc(new ::phml::NumericalConfiguration);
 	{
@@ -146,7 +148,7 @@ bool Nc(sqlite3 *db, const char *output, int *seed)
 			return false;
 	}
 	{
-		std::ofstream ofs(output, std::ios::binary);
+		boost::filesystem::ofstream ofs(output, std::ios::binary);
 		if (!ofs) {
 			std::cerr << "failed to open " << output << std::endl;
 			return false;

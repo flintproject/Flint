@@ -2,6 +2,9 @@
 #ifndef FLINT_EXEC_PARAMETER_H_
 #define FLINT_EXEC_PARAMETER_H_
 
+#define BOOST_FILESYSTEM_NO_DEPRECATED
+#include <boost/filesystem.hpp>
+
 #include "sqlite3.h"
 
 namespace flint {
@@ -11,7 +14,7 @@ namespace exec {
  * Save parameter names in the file "parameters.txt".
  * Return true in case of success, false otherwise.
  */
-bool SaveParameters(int id, sqlite3 *db);
+bool SaveParameters(const boost::filesystem::path &dir, sqlite3 *db);
 
 }
 }

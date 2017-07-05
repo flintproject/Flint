@@ -2,6 +2,9 @@
 #ifndef FLINT_LOAD_VAR_H_
 #define FLINT_LOAD_VAR_H_
 
+#define BOOST_FILESYSTEM_NO_DEPRECATED
+#include <boost/filesystem.hpp>
+
 #include "sqlite3.h"
 
 namespace flint {
@@ -11,7 +14,7 @@ namespace load {
  * Note that db is for read only.
  * Return true in case of success, otherwise false.
  */
-bool Var(sqlite3 *db, const char *output);
+bool Var(sqlite3 *db, const boost::filesystem::path &output);
 
 }
 }

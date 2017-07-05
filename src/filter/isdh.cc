@@ -14,6 +14,8 @@
 #include <string>
 #include <vector>
 
+#define BOOST_FILESYSTEM_NO_DEPRECATED
+#include <boost/filesystem/fstream.hpp>
 #include <boost/uuid/uuid_io.hpp>
 
 #include "lo.pb.h"
@@ -98,14 +100,15 @@ private:
 
 }
 
-bool Isdh(const char *filter_file, const char *output_file)
+bool Isdh(const boost::filesystem::path &filter_file,
+		  const boost::filesystem::path &output_file)
 {
 	std::unique_ptr<Filter> filter(new Filter());
 	{
 		std::unique_ptr<FilterLoader> loader(new FilterLoader(filter_file));
 		if (!loader->Load(filter.get())) return false;
 	}
-	std::ofstream ofs(output_file, std::ios::out|std::ios::binary);
+	boost::filesystem::ofstream ofs(output_file, std::ios::out|std::ios::binary);
 	if (!ofs.is_open()) {
 		std::cerr << "could not open output file: " << output_file << std::endl;
 		return false;

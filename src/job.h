@@ -2,10 +2,13 @@
 #ifndef FLINT_JOB_H_
 #define FLINT_JOB_H_
 
-#include <cstdio>
+#include <iostream>
 #include <memory>
 #include <string>
 #include <vector>
+
+#define BOOST_FILESYSTEM_NO_DEPRECATED
+#include <boost/filesystem.hpp>
 
 #include "sqlite3.h"
 
@@ -25,32 +28,31 @@ struct Option;
 namespace job {
 
 /*
- * Return newly-allocated char[] the client code should be responsible
- * for freeing.
+ * Return path of job `id'.
  */
-char *BuildPath(const char *dir, int id);
+boost::filesystem::path BuildPath(const boost::filesystem::path &dir, int id);
 
 /*
  * Return true in case of success, false otherwise.
  */
-bool Generate(sqlite3 *input, const char *dir, int *job_id);
+bool Generate(sqlite3 *input, const boost::filesystem::path &dir, int *job_id);
 
 /*
  * Note that db is for read only.
  * Return true in case of success, false otherwise.
  */
 bool Store(sqlite3 *db,
-		   const char *source_layout_file, double *source_data,
-		   const char *target_layout_file, double *target_data);
+		   const boost::filesystem::path &source_layout_file, double *source_data,
+		   const boost::filesystem::path &target_layout_file, double *target_data);
 
 struct Option {
 	int id;
-	std::string dir;
+	boost::filesystem::path dir;
 	std::vector<double> *input_data;
-	const char *input_history_file;
-	const char *output_data_file;
-	const char *output_history_file;
-	FILE *output_fp;
+	boost::filesystem::path input_history_file;
+	boost::filesystem::path output_data_file;
+	boost::filesystem::path output_history_file;
+	std::ostream *output_stream;
 	const fppp::Option *fppp_option;
 };
 
@@ -66,12 +68,12 @@ bool Evolve(task::Task &task,
  * Return true in case of success, false otherwise.
  */
 bool Job(int id,
-		 const char *task_dir,
-		 const char *job_dir,
+		 const boost::filesystem::path &task_dir,
+		 const boost::filesystem::path &job_dir,
 		 task::Task &task,
 		 const fppp::Option *fppp_option,
 		 std::vector<double> *data,
-		 const char *output_file);
+		 const boost::filesystem::path &output_file);
 
 }
 }

@@ -18,7 +18,7 @@ class Evaluator {
 public:
 	const Layout &layout() const {return layout_;}
 
-	bool Load(const char *layout_file);
+	bool Load(const boost::filesystem::path &layout_file);
 
 	bool Evaluate(sqlite3 *db,
 				  ct::Availability availability,

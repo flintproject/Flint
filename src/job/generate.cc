@@ -10,7 +10,7 @@
 #include <string>
 
 #define BOOST_FILESYSTEM_NO_DEPRECATED
-#include <boost/filesystem.hpp>
+#include <boost/filesystem/fstream.hpp>
 #include <boost/uuid/uuid.hpp>
 
 #include "db/driver.h"
@@ -53,14 +53,14 @@ public:
 
 class Inserter {
 public:
-	Inserter(sqlite3 *db, FILE *fp)
+	Inserter(sqlite3 *db, std::ostream &os)
 		: inserter_("parameter_eqs", db)
-		, fp_(fp)
+		, os_(os)
 	{}
 
 	bool Insert(const char *name, const char *rhs)
 	{
-		std::fprintf(fp_, "%s=%s\n", name, rhs);
+		os_ << name << '=' << rhs << std::endl;
 
 		std::ostringstream oss;
 		oss << "(eq %" << name << ' ' << rhs << ')';
@@ -75,7 +75,7 @@ public:
 
 private:
 	db::EqInserter inserter_;
-	FILE *fp_;
+	std::ostream &os_;
 };
 
 int SaveParameter(void *data, int argc, char **argv, char **names)
@@ -101,9 +101,9 @@ int SaveEquation(void *data, int argc, char **argv, char **names)
 
 class Generator {
 public:
-	Generator(sqlite3 *input, sqlite3 *output, FILE *fp)
+	Generator(sqlite3 *input, sqlite3 *output, std::ostream &os)
 		: input_(input)
-		, inserter_(output, fp)
+		, inserter_(output, os)
 	{}
 
 	bool Generate(int rowid, int ps_id) {
@@ -148,7 +148,7 @@ private:
 
 }
 
-bool Generate(sqlite3 *input, const char *dir, int *job_id)
+bool Generate(sqlite3 *input, const boost::filesystem::path &dir, int *job_id)
 {
 	int rowid;
 	int ps_id;
@@ -161,58 +161,56 @@ bool Generate(sqlite3 *input, const char *dir, int *job_id)
 		}
 		if (r < 0) return false;
 	}
-	std::unique_ptr<char[]> path(BuildPath(dir, rowid));
+	auto path = BuildPath(dir, rowid);
 	boost::system::error_code ec;
-	boost::filesystem::create_directories(path.get(), ec);
+	boost::filesystem::create_directories(path, ec);
 	if (ec) {
-		std::cerr << "failed to create directories: " << path.get()
+		std::cerr << "failed to create directories: " << path
 			 << ": " << ec << std::endl;
 		return false;
 	}
-	char filename[96];
-	std::sprintf(filename, "%s/generated.db", path.get());
+	boost::filesystem::path filename = path / "values.txt.tmp";
 	{
-		db::Driver driver(filename);
-		sqlite3 *output = driver.db();
+		auto driver = db::Driver::Create(path / "generated.db");
+		sqlite3 *output = driver->db();
 		if (!output)
 			return false;
 		if (!BeginTransaction(output))
 			return false;
 		if (!CreateTable(output, "parameter_eqs", "(uuid BLOB, math TEXT)"))
 			return false;
-		std::sprintf(filename, "%s/values.txt.tmp", path.get());
-		FILE *fp = std::fopen(filename, "w");
-		if (!fp) {
-			std::perror(filename);
+		boost::filesystem::ofstream ofs(filename, std::ios::out);
+		if (!ofs) {
+			std::cerr << "failed to open " << filename << std::endl;;
 			return false;
 		}
 		if (!BeginTransaction(input)) {
-			std::fclose(fp);
+			ofs.close();
 			return false;
 		}
 		{
-			Generator g(input, output, fp);
+			Generator g(input, output, ofs);
 			if (!g.Generate(rowid, ps_id)) {
-				std::fclose(fp);
+				ofs.close();
 				return false;
 			}
 		}
 		if (!CommitTransaction(input)) {
-			std::fclose(fp);
+			ofs.close();
 			return false;
 		}
-		std::fclose(fp);
+		ofs.close();
 		if (!CommitTransaction(output))
 			return false;
 	}
 
-	char values_file[96]; // large enough
-	std::sprintf(values_file, "%s/values.txt", path.get());
-	if (std::rename(filename, values_file) != 0) {
+	boost::filesystem::path values_file = path / "values.txt";
+	boost::filesystem::rename(filename, values_file, ec);
+	if (ec) {
 		std::cerr << "failed to rename " << filename
 			 << " to " << values_file
 			 << std::endl;
-		std::remove(filename);
+		boost::filesystem::remove(filename);
 		return false;
 	}
 

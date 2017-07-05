@@ -2,6 +2,11 @@
 #ifndef FLINT_DB_READ_ONLY_DRIVER_H_
 #define FLINT_DB_READ_ONLY_DRIVER_H_
 
+#include <memory>
+
+#define BOOST_FILESYSTEM_NO_DEPRECATED
+#include <boost/filesystem.hpp>
+
 #include "sqlite3.h"
 
 namespace flint {
@@ -11,6 +16,8 @@ class ReadOnlyDriver {
 public:
 	ReadOnlyDriver(const ReadOnlyDriver &) = delete;
 	ReadOnlyDriver &operator=(const ReadOnlyDriver &) = delete;
+
+	static std::unique_ptr<ReadOnlyDriver> Create(const boost::filesystem::path &path);
 
 	explicit ReadOnlyDriver(const char *filename);
 

@@ -190,7 +190,7 @@ bool IsAllGreen(size_t *color, size_t size)
 
 } // namespace
 
-bool Evaluator::Load(const char *layout_file)
+bool Evaluator::Load(const boost::filesystem::path &layout_file)
 {
 	LayoutLoader loader(layout_file);
 	if (!loader.Load(&layout_))

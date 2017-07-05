@@ -2,9 +2,12 @@
 #ifndef FLINT_FILTER_FILTER_LOADER_H_
 #define FLINT_FILTER_FILTER_LOADER_H_
 
-#include <fstream>
 #include <memory>
 #include <string>
+
+#define BOOST_FILESYSTEM_NO_DEPRECATED
+#include <boost/filesystem.hpp>
+#include <boost/filesystem/fstream.hpp>
 
 #include "bc/pack.h"
 
@@ -15,7 +18,9 @@ public:
 	FilterLoader(const FilterLoader &) = delete;
 	FilterLoader &operator=(const FilterLoader &) = delete;
 
-	explicit FilterLoader(const std::string &file) : ifs_(file.c_str(), std::ios::in|std::ios::binary) {}
+	explicit FilterLoader(const boost::filesystem::path &file)
+		: ifs_(file, std::ios::in|std::ios::binary)
+	{}
 
 	~FilterLoader() {
 		if (ifs_.is_open()) ifs_.close();
@@ -46,7 +51,7 @@ public:
 	}
 
 private:
-	std::ifstream ifs_;
+	boost::filesystem::ifstream ifs_;
 };
 
 }

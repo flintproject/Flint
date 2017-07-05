@@ -3,8 +3,11 @@
 
 #include <cassert>
 #include <cstdint>
+#include <cstdio>
 #include <iostream>
 
+#define BOOST_FILESYSTEM_NO_DEPRECATED
+#include <boost/filesystem/fstream.hpp>
 #define BOOST_DATE_TIME_NO_LIB
 #include <boost/interprocess/file_mapping.hpp>
 #include <boost/interprocess/mapped_region.hpp>
@@ -18,15 +21,13 @@ History::History()
 	, m_()
 {}
 
-bool History::Dump(FILE *fp) const
+bool History::Dump(std::ostream &os) const
 {
-	assert(fp);
-
 	std::uint64_t n = static_cast<std::uint64_t>(m_.size());
-	std::fwrite(&n, sizeof(n), 1, fp);
+	os.write(reinterpret_cast<const char *>(&n), sizeof(n));
 	for (HistoryMap::const_iterator it=m_.begin();it!=m_.end();++it) {
-		std::fwrite(&it->first, sizeof(double), 1, fp);
-		std::fwrite(&it->second, sizeof(double), 1, fp);
+		os.write(reinterpret_cast<const char *>(&it->first), sizeof(double));
+		os.write(reinterpret_cast<const char *>(&it->second), sizeof(double));
 	}
 	return true;
 }
@@ -116,7 +117,7 @@ bool History::Lookback(const bc::Lb &lb, double time, double *tmp)
 	return true;
 }
 
-HistoryDumper::HistoryDumper(const char *file)
+HistoryDumper::HistoryDumper(const boost::filesystem::path &file)
 	: file_(file)
 {}
 
@@ -124,22 +125,22 @@ bool HistoryDumper::Dump(size_t size, const History *history)
 {
 	assert(history);
 
-	FILE *fp = std::fopen(file_, "wb");
-	if (!fp) {
-		std::perror(file_);
+	boost::filesystem::ofstream ofs(file_, std::ios::out|std::ios::binary);
+	if (!ofs) {
+		std::cerr << "failed to open " << file_ << std::endl;
 		return false;
 	}
 	for (size_t i=0;i<size;i++) {
-		if (!history[i].Dump(fp)) {
-			std::fclose(fp);
+		if (!history[i].Dump(ofs)) {
+			ofs.close();
 			return false;
 		}
 	}
-	std::fclose(fp);
+	ofs.close();
 	return true;
 }
 
-HistoryLoader::HistoryLoader(const char *file)
+HistoryLoader::HistoryLoader(const boost::filesystem::path &file)
 	: file_(file)
 {}
 
@@ -148,30 +149,29 @@ bool HistoryLoader::Load(size_t size, History *history)
 	assert(history);
 
 	// check whether the file is empty or not
-	FILE *fp = std::fopen(file_, "rb");
-	if (!fp) {
-		std::perror(file_);
+	boost::filesystem::ifstream ifs(file_, std::ios::in|std::ios::binary);
+	if (!ifs) {
+		std::cerr << "failed to open " << file_ << std::endl;
 		return false;
 	}
-	int r = std::fseek(fp, 0L, SEEK_END);
-	if (r < 0) {
-		std::perror(file_);
-		std::fclose(fp);
+	if (ifs.seekg(0, std::ios::end).bad()) {
+		std::cerr << "failed to seek end of " << file_ << std::endl;
+		ifs.close();
 		return false;
 	}
-	long s = std::ftell(fp);
+	auto s = ifs.tellg();
 	if (s < 0) {
-		std::perror(file_);
-		std::fclose(fp);
+		std::cerr << "failed to tell position: " << file_ << std::endl;
+		ifs.close();
 		return false;
 	}
 	if (s == 0) { // OK, it's empty. Nothing to do
-		std::fclose(fp);
+		ifs.close();
 		return true;
 	}
-	std::fclose(fp);
+	ifs.close();
 
-	boost::interprocess::file_mapping fm(file_, boost::interprocess::read_only);
+	boost::interprocess::file_mapping fm(file_.string().c_str(), boost::interprocess::read_only);
 	boost::interprocess::mapped_region mr(fm, boost::interprocess::read_only);
 	char *addr = static_cast<char *>(mr.get_address());
 	size_t bs = mr.get_size();

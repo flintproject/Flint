@@ -30,7 +30,7 @@
 namespace flint {
 namespace phz {
 
-bool Read(sqlite3 *db, const char *dir)
+bool Read(sqlite3 *db, const boost::filesystem::path &dir)
 {
 	std::unique_ptr<char[]> filename(GetGivenFilename(db));
 	if (!filename)

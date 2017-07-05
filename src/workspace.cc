@@ -7,55 +7,45 @@
 
 #include <cassert>
 #include <cstdio>
-#include <cstring>
 #include <iostream>
-#include <memory>
+
+#define BOOST_FILESYSTEM_NO_DEPRECATED
+#include <boost/filesystem/fstream.hpp>
 
 namespace flint {
 namespace workspace {
 
-bool CreateSparseFile(const char *filename, size_t size)
+bool CreateSparseFile(const boost::filesystem::path &filename, size_t size)
 {
-	FILE *fp = std::fopen(filename, "wb");
-	if (!fp) {
+	boost::filesystem::ofstream ofs(filename, std::ios::out|std::ios::binary);
+	if (!ofs) {
 		std::cerr << "failed to open " << filename << std::endl;
 		return false;
 	}
-	int r = std::fseek(fp, size-1, SEEK_SET);
-	if (r != 0) {
+	if (!ofs.seekp(size-1, std::ios::cur)) {
 		std::cerr << "failed to seek: " << filename << std::endl;
-		std::fclose(fp);
+		ofs.close();
 		return false;
 	}
-	if (std::fputc('\0', fp) == EOF) {
+	if (!ofs.put('\0')) {
 		std::cerr << "failed to write null character: " << filename << std::endl;
-		std::fclose(fp);
+		ofs.close();
 		return false;
 	}
-	r = std::fclose(fp);
-	if (r != 0) {
-		std::cerr << "failed to close " << filename << std::endl;
-		return false;
-	}
-	return true;
+	ofs.close();
+	return bool(ofs);
 }
 
-bool CreateSparseFileAtomically(const char *filename, size_t size)
+bool CreateSparseFileAtomically(const boost::filesystem::path &filename, size_t size)
 {
-	size_t len = std::strlen(filename);
-	len += 4;
-	assert(len > 0);
-	std::unique_ptr<char[]> tmp_filename(new char[len+1]);
-	int r = std::sprintf(tmp_filename.get(), "%s.tmp", filename);
-	if (static_cast<size_t>(r) != len) {
-		std::cerr << "failed to build temporary filename: " << filename << std::endl;
+	boost::filesystem::path tmp_filename = filename;
+	tmp_filename += ".tmp";
+	if (!CreateSparseFile(tmp_filename, size))
 		return false;
-	}
-	if (!CreateSparseFile(tmp_filename.get(), size))
-		return false;
-	r = std::rename(tmp_filename.get(), filename);
-	if (r != 0) {
-		std::cerr << "failed to rename " << tmp_filename.get()
+	boost::system::error_code ec;
+	boost::filesystem::rename(tmp_filename, filename, ec);
+	if (ec) {
+		std::cerr << "failed to rename " << tmp_filename
 				  << " to " << filename
 				  << std::endl;
 		return false;

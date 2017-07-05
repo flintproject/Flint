@@ -2,12 +2,15 @@
 #ifndef FLINT_RUNTIME_H_
 #define FLINT_RUNTIME_H_
 
+#include <vector>
+
+#define BOOST_FILESYSTEM_NO_DEPRECATED
+#include <boost/filesystem.hpp>
+
 #include "flint/ct.h"
 #include "runtime/flow.h"
 #include "runtime/timeseries.h"
 #include "sqlite3.h"
-
-#include <vector>
 
 namespace flint {
 namespace runtime {
@@ -18,7 +21,7 @@ namespace runtime {
 bool Eval(sqlite3 *db,
 		  ct::Availability availability,
 		  int seed,
-		  const char *layout_file,
+		  const boost::filesystem::path &layout_file,
 		  Bytecode *bytecode,
 		  const FlowInboundMap *inbound,
 		  const TimeseriesVector *tv,
@@ -29,7 +32,7 @@ bool Eval(sqlite3 *db,
  */
 bool Init(sqlite3 *db,
 		  int seed,
-		  const char *layout_file,
+		  const boost::filesystem::path &layout_file,
 		  Bytecode *bytecode,
 		  const FlowInboundMap *inbound,
 		  const TimeseriesVector *tv,

@@ -292,13 +292,13 @@ ObjectiveWindow::ObjectiveWindow(wxWindow *parent)
 	, check_box_(new wxCheckBox(this, wxID_ANY, "Enable parameter fitting by the method of least-squares"))
 	, file_picker_(new wxFilePickerCtrl(this, wxID_ANY))
 {
-	// controls
-	file_picker_->Disable();
-
 	auto topSizer = new wxBoxSizer(wxVERTICAL);
 	topSizer->Add(check_box_);
 	topSizer->Add(file_picker_);
 	SetSizerAndFit(topSizer);
+
+	// controls
+	file_picker_->Disable();
 
 	// signals
 	check_box_->Bind(wxEVT_CHECKBOX, &ObjectiveWindow::OnCheck, this);

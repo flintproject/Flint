@@ -4,6 +4,9 @@
 
 #include <vector>
 
+#define BOOST_FILESYSTEM_NO_DEPRECATED
+#include <boost/filesystem.hpp>
+
 namespace flint {
 
 namespace task {
@@ -23,7 +26,8 @@ enum ConfigMode {
  * given_file is encoded in UTF-8.
  * Return nullptr in case of failure.
  */
-task::Task *Load(const char *given_file, ConfigMode mode, int dir,
+task::Task *Load(const char *given_file, ConfigMode mode,
+				 const boost::filesystem::path &dir,
 				 std::vector<double> *data);
 
 }

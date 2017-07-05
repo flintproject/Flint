@@ -9,11 +9,13 @@
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
-#include <fstream>
 #include <iostream>
 #include <map>
 #include <memory>
 #include <string>
+
+#define BOOST_FILESYSTEM_NO_DEPRECATED
+#include <boost/filesystem/fstream.hpp>
 
 #include "ipc.pb.h"
 #include "unit.pb.h"
@@ -150,7 +152,7 @@ bool IsOfTime(const UnitMap &units, int id, long *denominator, long *numerator)
 
 }
 
-bool UnitOfTime(sqlite3 *db, const char *output)
+bool UnitOfTime(sqlite3 *db, const boost::filesystem::path &output)
 {
 	UnitMap units;
 	{
@@ -159,7 +161,7 @@ bool UnitOfTime(sqlite3 *db, const char *output)
 			return false;
 	}
 
-	std::ofstream ofs(output, std::ios::binary);
+	boost::filesystem::ofstream ofs(output, std::ios::binary);
 	if (!ofs) {
 		std::cerr << "failed to open " << output << std::endl;
 		return false;

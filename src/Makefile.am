@@ -68,8 +68,7 @@ libflint_la_LIBADD = libsqlite3.la
 libflint_la_LDFLAGS = -no-undefined
 libflint_la_SOURCES = \
     database.c \
-    db/query.c \
-    process.c
+    db/query.c
 
 libflintxx_la_CPPFLAGS = -I$(top_srcdir)/include $(SOSLIB_CFLAGS) $(LIBSBML_CFLAGS) $(WXWIDGETS_CXXFLAGS) $(PROTOBUF_CFLAGS) $(BOOST_CPPFLAGS) $(SUNDIALS_CFLAGS) $(CLIBSEDML_CFLAGS) $(CZMQ_CFLAGS) $(ZEROMQ_CFLAGS) $(XML_CPPFLAGS)
 libflintxx_la_LIBADD = libflint.la libsqlite3.la $(SOSLIB_LIBS) $(LIBSBML_LIBS) $(WXWIDGETS_LIBS) $(PROTOBUF_LIBS) $(BOOST_FILESYSTEM_LIBS) $(BOOST_SYSTEM_LIBS) $(SUNDIALS_LIBS) $(CLIBSEDML_LIBS) $(CZMQ_LIBS) $(ZEROMQ_LIBS) $(XML_LIBS)
@@ -176,6 +175,7 @@ libflintxx_la_SOURCES = \
     phsp/read.cc \
     phsp/sample-builder.cc \
     phz/read.cc \
+    process.cc \
     reduction.cc \
     run/run.cc \
     run/spec.cc \
@@ -252,7 +252,8 @@ flint_exec_LDADD = libflintxx.la libflint.la libsqlite3.la $(PROTOBUF_LIBS) $(BO
 flint_exec_SOURCES = flint-exec-main.cc
 
 flint_lodbg_CPPFLAGS = $(PROTOBUF_CFLAGS) $(BOOST_CPPFLAGS) $(CZMQ_CFLAGS)
-flint_lodbg_LDADD = libflintxx.la libflint.la libsqlite3.la $(PROTOBUF_LIBS) $(CZMQ_LIBS)
+flint_lodbg_LDFLAGS = $(BOOST_FILESYSTEM_LDFLAGS) $(BOOST_SYSTEM_LDFLAGS)
+flint_lodbg_LDADD = libflintxx.la libflint.la libsqlite3.la $(PROTOBUF_LIBS) $(BOOST_FILESYSTEM_LIBS) $(BOOST_SYSTEM_LIBS) $(CZMQ_LIBS)
 flint_lodbg_SOURCES = flint-lodbg-main.cc
 
 flint_open_CPPFLAGS = $(PROTOBUF_CFLAGS) $(BOOST_CPPFLAGS)

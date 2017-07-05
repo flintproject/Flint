@@ -7,7 +7,7 @@
 namespace flint {
 namespace file {
 
-bool Txt(const char *filename, Format *format, int dir)
+bool Txt(const char *filename, Format *format, const boost::filesystem::path &dir)
 {
 	boost::filesystem::path path = GetPathFromUtf8(filename);
 	if (path.empty())
@@ -16,12 +16,11 @@ bool Txt(const char *filename, Format *format, int dir)
 	if (!DetectFormat(path_s.c_str(), format))
 		return false;
 	FILE *fp;
-	if (dir == 0) {
+	if (dir.empty()) {
 		fp = std::fopen("file.txt", "w");
 	} else {
-		char file_txt[64]; // FIXME
-		std::sprintf(file_txt, "%d/file.txt", dir);
-		fp = std::fopen(file_txt, "w");
+		auto file_txt = dir / "file.txt";
+		fp = std::fopen(file_txt.string().c_str(), "w");
 	}
 	if (!fp) {
 		std::perror(filename);

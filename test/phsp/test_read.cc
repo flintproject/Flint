@@ -27,7 +27,7 @@ int CheckIzhikevich_2003(void *, int argc, char **argv, char **)
 
 BOOST_AUTO_TEST_CASE(Izhikevich_2003) {
 	BOOST_CHECK(sedml::Read(TEST_MODELS("Izhikevich_2003.xml"), driver_.db()));
-	BOOST_CHECK(phsp::Read(TEST_MODELS("Izhikevich_2003.phsp"), driver_.db()));
+	BOOST_CHECK(phsp::Read(TEST_MODELS("Izhikevich_2003.phsp"), driver_.db(), boost::filesystem::current_path()));
 	BOOST_CHECK(boost::filesystem::is_directory("1"));
 	BOOST_CHECK(boost::filesystem::is_regular_file("1/task.db"));
 	{
@@ -51,7 +51,7 @@ int CheckLemming(void *, int argc, char **argv, char **)
 
 BOOST_AUTO_TEST_CASE(lemming) {
 	BOOST_CHECK(sedml::Read(TEST_MODELS("lemming.xml"), driver_.db()));
-	BOOST_CHECK(phsp::Read(TEST_MODELS("lemming.phsp"), driver_.db()));
+	BOOST_CHECK(phsp::Read(TEST_MODELS("lemming.phsp"), driver_.db(), boost::filesystem::current_path()));
 	BOOST_CHECK(boost::filesystem::is_directory("1"));
 	BOOST_CHECK(boost::filesystem::is_regular_file("1/task.db"));
 	{

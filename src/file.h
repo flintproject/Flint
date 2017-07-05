@@ -2,7 +2,8 @@
 #ifndef FLINT_FILE_H_
 #define FLINT_FILE_H_
 
-#include <cstdio>
+#define BOOST_FILESYSTEM_NO_DEPRECATED
+#include <boost/filesystem.hpp>
 
 namespace flint {
 namespace file {
@@ -28,7 +29,7 @@ bool DetectFormat(const char *filename, Format *format);
  * Note that filename is encoded in UTF-8.
  * Return true in case of success, otherwise false.
  */
-bool Txt(const char *filename, Format *format, int dir = 0);
+bool Txt(const char *filename, Format *format, const boost::filesystem::path &dir);
 
 }
 }

@@ -47,5 +47,6 @@ int main(int argc, char *argv[])
 		return EXIT_FAILURE;
 	}
 
-	return exec::Exec(option) ? EXIT_SUCCESS : EXIT_FAILURE;
+	boost::filesystem::path dir(".");
+	return exec::Exec(option, dir) ? EXIT_SUCCESS : EXIT_FAILURE;
 }

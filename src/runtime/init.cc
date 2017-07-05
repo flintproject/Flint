@@ -16,7 +16,7 @@ namespace runtime {
 
 bool Init(sqlite3 *db,
 		  int seed,
-		  const char *layout_file,
+		  const boost::filesystem::path &layout_file,
 		  Bytecode *bytecode,
 		  const FlowInboundMap *inbound,
 		  const TimeseriesVector *tv,

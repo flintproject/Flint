@@ -117,7 +117,7 @@ bool Ark::Solve(const task::Task &task, const job::Option &option)
 {
 	filter::Writer *writer = task.writer.get();
 	char *control_address = task.GetControlAddress(option.id);
-	FILE *output_fp = option.output_fp;
+	std::ostream *output_stream = option.output_stream;
 
 	/* skeleton: 2. Set problem dimensions */
 	if (!SetProblemDimensions())
@@ -203,10 +203,10 @@ bool Ark::Solve(const task::Task &task, const job::Option &option)
 		if (output_start_time <= data_[kIndexTime]) {
 			if (granularity <= 1 || ++g == granularity) {
 				if (writer) {
-					if (!writer->Write(data_.get(), output_fp))
+					if (!writer->Write(data_.get(), *output_stream))
 						return false;
 				} else {
-					if (std::fwrite(data_.get(), sizeof(double), layer_size_, output_fp) != static_cast<size_t>(layer_size_)) {
+					if (!output_stream->write(reinterpret_cast<const char *>(data_.get()), sizeof(double) * layer_size_)) {
 						std::cerr << "failed to write output" << std::endl;
 						return false;
 					}

@@ -141,18 +141,11 @@ void SimFrame::OnThreadUpdate(wxThreadEvent &)
 
 wxThread::ExitCode SimFrame::Entry()
 {
-	wxFileName orig_dir, temp_dir;
+	auto sim_dir = sim_->GetDirectoryName();
+	sim_dir.Mkdir(wxS_DIR_DEFAULT, wxPATH_MKDIR_FULL); // make sure that it exists
 
-	// change a dedicated directory for the simulation
-	orig_dir.AssignCwd();
-	temp_dir = sim_->GetDirectoryName();
-	temp_dir.Mkdir(wxS_DIR_DEFAULT, wxPATH_MKDIR_FULL); // make sure that it exists
-	temp_dir.SetCwd();
-
-	result_ = exec::Exec(option_);
-
-	// recover current directory
-	orig_dir.SetCwd();
+	wxString data = sim_dir.GetFullPath();
+	result_ = exec::Exec(option_, data.c_str().AsChar());
 
 	wxQueueEvent(this, new wxThreadEvent);
 	return static_cast<wxThread::ExitCode>(0);

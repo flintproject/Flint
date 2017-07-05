@@ -17,7 +17,7 @@
 #include <vector>
 
 #define BOOST_FILESYSTEM_NO_DEPRECATED
-#include <boost/filesystem.hpp>
+#include <boost/filesystem/fstream.hpp>
 
 #include "db/driver.h"
 #include "db/read-only-driver.h"
@@ -32,31 +32,35 @@ namespace exec {
 
 namespace {
 
-bool CreatePidTxt()
+bool CreatePidTxt(const boost::filesystem::path &dir)
 {
-	FILE *fp = std::fopen("pid.txt", "w");
-	if (!fp) {
-		std::perror("pid.txt");
+	boost::filesystem::ofstream ofs(dir / "pid.txt", std::ios::out|std::ios::binary);
+	if (!ofs) {
+		std::cerr << "failed to open " << dir << "/pid.txt" << std::endl;
 		return false;
 	}
-	WriteCurrentProcessId(fp);
-	std::fclose(fp);
+	WriteCurrentProcessId(ofs);
+	ofs.close();
 	return true;
 }
 
 class FutureTaskPool {
 public:
+	explicit FutureTaskPool(const boost::filesystem::path &dir)
+		: dir_(dir)
+	{}
+
 	void Add(int id, const char *path) {
 		size_t len = strlen(path);
 		std::unique_ptr<char[]> p(new char[len+1]);
 		if (len > 0)
 			std::memcpy(p.get(), path, len);
 		p[len] = '\0';
-		auto lmbd = [id](char *p){
-			TaskRunner runner(id, p);
+		auto lmbd = [id](char *p, const boost::filesystem::path &dir) {
+			TaskRunner runner(id, p, dir);
 			return runner.Run();
 		};
-		tasks_.emplace_back(std::async(std::launch::async, lmbd, p.release()));
+		tasks_.emplace_back(std::async(std::launch::async, lmbd, p.release(), dir_));
 	}
 
 	bool Wait() {
@@ -70,6 +74,7 @@ public:
 	}
 
 private:
+	const boost::filesystem::path &dir_;
 	std::vector<std::future<bool> > tasks_;
 };
 
@@ -103,27 +108,28 @@ bool CollectTasks(sqlite3 *db, FutureTaskPool *pool)
 	return true;
 }
 
-bool ReadInput(const cli::ExecOption &option)
+bool ReadInput(const cli::ExecOption &option, const boost::filesystem::path &dir)
 {
-	db::Driver driver("exec.db");
-	sqlite3 *db = driver.db();
+	auto driver = db::Driver::Create(dir / "exec.db");
+	sqlite3 *db = driver->db();
 	if (!db)
 		return false;
 	return sedml::Read(option.sedml_filename().c_str(), db) &&
-		phsp::Read(option.phsp_filename().c_str(), db);
+		phsp::Read(option.phsp_filename().c_str(), db, dir);
 }
 
-bool CopyInput()
+bool CopyInput(const boost::filesystem::path &dir)
 {
+	auto input_db = dir / "input.db";
 	boost::system::error_code ec;
-	boost::filesystem::rename("exec.db", "input.db", ec);
+	boost::filesystem::rename(dir / "exec.db", input_db, ec);
 	if (ec) {
 		std::cerr << "failed to rename exec.db to input.db: "
 				  << ec.message()
 				  << std::endl;
 		return false;
 	}
-	boost::filesystem::copy_file("input.db", "x.db", ec);
+	boost::filesystem::copy_file(input_db, dir / "x.db", ec);
 	if (ec) {
 		std::cerr << "failed to copy input.db to x.db: "
 				  << ec.message()
@@ -133,12 +139,12 @@ bool CopyInput()
 	return true;
 }
 
-bool RunTasks()
+bool RunTasks(const boost::filesystem::path &dir)
 {
-	FutureTaskPool pool;
+	FutureTaskPool pool(dir);
 	{
-		db::ReadOnlyDriver driver("input.db");
-		sqlite3 *db = driver.db();
+		auto driver = db::ReadOnlyDriver::Create(dir / "input.db");
+		sqlite3 *db = driver->db();
 		if (!db)
 			return false;
 		if (!CollectTasks(db, &pool))
@@ -149,11 +155,11 @@ bool RunTasks()
 
 }
 
-bool Exec(const cli::ExecOption &option)
+bool Exec(const cli::ExecOption &option, const boost::filesystem::path &dir)
 {
 	if (option.has_lock_filename())
 		InitializeBackgroundProcess(option.lock_filename().c_str());
-	return CreatePidTxt() && ReadInput(option) && CopyInput() && RunTasks();
+	return CreatePidTxt(dir) && ReadInput(option, dir) && CopyInput(dir) && RunTasks(dir);
 }
 
 }

@@ -5,37 +5,38 @@
 
 #include "flint/stats.h"
 
-#include <cinttypes>
 #include <cstdio>
+#include <iostream>
 #include <memory>
+
+#define BOOST_FILESYSTEM_NO_DEPRECATED
+#include <boost/filesystem/fstream.hpp>
 
 namespace flint {
 namespace stats {
 
 bool Record(const std::chrono::time_point<std::chrono::steady_clock> &rt_start,
 			int num_steps,
-			const std::string &dir)
+			const boost::filesystem::path &dir)
 {
 	// Stop watch at first
 	auto rt_end = std::chrono::steady_clock::now();
 	auto duration = std::chrono::duration_cast<std::chrono::microseconds>(rt_end - rt_start).count();
 
-	size_t len = dir.size();
-	if (len == 0)
+	if (dir.empty())
 		return true; // do nothing if dir is empty
-	std::unique_ptr<char[]> filename(new char[len+6+1]);
-	std::sprintf(filename.get(), "%s/stats.txt", dir.c_str());
-	FILE *fp = std::fopen(filename.get(), "w");
-	if (!fp) {
-		std::perror(filename.get());
+	auto filename = dir / "stats.txt";
+	boost::filesystem::fstream ofs(filename, std::ios::out);
+	if (!ofs) {
+		std::cerr << "failed to open " << filename << std::endl;
 		return false;
 	}
-	std::fprintf(fp, "number of steps: %d\n", num_steps);
-	std::fprintf(fp, "duration (microseconds): %" PRId64 "\n", duration);
+	ofs << "number of steps: " << num_steps << std::endl;
+	ofs << "duration (microseconds): " << duration << std::endl;
 	if (num_steps > 0)
-		std::fprintf(fp, "mean (microseconds): %" PRId64 "\n", duration/num_steps);
-	std::fclose(fp);
-	return false;
+		ofs << "mean (microseconds): " << (duration/num_steps) << std::endl;
+	ofs.close();
+	return true;
 }
 
 }

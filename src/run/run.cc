@@ -83,7 +83,7 @@ bool Run(const cli::RunOption &option)
 		InitializeBackgroundProcess(option.lock_filename().c_str());
 
 	std::vector<double> data;
-	std::unique_ptr<task::Task> task(load::Load(option.model_filename().c_str(), load::kRun, 0, &data));
+	std::unique_ptr<task::Task> task(load::Load(option.model_filename().c_str(), load::kRun, boost::filesystem::path(), &data));
 	if (!task)
 		return false;
 

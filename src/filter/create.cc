@@ -18,6 +18,8 @@
 #include <unordered_set>
 #include <vector>
 
+#define BOOST_FILESYSTEM_NO_DEPRECATED
+#include <boost/filesystem/fstream.hpp>
 #include <boost/functional/hash.hpp>
 #include <boost/uuid/uuid_io.hpp>
 
@@ -165,7 +167,10 @@ private:
 
 }
 
-bool Create(sqlite3 *db, const char *spec_file, const char *layout_file, const char *output_file)
+bool Create(sqlite3 *db,
+			const boost::filesystem::path &spec_file,
+			const boost::filesystem::path &layout_file,
+			const boost::filesystem::path &output_file)
 {
 	std::string time_unit;
 	{
@@ -192,7 +197,7 @@ bool Create(sqlite3 *db, const char *spec_file, const char *layout_file, const c
 	std::unique_ptr<lo::Header> header(new lo::Header);
 	header->set_size(size);
 
-	std::ofstream ofs(output_file, std::ios::out|std::ios::binary);
+	boost::filesystem::ofstream ofs(output_file, std::ios::out|std::ios::binary);
 	if (!ofs.is_open()) {
 		std::cerr << "could not open output file: " << output_file << std::endl;
 		return false;

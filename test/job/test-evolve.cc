@@ -61,9 +61,6 @@ struct F : public test::MemoryFixture {
 
 		option_.id = 0;
 		option_.input_data = nullptr;
-		option_.input_history_file = nullptr;
-		option_.output_data_file = nullptr;
-		option_.output_history_file = nullptr;
 		option_.fppp_option = nullptr;
 
 		task_.method = compiler::Method::kEuler;
@@ -113,11 +110,11 @@ struct F : public test::MemoryFixture {
 			   "  store %x#0 $0\n");									\
 		task_.bc.reset(compiler::bcc::Bcc(driver_.db()));				\
 		BOOST_REQUIRE(task_.bc);										\
-		FILE *fp = std::fopen("output", "wb");							\
-		BOOST_REQUIRE(fp);												\
-		option_.output_fp = fp;											\
+		std::ofstream ofs("output", std::ios::out|std::ios::binary);	\
+		BOOST_REQUIRE(ofs);												\
+		option_.output_stream = &ofs;									\
 		BOOST_REQUIRE(job::Evolve(task_, option_));						\
-		std::fclose(fp);												\
+		ofs.close();													\
 		CheckOutput(expected);											\
 	} while (0)
 
@@ -129,11 +126,11 @@ struct F : public test::MemoryFixture {
 			   "  $0 = (" #f " $1 $2)\n"								\
 			   "  store %x#0 $0\n");									\
 		task_.bc.reset(compiler::bcc::Bcc(driver_.db()));				\
-		FILE *fp = std::fopen("output", "wb");							\
-		BOOST_REQUIRE(fp);												\
-		option_.output_fp = fp;											\
+		std::ofstream ofs("output", std::ios::out|std::ios::binary);	\
+		BOOST_REQUIRE(ofs);												\
+		option_.output_stream = &ofs;									\
 		BOOST_REQUIRE(job::Evolve(task_, option_));						\
-		std::fclose(fp);												\
+		ofs.close();													\
 		CheckOutput(expected);											\
 	} while (0)
 

@@ -51,7 +51,7 @@ int main(int argc, char *argv[])
 	given_file[s] = '\0';
 	std::vector<double> data;
 	{
-		std::unique_ptr<task::Task> task(load::Load(given_file, load::kOpen, 0, &data));
+		std::unique_ptr<task::Task> task(load::Load(given_file, load::kOpen, boost::filesystem::path(), &data));
 		if (!task)
 			return EXIT_FAILURE;
 	}

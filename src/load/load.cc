@@ -79,43 +79,38 @@ const int kFilenameLength = 64;
 
 class Loader {
 public:
-	explicit Loader(int dir)
-		: dir_(new char[kFilenameLength])
-		, layout_(new char[kFilenameLength])
-		, model_(new char[kFilenameLength])
-		, modeldb_(new char[kFilenameLength])
-		, nc_(new char[kFilenameLength])
-		, param_(new char[kFilenameLength])
-		, phz_(new char[kFilenameLength])
-		, unitoftime_(new char[kFilenameLength])
-		, var_(new char[kFilenameLength])
+	explicit Loader(const boost::filesystem::path &dir)
+		: dir_(dir.empty() ? "." : dir)
+		, layout_(dir_)
+		, model_(dir_)
+		, modeldb_(dir_)
+		, nc_(dir_)
+		, param_(dir_)
+		, phz_(dir_)
+		, unitoftime_(dir_)
+		, var_(dir_)
 	{
-		if (dir) {
-			std::sprintf(dir_.get(), "%d", dir);
-		} else {
-			std::sprintf(dir_.get(), ".");
-		}
-		std::sprintf(layout_.get(), "%s/layout", dir_.get());
-		std::sprintf(model_.get(), "%s/model", dir_.get());
-		std::sprintf(modeldb_.get(), "%s/model.db", dir_.get());
-		std::sprintf(nc_.get(), "%s/nc", dir_.get());
-		std::sprintf(param_.get(), "%s/param", dir_.get());
-		std::sprintf(phz_.get(), "%s/phz", dir_.get());
-		std::sprintf(unitoftime_.get(), "%s/unitoftime", dir_.get());
-		std::sprintf(var_.get(), "%s/var", dir_.get());
+		layout_ /= "layout";
+		model_ /= "model";
+		modeldb_ /= "model.db";
+		nc_ /= "nc";
+		param_ /= "param";
+		phz_ /= "phz";
+		unitoftime_ /= "unitoftime";
+		var_ /= "var";
 	}
 
-	const char *model() const {return model_.get();}
-	const char *modeldb() const {return modeldb_.get();}
-	const char *param() const {return param_.get();}
-	const char *phz() const {return phz_.get();}
-	const char *var() const {return var_.get();}
+	const boost::filesystem::path &model() const {return model_;}
+	const boost::filesystem::path &modeldb() const {return modeldb_;}
+	const boost::filesystem::path &param() const {return param_;}
+	const boost::filesystem::path &phz() const {return phz_;}
+	const boost::filesystem::path &var() const {return var_;}
 
 	task::Task *LoadCellml(sqlite3 *db, std::vector<double> *data)
 	{
 		if (!cellml::Read(db))
 			return nullptr;
-		if (!layout::Generate(db, layout_.get()))
+		if (!layout::Generate(db, layout_))
 			return nullptr;
 		std::unique_ptr<Bytecode> init_bc;
 		{
@@ -130,7 +125,7 @@ public:
 		std::unique_ptr<task::Task> task(new task::Task);
 		if (!LoadFlows(db, &task->inbound))
 			return nullptr;
-		if (!runtime::Init(db, 0, layout_.get(), init_bc.get(), &task->inbound, nullptr, data))
+		if (!runtime::Init(db, 0, layout_, init_bc.get(), &task->inbound, nullptr, data))
 			return nullptr;
 		return task.release();
 	}
@@ -140,13 +135,13 @@ public:
 		if (!phml::Read(db))
 			return nullptr;
 		int seed = static_cast<int>(std::clock());
-		if (!phml::Nc(db, nc_.get(), &seed))
+		if (!phml::Nc(db, nc_, &seed))
 			return nullptr;
-		if (!phml::UnitOfTime(db, unitoftime_.get()))
+		if (!phml::UnitOfTime(db, unitoftime_))
 			return nullptr;
-		if (!phml::LengthAndStep(db, nc_.get(), unitoftime_.get()))
+		if (!phml::LengthAndStep(db, nc_, unitoftime_))
 			return nullptr;
-		if (!layout::Generate(db, layout_.get()))
+		if (!layout::Generate(db, layout_))
 			return nullptr;
 		std::unique_ptr<Bytecode> init_bc;
 		std::unique_ptr<task::Task> task(new task::Task);
@@ -169,7 +164,7 @@ public:
 			return nullptr;
 		if (!ts::LoadTimeseriesVector(db, &task->tv))
 			return nullptr;
-		if (!runtime::Init(db, seed, layout_.get(), init_bc.get(), &task->inbound, &task->tv, data))
+		if (!runtime::Init(db, seed, layout_, init_bc.get(), &task->inbound, &task->tv, data))
 			return nullptr;
 		return task.release();
 	}
@@ -178,7 +173,7 @@ public:
 	{
 		if (!flint::sbml::Read(db))
 			return nullptr;
-		if (!layout::Generate(db, layout_.get()))
+		if (!layout::Generate(db, layout_))
 			return nullptr;
 		std::unique_ptr<Bytecode> init_bc;
 		{
@@ -191,30 +186,31 @@ public:
 				return nullptr;
 		}
 		std::unique_ptr<task::Task> task(new task::Task);
-		if (!runtime::Init(db, 0, layout_.get(), init_bc.get(), &task->inbound, nullptr, data))
+		if (!runtime::Init(db, 0, layout_, init_bc.get(), &task->inbound, nullptr, data))
 			return nullptr;
 		return task.release();
 	}
 
 private:
-	std::unique_ptr<char[]> dir_;
-	std::unique_ptr<char[]> layout_;
-	std::unique_ptr<char[]> model_;
-	std::unique_ptr<char[]> modeldb_;
-	std::unique_ptr<char[]> nc_;
-	std::unique_ptr<char[]> param_;
-	std::unique_ptr<char[]> phz_;
-	std::unique_ptr<char[]> unitoftime_;
-	std::unique_ptr<char[]> var_;
+	boost::filesystem::path dir_;
+	boost::filesystem::path layout_;
+	boost::filesystem::path model_;
+	boost::filesystem::path modeldb_;
+	boost::filesystem::path nc_;
+	boost::filesystem::path param_;
+	boost::filesystem::path phz_;
+	boost::filesystem::path unitoftime_;
+	boost::filesystem::path var_;
 };
 
 }
 
-task::Task *Load(const char *given_file, ConfigMode mode, int dir, std::vector<double> *data)
+task::Task *Load(const char *given_file, ConfigMode mode,
+				 const boost::filesystem::path &dir, std::vector<double> *data)
 {
 	Loader loader(dir);
-	db::Driver driver(loader.modeldb());
-	sqlite3 *db = driver.db();
+	auto driver = db::Driver::Create(loader.modeldb());
+	sqlite3 *db = driver->db();
 	if (!db)
 		return nullptr;
 	if (!SaveGivenFile(db, given_file))

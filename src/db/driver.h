@@ -2,6 +2,11 @@
 #ifndef FLINT_DB_DRIVER_H_
 #define FLINT_DB_DRIVER_H_
 
+#include <memory>
+
+#define BOOST_FILESYSTEM_NO_DEPRECATED
+#include <boost/filesystem.hpp>
+
 #include "sqlite3.h"
 
 namespace flint {
@@ -11,6 +16,8 @@ class Driver {
 public:
 	Driver(const Driver &) = delete;
 	Driver &operator=(const Driver &) = delete;
+
+	static std::unique_ptr<Driver> Create(const boost::filesystem::path &path);
 
 	explicit Driver(const char *filename);
 

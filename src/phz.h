@@ -2,6 +2,9 @@
 #ifndef FLINT_PHZ_H_
 #define FLINT_PHZ_H_
 
+#define BOOST_FILESYSTEM_NO_DEPRECATED
+#include <boost/filesystem.hpp>
+
 #include "sqlite3.h"
 
 namespace flint {
@@ -11,7 +14,7 @@ namespace phz {
  * Read a PHZ file.
  * Return true in case of success, false otherwise.
  */
-bool Read(sqlite3 *db, const char *dir);
+bool Read(sqlite3 *db, const boost::filesystem::path &dir);
 
 }
 }

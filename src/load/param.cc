@@ -9,11 +9,12 @@
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
-#include <fstream>
 #include <iostream>
 #include <memory>
 #include <vector>
 
+#define BOOST_FILESYSTEM_NO_DEPRECATED
+#include <boost/filesystem/fstream.hpp>
 #include <boost/uuid/uuid.hpp>
 
 #include "lo.pb.h"
@@ -97,7 +98,7 @@ bool Process(sqlite3 *db, State *state)
 
 }
 
-bool Param(sqlite3 *db, const char *output)
+bool Param(sqlite3 *db, const boost::filesystem::path &output)
 {
 	State state;
 	if (!Process(db, &state))
@@ -105,7 +106,7 @@ bool Param(sqlite3 *db, const char *output)
 	lo::Header header;
 	header.set_size(state.pos);
 
-	std::ofstream ofs(output, std::ios::out|std::ios::binary);
+	boost::filesystem::ofstream ofs(output, std::ios::out|std::ios::binary);
 	if (!ofs) {
 		std::cerr << "failed to open " << output << std::endl;
 		return false;

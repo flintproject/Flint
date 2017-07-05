@@ -4,9 +4,11 @@
 
 #include "sqlite3.h"
 
-#include <cstdio>
+#include <iostream>
 #include <memory>
 
+#define BOOST_FILESYSTEM_NO_DEPRECATED
+#include <boost/filesystem.hpp>
 #define BOOST_DATE_TIME_NO_LIB
 #include <boost/interprocess/mapped_region.hpp>
 
@@ -70,14 +72,14 @@ struct Task {
  * Save a task's configuration into an attached database.
  * Return true in case of success, false otherwise.
  */
-bool Config(int id, sqlite3 *db);
+bool Config(int id, sqlite3 *db, const boost::filesystem::path &dir);
 
 /*
  * List a task's spec.
  * Note that db is for read only.
  * Return true in case of success, false otherwise.
  */
-bool Spec(int id, sqlite3 *db, FILE *fp);
+bool Spec(int id, sqlite3 *db, std::ostream &os);
 
 /*
  * Return true in case of success, false otherwise.
