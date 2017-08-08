@@ -112,7 +112,7 @@
 
   <Target Name='sundials' Inputs='tmp\sundials-$(SUNDIALS_VERSION)' Outputs='tmp\sundials-$(SUNDIALS_VERSION).installed'>
     <MakeDir Directories='$(VARDIR)\sundials-$(SUNDIALS_VERSION)\build'/>
-    <Exec Command='cmake $(CMakeGeneratorOption) -DCMAKE_INSTALL_PREFIX="$(PREFIX)" -DBUILD_SHARED_LIBS=OFF -DBUILD_STATIC_LIBS=ON ..' WorkingDirectory='$(VARDIR)\sundials-$(SUNDIALS_VERSION)\build'/>
+    <Exec Command='cmake $(CMakeGeneratorOption) -DCMAKE_INSTALL_PREFIX="$(PREFIX)" -DBUILD_SHARED_LIBS=OFF -DBUILD_STATIC_LIBS=ON -DEXAMPLES_ENABLE=OFF ..' WorkingDirectory='$(VARDIR)\sundials-$(SUNDIALS_VERSION)\build'/>
     <Exec Command='cmake --build "$(VARDIR)\sundials-$(SUNDIALS_VERSION)\build" --target install --config Release --clean-first'/>
     <Touch AlwaysCreate='true' Files='tmp\sundials-$(SUNDIALS_VERSION).installed'/>
   </Target>
