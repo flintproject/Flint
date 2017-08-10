@@ -165,7 +165,7 @@ bool HistoryLoader::Load(size_t size, History *history)
 		ifs.close();
 		return false;
 	}
-	if (s == 0) { // OK, it's empty. Nothing to do
+	if (!s) { // OK, it's empty. Nothing to do
 		ifs.close();
 		return true;
 	}

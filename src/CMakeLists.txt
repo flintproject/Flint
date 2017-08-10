@@ -9,7 +9,6 @@ add_library(sqlite3 STATIC
 add_library(libflint STATIC
     database.c
     db/query.c
-    process.c
     )
 target_link_libraries(libflint
     sqlite3
@@ -117,6 +116,7 @@ add_library(libflintxx STATIC
     phsp/read.cc
     phsp/sample-builder.cc
     phz/read.cc
+    process.cc
     reduction.cc
     run/run.cc
     run/spec.cc

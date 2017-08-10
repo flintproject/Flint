@@ -46,7 +46,7 @@
 
   <Target Name='boost' Inputs='tmp\$(BOOST_UNDERSCORE)' Outputs='tmp\$(BOOST_UNDERSCORE).installed'>
     <Exec Command='bootstrap' WorkingDirectory='$(VARDIR)\$(BOOST_UNDERSCORE)'/>
-    <Exec Command='.\b2 -d0 --prefix="$(PREFIX)" $(B2_WITHOUT_OPTIONS) $(BoostAddressModelOption) variant=release threading=multi link=shared runtime-link=shared install' WorkingDirectory='$(VARDIR)\$(BOOST_UNDERSCORE)'/>
+    <Exec Command='.\b2 -d0 --prefix="$(PREFIX)" $(B2_WITHOUT_OPTIONS) $(BoostAddressModelOption) toolset=msvc-14.0 variant=release threading=multi link=shared runtime-link=shared install' WorkingDirectory='$(VARDIR)\$(BOOST_UNDERSCORE)'/>
     <Touch AlwaysCreate='true' Files='tmp\$(BOOST_UNDERSCORE).installed'/>
   </Target>
 
