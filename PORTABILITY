@@ -11,13 +11,14 @@ Find instructions to install and use it in
 Moreover, some packages are necessary:
 $ sudo yum install wget \
     java-1.7.0-openjdk-devel gtk2-devel libuuid-devel libxml2-devel
+You also have to install Apache Ant 1.8 or later.
 
 
 == RHEL/CentOS 7
 
 Install necessary tools for building and installing Flint with:
 $ sudo yum install gcc gcc-c++ autoconf automake libtool cmake wget \
-    java-1.7.0-openjdk-devel gtk3-devel libuuid-devel libxml2-devel
+    ant java-1.7.0-openjdk-devel gtk3-devel libuuid-devel libxml2-devel
 
 
 == Debian Stretch/Buster/Sid
@@ -25,28 +26,28 @@ $ sudo yum install gcc gcc-c++ autoconf automake libtool cmake wget \
 We do not have a Debian package (.deb) for Flint yet.
 Before building Flint, you will want to install prerequisite Debian packages
 as follows:
-$ sudo apt-get install gcc g++ autoconf automake libtool cmake openjdk-8-jdk \
-    pkgconf libgtk2.0-dev libxml2-dev
+$ sudo apt-get install gcc g++ autoconf automake libtool cmake \
+    ant openjdk-8-jdk pkgconf libgtk2.0-dev libxml2-dev
 
 
 == Fedora 24
 
 Use dnf(8) to install required packages for building Flint:
 $ sudo dnf install gcc gcc-c++ autoconf automake libtool cmake wget \
-    java-1.8.0-openjdk libuuid-devel libxml2-devel gtk3-devel
+    ant java-1.8.0-openjdk libuuid-devel libxml2-devel gtk3-devel
 
 
 == Ubuntu 16.04 LTS (Xenial Xerus)
 
 $ sudo apt install g++ autoconf automake libtool cmake openjdk-8-jdk \
-    libgtk2.0-dev libxml2-dev uuid-dev
+    ant libgtk2.0-dev libxml2-dev uuid-dev
 
 
 == Ubuntu 14.04.3 LTS (Trusty Tahr)
 
 All you have to do for installing necessary tools is:
 $ sudo apt-get install g++ autoconf automake libtool cmake openjdk-7-jdk \
-    libgtk2.0-dev libxml2-dev uuid-dev
+    ant libgtk2.0-dev libxml2-dev uuid-dev
 
 
 * References
