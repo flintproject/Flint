@@ -10,14 +10,14 @@ Find instructions to install and use it in
 
 Moreover, some packages are necessary:
 $ sudo yum install wget \
-    java-1.7.0-openjdk gtk2-devel libuuid-devel libxml2-devel
+    java-1.7.0-openjdk-devel gtk2-devel libuuid-devel libxml2-devel
 
 
 == RHEL/CentOS 7
 
 Install necessary tools for building and installing Flint with:
 $ sudo yum install gcc gcc-c++ autoconf automake libtool cmake wget \
-    java-1.7.0-openjdk gtk3-devel libuuid-devel libxml2-devel
+    java-1.7.0-openjdk-devel gtk3-devel libuuid-devel libxml2-devel
 
 
 == Debian Stretch/Buster/Sid
