@@ -3,7 +3,6 @@ BOOST_UNUSED_COMPONENTS = \
 	container \
 	context \
 	coroutine \
-	coroutine2 \
 	date_time \
 	exception \
 	fiber \
