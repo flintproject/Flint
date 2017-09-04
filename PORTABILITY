@@ -4,15 +4,9 @@ We design Flint to be portable.
 == RHEL/CentOS 6
 
 The default g++ package is too old to build Flint.
-A workaround for the issue is using devtoolset-3's g++.
-Based on the instructions in
-<https://www.softwarecollections.org/en/scls/rhscl/devtoolset-3/>,
-you can install it as follows:
-$ sudo yum install scl-utils
-(download the package rhscl-devtoolset-3-*.noarch.rpm)
-$ sudo yum install rhscl-devtoolset-3-*.noarch.rpm
-$ sudo yum install devtoolset-3-gcc-c++
-$ scl enable devtoolset-3 bash
+A workaround for the issue is using devtoolset-6's g++.
+Find instructions to install and use it in
+<https://www.softwarecollections.org/en/scls/rhscl/devtoolset-6/>.
 
 Moreover, some packages are necessary:
 $ sudo yum install wget \
