@@ -3,7 +3,11 @@ This directory contains header libraries developed by third parties.
 Eigen/
 
 from Eigen 3.3.4.
-Its COPYING.README says:
+
+Please note that your Ceres Solver may have to be rebuilt as it depends on this
+bundled Eigen.
+
+Eigen's COPYING.README:
 ---
 Eigen is primarily MPL2 licensed. See COPYING.MPL2 and these links:
   http://www.mozilla.org/MPL/2.0/
