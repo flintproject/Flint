@@ -25,7 +25,7 @@ int main(int argc, char *argv[])
 {
 	if (argc == 2) {
 		usage();
-		if ( std::strcmp(argv[1], "-h") == 0 || std::strcmp(argv[1], "--help") ) {
+		if ( std::strcmp(argv[1], "-h") == 0 || std::strcmp(argv[1], "--help") == 0 ) {
 			return EXIT_SUCCESS;
 		} else {
 			return EXIT_FAILURE;
