@@ -91,7 +91,6 @@ bool App::OnInit()
 	fileName.SetCwd();
 
 	auto frame = new MainFrame;
-	frame->CentreOnScreen();
 	frame->Show();
 
 	pref_editor_ = nullptr;
