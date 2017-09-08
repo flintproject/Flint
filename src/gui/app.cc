@@ -98,15 +98,13 @@ std::string GetAbsoluteFilename(const wxString &file)
 	return fileName.GetFullPath().ToStdString();
 }
 
-void ChangeDirectory()
+wxFileName GetFlintDirectory()
 {
 	wxFileName fileName;
 	fileName.AssignHomeDir();
 	fileName.AppendDir(".flint");
 	fileName.AppendDir("2");
-	fileName.Rmdir(wxPATH_RMDIR_RECURSIVE); // clean up working directory at first
-	fileName.Mkdir(wxS_DIR_DEFAULT, wxPATH_MKDIR_FULL); // make sure that it exists
-	fileName.SetCwd();
+	return fileName;
 }
 
 }
@@ -128,7 +126,10 @@ bool App::OnInit()
 
 	wxPersistenceManager::Get().RegisterAndRestore(this, new PersistentApp(this, gnuplot_executable_));
 
-	ChangeDirectory();
+	auto fileName = GetFlintDirectory();
+	fileName.Rmdir(wxPATH_RMDIR_RECURSIVE); // clean up working directory at first
+	fileName.Mkdir(wxS_DIR_DEFAULT, wxPATH_MKDIR_FULL); // make sure that it exists
+	fileName.SetCwd();
 
 	auto frame = new MainFrame(input_files_);
 	SetTopWindow(frame);
@@ -180,7 +181,13 @@ bool App::OnCmdLineParsed(wxCmdLineParser &parser)
 		wxString s;
 		if (parser.Found("s", &s))
 			option.set_spec_filename(GetAbsoluteFilename(s));
-		ChangeDirectory();
+
+		auto now = wxDateTime::Now();
+		auto fileName = GetFlintDirectory();
+		fileName.AppendDir(now.Format("%F %T"));
+		fileName.Mkdir(wxS_DIR_DEFAULT, wxPATH_MKDIR_FULL); // make sure that it exists
+		fileName.SetCwd();
+
 		std::exit(run::Run(option) ? EXIT_SUCCESS : EXIT_FAILURE);
 	}
 
