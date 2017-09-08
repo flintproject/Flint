@@ -9,7 +9,7 @@ os:
 
 compiler:
   - gcc
-  - clang
+  # - clang
 
 addons:
   apt:
@@ -35,7 +35,8 @@ install:
   - if [ "$TRAVIS_OS_NAME" = linux -a "$CXX" = "clang++" ]; then export CC="clang-4.0" CXX="clang++-4.0" CFLAGS="-g0 -O0" CXXFLAGS="-g0 -O0"; fi
   - if [ "$TRAVIS_OS_NAME" = linux ]; then cd posix; else cd xcode; fi
   - if [ "$TRAVIS_OS_NAME" = osx ]; then echo "PKG_CONFIG = /usr/local/bin/pkg-config" > config.mk; fi
-  - travis_wait 60 make -s
+  - make -s download
+  - make -s all
 
 script:
   - if [ "$TRAVIS_OS_NAME" = linux ]; then make check; else make; fi # in posix/ or xcode/
