@@ -74,8 +74,9 @@ enum {
 
 }
 
-MainFrame::MainFrame()
+MainFrame::MainFrame(wxArrayString &input_files)
 	: wxFrame(nullptr, wxID_ANY, wxTheApp->GetAppDisplayName())
+	, input_files_(input_files)
 	, notebook_(nullptr)
 	, next_open_id_(1)
 	, next_simulation_id_(1)
@@ -355,6 +356,10 @@ void MainFrame::OnPreferences(wxCommandEvent &)
 void MainFrame::OnIdle(wxIdleEvent &)
 {
 	SetStatusText("");
+
+	for (const auto &file : input_files_)
+		OpenFile(file);
+	input_files_.Empty();
 }
 
 }

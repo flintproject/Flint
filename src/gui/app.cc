@@ -63,6 +63,13 @@ wxString PersistentApp::GetName() const
 	return "File";
 }
 
+const wxCmdLineEntryDesc kCommandLineDesc[] =
+{
+    { wxCMD_LINE_SWITCH, "h", "help", "show this help message", wxCMD_LINE_VAL_NONE, wxCMD_LINE_OPTION_HELP },
+    { wxCMD_LINE_PARAM, nullptr, nullptr, "input file", wxCMD_LINE_VAL_STRING, wxCMD_LINE_PARAM_OPTIONAL|wxCMD_LINE_PARAM_MULTIPLE },
+    { wxCMD_LINE_NONE, nullptr, nullptr, nullptr, wxCMD_LINE_VAL_NONE, 0 } // the same as { wxCMD_LINE_NONE }, and suppress compiler warnig
+};
+
 }
 
 bool App::OnInit()
@@ -90,11 +97,27 @@ bool App::OnInit()
 	fileName.Mkdir(wxS_DIR_DEFAULT, wxPATH_MKDIR_FULL); // make sure that it exists
 	fileName.SetCwd();
 
-	auto frame = new MainFrame;
+	auto frame = new MainFrame(input_files_);
+	SetTopWindow(frame);
 	frame->Show();
 
 	pref_editor_ = nullptr;
 
+	return true;
+}
+
+void App::OnInitCmdLine(wxCmdLineParser &parser)
+{
+	parser.SetDesc(kCommandLineDesc);
+	parser.SetSwitchChars("-");
+}
+
+bool App::OnCmdLineParsed(wxCmdLineParser &parser)
+{
+	for (const auto &arg : parser.GetArguments()) {
+		if (arg.GetKind() == wxCMD_LINE_PARAM)
+			input_files_.Add(arg.GetStrVal());
+	}
 	return true;
 }
 

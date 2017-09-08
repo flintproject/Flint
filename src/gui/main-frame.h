@@ -17,7 +17,7 @@ class Document;
 class MainFrame : public wxFrame
 {
 public:
-	MainFrame();
+	explicit MainFrame(wxArrayString &input_files);
 	~MainFrame();
 
 	bool OpenFile(const wxString &path);
@@ -33,6 +33,8 @@ private:
 	void OnRun(wxCommandEvent &event);
 	void OnPreferences(wxCommandEvent &event);
 	void OnIdle(wxIdleEvent &event);
+
+	wxArrayString &input_files_;
 
 	wxAuiManager manager_;
 	wxAuiNotebook *notebook_;
