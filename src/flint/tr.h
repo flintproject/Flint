@@ -2,6 +2,9 @@
 #ifndef FLINT_TR_H_
 #define FLINT_TR_H_
 
+#define BOOST_FILESYSTEM_NO_DEPRECATED
+#include <boost/filesystem.hpp>
+
 #include "cli.pb.h"
 
 namespace flint {
@@ -10,7 +13,7 @@ namespace tr {
 /*
  * Return true in case of success, false otherwise.
  */
-bool Translate(const cli::RunOption &option);
+bool Translate(const cli::RunOption &option, const boost::filesystem::path &dir);
 
 }
 }

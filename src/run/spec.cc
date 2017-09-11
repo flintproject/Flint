@@ -8,7 +8,6 @@
 #include <cassert>
 #include <cstdlib>
 #include <cstring>
-#include <iostream>
 #include <string>
 
 #include <boost/uuid/uuid_io.hpp>
@@ -20,25 +19,25 @@ namespace {
 
 int Print(void *data, int argc, char **argv, char **names)
 {
-	FILE *fp = static_cast<FILE *>(data);
+	std::ostream *os = static_cast<std::ostream *>(data);
 	(void)names;
 	assert(argc == 2);
 	assert(argv[0]);
 	boost::uuids::uuid sector_id;
 	memcpy(&sector_id, argv[0], sector_id.size());
 	std::string s = boost::uuids::to_string(sector_id);
-	fprintf(fp, "%s %s\n", s.c_str(), argv[1]);
+	*os << s << ' ' << argv[1] << std::endl;
 	return 0;
 }
 
 }
 
-bool Spec(sqlite3 *db, FILE *fp)
+bool Spec(sqlite3 *db, std::ostream *os)
 {
 	char *em;
 	int e;
 	e = sqlite3_exec(db, "SELECT sector_id, name FROM layout WHERE type = 'v' OR type = 'x'",
-					 &Print, fp, &em);
+					 &Print, os, &em);
 	if (e == SQLITE_OK)
 		return true;
 	if (e != SQLITE_ABORT)

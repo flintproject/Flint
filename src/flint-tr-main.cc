@@ -46,5 +46,5 @@ int main(int argc, char *argv[])
 		std::cerr << "failed to parse the input" << std::endl;
 		return EXIT_FAILURE;
 	}
-	return tr::Translate(option) ? EXIT_SUCCESS : EXIT_FAILURE;
+	return tr::Translate(option, boost::filesystem::path()) ? EXIT_SUCCESS : EXIT_FAILURE;
 }

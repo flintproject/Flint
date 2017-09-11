@@ -45,16 +45,15 @@ namespace tr {
 
 namespace {
 
-bool PrintFileAsByteArray(const char *filename, const char *name,
+bool PrintFileAsByteArray(const boost::filesystem::path &path, const char *name,
 						  std::ostream *os)
 {
 	const int kBufferSize = 1024;
 
-	boost::filesystem::path path(filename);
 	size_t size = static_cast<size_t>(boost::filesystem::file_size(path));
-	FILE *fp = std::fopen(filename, "rb");
-	if (!fp) {
-		std::perror(filename);
+	boost::filesystem::ifstream ifs(path, std::ios::in|std::ios::binary);
+	if (!ifs) {
+		std::cerr << "failed to open " << path << std::endl;
 		return false;
 	}
 	std::unique_ptr<unsigned char[]> buf(new unsigned char[kBufferSize]);
@@ -64,8 +63,13 @@ bool PrintFileAsByteArray(const char *filename, const char *name,
 	size_t t = 0;
 	boost::io::ios_flags_saver saver(*os);
 	while (t < size) {
-		size_t s = std::fread(buf.get(), 1, kBufferSize, fp);
-		for (size_t i=0;i<s;i++) {
+		int s = static_cast<int>(ifs.readsome(reinterpret_cast<char *>(buf.get()), kBufferSize));
+		if (ifs.fail()) {
+			ifs.close();
+			std::cerr << "an error occurred when reading " << path << std::endl;
+			return false;
+		}
+		for (int i=0;i<s;i++) {
 			os->put(((i&0xF) == 0x0) ? '\t' : ' ');
 			*os << "0x"
 				<< std::hex
@@ -79,12 +83,7 @@ bool PrintFileAsByteArray(const char *filename, const char *name,
 		}
 		t += s;
 	}
-	auto e = std::ferror(fp);
-	std::fclose(fp);
-	if (e) {
-		std::cerr << "an error occurred when reading " << filename << std::endl;
-		return false;
-	}
+	ifs.close();
 	if (size%kBufferSize != 0)
 		*os << std::endl;
 	*os << "};" << std::endl;
@@ -104,15 +103,15 @@ bool PrintDataAsDoubleArray(const std::vector<double> &data,
 
 }
 
-bool Translate(const cli::RunOption &option)
+bool Translate(const cli::RunOption &option, const boost::filesystem::path &dir)
 {
 	std::vector<double> data;
-	std::unique_ptr<task::Task> task(load::Load(option.model_filename().c_str(), load::kRun, boost::filesystem::path(), &data));
+	std::unique_ptr<task::Task> task(load::Load(option.model_filename().c_str(), load::kRun, dir, &data));
 	if (!task)
 		return false;
 
-	db::Driver driver("model.db");
-	sqlite3 *db = driver.db();
+	auto driver = db::Driver::Create(dir / "model.db");
+	sqlite3 *db = driver->db();
 	if (!db)
 		return false;
 	// prepare spec.txt in both cases
@@ -125,32 +124,41 @@ bool Translate(const cli::RunOption &option)
 			std::cerr << ec.message() << std::endl;
 			return false;
 		}
-		boost::filesystem::copy_file(spec_path, "spec.txt", ec);
+		boost::filesystem::copy_file(spec_path, dir / "spec.txt", ec);
 		if (ec) {
 			std::cerr << "failed to copy "
-				 << option.spec_filename()
-				 << " to spec.txt: "
-				 << ec.message()
-				 << std::endl;
+					  << option.spec_filename()
+					  << " to "
+					  << dir
+					  << "/spec.txt: "
+					  << ec.message()
+					  << std::endl;
 			return false;
 		}
 	} else {
 		// create the list of all variables
-		FILE *fp = fopen("spec.txt", "w");
-		if (!fp) {
-			std::perror("spec.txt");
+		boost::filesystem::ofstream ofs(dir / "spec.txt", std::ios::out);
+		if (!ofs) {
+			std::cerr << "failed to open "
+					  << dir
+					  << "/spec.txt"
+					  << std::endl;
 			return false;
 		}
-		if (!run::Spec(db, fp))
+		bool b = run::Spec(db, &ofs);
+		ofs.close();
+		if (!b)
 			return false;
-		fclose(fp);
 	}
 	task::ConfigReader reader(db);
 	if (!reader.Read())
 		return false;
-	if (!filter::Create(db, "spec.txt", "layout", "filter"))
+	if (!filter::Create(db,
+						dir / "spec.txt",
+						dir / "layout",
+						dir / "filter"))
 		return false;
-	if (!filter::Isdh("filter", "isdh"))
+	if (!filter::Isdh(dir / "filter", dir / "isdh"))
 		return false;
 	// TODO: granularity and output_start_time
 	if (reader.GetMethod() != compiler::Method::kArk) {
@@ -170,7 +178,7 @@ bool Translate(const cli::RunOption &option)
 	// load layout at first
 	std::unique_ptr<Layout> layout(new Layout);
 	{
-		std::unique_ptr<LayoutLoader> loader(new LayoutLoader("layout"));
+		std::unique_ptr<LayoutLoader> loader(new LayoutLoader(dir / "layout"));
 		if (!loader->Load(layout.get()))
 			return false;
 	}
@@ -181,7 +189,7 @@ bool Translate(const cli::RunOption &option)
 	std::unique_ptr<filter::Writer> writer;
 	{
 		filter::Cutter cutter;
-		if (!cutter.Load("filter", layer_size)) return false;
+		if (!cutter.Load(dir / "filter", layer_size)) return false;
 		writer.reset(cutter.CreateWriter());
 	}
 
@@ -212,7 +220,7 @@ bool Translate(const cli::RunOption &option)
 	RequestMaxNumOfDigitsForDouble(ofs);
 	translator->PrintFunctions();
 	translator->PrintReductionFunctions();
-	if (!PrintFileAsByteArray("isdh", "isdh", &ofs))
+	if (!PrintFileAsByteArray(dir / "isdh", "isdh", &ofs))
 		return false;
 	if (!PrintDataAsDoubleArray(data,
 								"input", &ofs))

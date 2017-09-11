@@ -19,10 +19,12 @@
 #pragma GCC diagnostic pop
 
 #include "cas.h"
+#include "cli.pb.h"
 #include "filter/writer.h"
 #include "flint/bc.h"
 #include "flint/error.h"
 #include "flint/ls.h"
+#include "flint/tr.h"
 #include "gui/app.h"
 #include "gui/document.h"
 #include "gui/sim-frame.h"
@@ -66,6 +68,7 @@ bool ModelFileDropTarget::OnDropFiles(wxCoord, wxCoord, const wxArrayString &fil
 }
 
 enum {
+	kIdExportToC,
 	kIdRun,
 	kIdPause,
 	kIdResume,
@@ -78,6 +81,7 @@ MainFrame::MainFrame(wxArrayString &input_files)
 	: wxFrame(nullptr, wxID_ANY, wxTheApp->GetAppDisplayName())
 	, input_files_(input_files)
 	, notebook_(nullptr)
+	, item_export_to_c_(nullptr)
 	, next_open_id_(1)
 	, next_simulation_id_(1)
 	, last_dir_(wxFileName::GetHomeDir())
@@ -88,6 +92,9 @@ MainFrame::MainFrame(wxArrayString &input_files)
 	auto menuFile = new wxMenu;
 	menuFile->Append(wxID_OPEN, "Open\tCTRL+O");
 	menuFile->Append(wxID_CLOSE, "Close\tCTRL+W");
+	menuFile->AppendSeparator();
+	item_export_to_c_ = menuFile->Append(kIdExportToC, "Export to C");
+	item_export_to_c_->Enable(false);
 	menuFile->AppendSeparator();
 	menuFile->Append(wxID_EXIT, "Quit\tCTRL+Q");
 
@@ -142,10 +149,13 @@ MainFrame::MainFrame(wxArrayString &input_files)
 	Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::OnClose, this, wxID_CLOSE);
 	Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::OnAbout, this, wxID_ABOUT);
 	Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::OnExit, this, wxID_EXIT);
+	Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::OnExportToC, this, kIdExportToC);
 	Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::OnRun, this, kIdRun);
 	Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::OnRecentFile, this, wxID_FILE1, wxID_FILE9);
 	Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::OnPreferences, this, wxID_PREFERENCES);
 	Bind(wxEVT_IDLE, &MainFrame::OnIdle, this);
+	notebook_->Bind(wxEVT_AUINOTEBOOK_PAGE_CLOSE, &MainFrame::OnNotebookPageClose, this);
+	notebook_->Bind(wxEVT_AUINOTEBOOK_PAGE_CLOSED, &MainFrame::OnNotebookPageClosed, this);
 }
 
 MainFrame::~MainFrame()
@@ -264,6 +274,8 @@ void MainFrame::OpenSubFrame(Document *doc)
 
 	history_.AddFileToHistory(doc->path());
 
+	item_export_to_c_->Enable(true);
+
 	wxString text("Opened ");
 	text += doc->path();
 	SetStatusText(text);
@@ -299,6 +311,9 @@ void MainFrame::OnClose(wxCommandEvent &)
 	text += notebook_->GetPageText(i);
 	notebook_->DeletePage(i);
 	SetStatusText(text);
+
+	if (notebook_->GetPageCount() == 0)
+		item_export_to_c_->Enable(false);
 }
 
 void MainFrame::OnAbout(wxCommandEvent &)
@@ -316,6 +331,130 @@ void MainFrame::OnExit(wxCommandEvent &)
 {
 	history_.Save(*wxConfig::Get());
 	Close(true);
+}
+
+namespace {
+
+class ExportToCHelper : public wxProgressDialog, public wxThreadHelper {
+public:
+	ExportToCHelper(const wxString &input_path,
+					const wxString &output_path,
+					MainFrame *frame);
+
+	bool Start();
+
+	void OnThreadUpdate(wxThreadEvent &event);
+
+protected:
+	virtual wxThread::ExitCode Entry() override;
+
+private:
+	const wxString input_path_;
+	const wxString output_path_;
+	MainFrame *frame_;
+	bool result_;
+	StderrCapture ec_;
+};
+
+ExportToCHelper::ExportToCHelper(const wxString &input_path,
+								 const wxString &output_path,
+								 MainFrame *frame)
+	: wxProgressDialog("Exporting model", input_path, 100, frame, wxPD_APP_MODAL|wxPD_AUTO_HIDE)
+	, input_path_(input_path)
+	, output_path_(output_path)
+	, frame_(frame)
+	, result_(false)
+{
+	Bind(wxEVT_THREAD, &ExportToCHelper::OnThreadUpdate, this);
+}
+
+bool ExportToCHelper::Start()
+{
+	if (CreateThread(wxTHREAD_DETACHED) != wxTHREAD_NO_ERROR) {
+		wxLogError("failed to create the helper thread");
+		return false;
+	}
+	if (GetThread()->Run() != wxTHREAD_NO_ERROR) {
+		wxLogError("failed to run the helper thread");
+		return false;
+	}
+	return true;
+}
+
+void ExportToCHelper::OnThreadUpdate(wxThreadEvent &)
+{
+	if (result_) {
+		wxMessageDialog dialog(frame_, "Exported successfully to " + output_path_);
+		dialog.ShowModal();
+	} else {
+		wxMessageDialog dialog(frame_, ec_.Get(), "Failed to export model");
+		dialog.ShowModal();
+	}
+	Destroy();
+}
+
+wxThread::ExitCode ExportToCHelper::Entry()
+{
+	cli::RunOption option;
+	option.set_model_filename(input_path_.ToStdString());
+	option.set_output_filename(output_path_.ToStdString());
+
+	wxFileName fileName;
+	fileName.AssignHomeDir();
+	fileName.AppendDir(".flint");
+	fileName.AppendDir("2");
+	auto now = wxDateTime::Now();
+	fileName.AppendDir(now.Format("%F %T"));
+	fileName.Mkdir(wxS_DIR_DEFAULT, wxPATH_MKDIR_FULL); // make sure that it exists
+
+	boost::filesystem::path dir(fileName.GetFullPath().ToStdString());
+
+	result_ = tr::Translate(option, dir);
+	wxQueueEvent(this, new wxThreadEvent);
+	return static_cast<wxThread::ExitCode>(0);
+}
+
+}
+
+void MainFrame::OnExportToC(wxCommandEvent &)
+{
+	auto count = notebook_->GetPageCount();
+	if (count == 0)
+		return;
+
+	wxFileDialog saveFileDialog(this,
+								"Select target C file",
+								last_dir_,
+								"",
+								"C files (*.c)|*.c",
+								wxFD_SAVE|wxFD_OVERWRITE_PROMPT);
+	if (saveFileDialog.ShowModal() == wxID_CANCEL)
+		return;
+
+	auto page = notebook_->GetPage(0);
+	auto notebook = wxStaticCast(page, wxNotebook);
+	auto p0 = notebook->GetPage(0);
+	auto gsw = wxStaticCast(p0, GeneralSetttingsWindow);
+	auto doc = gsw->doc();
+
+	auto helper = new ExportToCHelper(doc->path(), saveFileDialog.GetPath(), this);
+	helper->Start();
+}
+
+void MainFrame::OnNotebookPageClose(wxAuiNotebookEvent &)
+{
+	auto i = notebook_->GetSelection();
+	if (i == wxNOT_FOUND)
+		return;
+	wxString text("Closed ");
+	text += notebook_->GetPageText(i);
+	SetStatusText(text);
+}
+
+void MainFrame::OnNotebookPageClosed(wxAuiNotebookEvent &)
+{
+	if (notebook_->GetPageCount() == 0)
+		item_export_to_c_->Enable(false);
 }
 
 void MainFrame::OnRun(wxCommandEvent &)
@@ -355,8 +494,6 @@ void MainFrame::OnPreferences(wxCommandEvent &)
 
 void MainFrame::OnIdle(wxIdleEvent &)
 {
-	SetStatusText("");
-
 	for (const auto &file : input_files_)
 		OpenFile(file);
 	input_files_.Empty();

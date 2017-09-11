@@ -32,12 +32,12 @@ struct F : public test::MemoryFixture {
 
 	void GenerateAndCompare(const char *output, const char *expected)
 	{
-		FILE *ofp = std::fopen(output, "wb");
-		BOOST_REQUIRE(ofp != nullptr);
-		BOOST_REQUIRE(run::Spec(driver_.db(), ofp));
-		std::fclose(ofp);
-
 		boost::filesystem::path op(output);
+		boost::filesystem::ofstream ofs(op, std::ios::out|std::ios::binary);
+		BOOST_REQUIRE(ofs);
+		BOOST_REQUIRE(run::Spec(driver_.db(), &ofs));
+		ofs.close();
+
 		boost::filesystem::path fp(__FILE__);
 		boost::filesystem::path ep = fp.parent_path();
 		ep /= "spec";

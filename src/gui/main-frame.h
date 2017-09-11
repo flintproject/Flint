@@ -30,6 +30,9 @@ private:
 	void OnClose(wxCommandEvent &event);
 	void OnAbout(wxCommandEvent &event);
 	void OnExit(wxCommandEvent &event);
+	void OnExportToC(wxCommandEvent &event);
+	void OnNotebookPageClose(wxAuiNotebookEvent &event);
+	void OnNotebookPageClosed(wxAuiNotebookEvent &event);
 	void OnRun(wxCommandEvent &event);
 	void OnPreferences(wxCommandEvent &event);
 	void OnIdle(wxIdleEvent &event);
@@ -39,6 +42,8 @@ private:
 	wxAuiManager manager_;
 	wxAuiNotebook *notebook_;
 	wxFileHistory history_;
+
+	wxMenuItem *item_export_to_c_;
 
 	int next_open_id_;
 	int next_simulation_id_;

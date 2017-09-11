@@ -112,13 +112,13 @@ bool Run(const cli::RunOption &option)
 		}
 	} else {
 		// create the list of all variables
-		FILE *fp = fopen("spec.txt", "w");
-		if (!fp) {
-			std::perror("spec.txt");
+		boost::filesystem::ofstream ofs("spec.txt", std::ios::out);
+		if (!ofs) {
+			std::cerr << "failed to open spec.txt" << std::endl;
 			return false;
 		}
-		bool r = Spec(db, fp);
-		std::fclose(fp);
+		bool r = Spec(db, &ofs);
+		ofs.close();
 		if (!r)
 			return false;
 	}
