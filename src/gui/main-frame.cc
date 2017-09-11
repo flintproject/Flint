@@ -71,8 +71,7 @@ enum {
 	kIdExportToC,
 	kIdRun,
 	kIdPause,
-	kIdResume,
-	kIdSendToFlintK3
+	kIdResume
 };
 
 }
@@ -115,7 +114,6 @@ MainFrame::MainFrame(wxArrayString &input_files)
 	menuControl->Append(kIdRun, "&Run\tALT+R");
 	menuControl->Append(kIdPause, "&Pause\tALT+P");
 	menuControl->Append(kIdResume, "Re&sume\tALT+S");
-	menuControl->Append(kIdSendToFlintK3, "Send to Flint K3");
 
 	auto menuBar = new wxMenuBar;
 	menuBar->Append(menuFile, wxGetStockLabel(wxID_FILE));
