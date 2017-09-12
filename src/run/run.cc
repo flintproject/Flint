@@ -199,6 +199,7 @@ bool Run(const cli::RunOption &option)
 		return false;
 	std::string output_file = output_path.string();
 	return job::Job(0,
+					nullptr,
 					".",
 					"0",
 					*task,

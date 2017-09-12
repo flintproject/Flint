@@ -13,6 +13,7 @@
 #include <cstring>
 #include <iostream>
 #include <memory>
+#include <mutex>
 #include <random>
 #include <string>
 
@@ -27,6 +28,7 @@
 #include "bc/pack.h"
 #include "filter/cutter.h"
 #include "flint/bc.h"
+#include "flint/ctrl.h"
 #include "flint/ls.h"
 #include "flint/stats.h"
 #include "fppp.h"
@@ -254,6 +256,7 @@ bool Evolve(task::Task &task,
 	char *control_address = task.GetControlAddress(option.id);
 
 	std::ostream *output_stream = option.output_stream;
+	auto *arg = option.arg;
 
 	bool with_pre = bool(task.pre_bc);
 	bool with_post = bool(task.post_bc);
@@ -447,6 +450,12 @@ bool Evolve(task::Task &task,
 	auto rt_start = std::chrono::steady_clock::now();
 	// execute bytecode
 	do {
+		// pause if requested
+		if (arg && arg->paused) {
+			std::unique_lock<std::mutex> lock(arg->mutex);
+			arg->cv.wait(lock, [&arg]{return !arg->paused;});
+		}
+
 		// push into history
 		for (size_t k=0;k<layer_size; k++) {
 			history[k].Insert(prev[kIndexTime], prev[k]);

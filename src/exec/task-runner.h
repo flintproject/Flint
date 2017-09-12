@@ -4,6 +4,7 @@
 
 #include "db/driver.h"
 #include "db/read-only-driver.h"
+#include "flint/ctrl.h"
 #include "sqlite3.h"
 
 #include <memory>
@@ -26,10 +27,12 @@ namespace exec {
 
 class TaskRunner {
 public:
-	TaskRunner(int id, char *path, const boost::filesystem::path &dir);
+	TaskRunner(int id, char *path, const boost::filesystem::path &dir,
+			   ctrl::Argument *arg);
 
 	~TaskRunner();
 
+	ctrl::Argument *arg() {return arg_;}
 	const boost::filesystem::path &dir() const {return dir_;}
 	const boost::filesystem::path &layout() const {return layout_;}
 	const boost::filesystem::path &generated_layout() const {return generated_layout_;}
@@ -51,6 +54,7 @@ private:
 
 	int id_;
 	std::unique_ptr<char[]> path_;
+	ctrl::Argument *arg_;
 	boost::filesystem::path dir_;
 	boost::filesystem::path layout_;
 	boost::filesystem::path generated_layout_;

@@ -10,12 +10,18 @@
 #include "cli.pb.h"
 
 namespace flint {
+
+namespace ctrl {
+struct Argument;
+}
+
 namespace exec {
 
 /*
  * Return true in case of success, false otherwise.
  */
-bool Exec(const cli::ExecOption &option, const boost::filesystem::path &dir);
+bool Exec(const cli::ExecOption &option, const boost::filesystem::path &dir,
+		  ctrl::Argument *arg);
 
 }
 }

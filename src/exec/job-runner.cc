@@ -57,6 +57,7 @@ bool JobRunner::Run()
 			return false;
 	}
 	return job::Job(id_,
+					tr_->arg(),
 					tr_->dir(),
 					dir_,
 					*tr_->GetTask(),

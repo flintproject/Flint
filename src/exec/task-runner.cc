@@ -59,9 +59,11 @@ int CountParameterSamples(sqlite3 *db)
 
 }
 
-TaskRunner::TaskRunner(int id, char *path, const boost::filesystem::path &dir)
+TaskRunner::TaskRunner(int id, char *path, const boost::filesystem::path &dir,
+					   ctrl::Argument *arg)
 	: id_(id)
 	, path_(path)
+	, arg_(arg)
 	, dir_(dir)
 	, layout_(dir)
 	, generated_layout_(dir)

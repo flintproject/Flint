@@ -23,6 +23,7 @@
 #include "db/read-only-driver.h"
 #include "exec/task-runner.h"
 #include "flint/background.h"
+#include "flint/ctrl.h"
 #include "flint/process.h"
 #include "phsp.h"
 #include "sedml.h"
@@ -46,8 +47,9 @@ bool CreatePidTxt(const boost::filesystem::path &dir)
 
 class FutureTaskPool {
 public:
-	explicit FutureTaskPool(const boost::filesystem::path &dir)
+	FutureTaskPool(const boost::filesystem::path &dir, ctrl::Argument *arg)
 		: dir_(dir)
+		, arg_(arg)
 	{}
 
 	void Add(int id, const char *path) {
@@ -56,11 +58,11 @@ public:
 		if (len > 0)
 			std::memcpy(p.get(), path, len);
 		p[len] = '\0';
-		auto lmbd = [id](char *p, const boost::filesystem::path &dir) {
-			TaskRunner runner(id, p, dir);
+		auto lmbd = [this, id](char *p) {
+			TaskRunner runner(id, p, dir_, arg_);
 			return runner.Run();
 		};
-		tasks_.emplace_back(std::async(std::launch::async, lmbd, p.release(), dir_));
+		tasks_.emplace_back(std::async(std::launch::async, lmbd, p.release()));
 	}
 
 	bool Wait() {
@@ -75,6 +77,7 @@ public:
 
 private:
 	const boost::filesystem::path &dir_;
+	ctrl::Argument *arg_;
 	std::vector<std::future<bool> > tasks_;
 };
 
@@ -139,9 +142,9 @@ bool CopyInput(const boost::filesystem::path &dir)
 	return true;
 }
 
-bool RunTasks(const boost::filesystem::path &dir)
+bool RunTasks(const boost::filesystem::path &dir, ctrl::Argument *arg)
 {
-	FutureTaskPool pool(dir);
+	FutureTaskPool pool(dir, arg);
 	{
 		auto driver = db::ReadOnlyDriver::Create(dir / "input.db");
 		sqlite3 *db = driver->db();
@@ -155,11 +158,12 @@ bool RunTasks(const boost::filesystem::path &dir)
 
 }
 
-bool Exec(const cli::ExecOption &option, const boost::filesystem::path &dir)
+bool Exec(const cli::ExecOption &option, const boost::filesystem::path &dir,
+		  ctrl::Argument *arg)
 {
 	if (option.has_lock_filename())
 		InitializeBackgroundProcess(option.lock_filename().c_str());
-	return CreatePidTxt(dir) && ReadInput(option, dir) && CopyInput(dir) && RunTasks(dir);
+	return CreatePidTxt(dir) && ReadInput(option, dir) && CopyInput(dir) && RunTasks(dir, arg);
 }
 
 }

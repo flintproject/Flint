@@ -111,9 +111,9 @@ MainFrame::MainFrame(wxArrayString &input_files)
 	menuHelp->Append(wxID_ABOUT);
 
 	auto menuControl = new wxMenu;
-	menuControl->Append(kIdRun, "&Run\tALT+R");
-	menuControl->Append(kIdPause, "&Pause\tALT+P");
-	menuControl->Append(kIdResume, "Re&sume\tALT+S");
+	item_run_ = menuControl->Append(kIdRun, "&Run\tALT+R");
+	item_pause_ = menuControl->Append(kIdPause, "&Pause\tALT+P");
+	item_resume_ = menuControl->Append(kIdResume, "Re&sume\tALT+S");
 
 	auto menuBar = new wxMenuBar;
 	menuBar->Append(menuFile, wxGetStockLabel(wxID_FILE));
@@ -129,9 +129,9 @@ MainFrame::MainFrame(wxArrayString &input_files)
 	SetMinSize(wxSize(960, 600));
 
 	// panes
-	auto buttonRun = new wxButton(this, wxID_ANY, "&Run");
-	buttonRun->Bind(wxEVT_BUTTON, &MainFrame::OnRun, this);
-	manager_.AddPane(buttonRun,
+	button_run_ = new wxButton(this, wxID_ANY, "&Run");
+	button_run_->Bind(wxEVT_BUTTON, &MainFrame::OnRun, this);
+	manager_.AddPane(button_run_,
 					 wxAuiPaneInfo().Name("simulation").Caption("Simulation").Bottom().Layer(1).Position(1));
 	notebook_ = new wxAuiNotebook(this, wxID_ANY);
 	notebook_->SetDropTarget(new ModelFileDropTarget(this));
@@ -142,6 +142,8 @@ MainFrame::MainFrame(wxArrayString &input_files)
 	manager_.GetPane("simulation").Show();
 	manager_.Update();
 
+	ResetControl();
+
 	// event handlers
 	Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::OnOpen, this, wxID_OPEN);
 	Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::OnClose, this, wxID_CLOSE);
@@ -149,6 +151,8 @@ MainFrame::MainFrame(wxArrayString &input_files)
 	Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::OnExit, this, wxID_EXIT);
 	Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::OnExportToC, this, kIdExportToC);
 	Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::OnRun, this, kIdRun);
+	Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::OnPause, this, kIdPause);
+	Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::OnResume, this, kIdResume);
 	Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::OnRecentFile, this, wxID_FILE1, wxID_FILE9);
 	Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::OnPreferences, this, wxID_PREFERENCES);
 	Bind(wxEVT_IDLE, &MainFrame::OnIdle, this);
@@ -159,6 +163,30 @@ MainFrame::MainFrame(wxArrayString &input_files)
 MainFrame::~MainFrame()
 {
 	manager_.UnInit();
+}
+
+void MainFrame::MakePauseAvailable()
+{
+	item_run_->Enable(false);
+	item_pause_->Enable(true);
+	item_resume_->Enable(false);
+	button_run_->Enable(false);
+}
+
+void MainFrame::MakeResumeAvailable()
+{
+	item_run_->Enable(false);
+	item_pause_->Enable(false);
+	item_resume_->Enable(true);
+	button_run_->Enable(false);
+}
+
+void MainFrame::ResetControl()
+{
+	item_run_->Enable(true);
+	item_pause_->Enable(false);
+	item_resume_->Enable(false);
+	button_run_->Enable(true);
 }
 
 namespace {
@@ -483,6 +511,25 @@ void MainFrame::OnRun(wxCommandEvent &)
 	}
 	auto frame = new SimFrame(this, sim);
 	frame->Start();
+
+	arg_.paused = false;
+	MakePauseAvailable();
+}
+
+void MainFrame::OnPause(wxCommandEvent &)
+{
+	arg_.paused = true;
+	MakeResumeAvailable();
+}
+
+void MainFrame::OnResume(wxCommandEvent &)
+{
+	{
+		std::unique_lock<std::mutex> lock(arg_.mutex);
+		arg_.paused = false;
+	}
+	arg_.cv.notify_all();
+	MakePauseAvailable();
 }
 
 void MainFrame::OnPreferences(wxCommandEvent &)

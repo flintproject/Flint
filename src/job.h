@@ -16,6 +16,10 @@ namespace flint {
 
 struct Bytecode;
 
+namespace ctrl {
+struct Argument;
+}
+
 namespace task {
 class ConfigReader;
 struct Task;
@@ -53,6 +57,7 @@ struct Option {
 	boost::filesystem::path output_data_file;
 	boost::filesystem::path output_history_file;
 	std::ostream *output_stream;
+	ctrl::Argument *arg;
 	const fppp::Option *fppp_option;
 };
 
@@ -68,6 +73,7 @@ bool Evolve(task::Task &task,
  * Return true in case of success, false otherwise.
  */
 bool Job(int id,
+		 ctrl::Argument *arg,
 		 const boost::filesystem::path &task_dir,
 		 const boost::filesystem::path &job_dir,
 		 task::Task &task,

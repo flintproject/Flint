@@ -137,6 +137,9 @@ void SimFrame::OnThreadUpdate(wxThreadEvent &)
 		SetStatusText("finished successfully.");
 	else
 		wxLogError("simulation failed: %s", ec_.Get());
+
+	auto *main_frame = wxDynamicCast(GetParent(), MainFrame);
+	main_frame->ResetControl();
 }
 
 wxThread::ExitCode SimFrame::Entry()
@@ -144,8 +147,9 @@ wxThread::ExitCode SimFrame::Entry()
 	auto sim_dir = sim_->GetDirectoryName();
 	sim_dir.Mkdir(wxS_DIR_DEFAULT, wxPATH_MKDIR_FULL); // make sure that it exists
 
+	auto *main_frame = wxDynamicCast(GetParent(), MainFrame);
 	wxString data = sim_dir.GetFullPath();
-	result_ = exec::Exec(option_, data.c_str().AsChar());
+	result_ = exec::Exec(option_, data.c_str().AsChar(), &main_frame->arg());
 
 	wxQueueEvent(this, new wxThreadEvent);
 	return static_cast<wxThread::ExitCode>(0);

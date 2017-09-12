@@ -9,6 +9,8 @@
 #include <wx/filehistory.h>
 #pragma GCC diagnostic pop
 
+#include "flint/ctrl.h"
+
 namespace flint {
 namespace gui {
 
@@ -19,6 +21,12 @@ class MainFrame : public wxFrame
 public:
 	explicit MainFrame(wxArrayString &input_files);
 	~MainFrame();
+
+	ctrl::Argument &arg() {return arg_;}
+
+	void MakePauseAvailable();
+	void MakeResumeAvailable();
+	void ResetControl();
 
 	bool OpenFile(const wxString &path);
 
@@ -34,6 +42,8 @@ private:
 	void OnNotebookPageClose(wxAuiNotebookEvent &event);
 	void OnNotebookPageClosed(wxAuiNotebookEvent &event);
 	void OnRun(wxCommandEvent &event);
+	void OnPause(wxCommandEvent &event);
+	void OnResume(wxCommandEvent &event);
 	void OnPreferences(wxCommandEvent &event);
 	void OnIdle(wxIdleEvent &event);
 
@@ -44,10 +54,17 @@ private:
 	wxFileHistory history_;
 
 	wxMenuItem *item_export_to_c_;
+	wxMenuItem *item_run_;
+	wxMenuItem *item_pause_;
+	wxMenuItem *item_resume_;
+
+	wxButton *button_run_;
 
 	int next_open_id_;
 	int next_simulation_id_;
 	wxString last_dir_;
+
+	ctrl::Argument arg_;
 };
 
 }

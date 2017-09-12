@@ -17,9 +17,9 @@
 #include "bc/index.h"
 #include "compiler.h"
 #include "database.h"
-#include "exec.h"
 #include "filter/writer.h"
 #include "flint/bc.h"
+#include "flint/ctrl.h"
 #include "flint/ls.h"
 #include "job.h"
 #include "lo/layout.h"
@@ -33,6 +33,7 @@ namespace flint {
 namespace job {
 
 bool Job(int id,
+		 ctrl::Argument *arg,
 		 const boost::filesystem::path &task_dir,
 		 const boost::filesystem::path &job_dir,
 		 task::Task &task,
@@ -57,6 +58,7 @@ bool Job(int id,
 	option.input_data = data;
 	option.output_data_file = job_dir / "output-data";
 	option.output_history_file = job_dir / "output-history";
+	option.arg = arg;
 	option.fppp_option = fppp_option;
 
 	auto isdh_file = task_dir / "isdh";

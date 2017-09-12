@@ -12,6 +12,7 @@
 #include <cstring>
 #include <iostream>
 #include <memory>
+#include <mutex>
 #include <vector>
 
 #include <arkode/arkode.h>
@@ -21,6 +22,7 @@
 
 #include "bc/index.h"
 #include "filter/writer.h"
+#include "flint/ctrl.h"
 #include "flint/ls.h"
 #include "flint/stats.h"
 #include "job.h"
@@ -118,6 +120,7 @@ bool Ark::Solve(const task::Task &task, const job::Option &option)
 	filter::Writer *writer = task.writer.get();
 	char *control_address = task.GetControlAddress(option.id);
 	std::ostream *output_stream = option.output_stream;
+	auto *arg = option.arg;
 
 	/* skeleton: 2. Set problem dimensions */
 	if (!SetProblemDimensions())
@@ -186,6 +189,12 @@ bool Ark::Solve(const task::Task &task, const job::Option &option)
 	int num_steps = 0;
 	auto rt_start = std::chrono::steady_clock::now();
 	do {
+		// pause if requested
+		if (arg && arg->paused) {
+			std::unique_lock<std::mutex> lock(arg->mutex);
+			arg->cv.wait(lock, [&arg]{return !arg->paused;});
+		}
+
 		tout += data_[kIndexDt];
 		tout = std::min(tout, data_[kIndexEnd]);
 
