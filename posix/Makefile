@@ -9,7 +9,7 @@ EXTERNAL_LIBRARY_DIRS = $(filter-out $(UNNECESSARY_LIBRARIES),$(ALL_EXTERNAL_LIB
 
 PREFIX ?= $(abspath opt)
 
-PKG_CONFIG_PATH = $(PREFIX)/clibsedml-$(CLIBSEDML_VERSION)/lib/pkgconfig:$(PREFIX)/czmq-$(CZMQ_VERSION)/lib/pkgconfig:$(PREFIX)/libsbml-$(LIBSBML_VERSION)/lib/pkgconfig:$(PREFIX)/protobuf-$(PROTOBUF_VERSION)/lib/pkgconfig:$(PREFIX)/SBML_odeSolver-$(SOSLIB_VERSION)/lib/pkgconfig:$(PREFIX)/zeromq-$(ZEROMQ_VERSION)/lib/pkgconfig
+PKG_CONFIG_PATH = $(PREFIX)/clibsedml-$(CLIBSEDML_VERSION)/lib/pkgconfig:$(PREFIX)/czmq-$(CZMQ_VERSION)/lib/pkgconfig:$(PREFIX)/libmicrohttpd-$(LIBMICROHTTPD_VERSION)/lib/pkgconfig:$(PREFIX)/libsbml-$(LIBSBML_VERSION)/lib/pkgconfig:$(PREFIX)/protobuf-$(PROTOBUF_VERSION)/lib/pkgconfig:$(PREFIX)/SBML_odeSolver-$(SOSLIB_VERSION)/lib/pkgconfig:$(PREFIX)/zeromq-$(ZEROMQ_VERSION)/lib/pkgconfig
 
 .PHONY: all check check-sequential-version download mostlyclean clean distclean install
 
@@ -54,6 +54,11 @@ tmp/clibsedml-$(CLIBSEDML_VERSION): src/clibsedml-$(CLIBSEDML_VERSION).tar.gz | 
 
 tmp/czmq-$(CZMQ_VERSION): src/czmq-$(CZMQ_VERSION).tar.gz | tmp
 	-rm -rf var/czmq-$(CZMQ_VERSION)
+	tar -C var -zxf $<
+	touch $@
+
+tmp/libmicrohttpd-$(LIBMICROHTTPD_VERSION): src/libmicrohttpd-$(LIBMICROHTTPD_VERSION).tar.gz | tmp
+	-rm -rf var/libmicrohttpd-$(LIBMICROHTTPD_VERSION)
 	tar -C var -zxf $<
 	touch $@
 
@@ -114,6 +119,13 @@ tmp/czmq-$(CZMQ_VERSION).installed: tmp/czmq-$(CZMQ_VERSION) tmp/zeromq-$(ZEROMQ
 	$(MAKE) -C var/czmq-$(CZMQ_VERSION) install
 	touch $@
 
+tmp/libmicrohttpd-$(LIBMICROHTTPD_VERSION).installed: tmp/libmicrohttpd-$(LIBMICROHTTPD_VERSION)
+	(cd var/libmicrohttpd-$(LIBMICROHTTPD_VERSION) && ./configure --prefix=$(PREFIX)/libmicrohttpd-$(LIBMICROHTTPD_VERSION) $(LIBMICROHTTPD_CONFIGURE_OPTIONS))
+	$(MAKE) -C var/libmicrohttpd-$(LIBMICROHTTPD_VERSION) all
+	-rm -rf $(PREFIX)/libmicrohttpd-$(LIBMICROHTTPD_VERSION)
+	$(MAKE) -C var/libmicrohttpd-$(LIBMICROHTTPD_VERSION) install
+	touch $@
+
 tmp/protobuf-$(PROTOBUF_VERSION).installed: tmp/protobuf-$(PROTOBUF_VERSION)
 	(cd var/protobuf-$(PROTOBUF_VERSION) && ./configure --prefix=$(PREFIX)/protobuf-$(PROTOBUF_VERSION) $(PROTOBUF_CONFIGURE_OPTONS))
 	$(MAKE) -C var/protobuf-$(PROTOBUF_VERSION) all
@@ -158,7 +170,7 @@ tmp/zeromq-$(ZEROMQ_VERSION).installed: tmp/zeromq-$(ZEROMQ_VERSION)
 	$(MAKE) -C var/zeromq-$(ZEROMQ_VERSION) install
 	touch $@
 
-tmp/sequential-version.installed: tmp/$(BOOST_UNDERSCORE).installed tmp/ceres-solver-$(CERES_VERSION).installed tmp/clibsedml-$(CLIBSEDML_VERSION).installed tmp/czmq-$(CZMQ_VERSION).installed tmp/wxWidgets-$(WXWIDGETS_VERSION).installed tmp/protobuf-$(PROTOBUF_VERSION).installed tmp/SBML_odeSolver-$(SOSLIB_VERSION).installed
+tmp/sequential-version.installed: tmp/$(BOOST_UNDERSCORE).installed tmp/ceres-solver-$(CERES_VERSION).installed tmp/clibsedml-$(CLIBSEDML_VERSION).installed tmp/czmq-$(CZMQ_VERSION).installed tmp/libmicrohttpd-$(LIBMICROHTTPD_VERSION).installed tmp/wxWidgets-$(WXWIDGETS_VERSION).installed tmp/protobuf-$(PROTOBUF_VERSION).installed tmp/SBML_odeSolver-$(SOSLIB_VERSION).installed
 	(cd .. && autoreconf -i -f)
 	install -d var/sequential-version
 	(cd var/sequential-version && env LDFLAGS='-Wl,-rpath -Wl,$(PREFIX)/libsbml-$(LIBSBML_VERSION)/lib -Wl,-rpath -Wl,$(PREFIX)/sundials-$(SUNDIALS_VERSION)/lib -Wl,-rpath -Wl,$(PREFIX)/wxWidgets-$(WXWIDGETS_VERSION)/lib' PKG_CONFIG_PATH=$(PKG_CONFIG_PATH) ../../../configure --prefix=$(PREFIX)/sequential-version --with-boost=$(PREFIX)/$(BOOST_UNDERSCORE) --with-ceres-solver=$(PREFIX)/ceres-solver-$(CERES_VERSION) --with-protoc=$(PREFIX)/protobuf-$(PROTOBUF_VERSION)/bin/protoc --with-sundials=$(PREFIX)/sundials-$(SUNDIALS_VERSION) --with-wxWidgets=$(PREFIX)/wxWidgets-$(WXWIDGETS_VERSION) --enable-silent-rules)

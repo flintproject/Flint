@@ -55,6 +55,13 @@ if(NOT CLIBSEDML)
     message(FATAL_ERROR "failed to find clibsedml")
 endif(NOT CLIBSEDML)
 
+find_library(LIBMICROHTTPD
+             NAMES libmicrohttpd
+             )
+if(NOT LIBMICROHTTPD)
+    message(FATAL_ERROR "failed to find libmicrohttpd")
+endif(NOT LIBMICROHTTPD)
+
 find_library(LIBSBML
              NAMES libsbml
              )

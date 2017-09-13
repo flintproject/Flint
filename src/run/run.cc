@@ -65,7 +65,7 @@ public:
 
 }
 
-bool Run(const cli::RunOption &option)
+bool Run(const cli::RunOption &option, const boost::filesystem::path &dir)
 {
 	// redirect errors if requested
 	if (option.has_error_filename()) {
@@ -83,12 +83,12 @@ bool Run(const cli::RunOption &option)
 		InitializeBackgroundProcess(option.lock_filename().c_str());
 
 	std::vector<double> data;
-	std::unique_ptr<task::Task> task(load::Load(option.model_filename().c_str(), load::kRun, boost::filesystem::path(), &data));
+	std::unique_ptr<task::Task> task(load::Load(option.model_filename().c_str(), load::kRun, dir, &data));
 	if (!task)
 		return false;
 
-	db::Driver driver("model.db");
-	sqlite3 *db = driver.db();
+	auto driver = db::Driver::Create(dir / "model.db");
+	sqlite3 *db = driver->db();
 	if (!db)
 		return false;
 	// prepare spec.txt in both cases
@@ -101,20 +101,25 @@ bool Run(const cli::RunOption &option)
 			std::cerr << ec.message() << std::endl;
 			return false;
 		}
-		boost::filesystem::copy_file(spec_path, "spec.txt", ec);
+		boost::filesystem::copy_file(spec_path, dir / "spec.txt", ec);
 		if (ec) {
 			std::cerr << "failed to copy "
-				 << option.spec_filename()
-				 << " to spec.txt: "
-				 << ec.message()
-				 << std::endl;
+					  << option.spec_filename()
+					  << " to "
+					  << dir
+					  << "/spec.txt: "
+					  << ec.message()
+					  << std::endl;
 			return false;
 		}
 	} else {
 		// create the list of all variables
-		boost::filesystem::ofstream ofs("spec.txt", std::ios::out);
+		boost::filesystem::ofstream ofs(dir / "spec.txt", std::ios::out);
 		if (!ofs) {
-			std::cerr << "failed to open spec.txt" << std::endl;
+			std::cerr << "failed to open "
+					  << dir
+					  << "/spec.txt"
+					  << std::endl;
 			return false;
 		}
 		bool r = Spec(db, &ofs);
@@ -134,9 +139,9 @@ bool Run(const cli::RunOption &option)
 		task::ConfigReader reader(db);
 		if (!reader.Read())
 			return false;
-		if (!filter::Create(db, "spec.txt", "layout", "filter"))
+		if (!filter::Create(db, dir / "spec.txt", dir / "layout", dir / "filter"))
 			return false;
-		if (!filter::Isdh("filter", "isdh"))
+		if (!filter::Isdh(dir / "filter", dir / "isdh"))
 			return false;
 		task->method = reader.GetMethod();
 		task->length = reader.length();
@@ -145,7 +150,7 @@ bool Run(const cli::RunOption &option)
 		task->output_start_time = 0; // by default
 		{
 			std::unique_ptr<Layout> layout(new Layout);
-			LayoutLoader loader("layout");
+			LayoutLoader loader(dir / "layout");
 			if (!loader.Load(layout.get()))
 				return false;
 			size_t layer_size = layout->Calculate();
@@ -155,7 +160,7 @@ bool Run(const cli::RunOption &option)
 
 			{
 				filter::Cutter cutter;
-				if (!cutter.Load("filter", layer_size))
+				if (!cutter.Load(dir / "filter", layer_size))
 					return false;
 				task->writer.reset(cutter.CreateWriter());
 			}
@@ -200,8 +205,8 @@ bool Run(const cli::RunOption &option)
 	std::string output_file = output_path.string();
 	return job::Job(0,
 					nullptr,
-					".",
-					"0",
+					dir,
+					dir / "0",
 					*task,
 					fppp_option.get(),
 					&data,

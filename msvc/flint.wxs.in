@@ -111,6 +111,9 @@
           <Component Id='czmq' Guid='f1a4e0aa-f1b3-11e6-bb96-137b1a1cb289'>
             <File Id='libczmq' Name='czmq.dll' DiskId='1' Source='czmq.dll' />
           </Component>
+          <Component Id='libmicrohttpd' Guid='57ff9ade-9858-11e7-9c4d-3348fa464e85'>
+            <File Id='libmicrohttpd_dll' Name='libmicrohttpd-dll.dll' DiskId='1' Source='libmicrohttpd-dll.dll' />
+          </Component>
           <Component Id='protobuf' Guid='233d044c-ff5f-11e4-bcee-2f0a32a0ce0d'>
             <File Id='libprotobuf' Name='libprotobuf.dll' DiskId='1' Source='libprotobuf.dll' />
           </Component>
@@ -183,6 +186,7 @@
       <ComponentRef Id='ceres' />
       <ComponentRef Id='clibsedml' />
       <ComponentRef Id='czmq' />
+      <ComponentRef Id='libmicrohttpd' />
       <ComponentRef Id='protobuf' />
       <ComponentRef Id='sbml' />
       <ComponentRef Id='soslib' />

@@ -2,6 +2,8 @@
 #ifndef FLINT_GUI_APP_H_
 #define FLINT_GUI_APP_H_
 
+#include <memory>
+
 #include <boost/filesystem.hpp>
 
 #pragma GCC diagnostic push
@@ -15,6 +17,8 @@
 
 namespace flint {
 namespace gui {
+
+class Httpd;
 
 class App : public wxApp
 {
@@ -35,6 +39,7 @@ private:
 	wxPreferencesEditor *pref_editor_;
 	wxString gnuplot_executable_;
 	wxArrayString input_files_;
+	std::unique_ptr<Httpd> httpd_;
 };
 
 }

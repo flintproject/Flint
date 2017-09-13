@@ -4,15 +4,17 @@ include ../deposit.mk
 include ../option.mk
 include ../version.mk
 
+$(eval $(call external_library_source,https://ftp.gnu.org/gnu/libmicrohttpd,libmicrohttpd-$(LIBMICROHTTPD_VERSION)-w32-bin.zip,a7c97a506258504db014cd50d3db58c7))
+
 $(eval $(call external_library_source,https://github.com/wxWidgets/wxWidgets/releases/download/v$(WXWIDGETS_VERSION),wxWidgets-$(WXWIDGETS_VERSION)-headers.7z,64d598787dba35756c9c66ff0ccbb42d))
 $(eval $(call external_library_source,https://github.com/wxWidgets/wxWidgets/releases/download/v$(WXWIDGETS_VERSION),wxMSW-$(WXWIDGETS_VERSION)_vc140_Dev.7z,e26982d01a9f0392cd8c5bae720dc642))
 $(eval $(call external_library_source,https://github.com/wxWidgets/wxWidgets/releases/download/v$(WXWIDGETS_VERSION),wxMSW-$(WXWIDGETS_VERSION)_vc140_x64_Dev.7z,7029dadcdafe10070b97fd7848d758a0))
 $(eval $(call external_library_source,https://github.com/wxWidgets/wxWidgets/releases/download/v$(WXWIDGETS_VERSION),wxMSW-$(WXWIDGETS_VERSION)_vc140_ReleaseDLL.7z,80b6dc8228ae604d89260dcc9f8e64f4))
 $(eval $(call external_library_source,https://github.com/wxWidgets/wxWidgets/releases/download/v$(WXWIDGETS_VERSION),wxMSW-$(WXWIDGETS_VERSION)_vc140_x64_ReleaseDLL.7z,7f6e3ea06188163d66a600998f55fae2))
 
-UNNECESSARY_LIBRARIES = wxWidgets-%
-EXTERNAL_LIBRARIES = $(filter-out $(UNNECESSARY_LIBRARIES),$(ALL_EXTERNAL_LIBRARIES)) wxWidgets-$(WXWIDGETS_VERSION)-headers.7z wxMSW-$(WXWIDGETS_VERSION)_$(MSVC_VARIANT)_Dev.7z wxMSW-$(WXWIDGETS_VERSION)_$(MSVC_VARIANT)_ReleaseDLL.7z
-EXTERNAL_LIBRARY_DIRS = $(filter-out $(UNNECESSARY_LIBRARIES),$(ALL_EXTERNAL_LIBRARY_DIRS)) include lib
+UNNECESSARY_LIBRARIES = libmicrohttpd-% wxWidgets-%
+EXTERNAL_LIBRARIES = $(filter-out $(UNNECESSARY_LIBRARIES),$(ALL_EXTERNAL_LIBRARIES)) libmicrohttpd-$(LIBMICROHTTPD_VERSION)-w32-bin.zip wxWidgets-$(WXWIDGETS_VERSION)-headers.7z wxMSW-$(WXWIDGETS_VERSION)_$(MSVC_VARIANT)_Dev.7z wxMSW-$(WXWIDGETS_VERSION)_$(MSVC_VARIANT)_ReleaseDLL.7z
+EXTERNAL_LIBRARY_DIRS = $(filter-out $(UNNECESSARY_LIBRARIES),$(ALL_EXTERNAL_LIBRARY_DIRS)) libmicrohttpd-$(LIBMICROHTTPD_VERSION)-w32-bin include lib
 
 .PHONY: all mostlyclean clean distclean download
 
@@ -92,6 +94,11 @@ tmp/zeromq-$(ZEROMQ_VERSION): src/zeromq-$(ZEROMQ_VERSION).tar.gz | tmp
 	patch var/zeromq-$(ZEROMQ_VERSION)/ZeroMQConfig.cmake.in zeromq-$(ZEROMQ_VERSION).patch
 	touch $@
 
+tmp/libmicrohttpd-$(LIBMICROHTTPD_VERSION)-w32-bin: src/libmicrohttpd-$(LIBMICROHTTPD_VERSION)-w32-bin.zip | tmp
+	-rm -rf var/libmicrohttpd-$(LIBMICROHTTPD_VERSION)-w32-bin
+	(cd var && unzip -qq ../$<)
+	touch $@
+
 tmp/lib: src/wxMSW-$(WXWIDGETS_VERSION)_$(MSVC_VARIANT)_Dev.7z | tmp
 	-rm -rf var/lib
 	(cd var && 7z x ../$<)
@@ -131,6 +138,10 @@ flint/third-party-licenses.txt: tmp/ceres-solver-$(CERES_VERSION) tmp/czmq-$(CZM
 	echo >> $@
 	cat var/czmq-$(CZMQ_VERSION)/LICENSE >> $@
 	echo >> $@
+	echo ';; GNU libmicrohttpd $(LIBMICROHTTPD_VERSION)' >> $@
+	echo >> $@
+	echo 'GNU LGPL v2.1 <http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html>' >> $@
+	echo >> $@
 	echo ';; libSBML $(LIBSBML_VERSION)' >> $@
 	echo >> $@
 	cat var/libsbml-$(LIBSBML_VERSION)/LICENSE.txt >> $@
@@ -167,6 +178,7 @@ all.proj: all.proj.in
 		-D__CERES_VERSION="$(CERES_VERSION)" \
 		-D__CLIBSEDML_VERSION="$(CLIBSEDML_VERSION)" \
 		-D__CZMQ_VERSION="$(CZMQ_VERSION)" \
+		-D__LIBMICROHTTPD_VERSION="$(LIBMICROHTTPD_VERSION)" \
 		-D__LIBSBML_VERSION="$(LIBSBML_VERSION)" \
 		-D__LIBXML2_VERSION="$(LIBXML2_VERSION)" \
 		-D__PROTOBUF_VERSION="$(PROTOBUF_VERSION)" \

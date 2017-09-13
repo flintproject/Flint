@@ -15,6 +15,7 @@
 #pragma GCC diagnostic pop
 
 #include "cli.pb.h"
+#include "gui/httpd.h"
 #include "gui/main-frame.h"
 #include "gui/pref-page-general.h"
 #include "run.h"
@@ -137,6 +138,9 @@ bool App::OnInit()
 
 	pref_editor_ = nullptr;
 
+	httpd_.reset(new Httpd);
+	httpd_->Start(frame);
+
 	return true;
 }
 
@@ -186,9 +190,8 @@ bool App::OnCmdLineParsed(wxCmdLineParser &parser)
 		auto fileName = GetFlintDirectory();
 		fileName.AppendDir(now.Format("%F %T"));
 		fileName.Mkdir(wxS_DIR_DEFAULT, wxPATH_MKDIR_FULL); // make sure that it exists
-		fileName.SetCwd();
-
-		std::exit(run::Run(option) ? EXIT_SUCCESS : EXIT_FAILURE);
+		auto fullPath = fileName.GetFullPath();
+		std::exit(run::Run(option, fullPath.c_str().AsChar()) ? EXIT_SUCCESS : EXIT_FAILURE);
 	}
 
 	for (const auto &arg : parser.GetArguments()) {
@@ -200,6 +203,8 @@ bool App::OnCmdLineParsed(wxCmdLineParser &parser)
 
 int App::OnExit()
 {
+	httpd_.reset();
+
 	wxPersistenceManager::Get().SaveAndUnregister(this);
 
 	delete checker_;

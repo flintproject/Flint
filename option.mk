@@ -35,6 +35,13 @@ CZMQ_CONFIGURE_OPTIONS = \
 	--disable-static \
 	--disable-Werror
 
+LIBMICROHTTPD_CONFIGURE_OPTIONS = \
+	--enable-silent-rules \
+	--disable-static \
+	--disable-curl \
+	--disable-https \
+	--disable-epoll
+
 SOSLIB_CONFIGURE_OPTIONS = \
 	--disable-static \
 	--without-grace \

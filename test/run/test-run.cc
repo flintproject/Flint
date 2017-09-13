@@ -29,7 +29,7 @@ BOOST_AUTO_TEST_CASE(fhn) {
 	PushWorkingDirectory("fhn");
 	std::unique_ptr<cli::RunOption> option(GenerateOption(TEST_MODELS("fhn.phml"), "fhn.out"));
 	test::StderrCapture sc;
-	BOOST_CHECK(run::Run(*option));
+	BOOST_CHECK(run::Run(*option, boost::filesystem::path(".")));
 	BOOST_CHECK(sc.Get().empty());
 	PopWorkingDirectory();
 }
@@ -39,7 +39,7 @@ BOOST_AUTO_TEST_CASE(x_delta_time_without_pq) {
 	std::unique_ptr<cli::RunOption> option(GenerateOption(TEST_MODELS("x-delta-time-without-pq.phml"),
 														  "x-delta-time-without-pq.out"));
 	test::StderrCapture sc;
-	BOOST_CHECK(!run::Run(*option));
+	BOOST_CHECK(!run::Run(*option, boost::filesystem::path(".")));
 	BOOST_CHECK_EQUAL(sc.Get(),
 					  "failed to find variable: y\n"
 					  " in 669641d8-3027-11e5-ac85-7b2ae3e84a6c\n");
@@ -51,7 +51,7 @@ BOOST_AUTO_TEST_CASE(x_delta_time_with_too_small_max_delay) {
 	std::unique_ptr<cli::RunOption> option(GenerateOption(TEST_MODELS("x-delta-time-with-too-small-max-delay.phml"),
 														  "x-delta-time-with-too-small-max-delay.out"));
 	test::StderrCapture sc;
-	BOOST_CHECK(!run::Run(*option));
+	BOOST_CHECK(!run::Run(*option, boost::filesystem::path(".")));
 	BOOST_CHECK_EQUAL(sc.Get(),
 					  "failed to look back the value of variable y at time -0.001, possibly due to too small value of <max-delay>: 0.0001\n"
 					  " in d7ee586c-fbb4-11e5-8405-fbf140396b2a\n");
@@ -62,7 +62,7 @@ BOOST_AUTO_TEST_CASE(x_missing_name) {
 	PushWorkingDirectory("x-missing-name");
 	std::unique_ptr<cli::RunOption> option(GenerateOption(TEST_MODELS("x-missing-name.phml"), "x-missing-name.out"));
 	test::StderrCapture sc;
-	BOOST_CHECK(!run::Run(*option));
+	BOOST_CHECK(!run::Run(*option, boost::filesystem::path(".")));
 	BOOST_CHECK_EQUAL(sc.Get(),
 					  "failed to find variable: y\n"
 					  " in c5e5c13e-34c9-4e2b-b8fd-b5fe98807134\n");

@@ -31,6 +31,7 @@ DYLIBS := \
     libODES.0 \
     libceres.$(CERES_CURRENT) \
     libczmq.$(CZMQ_CURRENT) \
+    libmicrohttpd.$(LIBMICROHTTPD_CURRENT) \
     libsbml.$(LIBSBML_VERSION) \
     libsedml.0 \
     libxml2.2 \
@@ -124,7 +125,7 @@ endef
 
 .PHONY: all check mostlyclean clean distclean download
 
-all: download $(foreach lib,$(BOOST_UNDERSCORE) ceres-solver-$(CERES_VERSION) clibsedml-$(CLIBSEDML_VERSION) czmq-$(CZMQ_VERSION) libsbml-$(LIBSBML_VERSION) libxml2-$(LIBXML2_VERSION) protobuf-$(PROTOBUF_VERSION) SBML_odeSolver-$(SOSLIB_VERSION) sundials-$(SUNDIALS_VERSION) wxWidgets-$(WXWIDGETS_VERSION) zeromq-$(ZEROMQ_VERSION),tmp/$(lib).installed) $(DMGS)
+all: download $(foreach lib,$(BOOST_UNDERSCORE) ceres-solver-$(CERES_VERSION) clibsedml-$(CLIBSEDML_VERSION) czmq-$(CZMQ_VERSION) libmicrohttpd-$(LIBMICROHTTPD_VERSION) libsbml-$(LIBSBML_VERSION) libxml2-$(LIBXML2_VERSION) protobuf-$(PROTOBUF_VERSION) SBML_odeSolver-$(SOSLIB_VERSION) sundials-$(SUNDIALS_VERSION) wxWidgets-$(WXWIDGETS_VERSION) zeromq-$(ZEROMQ_VERSION),tmp/$(lib).installed) $(DMGS)
 
 check:
 	env DYLD_LIBRARY_PATH=$(PREFIX)/lib $(MAKE) -C build check
@@ -165,6 +166,11 @@ tmp/clibsedml-$(CLIBSEDML_VERSION): src/clibsedml-$(CLIBSEDML_VERSION).tar.gz | 
 
 tmp/czmq-$(CZMQ_VERSION): src/czmq-$(CZMQ_VERSION).tar.gz | tmp
 	-rm -rf var/czmq-$(CZMQ_VERSION)
+	tar -C var -zxf $<
+	touch $@
+
+tmp/libmicrohttpd-$(LIBMICROHTTPD_VERSION): src/libmicrohttpd-$(LIBMICROHTTPD_VERSION).tar.gz | tmp
+	-rm -rf var/libmicrohttpd-$(LIBMICROHTTPD_VERSION)
 	tar -C var -zxf $<
 	touch $@
 
@@ -219,6 +225,10 @@ tmp/clibsedml-$(CLIBSEDML_VERSION).installed: tmp/clibsedml-$(CLIBSEDML_VERSION)
 
 tmp/czmq-$(CZMQ_VERSION).installed: tmp/czmq-$(CZMQ_VERSION) tmp/zeromq-$(ZEROMQ_VERSION).installed
 	(cd var/czmq-$(CZMQ_VERSION) && export MACOSX_DEPLOYMENT_TARGET=10.9 && ./configure --prefix=$(PREFIX) $(CZMQ_CONFIGURE_OPTIONS) CC='clang' CFLAGS='-arch x86_64 -mmacosx-version-min=10.9' LDFLAGS='-arch x86_64 -mmacosx-version-min=10.9 -Wl,-headerpad_max_install_names' PKG_CONFIG=$(PKG_CONFIG) PKG_CONFIG_PATH=$(PKG_CONFIG_PATH) && $(MAKE) all install)
+	touch $@
+
+tmp/libmicrohttpd-$(LIBMICROHTTPD_VERSION).installed: tmp/libmicrohttpd-$(LIBMICROHTTPD_VERSION)
+	(cd var/libmicrohttpd-$(LIBMICROHTTPD_VERSION) && export MACOSX_DEPLOYMENT_TARGET=10.9 && ./configure --prefix=$(PREFIX) $(LIBMICROHTTPD_CONFIGURE_OPTIONS) CC='clang' CFLAGS='-arch x86_64 -mmacosx-version-min=10.9' LDFLAGS='-arch x86_64 -mmacosx-version-min=10.9 -Wl,-headerpad_max_install_names' && $(MAKE) all install)
 	touch $@
 
 tmp/protobuf-$(PROTOBUF_VERSION).installed: tmp/protobuf-$(PROTOBUF_VERSION)
@@ -307,6 +317,10 @@ $(APP)/Contents/Resources/third-party-licenses.txt: tmp/ceres-solver-$(CERES_VER
 	echo ';; CZMQ $(CZMQ_VERSION)' >> $@
 	echo >> $@
 	cat var/czmq-$(CZMQ_VERSION)/LICENSE >> $@
+	echo >> $@
+	echo ';; GNU libmicrohttpd $(LIBMICROHTTPD_VERSION)' >> $@
+	echo >> $@
+	cat var/libmicrohttpd-$(LIBMICROHTTPD_VERSION)/COPYING >> $@
 	echo >> $@
 	echo ';; libSBML $(LIBSBML_VERSION)' >> $@
 	echo >> $@

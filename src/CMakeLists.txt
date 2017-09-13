@@ -174,6 +174,7 @@ target_link_libraries(libflintxx
     Boost::filesystem
     ${CZMQ}
     ${LIBZMQ}
+    ${LIBMICROHTTPD}
     ${SOSLIB}
     ${LIBSBML}
     ${SUNDIALS_ARKODE}
@@ -288,6 +289,7 @@ add_executable(flint2 WIN32
     gui/document.cc
     gui/document/unit-of-time.cc
     gui/export-all-dialog.cc
+    gui/httpd.cc
     gui/gnuplot.cc
     gui/job.cc
     gui/main-frame.cc
@@ -428,6 +430,7 @@ target_link_libraries(fppp-sim
     libflint
     sqlite3
     ${Protobuf_LIBRARIES}
+    Boost::filesystem
     )
 
 add_executable(fppp-sup

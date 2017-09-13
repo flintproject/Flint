@@ -87,6 +87,7 @@ AS_IF([test "x$enable_tcp" != xno],[AC_DEFINE([ENABLE_TCP],[1],[Define to 1 if T
 AM_CONDITIONAL([ENABLE_TCP],[test "x$enable_tcp" != xno])
 
 PKG_CHECK_MODULES([CLIBSEDML],[clibsedml >= 0.1.2])
+PKG_CHECK_MODULES([LIBMICROHTTPD],[libmicrohttpd >= 0.9.33])
 PKG_CHECK_MODULES([LIBSBML],[libsbml])
 PKG_CHECK_MODULES([SOSLIB],[libODES])
 PKG_CHECK_MODULES([PROTOBUF],[protobuf])

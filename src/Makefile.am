@@ -275,9 +275,9 @@ flint_tr_LDFLAGS = $(BOOST_FILESYSTEM_LDFLAGS) $(BOOST_SYSTEM_LDFLAGS)
 flint_tr_LDADD = libflintxx.la libflint.la libsqlite3.la $(PROTOBUF_LIBS) $(BOOST_FILESYSTEM_LIBS) $(BOOST_SYSTEM_LIBS)
 flint_tr_SOURCES = flint-tr-main.cc
 
-flint2_CPPFLAGS = $(WXWIDGETS_CXXFLAGS) $(PROTOBUF_CFLAGS) $(BOOST_CPPFLAGS)
+flint2_CPPFLAGS = $(WXWIDGETS_CXXFLAGS) $(LIBMICROHTTPD_CFLAGS) $(PROTOBUF_CFLAGS) $(BOOST_CPPFLAGS)
 flint2_LDFLAGS = $(BOOST_FILESYSTEM_LDFLAGS) $(BOOST_SYSTEM_LDFLAGS)
-flint2_LDADD = libflint2.a libflintxx.la libflint.la libsqlite3.la $(WXWIDGETS_LIBS) $(PROTOBUF_LIBS) $(BOOST_FILESYSTEM_LIBS) $(BOOST_SYSTEM_LIBS)
+flint2_LDADD = libflint2.a libflintxx.la libflint.la libsqlite3.la $(WXWIDGETS_LIBS) $(LIBMICROHTTPD_LIBS) $(PROTOBUF_LIBS) $(BOOST_FILESYSTEM_LIBS) $(BOOST_SYSTEM_LIBS)
 flint2_SOURCES = \
     gui/app.cc \
     gui/configuration.cc \
@@ -285,6 +285,7 @@ flint2_SOURCES = \
     gui/document/unit-of-time.cc \
     gui/export-all-dialog.cc \
     gui/gnuplot.cc \
+    gui/httpd.cc \
     gui/job.cc \
     gui/main-frame.cc \
     gui/param-tree.cc \
@@ -366,7 +367,8 @@ fppp_rtm_LDADD = libflintxx.la libflint.la libsqlite3.la $(CZMQ_LIBS)
 fppp_rtm_SOURCES = fppp/rtm/main.cc
 
 fppp_sim_CPPFLAGS = $(PROTOBUF_CFLAGS) $(BOOST_CPPFLAGS) $(CZMQ_CFLAGS) $(ZEROMQ_CFLAGS)
-fppp_sim_LDADD = libflintxx.la libflint.la libsqlite3.la $(PROTOBUF_LIBS) $(CZMQ_LIBS)
+fppp_sim_LDFLAGS = $(BOOST_FILESYSTEM_LDFLAGS) $(BOOST_SYSTEM_LDFLAGS)
+fppp_sim_LDADD = libflintxx.la libflint.la libsqlite3.la $(PROTOBUF_LIBS) $(BOOST_FILESYSTEM_LIBS) $(BOOST_SYSTEM_LIBS) $(CZMQ_LIBS)
 fppp_sim_SOURCES = fppp/sim/main.cc
 
 fppp_sup_CPPFLAGS = $(BOOST_CPPFLAGS) $(CZMQ_CFLAGS) $(ZEROMQ_CFLAGS)

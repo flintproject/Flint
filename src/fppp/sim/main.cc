@@ -52,5 +52,5 @@ int main(int argc, char *argv[])
 	option.set_fppp_host(argv[1]);
 	for (int i=2;i<argc;i++)
 		option.add_fppp_output(argv[i]);
-	return run::Run(option) ? EXIT_SUCCESS : EXIT_FAILURE;
+	return run::Run(option, boost::filesystem::path(".")) ? EXIT_SUCCESS : EXIT_FAILURE;
 }

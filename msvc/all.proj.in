@@ -15,6 +15,7 @@
     <CERES_VERSION>__CERES_VERSION</CERES_VERSION>
     <CLIBSEDML_VERSION>__CLIBSEDML_VERSION</CLIBSEDML_VERSION>
     <CZMQ_VERSION>__CZMQ_VERSION</CZMQ_VERSION>
+    <LIBMICROHTTPD_VERSION>__LIBMICROHTTD_VERSION</LIBMICROHTTPD_VERSION>
     <LIBSBML_VERSION>__LIBSBML_VERSION</LIBSBML_VERSION>
     <LIBXML2_VERSION>__LIBXML2_VERSION</LIBXML2_VERSION>
     <PROTOBUF_VERSION>__PROTOBUF_VERSION</PROTOBUF_VERSION>
@@ -36,6 +37,23 @@
         <BoostAddressModelOption>address-model=32</BoostAddressModelOption>
         <CMakeGeneratorOption></CMakeGeneratorOption>
       </PropertyGroup>
+    </When>
+  </Choose>
+
+  <Choose>
+    <When Condition="'$(TargetArch)'=='x64'">
+      <ItemGroup>
+        <libmicrohttpdLibraryFiles Include="$(VARDIR)\libmicrohttpd-$(LIBMICROHTTPD_VERSION)-w32-bin\x86_64\VS2015\Release-dll\libmicrohttpd-dll.*"/>
+        <libmicrohttpdHeaderFiles Include="$(VARDIR)\libmicrohttpd-$(LIBMICROHTTPD_VERSION)-w32-bin\x86_64\VS2015\Release-dll\microhttpd.h"/>
+        <libmicrohttpdReleaseDLLFiles Include="$(VARDIR)\libmicrohttpd-$(LIBMICROHTTPD_VERSION)-w32-bin\x86_64\VS2015\Release-dll\libmicrohttpd-dll.dll"/>
+      </ItemGroup>
+    </When>
+    <When Condition="'$(TargetArch)'=='x86'">
+      <ItemGroup>
+        <libmicrohttpdLibraryFiles Include="$(VARDIR)\libmicrohttpd-$(LIBMICROHTTPD_VERSION)-w32-bin\x86\VS2015\Release-dll\libmicrohttpd-dll.*"/>
+        <libmicrohttpdHeaderFiles Include="$(VARDIR)\libmicrohttpd-$(LIBMICROHTTPD_VERSION)-w32-bin\x86\VS2015\Release-dll\microhttpd.h"/>
+        <libmicrohttpdReleaseDLLFiles Include="$(VARDIR)\libmicrohttpd-$(LIBMICROHTTPD_VERSION)-w32-bin\x86\VS2015\Release-dll\libmicrohttpd-dll.dll"/>
+      </ItemGroup>
     </When>
   </Choose>
 
@@ -124,6 +142,14 @@
     <Touch AlwaysCreate='true' Files='tmp\zeromq-$(ZEROMQ_VERSION).installed'/>
   </Target>
 
+  <Target Name='libmicrohttpd'
+          Inputs='tmp\libmicrohttpd-$(LIBMICROHTTPD_VERSION)'
+          Outputs='tmp\libmicrohttpd-$(LIBMICROHTTPD_VERSION).installed'>
+    <Copy SourceFiles='@(libmicrohttpdLibraryFiles)' DestinationFiles="@(libmicrohttpdLibraryFiles->'$(PREFIX)\lib\%(Filename)%(Extension)')"/>
+    <Copy SourceFiles='@(libmicrohttpdHeaderFiles)' DestinationFiles="@(libmicrohttpdHeaderFiles->'$(PREFIX)\include\%(Filename)%(Extension)')"/>
+    <Touch AlwaysCreate='true' Files='tmp\libmicrohttpd-$(LIBMICROHTTPD_VERSION).installed'/>
+  </Target>
+
   <Target Name='wxWidgets'
           Inputs='tmp\include;tmp\lib'
           Outputs='tmp\wxWidgets.installed'>
@@ -175,7 +201,7 @@
   </Target>
 
   <Target Name='build'
-          DependsOnTargets='boost;ceres-solver;clibsedml;sundials;SBML_odeSolver;czmq;wxWidgets;bc-pb;cli-pb;ipc-pb;lo-pb;phml-pb;unit-pb'
+          DependsOnTargets='boost;ceres-solver;clibsedml;sundials;SBML_odeSolver;czmq;libmicrohttpd;wxWidgets;bc-pb;cli-pb;ipc-pb;lo-pb;phml-pb;unit-pb'
           Outputs='tmp\build'>
     <MakeDir Directories='$(VARDIR)\build'/>
     <Exec Command='cmake $(CMakeGeneratorOption) -DCMAKE_INSTALL_PREFIX="$(PREFIX)" ..\..\..' WorkingDirectory='$(VARDIR)\build'/>
@@ -207,6 +233,7 @@
     </ItemGroup>
     <MakeDir Directories='flint'/>
     <Copy SourceFiles='@(DLLFiles)' DestinationFiles="@(DLLFiles->'flint\%(Filename)%(Extension)')"/>
+    <Copy SourceFiles='@(libmicrohttpdReleaseDLLFiles)' DestinationFiles="@(libmicrohttpdReleaseDLLFiles->'flint\%(Filename)%(Extension)')"/>
     <Copy SourceFiles='@(wxMSWReleaseDLLFiles)' DestinationFiles="@(wxMSWReleaseDLLFiles->'flint\%(Filename)%(Extension)')"/>
     <Copy SourceFiles="@(ExeFiles->'opt\bin\%(Filename)%(Extension)')" DestinationFiles="@(ExeFiles->'flint\%(Filename)%(Extension)')"/>
     <Touch AlwaysCreate='true' Files='tmp\flint'/>
