@@ -56,7 +56,7 @@ if(NOT CLIBSEDML)
 endif(NOT CLIBSEDML)
 
 find_library(LIBMICROHTTPD
-             NAMES libmicrohttpd
+             NAMES libmicrohttpd libmicrohttpd-dll
              )
 if(NOT LIBMICROHTTPD)
     message(FATAL_ERROR "failed to find libmicrohttpd")
