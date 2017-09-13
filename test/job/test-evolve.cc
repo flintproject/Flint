@@ -62,6 +62,7 @@ struct F : public test::MemoryFixture {
 		option_.id = 0;
 		option_.input_data = nullptr;
 		option_.fppp_option = nullptr;
+		option_.arg = nullptr;
 
 		task_.method = compiler::Method::kEuler;
 		task_.length = task_.step = 0.01;
