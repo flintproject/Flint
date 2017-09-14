@@ -84,6 +84,11 @@ tmp/czmq-$(CZMQ_VERSION): src/czmq-$(CZMQ_VERSION).tar.gz | tmp
 	patch var/czmq-$(CZMQ_VERSION)/configure czmq-$(CZMQ_VERSION)-configure.patch
 	touch $@
 
+tmp/libmicrohttpd-$(LIBMICROHTTPD_VERSION): src/libmicrohttpd-$(LIBMICROHTTPD_VERSION).tar.gz | tmp
+	-rm -rf var/libmicrohttpd-$(LIBMICROHTTPD_VERSION)
+	tar -C var -zxf $<
+	touch $@
+
 tmp/libsbml-$(LIBSBML_VERSION): src/libSBML-$(LIBSBML_VERSION)-core-src.zip | tmp
 	-rm -rf var/libsbml-$(LIBSBML_VERSION)
 	(cd var && unzip -qq ../$<)
@@ -145,6 +150,11 @@ tmp/czmq-$(CZMQ_VERSION).installed: tmp/czmq-$(CZMQ_VERSION) tmp/zeromq-$(ZEROMQ
 	$(MAKE) -C var/czmq-$(CZMQ_VERSION) all install
 	touch $@
 
+tmp/libmicrohttpd-$(LIBMICROHTTPD_VERSION).installed: tmp/libmicrohttpd-$(LIBMICROHTTPD_VERSION)
+	(cd var/libmicrohttpd-$(LIBMICROHTTPD_VERSION) && ./configure --host=$(HOST) --prefix=$(PREFIX) $(LIBMICROHTTPD_CONFIGURE_OPTIONS))
+	$(MAKE) -C var/libmicrohttpd-$(LIBMICROHTTPD_VERSION) all install
+	touch $@
+
 usr/bin/protoc: src/protobuf-java-$(PROTOBUF_VERSION).tar.gz | build
 	-rm -rf build/protobuf-$(PROTOBUF_VERSION)
 	tar -C build -zxf $<
@@ -200,7 +210,7 @@ flint opt usr var/flint:
 flint/lib: | flint
 	install -d $@
 
-var/flint/Makefile: tmp/$(BOOST_UNDERSCORE).installed tmp/ceres-solver-$(CERES_VERSION).installed tmp/clibsedml-$(CLIBSEDML_VERSION).installed tmp/czmq-$(CZMQ_VERSION).installed tmp/protobuf-$(PROTOBUF_VERSION).installed tmp/SBML_odeSolver-$(SOSLIB_VERSION).installed tmp/wxWidgets-$(WXWIDGETS_VERSION).installed ../configure | usr/bin/protoc var/flint
+var/flint/Makefile: tmp/$(BOOST_UNDERSCORE).installed tmp/ceres-solver-$(CERES_VERSION).installed tmp/clibsedml-$(CLIBSEDML_VERSION).installed tmp/czmq-$(CZMQ_VERSION).installed tmp/libmicrohttpd-$(LIBMICROHTTPD_VERSION).installed tmp/protobuf-$(PROTOBUF_VERSION).installed tmp/SBML_odeSolver-$(SOSLIB_VERSION).installed tmp/wxWidgets-$(WXWIDGETS_VERSION).installed ../configure | usr/bin/protoc var/flint
 	(cd var/flint && env CPPFLAGS='-DWIN32_LEAN_AND_MEAN -D_WIN32_WINNT=0x0600 -DWIN32 -DSBML_ODESOLVER_EXPORTS=1' LIBS='-lole32 -loleaut32 -lmswsock -lws2_32' PKG_CONFIG_PATH=$(PKG_CONFIG_PATH) LIBSBML_CFLAGS=$(PREFIX)/include LIBSBML_LIBS='-lsbml' SOSLIB_CFLAGS=$(PREFIX)/include SOSLIB_LIBS='-lODES' ../../../configure --host=$(HOST) --prefix=$(PREFIX) --with-boost=$(PREFIX) --with-ceres-solver=$(PREFIX) --with-xml-prefix=$(PREFIX) --disable-xmltest --with-protoc=$(abspath usr/bin/protoc) --with-sundials=$(PREFIX) --with-wxWidgets=$(PREFIX) --enable-release --enable-silent-rules --enable-shared --disable-static)
 
 $(foreach d,$(FLINT_DLLS),opt/bin/$(d).dll) $(foreach e,$(EXES),opt/bin/$(e).exe): $(foreach d,$(BIN_DLLS) $(BOOST_DLLS),$(call flint_dll_name,$(d))) tmp/sundials-$(SUNDIALS_VERSION).installed tmp/SBML_odeSolver-$(SOSLIB_VERSION).installed var/flint/Makefile
@@ -216,6 +226,8 @@ opt/bin/libceres.dll: tmp/ceres-solver-$(CERES_VERSION).installed
 opt/bin/libODES-0.dll: tmp/SBML_odeSolver-$(SOSLIB_VERSION).installed
 
 opt/bin/libczmq.dll: tmp/czmq-$(CZMQ_VERSION).installed
+
+opt/bin/libmicrohttpd-$(LIBMICROHTTPD_CURRENT).dll: tmp/libmicrohttpd-$(LIBMICROHTTPD_VERSION).installed
 
 opt/bin/libprotobuf-$(PROTOBUF_CURRENT).dll: tmp/protobuf-$(PROTOBUF_VERSION).installed
 
@@ -260,7 +272,7 @@ flint/flint.xml: flint.xml | flint
 	install -p -m 0644 $< $@
 
 flint/flint.wxs: flint.wxs.in | flint
-	m4 -DVERSION=$(VERSION) -DLIBGCC_DLL=$(LIBGCC_DLL) -DLIBSTDCXX_DLL=$(LIBSTDCXX_DLL) -DLIBWINPTHREAD_DLL=$(LIBWINPTHREAD_DLL) -DPROTOBUF_CURRENT=$(PROTOBUF_CURRENT) $< > $@
+	m4 -DVERSION=$(VERSION) -DLIBGCC_DLL=$(LIBGCC_DLL) -DLIBSTDCXX_DLL=$(LIBSTDCXX_DLL) -DLIBWINPTHREAD_DLL=$(LIBWINPTHREAD_DLL) -DLIBMICROHTTPD_CURRENT=$(LIBMICROHTTPD_CURRENT) -DPROTOBUF_CURRENT=$(PROTOBUF_CURRENT) $< > $@
 
 flint/icon.png: ../flint/src/jp/oist/flint/image/icon.png | flint
 	install -p -m 0644 $< $@
@@ -280,6 +292,10 @@ flint/third-party-licenses.txt: tmp/ceres-solver-$(CERES_VERSION) tmp/libsbml-$(
 	echo ';; CZMQ $(CZMQ_VERSION)' >> $@
 	echo >> $@
 	cat var/czmq-$(CZMQ_VERSION)/LICENSE >> $@
+	echo >> $@
+	echo ';; GNU libmicorhttpd $(LIBMICORHTTPD_VERSION)' >> $@
+	echo >> $@
+	cat var/libmicrohttpd-$(LIBMICROHTTPD_VERSION)/COPYING >> $@
 	echo >> $@
 	echo ';; libSBML $(LIBSBML_VERSION)' >> $@
 	echo >> $@

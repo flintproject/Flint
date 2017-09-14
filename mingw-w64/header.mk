@@ -14,6 +14,7 @@ BIN_DLLS := \
     libODES-0 \
     libceres \
     libczmq \
+    libmicrohttpd-$(LIBMICROHTTPD_CURRENT) \
     libprotobuf-$(PROTOBUF_CURRENT) \
     libsbml \
     libsedml-0 \
