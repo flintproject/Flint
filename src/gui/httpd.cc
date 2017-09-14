@@ -9,13 +9,21 @@
 #include <cstring>
 #include <thread>
 
-#include <microhttpd.h>
-
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wcast-qual"
 #include <wx/wx.h>
 #include <wx/filename.h>
 #pragma GCC diagnostic pop
+
+// winsock2.h has to come after wx/wx.h
+#ifdef _WIN32
+#include <winsock2.h>
+#else
+#include <arpa/inet.h>
+#include <sys/socket.h>
+#endif
+
+#include <microhttpd.h>
 
 #include "gui/main-frame.h"
 #include "run.h"
@@ -118,12 +126,22 @@ Httpd::~Httpd()
 bool Httpd::Start(MainFrame *frame)
 {
 	const int kPort = 20465;
+
+	// Allow access only from loopback address:
+	// https://stackoverflow.com/questions/46023399/make-local-http-server-inaccessable-from-outside
+	static struct sockaddr_in loopback_addr;
+	std::memset(&loopback_addr, 0, sizeof(loopback_addr));
+	loopback_addr.sin_family = AF_INET;
+	loopback_addr.sin_port = htons(kPort);
+	loopback_addr.sin_addr.s_addr = htonl(INADDR_LOOPBACK);
+
 	daemon_ = MHD_start_daemon(MHD_USE_THREAD_PER_CONNECTION,
-							   kPort,
+							   kPort, // ignored as MHD_OPTION_SOCK_ADDR is used below
 							   nullptr,
 							   nullptr,
 							   &AccessHandler,
 							   frame,
+							   MHD_OPTION_SOCK_ADDR, reinterpret_cast<struct sockaddr *>(&loopback_addr),
 							   MHD_OPTION_END);
 	return daemon_ != nullptr;
 }
