@@ -49,6 +49,7 @@ AS_IF([test "x$enable_thread" = "xposix"],[AC_DEFINE([USING_PTHREAD],[1],['Using
       [test "x$enable_thread" != "xno"],[AC_MSG_ERROR([unknown type of thread: $enable_thread])])
 
 BOOST_REQUIRE([1.65.0])
+BOOST_ASIO
 BOOST_CHRONO
 BOOST_FILESYSTEM
 BOOST_HASH

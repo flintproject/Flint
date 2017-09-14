@@ -12,6 +12,9 @@
 #include <fstream>
 #include <string>
 #include <vector>
+// To disable autolinking of Boost.Date_Time and Boost.Regex for MSVC
+#define BOOST_DATE_TIME_NO_LIB
+#define BOOST_REGEX_NO_LIB
 // We do not need Boost.Asio's threading support for isd2csv
 #define BOOST_ASIO_DISABLE_THREADS
 #include <boost/asio.hpp>
