@@ -48,7 +48,7 @@ namespace {
 bool PrintFileAsByteArray(const boost::filesystem::path &path, const char *name,
 						  std::ostream *os)
 {
-	const int kBufferSize = 1024;
+	const size_t kBufferSize = 8192;
 
 	size_t size = static_cast<size_t>(boost::filesystem::file_size(path));
 	boost::filesystem::ifstream ifs(path, std::ios::in|std::ios::binary);
@@ -63,13 +63,13 @@ bool PrintFileAsByteArray(const boost::filesystem::path &path, const char *name,
 	size_t t = 0;
 	boost::io::ios_flags_saver saver(*os);
 	while (t < size) {
-		int s = static_cast<int>(ifs.readsome(reinterpret_cast<char *>(buf.get()), kBufferSize));
-		if (ifs.fail()) {
+		size_t s = std::min(size - t, kBufferSize);
+		if (!ifs.read(reinterpret_cast<char *>(buf.get()), s)) {
 			ifs.close();
 			std::cerr << "an error occurred when reading " << path << std::endl;
 			return false;
 		}
-		for (int i=0;i<s;i++) {
+		for (size_t i=0;i<s;i++) {
 			os->put(((i&0xF) == 0x0) ? '\t' : ' ');
 			*os << "0x"
 				<< std::hex
