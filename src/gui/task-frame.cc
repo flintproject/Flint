@@ -206,6 +206,7 @@ void TaskFrame::Export(const Job &job)
 		isd2csv::Option option;
 		option.ignore_prefixes = false;
 		option.ignore_units = false;
+		option.port = ""; // no progress report
 		StderrCapture ec;
 		int b = isd2csv::Convert(option, &ifs, &ofs) == EXIT_SUCCESS;
 		ofs.close();

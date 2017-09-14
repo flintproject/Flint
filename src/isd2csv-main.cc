@@ -30,7 +30,7 @@ int main(int argc, char *argv[])
 
 	opts.add_options()
 		("help,h", "Show this message")
-		("progress", po::value<std::string>(&option.port), "Send progress in percentage")
+		("progress", po::value<std::string>(&option.port)->default_value(""), "Send progress in percentage")
 		("ignore-prefixes,P", "Ignore variable prefixes")
 		("ignore-units,U", "Ignore units")
 		("maximum-precision,M", "Request the maximum number of decimal digits to print double-precision floating-point numbers")

@@ -56,13 +56,15 @@ public:
 		, num_objs_(num_objs)
 		, descriptions_(num_objs)
 		, units_(num_objs)
-	{
-		if (socket_) socket_->open(boost::asio::ip::udp::v4());
-	}
+	{}
 
 	~Converter()
 	{
-		if (socket_ && socket_->is_open()) socket_->close();
+		if (socket_ && socket_->is_open()) {
+			boost::system::error_code ec;
+			socket_->shutdown(boost::asio::ip::udp::socket::shutdown_send, ec);
+			socket_->close(ec);
+		}
 	}
 
 	void GetDescription(std::uint32_t i, size_t bytes, const char *desc) {
@@ -108,12 +110,18 @@ public:
 			b += sizeof(double);
 		}
 		*os_ << "\r\n";
-		if (endpoint_ && socket_) {
+		if (endpoint_ && socket_ && socket_->is_open()) {
 			position_ += buf_size;
 			char p = static_cast<char>((position_ * 100) / length_);
 			if (progress_ < p && 0 <= p && p <= 100) {
 				progress_ = p;
-				socket_->send_to(boost::asio::buffer(&progress_, 1), *endpoint_);
+				try {
+					socket_->send_to(boost::asio::buffer(&progress_, 1), *endpoint_);
+				} catch (boost::system::system_error &) {
+					boost::system::error_code ec;
+					socket_->shutdown(boost::asio::ip::udp::socket::shutdown_send, ec);
+					socket_->close(ec);
+				}
 			}
 		}
 		return (b == eob) ? 1 : -1;
@@ -158,14 +166,20 @@ int Convert(const Option &option, std::istream *is, std::ostream *os)
 		boost::asio::io_service service;
 		boost::asio::ip::udp::resolver resolver(service);
 		boost::asio::ip::udp::resolver::query query(boost::asio::ip::udp::v4(), "127.0.0.1", option.port);
-		boost::asio::ip::udp::endpoint endpoint(*resolver.resolve(query));
-		boost::asio::ip::udp::socket socket(service);
-		Converter converter(option, os, reader.num_objs(), length, &endpoint, &socket);
-		return Read(reader, converter, is);
-	} else {
-		Converter converter(option, os, reader.num_objs());
-		return Read(reader, converter, is);
+		boost::system::error_code ec;
+		auto it = resolver.resolve(query, ec);
+		if (!ec) {
+			boost::asio::ip::udp::endpoint endpoint(*it);
+			boost::asio::ip::udp::socket socket(service);
+			socket.open(boost::asio::ip::udp::v4(), ec);
+			if (!ec) {
+				Converter converter(option, os, reader.num_objs(), length, &endpoint, &socket);
+				return Read(reader, converter, is);
+			}
+		}
 	}
+	Converter converter(option, os, reader.num_objs());
+	return Read(reader, converter, is);
 }
 
 }

@@ -289,6 +289,7 @@ int main(int argc, char *argv[])
 	isd2csv::Option isd2csv_option;
 	isd2csv_option.ignore_prefixes = (vm.count("ignore-prefixes") > 0);
 	isd2csv_option.ignore_units = (vm.count("ignore-units") > 0);
+	isd2csv_option.port = ""; // no progress report
 
 	std::vector<std::uint32_t> cv;
 	if (!isdstrip::ExtractConstantColumns(input_file.c_str(), nullptr, &cv))
