@@ -77,15 +77,6 @@ AC_ARG_ENABLE(release,
         [enable_release=no])
 AS_IF([test "x$enable_release" != xno],[AC_DEFINE([NDEBUG],[1],[Defined as 1 if the release mode is enabled])])
 
-AC_ARG_ENABLE(tcp,
-        [AS_HELP_STRING([--enable-tcp],
-                [Enable TCP support. Default: yes])],
-        [],
-        [enable_tcp=yes])
-AS_IF([test "x$enable_tcp" != xno],[BOOST_ASIO])
-AS_IF([test "x$enable_tcp" != xno],[AC_DEFINE([ENABLE_TCP],[1],[Define to 1 if TCP support is enabled])])
-AM_CONDITIONAL([ENABLE_TCP],[test "x$enable_tcp" != xno])
-
 PKG_CHECK_MODULES([CLIBSEDML],[clibsedml >= 0.1.2])
 PKG_CHECK_MODULES([LIBMICROHTTPD],[libmicrohttpd >= 0.9.33])
 PKG_CHECK_MODULES([LIBSBML],[libsbml])

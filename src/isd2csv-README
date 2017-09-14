@@ -4,7 +4,7 @@
 
 = Synopsis
 
-isd2csv [-o output] [-P] [-U] [path]
+isd2csv [-o output] [-P] [-U] [-M n] [--progress port] [path]
 isd2csv --help
 
 
@@ -22,6 +22,9 @@ isd2csv --help
 --maximum-precision, -M
     request the maximum number of decimal digits to print double-precision
     floating-point numbers.
+
+--progress
+    send progress in percentage to given UDP port.
 
 --help, -h
     show help.

@@ -12,11 +12,9 @@
 #include <fstream>
 #include <string>
 #include <vector>
-#ifdef ENABLE_TCP
 // We do not need Boost.Asio's threading support for isd2csv
 #define BOOST_ASIO_DISABLE_THREADS
 #include <boost/asio.hpp>
-#endif
 #include <boost/uuid/string_generator.hpp>
 
 #include "isdf/reader.h"
@@ -41,7 +39,6 @@ bool ValidatePrefix(const std::string &name)
 
 class Converter {
 public:
-#ifdef ENABLE_TCP
 	Converter(const Option &option,
 			  std::ostream *os, std::uint32_t num_objs, size_t length = 0,
 			  boost::asio::ip::udp::endpoint *endpoint = nullptr,
@@ -64,12 +61,6 @@ public:
 	{
 		if (socket_ && socket_->is_open()) socket_->close();
 	}
-#else
-	Converter(const Option &option, std::ostream *os)
-		: option_(option)
-		, os_(os)
-	{}
-#endif
 
 	void GetDescription(std::uint32_t i, size_t bytes, const char *desc) {
 		descriptions_[i] = std::string(desc, bytes);
@@ -114,7 +105,6 @@ public:
 			b += sizeof(double);
 		}
 		*os_ << "\r\n";
-#ifdef ENABLE_TCP
 		if (endpoint_ && socket_) {
 			position_ += buf_size;
 			char p = static_cast<char>((position_ * 100) / length_);
@@ -123,18 +113,15 @@ public:
 				socket_->send_to(boost::asio::buffer(&progress_, 1), *endpoint_);
 			}
 		}
-#endif
 		return (b == eob) ? 1 : -1;
 	}
 
 private:
 	const Option &option_;
-#ifdef ENABLE_TCP
 	size_t length_, position_;
 	boost::asio::ip::udp::endpoint *endpoint_;
 	boost::asio::ip::udp::socket *socket_;
 	char progress_;
-#endif
 	std::ostream *os_;
 	std::uint32_t num_objs_;
 	std::vector<std::string> descriptions_;
@@ -157,7 +144,6 @@ int Convert(const Option &option, std::istream *is, std::ostream *os)
 {
 	isdf::Reader reader;
 	if (!reader.ReadHeader(is)) return EXIT_FAILURE;
-#ifdef ENABLE_TCP
 	if (!option.port.empty()) {
 		size_t p = is->tellg();
 		is->seekg(0, std::ios::end);
@@ -177,10 +163,6 @@ int Convert(const Option &option, std::istream *is, std::ostream *os)
 		Converter converter(option, os, reader.num_objs());
 		return Read(reader, converter, is);
 	}
-#else
-	Converter converter(option, os);
-	return Read(reader, converter, is);
-#endif
 }
 
 }

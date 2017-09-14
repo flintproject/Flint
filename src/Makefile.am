@@ -302,12 +302,8 @@ flint2_SOURCES = \
     gui/view-frame.cc
 
 isd2csv_CPPFLAGS = $(BOOST_CPPFLAGS)
-isd2csv_LDFLAGS = $(BOOST_PROGRAM_OPTIONS_LDFLAGS)
-isd2csv_LDADD = libflintxx.la $(BOOST_PROGRAM_OPTIONS_LIBS)
-if ENABLE_TCP
-isd2csv_LDFLAGS += $(BOOST_SYSTEM_LDFLAGS)
-isd2csv_LDADD += $(BOOST_SYSTEM_LIBS)
-endif
+isd2csv_LDFLAGS = $(BOOST_SYSTEM_LDFLAGS) $(BOOST_PROGRAM_OPTIONS_LDFLAGS)
+isd2csv_LDADD = libflintxx.la $(BOOST_SYSTEM_LIBS) $(BOOST_PROGRAM_OPTIONS_LIBS)
 isd2csv_SOURCES = isd2csv-main.cc
 
 isdbswap_SOURCES = isdbswap-main.c

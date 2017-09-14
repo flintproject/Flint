@@ -3,9 +3,7 @@
 #define FLINT_ISD2CSV_H_
 
 #include <iostream>
-#ifdef ENABLE_TCP
 #include <string>
-#endif
 
 namespace flint {
 namespace isd2csv {
@@ -13,9 +11,7 @@ namespace isd2csv {
 struct Option {
 	bool ignore_prefixes;
 	bool ignore_units;
-#ifdef ENABLE_TCP
 	std::string port;
-#endif
 };
 
 int Convert(const Option &option, std::istream *input, std::ostream *output);
