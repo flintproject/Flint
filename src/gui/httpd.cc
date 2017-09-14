@@ -72,7 +72,7 @@ int AccessHandler(void *cls,
 		return Respond(connection, status);
 	}
 	if (*upload_data_size > kMaxDataSize) {
-		status = MHD_HTTP_PAYLOAD_TOO_LARGE;
+		status = 413; // MHD_HTTP_PAYLOAD_TOO_LARGE; not yet defined as of libmicrohttpd 0.9.33
 		*upload_data_size = 0;
 		return MHD_YES;
 	}
