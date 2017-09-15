@@ -26,7 +26,7 @@ bool Record(const std::chrono::time_point<std::chrono::steady_clock> &rt_start,
 	if (dir.empty())
 		return true; // do nothing if dir is empty
 	auto filename = dir / "stats.txt";
-	boost::filesystem::fstream ofs(filename, std::ios::out);
+	boost::filesystem::ofstream ofs(filename, std::ios::out|std::ios::binary);
 	if (!ofs) {
 		std::cerr << "failed to open " << filename << std::endl;
 		return false;

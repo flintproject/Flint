@@ -197,7 +197,7 @@ void TaskFrame::Export(const Job &job)
 			ShowErrorOnExporting(wxString::Format("failed to open %s", source_file.GetFullPath()));
 			return;
 		}
-		std::ofstream ofs(static_cast<const char *>(target_path.c_str()), std::ios::out);
+		std::ofstream ofs(static_cast<const char *>(target_path.c_str()), std::ios::out|std::ios::binary);
 		if (!ofs.is_open()) {
 			ifs.close();
 			ShowErrorOnExporting(wxString::Format("failed to open %s", target_path));

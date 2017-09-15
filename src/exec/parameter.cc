@@ -35,7 +35,7 @@ int WriteParameter(void *data, int argc, char **argv, char **names)
 bool SaveParameters(const boost::filesystem::path &dir, sqlite3 *db)
 {
 	auto path = dir / "parameters.txt.tmp";
-	boost::filesystem::ofstream ofs(path);
+	boost::filesystem::ofstream ofs(path, std::ios::out|std::ios::binary);
 	if (!ofs.is_open()) {
 		std::cerr << "failed to open " << path << std::endl;
 		return false;

@@ -179,7 +179,7 @@ bool Generate(sqlite3 *input, const boost::filesystem::path &dir, int *job_id)
 			return false;
 		if (!CreateTable(output, "parameter_eqs", "(uuid BLOB, math TEXT)"))
 			return false;
-		boost::filesystem::ofstream ofs(filename, std::ios::out);
+		boost::filesystem::ofstream ofs(filename, std::ios::out|std::ios::binary);
 		if (!ofs) {
 			std::cerr << "failed to open " << filename << std::endl;;
 			return false;

@@ -137,7 +137,7 @@ bool Translate(const cli::RunOption &option, const boost::filesystem::path &dir)
 		}
 	} else {
 		// create the list of all variables
-		boost::filesystem::ofstream ofs(dir / "spec.txt", std::ios::out);
+		boost::filesystem::ofstream ofs(dir / "spec.txt", std::ios::out|std::ios::binary);
 		if (!ofs) {
 			std::cerr << "failed to open "
 					  << dir

@@ -88,7 +88,7 @@ wxThread::ExitCode ExportAllDialog::Entry()
 				wxQueueEvent(this, event);
 				continue;
 			}
-			std::ofstream ofs(static_cast<const char *>(target_path.c_str()), std::ios::out);
+			std::ofstream ofs(static_cast<const char *>(target_path.c_str()), std::ios::out|std::ios::binary);
 			if (!ofs.is_open()) {
 				ifs.close();
 				event = new wxThreadEvent;

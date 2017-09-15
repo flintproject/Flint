@@ -102,7 +102,7 @@ const cas::DimensionAnalyzer *TaskRunner::GetDimensionAnalyzer() const
 bool TaskRunner::CreateSpec(int id, sqlite3 *db)
 {
 	auto spec_file = dir_ / "spec.txt";
-	boost::filesystem::ofstream ofs(spec_file, std::ios::out);
+	boost::filesystem::ofstream ofs(spec_file, std::ios::out|std::ios::binary);
 	if (!ofs) {
 		std::cerr << "failed to open " << spec_file << std::endl;
 		return false;
