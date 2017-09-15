@@ -50,10 +50,13 @@ void ExportAllDialog::OnThreadUpdate(wxThreadEvent &event)
 	int i = event.GetInt();
 	if (i < 0) {
 		ShowErrorOnExporting(event.GetString());
+		Destroy();
 	} else if (i == 0) {
 		Pulse();
-	} else if (i <= 100) {
+	} else if (i < 100) {
 		Update(i);
+	} else {
+		Destroy();
 	}
 }
 
@@ -86,7 +89,7 @@ wxThread::ExitCode ExportAllDialog::Entry()
 				event->SetInt(-1);
 				event->SetString(wxString::Format("failed to open %s", source_file.GetFullPath()));
 				wxQueueEvent(this, event);
-				continue;
+				return static_cast<wxThread::ExitCode>(0);
 			}
 			std::ofstream ofs(static_cast<const char *>(target_path.c_str()), std::ios::out|std::ios::binary);
 			if (!ofs.is_open()) {
@@ -95,7 +98,7 @@ wxThread::ExitCode ExportAllDialog::Entry()
 				event->SetInt(-1);
 				event->SetString(wxString::Format("failed to open %s", target_path));
 				wxQueueEvent(this, event);
-				continue;
+				return static_cast<wxThread::ExitCode>(0);
 			}
 			isd2csv::Option option;
 			option.ignore_prefixes = false;
@@ -110,7 +113,7 @@ wxThread::ExitCode ExportAllDialog::Entry()
 				event->SetInt(-1);
 				event->SetString(wxString::Format("failed to export %s: %s", target_path, ec.Get()));
 				wxQueueEvent(this, event);
-				continue;
+				return static_cast<wxThread::ExitCode>(0);
 			}
 		} else { // ISD
 			if (!wxCopyFile(source_file.GetFullPath(), target_path)) {
@@ -118,7 +121,7 @@ wxThread::ExitCode ExportAllDialog::Entry()
 				event->SetInt(-1);
 				event->SetString(wxString::Format("failed to export %s", target_path));
 				wxQueueEvent(this, event);
-				continue;
+				return static_cast<wxThread::ExitCode>(0);
 			}
 		}
 	}
