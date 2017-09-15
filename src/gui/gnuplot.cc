@@ -71,7 +71,7 @@ bool PlotLineGraph(const LineGraphOption &option,
 		unsigned int id = ifp.first;
 		const auto &input_file = ifp.second;
 		os.put(' ');
-		PrintSingleQuoted(input_file.fn_str(), os);
+		PrintSingleQuoted(input_file.c_str(), os); // TODO: check locale-dependency
 		int n = 0;
 		for (auto p : option.y1) {
 			auto i = p.first;

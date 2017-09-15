@@ -11,14 +11,13 @@ namespace gui {
 std::string GetFnStrFromWxFileName(const wxFileName &fileName)
 {
 	wxString fullPath = fileName.GetFullPath();
-	return static_cast<const char *>(fullPath.fn_str()); // TODO: check locale-dependency
+	return fullPath.ToStdString(); // TODO: check locale-dependency
 }
 
 boost::filesystem::path GetPathFromWxFileName(const wxFileName &fileName)
 {
 	wxString fullPath = fileName.GetFullPath();
-	boost::filesystem::path path(fullPath.fn_str()); // TODO: check locale-dependency
-	return path;
+	return GetPathFromWxString(fullPath);
 }
 
 boost::filesystem::path GetPathFromWxString(const wxString &str)
