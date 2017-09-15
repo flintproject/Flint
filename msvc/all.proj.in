@@ -261,8 +261,7 @@
     <Exec Command='light -ext WixUIExtension flint.wixobj' WorkingDirectory='flint'/>
   </Target>
 
-  <Target Name='Install'
-          DependsOnTargets='Package'>
+  <Target Name='Install'>
     <Exec Command='msiexec /i flint.msi' WorkingDirectory='flint'/>
   </Target>
 
