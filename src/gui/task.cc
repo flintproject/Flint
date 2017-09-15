@@ -10,6 +10,7 @@
 #include <boost/interprocess/mapped_region.hpp>
 
 #include "gui/configuration.h"
+#include "gui/filename.h"
 #include "gui/job.h"
 #include "gui/simulation.h"
 
@@ -90,7 +91,7 @@ bool Task::RequestCancel() const
 {
 	try {
 		auto filename = GetControlFileName();
-		boost::interprocess::file_mapping fm(filename.GetFullPath().c_str(), // TODO: check locale-dependency
+		boost::interprocess::file_mapping fm(GetFnStrFromWxFileName(filename).c_str(),
 											 boost::interprocess::read_write);
 		boost::interprocess::mapped_region mr(fm, boost::interprocess::read_write);
 		char *p = static_cast<char *>(mr.get_address());

@@ -21,6 +21,7 @@
 
 #include "gui/configuration.h"
 #include "gui/document.h"
+#include "gui/filename.h"
 #include "gui/formula.h"
 #include "gui/simulation.h"
 
@@ -31,7 +32,7 @@ namespace {
 
 class Writer {
 public:
-	Writer(const Simulation *sim, const char *file);
+	Writer(const Simulation *sim, const wxString &file);
 
 	~Writer();
 
@@ -42,9 +43,9 @@ private:
 	FILE *fp_;
 };
 
-Writer::Writer(const Simulation *sim, const char *file)
+Writer::Writer(const Simulation *sim, const wxString &file)
 	: sim_(sim)
-	, fp_(std::fopen(file, "wb"))
+	, fp_(wxFopen(file, "wb"))
 {
 	if (!fp_)
 		wxLogError("failed to open %s", file);
@@ -156,8 +157,7 @@ bool Writer::operator()()
 
 bool WritePhsp(const Simulation *sim, const wxFileName &filename)
 {
-	auto path = filename.GetFullPath();
-	Writer writer(sim, path.c_str()); // TODO: check locale-dependency
+	Writer writer(sim, filename.GetFullPath());
 	return writer();
 }
 

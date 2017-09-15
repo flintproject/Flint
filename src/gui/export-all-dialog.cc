@@ -7,9 +7,12 @@
 
 #include <cstdlib>
 #include <iostream>
-#include <fstream>
+
+#define BOOST_FILESYSTEM_NO_DEPRECATED
+#include <boost/filesystem.hpp>
 
 #include "flint/error.h"
+#include "gui/filename.h"
 #include "gui/job.h"
 #include "gui/task.h"
 #include "gui/task-frame.h"
@@ -83,7 +86,7 @@ wxThread::ExitCode ExportAllDialog::Entry()
 		auto target_path = filename.GetFullPath();
 
 		if (type_ == 0) { // CSV
-			std::ifstream ifs(static_cast<const char *>(source_file.GetFullPath().c_str()), std::ios::in|std::ios::binary);
+			boost::filesystem::ifstream ifs(GetPathFromWxFileName(source_file), std::ios::in|std::ios::binary);
 			if (!ifs.is_open()) {
 				event = new wxThreadEvent;
 				event->SetInt(-1);
@@ -91,7 +94,7 @@ wxThread::ExitCode ExportAllDialog::Entry()
 				wxQueueEvent(this, event);
 				return static_cast<wxThread::ExitCode>(0);
 			}
-			std::ofstream ofs(static_cast<const char *>(target_path.c_str()), std::ios::out|std::ios::binary);
+			boost::filesystem::ofstream ofs(GetPathFromWxFileName(filename), std::ios::out|std::ios::binary);
 			if (!ofs.is_open()) {
 				ifs.close();
 				event = new wxThreadEvent;

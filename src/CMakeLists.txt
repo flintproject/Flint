@@ -289,8 +289,9 @@ add_executable(flint2 WIN32
     gui/document.cc
     gui/document/unit-of-time.cc
     gui/export-all-dialog.cc
-    gui/httpd.cc
+    gui/filename.cc
     gui/gnuplot.cc
+    gui/httpd.cc
     gui/job.cc
     gui/main-frame.cc
     gui/param-tree.cc

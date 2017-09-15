@@ -284,6 +284,7 @@ flint2_SOURCES = \
     gui/document.cc \
     gui/document/unit-of-time.cc \
     gui/export-all-dialog.cc \
+    gui/filename.cc \
     gui/gnuplot.cc \
     gui/httpd.cc \
     gui/job.cc \

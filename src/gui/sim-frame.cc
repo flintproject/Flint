@@ -11,6 +11,7 @@
 #pragma GCC diagnostic pop
 
 #include "exec.h"
+#include "gui/filename.h"
 #include "gui/main-frame.h"
 #include "gui/phsp.h"
 #include "gui/sedml.h"
@@ -148,8 +149,7 @@ wxThread::ExitCode SimFrame::Entry()
 	sim_dir.Mkdir(wxS_DIR_DEFAULT, wxPATH_MKDIR_FULL); // make sure that it exists
 
 	auto *main_frame = wxDynamicCast(GetParent(), MainFrame);
-	wxString data = sim_dir.GetFullPath();
-	result_ = exec::Exec(option_, data.c_str().AsChar(), &main_frame->arg());
+	result_ = exec::Exec(option_, GetPathFromWxFileName(sim_dir), &main_frame->arg());
 
 	wxQueueEvent(this, new wxThreadEvent);
 	return static_cast<wxThread::ExitCode>(0);

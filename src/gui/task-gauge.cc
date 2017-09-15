@@ -9,6 +9,8 @@
 #include <boost/interprocess/file_mapping.hpp>
 #include <boost/interprocess/mapped_region.hpp>
 
+#include "gui/filename.h"
+
 namespace flint {
 namespace gui {
 
@@ -57,7 +59,7 @@ wxThread::ExitCode TaskGauge::Entry()
 	// wait until progress files are ready
 	for (;;) {
 		try {
-			boost::interprocess::file_mapping fm(filename_.GetFullPath().c_str(), // TODO: check locale-dependency
+			boost::interprocess::file_mapping fm(GetFnStrFromWxFileName(filename_).c_str(),
 												 boost::interprocess::read_only);
 			mr = boost::interprocess::mapped_region(fm, boost::interprocess::read_only, 0, 1);
 			break;

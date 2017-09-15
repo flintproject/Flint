@@ -25,6 +25,7 @@
 
 #include <microhttpd.h>
 
+#include "gui/filename.h"
 #include "gui/main-frame.h"
 #include "run.h"
 #include "utf8path.h"
@@ -53,8 +54,7 @@ void Run(std::unique_ptr<cli::RunOption> &&option)
 	auto now = wxDateTime::Now();
 	fileName.AppendDir(now.Format("%F %T"));
 	fileName.Mkdir(wxS_DIR_DEFAULT, wxPATH_MKDIR_FULL); // make sure that it exists
-	auto dirPath = fileName.GetFullPath();
-	run::Run(*o, dirPath.c_str().AsChar());
+	run::Run(*o, GetPathFromWxFileName(fileName));
 }
 
 int AccessHandler(void *cls,

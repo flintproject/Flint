@@ -6,7 +6,6 @@
 #include "gui/view-frame.h"
 
 #include <cstring>
-#include <fstream>
 #include <iostream>
 #include <map>
 #include <memory>
@@ -17,6 +16,7 @@
 #include <boost/process/io.hpp>
 
 #include "gui/app.h"
+#include "gui/filename.h"
 #include "gui/gnuplot.h"
 #include "gui/job.h"
 #include "gui/task-frame.h"
@@ -274,10 +274,9 @@ bool ViewFrame::LoadVariables()
 	auto task_frame = wxDynamicCast(GetParent(), TaskFrame);
 	auto filename = task_frame->task().GetDirectoryName();
 	filename.SetFullName("isdh");
-	wxString full_path = filename.GetFullPath();
-	std::ifstream ifs(static_cast<const char *>(full_path.c_str()), std::ios::in|std::ios::binary);
+	boost::filesystem::ifstream ifs(GetPathFromWxFileName(filename), std::ios::in|std::ios::binary);
 	if (!ifs.is_open()) {
-		wxLogError("failed to open %s", full_path);
+		wxLogError("failed to open %s", filename.GetFullPath());
 		return false;
 	}
 	isdf::Reader reader;
@@ -285,7 +284,7 @@ bool ViewFrame::LoadVariables()
 	bool b = reader.ReadHeader(&ifs) && reader.SkipComment(&ifs) && reader.ReadDescriptions(handler, &ifs);
 	if (!b) {
 		ifs.close();
-		wxLogError("failed to load variables from %s", full_path);
+		wxLogError("failed to load variables from %s", filename.GetFullPath());
 		return false;
 	}
 	ifs.close();
@@ -294,7 +293,7 @@ bool ViewFrame::LoadVariables()
 
 	if (task_frame->task().HasObjective()) {
 		wxString dps_path = task_frame->task().GetDpsPath();
-		ifs.open(static_cast<const char *>(dps_path.c_str()), std::ios::in|std::ios::binary);
+		ifs.open(GetPathFromWxString(dps_path), std::ios::in|std::ios::binary);
 		if (!ifs.is_open()) {
 			wxLogError("failed to open %s", dps_path);
 			return false;

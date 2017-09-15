@@ -15,6 +15,7 @@
 #pragma GCC diagnostic pop
 
 #include "cli.pb.h"
+#include "gui/filename.h"
 #include "gui/httpd.h"
 #include "gui/main-frame.h"
 #include "gui/pref-page-general.h"
@@ -196,8 +197,7 @@ bool App::OnCmdLineParsed(wxCmdLineParser &parser)
 		auto fileName = GetFlintDirectory();
 		fileName.AppendDir(now.Format("%F %T"));
 		fileName.Mkdir(wxS_DIR_DEFAULT, wxPATH_MKDIR_FULL); // make sure that it exists
-		auto fullPath = fileName.GetFullPath();
-		std::exit(run::Run(option, fullPath.c_str().AsChar()) ? EXIT_SUCCESS : EXIT_FAILURE);
+		std::exit(run::Run(option, GetPathFromWxFileName(fileName)) ? EXIT_SUCCESS : EXIT_FAILURE);
 	}
 
 	for (const auto &arg : parser.GetArguments()) {

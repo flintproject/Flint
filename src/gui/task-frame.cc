@@ -8,15 +8,17 @@
 #include <cassert>
 #include <cstdlib>
 #include <iostream>
-#include <fstream>
 #include <vector>
 
+#define BOOST_FILESYSTEM_NO_DEPRECATED
+#include <boost/filesystem.hpp>
 #define BOOST_DATE_TIME_NO_LIB
 #include <boost/interprocess/file_mapping.hpp>
 
 #include "db/read-only-driver.h"
 #include "flint/error.h"
 #include "gui/export-all-dialog.h"
+#include "gui/filename.h"
 #include "gui/job.h"
 #include "gui/simulation.h"
 #include "gui/task.h"
@@ -192,12 +194,12 @@ void TaskFrame::Export(const Job &job)
 		return;
 	auto target_path = saveFileDialog.GetPath();
 	if (r == 0) { // CSV
-		std::ifstream ifs(static_cast<const char *>(source_file.GetFullPath().c_str()), std::ios::in|std::ios::binary);
+		boost::filesystem::ifstream ifs(GetPathFromWxFileName(source_file), std::ios::in|std::ios::binary);
 		if (!ifs.is_open()) {
 			ShowErrorOnExporting(wxString::Format("failed to open %s", source_file.GetFullPath()));
 			return;
 		}
-		std::ofstream ofs(static_cast<const char *>(target_path.c_str()), std::ios::out|std::ios::binary);
+		boost::filesystem::ofstream ofs(GetPathFromWxString(target_path), std::ios::out|std::ios::binary);
 		if (!ofs.is_open()) {
 			ifs.close();
 			ShowErrorOnExporting(wxString::Format("failed to open %s", target_path));
@@ -297,7 +299,7 @@ void TaskFrame::LoadItems()
 		data_view_->AppendTextColumn("RSS", wxDATAVIEW_CELL_INERT, wxDVC_DEFAULT_WIDTH);
 		try {
 			auto rss_filename = task_.GetRssFileName();
-			boost::interprocess::file_mapping rss_fm(rss_filename.GetFullPath().c_str(),
+			boost::interprocess::file_mapping rss_fm(GetFnStrFromWxFileName(rss_filename).c_str(),
 													 boost::interprocess::read_only);
 			rss_mr_ = boost::interprocess::mapped_region(rss_fm, boost::interprocess::read_only);
 		} catch (const boost::interprocess::interprocess_exception &) {
@@ -307,7 +309,7 @@ void TaskFrame::LoadItems()
 
 	try {
 		auto filename = task_.GetProgressFileName();
-		boost::interprocess::file_mapping fm(filename.GetFullPath().c_str(),
+		boost::interprocess::file_mapping fm(GetFnStrFromWxFileName(filename).c_str(),
 											 boost::interprocess::read_only);
 		mr_ = boost::interprocess::mapped_region(fm, boost::interprocess::read_only);
 	} catch (const boost::interprocess::interprocess_exception &) {
@@ -317,12 +319,11 @@ void TaskFrame::LoadItems()
 	// FIXME: the database can be busy
 	auto filename = task_.GetDirectoryName();
 	filename.SetFullName("task.db");
-	auto full_path = filename.GetFullPath();
-	db::ReadOnlyDriver driver(full_path.c_str());
-	if (!driver.db())
+	auto driver = db::ReadOnlyDriver::Create(GetPathFromWxFileName(filename));
+	if (!driver->db())
 		return;
 	char *em;
-	int e = sqlite3_exec(driver.db(), "SELECT rowid, * FROM parameter_samples", &Process, this, &em);
+	int e = sqlite3_exec(driver->db(), "SELECT rowid, * FROM parameter_samples", &Process, this, &em);
 	if (e != SQLITE_OK)
 		if (e != SQLITE_ABORT)
 			wxLogError(em);

@@ -9,6 +9,7 @@
 #include <boost/interprocess/file_mapping.hpp>
 #include <boost/interprocess/mapped_region.hpp>
 
+#include "gui/filename.h"
 #include "gui/simulation.h"
 #include "gui/task.h"
 
@@ -47,7 +48,7 @@ int Job::GetProgress() const
 {
 	try {
 		auto filename = task.GetProgressFileName();
-		boost::interprocess::file_mapping fm(filename.GetFullPath().c_str(), // TODO: check locale-dependency
+		boost::interprocess::file_mapping fm(GetFnStrFromWxFileName(filename).c_str(),
 											 boost::interprocess::read_only);
 		boost::interprocess::mapped_region mr(fm, boost::interprocess::read_only, id, 1);
 		return static_cast<int>(*static_cast<char *>(mr.get_address()));
@@ -60,7 +61,7 @@ bool Job::IsCanceled() const
 {
 	try {
 		auto filename = task.GetControlFileName();
-		boost::interprocess::file_mapping fm(filename.GetFullPath().c_str(), // TODO: check locale-dependency
+		boost::interprocess::file_mapping fm(GetFnStrFromWxFileName(filename).c_str(),
 											 boost::interprocess::read_only);
 		boost::interprocess::mapped_region mr(fm, boost::interprocess::read_only, id, 1);
 		return *static_cast<char *>(mr.get_address()) == 1;
