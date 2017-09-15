@@ -444,8 +444,8 @@ wxThread::ExitCode ExportToCHelper::Entry()
 
 void MainFrame::OnExportToC(wxCommandEvent &)
 {
-	auto count = notebook_->GetPageCount();
-	if (count == 0)
+	auto i = notebook_->GetSelection();
+	if (i == wxNOT_FOUND)
 		return;
 
 	wxFileDialog saveFileDialog(this,
@@ -457,7 +457,7 @@ void MainFrame::OnExportToC(wxCommandEvent &)
 	if (saveFileDialog.ShowModal() == wxID_CANCEL)
 		return;
 
-	auto page = notebook_->GetPage(0);
+	auto page = notebook_->GetPage(i);
 	auto notebook = wxStaticCast(page, wxNotebook);
 	auto p0 = notebook->GetPage(0);
 	auto gsw = wxStaticCast(p0, GeneralSetttingsWindow);
