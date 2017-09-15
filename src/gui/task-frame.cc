@@ -221,7 +221,7 @@ void TaskFrame::Export(const Job &job)
 			return;
 		}
 	}
-	wxMessageBox(wxString::Format("exported to %s successuflly", target_path), "Exported");
+	wxMessageBox(wxString::Format("exported to %s successfully", target_path), "Exported");
 }
 
 void TaskFrame::ExportAll()
