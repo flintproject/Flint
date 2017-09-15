@@ -91,12 +91,18 @@ const wxCmdLineEntryDesc kCommandLineDesc[] =
 /*
  * We need this as we have to change directory before simulation.
  */
-std::string GetAbsoluteFilename(const wxString &file)
+wxFileName GetAbsoluteFilename(const wxString &file)
 {
 	wxFileName fileName(file);
 	if (!fileName.IsAbsolute())
 		fileName.MakeAbsolute();
-	return fileName.GetFullPath().ToStdString();
+	return fileName;
+}
+
+std::string GetAbsoluteFilenameInUtf8(const wxString &file)
+{
+	auto fileName = GetAbsoluteFilename(file);
+	return fileName.GetFullPath().utf8_str().data();
 }
 
 wxFileName GetFlintDirectory()
@@ -161,11 +167,11 @@ bool App::OnCmdLineParsed(wxCmdLineParser &parser)
 		wxString param0 = parser.GetParam(0);
 		wxString param1 = parser.GetParam(1);
 		cli::RunOption option;
-		option.set_model_filename(GetAbsoluteFilename(param0));
-		option.set_output_filename(GetAbsoluteFilename(param1));
+		option.set_model_filename(GetAbsoluteFilenameInUtf8(param0));
+		option.set_output_filename(GetAbsoluteFilenameInUtf8(param1));
 		wxString e;
 		if (parser.Found("e", &e))
-			option.set_error_filename(GetAbsoluteFilename(e));
+			option.set_error_filename(GetAbsoluteFilenameInUtf8(e));
 		long g;
 		if (parser.Found("g", &g)) {
 			if (g <= 0) {
@@ -184,7 +190,7 @@ bool App::OnCmdLineParsed(wxCmdLineParser &parser)
 		}
 		wxString s;
 		if (parser.Found("s", &s))
-			option.set_spec_filename(GetAbsoluteFilename(s));
+			option.set_spec_filename(GetAbsoluteFilenameInUtf8(s));
 
 		auto now = wxDateTime::Now();
 		auto fileName = GetFlintDirectory();
@@ -195,8 +201,10 @@ bool App::OnCmdLineParsed(wxCmdLineParser &parser)
 	}
 
 	for (const auto &arg : parser.GetArguments()) {
-		if (arg.GetKind() == wxCMD_LINE_PARAM)
-			input_files_.Add(GetAbsoluteFilename(arg.GetStrVal()));
+		if (arg.GetKind() == wxCMD_LINE_PARAM) {
+			auto fileName = GetAbsoluteFilename(arg.GetStrVal());
+			input_files_.Add(fileName.GetFullPath());
+		}
 	}
 	return true;
 }

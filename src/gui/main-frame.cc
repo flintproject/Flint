@@ -422,8 +422,8 @@ void ExportToCHelper::OnThreadUpdate(wxThreadEvent &)
 wxThread::ExitCode ExportToCHelper::Entry()
 {
 	cli::RunOption option;
-	option.set_model_filename(input_path_.ToStdString());
-	option.set_output_filename(output_path_.ToStdString());
+	option.set_model_filename(input_path_.utf8_str().data());
+	option.set_output_filename(output_path_.utf8_str().data());
 
 	wxFileName fileName;
 	fileName.AssignHomeDir();
