@@ -155,7 +155,7 @@
   </Target>
 
   <Target Name='libmicrohttpd'
-          Inputs='tmp\libmicrohttpd-$(LIBMICROHTTPD_VERSION)'
+          Inputs='tmp\libmicrohttpd-$(LIBMICROHTTPD_VERSION)-w32-bin'
           Outputs='tmp\libmicrohttpd-$(LIBMICROHTTPD_VERSION).installed'>
     <Copy SourceFiles='@(libmicrohttpdLibraryFiles)' DestinationFiles="@(libmicrohttpdLibraryFiles->'$(PREFIX)\lib\%(Filename)%(Extension)')"/>
     <Copy SourceFiles='@(libmicrohttpdHeaderFiles)' DestinationFiles="@(libmicrohttpdHeaderFiles->'$(PREFIX)\include\%(Filename)%(Extension)')"/>
