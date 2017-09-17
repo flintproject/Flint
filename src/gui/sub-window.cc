@@ -6,8 +6,14 @@
 #include "gui/sub-window.h"
 
 #include <cassert>
+#include <limits>
 #include <memory>
 #include <sstream>
+
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wcast-qual"
+#include <wx/valnum.h>
+#pragma GCC diagnostic pop
 
 #include "flint/numeric.h"
 #include "gui/document.h"
@@ -24,25 +30,50 @@ GeneralSetttingsWindow::GeneralSetttingsWindow(wxWindow *parent, Document *doc)
 								  wxDefaultPosition,
 								  wxDefaultSize,
 								  doc_->choices_method()))
-	, text_length_(new wxTextCtrl(this, wxID_ANY))
+	, text_length_(new wxTextCtrl(this,
+								  wxID_ANY,
+								  wxEmptyString,
+								  wxDefaultPosition,
+								  wxDefaultSize,
+								  0, // style
+								  wxFloatingPointValidator<double>(nullptr, wxNUM_VAL_ZERO_AS_BLANK|wxNUM_VAL_NO_TRAILING_ZEROES)))
 	, choice_length_(new wxChoice(this,
 								  wxID_ANY,
 								  wxDefaultPosition,
 								  wxDefaultSize,
 								  doc_->choices_time()))
-	, text_step_(new wxTextCtrl(this, wxID_ANY))
+	, text_step_(new wxTextCtrl(this,
+								wxID_ANY,
+								wxEmptyString,
+								wxDefaultPosition,
+								wxDefaultSize,
+								0, // style
+								wxFloatingPointValidator<double>(nullptr, wxNUM_VAL_ZERO_AS_BLANK|wxNUM_VAL_NO_TRAILING_ZEROES)))
 	, choice_step_(new wxChoice(this,
 								wxID_ANY,
 								wxDefaultPosition,
 								wxDefaultSize,
 								doc_->choices_time()))
-	, spin_start_(new wxSpinCtrlDouble(this))
+	, text_start_(new wxTextCtrl(this,
+								 wxID_ANY,
+								 wxEmptyString,
+								 wxDefaultPosition,
+								 wxDefaultSize,
+								 0, // style
+								 wxFloatingPointValidator<double>(nullptr, wxNUM_VAL_ZERO_AS_BLANK|wxNUM_VAL_NO_TRAILING_ZEROES)))
 	, choice_start_(new wxChoice(this,
 								 wxID_ANY,
 								 wxDefaultPosition,
 								 wxDefaultSize,
 								 doc_->choices_time()))
-	, spin_granularity_(new wxSpinCtrl(this))
+	, spin_granularity_(new wxSpinCtrl(this,
+									   wxID_ANY,
+									   wxEmptyString,
+									   wxDefaultPosition,
+									   wxDefaultSize,
+									   wxSP_ARROW_KEYS,
+									   1, // minimal value
+									   std::numeric_limits<int>::max())) // maximal value
 {
 	// controls
 	bool b = choice_method_->SetStringSelection(doc_->initial_config().method);
@@ -51,7 +82,7 @@ GeneralSetttingsWindow::GeneralSetttingsWindow(wxWindow *parent, Document *doc)
 	choice_length_->SetSelection(doc_->initial_config().length_unit);
 	*text_step_ << doc_->initial_config().step;
 	choice_step_->SetSelection(doc_->initial_config().step_unit);
-	spin_start_->SetValue(doc_->initial_config().start);
+	*text_start_ << doc_->initial_config().start;
 	choice_start_->SetSelection(doc_->initial_config().start_unit);
 	spin_granularity_->SetValue(doc_->initial_config().granularity);
 
@@ -70,7 +101,7 @@ GeneralSetttingsWindow::GeneralSetttingsWindow(wxWindow *parent, Document *doc)
 	vbox0->Add(grid0, 0, wxEXPAND);
 	auto grid1 = new wxGridSizer(2, 4, 5, 5);
 	grid1->Add(new wxStaticText(this, wxID_ANY, "Starting from"), 0, wxEXPAND|wxALIGN_CENTER_VERTICAL);
-	grid1->Add(spin_start_, 0, wxEXPAND|wxALIGN_CENTER_VERTICAL);
+	grid1->Add(text_start_, 0, wxEXPAND|wxALIGN_CENTER_VERTICAL);
 	grid1->Add(choice_start_, 0, wxEXPAND|wxALIGN_CENTER_VERTICAL);
 	grid1->Add(new wxStaticText(this, wxID_ANY, ""), 0, wxEXPAND|wxALIGN_CENTER_VERTICAL);
 	grid1->Add(new wxStaticText(this, wxID_ANY, "Data Sampling"), 0, wxEXPAND|wxALIGN_CENTER_VERTICAL);
@@ -92,7 +123,8 @@ void GeneralSetttingsWindow::Write(Configuration *config) const
 	config->length_unit = choice_length_->GetSelection();
 	config->step = text_step_->GetValue();
 	config->step_unit = choice_step_->GetSelection();
-	config->start = spin_start_->GetValue();
+	if (!text_start_->GetValue().ToDouble(&config->start))
+		config->start = 0;
 	config->start_unit = choice_step_->GetSelection();
 	config->granularity = spin_granularity_->GetValue();
 }

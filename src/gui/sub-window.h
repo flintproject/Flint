@@ -40,7 +40,7 @@ private:
 	wxChoice *choice_length_;
 	wxTextCtrl *text_step_;
 	wxChoice *choice_step_;
-	wxSpinCtrlDouble *spin_start_;
+	wxTextCtrl *text_start_;
 	wxChoice *choice_start_;
 	wxSpinCtrl *spin_granularity_;
 };
