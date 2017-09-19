@@ -141,6 +141,7 @@ bool App::OnInit()
 
 	auto frame = new MainFrame(input_files_);
 	SetTopWindow(frame);
+	frame->CentreOnScreen();
 	frame->Show();
 
 	pref_editor_ = nullptr;

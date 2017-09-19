@@ -79,14 +79,13 @@ enum {
 MainFrame::MainFrame(wxArrayString &input_files)
 	: wxFrame(nullptr, wxID_ANY, wxTheApp->GetAppDisplayName())
 	, input_files_(input_files)
+	, manager_(this)
 	, notebook_(nullptr)
 	, item_export_to_c_(nullptr)
 	, next_open_id_(1)
 	, next_simulation_id_(1)
 	, last_dir_(wxFileName::GetHomeDir())
 {
-	manager_.SetManagedWindow(this);
-
 	// menus
 	auto menuFile = new wxMenu;
 	menuFile->Append(wxID_OPEN, "Open\tCTRL+O");
@@ -126,7 +125,9 @@ MainFrame::MainFrame(wxArrayString &input_files)
 	CreateStatusBar();
 	SetStatusText("Ready");
 
-	SetMinSize(wxSize(960, 600));
+	auto size = wxSize(750, 500);
+	SetMinSize(size);
+	SetSize(size);
 
 	// panes
 	button_run_ = new wxButton(this, wxID_ANY, "&Run");
