@@ -14,6 +14,9 @@
 #define BOOST_FILESYSTEM_NO_DEPRECATED
 #include <boost/filesystem.hpp>
 #include <boost/process/io.hpp>
+#ifdef _WIN32
+#include <boost/process/windows.hpp>
+#endif
 
 #include "gui/app.h"
 #include "gui/filename.h"
@@ -137,7 +140,15 @@ void ViewFrame::Plot()
 			wxLogError("choose a valid gnuplot executable at Preferences");
 			return;
 		}
-		child_.reset(new boost::process::child(gnuplot_executable, "-persist", boost::process::std_in < pipe_));
+		child_.reset(new boost::process::child(gnuplot_executable,
+											   "-persist",
+											   "-raise",
+#ifdef _WIN32
+											   boost::process::windows::minimized_not_active,
+#endif
+											   boost::process::std_in < pipe_,
+											   boost::process::std_out > boost::process::null,
+											   boost::process::std_err > boost::process::null));
 		if (!child_->valid()) {
 			wxLogError("failed to call gnuplot");
 			return;
