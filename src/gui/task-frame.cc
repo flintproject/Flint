@@ -259,7 +259,7 @@ int TaskFrame::AddParameterSample(int argc, char **argv, char **names)
 
 	if (data_view_->GetItemCount() == 0) {
 		for (int i=1;i<argc;i++)
-			data_view_->AppendTextColumn(names[i]);
+			data_view_->AppendTextColumn(names[i])->SetSortable(true);
 	}
 
 	int id = std::atoi(argv[0]);
@@ -292,11 +292,11 @@ int Process(void *data, int argc, char **argv, char **names)
 
 void TaskFrame::LoadItems()
 {
-	data_view_->AppendTextColumn("ID", wxDATAVIEW_CELL_INERT, wxDVC_DEFAULT_WIDTH, wxALIGN_RIGHT);
-	data_view_->AppendProgressColumn("Progress");
-	data_view_->AppendTextColumn("Status", wxDATAVIEW_CELL_INERT, wxDVC_DEFAULT_WIDTH, wxALIGN_RIGHT);
+	data_view_->AppendTextColumn("ID", wxDATAVIEW_CELL_INERT, wxDVC_DEFAULT_WIDTH, wxALIGN_RIGHT)->SetSortable(true);
+	data_view_->AppendProgressColumn("Progress")->SetSortable(true);
+	data_view_->AppendTextColumn("Status", wxDATAVIEW_CELL_INERT, wxDVC_DEFAULT_WIDTH, wxALIGN_RIGHT)->SetSortable(true);
 	if (task_.HasObjective()) {
-		data_view_->AppendTextColumn("RSS", wxDATAVIEW_CELL_INERT, wxDVC_DEFAULT_WIDTH);
+		data_view_->AppendTextColumn("RSS", wxDATAVIEW_CELL_INERT, wxDVC_DEFAULT_WIDTH)->SetSortable(true);
 		try {
 			auto rss_filename = task_.GetRssFileName();
 			boost::interprocess::file_mapping rss_fm(GetFnStrFromWxFileName(rss_filename).c_str(),

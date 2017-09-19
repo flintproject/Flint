@@ -251,10 +251,10 @@ ParametersWindow::ParametersWindow(wxWindow *parent, const Document *doc)
 	auto button = new wxButton(this, wxID_ANY, "Edit parameter set");
 	button->Bind(wxEVT_BUTTON, &ParametersWindow::OnEditParameterSet, this);
 
-	parameters_->AppendTextColumn("Module", wxDATAVIEW_CELL_INERT, wxDVC_DEFAULT_WIDTH);
-	parameters_->AppendTextColumn("PQ", wxDATAVIEW_CELL_INERT, wxDVC_DEFAULT_WIDTH);
-	parameters_->AppendTextColumn("Type");
-	parameters_->AppendTextColumn("Expression", wxDATAVIEW_CELL_EDITABLE);
+	parameters_->AppendTextColumn("Module", wxDATAVIEW_CELL_INERT, wxDVC_DEFAULT_WIDTH)->SetSortable(true);
+	parameters_->AppendTextColumn("PQ", wxDATAVIEW_CELL_INERT, wxDVC_DEFAULT_WIDTH)->SetSortable(true);
+	parameters_->AppendTextColumn("Type")->SetSortable(true);
+	parameters_->AppendTextColumn("Expression", wxDATAVIEW_CELL_EDITABLE)->SetSortable(true);
 
 	std::ostringstream oss;
 	RequestMaxNumOfDigitsForDouble(oss);
