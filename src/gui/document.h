@@ -5,6 +5,9 @@
 #include <unordered_map>
 #include <vector>
 
+#define BOOST_FILESYSTEM_NO_DEPRECATED
+#include <boost/filesystem.hpp>
+
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wcast-qual"
 #include <wx/wx.h>
@@ -21,9 +24,7 @@ namespace gui {
 class Document
 {
 public:
-	Document(int id, const wxString &path, std::vector<double> data);
-
-	int id() const {return id_;}
+	Document(const boost::filesystem::path &dir, const wxString &path, std::vector<double> data);
 
 	const wxString &path() const {return path_;}
 
@@ -53,7 +54,7 @@ private:
 	bool LoadParam();
 	bool LoadVar();
 
-	int id_;
+	boost::filesystem::path dir_;
 	const wxString path_;
 	file::Format format_;
 	std::vector<double> data_;

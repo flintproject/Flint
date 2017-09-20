@@ -5,12 +5,13 @@
 
 #include "gui/document.h"
 
+#include <array>
 #include <cassert>
 #include <cstdio>
 #include <cstdlib>
-#include <fstream>
 #include <iostream>
-#include <memory>
+
+#include <boost/filesystem/fstream.hpp>
 
 #include "bc/index.h"
 #include "bc/pack.h"
@@ -20,8 +21,8 @@
 namespace flint {
 namespace gui {
 
-Document::Document(int id, const wxString &path, std::vector<double> data)
-	: id_(id)
+Document::Document(const boost::filesystem::path &dir, const wxString &path, std::vector<double> data)
+	: dir_(dir)
 	, path_(path)
 	, data_(std::move(data))
 {
@@ -47,10 +48,8 @@ bool Document::Load()
 	if (!LoadFileFormat())
 		return false;
 
-	std::unique_ptr<char[]> buf(new char[64]); // large enough
-	std::sprintf(buf.get(), "%d/model.db", id_);
-	db::ReadOnlyDriver driver(buf.get());
-	auto db = driver.db();
+	auto driver = db::ReadOnlyDriver::Create(dir_ / "model.db");
+	auto db = driver->db();
 	if (!db)
 		return false;
 	if (!LoadUnitOfTime(db))
@@ -78,21 +77,20 @@ bool Document::Load()
 
 bool Document::LoadFileFormat()
 {
-	std::unique_ptr<char[]> buf(new char[64]); // large enough
-	std::sprintf(buf.get(), "%d/file.txt", id_);
-	std::ifstream ifs(buf.get());
+	boost::filesystem::ifstream ifs(dir_ / "file.txt", std::ios::in);
 	if (!ifs) {
-		wxLogError("failed to open %s", buf.get());
+		wxLogError("failed to open file.txt");
 		return false;
 	}
-	ifs.getline(buf.get(), 64);
+	std::array<char, 64> buf;
+	ifs.getline(buf.data(), 64);
 	auto c = ifs.gcount();
 	if (c <= 0) {
-		wxLogError("failed to read %s", buf.get());
+		wxLogError("failed to read %s", buf.data());
 		return false;
 	}
 	ifs.close();
-	std::string s(buf.get());
+	std::string s(buf.data());
 	if (s == "cellml") {
 		format_ = file::kCellml;
 		return true;
@@ -111,11 +109,9 @@ bool Document::LoadFileFormat()
 
 bool Document::LoadNc()
 {
-	std::unique_ptr<char[]> buf(new char[64]); // large enough
-	std::sprintf(buf.get(), "%d/nc", id_);
-	std::ifstream ifs(buf.get(), std::ios::binary);
+	boost::filesystem::ifstream ifs(dir_ / "nc", std::ios::in|std::ios::binary);
 	if (!ifs) {
-		wxLogError("failed to open %s", buf.get());
+		wxLogError("failed to open nc");
 		return false;
 	}
 	phml::NumericalConfiguration nc;
@@ -155,11 +151,9 @@ bool Document::LoadNc()
 
 bool Document::LoadParam()
 {
-	std::unique_ptr<char[]> buf(new char[64]); // large enough
-	std::sprintf(buf.get(), "%d/param", id_);
-	std::ifstream ifs(buf.get(), std::ios::binary);
+	boost::filesystem::ifstream ifs(dir_ / "param", std::ios::in|std::ios::binary);
 	if (!ifs) {
-		wxLogError("failed to open %s", buf.get());
+		wxLogError("failed to open param");
 		return false;
 	}
 	lo::Header header;
@@ -179,11 +173,9 @@ bool Document::LoadParam()
 
 bool Document::LoadVar()
 {
-	std::unique_ptr<char[]> buf(new char[64]); // large enough
-	std::sprintf(buf.get(), "%d/var", id_);
-	std::ifstream ifs(buf.get(), std::ios::binary);
+	boost::filesystem::ifstream ifs(dir_ / "var", std::ios::in|std::ios::binary);
 	if (!ifs) {
-		wxLogError("failed to open %s", buf.get());
+		wxLogError("failed to open var");
 		return false;
 	}
 	lo::Header header;

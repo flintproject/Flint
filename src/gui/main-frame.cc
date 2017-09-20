@@ -267,7 +267,7 @@ wxThread::ExitCode OpenFileHelper::Entry()
 	std::unique_ptr<task::Task> task(load::Load(utf8path.data(), load::ConfigMode::kOpen, dir, &data));
 	if (task) {
 		wxCriticalSectionLocker lock(cs_);
-		doc_ = new Document(id_, path_, data);
+		doc_ = new Document(dir, path_, data);
 		if (!doc_->Load()) {
 			delete doc_;
 			doc_ = nullptr;
