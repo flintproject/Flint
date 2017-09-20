@@ -8,7 +8,6 @@
 #include <cassert>
 #include <cstdlib>
 #include <cstring>
-#include <fstream>
 #include <iostream>
 #include <memory>
 #include <string>
@@ -65,7 +64,7 @@ public:
 		}
 	}
 
-	void Write(std::ofstream *ofs) const {
+	void Write(std::ostream *os) const {
 		isdf::ISDFHeader header;
 		header.num_objs = num_objs_;
 		header.num_bytes_comment = 0;
@@ -74,19 +73,19 @@ public:
 
 		char buf[sizeof(isdf::ISDFHeader)];
 		std::memcpy(buf, &header, sizeof(header));
-		ofs->write(buf, sizeof(header));
+		os->write(buf, sizeof(header));
 
 		for (const auto &desc : descriptions_) {
 			std::uint32_t len = desc.size();
 			std::memcpy(buf, &len, sizeof(len));
-			ofs->write(buf, sizeof(len));
-			ofs->write(desc.c_str(), len);
+			os->write(buf, sizeof(len));
+			os->write(desc.c_str(), len);
 		}
 		for (const auto &u : units_) {
 			std::uint32_t len = u.size();
 			std::memcpy(buf, &len, sizeof(len));
-			ofs->write(buf, sizeof(len));
-			ofs->write(u.c_str(), len);
+			os->write(buf, sizeof(len));
+			os->write(u.c_str(), len);
 		}
 	}
 
