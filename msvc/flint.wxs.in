@@ -2,8 +2,8 @@
 <Wix xmlns='http://schemas.microsoft.com/wix/2006/wi'>
   <Product Id='f6d0d912-1a72-11e1-8967-9344df455682' Name='Flint' Language='1033'
            Version='VERSION' Manufacturer='Flint project' UpgradeCode='0223581c-1a73-11e1-b0fd-1f82e9961ce5'>
-    <Package Description='Flint is a simulator for physiome.'
-             Comments='Flint is a simulator for physiome.'
+    <Package Description='Flint is a simulator for biological and physiological models.'
+             Comments='Flint is a simulator for biological and physiological models.'
              Manufacturer='Flint project'
              InstallScope='perMachine' InstallerVersion='405' Compressed='yes' />
 
@@ -26,7 +26,7 @@
             <File Id='flint2.exe' Name='flint2.exe' DiskId='1' Source='flint2.exe' />
             <Shortcut Id='flint_desktop_shortcut' Name='Flint'
                       Directory='DesktopFolder'
-                      Description='Flint is a simulator for physiome.'
+                      Description='Flint is a simulator for biological and physiological models.'
                       Icon='flint.ico'
                       WorkingDirectory='FLINTDIR'
                       Advertise='yes' />
@@ -140,7 +140,7 @@
         <Directory Id='ApplicationProgramsFolder' Name='Flint'>
           <Component Id='flint_startmenu' Guid='d02d13fa-1a7e-11e1-8d61-5f7cc3fac917'>
             <Shortcut Id='flint_startmenu_shortcut' Name='Flint'
-                      Description='Flint is a simulator for physiome.'
+                      Description='Flint is a simulator for biological and physiological models.'
                       Icon='flint.ico'
                       Target='[FLINTDIR]flint2.exe'
                       WorkingDirectory='FLINTDIR' />
