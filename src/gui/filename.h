@@ -15,6 +15,8 @@
 namespace flint {
 namespace gui {
 
+void AppendCurrentTimestampDir(wxFileName &fileName);
+
 std::string GetFnStrFromWxFileName(const wxFileName &fileName);
 
 boost::filesystem::path GetPathFromWxFileName(const wxFileName &fileName);

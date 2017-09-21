@@ -51,8 +51,7 @@ void Run(std::unique_ptr<cli::RunOption> &&option)
 	fileName.AssignHomeDir();
 	fileName.AppendDir(".flint");
 	fileName.AppendDir("2");
-	auto now = wxDateTime::Now();
-	fileName.AppendDir(now.Format("%F %T"));
+	AppendCurrentTimestampDir(fileName);
 	fileName.Mkdir(wxS_DIR_DEFAULT, wxPATH_MKDIR_FULL); // make sure that it exists
 	run::Run(*o, GetPathFromWxFileName(fileName));
 }

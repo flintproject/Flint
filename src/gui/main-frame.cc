@@ -430,8 +430,7 @@ wxThread::ExitCode ExportToCHelper::Entry()
 	fileName.AssignHomeDir();
 	fileName.AppendDir(".flint");
 	fileName.AppendDir("2");
-	auto now = wxDateTime::Now();
-	fileName.AppendDir(now.Format("%F %T"));
+	AppendCurrentTimestampDir(fileName);
 	fileName.Mkdir(wxS_DIR_DEFAULT, wxPATH_MKDIR_FULL); // make sure that it exists
 
 	boost::filesystem::path dir(fileName.GetFullPath().ToStdString());

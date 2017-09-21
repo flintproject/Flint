@@ -196,7 +196,7 @@ bool App::OnCmdLineParsed(wxCmdLineParser &parser)
 
 		auto now = wxDateTime::Now();
 		auto fileName = GetFlintDirectory();
-		fileName.AppendDir(now.Format("%F %T"));
+		AppendCurrentTimestampDir(fileName);
 		fileName.Mkdir(wxS_DIR_DEFAULT, wxPATH_MKDIR_FULL); // make sure that it exists
 		std::exit(run::Run(option, GetPathFromWxFileName(fileName)) ? EXIT_SUCCESS : EXIT_FAILURE);
 	}

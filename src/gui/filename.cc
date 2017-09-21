@@ -5,8 +5,22 @@
 
 #include "gui/filename.h"
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wcast-qual"
+#include <wx/wx.h>
+#pragma GCC diagnostic pop
+
+#include <cassert>
+
 namespace flint {
 namespace gui {
+
+void AppendCurrentTimestampDir(wxFileName &fileName)
+{
+	auto now = wxDateTime::Now();
+	bool b = fileName.AppendDir(now.Format("%Y%m%d-%H%M%S"));
+	assert(b);
+}
 
 std::string GetFnStrFromWxFileName(const wxFileName &fileName)
 {
