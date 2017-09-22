@@ -27,6 +27,7 @@
 #include "flint/tr.h"
 #include "gui/app.h"
 #include "gui/document.h"
+#include "gui/filename.h"
 #include "gui/sim-frame.h"
 #include "gui/simulation.h"
 #include "gui/sub-window.h"

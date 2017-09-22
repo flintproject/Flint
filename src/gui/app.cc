@@ -194,7 +194,6 @@ bool App::OnCmdLineParsed(wxCmdLineParser &parser)
 		if (parser.Found("s", &s))
 			option.set_spec_filename(GetAbsoluteFilenameInUtf8(s));
 
-		auto now = wxDateTime::Now();
 		auto fileName = GetFlintDirectory();
 		AppendCurrentTimestampDir(fileName);
 		fileName.Mkdir(wxS_DIR_DEFAULT, wxPATH_MKDIR_FULL); // make sure that it exists
