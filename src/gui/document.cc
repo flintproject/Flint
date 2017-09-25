@@ -54,8 +54,6 @@ bool Document::Load()
 		return false;
 	if (!LoadUnitOfTime(db))
 		return false;
-	if (choices_time_.empty())
-		choices_time_.push_back("unit time");
 	choices_method_.push_back("Euler");
 	choices_method_.push_back("Runge Kutta");
 	choices_method_.push_back("ARK");
@@ -72,7 +70,9 @@ bool Document::Load()
 	initial_config_.filter_pattern = "Wildcard";
 	initial_config_.filter_value = "*";
 
-	return LoadNc() && LoadParam() && LoadVar();
+	return (format_ != file::kPhml || LoadNc())
+		&& LoadParam()
+		&& LoadVar();
 }
 
 bool Document::LoadFileFormat()

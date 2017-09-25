@@ -149,23 +149,30 @@ bool IsOfTime(const UnitMap &units, int id, long *denominator, long *numerator)
 
 bool Document::LoadUnitOfTime(sqlite3 *db)
 {
-	UnitMap units;
-	{
-		UnitMapLoader loader(db);
-		if (!loader.Load(&units))
-			return false;
-	}
-
-	int i = 0;
-	long d, n;
-	for (UnitMap::const_iterator it=units.begin();it!=units.end();++it) {
-		if (IsOfTime(units, it->first, &d, &n)) {
-			choices_time_.push_back(it->second->name());
-			denominators_time_.push_back(d);
-			numerators_time_.push_back(n);
-			auto p = ids_time_.emplace(it->first, i++);
-			assert(p.second);
+	if (format_ == file::kPhml) {
+		UnitMap units;
+		{
+			UnitMapLoader loader(db);
+			if (!loader.Load(&units))
+				return false;
 		}
+
+		int i = 0;
+		long d, n;
+		for (UnitMap::const_iterator it=units.begin();it!=units.end();++it) {
+			if (IsOfTime(units, it->first, &d, &n)) {
+				choices_time_.push_back(it->second->name());
+				denominators_time_.push_back(d);
+				numerators_time_.push_back(n);
+				auto p = ids_time_.emplace(it->first, i++);
+				assert(p.second);
+			}
+		}
+	}
+	if (choices_time_.empty()) {
+		choices_time_.push_back("unit time");
+		denominators_time_.push_back(1);
+		numerators_time_.push_back(1);
 	}
 	return true;
 }

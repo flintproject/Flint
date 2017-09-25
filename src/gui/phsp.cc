@@ -131,12 +131,28 @@ bool Writer::operator()()
 				wxLogError("failed to parse parameter value: %s", es.str());
 				return false;
 			}
-			// TODO: for SBML
-			boost::uuids::uuid uuid;
-			std::memcpy(&uuid, column.uuid().c_str(), 16);
-			auto u = boost::uuids::to_string(uuid);
-			std::fprintf(fp_, "      <target module-id='%s' physical-quantity-id='%d'>\n",
-						 u.c_str(), column.id());
+			switch (doc->format()) {
+			case file::kSbml:
+				if (std::strncmp(column.name().c_str(), "sbml:", 5) == 0) {
+					std::fprintf(fp_,
+								 "      <target %s='%s'>\n",
+								 (column.type() == lo::Type::S) ? "parameter-id" : "species-id", // TODO: optional reaction-id
+								 &column.name().c_str()[5]);
+				} else {
+					wxLogError("unexpected column name: %s", column.name());
+					return false;
+				}
+				break;
+			default:
+				{
+					boost::uuids::uuid uuid;
+					std::memcpy(&uuid, column.uuid().c_str(), 16);
+					auto u = boost::uuids::to_string(uuid);
+					std::fprintf(fp_, "      <target module-id='%s' physical-quantity-id='%d'>\n",
+								 u.c_str(), column.id());
+				}
+				break;
+			}
 			formula->WriteMathML("m", oss);
 			std::fprintf(fp_, "        <value><m:math>%s</m:math></value>\n",
 						 oss.str().c_str());

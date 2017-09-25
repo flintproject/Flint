@@ -27,6 +27,7 @@ public:
 	Document(const boost::filesystem::path &dir, const wxString &path, std::vector<double> data);
 
 	const wxString &path() const {return path_;}
+	file::Format format() const {return format_;}
 
 	const Configuration &initial_config() const {return initial_config_;}
 
