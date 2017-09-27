@@ -257,7 +257,8 @@ struct Grammar : qi::grammar<TIterator, cas::Expr()> {
 						   >> ' ' >> expr
 						   >> ' ' >> expr;
 
-		other_compound = td.keyword >> seq0;
+		other_compound = td.keyword [at_c<0>(_val) = _1]
+			>> seq0 [at_c<1>(_val) = _1];
 
 		pseq1 = +prest;
 
@@ -294,17 +295,23 @@ struct Grammar : qi::grammar<TIterator, cas::Expr()> {
 			| lt_compound
 			| neq_compound;
 
-		eq_compound = td.eq_ >> twin;
+		eq_compound = td.eq_ [at_c<0>(_val) = _1]
+			>> twin [at_c<1>(_val) = _1];
 
-		geq_compound = td.geq_ >> twin;
+		geq_compound = td.geq_ [at_c<0>(_val) = _1]
+			>> twin [at_c<1>(_val) = _1];
 
-		gt_compound = td.gt_ >> twin;
+		gt_compound = td.gt_ [at_c<0>(_val) = _1]
+			>> twin [at_c<1>(_val) = _1];
 
-		leq_compound = td.leq_ >> twin;
+		leq_compound = td.leq_ [at_c<0>(_val) = _1]
+			>> twin [at_c<1>(_val) = _1];
 
-		lt_compound = td.lt_ >> twin;
+		lt_compound = td.lt_ [at_c<0>(_val) = _1]
+			>> twin [at_c<1>(_val) = _1];
 
-		neq_compound = td.neq_ >> twin;
+		neq_compound = td.neq_ [at_c<0>(_val) = _1]
+			>> twin [at_c<1>(_val) = _1];
 
 		twin = ' ' >> expr >> ' ' >> expr;
 

@@ -199,7 +199,8 @@ struct Grammar : qi::grammar<TIterator, Compound()> {
 			>> ' ' >> expr [push_back(at_c<1>(_val), _1)]
 			>> ' ' >> expr [push_back(at_c<1>(_val), _1)];
 
-		conditional = td.case_set_ >> cseq;
+		conditional = td.case_set_ [at_c<0>(_val) = _1]
+			>> cseq [at_c<1>(_val) = _1];
 
 		cseq = +(' ' >> celem);
 
@@ -234,9 +235,11 @@ struct Grammar : qi::grammar<TIterator, Compound()> {
 
 		delta_time_expr = td.delta_time_ >> ' ' >> td.id [bind(&RewriteDeltaTime, _val, _1)];
 
-		eq_expr = td.eq_ >> seq1;
+		eq_expr = td.eq_ [at_c<0>(_val) = _1]
+			>> seq1 [at_c<1>(_val) = _1];
 
-		general_expr = td.keyword >> seq0;
+		general_expr = td.keyword [at_c<0>(_val) = _1]
+			>> seq0 [at_c<1>(_val) = _1];
 
 		seq0 = *rest;
 
