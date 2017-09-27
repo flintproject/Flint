@@ -99,7 +99,7 @@ endef
 
 endif
 
-$(eval $(call external_library_source,http://downloads.sourceforge.net/project/boost/boost/$(BOOST_VERSION),$(BOOST_UNDERSCORE).tar.bz2,5512d3809801b0a1b9dd58447b70915d))
+$(eval $(call external_library_source,https://dl.bintray.com/boostorg/release/$(BOOST_VERSION)/source,$(BOOST_UNDERSCORE).tar.bz2,5512d3809801b0a1b9dd58447b70915d))
 $(eval $(call external_library_source,http://ceres-solver.org/,ceres-solver-$(CERES_VERSION).tar.gz,cd568707571c92af3d69c1eb28d63d72))
 $(eval $(call external_library_source3,https://github.com/flintproject/clibsedml/archive/v$(CLIBSEDML_VERSION).tar.gz,clibsedml-$(CLIBSEDML_VERSION).tar.gz,0dfb7c2445da6c6858d5f2a848ac4bd9))
 $(eval $(call external_library_source,https://github.com/zeromq/czmq/releases/download/v$(CZMQ_VERSION),czmq-$(CZMQ_VERSION).tar.gz,b27cb5a23c472949b1e37765e404dc98))
