@@ -224,7 +224,7 @@
 
   <Target Name='flint'
           DependsOnTargets='build'
-          Inputs='tmb\build'
+          Inputs='tmp\build'
           Outputs='tmp\flint'>
     <ItemGroup>
       <DLLFiles Include='opt\bin\ceres.dll'/>
