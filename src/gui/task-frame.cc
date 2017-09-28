@@ -187,8 +187,8 @@ void TaskFrame::Export(const Job &job)
 	wxFileDialog saveFileDialog(this,
 								"Target file",
 								"",
-								"",
-								"*.*",
+								source_file.GetName() + ((r == 0) ? ".csv" : ".isd"),
+								(r == 0) ? "CSV files (*.csv)|*.csv" : "ISDF files (*.isd)|*.isd",
 								wxFD_SAVE|wxFD_OVERWRITE_PROMPT);
 	if (saveFileDialog.ShowModal() == wxID_CANCEL)
 		return;
