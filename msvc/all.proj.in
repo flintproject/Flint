@@ -238,6 +238,7 @@
       <DLLFiles Include='opt\lib\boost_filesystem-*.dll'/>
       <DLLFiles Include='opt\lib\boost_program_options-*.dll'/>
       <DLLFiles Include='opt\lib\boost_system-*.dll'/>
+      <DLLFiles Include='opt\lib\boost_unit_test_framework-*.dll'/>
       <wxMSWReleaseDLLFiles Include='release-dll\**\wxbase310u_*.dll'/>
       <wxMSWReleaseDLLFiles Include='release-dll\**\wxmsw310u_adv_*.dll'/>
       <wxMSWReleaseDLLFiles Include='release-dll\**\wxmsw310u_aui_*.dll'/>

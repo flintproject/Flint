@@ -2,6 +2,8 @@ cmake_minimum_required(VERSION 3.8)
 
 project(Flint)
 
+include(CTest)
+
 if(WIN32)
     add_definitions(-DWIN32_LEAN_AND_MEAN)
 endif(WIN32)
@@ -20,6 +22,7 @@ find_package(Boost 1.65 REQUIRED COMPONENTS
              program_options
              random
              system
+             unit_test_framework
              )
 include_directories("${Boost_INCLUDE_DIRS}")
 
@@ -128,3 +131,4 @@ endif(NOT SUNDIALS_NVECSERIAL)
 include_directories("include")
 
 add_subdirectory(src)
+add_subdirectory(test)
