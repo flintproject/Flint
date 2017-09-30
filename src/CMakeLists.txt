@@ -299,11 +299,12 @@ add_executable(flint2 WIN32
     gui/phsp.cc
     gui/pref-page-general.cc
     gui/sedml.cc
-    gui/sim-frame.cc
+    gui/sim-window.cc
     gui/simulation.cc
     gui/sub-window.cc
     gui/task-frame.cc
     gui/task-gauge.cc
+    gui/task-window.cc
     gui/task.cc
     gui/view-frame.cc
     )

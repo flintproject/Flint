@@ -28,7 +28,7 @@
 #include "gui/app.h"
 #include "gui/document.h"
 #include "gui/filename.h"
-#include "gui/sim-frame.h"
+#include "gui/sim-window.h"
 #include "gui/simulation.h"
 #include "gui/sub-window.h"
 #include "lo/layout.h"
@@ -134,7 +134,7 @@ MainFrame::MainFrame(wxArrayString &input_files)
 	button_run_ = new wxButton(this, wxID_ANY, "&Run");
 	button_run_->Bind(wxEVT_BUTTON, &MainFrame::OnRun, this);
 	manager_.AddPane(button_run_,
-					 wxAuiPaneInfo().Name("simulation").Caption("Simulation").Bottom().Layer(1).Position(1));
+					 wxAuiPaneInfo().Name("simulation").Caption("Simulation").Bottom().Layer(0).Position(1));
 	notebook_ = new wxAuiNotebook(this, wxID_ANY);
 	notebook_->SetDropTarget(new ModelFileDropTarget(this));
 	manager_.AddPane(notebook_,
@@ -512,8 +512,17 @@ void MainFrame::OnRun(wxCommandEvent &)
 		ow->Write(config.get());
 		sim->entries.emplace_back(doc, config.release());
 	}
-	auto frame = new SimFrame(this, sim);
-	frame->Start();
+	auto window = new SimWindow(this, sim);
+	auto info = wxAuiPaneInfo()
+		.Name(wxString::Format("job%d", sim->id))
+		.Caption(wxString::Format("Job %d", sim->id))
+		.Right()
+		.Layer(0)
+		.Position(0) // stack on top
+		.DestroyOnClose(true);
+	manager_.AddPane(window, info);
+	manager_.Update();
+	window->Start();
 
 	arg_.paused = false;
 	MakePauseAvailable();

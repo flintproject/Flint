@@ -41,7 +41,7 @@ enum {
 }
 
 TaskFrame::TaskFrame(wxWindow *parent, const Task &task)
-	: wxFrame(parent, wxID_ANY, wxString::Format("Task %d", task.id))
+	: wxFrame(parent, wxID_ANY, wxString::Format("Job %d's Task %d", task.simulation->id, task.id))
 	, task_(task)
 	, data_view_(new wxDataViewListCtrl(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxDV_MULTIPLE|wxDV_ROW_LINES))
 	, export_(new wxButton(this, wxID_ANY, "Export"))

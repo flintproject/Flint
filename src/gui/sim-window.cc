@@ -3,7 +3,7 @@
 #include "config.h"
 #endif
 
-#include "gui/sim-frame.h"
+#include "gui/sim-window.h"
 
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wcast-qual"
@@ -18,69 +18,14 @@
 #include "gui/simulation.h"
 #include "gui/task-frame.h"
 #include "gui/task-gauge.h"
+#include "gui/task-window.h"
 #include "gui/task.h"
 
 namespace flint {
 namespace gui {
 
-class TaskWindow : public wxWindow {
-public:
-	TaskWindow(wxWindow *parent, Simulation *sim, int i);
-
-	TaskGauge *gauge() {return gauge_;}
-
-	void NotifyClose();
-
-private:
-	void OnDetail(wxCommandEvent &event);
-	void OnX(wxCommandEvent &event);
-
-	TaskGauge *gauge_;
-	Task task_;
-};
-
-void TaskWindow::NotifyClose()
-{
-	gauge_->Stop();
-	if (!task_.IsFinished())
-		task_.RequestCancel();
-}
-
-TaskWindow::TaskWindow(wxWindow *parent, Simulation *sim, int i)
-	: wxWindow(parent, wxID_ANY)
-	, task_(sim, i)
-{
-	auto hbox = new wxStaticBoxSizer(wxHORIZONTAL, this, wxString::Format("Task %d", i));
-	gauge_ = new TaskGauge(hbox->GetStaticBox(), task_.GetProgressFileName());
-	auto x = new wxButton(hbox->GetStaticBox(), wxID_ANY, "x", wxDefaultPosition, wxDefaultSize, wxBU_EXACTFIT);
-	auto detail = new wxButton(hbox->GetStaticBox(), wxID_ANY, "Detail");
-	hbox->Add(detail);
-	hbox->Add(gauge_, 1 /* horizontally stretchable */);
-	hbox->Add(x);
-	SetSizerAndFit(hbox);
-
-	detail->Bind(wxEVT_BUTTON, &TaskWindow::OnDetail, this);
-	x->Bind(wxEVT_BUTTON, &TaskWindow::OnX, this);
-}
-
-void TaskWindow::OnDetail(wxCommandEvent &)
-{
-	auto *frame = new TaskFrame(GetParent(), task_);
-	frame->CentreOnParent();
-	frame->Show();
-	frame->Start();
-}
-
-void TaskWindow::OnX(wxCommandEvent &event)
-{
-	if (task_.IsFinished() || task_.RequestCancel()) {
-		auto x = wxDynamicCast(event.GetEventObject(), wxButton);
-		x->Disable();
-	}
-}
-
-SimFrame::SimFrame(MainFrame *parent, Simulation *sim)
-	: wxFrame(parent, wxID_ANY, wxString::Format("Simulation %d", sim->id))
+SimWindow::SimWindow(MainFrame *parent, Simulation *sim)
+	: wxWindow(parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, 0, wxString::Format("Simulation %d", sim->id))
 	, sim_(sim)
 {
 	auto vbox = new wxBoxSizer(wxVERTICAL);
@@ -91,14 +36,21 @@ SimFrame::SimFrame(MainFrame *parent, Simulation *sim)
 		vbox->Add(window, 0, wxEXPAND /* horizontally stretchable */);
 		windows_.push_back(window);
 	}
-	CreateStatusBar(1, wxSTB_DEFAULT_STYLE, wxID_ANY);
 	SetSizerAndFit(vbox);
 
-	Bind(wxEVT_THREAD, &SimFrame::OnThreadUpdate, this);
-	Bind(wxEVT_CLOSE_WINDOW, &SimFrame::OnClose, this);
+	Bind(wxEVT_THREAD, &SimWindow::OnThreadUpdate, this);
 }
 
-bool SimFrame::Start()
+SimWindow::~SimWindow()
+{
+	for (auto *window : windows_)
+		window->NotifyClose();
+	if ( GetThread() &&
+		 GetThread()->IsRunning() )
+		GetThread()->Delete();
+}
+
+bool SimWindow::Start()
 {
 	wxFileName filename = sim_->GetDirectoryName();
 	filename.Mkdir(wxS_DIR_DEFAULT, wxPATH_MKDIR_FULL); // make sure that it exists
@@ -123,7 +75,6 @@ bool SimFrame::Start()
 		return false;
 	}
 
-	CentreOnParent();
 	Show();
 
 	for (auto *window : windows_)
@@ -132,18 +83,19 @@ bool SimFrame::Start()
 	return true;
 }
 
-void SimFrame::OnThreadUpdate(wxThreadEvent &)
+void SimWindow::OnThreadUpdate(wxThreadEvent &)
 {
+	auto *main_frame = wxDynamicCast(GetParent(), MainFrame);
+
 	if (result_)
-		SetStatusText("finished successfully.");
+		main_frame->SetStatusText(wxString::Format("Job %d finished successfully.", sim_->id));
 	else
 		wxLogError("simulation failed: %s", ec_.Get());
 
-	auto *main_frame = wxDynamicCast(GetParent(), MainFrame);
 	main_frame->ResetControl();
 }
 
-wxThread::ExitCode SimFrame::Entry()
+wxThread::ExitCode SimWindow::Entry()
 {
 	auto sim_dir = sim_->GetDirectoryName();
 	sim_dir.Mkdir(wxS_DIR_DEFAULT, wxPATH_MKDIR_FULL); // make sure that it exists
@@ -153,16 +105,6 @@ wxThread::ExitCode SimFrame::Entry()
 
 	wxQueueEvent(this, new wxThreadEvent);
 	return static_cast<wxThread::ExitCode>(0);
-}
-
-void SimFrame::OnClose(wxCloseEvent &)
-{
-	for (auto *window : windows_)
-		window->NotifyClose();
-	if ( GetThread() &&
-		 GetThread()->IsRunning() )
-		GetThread()->Delete();
-	Destroy();
 }
 
 }
