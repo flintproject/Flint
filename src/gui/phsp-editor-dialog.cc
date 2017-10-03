@@ -83,10 +83,12 @@ ParamTreeViewModel::ParamTreeViewModel(const ParamTree &param_tree)
 
 unsigned int ParamTreeViewModel::GetChildren(const wxDataViewItem &item, wxDataViewItemArray &children) const
 {
+	wxDataViewItemArray arr;
 	auto id = reinterpret_cast<std::uintptr_t>(item.GetID());
 	for (auto p : pm_)
 		if (id == p.second)
-			children.Add(wxDataViewItem(reinterpret_cast<void *>(p.first)));
+			arr.Add(wxDataViewItem(reinterpret_cast<void *>(p.first)));
+	children = arr;
 	return static_cast<unsigned int>(children.GetCount());
 }
 
@@ -112,6 +114,7 @@ wxDataViewItem ParamTreeViewModel::GetParent(const wxDataViewItem &item) const
 
 void ParamTreeViewModel::GetValue(wxVariant &variant, const wxDataViewItem &item, unsigned int col) const
 {
+	assert(item.IsOk());
 	ParamTreeNode *node = reinterpret_cast<ParamTreeNode *>(item.GetID());
 	if (!node)
 		return;
@@ -130,11 +133,14 @@ void ParamTreeViewModel::GetValue(wxVariant &variant, const wxDataViewItem &item
 
 bool ParamTreeViewModel::IsContainer(const wxDataViewItem &item) const
 {
+	if (!item.IsOk())
+		return true; // the invisible root node can have children
 	return !GetParameterFromItem(item);
 }
 
 bool ParamTreeViewModel::SetValue(const wxVariant &variant, const wxDataViewItem &item, unsigned int col)
 {
+	assert(item.IsOk());
 	if (col != 1)
 		return false;
 	auto *parameter = GetParameterFromItem(item);
@@ -197,7 +203,6 @@ void ParamTreeViewModel::DeleteItem(const wxDataViewItem &item)
 	auto pit = pm_.find(reinterpret_cast<std::uintptr_t>(node));
 	assert(pit != pm_.end());
 	auto parent = wxDataViewItem(reinterpret_cast<void *>(pit->second));
-	ItemDeleted(parent, item); // to inform that the item is deleted
 	pm_.erase(pit);
 
 	// remove the subtree having the deleted one as its root
@@ -223,6 +228,10 @@ void ParamTreeViewModel::DeleteItem(const wxDataViewItem &item)
 			}
 		}
 	} while (!descendants.empty());
+
+	// the following call should come after the above deallocation,
+	// otherwise a SEGV happened on macOS.
+	ItemDeleted(parent, item); // to inform that the item is deleted
 }
 
 class ParamIntervalCtrl : public wxPropertyGrid {
