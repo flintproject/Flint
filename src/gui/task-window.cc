@@ -41,6 +41,10 @@ TaskWindow::TaskWindow(wxWindow *parent, Simulation *sim, int i)
 void TaskWindow::OnDetail(wxCommandEvent &)
 {
 	auto *frame = new TaskFrame(GetParent(), task_);
+	if (!frame->LoadItems()) {
+		delete frame;
+		return;
+	}
 	frame->CentreOnParent();
 	frame->Show();
 	frame->Start();

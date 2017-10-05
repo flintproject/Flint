@@ -49,23 +49,6 @@ TaskFrame::TaskFrame(wxWindow *parent, const Task &task)
 	, view_frame_(new ViewFrame(this, *data_view_))
 	, timer_(this)
 {
-	LoadItems();
-
-	auto hbox = new wxBoxSizer(wxHORIZONTAL);
-	hbox->Add(export_);
-	hbox->Add(view_);
-	auto vbox = new wxBoxSizer(wxVERTICAL);
-	vbox->Add(data_view_, 1 /* vertically stretchable */, wxEXPAND /* horizontally stretchable */);
-	vbox->Add(hbox, 0, wxALIGN_RIGHT);
-	data_view_->SetMinSize(wxSize(300, 200));
-	SetSizerAndFit(vbox);
-
-	export_->Bind(wxEVT_BUTTON, &TaskFrame::OnExport, this);
-	view_->Bind(wxEVT_BUTTON, &TaskFrame::OnView, this);
-	Bind(wxEVT_TIMER, &TaskFrame::OnTimer, this);
-	Bind(wxEVT_DATAVIEW_ITEM_CONTEXT_MENU, &TaskFrame::OnItemContextMenu, this);
-	Bind(wxEVT_DATAVIEW_SELECTION_CHANGED, &TaskFrame::OnSelectionChanged, this);
-	Bind(wxEVT_CLOSE_WINDOW, &TaskFrame::OnClose, this);
 }
 
 void TaskFrame::Start()
@@ -290,7 +273,7 @@ int Process(void *data, int argc, char **argv, char **names)
 
 }
 
-void TaskFrame::LoadItems()
+bool TaskFrame::LoadItems()
 {
 	data_view_->AppendTextColumn("ID", wxDATAVIEW_CELL_INERT, wxDVC_DEFAULT_WIDTH, wxALIGN_RIGHT)->SetSortable(true);
 	data_view_->AppendProgressColumn("Progress")->SetSortable(true);
@@ -302,8 +285,9 @@ void TaskFrame::LoadItems()
 			boost::interprocess::file_mapping rss_fm(GetFnStrFromWxFileName(rss_filename).c_str(),
 													 boost::interprocess::read_only);
 			rss_mr_ = boost::interprocess::mapped_region(rss_fm, boost::interprocess::read_only);
-		} catch (const boost::interprocess::interprocess_exception &) {
-			return;
+		} catch (const boost::interprocess::interprocess_exception &e) {
+			wxLogError("failed to read RSS: %s", e.what());
+			return false;
 		}
 	}
 
@@ -312,24 +296,46 @@ void TaskFrame::LoadItems()
 		boost::interprocess::file_mapping fm(GetFnStrFromWxFileName(filename).c_str(),
 											 boost::interprocess::read_only);
 		mr_ = boost::interprocess::mapped_region(fm, boost::interprocess::read_only);
-	} catch (const boost::interprocess::interprocess_exception &) {
-		return;
+	} catch (const boost::interprocess::interprocess_exception &e) {
+		wxLogError("failed to read progress: %s", e.what());
+		return false;
 	}
 
 	// FIXME: the database can be busy
 	auto filename = task_.GetDirectoryName();
 	filename.SetFullName("task.db");
 	auto driver = db::ReadOnlyDriver::Create(GetPathFromWxFileName(filename));
-	if (!driver->db())
-		return;
+	if (!driver->db()) {
+		wxLogError("failed to open task database");
+		return false;
+	}
 	char *em;
 	int e = sqlite3_exec(driver->db(), "SELECT rowid, * FROM parameter_samples", &Process, this, &em);
 	if (e != SQLITE_OK)
-		if (e != SQLITE_ABORT)
+		if (e != SQLITE_ABORT) {
 			wxLogError(em);
+			return false;
+		}
 
 	if (data_view_->GetItemCount() > 0)
 		data_view_->SelectRow(0);
+
+	auto hbox = new wxBoxSizer(wxHORIZONTAL);
+	hbox->Add(export_);
+	hbox->Add(view_);
+	auto vbox = new wxBoxSizer(wxVERTICAL);
+	vbox->Add(data_view_, 1 /* vertically stretchable */, wxEXPAND /* horizontally stretchable */);
+	vbox->Add(hbox, 0, wxALIGN_RIGHT);
+	data_view_->SetMinSize(wxSize(300, 200));
+	SetSizerAndFit(vbox);
+
+	export_->Bind(wxEVT_BUTTON, &TaskFrame::OnExport, this);
+	view_->Bind(wxEVT_BUTTON, &TaskFrame::OnView, this);
+	Bind(wxEVT_TIMER, &TaskFrame::OnTimer, this);
+	Bind(wxEVT_DATAVIEW_ITEM_CONTEXT_MENU, &TaskFrame::OnItemContextMenu, this);
+	Bind(wxEVT_DATAVIEW_SELECTION_CHANGED, &TaskFrame::OnSelectionChanged, this);
+	Bind(wxEVT_CLOSE_WINDOW, &TaskFrame::OnClose, this);
+	return true;
 }
 
 void TaskFrame::ShowErrorOnExporting(const wxString &message)

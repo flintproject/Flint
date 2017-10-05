@@ -25,6 +25,7 @@ public:
 
 	const Task &task() const {return task_;}
 
+	bool LoadItems();
 	int AddParameterSample(int argc, char **argv, char **names);
 	void Start();
 	void View();
@@ -41,7 +42,6 @@ private:
 	wxString GetRss(int job_id);
 	void Export(const Job &job);
 	void ExportAll();
-	void LoadItems();
 	void ShowErrorOnExporting(const wxString &message);
 
 	const Task &task_;
