@@ -248,7 +248,7 @@ private:
 };
 
 ParamIntervalCtrl::ParamIntervalCtrl(wxWindow *parent)
-	: wxPropertyGrid(parent)
+	: wxPropertyGrid(parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxPG_SPLITTER_AUTO_CENTER)
 	, lower_prop_(new wxFloatProperty("lower", wxPG_LABEL, 0))
 	, upper_prop_(new wxFloatProperty("upper", wxPG_LABEL, 4))
 	, step_prop_(new wxFloatProperty("step", wxPG_LABEL, 1))
@@ -257,7 +257,6 @@ ParamIntervalCtrl::ParamIntervalCtrl(wxWindow *parent)
 	Append(upper_prop_);
 	Append(step_prop_);
 	SetMinSize(wxSize(300, 300));
-	SetSplitterLeft();
 }
 
 void ParamIntervalCtrl::ImportValues(const ParamTreeParameter *parameter)
@@ -317,7 +316,7 @@ private:
 };
 
 ParamGaussianCtrl::ParamGaussianCtrl(wxWindow *parent)
-	: wxPropertyGrid(parent)
+	: wxPropertyGrid(parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxPG_SPLITTER_AUTO_CENTER)
 	, mean_prop_(new wxFloatProperty("mean", wxPG_LABEL, 0))
 	, stddev_prop_(new wxFloatProperty("stddev", wxPG_LABEL, 1))
 	, count_prop_(new wxIntProperty("count", wxPG_LABEL, 10))
@@ -326,7 +325,6 @@ ParamGaussianCtrl::ParamGaussianCtrl(wxWindow *parent)
 	Append(stddev_prop_);
 	Append(count_prop_);
 	SetMinSize(wxSize(300, 300));
-	SetSplitterLeft();
 }
 
 void ParamGaussianCtrl::ImportValues(const ParamTreeParameter *parameter)
@@ -359,7 +357,7 @@ private:
 };
 
 ParamUniformCtrl::ParamUniformCtrl(wxWindow *parent)
-	: wxPropertyGrid(parent)
+	: wxPropertyGrid(parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxPG_SPLITTER_AUTO_CENTER)
 	, min_prop_(new wxFloatProperty("minimum", wxPG_LABEL, 0))
 	, max_prop_(new wxFloatProperty("maximum", wxPG_LABEL, 1))
 	, count_prop_(new wxIntProperty("count", wxPG_LABEL, 10))
@@ -368,7 +366,6 @@ ParamUniformCtrl::ParamUniformCtrl(wxWindow *parent)
 	Append(max_prop_);
 	Append(count_prop_);
 	SetMinSize(wxSize(300, 300));
-	SetSplitterLeft();
 }
 
 void ParamUniformCtrl::ImportValues(const ParamTreeParameter *parameter)
@@ -401,10 +398,9 @@ PhspEditorDialog::PhspEditorDialog(wxWindow *parent, ParamTree &param_tree)
 	tree_view_->AssociateModel(model_);
 	model_->DecRef(); // avoid memory leak, see wxDataViewModel's documentation
 
-	tree_view_->AppendTextColumn("Type", 0, wxDATAVIEW_CELL_INERT);
-	tree_view_->AppendTextColumn("Name", 1, wxDATAVIEW_CELL_EDITABLE);
+	tree_view_->AppendTextColumn("Type", 0, wxDATAVIEW_CELL_INERT, 100, wxALIGN_LEFT, 0);
+	tree_view_->AppendTextColumn("Name", 1, wxDATAVIEW_CELL_EDITABLE, 60, wxALIGN_LEFT, wxDATAVIEW_COL_RESIZABLE);
 	tree_view_->AppendTextColumn("Values", 2, wxDATAVIEW_CELL_INERT);
-	tree_view_->Fit();
 
 	auto button_apply = new wxButton(this, wxID_ANY, "Apply");
 	button_apply->Bind(wxEVT_BUTTON, &PhspEditorDialog::OnApply, this);

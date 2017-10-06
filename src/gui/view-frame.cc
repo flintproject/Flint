@@ -55,12 +55,12 @@ ViewFrame::ViewFrame(TaskFrame *parent, wxDataViewListCtrl &job_list)
 	, num_variables_(0)
 	, skip_(0)
 {
-	data_view_->AppendToggleColumn("X", wxDATAVIEW_CELL_ACTIVATABLE, wxDVC_TOGGLE_DEFAULT_WIDTH)->SetSortable(true);
-	data_view_->AppendToggleColumn("Y1", wxDATAVIEW_CELL_ACTIVATABLE, wxDVC_TOGGLE_DEFAULT_WIDTH)->SetSortable(true);
-	data_view_->AppendToggleColumn("Y2", wxDATAVIEW_CELL_ACTIVATABLE, wxDVC_TOGGLE_DEFAULT_WIDTH)->SetSortable(true);
-	data_view_->AppendTextColumn("Name", wxDATAVIEW_CELL_INERT, wxDVC_DEFAULT_WIDTH)->SetSortable(true);
-	data_view_->AppendTextColumn("UUID")->SetSortable(true);
-	data_view_->AppendTextColumn("Label")->SetSortable(true);
+	data_view_->AppendToggleColumn("X", wxDATAVIEW_CELL_ACTIVATABLE, 30, wxALIGN_CENTER, wxDATAVIEW_COL_SORTABLE);
+	data_view_->AppendToggleColumn("Y1", wxDATAVIEW_CELL_ACTIVATABLE, 30, wxALIGN_CENTER, wxDATAVIEW_COL_SORTABLE);
+	data_view_->AppendToggleColumn("Y2", wxDATAVIEW_CELL_ACTIVATABLE, 30, wxALIGN_CENTER, wxDATAVIEW_COL_SORTABLE);
+	data_view_->AppendTextColumn("Name", wxDATAVIEW_CELL_INERT, 80, wxALIGN_LEFT, wxDATAVIEW_COL_RESIZABLE|wxDATAVIEW_COL_SORTABLE);
+	data_view_->AppendTextColumn("UUID", wxDATAVIEW_CELL_INERT, 300, wxALIGN_LEFT, wxDATAVIEW_COL_RESIZABLE|wxDATAVIEW_COL_SORTABLE);
+	data_view_->AppendTextColumn("Label", wxDATAVIEW_CELL_INERT, 80, wxALIGN_LEFT, wxDATAVIEW_COL_RESIZABLE|wxDATAVIEW_COL_SORTABLE);
 
 	LoadVariables();
 
