@@ -38,6 +38,9 @@ BOOST_AUTO_TEST_CASE(exponential) {
 	BOOST_CHECK(load::Load(TEST_MODELS("exponential_with_seed.isml"), load::kExec, boost::filesystem::path(), &data1));
 	BOOST_CHECK_EQUAL(data0.size(), data1.size());
 	BOOST_TEST(data0 != data1);
+	boost::filesystem::current_path(original_path_);
+	boost::filesystem::remove_all(p0);
+	boost::filesystem::remove_all(p1);
 }
 
 BOOST_AUTO_TEST_CASE(fsk) {
@@ -58,6 +61,7 @@ BOOST_AUTO_TEST_CASE(fsk) {
 	std::vector<double> data1;
 	BOOST_CHECK(load::Load(TEST_MODELS("fsk-plus-no-instance.phml"), load::kExec, boost::filesystem::path(), &data1));
 	BOOST_TEST(data0 == data1);
+	boost::filesystem::current_path(original_path_);
 	boost::filesystem::remove_all(p0);
 	boost::filesystem::remove_all(p1);
 }

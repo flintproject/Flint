@@ -25,7 +25,7 @@ public:
 
 	~F() {
 		// cleanup the working directory
-		boost::filesystem::current_path("..");
+		boost::filesystem::current_path(path_);
 		boost::filesystem::remove_all("tmp");
 	}
 
