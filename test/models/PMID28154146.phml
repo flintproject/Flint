@@ -1,0 +1,1117 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<is:insilico-model  xmlns:bqmodel="http://biomodels.net/model-qualifiers/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:svg="http://www.w3.org/2000/svg" xmlns:is="http://www.physiome.jp/ns/insilicoml" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:pd="http://www.physiome.jp/ns/physiodesigner" xmlns:vCard="http://www.w3.org/2001/vcard-rdf/3.0#" xmlns:ts="http://www.physiome.jp/ns/timeseriesml" xmlns:bqbiol="http://biomodels.net/biology-qualifiers/" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:m="http://www.w3.org/1998/Math/MathML" xmlns:dcterms="http://purl.org/dc/terms/">
+<is:header>
+<is:model-name>On the dynamical structure of calcium oscillations</is:model-name>
+<is:meta-information/>
+<is:date>
+<is:created>2017-10-11T05:30:24+09:00</is:created>
+<is:last-modified>2017-10-11T06:12:01+09:00</is:last-modified>
+</is:date>
+<is:numerical-configuration>
+<is:algorithm>
+<is:integration name="ark"/>
+</is:algorithm>
+<is:simulation-time-span unit-id="3">600</is:simulation-time-span>
+<is:time-discretization  unit-id="3"  evolution="true">
+<is:step>0.01</is:step>
+</is:time-discretization>
+</is:numerical-configuration>
+</is:header>
+<is:unit-set>
+<is:unit unit-id="11">
+<is:name>degree</is:name>
+</is:unit>
+<is:unit unit-id="10">
+<is:name>gram</is:name>
+<is:element unit-id="2"  prefix="milli"/>
+</is:unit>
+<is:unit unit-id="13">
+<is:name>volt</is:name>
+<is:element unit-id="1"  exponent="2"/>
+<is:element unit-id="2"  exponent="1"/>
+<is:element unit-id="3"  exponent="-3"/>
+<is:element unit-id="4"  exponent="-1"/>
+</is:unit>
+<is:unit unit-id="12">
+<is:name>millisecond</is:name>
+<is:element unit-id="3"  exponent="1"  prefix="milli"/>
+</is:unit>
+<is:unit unit-id="15">
+<is:name>farad</is:name>
+<is:element unit-id="1"  exponent="-2"/>
+<is:element unit-id="2"  exponent="-1"/>
+<is:element unit-id="3"  exponent="4"/>
+<is:element unit-id="4"  exponent="2"/>
+</is:unit>
+<is:unit unit-id="14">
+<is:name>siemens</is:name>
+<is:element unit-id="1"  exponent="-2"/>
+<is:element unit-id="2"  exponent="-1"/>
+<is:element unit-id="3"  exponent="3"/>
+<is:element unit-id="4"  exponent="2"/>
+</is:unit>
+<is:unit unit-id="1">
+<is:name>metre</is:name>
+</is:unit>
+<is:unit unit-id="0">
+<is:name>dimensionless</is:name>
+</is:unit>
+<is:unit unit-id="3">
+<is:name>second</is:name>
+</is:unit>
+<is:unit unit-id="2">
+<is:name>kilogram</is:name>
+</is:unit>
+<is:unit unit-id="5">
+<is:name>kelvin</is:name>
+</is:unit>
+<is:unit unit-id="4">
+<is:name>ampere</is:name>
+</is:unit>
+<is:unit unit-id="7">
+<is:name>candela</is:name>
+</is:unit>
+<is:unit unit-id="6">
+<is:name>mole</is:name>
+</is:unit>
+<is:unit unit-id="9">
+<is:name>meter</is:name>
+<is:element unit-id="1"/>
+</is:unit>
+<is:unit unit-id="8">
+<is:name>radian</is:name>
+</is:unit>
+</is:unit-set>
+
+<is:module-set>
+
+<is:module module-id="48137653-1c0e-480b-ab12-95c1218d2b76" type="functional-unit">
+<is:property>
+<is:name>Cell</is:name>
+<is:capsulation state="false"/>
+<is:template state="false"/>
+</is:property>
+
+<is:physical-quantity-set>
+<is:physical-quantity physical-quantity-id="42" type= "static-parameter">
+<is:name>V_serca</is:name>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="0"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="ae"  format="mathml">
+<m:math>
+<m:apply>
+<m:eq/>
+<m:ci>V_serca</m:ci>
+<m:cn>0.9</m:cn>
+</m:apply>
+</m:math>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="24" type= "variable-parameter">
+<is:name>alpha</is:name>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="0"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="ae"  format="mathml">
+<m:math>
+<m:apply>
+<m:eq/>
+<m:ci>alpha</m:ci>
+<m:apply>
+<m:times/>
+<m:ci>A</m:ci>
+<m:apply>
+<m:minus/>
+<m:cn>1</m:cn>
+<m:apply>
+<m:times/>
+<m:ci>m_bar_alpha</m:ci>
+<m:ci>h_bar_alpha</m:ci>
+</m:apply>
+</m:apply>
+</m:apply>
+</m:apply>
+</m:math>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="27" type= "variable-parameter">
+<is:name>m_bar_alpha</is:name>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="0"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="ae"  format="mathml">
+<m:math>
+<m:apply>
+<m:eq/>
+<m:ci>m_bar_alpha</m:ci>
+<m:apply>
+<m:divide/>
+<m:apply>
+<m:power/>
+<m:ci>c</m:ci>
+<m:cn>4</m:cn>
+</m:apply>
+<m:apply>
+<m:plus/>
+<m:apply>
+<m:power/>
+<m:ci>K_c</m:ci>
+<m:cn>4</m:cn>
+</m:apply>
+<m:apply>
+<m:power/>
+<m:ci>c</m:ci>
+<m:cn>4</m:cn>
+</m:apply>
+</m:apply>
+</m:apply>
+</m:apply>
+</m:math>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="20" type= "static-parameter">
+<is:name>k_f</is:name>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="0"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="ae"  format="mathml">
+<m:math>
+<m:apply>
+<m:eq/>
+<m:ci>k_f</m:ci>
+<m:cn>10</m:cn>
+</m:apply>
+</m:math>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="21" type= "variable-parameter">
+<is:name>P_o</is:name>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="0"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="ae"  format="mathml">
+<m:math>
+<m:apply>
+<m:eq/>
+<m:ci>P_o</m:ci>
+<m:apply>
+<m:divide/>
+<m:ci>beta</m:ci>
+<m:apply>
+<m:plus/>
+<m:ci>beta</m:ci>
+<m:apply>
+<m:times/>
+<m:ci>k_beta</m:ci>
+<m:apply>
+<m:plus/>
+<m:ci>beta</m:ci>
+<m:ci>alpha</m:ci>
+</m:apply>
+</m:apply>
+</m:apply>
+</m:apply>
+</m:apply>
+</m:math>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="22" type= "variable-parameter">
+<is:name>beta</is:name>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="0"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="ae"  format="mathml">
+<m:math>
+<m:apply>
+<m:eq/>
+<m:ci>beta</m:ci>
+<m:apply>
+<m:times/>
+<m:ci>B</m:ci>
+<m:ci>m_bar_beta</m:ci>
+<m:ci>h</m:ci>
+</m:apply>
+</m:apply>
+</m:math>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="23" type= "static-parameter">
+<is:name>k_beta</is:name>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="0"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="ae"  format="mathml">
+<m:math>
+<m:apply>
+<m:eq/>
+<m:ci>k_beta</m:ci>
+<m:cn>0.4</m:cn>
+</m:apply>
+</m:math>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="28" type= "variable-parameter">
+<is:name>h_bar_alpha</is:name>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="0"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="ae"  format="mathml">
+<m:math>
+<m:apply>
+<m:eq/>
+<m:ci>h_bar_alpha</m:ci>
+<m:apply>
+<m:divide/>
+<m:apply>
+<m:power/>
+<m:ci>K_h</m:ci>
+<m:cn>4</m:cn>
+</m:apply>
+<m:apply>
+<m:plus/>
+<m:apply>
+<m:power/>
+<m:ci>K_h</m:ci>
+<m:cn>4</m:cn>
+</m:apply>
+<m:apply>
+<m:power/>
+<m:ci>c</m:ci>
+<m:cn>4</m:cn>
+</m:apply>
+</m:apply>
+</m:apply>
+</m:apply>
+</m:math>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="40" type= "static-parameter">
+<is:name>tau_P</is:name>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="0"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="ae"  format="mathml">
+<m:math>
+<m:apply>
+<m:eq/>
+<m:ci>tau_P</m:ci>
+<m:cn>0.027</m:cn>
+</m:apply>
+</m:math>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="41" type= "static-parameter">
+<is:name>p_s</is:name>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="0"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="ae"  format="mathml">
+<m:math>
+<m:apply>
+<m:eq/>
+<m:ci>p_s</m:ci>
+<m:cn>0.1234</m:cn>
+</m:apply>
+</m:math>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="1" type= "state">
+<is:name>c</is:name>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="0"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:initial-value>
+<is:definition  type="ae"  format="mathml">
+<m:math><m:apply><m:eq/><m:ci>c</m:ci><m:cn>0</m:cn></m:apply></m:math>
+</is:definition>
+</is:initial-value>
+<is:implementation>
+<is:definition  type="ode"  format="mathml">
+<m:math>
+<m:apply>
+<m:eq/>
+<m:apply>
+<m:diff/>
+<m:bvar>
+<m:ci>time</m:ci>
+</m:bvar>
+<m:ci>c</m:ci>
+</m:apply>
+<m:apply>
+<m:plus/>
+<m:apply>
+<m:minus/>
+<m:ci>J_IPR</m:ci>
+<m:ci>J_serca</m:ci>
+</m:apply>
+<m:apply>
+<m:times/>
+<m:ci>delta</m:ci>
+<m:apply>
+<m:minus/>
+<m:ci>J_in</m:ci>
+<m:ci>J_pm</m:ci>
+</m:apply>
+</m:apply>
+</m:apply>
+</m:apply>
+</m:math>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="3" type= "variable-parameter">
+<is:name>J_serca</is:name>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="0"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="ae"  format="mathml">
+<m:math>
+<m:apply>
+<m:eq/>
+<m:ci>J_serca</m:ci>
+<m:apply>
+<m:divide/> 
+<m:apply>
+<m:times/>
+<m:ci>V_serca</m:ci>
+<m:apply>
+<m:minus/>
+<m:apply>
+<m:power/>
+<m:ci>c</m:ci>
+<m:cn>2</m:cn>
+</m:apply>
+<m:apply>
+<m:times/>
+<m:ci>K_bar</m:ci>
+<m:apply>
+<m:power/>
+<m:ci>c_e</m:ci>
+<m:cn>2</m:cn>
+</m:apply>
+</m:apply>
+</m:apply>
+</m:apply>
+<m:apply>
+<m:plus/>
+<m:apply>
+<m:power/>
+<m:ci>c</m:ci>
+<m:cn>2</m:cn>
+</m:apply>
+<m:apply>
+<m:power/>
+<m:ci>K_serca</m:ci>
+<m:cn>2</m:cn>
+</m:apply>
+</m:apply>
+</m:apply>
+</m:apply>
+</m:math>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="2" type= "variable-parameter">
+<is:name>J_IPR</is:name>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="0"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="ae"  format="mathml">
+<m:math>
+<m:apply>
+<m:eq/>
+<m:ci>J_IPR</m:ci>
+<m:apply>
+<m:times/>
+<m:ci>k_f</m:ci>
+<m:ci>P_o</m:ci>
+<m:apply>
+<m:minus/>
+<m:ci>c_e</m:ci>
+<m:ci>c</m:ci>
+</m:apply>
+</m:apply>
+</m:apply>
+</m:math>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="5" type= "variable-parameter">
+<is:name>J_in</is:name>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="0"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="ae"  format="mathml">
+<m:math>
+<m:apply>
+<m:eq/>
+<m:ci>J_in</m:ci>
+<m:apply>
+<m:plus/>
+<m:ci>alpha_0</m:ci>
+<m:apply>
+<m:times/>
+<m:ci>alpha_1</m:ci>
+<m:apply>
+<m:divide/>
+<m:apply>
+<m:power/>
+<m:ci>K_e</m:ci>
+<m:cn>4</m:cn>
+</m:apply>
+<m:apply>
+<m:plus/>
+<m:apply>
+<m:power/>
+<m:ci>K_e</m:ci>
+<m:cn>4</m:cn>
+</m:apply>
+<m:apply>
+<m:power/>
+<m:ci>c_e</m:ci>
+<m:cn>4</m:cn>
+</m:apply>
+</m:apply>
+</m:apply>
+</m:apply>
+</m:apply>
+</m:apply>
+</m:math>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="4" type= "static-parameter">
+<is:name>delta</is:name>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="0"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="ae"  format="mathml">
+<m:math>
+<m:apply>
+<m:eq/>
+<m:ci>delta</m:ci>
+<m:cn>1.5</m:cn>
+</m:apply>
+</m:math>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="7" type= "state">
+<is:name>c_e</is:name>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="0"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:initial-value>
+<is:definition  type="ae"  format="mathml">
+<m:math><m:apply><m:eq/><m:ci>c_e</m:ci><m:cn>0</m:cn></m:apply></m:math>
+</is:definition>
+</is:initial-value>
+<is:implementation>
+<is:definition  type="ode"  format="mathml">
+<m:math>
+<m:apply>
+<m:eq/>
+<m:apply>
+<m:diff/>
+<m:bvar>
+<m:ci>time</m:ci>
+</m:bvar>
+<m:ci>c_e</m:ci>
+</m:apply>
+<m:apply>
+<m:times/>
+<m:ci>gamma</m:ci>
+<m:apply>
+<m:minus/>
+<m:ci>J_serca</m:ci>
+<m:ci>J_IPR</m:ci>
+</m:apply>
+</m:apply>
+</m:apply>
+</m:math>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="6" type= "variable-parameter">
+<is:name>J_pm</is:name>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="0"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="ae"  format="mathml">
+<m:math>
+<m:apply>
+<m:eq/>
+<m:ci>J_pm</m:ci>
+<m:apply>
+<m:divide/>
+<m:apply>
+<m:times/>
+<m:ci>V_pm</m:ci>
+<m:apply>
+<m:power/>
+<m:ci>c</m:ci>
+<m:cn>2</m:cn>
+</m:apply>
+</m:apply>
+<m:apply>
+<m:plus/>
+<m:apply>
+<m:power/>
+<m:ci>K_pm</m:ci>
+<m:cn>2</m:cn>
+</m:apply>
+<m:apply>
+<m:power/>
+<m:ci>c</m:ci>
+<m:cn>2</m:cn>
+</m:apply>
+</m:apply>
+</m:apply>
+</m:apply>
+</m:math>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="9" type= "state">
+<is:name>h</is:name>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="0"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:initial-value>
+<is:definition  type="ae"  format="mathml">
+<m:math><m:apply><m:eq/><m:ci>h</m:ci><m:cn>0</m:cn></m:apply></m:math>
+</is:definition>
+</is:initial-value>
+<is:implementation>
+<is:definition  type="ode"  format="mathml">
+<m:math>
+<m:apply>
+<m:eq/>
+<m:apply>
+<m:times/>
+<m:ci>tau_h</m:ci>
+<m:apply>
+<m:diff/>
+<m:bvar>
+<m:ci>time</m:ci>
+</m:bvar>
+<m:ci>h</m:ci>
+</m:apply>
+</m:apply>
+<m:apply>
+<m:minus/>
+<m:ci>h_inf</m:ci>
+<m:ci>h</m:ci>
+</m:apply>
+</m:apply>
+</m:math>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="8" type= "static-parameter">
+<is:name>gamma</is:name>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="0"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="ae"  format="mathml">
+<m:math>
+<m:apply>
+<m:eq/>
+<m:ci>gamma</m:ci>
+<m:cn>5.5</m:cn>
+</m:apply>
+</m:math>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="39" type= "static-parameter">
+<is:name>K_tau</is:name>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="0"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="ae"  format="mathml">
+<m:math>
+<m:apply>
+<m:eq/>
+<m:ci>K_tau</m:ci>
+<m:cn>0.1</m:cn>
+</m:apply>
+</m:math>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="38" type= "static-parameter">
+<is:name>tau_max</is:name>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="0"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="ae"  format="mathml">
+<m:math>
+<m:apply>
+<m:eq/>
+<m:ci>tau_max</m:ci>
+<m:cn>1000</m:cn>
+</m:apply>
+</m:math>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="11" type= "variable-parameter">
+<is:name>h_inf</is:name>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="0"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="ae"  format="mathml">
+<m:math>
+<m:apply>
+<m:eq/>
+<m:ci>h_inf</m:ci>
+<m:apply>
+<m:divide/>
+<m:apply>
+<m:power/>
+<m:ci>K_h</m:ci>
+<m:cn>4</m:cn>
+</m:apply>
+<m:apply>
+<m:plus/>
+<m:apply>
+<m:power/>
+<m:ci>K_h</m:ci>
+<m:cn>4</m:cn>
+</m:apply>
+<m:apply>
+<m:power/>
+<m:ci>c</m:ci>
+<m:cn>4</m:cn>
+</m:apply>
+</m:apply>
+</m:apply>
+</m:apply>
+</m:math>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="10" type= "variable-parameter">
+<is:name>tau_h</is:name>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="0"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="ae"  format="mathml">
+<m:math>
+<m:apply>
+<m:eq/>
+<m:ci>tau_h</m:ci>
+<m:apply>
+<m:times/>
+<m:ci>tau_max</m:ci>
+<m:apply>
+<m:divide/>
+<m:apply>
+<m:power/>
+<m:ci>K_tau</m:ci>
+<m:cn>4</m:cn>
+</m:apply>
+<m:apply>
+<m:plus/>
+<m:apply>
+<m:power/>
+<m:ci>K_tau</m:ci>
+<m:cn>4</m:cn>
+</m:apply>
+<m:apply>
+<m:power/>
+<m:ci>c</m:ci>
+<m:cn>4</m:cn>
+</m:apply>
+</m:apply>
+</m:apply>
+</m:apply>
+</m:apply>
+</m:math>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="13" type= "static-parameter">
+<is:name>K_bar</is:name>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="0"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="ae"  format="mathml">
+<m:math>
+<m:apply>
+<m:eq/>
+<m:ci>K_bar</m:ci>
+<m:apply>
+<m:divide/>
+<m:cn>1.9</m:cn>
+<m:apply>
+<m:power/>
+<m:cn>10</m:cn>
+<m:cn>5</m:cn>
+</m:apply>
+</m:apply>
+</m:apply>
+</m:math>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="15" type= "static-parameter">
+<is:name>alpha_0</is:name>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="0"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="ae"  format="mathml">
+<m:math>
+<m:apply>
+<m:eq/>
+<m:ci>alpha_0</m:ci>
+<m:cn>0.0027</m:cn>
+</m:apply>
+</m:math>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="14" type= "static-parameter">
+<is:name>K_serca</is:name>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="0"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="ae"  format="mathml">
+<m:math>
+<m:apply>
+<m:eq/>
+<m:ci>K_serca</m:ci>
+<m:cn>0.2</m:cn>
+</m:apply>
+</m:math>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="17" type= "static-parameter">
+<is:name>K_e</is:name>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="0"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="ae"  format="mathml">
+<m:math>
+<m:apply>
+<m:eq/>
+<m:ci>K_e</m:ci>
+<m:cn>8</m:cn>
+</m:apply>
+</m:math>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="16" type= "static-parameter">
+<is:name>alpha_1</is:name>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="0"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="ae"  format="mathml">
+<m:math>
+<m:apply>
+<m:eq/>
+<m:ci>alpha_1</m:ci>
+<m:cn>0.07</m:cn>
+</m:apply>
+</m:math>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="19" type= "static-parameter">
+<is:name>K_pm</is:name>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="0"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="ae"  format="mathml">
+<m:math>
+<m:apply>
+<m:eq/>
+<m:ci>K_pm</m:ci>
+<m:cn>0.3</m:cn>
+</m:apply>
+</m:math>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="18" type= "static-parameter">
+<is:name>V_pm</is:name>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="0"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="ae"  format="mathml">
+<m:math>
+<m:apply>
+<m:eq/>
+<m:ci>V_pm</m:ci>
+<m:cn>0.11</m:cn>
+</m:apply>
+</m:math>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="31" type= "variable-parameter">
+<is:name>m_bar_beta</is:name>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="0"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="ae"  format="mathml">
+<m:math>
+<m:apply>
+<m:eq/>
+<m:ci>m_bar_beta</m:ci>
+<m:apply>
+<m:divide/>
+<m:apply>
+<m:power/>
+<m:ci>c</m:ci>
+<m:cn>4</m:cn>
+</m:apply>
+<m:apply>
+<m:plus/>
+<m:apply>
+<m:power/>
+<m:ci>K_c</m:ci>
+<m:cn>4</m:cn>
+</m:apply>
+<m:apply>
+<m:power/>
+<m:ci>c</m:ci>
+<m:cn>4</m:cn>
+</m:apply>
+</m:apply>
+</m:apply>
+</m:apply>
+</m:math>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="37" type= "static-parameter">
+<is:name>K_p</is:name>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="0"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="ae"  format="mathml">
+<m:math>
+<m:apply>
+<m:eq/>
+<m:ci>K_p</m:ci>
+<m:cn>0.2</m:cn>
+</m:apply>
+</m:math>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="36" type= "state">
+<is:name>p</is:name>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="0"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:initial-value>
+<is:definition  type="ae"  format="mathml">
+<m:math><m:apply><m:eq/><m:ci>p</m:ci><m:cn>0.1</m:cn></m:apply></m:math>
+</is:definition>
+</is:initial-value>
+<is:implementation>
+<is:definition  type="ode"  format="mathml">
+<m:math>
+<m:apply>
+<m:eq/>
+<m:apply>
+<m:diff/>
+<m:bvar>
+<m:ci>time</m:ci>
+</m:bvar>
+<m:ci>p</m:ci>
+</m:apply>
+<m:apply>
+<m:times/>
+<m:ci>tau_P</m:ci>
+<m:apply>
+<m:minus/>
+<m:ci>p_s</m:ci>
+<m:ci>p</m:ci>
+</m:apply>
+</m:apply>
+</m:apply>
+</m:math>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="35" type= "static-parameter">
+<is:name>K_h</is:name>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="0"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="ae"  format="mathml">
+<m:math>
+<m:apply>
+<m:eq/>
+<m:ci>K_h</m:ci>
+<m:cn>0.08</m:cn>
+</m:apply>
+</m:math>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="34" type= "static-parameter">
+<is:name>K_c</is:name>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="0"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="ae"  format="mathml">
+<m:math>
+<m:apply>
+<m:eq/>
+<m:ci>K_c</m:ci>
+<m:cn>0.2</m:cn>
+</m:apply>
+</m:math>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="33" type= "variable-parameter">
+<is:name>A</is:name>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="0"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="ae"  format="mathml">
+<m:math>
+<m:apply>
+<m:eq/>
+<m:ci>A</m:ci>
+<m:apply>
+<m:minus/>
+<m:cn>1</m:cn>
+<m:ci>B</m:ci>
+</m:apply>
+</m:apply>
+</m:math>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="32" type= "variable-parameter">
+<is:name>B</is:name>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="0"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="ae"  format="mathml">
+<m:math>
+<m:apply>
+<m:eq/>
+<m:ci>B</m:ci>
+<m:apply>
+<m:divide/>
+<m:apply>
+<m:power/>
+<m:ci>p</m:ci>
+<m:cn>2</m:cn>
+</m:apply>
+<m:apply>
+<m:plus/>
+<m:apply>
+<m:power/>
+<m:ci>K_p</m:ci>
+<m:cn>2</m:cn>
+</m:apply>
+<m:apply>
+<m:power/>
+<m:ci>p</m:ci>
+<m:cn>2</m:cn>
+</m:apply>
+</m:apply>
+</m:apply>
+</m:apply>
+</m:math>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+</is:physical-quantity-set>
+<is:morphology/>
+<is:timeseries-set/>
+</is:module>
+</is:module-set>
+</is:insilico-model>
