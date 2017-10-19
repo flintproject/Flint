@@ -71,12 +71,6 @@ public:
 	}
 };
 
-namespace {
-
-const int kFilenameLength = 64;
-
-}
-
 class Loader {
 public:
 	explicit Loader(const boost::filesystem::path &dir)
