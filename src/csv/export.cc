@@ -9,6 +9,10 @@
 #include <map>
 #include <memory>
 #include <vector>
+
+#define BOOST_FILESYSTEM_NO_DEPRECATED
+#include <boost/filesystem.hpp>
+#include <boost/filesystem/fstream.hpp>
 #define BOOST_DATE_TIME_NO_LIB
 #include <boost/interprocess/file_mapping.hpp>
 #include <boost/interprocess/mapped_region.hpp>
@@ -165,23 +169,23 @@ bool ExportIsdFromCsv(const boost::filesystem::path &input_path,
 	header.num_bytes_units = num_bytes_units;
 
 	std::string output_file = output_path.string();
-	FILE *ofp = std::fopen(output_file.c_str(), "wb");
-	if (!ofp) {
-		std::perror(output_file.c_str());
+	boost::filesystem::ofstream ofs(output_file, std::ios::binary);
+	if (!ofs) {
+		std::cerr << "failed to open " << output_file << std::endl;
 		return false;
 	}
-	if (std::fwrite(&header, sizeof(header), 1, ofp) != 1) {
+	if (!ofs.write(reinterpret_cast<const char *>(&header), sizeof(header))) {
 		std::cerr << "failed to write header" << std::endl;
 		return false;
 	}
 	// descriptions
 	for (std::uint32_t i=0; i<num_cols; i++) {
 		std::uint32_t u32len = desc_len[i];
-		if (std::fwrite(&u32len, 4, 1, ofp) != 1) {
+		if (!ofs.write(reinterpret_cast<const char *>(&u32len), 4)) {
 			std::cerr << "failed to write length" << std::endl;
 			return false;
 		}
-		if (std::fwrite(columns[i], u32len, 1, ofp) != 1) {
+		if (!ofs.write(columns[i], u32len)) {
 			std::cerr << "failed to write description" << std::endl;
 			return false;
 		}
@@ -191,17 +195,17 @@ bool ExportIsdFromCsv(const boost::filesystem::path &input_path,
 			UnitMap::const_iterator it = units.find(i);
 			if (it == units.end()) {
 				std::uint32_t u32len = 0;
-				if (std::fwrite(&u32len, 4, 1, ofp) != 1) {
+				if (!ofs.write(reinterpret_cast<const char *>(&u32len), 4)) {
 					std::cerr << "failed to write unit's length" << std::endl;
 					return false;
 				}
 			} else {
 				std::uint32_t u32len = unit_len[i];
-				if (std::fwrite(&u32len, 4, 1, ofp) != 1) {
+				if (!ofs.write(reinterpret_cast<const char *>(&u32len), 4)) {
 					std::cerr << "failed to write unit's length" << std::endl;
 					return false;
 				}
-				if (std::fwrite(it->second, u32len, 1, ofp) != 1) {
+				if (!ofs.write(it->second, u32len)) {
 					std::cerr << "failed to write unit" << std::endl;
 					return false;
 				}
@@ -219,7 +223,7 @@ bool ExportIsdFromCsv(const boost::filesystem::path &input_path,
 				std::cerr << "invalid double: " << (addr + bol[i]) << std::endl;
 				return false;
 			}
-			if (std::fwrite(&d, sizeof(d), 1, ofp) != 1) {
+			if (!ofs.write(reinterpret_cast<const char *>(&d), sizeof(d))) {
 				std::cerr << "failed to write value" << std::endl;
 				return false;
 			}
@@ -229,7 +233,7 @@ bool ExportIsdFromCsv(const boost::filesystem::path &input_path,
 			p = q + 1;
 		} while (++nc < num_cols);
 	}
-	std::fclose(ofp);
+	ofs.close();
 	return true;
 }
 
