@@ -145,7 +145,12 @@ struct TemporaryWorkingDirectory {
 
 	void PopWorkingDirectory() {
 		boost::filesystem::current_path(original_path_);
-		boost::filesystem::remove_all(current_path_);
+		if (!current_path_.empty()) {
+			boost::system::error_code ec;
+			boost::filesystem::remove_all(current_path_, ec);
+			if (ec)
+				std::cerr << ec.message() << std::endl;
+		}
 	}
 
 	boost::filesystem::path original_path_;
