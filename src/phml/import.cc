@@ -64,7 +64,7 @@ public:
 		}
 		xmlNodePtr node = xmlDocSetRootElement(doc_, object_->nodesetval->nodeTab[0]);
 		if (node) xmlUnlinkNode(node);
-		FILE *fp = std::fopen(dump_file, "w");
+		FILE *fp = std::fopen(dump_file, "wb");
 		if (!fp) {
 			std::cerr << "failed to open dump file: " << dump_file << std::endl;
 			return false;
