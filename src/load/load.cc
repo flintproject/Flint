@@ -126,7 +126,7 @@ public:
 
 	task::Task *LoadPhml(sqlite3 *db, std::vector<double> *data)
 	{
-		if (!phml::Read(db))
+		if (!phml::Read(db, dir_))
 			return nullptr;
 		int seed = static_cast<int>(std::clock());
 		if (!phml::Nc(db, nc_, &seed))

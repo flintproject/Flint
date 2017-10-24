@@ -36,11 +36,11 @@ public:
 		xmlFreeDoc(doc_);
 	}
 
-	bool Dump(const char *dump_file) {
+	boost::filesystem::path Dump(const boost::filesystem::path &dir) {
 		context_ = xmlXPathNewContext(doc_);
 		if (!context_) {
 			std::cerr << "failed to create XPath context" << std::endl;
-			return false;
+			return {};
 		}
 		std::unique_ptr<char[]> pattern(new char[128]);
 		std::sprintf(pattern.get(), "//is:module[@module-id='%s']/is:import/*", uuid_.c_str());
@@ -50,29 +50,31 @@ public:
 		object_ = xmlXPathEvalExpression(reinterpret_cast<const xmlChar *>(pattern.get()), context_);
 		if (!object_) {
 			std::cerr << "invalid XPath pattern: " << pattern.get() << std::endl;
-			return false;
+			return {};
 		}
 		assert(object_->type == XPATH_NODESET);
 		assert(object_->nodesetval);
 		if (object_->nodesetval->nodeNr == 0) {
 			std::cerr << "no such <import>" << std::endl;
-			return false;
+			return {};
 		}
 		if (object_->nodesetval->nodeNr > 1) {
 			std::cerr << "invalid <import>: " << object_->nodesetval->nodeNr << std::endl;
-			return false;
+			return {};
 		}
 		xmlNodePtr node = xmlDocSetRootElement(doc_, object_->nodesetval->nodeTab[0]);
 		if (node) xmlUnlinkNode(node);
-		FILE *fp = std::fopen(dump_file, "wb");
+		boost::filesystem::path dump_path = dir / uuid_;
+		dump_path.replace_extension("xml");
+		FILE *fp = std::fopen(dump_path.string().c_str(), "wb");
 		if (!fp) {
-			std::cerr << "failed to open dump file: " << dump_file << std::endl;
-			return false;
+			std::cerr << "failed to open dump file: " << dump_path << std::endl;
+			return {};
 		}
 		xmlDocDump(fp, doc_);
 		std::fclose(fp);
 		if (node) xmlFreeNode(node);
-		return true;
+		return dump_path;
 	}
 
 private:
@@ -84,21 +86,21 @@ private:
 
 } // namespace
 
-bool DumpImport(sqlite3 *db, const boost::uuids::uuid &uuid)
+boost::filesystem::path DumpImport(sqlite3 *db,
+								   const boost::uuids::uuid &uuid,
+								   const boost::filesystem::path &dir)
 {
 	std::unique_ptr<char[]> model_file(GetModelFilename(db));
 	if (!model_file)
-		return false;
+		return {};
 	xmlDocPtr doc = xmlParseFile(model_file.get());
 	if (!doc) {
 		std::cerr << "xml file seems malformed: " << model_file.get() << std::endl;
-		return false;
+		return {};
 	}
-	std::unique_ptr<char[]> dump_file(new char[64]);
 	std::string us = boost::uuids::to_string(uuid);
-	std::sprintf(dump_file.get(), "%s.xml", us.c_str());
 	std::unique_ptr<Parser> parser(new Parser(us, doc));
-	return parser->Dump(dump_file.get());
+	return parser->Dump(dir);
 }
 
 }

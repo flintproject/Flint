@@ -17,7 +17,7 @@ struct F : public test::MemoryFixture {
 
 	void GenerateAndCheck(const char *file) {
 		BOOST_REQUIRE_EQUAL(SaveGivenFile(driver_.db(), file), 1);
-		BOOST_REQUIRE(phml::Read(driver_.db()));
+		BOOST_REQUIRE(phml::Read(driver_.db(), boost::filesystem::current_path()));
 		BOOST_CHECK(layout::Generate(driver_.db(), "layout"));
 		BOOST_CHECK(boost::filesystem::is_regular_file("layout"));
 		boost::filesystem::remove_all("layout");

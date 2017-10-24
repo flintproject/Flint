@@ -31,23 +31,26 @@ namespace phml {
 
 namespace {
 
-db::Driver *GetDriver(const boost::uuids::uuid &uuid)
+std::unique_ptr<db::Driver> GetDriver(const boost::uuids::uuid &uuid,
+									  const boost::filesystem::path &dir)
 {
-	std::unique_ptr<char[]> db_file(new char[64]); // long enough
-	std::string us = boost::uuids::to_string(uuid);
-	std::sprintf(db_file.get(), "%s.db", us.c_str());
-	return new db::Driver(db_file.get());
+	boost::filesystem::path db_path = dir / boost::uuids::to_string(uuid);
+	db_path.replace_extension("db");
+	return db::Driver::Create(db_path);
 }
 
-bool SaveFile(const boost::uuids::uuid &uuid, const char *xml_file)
+bool SaveFile(const boost::uuids::uuid &uuid,
+			  const char *xml_file,
+			  const boost::filesystem::path &dir)
 {
-	std::unique_ptr<db::Driver> driver(GetDriver(uuid));
+	auto driver = GetDriver(uuid, dir);
 	return SaveGivenFile(driver->db(), xml_file);
 }
 
-bool ParseFile(const boost::uuids::uuid &uuid)
+bool ParseFile(const boost::uuids::uuid &uuid,
+			   const boost::filesystem::path &dir)
 {
-	std::unique_ptr<db::Driver> driver(GetDriver(uuid));
+	auto driver = GetDriver(uuid, dir);
 	return flint::sbml::Parse(driver->db());
 }
 
@@ -55,7 +58,7 @@ typedef std::vector<boost::uuids::uuid> UuidVector;
 
 }
 
-bool CombineAll(sqlite3 *db)
+bool CombineAll(sqlite3 *db, const boost::filesystem::path &dir)
 {
 	UuidVector uv;
 	sqlite3_stmt *stmt;
@@ -76,17 +79,18 @@ bool CombineAll(sqlite3 *db)
 		const unsigned char *ref = sqlite3_column_text(stmt, 2);
 
 		if (std::strcmp(reinterpret_cast<const char *>(type), "external") == 0) {
-			if (!SaveFile(uuid, reinterpret_cast<const char *>(ref))) return false;
+			if (!SaveFile(uuid, reinterpret_cast<const char *>(ref), dir))
+				return false;
 		} else {
-			if (!DumpImport(db, uuid)) return false;
-			std::unique_ptr<char[]> xml_file(new char[64]);
-			std::string us = boost::uuids::to_string(uuid);
-			std::sprintf(xml_file.get(), "%s.xml", us.c_str());
-			boost::filesystem::path xml_path = boost::filesystem::absolute(xml_file.get());
+			auto xml_path = DumpImport(db, uuid, dir);
+			if (xml_path.empty())
+				return false;
+			assert(xml_path.is_absolute());
 			std::unique_ptr<char[]> xml_utf8(GetUtf8FromPath(xml_path));
 			if (!xml_utf8)
 				return false;
-			if (!SaveFile(uuid, xml_utf8.get())) return false;
+			if (!SaveFile(uuid, xml_utf8.get(), dir))
+				return false;
 		}
 		uv.push_back(uuid);
 	}
@@ -97,12 +101,12 @@ bool CombineAll(sqlite3 *db)
 	sqlite3_finalize(stmt);
 
 	for (const auto &u : uv) {
-		if (!ParseFile(u))
+		if (!ParseFile(u, dir))
 			return false;
 	}
 
 	for (const auto &u : uv) {
-		if (!Combine(u, db))
+		if (!Combine(u, db, dir))
 			return false;
 	}
 

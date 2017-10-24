@@ -2,6 +2,8 @@
 #ifndef FLINT_PHML_IMPORT_H_
 #define FLINT_PHML_IMPORT_H_
 
+#define BOOST_FILESYSTEM_NO_DEPRECATED
+#include <boost/filesystem.hpp>
 #include <boost/uuid/uuid.hpp>
 
 #include <libxml/globals.h>
@@ -58,7 +60,9 @@ private:
 
 }
 
-bool DumpImport(sqlite3 *db, const boost::uuids::uuid &uuid);
+boost::filesystem::path DumpImport(sqlite3 *db,
+								   const boost::uuids::uuid &uuid,
+								   const boost::filesystem::path &dir);
 
 }
 

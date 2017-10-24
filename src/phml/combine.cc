@@ -279,31 +279,31 @@ int ProcessOde(void *data, int argc, char **argv, char **names)
 	return (writer->AddOde(argv[0], argv[1], argv[2])) ? 0 : 1;
 }
 
-class Loader : public db::Driver {
+class Loader {
 public:
-	explicit Loader(const char *db_file)
-		: db::Driver(db_file)
+	explicit Loader(const boost::filesystem::path &db_path)
+		: driver_(db::Driver::Create(db_path))
 	{
 	}
 
 	bool Load(Writer *writer) {
 		int e;
 		char *em;
-		e = sqlite3_exec(db(), "SELECT * FROM assignments", ProcessAssignment, writer, &em);
+		e = sqlite3_exec(driver_->db(), "SELECT * FROM assignments", ProcessAssignment, writer, &em);
 		if (e != SQLITE_OK) {
 			if (e != SQLITE_ABORT)
 				std::cerr << "failed to select assignments: " << e << ": " << em << std::endl;
 			sqlite3_free(em);
 			return false;
 		}
-		e = sqlite3_exec(db(), "SELECT * FROM constants", ProcessConstant, writer, &em);
+		e = sqlite3_exec(driver_->db(), "SELECT * FROM constants", ProcessConstant, writer, &em);
 		if (e != SQLITE_OK) {
 			if (e != SQLITE_ABORT)
 				std::cerr << "failed to select constants: " << e << ": " << em << std::endl;
 			sqlite3_free(em);
 			return false;
 		}
-		e = sqlite3_exec(db(), "SELECT * FROM odes", ProcessOde, writer, &em);
+		e = sqlite3_exec(driver_->db(), "SELECT * FROM odes", ProcessOde, writer, &em);
 		if (e != SQLITE_OK) {
 			if (e != SQLITE_ABORT)
 				std::cerr << "failed to select odes: " << e << ": " << em << std::endl;
@@ -312,11 +312,16 @@ public:
 		}
 		return true;
 	}
+
+private:
+	std::unique_ptr<db::Driver> driver_;
 };
 
 } // namespace
 
-bool Combine(const boost::uuids::uuid &uuid, sqlite3 *db)
+bool Combine(const boost::uuids::uuid &uuid,
+			 sqlite3 *db,
+			 const boost::filesystem::path &dir)
 {
 	PhysicalQuantityMap pqm;
 	int max_pq_id = 0;
@@ -339,10 +344,9 @@ bool Combine(const boost::uuids::uuid &uuid, sqlite3 *db)
 		}
 	}
 
-	std::ostringstream oss;
-	oss << uuid << ".db";
-	std::string uuid_db = oss.str();
-	Loader loader(uuid_db.c_str());
+	boost::filesystem::path db_path = dir / boost::uuids::to_string(uuid);
+	db_path.replace_extension("db");
+	Loader loader(db_path);
 	return loader.Load(&writer);
 }
 

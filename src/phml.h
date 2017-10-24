@@ -27,9 +27,9 @@ bool UnitOfTime(sqlite3 *db, const boost::filesystem::path &output);
  */
 bool LengthAndStep(sqlite3 *db, const boost::filesystem::path &nc_file, const boost::filesystem::path &uot_file);
 
-bool CombineAll(sqlite3 *db);
+bool CombineAll(sqlite3 *db, const boost::filesystem::path &dir);
 
-bool Read(sqlite3 *db);
+bool Read(sqlite3 *db, const boost::filesystem::path &dir);
 
 }
 }

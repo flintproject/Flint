@@ -33,7 +33,7 @@ BOOST_FIXTURE_TEST_SUITE(test_translate, F)
 		PushWorkingDirectory(#name);									\
 		std::unique_ptr<cli::RunOption> option(GenerateOption(TEST_MODELS(filename), filename ".c")); \
 		test::StderrCapture sc;											\
-		BOOST_CHECK(tr::Translate(*option, boost::filesystem::path()));	\
+		BOOST_CHECK(tr::Translate(*option, boost::filesystem::current_path()));	\
 		BOOST_CHECK_EQUAL(boost::process::system(CC " -std=c99 -Wall -W " filename ".c -lm"), EXIT_SUCCESS); \
 		BOOST_CHECK(sc.Get().empty());									\
 		PopWorkingDirectory();											\

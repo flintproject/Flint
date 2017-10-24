@@ -32,7 +32,7 @@ public:
 	void ReadAndCheck(const char *file)
 	{
 		BOOST_REQUIRE_EQUAL(SaveGivenFile(driver_.db(), file), 1);
-		BOOST_CHECK(phml::Read(driver_.db()));
+		BOOST_CHECK(phml::Read(driver_.db(), boost::filesystem::current_path()));
 	}
 
 	void CheckModules(const std::vector<std::string> &expected)
@@ -204,7 +204,7 @@ public:
 	{
 		BOOST_REQUIRE_EQUAL(SaveGivenFile(driver_.db(), file), 1);
 		test::StderrCapture capture;
-		BOOST_CHECK(!phml::Read(driver_.db()));
+		BOOST_CHECK(!phml::Read(driver_.db(), boost::filesystem::current_path()));
 		BOOST_CHECK_EQUAL(capture.Get(), expected);
 	}
 

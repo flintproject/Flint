@@ -26,7 +26,7 @@ struct F : public test::MemoryFixture {
 
 	void Phml(const char *file) {
 		SaveGivenFile(driver_.db(), file);
-		BOOST_REQUIRE(phml::Read(driver_.db()));
+		BOOST_REQUIRE(phml::Read(driver_.db(), boost::filesystem::current_path()));
 	}
 
 	void Sbml(const char *file) {

@@ -2403,7 +2403,7 @@ bool CreateViews(sqlite3 *db, const View *views, size_t n)
 
 }
 
-bool Read(sqlite3 *db)
+bool Read(sqlite3 *db, const boost::filesystem::path &dir)
 {
 	std::unique_ptr<char[]> given_filename(GetGivenFilename(db));
 	if (!given_filename)
@@ -2521,7 +2521,7 @@ bool Read(sqlite3 *db)
 	if (!CommitTransaction(db))
 		return false;
 
-	if (!CombineAll(db))
+	if (!CombineAll(db, dir))
 		return false;
 	if (!ts::Tsc(db))
 		return false;

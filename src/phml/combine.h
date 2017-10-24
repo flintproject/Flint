@@ -2,13 +2,17 @@
 #ifndef FLINT_PHML_COMBINE_H_
 #define FLINT_PHML_COMBINE_H_
 
+#define BOOST_FILESYSTEM_NO_DEPRECATED
+#include <boost/filesystem.hpp>
 #include <boost/uuid/uuid.hpp>
 
 #include "sqlite3.h"
 
 namespace flint {
 
-bool Combine(const boost::uuids::uuid &uuid, sqlite3 *db);
+bool Combine(const boost::uuids::uuid &uuid,
+			 sqlite3 *db,
+			 const boost::filesystem::path &dir);
 
 }
 
