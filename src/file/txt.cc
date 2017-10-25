@@ -17,10 +17,10 @@ bool Txt(const char *filename, Format *format, const boost::filesystem::path &di
 		return false;
 	FILE *fp;
 	if (dir.empty()) {
-		fp = std::fopen("file.txt", "w");
+		fp = std::fopen("file.txt", "wb");
 	} else {
 		auto file_txt = dir / "file.txt";
-		fp = std::fopen(file_txt.string().c_str(), "w");
+		fp = std::fopen(file_txt.string().c_str(), "wb");
 	}
 	if (!fp) {
 		std::perror(filename);
