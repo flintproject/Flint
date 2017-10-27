@@ -1,3 +1,3 @@
-Both sqlite3.h and sqlite3.c came from SQLite 3.20.1:
-http://sqlite.org/2017/sqlite-amalgamation-3200100.zip
+Both sqlite3.h and sqlite3.c came from SQLite 3.21.0:
+http://sqlite.org/2017/sqlite-amalgamation-3210000.zip
 Do NOT edit these files, we would like to keep it same as the upstream.
