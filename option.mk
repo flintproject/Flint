@@ -107,6 +107,8 @@ WXWIDGETS_CONFIGURE_OPTIONS = \
 	--disable-webkit \
 	--disable-webview \
 	--disable-xrc \
+	--disable-gtktest \
+	--disable-sdltest \
 	--without-expat \
 	--without-gtkprint \
 	--without-opengl \
