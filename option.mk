@@ -33,7 +33,8 @@ CLIBSEDML_CONFIGURE_OPTIONS = --enable-silent-rules --disable-static
 CZMQ_CONFIGURE_OPTIONS = \
 	--enable-silent-rules \
 	--disable-static \
-	--disable-Werror
+	--disable-Werror \
+	--without-docs
 
 LIBMICROHTTPD_CONFIGURE_OPTIONS = \
 	--enable-silent-rules \
@@ -114,4 +115,7 @@ WXWIDGETS_CONFIGURE_OPTIONS = \
 	--without-opengl \
 	--without-sdl
 
-ZEROMQ_CONFIGURE_OPTIONS = --enable-silent-rules --disable-static
+ZEROMQ_CONFIGURE_OPTIONS = \
+	--enable-silent-rules \
+	--disable-static \
+	--without-docs
