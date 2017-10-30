@@ -200,9 +200,10 @@ tmp/sundials-$(SUNDIALS_VERSION): src/sundials-$(SUNDIALS_VERSION).tar.gz | tmp
 	tar -C var -zxf $<
 	touch $@
 
-tmp/wxWidgets-$(WXWIDGETS_VERSION): src/wxWidgets-$(WXWIDGETS_VERSION).tar.bz2 | tmp
+tmp/wxWidgets-$(WXWIDGETS_VERSION): src/wxWidgets-$(WXWIDGETS_VERSION).tar.bz2 wxWidgets-$(WXWIDGETS_VERSION).patch | tmp
 	-rm -rf var/wxWidgets-$(WXWIDGETS_VERSION)
 	tar -C var -jxf $<
+	patch -d var/wxWidgets-$(WXWIDGETS_VERSION) -p1 < wxWidgets-$(WXWIDGETS_VERSION).patch
 	touch $@
 
 tmp/zeromq-$(ZEROMQ_VERSION): src/zeromq-$(ZEROMQ_VERSION).tar.gz | tmp

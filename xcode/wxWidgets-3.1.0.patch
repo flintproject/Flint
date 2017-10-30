@@ -1,0 +1,36 @@
+commit 9a610eadcfed4cbe81f831450f0613c006dd5eed
+Author: FX Coudert <fxcoudert@gmail.com>
+Date:   Mon Aug 7 14:45:39 2017 +0200
+
+    Fix compilation with macOS 10.13 SDK due to assert macros change
+    
+    Predefine __ASSERT_MACROS_DEFINE_VERSIONS_WITHOUT_UNDERSCORES to allow
+    compiling existing code with the newest SDK which doesn't define these
+    macro versions by default any longer.
+    
+    Closes https://github.com/wxWidgets/wxWidgets/pull/533
+
+diff --git a/configure b/configure
+index 5bd1e29671..b1e22707d8 100755
+--- a/configure
++++ b/configure
+@@ -19770,6 +19770,7 @@ esac
+ 
+ case "${host}" in
+   *-*-darwin* )
++    CPPFLAGS="-D__ASSERT_MACROS_DEFINE_VERSIONS_WITHOUT_UNDERSCORES=1 $CPPFLAGS"
+     { $as_echo "$as_me:${as_lineno-$LINENO}: checking if CoreFoundation/CFBase.h is usable" >&5
+ $as_echo_n "checking if CoreFoundation/CFBase.h is usable... " >&6; }
+     cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+diff --git a/configure.in b/configure.in
+index 26167e76ca..9b3d9100b3 100644
+--- a/configure.in
++++ b/configure.in
+@@ -1361,6 +1361,7 @@ esac
+ dnl This case is for OS X vs. everything else
+ case "${host}" in
+   *-*-darwin* )
++    CPPFLAGS="-D__ASSERT_MACROS_DEFINE_VERSIONS_WITHOUT_UNDERSCORES=1 $CPPFLAGS"
+     AC_MSG_CHECKING([if CoreFoundation/CFBase.h is usable])
+     AC_TRY_COMPILE([#include <CoreFoundation/CFBase.h>
+ ],[],
