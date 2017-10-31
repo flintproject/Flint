@@ -5,6 +5,7 @@
 
 #include "gui/sub-window.h"
 
+#include <array>
 #include <cassert>
 #include <limits>
 #include <memory>
@@ -134,7 +135,21 @@ namespace {
 
 const wxString choicesPattern[] = {"Regular expression", "Wildcard", "Fixed string"};
 
-const wxString choicesColumn[] = {"Physical Quantity", "Module"};
+const std::array<wxString, 2> choicesColumnsCellml = {"Variable", "Component"};
+const std::array<wxString, 2> choicesColumnsPhml = {"Physical Quantity", "Module"};
+const std::array<wxString, 2> choicesColumnsSbml = {"Species/Reaction", "-"};
+
+const std::array<wxString, 2> &GetChoices(const Document *doc)
+{
+	switch (doc->format()) {
+	case file::kCellml:
+		return choicesColumnsCellml;
+	case file::kSbml:
+		return choicesColumnsSbml;
+	default:
+		return choicesColumnsPhml;
+	}
+}
 
 }
 
@@ -153,15 +168,15 @@ OutputVariablesWindow::OutputVariablesWindow(wxWindow *parent, const Document *d
 								  wxID_ANY,
 								  wxDefaultPosition,
 								  wxDefaultSize,
-								  WXSIZEOF(choicesColumn),
-								  choicesColumn))
+								  2,
+								  GetChoices(doc).data()))
 {
 	long i;
 
 	// controls
 	auto availableVariables = new wxListView(this);
-	availableVariables->AppendColumn("Physical Quantity");
-	availableVariables->AppendColumn("Module");
+	for (auto &column : GetChoices(doc))
+		availableVariables->AppendColumn(column);
 	i = 0;
 	for (auto &column : doc->var()) {
 		availableVariables->InsertItem(i, column.name());
@@ -173,8 +188,8 @@ OutputVariablesWindow::OutputVariablesWindow(wxWindow *parent, const Document *d
 
 	auto vbox0 = new wxStaticBoxSizer(wxVERTICAL, this, "Enabled Variables");
 	enabled_variables_ = new wxListView(vbox0->GetStaticBox());
-	enabled_variables_->AppendColumn("Physical Quantity");
-	enabled_variables_->AppendColumn("Module");
+	for (auto &column : GetChoices(doc))
+		enabled_variables_->AppendColumn(column);
 	Choose(doc->var());
 	enabled_variables_->SetColumnWidth(0, wxLIST_AUTOSIZE_USEHEADER);
 	enabled_variables_->SetColumnWidth(1, wxLIST_AUTOSIZE);
@@ -242,6 +257,25 @@ void OutputVariablesWindow::Choose(const std::vector<lo::Column> &v)
 	}
 }
 
+namespace {
+
+const std::array<wxString, 2> parameterColumnsCellml = {"Component", "Variable"};
+const std::array<wxString, 2> parameterColumnsPhml = {"Module", "PQ"};
+const std::array<wxString, 2> parameterColumnsSbml = {"-", "Name"};
+
+const std::array<wxString, 2> &GetParameterColumns(const Document *doc)
+{
+	switch (doc->format()) {
+	case file::kCellml:
+		return parameterColumnsCellml;
+	case file::kSbml:
+		return parameterColumnsSbml;
+	default:
+		return parameterColumnsPhml;
+	}
+}
+
+}
 
 ParametersWindow::ParametersWindow(wxWindow *parent, const Document *doc)
 	: wxWindow(parent, wxID_ANY)
@@ -251,8 +285,8 @@ ParametersWindow::ParametersWindow(wxWindow *parent, const Document *doc)
 	auto button = new wxButton(this, wxID_ANY, "Edit parameter set");
 	button->Bind(wxEVT_BUTTON, &ParametersWindow::OnEditParameterSet, this);
 
-	parameters_->AppendTextColumn("Module", wxDATAVIEW_CELL_INERT, wxDVC_DEFAULT_WIDTH)->SetSortable(true);
-	parameters_->AppendTextColumn("PQ", wxDATAVIEW_CELL_INERT, wxDVC_DEFAULT_WIDTH)->SetSortable(true);
+	for (auto &column : GetParameterColumns(doc))
+		parameters_->AppendTextColumn(column, wxDATAVIEW_CELL_INERT, wxDVC_DEFAULT_WIDTH)->SetSortable(true);
 	parameters_->AppendTextColumn("Type")->SetSortable(true);
 	parameters_->AppendTextColumn("Expression", wxDATAVIEW_CELL_EDITABLE)->SetSortable(true);
 
