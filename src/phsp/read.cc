@@ -30,6 +30,7 @@
 #include "db/statement-driver.h"
 #include "db/utility.h"
 #include "flint/numeric.h"
+#include "flint/uuid-generator.h"
 #include "mathml/math-dumper.h"
 #include "phsp/sample-builder.h"
 #include "sqlite3.h"
@@ -57,6 +58,21 @@ public:
 
 	void set_format(xmlChar *format) {format_ = format;}
 	void set_iref(xmlChar *iref) {iref_ = iref;}
+
+	bool IsCellml() const {
+		assert(format_);
+		return xmlStrEqual(format_, reinterpret_cast<const xmlChar *>("cellml")) == 1;
+	}
+
+	bool IsPhml() const {
+		assert(format_);
+		return xmlStrEqual(format_, reinterpret_cast<const xmlChar *>("phml")) == 1;
+	}
+
+	bool IsSbml() const {
+		assert(format_);
+		return xmlStrEqual(format_, reinterpret_cast<const xmlChar *>("sbml")) == 1;
+	}
 
 private:
 	xmlChar *format_;
@@ -162,26 +178,34 @@ public:
 	Target &operator=(const Target &) = delete;
 
 	Target()
-		: uuid_(nullptr),
-		  physical_quantity_id_(),
-		  species_id_(nullptr),
-		  parameter_id_(nullptr),
-		  reaction_id_(nullptr)
+		: component_(nullptr)
+		, variable_(nullptr)
+		, uuid_(nullptr)
+		, physical_quantity_id_()
+		, species_id_(nullptr)
+		, parameter_id_(nullptr)
+		, reaction_id_(nullptr)
 	{}
 
 	~Target() {
+		if (component_) xmlFree(component_);
+		if (variable_) xmlFree(variable_);
 		if (uuid_) xmlFree(uuid_);
 		if (species_id_) xmlFree(species_id_);
 		if (parameter_id_) xmlFree(parameter_id_);
 		if (reaction_id_) xmlFree(reaction_id_);
 	}
 
+	const xmlChar *component() const {return component_;}
+	const xmlChar *variable() const {return variable_;}
 	const xmlChar *uuid() const {return uuid_;}
 	int physical_quantity_id() const {return physical_quantity_id_;}
 	const xmlChar *species_id() const {return species_id_;}
 	const xmlChar *parameter_id() const {return parameter_id_;}
 	const xmlChar *reaction_id() const {return reaction_id_;}
 
+	void set_component(xmlChar *component) {component_ = component;}
+	void set_variable(xmlChar *variable) {variable_ = variable;}
 	void set_uuid(xmlChar *uuid) {uuid_ = uuid;}
 	void set_physical_quantity_id(int id) {physical_quantity_id_ = id;}
 	void set_species_id(xmlChar *id) {species_id_ = id;}
@@ -195,6 +219,8 @@ public:
 	}
 
 private:
+	xmlChar *component_;
+	xmlChar *variable_;
 	xmlChar *uuid_;
 	int physical_quantity_id_;
 	xmlChar *species_id_;
@@ -379,28 +405,29 @@ public:
 
 private:
 	int ReadModel(const boost::filesystem::path &cp) {
-		std::unique_ptr<Model> model(new Model);
+		model_.reset(new Model);
 		int i;
 		while ( (i = xmlTextReaderMoveToNextAttribute(text_reader_)) > 0) {
 			if (xmlTextReaderIsNamespaceDecl(text_reader_)) continue;
 
 			const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
 			if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("format"))) {
-				model->set_format(xmlTextReaderValue(text_reader_));
-				if ( !xmlStrEqual(model->format(), reinterpret_cast<const xmlChar *>("phml")) &&
-					 !xmlStrEqual(model->format(), reinterpret_cast<const xmlChar *>("sbml")) ) {
-					std::cerr << "unknown format of <model>: " << reinterpret_cast<const char *>(model->format()) << std::endl;
+				model_->set_format(xmlTextReaderValue(text_reader_));
+				if ( !model_->IsCellml() &&
+					 !model_->IsPhml() &&
+					 !model_->IsSbml() ) {
+					std::cerr << "unknown format of <model>: " << reinterpret_cast<const char *>(model_->format()) << std::endl;
 					return -2;
 				}
 			} else if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("iref"))) {
-				model->set_iref(xmlTextReaderValue(text_reader_));
+				model_->set_iref(xmlTextReaderValue(text_reader_));
 			}
 		}
-		if (!model->format()) {
+		if (!model_->format()) {
 			std::cerr << "missing format of <model>" << std::endl;
 			return -2;
 		}
-		if (!model->iref()) {
+		if (!model_->iref()) {
 			std::cerr << "missing iref of <model>" << std::endl;
 			return -2;
 		}
@@ -420,7 +447,7 @@ private:
 				 << std::endl;
 			return -2;
 		}
-		e = sqlite3_bind_text(stmt, 1, reinterpret_cast<const char *>(model->iref()), -1, SQLITE_STATIC);
+		e = sqlite3_bind_text(stmt, 1, reinterpret_cast<const char *>(model_->iref()), -1, SQLITE_STATIC);
 		if (e != SQLITE_OK) {
 			std::cerr << "failed to bind parameter: " << e << std::endl;
 			return -2;
@@ -443,7 +470,7 @@ private:
 		}
 		if (e != SQLITE_ROW) {
 			std::cerr << "failed to find a corresponding model: "
-					  << reinterpret_cast<const char *>(model->iref())
+					  << reinterpret_cast<const char *>(model_->iref())
 				 << std::endl;
 			return -2;
 		}
@@ -461,7 +488,7 @@ private:
 			return -2;
 		}
 
-		boost::filesystem::path mp = GetPathFromUtf8(reinterpret_cast<const char *>(model->iref()));
+		boost::filesystem::path mp = GetPathFromUtf8(reinterpret_cast<const char *>(model_->iref()));
 		if (mp.empty())
 			return -2;
 		boost::filesystem::path amp = boost::filesystem::absolute(mp, cp);
@@ -533,7 +560,7 @@ private:
 				 << std::endl;
 			return -2;
 		}
-		e = sqlite3_bind_text(stmt, 1, reinterpret_cast<const char *>(model->format()), -1, SQLITE_STATIC);
+		e = sqlite3_bind_text(stmt, 1, reinterpret_cast<const char *>(model_->format()), -1, SQLITE_STATIC);
 		if (e != SQLITE_OK) {
 			std::cerr << "failed to bind parameter: " << e << std::endl;
 			return -2;
@@ -1130,7 +1157,9 @@ private:
 			if (xmlTextReaderIsNamespaceDecl(text_reader_)) continue;
 
 			const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
-			if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("module-id"))) {
+			if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("component"))) {
+				target->set_component(xmlTextReaderValue(text_reader_));
+			} else if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("module-id"))) {
 				target->set_uuid(xmlTextReaderValue(text_reader_));
 			} else if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("physical-quantity-id"))) {
 				int id = atoi(reinterpret_cast<const char *>(xmlTextReaderConstValue(text_reader_)));
@@ -1150,12 +1179,25 @@ private:
 				return -2;
 			}
 		}
-		if (target->uuid()) {
+		if (model_->IsCellml()) {
+			if (!target->component()) {
+				std::cerr << "missing component of <target>" << std::endl;
+				return -2;
+			}
+			if (!target->variable()) {
+				std::cerr << "missing variable of <target>" << std::endl;
+				return -2;
+			}
+		} else if (model_->IsPhml()) {
+			if (!target->uuid()) {
+				std::cerr << "missing module-id of <target>" << std::endl;
+				return -2;
+			}
 			if (target->physical_quantity_id() == 0) {
 				std::cerr << "missing physical-quantity-id of <target>" << std::endl;
 				return -2;
 			}
-		} else {
+		} else if (model_->IsSbml()) {
 			if ( !target->species_id() &&
 				 !target->parameter_id() &&
 				 !target->reaction_id() ) {
@@ -1197,7 +1239,19 @@ private:
 							return -2;
 						}
 						boost::uuids::uuid u; // to be alive until sqlite3_step()
-						if (target->uuid()) { // PHML
+						if (model_->IsCellml()) { // CellML
+							u = GenerateUuidForCellml(reinterpret_cast<const char *>(target->component()));
+							e = sqlite3_bind_blob(stmt, 1, &u, u.size(), SQLITE_STATIC);
+							if (e != SQLITE_OK) {
+								std::cerr << "failed to bind uuid: " << e << std::endl;
+								return -2;
+							}
+							e = sqlite3_bind_text(stmt, 2, reinterpret_cast<const char *>(target->variable()), -1, SQLITE_STATIC);
+							if (e != SQLITE_OK) {
+								std::cerr << "failed to bind parameter: " << e << std::endl;
+								return -2;
+							}
+						} else if (model_->IsPhml()) { // PHML
 							u = target->GetUuid();
 							e = sqlite3_bind_blob(stmt, 1, &u, u.size(), SQLITE_STATIC);
 							if (e != SQLITE_OK) {
@@ -1210,6 +1264,7 @@ private:
 								return -2;
 							}
 						} else { // SBML
+							assert(model_->IsSbml());
 							u = boost::uuids::nil_uuid();
 							e = sqlite3_bind_blob(stmt, 1, &u, u.size(), SQLITE_STATIC);
 							if (e != SQLITE_OK) {
@@ -1303,6 +1358,7 @@ private:
 	std::unique_ptr<db::StatementDriver> sd_param_;
 	std::random_device rd_;
 	std::mt19937 gen_;
+	std::unique_ptr<Model> model_;
 };
 
 }
