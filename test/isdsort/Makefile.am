@@ -13,6 +13,6 @@ TESTS = \
 $(TESTS:.sh=.mk): $(DATADIR)/test.mk.in
 	m4 -DDATADIR=$(DATADIR) -DTEST=$(@:.mk=) $< > $@
 
-CLEANFILES = $(TESTS) $(TESTS:.sh=.mk) *.isd 0.out/* 2.out/* 9.out/*
+CLEANFILES = $(TESTS) $(TESTS:.sh=.mk) *.isd 0.out.*/* 2.out.*/* 9.out.*/*
 
 check_SCRIPTS = $(TESTS) $(TESTS:.sh=.mk)
