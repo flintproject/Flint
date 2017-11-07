@@ -132,6 +132,12 @@ bool Writer::operator()()
 				return false;
 			}
 			switch (doc->format()) {
+			case file::kCellml:
+				std::fprintf(fp_,
+							 "      <target component='%s' variable='%s'>\n",
+							 column.track_name().c_str(),
+							 column.name().c_str());
+				break;
 			case file::kSbml:
 				if (std::strncmp(column.name().c_str(), "sbml:", 5) == 0) {
 					std::fprintf(fp_,

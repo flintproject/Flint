@@ -24,9 +24,8 @@
 #include "db/reach-driver.h"
 #include "db/statement-driver.h"
 #include "db/variable-inserter.h"
-#include "modelpath.h"
+#include "flint/uuid-generator.h"
 #include "sqlite3.h"
-#include "uuidgen.h"
 
 namespace flint {
 namespace {
@@ -66,7 +65,7 @@ public:
 		sqlite3_finalize(insert_stmt_);
 	}
 
-	bool Dump(sqlite3 *db, const boost::filesystem::path &path, ComponentMap *cm) {
+	bool Dump(sqlite3 *db, ComponentMap *cm) {
 		static const char kTreeQuery[] = "SELECT DISTINCT component FROM cellml_variables";
 
 		int e;
@@ -89,7 +88,6 @@ public:
 			return false;
 		}
 
-		std::unique_ptr<UuidGenerator> gen(new UuidGenerator(path));
 		for (e = sqlite3_step(query_stmt_); e == SQLITE_ROW; e = sqlite3_step(query_stmt_)) {
 			const unsigned char *c = sqlite3_column_text(query_stmt_, 0);
 			size_t clen = std::strlen(reinterpret_cast<const char *>(c));
@@ -97,7 +95,7 @@ public:
 				std::cerr << "empty component name" << std::endl;
 				return false;
 			}
-			boost::uuids::uuid uuid = (*gen)();
+			boost::uuids::uuid uuid = GenerateUuidForCellml(reinterpret_cast<const char *>(c));
 			e = sqlite3_bind_blob(insert_stmt_, 1, &uuid, uuid.size(), SQLITE_STATIC);
 			if (e != SQLITE_OK) {
 				std::cerr << "failed to bind uuid: " << e << std::endl;
@@ -132,6 +130,13 @@ class IvInserter : public db::EqInserter {
 public:
 	explicit IvInserter(sqlite3 *db)
 		: db::EqInserter("input_ivs", db)
+	{}
+};
+
+class DependentIvInserter : public db::EqInserter {
+public:
+	explicit DependentIvInserter(sqlite3 *db)
+		: db::EqInserter("dependent_ivs", db)
 	{}
 };
 
@@ -314,6 +319,7 @@ public:
 		: db::StatementDriver(db, kFunctionQuery)
 		, ei_(db)
 		, ii_(db)
+		, dii_(db)
 		, cm_(cm)
 	{
 	}
@@ -339,6 +345,8 @@ public:
 			const char *math = reinterpret_cast<const char *>(&body[1]);
 			if (!ei_.Insert(u, math)) return false;
 			if (!ii_.Insert(u, math)) return false;
+			if (!dii_.Insert(u, math))
+				return false;
 		}
 		if (e != SQLITE_DONE) {
 			std::cerr << "failed to step statement: " << e << std::endl;
@@ -350,6 +358,7 @@ public:
 private:
 	EqInserter ei_;
 	IvInserter ii_;
+	DependentIvInserter dii_;
 	const ComponentMap *cm_;
 };
 
@@ -424,17 +433,12 @@ private:
 
 bool TranslateCellml(sqlite3 *db)
 {
-	std::unique_ptr<char[]> filename(GetModelFilename(db));
-	if (!filename)
-		return false;
-	boost::filesystem::path path(filename.get());
-
 	if (!BeginTransaction(db))
 		return false;
 
 	if (!CreateTable(db, "input_ivs", "(uuid BLOB, math TEXT)"))
 		return false;
-	if (!CreateTable(db, "dependent_ivs", "(uuid BLOB, math TEXT)")) // TODO: insert proper rows
+	if (!CreateTable(db, "dependent_ivs", "(uuid BLOB, math TEXT)"))
 		return false;
 	if (!CreateTable(db, "input_eqs", "(uuid BLOB, math TEXT)"))
 		return false;
@@ -442,7 +446,7 @@ bool TranslateCellml(sqlite3 *db)
 	std::unique_ptr<ComponentMap> cm(new ComponentMap);
 	{
 		TreeDumper dumper;
-		if (!dumper.Dump(db, path, cm.get()))
+		if (!dumper.Dump(db, cm.get()))
 			return false;
 	}
 

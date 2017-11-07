@@ -43,35 +43,32 @@ struct F : public test::MemoryFixture {
 		boost::filesystem::path ep = fp.parent_path();
 		ep /= "var";
 		ep /= input;
-		boost::filesystem::ifstream efs(ep);
-		BOOST_REQUIRE(efs);
-		std::vector<std::string> expected;
-		std::string line;
-		while (!std::getline(efs, line).eof())
-			expected.push_back(line);
-		efs.close();
 
+		boost::filesystem::path op(std::string(output) + ".txt");
+		boost::filesystem::ofstream ofs(op, std::ios::binary);
+		BOOST_REQUIRE(ofs);
 		std::ifstream ifs(output, std::ios::binary);
 		BOOST_REQUIRE(ifs);
 		lo::Header header;
 		BOOST_REQUIRE(UnpackFromIstream(header, &ifs));
 		lo::Column column;
-		for (auto &e : expected) {
-			BOOST_REQUIRE(UnpackFromIstream(column, &ifs));
+		while (UnpackFromIstream(column, &ifs)) {
 			boost::uuids::uuid uuid;
 			std::memcpy(&uuid, column.uuid().c_str(), uuid.size());
-			std::ostringstream oss;
-			oss << column.position()
+			ofs << column.position()
 				<< ' '
 				<< uuid
 				<< ' '
 				<< column.id()
 				<< ' '
-				<< column.name();
-			BOOST_CHECK_EQUAL(oss.str(), e);
+				<< column.name()
+				<< std::endl;
 		}
-		BOOST_CHECK_EQUAL(ifs.get(), EOF);
+		ifs.close();
+		ofs.close();
 
+		test::CheckSame(op, ep);
+		boost::filesystem::remove(op);
 		std::remove(output);
 	}
 };

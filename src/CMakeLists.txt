@@ -161,6 +161,7 @@ add_library(libflintxx STATIC
     ts/tsfiles.cc
     utf8path.cc
     utf8string.c
+    uuid-generator.cc
     uuidgen.cc
     variable.cc
     variable-map.cc

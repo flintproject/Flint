@@ -1159,6 +1159,8 @@ private:
 			const xmlChar *local_name = xmlTextReaderConstLocalName(text_reader_);
 			if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("component"))) {
 				target->set_component(xmlTextReaderValue(text_reader_));
+			} else if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("variable"))) {
+				target->set_variable(xmlTextReaderValue(text_reader_));
 			} else if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("module-id"))) {
 				target->set_uuid(xmlTextReaderValue(text_reader_));
 			} else if (xmlStrEqual(local_name, reinterpret_cast<const xmlChar *>("physical-quantity-id"))) {
