@@ -1,3 +1,20 @@
+* Flint 1.9 (2017-11-10)
+
+** Supported platforms
+   - Windows: Windows 7, 8, and 10.
+   - macOS: OS X Mavericks (10.9) or later;
+     OS X Mountain Lion (10.8) is no longer supported.
+   - POSIX-like environments, including modern Linux.
+** New features
+   - Added a program called flint-lodbg, which dumps data layout used during
+     simulation for debugging purpose, reading from a layout file.
+   - flint2 now experimentally supports CellML and SBML models, as well as
+     more menus.
+** Improvements
+   - isdplot prints more informative message on errors.
+   - isdbswap now allows input ISDF to include empty comment.
+   - csv2isd exits with status 0 at --help.
+
 * Flint 1.8 (2017-06-09)
 
 ** Supported platforms
