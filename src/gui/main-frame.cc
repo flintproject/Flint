@@ -350,7 +350,7 @@ void MainFrame::OnAbout(wxCommandEvent &)
 {
 	wxAboutDialogInfo aboutInfo;
 	aboutInfo.SetName("Flint");
-	aboutInfo.SetVersion("1.9");
+	aboutInfo.SetVersion("2.0");
 	aboutInfo.SetDescription("A simulator for biological and physiological models");
 	aboutInfo.SetCopyright("(C) 2015-2017 Okinawa Institute of Science and Technology Graduate University");
 	aboutInfo.SetWebSite("https://flintproject.github.io/");
