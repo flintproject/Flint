@@ -3,26 +3,10 @@
   <title>Flint</title>
   <license file="license.rtf"></license>
   <options customize="never" require-scripts="false" hostArchitectures="x86_64"/>
-  <installation-check script="checkJRE()"></installation-check>
-  <script>
-<![CDATA[
-function checkJRE() {
-var r = system.files.fileExistsAtPath('/Library/Internet Plug-Ins/JavaAppletPlugin.plugin/Contents/Home');
-if (r) return true;
-my.result.type = 'Fatal';
-my.result.title = "Oracle's Java is needed";
-my.result.message = "Oracle's Java For Mac OS X is needed; please install Java 7 or later in advance from http://www.java.com/.";
-return false;
-}
-]]>
-  </script>
   <volume-check>
     <allowed-os-versions>
       <os-version min="10.9"/>
     </allowed-os-versions>
-    <required-bundles all="true">
-      <bundle id="com.oracle.jre" path="/Library/Internet Plug-Ins/JavaAppletPlugin.plugin" search="false"/>
-    </required-bundles>
   </volume-check>
   <choices-outline>
     <line choice="default">

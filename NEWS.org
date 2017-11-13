@@ -1,3 +1,8 @@
+* Flint 2.0 (2018-XX-XX)
+
+** Supported platforms
+   - Flint no longer depends on Java runtime environment.
+
 * Flint 1.9 (2017-11-10)
 
 ** Supported platforms

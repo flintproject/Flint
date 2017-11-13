@@ -11,18 +11,6 @@ PREFIX = $(abspath usr)
 
 PKG_CONFIG_PATH = $(PREFIX)/lib/pkgconfig
 
-JARS := \
-    GarudaSDK-2.0 \
-    commons-cli-1.3.1 \
-    commons-io-2.5 \
-    commons-logging-1.2 \
-    dom4j-1.6.1 \
-    jackson-all-1.8.1 \
-    jcommon-1.0.23 \
-    jfreechart-1.0.19 \
-    log4j-1.2.17 \
-    protobuf-java-$(PROTOBUF_VERSION) \
-    sqlite-jdbc-3.14.2.1
 BOOST_DYLIBS := \
     filesystem \
     program_options \
@@ -74,7 +62,6 @@ DMGS = Flint-$(VERSION).dmg
 
 APP = root/Applications/Flint.app
 
-flint_java_jar_name = $(APP)/Contents/Java/$(1).jar
 flint_frameworks_boost_dylib_name = $(APP)/Contents/Frameworks/libboost_$(1)-mt.dylib
 flint_frameworks_dylib_name = $(APP)/Contents/Frameworks/$(1).dylib
 flint_frameworks_sundials_dylib_name = $(APP)/Contents/Frameworks/libsundials_$(1).dylib
@@ -132,7 +119,6 @@ check:
 
 mostlyclean:
 	-rm -rf tmp/bundled Flint-*.dmg Flint-*/ flint-component.pkg resources root opt build build.xml ../configure
-	ant -f ../flint/build.xml clean
 
 clean: mostlyclean
 	-rm -rf usr $(foreach lib,$(EXTERNAL_LIBRARY_DIRS),tmp/$(lib).installed tmp/$(lib) var/$(lib))
@@ -265,9 +251,6 @@ tmp/zeromq-$(ZEROMQ_VERSION).installed: tmp/zeromq-$(ZEROMQ_VERSION)
 
 # for Flint
 
-../flint/dist/flint.jar: $(foreach p,$(PROGRAMS),opt/bin/$(p))
-	ant -f ../flint/build.xml jar
-
 ../configure: ../configure.ac
 	(cd .. && autoreconf -i -f)
 
@@ -289,19 +272,21 @@ $(foreach d,$(SUNDIALS_DYLIBS),$(eval $(call flint_frameworks_sundials_dylib,$(d
 
 $(foreach d,$(FLINT_DYLIBS),$(eval $(call flint_frameworks_flint_dylib,$(d))))
 
-root:
+$(APP)/Contents:
 	install -d $@
 
-root/Applications: | root
-	install -d $@
-
-tmp/bundled: Info.plist.patch build.xml ../flint/dist/flint.jar ../flint.icns | root/Applications
-	ant bundleapp
-	patch $(APP)/Contents/Info.plist $<
-	mkdir $(APP)/Contents/Frameworks/
+tmp/bundled: $(APP)/Contents/Info.plist $(APP)/Contents/PkgInfo $(APP)/Contents/Resources/flint.icns
 	touch $@
 
-$(APP)/Contents/Info.plist $(APP)/Contents/Java/flint.jar $(foreach j,$(JARS),$(call flint_java_jar_name,$(j))) $(APP)/Contents/MacOS/JavaAppLauncher $(APP)/Contents/PkgInfo $(APP)/Contents/Resources/flint.icns: tmp/bundled
+$(APP)/Contents/Info.plist: | $(APP)/Contents
+	touch $@ # FIXME
+
+$(APP)/Contents/PkgInfo: | $(APP)/Contents
+	touch $@ # FIXME
+
+$(APP)/Contents/Resources/flint.icns: ../flint.icns | $(APP)/Contents
+	install -d $(dir $@)
+	install -p -m 0644 $< $@
 
 $(foreach p,$(PROGRAMS),$(eval $(call flint_macos_program,$(p))))
 
@@ -351,11 +336,7 @@ $(APP)/Contents/Resources/third-party-licenses.txt: tmp/ceres-solver-$(CERES_VER
 	echo >> $@
 	cat var/zeromq-$(ZEROMQ_VERSION)/COPYING.LESSER >> $@
 
-$(APP)/Contents/Resources/icon.png: ../flint/src/jp/oist/flint/image/icon.png
-	install -d $(dir $@)
-	install -p -m 0644 $< $@
-
-flint-component.pkg: component.plist $(foreach d,$(BOOST_DYLIBS),$(call flint_frameworks_boost_dylib_name,$(d))) $(foreach d,$(DYLIBS) $(FLINT_DYLIBS),$(call flint_frameworks_dylib_name,$(d))) $(foreach d,$(SUNDIALS_DYLIBS),$(call flint_frameworks_sundials_dylib_name,$(d))) $(foreach p,$(PROGRAMS),$(call flint_macos_program_name,$(p))) $(foreach j,$(JARS),$(call flint_java_jar_name,$(j))) $(APP)/Contents/Resources/third-party-licenses.txt $(APP)/Contents/Resources/flint.icns $(APP)/Contents/Resources/icon.png $(APP)/Contents/Java/flint.jar $(APP)/Contents/MacOS/JavaAppLauncher $(APP)/Contents/Info.plist $(APP)/Contents/PkgInfo
+flint-component.pkg: component.plist $(foreach d,$(BOOST_DYLIBS),$(call flint_frameworks_boost_dylib_name,$(d))) $(foreach d,$(DYLIBS) $(FLINT_DYLIBS),$(call flint_frameworks_dylib_name,$(d))) $(foreach d,$(SUNDIALS_DYLIBS),$(call flint_frameworks_sundials_dylib_name,$(d))) $(foreach p,$(PROGRAMS),$(call flint_macos_program_name,$(p))) $(APP)/Contents/Resources/third-party-licenses.txt $(APP)/Contents/Resources/flint.icns $(APP)/Contents/Info.plist $(APP)/Contents/PkgInfo
 	pkgbuild --quiet --identifier jp.oist.flint --component-plist $< --root root $@
 
 Flint-$(VERSION) resources:

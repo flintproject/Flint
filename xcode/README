@@ -1,5 +1,5 @@
 This directory contains packaging script for macOS version of Flint.
-The script requires Xcode as well as ant, autoconf, automake, cmake,
+The script requires Xcode as well as autoconf, automake, cmake,
 libtool, and pkg-config.
 
 As a prerequisite, the dependent libraries have to be installed in a

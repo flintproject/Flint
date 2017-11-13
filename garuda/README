@@ -1,3 +1,0 @@
-To create both Windows and macOS versions of Garuda gadget of Flint,
-run the following command in this directory:
-$ make
