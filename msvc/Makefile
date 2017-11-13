@@ -113,7 +113,7 @@ tmp/release-dll: src/wxMSW-$(WXWIDGETS_VERSION)_$(MSVC_VARIANT)_ReleaseDLL.7z | 
 	(cd release-dll && 7z x ../$<)
 	touch $@
 
-flint/flint.ico: ../mingw-w64/flint.ico | flint
+flint/flint.ico: flint.ico | flint
 	install -p -m 0644 $< $@
 
 flint/flint.wxs: flint.wxs.in | flint

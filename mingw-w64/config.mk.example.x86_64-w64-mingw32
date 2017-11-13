@@ -1,7 +1,0 @@
-HOST = x86_64-w64-mingw32
-LIBGCC_DIR = /usr/lib/gcc/$(HOST)/6.3-posix
-LIBGCC_DLL = libgcc_s_seh-1.dll
-LIBSTDCXX_DIR = /usr/lib/gcc/$(HOST)/6.3-posix
-LIBSTDCXX_DLL = libstdc++-6.dll
-LIBWINPTHREAD_DIR = /usr/$(HOST)/lib
-LIBWINPTHREAD_DLL = libwinpthread-1.dll

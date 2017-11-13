@@ -2,6 +2,13 @@
 
 ** Supported platforms
    - Flint no longer depends on Java runtime environment.
+** New features
+   - New main program, formerly called flint2, supersedes the original one.
+** Improvements
+   - The size of installed binary gets smaller than ever.
+   - The windows installer refrains from adding Flint's folder to PATH.
+   - Programs of Windows version run faster, thanks to switch from MinGW-w64
+     to MSVC.
 
 * Flint 1.9 (2017-11-10)
 
