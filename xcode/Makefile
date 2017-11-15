@@ -261,7 +261,7 @@ build/Makefile: ../configure
 	install -d $(dir $@)
 	(cd $(dir $@) && ../../configure --prefix=$(CURDIR)/opt --with-boost=$(PREFIX) --with-ceres-solver=$(PREFIX) --with-protoc=$(PREFIX)/bin/protoc --with-xml-prefix=$(PREFIX) --with-protoc=$(PREFIX)/bin/protoc --with-sundials=$(PREFIX) --with-wxWidgets=$(PREFIX) --enable-release --enable-silent-rules CC='clang' CXX='clang++' CFLAGS='-arch x86_64 -mmacosx-version-min=10.9' CXXFLAGS='-stdlib=libc++ -arch x86_64 -mmacosx-version-min=10.9' LDFLAGS='-stdlib=libc++ -arch x86_64 -mmacosx-version-min=10.9 -headerpad_max_install_names' PKG_CONFIG=$(PKG_CONFIG) PKG_CONFIG_PATH=$(PKG_CONFIG_PATH))
 
-$(foreach p,$(PROGRAMS),opt/bin/$(p)): build/Makefile
+$(foreach p,$(PROGRAMS),opt/bin/$(p)) $(foreach d,$(FLINT_DYLIBS),opt/lib/$(d).dylib): build/Makefile
 	$(MAKE) -C build all install-exec
 
 $(foreach d,$(BOOST_DYLIBS),$(eval $(call flint_frameworks_boost_dylib,$(d))))
