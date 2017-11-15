@@ -160,7 +160,7 @@ maintainer-clean: distclean
 	-sudo rpm -e flint
 	-sudo rpm -e $(DEPNAMES)
 
-download: $(foreach lib,$(BOOST_UNDERSCORE).tar.bz2 clibsedml-$(CLIBSEDML_VERSION).tar.gz czmq-$(CZMQ_VERSION).tar.gz libSBML-$(LIBSBML_VERSION)-core-src.zip protobuf-java-$(PROTOBUF_VERSION).tar.gz SBML_odeSolver-$(SOSLIB_VERSION).tar.gz sundials-$(SUNDIALS_VERSION).tar.gz wxWidgets-$(WXWIDGETS_VERSION).tar.bz2 zeromq-$(ZEROMQ_VERSION).tar.gz,src/$(lib))
+download: $(foreach lib,$(BOOST_UNDERSCORE).tar.bz2 clibsedml-$(CLIBSEDML_VERSION).tar.gz czmq-$(CZMQ_VERSION).tar.gz libSBML-$(LIBSBML_VERSION)-core-src.zip protobuf-cpp-$(PROTOBUF_VERSION).tar.gz SBML_odeSolver-$(SOSLIB_VERSION).tar.gz sundials-$(SUNDIALS_VERSION).tar.gz wxWidgets-$(WXWIDGETS_VERSION).tar.bz2 zeromq-$(ZEROMQ_VERSION).tar.gz,src/$(lib))
 
 Flint-$(VERSION)-$(DIST).$(ARCH):
 	install -d $@
@@ -220,7 +220,7 @@ $(eval $(call flint_unzip,libsbml-$(LIBSBML_VERSION),libSBML-$(LIBSBML_VERSION)-
 
 $(eval $(call flint_setup_dir,libsbml,libsbml-$(LIBSBML_VERSION)))
 
-$(eval $(call flint_expand_tar_gz,protobuf-$(PROTOBUF_VERSION),protobuf-java-$(PROTOBUF_VERSION)))
+$(eval $(call flint_expand_tar_gz,protobuf-$(PROTOBUF_VERSION),protobuf-cpp-$(PROTOBUF_VERSION)))
 
 $(eval $(call flint_setup_dir,protobuf,protobuf-$(PROTOBUF_VERSION)))
 

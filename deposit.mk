@@ -5,7 +5,7 @@ CZMQ_VERSION = 4.0.2
 LIBMICROHTTPD_VERSION = 0.9.55
 LIBSBML_VERSION = 5.15.0
 LIBXML2_VERSION = 2.9.7
-PROTOBUF_VERSION = 3.3.0
+PROTOBUF_VERSION = 3.5.0
 SOSLIB_VERSION = 1.9.0
 SUNDIALS_VERSION = 2.7.0
 WXWIDGETS_VERSION = 3.1.0
@@ -14,7 +14,7 @@ ZEROMQ_VERSION = 4.2.2
 CERES_CURRENT = 1
 CZMQ_CURRENT = 4
 LIBMICROHTTPD_CURRENT = 12
-PROTOBUF_CURRENT = 13
+PROTOBUF_CURRENT = 15
 ZEROMQ_CURRENT = 5
 
 CZMQ_VERSION_INFO = $(CZMQ_CURRENT).0.2
@@ -30,7 +30,7 @@ ALL_EXTERNAL_LIBRARIES = \
 	libmicrohttpd-$(LIBMICROHTTPD_VERSION).tar.gz \
 	libSBML-$(LIBSBML_VERSION)-core-src.zip \
 	libxml2-$(LIBXML2_VERSION).tar.gz \
-	protobuf-java-$(PROTOBUF_VERSION).tar.gz \
+	protobuf-cpp-$(PROTOBUF_VERSION).tar.gz \
 	SBML_odeSolver-$(SOSLIB_VERSION).tar.gz \
 	sundials-$(SUNDIALS_VERSION).tar.gz \
 	wxWidgets-$(WXWIDGETS_VERSION).tar.bz2 \
@@ -106,7 +106,7 @@ $(eval $(call external_library_source,https://github.com/zeromq/czmq/releases/do
 $(eval $(call external_library_source,https://ftp.gnu.org/gnu/libmicrohttpd,libmicrohttpd-$(LIBMICROHTTPD_VERSION).tar.gz,1c20f84a8b9cf692dd50b558b3571a3a))
 $(eval $(call external_library_source,http://downloads.sourceforge.net/project/sbml/libsbml/$(LIBSBML_VERSION)/stable,libSBML-$(LIBSBML_VERSION)-core-src.zip,9dc9d0c6e5fa0f45edf311a72fa0364a))
 $(eval $(call external_library_source,ftp://xmlsoft.org/libxml2,libxml2-$(LIBXML2_VERSION).tar.gz,896608641a08b465098a40ddf51cefba))
-$(eval $(call external_library_source,https://github.com/google/protobuf/releases/download/v$(PROTOBUF_VERSION),protobuf-java-$(PROTOBUF_VERSION).tar.gz,66326b088086a557856f86b41164f15e))
+$(eval $(call external_library_source,https://github.com/google/protobuf/releases/download/v$(PROTOBUF_VERSION),protobuf-cpp-$(PROTOBUF_VERSION).tar.gz,e4ba8284a407712168593e79e6555eb2))
 $(eval $(call external_library_source3,https://github.com/raim/SBML_odeSolver/archive/$(SOSLIB_VERSION).tar.gz,SBML_odeSolver-$(SOSLIB_VERSION).tar.gz,a2223179576e33eff110065d4481e306))
 $(eval $(call external_library_source,http://pkgs.fedoraproject.org/repo/extras/sundials/sundials-$(SUNDIALS_VERSION).tar.gz/c304631b9bc82877d7b0e9f4d4fd94d3,sundials-$(SUNDIALS_VERSION).tar.gz,c304631b9bc82877d7b0e9f4d4fd94d3))
 $(eval $(call external_library_source,https://github.com/wxWidgets/wxWidgets/releases/download/v$(WXWIDGETS_VERSION),wxWidgets-$(WXWIDGETS_VERSION).tar.bz2,e20c14bb9bf5d4ec0979a3cd7510dece))

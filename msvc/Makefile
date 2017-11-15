@@ -70,10 +70,9 @@ tmp/libxml2-$(LIBXML2_VERSION): src/libxml2-$(LIBXML2_VERSION).tar.gz | tmp
 	tar -C var -zxf $<
 	touch $@
 
-tmp/protobuf-$(PROTOBUF_VERSION): src/protobuf-java-$(PROTOBUF_VERSION).tar.gz | tmp
+tmp/protobuf-$(PROTOBUF_VERSION): src/protobuf-cpp-$(PROTOBUF_VERSION).tar.gz | tmp
 	-rm -rf var/protobuf-$(PROTOBUF_VERSION)
 	tar -C var -zxf $<
-	patch -d var/protobuf-$(PROTOBUF_VERSION) -p1 < protobuf-$(PROTOBUF_VERSION).patch
 	touch $@
 
 tmp/SBML_odeSolver-$(SOSLIB_VERSION): src/SBML_odeSolver-$(SOSLIB_VERSION).tar.gz SBML_odeSolver-$(SOSLIB_VERSION).patch | tmp

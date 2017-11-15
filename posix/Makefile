@@ -67,7 +67,7 @@ tmp/libsbml-$(LIBSBML_VERSION): src/libSBML-$(LIBSBML_VERSION)-core-src.zip | tm
 	(cd var && unzip -qq ../$<)
 	touch $@
 
-tmp/protobuf-$(PROTOBUF_VERSION): src/protobuf-java-$(PROTOBUF_VERSION).tar.gz | tmp
+tmp/protobuf-$(PROTOBUF_VERSION): src/protobuf-cpp-$(PROTOBUF_VERSION).tar.gz | tmp
 	-rm -rf var/protobuf-$(PROTOBUF_VERSION)
 	tar -C var -zxf $<
 	touch $@
