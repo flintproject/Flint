@@ -272,10 +272,10 @@ $(foreach d,$(SUNDIALS_DYLIBS),$(eval $(call flint_frameworks_sundials_dylib,$(d
 
 $(foreach d,$(FLINT_DYLIBS),$(eval $(call flint_frameworks_flint_dylib,$(d))))
 
-$(APP)/Contents $(APP)/Contents/Frameworks:
+$(APP)/Contents $(APP)/Contents/Frameworks $(APP)/Contents/MacOS:
 	install -d $@
 
-tmp/bundled: $(APP)/Contents/Info.plist $(APP)/Contents/PkgInfo $(APP)/Contents/Resources/flint.icns | $(APP)/Contents/Frameworks
+tmp/bundled: $(APP)/Contents/Info.plist $(APP)/Contents/PkgInfo $(APP)/Contents/Resources/flint.icns | $(APP)/Contents/Frameworks $(APP)/Contents/MacOS
 	touch $@
 
 $(APP)/Contents/Info.plist: | $(APP)/Contents
