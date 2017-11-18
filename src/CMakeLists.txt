@@ -243,17 +243,6 @@ target_link_libraries(flint-lodbg
     ${Protobuf_LIBRARIES}
     )
 
-add_executable(flint-open
-    flint-open-main.cc
-    )
-target_link_libraries(flint-open
-    libflintxx
-    libflint
-    sqlite3
-    ${Protobuf_LIBRARIES}
-    Boost::filesystem
-    )
-
 add_executable(flint-pause
     flint-pause-main.c
     )
@@ -450,7 +439,6 @@ install(TARGETS
     flint-cli
     flint-exec
     flint-lodbg
-    flint-open
     flint-pause
     flint-resume
     flint-run

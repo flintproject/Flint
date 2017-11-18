@@ -41,7 +41,6 @@ PROGRAMS := \
     csv2isd \
     flint-exec \
     flint-lodbg \
-    flint-open \
     flint-pause \
     flint-resume \
     flint-run \

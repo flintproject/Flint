@@ -31,7 +31,6 @@ bin_PROGRAMS = \
 	flint-cli \
 	flint-exec \
 	flint-lodbg \
-	flint-open \
 	flint-pause \
 	flint-resume \
 	flint-run \
@@ -256,11 +255,6 @@ flint_lodbg_CPPFLAGS = $(PROTOBUF_CFLAGS) $(BOOST_CPPFLAGS) $(CZMQ_CFLAGS)
 flint_lodbg_LDFLAGS = $(BOOST_FILESYSTEM_LDFLAGS) $(BOOST_SYSTEM_LDFLAGS)
 flint_lodbg_LDADD = libflintxx.la libflint.la libsqlite3.la $(PROTOBUF_LIBS) $(BOOST_FILESYSTEM_LIBS) $(BOOST_SYSTEM_LIBS) $(CZMQ_LIBS)
 flint_lodbg_SOURCES = flint-lodbg-main.cc
-
-flint_open_CPPFLAGS = $(PROTOBUF_CFLAGS) $(BOOST_CPPFLAGS)
-flint_open_LDFLAGS = $(BOOST_FILESYSTEM_LDFLAGS) $(BOOST_SYSTEM_LDFLAGS)
-flint_open_LDADD = libflintxx.la libflint.la libsqlite3.la $(PROTOBUF_LIBS) $(BOOST_FILESYSTEM_LIBS) $(BOOST_SYSTEM_LIBS)
-flint_open_SOURCES = flint-open-main.cc
 
 flint_pause_SOURCES = flint-pause-main.c
 
