@@ -243,10 +243,6 @@ target_link_libraries(flint-lodbg
     ${Protobuf_LIBRARIES}
     )
 
-add_executable(flint-pause
-    flint-pause-main.c
-    )
-
 add_executable(flint-resume
     flint-resume-main.c
     )
@@ -439,7 +435,6 @@ install(TARGETS
     flint-cli
     flint-exec
     flint-lodbg
-    flint-pause
     flint-resume
     flint-run
     flint-tr

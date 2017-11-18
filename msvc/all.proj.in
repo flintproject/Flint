@@ -244,7 +244,7 @@
       <wxMSWReleaseDLLFiles Include='release-dll\**\wxmsw310u_aui_*.dll'/>
       <wxMSWReleaseDLLFiles Include='release-dll\**\wxmsw310u_core_*.dll'/>
       <wxMSWReleaseDLLFiles Include='release-dll\**\wxmsw310u_propgrid_*.dll'/>
-      <ExeFiles Include='csv2isd.exe;flint2.exe;flint-cli.exe;flint-exec.exe;flint-lodbg.exe;flint-pause.exe;flint-resume.exe;flint-run.exe;flint-tr.exe;isd2csv.exe;isdbswap.exe;isdcut.exe;isddiff.exe;isdhead.exe;isdls.exe;isdmerge.exe;isdrand.exe;isdsort.exe;isdstrip.exe;isdwc.exe'/>
+      <ExeFiles Include='csv2isd.exe;flint2.exe;flint-cli.exe;flint-exec.exe;flint-lodbg.exe;flint-resume.exe;flint-run.exe;flint-tr.exe;isd2csv.exe;isdbswap.exe;isdcut.exe;isddiff.exe;isdhead.exe;isdls.exe;isdmerge.exe;isdrand.exe;isdsort.exe;isdstrip.exe;isdwc.exe'/>
     </ItemGroup>
     <MakeDir Directories='flint'/>
     <Copy SourceFiles='@(DLLFiles)' DestinationFiles="@(DLLFiles->'flint\%(Filename)%(Extension)')"/>
