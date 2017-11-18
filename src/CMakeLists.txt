@@ -243,10 +243,6 @@ target_link_libraries(flint-lodbg
     ${Protobuf_LIBRARIES}
     )
 
-add_executable(flint-resume
-    flint-resume-main.c
-    )
-
 add_executable(flint-run
     flint-run-main.cc
     )
@@ -435,7 +431,6 @@ install(TARGETS
     flint-cli
     flint-exec
     flint-lodbg
-    flint-resume
     flint-run
     flint-tr
     flint2

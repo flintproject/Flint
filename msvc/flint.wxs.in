@@ -41,9 +41,6 @@
           <Component Id='flint_lodbg' Guid='a4b2f908-bd93-11e5-b1e0-0f2dd21ca26a'>
             <File Id='flint_lodbg.exe' Name='flint-lodbg.exe' DiskId='1' Source='flint-lodbg.exe' />
           </Component>
-          <Component Id='flint_resume' Guid='dff9d6d2-5b76-11e5-86b2-af7c494b40c8'>
-            <File Id='flint_resume.exe' Name='flint-resume.exe' DiskId='1' Source='flint-resume.exe' />
-          </Component>
           <Component Id='flint_run' Guid='c7541b2a-9d03-11e3-9698-b745a2cde4a7'>
             <File Id='flint_run.exe' Name='flint-run.exe' DiskId='1' Source='flint-run.exe' />
           </Component>
@@ -159,7 +156,6 @@
       <ComponentRef Id='csv2isd' />
       <ComponentRef Id='flint_exec' />
       <ComponentRef Id='flint_lodbg' />
-      <ComponentRef Id='flint_resume' />
       <ComponentRef Id='flint_run' />
       <ComponentRef Id='flint_tr' />
       <ComponentRef Id='isd2csv' />
