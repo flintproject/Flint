@@ -22,7 +22,6 @@
 #include "file.h"
 #include "filter.h"
 #include "filter/cutter.h"
-#include "flint/background.h"
 #include "flint/ls.h"
 #include "fppp.h"
 #include "job.h"
@@ -78,9 +77,6 @@ bool Run(const cli::RunOption &option, const boost::filesystem::path &dir)
 			return false;
 		}
 	}
-
-	if (option.has_lock_filename())
-		InitializeBackgroundProcess(option.lock_filename().c_str());
 
 	std::vector<double> data;
 	std::unique_ptr<task::Task> task(load::Load(option.model_filename().c_str(), load::kRun, dir, &data));

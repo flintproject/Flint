@@ -22,7 +22,6 @@
 #include "db/driver.h"
 #include "db/read-only-driver.h"
 #include "exec/task-runner.h"
-#include "flint/background.h"
 #include "flint/ctrl.h"
 #include "flint/process.h"
 #include "phsp.h"
@@ -161,8 +160,6 @@ bool RunTasks(const boost::filesystem::path &dir, ctrl::Argument *arg)
 bool Exec(const cli::ExecOption &option, const boost::filesystem::path &dir,
 		  ctrl::Argument *arg)
 {
-	if (option.has_lock_filename())
-		InitializeBackgroundProcess(option.lock_filename().c_str());
 	return CreatePidTxt(dir) && ReadInput(option, dir) && CopyInput(dir) && RunTasks(dir, arg);
 }
 

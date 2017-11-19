@@ -26,7 +26,6 @@
 #include "file.h"
 #include "filter.h"
 #include "filter/cutter.h"
-#include "flint/background.h"
 #include "flint/bc.h"
 #include "flint/ls.h"
 #include "flint/numeric.h"
