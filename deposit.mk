@@ -2,7 +2,7 @@ BOOST_VERSION = 1.65.0
 CERES_VERSION = 1.13.0
 CLIBSEDML_VERSION = 0.1.2
 CZMQ_VERSION = 4.0.2
-LIBMICROHTTPD_VERSION = 0.9.55
+LIBMICROHTTPD_VERSION = 0.9.57
 LIBSBML_VERSION = 5.15.0
 LIBXML2_VERSION = 2.9.7
 PROTOBUF_VERSION = 3.5.0
@@ -103,7 +103,7 @@ $(eval $(call external_library_source,https://dl.bintray.com/boostorg/release/$(
 $(eval $(call external_library_source,http://ceres-solver.org/,ceres-solver-$(CERES_VERSION).tar.gz,cd568707571c92af3d69c1eb28d63d72))
 $(eval $(call external_library_source3,https://github.com/flintproject/clibsedml/archive/v$(CLIBSEDML_VERSION).tar.gz,clibsedml-$(CLIBSEDML_VERSION).tar.gz,0dfb7c2445da6c6858d5f2a848ac4bd9))
 $(eval $(call external_library_source,https://github.com/zeromq/czmq/releases/download/v$(CZMQ_VERSION),czmq-$(CZMQ_VERSION).tar.gz,b27cb5a23c472949b1e37765e404dc98))
-$(eval $(call external_library_source,https://ftp.gnu.org/gnu/libmicrohttpd,libmicrohttpd-$(LIBMICROHTTPD_VERSION).tar.gz,1c20f84a8b9cf692dd50b558b3571a3a))
+$(eval $(call external_library_source,https://ftp.gnu.org/gnu/libmicrohttpd,libmicrohttpd-$(LIBMICROHTTPD_VERSION).tar.gz,8f14406f7395777daccd5142ac935967))
 $(eval $(call external_library_source,http://downloads.sourceforge.net/project/sbml/libsbml/$(LIBSBML_VERSION)/stable,libSBML-$(LIBSBML_VERSION)-core-src.zip,9dc9d0c6e5fa0f45edf311a72fa0364a))
 $(eval $(call external_library_source,ftp://xmlsoft.org/libxml2,libxml2-$(LIBXML2_VERSION).tar.gz,896608641a08b465098a40ddf51cefba))
 $(eval $(call external_library_source,https://github.com/google/protobuf/releases/download/v$(PROTOBUF_VERSION),protobuf-cpp-$(PROTOBUF_VERSION).tar.gz,e4ba8284a407712168593e79e6555eb2))
