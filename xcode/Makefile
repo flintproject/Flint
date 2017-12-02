@@ -107,9 +107,9 @@ $(call flint_macos_program_name,$(1)): opt/bin/$(1) tmp/bundled
 	for name in $(FLINT_DYLIBS); do install_name_tool -change $(CURDIR)/opt/lib/$$$$name.dylib @executable_path/../Frameworks/$$$$name.dylib $$@; done
 endef
 
-.PHONY: all check mostlyclean clean distclean download
+.PHONY: all check mostlyclean clean distclean download external
 
-all: download $(foreach lib,$(BOOST_UNDERSCORE) ceres-solver-$(CERES_VERSION) clibsedml-$(CLIBSEDML_VERSION) czmq-$(CZMQ_VERSION) libmicrohttpd-$(LIBMICROHTTPD_VERSION) libsbml-$(LIBSBML_VERSION) libxml2-$(LIBXML2_VERSION) protobuf-$(PROTOBUF_VERSION) SBML_odeSolver-$(SOSLIB_VERSION) sundials-$(SUNDIALS_VERSION) wxWidgets-$(WXWIDGETS_VERSION) zeromq-$(ZEROMQ_VERSION),tmp/$(lib).installed) $(DMGS)
+all: download external $(DMGS)
 
 check:
 	env DYLD_LIBRARY_PATH=$(PREFIX)/lib $(MAKE) -C build check
@@ -124,6 +124,8 @@ distclean: clean
 	-rm -f $(foreach lib,$(EXTERNAL_LIBRARIES),src/$(lib))
 
 download: $(foreach lib,$(EXTERNAL_LIBRARIES),src/$(lib))
+
+external: $(foreach lib,$(BOOST_UNDERSCORE) ceres-solver-$(CERES_VERSION) clibsedml-$(CLIBSEDML_VERSION) czmq-$(CZMQ_VERSION) libmicrohttpd-$(LIBMICROHTTPD_VERSION) libsbml-$(LIBSBML_VERSION) libxml2-$(LIBXML2_VERSION) protobuf-$(PROTOBUF_VERSION) SBML_odeSolver-$(SOSLIB_VERSION) sundials-$(SUNDIALS_VERSION) wxWidgets-$(WXWIDGETS_VERSION) zeromq-$(ZEROMQ_VERSION),tmp/$(lib).installed)
 
 var:
 	install -d $@
