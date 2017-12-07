@@ -7,6 +7,11 @@ os:
   - linux
   - osx
 
+cache:
+  directories:
+  - posix/src
+  - xcode/src
+
 env:
   global:
     - MAKEFLAGS="-j 2"
