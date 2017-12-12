@@ -1,0 +1,22 @@
+commit b651cb479235751b22b8f9a822a2fc6bc1be01ab
+Author: Luca Boccassi <luca.boccassi@gmail.com>
+Date:   Tue Feb 7 11:43:48 2017 +0000
+
+    Problem: build error with GCC7 in zgossip_engine.inc
+    
+    Solution: snprintf size parameter includes the NULL terminating char
+    as the manpage says, so don't pass sizeof(..) - 1
+
+diff --git a/src/zgossip_engine.inc b/src/zgossip_engine.inc
+index f66f76c1..b5596a8e 100644
+--- a/src/zgossip_engine.inc
++++ b/src/zgossip_engine.inc
+@@ -257,7 +257,7 @@ engine_set_log_prefix (client_t *client, const char *string)
+ {
+     if (client) {
+         s_client_t *self = (s_client_t *) client;
+-        snprintf (self->log_prefix, sizeof (self->log_prefix) - 1,
++        snprintf (self->log_prefix, sizeof (self->log_prefix),
+             "%6d:%-33s", self->unique_id, string);
+     }
+ }
