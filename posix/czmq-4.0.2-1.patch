@@ -1,0 +1,22 @@
+commit 41866333eccc5bcc6e18dc823efb5fa8748719ce
+Author: Luca Boccassi <luca.boccassi@gmail.com>
+Date:   Tue Feb 7 12:05:17 2017 +0000
+
+    Problem: build error in zsys with GCC7
+    
+    Solution: use a larger buffer for the PID buffer in zsys_run_as to
+    avoid a possible overflow.
+
+diff --git a/src/zsys.c b/src/zsys.c
+index 13caf667..c0b60305 100644
+--- a/src/zsys.c
++++ b/src/zsys.c
+@@ -1135,7 +1135,7 @@ zsys_run_as (const char *lockfile, const char *group, const char *user)
+             }
+         }
+         //   We record the current process id in the lock file
+-        char pid_buffer [10];
++        char pid_buffer [32];
+         snprintf (pid_buffer, sizeof (pid_buffer), "%6" PRIi64 "\n", (int64_t)getpid ());
+         if ((size_t) write (handle, pid_buffer, strlen (pid_buffer)) != strlen (pid_buffer)) {
+             zsys_error ("cannot write to lockfile: %s", strerror (errno));

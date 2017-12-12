@@ -54,10 +54,11 @@ tmp/clibsedml-$(CLIBSEDML_VERSION): src/clibsedml-$(CLIBSEDML_VERSION).tar.gz | 
 	tar -C var -zxf $<
 	touch $@
 
-tmp/czmq-$(CZMQ_VERSION): src/czmq-$(CZMQ_VERSION).tar.gz czmq-$(CZMQ_VERSION).patch | tmp
+tmp/czmq-$(CZMQ_VERSION): src/czmq-$(CZMQ_VERSION).tar.gz czmq-$(CZMQ_VERSION)-0.patch czmq-$(CZMQ_VERSION)-1.patch | tmp
 	-rm -rf var/czmq-$(CZMQ_VERSION)
 	tar -C var -zxf $<
-	patch var/czmq-$(CZMQ_VERSION)/src/zgossip_engine.inc czmq-$(CZMQ_VERSION).patch
+	patch var/czmq-$(CZMQ_VERSION)/src/zgossip_engine.inc czmq-$(CZMQ_VERSION)-0.patch
+	patch var/czmq-$(CZMQ_VERSION)/src/zsys.c czmq-$(CZMQ_VERSION)-1.patch
 	touch $@
 
 tmp/libmicrohttpd-$(LIBMICROHTTPD_VERSION): src/libmicrohttpd-$(LIBMICROHTTPD_VERSION).tar.gz | tmp
