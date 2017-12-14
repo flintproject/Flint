@@ -5,7 +5,7 @@ language: cpp
 
 os:
   - linux
-  - osx
+  # - osx
 
 cache:
   directories:
@@ -18,7 +18,7 @@ env:
 
 compiler:
   - gcc
-  - clang
+  # - clang
 
 addons:
   apt:
