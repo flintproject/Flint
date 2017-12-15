@@ -90,6 +90,7 @@ tmp/sundials-$(SUNDIALS_VERSION): src/sundials-$(SUNDIALS_VERSION).tar.gz sundia
 tmp/zeromq-$(ZEROMQ_VERSION): src/zeromq-$(ZEROMQ_VERSION).tar.gz | tmp
 	-rm -rf var/zeromq-$(ZEROMQ_VERSION)
 	tar -C var -zxf $<
+	patch var/zeromq-$(ZEROMQ_VERSION)/ZeroMQConfig.cmake.in zeromq-$(ZEROMQ_VERSION).patch
 	touch $@
 
 tmp/libmicrohttpd-$(LIBMICROHTTPD_VERSION)-w32-bin: src/libmicrohttpd-$(LIBMICROHTTPD_VERSION)-w32-bin.zip | tmp
