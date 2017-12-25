@@ -136,7 +136,6 @@ tmp: | var
 tmp/$(BOOST_UNDERSCORE): src/$(BOOST_UNDERSCORE).tar.bz2 boost-$(BOOST_VERSION).patch | tmp
 	-rm -rf var/$(BOOST_UNDERSCORE)
 	tar -C var -jxf $<
-	patch var/$(BOOST_UNDERSCORE)/boost/process/detail/config.hpp boost-$(BOOST_VERSION).patch
 	touch $@
 
 tmp/ceres-solver-$(CERES_VERSION): src/ceres-solver-$(CERES_VERSION).tar.gz | tmp
