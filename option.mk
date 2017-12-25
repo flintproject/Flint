@@ -12,7 +12,6 @@ BOOST_UNUSED_COMPONENTS = \
 	iostreams \
 	locale \
 	log \
-	metaparse \
 	mpi \
 	python \
 	regex \
