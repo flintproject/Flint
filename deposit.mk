@@ -60,13 +60,13 @@ ifeq ($(OS),Darwin)
 define external_library_source
 src/$(2): | src
 	curl -L -o $$@ $(1)/$(2)
-	md5 $$@ | grep $(3)
+	shasum -a 256 $$@ | grep $(3)
 endef
 
 define external_library_source3
 src/$(2): | src
 	curl -L -o $$@ $(1)
-	md5 $$@ | grep $(3)
+	shasum -a 256 $$@ | grep $(3)
 endef
 
 else ifeq ($(OS),FreeBSD)
@@ -74,13 +74,13 @@ else ifeq ($(OS),FreeBSD)
 define external_library_source
 src/$(2): | src
 	curl -L -o $$@ $(1)/$(2)
-	md5 $$@ | grep $(3)
+	shasum -a 256 $$@ | grep $(3)
 endef
 
 define external_library_source3
 src/$(2): | src
 	curl -L -o $$@ $(1)
-	md5 $$@ | grep $(3)
+	shasum -a 256 $$@ | grep $(3)
 endef
 
 else
@@ -88,26 +88,26 @@ else
 define external_library_source
 src/$(2): | src
 	wget -O $$@ $(1)/$(2)
-	test "$(3)" = `md5sum $$@ | cut -d' ' -f1`
+	test "$(3)" = `sha256sum $$@ | cut -d' ' -f1`
 endef
 
 define external_library_source3
 src/$(2): | src
 	wget -O $$@ $(1)
-	test "$(3)" = `md5sum $$@ | cut -d' ' -f1`
+	test "$(3)" = `sha256sum $$@ | cut -d' ' -f1`
 endef
 
 endif
 
-$(eval $(call external_library_source,https://dl.bintray.com/boostorg/release/$(BOOST_VERSION)/source,$(BOOST_UNDERSCORE).tar.bz2,b2dfbd6c717be4a7bb2d88018eaccf75))
-$(eval $(call external_library_source,http://ceres-solver.org/,ceres-solver-$(CERES_VERSION).tar.gz,cd568707571c92af3d69c1eb28d63d72))
-$(eval $(call external_library_source3,https://github.com/flintproject/clibsedml/archive/v$(CLIBSEDML_VERSION).tar.gz,clibsedml-$(CLIBSEDML_VERSION).tar.gz,0dfb7c2445da6c6858d5f2a848ac4bd9))
-$(eval $(call external_library_source,https://github.com/zeromq/czmq/releases/download/v$(CZMQ_VERSION),czmq-$(CZMQ_VERSION).tar.gz,b27cb5a23c472949b1e37765e404dc98))
-$(eval $(call external_library_source,https://ftp.gnu.org/gnu/libmicrohttpd,libmicrohttpd-$(LIBMICROHTTPD_VERSION).tar.gz,9291644ec46b517b18758f0b2eccf010))
-$(eval $(call external_library_source,http://downloads.sourceforge.net/project/sbml/libsbml/$(LIBSBML_VERSION)/stable,libSBML-$(LIBSBML_VERSION)-core-src.zip,9dc9d0c6e5fa0f45edf311a72fa0364a))
-$(eval $(call external_library_source,ftp://xmlsoft.org/libxml2,libxml2-$(LIBXML2_VERSION).tar.gz,896608641a08b465098a40ddf51cefba))
-$(eval $(call external_library_source,https://github.com/google/protobuf/releases/download/v$(PROTOBUF_VERSION),protobuf-cpp-$(PROTOBUF_VERSION).tar.gz,e4ba8284a407712168593e79e6555eb2))
-$(eval $(call external_library_source3,https://github.com/raim/SBML_odeSolver/archive/$(SOSLIB_VERSION).tar.gz,SBML_odeSolver-$(SOSLIB_VERSION).tar.gz,a2223179576e33eff110065d4481e306))
-$(eval $(call external_library_source,http://pkgs.fedoraproject.org/repo/extras/sundials/sundials-$(SUNDIALS_VERSION).tar.gz/c304631b9bc82877d7b0e9f4d4fd94d3,sundials-$(SUNDIALS_VERSION).tar.gz,c304631b9bc82877d7b0e9f4d4fd94d3))
-$(eval $(call external_library_source,https://github.com/wxWidgets/wxWidgets/releases/download/v$(WXWIDGETS_VERSION),wxWidgets-$(WXWIDGETS_VERSION).tar.bz2,e20c14bb9bf5d4ec0979a3cd7510dece))
-$(eval $(call external_library_source,https://github.com/zeromq/libzmq/releases/download/v$(ZEROMQ_VERSION),zeromq-$(ZEROMQ_VERSION).tar.gz,c4e18bd0584ccd34213f152c11f54d6c))
+$(eval $(call external_library_source,https://dl.bintray.com/boostorg/release/$(BOOST_VERSION)/source,$(BOOST_UNDERSCORE).tar.bz2,5721818253e6a0989583192f96782c4a98eb6204965316df9f5ad75819225ca9))
+$(eval $(call external_library_source,http://ceres-solver.org/,ceres-solver-$(CERES_VERSION).tar.gz,1df490a197634d3aab0a65687decd362912869c85a61090ff66f073c967a7dcd))
+$(eval $(call external_library_source3,https://github.com/flintproject/clibsedml/archive/v$(CLIBSEDML_VERSION).tar.gz,clibsedml-$(CLIBSEDML_VERSION).tar.gz,cf25d0aad379e14c26a74166b5d652e2072fc87183caf6f34c16b5122ffa469f))
+$(eval $(call external_library_source,https://github.com/zeromq/czmq/releases/download/v$(CZMQ_VERSION),czmq-$(CZMQ_VERSION).tar.gz,808c7a2262ca733d7a2c362e0a00fdbe5ec517d90fa017ba405b7cdb4f81eb89))
+$(eval $(call external_library_source,https://ftp.gnu.org/gnu/libmicrohttpd,libmicrohttpd-$(LIBMICROHTTPD_VERSION).tar.gz,7a11e1376c62ff95bd6d2dfe6799d57ac7cdbcb32f70bfbd5e47c71f373e01f3))
+$(eval $(call external_library_source,http://downloads.sourceforge.net/project/sbml/libsbml/$(LIBSBML_VERSION)/stable,libSBML-$(LIBSBML_VERSION)-core-src.zip,a851111af505bbbb99f7102368fd4f210beda6c2e853f99d4337e2c0bec99030))
+$(eval $(call external_library_source,ftp://xmlsoft.org/libxml2,libxml2-$(LIBXML2_VERSION).tar.gz,f63c5e7d30362ed28b38bfa1ac6313f9a80230720b7fb6c80575eeab3ff5900c))
+$(eval $(call external_library_source,https://github.com/google/protobuf/releases/download/v$(PROTOBUF_VERSION),protobuf-cpp-$(PROTOBUF_VERSION).tar.gz,8dd6b051c2b39ab95dfe1f53cc5e1662ceb852d856db57d85751696859698551))
+$(eval $(call external_library_source3,https://github.com/raim/SBML_odeSolver/archive/$(SOSLIB_VERSION).tar.gz,SBML_odeSolver-$(SOSLIB_VERSION).tar.gz,059c2f51f52e1ac29d3873a2d3fcc71947e1a196f29816067041c976cb5cc651))
+$(eval $(call external_library_source,http://pkgs.fedoraproject.org/repo/extras/sundials/sundials-$(SUNDIALS_VERSION).tar.gz/c304631b9bc82877d7b0e9f4d4fd94d3,sundials-$(SUNDIALS_VERSION).tar.gz,d39fcac7175d701398e4eb209f7e92a5b30a78358d4a0c0fcc23db23c11ba104))
+$(eval $(call external_library_source,https://github.com/wxWidgets/wxWidgets/releases/download/v$(WXWIDGETS_VERSION),wxWidgets-$(WXWIDGETS_VERSION).tar.bz2,e082460fb6bf14b7dd6e8ac142598d1d3d0b08a7b5ba402fdbf8711da7e66da8))
+$(eval $(call external_library_source,https://github.com/zeromq/libzmq/releases/download/v$(ZEROMQ_VERSION),zeromq-$(ZEROMQ_VERSION).tar.gz,8f1e2b2aade4dbfde98d82366d61baef2f62e812530160d2e6d0a5bb24e40bc0))
