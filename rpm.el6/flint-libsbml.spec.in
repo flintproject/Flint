@@ -45,7 +45,7 @@ rm -rf %{buildroot}
 /opt/flint/lib/libsbml.la
 /opt/flint/lib/libsbml.so
 /opt/flint/lib/libsbml.so.5
-/opt/flint/lib/libsbml.so.5.15.0
+/opt/flint/lib/libsbml.so.5.16.0
 /opt/flint/lib/pkgconfig/libsbml.pc
 
 %changelog
