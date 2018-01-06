@@ -20,7 +20,6 @@
 #include "gui/main-frame.h"
 #include "gui/pref-page-general.h"
 #include "run.h"
-#include "utf8path.h"
 
 #include <cstdlib>
 #include <cstdio>

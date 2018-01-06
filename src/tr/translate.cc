@@ -29,6 +29,7 @@
 #include "flint/bc.h"
 #include "flint/ls.h"
 #include "flint/numeric.h"
+#include "flint/utf8path.h"
 #include "job.h"
 #include "lo/layout.h"
 #include "lo/layout_loader.h"
@@ -37,7 +38,6 @@
 #include "runtime/flow.h"
 #include "task.h"
 #include "task/config-reader.h"
-#include "utf8path.h"
 
 namespace flint {
 namespace tr {

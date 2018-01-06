@@ -31,8 +31,8 @@
 #include "db/timeseries-loader.h"
 #include "db/tsref-loader.h"
 #include "db/variable-loader.h"
+#include "flint/utf8path.h"
 #include "isdf/reader.h"
-#include "utf8path.h"
 #include "variable.h"
 
 namespace flint {

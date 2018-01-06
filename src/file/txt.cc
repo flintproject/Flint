@@ -2,7 +2,7 @@
 #include "file.h"
 
 #include <cstdio>
-#include "utf8path.h"
+#include "flint/utf8path.h"
 
 namespace flint {
 namespace file {

@@ -21,10 +21,10 @@
 #include "database.h"
 #include "db/driver.h"
 #include "db/utility.h"
+#include "flint/utf8path.h"
 #include "phml/combine.h"
 #include "phml/import.h"
 #include "sbml.h"
-#include "utf8path.h"
 
 namespace flint {
 namespace phml {

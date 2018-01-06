@@ -16,7 +16,7 @@
 #include <boost/uuid/string_generator.hpp>
 
 #include "db/utility.h"
-#include "utf8path.h"
+#include "flint/utf8path.h"
 #include "phml/arc.h"
 #include "phml/bridge.h"
 #include "phml/definition.h"

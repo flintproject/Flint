@@ -37,7 +37,6 @@
 #include "runtime/flow.h"
 #include "task.h"
 #include "task/config-reader.h"
-#include "utf8path.h"
 
 namespace flint {
 namespace tr {

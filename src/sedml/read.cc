@@ -16,8 +16,8 @@
 
 #include "db/query.h"
 #include "db/utility.h"
+#include "flint/utf8path.h"
 #include "sqlite3.h"
-#include "utf8path.h"
 
 namespace flint {
 namespace sedml {

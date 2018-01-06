@@ -23,6 +23,7 @@
 #include "filter.h"
 #include "filter/cutter.h"
 #include "flint/ls.h"
+#include "flint/utf8path.h"
 #include "fppp.h"
 #include "job.h"
 #include "lo/layout.h"
@@ -32,7 +33,6 @@
 #include "runtime/channel.h"
 #include "task.h"
 #include "task/config-reader.h"
-#include "utf8path.h"
 
 namespace flint {
 namespace run {

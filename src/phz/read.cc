@@ -24,8 +24,8 @@
 #pragma GCC diagnostic pop
 
 #include "database.h"
+#include "flint/utf8path.h"
 #include "modelpath.h"
-#include "utf8path.h"
 
 namespace flint {
 namespace phz {

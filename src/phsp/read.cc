@@ -30,11 +30,11 @@
 #include "db/statement-driver.h"
 #include "db/utility.h"
 #include "flint/numeric.h"
+#include "flint/utf8path.h"
 #include "flint/uuid-generator.h"
 #include "mathml/math-dumper.h"
 #include "phsp/sample-builder.h"
 #include "sqlite3.h"
-#include "utf8path.h"
 
 namespace flint {
 namespace phsp {

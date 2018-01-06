@@ -9,7 +9,7 @@
 #include <cstring>
 #include <sstream>
 
-#include "utf8path.h"
+#include "flint/utf8path.h"
 
 namespace flint {
 namespace task {

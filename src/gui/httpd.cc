@@ -25,10 +25,10 @@
 
 #include <microhttpd.h>
 
+#include "flint/utf8path.h"
 #include "gui/filename.h"
 #include "gui/main-frame.h"
 #include "run.h"
-#include "utf8path.h"
 
 namespace flint {
 namespace gui {

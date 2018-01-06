@@ -7,7 +7,7 @@
 #include <string>
 
 #include "database.h"
-#include "utf8path.h"
+#include "flint/utf8path.h"
 
 namespace flint {
 
