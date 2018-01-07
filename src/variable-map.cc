@@ -2,7 +2,7 @@
 #include "variable-map.h"
 
 #include "db/variable-loader.h"
-#include "variable.h"
+#include "flint/variable.h"
 
 #include <cassert>
 

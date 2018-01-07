@@ -32,8 +32,8 @@
 #include "db/tsref-loader.h"
 #include "db/variable-loader.h"
 #include "flint/utf8path.h"
+#include "flint/variable.h"
 #include "isdf/reader.h"
-#include "variable.h"
 
 namespace flint {
 namespace ts {

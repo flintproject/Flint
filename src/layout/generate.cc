@@ -28,7 +28,7 @@
 #include "db/space_loader.h"
 #include "db/statement-driver.h"
 #include "db/variable-loader.h"
-#include "variable.h"
+#include "flint/variable.h"
 
 namespace flint {
 namespace layout {

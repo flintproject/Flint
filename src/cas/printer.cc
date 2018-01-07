@@ -3,7 +3,7 @@
 
 #include <cassert>
 
-#include "variable.h"
+#include "flint/variable.h"
 #include "variable-map.h"
 
 namespace flint {

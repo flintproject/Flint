@@ -11,8 +11,8 @@
 
 #include <boost/uuid/uuid_io.hpp>
 
+#include "flint/variable.h"
 #include "statement-driver.h"
-#include "variable.h"
 
 namespace flint {
 namespace db {

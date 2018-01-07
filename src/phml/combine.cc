@@ -18,7 +18,7 @@
 #include "db/query.h"
 #include "db/variable-inserter.h"
 #include "db/variable-loader.h"
-#include "variable.h"
+#include "flint/variable.h"
 
 namespace flint {
 namespace {

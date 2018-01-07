@@ -7,8 +7,8 @@
 #include <memory>
 #include <string>
 
+#include "flint/variable.h"
 #include "mathml.h"
-#include "variable.h"
 #include "variable-map.h"
 
 namespace flint {
