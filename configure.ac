@@ -84,7 +84,7 @@ PKG_CHECK_MODULES([LIBSBML],[libsbml])
 PKG_CHECK_MODULES([SOSLIB],[libODES])
 PKG_CHECK_MODULES([PROTOBUF],[protobuf])
 PKG_CHECK_MODULES([ZEROMQ],[libzmq >= 4.2.3])
-PKG_CHECK_MODULES([CZMQ],[libczmq >= 4.0.2])
+PKG_CHECK_MODULES([CZMQ],[libczmq >= 4.1.0])
 
 AC_ARG_WITH([ceres-solver],
         [AS_HELP_STRING([--with-ceres-solver],

@@ -32,7 +32,7 @@ CLIBSEDML_CONFIGURE_OPTIONS = --enable-silent-rules --disable-static
 CZMQ_CONFIGURE_OPTIONS = \
 	--enable-silent-rules \
 	--disable-static \
-	--disable-Werror \
+	--without-liblz4 \
 	--without-docs
 
 LIBMICROHTTPD_CONFIGURE_OPTIONS = \

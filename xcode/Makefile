@@ -151,6 +151,7 @@ tmp/clibsedml-$(CLIBSEDML_VERSION): src/clibsedml-$(CLIBSEDML_VERSION).tar.gz | 
 tmp/czmq-$(CZMQ_VERSION): src/czmq-$(CZMQ_VERSION).tar.gz | tmp
 	-rm -rf var/czmq-$(CZMQ_VERSION)
 	tar -C var -zxf $<
+	rm var/czmq-$(CZMQ_VERSION)/src/platform.h
 	touch $@
 
 tmp/libmicrohttpd-$(LIBMICROHTTPD_VERSION): src/libmicrohttpd-$(LIBMICROHTTPD_VERSION).tar.gz | tmp
