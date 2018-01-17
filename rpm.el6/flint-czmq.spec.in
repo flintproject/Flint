@@ -47,7 +47,6 @@ rm -rf %{buildroot}
 /opt/flint/include/czmq_library.h
 /opt/flint/include/czmq_prelude.h
 /opt/flint/include/zactor.h
-/opt/flint/include/zargs.h
 /opt/flint/include/zarmour.h
 /opt/flint/include/zauth.h
 /opt/flint/include/zbeacon.h
@@ -71,14 +70,11 @@ rm -rf %{buildroot}
 /opt/flint/include/zmonitor.h
 /opt/flint/include/zmsg.h
 /opt/flint/include/zpoller.h
-/opt/flint/include/zproc.h
 /opt/flint/include/zproxy.h
 /opt/flint/include/zrex.h
 /opt/flint/include/zsock.h
 /opt/flint/include/zstr.h
 /opt/flint/include/zsys.h
-/opt/flint/include/ztimerset.h
-/opt/flint/include/ztrie.h
 /opt/flint/include/zuuid.h
 /opt/flint/lib/libczmq.a
 /opt/flint/lib/libczmq.la
