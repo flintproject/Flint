@@ -133,7 +133,7 @@ var:
 tmp: | var
 	install -d $@
 
-tmp/$(BOOST_UNDERSCORE): src/$(BOOST_UNDERSCORE).tar.bz2 boost-$(BOOST_VERSION).patch | tmp
+tmp/$(BOOST_UNDERSCORE): src/$(BOOST_UNDERSCORE).tar.bz2 | tmp
 	-rm -rf var/$(BOOST_UNDERSCORE)
 	tar -C var -jxf $<
 	touch $@
