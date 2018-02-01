@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+<key>CFBundleName</key>
+<string>Flint</string>
+<key>CFBundleDisplayName</key>
+<string>Flint</string>
+<key>CFBundleIdentifier</key>
+<string>jp.oist.flint</string>
+<key>CFBundleVersion</key>
+<string>2.0.0</string>
+<key>CFBundlePackageType</key>
+<string>APPL</string>
+<key>CFBundleSignature</key>
+<string>????</string>
+<key>CFBundleExecutable</key>
+<string>flint2</string>
+<key>CFBundleShortVersionString</key>
+<string>2.0.0</string>
+<key>LSMinimumSystemVersion</key>
+<string>10.9.0</string>
+<key>NSHumanReadableCopyright</key>
+<string>Copyright © 2015-2018 Takeshi Abe
+Copyright © 2015-2017 Okinawa Institute of Science and Technology Graduate University</string>
+<key>CFBundleIconFile</key>
+<string>flint.icns</string>
+<key>NSHighResolutionCapable</key>
+<true/>
+</dict>
+</plist>

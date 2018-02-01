@@ -277,8 +277,8 @@ $(APP)/Contents $(APP)/Contents/Frameworks $(APP)/Contents/MacOS:
 tmp/bundled: $(APP)/Contents/Info.plist $(APP)/Contents/PkgInfo $(APP)/Contents/Resources/flint.icns | $(APP)/Contents/Frameworks $(APP)/Contents/MacOS
 	touch $@
 
-$(APP)/Contents/Info.plist: | $(APP)/Contents
-	touch $@ # FIXME
+$(APP)/Contents/Info.plist: Info.plist | $(APP)/Contents
+	install -p -m 0644 $< $@
 
 $(APP)/Contents/PkgInfo: | $(APP)/Contents
 	touch $@ # FIXME
