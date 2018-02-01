@@ -118,9 +118,6 @@ flint/flint.ico: flint.ico | flint
 flint/flint.wxs: flint.wxs.in | flint
 	m4 -DVERSION=$(VERSION) $< > $@
 
-flint/icon.png: ../flint/src/jp/oist/flint/image/icon.png | flint
-	install -p -m 0644 $< $@
-
 flint/license.rtf: ../doc/license.rtf | flint
 	install -p -m 0644 $< $@
 
