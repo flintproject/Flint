@@ -94,7 +94,7 @@
           Inputs='tmp\czmq-$(CZMQ_VERSION);tmp\zeromq-$(ZEROMQ_VERSION).installed'
           Outputs='tmp\czmq-$(CZMQ_VERSION).installed'>
     <MakeDir Directories='$(VARDIR)\czmq-$(CZMQ_VERSION)\build'/>
-    <Exec Command='cmake $(CMakeGeneratorOption) -DCMAKE_INSTALL_PREFIX="$(PREFIX)" -DBUILD_SHARED_LIBS=ON ..' WorkingDirectory='$(VARDIR)\czmq-$(CZMQ_VERSION)\build'/>
+    <Exec Command='cmake $(CMakeGeneratorOption) -DCMAKE_INSTALL_PREFIX="$(PREFIX)" -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=ON ..' WorkingDirectory='$(VARDIR)\czmq-$(CZMQ_VERSION)\build'/>
     <Exec Command='cmake --build "$(VARDIR)\czmq-$(CZMQ_VERSION)\build" --target install --config Release --clean-first'/>
     <Touch AlwaysCreate='true' Files='tmp\czmq-$(CZMQ_VERSION).installed'/>
   </Target>
@@ -228,7 +228,7 @@
           Outputs='tmp\flint'>
     <ItemGroup>
       <DLLFiles Include='opt\bin\ceres.dll'/>
-      <DLLFiles Include='opt\bin\czmq.dll'/>
+      <DLLFiles Include='opt\bin\libczmq.dll'/>
       <DLLFiles Include='opt\bin\libprotobuf.dll'/>
       <DLLFiles Include='opt\bin\libsbml.dll'/>
       <DLLFiles Include='opt\bin\libxml2.dll'/>
