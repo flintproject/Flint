@@ -7,7 +7,6 @@
 
 #include <cstdio>
 #include <iostream>
-#include <memory>
 
 #define BOOST_FILESYSTEM_NO_DEPRECATED
 #include <boost/filesystem/fstream.hpp>
