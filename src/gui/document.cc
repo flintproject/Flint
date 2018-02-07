@@ -18,6 +18,12 @@
 #include "db/read-only-driver.h"
 #include "phml.pb.h"
 
+namespace {
+
+const char kRK4[] = "Runge-Kutta (RK4)";
+
+}
+
 namespace flint {
 namespace gui {
 
@@ -55,11 +61,11 @@ bool Document::Load()
 	if (!LoadUnitOfTime(db))
 		return false;
 	choices_method_.push_back("Euler");
-	choices_method_.push_back("Runge Kutta");
+	choices_method_.push_back(kRK4);
 	choices_method_.push_back("ARK");
 
 	// initialize configuration
-	initial_config_.method = "Runge Kutta";
+	initial_config_.method = kRK4;
 	initial_config_.length = "100";
 	initial_config_.length_unit = 0;
 	initial_config_.step = "0.01";
@@ -131,7 +137,7 @@ bool Document::LoadNc()
 			} else if (nc.integration() == "euler") {
 				initial_config_.method = "Euler";
 			} else if (nc.integration() == "4th-rungekutta") {
-				initial_config_.method = "Runge Kutta";
+				initial_config_.method = kRK4;
 			}
 		}
 		if (nc.has_sts()) {
