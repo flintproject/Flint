@@ -171,7 +171,6 @@ libflintxx_la_SOURCES = \
     phsp/read.cc \
     phsp/sample-builder.cc \
     phz/read.cc \
-    process.cc \
     reduction.cc \
     run/run.cc \
     run/spec.cc \

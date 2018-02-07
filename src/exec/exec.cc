@@ -23,7 +23,6 @@
 #include "db/read-only-driver.h"
 #include "exec/task-runner.h"
 #include "flint/ctrl.h"
-#include "flint/process.h"
 #include "phsp.h"
 #include "sedml.h"
 
@@ -31,18 +30,6 @@ namespace flint {
 namespace exec {
 
 namespace {
-
-bool CreatePidTxt(const boost::filesystem::path &dir)
-{
-	boost::filesystem::ofstream ofs(dir / "pid.txt", std::ios::out|std::ios::binary);
-	if (!ofs) {
-		std::cerr << "failed to open " << dir << "/pid.txt" << std::endl;
-		return false;
-	}
-	WriteCurrentProcessId(ofs);
-	ofs.close();
-	return true;
-}
 
 class FutureTaskPool {
 public:
@@ -160,7 +147,7 @@ bool RunTasks(const boost::filesystem::path &dir, ctrl::Argument *arg)
 bool Exec(const cli::ExecOption &option, const boost::filesystem::path &dir,
 		  ctrl::Argument *arg)
 {
-	return CreatePidTxt(dir) && ReadInput(option, dir) && CopyInput(dir) && RunTasks(dir, arg);
+	return ReadInput(option, dir) && CopyInput(dir) && RunTasks(dir, arg);
 }
 
 }
