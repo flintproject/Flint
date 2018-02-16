@@ -2,6 +2,7 @@
 #ifndef FLINT_GUI_DOCUMENT_H_
 #define FLINT_GUI_DOCUMENT_H_
 
+#include <ctime>
 #include <unordered_map>
 #include <vector>
 
@@ -45,7 +46,11 @@ public:
 	int GetDenominator(int i) const {return denominators_time_[i];}
 	int GetNumerator(int i) const {return numerators_time_[i];}
 
+	bool IsModified() const;
+
 	bool Load();
+
+	void UpdateMtime();
 
 private:
 	bool LoadFileFormat();
@@ -57,6 +62,7 @@ private:
 
 	boost::filesystem::path dir_;
 	const wxString path_;
+	std::time_t mtime_; // modification time of the model file
 	file::Format format_;
 	std::vector<double> data_;
 

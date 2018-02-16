@@ -492,6 +492,25 @@ void MainFrame::OnRun(wxCommandEvent &)
 	auto count = notebook_->GetPageCount();
 	if (count == 0)
 		return;
+
+	// Check whether the model file has been changed or not after load
+	for (size_t i=0;i<count;i++) {
+		auto page = notebook_->GetPage(i);
+		auto notebook = wxStaticCast(page, wxNotebook);
+		auto p0 = notebook->GetPage(0);
+		auto gsw = wxStaticCast(p0, GeneralSetttingsWindow);
+		auto doc = gsw->doc();
+		if (doc->IsModified()) {
+			wxMessageDialog dialog(this,
+								   "Model \"" + doc->path() + "\" seems to be modified recently.\nWould you like to proceed?",
+								   "The model has been modified recently",
+								   wxYES_NO|wxNO_DEFAULT);
+			if (dialog.ShowModal() != wxID_YES)
+				return;
+			doc->UpdateMtime();
+		}
+	}
+
 	auto sim = new Simulation;
 	sim->id = next_simulation_id_++;
 	for (size_t i=0;i<count;i++) {

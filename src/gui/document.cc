@@ -30,6 +30,7 @@ namespace gui {
 Document::Document(const boost::filesystem::path &dir, const wxString &path, std::vector<double> data)
 	: dir_(dir)
 	, path_(path)
+	, mtime_(wxFileModificationTime(path))
 	, data_(std::move(data))
 {
 }
@@ -47,6 +48,11 @@ const char *Document::GetFormat() const
 		assert(false);
 		return nullptr;
 	}
+}
+
+bool Document::IsModified() const
+{
+	return mtime_ < wxFileModificationTime(path_);
 }
 
 bool Document::Load()
@@ -79,6 +85,11 @@ bool Document::Load()
 	return (format_ != file::kPhml || LoadNc())
 		&& LoadParam()
 		&& LoadVar();
+}
+
+void Document::UpdateMtime()
+{
+	mtime_ = std::time(nullptr);
 }
 
 bool Document::LoadFileFormat()
