@@ -502,12 +502,24 @@ void MainFrame::OnRun(wxCommandEvent &)
 		auto doc = gsw->doc();
 		if (doc->IsModified()) {
 			wxMessageDialog dialog(this,
-								   "Model \"" + doc->path() + "\" seems to be modified recently.\nWould you like to proceed?",
-								   "The model has been modified recently",
-								   wxYES_NO|wxNO_DEFAULT);
-			if (dialog.ShowModal() != wxID_YES)
+								   "Model \"" + doc->path() + "\" looks modified recently.\nWould you like to proceed?\n(Yes to run simulation;\n No to stop and reload it;\n Cancel to give up and do nothing)",
+								   "The model looks modified recently",
+								   wxYES_NO|wxCANCEL|wxNO_DEFAULT);
+			auto r = dialog.ShowModal();
+			if (r == wxID_YES) {
+				doc->UpdateMtime();
+			} else if (r == wxID_NO) {
+				auto path = doc->path();
+				// close the model at first
+				notebook_->DeletePage(i);
+				if (notebook_->GetPageCount() == 0)
+					item_export_to_c_->Enable(false);
+				// queue reload
+				input_files_.Add(path);
 				return;
-			doc->UpdateMtime();
+			} else {
+				return;
+			}
 		}
 	}
 
