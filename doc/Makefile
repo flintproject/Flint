@@ -5,6 +5,8 @@ all: flint-user-guide.pdf
 clean:
 	-rm *.aux *.idx *.log *.out *.pdf *.toc
 
-%.pdf: %.tex
+%.pdf: %.tex publication.bib software.bib
 	pdflatex $<
-	pdflatex $< # run twice for building table of contents
+	bibtex $(basename $<)
+	pdflatex $<
+	pdflatex $<

@@ -17,6 +17,7 @@
 
 \def\FlintVersion{2.0}
 \def\Flint{Flint \FlintVersion}
+\def\Tagline{a simulator for biological and physiological models}
 
 \newcommand\FigureOfImage[2]{\begin{figure}[h]
   \centering
@@ -45,21 +46,21 @@ users would like to know when using \Flint.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \chapter{Introduction}
-Welcome to \Flint.
 
 \section{Brief summary about Flint}
+\Flint~is new reimplementation of Flint 1.x, \Tagline.
 Flint can run simulations of multi-level physiological models written in PHML.
 It means that Flint parses given models, performs numerical analysis for their
-simulation, and renders simulation outcome into a line graph on the plot
-window's canvas. Likewise, Flint can handle SBML and SBML-PHML hybrid models.
-Furthermore, Flint offers a plug-in feature with which different types of
-plotting applications such as gnuplot are available.
+simulation, and renders simulation outcome into a line graph via an external
+program such as gnuplot \cite{gnuplot}.
+Likewise, Flint can handle CellML and SBML as well as SBML-PHML hybrid models.
 
 \subsection{Markup languages}
-\Flint\ supports the following three languages for models:
+\Flint\ supports the following standard languages for models:
 \begin{itemize}
-\item PHML/ISML
-\item SBML
+\item PHML \cite{PHML} (including its precursor ISML \cite{ISML})
+\item SBML \cite{SBML}
+\item CellML \cite{CellML} (as an experimental feature)
 \end{itemize}
 
 \subsection{Solver methods for ordinary differential equations}
@@ -67,7 +68,7 @@ plotting applications such as gnuplot are available.
 \begin{itemize}
 \item Euler method
 \item Runge-Kutta 4th-order method
-\item Adaptive stepsize Runge-Kutta method, based on the ARKode solver of SUNDIALS
+\item Adaptive stepsize Runge-Kutta method, based on the ARKode solver of SUNDIALS \cite{hindmarsh2005sundials}
 \end{itemize}
 
 \section{Notation}
@@ -90,9 +91,9 @@ For Windows, double-clicking the .msi package will start the installation
 process.
 
 \section{Try your first simulation with \Flint}
-This section describes a simple procedure with \Flint\ to run a simulation of a
-sample model ``HodgkinHuxley\_1952\_neuron\_model.phml'', which is distributed
-as part of the PhysioDesigner installation.
+This section describes a simple procedure with \Flint\ to run a simulation of an
+example model ``HodgkinHuxley\_1952\_neuron\_model.phml'', which is distributed
+as part of the PhysioDesigner \cite{PhysioDesigner} installation.
 
 \begin{description}
 \item[Launch Flint] \hfill \\
@@ -509,10 +510,9 @@ The following suboptions are available:
   specify output variables with {\tt file}.
 \end{description}
 
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\chapter{Frequently Asked Questions (FAQ)}
-Please read this chapter first when in doubt.
+\bibliographystyle{unsrt}
+\bibliography{publication,software}
 
 \end{document}
