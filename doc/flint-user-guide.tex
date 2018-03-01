@@ -1,6 +1,11 @@
 % -*- mode: latex; fill-column: 80; -*-
 \documentclass[a4paper,10pt]{report}
 
+\hoffset=-0.75in
+\voffset=-1in
+\textwidth=450pt
+\textheight=720pt
+
 \usepackage{hyperref}
 \hypersetup{
   colorlinks,
@@ -21,7 +26,7 @@
 
 \newcommand\FigureOfImage[2]{\begin{figure}[h]
   \centering
-  \includegraphics[width=0.6\textwidth]{#1}
+  \includegraphics[width=0.8\textwidth]{#1}
   \caption{#2}\label{fig:#1}
 \end{figure}}
 
@@ -68,7 +73,8 @@ Likewise, Flint can handle CellML and SBML as well as SBML-PHML hybrid models.
 \begin{itemize}
 \item Euler method
 \item Runge-Kutta 4th-order method
-\item Adaptive stepsize Runge-Kutta method, based on the ARKode solver of SUNDIALS \cite{hindmarsh2005sundials}
+\item Adaptive stepsize Runge-Kutta method, based on the ARKode solver of
+  SUNDIALS \cite{hindmarsh2005sundials}
 \end{itemize}
 
 \section{Notation}
@@ -92,20 +98,22 @@ process.
 
 \section{Try your first simulation with \Flint}
 This section describes a simple procedure with \Flint\ to run a simulation of an
-example model ``HodgkinHuxley\_1952\_neuron\_model.phml'', which is distributed
+example model ``HodgkinHuxley\_1952\_neuron\_model.phz'', which is distributed
 as part of the PhysioDesigner \cite{PhysioDesigner} installation.
 
 \begin{description}
 \item[Launch Flint] \hfill \\
 To launch Flint, double-click flint.exe on Windows, or Flint.app on macOS.
+It shows a window like Fig.~\ref{fig:initial}.
 \FigureOfImage{initial}{The initial window of Flint.}
 
 \item[Open a model] \hfill \\
 In the ``File'' menu, select ``Open'' to choose a model file. Then you will see
 a file dialog like Fig.~\ref{fig:open-model}.
 \FigureOfImage{open-model}{The file dialog to open a model.}
-Select ``HodgkinHuxley\_1952\_neuron\_model.phml'' in the file dialog, and
-click ``Open'' button. Then the model window will appear like Fig.~\ref{fig:hh}.
+Select ``HodgkinHuxley\_1952\_neuron\_model.phz'' in the file dialog, and
+click ``Open'' button.
+Then the model window will appear as in Fig.~\ref{fig:hh}.
 \FigureOfImage{hh}{The model window.}
 
 \item[Choose duration and time step] \hfill \\
@@ -116,36 +124,32 @@ length of the simulation in ``Simulation Time Step'' optionally.
 Click the ``Run'' button to start a simulation.
 
 Once simulation started running, the progress bar will appear in the control
-panel in the right side like Fig.~\ref{fig:hh-progress}, and both ``Cancel''
-(with the cross mark) and ``Detail'' buttons will be enabled.
+panel in the right side like Fig.~\ref{fig:hh-progress}, and both the cross mark
+(as ``Cancel'') and ``Detail'' buttons will be enabled.
 \FigureOfImage{hh-progress}{The progress bar for the model.}
 
-Wait until a message dialog shows up to tell that the simulation completed.
-\FigureOfImage{hh-completed}{The message dialog says the simulation completed.}
+Wait until the status bar tells that the simulation completed (see
+Fig.~\ref{fig:hh-compeleted}).
+\FigureOfImage{hh-completed}{The status bar indicates the simulation completed.}
 
 \item[See detail of the simulation] \hfill \\
 Click the ``Detail'' button to get the simultion result.
-Then a detail window will appear like Fig.~\ref{fig:hh-detail}.
+Then a detail window will appear as in Fig.~\ref{fig:hh-detail}.
 \FigureOfImage{hh-detail}{The detail window.}
 
 \item[Select ordinates] \hfill \\
 Click the ``View'' button on the detail window, then a plot window to render
 line graphs about the simulation result, like Fig.~\ref{fig:hh-plot}.
 \FigureOfImage{hh-plot}{The plot window.}
-Drag a name card ``V'' from the variable list, and drop it into the right axis
-field labelled Y1. Soon the corresponding line graph will appear on the canvas,
+Check the Y1 column of ``V'' in the variable list, which calls gnuplot.
+Soon the corresponding line graph will appear on a separate window,
 like Fig.~\ref{fig:hh-plot-v}.
 \FigureOfImage{hh-plot-v}{The plot window with ``V'' on Y1.}
-At the same time you can also pick up another name ``I\_Na'' from the list,
-moving it into the left axis field labelled Y2, like
+Moreover you can also check the Y2 column of another variable ``I\_Na'' in the
+list to arrange two line graphs in the same canvas, as in
 Fig.~\ref{fig:hh-plot-v-ina}.
 \FigureOfImage{hh-plot-v-ina}{The plot window with ``V'' on Y1 and ``I\_Na''
 on Y2.}
-
-\item[Plot a line graph with gnuplot] \hfill \\
-Push button ``Plot'' to draw the line graph about ``V'' and ``I\_Na'' with
-gnuplot. Soon a gnuplot window will pop up like Fig.~\ref{fig:hh-gnuplot}.
-\FigureOfImage{hh-gnuplot}{Line graph by gnuplot about ``V'' and ``I\_Na''.}
 \end{description}
 
 
@@ -169,7 +173,7 @@ Loading a model can fail due to some reasons; for example, it may fail if
 the model file contains an error or unsupported elements.
 An error dialog will display a diagnosis message when loading a model fails.
 Once loading a model successfully, the model window shows up and stays
-in the main window until closed.
+in the main window until closed, like Fig.~\ref{fig:lr}.
 
 \section{Configuring simulation tasks}
 \FigureOfImage{lr}{The model window.}
@@ -197,10 +201,13 @@ This setting is for determining how often the result data are written in.
 Note that the sampling rate does not affect the calculation for simulation.
 
 \subsection{Select output variables}
-Before starting simulations for a loaded model, users may want to choose limited
-number of variables for output among available variables. Filtering output
-variables will reduce the burden of writing output, and thus may improve the
-simulation performance.
+Before starting simulations for a loaded model, users may want to choose a
+limited number of variables for output among available variables.
+Filtering output variables will reduce the burden of writing output, and thus
+may improve the simulation performance.
+The ``Output Variables'' panel (Fig.~\ref{fig:lr-output-variables}) allows
+user to select output variables by matching its properties, such as name,
+with a given string.
 \FigureOfImage{lr-output-variables}{The ``Output Variables'' panel.}
 
 \subsection{Parametrize constant values}
@@ -211,7 +218,7 @@ different values of parameters.
 A parameter is bound to a set of possible values, called value-set.
 The whole set of possible tuples of multiple parameters is defined as a
 cartesian product of multiple value-sets.
-If users define value-sets and use them, then Flint will run as many jobs
+If users edit parameter sets and use them, then Flint will run as many jobs
 for the model as cardinality of the cartesian product. In other words,
 each simulation job corresponds to a value tuple for multiple parameters.
 
@@ -226,38 +233,44 @@ element in the model; the ``Expression'' field of the row accepts a formula
 \begin{figure}[h]
   \centering
   \begin{subfigure}[b]{0.45\textwidth}
-    \includegraphics[width=\textwidth]{lr-value-set-a}
-    \caption{{\tt a} of type enum}\label{fig:lr-value-set-a}
+    \includegraphics[width=\textwidth]{lr-edit-parameter-set-a}
+    \caption{{\tt a} edit a parameter set calld ``p0''}\label{fig:lr-edit-parameter-set-a}
   \end{subfigure}
   \begin{subfigure}[b]{0.45\textwidth}
-    \includegraphics[width=\textwidth]{lr-value-set-b}
-    \caption{{\tt b} of type interval}\label{fig:lr-value-set-b}
+    \includegraphics[width=\textwidth]{lr-edit-parameter-set-b}
+    \caption{{\tt b} choosing value type}\label{fig:lr-edit-parameter-set-b}
   \end{subfigure}
-  \caption{Editing value-sets in the ``Define value set'' window.}\label{fig:lr-value-set}
+  \caption{Editing parameter sets in the ``Define parameter set'' window.}
 \end{figure}
 
 \subsubsection{Define a value-set}
 In order to define or modify value-sets, push button ``Define value set'' at
 first. Then a window will pop up. It allows users to define new value-set,
-see existing value-sets, and modify them.
+see existing value-sets, and modify them (see Fig.~\ref{fig:lr-edit-parameter-set-a}).
 
-There are two types of value-sets: enum and interval. For a value-set of type
-enum, each of possible values must be specified. On the other hand, only the
-lower and upper (both inclusive) of a range of values with a step are required
-to define a value-set of type interval.
+There are four types of value-sets: enum, interval, Gaussian, and uniform
+(see Fig.~\ref{fig:lr-edit-parameter-set-b}).
+For a value-set of type enum, each of possible values must be specified.
+On the other hand, only the lower and upper (both inclusive) of a range
+of values with a step are required to define a value-set of type interval.
 Note that possible values of an enum should be separated by a comma.
+The latter two types of value-sets are for generating (pseudo)random values
+according to specified probability distribution in simulation time.
 
 \subsubsection{Use value-sets}
 Once users have defined a value-set, it is available in the ``Expression''
 field of any row in the ``Parameters'' table. For example, users can specify
 {\tt a+2*b} in the field if there exists a couple of value-set named {\tt a} and
-{\tt b}.
+{\tt b} (see Fig.~\ref{fig:lr-parameter-set}).
+\FigureOfImage{lr-parameter-set}{Parameterize with defined value-set ``p0''.}
 
 \section{Starting simulation}
 To start simulation, use the menu ``Control''$\rightarrow$``Run'' or button
 ``Run'' on the control panel. It kicks simulation jobs for all loaded models.
 Users can monitor the progress in total on the control panel, as well as the
 one for a single job on the detail windows like Fig.~\ref{fig:lr-detail}.
+Note that a context menu allows users to cancel simulation assigned to a
+specific parameter value in a task.
 \FigureOfImage{lr-detail}{The detail window during simulation.}
 
 \section{Controlling simulation jobs}
@@ -265,10 +278,9 @@ After starting simulation jobs, users can control them instead of just waiting
 for them finishing.
 
 \subsection{Cancel jobs}
-There are two ways to cancel running jobs; one is pushing the cross mark on
-the control panel (see Fig.~\ref{fig:lr-progress}), which cancels all of related
-jobs. The other is pushing the cross mark at the detail window, which cancels the
-corresponding job only.
+There is another way to cancel running jobs; pushing the cross mark on the
+control panel (see Fig.~\ref{fig:lr-progress}), which cancels a job i.e. all
+of its tasks together.
 \FigureOfImage{lr-progress}{The progress bar / cross mark / ``Detail'' button on
  the control panel.}
 
@@ -289,54 +301,23 @@ From the detail window, users can display the plot window by clicking button
 
 \subsection{Choose abscissa and ordinates}
 In order to draw a line graph, users have to specify the abscissa and ordinates
-by drag-and-dropping variables from the left side frame.
-\FigureOfImage{lr-plot}{Selecting {\tt V} as a Y1 ordinate.}
-
-If there are so many variables that some of them scroll out on a frame, a scroll
-bar appears on the left edge of the frame. Besides scrolling them by wheeling
-with mouse, especially on the left side frame, the focus can jump to a variable
-by typing an alphabet key (i.e., \texttt{[A-z]}) which specifies the first
-character of the variable's name.
-
-\subsection{Configuration for gnuplot}
-Pushing the ``Plot'' button calls gnuplot to draw a line graph with the
-specified abscissa and ordinates. Users have to install gnuplot in advance, and
-to specify the location of the gnuplot executable (see
-section~\ref{sec:preference}).
-
-\subsubsection{Options for gnuplot}
-Users can control the following options for gnuplot in Tab ``Range'' or ``Legend'':
-\begin{itemize}
-\item Minimum and/or maximum value(s) for the abscissa ($X$) and/or ordinates ($Y1$/$Y2$)
-\item Labels for the abscissa ($X$) and/or ordinates ($Y1$/$Y2$)
-\item With or without the title
-\end{itemize}
-These will be enabled on next time plotting.
-\FigureOfImage{lr-plot-target}{The ``Target'' tab.}
-\FigureOfImage{lr-plot-range}{The ``Range'' tab.}
-\FigureOfImage{lr-plot-legend}{The ``Legend'' tab.}
-\FigureOfImage{lr-gnuplot}{The line graph generated by gnuplot.}
-
-\subsubsection{Writing the line graph to a file}
-It is possible to make gnuplot write the line graph to some file, as follows:
-\begin{itemize}
-\item choose Tab ``Target''.
-\item check the ``file'' button.
-\item select a file format and path to be written.
-\item push button ``Plot''.
-\end{itemize}
-Then a dialog will inform users of the resulting status.
+by checking an X column as well as either Y1 or Y2 column.
+Immediately after choosing abscissa and ordinates, Flint calls gnuplot in the
+background to draw a line graph.
+Thus users have to install gnuplot in advance, and to specify the location of
+the gnuplot executable (see section~\ref{sec:preference}).
 
 \subsubsection{Trouble shooting}
 \begin{itemize}
-\item Pushing button ``Plot'' with no response, check the gnuplot initialization
-  file to load. It is called $\tt{.gnuplot}$ on Unix and macOS, and
-  $\tt{GNUPLOT.INI}$ on other systems.
+\item Choosing abscissa and ordinates results in no response, make sure if the
+  gnuplot initialization file is valid and correct.
+  It is called $\tt{.gnuplot}$ on Unix and macOS, and $\tt{GNUPLOT.INI}$ on
+  other systems.
 \end{itemize}
 
 \section{Saving output data}
 Users may save the resulting simulation data for later investigation.
-\FigureOfImage{lr-detail-buttons}{Buttons to export data in the detail window.}
+\FigureOfImage{lr-export}{The dialog to save data.}
 
 \subsection{Exporing data as CSV}
 Flint can export the result data into a CSV file.
@@ -345,9 +326,11 @@ The header column contains the variable names as well as their unit name if any.
 The procedure is as follows:
 \begin{enumerate}
 \item Open the ``Detail'' window
-\item Push button ``Export'' (see Fig.~\ref{fig:lr-detail-buttons})
-\item Choose a target filename \emph{ending with .csv or .txt} in the file dialog.
+\item Select as many tasks as you would like to save.
+\item Push button ``Export''
+\item Choose a target directory in the file dialog (see Fig.~\ref{fig:lr-export})
 \end{enumerate}
+The names of files saved in the target directory are of form ``(ID).csv.''
 
 \subsection{Exporting data as ISD}
 Flint can also export the result data into a ISD file.
@@ -356,36 +339,11 @@ The ISD file format is a binary file format for preserving multi-variate data.
 The procedure is as follows:
 \begin{enumerate}
 \item Open the ``Detail'' window
-\item Push button ``Export'' (see Fig.~\ref{fig:lr-detail-buttons})
-\item Choose a target filename \emph{which extension is neither .csv nor .txt}
-  in the file dialog.
+\item Select as many tasks as you would like to save.
+\item Push button ``Export''
+\item Choose a target directory in the file dialog (see Fig.~\ref{fig:lr-export})
 \end{enumerate}
-
-\subsection{Exporting all data into a directory}
-It is sometimes useful to export all data for simulation jobs into a directory.
-The procedure is as follows:
-\begin{enumerate}
-\item Open the ``Detail'' window
-\item Push button ``Export all'' (see Fig.~\ref{fig:lr-detail})
-\item Choose a target directory in the file dialog.
-\end{enumerate}
-
-\section{Flint K3}
-Instead of runnsing simulation with Flint, it is also possible to submit a loaded
-model to Flint K3 (\url{https://flintk3.unit.oist.jp/}) for simulation.
-A K3 account is necessary to use this advanced feature.
-
-\subsection{From menu}
-To submit a model to Flint K3,
-\begin{enumerate}
-\item Load a model
-\item Select the menu ``Control''$\rightarrow$``Send to Flint K3''
-\item Enter the User ID and Password of a K3 account and the title of new job
-  (see Fig.~\ref{fig:new-job-to-k3})
-\item Push button ``Submit''
-\end{enumerate}
-\FigureOfImage{new-job-to-k3}{The ``New job to K3'' dialog.}
-Then a dialog will appear to tell whether it is done successfully or not.
+The names of files saved in the target directory are of form ``(ID).isd.''
 
 \section{Exporting C source code from model}
 Not only running online simulation, but also Flint can export simulation code
@@ -395,10 +353,10 @@ as a C99 source file from a loaded model. So far it works only for pure ODE mode
 To export C code from a model,
 \begin{enumerate}
 \item Load a model
-\item Select the menu ``File''$\rightarrow$``Export''$\rightarrow$``C''
+\item Select the menu ``File''$\rightarrow$``Export to C'' (see Fig.~\ref{fig:export-to-c})
 \item Choose a target filename via the file dialog that follows.
 \end{enumerate}
-\FigureOfImage{export-to-c}{The menu ``File''$\rightarrow$``Export''$\rightarrow$``C''.}
+\FigureOfImage{export-to-c}{The menu ``File''$\rightarrow$``Export to C''.}
 Then a dialog will appear to tell whether it is done successfully or not.
 
 Please note that the numerical method used in the exported code is the one
@@ -423,14 +381,15 @@ will run a simulation, writing the whole output into {\tt output.isd}.
 
 \section{Preference}
 \label{sec:preference}
-Users can customize Flint's preference.
+Users can customize Flint's behavior via preference, which UI looks like
+Fig.~\ref{fig:preference-plotter}.
 
 \subsection{Plotter}
-This is an advanced option.
-For gnuplot, select the path of {\tt gnuplot} (or {\tt pgnuplot.exe} on Windows),
-e.g., ``$\tt{/usr/bin/gnuplot}$''. On macOS, say,
-{\tt /Applications/gnuplot.app} as an application bundle of gnuplot, its value
-should be \[{\tt /Applications/gnuplot.app/bin/gnuplot}.\]
+This is a necessary option to render line graphs.
+Select the path of {\tt gnuplot} (or {\tt gnuplot.exe} on Windows), e.g.,
+``$\tt{/usr/bin/gnuplot}$''. If macOS users have, say,
+{\tt /Applications/gnuplot.app} as an application bundle of gnuplot,
+its value should be \[{\tt /Applications/gnuplot.app/bin/gnuplot}.\]
 \FigureOfImage{preference-plotter}{The ``Plotter'' panel on the preference dialog.}
 
 \section{Shortcut keys}
@@ -509,6 +468,15 @@ The following suboptions are available:
 \item[-s {\tt file}] \hfill \\
   specify output variables with {\tt file}.
 \end{description}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\chapter{Frequently Asked Questions (FAQ)}
+Please read this chapter first when in doubt.
+
+\section{How to uninstall Flint}
+On windows, you can uninstall Flint through the system menu ``Settings''$\rightarrow$``Apps \& features''.
+On macOS, all you have to do for uninstallation is to remove Flint.app.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
