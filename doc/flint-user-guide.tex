@@ -61,15 +61,15 @@ program such as gnuplot \cite{gnuplot}.
 Likewise, Flint can handle CellML and SBML as well as SBML-PHML hybrid models.
 
 \subsection{Markup languages}
-\Flint\ supports the following standard languages for models:
+\Flint\ supports the following standard languages of models:
 \begin{itemize}
 \item PHML \cite{PHML} (including its precursor ISML \cite{ISML})
 \item SBML \cite{SBML}
-\item CellML \cite{CellML} (as an experimental feature)
+\item CellML \cite{CellML} (supported as an experimental feature)
 \end{itemize}
 
 \subsection{Solver methods for ordinary differential equations}
-\Flint\ supports the following two algorithms to solve ODEs numerically:
+\Flint\ supports the following algorithms to solve ODEs numerically:
 \begin{itemize}
 \item Euler method
 \item Runge-Kutta 4th-order method
@@ -88,13 +88,12 @@ a command shell on your system, such as\\
 \chapter{Getting started}
 
 \section{Install \Flint}
-Flint project makes both Windows and macOS version of \Flint\ freely
+Flint project makes both Windows and macOS version of \Flint's installer freely
 available at \url{https://flintproject.github.io/}.
-The .dmg archive for macOS contains Flint's application bundle, named
-``Flint.app''; extracting it and copying it into your favorite path is all
-you have to do for installation.
 For Windows, double-clicking the .msi package will start the installation
 process.
+The .dmg archive for macOS contains \Flint's .pkg file; extracting and
+double-clicking it to start an application bundle called ``Flint.app''.
 
 \section{Try your first simulation with \Flint}
 This section describes a simple procedure with \Flint\ to run a simulation of an
