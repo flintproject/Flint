@@ -67,7 +67,7 @@ rm -rf %{buildroot}
 /etc/ld.so.conf.d/%{name}.conf
 /opt/flint/bin/csv2isd
 /opt/flint/bin/flint-*
-/opt/flint/bin/flint2
+/opt/flint/bin/flint
 /opt/flint/bin/isd2csv
 /opt/flint/bin/isdbswap
 /opt/flint/bin/isdcut

@@ -43,7 +43,7 @@ PROGRAMS := \
     flint-lodbg \
     flint-run \
     flint-tr \
-    flint2 \
+    flint \
     isd2csv \
     isdcut \
     isddiff \

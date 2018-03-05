@@ -263,7 +263,7 @@ target_link_libraries(flint-tr
     Boost::filesystem
     )
 
-add_executable(flint2 WIN32
+add_executable(flint WIN32
     gui/app.cc
     gui/configuration.cc
     gui/document.cc
@@ -288,7 +288,7 @@ add_executable(flint2 WIN32
     gui/task.cc
     gui/view-frame.cc
     )
-target_link_libraries(flint2
+target_link_libraries(flint
     libflint2
     libflintxx
     libflint
@@ -431,7 +431,7 @@ install(TARGETS
     flint-lodbg
     flint-run
     flint-tr
-    flint2
+    flint
     isd2csv
     isdbswap
     isdcut

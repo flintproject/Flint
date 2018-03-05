@@ -15,7 +15,7 @@
 <key>CFBundleSignature</key>
 <string>????</string>
 <key>CFBundleExecutable</key>
-<string>flint2</string>
+<string>flint</string>
 <key>CFBundleShortVersionString</key>
 <string>2.0.0</string>
 <key>LSMinimumSystemVersion</key>

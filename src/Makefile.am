@@ -33,7 +33,7 @@ bin_PROGRAMS = \
 	flint-lodbg \
 	flint-run \
 	flint-tr \
-	flint2 \
+	flint \
 	isd2csv \
 	isdbswap \
 	isdcut \
@@ -262,10 +262,10 @@ flint_tr_LDFLAGS = $(BOOST_FILESYSTEM_LDFLAGS) $(BOOST_SYSTEM_LDFLAGS)
 flint_tr_LDADD = libflintxx.la libflint.la libsqlite3.la $(PROTOBUF_LIBS) $(BOOST_FILESYSTEM_LIBS) $(BOOST_SYSTEM_LIBS)
 flint_tr_SOURCES = flint-tr-main.cc
 
-flint2_CPPFLAGS = $(WXWIDGETS_CXXFLAGS) $(LIBMICROHTTPD_CFLAGS) $(PROTOBUF_CFLAGS) $(BOOST_CPPFLAGS)
-flint2_LDFLAGS = $(BOOST_FILESYSTEM_LDFLAGS) $(BOOST_SYSTEM_LDFLAGS)
-flint2_LDADD = libflint2.a libflintxx.la libflint.la libsqlite3.la $(WXWIDGETS_LIBS) $(LIBMICROHTTPD_LIBS) $(PROTOBUF_LIBS) $(BOOST_FILESYSTEM_LIBS) $(BOOST_SYSTEM_LIBS)
-flint2_SOURCES = \
+flint_CPPFLAGS = $(WXWIDGETS_CXXFLAGS) $(LIBMICROHTTPD_CFLAGS) $(PROTOBUF_CFLAGS) $(BOOST_CPPFLAGS)
+flint_LDFLAGS = $(BOOST_FILESYSTEM_LDFLAGS) $(BOOST_SYSTEM_LDFLAGS)
+flint_LDADD = libflint2.a libflintxx.la libflint.la libsqlite3.la $(WXWIDGETS_LIBS) $(LIBMICROHTTPD_LIBS) $(PROTOBUF_LIBS) $(BOOST_FILESYSTEM_LIBS) $(BOOST_SYSTEM_LIBS)
+flint_SOURCES = \
     gui/app.cc \
     gui/configuration.cc \
     gui/document.cc \

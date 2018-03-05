@@ -23,7 +23,7 @@
         <Directory Id='FLINTDIR' Name='Flint'>
 
           <Component Id='flint_exe' Guid='b3759fa0-220f-11e1-95b8-8fcafecb7541'>
-            <File Id='flint2.exe' Name='flint2.exe' DiskId='1' Source='flint2.exe' />
+            <File Id='flint.exe' Name='flint.exe' DiskId='1' Source='flint.exe' />
             <Shortcut Id='flint_desktop_shortcut' Name='Flint'
                       Directory='DesktopFolder'
                       Description='Flint is a simulator for biological and physiological models.'
@@ -133,7 +133,7 @@
             <Shortcut Id='flint_startmenu_shortcut' Name='Flint'
                       Description='Flint is a simulator for biological and physiological models.'
                       Icon='flint.ico'
-                      Target='[FLINTDIR]flint2.exe'
+                      Target='[FLINTDIR]flint.exe'
                       WorkingDirectory='FLINTDIR' />
             <Shortcut Id='UninstallProduct' Name='uninstall'
                       Description='Uninstall Flint.'
