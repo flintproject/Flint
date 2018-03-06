@@ -38,7 +38,7 @@ find_package(Ceres REQUIRED)
 include_directories("${CERES_INCLUDE_DIRS}")
 
 find_library(LIBZMQ
-             NAMES libzmq libzmq-v140-mt-4_2_3
+             NAMES libzmq libzmq-v141-mt-4_2_3
              )
 if(NOT LIBZMQ)
     message(FATAL_ERROR "failed to find libzmq")

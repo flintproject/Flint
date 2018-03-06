@@ -14,7 +14,7 @@ BuildRequires: flint-clibsedml >= 0.1.0
 BuildRequires: flint-czmq >= 4.1.0
 BuildRequires: flint-protobuf >= 3.5.0
 BuildRequires: flint-soslib
-BuildRequires: flint-wxwidgets >= 3.1.0
+BuildRequires: flint-wxwidgets >= 3.1.1
 BuildRequires: libmicrohttpd-devel >= 0.9.33
 BuildRequires: libxml2-devel >= 2.7
 Requires: flint-boost >= 1.66.0
@@ -22,7 +22,7 @@ Requires: flint-clibsedml >= 0.1.0
 Requires: flint-czmq => 4.1.0
 Requires: flint-protobuf >= 3.5.0
 Requires: flint-soslib
-Requires: flint-wxwidgets >= 3.1.0
+Requires: flint-wxwidgets >= 3.1.1
 Requires: libmicrohttpd >= 0.9.33
 Requires: libxml2 >= 2.7
 

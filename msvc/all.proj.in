@@ -29,13 +29,15 @@
     <When Condition="'$(TargetArch)'=='x64'">
       <PropertyGroup>
         <BoostAddressModelOption>address-model=64</BoostAddressModelOption>
-        <CMakeGeneratorOption>-G "Visual Studio 14 2015 Win64"</CMakeGeneratorOption>
+        <CMakeGeneratorOption>-G "Visual Studio 15 2017 Win64"</CMakeGeneratorOption>
+        <MsvcVariant>vc141_x64</MsvcVariant>
       </PropertyGroup>
     </When>
     <When Condition="'$(TargetArch)'=='x86'">
       <PropertyGroup>
         <BoostAddressModelOption>address-model=32</BoostAddressModelOption>
-        <CMakeGeneratorOption></CMakeGeneratorOption>
+        <CMakeGeneratorOption>-G "Visual Studio 15 2017"</CMakeGeneratorOption>
+        <MsvcVariant>vc141</MsvcVariant>
       </PropertyGroup>
     </When>
   </Choose>
@@ -43,16 +45,16 @@
   <Choose>
     <When Condition="'$(TargetArch)'=='x64'">
       <ItemGroup>
-        <libmicrohttpdLibraryFiles Include="$(VARDIR)\libmicrohttpd-$(LIBMICROHTTPD_VERSION)-w32-bin\x86_64\VS2015\Release-dll\libmicrohttpd-dll.*"/>
-        <libmicrohttpdHeaderFiles Include="$(VARDIR)\libmicrohttpd-$(LIBMICROHTTPD_VERSION)-w32-bin\x86_64\VS2015\Release-dll\microhttpd.h"/>
-        <libmicrohttpdReleaseDLLFiles Include="$(VARDIR)\libmicrohttpd-$(LIBMICROHTTPD_VERSION)-w32-bin\x86_64\VS2015\Release-dll\libmicrohttpd-dll.dll"/>
+        <libmicrohttpdLibraryFiles Include="$(VARDIR)\libmicrohttpd-$(LIBMICROHTTPD_VERSION)-w32-bin\x86_64\VS2017\Release-dll\libmicrohttpd-dll.*"/>
+        <libmicrohttpdHeaderFiles Include="$(VARDIR)\libmicrohttpd-$(LIBMICROHTTPD_VERSION)-w32-bin\x86_64\VS2017\Release-dll\microhttpd.h"/>
+        <libmicrohttpdReleaseDLLFiles Include="$(VARDIR)\libmicrohttpd-$(LIBMICROHTTPD_VERSION)-w32-bin\x86_64\VS2017\Release-dll\libmicrohttpd-dll.dll"/>
       </ItemGroup>
     </When>
     <When Condition="'$(TargetArch)'=='x86'">
       <ItemGroup>
-        <libmicrohttpdLibraryFiles Include="$(VARDIR)\libmicrohttpd-$(LIBMICROHTTPD_VERSION)-w32-bin\x86\VS2015\Release-dll\libmicrohttpd-dll.*"/>
-        <libmicrohttpdHeaderFiles Include="$(VARDIR)\libmicrohttpd-$(LIBMICROHTTPD_VERSION)-w32-bin\x86\VS2015\Release-dll\microhttpd.h"/>
-        <libmicrohttpdReleaseDLLFiles Include="$(VARDIR)\libmicrohttpd-$(LIBMICROHTTPD_VERSION)-w32-bin\x86\VS2015\Release-dll\libmicrohttpd-dll.dll"/>
+        <libmicrohttpdLibraryFiles Include="$(VARDIR)\libmicrohttpd-$(LIBMICROHTTPD_VERSION)-w32-bin\x86\VS2017\Release-dll\libmicrohttpd-dll.*"/>
+        <libmicrohttpdHeaderFiles Include="$(VARDIR)\libmicrohttpd-$(LIBMICROHTTPD_VERSION)-w32-bin\x86\VS2017\Release-dll\microhttpd.h"/>
+        <libmicrohttpdReleaseDLLFiles Include="$(VARDIR)\libmicrohttpd-$(LIBMICROHTTPD_VERSION)-w32-bin\x86\VS2017\Release-dll\libmicrohttpd-dll.dll"/>
       </ItemGroup>
     </When>
   </Choose>
@@ -66,7 +68,7 @@
           Inputs='tmp\$(BOOST_UNDERSCORE)'
           Outputs='tmp\$(BOOST_UNDERSCORE).installed'>
     <Exec Command='bootstrap' WorkingDirectory='$(VARDIR)\$(BOOST_UNDERSCORE)'/>
-    <Exec Command='.\b2 -d0 --prefix="$(PREFIX)" $(B2_WITHOUT_OPTIONS) $(BoostAddressModelOption) toolset=msvc-14.0 variant=release threading=multi link=shared runtime-link=shared install' WorkingDirectory='$(VARDIR)\$(BOOST_UNDERSCORE)'/>
+    <Exec Command='.\b2 -d0 --prefix="$(PREFIX)" $(B2_WITHOUT_OPTIONS) $(BoostAddressModelOption) toolset=msvc-14.1 variant=release threading=multi link=shared runtime-link=shared install' WorkingDirectory='$(VARDIR)\$(BOOST_UNDERSCORE)'/>
     <Touch AlwaysCreate='true' Files='tmp\$(BOOST_UNDERSCORE).installed'/>
   </Target>
 
@@ -217,7 +219,7 @@
           Inputs='tmp\$(BOOST_UNDERSCORE).installed;tmp\ceres-solver-$(CERES_VERSION).installed;tmp\clibsedml-$(CLIBSEDML_VERSION).installed;tmp\sundials-$(SUNDIALS_VERSION).installed;tmp\SBML_odeSolver-$(SOSLIB_VERSION).installed;tmp\czmq-$(CZMQ_VERSION).installed;tmp\libmicrohttpd-$(LIBMICROHTTPD_VERSION).installed;tmp\wxWidgets.installed;..\src\bc.pb.cc;..\src\cli.pb.cc;..\src\ipc.pb.cc;..\src\lo.pb.cc;..\src\phml.pb.cc;..\src\unit.pb.cc'
           Outputs='tmp\build'>
     <MakeDir Directories='$(VARDIR)\build'/>
-    <Exec Command='cmake $(CMakeGeneratorOption) -DCMAKE_INSTALL_PREFIX="$(PREFIX)" ..\..\..' WorkingDirectory='$(VARDIR)\build'/>
+    <Exec Command='cmake $(CMakeGeneratorOption) -DCMAKE_INSTALL_PREFIX="$(PREFIX)" -DwxWidgets_LIB_DIR="$(PREFIX)\lib\$(MsvcVariant)_dll" ..\..\..' WorkingDirectory='$(VARDIR)\build'/>
     <Exec Command='cmake --build "$(VARDIR)\build" --target install --config Release'/>
     <Touch AlwaysCreate='true' Files='tmp\build'/>
   </Target>
@@ -239,11 +241,11 @@
       <DLLFiles Include='opt\lib\boost_program_options-*.dll'/>
       <DLLFiles Include='opt\lib\boost_system-*.dll'/>
       <DLLFiles Include='opt\lib\boost_unit_test_framework-*.dll'/>
-      <wxMSWReleaseDLLFiles Include='release-dll\**\wxbase310u_*.dll'/>
-      <wxMSWReleaseDLLFiles Include='release-dll\**\wxmsw310u_adv_*.dll'/>
-      <wxMSWReleaseDLLFiles Include='release-dll\**\wxmsw310u_aui_*.dll'/>
-      <wxMSWReleaseDLLFiles Include='release-dll\**\wxmsw310u_core_*.dll'/>
-      <wxMSWReleaseDLLFiles Include='release-dll\**\wxmsw310u_propgrid_*.dll'/>
+      <wxMSWReleaseDLLFiles Include='release-dll\**\wxbase311u_*.dll'/>
+      <wxMSWReleaseDLLFiles Include='release-dll\**\wxmsw311u_adv_*.dll'/>
+      <wxMSWReleaseDLLFiles Include='release-dll\**\wxmsw311u_aui_*.dll'/>
+      <wxMSWReleaseDLLFiles Include='release-dll\**\wxmsw311u_core_*.dll'/>
+      <wxMSWReleaseDLLFiles Include='release-dll\**\wxmsw311u_propgrid_*.dll'/>
       <ExeFiles Include='csv2isd.exe;flint.exe;flint-cli.exe;flint-exec.exe;flint-lodbg.exe;flint-run.exe;flint-tr.exe;isd2csv.exe;isdbswap.exe;isdcut.exe;isddiff.exe;isdhead.exe;isdls.exe;isdmerge.exe;isdrand.exe;isdsort.exe;isdstrip.exe;isdwc.exe'/>
     </ItemGroup>
     <MakeDir Directories='flint'/>

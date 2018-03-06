@@ -102,7 +102,6 @@ WXWIDGETS_CONFIGURE_OPTIONS = \
 	--disable-ribbon \
 	--disable-richtext \
 	--disable-sound \
-	--disable-static \
 	--disable-svg \
 	--disable-webkit \
 	--disable-webview \

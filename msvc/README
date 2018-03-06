@@ -15,10 +15,10 @@ We have tested our procedure on Windows 10.
   - 7z
   - wget
 
-* Visual Studio 2015 or later
+* Visual Studio 2017
   https://www.visualstudio.com/
   Do not forget to install the Visual C++ component:
-  https://msdn.microsoft.com/en-us/library/e2h7fzkw.aspx
+  https://docs.microsoft.com/en-us/visualstudio/install/install-visual-studio
 
 * WiX 3.x
   http://wixtoolset.org/
@@ -42,8 +42,10 @@ We have tested our procedure on Windows 10.
    $ make
    Then it will download and unpack dependency libraries.
 
-3. Launch "VS2015 x86 Native Tools Command Prompt" (or "VS2015 x64 Native Tools
-   Command Prompt" if you choose x86-64 in the above step);
-   change directory to this directory;
+3. Launch "x64 Native Tools Command Prompt for VS 2017"
+   (or "x86 Native Tools Command Prompt for VS 2017"
+   if you choose x86 in the above step; see
+   https://docs.microsoft.com/en-us/cpp/build/building-on-the-command-line#developer_command_prompt_shortcuts).
+   Change directory to this directory,
    and run MSBuild with a project file:
    > msbuild all.proj /fl
