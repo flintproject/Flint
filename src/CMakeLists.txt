@@ -1,3 +1,4 @@
+include_directories("include")
 include_directories(".")
 
 add_definitions(-DSQLITE_THREADSAFE=1 -DSQLITE_OMIT_LOAD_EXTENSION)

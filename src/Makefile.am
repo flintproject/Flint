@@ -67,7 +67,7 @@ libflint_la_SOURCES = \
     database.c \
     db/query.c
 
-libflintxx_la_CPPFLAGS = -I$(top_srcdir)/include $(SOSLIB_CFLAGS) $(LIBSBML_CFLAGS) $(WXWIDGETS_CXXFLAGS) $(PROTOBUF_CFLAGS) $(BOOST_CPPFLAGS) $(SUNDIALS_CFLAGS) $(CLIBSEDML_CFLAGS) $(CZMQ_CFLAGS) $(ZEROMQ_CFLAGS) $(XML_CPPFLAGS)
+libflintxx_la_CPPFLAGS = -I$(top_srcdir)/include -I$(srcdir)/include $(SOSLIB_CFLAGS) $(LIBSBML_CFLAGS) $(WXWIDGETS_CXXFLAGS) $(PROTOBUF_CFLAGS) $(BOOST_CPPFLAGS) $(SUNDIALS_CFLAGS) $(CLIBSEDML_CFLAGS) $(CZMQ_CFLAGS) $(ZEROMQ_CFLAGS) $(XML_CPPFLAGS)
 libflintxx_la_LIBADD = libflint.la libsqlite3.la $(SOSLIB_LIBS) $(LIBSBML_LIBS) $(WXWIDGETS_LIBS) $(PROTOBUF_LIBS) $(BOOST_FILESYSTEM_LIBS) $(BOOST_SYSTEM_LIBS) $(SUNDIALS_LIBS) $(CLIBSEDML_LIBS) $(CZMQ_LIBS) $(ZEROMQ_LIBS) $(XML_LIBS)
 libflintxx_la_LDFLAGS = -no-undefined $(BOOST_FILESYSTEM_LDFLAGS) $(BOOST_SYSTEM_LDFLAGS)
 libflintxx_la_SOURCES = \
@@ -247,7 +247,7 @@ flint_exec_LDFLAGS = $(BOOST_FILESYSTEM_LDFLAGS) $(BOOST_SYSTEM_LDFLAGS)
 flint_exec_LDADD = libflintxx.la libflint.la libsqlite3.la $(PROTOBUF_LIBS) $(BOOST_FILESYSTEM_LIBS) $(BOOST_SYSTEM_LIBS)
 flint_exec_SOURCES = flint-exec-main.cc
 
-flint_lodbg_CPPFLAGS = $(PROTOBUF_CFLAGS) $(BOOST_CPPFLAGS) $(CZMQ_CFLAGS)
+flint_lodbg_CPPFLAGS = -I$(srcdir)/include $(PROTOBUF_CFLAGS) $(BOOST_CPPFLAGS) $(CZMQ_CFLAGS)
 flint_lodbg_LDFLAGS = $(BOOST_FILESYSTEM_LDFLAGS) $(BOOST_SYSTEM_LDFLAGS)
 flint_lodbg_LDADD = libflintxx.la libflint.la libsqlite3.la $(PROTOBUF_LIBS) $(BOOST_FILESYSTEM_LIBS) $(BOOST_SYSTEM_LIBS) $(CZMQ_LIBS)
 flint_lodbg_SOURCES = flint-lodbg-main.cc
@@ -257,12 +257,12 @@ flint_run_LDFLAGS = $(BOOST_FILESYSTEM_LDFLAGS) $(BOOST_SYSTEM_LDFLAGS)
 flint_run_LDADD = libflintxx.la libflint.la libsqlite3.la $(PROTOBUF_LIBS) $(BOOST_FILESYSTEM_LIBS) $(BOOST_SYSTEM_LIBS)
 flint_run_SOURCES = flint-run-main.cc
 
-flint_tr_CPPFLAGS = $(PROTOBUF_CFLAGS) $(BOOST_CPPFLAGS)
+flint_tr_CPPFLAGS = -I$(srcdir)/include $(PROTOBUF_CFLAGS) $(BOOST_CPPFLAGS)
 flint_tr_LDFLAGS = $(BOOST_FILESYSTEM_LDFLAGS) $(BOOST_SYSTEM_LDFLAGS)
 flint_tr_LDADD = libflintxx.la libflint.la libsqlite3.la $(PROTOBUF_LIBS) $(BOOST_FILESYSTEM_LIBS) $(BOOST_SYSTEM_LIBS)
 flint_tr_SOURCES = flint-tr-main.cc
 
-flint_CPPFLAGS = $(WXWIDGETS_CXXFLAGS) $(LIBMICROHTTPD_CFLAGS) $(PROTOBUF_CFLAGS) $(BOOST_CPPFLAGS)
+flint_CPPFLAGS = -I$(srcdir)/include $(WXWIDGETS_CXXFLAGS) $(LIBMICROHTTPD_CFLAGS) $(PROTOBUF_CFLAGS) $(BOOST_CPPFLAGS)
 flint_LDFLAGS = $(BOOST_FILESYSTEM_LDFLAGS) $(BOOST_SYSTEM_LDFLAGS)
 flint_LDADD = libflint2.a libflintxx.la libflint.la libsqlite3.la $(WXWIDGETS_LIBS) $(LIBMICROHTTPD_LIBS) $(PROTOBUF_LIBS) $(BOOST_FILESYSTEM_LIBS) $(BOOST_SYSTEM_LIBS)
 flint_SOURCES = \
@@ -290,7 +290,7 @@ flint_SOURCES = \
     gui/task.cc \
     gui/view-frame.cc
 
-isd2csv_CPPFLAGS = $(BOOST_CPPFLAGS)
+isd2csv_CPPFLAGS = -I$(srcdir)/include $(BOOST_CPPFLAGS)
 isd2csv_LDFLAGS = $(BOOST_SYSTEM_LDFLAGS) $(BOOST_PROGRAM_OPTIONS_LDFLAGS)
 isd2csv_LDADD = libflintxx.la $(BOOST_SYSTEM_LIBS) $(BOOST_PROGRAM_OPTIONS_LIBS)
 isd2csv_SOURCES = isd2csv-main.cc
@@ -322,7 +322,7 @@ isdmerge_LDFLAGS = $(BOOST_PROGRAM_OPTIONS_LDFLAGS)
 isdmerge_LDADD = $(BOOST_PROGRAM_OPTIONS_LIBS)
 isdmerge_SOURCES = isdmerge-main.cpp
 
-isdplot_CPPFLAGS = $(BOOST_CPPFLAGS)
+isdplot_CPPFLAGS = -I$(srcdir)/include $(BOOST_CPPFLAGS)
 isdplot_LDFLAGS = $(BOOST_FILESYSTEM_LDFLAGS) $(BOOST_SYSTEM_LDFLAGS) $(BOOST_PROGRAM_OPTIONS_LDFLAGS)
 isdplot_LDADD = libflintxx.la libflint.la libsqlite3.la $(BOOST_FILESYSTEM_LIBS) $(BOOST_SYSTEM_LIBS) $(BOOST_PROGRAM_OPTIONS_LIBS)
 isdplot_SOURCES = isdplot-main.cc
@@ -333,7 +333,7 @@ isdrand_SOURCES = isdrand-main.c
 isdsort_CPPFLAGS = $(BOOST_CPPFLAGS)
 isdsort_SOURCES = isdsort-main.cc
 
-isdstrip_CPPFLAGS = $(BOOST_CPPFLAGS)
+isdstrip_CPPFLAGS = -I$(srcdir)/include $(BOOST_CPPFLAGS)
 isdstrip_LDFLAGS = $(BOOST_FILESYSTEM_LDFLAGS) $(BOOST_SYSTEM_LDFLAGS) $(BOOST_PROGRAM_OPTIONS_LDFLAGS)
 isdstrip_LDADD = libflintxx.la libflint.la libsqlite3.la $(BOOST_FILESYSTEM_LIBS) $(BOOST_SYSTEM_LIBS) $(BOOST_PROGRAM_OPTIONS_LIBS)
 isdstrip_SOURCES = isdstrip-main.cc
@@ -343,11 +343,11 @@ isdwc_LDFLAGS = $(BOOST_PROGRAM_OPTIONS_LDFLAGS)
 isdwc_LDADD = $(BOOST_PROGRAM_OPTIONS_LIBS)
 isdwc_SOURCES = isdwc-main.cc
 
-fppp_isd_CPPFLAGS = $(BOOST_CPPFLAGS) $(CZMQ_CFLAGS)
+fppp_isd_CPPFLAGS = -I$(srcdir)/include $(BOOST_CPPFLAGS) $(CZMQ_CFLAGS)
 fppp_isd_LDADD = libflintxx.la libflint.la libsqlite3.la $(CZMQ_LIBS)
 fppp_isd_SOURCES = fppp/isd/main.cc
 
-fppp_rtm_CPPFLAGS = $(BOOST_CPPFLAGS) $(CZMQ_CFLAGS) $(ZEROMQ_CFLAGS)
+fppp_rtm_CPPFLAGS = -I$(srcdir)/include $(BOOST_CPPFLAGS) $(CZMQ_CFLAGS) $(ZEROMQ_CFLAGS)
 fppp_rtm_LDADD = libflintxx.la libflint.la libsqlite3.la $(CZMQ_LIBS)
 fppp_rtm_SOURCES = fppp/rtm/main.cc
 

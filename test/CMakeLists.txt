@@ -1,5 +1,6 @@
 enable_testing()
 
+include_directories("../src/include")
 include_directories("../src")
 include_directories(".")
 
