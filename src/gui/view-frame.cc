@@ -61,6 +61,7 @@ ViewFrame::ViewFrame(TaskFrame *parent, wxDataViewListCtrl &job_list)
 	data_view_->AppendTextColumn("Name", wxDATAVIEW_CELL_INERT, 80, wxALIGN_LEFT, wxDATAVIEW_COL_RESIZABLE|wxDATAVIEW_COL_SORTABLE);
 	data_view_->AppendTextColumn("UUID", wxDATAVIEW_CELL_INERT, 300, wxALIGN_LEFT, wxDATAVIEW_COL_RESIZABLE|wxDATAVIEW_COL_SORTABLE);
 	data_view_->AppendTextColumn("Label", wxDATAVIEW_CELL_INERT, 80, wxALIGN_LEFT, wxDATAVIEW_COL_RESIZABLE|wxDATAVIEW_COL_SORTABLE);
+	data_view_->AppendTextColumn("Title", wxDATAVIEW_CELL_EDITABLE, 300, wxALIGN_LEFT, wxDATAVIEW_COL_RESIZABLE|wxDATAVIEW_COL_SORTABLE);
 
 	LoadVariables();
 
