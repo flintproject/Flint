@@ -128,6 +128,7 @@ bool App::OnInit()
 		return false;
 	}
 
+	SetAppName("flint2");
 	SetAppDisplayName("Flint");
 	SetVendorDisplayName("Flint project");
 
