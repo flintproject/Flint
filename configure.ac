@@ -37,17 +37,6 @@ AS_IF([test "x$with_protoc" = "x"],[AC_SUBST([PROTOC_EXECUTABLE],[protoc])],
       [AC_MSG_ERROR([could not find protoc, please specify its right location by --with-protoc])])
 
 # Checks for libraries.
-AC_ARG_ENABLE(thread,
-      [AS_HELP_STRING([--enable-thread],
-        [Enable thread support. Available values: posix, windows.
-         Default: no])],
-      [],
-      [enable_thread=no])
-AS_IF([test "x$enable_thread" = "xposix"],[AX_PTHREAD])
-AS_IF([test "x$enable_thread" = "xposix"],[AC_DEFINE([USING_PTHREAD],[1],['Using POSIX Threads (pthreads)'])],
-      [test "x$enable_thread" = "xwindows"],[AC_DEFINE([USING_WINTHREAD],[1],['Using Windows Threads'])],
-      [test "x$enable_thread" != "xno"],[AC_MSG_ERROR([unknown type of thread: $enable_thread])])
-
 BOOST_REQUIRE([1.66.0])
 BOOST_ASIO
 BOOST_CHRONO
