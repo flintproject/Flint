@@ -187,10 +187,10 @@ OutputVariablesWindow::OutputVariablesWindow(wxWindow *parent, const Document *d
 
 	// sizers
 	auto hbox0 = new wxBoxSizer(wxHORIZONTAL);
-	hbox0->Add(new wxStaticText(this, wxID_ANY, "Filter Pattern:"), 0, wxALIGN_CENTER_VERTICAL);
+	hbox0->Add(new wxStaticText(this, wxID_ANY, "Filter Pattern: "), 0, wxALIGN_CENTER_VERTICAL);
 	hbox0->Add(choice_pattern_, 0, wxALIGN_CENTER_VERTICAL);
 	auto hbox1 = new wxBoxSizer(wxHORIZONTAL);
-	hbox1->Add(new wxStaticText(this, wxID_ANY, "Filter Column:"), 0, wxALIGN_CENTER_VERTICAL);
+	hbox1->Add(new wxStaticText(this, wxID_ANY, "Filter Column: "), 0, wxALIGN_CENTER_VERTICAL);
 	hbox1->Add(choice_column_, 0, wxALIGN_CENTER_VERTICAL);
 	auto vbox = new wxBoxSizer(wxVERTICAL);
 	vbox->Add(enabled_variables_, 1 /* vertically stretchable */, wxEXPAND);
