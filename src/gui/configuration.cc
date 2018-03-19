@@ -95,11 +95,6 @@ void Configuration::GetOutputVariables(const Document *doc,
 		} catch (const std::regex_error &e) {
 			// ignore columns if given regexp is invalid
 		}
-	} else if (filter_pattern == "Wildcard") {
-		for (auto &column : doc->var()) {
-			// TODO
-			v->push_back(column);
-		}
 	} else { // Fixed string
 		for (auto &column : doc->var()) {
 			auto found = GetTargetString(column, filter_column).find(filter_value);

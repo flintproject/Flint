@@ -79,8 +79,8 @@ bool Document::Load()
 	initial_config_.start = 0;
 	initial_config_.start_unit = 0;
 	initial_config_.granularity = 1;
-	initial_config_.filter_pattern = "Wildcard";
-	initial_config_.filter_value = "*";
+	initial_config_.filter_pattern = "Regular expression";
+	initial_config_.filter_value = ".+";
 
 	return (format_ != file::kPhml || LoadNc())
 		&& LoadParam()

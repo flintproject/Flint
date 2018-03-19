@@ -133,7 +133,7 @@ void GeneralSetttingsWindow::Write(Configuration *config) const
 
 namespace {
 
-const wxString choicesPattern[] = {"Regular expression", "Wildcard", "Fixed string"};
+const wxString choicesPattern[] = {"Regular expression", "Fixed string"};
 
 const std::array<wxString, 2> choicesColumnsCellml = {"Variable", "Component"};
 const std::array<wxString, 2> choicesColumnsPhml = {"Physical Quantity", "Module"};
