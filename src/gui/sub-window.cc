@@ -156,7 +156,7 @@ const std::array<wxString, 2> &GetChoices(const Document *doc)
 OutputVariablesWindow::OutputVariablesWindow(wxWindow *parent, const Document *doc)
 	: wxWindow(parent, wxID_ANY)
 	, doc_(doc)
-	, enabled_variables_(nullptr)
+	, enabled_variables_(new wxListView(this))
 	, choice_pattern_(new wxChoice(this,
 								   wxID_ANY,
 								   wxDefaultPosition,
@@ -171,23 +171,7 @@ OutputVariablesWindow::OutputVariablesWindow(wxWindow *parent, const Document *d
 								  2,
 								  GetChoices(doc).data()))
 {
-	long i;
-
 	// controls
-	auto availableVariables = new wxListView(this);
-	for (auto &column : GetChoices(doc))
-		availableVariables->AppendColumn(column);
-	i = 0;
-	for (auto &column : doc->var()) {
-		availableVariables->InsertItem(i, column.name());
-		availableVariables->SetItem(i, 1, column.track_name());
-		++i;
-	}
-	availableVariables->SetColumnWidth(0, wxLIST_AUTOSIZE_USEHEADER);
-	availableVariables->SetColumnWidth(1, wxLIST_AUTOSIZE);
-
-	auto vbox0 = new wxStaticBoxSizer(wxVERTICAL, this, "Enabled Variables");
-	enabled_variables_ = new wxListView(vbox0->GetStaticBox());
 	for (auto &column : GetChoices(doc))
 		enabled_variables_->AppendColumn(column);
 	Choose(doc->var());
@@ -202,7 +186,6 @@ OutputVariablesWindow::OutputVariablesWindow(wxWindow *parent, const Document *d
 	choice_column_->SetSelection(0);
 
 	// sizers
-	vbox0->Add(enabled_variables_, 1 /* vertically stretchable */, wxEXPAND);
 	auto hbox0 = new wxBoxSizer(wxHORIZONTAL);
 	hbox0->Add(new wxStaticText(this, wxID_ANY, "Filter Pattern:"), 0, wxALIGN_CENTER_VERTICAL);
 	hbox0->Add(choice_pattern_, 0, wxALIGN_CENTER_VERTICAL);
@@ -210,18 +193,11 @@ OutputVariablesWindow::OutputVariablesWindow(wxWindow *parent, const Document *d
 	hbox1->Add(new wxStaticText(this, wxID_ANY, "Filter Column:"), 0, wxALIGN_CENTER_VERTICAL);
 	hbox1->Add(choice_column_, 0, wxALIGN_CENTER_VERTICAL);
 	auto vbox = new wxBoxSizer(wxVERTICAL);
-	vbox->Add(vbox0, 1 /* vertically stretchable */, wxEXPAND);
+	vbox->Add(enabled_variables_, 1 /* vertically stretchable */, wxEXPAND);
 	vbox->Add(hbox0, 0, wxEXPAND);
 	vbox->Add(text_pattern_, 0, wxEXPAND);
 	vbox->Add(hbox1, 0, wxEXPAND);
-	auto topSizer = new wxBoxSizer(wxHORIZONTAL);
-	topSizer->Add(availableVariables,
-				  1, // horizontally stretchable
-				  wxEXPAND);
-	topSizer->Add(vbox,
-				  1, // horizontally stretchable
-				  wxEXPAND);
-	SetSizerAndFit(topSizer);
+	SetSizerAndFit(vbox);
 
 	choice_pattern_->Bind(wxEVT_CHOICE, &OutputVariablesWindow::OnChoice, this);
 	text_pattern_->Bind(wxEVT_TEXT, &OutputVariablesWindow::OnChoice, this);
