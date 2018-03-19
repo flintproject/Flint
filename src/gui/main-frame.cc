@@ -317,6 +317,7 @@ void MainFrame::OnOpen(wxCommandEvent &)
 								"",
 								"PHML files (*.phml;*.isml)|*.phml;*.isml"
 								"|SBML files (*.xml)|*.xml"
+								"|CellML files (*.cellml)|*.cellml"
 								"|All files (*.*)|*.*",
 								wxFD_OPEN|wxFD_FILE_MUST_EXIST);
 	if (openFileDialog.ShowModal() == wxID_CANCEL)
