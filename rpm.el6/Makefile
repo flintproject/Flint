@@ -118,18 +118,21 @@ endef
 
 define flint_expand_tar_gz
 var/$(1): src/$(2).tar.gz | var
+	-rm -rf $$@
 	-tar -C var -zxf $$<
 	touch $$@
 endef
 
 define flint_expand_tar_bz2
 var/$(1): src/$(2).tar.bz2 | var
+	-rm -rf $$@
 	tar -C var -jxf $$<
 	touch $$@
 endef
 
 define flint_unzip
 var/$(1): src/$(2).zip | var
+	-rm -rf $$@
 	(cd var && unzip -qq ../$$<)
 	touch $$@
 endef
@@ -229,6 +232,7 @@ $(eval $(call flint_expand_tar_gz,SBML_odeSolver-$(SOSLIB_VERSION),SBML_odeSolve
 $(eval $(call flint_setup_dir,soslib,SBML_odeSolver-$(SOSLIB_VERSION)))
 
 var/wxWidgets-$(WXWIDGETS_VERSION): src/wxWidgets-$(WXWIDGETS_VERSION).tar.bz2 ../external/wxWidgets-e5a1a29e77884c8617f1c23efb2f374743097d6f.patch | var
+	-rm -rf $@
 	tar -C var -jxf $<
 	patch -d var/wxWidgets-$(WXWIDGETS_VERSION) -p1 < ../external/wxWidgets-e5a1a29e77884c8617f1c23efb2f374743097d6f.patch
 	touch $@
