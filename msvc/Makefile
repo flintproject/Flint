@@ -54,10 +54,10 @@ tmp/clibsedml-$(CLIBSEDML_VERSION): src/clibsedml-$(CLIBSEDML_VERSION).tar.gz cl
 	patch -d var/clibsedml-$(CLIBSEDML_VERSION) -p1 < clibsedml-$(CLIBSEDML_VERSION).patch
 	touch $@
 
-tmp/czmq-$(CZMQ_VERSION): src/czmq-$(CZMQ_VERSION).tar.gz | tmp
+tmp/czmq-$(CZMQ_VERSION): src/czmq-$(CZMQ_VERSION).tar.gz czmq-$(CZMQ_VERSION).patch | tmp
 	-rm -rf var/czmq-$(CZMQ_VERSION)
 	tar -C var -zxf $<
-	patch var/czmq-$(CZMQ_VERSION)/Findlibzmq.cmake czmq-$(CZMQ_VERSION).patch
+	patch -d var/czmq-$(CZMQ_VERSION) -p1 < czmq-$(CZMQ_VERSION).patch
 	touch $@
 
 tmp/libsbml-$(LIBSBML_VERSION): src/libSBML-$(LIBSBML_VERSION)-core-src.zip | tmp
@@ -87,9 +87,10 @@ tmp/sundials-$(SUNDIALS_VERSION): src/sundials-$(SUNDIALS_VERSION).tar.gz sundia
 	patch -d var/sundials-$(SUNDIALS_VERSION) -p1 < sundials-$(SUNDIALS_VERSION).patch
 	touch $@
 
-tmp/zeromq-$(ZEROMQ_VERSION): src/zeromq-$(ZEROMQ_VERSION).tar.gz | tmp
+tmp/zeromq-$(ZEROMQ_VERSION): src/zeromq-$(ZEROMQ_VERSION).tar.gz zeromq-$(ZEROMQ_VERSION).patch | tmp
 	-rm -rf var/zeromq-$(ZEROMQ_VERSION)
 	tar -C var -zxf $<
+	patch -d var/zeromq-$(ZEROMQ_VERSION) -p0 < zeromq-$(ZEROMQ_VERSION).patch
 	touch $@
 
 tmp/libmicrohttpd-$(LIBMICROHTTPD_VERSION)-w32-bin: src/libmicrohttpd-$(LIBMICROHTTPD_VERSION)-w32-bin.zip | tmp

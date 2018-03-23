@@ -1,6 +1,21 @@
---- Findlibzmq.cmake.orig	2017-01-01 04:57:21.000000000 +0900
-+++ Findlibzmq.cmake	2017-06-13 09:50:56.496310700 +0900
-@@ -28,7 +28,7 @@
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index ed8f1082..f3742f23 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -608,7 +608,7 @@ add_custom_command(
+     TARGET  distclean
+ )
+ 
+-include(ClangFormat)
++#include(ClangFormat)
+ 
+ ########################################################################
+ # summary
+diff --git a/Findlibzmq.cmake b/Findlibzmq.cmake
+index 14dd79c4..3f23435a 100644
+--- a/Findlibzmq.cmake
++++ b/Findlibzmq.cmake
+@@ -28,7 +28,7 @@ find_path (
  
  find_library (
      LIBZMQ_LIBRARIES
