@@ -11,7 +11,7 @@ In order to build Flint, the following libraries are required:
   http://www.boost.org/
 - Ceres Solver 1.13
   http://ceres-solver.org/
-- CZMQ 4.1.0
+- CZMQ 4.1.1
   http://czmq.zeromq.org/
 - Protocol buffers 3.5.0
   https://developers.google.com/protocol-buffers/
