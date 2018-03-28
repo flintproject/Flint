@@ -1,7 +1,9 @@
-* Flint 2.0 (2018-XX-XX)
+* Flint 2.0 (2018-04-XX)
 
 ** Supported platforms
-   - Flint no longer depends on Java runtime environment.
+   - Windows: Windows 7, 8, and 10.
+   - macOS: OS X Mavericks (10.9) or later.
+   - Linux distributions such as Debian 9, RHEL/CentOS 6, and RHEL/CentOS 7.
 ** New features
    - New main program, formerly called flint2, supersedes the original one.
 ** Improvements
@@ -9,6 +11,11 @@
    - The windows installer refrains from adding Flint's folder to PATH.
    - Programs of Windows version run faster, thanks to switch from MinGW-w64
      to MSVC.
+** Major changes from Flint 1.9
+   - Flint no longer depends on Java runtime environment.
+   - Flint now calls Gnuplot to render line charts of simulation result;
+     you may have to install Gnuplot and must specify the path of its executable
+     with Flint's preference menu.
 
 * Flint 1.9 (2017-11-10)
 
