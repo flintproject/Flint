@@ -46,6 +46,7 @@ private:
 	void OnResume(wxCommandEvent &event);
 	void OnPreferences(wxCommandEvent &event);
 	void OnIdle(wxIdleEvent &event);
+	void OnCloseWindow(wxCloseEvent &event);
 
 	wxArrayString &input_files_;
 

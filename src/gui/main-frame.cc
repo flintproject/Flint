@@ -147,6 +147,7 @@ MainFrame::MainFrame(wxArrayString &input_files)
 	ResetControl();
 
 	// event handlers
+	Bind(wxEVT_CLOSE_WINDOW, &MainFrame::OnCloseWindow, this);
 	Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::OnOpen, this, wxID_OPEN);
 	Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::OnClose, this, wxID_CLOSE);
 	Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::OnAbout, this, wxID_ABOUT);
@@ -347,6 +348,12 @@ void MainFrame::OnClose(wxCommandEvent &)
 		item_export_to_c_->Enable(false);
 }
 
+void MainFrame::OnCloseWindow(wxCloseEvent &)
+{
+	history_.Save(*wxConfig::Get());
+	Destroy();
+}
+
 void MainFrame::OnAbout(wxCommandEvent &)
 {
 	wxAboutDialogInfo aboutInfo;
@@ -361,8 +368,7 @@ void MainFrame::OnAbout(wxCommandEvent &)
 
 void MainFrame::OnExit(wxCommandEvent &)
 {
-	history_.Save(*wxConfig::Get());
-	Close(true);
+	Close();
 }
 
 namespace {
