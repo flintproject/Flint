@@ -1,11 +1,11 @@
 #+TITLE: Procedure for creating new release of Flint
 
 * Package binaries
-** Collect md5 checksums
+** Collect SHA1 checksums
 * Tag git repository
 ** Branch for new minor version (if necessary)
 * Upload packages to Sourceforge
-** Check md5 checksums
+** Check SHA1 checksums
 * Update official site
 ** Revise index page
 ** Build documentation
