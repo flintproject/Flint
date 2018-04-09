@@ -1,4 +1,4 @@
-* Flint 2.0 (2018-04-XX)
+* Flint 2.0 (2018-04-09)
 
 ** Supported platforms
    - Windows: Windows 7, 8, and 10.
