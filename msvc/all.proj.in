@@ -75,9 +75,9 @@
   <Target Name='ceres-solver'
           Inputs='tmp\ceres-solver-$(CERES_VERSION)'
           Outputs='tmp\ceres-solver-$(CERES_VERSION).installed'>
-    <MakeDir Directories='$(VARDIR)\ceres-solver-$(CERES_VERSION)\build'/>
-    <Exec Command='cmake $(CMakeGeneratorOption) -DCMAKE_INSTALL_PREFIX="$(PREFIX)" -DEIGEN_INCLUDE_DIR="$(EIGEN_INCLUDE_DIR)" -DMINIGLOG=ON -DBUILD_SHARED_LIBS=ON ..' WorkingDirectory='$(VARDIR)\ceres-solver-$(CERES_VERSION)\build'/>
-    <Exec Command='cmake --build "$(VARDIR)\ceres-solver-$(CERES_VERSION)\build" --target install --config Release --clean-first'/>
+    <MakeDir Directories='$(VARDIR)\ceres-solver-$(CERES_VERSION)\build.d'/>
+    <Exec Command='cmake $(CMakeGeneratorOption) -DCMAKE_INSTALL_PREFIX="$(PREFIX)" -DEIGEN_INCLUDE_DIR="$(EIGEN_INCLUDE_DIR)" -DMINIGLOG=ON -DBUILD_SHARED_LIBS=ON ..' WorkingDirectory='$(VARDIR)\ceres-solver-$(CERES_VERSION)\build.d'/>
+    <Exec Command='cmake --build "$(VARDIR)\ceres-solver-$(CERES_VERSION)\build.d" --target install --config Release --clean-first'/>
     <Touch AlwaysCreate='true' Files='tmp\ceres-solver-$(CERES_VERSION).installed'/>
   </Target>
 
