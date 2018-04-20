@@ -16,3 +16,4 @@
   doc/flint-user-guide.tex
   src/gui/main-frame.cc
   version.mk
+  xcode/Info.plist
