@@ -335,7 +335,7 @@ $(APP)/Contents/Resources/third-party-licenses.txt: tmp/ceres-solver-$(CERES_VER
 	cat var/zeromq-$(ZEROMQ_VERSION)/COPYING.LESSER >> $@
 
 flint-component.pkg: component.plist $(foreach d,$(BOOST_DYLIBS),$(call flint_frameworks_boost_dylib_name,$(d))) $(foreach d,$(DYLIBS) $(FLINT_DYLIBS),$(call flint_frameworks_dylib_name,$(d))) $(foreach d,$(SUNDIALS_DYLIBS),$(call flint_frameworks_sundials_dylib_name,$(d))) $(foreach p,$(PROGRAMS),$(call flint_macos_program_name,$(p))) $(APP)/Contents/Resources/third-party-licenses.txt $(APP)/Contents/Resources/flint.icns $(APP)/Contents/Info.plist $(APP)/Contents/PkgInfo
-	pkgbuild --quiet --identifier jp.oist.flint --component-plist $< --root root $@
+	pkgbuild --quiet --identifier jp.physiome.flint --component-plist $< --root root $@
 
 Flint-$(VERSION) resources:
 	install -d $@

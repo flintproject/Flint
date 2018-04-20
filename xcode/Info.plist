@@ -7,7 +7,7 @@
 <key>CFBundleDisplayName</key>
 <string>Flint</string>
 <key>CFBundleIdentifier</key>
-<string>jp.oist.flint</string>
+<string>jp.physiome.flint</string>
 <key>CFBundleVersion</key>
 <string>2.0.0</string>
 <key>CFBundlePackageType</key>

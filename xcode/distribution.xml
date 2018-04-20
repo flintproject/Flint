@@ -10,12 +10,12 @@
   </volume-check>
   <choices-outline>
     <line choice="default">
-      <line choice="jp.oist.flint"/>
+      <line choice="jp.physiome.flint"/>
     </line>
   </choices-outline>
   <choice id="default"/>
-  <choice id="jp.oist.flint" visible="false">
-    <pkg-ref id="jp.oist.flint"/>
+  <choice id="jp.physiome.flint" visible="false">
+    <pkg-ref id="jp.physiome.flint"/>
   </choice>
-  <pkg-ref id="jp.oist.flint" version="0" onConclusion="none">flint-component.pkg</pkg-ref>
+  <pkg-ref id="jp.physiome.flint" version="0" onConclusion="none">flint-component.pkg</pkg-ref>
 </installer-gui-script>
