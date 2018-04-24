@@ -22,6 +22,7 @@
 #include "gui/filename.h"
 #include "gui/gnuplot.h"
 #include "gui/job.h"
+#include "gui/script-frame.h"
 #include "gui/task-frame.h"
 #include "gui/task.h"
 #include "isdf/isdf.h"
@@ -52,6 +53,8 @@ ViewFrame::ViewFrame(TaskFrame *parent, wxDataViewListCtrl &job_list)
 	, log_x_(new wxCheckBox(this, wxID_ANY, "Log X"))
 	, log_y1_(new wxCheckBox(this, wxID_ANY, "Log Y1"))
 	, log_y2_(new wxCheckBox(this, wxID_ANY, "Log Y2"))
+	, show_script_(new wxCheckBox(this, wxID_ANY, "Show gnuplot script"))
+	, script_frame_(new ScriptFrame(this))
 	, num_variables_(0)
 	, skip_(0)
 {
@@ -72,6 +75,7 @@ ViewFrame::ViewFrame(TaskFrame *parent, wxDataViewListCtrl &job_list)
 	hbox->Add(log_x_);
 	hbox->Add(log_y1_);
 	hbox->Add(log_y2_);
+	hbox->Add(show_script_);
 	auto vbox = new wxBoxSizer(wxVERTICAL);
 	vbox->Add(data_view_, 1 /* vertically stretchable */, wxEXPAND /* horizontally stretchable */);
 	vbox->Add(hbox);
@@ -82,6 +86,7 @@ ViewFrame::ViewFrame(TaskFrame *parent, wxDataViewListCtrl &job_list)
 	log_x_->Bind(wxEVT_CHECKBOX, &ViewFrame::OnCheckBox, this);
 	log_y1_->Bind(wxEVT_CHECKBOX, &ViewFrame::OnCheckBox, this);
 	log_y2_->Bind(wxEVT_CHECKBOX, &ViewFrame::OnCheckBox, this);
+	show_script_->Bind(wxEVT_CHECKBOX, &ViewFrame::OnShowScript, this);
 	Bind(wxEVT_DATAVIEW_ITEM_VALUE_CHANGED, &ViewFrame::OnItemValueChanged, this);
 	Bind(wxEVT_CLOSE_WINDOW, &ViewFrame::OnClose, this);
 }
@@ -156,11 +161,26 @@ void ViewFrame::Plot()
 		}
 	}
 	PlotLineGraph(option, dgo_.get(), pipe_);
+
+	script_frame_->Clear();
+	std::ostream os(script_frame_->GetTextCtrl());
+	PlotLineGraph(option, dgo_.get(), os);
+	os.flush();
+}
+
+void ViewFrame::UncheckShowScript()
+{
+	show_script_->SetValue(false);
 }
 
 void ViewFrame::OnCheckBox(wxCommandEvent &)
 {
 	Plot();
+}
+
+void ViewFrame::OnShowScript(wxCommandEvent &)
+{
+	script_frame_->Show(show_script_->IsChecked());
 }
 
 void ViewFrame::OnItemValueChanged(wxDataViewEvent &event)
@@ -201,6 +221,7 @@ void ViewFrame::OnItemValueChanged(wxDataViewEvent &event)
 
 void ViewFrame::OnClose(wxCloseEvent &)
 {
+	script_frame_->Show(false);
 	Show(false);
 }
 

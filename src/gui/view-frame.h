@@ -19,6 +19,7 @@ namespace gui {
 
 struct DpsGraphOption;
 struct Job;
+class ScriptFrame;
 class TaskFrame;
 
 class ViewFrame : public wxFrame {
@@ -27,9 +28,11 @@ public:
 	~ViewFrame();
 
 	void Plot();
+	void UncheckShowScript();
 
 private:
 	void OnCheckBox(wxCommandEvent &event);
+	void OnShowScript(wxCommandEvent &event);
 	void OnItemValueChanged(wxDataViewEvent &event);
 	void OnClose(wxCloseEvent &event);
 
@@ -41,6 +44,8 @@ private:
 	wxCheckBox *log_x_;
 	wxCheckBox *log_y1_;
 	wxCheckBox *log_y2_;
+	wxCheckBox *show_script_;
+	ScriptFrame *script_frame_;
 	unsigned int num_variables_;
 	unsigned int skip_;
 	std::unique_ptr<DpsGraphOption> dgo_;

@@ -280,6 +280,7 @@ flint_SOURCES = \
     gui/phsp-editor-dialog.cc \
     gui/phsp.cc \
     gui/pref-page-general.cc \
+    gui/script-frame.cc \
     gui/sedml.cc \
     gui/sim-window.cc \
     gui/simulation.cc \
