@@ -22,8 +22,10 @@ public:
 
 private:
 	void OnClose(wxCloseEvent &event);
+	void OnSave(wxCommandEvent &event);
 
 	wxTextCtrl *script_text_;
+	wxButton *save_;
 };
 
 }
