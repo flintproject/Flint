@@ -200,8 +200,8 @@ tmp/$(BOOST_UNDERSCORE).installed: tmp/$(BOOST_UNDERSCORE)
 	touch $@
 
 tmp/ceres-solver-$(CERES_VERSION).installed: tmp/ceres-solver-$(CERES_VERSION)
-	install -d var/ceres-solver-$(CERES_VERSION)/build
-	(cd var/ceres-solver-$(CERES_VERSION)/build && export MACOSX_DEPLOYMENT_TARGET=10.9 && CC='clang' CXX='clang++' CFLAGS='-arch x86_64 -mmacosx-version-min=10.9' CXXFLAGS='-std=c++11 -stdlib=libc++ -arch x86_64 -mmacosx-version-min=10.9' LDFLAGS='-stdlib=libc++ -arch x86_64 -mmacosx-version-min=10.9' cmake -DCMAKE_INSTALL_PREFIX=$(PREFIX) -DEIGEN_INCLUDE_DIR=$(abspath ../include) $(CERES_CMAKE_OPTIONS) .. && $(MAKE) all install)
+	install -d var/ceres-solver-$(CERES_VERSION)/build.dir
+	(cd var/ceres-solver-$(CERES_VERSION)/build.dir && export MACOSX_DEPLOYMENT_TARGET=10.9 && CC='clang' CXX='clang++' CFLAGS='-arch x86_64 -mmacosx-version-min=10.9' CXXFLAGS='-std=c++11 -stdlib=libc++ -arch x86_64 -mmacosx-version-min=10.9' LDFLAGS='-stdlib=libc++ -arch x86_64 -mmacosx-version-min=10.9' cmake -DCMAKE_INSTALL_PREFIX=$(PREFIX) -DEIGEN_INCLUDE_DIR=$(abspath ../include) $(CERES_CMAKE_OPTIONS) .. && $(MAKE) all install)
 	touch $@
 
 tmp/clibsedml-$(CLIBSEDML_VERSION).installed: tmp/clibsedml-$(CLIBSEDML_VERSION) tmp/libxml2-$(LIBXML2_VERSION).installed
