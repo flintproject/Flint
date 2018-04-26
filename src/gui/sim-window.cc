@@ -88,7 +88,7 @@ void SimWindow::OnThreadUpdate(wxThreadEvent &)
 	auto *main_frame = wxDynamicCast(GetParent(), MainFrame);
 
 	if (result_)
-		main_frame->SetStatusText(wxString::Format("Job %d finished successfully.", sim_->id));
+		main_frame->SetStatusText(wxString::Format("Job %d finished successfully", sim_->id));
 	else
 		wxLogError("simulation failed: %s", ec_.Get());
 

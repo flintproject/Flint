@@ -565,6 +565,7 @@ void MainFrame::OnRun(wxCommandEvent &)
 
 	arg_.paused = false;
 	MakePauseAvailable();
+	SetStatusText(wxString::Format("Job %d started", sim->id));
 }
 
 void MainFrame::OnPause(wxCommandEvent &)
