@@ -1,3 +1,8 @@
+* Flint 2.1 (2018-10-XX)
+
+** New features
+- Added a window to show and save the gnuplot script plotting line chart.
+
 * Flint 2.0 (2018-04-09)
 
 ** Supported platforms
