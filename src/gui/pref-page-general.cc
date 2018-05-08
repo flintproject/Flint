@@ -8,33 +8,56 @@
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wcast-qual"
 #include <wx/filepicker.h>
+#include <wx/spinctrl.h>
 #include <wx/wx.h>
 #pragma GCC diagnostic pop
 
 #include "gui/app.h"
+#include "gui/preference.h"
 
 namespace flint {
 namespace gui {
 
-PrefPageGeneral::PrefPageGeneral(wxString &gnuplot_executable)
+PrefPageGeneral::PrefPageGeneral(Preference &preference)
 	: wxStockPreferencesPage(wxStockPreferencesPage::Kind_General)
-	, gnuplot_executable_(gnuplot_executable)
+	, preference_(preference)
 {}
 
 wxWindow *PrefPageGeneral::CreateWindow(wxWindow *parent)
 {
 	auto panel = new wxPanel(parent);
+
+	auto box_c = new wxStaticBoxSizer(wxHORIZONTAL, panel, "Concurrency hint");
+	auto ctrl_c = new wxSpinCtrl(box_c->GetStaticBox(),
+								 wxID_ANY,
+								 wxString::Format("%i", preference_.concurrency),
+								 wxDefaultPosition,
+								 wxDefaultSize,
+								 wxSP_ARROW_KEYS|wxALIGN_RIGHT,
+								 1,
+								 1000,
+								 1);
+	auto text_c = new wxStaticText(box_c->GetStaticBox(),
+								   wxID_ANY,
+								   "The number of concurrent threads:");
+	box_c->Add(text_c, 0 /* horizontally unstretchable */, wxALIGN_CENTER_VERTICAL);
+	box_c->Add(ctrl_c, 1 /* horizontally stretchable */, wxALIGN_CENTER_VERTICAL);
+
 	auto box = new wxStaticBoxSizer(wxHORIZONTAL, panel, "Plotter");
 	auto ctrl = new wxFilePickerCtrl(box->GetStaticBox(),
 									 wxID_ANY,
-									 gnuplot_executable_,
+									 preference_.gnuplot_executable,
 									 "gnuplot");
 	auto text = new wxStaticText(box->GetStaticBox(),
 								 wxID_ANY,
-								 "gnuplot's executable:");
+								 "Gnuplot executable:");
 	box->Add(text, 0 /* horizontally unstretchable */, wxALIGN_CENTER_VERTICAL);
 	box->Add(ctrl, 1 /* horizontally stretchable */, wxALIGN_CENTER_VERTICAL);
-	panel->SetSizerAndFit(box);
+
+	auto vbox = new wxBoxSizer(wxVERTICAL);
+	vbox->Add(box_c, 0, wxEXPAND /* horizontally stretchable */);
+	vbox->Add(box, 0, wxEXPAND /* horizontally stretchable */);
+	panel->SetSizerAndFit(vbox);
 
 	// events
 	ctrl->Bind(wxEVT_FILEPICKER_CHANGED, &App::OnGnuplotExecutable, &wxGetApp());

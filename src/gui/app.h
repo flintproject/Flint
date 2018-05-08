@@ -19,6 +19,7 @@ namespace flint {
 namespace gui {
 
 class Httpd;
+class Preference;
 
 class App : public wxApp
 {
@@ -37,7 +38,7 @@ public:
 private:
 	wxSingleInstanceChecker *checker_;
 	wxPreferencesEditor *pref_editor_;
-	wxString gnuplot_executable_;
+	std::unique_ptr<Preference> preference_;
 	wxArrayString input_files_;
 	std::unique_ptr<Httpd> httpd_;
 };

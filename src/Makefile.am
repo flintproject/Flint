@@ -279,6 +279,7 @@ flint_SOURCES = \
     gui/param-tree.cc \
     gui/phsp-editor-dialog.cc \
     gui/phsp.cc \
+    gui/preference.cc \
     gui/pref-page-general.cc \
     gui/script-frame.cc \
     gui/sedml.cc \

@@ -19,6 +19,7 @@
 #include "gui/httpd.h"
 #include "gui/main-frame.h"
 #include "gui/pref-page-general.h"
+#include "gui/preference.h"
 #include "run.h"
 
 #include <cstdlib>
@@ -34,7 +35,7 @@ namespace {
 class PersistentApp : public wxPersistentObject
 {
 public:
-	PersistentApp(App *, wxString &gnuplot_executable);
+	PersistentApp(App *, Preference &preference);
 
 	virtual void Save() const override;
 	virtual bool Restore() override;
@@ -42,23 +43,23 @@ public:
 	virtual wxString GetName() const override;
 
 private:
-	wxString &gnuplot_executable_;
+	Preference &preference_;
 };
 
-PersistentApp::PersistentApp(App *obj, wxString &gnuplot_executable)
+PersistentApp::PersistentApp(App *obj, Preference &preference)
 	: wxPersistentObject(obj)
-	, gnuplot_executable_(gnuplot_executable)
+	, preference_(preference)
 {
 }
 
 void PersistentApp::Save() const
 {
-	SaveValue("gnuplot_executable", gnuplot_executable_);
+	SaveValue("gnuplot_executable", preference_.gnuplot_executable);
 }
 
 bool PersistentApp::Restore()
 {
-	return RestoreValue("gnuplot_executable", &gnuplot_executable_);
+	return RestoreValue("gnuplot_executable", &preference_.gnuplot_executable);
 }
 
 wxString PersistentApp::GetKind() const
@@ -132,7 +133,9 @@ bool App::OnInit()
 	SetAppDisplayName("Flint");
 	SetVendorDisplayName("Flint project");
 
-	wxPersistenceManager::Get().RegisterAndRestore(this, new PersistentApp(this, gnuplot_executable_));
+	preference_.reset(new Preference);
+
+	wxPersistenceManager::Get().RegisterAndRestore(this, new PersistentApp(this, *preference_));
 
 	auto fileName = GetFlintDirectory();
 	fileName.Rmdir(wxPATH_RMDIR_RECURSIVE); // clean up working directory at first
@@ -222,7 +225,7 @@ int App::OnExit()
 
 boost::filesystem::path App::GetGnuplotExecutable() const
 {
-	boost::filesystem::path p(gnuplot_executable_.ToStdString());
+	boost::filesystem::path p(preference_->gnuplot_executable.ToStdString());
 	if (p.empty()) {
 		// search executable from PATH
 		p = boost::process::search_path("gnuplot");
@@ -232,14 +235,14 @@ boost::filesystem::path App::GetGnuplotExecutable() const
 
 void App::OnGnuplotExecutable(wxFileDirPickerEvent &event)
 {
-	gnuplot_executable_ = event.GetPath();
+	preference_->gnuplot_executable = event.GetPath();
 }
 
 void App::ShowPreferencesEditor(wxWindow *parent)
 {
 	if (!pref_editor_) {
 		pref_editor_ = new wxPreferencesEditor;
-		pref_editor_->AddPage(new PrefPageGeneral(gnuplot_executable_));
+		pref_editor_->AddPage(new PrefPageGeneral(*preference_));
 	}
 	pref_editor_->Show(parent);
 }

@@ -10,14 +10,16 @@
 namespace flint {
 namespace gui {
 
+class Preference;
+
 class PrefPageGeneral : public wxStockPreferencesPage {
 public:
-	explicit PrefPageGeneral(wxString &gnuplot_executable);
+	explicit PrefPageGeneral(Preference &preference);
 
 	virtual wxWindow *CreateWindow(wxWindow *parent) override;
 
 private:
-	wxString &gnuplot_executable_;
+	Preference &preference_;
 };
 
 }
