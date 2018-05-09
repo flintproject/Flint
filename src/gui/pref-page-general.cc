@@ -60,6 +60,7 @@ wxWindow *PrefPageGeneral::CreateWindow(wxWindow *parent)
 	panel->SetSizerAndFit(vbox);
 
 	// events
+	ctrl_c->Bind(wxEVT_SPINCTRL, &App::OnConcurrency, &wxGetApp());
 	ctrl->Bind(wxEVT_FILEPICKER_CHANGED, &App::OnGnuplotExecutable, &wxGetApp());
 
 	return panel;

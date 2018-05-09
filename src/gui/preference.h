@@ -12,7 +12,7 @@ namespace gui {
 
 struct Preference
 {
-	unsigned int concurrency;
+	int concurrency; // should be non-negative
 	wxString gnuplot_executable;
 
 	Preference();

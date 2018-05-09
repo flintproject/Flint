@@ -7,7 +7,7 @@ namespace flint {
 namespace gui {
 
 Preference::Preference()
-	: concurrency(std::thread::hardware_concurrency())
+	: concurrency(static_cast<int>(std::thread::hardware_concurrency()))
 {
 }
 

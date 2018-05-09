@@ -13,6 +13,7 @@
 #include <wx/filepicker.h>
 #include <wx/preferences.h>
 #include <wx/snglinst.h>
+#include <wx/spinbutt.h>
 #pragma GCC diagnostic pop
 
 namespace flint {
@@ -31,6 +32,7 @@ public:
 
 	boost::filesystem::path GetGnuplotExecutable() const;
 
+	void OnConcurrency(wxSpinEvent &event);
 	void OnGnuplotExecutable(wxFileDirPickerEvent &event);
 
 	void ShowPreferencesEditor(wxWindow *parent);

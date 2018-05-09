@@ -54,12 +54,15 @@ PersistentApp::PersistentApp(App *obj, Preference &preference)
 
 void PersistentApp::Save() const
 {
+	SaveValue("concurrency", preference_.concurrency);
 	SaveValue("gnuplot_executable", preference_.gnuplot_executable);
 }
 
 bool PersistentApp::Restore()
 {
-	return RestoreValue("gnuplot_executable", &preference_.gnuplot_executable);
+	bool r0 = RestoreValue("concurrency", &preference_.concurrency);
+	bool r1 = RestoreValue("gnuplot_executable", &preference_.gnuplot_executable);
+	return r0 && r1;
 }
 
 wxString PersistentApp::GetKind() const
@@ -231,6 +234,11 @@ boost::filesystem::path App::GetGnuplotExecutable() const
 		p = boost::process::search_path("gnuplot");
 	}
 	return p;
+}
+
+void App::OnConcurrency(wxSpinEvent &event)
+{
+	preference_->concurrency = event.GetPosition();
 }
 
 void App::OnGnuplotExecutable(wxFileDirPickerEvent &event)
