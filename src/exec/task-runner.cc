@@ -282,7 +282,7 @@ bool TaskRunner::Run()
 	char *addr = static_cast<char *>(task_->progress_mr.get_address());
 	auto reflect = [addr, n]{
 		// addr is 1-based
-		auto a = std::accumulate<char *, int64_t>(addr+1, addr+1+n, 0)/n;
+		auto a = std::accumulate<char *, int64_t>(addr+1, addr+1+n, 0)/n; // TODO: replace with C++17's std::reduce
 		assert(0 <= a && a <= 100);
 		*addr = static_cast<char>(a);
 	};
