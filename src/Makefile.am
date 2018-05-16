@@ -112,7 +112,6 @@ libflintxx_la_SOURCES = \
     exec/exec.cc \
     exec/job-runner.cc \
     exec/parameter.cc \
-    exec/progress.cc \
     exec/task-runner.cc \
     file/detect.cc \
     file/txt.cc \

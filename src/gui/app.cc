@@ -226,6 +226,11 @@ int App::OnExit()
 	return wxApp::OnExit();
 }
 
+int App::GetConcurrency() const
+{
+	return preference_->concurrency;
+}
+
 boost::filesystem::path App::GetGnuplotExecutable() const
 {
 	boost::filesystem::path p(preference_->gnuplot_executable.ToStdString());

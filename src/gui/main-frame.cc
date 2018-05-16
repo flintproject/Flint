@@ -563,6 +563,7 @@ void MainFrame::OnRun(wxCommandEvent &)
 	manager_.Update();
 	window->Start();
 
+	arg_.concurrency = wxGetApp().GetConcurrency();
 	arg_.paused = false;
 	MakePauseAvailable();
 	SetStatusText(wxString::Format("Job %d started", sim->id));

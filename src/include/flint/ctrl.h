@@ -10,6 +10,7 @@ namespace flint {
 namespace ctrl {
 
 struct Argument {
+	int concurrency; // hint for parallel computation
 	std::atomic<bool> paused;
 	std::mutex mutex;
 	std::condition_variable cv;

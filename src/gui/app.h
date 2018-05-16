@@ -30,6 +30,7 @@ public:
 	virtual bool OnCmdLineParsed(wxCmdLineParser &parser) override;
 	virtual int OnExit() override;
 
+	int GetConcurrency() const;
 	boost::filesystem::path GetGnuplotExecutable() const;
 
 	void OnConcurrency(wxSpinEvent &event);

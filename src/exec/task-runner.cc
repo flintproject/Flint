@@ -6,11 +6,14 @@
 #include "exec/task-runner.h"
 
 #include <cassert>
+#include <chrono>
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
 #include <iostream>
 #include <future>
+#include <numeric>
+#include <vector>
 
 #define BOOST_FILESYSTEM_NO_DEPRECATED
 #include <boost/filesystem/fstream.hpp>
@@ -28,7 +31,6 @@
 #include "exec.h"
 #include "exec/job-runner.h"
 #include "exec/parameter.h"
-#include "exec/progress.h"
 #include "filter.h"
 #include "filter/cutter.h"
 #include "flint/ls.h"
@@ -56,6 +58,9 @@ int CountParameterSamples(sqlite3 *db)
 	}
 	return sqlite3_column_int(sd.stmt(), 0);
 }
+
+const unsigned int kUnitInterval = 200;
+const unsigned int kMaxInterval = kUnitInterval << 5;
 
 }
 
@@ -273,21 +278,70 @@ bool TaskRunner::Run()
 	if (!layout::Generate(db_driver_->db(), generated_layout_))
 		return false;
 	std::vector<std::future<bool> > v;
+	size_t c = static_cast<size_t>((arg_ && arg_->concurrency > 0) ? arg_->concurrency : 1);
+	char *addr = static_cast<char *>(task_->progress_mr.get_address());
+	auto reflect = [addr, n]{
+		// addr is 1-based
+		auto a = std::accumulate<char *, int64_t>(addr+1, addr+1+n, 0)/n;
+		assert(0 <= a && a <= 100);
+		*addr = static_cast<char>(a);
+	};
+	bool generated_all = false;
+	unsigned int interval = kUnitInterval;
+	bool result = true;
 	do {
-		int job_id;
-		if (!job::Generate(db_driver_->db(), dir_, &job_id))
-			return false;
-		if (job_id == 0)
-			break; // all jobs has been generated
+		while (!generated_all && v.size() < c) {
+			int job_id;
+			if (!job::Generate(db_driver_->db(), dir_, &job_id))
+				return false;
+			if (job_id == 0) { // all jobs has been generated
+				generated_all = true;
+				break;
+			}
 
-		auto lmbd = [](TaskRunner *tr, int id){
-			JobRunner runner(tr, id);
-			return runner.Run();
-		};
-		v.emplace_back(std::async(std::launch::async, lmbd, this, job_id));
-	} while (!task_->IsCanceled()); // at least one job runs
-	assert(v.size() <= static_cast<size_t>(n));
-	return MonitorTaskProgress(v, &task_->progress_mr);
+			auto lmbd = [](TaskRunner *tr, int id){
+				JobRunner runner(tr, id);
+				return runner.Run();
+			};
+			v.emplace_back(std::async(std::launch::async, lmbd, this, job_id));
+		}
+
+		auto it = v.begin();
+		while (it != v.end()) {
+			auto &f = *it;
+			std::future_status s = f.wait_for(std::chrono::milliseconds(0));
+			switch (s) {
+			case std::future_status::deferred:
+				++it; // come back later
+				break;
+			case std::future_status::timeout:
+				++it;
+				break;
+			case std::future_status::ready:
+				if (!f.get())
+					result = false;
+				interval = 0;
+				it = v.erase(it);
+				break;
+			}
+		}
+
+		reflect();
+
+		if (interval == 0) {
+			interval = kUnitInterval;
+			if (generated_all && v.empty())
+				goto done;
+		} else {
+			// wait for a job finished
+			std::this_thread::sleep_for(std::chrono::milliseconds(interval));
+			if (interval < kMaxInterval)
+				interval <<= 1;
+		}
+	} while (!task_->IsCanceled());
+	reflect();
+ done:
+	return result;
 }
 
 }
