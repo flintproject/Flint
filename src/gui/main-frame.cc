@@ -28,6 +28,8 @@
 #include "gui/app.h"
 #include "gui/document.h"
 #include "gui/filename.h"
+#include "gui/phsp.h"
+#include "gui/sedml.h"
 #include "gui/sim-window.h"
 #include "gui/simulation.h"
 #include "gui/sub-window.h"
@@ -69,6 +71,7 @@ bool ModelFileDropTarget::OnDropFiles(wxCoord, wxCoord, const wxArrayString &fil
 }
 
 enum {
+	kIdSaveConfigAs,
 	kIdExportToC,
 	kIdRun,
 	kIdPause,
@@ -81,8 +84,6 @@ MainFrame::MainFrame(wxArrayString &input_files)
 	: wxFrame(nullptr, wxID_ANY, wxTheApp->GetAppDisplayName())
 	, input_files_(input_files)
 	, manager_(this)
-	, notebook_(nullptr)
-	, item_export_to_c_(nullptr)
 	, next_open_id_(1)
 	, next_simulation_id_(1)
 	, last_dir_(wxFileName::GetHomeDir())
@@ -91,6 +92,11 @@ MainFrame::MainFrame(wxArrayString &input_files)
 	auto menuFile = new wxMenu;
 	menuFile->Append(wxID_OPEN, "Open\tCTRL+O");
 	menuFile->Append(wxID_CLOSE, "Close\tCTRL+W");
+	menuFile->AppendSeparator();
+	item_save_config_ = menuFile->Append(wxID_SAVE, "Save configuration\tCTRL+S");
+	item_save_config_->Enable(false);
+	item_save_config_as_ = menuFile->Append(kIdSaveConfigAs, "Save configuration as...\tSHIFT+CTRL+S");
+	item_save_config_as_->Enable(false);
 	menuFile->AppendSeparator();
 	item_export_to_c_ = menuFile->Append(kIdExportToC, "Export to C");
 	item_export_to_c_->Enable(false);
@@ -152,6 +158,8 @@ MainFrame::MainFrame(wxArrayString &input_files)
 	Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::OnClose, this, wxID_CLOSE);
 	Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::OnAbout, this, wxID_ABOUT);
 	Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::OnExit, this, wxID_EXIT);
+	Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::OnSaveConfig, this, wxID_SAVE);
+	Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::OnSaveConfigAs, this, kIdSaveConfigAs);
 	Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::OnExportToC, this, kIdExportToC);
 	Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::OnRun, this, kIdRun);
 	Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::OnPause, this, kIdPause);
@@ -303,6 +311,8 @@ void MainFrame::OpenSubFrame(Document *doc)
 
 	history_.AddFileToHistory(doc->path());
 
+	item_save_config_->Enable(true);
+	item_save_config_as_->Enable(true);
 	item_export_to_c_->Enable(true);
 
 	wxString text("Opened ");
@@ -344,8 +354,11 @@ void MainFrame::OnClose(wxCommandEvent &)
 	notebook_->DeletePage(i);
 	SetStatusText(text);
 
-	if (notebook_->GetPageCount() == 0)
+	if (notebook_->GetPageCount() == 0) {
+		item_save_config_->Enable(false);
+		item_save_config_as_->Enable(false);
 		item_export_to_c_->Enable(false);
+	}
 }
 
 void MainFrame::OnCloseWindow(wxCloseEvent &)
@@ -369,6 +382,63 @@ void MainFrame::OnAbout(wxCommandEvent &)
 void MainFrame::OnExit(wxCommandEvent &)
 {
 	Close();
+}
+
+void MainFrame::OnSaveConfig(wxCommandEvent &)
+{
+	auto count = notebook_->GetPageCount();
+	if (count == 0)
+		return;
+
+	if (config_dir_.IsEmpty()) {
+		wxDirDialog saveDirDialog(this,
+								  "Target directory",
+								  "", // TODO: defaultPath
+								  wxDD_DEFAULT_STYLE|wxDD_DIR_MUST_EXIST);
+		if (saveDirDialog.ShowModal() == wxID_CANCEL)
+			return;
+		config_dir_ = saveDirDialog.GetPath();
+	}
+
+	std::unique_ptr<Simulation> sim(new Simulation); // no need for id
+	for (size_t i=0;i<count;i++) {
+		auto page = notebook_->GetPage(i);
+		auto notebook = wxStaticCast(page, wxNotebook);
+		auto p0 = notebook->GetPage(0);
+		auto gsw = wxStaticCast(p0, GeneralSetttingsWindow);
+		auto doc = gsw->doc();
+		auto p1 = notebook->GetPage(1);
+		auto ovw = wxStaticCast(p1, OutputVariablesWindow);
+		auto p2 = notebook->GetPage(2);
+		auto pw = wxStaticCast(p2, ParametersWindow);
+		auto p3 = notebook->GetPage(3);
+		auto ow = wxStaticCast(p3, ObjectiveWindow);
+		std::unique_ptr<Configuration> config(new Configuration(doc->initial_config()));
+		gsw->Write(config.get());
+		ovw->Write(config.get());
+		pw->Write(config.get());
+		ow->Write(config.get());
+		sim->entries.emplace_back(doc, config.release());
+	}
+
+	wxFileName filename(config_dir_, "input.xml");
+	if (!WriteSedml(sim.get(), filename)) {
+		wxLogError("failed to save into a SED-ML file");
+		return;
+	}
+	filename.SetFullName("input.phsp");
+	if (!WritePhsp(sim.get(), filename)) {
+		wxLogError("failed to save into a PHSP file");
+		return;
+	}
+
+	SetStatusText(wxString::Format("Saved configuration into %s", config_dir_));
+}
+
+void MainFrame::OnSaveConfigAs(wxCommandEvent &event)
+{
+	config_dir_.Clear();
+	OnSaveConfig(event);
 }
 
 namespace {
@@ -490,8 +560,11 @@ void MainFrame::OnNotebookPageClose(wxAuiNotebookEvent &)
 
 void MainFrame::OnNotebookPageClosed(wxAuiNotebookEvent &)
 {
-	if (notebook_->GetPageCount() == 0)
+	if (notebook_->GetPageCount() == 0) {
+		item_save_config_->Enable(false);
+		item_save_config_as_->Enable(false);
 		item_export_to_c_->Enable(false);
+	}
 }
 
 void MainFrame::OnRun(wxCommandEvent &)
@@ -519,8 +592,11 @@ void MainFrame::OnRun(wxCommandEvent &)
 				auto path = doc->path();
 				// close the model at first
 				notebook_->DeletePage(i);
-				if (notebook_->GetPageCount() == 0)
+				if (notebook_->GetPageCount() == 0) {
+					item_save_config_->Enable(false);
+					item_save_config_as_->Enable(false);
 					item_export_to_c_->Enable(false);
+				}
 				// queue reload
 				input_files_.Add(path);
 				return;

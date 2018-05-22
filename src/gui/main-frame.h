@@ -38,6 +38,8 @@ private:
 	void OnClose(wxCommandEvent &event);
 	void OnAbout(wxCommandEvent &event);
 	void OnExit(wxCommandEvent &event);
+	void OnSaveConfig(wxCommandEvent &event);
+	void OnSaveConfigAs(wxCommandEvent &event);
 	void OnExportToC(wxCommandEvent &event);
 	void OnNotebookPageClose(wxAuiNotebookEvent &event);
 	void OnNotebookPageClosed(wxAuiNotebookEvent &event);
@@ -54,6 +56,8 @@ private:
 	wxAuiNotebook *notebook_;
 	wxFileHistory history_;
 
+	wxMenuItem *item_save_config_;
+	wxMenuItem *item_save_config_as_;
 	wxMenuItem *item_export_to_c_;
 	wxMenuItem *item_run_;
 	wxMenuItem *item_pause_;
@@ -64,6 +68,7 @@ private:
 	int next_open_id_;
 	int next_simulation_id_;
 	wxString last_dir_;
+	wxString config_dir_; // initially empty, meaning user choose a directory first
 
 	ctrl::Argument arg_;
 };
