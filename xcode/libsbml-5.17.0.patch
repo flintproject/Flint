@@ -1,6 +1,7 @@
---- Makefile.in.orig	2016-04-05 00:59:24.000000000 +0900
-+++ Makefile.in	2016-11-30 14:02:43.216237269 +0900
-@@ -656,7 +656,7 @@
+diff -r -u libsbml-5.17.0/Makefile.in libsbml-5.17.0.new/Makefile.in
+--- libsbml-5.17.0/Makefile.in	2018-05-07 01:56:22.000000000 +0900
++++ libsbml-5.17.0.new/Makefile.in	2018-05-29 11:38:31.000000000 +0900
+@@ -664,7 +664,7 @@
  # libsbml.pc.
  # -----------------------------------------------------------------------------
  
@@ -9,3 +10,16 @@
  
  COMPRESS_CPFLAGS    = ${ZLIB_CPPFLAGS} ${BZ2_CPPFLAGS}
  COMPRESS_LDFLAGS    = ${ZLIB_LDFLAGS} ${BZ2_LDFLAGS}
+Only in libsbml-5.17.0.new: build.dir
+diff -r -u libsbml-5.17.0/src/sbml/Model.cpp libsbml-5.17.0.new/src/sbml/Model.cpp
+--- libsbml-5.17.0/src/sbml/Model.cpp	2018-05-10 04:27:36.000000000 +0900
++++ libsbml-5.17.0.new/src/sbml/Model.cpp	2018-05-29 11:36:33.000000000 +0900
+@@ -240,7 +240,7 @@
+     mConstraints          = rhs.mConstraints;
+     mReactions            = rhs.mReactions;
+     mEvents               = rhs.mEvents;
+-    mUnitsDataMap = rhs.mUnitsDataMap;
++//    mUnitsDataMap = rhs.mUnitsDataMap;
+ 
+ 
+     if (this->mFormulaUnitsData  != NULL)

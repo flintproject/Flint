@@ -162,7 +162,7 @@ tmp/libmicrohttpd-$(LIBMICROHTTPD_VERSION): src/libmicrohttpd-$(LIBMICROHTTPD_VE
 tmp/libsbml-$(LIBSBML_VERSION): src/libSBML-$(LIBSBML_VERSION)-core-src.zip libsbml-$(LIBSBML_VERSION).patch | tmp
 	-rm -rf var/libsbml-$(LIBSBML_VERSION)
 	(cd var && unzip -qq ../$<)
-	patch var/libsbml-$(LIBSBML_VERSION)/Makefile.in libsbml-$(LIBSBML_VERSION).patch
+	(cd var/libsbml-$(LIBSBML_VERSION) && patch -p1 < ../../libsbml-$(LIBSBML_VERSION).patch)
 	touch $@
 
 tmp/libxml2-$(LIBXML2_VERSION): src/libxml2-$(LIBXML2_VERSION).tar.gz | tmp
