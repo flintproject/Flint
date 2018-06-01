@@ -33,8 +33,9 @@ namespace {
 
 class FutureTaskPool {
 public:
-	FutureTaskPool(const boost::filesystem::path &dir, ctrl::Argument *arg)
-		: dir_(dir)
+	FutureTaskPool(int concurrency, const boost::filesystem::path &dir, ctrl::Argument *arg)
+		: concurrency_(concurrency)
+		, dir_(dir)
 		, arg_(arg)
 	{}
 
@@ -46,7 +47,7 @@ public:
 		p[len] = '\0';
 		auto lmbd = [this, id](char *p) {
 			TaskRunner runner(id, p, dir_, arg_);
-			return runner.Run();
+			return runner.Run(concurrency_);
 		};
 		tasks_.emplace_back(std::async(std::launch::async, lmbd, p.release()));
 	}
@@ -62,6 +63,7 @@ public:
 	}
 
 private:
+	int concurrency_;
 	const boost::filesystem::path &dir_;
 	ctrl::Argument *arg_;
 	std::vector<std::future<bool> > tasks_;
@@ -128,9 +130,9 @@ bool CopyInput(const boost::filesystem::path &dir)
 	return true;
 }
 
-bool RunTasks(const boost::filesystem::path &dir, ctrl::Argument *arg)
+bool RunTasks(int concurrency, const boost::filesystem::path &dir, ctrl::Argument *arg)
 {
-	FutureTaskPool pool(dir, arg);
+	FutureTaskPool pool(concurrency, dir, arg);
 	{
 		auto driver = db::ReadOnlyDriver::Create(dir / "input.db");
 		sqlite3 *db = driver->db();
@@ -147,7 +149,7 @@ bool RunTasks(const boost::filesystem::path &dir, ctrl::Argument *arg)
 bool Exec(const cli::ExecOption &option, const boost::filesystem::path &dir,
 		  ctrl::Argument *arg)
 {
-	return ReadInput(option, dir) && CopyInput(dir) && RunTasks(dir, arg);
+	return ReadInput(option, dir) && CopyInput(dir) && RunTasks(option.concurrency(), dir, arg);
 }
 
 }

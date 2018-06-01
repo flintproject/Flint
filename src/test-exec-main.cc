@@ -13,7 +13,7 @@ namespace {
 
 void Usage()
 {
-	std::cerr << "usage: test-exec SEDML PHSP" << std::endl;
+	std::cerr << "usage: test-exec SEDML PHSP [CONCURRENCY]" << std::endl;
 }
 
 } // namespace
@@ -32,6 +32,16 @@ int main(int argc, char *argv[])
 	cli::ExecOption option;
 	option.set_sedml_filename(argv[1]);
 	option.set_phsp_filename(argv[2]);
+	if (argc > 3) {
+		int c = std::atoi(argv[3]);
+		if (c <= 0) {
+			std::cerr << "invalid concurrency" << std::endl;
+			return EXIT_FAILURE;
+		}
+		option.set_concurrency(c);
+	} else {
+		option.set_concurrency(1);
+	}
 	int s = option.ByteSize();
 	std::unique_ptr<char[]> buffer(new char[s]);
 	if (!option.SerializeToArray(buffer.get(), s)) {

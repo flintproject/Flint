@@ -24,7 +24,7 @@ public:
 
 	~SimWindow();
 
-	bool Start();
+	bool Start(int concurrency);
 
 	void OnThreadUpdate(wxThreadEvent &event);
 

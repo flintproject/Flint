@@ -50,7 +50,7 @@ SimWindow::~SimWindow()
 		GetThread()->Delete();
 }
 
-bool SimWindow::Start()
+bool SimWindow::Start(int concurrency)
 {
 	wxFileName filename = sim_->GetDirectoryName();
 	filename.Mkdir(wxS_DIR_DEFAULT, wxPATH_MKDIR_FULL); // make sure that it exists
@@ -64,6 +64,7 @@ bool SimWindow::Start()
 	if (!WritePhsp(sim_, filename))
 		return false;
 	option_.set_phsp_filename(filename.GetFullPath().utf8_str().data());
+	option_.set_concurrency(concurrency);
 
 	// start thread
 	if (CreateThread(wxTHREAD_DETACHED) != wxTHREAD_NO_ERROR) {

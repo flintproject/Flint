@@ -44,7 +44,7 @@ public:
 
 	const cas::DimensionAnalyzer *GetDimensionAnalyzer() const;
 
-	bool Run();
+	bool Run(int concurrency);
 
 private:
 	bool CreateSpec(int id, sqlite3 *db);

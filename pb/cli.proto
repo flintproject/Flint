@@ -9,6 +9,7 @@ message ExecOption {
 
   required string sedml_filename = 1; // in UTF-8
   required string phsp_filename = 2; // in UTF-8
+  required int32 concurrency = 3; // hint for parallel computation
 
 }
 
