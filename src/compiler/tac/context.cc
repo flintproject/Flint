@@ -195,6 +195,7 @@ bool Context::Componentwise(RegisterType rt, int n, cas::Compound &c)
 	*os_ << "  alloc $i" << n << ' ' << size << std::endl;
 	for (int i=0;i<size;i++) {
 		std::vector<int> params;
+		params.reserve(args.size());
 		for (auto k : args) {
 			int m = fr_++;
 			*os_ << "  deref $" << m << " $i" << k << ' ' << i << std::endl;

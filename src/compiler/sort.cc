@@ -282,6 +282,7 @@ bool Sort(sqlite3 *db)
 			return false;
 		}
 		std::vector<IndexAndLevel> v;
+		v.reserve(n);
 		for (size_t k=0;k<n;k++) {
 			v.push_back(IndexAndLevel(k, arr[k]));
 		}
