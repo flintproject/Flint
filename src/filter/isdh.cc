@@ -32,13 +32,7 @@ public:
 	Filter(const Filter &) = delete;
 	Filter &operator=(const Filter &) = delete;
 
-	Filter()
-		: num_objs_(),
-		  num_bytes_descs_(),
-		  num_bytes_units_(),
-		  descriptions_(),
-		  units_()
-	{}
+	Filter() = default;
 
 	void ReadHeader(int /*size*/) const {
 		// ignore header

@@ -22,7 +22,7 @@ public:
 	Cutter(const Cutter &) = delete;
 	Cutter &operator=(const Cutter &) = delete;
 
-	Cutter() : size_(), columns_() {}
+	Cutter() = default;
 
 	bool Load(const boost::filesystem::path &filter_file, size_t layer_size) {
 		std::unique_ptr<FilterLoader> loader(new FilterLoader(filter_file));

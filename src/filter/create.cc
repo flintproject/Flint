@@ -67,7 +67,7 @@ public:
 	Spec(const Spec &) = delete;
 	Spec &operator=(const Spec &) = delete;
 
-	Spec() {}
+	Spec() = default;
 
 	void AddSpec(const boost::uuids::uuid &u, const char *name) {
 		m_[u].insert(name);
@@ -90,7 +90,7 @@ public:
 	Layout(const Layout &) = delete;
 	Layout &operator=(const Layout &) = delete;
 
-	Layout() {}
+	Layout() = default;
 
 	void AddTrack(std::unique_ptr<lo::Track> &&track) {
 		tv_.push_back(std::move(track));
