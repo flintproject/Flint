@@ -328,10 +328,10 @@ bool TaskRunner::Run(int concurrency)
 
 		reflect();
 
+		if (generated_all && v.empty())
+			goto done;
 		if (interval == 0) {
 			interval = kUnitInterval;
-			if (generated_all && v.empty())
-				goto done;
 		} else {
 			// wait for a job finished
 			std::this_thread::sleep_for(std::chrono::milliseconds(interval));
