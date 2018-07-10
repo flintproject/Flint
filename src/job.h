@@ -61,18 +61,22 @@ struct Option {
 	const fppp::Option *fppp_option;
 };
 
+enum class Result {
+	kSucceeded,
+	kCancelled,
+	kFailed
+};
+
 /*
  * Note that db is for read only.
- * Return true in case of success, false otherwise.
  */
-bool Evolve(task::Task &task,
+Result Evolve(task::Task &task,
 			const Option &option);
 
 /*
  * Note that output_file is in the native encoding.
- * Return true in case of success, false otherwise.
  */
-bool Job(int id,
+Result Job(int id,
 		 ctrl::Argument *arg,
 		 const boost::filesystem::path &task_dir,
 		 const boost::filesystem::path &job_dir,

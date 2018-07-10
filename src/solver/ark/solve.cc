@@ -12,7 +12,6 @@
 
 #include "cas.h"
 #include "flint/bc.h"
-#include "job.h"
 #include "lo/layout.h"
 #include "runtime/flow.h"
 #include "runtime/processor.h"
@@ -44,34 +43,34 @@ Processor *CreateProcessor(const task::Task &task, Bytecode *bytecode)
 
 }
 
-bool Solve(task::Task &task, const job::Option &option)
+job::Result Solve(task::Task &task, const job::Option &option)
 {
 	std::unique_ptr<Bytecode> auxv_bc(task.system->GenerateAuxVarBc());
 	if (!auxv_bc)
-		return false;
+		return job::Result::kFailed;
 	std::unique_ptr<Bytecode> mass_bc(task.system->GenerateOdeMassBc());
 	if (!mass_bc)
-		return false;
+		return job::Result::kFailed;
 	std::unique_ptr<Bytecode> rhs_bc(task.system->GenerateOdeRhsBc());
 	if (!rhs_bc)
-		return false;
+		return job::Result::kFailed;
 
 	std::unique_ptr<Processor> auxv_proc(CreateProcessor(task, auxv_bc.get()));
 	if (!auxv_proc)
-		return false;
+		return job::Result::kFailed;
 	std::unique_ptr<Auxv> auxv(new Auxv(auxv_proc.get()));
 
 	std::unique_ptr<Processor> mass_proc(CreateProcessor(task, mass_bc.get()));
 	if (!mass_proc)
-		return false;
+		return job::Result::kFailed;
 	std::unique_ptr<Mmdm> mmdm(new Mmdm(task.layout->SelectStates()));
 	if (!task.layout->GenerateMmdm(*task.system, mmdm.get()))
-		return false;
+		return job::Result::kFailed;
 	std::unique_ptr<Mass> mass(new Mass(mass_proc.get(), mmdm.get()));
 
 	std::unique_ptr<Processor> rhs_proc(CreateProcessor(task, rhs_bc.get()));
 	if (!rhs_proc)
-		return false;
+		return job::Result::kFailed;
 	std::unique_ptr<Rhs> rhs(new Rhs(task.layer_size, rhs_proc.get()));
 
 	std::unique_ptr<Ark> ark(new Ark(task.layout.get(), task.layer_size,

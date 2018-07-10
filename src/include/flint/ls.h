@@ -54,6 +54,11 @@ public:
 	 */
 	State operator()(const double *data);
 
+	/*
+	 * Modify the bound value if sum_ is smaller than it.
+	 */
+	void UpdateBound();
+
 private:
 	Configuration &config_;
 	dps::Cursor cursor_;

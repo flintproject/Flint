@@ -14,7 +14,6 @@
 #include "compiler.h"
 #include "db/read-only-driver.h"
 #include "exec/task-runner.h"
-#include "job.h"
 #include "runtime.h"
 #include "task.h"
 
@@ -29,7 +28,7 @@ JobRunner::JobRunner(TaskRunner *tr, int id)
 {
 }
 
-bool JobRunner::Run()
+job::Result JobRunner::Run()
 {
 	std::vector<double> init(tr_->data()); // copy data
 	{
@@ -39,22 +38,22 @@ bool JobRunner::Run()
 			auto g = db::ReadOnlyDriver::Create(dir_ / "generated.db");
 			std::unique_ptr<Bytecode> generated_bc(c.Compile(g->db(), "parameter_eqs", compiler::Method::kAssign));
 			if (!generated_bc)
-				return false;
+				return job::Result::kFailed;
 			// TODO: give a proper seed if desired
 			if (!runtime::Eval(tr_->GetDatabase(), ct::Availability::kNone, 0,
 							   tr_->generated_layout(), generated_bc.get(),
 							   nullptr, nullptr, &generated_init))
-				return false;
+				return job::Result::kFailed;
 		}
 		if (!job::Store(tr_->GetDatabase(), tr_->generated_layout(), generated_init.data(), tr_->layout(), init.data()))
-			return false;
+			return job::Result::kFailed;
 	}
 	if (tr_->GetTask()->reinit_bc) {
 		// Re-calculate the rest of initial values
 		if (!runtime::Eval(tr_->GetModelDatabase(), ct::Availability::kLiteral, 0,
 						   tr_->layout(), tr_->GetTask()->reinit_bc.get(),
 						   &tr_->GetTask()->inbound, &tr_->GetTask()->tv, &init))
-			return false;
+			return job::Result::kFailed;
 	}
 	return job::Job(id_,
 					tr_->arg(),

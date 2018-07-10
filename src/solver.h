@@ -4,11 +4,9 @@
 
 #include <cstdio>
 
-namespace flint {
+#include "job.h"
 
-namespace job {
-struct Option;
-}
+namespace flint {
 
 namespace task {
 struct Task;
@@ -20,10 +18,7 @@ enum class Method {
 	kArk
 };
 
-/*
- * Return true in case of success, false otherwise.
- */
-bool Solve(Method method, task::Task &task, const job::Option &option);
+job::Result Solve(Method method, task::Task &task, const job::Option &option);
 
 }
 }

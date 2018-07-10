@@ -246,7 +246,7 @@ bool SaveData(const boost::filesystem::path &output_data_file, size_t layer_size
 
 }
 
-bool Evolve(task::Task &task,
+Result Evolve(task::Task &task,
 			const Option &option)
 {
 	size_t granularity = task.granularity;
@@ -271,7 +271,7 @@ bool Evolve(task::Task &task,
 	int nol = task.bc->nol;
 	if (nol <= 0) {
 		std::cerr << "invalid nol: " << nol << std::endl;
-		return false;
+		return Result::kFailed;
 	}
 	if (with_pre) {
 		preexecutor.reset(new PExecutor(layer_size));
@@ -296,13 +296,13 @@ bool Evolve(task::Task &task,
 
 	// replace nominal location in bytecode
 	if (!processor->SolveLocation()) {
-		return false;
+		return Result::kFailed;
 	}
 	if (with_pre && !preprocessor->SolveLocation()) {
-		return false;
+		return Result::kFailed;
 	}
 	if (with_post && !postprocessor->SolveLocation()) {
-		return false;
+		return Result::kFailed;
 	}
 
 	processor->CalculateCodeOffset();
@@ -314,9 +314,9 @@ bool Evolve(task::Task &task,
 		channel = option.fppp_option->channel.get();
 		std::map<key::Data, size_t> fppp_output = option.fppp_option->output; // copy
 		if (!task.layout->SelectByKeyData(&fppp_output))
-			return false;
+			return Result::kFailed;
 		if (!channel->Connect(option.fppp_option->host, fppp_output))
-			return false;
+			return Result::kFailed;
 	}
 	processor->set_channel(channel);
 	if (with_pre)
@@ -326,7 +326,7 @@ bool Evolve(task::Task &task,
 
 	{
 		if (!processor->SolveDependencies(&task.inbound))
-			return false;
+			return Result::kFailed;
 		if (with_pre)
 			preprocessor->ScheduleEvents(task.inbound);
 		if (with_post)
@@ -381,11 +381,12 @@ bool Evolve(task::Task &task,
 	// arrange history
 	std::unique_ptr<History[]> history(new History[layer_size]);
 	if (!task.layout->SpecifyCapacity(layer_size, history.get())) {
-		return false;
+		return Result::kFailed;
 	}
 	if (!option.input_history_file.empty()) {
 		HistoryLoader loader(option.input_history_file);
-		if (!loader.Load(layer_size, history.get())) return false;
+		if (!loader.Load(layer_size, history.get()))
+			return Result::kFailed;
 	}
 	executor->set_history(history.get());
 	if (with_pre)
@@ -445,7 +446,7 @@ bool Evolve(task::Task &task,
 
 	size_t g = (output_start_time == 0) ? 0 : granularity-1;
 
-	bool result = true;
+	Result result = Result::kSucceeded;
 	int num_steps = 0;
 	auto rt_start = std::chrono::steady_clock::now();
 	// execute bytecode
@@ -464,13 +465,13 @@ bool Evolve(task::Task &task,
 		// advance step
 		if (with_pre) {
 			if (!preprocessor->Process(preexecutor.get())) {
-				result = false;
+				result = Result::kFailed;
 				break;
 			}
 			preexecutor->Flush();
 		}
 		if (!processor->Process(executor.get())) {
-			result = false;
+			result = Result::kFailed;
 			break;
 		}
 		// one time step forward
@@ -478,7 +479,7 @@ bool Evolve(task::Task &task,
 		double last_time = data[kIndexTime];
 		if (with_post) {
 			if (!postprocessor->Process(postexecutor.get())) {
-				result = false;
+				result = Result::kFailed;
 				break;
 			}
 			postexecutor->Flush();
@@ -488,14 +489,14 @@ bool Evolve(task::Task &task,
 			if (granularity <= 1 || ++g == granularity) {
 				if (writer) {
 					if (!writer->Write(data.get(), *output_stream)) {
-						result = false;
+						result = Result::kFailed;
 						break;
 					}
 				} else {
 					// output the first layer of data
 					if (!output_stream->write(reinterpret_cast<const char *>(data.get()), sizeof(double) * layer_size)) {
 						std::cerr << "failed to write output" << std::endl;
-						result = false;
+						result = Result::kFailed;
 						break;
 					}
 				}
@@ -508,21 +509,26 @@ bool Evolve(task::Task &task,
 		if (progress_address) {
 			if (data[kIndexEnd] <= 0) {
 				std::cerr << "non-positive end time: " << data[kIndexEnd] << std::endl;
-				return false;
+				result = Result::kFailed;
+				break;
 			}
 			*progress_address = static_cast<char>(100 * std::min(1.0, data[kIndexTime] / data[kIndexEnd]));
 		}
 
 		if (accum) {
 			auto state = (*accum)(data.get());
-			if (state == ls::Accumulator::State::kGt)
+			if (state == ls::Accumulator::State::kGt) {
+				result = Result::kCancelled;
 				break;
+			}
 			if (state == ls::Accumulator::State::kDone)
 				accum.reset();
 		}
 
-		if (control_address && *control_address == 1)
+		if (control_address && *control_address == 1) {
+			result = Result::kCancelled;
 			break;
+		}
 
 		// update prev via double buffering
 		data.swap(prev);
@@ -534,16 +540,22 @@ bool Evolve(task::Task &task,
 		++num_steps;
 	} while (data[kIndexTime] < data[kIndexEnd]);
 
+	// Update the bound value, if needed, only if the time evolution is successful
+	if (accum && result == Result::kSucceeded)
+		accum->UpdateBound();
+
 	(void)stats::Record(rt_start, num_steps, option.dir);
 
 	output_stream->flush();
 
 	if (!option.output_data_file.empty()) {
-		if (!SaveData(option.output_data_file, layer_size, data.get())) return false;
+		if (!SaveData(option.output_data_file, layer_size, data.get()))
+			return Result::kFailed;
 	}
 	if (!option.output_history_file.empty()) {
 		HistoryDumper dumper(option.output_history_file);
-		if (!dumper.Dump(layer_size, history.get())) return false;
+		if (!dumper.Dump(layer_size, history.get()))
+			return Result::kFailed;
 	}
 
 	return result;

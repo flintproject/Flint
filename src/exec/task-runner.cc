@@ -277,7 +277,7 @@ bool TaskRunner::Run(int concurrency)
 		return false;
 	if (!layout::Generate(db_driver_->db(), generated_layout_))
 		return false;
-	std::vector<std::future<bool> > v;
+	std::vector<std::future<job::Result>> v;
 	size_t c = static_cast<size_t>((concurrency > 0) ? concurrency : 1);
 	char *addr = static_cast<char *>(task_->progress_mr.get_address());
 	auto reflect = [addr, n]{
@@ -318,7 +318,7 @@ bool TaskRunner::Run(int concurrency)
 				++it;
 				break;
 			case std::future_status::ready:
-				if (!f.get())
+				if (f.get() == job::Result::kFailed)
 					result = false;
 				interval = 0;
 				it = v.erase(it);

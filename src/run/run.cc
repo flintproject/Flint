@@ -206,7 +206,7 @@ bool Run(const cli::RunOption &option, const boost::filesystem::path &dir)
 					*task,
 					fppp_option.get(),
 					&data,
-					output_file.c_str());
+					output_file.c_str()) != job::Result::kFailed;
 }
 
 }

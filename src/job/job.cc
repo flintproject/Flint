@@ -32,7 +32,7 @@
 namespace flint {
 namespace job {
 
-bool Job(int id,
+Result Job(int id,
 		 ctrl::Argument *arg,
 		 const boost::filesystem::path &task_dir,
 		 const boost::filesystem::path &job_dir,
@@ -46,11 +46,11 @@ bool Job(int id,
 	boost::filesystem::create_directories(job_dir, ec);
 	if (ec) {
 		std::cerr << "failed to create directory: " << ec << std::endl;
-		return false;
+		return Result::kFailed;
 	}
 
 	if (!task::Timer(task.length, task.step, data->data()))
-		return false;
+		return Result::kFailed;
 
 	job::Option option;
 	option.id = id;
@@ -69,23 +69,23 @@ bool Job(int id,
 			 << " to "
 			 << output_file
 			 << ": " << ec << std::endl;
-		return false;
+		return Result::kFailed;
 	}
 	boost::filesystem::ofstream ofs(output_file, std::ios::out|std::ios::binary|std::ios::app);
 	if (!ofs) {
 		std::cerr << "failed to open " << output_file << std::endl;
-		return false;
+		return Result::kFailed;
 	}
 	// write initial values only when output_start_time is 0.
 	if (task.output_start_time == 0) {
 		if (!task.writer->Write(data->data(), ofs)) {
 			ofs.close();
-			return false;
+			return Result::kFailed;
 		}
 	}
 	option.output_stream = &ofs;
 
-	bool r;
+	Result r;
 	if (task.method == compiler::Method::kArk) {
 		r = solver::Solve(solver::Method::kArk, task, option);
 	} else {

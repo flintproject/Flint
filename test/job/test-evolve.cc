@@ -114,7 +114,7 @@ struct F : public test::MemoryFixture {
 		std::ofstream ofs("output", std::ios::out|std::ios::binary);	\
 		BOOST_REQUIRE(ofs);												\
 		option_.output_stream = &ofs;									\
-		BOOST_REQUIRE(job::Evolve(task_, option_));						\
+		BOOST_REQUIRE(job::Evolve(task_, option_) == job::Result::kSucceeded); \
 		ofs.close();													\
 		CheckOutput(expected);											\
 	} while (0)
@@ -130,7 +130,7 @@ struct F : public test::MemoryFixture {
 		std::ofstream ofs("output", std::ios::out|std::ios::binary);	\
 		BOOST_REQUIRE(ofs);												\
 		option_.output_stream = &ofs;									\
-		BOOST_REQUIRE(job::Evolve(task_, option_));						\
+		BOOST_REQUIRE(job::Evolve(task_, option_) == job::Result::kSucceeded); \
 		ofs.close();													\
 		CheckOutput(expected);											\
 	} while (0)

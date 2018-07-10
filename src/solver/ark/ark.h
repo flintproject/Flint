@@ -9,13 +9,11 @@
 #include <arkode/arkode.h>
 #include <nvector/nvector_serial.h>
 
+#include "job.h"
+
 namespace flint {
 
 class Layout;
-
-namespace job {
-struct Option;
-}
 
 namespace task {
 struct Task;
@@ -48,7 +46,7 @@ public:
 
 	void WriteData(int lo, N_Vector ydot);
 
-	bool Solve(const task::Task &task, const job::Option &option);
+	job::Result Solve(const task::Task &task, const job::Option &option);
 
 private:
 	bool SetProblemDimensions();

@@ -126,12 +126,17 @@ Accumulator::State Accumulator::operator()(const double *data)
 		}
 	default:
 		{
-			std::lock_guard<std::mutex> g(config_.mutex);
-			if (sum_ < config_.bound)
-				config_.bound = sum_;
+			UpdateBound();
 			return State::kDone;
 		}
 	}
+}
+
+void Accumulator::UpdateBound()
+{
+	std::lock_guard<std::mutex> g(config_.mutex);
+	if (sum_ < config_.bound)
+		config_.bound = sum_;
 }
 
 }

@@ -2,11 +2,9 @@
 #ifndef FLINT_SOLVER_ARK_H_
 #define FLINT_SOLVER_ARK_H_
 
-namespace flint {
+#include "job.h"
 
-namespace job {
-struct Option;
-}
+namespace flint {
 
 namespace task {
 struct Task;
@@ -16,7 +14,7 @@ namespace solver {
 
 namespace ark {
 
-bool Solve(task::Task &task, const job::Option &option);
+job::Result Solve(task::Task &task, const job::Option &option);
 
 }
 }

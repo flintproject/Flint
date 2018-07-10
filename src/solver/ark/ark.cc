@@ -25,7 +25,6 @@
 #include "flint/ctrl.h"
 #include "flint/ls.h"
 #include "flint/stats.h"
-#include "job.h"
 #include "lo/layout.h"
 #include "solver.h"
 #include "solver/ark/auxv.h"
@@ -115,7 +114,7 @@ void Ark::WriteData(int lo, N_Vector y)
 	assert(i == dim_);
 }
 
-bool Ark::Solve(const task::Task &task, const job::Option &option)
+job::Result Ark::Solve(const task::Task &task, const job::Option &option)
 {
 	filter::Writer *writer = task.writer.get();
 	char *control_address = task.GetControlAddress(option.id);
@@ -124,31 +123,31 @@ bool Ark::Solve(const task::Task &task, const job::Option &option)
 
 	/* skeleton: 2. Set problem dimensions */
 	if (!SetProblemDimensions())
-		return false;
+		return job::Result::kFailed;
 
 	/* skeleton: 3. Set vector of initial values */
 	if (!SetVectorOfInitialValues(option.input_data->data()))
-		return false;
+		return job::Result::kFailed;
 
 	/* skeleton: 4. Create ARKode object */
 	arkode_mem_ = ARKodeCreate();
 	if (!arkode_mem_) {
 		std::cerr << "failed to create ARKode object" << std::endl;
-		return false;
+		return job::Result::kFailed;
 	}
 
 	/* skeleton: 5. Initialize ARKode solver */
 	int r = ARKodeInit(arkode_mem_, nullptr, ArkRhs, 0.0, y_);
 	if (r != ARK_SUCCESS) {
 		std::cerr << "failed to initialize ARKode solver: " << r << std::endl;
-		return false;
+		return job::Result::kFailed;
 	}
 
 	/* skeleton: 6. Specify integration tolerances */
 	r = ARKodeSStolerances(arkode_mem_, 1e-4, 1e-9);
 	if (r != ARK_SUCCESS) {
 		std::cerr << "failed to specify integration tolerances: " << r << std::endl;
-		return false;
+		return job::Result::kFailed;
 	}
 
 	/* skeleton: 7. Set optional inputs */
@@ -164,7 +163,7 @@ bool Ark::Solve(const task::Task &task, const job::Option &option)
 	r = ARKMassDense(arkode_mem_, dim_, ArkDlsDenseMass);
 	if (r != ARKDLS_SUCCESS) {
 		std::cerr << "ARKMassDense() failed: " << r << std::endl;
-		return false;
+		return job::Result::kFailed;
 	}
 
 	/* skeleton: 11. Set mass matrix linear solver optional inputs */
@@ -184,6 +183,7 @@ bool Ark::Solve(const task::Task &task, const job::Option &option)
 
 	size_t g = (output_start_time == 0) ? 0 : granularity-1;
 
+	job::Result result = job::Result::kSucceeded;
 	realtype tout = 0;
 	realtype tret;
 	int num_steps = 0;
@@ -201,23 +201,29 @@ bool Ark::Solve(const task::Task &task, const job::Option &option)
 		r = ARKode(arkode_mem_, tout, y_, &tret, ARK_NORMAL);
 		if (r != ARK_SUCCESS) {
 			std::cerr << "failed to advance step via ARKode: " << r << std::endl;
-			return false;
+			result = job::Result::kFailed;
+			break;
 		}
 
 		// copy output to data
 		ReadData(tret, y_);
-		if (!auxv_->Evaluate(data_.get()))
-			return false;
+		if (!auxv_->Evaluate(data_.get())) {
+			result = job::Result::kFailed;
+			break;
+		}
 
 		if (output_start_time <= data_[kIndexTime]) {
 			if (granularity <= 1 || ++g == granularity) {
 				if (writer) {
-					if (!writer->Write(data_.get(), *output_stream))
-						return false;
+					if (!writer->Write(data_.get(), *output_stream)) {
+						result = job::Result::kFailed;
+						break;
+					}
 				} else {
 					if (!output_stream->write(reinterpret_cast<const char *>(data_.get()), sizeof(double) * layer_size_)) {
 						std::cerr << "failed to write output" << std::endl;
-						return false;
+						result = job::Result::kFailed;
+						break;
 					}
 				}
 				g = 0;
@@ -227,29 +233,38 @@ bool Ark::Solve(const task::Task &task, const job::Option &option)
 		if (progress_address) {
 			if (data_[kIndexEnd] <= 0) {
 				std::cerr << "non-positive end time: " << data_[kIndexEnd] << std::endl;
-				return false;
+				result = job::Result::kFailed;
+				break;
 			}
 			*progress_address = static_cast<char>(100 * std::min(1.0, data_[kIndexTime] / data_[kIndexEnd]));
 		}
 
 		if (accum) {
 			auto state = (*accum)(data_.get());
-			if (state == ls::Accumulator::State::kGt)
+			if (state == ls::Accumulator::State::kGt) {
+				result = job::Result::kCancelled;
 				break;
+			}
 			if (state == ls::Accumulator::State::kDone)
 				accum.reset();
 		}
 
-		if (control_address && *control_address == 1)
+		if (control_address && *control_address == 1) {
+			result = job::Result::kCancelled;
 			break;
+		}
 
 		++num_steps;
 	} while (tret < data_[kIndexEnd]);
 
+	// Update the bound value, if needed, only if the time evolution is successful
+	if (accum && result == job::Result::kSucceeded)
+		accum->UpdateBound();
+
 	(void)stats::Record(rt_start, num_steps, option.dir);
 
 	/* skeleton: 14. Get optional outputs */
-	return true;
+	return result;
 }
 
 bool Ark::SetProblemDimensions()

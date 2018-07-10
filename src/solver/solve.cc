@@ -5,21 +5,20 @@
 
 #include "solver.h"
 
-#include "job.h"
 #include "task.h"
 #include "solver/ark.h"
 
 namespace flint {
 namespace solver {
 
-bool Solve(Method method, task::Task &task, const job::Option &option)
+job::Result Solve(Method method, task::Task &task, const job::Option &option)
 {
 	switch (method) {
 	case Method::kArk:
 		return ark::Solve(task, option);
 	}
 	// TODO
-	return false;
+	return job::Result::kFailed;
 }
 
 }

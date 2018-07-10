@@ -5,6 +5,8 @@
 #define BOOST_FILESYSTEM_NO_DEPRECATED
 #include <boost/filesystem.hpp>
 
+#include "job.h"
+
 namespace flint {
 namespace exec {
 
@@ -14,7 +16,7 @@ class JobRunner {
 public:
 	JobRunner(TaskRunner *tr, int id);
 
-	bool Run();
+	job::Result Run();
 
 private:
 	TaskRunner *tr_;
