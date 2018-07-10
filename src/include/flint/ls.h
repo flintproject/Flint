@@ -49,7 +49,7 @@ public:
 
 	/*
 	 * Return kLeq if the current value is less than or equals the bound value,
-	 * kGt if the current value is greater than the bount value,
+	 * kGt if the current value is greater than it,
 	 * kDone otherwise.
 	 */
 	State operator()(const double *data);
