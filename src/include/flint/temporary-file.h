@@ -46,7 +46,7 @@ public:
 		if (ec)
 			return;
 		boost::filesystem::remove(path_, ec);
-		own_ = ec;
+		own_ = bool(ec);
 	}
 
 private:
