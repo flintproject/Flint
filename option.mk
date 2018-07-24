@@ -3,6 +3,7 @@ BOOST_UNUSED_COMPONENTS = \
 	chrono \
 	container \
 	context \
+	contract \
 	coroutine \
 	date_time \
 	exception \
@@ -15,9 +16,9 @@ BOOST_UNUSED_COMPONENTS = \
 	mpi \
 	python \
 	regex \
-	stacktrace \
 	serialization \
 	signals \
+	stacktrace \
 	thread \
 	timer \
 	type_erasure \
