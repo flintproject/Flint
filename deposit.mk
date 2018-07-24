@@ -1,4 +1,4 @@
-BOOST_VERSION = 1.66.0
+BOOST_VERSION = 1.67.0
 CERES_VERSION = 1.14.0
 CLIBSEDML_VERSION = 0.1.2
 CZMQ_VERSION = 4.1.1
@@ -99,7 +99,7 @@ endef
 
 endif
 
-$(eval $(call external_library_source,https://dl.bintray.com/boostorg/release/$(BOOST_VERSION)/source,$(BOOST_UNDERSCORE).tar.bz2,5721818253e6a0989583192f96782c4a98eb6204965316df9f5ad75819225ca9))
+$(eval $(call external_library_source,https://dl.bintray.com/boostorg/release/$(BOOST_VERSION)/source,$(BOOST_UNDERSCORE).tar.bz2,2684c972994ee57fc5632e03bf044746f6eb45d4920c343937a465fd67a5adba))
 $(eval $(call external_library_source,http://ceres-solver.org/,ceres-solver-$(CERES_VERSION).tar.gz,4744005fc3b902fed886ea418df70690caa8e2ff6b5a90f3dd88a3d291ef8e8e))
 $(eval $(call external_library_source3,https://github.com/flintproject/clibsedml/archive/v$(CLIBSEDML_VERSION).tar.gz,clibsedml-$(CLIBSEDML_VERSION).tar.gz,cf25d0aad379e14c26a74166b5d652e2072fc87183caf6f34c16b5122ffa469f))
 $(eval $(call external_library_source,https://github.com/zeromq/czmq/releases/download/v$(CZMQ_VERSION),czmq-$(CZMQ_VERSION).tar.gz,f00ff419881dc2a05d0686c8467cd89b4882677fc56f31c0e2cc81c134cbb0c0))
