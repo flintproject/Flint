@@ -94,9 +94,9 @@ sqlite3 *TaskRunner::GetDatabase()
 	return db_driver_->db();
 }
 
-sqlite3 *TaskRunner::GetModelDatabase()
+std::unique_ptr<db::ReadOnlyDriver> TaskRunner::GetModelDatabase()
 {
-	return modeldb_driver_->db();
+	return db::ReadOnlyDriver::Create(dir_ / "model.db");
 }
 
 const cas::DimensionAnalyzer *TaskRunner::GetDimensionAnalyzer() const
@@ -192,10 +192,12 @@ bool TaskRunner::Run(int concurrency)
 			return false;
 	}
 
-	modeldb_driver_ = db::ReadOnlyDriver::Create(dir_ / "model.db");
+	auto modeldb_driver = GetModelDatabase();
+	if (!modeldb_driver->db())
+		return false;
 	auto spec_file = dir_ / "spec.txt";
 	auto filter_file = dir_ / "filter";
-	if (!filter::Create(modeldb_driver_->db(), spec_file, layout_, filter_file))
+	if (!filter::Create(modeldb_driver->db(), spec_file, layout_, filter_file))
 		return false;
 	auto track_file = dir_ / "track";
 	if (!filter::Track(filter_file, track_file))
@@ -204,7 +206,7 @@ bool TaskRunner::Run(int concurrency)
 	if (!filter::Isdh(filter_file, isdh_file))
 		return false;
 	{
-		task::ConfigReader reader(modeldb_driver_->db());
+		task::ConfigReader reader(modeldb_driver->db());
 		if (!reader.Read())
 			return false;
 		// fill task's rest of fields
@@ -240,23 +242,24 @@ bool TaskRunner::Run(int concurrency)
 	}
 	if (task_->method == compiler::Method::kArk) {
 		std::unique_ptr<cas::System> system(new cas::System);
-		if (!system->Load(modeldb_driver_->db()))
+		if (!system->Load(modeldb_driver->db()))
 			return false;
-		if (!cas::AnnotateEquations(modeldb_driver_->db(), "input_eqs", system.get()))
+		if (!cas::AnnotateEquations(modeldb_driver->db(), "input_eqs", system.get()))
 			return false;
 		task_->system = std::move(system);
 	} else {
 		cas::DimensionAnalyzer da;
-		if (!da.Load(modeldb_driver_->db()))
+		if (!da.Load(modeldb_driver->db()))
 			return false;
 		compiler::Compiler c(&da);
-		task_->reinit_bc.reset(c.Compile(modeldb_driver_->db(), "dependent_ivs", compiler::Method::kAssign));
+		task_->reinit_bc.reset(c.Compile(modeldb_driver->db(), "dependent_ivs", compiler::Method::kAssign));
 		if (!task_->reinit_bc)
 			return false;
-		task_->bc.reset(c.Compile(modeldb_driver_->db(), "input_eqs", task_->method));
+		task_->bc.reset(c.Compile(modeldb_driver->db(), "input_eqs", task_->method));
 		if (!task_->bc)
 			return false;
 	}
+	modeldb_driver.reset();
 
 	db_driver_ = db::Driver::Create(dir_ / "task.db");
 	if (!exec::SaveParameters(dir_, db_driver_->db()))

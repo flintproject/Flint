@@ -40,7 +40,7 @@ public:
 
 	task::Task *GetTask();
 	sqlite3 *GetDatabase();
-	sqlite3 *GetModelDatabase();
+	std::unique_ptr<db::ReadOnlyDriver> GetModelDatabase();
 
 	const cas::DimensionAnalyzer *GetDimensionAnalyzer() const;
 
@@ -61,7 +61,6 @@ private:
 	std::unique_ptr<task::Task> task_;
 	std::vector<double> data_;
 	std::unique_ptr<db::Driver> db_driver_;
-	std::unique_ptr<db::ReadOnlyDriver> modeldb_driver_;
 	std::unique_ptr<cas::DimensionAnalyzer> dimension_analyzer_;
 };
 

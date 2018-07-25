@@ -50,7 +50,10 @@ job::Result JobRunner::Run()
 	}
 	if (tr_->GetTask()->reinit_bc) {
 		// Re-calculate the rest of initial values
-		if (!runtime::Eval(tr_->GetModelDatabase(), ct::Availability::kLiteral, 0,
+		auto modeldb_driver = tr_->GetModelDatabase();
+		if (!modeldb_driver->db())
+			return job::Result::kFailed;
+		if (!runtime::Eval(modeldb_driver->db(), ct::Availability::kLiteral, 0,
 						   tr_->layout(), tr_->GetTask()->reinit_bc.get(),
 						   &tr_->GetTask()->inbound, &tr_->GetTask()->tv, &init))
 			return job::Result::kFailed;
