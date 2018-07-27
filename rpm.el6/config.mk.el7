@@ -1,2 +1,2 @@
-DIST = el7.centos
+DIST = el7
 GTK_PACKAGE_NAME = gtk3

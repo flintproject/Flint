@@ -14,4 +14,4 @@ git(1) is also required to create archive of Flint's source code.
 == Configuration
 
 Create config.mk in order to specify DIST and GTK_PACKAGE_NAME.
-See config.mk.el6 or config.mk.el7.centos for example.
+See config.mk.el6 or config.mk.el7 for example boilerplate.
