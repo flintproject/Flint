@@ -18,8 +18,8 @@ $ sudo yum install libtool cmake wget gtk2-devel libuuid-devel \
 Please install devtoolset-7's g++ as above.
 
 Then, install necessary tools for building and installing Flint with:
-$ sudo yum install gcc gcc-c++ autoconf automake libtool cmake wget \
-    gtk3-devel libuuid-devel libxml2-devel patch
+$ sudo yum install libtool cmake wget gtk3-devel libuuid-devel \
+    libxml2-devel patch
 
 
 == Debian Stretch/Buster/Sid
