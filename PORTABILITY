@@ -4,7 +4,7 @@ We design Flint to be portable.
 == RHEL/CentOS 6
 
 The default g++ package is too old to build Flint.
-A workaround for the issue is using devtoolset-7's g++.
+A workaround for the issue is to use the one provided by devtoolset-7.
 Find instructions to install and use it in
 <https://www.softwarecollections.org/en/scls/rhscl/devtoolset-7/>.
 
