@@ -3,7 +3,7 @@ Name: flint-boost
 Version: boost_VERSION
 Release: boost_RELEASE%{?dist}
 License: Boost-1.0
-URL: http://www.boost.org/
+URL: https://www.boost.org/
 Source0: %{name}-%{version}.tar.gz
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
 BuildRequires: gcc-c++
