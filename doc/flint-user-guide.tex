@@ -383,6 +383,11 @@ will run a simulation, writing the whole output into {\tt output.isd}.
 Users can customize Flint's behavior via preference, which UI looks like
 Fig.~\ref{fig:preference-plotter}.
 
+\subsection{Concurrency hint}
+The concurrency hint helps Flint run multithread simulation with an optimized number
+of concurrent threads. By default Flint automatically detects the number of cores and
+preset it for the hint.
+
 \subsection{Plotter}
 This is a necessary option to render line graphs.
 Select the path of {\tt gnuplot} (or {\tt gnuplot.exe} on Windows), e.g.,
@@ -400,6 +405,8 @@ There are useful shortcut keys as follows:
   \hline
   File $\rightarrow$ Open & {\tt Cmd}+O & {\tt Ctrl}+O \\
   File $\rightarrow$ Exit & {\tt Cmd}+Q & {\tt Ctrl}+Q \\
+  File $\rightarrow$ Save configuration & {\tt Cmd}+S & {\tt Ctrl}+S \\
+  File $\rightarrow$ Save configuration as...& {\tt Cmd}+{\tt Shift}+S & {\tt Ctrl}+{\tt Shift}+S \\
   Edit $\rightarrow$ Copy & {\tt Cmd}+C & {\tt Ctrl}+C \\
   File $\rightarrow$ Cut  & {\tt Cmd}+X & {\tt Ctrl}+X \\
   Edit $\rightarrow$ Preference & {\tt Cmd}+, & {\tt Ctrl}+, \\

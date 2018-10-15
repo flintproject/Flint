@@ -1,7 +1,19 @@
-* Flint 2.1 (2018-10-XX)
+* Flint 2.1 (2018-10-15)
 
+** Supported platforms
+   - Windows 7 or later.
+   - macOS: OS X Mavericks (10.9) or later.
+   - Linux distributions such as Debian 9, RHEL/CentOS 6, and RHEL/CentOS 7.
 ** New features
-- Added a window to show and save the gnuplot script plotting line chart.
+   - Added a window to show and save the gnuplot script plotting line chart.
+   - Allow to give a hint of concurrency in the preference window or as
+     flint-exec's input.
+   - Save configuration into a directory via CTRL+S.
+** Improvements
+   - Improved thread safety on parameter fitting.
+   - Performance optimizations.
+** Bug fixes
+   - Fix unexpected hangs.
 
 * Flint 2.0 (2018-04-09)
 
