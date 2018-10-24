@@ -5,7 +5,7 @@ language: cpp
 
 os:
   - linux
-  # - osx
+  - osx
 
 cache:
   directories:
