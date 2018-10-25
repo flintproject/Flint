@@ -45,7 +45,7 @@ install:
   - if [ "$TRAVIS_OS_NAME" = linux ]; then cd posix; else cd xcode; fi
   - if [ "$TRAVIS_OS_NAME" = osx ]; then echo "PKG_CONFIG = /usr/local/bin/pkg-config" > config.mk; fi
   - make -s download
-  - travis_wait make -s external
+  - travis_wait 60 make -s external
   - make -s all
 
 script:
