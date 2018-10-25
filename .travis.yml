@@ -38,7 +38,7 @@ addons:
 
 before_install:
   - if [ "$TRAVIS_OS_NAME" = osx ]; then brew update; fi
-  - if [ "$TRAVIS_OS_NAME" = osx ]; then brew libtool; fi
+  - if [ "$TRAVIS_OS_NAME" = osx ]; then brew install libtool; fi
 
 install:
   - if [ "$TRAVIS_OS_NAME" = linux -a "$CXX" = "g++" ]; then export CC="gcc-4.9" CXX="g++-4.9" CFLAGS="-g0 -O0" CXXFLAGS="-g0 -O0"; fi
