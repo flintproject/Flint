@@ -478,8 +478,7 @@ private:
 		sqlite3_finalize(stmt);
 
 		// create a task directory
-		char dir_path[64];
-		std::sprintf(dir_path, "%d", rowid);
+		auto dir_path = std::to_string(rowid);
 		boost::filesystem::path dp = dir_ / dir_path;
 		if (!boost::filesystem::is_directory(dp) && !boost::filesystem::create_directory(dp)) {
 			std::cerr << "failed to create a directory: "

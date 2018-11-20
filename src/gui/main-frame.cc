@@ -38,6 +38,7 @@
 #include "../task.h" // TODO: fix collision between 2 task.h
 
 #include <memory>
+#include <string>
 #include <vector>
 
 namespace flint {
@@ -262,8 +263,7 @@ wxThread::ExitCode OpenFileHelper::Entry()
 
 	auto dir = boost::filesystem::current_path();
 	{
-		char buf[64];
-		std::sprintf(buf, "%d", id_);
+		auto buf = std::to_string(id_);
 		dir /= buf;
 		boost::system::error_code ec;
 		boost::filesystem::create_directory(dir, ec);

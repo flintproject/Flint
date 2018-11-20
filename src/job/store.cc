@@ -172,7 +172,6 @@ public:
 	}
 
 	bool Rewrite(const char *format, const TargetValueMap &tvm, double *target_data) const {
-		std::unique_ptr<char[]> buf(new char[32]); // FIXME
 		int si = 0;
 		int di = 0;
 		size_t i = kOffsetBase;
@@ -201,8 +200,8 @@ public:
 							} else {
 								std::unordered_map<std::string, double>::const_iterator mit;
 								if (strcmp("phml", format) == 0) {
-									sprintf(buf.get(), "%d", dp->id());
-									mit = it->second.find(buf.get());
+									auto buf = std::to_string(dp->id());
+									mit = it->second.find(buf);
 								} else {
 									mit = it->second.find(dp->name());
 								}
