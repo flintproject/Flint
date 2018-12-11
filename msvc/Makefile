@@ -6,11 +6,11 @@ include ../version.mk
 
 $(eval $(call external_library_source,https://ftp.gnu.org/gnu/libmicrohttpd,libmicrohttpd-$(LIBMICROHTTPD_VERSION)-w32-bin.zip,41ccb4d5ea2003c3e495784dc68a7522a941726b5bec60480c292dac30d94d45))
 
-$(eval $(call external_library_source,https://github.com/wxWidgets/wxWidgets/releases/download/v$(WXWIDGETS_VERSION),wxWidgets-$(WXWIDGETS_VERSION)-headers.7z,aa4d3a402abd65422406f5ec76c6b20435e352fc1439885b63c39b98a9a81cc5))
-$(eval $(call external_library_source,https://github.com/wxWidgets/wxWidgets/releases/download/v$(WXWIDGETS_VERSION),wxMSW-$(WXWIDGETS_VERSION)_vc141_Dev.7z,7d6f59813485fdb34b464637d7247ac1eeee83b41f4ad46c4d01d016317d67b6))
-$(eval $(call external_library_source,https://github.com/wxWidgets/wxWidgets/releases/download/v$(WXWIDGETS_VERSION),wxMSW-$(WXWIDGETS_VERSION)_vc141_x64_Dev.7z,7c57f495ae434a56ee0d21db6a7510dbc837d3baf9f6339532d41bb98bbca3d3))
-$(eval $(call external_library_source,https://github.com/wxWidgets/wxWidgets/releases/download/v$(WXWIDGETS_VERSION),wxMSW-$(WXWIDGETS_VERSION)_vc141_ReleaseDLL.7z,231071ded11bba13cdee17dec3bb019d4be3c264ac7152dbb7237e56f89268ea))
-$(eval $(call external_library_source,https://github.com/wxWidgets/wxWidgets/releases/download/v$(WXWIDGETS_VERSION),wxMSW-$(WXWIDGETS_VERSION)_vc141_x64_ReleaseDLL.7z,2b2b5e3385275e4521e416d388d0a2cf9d1d7e6cc6adb104112d8334a8d5fd69))
+$(eval $(call external_library_source,https://github.com/wxWidgets/wxWidgets/releases/download/v$(WXWIDGETS_VERSION),wxWidgets-$(WXWIDGETS_VERSION)-headers.7z,6f163f3773a5faf2bbfa3895b789d56996a53be40b0e68e756754a200877a3f3))
+$(eval $(call external_library_source,https://github.com/wxWidgets/wxWidgets/releases/download/v$(WXWIDGETS_VERSION),wxMSW-$(WXWIDGETS_VERSION)_vc141_Dev.7z,d7d5efb7ededd222336cfa58decde9b5e6d6b5ac2adbacdad203b744771da27c))
+$(eval $(call external_library_source,https://github.com/wxWidgets/wxWidgets/releases/download/v$(WXWIDGETS_VERSION),wxMSW-$(WXWIDGETS_VERSION)_vc141_x64_Dev.7z,18456db5db0d74ee2d951d312b19fa48f0528e98697aa012d4dde27054b181c1))
+$(eval $(call external_library_source,https://github.com/wxWidgets/wxWidgets/releases/download/v$(WXWIDGETS_VERSION),wxMSW-$(WXWIDGETS_VERSION)_vc141_ReleaseDLL.7z,79ca4cabbe97d6a923af0e2a4fe28364e619c0ab4bd56afbade37dfaa94f92bb))
+$(eval $(call external_library_source,https://github.com/wxWidgets/wxWidgets/releases/download/v$(WXWIDGETS_VERSION),wxMSW-$(WXWIDGETS_VERSION)_vc141_x64_ReleaseDLL.7z,85d3bcc5fab41a3d7f00621f060922e0addb09ecf86b9e25e02c88693b96f26a))
 
 UNNECESSARY_LIBRARIES = libmicrohttpd-% wxWidgets-%
 EXTERNAL_LIBRARIES = $(filter-out $(UNNECESSARY_LIBRARIES),$(ALL_EXTERNAL_LIBRARIES)) libmicrohttpd-$(LIBMICROHTTPD_VERSION)-w32-bin.zip wxWidgets-$(WXWIDGETS_VERSION)-headers.7z wxMSW-$(WXWIDGETS_VERSION)_$(MSVC_VARIANT)_Dev.7z wxMSW-$(WXWIDGETS_VERSION)_$(MSVC_VARIANT)_ReleaseDLL.7z

@@ -241,11 +241,11 @@
       <DLLFiles Include='opt\lib\boost_program_options-*.dll'/>
       <DLLFiles Include='opt\lib\boost_system-*.dll'/>
       <DLLFiles Include='opt\lib\boost_unit_test_framework-*.dll'/>
-      <wxMSWReleaseDLLFiles Include='release-dll\**\wxbase311u_*.dll'/>
-      <wxMSWReleaseDLLFiles Include='release-dll\**\wxmsw311u_adv_*.dll'/>
-      <wxMSWReleaseDLLFiles Include='release-dll\**\wxmsw311u_aui_*.dll'/>
-      <wxMSWReleaseDLLFiles Include='release-dll\**\wxmsw311u_core_*.dll'/>
-      <wxMSWReleaseDLLFiles Include='release-dll\**\wxmsw311u_propgrid_*.dll'/>
+      <wxMSWReleaseDLLFiles Include='release-dll\**\wxbase312u_*.dll'/>
+      <wxMSWReleaseDLLFiles Include='release-dll\**\wxmsw312u_adv_*.dll'/>
+      <wxMSWReleaseDLLFiles Include='release-dll\**\wxmsw312u_aui_*.dll'/>
+      <wxMSWReleaseDLLFiles Include='release-dll\**\wxmsw312u_core_*.dll'/>
+      <wxMSWReleaseDLLFiles Include='release-dll\**\wxmsw312u_propgrid_*.dll'/>
       <ExeFiles Include='csv2isd.exe;flint.exe;flint-cli.exe;flint-exec.exe;flint-lodbg.exe;flint-run.exe;flint-tr.exe;isd2csv.exe;isdbswap.exe;isdcut.exe;isddiff.exe;isdhead.exe;isdls.exe;isdmerge.exe;isdrand.exe;isdsort.exe;isdstrip.exe;isdwc.exe'/>
     </ItemGroup>
     <MakeDir Directories='flint'/>
