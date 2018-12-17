@@ -27,7 +27,7 @@ $ sudo yum install libtool cmake wget gtk3-devel libuuid-devel \
 We do not have a Debian package (.deb) for Flint yet.
 Before building Flint, you will want to install prerequisite Debian packages
 as follows:
-$ sudo apt-get install gcc g++ autoconf automake libtool cmake \
+$ sudo aptitude install gcc g++ autoconf automake libtool cmake \
     pkgconf libgtk2.0-dev libxml2-dev patch
 
 
