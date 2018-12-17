@@ -57,4 +57,4 @@ $ sudo apt-get install g++ autoconf automake libtool cmake libgtk2.0-dev \
 https://developer.apple.com/library/mac/documentation/porting/conceptual/portingunix/preparing/preparing.html
 
 ** UTF-8 Everywhere
-http://www.utf8everywhere.org/
+https://www.utf8everywhere.org/
