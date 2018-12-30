@@ -8,8 +8,6 @@ CellML, PHML and/or SBML.
 * It runs on Windows, macOS, Linux etc.
 * It provides graphical user interface on top of command-line interface.
 
-See INSTALL to build and install Flint from source.
-
 Download
 --------
 
@@ -19,3 +17,8 @@ RHEL 6.x/7.x are freely available at
 https://flintproject.github.io/
 
 as well as documentation including its user manual and tutorials.
+
+Hacking
+-------
+
+Please see INSTALL to build and install Flint from source.

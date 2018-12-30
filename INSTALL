@@ -1,4 +1,10 @@
-This explains how to build and install Flint.
+This explains how to build and install Flint from source.
+
+
+= If you would just like to install Flint via official binary installers
+
+You do *not* have to read the following details; the installer for your
+platform does everything to set up Flint.
 
 
 = Prerequisite
