@@ -17,7 +17,7 @@ include_directories("${LIBXML2_INCLUDE_DIR}")
 
 add_definitions(-DBOOST_ALL_DYN_LINK)
 
-find_package(Boost 1.68 REQUIRED COMPONENTS
+find_package(Boost 1.69 REQUIRED COMPONENTS
              filesystem
              program_options
              random
