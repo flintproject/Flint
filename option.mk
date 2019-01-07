@@ -17,7 +17,6 @@ BOOST_UNUSED_COMPONENTS = \
 	python \
 	regex \
 	serialization \
-	signals \
 	stacktrace \
 	thread \
 	timer \
