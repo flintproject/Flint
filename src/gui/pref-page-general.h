@@ -10,7 +10,7 @@
 namespace flint {
 namespace gui {
 
-class Preference;
+struct Preference;
 
 class PrefPageGeneral : public wxStockPreferencesPage {
 public:

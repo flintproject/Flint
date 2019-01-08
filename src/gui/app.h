@@ -20,7 +20,7 @@ namespace flint {
 namespace gui {
 
 class Httpd;
-class Preference;
+struct Preference;
 
 class App : public wxApp
 {
