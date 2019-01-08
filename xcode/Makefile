@@ -133,9 +133,10 @@ var:
 tmp: | var
 	install -d $@
 
-tmp/$(BOOST_UNDERSCORE): src/$(BOOST_UNDERSCORE).tar.bz2 | tmp
+tmp/$(BOOST_UNDERSCORE): src/$(BOOST_UNDERSCORE).tar.bz2 ../external/Boost-process-78b5ea1f6bf67c87ed0b3375596187a7986d7e8a.patch | tmp
 	-rm -rf var/$(BOOST_UNDERSCORE)
 	tar -C var -jxf $<
+	patch -d var/$(BOOST_UNDERSCORE)/boost -p3 < ../external/Boost-process-78b5ea1f6bf67c87ed0b3375596187a7986d7e8a.patch
 	touch $@
 
 tmp/ceres-solver-$(CERES_VERSION): src/ceres-solver-$(CERES_VERSION).tar.gz | tmp
