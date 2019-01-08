@@ -48,7 +48,7 @@ public:
 
 	virtual ParamValues *Copy() const override;
 	virtual wxString GetText() const override;
-	virtual wxString GetXml(const wxString &name, int indent) const;
+	virtual wxString GetXml(const wxString &name, int indent) const override;
 
 	double lower() const {return lower_;}
 	double upper() const {return upper_;}
@@ -68,7 +68,7 @@ public:
 
 	virtual ParamValues *Copy() const override;
 	virtual wxString GetText() const override;
-	virtual wxString GetXml(const wxString &name, int indent) const;
+	virtual wxString GetXml(const wxString &name, int indent) const override;
 
 	const wxString &body() const {return body_;}
 
@@ -84,7 +84,7 @@ public:
 
 	virtual ParamValues *Copy() const override;
 	virtual wxString GetText() const override;
-	virtual wxString GetXml(const wxString &name, int indent) const;
+	virtual wxString GetXml(const wxString &name, int indent) const override;
 
 	double mean() const {return mean_;}
 	double stddev() const {return stddev_;}
@@ -104,7 +104,7 @@ public:
 
 	virtual ParamValues *Copy() const override;
 	virtual wxString GetText() const override;
-	virtual wxString GetXml(const wxString &name, int indent) const;
+	virtual wxString GetXml(const wxString &name, int indent) const override;
 
 	double min() const {return min_;}
 	double max() const {return max_;}
