@@ -1,0 +1,24 @@
+This document explains the definition of a mathematical model supposed to
+be recognized by Flint.
+
+A model has an arbitrary number of variables, each of which belongs to one of
+two groups: independent and dependent ones.
+
+A variable has its name and the set of its possible values, called its domain.
+Note that the domain determines its dimension.
+
+A given model is defined by a set of equations constraining the values of dependent
+variables in terms of all of variables.  Equations can have parameters, which are
+like variables, but do not come together with any equations defining them.
+
+Although equations in a model can be of any form in principle, typical classes
+of them are:
+- algebraic equations,
+- difference equations,
+- ordinary differential equations,
+- delay differential equations, and
+- stochastic differential equations.
+
+Some of equations are effective only when independent variables take specific
+values.  For example, an initial condition is represented by such equations.
+
