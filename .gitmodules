@@ -1,0 +1,3 @@
+[submodule "tool/test/xunit"]
+	path = tool/test/xunit
+	url = https://github.com/tabe/xunit.git

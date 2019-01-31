@@ -1,0 +1,15 @@
+;; http://www.scholarpedia.org/article/Rossler_attractor
+(define-model roessler
+  (variable t :independent :real)
+  (variable x :real)
+  (variable y :real)
+  (variable z :real)
+  (parameter a)
+  (parameter b)
+  (parameter c)
+  (eq (diff (bvar t) x)
+      (minus (minus y) z))
+  (eq (diff (bvar t) y)
+      (plus x (times a y)))
+  (eq (diff (bvar t) z)
+      (plus b (times z (minus x c)))))

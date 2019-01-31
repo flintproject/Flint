@@ -1,0 +1,6 @@
+This directory contains scripts for developers.
+
+The scripts with extension .ss or .sls are written in Scheme and runs on
+Chez Scheme [1].
+
+[1] https://cisco.github.io/ChezScheme/
