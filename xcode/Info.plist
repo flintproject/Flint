@@ -9,7 +9,7 @@
 <key>CFBundleIdentifier</key>
 <string>jp.physiome.flint</string>
 <key>CFBundleVersion</key>
-<string>2.1.0</string>
+<string>2.1.1</string>
 <key>CFBundlePackageType</key>
 <string>APPL</string>
 <key>CFBundleSignature</key>
@@ -17,7 +17,7 @@
 <key>CFBundleExecutable</key>
 <string>flint</string>
 <key>CFBundleShortVersionString</key>
-<string>2.1.0</string>
+<string>2.1.1</string>
 <key>LSMinimumSystemVersion</key>
 <string>10.9.0</string>
 <key>NSHumanReadableCopyright</key>
