@@ -5,6 +5,13 @@
    - macOS: OS X Mavericks (10.9) or later.
    - Linux distributions such as Debian 9, RHEL/CentOS 6, and RHEL/CentOS 7.
 
+* Flint 2.1.1 (2019-02-01)
+
+** Target platforms
+   - macOS: OS X Mavericks (10.9) or later.
+** Bug fixes
+   - Fix crash at launch on macOS.
+
 * Flint 2.1 (2018-10-15)
 
 ** Supported platforms
