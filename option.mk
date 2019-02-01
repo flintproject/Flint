@@ -34,6 +34,7 @@ CZMQ_CONFIGURE_OPTIONS = \
 	--enable-silent-rules \
 	--disable-static \
 	--without-liblz4 \
+	--without-uuid \
 	--without-docs
 
 LIBMICROHTTPD_CONFIGURE_OPTIONS = \
