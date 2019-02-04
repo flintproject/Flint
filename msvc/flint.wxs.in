@@ -118,7 +118,7 @@
             <File Id='libxml2' Name='libxml2.dll' DiskId='1' Source='libxml2.dll' />
           </Component>
           <Component Id='zeromq' Guid='f3c4adfc-f1b3-11e6-9632-afb37b5e1b1b'>
-            <File Id='libzmq' Name='libzmq-v141-mt-4_3_0.dll' DiskId='1' Source='libzmq-v141-mt-4_3_0.dll' />
+            <File Id='libzmq' Name='libzmq-v141-mt-4_3_1.dll' DiskId='1' Source='libzmq-v141-mt-4_3_1.dll' />
           </Component>
 
           <Component Id='third_party_licenses' Guid='6699ad54-8e3f-11e3-ae53-e3655a982178'>
