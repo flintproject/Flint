@@ -11,7 +11,6 @@ BuildRequires: make
 BuildRequires: flint-zeromq >= 4.3.0
 BuildRequires: libuuid-devel
 Requires: flint-zeromq >= 4.3.0
-Requires: libuuid
 
 %description
 This is a CZMQ package for Flint.
@@ -20,7 +19,7 @@ This is a CZMQ package for Flint.
 %setup -q
 
 %build
-./configure --prefix=/opt/flint --enable-silent-rules --without-docs --without-liblz4 PKG_CONFIG_PATH=/opt/flint/lib/pkgconfig
+./configure --prefix=/opt/flint --enable-silent-rules --without-docs --without-liblz4 --without-uuid PKG_CONFIG_PATH=/opt/flint/lib/pkgconfig
 make
 
 %install
