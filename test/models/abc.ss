@@ -1,0 +1,15 @@
+;; Arnold-Beltrami-Childress (ABC) flow
+(define-model abc
+  (variable t :independent)
+  (variable x)
+  (variable y)
+  (variable z)
+  (parameter A)
+  (parameter B)
+  (parameter C)
+  (eq (diff (bvar t) x)
+      (plus (times A (sin z)) (times C (cos y))))
+  (eq (diff (bvar t) y)
+      (plus (times B (sin x)) (times A (cos z))))
+  (eq (diff (bvar t) z)
+      (plus (times C (sin y)) (times B (cos x)))))
