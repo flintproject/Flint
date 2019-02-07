@@ -296,16 +296,16 @@
                       (cadr a))
                      (else #f)))
               ((null? (cdr rgs))
-               (cond ((= 0 a) ; (minus 0 b) -> (minus b)
+               (cond ((and (number? a) (= 0 a)) ; (minus 0 b) -> (minus b)
                       `(minus ,(car rgs)))
-                     ((= 0 (car rgs)) ; (minus a 0) -> a
+                     ((and (number? (car rgs)) (= 0 (car rgs))) ; (minus a 0) -> a
                       a)
                      ((equal? a (car rgs)) ; (minus a a) -> 0
                       0)
                      (else #f)))
               ((memq 0 rgs) ; (minus a b ... 0 c ...) -> (minus a b ... c ...)
                `(minus ,a ,@(remq 0 rgs)))
-              ((= 0 a) ; (minus 0 b ...) -> (minus (plus b ...))
+              ((and (number? a) (= 0 a)) ; (minus 0 b ...) -> (minus (plus b ...))
                `(minus (plus ,@rgs)))
               ((member a rgs) ; (minus a b ... a c ...) -> (minus (plus b ... c ...))
                => (lambda (rest)
@@ -325,13 +325,13 @@
 
     (define (reduce-divide args)
       (assert (<= 2 (length args)))
-      (cond ((= 0 (car args)) ; (divide 0 a ...) -> 0
+      (cond ((and (number? (car args)) (= 0 (car args))) ; (divide 0 a ...) -> 0
              0)
-            ((remq 1 (cdr args)) ; (divide a b ... 1 c ...) -> (divide a b ... c ...)
-             => (lambda (rest)
-                  (if (null? rest) ; (divide a 1 ...) -> a
-                      (car args)
-                      `(divide ,(car args) ,@rest))))
+            ((memq 1 (cdr args)) ; (divide a b ... 1 c ...) -> (divide a b ... c ...)
+             (let ((rest (remq 1 (cdr args))))
+               (if (null? rest) ; (divide a 1 ...) -> a
+                   (car args)
+                   `(divide ,(car args) ,@rest))))
             (else #f)))
 
     (define (reduce-formula x)
