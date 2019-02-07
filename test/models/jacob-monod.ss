@@ -7,6 +7,6 @@
   (parameter K) ; the saturation constant
   (parameter Y) ; the yield fo x per unit y taken up
   (eq (diff (bvar t) x)
-      (times (divides (times V y) (plus K y)) x))
+      (times (divide (times V y) (plus K y)) x))
   (eq (diff (bvar t) y)
-      (minus (times (divides 1 Y) (divides (times V y) (plus K y)) x))))
+      (minus (times (divide 1 Y) (divide (times V y) (plus K y)) x))))
