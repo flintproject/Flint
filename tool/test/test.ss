@@ -1,9 +1,9 @@
 #!r6rs
 (import (xunit)
-        (model cas)
         (model lang)
         (model record)
         (model formula latex)
+        (model formula simpl)
         (chezscheme))
 
 (define (model-list)
@@ -46,6 +46,14 @@
                  (equation-lhs (car es)))
   (assert-equal? 0
                  (equation-rhs (car es))))
+
+;; Simplifying formulae
+
+(define (test-formula-simplify expected f)
+  (assert-equal? expected (formula-simplify f)))
+
+(test-formula-simplify 1 '(plus 0 (times)))
+(test-formula-simplify 'a '(minus (minus 0 (divide a 1 1))))
 
 ;; Writing formulae in LaTeX format
 
