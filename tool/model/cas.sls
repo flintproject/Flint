@@ -1,6 +1,7 @@
+#!r6rs
 (library (model cas)
   (export formula-simplify)
-  (import (chezscheme)
+  (import (rnrs (6))
           (model record))
 
   (define (leaves e)

@@ -1,6 +1,11 @@
 This directory contains scripts for developers.
 
-The scripts with extension .ss or .sls are written in Scheme and runs on
-Chez Scheme [1].
+The scripts with extension .ss or .sls are written in R6RS Scheme [1] and
+runs on Chez Scheme [2].
 
-[1] https://cisco.github.io/ChezScheme/
+It is necessary to initialize and update git submodule xunit [3] before
+running tests in this directory if you have not yet.
+
+[1] http://www.r6rs.org/
+[2] https://cisco.github.io/ChezScheme/
+[3] https://github.com/tabe/xunit

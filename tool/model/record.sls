@@ -1,3 +1,4 @@
+#!r6rs
 (library (model record)
   (export make-variable
           variable-name
@@ -12,7 +13,7 @@
           model-equations
           print-model
           )
-  (import (chezscheme))
+  (import (rnrs (6)))
 
   (define-record-type variable
     (fields name

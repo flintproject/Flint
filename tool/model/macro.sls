@@ -1,6 +1,7 @@
+#!r6rs
 (library (model macro)
   (export define-auxiliary-keywords)
-  (import (chezscheme))
+  (import (rnrs (6)))
 
   ;; Adopted from <https://github.com/cisco/ChezScheme/issues/41>
 

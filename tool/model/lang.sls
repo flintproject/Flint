@@ -1,3 +1,4 @@
+#!r6rs
 (library (model lang)
   (export :default
           :independent
@@ -12,7 +13,7 @@
           equation-form
           define-model
           )
-  (import (except (chezscheme) <)
+  (import (except (rnrs (6)) <)
           (model macro)
           (model record))
 

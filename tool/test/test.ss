@@ -1,3 +1,4 @@
+#!r6rs
 (import (xunit)
         (model cas)
         (model lang)
