@@ -3,13 +3,14 @@
         (model lang)
         (model record)
         (model formula latex)
+        (model formula mathml)
         (model formula simpl)
         (chezscheme))
 
 (define (model-list)
-  (let* ((m (path-parent (path-parent (current-directory))))
+  (let* ((m (path-parent (current-directory)))
          (s (directory-separator))
-         (p (format "~a~atest~amodels" m s s)))
+         (p (format "~a~aexample" m s)))
     (filter (lambda (x)
               (and (file-regular? x)
                    (string=? (path-extension x) "ss")))
@@ -55,15 +56,45 @@
 (test-formula-simplify 1 '(plus 0 (times)))
 (test-formula-simplify 'a '(minus (minus 0 (divide a 1 1))))
 
+;; Writing formulae in MathML format
+
+(define (test-formula->mathml m expected)
+  (for-each
+   (lambda (e xy)
+     (assert-string=? (car xy) (formula->mathml (equation-lhs e) "m"))
+     (assert-string=? (cdr xy) (formula->mathml (equation-rhs e) "m")))
+   (model-equations m)
+   expected))
+
+(test-formula->mathml
+ abc
+ '(("<m:apply><m:diff/><m:bvar><m:ci>t</m:ci></m:bvar><m:ci>x</m:ci></m:apply>" .
+    "<m:apply><m:plus/><m:apply><m:times/><m:ci>A</m:ci><m:apply><m:sin/><m:ci>z</m:ci></m:apply></m:apply><m:apply><m:times/><m:ci>C</m:ci><m:apply><m:cos/><m:ci>y</m:ci></m:apply></m:apply></m:apply>")
+   ("<m:apply><m:diff/><m:bvar><m:ci>t</m:ci></m:bvar><m:ci>y</m:ci></m:apply>" .
+    "<m:apply><m:plus/><m:apply><m:times/><m:ci>B</m:ci><m:apply><m:sin/><m:ci>x</m:ci></m:apply></m:apply><m:apply><m:times/><m:ci>A</m:ci><m:apply><m:cos/><m:ci>z</m:ci></m:apply></m:apply></m:apply>")
+   ("<m:apply><m:diff/><m:bvar><m:ci>t</m:ci></m:bvar><m:ci>z</m:ci></m:apply>" .
+    "<m:apply><m:plus/><m:apply><m:times/><m:ci>C</m:ci><m:apply><m:sin/><m:ci>y</m:ci></m:apply></m:apply><m:apply><m:times/><m:ci>B</m:ci><m:apply><m:cos/><m:ci>x</m:ci></m:apply></m:apply></m:apply>")
+   ))
+
+(test-formula->mathml
+ duffing
+ '(("<m:apply><m:plus/><m:apply><m:diff/><m:bvar><m:degree><m:cn>2</m:cn></m:degree><m:ci>t</m:ci></m:bvar><m:ci>x</m:ci></m:apply><m:apply><m:times/><m:ci>delta</m:ci><m:apply><m:diff/><m:bvar><m:ci>t</m:ci></m:bvar><m:ci>x</m:ci></m:apply></m:apply><m:apply><m:times/><m:ci>beta</m:ci><m:ci>x</m:ci></m:apply><m:apply><m:times/><m:ci>alpha</m:ci><m:apply><m:power/><m:ci>x</m:ci><m:cn>3</m:cn></m:apply></m:apply></m:apply>" .
+    "<m:apply><m:times/><m:ci>gamma</m:ci><m:apply><m:cos/><m:apply><m:times/><m:ci>omega</m:ci><m:ci>t</m:ci></m:apply></m:apply></m:apply>")
+   ))
+
+(test-formula->mathml
+ efk1
+ '(("<m:apply><m:plus/><m:apply><m:diff/><m:bvar><m:degree><m:cn>4</m:cn></m:degree><m:ci>t</m:ci></m:bvar><m:ci>u</m:ci></m:apply><m:apply><m:times/><m:ci>q</m:ci><m:apply><m:diff/><m:bvar><m:degree><m:cn>2</m:cn></m:degree><m:ci>t</m:ci></m:bvar><m:ci>u</m:ci></m:apply></m:apply><m:apply><m:power/><m:ci>u</m:ci><m:cn>3</m:cn></m:apply><m:apply><m:minus/><m:ci>u</m:ci></m:apply></m:apply>" .
+    "<m:cn>0</m:cn>")
+   ))
+
 ;; Writing formulae in LaTeX format
 
 (define (test-formula->latex m expected)
   (for-each
    (lambda (e xy)
-     (let ((lhs-latex (formula->latex (equation-lhs e)))
-           (rhs-latex (formula->latex (equation-rhs e))))
-       (assert-string=? (car xy) (formula->latex (equation-lhs e)))
-       (assert-string=? (cdr xy) (formula->latex (equation-rhs e)))))
+     (assert-string=? (car xy) (formula->latex (equation-lhs e)))
+     (assert-string=? (cdr xy) (formula->latex (equation-rhs e))))
    (model-equations m)
    expected))
 
