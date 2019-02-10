@@ -129,6 +129,13 @@
     (assert (derivative-free? y))
     (set-minus (terminal-set x) (terminal-set y)))
 
+  (define (subtract s ms)
+    (let lp ((s s)
+             (ms ms))
+      (if (null? ms)
+          s
+          (lp `(minus ,s ,(car ms)) (cdr ms)))))
+
   (define (solve s lhs rhs)
     (assert (symbol? s))
     (assert (list? lhs))
@@ -140,7 +147,7 @@
                 (rest '()))
          (if (null? args)
              (if term
-                 (make-equation term `(minus ,rhs ,@rest))
+                 (make-equation term (subtract rhs rest))
                  #f)
              (if (memq s (subformulae (car args)))
                  (lp (cdr args) (car args) rest)

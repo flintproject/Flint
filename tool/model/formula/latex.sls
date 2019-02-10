@@ -118,11 +118,13 @@
                       ((null? (cdr args))
                        (make-sum
                         (list "- " (tree->product (formula->tree (car args))))))
-                      (else
+                      ((= (length args) 2)
                        (make-sum
-                        (cons (tree->sum (formula->tree (car args)))
-                              (map (lambda (x) (list " - " (tree->product (formula->tree x))))
-                                   (cdr args)))))))
+                        (list (tree->sum (formula->tree (car args)))
+                              " - "
+                              (tree->product (formula->tree (cadr args))))))
+                      (else
+                       (error #f "more than two arguments of minus" f))))
                ((times)
                 (cond ((null? args)
                        (error #f "no argument of times" f))

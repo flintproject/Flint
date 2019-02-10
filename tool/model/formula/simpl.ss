@@ -25,22 +25,19 @@
                            (eq? 'minus (car a))) ; (minus (minus b)) -> b
                       (cadr a))
                      (else #f)))
-              ((null? (cdr rgs))
-               (cond ((and (number? a) (= 0 a)) ; (minus 0 b) -> (minus b)
-                      `(minus ,(car rgs)))
-                     ((and (number? (car rgs)) (= 0 (car rgs))) ; (minus a 0) -> a
-                      a)
-                     ((equal? a (car rgs)) ; (minus a a) -> 0
-                      0)
-                     (else #f)))
-              ((memq 0 rgs) ; (minus a b ... 0 c ...) -> (minus a b ... c ...)
-               `(minus ,a ,@(remq 0 rgs)))
-              ((and (number? a) (= 0 a)) ; (minus 0 b ...) -> (minus (plus b ...))
-               `(minus (plus ,@rgs)))
-              ((member a rgs) ; (minus a b ... a c ...) -> (minus (plus b ... c ...))
-               => (lambda (rest)
-                    `(minus (plus ,@(reverse (list-tail (reverse rgs) (length rest))) ,@(cdr rest)))))
-              (else #f))))
+              (else
+               (let ((b (car rgs)))
+                 (cond ((and (number? a) (= 0 a)) ; (minus 0 b) -> (minus b)
+                        `(minus ,b))
+                       ((and (number? b) (= 0 b)) ; (minus a 0) -> a
+                        a)
+                       ((equal? a b) ; (minus a a) -> 0
+                        0)
+                       ((and (list? b)
+                             (= (length b) 2)
+                             (eq? 'minus (car b))) ; (minus a (minus c)) -> (plus a c)
+                        `(plus ,a ,(cadr b)))
+                       (else #f)))))))
 
     (define (reduce-times args)
       (cond ((null? args) ; (times) -> 1

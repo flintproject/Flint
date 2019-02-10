@@ -13,9 +13,8 @@
   (parameter b2 :default 6/25)
   (eq (diff (bvar t) x)
       (times a
-             (minus z
-                    (times a1 (power x 3))
-                    (times a2 (power x 2))
+             (minus (minus (minus z (times a1 (power x 3)))
+                           (times a2 (power x 2)))
                     (times b x))))
   (eq (diff (bvar t) y)
       (minus z))
