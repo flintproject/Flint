@@ -88,6 +88,8 @@
     "<m:cn>0</m:cn>")
    ))
 
+(assert-string=? "<cn type=\"rational\">7<sep/>3</cn>" (formula->mathml 7/3 #f))
+
 ;; Writing formulae in LaTeX format
 
 (define (test-formula->latex m expected)
