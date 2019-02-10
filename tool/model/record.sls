@@ -8,9 +8,11 @@
           make-equation
           equation-lhs
           equation-rhs
+          model?
           make-model
           model-variables
           model-equations
+          model-independent-variable
           print-model
           )
   (import (rnrs (6)))
@@ -28,6 +30,9 @@
   (define-record-type model
     (fields variables
             equations))
+
+  (define (model-independent-variable m)
+    (find (lambda (v) (symbol=? (variable-type v) 'independent)) (model-variables m)))
 
   (define (print-model m)
     (define (print-list name l)
