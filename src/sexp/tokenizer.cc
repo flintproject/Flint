@@ -29,6 +29,7 @@ private:
 	int ReadRestOfNumber(const char *p, Token *token);
 	int ReadRestOfReal(const char *p, Token *token);
 	int ReadExponent(const char *p, Token *token);
+	int ReadDenominatorOfRational(const char *p, Token *token);
 
 	const char *input_;
 	const char *point_;
@@ -191,6 +192,9 @@ int Impl::ReadRestOfNumber(const char *p, Token *token)
 	case '.':
 		++point_;
 		return ReadRestOfReal(p, token);
+	case '/':
+		++point_;
+		return ReadDenominatorOfRational(p, token);
 	case '0': case '1': case '2': case '3': case '4':
 	case '5': case '6': case '7': case '8': case '9':
 		++point_;
@@ -214,6 +218,9 @@ int Impl::ReadNumberWithLeadingZero(const char *p, Token *token)
 	case '.':
 		++point_;
 		return ReadRestOfReal(p, token);
+	case '/':
+		++point_;
+		return ReadDenominatorOfRational(p, token);
 	}
 	// zero
 	token->type = Token::Type::kInteger;
@@ -274,6 +281,27 @@ int Impl::ReadExponent(const char *p, Token *token)
 	while (std::isdigit(point_[0])) ++point_;
 
 	token->type = Token::Type::kReal;
+	token->lexeme = p;
+	token->size = point_ - p;
+	return 1;
+}
+
+int Impl::ReadDenominatorOfRational(const char *p, Token *token)
+{
+	switch (point_[0]) {
+	case '1': case '2': case '3': case '4':
+	case '5': case '6': case '7': case '8': case '9':
+		++point_;
+		break;
+	default:
+		std::cerr << "unexpected character in denominator of rational: "
+				  << p
+				  << std::endl;
+		return -1;
+	}
+	while (std::isdigit(point_[0])) ++point_;
+
+	token->type = Token::Type::kRational;
 	token->lexeme = p;
 	token->size = point_ - p;
 	return 1;

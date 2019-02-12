@@ -6,6 +6,7 @@
 #include "compiler/bcc/tokenizer.h"
 
 #include <cassert>
+#include <cctype>
 #include <cerrno>
 #include <cmath>
 #include <cstdio>
@@ -37,6 +38,7 @@ private:
 	int ReadDollar(Token *token);
 	int ReadId(char c, Token *token);
 	int ReadNumber(Token *token);
+	int ReadReal(Token *token);
 	int ReadLabel(Token *token);
 	int ReadFunction(Token *token);
 
@@ -154,8 +156,9 @@ int TokenizerImpl::Read(Token *token)
 		ReportUnexpectedCharacter(c);
 		return -1;
 	case '-': // an initial character for number
-	case '.': // an initial character for number
 		return ReadNumber(token);
+	case '.': // an initial character for number
+		return ReadReal(token);
 	case '/':
 		ReportUnexpectedCharacter(c);
 		return -1;
@@ -320,6 +323,56 @@ int TokenizerImpl::ReadId(char c, Token *token)
 }
 
 int TokenizerImpl::ReadNumber(Token *token)
+{
+	char *e;
+	errno = 0;
+	double d = std::strtod(point_, &e);
+	if (d == 0 && e == point_) {
+		std::cerr << "no conversion was performed: "
+				  << point_
+				  << std::endl;
+		return -1;
+	}
+	if (errno == ERANGE) {
+		if (d == HUGE_VAL || d == -HUGE_VAL) {
+			std::cerr << "found overflow: " << point_ << std::endl;
+			return -1;
+		}
+		if (d == 0) {
+			std::cerr << "found underflow: " << point_ << std::endl;
+			return -1;
+		}
+	}
+	if (*e == '/') { // indicating a rational
+		const char *p = point_;
+		if (*p == '+' || *p == '-')
+			++p;
+		while (p < e) {
+			if (!std::isdigit(*p)) {
+				std::cerr << "real number followed by /: " << point_ << std::endl;
+				return -1;
+			}
+			++p;
+		}
+		++e;
+		if (!std::isdigit(*e)) {
+			std::cerr << "/ followed by unexpected character: " << point_ << std::endl;
+			return -1;
+		} else if (*e == '0') {
+			std::cerr << "/ followed by 0: " << point_ << std::endl;
+			return -1;
+		}
+		++e;
+		while (std::isdigit(*e)) ++e;
+	}
+	token->type = Token::Type::kNumber;
+	token->lexeme = point_;
+	token->size = static_cast<int>(e - point_);
+	point_ = e;
+	return 1;
+}
+
+int TokenizerImpl::ReadReal(Token *token)
 {
 	char *e;
 	errno = 0;

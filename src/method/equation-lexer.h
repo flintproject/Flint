@@ -32,18 +32,20 @@ struct EquationLexer : lex::lexer<TLexer> {
 		delta_time_ = "\"$\"DeltaTime";
 
 		real = "{SIGN}?{FLOAT}";
+		rational = "{SIGN}?(0|[1-9]\\d*)\"/\"[1-9]\\d*";
 		integer = "{SIGN}?\\d+";
 		id = "\"%\"[a-zA-Z_][a-zA-Z_0-9:]*";
 		keyword = "[$]?[a-zA-Z_]\\w*";
 
 		this->self = lex::token_def<>('\n') | '\r' | '(' | ')' | ' ';
 		this->self += case_set_ | case_ | condition_ | diff_ | eq_ | delay_ | delta_time_;
-		this->self += real | integer | id | keyword;
+		this->self += real | rational | integer | id | keyword;
 	}
 
 	lex::token_def<std::string> case_set_, case_, condition_, eq_, diff_, delay_, delta_time_;
 	lex::token_def<std::string> id, keyword;
 	lex::token_def<int> integer;
+	lex::token_def<flint::lexer::Rational> rational;
 	lex::token_def<flint::lexer::Real> real;
 };
 

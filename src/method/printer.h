@@ -20,6 +20,8 @@ public:
 
 	void operator()(int i) const;
 
+	void operator()(const flint::lexer::Rational &r) const;
+
 	void operator()(const flint::lexer::Real &r) const;
 
 private:

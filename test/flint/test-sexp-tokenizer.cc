@@ -93,6 +93,20 @@ BOOST_AUTO_TEST_CASE(Integer) {
 	CHECK_TOKEN(Token::Type::kInteger, 5);
 }
 
+BOOST_AUTO_TEST_CASE(Rational) {
+	Tokenizer t0("3/4");
+	BOOST_CHECK_EQUAL(t0(&token), 1);
+	CHECK_TOKEN(Token::Type::kRational, 3);
+
+	Tokenizer t1("+0/109");
+	BOOST_CHECK_EQUAL(t1(&token), 1);
+	CHECK_TOKEN(Token::Type::kRational, 6);
+
+	Tokenizer t2("-10/777");
+	BOOST_CHECK_EQUAL(t2(&token), 1);
+	CHECK_TOKEN(Token::Type::kRational, 7);
+}
+
 BOOST_AUTO_TEST_CASE(Real) {
 	Tokenizer t0(".0");
 	BOOST_CHECK_EQUAL(t0(&token), 1);

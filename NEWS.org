@@ -4,6 +4,8 @@
    - Windows 7 or later.
    - macOS: OS X Mavericks (10.9) or later.
    - Linux distributions such as Debian 9, RHEL/CentOS 6, and RHEL/CentOS 7.
+** Improvements
+   - Support MathML's <cn> of type="rational" to represent rational numbers.
 
 * Flint 2.1.1 (2019-02-01)
 

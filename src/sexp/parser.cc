@@ -88,6 +88,7 @@ int Impl::Parse(std::unique_ptr<sexp::Expression> *expp)
 		expp->reset(new sexp::Identifier(token));
 		return 1;
 	case Token::Type::kInteger:
+	case Token::Type::kRational:
 	case Token::Type::kReal:
 		if (!stack_.empty()) {
 			stack_.top().emplace_back(new sexp::Literal(token));

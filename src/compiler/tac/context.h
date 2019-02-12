@@ -54,6 +54,7 @@ private:
 	bool Assign(RegisterType rt, int n, cas::Compound &c);
 	bool Assign(RegisterType rt, int n, const cas::Identifier &id);
 	bool Assign(int n, int i);
+	bool Assign(int n, const lexer::Rational &r);
 	bool Assign(int n, const lexer::Real &r);
 	void GetType(cas::Expr &expr, int *w, int *col, int *row);
 

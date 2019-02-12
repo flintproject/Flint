@@ -159,7 +159,7 @@
 <is:initial-value/>
 <is:implementation>
 <is:definition type="ae" sub-type="" format="mathml">
-<m:math><m:apply><m:eq/><m:ci>r</m:ci><m:cn>3.5</m:cn></m:apply></m:math>
+<m:math><m:apply><m:eq/><m:ci>r</m:ci><m:cn type="rational">7<m:sep/>2</m:cn></m:apply></m:math>
 </is:definition>
 </is:implementation>
 <is:problem-condition-set/>

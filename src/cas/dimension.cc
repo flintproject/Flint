@@ -755,6 +755,8 @@ bool Context::Analyse(Expr *expr, int *col, int *row)
 		}
 	} else if (type == kExprIsInteger) {
 		*col = *row = 1;
+	} else if (type == kExprIsRational) {
+		*col = *row = 1;
 	} else {
 		assert(type == kExprIsReal);
 		*col = *row = 1;

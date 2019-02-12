@@ -29,6 +29,7 @@ enum {
 	kExprIsCompound,
 	kExprIsIdentifier,
 	kExprIsInteger,
+	kExprIsRational,
 	kExprIsReal
 };
 
@@ -50,6 +51,7 @@ struct Identifier {
 typedef boost::variant<boost::recursive_wrapper<Compound>,
 					   Identifier,
 					   int,
+					   lexer::Rational,
 					   lexer::Real
 					   > Expr;
 

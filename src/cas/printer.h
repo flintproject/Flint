@@ -33,6 +33,8 @@ public:
 
 	void operator()(int i);
 
+	void operator()(const flint::lexer::Rational &r);
+
 	void operator()(const flint::lexer::Real &r);
 
 	std::string GetAndClearString();

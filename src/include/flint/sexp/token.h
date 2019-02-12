@@ -15,6 +15,7 @@ struct Token {
 		kIdentifier,
 		kKeyword,
 		kInteger,
+		kRational,
 		kReal
 	};
 

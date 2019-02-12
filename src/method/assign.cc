@@ -49,6 +49,10 @@ public:
 		*os_ << i;
 	}
 
+	void operator()(const flint::lexer::Rational &r) const {
+		*os_ << r.lexeme;
+	}
+
 	void operator()(const flint::lexer::Real &r) const {
 		*os_ << r.lexeme;
 	}

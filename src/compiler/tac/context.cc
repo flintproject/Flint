@@ -647,6 +647,9 @@ bool Context::Assign(RegisterType rt, int n, cas::Expr &expr)
 	case cas::kExprIsInteger:
 		assert(rt == RegisterType::kFloat);
 		return Assign(n, boost::get<int>(expr));
+	case cas::kExprIsRational:
+		assert(rt == RegisterType::kFloat);
+		return Assign(n, boost::get<lexer::Rational>(expr));
 	case cas::kExprIsReal:
 		assert(rt == RegisterType::kFloat);
 		return Assign(n, boost::get<lexer::Real>(expr));
@@ -701,6 +704,12 @@ bool Context::Assign(RegisterType rt, int n, const cas::Identifier &id)
 bool Context::Assign(int n, int i)
 {
 	*os_ << "  loadi $" << n << ' ' << i << std::endl;
+	return true;
+}
+
+bool Context::Assign(int n, const lexer::Rational &r)
+{
+	*os_ << "  loadi $" << n << ' ' << r.lexeme << std::endl;
 	return true;
 }
 

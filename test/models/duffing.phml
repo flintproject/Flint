@@ -164,7 +164,7 @@
           <is:name>gamma</is:name>
           <is:implementation>
             <is:definition format="mathml" type="ae">
-              <m:math><m:apply><m:eq /><m:ci>gamma</m:ci><m:cn>0.5</m:cn></m:apply></m:math>
+              <m:math><m:apply><m:eq /><m:ci>gamma</m:ci><m:cn type="rational">1<m:sep/>2</m:cn></m:apply></m:math>
             </is:definition>
           </is:implementation>
           <is:dimension type="scalar" />

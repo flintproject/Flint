@@ -184,6 +184,7 @@ struct Lexer : lex::lexer<TLexer> {
 		uniform_variate_ = "$uniform_variate";
 
 		real = "{SIGN}?{FLOAT}";
+		rational = "{SIGN}?(0|[1-9]\\d*)\"/\"[1-9]\\d*";
 		integer = "{SIGN}?\\d+";
 		id = "[%@][a-zA-Z_][a-zA-Z_0-9:#]*";
 		keyword = "[$]?[a-zA-Z_]\\w*";
@@ -193,7 +194,7 @@ struct Lexer : lex::lexer<TLexer> {
 		this->self += lt_ | max_ | mean_ | min_ | neq_ | not_ | or_;
 		this->self += otherwise_ | piece_ | piecewise_ | plus_ | times_ | xor_;
 		this->self += uniform_variate_;
-		this->self += real | integer | id | keyword;
+		this->self += real | rational | integer | id | keyword;
 	}
 
 	lex::token_def<std::string> and_, eq_, geq_, gt_, leq_, log_, logbase_;
@@ -202,6 +203,7 @@ struct Lexer : lex::lexer<TLexer> {
 	lex::token_def<std::string> uniform_variate_;
 	lex::token_def<std::string> id, keyword;
 	lex::token_def<int> integer;
+	lex::token_def<flint::lexer::Rational> rational;
 	lex::token_def<flint::lexer::Real> real;
 };
 
@@ -217,6 +219,7 @@ struct Grammar : qi::grammar<TIterator, cas::Expr()> {
 		using boost::phoenix::val;
 
 		expr %= td.real
+			| td.rational
 			| td.integer
 			| td.id
 			| td.keyword

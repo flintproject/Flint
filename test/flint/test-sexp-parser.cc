@@ -84,7 +84,7 @@ BOOST_AUTO_TEST_CASE(Compound) {
 	BOOST_REQUIRE_EQUAL(p1(&exp), 1);
 	CHECK_COMPOUND(3u);
 
-	Parser p2("(hello (world %x1 2.3) 4 (more (and more longer)))");
+	Parser p2("(hello (world %x1 2.3) 4 (more (and more longer -1/6)))");
 	BOOST_REQUIRE_EQUAL(p2(&exp), 1);
 	CHECK_COMPOUND(4u);
 }

@@ -55,6 +55,7 @@ struct AssignmentGrammar : qi::grammar<TIterator, Compound()> {
 			| eq_expr
 			| general_expr
 			| td.real
+			| td.rational
 			| td.integer
 			| td.id
 			| td.keyword;

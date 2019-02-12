@@ -29,6 +29,11 @@ void Printer::operator()(int i) const
 	*os_ << i;
 }
 
+void Printer::operator()(const flint::lexer::Rational &r) const
+{
+	*os_ << r.lexeme;
+}
+
 void Printer::operator()(const flint::lexer::Real &r) const
 {
 	*os_ << r.lexeme;

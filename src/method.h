@@ -20,12 +20,14 @@ enum {
 	kExprIsCompound,
 	kExprIsString,
 	kExprIsInteger,
+	kExprIsRational,
 	kExprIsReal
 };
 
 typedef boost::variant<boost::recursive_wrapper<Compound>,
 					   std::string,
 					   int,
+					   flint::lexer::Rational,
 					   flint::lexer::Real
 					   > Expr;
 
