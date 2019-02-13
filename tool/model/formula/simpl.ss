@@ -51,14 +51,11 @@
             (else #f)))
 
     (define (reduce-divide args)
-      (assert (<= 2 (length args)))
-      (cond ((and (number? (car args)) (= 0 (car args))) ; (divide 0 a ...) -> 0
+      (assert (= 2 (length args)))
+      (cond ((and (number? (car args)) (= 0 (car args))) ; (divide 0 a) -> 0
              0)
-            ((memq 1 (cdr args)) ; (divide a b ... 1 c ...) -> (divide a b ... c ...)
-             (let ((rest (remq 1 (cdr args))))
-               (if (null? rest) ; (divide a 1 ...) -> a
-                   (car args)
-                   `(divide ,(car args) ,@rest))))
+            ((and (number? (cadr args)) (= 1 (cadr args))) ; (divide a 1) -> a
+             (car args))
             (else #f)))
 
     (define (reduce-formula x)

@@ -54,7 +54,7 @@
   (assert-equal? expected (formula-simplify f)))
 
 (test-formula-simplify 1 '(plus 0 (times)))
-(test-formula-simplify 'a '(minus (minus 0 (divide a 1 1))))
+(test-formula-simplify 'a '(minus (minus 0 (divide a 1))))
 
 ;; Writing formulae in MathML format
 
