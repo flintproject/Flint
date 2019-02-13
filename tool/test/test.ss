@@ -53,8 +53,10 @@
 (define (test-formula-simplify expected f)
   (assert-equal? expected (formula-simplify f)))
 
-(test-formula-simplify 1 '(plus 0 (times)))
+(test-formula-simplify '(plus a 5) '(plus (plus 1 (plus 0 (times))) a 3))
 (test-formula-simplify 'a '(minus (minus 0 (divide a 1))))
+(test-formula-simplify '(minus (plus a b d) c) '(minus (plus a b) (minus c d)))
+(test-formula-simplify '(times 21/10 a) '(times a (divide 7 5) 3 (divide 1 2)))
 
 ;; Writing formulae in MathML format
 
