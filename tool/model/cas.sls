@@ -58,6 +58,15 @@
           (dv (derivative-dname d)))
       `(diff (bvar ,iv) ,dv)))
 
+  (define (differential? d)
+    (and (list? d)
+         (= (length d) 2)
+         (eq? (car d) 'Differential)))
+
+  (define (differential-name d)
+    (assert (differential? d))
+    (cadr d))
+
   (define (unique l)
     (assert (list? l))
     (cond ((null? l) l)
@@ -238,6 +247,13 @@
                                                     (replace-derivative b s rhs))
                                     ,@(cdr rest))
                                   done))))
+                       ((differential? lhs)
+                        (let-values (((defined0 undefined1) (partition (lambda (v) (symbol=? (variable-name v) (differential-name lhs))) undefined)))
+                          (lp (+ n 1)
+                              undefined1
+                              (append defined defined0)
+                              (cdr rest)
+                              (cons e done))))
                        (else
                         (let ((ld (find-derivative lhs)))
                           (if ld

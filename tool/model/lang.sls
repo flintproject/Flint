@@ -3,7 +3,9 @@
   (export :default
           :independent
           :natural
+          :random
           :real
+          :Wiener
           <
           variable-with-attribute
           variable
@@ -17,10 +19,10 @@
           (model macro)
           (model record))
 
-  (define-auxiliary-keywords :default :independent :natural :real <)
+  (define-auxiliary-keywords :default :independent :natural :random :real :Wiener <)
 
   (define-syntax variable-with-attribute
-    (syntax-rules (:default :independent :natural :real <)
+    (syntax-rules (:default :independent :natural :random :real :Wiener <)
       ((_ s)
        s)
       ((_ s :default value attr ...)
@@ -47,12 +49,28 @@
          'natural
          (variable-default s))
         attr ...))
+      ((_ s :random attr ...)
+       (variable-with-attribute
+        (make-variable
+         (variable-name s)
+         'random
+         (variable-set s)
+         (variable-default s))
+        attr ...))
       ((_ s :real attr ...)
        (variable-with-attribute
         (make-variable
          (variable-name s)
          (variable-type s)
          'real
+         (variable-default s))
+        attr ...))
+      ((_ s :Wiener attr ...)
+       (variable-with-attribute
+        (make-variable
+         (variable-name s)
+         'Wiener
+         (variable-set s)
          (variable-default s))
         attr ...))
       ((_ s (< x y ...) attr ...) ; TODO

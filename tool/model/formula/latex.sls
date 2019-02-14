@@ -89,7 +89,16 @@
                  (else
                   (make-atom (list "\\mathit{" f "}")))))
           ((number? f)
-           (make-atom f))
+           (if (and (exact? f)
+                    (rational? f)
+                    (not (integer? f)))
+               (let* ((n (numerator f))
+                      (d (denominator f))
+                      (x (list "\\frac{" (abs n) "}{" d "}")))
+                 (if (negative? n)
+                     (make-sum (cons "- " x))
+                     (make-factor x)))
+               (make-atom f)))
           ((symbol? (car f))
            (let ((args (cdr f)))
              (case (car f)
@@ -227,6 +236,14 @@
                               (tree->atom (formula->tree (cadr args))))))
                       (else
                        (error #f ">2 arguments of power" f))))
+               ((root)
+                (cond ((= (length args) 1)
+                       (make-factor
+                        (list "\\sqrt{"
+                              (formula->tree (car args))
+                              "}"))) ; TODO: Support degree other than 2
+                      (else
+                       (error #f "invalid number of arguments of root" f))))
                ((diff)
                 (cond ((or (null? args)
                            (null? (cdr args)))
@@ -241,9 +258,9 @@
                                 (error #f "no argument of bvar" f))
                                ((= 1 (length bvar-args))
                                 (make-factor
-                                 (list "\\frac{\\operatorname{d}"
+                                 (list "\\frac{\\operatorname{d}\\!"
                                        (tree->product (formula->tree (cadr args)))
-                                       "}{\\operatorname{d}"
+                                       "}{\\operatorname{d}\\!"
                                        (formula->tree (car bvar-args))
                                        "}")))
                                ((= 2 (length bvar-args))
@@ -257,9 +274,9 @@
                                          (make-factor
                                           (list "\\frac{\\operatorname{d}^{"
                                                 (cadr d)
-                                                "}"
+                                                "}\\!"
                                                 (tree->product (formula->tree (cadr args)))
-                                                "}{\\operatorname{d}"
+                                                "}{\\operatorname{d}\\!"
                                                 (formula->tree (cadr bvar-args))
                                                 "^{"
                                                 (cadr d)
@@ -270,6 +287,13 @@
                                 (error #f "unsupported argument of bvar" (car args))))))
                       (else
                        (error #f "unsupported argument of diff" f))))
+               ((Differential)
+                (cond ((null? args)
+                       (error #f "no argument of Differential" f))
+                      (else
+                       (make-factor
+                        (list "\\operatorname{d}\\!"
+                              (tree->product (formula->tree (car args))))))))
                (else
                 (error #f "unsupported formula" f)))))
           (else
