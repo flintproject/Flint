@@ -110,37 +110,33 @@
                         (model-variables n))))))
 
   (define (implementation->list impl)
-    `("<is:implementation>\n"
-      "<is:definition type=\"" ,(definition-type impl) "\" format=\"mathml\">\n"
-      "<m:math>"
-      ,(formula->mathml (definition-mathml impl) "m" phml-csymbol-list)
-      "</m:math>\n"
-      "</is:definition>\n"
-      "</is:implementation>\n"
+    `("        <is:implementation>\n"
+      "          <is:definition type=\"" ,(definition-type impl) "\" format=\"mathml\">\n"
+      "            <m:math>" ,(formula->mathml (definition-mathml impl) "m" phml-csymbol-list) "</m:math>\n"
+      "          </is:definition>\n"
+      "        </is:implementation>\n"
       ))
 
   (define (initial-value->list iv)
     (if iv
-        `("<is:initial-value>\n"
-          "<is:definition type=\"" ,(definition-type iv)  "\" format=\"mathml\">\n"
-          "<m:math>"
-          ,(formula->mathml (definition-mathml iv) "m" phml-csymbol-list)
-          "</m:math>\n"
-          "</is:definition>\n"
-          "</is:initial-value>\n"
+        `("        <is:initial-value>\n"
+          "          <is:definition type=\"" ,(definition-type iv)  "\" format=\"mathml\">\n"
+          "            <m:math>" ,(formula->mathml (definition-mathml iv) "m" phml-csymbol-list) "</m:math>\n"
+          "          </is:definition>\n"
+          "        </is:initial-value>\n"
           )
         '()))
 
   (define (physical-quantity->list pq id)
-    `("<is:physical-quantity type=\"" ,(physical-quantity-type pq) "\" physical-quantity-id=\"" ,(+ id 1) "\">\n"
-      "<is:name>" ,(physical-quantity-name pq) "</is:name>\n"
+    `("      <is:physical-quantity type=\"" ,(physical-quantity-type pq) "\" physical-quantity-id=\"" ,(+ id 1) "\">\n"
+      "        <is:name>" ,(physical-quantity-name pq) "</is:name>\n"
       ,@(implementation->list (physical-quantity-implementation pq))
       ,@(initial-value->list (physical-quantity-initial-value pq))
-      "<is:dimension type=\"scalar\" />\n"
-      "<is:value-type-set>\n"
-      "<is:value-type unit-id=\"0\" precision=\"double\" />\n"
-      "</is:value-type-set>\n"
-      "</is:physical-quantity>\n"
+      "        <is:dimension type=\"scalar\" />\n"
+      "        <is:value-type-set>\n"
+      "          <is:value-type unit-id=\"0\" precision=\"double\" />\n"
+      "        </is:value-type-set>\n"
+      "      </is:physical-quantity>\n"
      ))
 
   (define (phml->list p)
