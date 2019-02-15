@@ -104,85 +104,85 @@
 
 (test-formula->latex
  abc
- '(("\\frac{\\operatorname{d}x}{\\operatorname{d}t}" .
+ '(("\\frac{\\operatorname{d}\\!x}{\\operatorname{d}\\!t}" .
     "A \\sin(z) + C \\cos(y)")
-   ("\\frac{\\operatorname{d}y}{\\operatorname{d}t}" .
+   ("\\frac{\\operatorname{d}\\!y}{\\operatorname{d}\\!t}" .
     "B \\sin(x) + A \\cos(z)")
-   ("\\frac{\\operatorname{d}z}{\\operatorname{d}t}" .
+   ("\\frac{\\operatorname{d}\\!z}{\\operatorname{d}\\!t}" .
     "C \\sin(y) + B \\cos(x)")
    ))
 
 (test-formula->latex
  chua1
- '(("\\frac{\\operatorname{d}x}{\\operatorname{d}t}" .
+ '(("\\frac{\\operatorname{d}\\!x}{\\operatorname{d}\\!t}" .
     "a (z - \\mathit{a1} x^3 - \\mathit{a2} x^2 - b x)")
-   ("\\frac{\\operatorname{d}y}{\\operatorname{d}t}" .
+   ("\\frac{\\operatorname{d}\\!y}{\\operatorname{d}\\!t}" .
     "- z")
-   ("\\frac{\\operatorname{d}z}{\\operatorname{d}t}" .
+   ("\\frac{\\operatorname{d}\\!z}{\\operatorname{d}\\!t}" .
     "- \\mathit{b1} x + y + \\mathit{b2} z")
    ))
 
 (test-formula->latex
  duffing
- '(("\\frac{\\operatorname{d}^{2}x}{\\operatorname{d}t^{2}} + \\delta \\frac{\\operatorname{d}x}{\\operatorname{d}t} + \\beta x + \\alpha x^3" .
+ '(("\\frac{\\operatorname{d}^{2}\\!x}{\\operatorname{d}\\!t^{2}} + \\delta \\frac{\\operatorname{d}\\!x}{\\operatorname{d}\\!t} + \\beta x + \\alpha x^3" .
     "\\gamma \\cos(\\omega t)")
    ))
 
 (test-formula->latex
  efk1
- '(("\\frac{\\operatorname{d}^{4}u}{\\operatorname{d}t^{4}} + q \\frac{\\operatorname{d}^{2}u}{\\operatorname{d}t^{2}} + u^3 + (- u)" .
+ '(("\\frac{\\operatorname{d}^{4}\\!u}{\\operatorname{d}\\!t^{4}} + q \\frac{\\operatorname{d}^{2}\\!u}{\\operatorname{d}\\!t^{2}} + u^3 + (- u)" .
     "0")
    ))
 
 (test-formula->latex
  fitzhugh-nagumo
- '(("\\frac{\\operatorname{d}V}{\\operatorname{d}t}" .
+ '(("\\frac{\\operatorname{d}\\!V}{\\operatorname{d}\\!t}" .
     "V - \\frac{V^3}{3} - W + I")
-   ("\\frac{\\operatorname{d}W}{\\operatorname{d}t}" .
+   ("\\frac{\\operatorname{d}\\!W}{\\operatorname{d}\\!t}" .
     "0.08 (V + 0.7 - 0.8 W)")
    ))
 
 (test-formula->latex
  jacob-monod
- '(("\\frac{\\operatorname{d}x}{\\operatorname{d}t}" .
+ '(("\\frac{\\operatorname{d}\\!x}{\\operatorname{d}\\!t}" .
     "\\frac{V y}{K + y} x")
-   ("\\frac{\\operatorname{d}y}{\\operatorname{d}t}" .
+   ("\\frac{\\operatorname{d}\\!y}{\\operatorname{d}\\!t}" .
     "- \\frac{1}{Y} \\frac{V y}{K + y} x")
    ))
 
 (test-formula->latex
  laguerre
- '(("x \\frac{\\operatorname{d}^{2}y}{\\operatorname{d}x^{2}} + (\\alpha - x + 1) \\frac{\\operatorname{d}y}{\\operatorname{d}x} + n y" .
+ '(("x \\frac{\\operatorname{d}^{2}\\!y}{\\operatorname{d}\\!x^{2}} + (\\alpha - x + 1) \\frac{\\operatorname{d}\\!y}{\\operatorname{d}\\!x} + n y" .
     "0")
    ))
 
 (test-formula->latex
  logistic
- '(("\\frac{\\operatorname{d}x}{\\operatorname{d}t}" .
+ '(("\\frac{\\operatorname{d}\\!x}{\\operatorname{d}\\!t}" .
     "x (1 - x)")
    ))
 
 (test-formula->latex
  lotka-volterra
- '(("\\frac{\\operatorname{d}x}{\\operatorname{d}t}" .
+ '(("\\frac{\\operatorname{d}\\!x}{\\operatorname{d}\\!t}" .
     "(b - p y) x")
-   ("\\frac{\\operatorname{d}y}{\\operatorname{d}t}" .
+   ("\\frac{\\operatorname{d}\\!y}{\\operatorname{d}\\!t}" .
     "(r x - d) y")
    ))
 
 (test-formula->latex
  roessler
- '(("\\frac{\\operatorname{d}x}{\\operatorname{d}t}" .
+ '(("\\frac{\\operatorname{d}\\!x}{\\operatorname{d}\\!t}" .
     "- y - z")
-   ("\\frac{\\operatorname{d}y}{\\operatorname{d}t}" .
+   ("\\frac{\\operatorname{d}\\!y}{\\operatorname{d}\\!t}" .
     "x + a y")
-   ("\\frac{\\operatorname{d}z}{\\operatorname{d}t}" .
+   ("\\frac{\\operatorname{d}\\!z}{\\operatorname{d}\\!t}" .
     "b + z (x - c)")
    ))
 
 (test-formula->latex
  van-der-pol
- '(("\\frac{\\operatorname{d}^{2}x}{\\operatorname{d}t^{2}} - \\epsilon (1 - x^2) \\frac{\\operatorname{d}x}{\\operatorname{d}t} + x" .
+ '(("\\frac{\\operatorname{d}^{2}\\!x}{\\operatorname{d}\\!t^{2}} - \\epsilon (1 - x^2) \\frac{\\operatorname{d}\\!x}{\\operatorname{d}\\!t} + x" .
     "0")
    ))
 
