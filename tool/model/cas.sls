@@ -61,7 +61,7 @@
   (define (differential? d)
     (and (list? d)
          (= (length d) 2)
-         (eq? (car d) 'Differential)))
+         (eq? (car d) 'differential)))
 
   (define (differential-name d)
     (assert (differential? d))

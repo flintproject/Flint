@@ -21,6 +21,11 @@
     (fields uuid
             physical-quantities))
 
+  (define phml-csymbol-list
+    '(differential
+      gauss_variate
+      ))
+
   (define (replace-independent-variable-with-time f m)
     (let ((x (variable-name (model-independent-variable m))))
       (cond ((number? f)
@@ -52,6 +57,15 @@
                 `(eq ,(equation-lhs e) ,(equation-rhs e))))
           (else #f)))
 
+  (define (find-sde v m)
+    (cond ((find
+            (lambda (e)
+              (equal? `(differential ,(variable-name v)) (equation-lhs e)))
+            (model-equations m))
+           => (lambda (e)
+                `(eq ,(equation-lhs e) ,(equation-rhs e))))
+          (else #f)))
+
   (define (model->phml m uuid)
     (let ((n (normalize m)))
       (make-phml uuid
@@ -62,6 +76,12 @@
                             (variable-name v)
                             'static-parameter
                             (make-definition 'ae `(eq ,(variable-name v) ,(or (variable-default v) 0)))
+                            #f))
+                          ((symbol=? (variable-type v) 'Wiener)
+                           (make-physical-quantity
+                            (variable-name v)
+                            'variable-parameter
+                            (make-definition 'ae `(eq ,(variable-name v) (gauss_variate 0 1)))
                             #f))
                           ((find-ae v n)
                            => (lambda (ae)
@@ -77,6 +97,13 @@
                                  'state
                                  (make-definition 'ode (replace-independent-variable-with-time ode m))
                                  (make-definition 'ae `(eq ,(variable-name v) ,(or (variable-default v) 0))))))
+                          ((find-sde v n)
+                           => (lambda (sde)
+                                (make-physical-quantity
+                                 (variable-name v)
+                                 'state
+                                 (make-definition 'sde (replace-independent-variable-with-time sde m))
+                                 (make-definition 'ae `(eq ,(variable-name v) ,(or (variable-default v) 0))))))
                           (else
                            (error #f "failed to convert to PHML" v))))
                   (remp (lambda (v) (symbol=? (variable-type v) 'independent))
@@ -86,7 +113,7 @@
     `("<is:implementation>\n"
       "<is:definition type=\"" ,(definition-type impl) "\" format=\"mathml\">\n"
       "<m:math>"
-      ,(formula->mathml (definition-mathml impl) "m")
+      ,(formula->mathml (definition-mathml impl) "m" phml-csymbol-list)
       "</m:math>\n"
       "</is:definition>\n"
       "</is:implementation>\n"
@@ -97,7 +124,7 @@
         `("<is:initial-value>\n"
           "<is:definition type=\"" ,(definition-type iv)  "\" format=\"mathml\">\n"
           "<m:math>"
-          ,(formula->mathml (definition-mathml iv) "m")
+          ,(formula->mathml (definition-mathml iv) "m" phml-csymbol-list)
           "</m:math>\n"
           "</is:definition>\n"
           "</is:initial-value>\n"

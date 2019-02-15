@@ -37,7 +37,12 @@
           ,(number->string x)
           ,@(close-tag "cn" prefix))))
 
-  (define (formula->mathml-list f prefix)
+  (define (csymbol-tag name prefix)
+    (if prefix
+        `("<" ,prefix ":csymbol>" ,name "</" ,prefix ":csymbol>")
+        `("<csymbol>" ,name "</csymbol>")))
+
+  (define (formula->mathml-list f prefix csymbol-list)
     (cond ((number? f)
            (number->cn f prefix))
           ((symbol? f)
@@ -51,16 +56,18 @@
                ((bvar degree)
                 (append
                  (open-tag name prefix)
-                 (apply append (map (lambda (x) (formula->mathml-list x prefix)) args))
+                 (apply append (map (lambda (x) (formula->mathml-list x prefix csymbol-list)) args))
                  (close-tag name prefix)))
                (else
                 (append
                  (open-tag "apply" prefix)
-                 (empty-tag name prefix)
-                 (apply append (map (lambda (x) (formula->mathml-list x prefix)) args))
+                 (if (memq (car f) csymbol-list)
+                     (csymbol-tag name prefix)
+                     (empty-tag name prefix))
+                 (apply append (map (lambda (x) (formula->mathml-list x prefix csymbol-list)) args))
                  (close-tag "apply" prefix))))))))
 
-  (define (formula->mathml f prefix)
-    (apply string-append (formula->mathml-list f prefix)))
+  (define (formula->mathml f prefix csymbol-list)
+    (apply string-append (formula->mathml-list f prefix csymbol-list)))
 
 )

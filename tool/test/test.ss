@@ -63,8 +63,8 @@
 (define (test-formula->mathml m expected)
   (for-each
    (lambda (e xy)
-     (assert-string=? (car xy) (formula->mathml (equation-lhs e) "m"))
-     (assert-string=? (cdr xy) (formula->mathml (equation-rhs e) "m")))
+     (assert-string=? (car xy) (formula->mathml (equation-lhs e) "m" '()))
+     (assert-string=? (cdr xy) (formula->mathml (equation-rhs e) "m" '())))
    (model-equations m)
    expected))
 
@@ -90,7 +90,7 @@
     "<m:cn>0</m:cn>")
    ))
 
-(assert-string=? "<cn type=\"rational\">7<sep/>3</cn>" (formula->mathml 7/3 #f))
+(assert-string=? "<cn type=\"rational\">7<sep/>3</cn>" (formula->mathml 7/3 #f '()))
 
 ;; Writing formulae in LaTeX format
 

@@ -287,9 +287,9 @@
                                 (error #f "unsupported argument of bvar" (car args))))))
                       (else
                        (error #f "unsupported argument of diff" f))))
-               ((Differential)
+               ((differential)
                 (cond ((null? args)
-                       (error #f "no argument of Differential" f))
+                       (error #f "no argument of differential" f))
                       (else
                        (make-factor
                         (list "\\operatorname{d}\\!"
