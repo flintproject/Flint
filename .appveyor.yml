@@ -7,7 +7,7 @@ image: Visual Studio 2017
 platform: x64
 
 install:
-  - 'C:\cygwin64\setup-x86_64.exe -d -g -n -N -q -P m4,make,patch,tar,wget'
+  - 'C:\cygwin64\setup-x86_64.exe -d -n -N -q -P m4,make,patch,tar,wget'
   - 'C:\cygwin64\bin\bash -l "cd msvc && cp config.mk.x86-x64 config.mk && make"'
 
 build_script:
