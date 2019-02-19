@@ -1,0 +1,14 @@
+version: 2.2.0.{build}
+
+shallow_clone: true
+
+image: Visual Studio 2017
+
+platform: x64
+
+install:
+  - 'C:\cygwin64\setup-x86_64.exe -d -g -n -N -q -P m4,make,patch,tar,wget'
+  - 'C:\cygwin64\bin\bash -l "cd msvc && cp config.mk.x86-x64 config.mk && make"'
+
+build_script:
+  - cmd: "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvarsall.bat" x64 && cd msvc && msbuild all.proj
