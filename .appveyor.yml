@@ -8,8 +8,8 @@ platform: x64
 
 install:
   - 'C:\cygwin64\setup-x86_64.exe -d -n -N -q -P m4,make,patch,tar,wget'
-  - 'C:\cygwin64\bin\bash -l -c "pwd && cd msvc && cp config.mk.x86-64 config.mk && make"'
 
 build_script:
+  - 'C:\cygwin64\bin\bash -l -c "pwd && cd msvc && cp config.mk.x86-64 config.mk && make"'
   - call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvarsall.bat" x64
   - cd msvc && msbuild all.proj
