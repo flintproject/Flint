@@ -11,4 +11,4 @@ install:
   - 'C:\cygwin64\bin\bash -l "cd msvc && cp config.mk.x86-x64 config.mk && make"'
 
 build_script:
-  - cmd: "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvarsall.bat" x64 && cd msvc && msbuild all.proj
+  - cmd: "C:\\Program Files (x86)\\Microsoft Visual Studio\\2017\\Community\\VC\\Auxiliary\\Build\\vcvarsall.bat" x64 && cd msvc && msbuild all.proj
