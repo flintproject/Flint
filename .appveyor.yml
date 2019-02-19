@@ -7,7 +7,7 @@ image: Visual Studio 2017
 platform: x64
 
 install:
-  - 'C:\cygwin64\setup-x86_64.exe -d -n -N -q -P m4,make,patch,tar,wget'
+  - 'C:\cygwin64\setup-x86_64.exe -d -n -N -q -P m4,make,patch,tar,unzip,wget'
 
 build_script:
   - 'C:\cygwin64\bin\bash -l -c "cd $(cygpath $APPVEYOR_BUILD_FOLDER)/msvc && cp config.mk.x86-64 config.mk && make"'
