@@ -11,6 +11,6 @@ install:
 
 build_script:
   - cd %APPVEYOR_BUILD_FOLDER%\msvc
-  - 'C:\cygwin64\bin\bash -l -c "cp config.mk.x86-64 config.mk && make"'
+  - 'C:\cygwin64\bin\bash -l -c "pwd && cp config.mk.x86-64 config.mk && make"'
   - call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvarsall.bat" x64
   - msbuild all.proj
