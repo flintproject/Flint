@@ -10,6 +10,6 @@ install:
   - 'C:\cygwin64\setup-x86_64.exe -d -n -N -q -P m4,make,patch,tar,wget'
 
 build_script:
-  - cd %APPVEYOR_BUILD_FOLDER%\msvc && C:\cygwin64\bin\bash -l -c "pwd && cp config.mk.x86-64 config.mk && make"
+  - 'C:\cygwin64\bin\bash -l -c "cd $(cygpath $APPVEYOR_BUILD_FOLDER)/msvc && cp config.mk.x86-64 config.mk && make"'
   - call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvarsall.bat" x64
   - cd %APPVEYOR_BUILD_FOLDER%\msvc && msbuild all.proj
