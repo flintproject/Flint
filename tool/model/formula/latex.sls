@@ -39,6 +39,15 @@
       omega
       Omega))
 
+  (define (greek-prefix? s)
+    (assert (string? s))
+    (exists
+     (lambda (g)
+       (and (< (string-length g) (string-length s))
+            (string=? g (substring s 0 (string-length g)))
+            (char=? #\_ (list-ref (string->list s) (string-length g)))))
+     (map symbol->string greek-symbols)))
+
   ;; level
   ;;   atom: number, indentifier, etc.
   ;;   factor: function call, power, root, logarithm, etc.
@@ -85,6 +94,8 @@
            (cond ((= (string-length (symbol->string f)) 1)
                   (make-atom f))
                  ((memq f greek-symbols)
+                  (make-atom (list "\\" f)))
+                 ((greek-prefix? (symbol->string f))
                   (make-atom (list "\\" f)))
                  (else
                   (make-atom (list "\\mathit{" f "}")))))
