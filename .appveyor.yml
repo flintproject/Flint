@@ -6,6 +6,15 @@ image: Visual Studio 2017
 
 platform: x64
 
+cache:
+  - msvc\opt -> deposit.mk, msvc\Makefile
+  - msvc\src -> deposit.mk, msvc\Makefile
+  - msvc\tmp -> deposit.mk, msvc\Makefile
+  - msvc\var -> deposit.mk, msvc\Makefile
+
+environment:
+  APPVEYOR_SAVE_CACHE_ON_ERROR: true
+
 install:
   - 'C:\cygwin64\setup-x86_64.exe -d -n -N -q -P m4,make,patch,tar,unzip,wget'
 
