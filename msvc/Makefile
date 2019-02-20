@@ -24,7 +24,7 @@ mostlyclean:
 	-rm -rf all.proj tmp/build var/build flint
 
 clean: mostlyclean
-	-rm -rf opt usr release-dll tmp var
+	-rm -rf opt release-dll tmp var
 
 distclean: clean
 	-rm -f src/*.7z src/*.zip src/*.tar.bz2 src/*.tar.gz
