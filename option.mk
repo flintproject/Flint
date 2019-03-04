@@ -31,8 +31,12 @@ CLIBSEDML_CONFIGURE_OPTIONS = --enable-silent-rules --disable-static
 
 CZMQ_CONFIGURE_OPTIONS = \
 	--enable-silent-rules \
+	--disable-drafts \
 	--disable-static \
+	--without-libcurl \
 	--without-liblz4 \
+	--without-libmicrohttpd \
+	--without-libsystemd \
 	--without-uuid \
 	--without-docs
 

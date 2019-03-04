@@ -1,7 +1,7 @@
 BOOST_VERSION = 1.69.0
 CERES_VERSION = 1.14.0
 CLIBSEDML_VERSION = 0.1.2
-CZMQ_VERSION = 4.1.1
+CZMQ_VERSION = 4.2.0
 LIBMICROHTTPD_VERSION = 0.9.58
 LIBSBML_VERSION = 5.17.0
 LIBXML2_VERSION = 2.9.7
@@ -17,7 +17,7 @@ LIBMICROHTTPD_CURRENT = 12
 PROTOBUF_CURRENT = 18
 ZEROMQ_CURRENT = 5
 
-CZMQ_VERSION_INFO = $(CZMQ_CURRENT).1.1
+CZMQ_VERSION_INFO = $(CZMQ_CURRENT).2.0
 ZEROMQ_VERSION_INFO = $(ZEROMQ_CURRENT).2.1
 
 BOOST_UNDERSCORE = boost_$(subst .,_,$(BOOST_VERSION))
@@ -102,7 +102,7 @@ endif
 $(eval $(call external_library_source,https://dl.bintray.com/boostorg/release/$(BOOST_VERSION)/source,$(BOOST_UNDERSCORE).tar.bz2,8f32d4617390d1c2d16f26a27ab60d97807b35440d45891fa340fc2648b04406))
 $(eval $(call external_library_source,http://ceres-solver.org/,ceres-solver-$(CERES_VERSION).tar.gz,4744005fc3b902fed886ea418df70690caa8e2ff6b5a90f3dd88a3d291ef8e8e))
 $(eval $(call external_library_source3,https://github.com/flintproject/clibsedml/archive/v$(CLIBSEDML_VERSION).tar.gz,clibsedml-$(CLIBSEDML_VERSION).tar.gz,cf25d0aad379e14c26a74166b5d652e2072fc87183caf6f34c16b5122ffa469f))
-$(eval $(call external_library_source,https://github.com/zeromq/czmq/releases/download/v$(CZMQ_VERSION),czmq-$(CZMQ_VERSION).tar.gz,f00ff419881dc2a05d0686c8467cd89b4882677fc56f31c0e2cc81c134cbb0c0))
+$(eval $(call external_library_source,https://github.com/zeromq/czmq/releases/download/v$(CZMQ_VERSION),czmq-$(CZMQ_VERSION).tar.gz,cfab29c2b3cc8a845749758a51e1dd5f5160c1ef57e2a41ea96e4c2dcc8feceb))
 $(eval $(call external_library_source,https://ftp.gnu.org/gnu/libmicrohttpd,libmicrohttpd-$(LIBMICROHTTPD_VERSION).tar.gz,7a11e1376c62ff95bd6d2dfe6799d57ac7cdbcb32f70bfbd5e47c71f373e01f3))
 $(eval $(call external_library_source,http://downloads.sourceforge.net/project/sbml/libsbml/$(LIBSBML_VERSION)/stable,libSBML-$(LIBSBML_VERSION)-core-src.zip,76d6c1e9bbe966204db602d9595b6536fc96ff6af7404d2ca1df3225a0a721b4))
 $(eval $(call external_library_source,ftp://xmlsoft.org/libxml2,libxml2-$(LIBXML2_VERSION).tar.gz,f63c5e7d30362ed28b38bfa1ac6313f9a80230720b7fb6c80575eeab3ff5900c))
