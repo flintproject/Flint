@@ -51,13 +51,13 @@ tmp/ceres-solver-$(CERES_VERSION): src/ceres-solver-$(CERES_VERSION).tar.gz cere
 tmp/clibsedml-$(CLIBSEDML_VERSION): src/clibsedml-$(CLIBSEDML_VERSION).tar.gz clibsedml-$(CLIBSEDML_VERSION).patch | tmp
 	-rm -rf var/clibsedml-$(CLIBSEDML_VERSION)
 	tar -C var -zxf $<
-	patch -d var/clibsedml-$(CLIBSEDML_VERSION) -p0 < clibsedml-$(CLIBSEDML_VERSION).patch
+	patch -d var/clibsedml-$(CLIBSEDML_VERSION) -p1 < clibsedml-$(CLIBSEDML_VERSION).patch
 	touch $@
 
 tmp/czmq-$(CZMQ_VERSION): src/czmq-$(CZMQ_VERSION).tar.gz czmq-$(CZMQ_VERSION).patch | tmp
 	-rm -rf var/czmq-$(CZMQ_VERSION)
 	tar -C var -zxf $<
-	patch -d var/czmq-$(CZMQ_VERSION) -p1 < czmq-$(CZMQ_VERSION).patch
+	patch -d var/czmq-$(CZMQ_VERSION) -p0 < czmq-$(CZMQ_VERSION).patch
 	touch $@
 
 tmp/libsbml-$(LIBSBML_VERSION): src/libSBML-$(LIBSBML_VERSION)-core-src.zip | tmp
