@@ -19,7 +19,7 @@ This is a CZMQ package for Flint.
 %setup -q
 
 %build
-./configure --prefix=/opt/flint --enable-silent-rules --without-docs --without-liblz4 --without-uuid PKG_CONFIG_PATH=/opt/flint/lib/pkgconfig
+./configure --prefix=/opt/flint --enable-silent-rules --disable-drafts --without-libcurl --without-liblz4 --without-libmicrohttpd --without-libsystemd --without-uuid --without-docs PKG_CONFIG_PATH=/opt/flint/lib/pkgconfig
 make
 
 %install

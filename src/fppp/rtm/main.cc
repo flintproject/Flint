@@ -18,6 +18,7 @@
 
 #include <boost/uuid/string_generator.hpp>
 #include <czmq.h>
+#include <zmq.h>
 
 #include "fppp.h"
 #include "fppp/utility.h"

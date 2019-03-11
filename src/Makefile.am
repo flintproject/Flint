@@ -345,19 +345,19 @@ isdwc_LDADD = $(BOOST_PROGRAM_OPTIONS_LIBS)
 isdwc_SOURCES = isdwc-main.cc
 
 fppp_isd_CPPFLAGS = -I$(srcdir)/include $(BOOST_CPPFLAGS) $(CZMQ_CFLAGS)
-fppp_isd_LDADD = libflintxx.la libflint.la libsqlite3.la $(CZMQ_LIBS)
+fppp_isd_LDADD = libflintxx.la libflint.la libsqlite3.la $(CZMQ_LIBS) $(ZEROMQ_LIBS)
 fppp_isd_SOURCES = fppp/isd/main.cc
 
 fppp_rtm_CPPFLAGS = -I$(srcdir)/include $(BOOST_CPPFLAGS) $(CZMQ_CFLAGS) $(ZEROMQ_CFLAGS)
-fppp_rtm_LDADD = libflintxx.la libflint.la libsqlite3.la $(CZMQ_LIBS)
+fppp_rtm_LDADD = libflintxx.la libflint.la libsqlite3.la $(CZMQ_LIBS) $(ZEROMQ_LIBS)
 fppp_rtm_SOURCES = fppp/rtm/main.cc
 
-fppp_sim_CPPFLAGS = $(PROTOBUF_CFLAGS) $(BOOST_CPPFLAGS) $(CZMQ_CFLAGS) $(ZEROMQ_CFLAGS)
+fppp_sim_CPPFLAGS = $(PROTOBUF_CFLAGS) $(BOOST_CPPFLAGS)
 fppp_sim_LDFLAGS = $(BOOST_FILESYSTEM_LDFLAGS) $(BOOST_SYSTEM_LDFLAGS)
-fppp_sim_LDADD = libflintxx.la libflint.la libsqlite3.la $(PROTOBUF_LIBS) $(BOOST_FILESYSTEM_LIBS) $(BOOST_SYSTEM_LIBS) $(CZMQ_LIBS)
+fppp_sim_LDADD = libflintxx.la libflint.la libsqlite3.la $(PROTOBUF_LIBS) $(BOOST_FILESYSTEM_LIBS) $(BOOST_SYSTEM_LIBS)
 fppp_sim_SOURCES = fppp/sim/main.cc
 
-fppp_sup_CPPFLAGS = $(BOOST_CPPFLAGS) $(CZMQ_CFLAGS) $(ZEROMQ_CFLAGS)
+fppp_sup_CPPFLAGS = $(BOOST_CPPFLAGS) $(CZMQ_CFLAGS)
 fppp_sup_LDADD = libflintxx.la libflint.la libsqlite3.la $(CZMQ_LIBS)
 fppp_sup_SOURCES = fppp/sup/main.cc
 
