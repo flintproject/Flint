@@ -50,8 +50,11 @@ TReal GetGammaVariate(TReal alpha, TReal beta, TRng *rng)
 template<typename TReal, typename TRng>
 TReal GetGaussVariate(TReal mean, TReal sigma, TRng *rng)
 {
-	std::normal_distribution<> norm(mean, sigma);
-	return norm(*rng);
+	if (sigma > 0) {
+		std::normal_distribution<> norm(mean, sigma);
+		return norm(*rng);
+	}
+	return FallbackValue<TReal>();
 }
 
 template<typename TReal, typename TRng>

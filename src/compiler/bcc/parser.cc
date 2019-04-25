@@ -424,7 +424,7 @@ bool ParserImpl::ParseInstOp(int a, bc::Code *code)
 	case Token::Type::kGammaVariate:
 		return ParseGen2(a, bc::Gen2::kGammaVariate, code);
 	case Token::Type::kGaussVariate:
-		return ParseGen2(a, bc::Gen2::kGammaVariate, code);
+		return ParseGen2(a, bc::Gen2::kGaussVariate, code);
 	case Token::Type::kLognormalVariate:
 		return ParseGen2(a, bc::Gen2::kLognormalVariate, code);
 	case Token::Type::kUniformVariate:
