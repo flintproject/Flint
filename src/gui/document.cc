@@ -17,6 +17,7 @@
 #include "bc/pack.h"
 #include "db/read-only-driver.h"
 #include "phml.pb.h"
+#include "gui/label.h"
 
 namespace {
 
@@ -69,6 +70,7 @@ bool Document::Load()
 	choices_method_.push_back("Euler");
 	choices_method_.push_back(kRK4);
 	choices_method_.push_back("ARK");
+	choices_method_.push_back(kLabelEulerMaruyama);
 
 	// initialize configuration
 	initial_config_.method = kRK4;
@@ -149,6 +151,8 @@ bool Document::LoadNc()
 				initial_config_.method = "Euler";
 			} else if (nc.integration() == "4th-rungekutta") {
 				initial_config_.method = kRK4;
+			} else if (nc.integration() == "euler-maruyama") {
+				initial_config_.method = kLabelEulerMaruyama;
 			}
 		}
 		if (nc.has_sts()) {

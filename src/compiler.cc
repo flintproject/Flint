@@ -41,6 +41,10 @@ Bytecode *Compiler::Compile(sqlite3 *db, const char *table, Method method)
 	case Method::kArk:
 		assert(false); // TODO
 		break;
+	case Method::kEulerMaruyama:
+		if (!method::EulerMaruyama(db, table, tmp.db()))
+			return nullptr;
+		break;
 	}
 	return GenerateBytecode(tmp.db());
 }

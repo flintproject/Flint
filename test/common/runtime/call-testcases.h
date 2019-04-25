@@ -255,6 +255,14 @@ BOOST_AUTO_TEST_CASE(rem)
 	TESTCASE2(rem, 3, 2, 1);
 }
 
+BOOST_AUTO_TEST_CASE(root)
+{
+	TESTCASE1(root, 1, 1);
+	TESTCASE1(root, 81, 9);
+	TESTCASE1(root, 1/4, 0.5);
+	TESTCASE1(root, 9/100, 0.3);
+}
+
 BOOST_AUTO_TEST_CASE(sec)
 {
 	TESTCASE1(sec, 0, 1);

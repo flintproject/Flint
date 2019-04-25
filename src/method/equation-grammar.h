@@ -25,15 +25,23 @@ struct EquationGrammar : qi::grammar<TIterator, Compound()> {
 		using boost::phoenix::push_back;
 		using boost::phoenix::val;
 
-		statement = equation | conditional;
+		statement = declaration | equation | conditional;
+
+		declaration = '(' >> td.Wiener_ [at_c<0>(_val) = _1]
+						  >> ' ' >> td.id [push_back(at_c<1>(_val), _1)]
+						  >> ')';
 
 		equation = '(' >> td.eq_ [at_c<0>(_val) = _1]
-					   >> ' ' >> (lexp | td.id) [push_back(at_c<1>(_val), _1)]
+					   >> ' ' >> (lexp | dexp | td.id) [push_back(at_c<1>(_val), _1)]
 					   >> ' ' >> expr [push_back(at_c<1>(_val), _1)]
 					   >> ')';
 
 		lexp = '(' >> td.diff_ [at_c<0>(_val) = _1]
 				   >> ' ' >> expr [push_back(at_c<1>(_val), _1)]
+				   >> ' ' >> td.id [push_back(at_c<1>(_val), _1)]
+				   >> ')';
+
+		dexp = '(' >> td.differential_ [at_c<0>(_val) = _1]
 				   >> ' ' >> td.id [push_back(at_c<1>(_val), _1)]
 				   >> ')';
 
@@ -58,6 +66,7 @@ struct EquationGrammar : qi::grammar<TIterator, Compound()> {
 		expr = delay_expr
 			| delta_time_expr
 			| eq_expr
+			| dexp
 			| general_expr
 			| td.real
 			| td.rational
@@ -90,7 +99,9 @@ struct EquationGrammar : qi::grammar<TIterator, Compound()> {
 	}
 
 	qi::rule<TIterator, Expr()> expr, rest;
-	qi::rule<TIterator, Compound()> statement, equation, lexp, conditional, cexp, delay_expr, delta_time_expr, eq_expr, general_expr;
+	qi::rule<TIterator, Compound()> statement, declaration, equation, lexp, dexp;
+	qi::rule<TIterator, Compound()> conditional, cexp, delay_expr;
+	qi::rule<TIterator, Compound()> delta_time_expr, eq_expr, general_expr;
 	qi::rule<TIterator, std::vector<Expr>()> cseq, seq0, seq1;
 };
 

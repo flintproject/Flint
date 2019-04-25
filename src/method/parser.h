@@ -38,6 +38,11 @@ bool IsConditional(const Expr &x, Compound &y)
 	return IsConditional(y);
 }
 
+bool IsWiener(const Compound &x)
+{
+	return x.keyword == "Wiener" && x.children.size() == 1;
+}
+
 bool IsEquation(const Compound &x)
 {
 	return x.keyword == "eq" && x.children.size() >= 2;
@@ -162,6 +167,10 @@ private:
 				return 1;
 			}
 			if (!inserter_.PrintAndInsert(uuid, lhs, rhs))
+				return 1;
+		} else if (IsWiener(statement)) {
+			if (!inserter_.PrintAndInsertWiener(uuid,
+												statement.children[0]))
 				return 1;
 		} else if (IsEquation(statement)) {
 			if (!inserter_.PrintAndInsert(uuid,

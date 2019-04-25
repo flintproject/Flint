@@ -1,6 +1,7 @@
 set(test_files
   test_assign
   test_euler
+  test_euler_maruyama
   test_event
   test_rk4
   )

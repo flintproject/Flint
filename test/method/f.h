@@ -61,6 +61,12 @@ struct F {
 
 	}
 
+	void SetupSde()
+	{
+		input.Exec("INSERT INTO input VALUES (X'00000000000000000000000000000000', '(Wiener %W)')");
+		input.Exec("INSERT INTO input VALUES (X'00000000000000000000000000000000', '(eq ($differential %X) (plus (times %X ($differential %time)) (times 2 ($differential %W))))')");
+	}
+
 	void SetupSbml()
 	{
 		input.Exec("INSERT INTO input VALUES (X'00000000000000000000000000000000', '(eq %sbml:y (power %sbml:x 2))')");

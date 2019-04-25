@@ -25,7 +25,8 @@ public:
 		return &stream_;
 	}
 
-	void Print(const char *s) {
+	template<typename TChar>
+	void Print(const TChar *s) {
 		stream_ << s;
 	}
 

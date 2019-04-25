@@ -13,6 +13,7 @@
 #include <boost/uuid/uuid_io.hpp>
 
 #include "gui/document.h"
+#include "gui/label.h"
 
 namespace flint {
 namespace gui {
@@ -23,6 +24,8 @@ const char *Configuration::GetKisaoId() const
 		return "9999999";
 	if (method == "Euler")
 		return "0000030";
+	if (method == kLabelEulerMaruyama)
+		return "0000286";
 	return "0000032";
 }
 

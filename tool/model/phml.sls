@@ -9,6 +9,7 @@
 
   (define-record-type definition
     (fields type
+            sub-type
             mathml))
 
   (define-record-type physical-quantity
@@ -75,35 +76,35 @@
                            (make-physical-quantity
                             (variable-name v)
                             'static-parameter
-                            (make-definition 'ae `(eq ,(variable-name v) ,(or (variable-default v) 0)))
+                            (make-definition 'ae #f `(eq ,(variable-name v) ,(or (variable-default v) 0)))
                             #f))
                           ((symbol=? (variable-type v) 'Wiener)
                            (make-physical-quantity
                             (variable-name v)
-                            'variable-parameter
-                            (make-definition 'ae `(eq ,(variable-name v) (gauss_variate 0 1)))
+                            'state
+                            (make-definition 'predefined 'Wiener-process #f)
                             #f))
                           ((find-ae v n)
                            => (lambda (ae)
                                 (make-physical-quantity
                                  (variable-name v)
                                  'variable-parameter
-                                 (make-definition 'ae (replace-independent-variable-with-time ae m))
+                                 (make-definition 'ae #f (replace-independent-variable-with-time ae m))
                                  #f)))
                           ((find-ode v n)
                            => (lambda (ode)
                                 (make-physical-quantity
                                  (variable-name v)
                                  'state
-                                 (make-definition 'ode (replace-independent-variable-with-time ode m))
-                                 (make-definition 'ae `(eq ,(variable-name v) ,(or (variable-default v) 0))))))
+                                 (make-definition 'ode #f (replace-independent-variable-with-time ode m))
+                                 (make-definition 'ae #f `(eq ,(variable-name v) ,(or (variable-default v) 0))))))
                           ((find-sde v n)
                            => (lambda (sde)
                                 (make-physical-quantity
                                  (variable-name v)
                                  'state
-                                 (make-definition 'sde (replace-independent-variable-with-time sde m))
-                                 (make-definition 'ae `(eq ,(variable-name v) ,(or (variable-default v) 0))))))
+                                 (make-definition 'sde #f (replace-independent-variable-with-time sde m))
+                                 (make-definition 'ae #f `(eq ,(variable-name v) ,(or (variable-default v) 0))))))
                           (else
                            (error #f "failed to convert to PHML" v))))
                   (remp (lambda (v) (symbol=? (variable-type v) 'independent))
@@ -111,9 +112,11 @@
 
   (define (implementation->list impl)
     `("        <is:implementation>\n"
-      "          <is:definition type=\"" ,(definition-type impl) "\" format=\"mathml\">\n"
-      "            <m:math>" ,(formula->mathml (definition-mathml impl) "m" phml-csymbol-list) "</m:math>\n"
-      "          </is:definition>\n"
+      ,@(if (symbol=? (definition-type impl) 'predefined)
+            `("          <is:definition type=\"predefined\" sub-type=\"" ,(definition-sub-type impl) "\" />\n")
+            `("          <is:definition type=\"" ,(definition-type impl) "\" format=\"mathml\">\n"
+              "            <m:math>" ,(formula->mathml (definition-mathml impl) "m" phml-csymbol-list) "</m:math>\n"
+              "          </is:definition>\n"))
       "        </is:implementation>\n"
       ))
 
@@ -151,6 +154,7 @@
       "    <is:simulation-time-span unit-id=\"3\">100</is:simulation-time-span>\n"
       "    <is:algorithm>\n"
       "      <is:integration name=\"4th-rungekutta\"/>\n"
+      "      <is:random-generator type=\"built-in\" name=\"mersenne-twister\" seed=\"1\" />\n"
       "    </is:algorithm>\n"
       "  </is:numerical-configuration>\n"
       "</is:header>\n"

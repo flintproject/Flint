@@ -27,9 +27,11 @@ struct EquationLexer : lex::lexer<TLexer> {
 		case_ = "case";
 		condition_ = "condition";
 		diff_ = "diff";
+		differential_ = "\"$\"differential";
 		eq_ = "eq";
 		delay_ = "\"$\"Delay";
 		delta_time_ = "\"$\"DeltaTime";
+		Wiener_ = "Wiener";
 
 		real = "{SIGN}?{FLOAT}";
 		rational = "{SIGN}?(0|[1-9]\\d*)\"/\"[1-9]\\d*";
@@ -38,11 +40,13 @@ struct EquationLexer : lex::lexer<TLexer> {
 		keyword = "[$]?[a-zA-Z_]\\w*";
 
 		this->self = lex::token_def<>('\n') | '\r' | '(' | ')' | ' ';
-		this->self += case_set_ | case_ | condition_ | diff_ | eq_ | delay_ | delta_time_;
+		this->self += case_set_ | case_ | condition_ | diff_ | differential_;
+		this->self += eq_ | delay_ | delta_time_ | Wiener_;
 		this->self += real | rational | integer | id | keyword;
 	}
 
-	lex::token_def<std::string> case_set_, case_, condition_, eq_, diff_, delay_, delta_time_;
+	lex::token_def<std::string> case_set_, case_, condition_, eq_, diff_;
+	lex::token_def<std::string> differential_, delay_, delta_time_, Wiener_;
 	lex::token_def<std::string> id, keyword;
 	lex::token_def<int> integer;
 	lex::token_def<flint::lexer::Rational> rational;

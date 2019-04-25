@@ -20,7 +20,8 @@ enum class Method {
 	kEuler,
 	kEvent,
 	kRk4,
-	kArk
+	kArk,
+	kEulerMaruyama
 };
 
 class Compiler {

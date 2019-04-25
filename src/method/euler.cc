@@ -94,9 +94,15 @@ public:
 		} else {
 			assert(lhs.which() == kExprIsCompound);
 			const Compound &c(boost::get<Compound>(lhs));
-			assert(c.children.size() == 2);
+			if (c.children.size() != 2) {
+				std::cerr << "unexpected expression with keyword: " << c.keyword << std::endl;
+				return false;
+			}
 			const Expr &e(c.children.at(1));
-			assert(e.which() == kExprIsString);
+			if (e.which() != kExprIsString) {
+				std::cerr << "got an ill-formed derivative: " << c.keyword << std::endl;
+				return false;
+			}
 			const std::string &id(boost::get<std::string>(e));
 			oss << id << "#0";
 			std::string name = oss.str();
@@ -107,6 +113,13 @@ public:
 			std::string math = oss.str();
 			return Insert(uuid, name.c_str(), math.c_str());
 		}
+	}
+
+	bool PrintAndInsertWiener(const boost::uuids::uuid &,
+							  const Expr &)
+	{
+		std::cerr << "The Euler method cannot solve SDEs, please use the Euler-Maruyama method instead." << std::endl;
+		return false;
 	}
 };
 

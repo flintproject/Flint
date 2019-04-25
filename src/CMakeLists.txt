@@ -83,6 +83,7 @@ add_library(libflintxx STATIC
     mathml/math-dumper.cc
     mathml/mathml.cc
     method/assign.cc
+    method/euler-maruyama.cc
     method/euler.cc
     method/event.cc
     method/helper.cc

@@ -240,6 +240,7 @@ public:
 		  iv_dumper_(),
 		  impl_dumper_(),
 		  extra_dumper_()
+		, is_Wiener_process_(false)
 	{
 	}
 
@@ -1100,6 +1101,7 @@ private:
 						return -2;
 					}
 					if (!dd_->UpdatePq(pq_.get(),
+									   is_Wiener_process_ ||
 									   (iv_dumper_ && iv_dumper_->TargetIsIndependent()) ||
 									   (impl_dumper_ && impl_dumper_->TargetIsIndependent())))
 						return -2;
@@ -1116,6 +1118,27 @@ private:
 					if (impl_dumper_) {
 						if (impl_->IsProper() && !dd_->SaveImplementation(pq_.get(), impl_.get())) return -2;
 						impl_dumper_.reset();
+					}
+					if (is_Wiener_process_) {
+						if (pq_->type() != PQ::kState) {
+							std::cerr << "unexpected Wiener process for <physical-quantity> of type "
+								 << pq_->GetTypeName()
+								 << std::endl;
+							return -2;
+						}
+						iv_.reset(new InitialValue);
+						iv_->Print(" (eq %");
+						iv_->Print(pq_->name());
+						iv_->Print(" 0)");
+						if (!dd_->SaveInitialValue(pq_.get(), iv_.get()))
+							return -2;
+						impl_.reset(new Implementation);
+						impl_->Print(" (Wiener %");
+						impl_->Print(pq_->name());
+						impl_->Print(")");
+						if (!dd_->SaveImplementation(pq_.get(), impl_.get()))
+							return -2;
+						is_Wiener_process_ = false;
 					}
 					if (ref_) {
 						if (!dd_->SaveReference(pq_.get(), ref_.get(), extra_.get())) return -2;
@@ -1496,6 +1519,15 @@ private:
 			pq_->set_unit_id(xmlCharStrdup("0")); // unit: dimensionless
 			GraphReader graph_reader(pq_.get(), text_reader_, dd_.get());
 			return graph_reader.Read();
+		} else if (xmlStrEqual(definition->type(), reinterpret_cast<const xmlChar *>("predefined"))) {
+			if (xmlStrEqual(definition->sub_type(), reinterpret_cast<const xmlChar *>("Wiener-process"))) {
+				is_Wiener_process_ = true;
+				return 1;
+			}
+			std::cerr << "unknown sub-type of predefined <implementation>: "
+					  << definition->sub_type()
+					  << std::endl;
+			return -2;
 		}
 		// expect definition in MathML
 		impl_dumper_.reset(new DefinitionDumper<Implementation>(text_reader_,
@@ -2290,6 +2322,7 @@ private:
 	std::unique_ptr<DefinitionDumper<InitialValue> > iv_dumper_;
 	std::unique_ptr<DefinitionDumper<Implementation> > impl_dumper_;
 	std::unique_ptr<DefinitionDumper<ExtraImplementation> > extra_dumper_;
+	bool is_Wiener_process_;
 };
 
 struct Schema {

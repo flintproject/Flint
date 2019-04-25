@@ -85,6 +85,13 @@ public:
 		std::string math = oss.str();
 		return Insert(uuid, name.c_str(), math.c_str());
 	}
+
+	bool PrintAndInsertWiener(const boost::uuids::uuid &,
+							  const Expr &)
+	{
+		assert(false);
+		return false;
+	}
 };
 
 }
