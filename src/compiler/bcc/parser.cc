@@ -645,29 +645,32 @@ bool ParserImpl::ParseImm(double *d)
 		*d = 0;
 		return true;
 	case Token::Type::kNumber:
-		if ( const char *c = std::strchr(t.lexeme, '/') ) { // rationals
-			double num = std::atof(t.lexeme);
-			if (num == HUGE_VAL) {
-				std::cerr << "numerator is out of range: ";
-				t.Write(std::cerr) << std::endl;
-				return false;
+		{
+			const char *c = std::strpbrk(t.lexeme, "/\n");
+			if ( c && *c == '/' ) { // rationals
+				double num = std::atof(t.lexeme);
+				if (num == HUGE_VAL) {
+					std::cerr << "numerator is out of range: ";
+					t.Write(std::cerr) << std::endl;
+					return false;
+				}
+				double den = std::atof(++c);
+				if (den == HUGE_VAL) {
+					std::cerr << "denominator is out of range: ";
+					t.Write(std::cerr) << std::endl;
+					return false;
+				}
+				if (den == 0) {
+					std::cerr << "invalid denominator: ";
+					t.Write(std::cerr) << std::endl;
+					return false;
+				}
+				*d = num/den;
+			} else {
+				*d = std::atof(t.lexeme);
 			}
-			double den = std::atof(++c);
-			if (den == HUGE_VAL) {
-				std::cerr << "denominator is out of range: ";
-				t.Write(std::cerr) << std::endl;
-				return false;
-			}
-			if (den == 0) {
-				std::cerr << "invalid denominator: ";
-				t.Write(std::cerr) << std::endl;
-				return false;
-			}
-			*d = num/den;
-		} else {
-			*d = std::atof(t.lexeme);
+			return true;
 		}
-		return true;
 	default:
 		std::cerr << "immediate value expected, but got: ";
 		t.Write(std::cerr) << std::endl;
