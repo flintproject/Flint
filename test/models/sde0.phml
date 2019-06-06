@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<is:insilico-model xmlns:m="http://www.w3.org/1998/Math/MathML" xmlns:is="http://www.physiome.jp/ns/insilicoml" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemalocation="http://www.physiome.jp/ns/insilicoml-1.0 insilicoml.xsd" version="1.0">
+  <is:header>
+    <is:description>An SDE model with its solution</is:description>
+    <is:numerical-configuration>
+      <is:time-discretization unit-id="3" evolution="true">
+        <is:step>1e-8</is:step>
+      </is:time-discretization>
+      <is:simulation-time-span unit-id="3">1</is:simulation-time-span>
+      <is:algorithm>
+        <is:integration name="euler-maruyama"/>
+        <is:random-generator type="built-in" name="mersenne-twister" seed="1" />
+      </is:algorithm>
+    </is:numerical-configuration>
+  </is:header>
+  <is:unit-set>
+    <is:unit unit-id="0">
+      <is:name>dimensionless</is:name>
+    </is:unit>
+    <is:unit unit-id="1">
+      <is:name>meter</is:name>
+    </is:unit>
+    <is:unit unit-id="2">
+      <is:name>kilogram</is:name>
+    </is:unit>
+    <is:unit unit-id="3">
+      <is:name>second</is:name>
+    </is:unit>
+    <is:unit unit-id="4">
+      <is:name>ampere</is:name>
+    </is:unit>
+    <is:unit unit-id="5">
+      <is:name>kelvin</is:name>
+    </is:unit>
+    <is:unit unit-id="6">
+      <is:name>mole</is:name>
+    </is:unit>
+    <is:unit unit-id="7">
+      <is:name>candela</is:name>
+    </is:unit>
+  </is:unit-set>
+  <is:edge-set />
+  <is:module-set>
+    <is:module module-id="b4c783f8-f135-11e3-a0b4-532ab77a6693" type="functional-unit">
+      <is:property>
+        <is:name>M</is:name>
+        <is:capsulation state="false" />
+        <is:template state="false" />
+        <is:instance state="false" />
+      </is:property>
+      <is:port-set />
+      <is:physical-quantity-set>
+        <is:physical-quantity type="state" physical-quantity-id="1">
+          <is:name>W</is:name>
+          <is:implementation>
+            <is:definition type="predefined" sub-type="Wiener-process" />
+          </is:implementation>
+          <is:dimension type="scalar" />
+          <is:value-type-set>
+            <is:value-type unit-id="0" precision="double" />
+          </is:value-type-set>
+        </is:physical-quantity>
+        <is:physical-quantity type="state" physical-quantity-id="2">
+          <is:name>X</is:name>
+          <is:initial-value>
+            <is:definition type="ae" format="mathml">
+              <m:math><m:apply><m:eq/><m:ci>X</m:ci><m:cn>0</m:cn></m:apply></m:math>
+            </is:definition>
+          </is:initial-value>
+          <is:implementation>
+            <is:definition format="mathml" type="sde">
+              <m:math>
+                <m:apply>
+                  <m:eq/>
+                  <m:apply>
+                    <m:csymbol>differential</m:csymbol>
+                    <m:ci>X</m:ci>
+                  </m:apply>
+                  <m:apply>
+                    <m:plus/>
+                    <m:apply>
+                      <m:times/>
+                      <m:apply>
+                        <m:plus/>
+                        <m:apply>
+                          <m:times/>
+                          <m:cn>0.5</m:cn>
+                          <m:ci>X</m:ci>
+                        </m:apply>
+                        <m:apply>
+                          <m:root/>
+                          <m:apply>
+                            <m:plus/>
+                            <m:cn>1</m:cn>
+                            <m:apply>
+                              <m:power/>
+                              <m:ci>X</m:ci>
+                              <m:cn>2</m:cn>
+                            </m:apply>
+                          </m:apply>
+                        </m:apply>
+                      </m:apply>
+                      <m:apply>
+                        <m:csymbol>differential</m:csymbol>
+                        <m:ci>time</m:ci>
+                      </m:apply>
+                    </m:apply>
+                    <m:apply>
+                      <m:times/>
+                      <m:apply>
+                        <m:root/>
+                        <m:apply>
+                          <m:plus/>
+                          <m:cn>1</m:cn>
+                          <m:apply>
+                            <m:power/>
+                            <m:ci>X</m:ci>
+                            <m:cn>2</m:cn>
+                          </m:apply>
+                        </m:apply>
+                      </m:apply>
+                      <m:apply>
+                        <m:csymbol>differential</m:csymbol>
+                        <m:ci>W</m:ci>
+                      </m:apply>
+                    </m:apply>
+                  </m:apply>
+                </m:apply>
+              </m:math>
+            </is:definition>
+          </is:implementation>
+          <is:dimension type="scalar" />
+          <is:value-type-set>
+            <is:value-type unit-id="0" precision="double" />
+          </is:value-type-set>
+          <is:description>SDE: dX = [X/2 + sqrt(1 + X^2)]dt + sqrt(1 + X^2)dW; X_0 = 0.</is:description>
+        </is:physical-quantity>
+        <is:physical-quantity type="variable-parameter" physical-quantity-id="3">
+          <is:name>Y</is:name>
+          <is:implementation>
+            <is:definition format="mathml" type="ae">
+              <m:math>
+                <m:apply>
+                  <m:eq/>
+                  <m:ci>Y</m:ci>
+                  <m:apply>
+                    <m:sinh/>
+                    <m:apply>
+                      <m:plus/>
+                      <m:ci>time</m:ci>
+                      <m:ci>W</m:ci>
+                    </m:apply>
+                  </m:apply>
+                </m:apply>
+              </m:math>
+            </is:definition>
+          </is:implementation>
+          <is:dimension type="scalar" />
+          <is:value-type-set>
+            <is:value-type unit-id="0" precision="double" />
+          </is:value-type-set>
+          <is:description>A closed-form solution: Y = sinh(t + W).</is:description>
+        </is:physical-quantity>
+      </is:physical-quantity-set>
+      <is:event-set />
+      <is:morphology />
+    </is:module>
+  </is:module-set>
+  <is:controller-set />
+</is:insilico-model>
