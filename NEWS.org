@@ -11,6 +11,7 @@
    - Support MathML's <cn> of type="rational" to represent rational numbers.
 ** Bug fixes
    - Fixed a Gaussian pseudo-random number generation.
+   - Using the seed specified in a PHML model for pseudo-random numbers.
 
 * Flint 2.1.1 (2019-02-01)
 

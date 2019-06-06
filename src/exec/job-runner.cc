@@ -11,6 +11,7 @@
 #include <iostream>
 #include <memory>
 
+#include "bc/index.h"
 #include "compiler.h"
 #include "db/read-only-driver.h"
 #include "exec/task-runner.h"
@@ -40,7 +41,7 @@ job::Result JobRunner::Run()
 			if (!generated_bc)
 				return job::Result::kFailed;
 			// TODO: give a proper seed if desired
-			if (!runtime::Eval(tr_->GetDatabase(), ct::Availability::kNone, 0,
+			if (!runtime::Eval(tr_->GetDatabase(), ct::Availability::kNone, init[kIndexSeed],
 							   tr_->generated_layout(), generated_bc.get(),
 							   nullptr, nullptr, &generated_init))
 				return job::Result::kFailed;
@@ -53,7 +54,7 @@ job::Result JobRunner::Run()
 		auto modeldb_driver = tr_->GetModelDatabase();
 		if (!modeldb_driver->db())
 			return job::Result::kFailed;
-		if (!runtime::Eval(modeldb_driver->db(), ct::Availability::kLiteral, 0,
+		if (!runtime::Eval(modeldb_driver->db(), ct::Availability::kLiteral, init[kIndexSeed],
 						   tr_->layout(), tr_->GetTask()->reinit_bc.get(),
 						   &tr_->GetTask()->inbound, &tr_->GetTask()->tv, &init))
 			return job::Result::kFailed;

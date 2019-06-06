@@ -265,9 +265,7 @@ bool Evaluator::Evaluate(sqlite3 *db,
 
 	// initialize pseudo random number generator with given seed
 	std::unique_ptr<std::mt19937> rng(new std::mt19937(seed));
-	// generate the future seed by the generator
-	int future_seed = static_cast<int>((*rng)());
-	(*data)[kIndexSeed] = static_cast<double>(future_seed);
+	(*data)[kIndexSeed] = static_cast<double>(seed);
 	processor->set_rng(rng.get());
 
 	if (!processor->Process(executor.get())) return false;
