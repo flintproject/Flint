@@ -37,7 +37,7 @@ AS_IF([test "x$with_protoc" = "x"],[AC_SUBST([PROTOC_EXECUTABLE],[protoc])],
       [AC_MSG_ERROR([could not find protoc, please specify its right location by --with-protoc])])
 
 # Checks for libraries.
-BOOST_REQUIRE([1.69.0])
+BOOST_REQUIRE([1.70.0])
 BOOST_ASIO
 BOOST_CHRONO
 BOOST_FILESYSTEM
@@ -58,7 +58,7 @@ LIBS=$boost_timer_save_LIBS
 LDFLAGS=$boost_timer_save_LDFLAGS
 
 # Boost.Interprocess uses pthread system calls in POSIX systems;
-# see <https://www.boost.org/doc/libs/1_69_0/doc/html/interprocess.html>.
+# see <https://www.boost.org/doc/libs/1_70_0/doc/html/interprocess.html>.
 AC_SEARCH_LIBS([shm_open],[rt])
 
 AC_ARG_ENABLE(release,
