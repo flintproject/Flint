@@ -4,8 +4,13 @@
    - Windows 7 or later.
    - macOS: OS X Mavericks (10.9) or later.
    - Linux distributions such as Debian 9, RHEL/CentOS 6, and RHEL/CentOS 7.
+** New features
+   - Added an experimental support of the Euler-Maruyama method to solve Itô
+     stochastic differential equations.
 ** Improvements
    - Support MathML's <cn> of type="rational" to represent rational numbers.
+** Bug fixes
+   - Fixed a Gaussian pseudo-random number generation.
 
 * Flint 2.1.1 (2019-02-01)
 
