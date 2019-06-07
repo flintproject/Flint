@@ -16,7 +16,7 @@ find_package(LibXml2 REQUIRED)
 include_directories("${LIBXML2_INCLUDE_DIR}")
 
 add_definitions(-DBOOST_ALL_DYN_LINK)
-
+set(Boost_NO_BOOST_CMAKE ON)
 find_package(Boost 1.70 REQUIRED COMPONENTS
              filesystem
              program_options
