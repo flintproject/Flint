@@ -39,7 +39,6 @@ AS_IF([test "x$with_protoc" = "x"],[AC_SUBST([PROTOC_EXECUTABLE],[protoc])],
 # Checks for libraries.
 BOOST_REQUIRE([1.70.0])
 BOOST_ASIO
-BOOST_CHRONO
 BOOST_FILESYSTEM
 BOOST_HASH
 BOOST_MATH
@@ -48,14 +47,6 @@ BOOST_RANDOM
 BOOST_UUID
 BOOST_XPRESSIVE
 BOOST_TEST
-boost_timer_save_LIBS=$LIBS
-boost_timer_save_LDFLAGS=$LDFLAGS
-LIBS="$LIBS $BOOST_CHRONO_LIBS"
-LDFLAGS="$LDFLAGS $BOOST_CHRONO_LDFLAGS"
-BOOST_FIND_LIBS([timer],[timer],[],[boost/timer.hpp],[boost::timer t;])
-BOOST_TIMER_LIBS="$BOOST_TIMER_LIBS $BOOST_CHRONO_LIBS"
-LIBS=$boost_timer_save_LIBS
-LDFLAGS=$boost_timer_save_LDFLAGS
 
 # Boost.Interprocess uses pthread system calls in POSIX systems;
 # see <https://www.boost.org/doc/libs/1_70_0/doc/html/interprocess.html>.
