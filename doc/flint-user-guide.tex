@@ -68,13 +68,20 @@ Likewise, Flint can handle CellML and SBML as well as SBML-PHML hybrid models.
 \item CellML \cite{CellML} (supported as an experimental feature)
 \end{itemize}
 
-\subsection{Solver methods for ordinary differential equations}
+\subsection{Available numerical algorithms for ordinary differential equations}
 \Flint\ supports the following algorithms to solve ODEs numerically:
 \begin{itemize}
 \item Euler method
 \item Runge-Kutta 4th-order method
 \item Adaptive stepsize Runge-Kutta method, based on the ARKode solver of
   SUNDIALS \cite{hindmarsh2005sundials}
+\end{itemize}
+
+\subsection{Available numerical algorithms for stochastic differential equations}
+\Flint\ also experimentally supports the following algorithms to solve SDEs
+numerically:
+\begin{itemize}
+\item Euler-Maruyama method \cite{Allen2007}
 \end{itemize}
 
 \section{Notation}
@@ -180,8 +187,10 @@ Before starting simulations for a loaded model, users may want to configure them
 in terms of numerical integration, simulation time, output data, and parameters.
 
 \subsection{Integration method}
-Users have to choose a solver method for ordinary differential equations at the
-``Integration method'' combobox.
+Users have to choose a solver method for ordinary differential equations or
+stochastic differential equations at the ``Integration method'' combobox.
+An error will occur at simulatoin time when choosing any method except
+the Euler-Maruyama method for a model including SDEs.
 
 \subsection{Simulation Length}
 Users must specify the total length of simulation time at the ``Simulation Length''
