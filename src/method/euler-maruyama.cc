@@ -88,26 +88,71 @@ bool IsDifferential(const Expr &e, std::string &id)
 	return true;
 }
 
-bool DecomposeSdeRhsTerm(const Expr &term, std::string &id, Expr &factor)
+bool IsMinus1(const Expr &e, Expr &arg)
 {
+	if (e.which() != kExprIsCompound)
+		return false;
+	const auto &c = boost::get<Compound>(e);
+	if (c.keyword != "minus")
+		return false;
+	if (c.children.size() == 1) {
+		arg = c.children[0];
+		return true;
+	}
+	return false;
+}
+
+Expr ChangeSign(const Expr &e, double sign)
+{
+	if (sign > 0)
+		return e;
+	Expr r;
+	if (IsMinus1(e, r))
+		return r;
+	Compound m;
+	m.keyword = "minus";
+	m.children.push_back(e);
+	return m;
+}
+
+bool DecomposeSdeRhsTerm(const Expr &term, std::string &id, Expr &factor, double sign)
+{
+	if (IsDifferential(term, id)) {
+		factor = sign * 1.0;
+		return true;
+	}
 	if (term.which() != kExprIsCompound)
 		return false;
 	const auto &c = boost::get<Compound>(term);
 	if (c.keyword != "times")
 		return false;
-	if (c.children.size() != 2)
-		return false;
-	const auto &e0 = c.children.at(0);
-	const auto &e1 = c.children.at(1);
-	if (IsDifferential(e0, id)) {
-		factor = e1;
+	if (IsDifferential(c.children.back(), id)) {
+		if (c.children.size() == 2) {
+			factor = ChangeSign(c.children.front(), sign);
+			return true;
+		}
+		Compound p;
+		p.keyword = "times";
+		// copy children except the last one
+		for (size_t i=0;i<c.children.size()-1;i++)
+			p.children.push_back(c.children[i]);
+		factor = ChangeSign(p, sign);
 		return true;
-	} else if (IsDifferential(e1, id)) {
-		factor = e0;
-		return true;
-	} else {
-		return false;
 	}
+	if (IsDifferential(c.children.front(), id)) {
+		if (c.children.size() == 2) {
+			factor = ChangeSign(c.children.back(), sign);
+			return true;
+		}
+		Compound p;
+		p.keyword = "times";
+		// copy children except the first one
+		for (size_t i=1;i<c.children.size();i++)
+			p.children.push_back(c.children[i]);
+		factor = ChangeSign(p, sign);
+		return true;
+	}
+	return false;
 }
 
 bool IsVoidDrift(Expr &drift)
@@ -118,28 +163,13 @@ bool IsVoidDrift(Expr &drift)
 /*
  * precondition: drift = 0
  */
-bool DecomposeSdeRhs(const Expr &rhs, Expr &drift, std::unordered_map<std::string, Expr> &diffusion)
+bool DecomposeSdeRhs(const Expr &rhs, Expr &drift, std::unordered_map<std::string, Expr> &diffusion,
+					 double sign = 1.0)
 {
 	assert(rhs.which() == kExprIsCompound);
 	std::string id;
-	if (IsDifferential(rhs, id)) {
-		if (id == "%time") {
-			if (IsVoidDrift(drift)) {
-				drift = 1.0;
-				return true;
-			} else {
-				std::cerr << "more than one drift terms" << std::endl;
-				return false;
-			}
-		} else if (diffusion.emplace(id, 1.0).second) {
-			return true;
-		} else {
-			std::cerr << "more than one diffusion terms are unsupported: " << id << std::endl;
-			return false;
-		}
-	}
 	Expr factor;
-	if (DecomposeSdeRhsTerm(rhs, id, factor)) {
+	if (DecomposeSdeRhsTerm(rhs, id, factor, sign)) {
 		if (id == "%time") {
 			if (IsVoidDrift(drift)) {
 				drift = factor;
@@ -156,25 +186,68 @@ bool DecomposeSdeRhs(const Expr &rhs, Expr &drift, std::unordered_map<std::strin
 		}
 	}
 	const auto &c = boost::get<Compound>(rhs);
-	if (c.keyword != "plus") {
-		std::cerr << "plus expected, but got: " << c.keyword << std::endl;
-		return false;
-	}
-	for (const auto &e : c.children) {
-		Expr d = 0;
-		if (!DecomposeSdeRhs(e, d, diffusion))
-			return false;
-		// check if there are more than one drift terms
-		if (!IsVoidDrift(d)) {
-			if (IsVoidDrift(drift)) {
-				drift = d;
-			} else {
-				std::cerr << "more than one drift terms" << std::endl;
+	if (c.keyword == "plus") {
+		for (const auto &e : c.children) {
+			Expr d = 0;
+			if (!DecomposeSdeRhs(e, d, diffusion, sign))
 				return false;
+			// check if there are more than one drift terms
+			if (!IsVoidDrift(d)) {
+				if (IsVoidDrift(drift)) {
+					drift = d;
+				} else {
+					std::cerr << "more than one drift terms" << std::endl;
+					return false;
+				}
 			}
 		}
+		return true;
 	}
-	return true;
+	if (c.keyword == "minus") {
+		if (c.children.size() == 1) {
+			Expr d = 0;
+			if (!DecomposeSdeRhs(c.children[0], d, diffusion, -sign))
+				return false;
+			// check if there are more than one drift terms
+			if (!IsVoidDrift(d)) {
+				if (IsVoidDrift(drift)) {
+					drift = d;
+				} else {
+					std::cerr << "more than one drift terms" << std::endl;
+					return false;
+				}
+			}
+		} else {
+			assert(c.children.size() == 2);
+			Expr d0 = 0;
+			if (!DecomposeSdeRhs(c.children[0], d0, diffusion, sign))
+				return false;
+			// check if there are more than one drift terms
+			if (!IsVoidDrift(d0)) {
+				if (IsVoidDrift(drift)) {
+					drift = d0;
+				} else {
+					std::cerr << "more than one drift terms" << std::endl;
+					return false;
+				}
+			}
+			Expr d1 = 0;
+			if (!DecomposeSdeRhs(c.children[1], d1, diffusion, -sign))
+				return false;
+			// check if there are more than one drift terms
+			if (!IsVoidDrift(d1)) {
+				if (IsVoidDrift(drift)) {
+					drift = d1;
+				} else {
+					std::cerr << "more than one drift terms" << std::endl;
+					return false;
+				}
+			}
+		}
+		return true;
+	}
+	std::cerr << "either plus or minus expected, but got: " << c.keyword << std::endl;
+	return false;
 }
 
 class Inserter : db::AstInserter {
