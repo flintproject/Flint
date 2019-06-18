@@ -195,55 +195,55 @@ tmp/zeromq-$(ZEROMQ_VERSION): src/zeromq-$(ZEROMQ_VERSION).tar.gz | tmp
 	touch $@
 
 tmp/$(BOOST_UNDERSCORE).installed: tmp/$(BOOST_UNDERSCORE)
-	(cd var/$(BOOST_UNDERSCORE) && export MACOSX_DEPLOYMENT_TARGET=10.9 && ./bootstrap.sh --with-toolset=clang --without-icu && ./b2 -d0 --prefix=$(PREFIX) --no-cmake-config $(B2_WITHOUT_OPTIONS) --layout=tagged-1.66 toolset=clang cflags='-arch x86_64 -mmacosx-version-min=10.9' cxxflags='-std=c++11 -stdlib=libc++ -arch x86_64 -mmacosx-version-min=10.9' linkflags='-stdlib=libc++ -arch x86_64 -mmacosx-version-min=10.9 -headerpad_max_install_names' link=shared variant=release threading=multi install)
+	(cd var/$(BOOST_UNDERSCORE) && export MACOSX_DEPLOYMENT_TARGET=10.9 && ./bootstrap.sh --with-toolset=clang --without-icu && ./b2 -d0 --prefix=$(PREFIX) --no-cmake-config $(B2_WITHOUT_OPTIONS) --layout=tagged-1.66 toolset=clang cflags='-arch x86_64 -mmacosx-version-min=10.9 -O2 -g' cxxflags='-std=c++11 -stdlib=libc++ -arch x86_64 -mmacosx-version-min=10.9 -O2 -g' linkflags='-stdlib=libc++ -arch x86_64 -mmacosx-version-min=10.9 -headerpad_max_install_names' link=shared variant=release threading=multi install)
 	touch $@
 
 tmp/ceres-solver-$(CERES_VERSION).installed: tmp/ceres-solver-$(CERES_VERSION)
 	install -d var/ceres-solver-$(CERES_VERSION)/build.dir
-	(cd var/ceres-solver-$(CERES_VERSION)/build.dir && export MACOSX_DEPLOYMENT_TARGET=10.9 && CC='clang' CXX='clang++' CFLAGS='-arch x86_64 -mmacosx-version-min=10.9' CXXFLAGS='-std=c++11 -stdlib=libc++ -arch x86_64 -mmacosx-version-min=10.9' LDFLAGS='-stdlib=libc++ -arch x86_64 -mmacosx-version-min=10.9 -headerpad_max_install_names' cmake -DCMAKE_INSTALL_PREFIX=$(PREFIX) -DEIGEN_INCLUDE_DIR=$(abspath ../include) $(CERES_CMAKE_OPTIONS) .. && $(MAKE) all install)
+	(cd var/ceres-solver-$(CERES_VERSION)/build.dir && export MACOSX_DEPLOYMENT_TARGET=10.9 && CC='clang' CXX='clang++' CFLAGS='-arch x86_64 -mmacosx-version-min=10.9 -O2 -g' CXXFLAGS='-std=c++11 -stdlib=libc++ -arch x86_64 -mmacosx-version-min=10.9 -O2 -g' LDFLAGS='-stdlib=libc++ -arch x86_64 -mmacosx-version-min=10.9 -headerpad_max_install_names' cmake -DCMAKE_INSTALL_PREFIX=$(PREFIX) -DEIGEN_INCLUDE_DIR=$(abspath ../include) $(CERES_CMAKE_OPTIONS) .. && $(MAKE) all install)
 	touch $@
 
 tmp/clibsedml-$(CLIBSEDML_VERSION).installed: tmp/clibsedml-$(CLIBSEDML_VERSION) tmp/libxml2-$(LIBXML2_VERSION).installed
-	(cd var/clibsedml-$(CLIBSEDML_VERSION) && autoreconf -i -f && export MACOSX_DEPLOYMENT_TARGET=10.9 && ./configure --prefix=$(PREFIX) --with-xml-prefix=$(PREFIX) $(CLIBSEDML_CONFIGURE_OPTIONS) CC='clang' CFLAGS='-Wall -W -arch x86_64 -mmacosx-version-min=10.9' LDFLAGS='-arch x86_64 -mmacosx-version-min=10.9 -headerpad_max_install_names' && $(MAKE) all install)
+	(cd var/clibsedml-$(CLIBSEDML_VERSION) && autoreconf -i -f && export MACOSX_DEPLOYMENT_TARGET=10.9 && ./configure --prefix=$(PREFIX) --with-xml-prefix=$(PREFIX) $(CLIBSEDML_CONFIGURE_OPTIONS) CC='clang' CFLAGS='-Wall -W -arch x86_64 -mmacosx-version-min=10.9 -O2 -g' LDFLAGS='-arch x86_64 -mmacosx-version-min=10.9 -headerpad_max_install_names' && $(MAKE) all install)
 	touch $@
 
 tmp/czmq-$(CZMQ_VERSION).installed: tmp/czmq-$(CZMQ_VERSION) tmp/zeromq-$(ZEROMQ_VERSION).installed
-	(cd var/czmq-$(CZMQ_VERSION) && export MACOSX_DEPLOYMENT_TARGET=10.9 && ./configure --prefix=$(PREFIX) $(CZMQ_CONFIGURE_OPTIONS) CC='clang' CFLAGS='-arch x86_64 -mmacosx-version-min=10.9' LDFLAGS='-arch x86_64 -mmacosx-version-min=10.9 -headerpad_max_install_names' PKG_CONFIG=$(PKG_CONFIG) PKG_CONFIG_PATH=$(PKG_CONFIG_PATH) && $(MAKE) all install)
+	(cd var/czmq-$(CZMQ_VERSION) && export MACOSX_DEPLOYMENT_TARGET=10.9 && ./configure --prefix=$(PREFIX) $(CZMQ_CONFIGURE_OPTIONS) CC='clang' CFLAGS='-arch x86_64 -mmacosx-version-min=10.9 -O2 -g' LDFLAGS='-arch x86_64 -mmacosx-version-min=10.9 -headerpad_max_install_names' PKG_CONFIG=$(PKG_CONFIG) PKG_CONFIG_PATH=$(PKG_CONFIG_PATH) && $(MAKE) all install)
 	touch $@
 
 tmp/libmicrohttpd-$(LIBMICROHTTPD_VERSION).installed: tmp/libmicrohttpd-$(LIBMICROHTTPD_VERSION)
-	(cd var/libmicrohttpd-$(LIBMICROHTTPD_VERSION) && export MACOSX_DEPLOYMENT_TARGET=10.9 && ./configure --prefix=$(PREFIX) $(LIBMICROHTTPD_CONFIGURE_OPTIONS) CC='clang' CFLAGS='-arch x86_64 -mmacosx-version-min=10.9' LDFLAGS='-arch x86_64 -mmacosx-version-min=10.9 -headerpad_max_install_names' && $(MAKE) all install)
+	(cd var/libmicrohttpd-$(LIBMICROHTTPD_VERSION) && export MACOSX_DEPLOYMENT_TARGET=10.9 && ./configure --prefix=$(PREFIX) $(LIBMICROHTTPD_CONFIGURE_OPTIONS) CC='clang' CFLAGS='-arch x86_64 -mmacosx-version-min=10.9 -O2 -g' LDFLAGS='-arch x86_64 -mmacosx-version-min=10.9 -headerpad_max_install_names' && $(MAKE) all install)
 	touch $@
 
 tmp/protobuf-$(PROTOBUF_VERSION).installed: tmp/protobuf-$(PROTOBUF_VERSION)
-	(cd var/protobuf-$(PROTOBUF_VERSION) && export MACOSX_DEPLOYMENT_TARGET=10.9 && ./configure --prefix=$(PREFIX) $(PROTOBUF_CONFIGURE_OPTONS) CC='clang' CXX='clang++' CFLAGS='-arch x86_64 -mmacosx-version-min=10.9' CXXFLAGS='-std=c++11 -stdlib=libc++ -arch x86_64 -mmacosx-version-min=10.9' LDFLAGS='-stdlib=libc++ -arch x86_64 -mmacosx-version-min=10.9 -headerpad_max_install_names' LIBS='-lc++ -lc++abi' && $(MAKE) all install)
+	(cd var/protobuf-$(PROTOBUF_VERSION) && export MACOSX_DEPLOYMENT_TARGET=10.9 && ./configure --prefix=$(PREFIX) $(PROTOBUF_CONFIGURE_OPTONS) CC='clang' CXX='clang++' CFLAGS='-arch x86_64 -mmacosx-version-min=10.9 -O2 -g' CXXFLAGS='-std=c++11 -stdlib=libc++ -arch x86_64 -mmacosx-version-min=10.9 -O2 -g' LDFLAGS='-stdlib=libc++ -arch x86_64 -mmacosx-version-min=10.9 -headerpad_max_install_names' LIBS='-lc++ -lc++abi' && $(MAKE) all install)
 	touch $@
 
 tmp/libxml2-$(LIBXML2_VERSION).installed: tmp/libxml2-$(LIBXML2_VERSION)
-	(cd var/libxml2-$(LIBXML2_VERSION) && export MACOSX_DEPLOYMENT_TARGET=10.9 && ./configure --prefix=$(PREFIX) $(LIBXML2_CONFIGURE_OPTIONS) CC='clang' CXX='clang++' CFLAGS='-arch x86_64 -mmacosx-version-min=10.9' CXXFLAGS='-std=c++11 -stdlib=libc++ -arch x86_64 -mmacosx-version-min=10.9' LDFLAGS='-stdlib=libc++ -arch x86_64 -mmacosx-version-min=10.9 -headerpad_max_install_names' && $(MAKE) all install)
+	(cd var/libxml2-$(LIBXML2_VERSION) && export MACOSX_DEPLOYMENT_TARGET=10.9 && ./configure --prefix=$(PREFIX) $(LIBXML2_CONFIGURE_OPTIONS) CC='clang' CXX='clang++' CFLAGS='-arch x86_64 -mmacosx-version-min=10.9 -O2 -g' CXXFLAGS='-std=c++11 -stdlib=libc++ -arch x86_64 -mmacosx-version-min=10.9 -O2 -g' LDFLAGS='-stdlib=libc++ -arch x86_64 -mmacosx-version-min=10.9 -headerpad_max_install_names' && $(MAKE) all install)
 	touch $@
 
 tmp/sundials-$(SUNDIALS_VERSION).installed: tmp/sundials-$(SUNDIALS_VERSION)
 	install -d var/sundials-$(SUNDIALS_VERSION)/build
-	(cd var/sundials-$(SUNDIALS_VERSION)/build && export MACOSX_DEPLOYMENT_TARGET=10.9 && CC='clang' CXX='clang++' CFLAGS='-arch x86_64 -mmacosx-version-min=10.9' CXXFLAGS='-std=c++11 -stdlib=libc++ -arch x86_64 -mmacosx-version-min=10.9' LDFLAGS='-stdlib=libc++ -arch x86_64 -mmacosx-version-min=10.9 -headerpad_max_install_names' cmake -DCMAKE_INSTALL_PREFIX=$(PREFIX) $(SUNDIALS_CMAKE_OPTIONS) .. && $(MAKE) all install)
+	(cd var/sundials-$(SUNDIALS_VERSION)/build && export MACOSX_DEPLOYMENT_TARGET=10.9 && CC='clang' CXX='clang++' CFLAGS='-arch x86_64 -mmacosx-version-min=10.9 -O2 -g' CXXFLAGS='-std=c++11 -stdlib=libc++ -arch x86_64 -mmacosx-version-min=10.9 -O2 -g' LDFLAGS='-stdlib=libc++ -arch x86_64 -mmacosx-version-min=10.9 -headerpad_max_install_names' cmake -DCMAKE_INSTALL_PREFIX=$(PREFIX) $(SUNDIALS_CMAKE_OPTIONS) .. && $(MAKE) all install)
 	touch $@
 
 tmp/wxWidgets-$(WXWIDGETS_VERSION).installed: tmp/wxWidgets-$(WXWIDGETS_VERSION)
-	(cd var/wxWidgets-$(WXWIDGETS_VERSION) && export MACOSX_DEPLOYMENT_TARGET=10.9 && ./configure --prefix=$(PREFIX) $(WXWIDGETS_CONFIGURE_OPTIONS) --enable-macosx_arch=x86_64 --with-macosx-version-min=10.9 CC='clang' CXX='clang++' CXXFLAGS='-std=c++11 -stdlib=libc++' LDFLAGS='-stdlib=libc++ -headerpad_max_install_names' && $(MAKE) all install)
+	(cd var/wxWidgets-$(WXWIDGETS_VERSION) && export MACOSX_DEPLOYMENT_TARGET=10.9 && ./configure --prefix=$(PREFIX) $(WXWIDGETS_CONFIGURE_OPTIONS) --enable-macosx_arch=x86_64 --with-macosx-version-min=10.9 CC='clang' CXX='clang++' CXXFLAGS='-std=c++11 -stdlib=libc++ -O2 -g' LDFLAGS='-stdlib=libc++ -headerpad_max_install_names' && $(MAKE) all install)
 	touch $@
 
 tmp/libsbml-$(LIBSBML_VERSION).installed: tmp/libsbml-$(LIBSBML_VERSION) tmp/libxml2-$(LIBXML2_VERSION).installed
-	(cd var/libsbml-$(LIBSBML_VERSION) && export MACOSX_DEPLOYMENT_TARGET=10.9 && ./configure --prefix=$(PREFIX) --with-libxml=$(PREFIX) $(LIBSBML_CONFIGURE_OPTIONS) CC='clang' CXX='clang++' CFLAGS='-arch x86_64 -mmacosx-version-min=10.9' CXXFLAGS='-std=c++11 -stdlib=libc++ -arch x86_64 -mmacosx-version-min=10.9' LDFLAGS='-stdlib=libc++ -arch x86_64 -mmacosx-version-min=10.9 -headerpad_max_install_names' LIBS='-lc++' && $(MAKE) all install)
+	(cd var/libsbml-$(LIBSBML_VERSION) && export MACOSX_DEPLOYMENT_TARGET=10.9 && ./configure --prefix=$(PREFIX) --with-libxml=$(PREFIX) $(LIBSBML_CONFIGURE_OPTIONS) CC='clang' CXX='clang++' CFLAGS='-arch x86_64 -mmacosx-version-min=10.9 -O2 -g' CXXFLAGS='-std=c++11 -stdlib=libc++ -arch x86_64 -mmacosx-version-min=10.9 -O2 -g' LDFLAGS='-stdlib=libc++ -arch x86_64 -mmacosx-version-min=10.9 -headerpad_max_install_names' LIBS='-lc++' && $(MAKE) all install)
 	unlink $(PREFIX)/lib/libsbml.5.dylib # remove the alias to make the dylib name unique
 	install_name_tool -id $(PREFIX)/lib/libsbml.$(LIBSBML_VERSION).dylib $(PREFIX)/lib/libsbml.$(LIBSBML_VERSION).dylib
 	touch $@
 
 tmp/SBML_odeSolver-$(SOSLIB_VERSION).installed: tmp/SBML_odeSolver-$(SOSLIB_VERSION) tmp/sundials-$(SUNDIALS_VERSION).installed tmp/libsbml-$(LIBSBML_VERSION).installed
-	(cd var/SBML_odeSolver-$(SOSLIB_VERSION) && autoreconf -i && export MACOSX_DEPLOYMENT_TARGET=10.9 && ./configure --prefix=$(PREFIX) --with-libsbml=$(PREFIX) --with-libxml2=$(PREFIX) --with-sundials=$(PREFIX) $(SOSLIB_CONFIGURE_OPTIONS) CC='clang' CFLAGS='-arch x86_64 -mmacosx-version-min=10.9' LDFLAGS='-arch x86_64 -mmacosx-version-min=10.9 -headerpad_max_install_names' && $(MAKE) all install)
+	(cd var/SBML_odeSolver-$(SOSLIB_VERSION) && autoreconf -i && export MACOSX_DEPLOYMENT_TARGET=10.9 && ./configure --prefix=$(PREFIX) --with-libsbml=$(PREFIX) --with-libxml2=$(PREFIX) --with-sundials=$(PREFIX) $(SOSLIB_CONFIGURE_OPTIONS) CC='clang' CFLAGS='-arch x86_64 -mmacosx-version-min=10.9 -O2 -g' LDFLAGS='-arch x86_64 -mmacosx-version-min=10.9 -headerpad_max_install_names' && $(MAKE) all install)
 	touch $@
 
 tmp/zeromq-$(ZEROMQ_VERSION).installed: tmp/zeromq-$(ZEROMQ_VERSION)
-	(cd var/zeromq-$(ZEROMQ_VERSION) && export MACOSX_DEPLOYMENT_TARGET=10.9 && ./configure --prefix=$(PREFIX) $(ZEROMQ_CONFIGURE_OPTIONS) CC='clang' CXX='clang++' CFLAGS='-Wall -W -arch x86_64 -mmacosx-version-min=10.9' CXXFLAGS='-Wall -W -stdlib=libc++ -arch x86_64 -mmacosx-version-min=10.9' LDFLAGS='-arch x86_64 -mmacosx-version-min=10.9 -headerpad_max_install_names' && $(MAKE) all install)
+	(cd var/zeromq-$(ZEROMQ_VERSION) && export MACOSX_DEPLOYMENT_TARGET=10.9 && ./configure --prefix=$(PREFIX) $(ZEROMQ_CONFIGURE_OPTIONS) CC='clang' CXX='clang++' CFLAGS='-Wall -W -arch x86_64 -mmacosx-version-min=10.9 -O2 -g' CXXFLAGS='-Wall -W -stdlib=libc++ -arch x86_64 -mmacosx-version-min=10.9 -O2 -g' LDFLAGS='-arch x86_64 -mmacosx-version-min=10.9 -headerpad_max_install_names' && $(MAKE) all install)
 	touch $@
 
 # for Flint
@@ -256,7 +256,7 @@ build.xml: build.xml.in
 
 build/Makefile: ../configure
 	install -d $(dir $@)
-	(cd $(dir $@) && ../../configure --prefix=$(CURDIR)/opt --with-boost=$(PREFIX) --with-ceres-solver=$(PREFIX) --with-protoc=$(PREFIX)/bin/protoc --with-xml-prefix=$(PREFIX) --with-protoc=$(PREFIX)/bin/protoc --with-sundials=$(PREFIX) --with-wxWidgets=$(PREFIX) --enable-release --enable-silent-rules CC='clang' CXX='clang++' CFLAGS='-arch x86_64 -mmacosx-version-min=10.9' CXXFLAGS='-stdlib=libc++ -arch x86_64 -mmacosx-version-min=10.9' LDFLAGS='-stdlib=libc++ -arch x86_64 -mmacosx-version-min=10.9 -headerpad_max_install_names' PKG_CONFIG=$(PKG_CONFIG) PKG_CONFIG_PATH=$(PKG_CONFIG_PATH))
+	(cd $(dir $@) && ../../configure --prefix=$(CURDIR)/opt --with-boost=$(PREFIX) --with-ceres-solver=$(PREFIX) --with-protoc=$(PREFIX)/bin/protoc --with-xml-prefix=$(PREFIX) --with-protoc=$(PREFIX)/bin/protoc --with-sundials=$(PREFIX) --with-wxWidgets=$(PREFIX) --enable-release --enable-silent-rules CC='clang' CXX='clang++' CFLAGS='-arch x86_64 -mmacosx-version-min=10.9 -O2 -g' CXXFLAGS='-stdlib=libc++ -arch x86_64 -mmacosx-version-min=10.9 -O2 -g' LDFLAGS='-stdlib=libc++ -arch x86_64 -mmacosx-version-min=10.9 -headerpad_max_install_names' PKG_CONFIG=$(PKG_CONFIG) PKG_CONFIG_PATH=$(PKG_CONFIG_PATH))
 
 $(foreach p,$(PROGRAMS),opt/bin/$(p)) $(foreach d,$(FLINT_DYLIBS),opt/lib/$(d).dylib): build/Makefile
 	$(MAKE) -C build all install-exec

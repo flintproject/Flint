@@ -9,6 +9,8 @@
      stochastic differential equations.
 ** Improvements
    - Support MathML's <cn> of type="rational" to represent rational numbers.
+   - The executable distributed as the official binary package for macOS
+     runs faster than the previous release's.
 ** Bug fixes
    - Fixed a Gaussian pseudo-random number generation.
    - Using the seed specified in a PHML model for pseudo-random numbers.
