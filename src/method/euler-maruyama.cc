@@ -102,15 +102,35 @@ bool IsMinus1(const Expr &e, Expr &arg)
 	return false;
 }
 
+bool IsMinus2(const Expr &e, Expr &arg0, Expr &arg1)
+{
+	if (e.which() != kExprIsCompound)
+		return false;
+	const auto &c = boost::get<Compound>(e);
+	if (c.keyword != "minus")
+		return false;
+	if (c.children.size() == 2) {
+		arg0 = c.children[0];
+		arg1 = c.children[1];
+		return true;
+	}
+	return false;
+}
+
 Expr ChangeSign(const Expr &e, double sign)
 {
 	if (sign > 0)
 		return e;
-	Expr r;
-	if (IsMinus1(e, r))
-		return r;
+	Expr r0, r1;
+	if (IsMinus1(e, r0))
+		return r0;
 	Compound m;
 	m.keyword = "minus";
+	if (IsMinus2(e, r0, r1)) { // swap the 1st argument with the 2nd
+		m.children.push_back(r1);
+		m.children.push_back(r0);
+		return m;
+	}
 	m.children.push_back(e);
 	return m;
 }
