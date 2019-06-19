@@ -12,7 +12,7 @@ Download
 --------
 
 Binary installers of Flint's official releases for Windows, macOS, and
-RHEL 6.x/7.x are freely available at
+CentOS/RHEL 7 are freely available at
 
 https://flintproject.github.io/
 

@@ -1,2 +1,0 @@
-DIST = el6
-GTK_PACKAGE_NAME = gtk2

@@ -1,5 +1,5 @@
 The RPM packages of Flint make it easy to install and uninstall Flint on
-an RPM-flavor distribution such as CentOS 6.x.
+an RPM-flavor distribution such as CentOS and RHEL.
 They consist of:
   flint-(version)-(release).(dist).(arch).rpm
 where (version) is the version string of Flint,
