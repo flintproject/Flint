@@ -66,12 +66,9 @@ DEPINSTALLED := $(foreach d,$(DEPS),$(call flint_installed,$(d)))
 RPMBUILD_DIR = ~/rpmbuild
 
 FLINT_PACKAGE     = flint-$(VERSION)-$(RELEASE).$(DIST).$(ARCH).rpm
-FLINT_GUI_PACKAGE = flint-gui-$(VERSION)-$(RELEASE).$(DIST).$(ARCH).rpm
-TARGET_PACKAGES = $(FLINT_PACKAGE) $(FLINT_GUI_PACKAGE)
-DIST_PACKAGES = $(FLINT_PACKAGE) $(FLINT_GUI_PACKAGE)
 
-RPM_FILES := $(foreach p,$(DEPPACKAGES) $(TARGET_PACKAGES),rpm/$(p))
-DIST_FILES := $(foreach p,$(DEPPACKAGES) $(DIST_PACKAGES),Flint-$(VERSION)-$(DIST).$(ARCH)/$(p))
+RPM_FILES := $(foreach p,$(DEPPACKAGES) $(FLINT_PACKAGE),rpm/$(p))
+DIST_FILES := $(foreach p,$(DEPPACKAGES) $(FLINT_PACKAGE),Flint-$(VERSION)-$(DIST).$(ARCH)/$(p))
 
 define flint_archive
 $(call flint_tarball,$(1)): var/$(call flint_basename,$(1))
@@ -159,7 +156,6 @@ distclean: clean
 	-rm -f Flint-$(VERSION)-$(DIST).$(ARCH).zip
 
 maintainer-clean: distclean
-	-sudo rpm -e flint-gui
 	-sudo rpm -e flint
 	-sudo rpm -e $(DEPNAMES)
 
@@ -195,7 +191,7 @@ var/flint-$(VERSION).tar.gz: | var
 flint.spec: flint.spec.in
 	m4 -DVERSION=$(VERSION) -DRELEASE=$(RELEASE) $< > $@
 
-$(foreach p,$(TARGET_PACKAGES),$(RPMBUILD_DIR)/RPMS/$(ARCH)/$(p)): flint.spec var/flint-$(VERSION).tar.gz $(DEPINSTALLED)
+$(foreach p,$(FLINT_PACKAGE),$(RPMBUILD_DIR)/RPMS/$(ARCH)/$(p)): flint.spec var/flint-$(VERSION).tar.gz $(DEPINSTALLED)
 	install var/flint-$(VERSION).tar.gz $(RPMBUILD_DIR)/SOURCES/
 	rpmbuild -bb $<
 

@@ -25,18 +25,10 @@ Requires: flint-soslib
 Requires: flint-wxwidgets >= 3.1.2
 Requires: libmicrohttpd >= 0.9.33
 Requires: libxml2 >= 2.7
+Requires: gnuplot
 
 %description
 This is a simulator for biological and physiological models.
-
-%package gui
-Summary: The GUI part of Flint
-Group: Applications/Productivity
-Requires: flint
-Requires: gnuplot
-
-%description gui
-This is the GUI part of Flint.
 
 %prep
 %setup -q
@@ -93,9 +85,5 @@ rm -rf %{buildroot}
 /opt/flint/lib/libsqlite3.so
 /opt/flint/lib/libsqlite3.so.0
 /opt/flint/lib/libsqlite3.so.0.0.0
-
-%files gui
-%defattr(-,root,root,-)
-%doc
 
 %changelog
