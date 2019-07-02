@@ -1,3 +1,10 @@
+* Flint 2.3 (2019-12-XX)
+
+** Supported platforms
+   - Windows 7 or later.
+   - macOS: OS X Mavericks (10.9) or later.
+   - Linux distributions such as Debian 9, Ubuntu 18.04, and RHEL/CentOS 7.
+
 * Flint 2.2 (2019-06-19)
 
 ** Supported platforms
