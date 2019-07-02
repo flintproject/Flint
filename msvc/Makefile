@@ -4,7 +4,7 @@ include ../deposit.mk
 include ../option.mk
 include ../version.mk
 
-$(eval $(call external_library_source,https://ftp.gnu.org/gnu/libmicrohttpd,libmicrohttpd-$(LIBMICROHTTPD_VERSION)-w32-bin.zip,41ccb4d5ea2003c3e495784dc68a7522a941726b5bec60480c292dac30d94d45))
+$(eval $(call external_library_source,https://ftp.gnu.org/gnu/libmicrohttpd,libmicrohttpd-$(LIBMICROHTTPD_VERSION)-w32-bin.zip,80fe1395a239df71c65df149ee8804f155dc5c2ebd736f28e56bcd289ffafadd))
 
 $(eval $(call external_library_source,https://github.com/wxWidgets/wxWidgets/releases/download/v$(WXWIDGETS_VERSION),wxWidgets-$(WXWIDGETS_VERSION)-headers.7z,6f163f3773a5faf2bbfa3895b789d56996a53be40b0e68e756754a200877a3f3))
 $(eval $(call external_library_source,https://github.com/wxWidgets/wxWidgets/releases/download/v$(WXWIDGETS_VERSION),wxMSW-$(WXWIDGETS_VERSION)_vc141_Dev.7z,d7d5efb7ededd222336cfa58decde9b5e6d6b5ac2adbacdad203b744771da27c))
