@@ -1,5 +1,4 @@
-sudo: false
-dist: trusty
+dist: xenial
 
 language: cpp
 
@@ -25,13 +24,12 @@ compiler:
 addons:
   apt:
     sources:
-    - ubuntu-toolchain-r-test
-    - llvm-toolchain-trusty-4.0
+    - llvm-toolchain-xenial-6.0
     packages:
     - libtool
-    - gcc-4.9
-    - g++-4.9
-    - clang-4.0
+    - gcc
+    - g++
+    - clang-6.0
     - libgtk2.0-dev
     - libxml2-dev
     - uuid-dev
@@ -40,8 +38,8 @@ addons:
     - libtool
 
 install:
-  - if [ "$TRAVIS_OS_NAME" = linux -a "$CXX" = "g++" ]; then export CC="gcc-4.9" CXX="g++-4.9" CFLAGS="-g0 -O0" CXXFLAGS="-g0 -O0"; fi
-  - if [ "$TRAVIS_OS_NAME" = linux -a "$CXX" = "clang++" ]; then export CC="clang-4.0" CXX="clang++-4.0" CFLAGS="-g0 -O0" CXXFLAGS="-g0 -O0"; fi
+  - if [ "$TRAVIS_OS_NAME" = linux -a "$CXX" = "g++" ]; then export CFLAGS="-g0 -O0" CXXFLAGS="-g0 -O0"; fi
+  - if [ "$TRAVIS_OS_NAME" = linux -a "$CXX" = "clang++" ]; then export CFLAGS="-g0 -O0" CXXFLAGS="-g0 -O0"; fi
   - if [ "$TRAVIS_OS_NAME" = linux ]; then cd posix; else cd xcode; fi
   - if [ "$TRAVIS_OS_NAME" = osx ]; then echo "PKG_CONFIG = /usr/local/bin/pkg-config" > config.mk; fi
   - make -s download
