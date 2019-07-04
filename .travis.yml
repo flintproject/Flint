@@ -19,19 +19,11 @@ env:
 
 compiler:
   - gcc
-  # - clang
+  - clang
 
 addons:
   apt:
-    sources:
-    - llvm-toolchain-xenial-6.0
     packages:
-    - libtool
-    - gcc
-    - g++
-    - clang-6.0
-    - libgtk2.0-dev
-    - libxml2-dev
     - uuid-dev
   homebrew:
     packages:
