@@ -160,7 +160,7 @@ tmp/libsbml-$(LIBSBML_VERSION).installed: tmp/libsbml-$(LIBSBML_VERSION)
 	touch $@
 
 tmp/SBML_odeSolver-$(SOSLIB_VERSION).installed: tmp/SBML_odeSolver-$(SOSLIB_VERSION) tmp/sundials-$(SUNDIALS_VERSION).installed tmp/libsbml-$(LIBSBML_VERSION).installed
-	(cd var/SBML_odeSolver-$(SOSLIB_VERSION) && autoreconf -i && ./configure --prefix=$(PREFIX)/SBML_odeSolver-$(SOSLIB_VERSION) --with-libsbml=$(PREFIX)/libsbml-$(LIBSBML_VERSION) --with-libxml2 --with-sundials=$(PREFIX)/sundials-$(SUNDIALS_VERSION) $(SOSLIB_CONFIGURE_OPTIONS))
+	(cd var/SBML_odeSolver-$(SOSLIB_VERSION) && autoreconf -i && env LDFLAGS='-Wl,-rpath -Wl,$(PREFIX)/sundials-$(SUNDIALS_VERSION)/lib' ./configure --prefix=$(PREFIX)/SBML_odeSolver-$(SOSLIB_VERSION) --with-libsbml=$(PREFIX)/libsbml-$(LIBSBML_VERSION) --with-libxml2 --with-sundials=$(PREFIX)/sundials-$(SUNDIALS_VERSION) $(SOSLIB_CONFIGURE_OPTIONS))
 	$(MAKE) -C var/SBML_odeSolver-$(SOSLIB_VERSION) all
 	-rm -rf $(PREFIX)/SBML_odeSolver-$(SOSLIB_VERSION)
 	$(MAKE) -C var/SBML_odeSolver-$(SOSLIB_VERSION) install
