@@ -176,7 +176,7 @@ tmp/zeromq-$(ZEROMQ_VERSION).installed: tmp/zeromq-$(ZEROMQ_VERSION)
 tmp/sequential-version.installed: external
 	(cd .. && autoreconf -i -f)
 	install -d var/sequential-version
-	(cd var/sequential-version && env LDFLAGS='-Wl,-rpath -Wl,$(PREFIX)/libsbml-$(LIBSBML_VERSION)/lib -Wl,-rpath -Wl,$(PREFIX)/sundials-$(SUNDIALS_VERSION)/lib -Wl,-rpath -Wl,$(PREFIX)/wxWidgets-$(WXWIDGETS_VERSION)/lib' PKG_CONFIG_PATH=$(PKG_CONFIG_PATH) ../../../configure --prefix=$(PREFIX)/sequential-version --with-boost=$(PREFIX)/$(BOOST_UNDERSCORE) --with-ceres-solver=$(PREFIX)/ceres-solver-$(CERES_VERSION) --with-protoc=$(PREFIX)/protobuf-$(PROTOBUF_VERSION)/bin/protoc --with-sundials=$(PREFIX)/sundials-$(SUNDIALS_VERSION) --with-wxWidgets=$(PREFIX)/wxWidgets-$(WXWIDGETS_VERSION) --enable-silent-rules)
+	(cd var/sequential-version && env LDFLAGS='-Wl,-rpath -Wl,$(PREFIX)/libsbml-$(LIBSBML_VERSION)/lib -Wl,-rpath -Wl,$(PREFIX)/sundials-$(SUNDIALS_VERSION)/lib -Wl,-rpath -Wl,$(PREFIX)/wxWidgets-$(WXWIDGETS_VERSION)/lib -Wl,-rpath -Wl,$(PREFIX)/protobuf-$(PROTOBUF_VERSION)/lib' PKG_CONFIG_PATH=$(PKG_CONFIG_PATH) ../../../configure --prefix=$(PREFIX)/sequential-version --with-boost=$(PREFIX)/$(BOOST_UNDERSCORE) --with-ceres-solver=$(PREFIX)/ceres-solver-$(CERES_VERSION) --with-protoc=$(PREFIX)/protobuf-$(PROTOBUF_VERSION)/bin/protoc --with-sundials=$(PREFIX)/sundials-$(SUNDIALS_VERSION) --with-wxWidgets=$(PREFIX)/wxWidgets-$(WXWIDGETS_VERSION) --enable-silent-rules)
 	$(MAKE) -C var/sequential-version all
 	-rm -rf $(PREFIX)/sequential-version
 	$(MAKE) -C var/sequential-version install
