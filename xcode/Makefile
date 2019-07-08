@@ -78,7 +78,6 @@ $(call flint_frameworks_dylib_name,$(1)): $(PREFIX)/lib/$(1).dylib tmp/bundled
 	install_name_tool -change $(PREFIX)/lib/libxml2.2.dylib @executable_path/../Frameworks/libxml2.2.dylib $$@
 	install_name_tool -change $(PREFIX)/lib/libsbml.$(LIBSBML_VERSION).dylib @executable_path/../Frameworks/libsbml.$(LIBSBML_VERSION).dylib $$@
 	for name in $(SUNDIALS_DYLIBS); do install_name_tool -change $(PREFIX)/lib/libsundials_$$$$name.dylib @executable_path/../Frameworks/libsundials_$$$$name.dylib $$@; done
-	for name in $(SUNDIALS_DYLIBS); do install_name_tool -change libsundials_$$$$name.dylib @executable_path/../Frameworks/libsundials_$$$$name.dylib $$@; done # for SOSlib
 	install_name_tool -change $(PREFIX)/lib/libzmq.$(ZEROMQ_CURRENT).dylib @executable_path/../Frameworks/libzmq.$(ZEROMQ_CURRENT).dylib $$@
 endef
 
@@ -240,6 +239,7 @@ tmp/libsbml-$(LIBSBML_VERSION).installed: tmp/libsbml-$(LIBSBML_VERSION) tmp/lib
 
 tmp/SBML_odeSolver-$(SOSLIB_VERSION).installed: tmp/SBML_odeSolver-$(SOSLIB_VERSION) tmp/sundials-$(SUNDIALS_VERSION).installed tmp/libsbml-$(LIBSBML_VERSION).installed
 	(cd var/SBML_odeSolver-$(SOSLIB_VERSION) && autoreconf -i && export MACOSX_DEPLOYMENT_TARGET=10.9 && ./configure --prefix=$(PREFIX) --with-libsbml=$(PREFIX) --with-libxml2=$(PREFIX) --with-sundials=$(PREFIX) $(SOSLIB_CONFIGURE_OPTIONS) CC='clang' CFLAGS='-arch x86_64 -mmacosx-version-min=10.9 -O2 -g' LDFLAGS='-arch x86_64 -mmacosx-version-min=10.9 -headerpad_max_install_names' && $(MAKE) all install)
+	for name in $(SUNDIALS_DYLIBS); do install_name_tool -change libsundials_$$name.dylib $(PREFIX)/lib/libsundials_$$name.dylib $(PREFIX)/lib/libODES.0.dylib; done
 	touch $@
 
 tmp/zeromq-$(ZEROMQ_VERSION).installed: tmp/zeromq-$(ZEROMQ_VERSION)
