@@ -25,6 +25,7 @@ addons:
   apt:
     packages:
     - libgtk2.0-dev
+    - libsqlite3-dev
     - uuid-dev
   homebrew:
     packages:
