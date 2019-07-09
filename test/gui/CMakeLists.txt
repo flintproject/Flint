@@ -11,7 +11,7 @@ foreach(test_file ${test_files})
     libflint2
     libflintxx
     libflint
-    sqlite3
+    SQLite::SQLite3
     Boost::filesystem
     Boost::unit_test_framework
     )

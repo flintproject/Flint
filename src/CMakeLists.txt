@@ -1,18 +1,12 @@
 include_directories("include")
 include_directories(".")
 
-add_definitions(-DSQLITE_THREADSAFE=1 -DSQLITE_OMIT_LOAD_EXTENSION)
-
-add_library(sqlite3 STATIC
-    sqlite3.c
-    )
-
 add_library(libflint STATIC
     database.c
     db/query.c
     )
 target_link_libraries(libflint
-    sqlite3
+    SQLite::SQLite3
     )
 
 add_library(libflintxx STATIC
@@ -168,7 +162,7 @@ add_library(libflintxx STATIC
     )
 target_link_libraries(libflintxx
     libflint
-    sqlite3
+    SQLite::SQLite3
     ${wxWidgets_LIBRARIES}
     ${Protobuf_LIBRARIES}
     Boost::filesystem
@@ -206,7 +200,7 @@ add_executable(csv2isd
 target_link_libraries(csv2isd
     libflintxx
     libflint
-    sqlite3
+    SQLite::SQLite3
     Boost::filesystem
     )
 
@@ -216,7 +210,7 @@ add_executable(flint-cli
 target_link_libraries(flint-cli
     libflintxx
     libflint
-    sqlite3
+    SQLite::SQLite3
     ${Protobuf_LIBRARIES}
     Boost::program_options
     )
@@ -227,7 +221,7 @@ add_executable(flint-exec
 target_link_libraries(flint-exec
     libflintxx
     libflint
-    sqlite3
+    SQLite::SQLite3
     ${Protobuf_LIBRARIES}
     Boost::filesystem
     )
@@ -238,7 +232,7 @@ add_executable(flint-lodbg
 target_link_libraries(flint-lodbg
     libflintxx
     libflint
-    sqlite3
+    SQLite::SQLite3
     ${Protobuf_LIBRARIES}
     )
 
@@ -248,7 +242,7 @@ add_executable(flint-run
 target_link_libraries(flint-run
     libflintxx
     libflint
-    sqlite3
+    SQLite::SQLite3
     ${Protobuf_LIBRARIES}
     Boost::filesystem
     )
@@ -259,7 +253,7 @@ add_executable(flint-tr
 target_link_libraries(flint-tr
     libflintxx
     libflint
-    sqlite3
+    SQLite::SQLite3
     ${Protobuf_LIBRARIES}
     Boost::filesystem
     )
@@ -295,7 +289,7 @@ target_link_libraries(flint
     libflint2
     libflintxx
     libflint
-    sqlite3
+    SQLite::SQLite3
     ${Protobuf_LIBRARIES}
     Boost::filesystem
     )
@@ -355,7 +349,7 @@ add_executable(isdplot
 target_link_libraries(isdplot
     libflintxx
     libflint
-    sqlite3
+    SQLite::SQLite3
     Boost::filesystem
     Boost::program_options
     )
@@ -375,7 +369,7 @@ add_executable(isdstrip
 target_link_libraries(isdstrip
     libflintxx
     libflint
-    sqlite3
+    SQLite::SQLite3
     Boost::filesystem
     Boost::program_options
     )
@@ -393,7 +387,7 @@ add_executable(fppp-isd
 target_link_libraries(fppp-isd
     libflintxx
     libflint
-    sqlite3
+    SQLite::SQLite3
     )
 
 if(UNIX)
@@ -403,7 +397,7 @@ add_executable(fppp-rtm
 target_link_libraries(fppp-rtm
     libflintxx
     libflint
-    sqlite3
+    SQLite::SQLite3
     )
 endif(UNIX)
 
@@ -413,7 +407,7 @@ add_executable(fppp-sim
 target_link_libraries(fppp-sim
     libflintxx
     libflint
-    sqlite3
+    SQLite::SQLite3
     ${Protobuf_LIBRARIES}
     Boost::filesystem
     )
@@ -424,7 +418,7 @@ add_executable(fppp-sup
 target_link_libraries(fppp-sup
     libflintxx
     libflint
-    sqlite3
+    SQLite::SQLite3
     )
 
 install(TARGETS

@@ -4,6 +4,12 @@ include ../deposit.mk
 include ../option.mk
 include ../version.mk
 
+SQLITE_YEAR = 2019
+SQLITE_VSTR = 3280000
+
+$(eval $(call external_library_source,https://sqlite.org/$(SQLITE_YEAR),sqlite-amalgamation-$(SQLITE_VSTR).zip,d02fc4e95cfef672b45052e221617a050b7f2e20103661cda88387349a9b1327))
+$(eval $(call external_library_source,https://sqlite.org/$(SQLITE_YEAR),sqlite-dll-win64-x64-$(SQLITE_VSTR).zip,cbffbd496c975102d8b5dae44e101ff8534b2533fc8a8f716f707a4220409453))
+
 $(eval $(call external_library_source,https://ftp.gnu.org/gnu/libmicrohttpd,libmicrohttpd-$(LIBMICROHTTPD_VERSION)-w32-bin.zip,80fe1395a239df71c65df149ee8804f155dc5c2ebd736f28e56bcd289ffafadd))
 
 $(eval $(call external_library_source,https://github.com/wxWidgets/wxWidgets/releases/download/v$(WXWIDGETS_VERSION),wxWidgets-$(WXWIDGETS_VERSION)-headers.7z,6f163f3773a5faf2bbfa3895b789d56996a53be40b0e68e756754a200877a3f3))
@@ -13,12 +19,12 @@ $(eval $(call external_library_source,https://github.com/wxWidgets/wxWidgets/rel
 $(eval $(call external_library_source,https://github.com/wxWidgets/wxWidgets/releases/download/v$(WXWIDGETS_VERSION),wxMSW-$(WXWIDGETS_VERSION)_vc141_x64_ReleaseDLL.7z,85d3bcc5fab41a3d7f00621f060922e0addb09ecf86b9e25e02c88693b96f26a))
 
 UNNECESSARY_LIBRARIES = libmicrohttpd-% wxWidgets-%
-EXTERNAL_LIBRARIES = $(filter-out $(UNNECESSARY_LIBRARIES),$(ALL_EXTERNAL_LIBRARIES)) libmicrohttpd-$(LIBMICROHTTPD_VERSION)-w32-bin.zip wxWidgets-$(WXWIDGETS_VERSION)-headers.7z wxMSW-$(WXWIDGETS_VERSION)_$(MSVC_VARIANT)_Dev.7z wxMSW-$(WXWIDGETS_VERSION)_$(MSVC_VARIANT)_ReleaseDLL.7z
+EXTERNAL_LIBRARIES = $(filter-out $(UNNECESSARY_LIBRARIES),$(ALL_EXTERNAL_LIBRARIES)) libmicrohttpd-$(LIBMICROHTTPD_VERSION)-w32-bin.zip wxWidgets-$(WXWIDGETS_VERSION)-headers.7z wxMSW-$(WXWIDGETS_VERSION)_$(MSVC_VARIANT)_Dev.7z wxMSW-$(WXWIDGETS_VERSION)_$(MSVC_VARIANT)_ReleaseDLL.7z sqlite-amalgamation-$(SQLITE_VSTR).zip sqlite-dll-win64-x64-$(SQLITE_VSTR).zip
 EXTERNAL_LIBRARY_DIRS = $(filter-out $(UNNECESSARY_LIBRARIES),$(ALL_EXTERNAL_LIBRARY_DIRS)) libmicrohttpd-$(LIBMICROHTTPD_VERSION)-w32-bin include lib
 
 .PHONY: all mostlyclean clean distclean download
 
-all: download all.proj $(foreach lib,$(EXTERNAL_LIBRARY_DIRS),tmp/$(lib)) tmp/release-dll flint/flint.ico flint/flint.wxs flint/license.rtf flint/third-party-licenses.txt
+all: download all.proj $(foreach lib,$(EXTERNAL_LIBRARY_DIRS),tmp/$(lib)) tmp/release-dll tmp/sqlite.header tmp/sqlite.precompiled flint/flint.ico flint/flint.wxs flint/license.rtf flint/third-party-licenses.txt
 
 mostlyclean:
 	-rm -rf all.proj tmp/build var/build flint
@@ -112,6 +118,16 @@ tmp/release-dll: src/wxMSW-$(WXWIDGETS_VERSION)_$(MSVC_VARIANT)_ReleaseDLL.7z | 
 	(cd release-dll && 7z x ../$<)
 	touch $@
 
+tmp/sqlite.header: src/sqlite-amalgamation-$(SQLITE_VSTR).zip | tmp
+	-rm -rf var/sqlite-amalgamation-$(SQLITE_VSTR)
+	unzip -d var -qq $<
+	touch $@
+
+tmp/sqlite.precompiled: src/sqlite-dll-win64-x64-$(SQLITE_VSTR).zip | tmp
+	-rm -f var/sqlite3.*
+	unzip -d var -qq $<
+	touch $@
+
 flint/flint.ico: flint.ico | flint
 	install -p -m 0644 $< $@
 
@@ -179,6 +195,7 @@ all.proj: all.proj.in
 		-D__LIBXML2_VERSION="$(LIBXML2_VERSION)" \
 		-D__PROTOBUF_VERSION="$(PROTOBUF_VERSION)" \
 		-D__SOSLIB_VERSION="$(SOSLIB_VERSION)" \
+		-D__SQLITE_VSTR="$(SQLITE_VSTR)" \
 		-D__SUNDIALS_VERSION="$(SUNDIALS_VERSION)" \
 		-D__ZEROMQ_VERSION="$(ZEROMQ_VERSION)" \
 		$< > $@

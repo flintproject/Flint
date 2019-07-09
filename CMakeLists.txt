@@ -12,6 +12,8 @@ if(MSVC)
     add_definitions(-DNOMINMAX)
 endif(MSVC)
 
+find_package(SQLite3 REQUIRED)
+
 find_package(LibXml2 REQUIRED)
 include_directories("${LIBXML2_INCLUDE_DIR}")
 

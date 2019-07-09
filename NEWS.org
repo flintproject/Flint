@@ -4,6 +4,8 @@
    - Windows 7 or later.
    - macOS: OS X Mavericks (10.9) or later.
    - Linux distributions such as Debian 9, Ubuntu 18.04, and RHEL/CentOS 7.
+** Improvements
+   - Flint now consists of smaller binaries than the ones of previous releases.
 
 * Flint 2.2 (2019-06-19)
 

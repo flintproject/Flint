@@ -9,7 +9,7 @@ foreach(test_file ${test_files})
   target_link_libraries(test-file-${test_file}
     libflintxx
     libflint
-    sqlite3
+    SQLite::SQLite3
     Boost::filesystem
     Boost::unit_test_framework
     )

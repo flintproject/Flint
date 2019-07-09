@@ -111,6 +111,8 @@ AC_SUBST([WXWIDGETS_LIBS])
 
 AM_PATH_XML2([2.7.6])
 
+AX_LIB_SQLITE3([3.7.17])
+
 # Checks for header files.
 AC_CHECK_HEADERS([arpa/inet.h float.h stdint.h string.h sys/resource.h sys/time.h unistd.h])
 

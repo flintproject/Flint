@@ -56,19 +56,19 @@ noinst_PROGRAMS = \
 	test-run
 
 # Dependency comes first
-lib_LTLIBRARIES = libsqlite3.la libflint.la libflintxx.la
+lib_LTLIBRARIES = libflint.la libflintxx.la
 
 lib_LIBRARIES = libflint2.a
 
 libflint_la_CPPFLAGS = $(AM_CFLAGS) -std=c99 -pedantic-errors
-libflint_la_LIBADD = libsqlite3.la
+libflint_la_LIBADD = $(SQLITE3_LDFLAGS)
 libflint_la_LDFLAGS = -no-undefined
 libflint_la_SOURCES = \
     database.c \
     db/query.c
 
 libflintxx_la_CPPFLAGS = -I$(top_srcdir)/include -I$(srcdir)/include $(SOSLIB_CFLAGS) $(LIBSBML_CFLAGS) $(WXWIDGETS_CXXFLAGS) $(PROTOBUF_CFLAGS) $(BOOST_CPPFLAGS) $(SUNDIALS_CFLAGS) $(CLIBSEDML_CFLAGS) $(CZMQ_CFLAGS) $(ZEROMQ_CFLAGS) $(XML_CPPFLAGS)
-libflintxx_la_LIBADD = libflint.la libsqlite3.la $(SOSLIB_LIBS) $(LIBSBML_LIBS) $(WXWIDGETS_LIBS) $(PROTOBUF_LIBS) $(BOOST_FILESYSTEM_LIBS) $(BOOST_SYSTEM_LIBS) $(SUNDIALS_LIBS) $(CLIBSEDML_LIBS) $(CZMQ_LIBS) $(ZEROMQ_LIBS) $(XML_LIBS)
+libflintxx_la_LIBADD = libflint.la $(SOSLIB_LIBS) $(LIBSBML_LIBS) $(WXWIDGETS_LIBS) $(PROTOBUF_LIBS) $(BOOST_FILESYSTEM_LIBS) $(BOOST_SYSTEM_LIBS) $(SUNDIALS_LIBS) $(CLIBSEDML_LIBS) $(CZMQ_LIBS) $(ZEROMQ_LIBS) $(XML_LIBS) $(SQLITE3_LDFLAGS)
 libflintxx_la_LDFLAGS = -no-undefined $(BOOST_FILESYSTEM_LDFLAGS) $(BOOST_SYSTEM_LDFLAGS)
 libflintxx_la_SOURCES = \
     bc.pb.cc \
@@ -228,43 +228,39 @@ libflint2_a_SOURCES = \
     gui/formula/token.cc \
     gui/formula/tree.cc
 
-libsqlite3_la_CPPFLAGS = -DSQLITE_THREADSAFE=1 -DSQLITE_OMIT_LOAD_EXTENSION
-libsqlite3_la_LDFLAGS = -no-undefined
-libsqlite3_la_SOURCES = sqlite3.c
-
-csv2isd_CPPFLAGS = $(BOOST_CPPFLAGS)
+csv2isd_CPPFLAGS = $(BOOST_CPPFLAGS) $(SQLITE3_CFLAGS)
 csv2isd_LDFLAGS = $(BOOST_FILESYSTEM_LDFLAGS) $(BOOST_SYSTEM_LDFLAGS)
-csv2isd_LDADD = libflintxx.la libflint.la libsqlite3.la $(BOOST_FILESYSTEM_LIBS) $(BOOST_SYSTEM_LIBS)
+csv2isd_LDADD = libflintxx.la libflint.la $(BOOST_FILESYSTEM_LIBS) $(BOOST_SYSTEM_LIBS) $(SQLITE3_LDFLAGS)
 csv2isd_SOURCES = csv2isd-main.cc
 
-flint_cli_CPPFLAGS = $(PROTOBUF_CFLAGS) $(BOOST_CPPFLAGS)
+flint_cli_CPPFLAGS = $(PROTOBUF_CFLAGS) $(BOOST_CPPFLAGS) $(SQLITE3_CFLAGS)
 flint_cli_LDFLAGS = $(BOOST_PROGRAM_OPTIONS_LDFLAGS)
-flint_cli_LDADD = libflintxx.la libflint.la libsqlite3.la $(PROTOBUF_LIBS) $(BOOST_PROGRAM_OPTIONS_LIBS)
+flint_cli_LDADD = libflintxx.la libflint.la $(PROTOBUF_LIBS) $(BOOST_PROGRAM_OPTIONS_LIBS) $(SQLITE3_LDFLAGS)
 flint_cli_SOURCES = flint-cli-main.cc
 
-flint_exec_CPPFLAGS = $(PROTOBUF_CFLAGS) $(BOOST_CPPFLAGS)
+flint_exec_CPPFLAGS = $(PROTOBUF_CFLAGS) $(BOOST_CPPFLAGS) $(SQLITE3_CFLAGS)
 flint_exec_LDFLAGS = $(BOOST_FILESYSTEM_LDFLAGS) $(BOOST_SYSTEM_LDFLAGS)
-flint_exec_LDADD = libflintxx.la libflint.la libsqlite3.la $(PROTOBUF_LIBS) $(BOOST_FILESYSTEM_LIBS) $(BOOST_SYSTEM_LIBS)
+flint_exec_LDADD = libflintxx.la libflint.la $(PROTOBUF_LIBS) $(BOOST_FILESYSTEM_LIBS) $(BOOST_SYSTEM_LIBS) $(SQLITE3_LDFLAGS)
 flint_exec_SOURCES = flint-exec-main.cc
 
-flint_lodbg_CPPFLAGS = -I$(srcdir)/include $(PROTOBUF_CFLAGS) $(BOOST_CPPFLAGS) $(CZMQ_CFLAGS)
+flint_lodbg_CPPFLAGS = -I$(srcdir)/include $(PROTOBUF_CFLAGS) $(BOOST_CPPFLAGS) $(CZMQ_CFLAGS) $(SQLITE3_CFLAGS)
 flint_lodbg_LDFLAGS = $(BOOST_FILESYSTEM_LDFLAGS) $(BOOST_SYSTEM_LDFLAGS)
-flint_lodbg_LDADD = libflintxx.la libflint.la libsqlite3.la $(PROTOBUF_LIBS) $(BOOST_FILESYSTEM_LIBS) $(BOOST_SYSTEM_LIBS) $(CZMQ_LIBS)
+flint_lodbg_LDADD = libflintxx.la libflint.la $(PROTOBUF_LIBS) $(BOOST_FILESYSTEM_LIBS) $(BOOST_SYSTEM_LIBS) $(CZMQ_LIBS) $(SQLITE3_LDFLAGS)
 flint_lodbg_SOURCES = flint-lodbg-main.cc
 
-flint_run_CPPFLAGS = $(PROTOBUF_CFLAGS) $(BOOST_CPPFLAGS)
+flint_run_CPPFLAGS = $(PROTOBUF_CFLAGS) $(BOOST_CPPFLAGS) $(SQLITE3_CFLAGS)
 flint_run_LDFLAGS = $(BOOST_FILESYSTEM_LDFLAGS) $(BOOST_SYSTEM_LDFLAGS)
-flint_run_LDADD = libflintxx.la libflint.la libsqlite3.la $(PROTOBUF_LIBS) $(BOOST_FILESYSTEM_LIBS) $(BOOST_SYSTEM_LIBS)
+flint_run_LDADD = libflintxx.la libflint.la $(PROTOBUF_LIBS) $(BOOST_FILESYSTEM_LIBS) $(BOOST_SYSTEM_LIBS) $(SQLITE3_LDFLAGS)
 flint_run_SOURCES = flint-run-main.cc
 
-flint_tr_CPPFLAGS = -I$(srcdir)/include $(PROTOBUF_CFLAGS) $(BOOST_CPPFLAGS)
+flint_tr_CPPFLAGS = -I$(srcdir)/include $(PROTOBUF_CFLAGS) $(BOOST_CPPFLAGS) $(SQLITE3_CFLAGS)
 flint_tr_LDFLAGS = $(BOOST_FILESYSTEM_LDFLAGS) $(BOOST_SYSTEM_LDFLAGS)
-flint_tr_LDADD = libflintxx.la libflint.la libsqlite3.la $(PROTOBUF_LIBS) $(BOOST_FILESYSTEM_LIBS) $(BOOST_SYSTEM_LIBS)
+flint_tr_LDADD = libflintxx.la libflint.la $(PROTOBUF_LIBS) $(BOOST_FILESYSTEM_LIBS) $(BOOST_SYSTEM_LIBS) $(SQLITE3_LDFLAGS)
 flint_tr_SOURCES = flint-tr-main.cc
 
-flint_CPPFLAGS = -I$(srcdir)/include $(WXWIDGETS_CXXFLAGS) $(LIBMICROHTTPD_CFLAGS) $(PROTOBUF_CFLAGS) $(BOOST_CPPFLAGS)
+flint_CPPFLAGS = -I$(srcdir)/include $(WXWIDGETS_CXXFLAGS) $(LIBMICROHTTPD_CFLAGS) $(PROTOBUF_CFLAGS) $(BOOST_CPPFLAGS) $(SQLITE3_CFLAGS)
 flint_LDFLAGS = $(BOOST_FILESYSTEM_LDFLAGS) $(BOOST_SYSTEM_LDFLAGS)
-flint_LDADD = libflint2.a libflintxx.la libflint.la libsqlite3.la $(WXWIDGETS_LIBS) $(LIBMICROHTTPD_LIBS) $(PROTOBUF_LIBS) $(BOOST_FILESYSTEM_LIBS) $(BOOST_SYSTEM_LIBS)
+flint_LDADD = libflint2.a libflintxx.la libflint.la $(WXWIDGETS_LIBS) $(LIBMICROHTTPD_LIBS) $(PROTOBUF_LIBS) $(BOOST_FILESYSTEM_LIBS) $(BOOST_SYSTEM_LIBS) $(SQLITE3_LDFLAGS)
 flint_SOURCES = \
     gui/app.cc \
     gui/configuration.cc \
@@ -324,9 +320,9 @@ isdmerge_LDFLAGS = $(BOOST_PROGRAM_OPTIONS_LDFLAGS)
 isdmerge_LDADD = $(BOOST_PROGRAM_OPTIONS_LIBS)
 isdmerge_SOURCES = isdmerge-main.cpp
 
-isdplot_CPPFLAGS = -I$(srcdir)/include $(BOOST_CPPFLAGS)
+isdplot_CPPFLAGS = -I$(srcdir)/include $(BOOST_CPPFLAGS) $(SQLITE3_CFLAGS)
 isdplot_LDFLAGS = $(BOOST_FILESYSTEM_LDFLAGS) $(BOOST_SYSTEM_LDFLAGS) $(BOOST_PROGRAM_OPTIONS_LDFLAGS)
-isdplot_LDADD = libflintxx.la libflint.la libsqlite3.la $(BOOST_FILESYSTEM_LIBS) $(BOOST_SYSTEM_LIBS) $(BOOST_PROGRAM_OPTIONS_LIBS)
+isdplot_LDADD = libflintxx.la libflint.la $(BOOST_FILESYSTEM_LIBS) $(BOOST_SYSTEM_LIBS) $(BOOST_PROGRAM_OPTIONS_LIBS) $(SQLITE3_LDFLAGS)
 isdplot_SOURCES = isdplot-main.cc
 
 isdrand_CFLAGS = $(AM_CFLAGS) -std=c99 -pedantic-errors
@@ -335,9 +331,9 @@ isdrand_SOURCES = isdrand-main.c
 isdsort_CPPFLAGS = $(BOOST_CPPFLAGS)
 isdsort_SOURCES = isdsort-main.cc
 
-isdstrip_CPPFLAGS = -I$(srcdir)/include $(BOOST_CPPFLAGS)
+isdstrip_CPPFLAGS = -I$(srcdir)/include $(BOOST_CPPFLAGS) $(SQLITE3_CFLAGS)
 isdstrip_LDFLAGS = $(BOOST_FILESYSTEM_LDFLAGS) $(BOOST_SYSTEM_LDFLAGS) $(BOOST_PROGRAM_OPTIONS_LDFLAGS)
-isdstrip_LDADD = libflintxx.la libflint.la libsqlite3.la $(BOOST_FILESYSTEM_LIBS) $(BOOST_SYSTEM_LIBS) $(BOOST_PROGRAM_OPTIONS_LIBS)
+isdstrip_LDADD = libflintxx.la libflint.la $(BOOST_FILESYSTEM_LIBS) $(BOOST_SYSTEM_LIBS) $(BOOST_PROGRAM_OPTIONS_LIBS) $(SQLITE3_LDFLAGS)
 isdstrip_SOURCES = isdstrip-main.cc
 
 isdwc_CPPFLAGS = $(BOOST_CPPFLAGS)
@@ -345,27 +341,28 @@ isdwc_LDFLAGS = $(BOOST_PROGRAM_OPTIONS_LDFLAGS)
 isdwc_LDADD = $(BOOST_PROGRAM_OPTIONS_LIBS)
 isdwc_SOURCES = isdwc-main.cc
 
-fppp_isd_CPPFLAGS = -I$(srcdir)/include $(BOOST_CPPFLAGS) $(CZMQ_CFLAGS)
-fppp_isd_LDADD = libflintxx.la libflint.la libsqlite3.la $(CZMQ_LIBS) $(ZEROMQ_LIBS)
+fppp_isd_CPPFLAGS = -I$(srcdir)/include $(BOOST_CPPFLAGS) $(CZMQ_CFLAGS) $(SQLITE3_CFLAGS)
+fppp_isd_LDFLAGS =
+fppp_isd_LDADD = libflintxx.la libflint.la $(CZMQ_LIBS) $(ZEROMQ_LIBS) $(SQLITE3_LDFLAGS)
 fppp_isd_SOURCES = fppp/isd/main.cc
 
-fppp_rtm_CPPFLAGS = -I$(srcdir)/include $(BOOST_CPPFLAGS) $(CZMQ_CFLAGS) $(ZEROMQ_CFLAGS)
-fppp_rtm_LDADD = libflintxx.la libflint.la libsqlite3.la $(CZMQ_LIBS) $(ZEROMQ_LIBS)
+fppp_rtm_CPPFLAGS = -I$(srcdir)/include $(BOOST_CPPFLAGS) $(CZMQ_CFLAGS) $(ZEROMQ_CFLAGS) $(SQLITE3_CFLAGS)
+fppp_rtm_LDADD = libflintxx.la libflint.la $(CZMQ_LIBS) $(ZEROMQ_LIBS) $(SQLITE3_LDFLAGS)
 fppp_rtm_SOURCES = fppp/rtm/main.cc
 
-fppp_sim_CPPFLAGS = $(PROTOBUF_CFLAGS) $(BOOST_CPPFLAGS)
+fppp_sim_CPPFLAGS = $(PROTOBUF_CFLAGS) $(BOOST_CPPFLAGS) $(SQLITE3_CFLAGS)
 fppp_sim_LDFLAGS = $(BOOST_FILESYSTEM_LDFLAGS) $(BOOST_SYSTEM_LDFLAGS)
-fppp_sim_LDADD = libflintxx.la libflint.la libsqlite3.la $(PROTOBUF_LIBS) $(BOOST_FILESYSTEM_LIBS) $(BOOST_SYSTEM_LIBS)
+fppp_sim_LDADD = libflintxx.la libflint.la $(PROTOBUF_LIBS) $(BOOST_FILESYSTEM_LIBS) $(BOOST_SYSTEM_LIBS) $(SQLITE3_LDFLAGS)
 fppp_sim_SOURCES = fppp/sim/main.cc
 
-fppp_sup_CPPFLAGS = $(BOOST_CPPFLAGS) $(CZMQ_CFLAGS)
-fppp_sup_LDADD = libflintxx.la libflint.la libsqlite3.la $(CZMQ_LIBS)
+fppp_sup_CPPFLAGS = $(BOOST_CPPFLAGS) $(CZMQ_CFLAGS) $(SQLITE3_CFLAGS)
+fppp_sup_LDADD = libflintxx.la libflint.la $(CZMQ_LIBS) $(SQLITE3_LDFLAGS)
 fppp_sup_SOURCES = fppp/sup/main.cc
 
-test_exec_CPPFLAGS = $(PROTOBUF_CFLAGS) $(BOOST_CPPFLAGS)
-test_exec_LDADD = libflintxx.la libflint.la libsqlite3.la $(PROTOBUF_LIBS)
+test_exec_CPPFLAGS = $(PROTOBUF_CFLAGS) $(BOOST_CPPFLAGS) $(SQLITE3_CFLAGS)
+test_exec_LDADD = libflintxx.la libflint.la $(PROTOBUF_LIBS) $(SQLITE3_LDFLAGS)
 test_exec_SOURCES = test-exec-main.cc
 
-test_run_CPPFLAGS = $(PROTOBUF_CFLAGS) $(BOOST_CPPFLAGS)
-test_run_LDADD = libflintxx.la libflint.la libsqlite3.la $(PROTOBUF_LIBS)
+test_run_CPPFLAGS = $(PROTOBUF_CFLAGS) $(BOOST_CPPFLAGS) $(SQLITE3_CFLAGS)
+test_run_LDADD = libflintxx.la libflint.la $(PROTOBUF_LIBS) $(SQLITE3_LDFLAGS)
 test_run_SOURCES = test-run-main.cc

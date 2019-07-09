@@ -20,6 +20,7 @@
     <LIBXML2_VERSION>__LIBXML2_VERSION</LIBXML2_VERSION>
     <PROTOBUF_VERSION>__PROTOBUF_VERSION</PROTOBUF_VERSION>
     <SOSLIB_VERSION>__SOSLIB_VERSION</SOSLIB_VERSION>
+    <SQLITE_VSTR>__SQLITE_VSTR</SQLITE_VSTR>
     <SUNDIALS_VERSION>__SUNDIALS_VERSION</SUNDIALS_VERSION>
     <ZEROMQ_VERSION>__ZEROMQ_VERSION</ZEROMQ_VERSION>
 
@@ -172,6 +173,14 @@
     <Touch AlwaysCreate='true' Files='tmp\wxWidgets.installed'/>
   </Target>
 
+  <Target Name='SQLite'
+          Inputs='$(VARDIR)\sqlite-amalgamation-$(SQLITE_VSTR)\sqlite3.h;$(VARDIR)\sqlite3.def'
+          Outputs='tmp\SQLite.installed'>
+    <Copy SourceFiles='$(VARDIR)\sqlite-amalgamation-$(SQLITE_VSTR)\sqlite3.h' DestinationFolder="$(PREFIX)\include"/>
+    <Exec Command='lib /DEF:$(VARDIR)\sqlite3.def /MACHINE:x64 /OUT:$(PREFIX)\lib\sqlite3.lib'/>
+    <Touch AlwaysCreate='true' Files='tmp\SQLite.installed'/>
+  </Target>
+
   <Target Name='bc-pb'
           DependsOnTargets='protobuf'
           Inputs='$(PBDIR)\bc.proto;tmp\protobuf-$(PROTOBUF_VERSION).installed'
@@ -215,8 +224,8 @@
   </Target>
 
   <Target Name='build'
-          DependsOnTargets='boost;ceres-solver;clibsedml;sundials;SBML_odeSolver;czmq;libmicrohttpd;wxWidgets;bc-pb;cli-pb;ipc-pb;lo-pb;phml-pb;unit-pb'
-          Inputs='tmp\$(BOOST_UNDERSCORE).installed;tmp\ceres-solver-$(CERES_VERSION).installed;tmp\clibsedml-$(CLIBSEDML_VERSION).installed;tmp\sundials-$(SUNDIALS_VERSION).installed;tmp\SBML_odeSolver-$(SOSLIB_VERSION).installed;tmp\czmq-$(CZMQ_VERSION).installed;tmp\libmicrohttpd-$(LIBMICROHTTPD_VERSION).installed;tmp\wxWidgets.installed;..\src\bc.pb.cc;..\src\cli.pb.cc;..\src\ipc.pb.cc;..\src\lo.pb.cc;..\src\phml.pb.cc;..\src\unit.pb.cc'
+          DependsOnTargets='boost;ceres-solver;clibsedml;sundials;SBML_odeSolver;czmq;libmicrohttpd;wxWidgets;SQLite;bc-pb;cli-pb;ipc-pb;lo-pb;phml-pb;unit-pb'
+          Inputs='tmp\$(BOOST_UNDERSCORE).installed;tmp\ceres-solver-$(CERES_VERSION).installed;tmp\clibsedml-$(CLIBSEDML_VERSION).installed;tmp\sundials-$(SUNDIALS_VERSION).installed;tmp\SBML_odeSolver-$(SOSLIB_VERSION).installed;tmp\czmq-$(CZMQ_VERSION).installed;tmp\libmicrohttpd-$(LIBMICROHTTPD_VERSION).installed;tmp\wxWidgets.installed;tmp\SQLite.installed;..\src\bc.pb.cc;..\src\cli.pb.cc;..\src\ipc.pb.cc;..\src\lo.pb.cc;..\src\phml.pb.cc;..\src\unit.pb.cc'
           Outputs='tmp\build'>
     <MakeDir Directories='$(VARDIR)\build'/>
     <Exec Command='cmake $(CMakeGeneratorOption) -DCMAKE_INSTALL_PREFIX="$(PREFIX)" -DwxWidgets_LIB_DIR="$(PREFIX)\lib\$(MsvcVariant)_dll" ..\..\..' WorkingDirectory='$(VARDIR)\build'/>
@@ -252,6 +261,7 @@
     <Copy SourceFiles='@(DLLFiles)' DestinationFiles="@(DLLFiles->'flint\%(Filename)%(Extension)')"/>
     <Copy SourceFiles='@(libmicrohttpdReleaseDLLFiles)' DestinationFiles="@(libmicrohttpdReleaseDLLFiles->'flint\%(Filename)%(Extension)')"/>
     <Copy SourceFiles='@(wxMSWReleaseDLLFiles)' DestinationFiles="@(wxMSWReleaseDLLFiles->'flint\%(Filename)%(Extension)')"/>
+    <Copy SourceFiles='$(VARDIR)\sqlite3.dll' DestinationFolder='flint'/>
     <Copy SourceFiles="@(ExeFiles->'opt\bin\%(Filename)%(Extension)')" DestinationFiles="@(ExeFiles->'flint\%(Filename)%(Extension)')"/>
     <Touch AlwaysCreate='true' Files='tmp\flint'/>
   </Target>

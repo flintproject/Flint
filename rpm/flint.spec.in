@@ -17,6 +17,7 @@ BuildRequires: flint-soslib
 BuildRequires: flint-wxwidgets >= 3.1.2
 BuildRequires: libmicrohttpd-devel >= 0.9.33
 BuildRequires: libxml2-devel >= 2.7
+BuildRequires: sqlite-devel >= 3.7.17
 Requires: flint-boost >= 1.70.0
 Requires: flint-clibsedml >= 0.1.0
 Requires: flint-czmq => 4.2.0
@@ -25,6 +26,7 @@ Requires: flint-soslib
 Requires: flint-wxwidgets >= 3.1.2
 Requires: libmicrohttpd >= 0.9.33
 Requires: libxml2 >= 2.7
+Requires: sqlite >= 3.7.17
 Requires: gnuplot
 
 %description
@@ -81,9 +83,5 @@ rm -rf %{buildroot}
 /opt/flint/lib/libflintxx.so
 /opt/flint/lib/libflintxx.so.0
 /opt/flint/lib/libflintxx.so.0.0.0
-/opt/flint/lib/libsqlite3.la
-/opt/flint/lib/libsqlite3.so
-/opt/flint/lib/libsqlite3.so.0
-/opt/flint/lib/libsqlite3.so.0.0.0
 
 %changelog

@@ -21,6 +21,8 @@ In order to build Flint, the following libraries are required:
   http://czmq.zeromq.org/
 - Protocol buffers 3.8.0
   https://developers.google.com/protocol-buffers/
+- SQLite 3.7.17 or newer (with SQLITE_THREADSAFE=1)
+  https://sqlite.org/
 - The SBML ODE Solver Library (SOSlib) 1.9.0
   http://www.tbi.univie.ac.at/~raim/odeSolver/
   https://github.com/raim/SBML_odeSolver

@@ -114,6 +114,9 @@
           <Component Id='soslib' Guid='fe0ea6b2-ff5e-11e4-9eff-3f83ebaed478'>
             <File Id='libODES' Name='ODES.dll' DiskId='1' Source='ODES.dll' />
           </Component>
+          <Component Id='sqlite' Guid='3f0ec68a-a1fc-11e9-889b-1f573acc4e30'>
+            <File Id='sqlite3' Name='sqlite3.dll' DiskId='1' Source='sqlite3.dll' />
+          </Component>
           <Component Id='xml2' Guid='d02ce240-1a7e-11e1-8c5d-b793ab03d5f9'>
             <File Id='libxml2' Name='libxml2.dll' DiskId='1' Source='libxml2.dll' />
           </Component>
@@ -178,6 +181,7 @@
       <ComponentRef Id='protobuf' />
       <ComponentRef Id='sbml' />
       <ComponentRef Id='soslib' />
+      <ComponentRef Id='sqlite' />
       <ComponentRef Id='xml2' />
       <ComponentRef Id='zeromq' />
       <ComponentRef Id='third_party_licenses' />

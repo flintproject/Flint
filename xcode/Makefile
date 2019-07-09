@@ -35,8 +35,7 @@ SUNDIALS_DYLIBS := \
     nvecserial.2
 FLINT_DYLIBS := \
     libflint.0 \
-    libflintxx.0 \
-    libsqlite3.0
+    libflintxx.0
 PROGRAMS := \
     csv2isd \
     flint-exec \
