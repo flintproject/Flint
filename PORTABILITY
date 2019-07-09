@@ -13,13 +13,13 @@ $ sudo yum install libtool cmake wget gtk3-devel sqlite-devel libuuid-devel \
     libxml2-devel patch
 
 
-== Debian Stretch/Buster/Sid
+== Debian buster/bullseye/sid
 
 We do not have a Debian package (.deb) for Flint yet.
 Before building Flint, you will want to install prerequisite Debian packages
 as follows:
 $ sudo aptitude install gcc g++ autoconf automake libtool cmake \
-    pkgconf libgtk2.0-dev libsqlite3-dev libxml2-dev patch
+    pkgconf libgtk-3-dev libsqlite3-dev libxml2-dev patch
 
 
 == Fedora 30
