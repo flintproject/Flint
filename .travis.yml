@@ -4,9 +4,9 @@ language: cpp
 
 os:
   - linux
-  # - osx
+  - osx
 
-osx_image: xcode10
+osx_image: xcode10.2
 
 cache:
   directories:
@@ -41,4 +41,4 @@ install:
   - make -s all
 
 script:
-  - if [ "$TRAVIS_OS_NAME" = linux ]; then make check; else make; fi # in posix/ or xcode/
+  - make check # in posix/ or xcode/

@@ -110,7 +110,7 @@ endef
 all: download external $(DMGS)
 
 check:
-	env DYLD_LIBRARY_PATH=$(PREFIX)/lib $(MAKE) -C build check
+	$(MAKE) -C build check
 
 mostlyclean:
 	-rm -rf tmp/bundled Flint-*.dmg Flint-*/ flint-component.pkg resources root opt build build.xml ../configure
