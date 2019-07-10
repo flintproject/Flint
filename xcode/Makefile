@@ -4,12 +4,14 @@ include ../deposit.mk
 include ../option.mk
 include ../version.mk
 
-EXTERNAL_LIBRARIES = $(ALL_EXTERNAL_LIBRARIES)
-EXTERNAL_LIBRARY_DIRS = $(ALL_EXTERNAL_LIBRARY_DIRS)
+UNNECESSARY_LIBRARIES = libxml2-%
+EXTERNAL_LIBRARIES = $(filter-out $(UNNECESSARY_LIBRARIES),$(ALL_EXTERNAL_LIBRARIES))
+EXTERNAL_LIBRARY_DIRS = $(filter-out $(UNNECESSARY_LIBRARIES),$(ALL_EXTERNAL_LIBRARY_DIRS))
 
 PREFIX = $(abspath usr)
 
 PKG_CONFIG_PATH = $(PREFIX)/lib/pkgconfig
+PKG_CONFIG_LIBDIR = /usr/lib/pkgconfig
 
 BOOST_DYLIBS := \
     filesystem \
@@ -22,7 +24,6 @@ DYLIBS := \
     libmicrohttpd.$(LIBMICROHTTPD_CURRENT) \
     libsbml.$(LIBSBML_VERSION) \
     libsedml.0 \
-    libxml2.2 \
     libprotobuf.$(PROTOBUF_CURRENT) \
     libwx_osx_cocoau-3.1 \
     libzmq.$(ZEROMQ_CURRENT)
@@ -74,7 +75,6 @@ define flint_frameworks_dylib
 $(call flint_frameworks_dylib_name,$(1)): $(PREFIX)/lib/$(1).dylib tmp/bundled
 	install -p -m 0644 $$< $$@
 	install_name_tool -id @executable_path/../Frameworks/$(1).dylib $$@
-	install_name_tool -change $(PREFIX)/lib/libxml2.2.dylib @executable_path/../Frameworks/libxml2.2.dylib $$@
 	install_name_tool -change $(PREFIX)/lib/libsbml.$(LIBSBML_VERSION).dylib @executable_path/../Frameworks/libsbml.$(LIBSBML_VERSION).dylib $$@
 	for name in $(SUNDIALS_DYLIBS); do install_name_tool -change $(PREFIX)/lib/libsundials_$$$$name.dylib @executable_path/../Frameworks/libsundials_$$$$name.dylib $$@; done
 	install_name_tool -change $(PREFIX)/lib/libzmq.$(ZEROMQ_CURRENT).dylib @executable_path/../Frameworks/libzmq.$(ZEROMQ_CURRENT).dylib $$@
@@ -123,7 +123,7 @@ distclean: clean
 
 download: $(foreach lib,$(EXTERNAL_LIBRARIES),src/$(lib))
 
-external: $(foreach lib,$(BOOST_UNDERSCORE) ceres-solver-$(CERES_VERSION) clibsedml-$(CLIBSEDML_VERSION) czmq-$(CZMQ_VERSION) libmicrohttpd-$(LIBMICROHTTPD_VERSION) libsbml-$(LIBSBML_VERSION) libxml2-$(LIBXML2_VERSION) protobuf-$(PROTOBUF_VERSION) SBML_odeSolver-$(SOSLIB_VERSION) sundials-$(SUNDIALS_VERSION) wxWidgets-$(WXWIDGETS_VERSION) zeromq-$(ZEROMQ_VERSION),tmp/$(lib).installed)
+external: $(foreach lib,$(BOOST_UNDERSCORE) ceres-solver-$(CERES_VERSION) clibsedml-$(CLIBSEDML_VERSION) czmq-$(CZMQ_VERSION) libmicrohttpd-$(LIBMICROHTTPD_VERSION) libsbml-$(LIBSBML_VERSION) protobuf-$(PROTOBUF_VERSION) SBML_odeSolver-$(SOSLIB_VERSION) sundials-$(SUNDIALS_VERSION) wxWidgets-$(WXWIDGETS_VERSION) zeromq-$(ZEROMQ_VERSION),tmp/$(lib).installed)
 
 var:
 	install -d $@
@@ -162,11 +162,6 @@ tmp/libsbml-$(LIBSBML_VERSION): src/libSBML-$(LIBSBML_VERSION)-core-src.zip libs
 	(cd var/libsbml-$(LIBSBML_VERSION) && patch -p1 < ../../libsbml-$(LIBSBML_VERSION).patch)
 	touch $@
 
-tmp/libxml2-$(LIBXML2_VERSION): src/libxml2-$(LIBXML2_VERSION).tar.gz | tmp
-	-rm -rf var/libxml2-$(LIBXML2_VERSION)
-	tar -C var -zxf $<
-	touch $@
-
 tmp/protobuf-$(PROTOBUF_VERSION): src/protobuf-cpp-$(PROTOBUF_VERSION).tar.gz | tmp
 	-rm -rf var/protobuf-$(PROTOBUF_VERSION)
 	tar -C var -zxf $<
@@ -201,12 +196,12 @@ tmp/ceres-solver-$(CERES_VERSION).installed: tmp/ceres-solver-$(CERES_VERSION)
 	(cd var/ceres-solver-$(CERES_VERSION)/build.dir && export MACOSX_DEPLOYMENT_TARGET=10.9 && CC='clang' CXX='clang++' CFLAGS='-arch x86_64 -mmacosx-version-min=10.9 -O2 -g' CXXFLAGS='-std=c++11 -stdlib=libc++ -arch x86_64 -mmacosx-version-min=10.9 -O2 -g' LDFLAGS='-stdlib=libc++ -arch x86_64 -mmacosx-version-min=10.9 -headerpad_max_install_names' cmake -DCMAKE_INSTALL_PREFIX=$(PREFIX) -DEIGEN_INCLUDE_DIR=$(abspath ../include) $(CERES_CMAKE_OPTIONS) .. && $(MAKE) all install)
 	touch $@
 
-tmp/clibsedml-$(CLIBSEDML_VERSION).installed: tmp/clibsedml-$(CLIBSEDML_VERSION) tmp/libxml2-$(LIBXML2_VERSION).installed
-	(cd var/clibsedml-$(CLIBSEDML_VERSION) && autoreconf -i -f && export MACOSX_DEPLOYMENT_TARGET=10.9 && ./configure --prefix=$(PREFIX) --with-xml-prefix=$(PREFIX) $(CLIBSEDML_CONFIGURE_OPTIONS) CC='clang' CFLAGS='-Wall -W -arch x86_64 -mmacosx-version-min=10.9 -O2 -g' LDFLAGS='-arch x86_64 -mmacosx-version-min=10.9 -headerpad_max_install_names' && $(MAKE) all install)
+tmp/clibsedml-$(CLIBSEDML_VERSION).installed: tmp/clibsedml-$(CLIBSEDML_VERSION)
+	(cd var/clibsedml-$(CLIBSEDML_VERSION) && autoreconf -i -f && export MACOSX_DEPLOYMENT_TARGET=10.9 && ./configure --prefix=$(PREFIX) --with-xml-exec-prefix=/usr $(CLIBSEDML_CONFIGURE_OPTIONS) CC='clang' CFLAGS='-Wall -W -arch x86_64 -mmacosx-version-min=10.9 -O2 -g' LDFLAGS='-arch x86_64 -mmacosx-version-min=10.9 -headerpad_max_install_names' && $(MAKE) all install)
 	touch $@
 
 tmp/czmq-$(CZMQ_VERSION).installed: tmp/czmq-$(CZMQ_VERSION) tmp/zeromq-$(ZEROMQ_VERSION).installed
-	(cd var/czmq-$(CZMQ_VERSION) && export MACOSX_DEPLOYMENT_TARGET=10.9 && ./configure --prefix=$(PREFIX) $(CZMQ_CONFIGURE_OPTIONS) CC='clang' CFLAGS='-arch x86_64 -mmacosx-version-min=10.9 -O2 -g' LDFLAGS='-arch x86_64 -mmacosx-version-min=10.9 -headerpad_max_install_names' PKG_CONFIG=$(PKG_CONFIG) PKG_CONFIG_PATH=$(PKG_CONFIG_PATH) && $(MAKE) all install)
+	(cd var/czmq-$(CZMQ_VERSION) && export MACOSX_DEPLOYMENT_TARGET=10.9 && ./configure --prefix=$(PREFIX) $(CZMQ_CONFIGURE_OPTIONS) CC='clang' CFLAGS='-arch x86_64 -mmacosx-version-min=10.9 -O2 -g' LDFLAGS='-arch x86_64 -mmacosx-version-min=10.9 -headerpad_max_install_names' PKG_CONFIG=$(PKG_CONFIG) PKG_CONFIG_PATH=$(PKG_CONFIG_PATH) PKG_CONFIG_LIBDIR=$(PKG_CONFIG_LIBDIR) && $(MAKE) all install)
 	touch $@
 
 tmp/libmicrohttpd-$(LIBMICROHTTPD_VERSION).installed: tmp/libmicrohttpd-$(LIBMICROHTTPD_VERSION)
@@ -215,10 +210,6 @@ tmp/libmicrohttpd-$(LIBMICROHTTPD_VERSION).installed: tmp/libmicrohttpd-$(LIBMIC
 
 tmp/protobuf-$(PROTOBUF_VERSION).installed: tmp/protobuf-$(PROTOBUF_VERSION)
 	(cd var/protobuf-$(PROTOBUF_VERSION) && export MACOSX_DEPLOYMENT_TARGET=10.9 && ./configure --prefix=$(PREFIX) $(PROTOBUF_CONFIGURE_OPTONS) CC='clang' CXX='clang++' CFLAGS='-arch x86_64 -mmacosx-version-min=10.9 -O2 -g' CXXFLAGS='-std=c++11 -stdlib=libc++ -arch x86_64 -mmacosx-version-min=10.9 -O2 -g' LDFLAGS='-stdlib=libc++ -arch x86_64 -mmacosx-version-min=10.9 -headerpad_max_install_names' LIBS='-lc++ -lc++abi' && $(MAKE) all install)
-	touch $@
-
-tmp/libxml2-$(LIBXML2_VERSION).installed: tmp/libxml2-$(LIBXML2_VERSION)
-	(cd var/libxml2-$(LIBXML2_VERSION) && export MACOSX_DEPLOYMENT_TARGET=10.9 && ./configure --prefix=$(PREFIX) $(LIBXML2_CONFIGURE_OPTIONS) CC='clang' CXX='clang++' CFLAGS='-arch x86_64 -mmacosx-version-min=10.9 -O2 -g' CXXFLAGS='-std=c++11 -stdlib=libc++ -arch x86_64 -mmacosx-version-min=10.9 -O2 -g' LDFLAGS='-stdlib=libc++ -arch x86_64 -mmacosx-version-min=10.9 -headerpad_max_install_names' && $(MAKE) all install)
 	touch $@
 
 tmp/sundials-$(SUNDIALS_VERSION).installed: tmp/sundials-$(SUNDIALS_VERSION)
@@ -230,14 +221,14 @@ tmp/wxWidgets-$(WXWIDGETS_VERSION).installed: tmp/wxWidgets-$(WXWIDGETS_VERSION)
 	(cd var/wxWidgets-$(WXWIDGETS_VERSION) && export MACOSX_DEPLOYMENT_TARGET=10.9 && ./configure --prefix=$(PREFIX) $(WXWIDGETS_CONFIGURE_OPTIONS) --enable-macosx_arch=x86_64 --with-macosx-version-min=10.9 CC='clang' CXX='clang++' CXXFLAGS='-std=c++11 -stdlib=libc++ -O2 -g' LDFLAGS='-stdlib=libc++ -headerpad_max_install_names' && $(MAKE) all install)
 	touch $@
 
-tmp/libsbml-$(LIBSBML_VERSION).installed: tmp/libsbml-$(LIBSBML_VERSION) tmp/libxml2-$(LIBXML2_VERSION).installed
-	(cd var/libsbml-$(LIBSBML_VERSION) && export MACOSX_DEPLOYMENT_TARGET=10.9 && ./configure --prefix=$(PREFIX) --with-libxml=$(PREFIX) $(LIBSBML_CONFIGURE_OPTIONS) CC='clang' CXX='clang++' CFLAGS='-arch x86_64 -mmacosx-version-min=10.9 -O2 -g' CXXFLAGS='-std=c++11 -stdlib=libc++ -arch x86_64 -mmacosx-version-min=10.9 -O2 -g' LDFLAGS='-stdlib=libc++ -arch x86_64 -mmacosx-version-min=10.9 -headerpad_max_install_names' LIBS='-lc++' && $(MAKE) all install)
+tmp/libsbml-$(LIBSBML_VERSION).installed: tmp/libsbml-$(LIBSBML_VERSION)
+	(cd var/libsbml-$(LIBSBML_VERSION) && export MACOSX_DEPLOYMENT_TARGET=10.9 && ./configure --prefix=$(PREFIX) --with-libxml=/usr $(LIBSBML_CONFIGURE_OPTIONS) CC='clang' CXX='clang++' CFLAGS='-arch x86_64 -mmacosx-version-min=10.9 -O2 -g' CXXFLAGS='-std=c++11 -stdlib=libc++ -arch x86_64 -mmacosx-version-min=10.9 -O2 -g' LDFLAGS='-stdlib=libc++ -arch x86_64 -mmacosx-version-min=10.9 -headerpad_max_install_names' LIBS='-lc++' && $(MAKE) all install)
 	unlink $(PREFIX)/lib/libsbml.5.dylib # remove the alias to make the dylib name unique
 	install_name_tool -id $(PREFIX)/lib/libsbml.$(LIBSBML_VERSION).dylib $(PREFIX)/lib/libsbml.$(LIBSBML_VERSION).dylib
 	touch $@
 
 tmp/SBML_odeSolver-$(SOSLIB_VERSION).installed: tmp/SBML_odeSolver-$(SOSLIB_VERSION) tmp/sundials-$(SUNDIALS_VERSION).installed tmp/libsbml-$(LIBSBML_VERSION).installed
-	(cd var/SBML_odeSolver-$(SOSLIB_VERSION) && autoreconf -i && export MACOSX_DEPLOYMENT_TARGET=10.9 && ./configure --prefix=$(PREFIX) --with-libsbml=$(PREFIX) --with-libxml2=$(PREFIX) --with-sundials=$(PREFIX) $(SOSLIB_CONFIGURE_OPTIONS) CC='clang' CFLAGS='-arch x86_64 -mmacosx-version-min=10.9 -O2 -g' LDFLAGS='-arch x86_64 -mmacosx-version-min=10.9 -headerpad_max_install_names' && $(MAKE) all install)
+	(cd var/SBML_odeSolver-$(SOSLIB_VERSION) && autoreconf -i && export MACOSX_DEPLOYMENT_TARGET=10.9 && ./configure --prefix=$(PREFIX) --with-libsbml=$(PREFIX) --with-libxml2=/usr --with-sundials=$(PREFIX) $(SOSLIB_CONFIGURE_OPTIONS) CC='clang' CFLAGS='-arch x86_64 -mmacosx-version-min=10.9 -O2 -g' LDFLAGS='-arch x86_64 -mmacosx-version-min=10.9 -headerpad_max_install_names' && $(MAKE) all install)
 	for name in $(SUNDIALS_DYLIBS); do install_name_tool -change libsundials_$$name.dylib $(PREFIX)/lib/libsundials_$$name.dylib $(PREFIX)/lib/libODES.0.dylib; done
 	touch $@
 
@@ -255,7 +246,7 @@ build.xml: build.xml.in
 
 build/Makefile: ../configure
 	install -d $(dir $@)
-	(cd $(dir $@) && ../../configure --prefix=$(CURDIR)/opt --with-boost=$(PREFIX) --with-ceres-solver=$(PREFIX) --with-protoc=$(PREFIX)/bin/protoc --with-xml-prefix=$(PREFIX) --with-protoc=$(PREFIX)/bin/protoc --with-sundials=$(PREFIX) --with-wxWidgets=$(PREFIX) --enable-release --enable-silent-rules CC='clang' CXX='clang++' CFLAGS='-arch x86_64 -mmacosx-version-min=10.9 -O2 -g' CXXFLAGS='-stdlib=libc++ -arch x86_64 -mmacosx-version-min=10.9 -O2 -g' LDFLAGS='-stdlib=libc++ -arch x86_64 -mmacosx-version-min=10.9 -headerpad_max_install_names' PKG_CONFIG=$(PKG_CONFIG) PKG_CONFIG_PATH=$(PKG_CONFIG_PATH))
+	(cd $(dir $@) && ../../configure --prefix=$(CURDIR)/opt --with-boost=$(PREFIX) --with-ceres-solver=$(PREFIX) --with-protoc=$(PREFIX)/bin/protoc --with-xml-exec-prefix=/usr --with-protoc=$(PREFIX)/bin/protoc --with-sundials=$(PREFIX) --with-wxWidgets=$(PREFIX) --enable-release --enable-silent-rules CC='clang' CXX='clang++' CFLAGS='-arch x86_64 -mmacosx-version-min=10.9 -O2 -g' CXXFLAGS='-stdlib=libc++ -arch x86_64 -mmacosx-version-min=10.9 -O2 -g' LDFLAGS='-stdlib=libc++ -arch x86_64 -mmacosx-version-min=10.9 -headerpad_max_install_names' PKG_CONFIG=$(PKG_CONFIG) PKG_CONFIG_PATH=$(PKG_CONFIG_PATH) PKG_CONFIG_LIBDIR=$(PKG_CONFIG_LIBDIR) CLIBSEDML_CFLAGS='-I$(PREFIX)/include' CLIBSEDML_LIBS='-L$(PREFIX)/lib -lsedml' LIBSBML_CFLAGS='-I$(PREFIX)/include' LIBSBML_LIBS='-L$(PREFIX)/lib -lsbml' SOSLIB_CFLAGS='-I$(PREFIX)/include' SOSLIB_LIBS='-L$(PREFIX)/lib -lODES')
 
 $(foreach p,$(PROGRAMS),opt/bin/$(p)) $(foreach d,$(FLINT_DYLIBS),opt/lib/$(d).dylib): build/Makefile
 	$(MAKE) -C build all install-exec
@@ -286,7 +277,7 @@ $(APP)/Contents/Resources/flint.icns: ../flint.icns | $(APP)/Contents
 
 $(foreach p,$(PROGRAMS),$(eval $(call flint_macos_program,$(p))))
 
-$(APP)/Contents/Resources/third-party-licenses.txt: tmp/ceres-solver-$(CERES_VERSION) tmp/libsbml-$(LIBSBML_VERSION) tmp/libxml2-$(LIBXML2_VERSION) tmp/protobuf-$(PROTOBUF_VERSION) tmp/SBML_odeSolver-$(SOSLIB_VERSION) tmp/sundials-$(SUNDIALS_VERSION)
+$(APP)/Contents/Resources/third-party-licenses.txt: tmp/ceres-solver-$(CERES_VERSION) tmp/libsbml-$(LIBSBML_VERSION) tmp/protobuf-$(PROTOBUF_VERSION) tmp/SBML_odeSolver-$(SOSLIB_VERSION) tmp/sundials-$(SUNDIALS_VERSION)
 	install -d $(dir $@)
 	echo ';;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;' > $@
 	echo ';; Licenses of third-party libraries' >> $@
@@ -307,10 +298,6 @@ $(APP)/Contents/Resources/third-party-licenses.txt: tmp/ceres-solver-$(CERES_VER
 	echo ';; libSBML $(LIBSBML_VERSION)' >> $@
 	echo >> $@
 	cat var/libsbml-$(LIBSBML_VERSION)/LICENSE.txt >> $@
-	echo >> $@
-	echo ';; libxml2 $(LIBXML2_VERSION)' >> $@
-	echo >> $@
-	cat var/libxml2-$(LIBXML2_VERSION)/Copyright >> $@
 	echo >> $@
 	echo ';; Protocol Buffers $(PROTOBUF_VERSION)' >> $@
 	echo >> $@
