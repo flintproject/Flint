@@ -12,6 +12,11 @@ if(MSVC)
     add_definitions(-DNOMINMAX)
 endif(MSVC)
 
+# The previous versions of CMake does not come with FindSQLite3.cmake.
+if(CMAKE_VERSION VERSION_LESS 3.14)
+    set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake")
+endif(CMAKE_VERSION VERSION_LESS 3.14)
+
 find_package(SQLite3 REQUIRED)
 
 find_package(LibXml2 REQUIRED)
