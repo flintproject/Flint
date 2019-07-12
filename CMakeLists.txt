@@ -12,9 +12,11 @@ if(MSVC)
     add_definitions(-DNOMINMAX)
 endif(MSVC)
 
-# The previous versions of CMake do not come with FindSQLite3.cmake.
 if(CMAKE_VERSION VERSION_LESS 3.14)
+    # The previous versions of CMake do not come with FindSQLite3.cmake.
     set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake")
+    # Newer Boost cannot be detected by default
+    set(Boost_ADDITIONAL_VERSIONS 1.70.0 1.70)
 endif(CMAKE_VERSION VERSION_LESS 3.14)
 
 find_package(SQLite3 REQUIRED)
