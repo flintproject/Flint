@@ -16,6 +16,7 @@ environment:
   APPVEYOR_SAVE_CACHE_ON_ERROR: true
 
 install:
+  - set PATH=C:\Program Files (x86)\WiX Toolset v3.11\bin;%PATH%
   - 'C:\cygwin64\setup-x86_64.exe -d -n -N -q -P m4,make,patch,tar,unzip,wget'
 
 build_script:
