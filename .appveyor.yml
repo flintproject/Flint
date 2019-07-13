@@ -7,13 +7,10 @@ image: Visual Studio 2017
 platform: x64
 
 cache:
-  - msvc\opt -> deposit.mk, msvc\Makefile
-  - msvc\src -> deposit.mk, msvc\Makefile
-  - msvc\tmp -> deposit.mk, msvc\Makefile
-  - msvc\var -> deposit.mk, msvc\Makefile
-
-environment:
-  APPVEYOR_SAVE_CACHE_ON_ERROR: true
+  - msvc\opt -> .appveyor.yml, deposit.mk, msvc\Makefile
+  - msvc\src -> .appveyor.yml, deposit.mk, msvc\Makefile
+  - msvc\tmp -> .appveyor.yml, deposit.mk, msvc\Makefile
+  - msvc\var -> .appveyor.yml, deposit.mk, msvc\Makefile
 
 install:
   - set PATH=C:\Program Files (x86)\WiX Toolset v3.11\bin;%PATH%
