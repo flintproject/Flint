@@ -27,9 +27,6 @@ addons:
     - libgtk2.0-dev
     - libsqlite3-dev
     - uuid-dev
-  homebrew:
-    packages:
-    - libtool
 
 install:
   - if [ "$TRAVIS_OS_NAME" = linux -a "$CXX" = "g++" ]; then export CFLAGS="-g0 -O0" CXXFLAGS="-g0 -O0"; fi
