@@ -170,6 +170,7 @@ tmp/protobuf-$(PROTOBUF_VERSION): src/protobuf-cpp-$(PROTOBUF_VERSION).tar.gz | 
 tmp/SBML_odeSolver-$(SOSLIB_VERSION): src/SBML_odeSolver-$(SOSLIB_VERSION).tar.gz | tmp
 	-rm -rf var/SBML_odeSolver-$(SOSLIB_VERSION)
 	tar -C var -zxf $<
+	(cd var/SBML_odeSolver-$(SOSLIB_VERSION) && patch -p1 < ../../SBML_odeSolver-$(SOSLIB_VERSION).patch)
 	touch $@
 
 tmp/sundials-$(SUNDIALS_VERSION): src/sundials-$(SUNDIALS_VERSION).tar.gz | tmp
