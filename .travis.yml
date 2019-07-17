@@ -32,6 +32,7 @@ install:
   - if [ "$TRAVIS_OS_NAME" = linux -a "$CXX" = "g++" ]; then export CFLAGS="-g0 -O0" CXXFLAGS="-g0 -O0"; fi
   - if [ "$TRAVIS_OS_NAME" = linux -a "$CXX" = "clang++" ]; then export CFLAGS="-g0 -O0" CXXFLAGS="-g0 -O0"; fi
   - if [ "$TRAVIS_OS_NAME" = linux ]; then cd posix; else cd xcode; fi
+  - if [ "$TRAVIS_OS_NAME" = osx ]; then export LIBTOOL=glibtool LIBTOOLIZE=glibtoolize; fi
   - if [ "$TRAVIS_OS_NAME" = osx ]; then cp config.mk.travis config.mk; fi
   - make -s download
   - travis_wait 60 make -s external
