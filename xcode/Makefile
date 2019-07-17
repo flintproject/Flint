@@ -229,7 +229,7 @@ tmp/libsbml-$(LIBSBML_VERSION).installed: tmp/libsbml-$(LIBSBML_VERSION)
 	touch $@
 
 tmp/SBML_odeSolver-$(SOSLIB_VERSION).installed: tmp/SBML_odeSolver-$(SOSLIB_VERSION) tmp/sundials-$(SUNDIALS_VERSION).installed tmp/libsbml-$(LIBSBML_VERSION).installed
-	(cd var/SBML_odeSolver-$(SOSLIB_VERSION) && autoreconf -i && export MACOSX_DEPLOYMENT_TARGET=10.9 && ./configure --prefix=$(PREFIX) --with-libsbml=$(PREFIX) --with-libxml2=/usr --with-sundials=$(PREFIX) $(SOSLIB_CONFIGURE_OPTIONS) CC='clang' CFLAGS='-arch x86_64 -mmacosx-version-min=10.9 -O2 -g' LDFLAGS='-arch x86_64 -mmacosx-version-min=10.9 -headerpad_max_install_names' && $(MAKE) libtool all install)
+	(cd var/SBML_odeSolver-$(SOSLIB_VERSION) && autoreconf -i && export MACOSX_DEPLOYMENT_TARGET=10.9 && ./configure --prefix=$(PREFIX) --with-libsbml=$(PREFIX) --with-libxml2=/usr --with-sundials=$(PREFIX) $(SOSLIB_CONFIGURE_OPTIONS) CC='clang' CFLAGS='-arch x86_64 -mmacosx-version-min=10.9 -O2 -g' LDFLAGS='-arch x86_64 -mmacosx-version-min=10.9 -headerpad_max_install_names' && $(MAKE) all install)
 	for name in $(SUNDIALS_DYLIBS); do install_name_tool -change libsundials_$$name.dylib $(PREFIX)/lib/libsundials_$$name.dylib $(PREFIX)/lib/libODES.0.dylib; done
 	touch $@
 
