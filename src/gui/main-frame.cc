@@ -326,7 +326,7 @@ void MainFrame::OnOpen(wxCommandEvent &)
 								"Model file",
 								last_dir_,
 								"",
-								"PHML files (*.phml;*.isml)|*.phml;*.isml"
+								"PHML files (*.phml;*.phz;*.isml)|*.phml;*.phz;*.isml"
 								"|SBML files (*.xml)|*.xml"
 								"|CellML files (*.cellml)|*.cellml"
 								"|All files (*.*)|*.*",
