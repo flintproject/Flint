@@ -5,7 +5,7 @@ CZMQ_VERSION = 4.2.0
 LIBMICROHTTPD_VERSION = 0.9.64
 LIBSBML_VERSION = 5.17.0
 LIBXML2_VERSION = 2.9.7
-PROTOBUF_VERSION = 3.8.0
+PROTOBUF_VERSION = 3.9.0
 SOSLIB_VERSION = 1.9.0
 SUNDIALS_VERSION = 2.7.0
 WXWIDGETS_VERSION = 3.1.2
@@ -14,7 +14,7 @@ ZEROMQ_VERSION = 4.3.1
 CERES_CURRENT = 1
 CZMQ_CURRENT = 4
 LIBMICROHTTPD_CURRENT = 12
-PROTOBUF_CURRENT = 19
+PROTOBUF_CURRENT = 20
 ZEROMQ_CURRENT = 5
 
 CZMQ_VERSION_INFO = $(CZMQ_CURRENT).2.0
@@ -106,7 +106,7 @@ $(eval $(call external_library_source,https://github.com/zeromq/czmq/releases/do
 $(eval $(call external_library_source,https://ftp.gnu.org/gnu/libmicrohttpd,libmicrohttpd-$(LIBMICROHTTPD_VERSION).tar.gz,e792d8ed5990823a0baadea0adf94365999e702f6f1314ef9c555018dafc350e))
 $(eval $(call external_library_source,http://downloads.sourceforge.net/project/sbml/libsbml/$(LIBSBML_VERSION)/stable,libSBML-$(LIBSBML_VERSION)-core-src.zip,76d6c1e9bbe966204db602d9595b6536fc96ff6af7404d2ca1df3225a0a721b4))
 $(eval $(call external_library_source,ftp://xmlsoft.org/libxml2,libxml2-$(LIBXML2_VERSION).tar.gz,f63c5e7d30362ed28b38bfa1ac6313f9a80230720b7fb6c80575eeab3ff5900c))
-$(eval $(call external_library_source,https://github.com/google/protobuf/releases/download/v$(PROTOBUF_VERSION),protobuf-cpp-$(PROTOBUF_VERSION).tar.gz,ddc96d83f3b7417da53bce2510b94ad2796465ef8763f7a4e82089157efe97aa))
+$(eval $(call external_library_source,https://github.com/google/protobuf/releases/download/v$(PROTOBUF_VERSION),protobuf-cpp-$(PROTOBUF_VERSION).tar.gz,12d5facbb9c974be261debb81fa48f4f5be25830d43a64b552edcc4b95cd6cb6))
 $(eval $(call external_library_source3,https://github.com/raim/SBML_odeSolver/archive/$(SOSLIB_VERSION).tar.gz,SBML_odeSolver-$(SOSLIB_VERSION).tar.gz,059c2f51f52e1ac29d3873a2d3fcc71947e1a196f29816067041c976cb5cc651))
 $(eval $(call external_library_source,https://github.com/LLNL/sundials/releases/download/v$(SUNDIALS_VERSION),sundials-$(SUNDIALS_VERSION).tar.gz,d39fcac7175d701398e4eb209f7e92a5b30a78358d4a0c0fcc23db23c11ba104))
 $(eval $(call external_library_source,https://github.com/wxWidgets/wxWidgets/releases/download/v$(WXWIDGETS_VERSION),wxWidgets-$(WXWIDGETS_VERSION).tar.bz2,4cb8d23d70f9261debf7d6cfeca667fc0a7d2b6565adb8f1c484f9b674f1f27a))
