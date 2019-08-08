@@ -1,8 +1,0 @@
---- CMakeLists.txt	2018-03-22 00:59:07.000000000 +0900
-+++ CMakeLists.txt.new	2018-03-23 14:53:55.212185044 +0900
-@@ -1290,4 +1290,4 @@
-   endif ()
- endif ()
- 
--include(ClangFormat)
-+#include(ClangFormat)

@@ -93,10 +93,9 @@ tmp/sundials-$(SUNDIALS_VERSION): src/sundials-$(SUNDIALS_VERSION).tar.gz sundia
 	patch -d var/sundials-$(SUNDIALS_VERSION) -p1 < sundials-$(SUNDIALS_VERSION).patch
 	touch $@
 
-tmp/zeromq-$(ZEROMQ_VERSION): src/zeromq-$(ZEROMQ_VERSION).tar.gz zeromq-$(ZEROMQ_VERSION).patch | tmp
+tmp/zeromq-$(ZEROMQ_VERSION): src/zeromq-$(ZEROMQ_VERSION).tar.gz | tmp
 	-rm -rf var/zeromq-$(ZEROMQ_VERSION)
 	tar -C var -zxf $<
-	patch -d var/zeromq-$(ZEROMQ_VERSION) -p0 < zeromq-$(ZEROMQ_VERSION).patch
 	touch $@
 
 tmp/libmicrohttpd-$(LIBMICROHTTPD_VERSION)-w32-bin: src/libmicrohttpd-$(LIBMICROHTTPD_VERSION)-w32-bin.zip | tmp
