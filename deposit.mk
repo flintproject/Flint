@@ -1,3 +1,4 @@
+# -*- Mode: makefile-gmake; tab-width: 4; indent-tabs-mode: t -*-
 BOOST_VERSION = 1.70.0
 CERES_VERSION = 1.14.0
 CLIBSEDML_VERSION = 0.1.2

@@ -1,3 +1,4 @@
+# -*- Mode: makefile-gmake; tab-width: 4; indent-tabs-mode: t -*-
 BOOST_UNUSED_COMPONENTS = \
 	atomic \
 	chrono \
