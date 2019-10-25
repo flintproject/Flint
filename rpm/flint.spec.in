@@ -32,6 +32,8 @@ Requires: gnuplot
 %description
 This is a simulator for biological and physiological models.
 
+%global debug_package %{nil}
+
 %prep
 %setup -q
 

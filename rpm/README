@@ -5,13 +5,17 @@ in this directory.
 
 Make sure that rpmbuild(8) is installed on your system, and follow the
 instruction at:
-http://wiki.centos.org/HowTos/SetupRpmBuildEnvironment
-and
-http://fedoraproject.org/wiki/How_to_create_an_RPM_package
+https://wiki.centos.org/HowTos/SetupRpmBuildEnvironment
 git(1) is also required to create archive of Flint's source code.
 
 
 == Configuration
 
 Create config.mk in order to specify DIST and GTK_PACKAGE_NAME.
-See config.mk.el7 for example boilerplate.
+See config.mk.el7 or config.mk.el8 for example boilerplate.
+
+
+== Reference
+
+For more information about creating rpm packages:
+https://docs.fedoraproject.org/en-US/quick-docs/creating-rpm-packages/

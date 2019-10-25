@@ -13,6 +13,8 @@ BuildRequires: make
 %description
 This is a Ceres Solver package for Flint.
 
+%global debug_package %{nil}
+
 %prep
 %setup -q
 

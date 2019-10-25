@@ -19,6 +19,8 @@ Requires: libxml2 >= 2.7
 %description
 This is a SOSlib package for Flint.
 
+%global debug_package %{nil}
+
 %prep
 %setup -q
 

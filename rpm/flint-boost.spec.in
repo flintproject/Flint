@@ -12,6 +12,8 @@ BuildRequires: make
 %description
 This is a Boost library package for Flint.
 
+%global debug_package %{nil}
+
 %prep
 %setup -q
 

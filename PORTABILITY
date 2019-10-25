@@ -13,6 +13,20 @@ $ sudo yum install libtool cmake wget gtk3-devel sqlite-devel libuuid-devel \
     libxml2-devel patch
 
 
+== RHEL/CentOS 8
+
+Prerequisites for building Flint:
+$ sudo dnf install gcc gcc-c++ autoconf automake libtool cmake make wget \
+    sqlite-devel libmicrohttpd-devel libuuid-devel libxml2-devel gtk3-devel patch
+
+Note that, for installing libmicrohttpd-devel with dnf, you may have to enable
+an optional repository called CoreReady Linux Builder or PowerTools.
+On RHEL 8:
+$ sudo subscription-manager repos --enable "codeready-builder-for-rhel-8-*-rpms"
+On CentOS 8:
+$ sudo dnf config-manager --set-enabled PowerTools
+
+
 == Debian buster/bullseye/sid
 
 We do not have a Debian package (.deb) for Flint yet.

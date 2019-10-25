@@ -1,0 +1,2 @@
+DIST = el8
+GTK_PACKAGE_NAME = gtk3
