@@ -32,6 +32,7 @@ addons:
     packages:
     - libgtk2.0-dev
     - libsqlite3-dev
+    - unzip
     - uuid-dev
 
 install:
