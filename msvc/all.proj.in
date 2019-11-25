@@ -31,14 +31,14 @@
       <PropertyGroup>
         <BoostAddressModelOption>address-model=64</BoostAddressModelOption>
         <CMakeGeneratorOption>-G "Visual Studio 15 2017 Win64"</CMakeGeneratorOption>
-        <MsvcVariant>vc141_x64</MsvcVariant>
+        <MsvcVariant>vc14x_x64</MsvcVariant>
       </PropertyGroup>
     </When>
     <When Condition="'$(TargetArch)'=='x86'">
       <PropertyGroup>
         <BoostAddressModelOption>address-model=32</BoostAddressModelOption>
         <CMakeGeneratorOption>-G "Visual Studio 15 2017"</CMakeGeneratorOption>
-        <MsvcVariant>vc141</MsvcVariant>
+        <MsvcVariant>vc14x</MsvcVariant>
       </PropertyGroup>
     </When>
   </Choose>
@@ -250,11 +250,11 @@
       <DLLFiles Include='opt\lib\boost_program_options-*.dll'/>
       <DLLFiles Include='opt\lib\boost_system-*.dll'/>
       <DLLFiles Include='opt\lib\boost_unit_test_framework-*.dll'/>
-      <wxMSWReleaseDLLFiles Include='release-dll\**\wxbase312u_*.dll'/>
-      <wxMSWReleaseDLLFiles Include='release-dll\**\wxmsw312u_adv_*.dll'/>
-      <wxMSWReleaseDLLFiles Include='release-dll\**\wxmsw312u_aui_*.dll'/>
-      <wxMSWReleaseDLLFiles Include='release-dll\**\wxmsw312u_core_*.dll'/>
-      <wxMSWReleaseDLLFiles Include='release-dll\**\wxmsw312u_propgrid_*.dll'/>
+      <wxMSWReleaseDLLFiles Include='release-dll\**\wxbase313u_*.dll'/>
+      <wxMSWReleaseDLLFiles Include='release-dll\**\wxmsw313u_adv_*.dll'/>
+      <wxMSWReleaseDLLFiles Include='release-dll\**\wxmsw313u_aui_*.dll'/>
+      <wxMSWReleaseDLLFiles Include='release-dll\**\wxmsw313u_core_*.dll'/>
+      <wxMSWReleaseDLLFiles Include='release-dll\**\wxmsw313u_propgrid_*.dll'/>
       <ExeFiles Include='csv2isd.exe;flint.exe;flint-cli.exe;flint-exec.exe;flint-lodbg.exe;flint-run.exe;flint-tr.exe;isd2csv.exe;isdbswap.exe;isdcut.exe;isddiff.exe;isdhead.exe;isdls.exe;isdmerge.exe;isdrand.exe;isdsort.exe;isdstrip.exe;isdwc.exe'/>
     </ItemGroup>
     <MakeDir Directories='flint'/>

@@ -12,11 +12,11 @@ $(eval $(call external_library_source,https://sqlite.org/$(SQLITE_YEAR),sqlite-d
 
 $(eval $(call external_library_source,https://ftp.gnu.org/gnu/libmicrohttpd,libmicrohttpd-$(LIBMICROHTTPD_VERSION)-w32-bin.zip,80fe1395a239df71c65df149ee8804f155dc5c2ebd736f28e56bcd289ffafadd))
 
-$(eval $(call external_library_source,https://github.com/wxWidgets/wxWidgets/releases/download/v$(WXWIDGETS_VERSION),wxWidgets-$(WXWIDGETS_VERSION)-headers.7z,6f163f3773a5faf2bbfa3895b789d56996a53be40b0e68e756754a200877a3f3))
-$(eval $(call external_library_source,https://github.com/wxWidgets/wxWidgets/releases/download/v$(WXWIDGETS_VERSION),wxMSW-$(WXWIDGETS_VERSION)_vc141_Dev.7z,d7d5efb7ededd222336cfa58decde9b5e6d6b5ac2adbacdad203b744771da27c))
-$(eval $(call external_library_source,https://github.com/wxWidgets/wxWidgets/releases/download/v$(WXWIDGETS_VERSION),wxMSW-$(WXWIDGETS_VERSION)_vc141_x64_Dev.7z,18456db5db0d74ee2d951d312b19fa48f0528e98697aa012d4dde27054b181c1))
-$(eval $(call external_library_source,https://github.com/wxWidgets/wxWidgets/releases/download/v$(WXWIDGETS_VERSION),wxMSW-$(WXWIDGETS_VERSION)_vc141_ReleaseDLL.7z,79ca4cabbe97d6a923af0e2a4fe28364e619c0ab4bd56afbade37dfaa94f92bb))
-$(eval $(call external_library_source,https://github.com/wxWidgets/wxWidgets/releases/download/v$(WXWIDGETS_VERSION),wxMSW-$(WXWIDGETS_VERSION)_vc141_x64_ReleaseDLL.7z,85d3bcc5fab41a3d7f00621f060922e0addb09ecf86b9e25e02c88693b96f26a))
+$(eval $(call external_library_source,https://github.com/wxWidgets/wxWidgets/releases/download/v$(WXWIDGETS_VERSION),wxWidgets-$(WXWIDGETS_VERSION)-headers.7z,a960b589ec18c143139421c2ae091980e5d5e48209faed94882496bf1a8bb6bf))
+$(eval $(call external_library_source,https://github.com/wxWidgets/wxWidgets/releases/download/v$(WXWIDGETS_VERSION),wxMSW-$(WXWIDGETS_VERSION)_vc14x_Dev.7z,2349d7a40f97210c943a787e91bec4a38672503342e0daf4212ec79dd94657c3))
+$(eval $(call external_library_source,https://github.com/wxWidgets/wxWidgets/releases/download/v$(WXWIDGETS_VERSION),wxMSW-$(WXWIDGETS_VERSION)_vc14x_x64_Dev.7z,cc812f3bafba1a8920cd6617e40c7f177ea6c17e23745986d7589d366a3b77c4))
+$(eval $(call external_library_source,https://github.com/wxWidgets/wxWidgets/releases/download/v$(WXWIDGETS_VERSION),wxMSW-$(WXWIDGETS_VERSION)_vc14x_ReleaseDLL.7z,6c88ba2bf44ad835e01d4e31ef751a304bf590e3088569d08abf48cdfc6691a4))
+$(eval $(call external_library_source,https://github.com/wxWidgets/wxWidgets/releases/download/v$(WXWIDGETS_VERSION),wxMSW-$(WXWIDGETS_VERSION)_vc14x_x64_ReleaseDLL.7z,bf7a06b6b5e59209d862795f98a834dcec74f051be46f9187206b0250da67375))
 
 UNNECESSARY_LIBRARIES = libmicrohttpd-% wxWidgets-%
 EXTERNAL_LIBRARIES = $(filter-out $(UNNECESSARY_LIBRARIES),$(ALL_EXTERNAL_LIBRARIES)) libmicrohttpd-$(LIBMICROHTTPD_VERSION)-w32-bin.zip wxWidgets-$(WXWIDGETS_VERSION)-headers.7z wxMSW-$(WXWIDGETS_VERSION)_$(MSVC_VARIANT)_Dev.7z wxMSW-$(WXWIDGETS_VERSION)_$(MSVC_VARIANT)_ReleaseDLL.7z sqlite-amalgamation-$(SQLITE_VSTR).zip sqlite-dll-win64-x64-$(SQLITE_VSTR).zip
