@@ -9,7 +9,9 @@ BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
 BuildRequires: gcc-c++
 BuildRequires: GTK_PACKAGE_NAME-devel
 BuildRequires: make
+BuildRequires: zlib-devel
 Requires: GTK_PACKAGE_NAME
+Requires: zlib
 
 %description
 This is a wxWidgets package for Flint.
@@ -20,7 +22,44 @@ This is a wxWidgets package for Flint.
 %setup -q
 
 %build
-./configure --prefix=/opt/flint --enable-cxx11 --disable-compat30 --enable-monolithic
+./configure --prefix=/opt/flint \
+	--enable-arcstream \
+	--enable-aui \
+	--enable-cxx11 \
+	--enable-dnd \
+	--enable-monolithic \
+	--enable-propgrid \
+	--enable-streams \
+	--enable-timer \
+	--enable-zipstream \
+	--with-zlib=sys \
+	--disable-compat30 \
+	--disable-constraints \
+	--disable-ftp \
+	--disable-help \
+	--disable-html \
+	--disable-htmlhelp \
+	--disable-mediactrl \
+	--disable-mshtmlhelp \
+	--disable-postscript \
+	--disable-printarch \
+	--disable-protocol-ftp \
+	--disable-ribbon \
+	--disable-richtext \
+	--disable-sound \
+	--disable-svg \
+	--disable-webkit \
+	--disable-webview \
+	--disable-xrc \
+	--disable-gtktest \
+	--disable-sdltest \
+	--without-expat \
+	--without-gtkprint \
+	--without-libpng \
+	--without-libjpeg \
+	--without-libtiff \
+	--without-opengl \
+	--without-sdl
 make
 
 %install

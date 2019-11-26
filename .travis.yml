@@ -35,6 +35,7 @@ addons:
     - libxml2-dev
     - unzip
     - uuid-dev
+    - zlib1g-dev
 
 install:
   - if [ "$TRAVIS_OS_NAME" = linux -a "$CXX" = "g++" ]; then export CFLAGS="-g0 -O0" CXXFLAGS="-g0 -O0"; fi

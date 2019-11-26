@@ -116,6 +116,9 @@ WXWIDGETS_CONFIGURE_OPTIONS = \
 	--disable-sdltest \
 	--without-expat \
 	--without-gtkprint \
+	--without-libpng \
+	--without-libjpeg \
+	--without-libtiff \
 	--without-opengl \
 	--without-sdl
 
