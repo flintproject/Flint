@@ -55,6 +55,7 @@ This is a wxWidgets package for Flint.
 	--disable-sdltest \
 	--without-expat \
 	--without-gtkprint \
+	--without-liblzma \
 	--without-libpng \
 	--without-libjpeg \
 	--without-libtiff \
