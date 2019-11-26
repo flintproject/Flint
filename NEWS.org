@@ -6,6 +6,8 @@
    - Linux distributions such as Debian 10, Ubuntu 18.04, and RHEL/CentOS 7 & 8.
 ** Improvements
    - Flint now consists of smaller binaries than the ones of previous releases.
+** Bug fixes
+   - #3 Fixed crash on macOS when exporting multiple results.
 
 * Flint 2.2 (2019-06-19)
 
