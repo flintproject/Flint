@@ -20,7 +20,16 @@ This is a Ceres Solver package for Flint.
 
 %build
 install -d build
-(cd build && cmake -DCMAKE_INSTALL_PREFIX=/opt/flint -DEIGEN_INCLUDE_DIR=FLINT_INCLUDE_DIR -DMINIGLOG=ON -DBUILD_SHARED_LIBS=ON ..)
+(cd build && \
+	cmake -DCMAKE_INSTALL_PREFIX=/opt/flint -DEIGEN_INCLUDE_DIR=FLINT_INCLUDE_DIR \
+	-DMINIGLOG=ON \
+	-DCXX11=ON \
+	-DBUILD_SHARED_LIBS=ON \
+	-DGFLAGS=OFF \
+	-DSUITESPARSE=OFF \
+	-DCXSPARSE=OFF \
+	-DLAPACK=OFF \
+	..)
 make -C build
 
 %install
