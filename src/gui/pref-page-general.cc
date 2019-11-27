@@ -55,9 +55,11 @@ wxWindow *PrefPageGeneral::CreateWindow(wxWindow *parent)
 	box->Add(ctrl, 1 /* horizontally stretchable */, wxALIGN_CENTER_VERTICAL);
 
 	auto vbox = new wxBoxSizer(wxVERTICAL);
-	vbox->Add(box_c, 0, wxEXPAND /* horizontally stretchable */);
-	vbox->Add(box, 0, wxEXPAND /* horizontally stretchable */);
-	panel->SetSizerAndFit(vbox);
+	vbox->Add(box_c, wxSizerFlags().Expand().Border());
+	vbox->Add(box, wxSizerFlags().Expand().Border());
+	vbox->AddStretchSpacer();
+	panel->SetSizer(vbox);
+	panel->SetMinSize(wxSize(450, 300)); // to prevent frame shrinkage for the GTK3 case
 
 	// events
 	ctrl_c->Bind(wxEVT_SPINCTRL, &App::OnConcurrency, &wxGetApp());
