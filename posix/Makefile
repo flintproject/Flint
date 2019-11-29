@@ -65,9 +65,10 @@ tmp/libmicrohttpd-$(LIBMICROHTTPD_VERSION): src/libmicrohttpd-$(LIBMICROHTTPD_VE
 	tar -C var -zxf $<
 	touch $@
 
-tmp/libsbml-$(LIBSBML_VERSION): src/libSBML-$(LIBSBML_VERSION)-core-src.zip | tmp
+tmp/libsbml-$(LIBSBML_VERSION): src/libSBML-$(LIBSBML_VERSION)-core-src.zip ../external/config.guess ../external/config.sub | tmp
 	-rm -rf var/libsbml-$(LIBSBML_VERSION)
 	(cd var && unzip -qq ../$<)
+	install -b ../external/config.guess ../external/config.sub var/libsbml-$(LIBSBML_VERSION)/config/
 	touch $@
 
 tmp/protobuf-$(PROTOBUF_VERSION): src/protobuf-cpp-$(PROTOBUF_VERSION).tar.gz | tmp
