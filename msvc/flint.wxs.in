@@ -76,13 +76,13 @@
           </Component>
 
           <Component Id='boost.filesystem' Guid='d02c19b4-1a7e-11e1-846e-4f0b3849c594'>
-            <File Id='libboost_filesystem' Name='boost_filesystem-vc141-mt-$(sys.BUILDARCH)-1_71.dll' DiskId='1' Source='boost_filesystem-vc141-mt-$(sys.BUILDARCH)-1_71.dll' />
+            <File Id='libboost_filesystem' Name='boost_filesystem-vc142-mt-$(sys.BUILDARCH)-1_71.dll' DiskId='1' Source='boost_filesystem-vc142-mt-$(sys.BUILDARCH)-1_71.dll' />
           </Component>
           <Component Id='boost.program_options' Guid='d02c4c7c-1a7e-11e1-bd00-4fe26f314427'>
-            <File Id='libboost_program_options' Name='boost_program_options-vc141-mt-$(sys.BUILDARCH)-1_71.dll' DiskId='1' Source='boost_program_options-vc141-mt-$(sys.BUILDARCH)-1_71.dll' />
+            <File Id='libboost_program_options' Name='boost_program_options-vc142-mt-$(sys.BUILDARCH)-1_71.dll' DiskId='1' Source='boost_program_options-vc142-mt-$(sys.BUILDARCH)-1_71.dll' />
           </Component>
           <Component Id='boost.system' Guid='d02c802a-1a7e-11e1-8142-7b383aa4b0d4'>
-            <File Id='libboost_system' Name='boost_system-vc141-mt-$(sys.BUILDARCH)-1_71.dll' DiskId='1' Source='boost_system-vc141-mt-$(sys.BUILDARCH)-1_71.dll' />
+            <File Id='libboost_system' Name='boost_system-vc142-mt-$(sys.BUILDARCH)-1_71.dll' DiskId='1' Source='boost_system-vc142-mt-$(sys.BUILDARCH)-1_71.dll' />
           </Component>
           <Component Id='wxmsw' Guid='80ff1e98-c791-11e6-9786-dfa231e0a1a7'>
             <File Id='wxbase313u' Name='wxbase313u_$(var.MsvcVariant).dll' DiskId='1' Source='wxbase313u_$(var.MsvcVariant).dll' />
@@ -121,7 +121,7 @@
             <File Id='libxml2' Name='libxml2.dll' DiskId='1' Source='libxml2.dll' />
           </Component>
           <Component Id='zeromq' Guid='f3c4adfc-f1b3-11e6-9632-afb37b5e1b1b'>
-            <File Id='libzmq' Name='libzmq-v141-mt-4_3_2.dll' DiskId='1' Source='libzmq-v141-mt-4_3_2.dll' />
+            <File Id='libzmq' Name='libzmq-v142-mt-4_3_2.dll' DiskId='1' Source='libzmq-v142-mt-4_3_2.dll' />
           </Component>
 
           <Component Id='third_party_licenses' Guid='6699ad54-8e3f-11e3-ae53-e3655a982178'>
@@ -188,9 +188,9 @@
     </Feature>
     <Feature Id='VCRedist' Title='Visual C++ Redistributable' AllowAdvertise='no' Display='hidden' Level='1'>
       <?if $(sys.BUILDARCH) = x64 ?>
-      <MergeRef Id='VC141_CRT_x64' />
+      <MergeRef Id='VC142_CRT_x64' />
       <?elseif $(sys.BUILDARCH) = x86 ?>
-      <MergeRef Id='VC141_CRT_x86' />
+      <MergeRef Id='VC142_CRT_x86' />
       <?endif ?>
     </Feature>
 
@@ -205,9 +205,9 @@
   <Fragment>
     <DirectoryRef Id='TARGETDIR'>
       <?if $(sys.BUILDARCH) = x64 ?>
-      <Merge Id='VC141_CRT_x64' SourceFile='$(env.VCToolsRedistDir)\MergeModules\Microsoft_VC141_CRT_x64.msm' DiskId='1' Language='0' />
+      <Merge Id='VC142_CRT_x64' SourceFile='$(env.VCToolsRedistDir)\MergeModules\Microsoft_VC142_CRT_x64.msm' DiskId='1' Language='0' />
       <?elseif $(sys.BUILDARCH) = x86 ?>
-      <Merge Id='VC141_CRT_x86' SourceFile='$(env.VCToolsRedistDir)\MergeModules\Microsoft_VC141_CRT_x86.msm' DiskId='1' Language='0' />
+      <Merge Id='VC142_CRT_x86' SourceFile='$(env.VCToolsRedistDir)\MergeModules\Microsoft_VC142_CRT_x86.msm' DiskId='1' Language='0' />
       <?endif ?>
     </DirectoryRef>
   </Fragment>

@@ -30,14 +30,14 @@
     <When Condition="'$(TargetArch)'=='x64'">
       <PropertyGroup>
         <BoostAddressModelOption>address-model=64</BoostAddressModelOption>
-        <CMakeGeneratorOption>-G "Visual Studio 15 2017 Win64"</CMakeGeneratorOption>
+        <CMakeGeneratorOption>-G "Visual Studio 16 2019" -A x64</CMakeGeneratorOption>
         <MsvcVariant>vc14x_x64</MsvcVariant>
       </PropertyGroup>
     </When>
     <When Condition="'$(TargetArch)'=='x86'">
       <PropertyGroup>
         <BoostAddressModelOption>address-model=32</BoostAddressModelOption>
-        <CMakeGeneratorOption>-G "Visual Studio 15 2017"</CMakeGeneratorOption>
+        <CMakeGeneratorOption>-G "Visual Studio 16 2019" -A Win32</CMakeGeneratorOption>
         <MsvcVariant>vc14x</MsvcVariant>
       </PropertyGroup>
     </When>
@@ -46,16 +46,16 @@
   <Choose>
     <When Condition="'$(TargetArch)'=='x64'">
       <ItemGroup>
-        <libmicrohttpdLibraryFiles Include="$(VARDIR)\libmicrohttpd-$(LIBMICROHTTPD_VERSION)-w32-bin\x86_64\VS2017\Release-dll\libmicrohttpd-dll.*"/>
-        <libmicrohttpdHeaderFiles Include="$(VARDIR)\libmicrohttpd-$(LIBMICROHTTPD_VERSION)-w32-bin\x86_64\VS2017\Release-dll\microhttpd.h"/>
-        <libmicrohttpdReleaseDLLFiles Include="$(VARDIR)\libmicrohttpd-$(LIBMICROHTTPD_VERSION)-w32-bin\x86_64\VS2017\Release-dll\libmicrohttpd-dll.dll"/>
+        <libmicrohttpdLibraryFiles Include="$(VARDIR)\libmicrohttpd-$(LIBMICROHTTPD_VERSION)-w32-bin\x86_64\VS2019\Release-dll\libmicrohttpd-dll.*"/>
+        <libmicrohttpdHeaderFiles Include="$(VARDIR)\libmicrohttpd-$(LIBMICROHTTPD_VERSION)-w32-bin\x86_64\VS2019\Release-dll\microhttpd.h"/>
+        <libmicrohttpdReleaseDLLFiles Include="$(VARDIR)\libmicrohttpd-$(LIBMICROHTTPD_VERSION)-w32-bin\x86_64\VS2019\Release-dll\libmicrohttpd-dll.dll"/>
       </ItemGroup>
     </When>
     <When Condition="'$(TargetArch)'=='x86'">
       <ItemGroup>
-        <libmicrohttpdLibraryFiles Include="$(VARDIR)\libmicrohttpd-$(LIBMICROHTTPD_VERSION)-w32-bin\x86\VS2017\Release-dll\libmicrohttpd-dll.*"/>
-        <libmicrohttpdHeaderFiles Include="$(VARDIR)\libmicrohttpd-$(LIBMICROHTTPD_VERSION)-w32-bin\x86\VS2017\Release-dll\microhttpd.h"/>
-        <libmicrohttpdReleaseDLLFiles Include="$(VARDIR)\libmicrohttpd-$(LIBMICROHTTPD_VERSION)-w32-bin\x86\VS2017\Release-dll\libmicrohttpd-dll.dll"/>
+        <libmicrohttpdLibraryFiles Include="$(VARDIR)\libmicrohttpd-$(LIBMICROHTTPD_VERSION)-w32-bin\x86\VS2019\Release-dll\libmicrohttpd-dll.*"/>
+        <libmicrohttpdHeaderFiles Include="$(VARDIR)\libmicrohttpd-$(LIBMICROHTTPD_VERSION)-w32-bin\x86\VS2019\Release-dll\microhttpd.h"/>
+        <libmicrohttpdReleaseDLLFiles Include="$(VARDIR)\libmicrohttpd-$(LIBMICROHTTPD_VERSION)-w32-bin\x86\VS2019\Release-dll\libmicrohttpd-dll.dll"/>
       </ItemGroup>
     </When>
   </Choose>
@@ -69,7 +69,7 @@
           Inputs='tmp\$(BOOST_UNDERSCORE)'
           Outputs='tmp\$(BOOST_UNDERSCORE).installed'>
     <Exec Command='bootstrap' WorkingDirectory='$(VARDIR)\$(BOOST_UNDERSCORE)'/>
-    <Exec Command='.\b2 -d0 --prefix="$(PREFIX)" --no-cmake-config $(B2_WITHOUT_OPTIONS) $(BoostAddressModelOption) toolset=msvc-14.1 variant=release threading=multi link=shared runtime-link=shared install' WorkingDirectory='$(VARDIR)\$(BOOST_UNDERSCORE)'/>
+    <Exec Command='.\b2 -d0 --prefix="$(PREFIX)" --no-cmake-config $(B2_WITHOUT_OPTIONS) $(BoostAddressModelOption) toolset=msvc-14.2 variant=release threading=multi link=shared runtime-link=shared install' WorkingDirectory='$(VARDIR)\$(BOOST_UNDERSCORE)'/>
     <Touch AlwaysCreate='true' Files='tmp\$(BOOST_UNDERSCORE).installed'/>
   </Target>
 
