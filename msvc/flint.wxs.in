@@ -76,13 +76,13 @@
           </Component>
 
           <Component Id='boost.filesystem' Guid='d02c19b4-1a7e-11e1-846e-4f0b3849c594'>
-            <File Id='libboost_filesystem' Name='boost_filesystem-vc142-mt-$(sys.BUILDARCH)-1_71.dll' DiskId='1' Source='boost_filesystem-vc142-mt-$(sys.BUILDARCH)-1_71.dll' />
+            <File Id='libboost_filesystem' Name='boost_filesystem-vc142-mt-$(sys.BUILDARCH)-1_72.dll' DiskId='1' Source='boost_filesystem-vc142-mt-$(sys.BUILDARCH)-1_72.dll' />
           </Component>
           <Component Id='boost.program_options' Guid='d02c4c7c-1a7e-11e1-bd00-4fe26f314427'>
-            <File Id='libboost_program_options' Name='boost_program_options-vc142-mt-$(sys.BUILDARCH)-1_71.dll' DiskId='1' Source='boost_program_options-vc142-mt-$(sys.BUILDARCH)-1_71.dll' />
+            <File Id='libboost_program_options' Name='boost_program_options-vc142-mt-$(sys.BUILDARCH)-1_72.dll' DiskId='1' Source='boost_program_options-vc142-mt-$(sys.BUILDARCH)-1_72.dll' />
           </Component>
           <Component Id='boost.system' Guid='d02c802a-1a7e-11e1-8142-7b383aa4b0d4'>
-            <File Id='libboost_system' Name='boost_system-vc142-mt-$(sys.BUILDARCH)-1_71.dll' DiskId='1' Source='boost_system-vc142-mt-$(sys.BUILDARCH)-1_71.dll' />
+            <File Id='libboost_system' Name='boost_system-vc142-mt-$(sys.BUILDARCH)-1_72.dll' DiskId='1' Source='boost_system-vc142-mt-$(sys.BUILDARCH)-1_72.dll' />
           </Component>
           <Component Id='wxmsw' Guid='80ff1e98-c791-11e6-9786-dfa231e0a1a7'>
             <File Id='wxbase313u' Name='wxbase313u_$(var.MsvcVariant).dll' DiskId='1' Source='wxbase313u_$(var.MsvcVariant).dll' />
