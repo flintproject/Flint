@@ -103,7 +103,7 @@ int main(int argc, char *argv[])
 		flint::key::Data kd;
 		if (!flint::key::Data::FromString(argv[i], &kd)) {
 			std::cerr << "invalid input name: " << argv[i] << std::endl;
-			return false;
+			return EXIT_FAILURE;
 		}
 		in.insert(kd);
 	}
