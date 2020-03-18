@@ -12,6 +12,7 @@
 #include <cstring>
 #include <iostream>
 #include <future>
+#include <mutex>
 #include <numeric>
 #include <vector>
 
@@ -280,6 +281,7 @@ bool TaskRunner::Run(int concurrency)
 		return false;
 	if (!layout::Generate(db_driver_->db(), generated_layout_))
 		return false;
+	std::mutex mutex_v; // for mutual exclusive access of "task.db" (db_driver_->db())
 	std::vector<std::future<job::Result>> v;
 	size_t c = static_cast<size_t>((concurrency > 0) ? concurrency : 1);
 	char *addr = static_cast<char *>(task_->progress_mr.get_address());
@@ -295,18 +297,20 @@ bool TaskRunner::Run(int concurrency)
 	do {
 		while (!generated_all && v.size() < c) {
 			int job_id;
+			std::unique_lock<std::mutex> lock(mutex_v);
 			if (!job::Generate(db_driver_->db(), dir_, &job_id))
 				return false;
+			lock.unlock();
 			if (job_id == 0) { // all jobs has been generated
 				generated_all = true;
 				break;
 			}
 
-			auto lmbd = [](TaskRunner *tr, int id){
+			auto lmbd = [](TaskRunner *tr, int id, std::mutex *m){
 				JobRunner runner(tr, id);
-				return runner.Run();
+				return runner.Run(*m);
 			};
-			v.emplace_back(std::async(std::launch::async, lmbd, this, job_id));
+			v.emplace_back(std::async(std::launch::async, lmbd, this, job_id, &mutex_v));
 		}
 
 		auto it = v.begin();

@@ -29,7 +29,7 @@ JobRunner::JobRunner(TaskRunner *tr, int id)
 {
 }
 
-job::Result JobRunner::Run()
+job::Result JobRunner::Run(std::mutex &mutex)
 {
 	std::vector<double> init(tr_->data()); // copy data
 	{
@@ -40,12 +40,14 @@ job::Result JobRunner::Run()
 			std::unique_ptr<Bytecode> generated_bc(c.Compile(g->db(), "parameter_eqs", compiler::Method::kAssign));
 			if (!generated_bc)
 				return job::Result::kFailed;
+			std::lock_guard<std::mutex> lock(mutex); // TODO: replaceable with C++17's std::scoped_lock
 			// TODO: give a proper seed if desired
 			if (!runtime::Eval(tr_->GetDatabase(), ct::Availability::kNone, init[kIndexSeed],
 							   tr_->generated_layout(), generated_bc.get(),
 							   nullptr, nullptr, &generated_init))
 				return job::Result::kFailed;
 		}
+		std::lock_guard<std::mutex> lock(mutex); // TODO: replaceable with C++17's std::scoped_lock
 		if (!job::Store(tr_->GetDatabase(), tr_->generated_layout(), generated_init.data(), tr_->layout(), init.data()))
 			return job::Result::kFailed;
 	}

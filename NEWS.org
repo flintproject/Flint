@@ -9,6 +9,7 @@
 ** Bug fixes
    - #3 Fixed crash on macOS when exporting multiple results.
    - #4 Fixed frame shrinkage of Preference window on GTK 3.
+   - #11 Fixed crash on macOS when starting a simulation of multiple jobs.
 
 * Flint 2.2 (2019-06-19)
 

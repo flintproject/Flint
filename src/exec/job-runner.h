@@ -2,6 +2,8 @@
 #ifndef FLINT_EXEC_JOB_RUNNER_H_
 #define FLINT_EXEC_JOB_RUNNER_H_
 
+#include <mutex>
+
 #define BOOST_FILESYSTEM_NO_DEPRECATED
 #include <boost/filesystem.hpp>
 
@@ -16,7 +18,7 @@ class JobRunner {
 public:
 	JobRunner(TaskRunner *tr, int id);
 
-	job::Result Run();
+	job::Result Run(std::mutex &mutex);
 
 private:
 	TaskRunner *tr_;
