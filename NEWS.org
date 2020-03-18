@@ -1,8 +1,10 @@
-* Flint 2.3 (2019-12-XX)
+* Flint 2.3 (2020-03-18)
 
 ** Supported platforms
    - Windows 7 or later.
-   - macOS: OS X Mavericks (10.9) or later.
+   - macOS: OS X Yosemite (10.10) or later.
+     This version may still run on OS X Mavericks (10.9), but it is no longer
+     supported.
    - Linux distributions such as Debian 10, Ubuntu 18.04, and RHEL/CentOS 7 & 8.
 ** Improvements
    - Flint now consists of smaller binaries than the ones of previous releases.
