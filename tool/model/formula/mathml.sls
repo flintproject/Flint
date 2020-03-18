@@ -53,7 +53,7 @@
            (let ((name (symbol->string (car f)))
                  (args (cdr f)))
              (case (car f)
-               ((bvar degree)
+               ((bvar degree piecewise piece otherwise)
                 (append
                  (open-tag name prefix)
                  (apply append (map (lambda (x) (formula->mathml-list x prefix csymbol-list)) args))
