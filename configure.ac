@@ -2,7 +2,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ([2.63])
-AC_INIT([Flint], [2.3.0], [tabe@fixedpoint.jp])
+AC_INIT([Flint], [2.4.0], [tabe@fixedpoint.jp])
 AC_CONFIG_SRCDIR([src/isd2csv-main.cc])
 AC_CONFIG_AUX_DIR([build-aux])
 AM_INIT_AUTOMAKE([-Wall -Wno-extra-portability -Werror foreign subdir-objects])
