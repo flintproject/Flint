@@ -1,4 +1,4 @@
-/* C++ code produced by gperf version 3.0.4 */
+/* C++ code produced by gperf version 3.1 */
 /* Command-line: gperf function.txt  */
 /* Computed positions: -k'1,3-4,6' */
 
@@ -26,7 +26,7 @@
       && ('w' == 119) && ('x' == 120) && ('y' == 121) && ('z' == 122) \
       && ('{' == 123) && ('|' == 124) && ('}' == 125) && ('~' == 126))
 /* The character set is not based on ISO-646.  */
-#error "gperf generated tables don't work with this execution character set. Please report a bug to <bug-gnu-gperf@gnu.org>."
+#error "gperf generated tables don't work with this execution character set. Please report a bug to <bug-gperf@gnu.org>."
 #endif
 
 #line 8 "function.txt"
@@ -36,13 +36,13 @@ struct FunctionEntry { const char *name; Tree::Op op; };
 class FunctionHash
 {
 private:
-  static inline unsigned int hash (const char *str, unsigned int len);
+  static inline unsigned int hash (const char *str, size_t len);
 public:
-  static const struct FunctionEntry *in_word_set (const char *str, unsigned int len);
+  static const struct FunctionEntry *in_word_set (const char *str, size_t len);
 };
 
 inline unsigned int
-FunctionHash::hash (register const char *str, register unsigned int len)
+FunctionHash::hash (const char *str, size_t len)
 {
   static const unsigned char asso_values[] =
     {
@@ -73,30 +73,30 @@ FunctionHash::hash (register const char *str, register unsigned int len)
       88, 88, 88, 88, 88, 88, 88, 88, 88, 88,
       88, 88, 88, 88, 88, 88, 88
     };
-  register int hval = len;
+  unsigned int hval = len;
 
   switch (hval)
     {
       default:
-        hval += asso_values[(unsigned char)str[5]+1];
+        hval += asso_values[static_cast<unsigned char>(str[5]+1)];
       /*FALLTHROUGH*/
       case 5:
       case 4:
-        hval += asso_values[(unsigned char)str[3]];
+        hval += asso_values[static_cast<unsigned char>(str[3])];
       /*FALLTHROUGH*/
       case 3:
-        hval += asso_values[(unsigned char)str[2]+1];
+        hval += asso_values[static_cast<unsigned char>(str[2]+1)];
       /*FALLTHROUGH*/
       case 2:
       case 1:
-        hval += asso_values[(unsigned char)str[0]];
+        hval += asso_values[static_cast<unsigned char>(str[0])];
         break;
     }
   return hval;
 }
 
 const struct FunctionEntry *
-FunctionHash::in_word_set (register const char *str, register unsigned int len)
+FunctionHash::in_word_set (const char *str, size_t len)
 {
   enum
     {
@@ -225,11 +225,11 @@ FunctionHash::in_word_set (register const char *str, register unsigned int len)
 
   if (len <= MAX_WORD_LENGTH && len >= MIN_WORD_LENGTH)
     {
-      register int key = hash (str, len);
+      unsigned int key = hash (str, len);
 
-      if (key <= MAX_HASH_VALUE && key >= 0)
+      if (key <= MAX_HASH_VALUE)
         {
-          register const char *s = wordlist[key].name;
+          const char *s = wordlist[key].name;
 
           if (*str == *s && !strncmp (str + 1, s + 1, len - 1) && s[len] == '\0')
             return &wordlist[key];

@@ -1,4 +1,4 @@
-/* C++ code produced by gperf version 3.0.4 */
+/* C++ code produced by gperf version 3.1 */
 /* Command-line: gperf procedure.txt  */
 /* Computed positions: -k'4' */
 
@@ -26,7 +26,7 @@
       && ('w' == 119) && ('x' == 120) && ('y' == 121) && ('z' == 122) \
       && ('{' == 123) && ('|' == 124) && ('}' == 125) && ('~' == 126))
 /* The character set is not based on ISO-646.  */
-#error "gperf generated tables don't work with this execution character set. Please report a bug to <bug-gnu-gperf@gnu.org>."
+#error "gperf generated tables don't work with this execution character set. Please report a bug to <bug-gperf@gnu.org>."
 #endif
 
 #line 8 "procedure.txt"
@@ -36,13 +36,13 @@ struct ProcedureEntry { const char *name; Token::Type type; };
 class ProcedureHash
 {
 private:
-  static inline unsigned int hash (const char *str, unsigned int len);
+  static inline unsigned int hash (const char *str, size_t len);
 public:
-  static const struct ProcedureEntry *in_word_set (const char *str, unsigned int len);
+  static const struct ProcedureEntry *in_word_set (const char *str, size_t len);
 };
 
 inline unsigned int
-ProcedureHash::hash (register const char *str, register unsigned int len)
+ProcedureHash::hash (const char *str, size_t len)
 {
   static const unsigned char asso_values[] =
     {
@@ -73,12 +73,12 @@ ProcedureHash::hash (register const char *str, register unsigned int len)
       26, 26, 26, 26, 26, 26, 26, 26, 26, 26,
       26, 26, 26, 26, 26, 26
     };
-  register int hval = len;
+  unsigned int hval = len;
 
   switch (hval)
     {
       default:
-        hval += asso_values[(unsigned char)str[3]];
+        hval += asso_values[static_cast<unsigned char>(str[3])];
       /*FALLTHROUGH*/
       case 3:
         break;
@@ -87,7 +87,7 @@ ProcedureHash::hash (register const char *str, register unsigned int len)
 }
 
 const struct ProcedureEntry *
-ProcedureHash::in_word_set (register const char *str, register unsigned int len)
+ProcedureHash::in_word_set (const char *str, size_t len)
 {
   enum
     {
@@ -138,11 +138,11 @@ ProcedureHash::in_word_set (register const char *str, register unsigned int len)
 
   if (len <= MAX_WORD_LENGTH && len >= MIN_WORD_LENGTH)
     {
-      register int key = hash (str, len);
+      unsigned int key = hash (str, len);
 
-      if (key <= MAX_HASH_VALUE && key >= 0)
+      if (key <= MAX_HASH_VALUE)
         {
-          register const char *s = wordlist[key].name;
+          const char *s = wordlist[key].name;
 
           if (*str == *s && !strncmp (str + 1, s + 1, len - 1) && s[len] == '\0')
             return &wordlist[key];
