@@ -9,6 +9,8 @@ if(WIN32)
 endif(WIN32)
 
 if(MSVC)
+    # https://docs.microsoft.com/en-us/cpp/c-runtime-library/security-features-in-the-crt
+    add_compile_definitions(_CRT_SECURE_NO_WARNINGS)
     add_definitions(-DNOMINMAX)
 endif(MSVC)
 
