@@ -4,9 +4,9 @@ We design Flint to be portable.
 == RHEL/CentOS 7
 
 The default g++ package is too old to build Flint.
-A workaround for the issue is to use the one provided by devtoolset-7.
+A workaround for the issue is to use the one provided by devtoolset-8.
 Find instructions to install and use it in
-<https://www.softwarecollections.org/en/scls/rhscl/devtoolset-7/>.
+<https://www.softwarecollections.org/en/scls/rhscl/devtoolset-8/>.
 
 Then, install necessary tools for building and installing Flint with:
 $ sudo yum install libtool cmake wget gtk3-devel sqlite-devel libuuid-devel \
