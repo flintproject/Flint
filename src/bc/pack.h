@@ -12,6 +12,7 @@
 #include <cstdio>
 #include <cstring>
 #include <iostream>
+#include <limits>
 #include <memory>
 
 namespace flint {
@@ -22,8 +23,13 @@ bool PackToOstream(const TMessage &message, std::ostream *os)
 	const size_t kHeadSize = 4;
 	char buffer[kHeadSize];
 
-	uint32_t byte_size = static_cast<uint32_t>(message.ByteSize());
-	assert(byte_size > 0);
+	size_t bs = message.ByteSizeLong();
+	assert(bs > 0);
+	if (std::numeric_limits<uint32_t>::max() < bs) {
+		std::cerr << "message is too big: " << bs << std::endl;
+		return false;
+	}
+	uint32_t byte_size = static_cast<uint32_t>(bs);
 	uint32_t n_byte_size = htonl(byte_size);
 	memcpy(buffer, &n_byte_size, kHeadSize);
 	if (!os->write(buffer, kHeadSize).good()) return false;

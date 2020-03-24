@@ -3,6 +3,7 @@
 #include <cstdlib>
 #include <cstring>
 #include <iostream>
+#include <limits>
 #include <memory>
 
 #include "bc/binary.h"
@@ -42,9 +43,13 @@ int main(int argc, char *argv[])
 	} else {
 		option.set_concurrency(1);
 	}
-	int s = option.ByteSize();
+	size_t s = option.ByteSizeLong();
+	if (static_cast<size_t>(std::numeric_limits<int>::max()) < s) {
+		std::cerr << "option is too big: " << s << std::endl;
+		return EXIT_FAILURE;
+	}
 	std::unique_ptr<char[]> buffer(new char[s]);
-	if (!option.SerializeToArray(buffer.get(), s)) {
+	if (!option.SerializeToArray(buffer.get(), static_cast<int>(s))) {
 		std::cerr << "failed to serialize to array" << std::endl;
 		return EXIT_FAILURE;
 	}

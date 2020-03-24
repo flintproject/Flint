@@ -7,6 +7,7 @@
 #include <cstdlib>
 #include <cstring>
 #include <iostream>
+#include <limits>
 #include <memory>
 
 #include <boost/program_options.hpp>
@@ -56,9 +57,13 @@ int main(int argc, char *argv[])
 	option->set_model_filename(model_file);
 	option->set_output_filename(output_file);
 
-	int bs = option->ByteSize();
+	size_t bs = option->ByteSizeLong();
+	if (static_cast<size_t>(std::numeric_limits<int>::max()) < bs) {
+		std::cerr << "option is too big: " << bs << std::endl;
+		return EXIT_FAILURE;
+	}
 	std::unique_ptr<char[]> ba(new char[bs]);
-	if (!option->SerializeToArray(ba.get(), bs)) {
+	if (!option->SerializeToArray(ba.get(), static_cast<int>(bs))) {
 		std::cerr << "failed to serialize option" << std::endl;
 		return EXIT_FAILURE;
 	}
