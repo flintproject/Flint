@@ -24,7 +24,7 @@ DYLIBS := \
     libmicrohttpd.$(LIBMICROHTTPD_CURRENT) \
     libsbml.$(LIBSBML_VERSION) \
     libsedml.0 \
-    libprotobuf.$(PROTOBUF_CURRENT) \
+    libprotobuf.$(PROTOBUF_CURRENT_MAJOR) \
     libwx_osx_cocoau-3.1 \
     libzmq.$(ZEROMQ_CURRENT)
 SUNDIALS_DYLIBS := \

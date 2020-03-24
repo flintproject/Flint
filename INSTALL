@@ -19,7 +19,7 @@ In order to build Flint, the following libraries are required:
   http://ceres-solver.org/
 - CZMQ 4.2.0
   http://czmq.zeromq.org/
-- Protocol buffers 3.8.0
+- Protocol buffers 3.11.0 or later
   https://developers.google.com/protocol-buffers/
 - SQLite 3.7.17 or newer (with SQLITE_THREADSAFE=1)
   https://sqlite.org/
