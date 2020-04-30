@@ -255,6 +255,60 @@
                               "}"))) ; TODO: Support degree other than 2
                       (else
                        (error #f "invalid number of arguments of root" f))))
+               ((geq)
+                (cond ((= (length args) 2)
+                       (make-factor
+                        (list (formula->tree (car args))
+                              " \\geq "
+                              (formula->tree (cadr args)))))
+                      (else
+                       (error #f "invalid number of arguments of geq" f))))
+               ((gt)
+                (cond ((= (length args) 2)
+                       (make-factor
+                        (list (formula->tree (car args))
+                              " > "
+                              (formula->tree (cadr args)))))
+                      (else
+                       (error #f "invalid number of arguments of gt" f))))
+               ((leq)
+                (cond ((= (length args) 2)
+                       (make-factor
+                        (list (formula->tree (car args))
+                              " \\leq "
+                              (formula->tree (cadr args)))))
+                      (else
+                       (error #f "invalid number of arguments of leq" f))))
+               ((lt)
+                (cond ((= (length args) 2)
+                       (make-factor
+                        (list (formula->tree (car args))
+                              " < "
+                              (formula->tree (cadr args)))))
+                      (else
+                       (error #f "invalid number of arguments of lt" f))))
+               ((piece)
+                (cond ((or (null? args)
+                           (null? (cdr args)))
+                       (error #f "<2 argument of piece" f))
+                      (else
+                       (list (formula->tree (car args))
+                             " & \\text{if } "
+                             (formula->tree (cadr args))))))
+               ((otherwise)
+                (cond ((null? args)
+                       (error #f "no argument of otherwise" f))
+                      (else
+                       (list (formula->tree (car args))
+                             " & \\text{otherwise}"))))
+               ((piecewise)
+                (cond ((null? args)
+                       (error #f "no argument of piecewise" f))
+                      (else
+                       (make-factor
+                        (list "\\begin{cases}"
+                              (map (lambda (x) (list (formula->tree x) "\\\\")) args)
+                              "\\end{cases}")))))
                ((diff)
                 (cond ((or (null? args)
                            (null? (cdr args)))
