@@ -1,0 +1,29 @@
+\documentclass[11pt]{article}
+\usepackage[boxed]{algorithm2e}
+
+\begin{document}
+
+\SetAlCapSkip{.8em}
+\SetKwInOut{Input}{Input}
+\SetKwInOut{Output}{Output}
+\begin{algorithm}[H]
+  \Input{A set $S$ of parameter values; timeseries data $D$ of target state variables}
+  \Output{An element of $S$ with which simulated timeseries has the least RSS against $D$ in $S$}
+  $m \leftarrow \infty$\;
+  \ForEach(// in parallel){$e \in S$}{
+    $s \leftarrow 0$\;
+    start simulation with parameters $e$ from $t = 0$\;
+    \ForEach(// in the ascending order of time){$t$ found in $D$}{
+      simulate until $t$\;
+      increment $s$ by the squared error at $t$\;
+      \lIf{$s \geq m$}{break}}
+    \uIf{$s = 0$}{\Return{$e$}}
+    \ElseIf{$s < m$}{
+      $x \leftarrow e$\;
+      $m \leftarrow s$\;
+    }
+  }
+  \Return{$x$}
+\end{algorithm}
+
+\end{document}
