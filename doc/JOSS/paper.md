@@ -12,12 +12,12 @@ authors:
     orcid: 0000-0002-7074-4561
     affiliation: 1
   - name: Yoshiyuki Asai
-    orcid: 
+    orcid: 0000-0001-5519-4306
     affiliation: 1
 affiliations:
  - name: Graduate School of Medicine, Yamaguchi University
    index: 1
-date: 12 April 2020
+date: 22 May 2020
 bibliography: paper.bib
 ---
 
