@@ -4,11 +4,11 @@ include ../deposit.mk
 include ../option.mk
 include ../version.mk
 
-SQLITE_YEAR = 2019
-SQLITE_VSTR = 3300100
+SQLITE_YEAR = 2020
+SQLITE_VSTR = 3320100
 
-$(eval $(call external_library_source,https://sqlite.org/$(SQLITE_YEAR),sqlite-amalgamation-$(SQLITE_VSTR).zip,adf051d4c10781ea5cfabbbc4a2577b6ceca68590d23b58b8260a8e24cc5f081))
-$(eval $(call external_library_source,https://sqlite.org/$(SQLITE_YEAR),sqlite-dll-win64-x64-$(SQLITE_VSTR).zip,23bbc7cd2889734acb944e329e809c914923f5cb54276af4e2d21f4646d42c5c))
+$(eval $(call external_library_source,https://sqlite.org/$(SQLITE_YEAR),sqlite-amalgamation-$(SQLITE_VSTR).zip,8d46ef69b96628bedb781bd8309210f2a1f4a353792097302f6b754044e6540f))
+$(eval $(call external_library_source,https://sqlite.org/$(SQLITE_YEAR),sqlite-dll-win64-x64-$(SQLITE_VSTR).zip,02dfbb3f9a4b98a221c48263270fd3eebedbc3e8057ae364458cc41d2237e2fc))
 
 $(eval $(call external_library_source,https://ftp.gnu.org/gnu/libmicrohttpd,libmicrohttpd-$(LIBMICROHTTPD_VERSION)-w32-bin.zip,80fe1395a239df71c65df149ee8804f155dc5c2ebd736f28e56bcd289ffafadd))
 
