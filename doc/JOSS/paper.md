@@ -17,7 +17,7 @@ authors:
 affiliations:
  - name: Graduate School of Medicine, Yamaguchi University
    index: 1
-date: 22 May 2020
+date: 23 Jun 2020
 bibliography: paper.bib
 ---
 
@@ -44,6 +44,19 @@ e.g. using the additive Runge-Kutta scheme implemented in the SUNDIALS library
 [@hindmarsh2005sundials]. It also supports a non-deterministic extension of
 ODEs, namely stochastic differential equations (SDE) [@higham_algorithmic_2001]
 which makes it possible to involve random elements, e.g. noises, in the dynamics.
+
+The development of `Flint` has been tied in with the physiome.jp project
+[@nomura_toward_2010], which aims to establish a computational platform for
+multiscale in silico studies on physiome. As part of the platform, `Flint`
+complements the features of an authoring software PhysioDesigner for PHML
+[@asai_multilevel_2012], while they are deliberately separated programs. Driven
+by demands from the project's collaborators, we have enhanced `Flint` to support
+different modeling standards. For example, in order to leverage a published SBML
+model of subcellular signaling to build tissue or higher-level physiological
+ones, there is a technical proposal embedding it in PHML
+[@asai_versatile_2014]. Simulating such models is a reason for adopting `Flint`
+even when other state-of-the-art tools are publicly available, e.g. COPASI
+[@hoops_copasicomplex_2006], focusing on its own format.
 
 # Implementation
 
