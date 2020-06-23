@@ -6,6 +6,15 @@ include ../option.mk
 UNNECESSARY_LIBRARIES = libxml2-%
 EXTERNAL_LIBRARIES = $(filter-out $(UNNECESSARY_LIBRARIES),$(ALL_EXTERNAL_LIBRARIES))
 EXTERNAL_LIBRARY_DIRS = $(filter-out $(UNNECESSARY_LIBRARIES),$(ALL_EXTERNAL_LIBRARY_DIRS))
+EXTERNAL_INSTALLED = \
+	tmp/$(BOOST_UNDERSCORE).installed \
+	tmp/ceres-solver-$(CERES_VERSION).installed \
+	tmp/clibsedml-$(CLIBSEDML_VERSION).installed \
+	tmp/czmq-$(CZMQ_VERSION).installed \
+	tmp/libmicrohttpd-$(LIBMICROHTTPD_VERSION).installed \
+	tmp/wxWidgets-$(WXWIDGETS_VERSION).installed \
+	tmp/protobuf-$(PROTOBUF_VERSION).installed \
+	tmp/SBML_odeSolver-$(SOSLIB_VERSION).installed
 
 PREFIX ?= $(abspath opt)
 
@@ -22,7 +31,7 @@ check-sequential-version: tmp/sequential-version.installed
 
 download: $(foreach lib,$(EXTERNAL_LIBRARIES),src/$(lib))
 
-external: tmp/$(BOOST_UNDERSCORE).installed tmp/ceres-solver-$(CERES_VERSION).installed tmp/clibsedml-$(CLIBSEDML_VERSION).installed tmp/czmq-$(CZMQ_VERSION).installed tmp/libmicrohttpd-$(LIBMICROHTTPD_VERSION).installed tmp/wxWidgets-$(WXWIDGETS_VERSION).installed tmp/protobuf-$(PROTOBUF_VERSION).installed tmp/SBML_odeSolver-$(SOSLIB_VERSION).installed
+external: $(EXTERNAL_INSTALLED)
 
 mostlyclean:
 	-rm -rf tmp/sequential-version.installed opt/sequential-version var/sequential-version
@@ -32,6 +41,8 @@ clean: mostlyclean
 
 distclean: clean
 	-rm -rf $(foreach lib,$(EXTERNAL_LIBRARIES),src/$(lib))
+
+install: download tmp/sequential-version.installed
 
 var:
 	install -d $@
@@ -174,7 +185,7 @@ tmp/zeromq-$(ZEROMQ_VERSION).installed: tmp/zeromq-$(ZEROMQ_VERSION)
 	$(MAKE) -C var/zeromq-$(ZEROMQ_VERSION) install
 	touch $@
 
-tmp/sequential-version.installed: external
+tmp/sequential-version.installed: $(EXTERNAL_INSTALLED)
 	(cd .. && autoreconf -i -f)
 	install -d var/sequential-version
 	(cd var/sequential-version && env LDFLAGS='-Wl,-rpath -Wl,$(PREFIX)/libsbml-$(LIBSBML_VERSION)/lib -Wl,-rpath -Wl,$(PREFIX)/sundials-$(SUNDIALS_VERSION)/lib -Wl,-rpath -Wl,$(PREFIX)/wxWidgets-$(WXWIDGETS_VERSION)/lib -Wl,-rpath -Wl,$(PREFIX)/protobuf-$(PROTOBUF_VERSION)/lib' PKG_CONFIG_PATH=$(PKG_CONFIG_PATH) ../../../configure --prefix=$(PREFIX)/sequential-version --with-boost=$(PREFIX)/$(BOOST_UNDERSCORE) --with-ceres-solver=$(PREFIX)/ceres-solver-$(CERES_VERSION) --with-protoc=$(PREFIX)/protobuf-$(PROTOBUF_VERSION)/bin/protoc --with-sundials=$(PREFIX)/sundials-$(SUNDIALS_VERSION) --with-wxWidgets=$(PREFIX)/wxWidgets-$(WXWIDGETS_VERSION) --enable-silent-rules)
