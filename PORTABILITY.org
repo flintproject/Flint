@@ -1,13 +1,11 @@
-This explains how to build and install Flint from source.
+# -*- mode: org; mode: auto-fill; fill-column: 80; -*-
 
+* Introduction
 
-= If you would just like to install Flint via official binary installers
+We design Flint to be portable.  This document gives some hints for porting
+Flint to a not-yet-unsupported OS or platform.
 
-You do *not* have to read the following details; the installer for your
-platform does everything to set up Flint.
-
-
-= Prerequisite
+* Prerequisite
 
 You need autotools for building Flint.
 pkg-config is helpful but not required.
@@ -41,46 +39,66 @@ In order to build Flint, the following libraries are required:
 - ZeroMQ 4.3.2
   https://zeromq.org/
 
-Also, please read PORTABILITY for platform-specific details.
-
-
-= How to build and install Flint
+* How to build and install programs
 
 In short, type in your shell at the top of this source directory:
+#+begin_src shell
 $ autoreconf -i -f
 $ ./configure
 $ make all
-# make install
+$ make install # or sudo make install
+#+end_src
 That's all if succeeded.
 
 We recommend an out-of-tree way, e.g.:
+#+begin_src shell
 $ autoreconf -i -f
 $ mkdir build
 $ cd build
 $ ../configure
 $ make all
-# make install
+$ make install # or sudo make install
+#+end_src
 
 Please specify --prefix if you want.
 Give --with-boost option as follows if you have Boost installed at non-canonical
 location, say, /opt:
+#+begin_src shell
 $ ./configure --with-boost=/opt [...]
+#+end_src
 And --with-xml-prefix option accepts the prefix where libxml2 is installed, like:
+#+begin_src shell
 $ ./configure --with-xml-prefix=/opt [...]
+#+end_src
 By default pkg-config searches Protocol Buffers. Providing environment variable
 PKG_CONFIG_PATH allows you to suggest a non-canonical location of .pc scripts:
+#+begin_src shell
 $ PKG_CONFIG_PATH=/opt/lib/pkgconfig ./configure [...]
+#+end_src
 If you do not want to depend on pkg-config, environment variables PROTOBUF_CLFAGS
 and PROTOBUF_LIBS help you with specifying arbitrary flags:
+#+begin_src shell
 $ PROTOBUF_CFLAGS="-I/opt/include" PROTOBUF_LIBS='-L/opt/lib -lprotobuf' ./configure [...]
+#+end_src
 Note that, aside from the above, you may also have to tell the path of protoc
 executable by --with-protoc option:
+#+begin_src shell
 $ ./configure --with-protoc=/opt/bin/protoc [...]
+#+end_src
 
-
-== How to run tests
+* How to run tests
 
 `make check` runs all of tests.
 Boost Test Library is used for some of unit tests. For such a test case,
 say test/base/test_rational, just run:
+#+begin_src shell
 $ ./test/base/test_rational
+#+end_src
+
+* References
+
+** Porting UNIX/Linux Applications to OS X
+https://developer.apple.com/library/mac/documentation/porting/conceptual/portingunix/preparing/preparing.html
+
+** UTF-8 Everywhere
+https://www.utf8everywhere.org/

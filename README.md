@@ -22,4 +22,4 @@ as well as documentation including its user manual and tutorials.
 Hacking
 -------
 
-Please see INSTALL to build and install Flint from source.
+Please see INSTALL.org to build and install Flint from source.
