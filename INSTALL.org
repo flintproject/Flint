@@ -88,7 +88,7 @@ $ sudo aptitude install gcc g++ autoconf automake libtool cmake \
     pkgconf libgtk-3-dev libsqlite3-dev libxml2-dev patch zlib1g-dev
 #+end_src
 
-** Fedora 31
+** Fedora 32
 
 Use dnf(8) to install required packages for building Flint:
 #+begin_src shell
