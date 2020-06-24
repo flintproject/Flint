@@ -3,7 +3,7 @@ version: ~> 1.0
 arch:
   - amd64
 
-dist: xenial
+dist: bionic
 
 language: cpp
 
@@ -29,7 +29,7 @@ compiler:
 addons:
   apt:
     packages:
-    - libgtk2.0-dev
+    - libgtk-3-dev
     - libsqlite3-dev
     - libxml2-dev
     - unzip
