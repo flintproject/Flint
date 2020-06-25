@@ -12,34 +12,15 @@ platform does everything to set up Flint.
 * Instructions for supported OSes
 
 Here we focus on building Flint on Linux, which has a wide variety of
-distributions.  Please look into another document PORTABILITY.org if you would
+distributions.  Please look into another document =PORTABILITY.org= if you would
 like to try building Flint on an unsupported OS.
 
-** The common command to build Flint
+** Prerequisites
 
-Running the following command in a shell will automatically download and install
-dependency libraries, then build and install Flint's binary programs in
-posix/opt/sequential-version/bin by default.
-#+begin_src shell
-$ make -C posix
-$ ./posix/opt/sequential-version/bin/flint # to run the Flint program
-#+end_src
+There are several development tools needed for building Flint.  You can satisfy
+the prerequisites by installing their packages as follows.
 
-If you rebuild Flint in the above way again, then first delete previous
-artifacts:
-#+begin_src shell
-$ make -C posix clean all
-#+end_src
-
-Additional documentation can be found in posix/README.
-
-
-* Distribution-specific prerequisites
-
-Before running the above Make command, you may require some packages installed
-as follows.
-
-** RHEL/CentOS 7
+*** RHEL/CentOS 7
 
 The default g++ package is too old to build Flint.
 A workaround for the issue is to use the one provided by devtoolset-8.
@@ -55,10 +36,9 @@ $ sudo yum install libtool cmake wget gtk3-devel sqlite-devel libuuid-devel \
 Do not forget enabling devtoolset-8 when running the make command:
 #+begin_src shell
 $ scl enable devtoolset-8 bash
-(bash) $ make -C posix
 #+end_src
 
-** RHEL/CentOS 8
+*** RHEL/CentOS 8
 
 Prerequisites for building Flint:
 #+begin_src shell
@@ -78,7 +58,7 @@ On CentOS 8:
 $ sudo dnf config-manager --set-enabled PowerTools
 #+end_src
 
-** Debian buster/bullseye/sid
+*** Debian buster/bullseye/sid
 
 We do not have a Debian package (.deb) for Flint yet.
 Before building Flint, you will want to install prerequisite Debian packages
@@ -88,7 +68,7 @@ $ sudo aptitude install gcc g++ autoconf automake libtool cmake \
     pkgconf libgtk-3-dev libsqlite3-dev libxml2-dev patch zlib1g-dev
 #+end_src
 
-** Fedora 32
+*** Fedora 32
 
 Use dnf(8) to install required packages for building Flint:
 #+begin_src shell
@@ -96,16 +76,46 @@ $ sudo dnf install gcc gcc-c++ autoconf automake libtool cmake make wget \
     sqlite-devel libuuid-devel libxml2-devel gtk3-devel patch zlib-devel
 #+end_src
 
-** Ubuntu 20.04 LTS (Focal Fossa)
+*** Ubuntu 20.04 LTS (Focal Fossa)
 
 #+begin_src shell
 $ sudo apt install g++ autoconf automake libtool cmake make libgtk-3-dev \
     libsqlite3-dev libxml2-dev uuid-dev patch zlib1g-dev
 #+end_src
 
-** Ubuntu 18.04 LTS (Bionic Beaver)
+*** Ubuntu 18.04 LTS (Bionic Beaver)
 
 #+begin_src shell
 $ sudo apt install g++ autoconf automake libtool cmake make libgtk-3-dev \
     libsqlite3-dev libxml2-dev uuid-dev patch zlib1g-dev
 #+end_src
+
+** Building Flint
+
+Running ~make~ at directory =posix= in a shell will automatically download and
+install dependency libraries, and then build/install Flint's binary programs in
+=posix/opt/sequential-version/bin= by default.
+#+begin_src shell
+$ make -C posix
+$ ./posix/opt/sequential-version/bin/flint # to run the Flint program
+#+end_src
+
+If you rebuild Flint in the above way again, then first delete previous
+artifacts:
+#+begin_src shell
+$ make -C posix clean
+#+end_src
+
+** Testing Flint
+
+Once building Flint, it is recommended to run automated tests to see if the
+program works as expected.  Launch the following command:
+
+#+begin_src shell
+$ make -C posix check
+#+end_src
+
+** About custom installation
+
+Additional documentation, for e.g. customizing the installation location, can be
+found in =posix/README=.
