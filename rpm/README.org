@@ -1,0 +1,44 @@
+# -*- mode: org; mode: auto-fill; fill-column: 80; -*-
+
+* Introduction
+
+This document explains how to build Flint's RPM packages from source on
+CentOS or RHEL.
+
+* Instructions
+
+** Setup
+
+Run the following commands to set up the build environment:
+#+begin_src shell
+$ sudo yum install rpm-build rpmdevtools
+$ rpmdev-setuptree
+#+end_src
+Please consult https://wiki.centos.org/HowTos/SetupRpmBuildEnvironment for more
+details.
+
+Next, check and follow =../INSTALL.org= to satisfy prerequisites.
+
+** Configuration
+
+Create =config.mk= in order to specify ~DIST~ and ~GTK_PACKAGE_NAME~.
+See =config.mk.el7= or =config.mk.el8= for example boilerplate.
+
+** Packaging
+
+Make sure that both ~git~ and ~make~ has been installed, just in case.
+Running
+#+begin_src shell
+$ make
+#+end_src
+in this directory will build Flint and eventually generate its RPM packages in
+subdirectory ~Flint-(version)-(release).(dist).(arch)/~.
+Note that internet connection may be required as the above command first
+download and build dependency libraries if needed.  The process may prompt for
+your password as it calls ~sudo~ several times to install dependency packages.
+
+* Reference
+
+For more information about creating rpm packages:
+https://docs.fedoraproject.org/en-US/quick-docs/creating-rpm-packages/
+
