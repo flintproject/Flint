@@ -21,10 +21,15 @@
 \graphicspath{ {./image/} }
 
 \usepackage{subcaption}
+\usepackage{listings}
 
 \def\FlintVersion{2.4}
-\def\Flint{Flint \FlintVersion}
+\def\FlintLongVersion{2.4.0}
+\def\Flint{Flint~\FlintVersion}
 \def\Tagline{a simulator for biological and physiological models}
+\def\FlintFilenamePrefix{Flint-\FlintLongVersion}
+
+\newcommand{\filename}[1]{{\tt #1}}
 
 \newcommand\FigureOfImage[2]{\begin{figure}[h]
   \centering
@@ -42,8 +47,8 @@
 \maketitle
 
 \begin{abstract}
-This document describes how to use \Flint.
-Readers also find some OS-specific notes and trouble-shooting techniques which
+This document describes how to use \Flint, \Tagline.
+Readers also find some platform-specific notes and trouble-shooting techniques that
 users would like to know when using \Flint.
 \end{abstract}
 
@@ -57,12 +62,11 @@ users would like to know when using \Flint.
 
 \chapter{Introduction}
 
-\section{Brief summary about Flint}
+\section{Brief summary about \Flint}
 \Flint~is new reimplementation of Flint 1.x, \Tagline.
 Flint can run simulations of multi-level physiological models written in PHML.
 It means that Flint parses given models, performs numerical analysis for their
-simulation, and renders simulation outcome into a line graph via an external
-program such as gnuplot \cite{gnuplot}.
+simulation, and renders simulation outcome into a line graph via gnuplot \cite{gnuplot}.
 Likewise, Flint can handle CellML and SBML as well as SBML-PHML hybrid models.
 
 \subsection{Markup languages}
@@ -99,22 +103,77 @@ a command shell on your system, such as\\
 
 \chapter{Getting started}
 
-\section{Install \Flint}
-Flint project makes both Windows and macOS version of \Flint's installer freely
-available at \url{https://flintproject.github.io/}.
-For Windows, double-clicking the .msi package will start the installation
-process.
+This chapter explains how to obtain and install Flint, and describes how to run
+a simulation.
+
+\section{Supported platforms}
+\Flint\ runs on several supported platforms, including:
+\begin{itemize}
+\item Windows 7 or later;
+\item macOS: OS X El Captian (10.11) or later;
+\item Linux distributions such as Debian 10, Ubuntu 18.04, and RHEL/CentOS 7 or 8.
+\end{itemize}
+
+\section{Download and install \Flint}
+Flint project distributes \Flint's x86-64 binary installers for Windows,
+macOS, and CentOS/RHEL 7 or 8.
+
+\subsection{On Windows}
+Please download the installer package
+\filename{\FlintFilenamePrefix-windows.x86\_64.msi} at
+\url{https://sourceforge.net/projects/flintproject/files/Flint/}.
+Double-clicking the .msi package will start the installation process.
+If installed successfully, Flint's executable program will be found at\\
+\filename{C:\textbackslash Program Files\textbackslash Flint\textbackslash flint.exe}.
+
+\subsection{On macOS}
+Please download the installer package \filename{\FlintFilenamePrefix-mac.dmg} at
+\url{https://sourceforge.net/projects/flintproject/files/Flint/}.
 The .dmg archive for macOS contains \Flint's .pkg file; extracting and
-double-clicking it to start an application bundle called ``Flint.app''.
+double-clicking it to start an application bundle called\\
+\filename{Flint.app}.
+
+\subsection{On CentOS/RHEL}
+Please download \filename{\FlintFilenamePrefix-el7.x86\_64.zip} or
+\filename{\FlintFilenamePrefix-el8.x86\_64.zip}
+at \url{https://sourceforge.net/projects/flintproject/files/Flint/}, depending
+on the major version of your OS.
+Unzipping the archive, run the following command on a bash-like shell to install
+RPM packages in it:
+\begin{verbatim}
+$ unzip Flint-*-el*.x86_64.zip
+$ cd Flint-*-el*.x86_64
+$ sudo rpm -Uvh --replacepkgs flint-*.rpm
+\end{verbatim}
+Once installed, Flint's executable will be found at\\
+\filename{/opt/flint/bin/flint}.
+
+\subsection{On other supported OSes}
+In principle \Flint\ runs on any Linux distribution coming up with GTK 2 or 3.
+You can build Flint from its source tarball, available at
+\url{https://github.com/flintproject/Flint/archive/\FlintFilenamePrefix.tar.gz},
+by following the instructions in \filename{INSTALL.org} found in the archive.
 
 \section{Try your first simulation with \Flint}
 This section describes a simple procedure with \Flint\ to run a simulation of an
-example model ``HodgkinHuxley\_1952\_neuron\_model.phz'', which is distributed
-as part of the PhysioDesigner \cite{PhysioDesigner} installation.
+example PHML model, which replicates the system of ordinary differential
+equations about membrane potentials in nerve introduced by
+\cite{hodgkin_quantitative_1952}.
+If you have installed \Flint\ via one of its binary installer packages, the
+model file can be found at\\
+\filename{C:\textbackslash Program Files\textbackslash Flint\textbackslash  flint.exe}
+on Windows,\\
+\filename{Flint.app/Contents/Resources/example/HodgkinHuxley\_1952\_neuron\_model.phml}
+on macOS, or\\
+\filename{/opt/flint/example/HodgkinHuxley\_1952\_neuron\_model.phml} on CentOS/RHEL.\\
+Otherwise you can also download it from\\
+\url{https://github.com/flintproject/Flint/tree/\FlintFilenamePrefix/example/HodgkinHuxley\_1952\_neuron\_model.phml}.
 
 \begin{description}
 \item[Launch Flint] \hfill \\
-To launch Flint, double-click flint.exe on Windows, or Flint.app on macOS.
+To launch Flint, double-click
+\filename{C:\textbackslash Program Files\textbackslash Flint\textbackslash flint.exe} on Windows,\\
+\filename{Flint.app} on macOS, or \filename{/opt/flint/bin/flint} on CentOS/RHEL.\\
 It shows a window like Fig.~\ref{fig:initial}.
 \FigureOfImage{initial}{The initial window of Flint.}
 
@@ -122,8 +181,10 @@ It shows a window like Fig.~\ref{fig:initial}.
 In the ``File'' menu, select ``Open'' to choose a model file. Then you will see
 a file dialog like Fig.~\ref{fig:open-model}.
 \FigureOfImage{open-model}{The file dialog to open a model.}
-Select ``HodgkinHuxley\_1952\_neuron\_model.phz'' in the file dialog, and
-click ``Open'' button.
+Select \filename{HodgkinHuxley\_1952\_neuron\_model.phml} in the file dialog
+\footnote{On macOS, opening a form by {\tt Command}+{\tt Shift}+{\tt g}, one can
+specify an absolute path in the application bundle \filename{Flint.app}.},
+and click ``Open'' button.
 Then the model window will appear as in Fig.~\ref{fig:hh}.
 \FigureOfImage{hh}{The model window.}
 
@@ -140,7 +201,7 @@ panel in the right side like Fig.~\ref{fig:hh-progress}, and both the cross mark
 \FigureOfImage{hh-progress}{The progress bar for the model.}
 
 Wait until the status bar tells that the simulation completed (see
-Fig.~\ref{fig:hh-compeleted}).
+Fig.~\ref{fig:hh-completed}).
 \FigureOfImage{hh-completed}{The status bar indicates the simulation completed.}
 
 \item[See detail of the simulation] \hfill \\
@@ -171,8 +232,8 @@ on Y2.}
 explains features of the GUI and how to use them.
 
 \section{Launching Flint}
-On Windows, double-clicking ``flint.exe'' in the start menu starts Flint.
-On macOS, double-clicking ``Flint.app'' works similarly.
+On Windows, double-clicking \filename{flint.exe} in the start menu starts Flint.
+On macOS, double-clicking \filename{Flint.app} works similarly.
 
 \section{Quitting Flint}
 To quit Flint, use the menu ``File''$\rightarrow$``Exit''.
@@ -194,7 +255,7 @@ in terms of numerical integration, simulation time, output data, and parameters.
 \subsection{Integration method}
 Users have to choose a solver method for ordinary differential equations or
 stochastic differential equations at the ``Integration method'' combobox.
-An error will occur at simulatoin time when choosing any method except
+An error will occur at simulation time when choosing any method except
 the Euler-Maruyama method for a model including SDEs.
 
 \subsection{Simulation Length}
@@ -219,9 +280,24 @@ limited number of variables for output among available variables.
 Filtering output variables will reduce the burden of writing output, and thus
 may improve the simulation performance.
 The ``Output Variables'' panel (Fig.~\ref{fig:lr-output-variables}) allows
-user to select output variables by matching its properties, such as name,
-with a given string.
+user to select output variables by matching one of their properties with a given
+string. The possible target properties depend on the format of the model file,
+and are summarized in Table~\ref{tab:outputproperties}. With the ``Filter Column''
+combo box one can choose the target. The ``Filter Pattern'' combo box chooses
+the way to interpret the given string: as a regular expression (default), or
+just as a fixed string.
 \FigureOfImage{lr-output-variables}{The ``Output Variables'' panel.}
+\begin{table}
+\centering
+\begin{tabular}{l|c}
+  Model file format & properties \\
+  \hline
+  PHML & Physical-quantity name; Module name \\
+  SBML & Species or reaction name \\
+  CellML &  Variable name; Component name \\
+\end{tabular}
+\caption{Output variable's properties to be matched} \label{tab:outputproperties}
+\end{table}
 
 \subsection{Parametrize constant values}
 By default, Flint run a simulation job for a loaded model. At the same time
@@ -299,9 +375,9 @@ of its tasks together.
 
 \subsection{Pause and resume jobs}
 As in Fig.~\ref{fig:control}, users can pause jobs at any time during simulation
-by using the menu ``Control''$\rightarrow$``Pause''. Resumeing paused jobs can
+by using the menu ``Control''$\rightarrow$``Pause''. Resuming paused jobs can
 be done with the menu ``Control''$\rightarrow$``Resume''.
-Note that these operation affects all of alive jobs simultaneously.
+Note that this operation affects all of alive jobs simultaneously.
 \FigureOfImage{control}{The Control Menu.}
 
 \section{Visualizing simulation results}
@@ -403,7 +479,10 @@ of concurrent threads. By default Flint automatically detects the number of core
 preset it for the hint.
 
 \subsection{Plotter}
-This is a necessary option to render line graphs.
+Flint must find the gnuplot executable when rendering line graphs.
+Giving a proper path to the gnuplot program through this option is mandatory on
+Windows and macOS. On the other hand, Flint try \filename{/usr/bin/gnuplot}, if
+omitted, on Linux.
 Select the path of {\tt gnuplot} (or {\tt gnuplot.exe} on Windows), e.g.,
 ``$\tt{/usr/bin/gnuplot}$''. If macOS users have, say,
 {\tt /Applications/gnuplot.app} as an application bundle of gnuplot,
@@ -417,20 +496,20 @@ There are useful shortcut keys as follows:
 \begin{tabular}{l||c|c}
   Command & Shortcut keys on macOS & Shortcut keys on Linux or Windows\\
   \hline
-  File $\rightarrow$ Open & {\tt Cmd}+O & {\tt Ctrl}+O \\
-  File $\rightarrow$ Exit & {\tt Cmd}+Q & {\tt Ctrl}+Q \\
-  File $\rightarrow$ Save configuration & {\tt Cmd}+S & {\tt Ctrl}+S \\
-  File $\rightarrow$ Save configuration as...& {\tt Cmd}+{\tt Shift}+S & {\tt Ctrl}+{\tt Shift}+S \\
-  Edit $\rightarrow$ Copy & {\tt Cmd}+C & {\tt Ctrl}+C \\
-  File $\rightarrow$ Cut  & {\tt Cmd}+X & {\tt Ctrl}+X \\
-  Edit $\rightarrow$ Preference & {\tt Cmd}+, & {\tt Ctrl}+, \\
+  File $\rightarrow$ Open & {\tt Command}+O & {\tt Ctrl}+O \\
+  File $\rightarrow$ Exit & {\tt Command}+Q & {\tt Ctrl}+Q \\
+  File $\rightarrow$ Save configuration & {\tt Command}+S & {\tt Ctrl}+S \\
+  File $\rightarrow$ Save configuration as...& {\tt Command}+{\tt Shift}+S & {\tt Ctrl}+{\tt Shift}+S \\
+  Edit $\rightarrow$ Copy & {\tt Command}+C & {\tt Ctrl}+C \\
+  File $\rightarrow$ Cut  & {\tt Command}+X & {\tt Ctrl}+X \\
+  Edit $\rightarrow$ Preference & {\tt Command}+, & {\tt Ctrl}+, \\
   Control $\rightarrow$ Run & {\tt Option}+R & {\tt Alt}+R \\
   Control $\rightarrow$ Pause & {\tt Option}+P & {\tt Alt}+P \\
   Control $\rightarrow$ Resume & {\tt Option}+S & {\tt Alt}+S \\
 \end{tabular}
 
 \subsection{Additional keys}
-Both {\tt Esc} and {\tt Ctrl}+{\tt W} (or {\tt Cmd}+{\tt W} on Mac) can close an active
+Both {\tt Esc} and {\tt Ctrl}+{\tt W} (or {\tt Command}+{\tt W} on Mac) can close an active
 subwindow in which there is no dedicated button to close it.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -450,7 +529,7 @@ In a {\tt cmd} session on Windows,
 \begin{verbatim}
 $ flint.exe
 \end{verbatim}
-has the similar effect.
+has a similar effect.
 
 \subsection{Invocation with filenames}
 If filenames of models are given in the command line on Windows:
@@ -496,7 +575,13 @@ Please read this chapter first when in doubt.
 
 \section{How to uninstall Flint}
 On windows, you can uninstall Flint through the system menu ``Settings''$\rightarrow$``Apps \& features''.
-On macOS, all you have to do for uninstallation is to remove Flint.app.
+On macOS, all you have to do for uninstallation is to remove \filename{Flint.app}.
+If you have installed Flint's RPM packages on CentOS/RHEL, the following command
+uninstalls them:
+\begin{verbatim}
+$ sudo rpm -e flint flint-boost flint-clibsedml flint-czmq flint-libsbml \
+    flint-protobuf flint-soslib flint-sundials flint-wxwidgets flint-zeromq
+\end{verbatim}
 
 \section{How to file a bug report or a feature request}
 Please visit Flint's GitHub Issues page at
@@ -504,9 +589,21 @@ Please visit Flint's GitHub Issues page at
 and find whether your issue has been reported or not.
 Feel free to file it if there is no similar issue.
 
+\section{What are programs named \filename{flint-cli}, \filename{flint-exec}, etc.?}
+Besides the main \filename{flint} program, there are some auxiliary executables in
+Flint. Some of them are utility programs for internal use or experimental
+purpose. Others remains only for backward compatibility with Flint 1.x. In
+either case their interface is subject to change. You can find brief description about
+them in \filename{src/*-README} of Flint's source tree.
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \bibliographystyle{unsrt}
 \bibliography{publication,software}
 
 \end{document}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: t
+%%% End:

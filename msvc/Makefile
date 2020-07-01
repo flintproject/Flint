@@ -24,7 +24,7 @@ EXTERNAL_LIBRARY_DIRS = $(filter-out $(UNNECESSARY_LIBRARIES),$(ALL_EXTERNAL_LIB
 
 .PHONY: all mostlyclean clean distclean download
 
-all: download all.proj $(foreach lib,$(EXTERNAL_LIBRARY_DIRS),tmp/$(lib)) tmp/release-dll tmp/sqlite.header tmp/sqlite.precompiled flint/flint.ico flint/flint.wxs flint/license.rtf flint/third-party-licenses.txt
+all: download all.proj $(foreach lib,$(EXTERNAL_LIBRARY_DIRS),tmp/$(lib)) tmp/release-dll tmp/sqlite.header tmp/sqlite.precompiled flint/flint.ico flint/flint.wxs flint/license.rtf flint/third-party-licenses.txt flint/example/HodgkinHuxley_1952_neuron_model.phml
 
 mostlyclean:
 	-rm -rf all.proj tmp/build var/build flint
@@ -180,6 +180,12 @@ flint/third-party-licenses.txt: tmp/ceres-solver-$(CERES_VERSION) tmp/czmq-$(CZM
 	echo ';; ZeroMQ $(ZEROMQ_VERSION)' >> $@
 	echo >> $@
 	cat var/zeromq-$(ZEROMQ_VERSION)/COPYING.LESSER >> $@
+
+flint/example: | flint
+	install -d $@
+
+flint/example/HodgkinHuxley_1952_neuron_model.phml: ../example/HodgkinHuxley_1952_neuron_model.phml | flint/example
+	install -p -m 0644 $< $@
 
 all.proj: all.proj.in
 	m4 \

@@ -134,6 +134,7 @@ AC_FUNC_ERROR_AT_LINE
 AC_CHECK_FUNCS([floor gethostname gettimeofday memset mkstemp popen pow putenv socket sqrt strerror strstr])
 
 AC_CONFIG_FILES([Makefile
+                 example/Makefile
                  src/Makefile
                  test/Makefile
                  test/base/Makefile

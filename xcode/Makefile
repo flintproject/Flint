@@ -259,7 +259,10 @@ $(foreach d,$(SUNDIALS_DYLIBS),$(eval $(call flint_frameworks_sundials_dylib,$(d
 
 $(foreach d,$(FLINT_DYLIBS),$(eval $(call flint_frameworks_flint_dylib,$(d))))
 
-$(APP)/Contents $(APP)/Contents/Frameworks $(APP)/Contents/MacOS:
+$(APP)/Contents:
+	install -d $@
+
+$(APP)/Contents/Frameworks $(APP)/Contents/MacOS $(APP)/Contents/Resources: | $(APP)/Contents
 	install -d $@
 
 tmp/bundled: $(APP)/Contents/Info.plist $(APP)/Contents/PkgInfo $(APP)/Contents/Resources/flint.icns | $(APP)/Contents/Frameworks $(APP)/Contents/MacOS
@@ -271,8 +274,7 @@ $(APP)/Contents/Info.plist: Info.plist | $(APP)/Contents
 $(APP)/Contents/PkgInfo: | $(APP)/Contents
 	touch $@ # FIXME
 
-$(APP)/Contents/Resources/flint.icns: ../flint.icns | $(APP)/Contents
-	install -d $(dir $@)
+$(APP)/Contents/Resources/flint.icns: ../flint.icns | $(APP)/Contents/Resources
 	install -p -m 0644 $< $@
 
 $(foreach p,$(PROGRAMS),$(eval $(call flint_macos_program,$(p))))
@@ -319,7 +321,13 @@ $(APP)/Contents/Resources/third-party-licenses.txt: tmp/ceres-solver-$(CERES_VER
 	echo >> $@
 	cat var/zeromq-$(ZEROMQ_VERSION)/COPYING.LESSER >> $@
 
-flint-component.pkg: component.plist $(foreach d,$(BOOST_DYLIBS),$(call flint_frameworks_boost_dylib_name,$(d))) $(foreach d,$(DYLIBS) $(FLINT_DYLIBS),$(call flint_frameworks_dylib_name,$(d))) $(foreach d,$(SUNDIALS_DYLIBS),$(call flint_frameworks_sundials_dylib_name,$(d))) $(foreach p,$(PROGRAMS),$(call flint_macos_program_name,$(p))) $(APP)/Contents/Resources/third-party-licenses.txt $(APP)/Contents/Resources/flint.icns $(APP)/Contents/Info.plist $(APP)/Contents/PkgInfo
+$(APP)/Contents/Resources/example: | $(APP)/Contents/Resources
+	install -d $@
+
+$(APP)/Contents/Resources/example/HodgkinHuxley_1952_neuron_model.phml: ../example/HodgkinHuxley_1952_neuron_model.phml | $(APP)/Contents/Resources/example
+	install -p -m 0644 $< $@
+
+flint-component.pkg: component.plist $(foreach d,$(BOOST_DYLIBS),$(call flint_frameworks_boost_dylib_name,$(d))) $(foreach d,$(DYLIBS) $(FLINT_DYLIBS),$(call flint_frameworks_dylib_name,$(d))) $(foreach d,$(SUNDIALS_DYLIBS),$(call flint_frameworks_sundials_dylib_name,$(d))) $(foreach p,$(PROGRAMS),$(call flint_macos_program_name,$(p))) $(APP)/Contents/Resources/example/HodgkinHuxley_1952_neuron_model.phml $(APP)/Contents/Resources/third-party-licenses.txt $(APP)/Contents/Resources/flint.icns $(APP)/Contents/Info.plist $(APP)/Contents/PkgInfo
 	pkgbuild --quiet --identifier jp.physiome.flint --component-plist $< --root root $@
 
 Flint-$(VERSION) resources:

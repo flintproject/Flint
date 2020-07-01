@@ -127,6 +127,12 @@
           <Component Id='third_party_licenses' Guid='6699ad54-8e3f-11e3-ae53-e3655a982178'>
             <File Id='third_party_licenses.txt' Name='third-party-licenses.txt' DiskId='1' Source='third-party-licenses.txt' />
           </Component>
+
+          <Directory Id='EXAMPLEDIR' Name='example'>
+            <Component Id='HodgkinHuxley_1952_neuron_model' Guid='6476225e-bb70-11ea-93ab-dbc0f80885a3'>
+              <File Id='HodgkinHuxley_1952_neuron_model.phml' Name='HodgkinHuxley_1952_neuron_model.phml' DiskId='1' Source='example\HodgkinHuxley_1952_neuron_model.phml' />
+            </Component>
+          </Directory>
         </Directory>
       </Directory>
 
@@ -185,6 +191,7 @@
       <ComponentRef Id='xml2' />
       <ComponentRef Id='zeromq' />
       <ComponentRef Id='third_party_licenses' />
+      <ComponentRef Id='HodgkinHuxley_1952_neuron_model' />
     </Feature>
     <Feature Id='VCRedist' Title='Visual C++ Redistributable' AllowAdvertise='no' Display='hidden' Level='1'>
       <?if $(sys.BUILDARCH) = x64 ?>
