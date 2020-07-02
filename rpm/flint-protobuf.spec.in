@@ -46,17 +46,17 @@ rm -rf %{buildroot}
 /opt/flint/lib/libprotobuf-lite.la
 /opt/flint/lib/libprotobuf-lite.so
 /opt/flint/lib/libprotobuf-lite.so.PROTOBUF_CURRENT_MAJOR
-/opt/flint/lib/libprotobuf-lite.so.PROTOBUF_CURRENT_MAJOR.PROTOBUF_CURRENT_MINOR.0
+/opt/flint/lib/libprotobuf-lite.so.PROTOBUF_CURRENT_MAJOR.0.PROTOBUF_CURRENT_TINY
 /opt/flint/lib/libprotobuf.a
 /opt/flint/lib/libprotobuf.la
 /opt/flint/lib/libprotobuf.so
 /opt/flint/lib/libprotobuf.so.PROTOBUF_CURRENT_MAJOR
-/opt/flint/lib/libprotobuf.so.PROTOBUF_CURRENT_MAJOR.PROTOBUF_CURRENT_MINOR.0
+/opt/flint/lib/libprotobuf.so.PROTOBUF_CURRENT_MAJOR.0.PROTOBUF_CURRENT_TINY
 /opt/flint/lib/libprotoc.a
 /opt/flint/lib/libprotoc.la
 /opt/flint/lib/libprotoc.so
 /opt/flint/lib/libprotoc.so.PROTOBUF_CURRENT_MAJOR
-/opt/flint/lib/libprotoc.so.PROTOBUF_CURRENT_MAJOR.PROTOBUF_CURRENT_MINOR.0
+/opt/flint/lib/libprotoc.so.PROTOBUF_CURRENT_MAJOR.0.PROTOBUF_CURRENT_TINY
 /opt/flint/lib/pkgconfig/protobuf-lite.pc
 /opt/flint/lib/pkgconfig/protobuf.pc
 
