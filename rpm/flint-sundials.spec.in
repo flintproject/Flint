@@ -20,7 +20,7 @@ This is a SUNDIALS package for Flint.
 
 %build
 install -d build
-(cd build && cmake -DCMAKE_INSTALL_PREFIX=/opt/flint -DBUILD_STATIC_LIBS=OFF -DBUILD_SHARED_LIBS=ON ..)
+(cd build && cmake -DCMAKE_INSTALL_PREFIX=/opt/flint -DBUILD_STATIC_LIBS=OFF -DBUILD_SHARED_LIBS=ON -DEXAMPLES_ENABLE=OFF ..)
 make -C build
 
 %install
@@ -48,6 +48,5 @@ rm -rf %{buildroot}
 /opt/flint/include/nvector/*
 /opt/flint/include/sundials/*
 /opt/flint/lib/libsundials_*
-/opt/flint/examples
 
 %changelog
