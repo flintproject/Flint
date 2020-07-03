@@ -17,33 +17,41 @@ authors:
 affiliations:
  - name: Graduate School of Medicine, Yamaguchi University
    index: 1
-date: 23 Jun 2020
+date: 3 Jul 2020
 bibliography: paper.bib
 ---
 
 # Introduction
 
-Understanding dynamics of biological or physiological systems often requires a
-rigorous mathematical model that describes the hypotheses to be tested. It is
-widely recognized that the class of ordinary differential equations (ODEs) is
+Understanding dynamics of living organisms often requires a rigorous
+mathematical model that describes the hypotheses to be tested. It is
+widely recognized that the class of ordinary differential equations (ODE) is
 suitable for describing the time course of variables in a deterministic system,
 stemming from a simple assumption about the rate of their change.
 One of such examples is the chemical reaction accelerated by an enzyme
 following the Michaelis-Menten kinetics; another is the action potential of
-cardiac cells driven by modulation of ion channels. As a consequence, recent
-computational studies on composite intracellular models employs several
-domain-specific languages such as CellML [@lloyd_cellml_2004], the Physiological
-Hierarchy Markup Language (PHML) [@asai_databases_2015], or the Systems Biology
-Markup Language (SBML) [@hucka_systems_2003], in order to make it easier for
-researchers to edit models that implicitly specify the ODEs in problem.
+cardiac cells driven by modulation of ion channels. By a virtue of
+differential equations, these celullar models can be integrated into the one of
+tissue or organ level. In fact, the way to integrate a computational model of
+the physiological functions of the whole individual has been explored since the
+end of the last century, under the name physiome [@leem_perspectives_2016].
 
-We introduce `Flint`, a simulator software for models written in these
-languages, which allows users to transform a given model into a set of ODEs and
-solve it in a numerical manner. `Flint` facilitates efficient solvers
-e.g. using the additive Runge-Kutta scheme implemented in the SUNDIALS library
-[@hindmarsh2005sundials]. It also supports a non-deterministic extension of
-ODEs, namely stochastic differential equations (SDE) [@higham_algorithmic_2001]
-which makes it possible to involve random elements, e.g. noises, in the dynamics.
+It is, however, technically challenging for practitioners in the field of
+biology or physiology to express their hypotheses on biological organisms in a
+precise system of ODEs. In order to make it easier to edit a model in problem
+that implicitly specify the ODEs, several domain-specific languages have
+been proposed and standardized, including CellML [@lloyd_cellml_2004], the
+Physiological Hierarchy Markup Language (PHML) [@asai_databases_2015], and the
+Systems Biology Markup Language (SBML) reported by [@hucka_systems_2003].
+Although the design principle of each modeling language varies, computational
+analysis of any model in these languages comprises the shared set of procedures
+based on the theory of differential equations and dynamical systems.
+
+In this work we introduce `Flint`, a simulator software for models written in
+the above languages. The simulator allows users to transform a given model into
+a system of ODEs and solve it in a numerical manner. It also supports stochastic
+differential equations (SDE), a non-deterministic extension of ODEs, which makes
+it possible to involve random elements, e.g. noises, in the dynamics.
 
 The development of `Flint` has been tied in with the physiome.jp project
 [@nomura_toward_2010], which aims to establish a computational platform for
@@ -56,9 +64,46 @@ model of subcellular signaling to build tissue or higher-level physiological
 ones, there is a technical proposal embedding it in PHML
 [@asai_versatile_2014]. Simulating such models is a reason for adopting `Flint`
 even when other state-of-the-art tools are publicly available, e.g. COPASI
-[@hoops_copasicomplex_2006], focusing on its own format.
+[@hoops_copasicomplex_2006], focusing on its own format. It is `Flint`'s main
+contribution to provide an open, language-agnostic resource for reproducible
+simulation studies.
 
 # Implementation
+
+## User interface
+
+`Flint` is a standalone program that runs on consumer desktop environments such
+as Microsoft Windows, Apple's macOS, and Linux with GTK. For the simplest usage,
+its graphical user interface runs a simulation of a given model with only two
+steps; open the model file, and select the Run button. Running simulations at the
+command line is also supported, although only a limited number of the functions
+are available in the command line interface. The simulator delegate the task
+of displaying the output to gnuplot [@gnuplot_2017].
+
+## Numerical algorithms to solve a system of differential equations
+
+`Flint` compiles a model written in a supported XML language into bytecode of
+simulation, and then evaluates it with particular initial values. Our current
+implementation provides three algorithms for solving initial-value problems for
+ODEs numerically: the forward Euler method, the Runge-Kutta 4th-order method,
+and the additive Runge-Kutta scheme implemented in the SUNDIALS library
+[@hindmarsh2005sundials]. The Euler-Maruyama method is the one for solving SDEs
+[@higham_algorithmic_2001].
+
+## Multithreading for parallel simulation
+
+Solving an initial-value problem numerically is only the preliminary step to
+analyze the dynamics of the model. Further investigation often asks for the
+different values of initial values or parameters. For instance, hypotheses on
+biological switches has been stated in terms of bifurcation, and demonstrated by
+a series of simulations changing the values of parameters, in both deterministic
+[@fussmann_crossing_2000] and stochastic [@samoilov_stochastic_2005] paradigms.
+`Flint` employs multithreading to increase the number of simulations running in
+parallel. The parallelization is automatically performed when the user assigns
+multiple values to some parameter of a model for simulation, and honors the
+number of available CPU cores, which can be adjusted in the preference.
+
+## Grid search algorithm for parameter fitting
 
 The larger the number of variables and parameters in a given model are, the more
 resource-consuming its simulation becomes. It is also the case for estimating
