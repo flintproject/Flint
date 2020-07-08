@@ -41,11 +41,12 @@ biology or physiology to express their hypotheses on biological organisms in a
 precise system of ODEs. In order to make it easier to edit a model in problem
 that implicitly specify the ODEs, several domain-specific languages have
 been proposed and standardized, including CellML [@lloyd_cellml_2004], the
-Physiological Hierarchy Markup Language (PHML) [@asai_databases_2015], and the
-Systems Biology Markup Language (SBML) reported by [@hucka_systems_2003].
-Although the design principle of each modeling language varies, computational
-analysis of any model in these languages comprises the shared set of procedures
-based on the theory of differential equations and dynamical systems.
+Physiological Hierarchy Markup Language (PHML) reported by
+[@asai_databases_2015], and the Systems Biology Markup Language (SBML) reported
+by [@hucka_systems_2003]. Although the design principle of each modeling
+language varies, computational analysis of any model in these languages
+comprises the shared set of procedures based on the theory of differential
+equations and dynamical systems.
 
 In this work we introduce `Flint`, a simulator software for models written in
 the above languages. The simulator allows users to transform a given model into
