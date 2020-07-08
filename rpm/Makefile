@@ -165,7 +165,7 @@ download: $(foreach lib,$(BOOST_UNDERSCORE).tar.bz2 clibsedml-$(CLIBSEDML_VERSIO
 Flint-$(VERSION)-$(DIST).$(ARCH):
 	install -d $@
 
-Flint-$(VERSION)-$(DIST).$(ARCH)/README: data/README | Flint-$(VERSION)-$(DIST).$(ARCH)
+Flint-$(VERSION)-$(DIST).$(ARCH)/README.org: data/README.org | Flint-$(VERSION)-$(DIST).$(ARCH)
 	install -p -m 0644 $< $@
 
 Flint-$(VERSION)-$(DIST).$(ARCH).zip: $(DIST_FILES) Flint-$(VERSION)-$(DIST).$(ARCH)/README

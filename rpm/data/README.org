@@ -1,0 +1,19 @@
+# -*- mode: org; mode: auto-fill; fill-column: 80; -*-
+
+* Introduction
+
+This document explains how to install Flint with its RPM packages on CentOS or
+RHEL.
+
+* Instructions
+
+The first step of the installation is to install some dependency packages
+as follows:
+#+begin_src shell
+$ sudo yum install libxml2 gnuplot gtk3 sqlite zlib
+#+end_src
+
+Then, run the following command in this directory to install Flint:
+#+begin_src shell
+$ sudo rpm -Uvh --replacepkgs flint-*.rpm
+#+end_src

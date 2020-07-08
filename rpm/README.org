@@ -3,7 +3,8 @@
 * Introduction
 
 This document explains how to build Flint's RPM packages from source on
-CentOS or RHEL.
+CentOS or RHEL.  Please read =data/README.org= if you would like to know
+how to install the RPM packages on your machine.
 
 * Instructions
 
