@@ -1,6 +1,7 @@
 # -*- Mode: makefile-gmake; tab-width: 4; indent-tabs-mode: t -*-
 include config.mk
 include ../deposit.mk
+include ../example.mk
 include ../option.mk
 include ../version.mk
 
@@ -63,6 +64,7 @@ flint_frameworks_boost_dylib_name = $(APP)/Contents/Frameworks/libboost_$(1)-mt.
 flint_frameworks_dylib_name = $(APP)/Contents/Frameworks/$(1).dylib
 flint_frameworks_sundials_dylib_name = $(APP)/Contents/Frameworks/libsundials_$(1).dylib
 flint_macos_program_name = $(APP)/Contents/MacOS/$(1)
+flint_example_name = $(APP)/Contents/Resources/example/$(1)
 
 define flint_frameworks_boost_dylib
 $(call flint_frameworks_boost_dylib_name,$(1)): tmp/$(BOOST_UNDERSCORE).installed tmp/bundled
@@ -104,6 +106,22 @@ $(call flint_macos_program_name,$(1)): opt/bin/$(1) tmp/bundled
 	for name in $(SUNDIALS_DYLIBS); do install_name_tool -change $(PREFIX)/lib/libsundials_$$$$name.dylib @executable_path/../Frameworks/libsundials_$$$$name.dylib $$@; done
 	for name in $(FLINT_DYLIBS); do install_name_tool -change $(CURDIR)/opt/lib/$$$$name.dylib @executable_path/../Frameworks/$$$$name.dylib $$@; done
 endef
+
+define flint_example
+$(call flint_example_name,$(1)): ../example/$(1) | $(APP)/Contents/Resources/example
+	install -p -m 0644 $$< $$@
+endef
+
+COMPONENT_PKG_FILES = \
+	$(foreach d,$(BOOST_DYLIBS),$(call flint_frameworks_boost_dylib_name,$(d))) \
+	$(foreach d,$(DYLIBS) $(FLINT_DYLIBS),$(call flint_frameworks_dylib_name,$(d))) \
+	$(foreach d,$(SUNDIALS_DYLIBS),$(call flint_frameworks_sundials_dylib_name,$(d))) \
+	$(foreach p,$(PROGRAMS),$(call flint_macos_program_name,$(p))) \
+	$(foreach e,$(EXAMPLE_PHML),$(call flint_example_name,$(e))) \
+	$(APP)/Contents/Resources/third-party-licenses.txt \
+	$(APP)/Contents/Resources/flint.icns \
+	$(APP)/Contents/Info.plist \
+	$(APP)/Contents/PkgInfo
 
 .PHONY: all check mostlyclean clean distclean download external
 
@@ -324,10 +342,9 @@ $(APP)/Contents/Resources/third-party-licenses.txt: tmp/ceres-solver-$(CERES_VER
 $(APP)/Contents/Resources/example: | $(APP)/Contents/Resources
 	install -d $@
 
-$(APP)/Contents/Resources/example/HodgkinHuxley_1952_neuron_model.phml: ../example/HodgkinHuxley_1952_neuron_model.phml | $(APP)/Contents/Resources/example
-	install -p -m 0644 $< $@
+$(foreach e,$(EXAMPLE_PHML),$(eval $(call flint_example,$(e))))
 
-flint-component.pkg: component.plist $(foreach d,$(BOOST_DYLIBS),$(call flint_frameworks_boost_dylib_name,$(d))) $(foreach d,$(DYLIBS) $(FLINT_DYLIBS),$(call flint_frameworks_dylib_name,$(d))) $(foreach d,$(SUNDIALS_DYLIBS),$(call flint_frameworks_sundials_dylib_name,$(d))) $(foreach p,$(PROGRAMS),$(call flint_macos_program_name,$(p))) $(APP)/Contents/Resources/example/HodgkinHuxley_1952_neuron_model.phml $(APP)/Contents/Resources/third-party-licenses.txt $(APP)/Contents/Resources/flint.icns $(APP)/Contents/Info.plist $(APP)/Contents/PkgInfo
+flint-component.pkg: component.plist $(COMPONENT_PKG_FILES)
 	pkgbuild --quiet --identifier jp.physiome.flint --component-plist $< --root root $@
 
 Flint-$(VERSION) resources:

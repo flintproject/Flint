@@ -1,0 +1,1500 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<is:insilico-model  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:svg="http://www.w3.org/2000/svg" xmlns:is="http://www.physiome.jp/ns/insilicoml" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:m="http://www.w3.org/1998/Math/MathML" xmlns:pd="http://www.physiodesigner.org/2012/ns/physiodesigner/1.0" version="1.0" xsi:schemalocation="http://www.physiome.jp/ns/phml-1.0 phml.xsd">
+    <is:header>
+        <is:model-name>two_coupled_BVPs</is:model-name>
+        <is:meta-information>
+            <is:article-set>
+                <is:article type="model-proposal" article-id="1">
+                    <is:journal>
+                        <is:journal-title>Biological Cybernetics</is:journal-title>
+                        <is:publisher-name/>
+                        <is:volume>88</is:volume>
+                        <is:issue/>
+                        <is:publication-date>
+                            <is:year>2003</is:year>
+                            <is:month/>
+                        </is:publication-date>
+                    </is:journal>
+                    <is:pubmed-id/>
+                    <is:article-title>A coupled oscillator model of disordered interlimb coordination in patients with Parkinson's disease</is:article-title>
+                    <is:vernacular-article-title lang="any"/>
+                    <is:pages>
+                        <is:first-page>152</is:first-page>
+                        <is:last-page>162</is:last-page>
+                    </is:pages>
+                    <is:target-model-set>
+                        <is:target-model db-id="this"/>
+                    </is:target-model-set>
+                    <is:author-set>
+                        <is:author>
+                            <is:first-name>Y.</is:first-name>
+                            <is:last-name>Asai</is:last-name>
+                        </is:author>
+                        <is:author>
+                            <is:first-name>T.</is:first-name>
+                            <is:last-name>Nomura</is:last-name>
+                        </is:author>
+                        <is:author>
+                            <is:first-name>S.</is:first-name>
+                            <is:last-name>Sato</is:last-name>
+                        </is:author>
+                        <is:author>
+                            <is:first-name>A.</is:first-name>
+                            <is:last-name>Tamaki</is:last-name>
+                        </is:author>
+                        <is:author>
+                            <is:first-name>Y.</is:first-name>
+                            <is:last-name>Matsuo</is:last-name>
+                        </is:author>
+                        <is:author>
+                            <is:first-name>I.</is:first-name>
+                            <is:last-name>Mizukura</is:last-name>
+                        </is:author>
+                        <is:author>
+                            <is:first-name>K.</is:first-name>
+                            <is:last-name>Abe</is:last-name>
+                        </is:author>
+                    </is:author-set>
+                    <is:description/>
+                </is:article>
+            </is:article-set>
+            <is:creator-set>
+                <is:creator>
+                    <is:person-name>
+                        <is:first-name>Yoshiyuki</is:first-name>
+                        <is:middle-name/>
+                        <is:last-name>Asai</is:last-name>
+                    </is:person-name>
+                    <is:affiliation-set>
+                        <is:affiliation>
+                            <is:organization>Osaka university</is:organization>
+                            <is:contact>
+                                <is:address/>
+                                <is:email>asai@bpe.es.osaka-u.ac.jp</is:email>
+                            </is:contact>
+                        </is:affiliation>
+                    </is:affiliation-set>
+                    <is:target-model-set>
+                        <is:target-model db-id="this"/>
+                    </is:target-model-set>
+                </is:creator>
+            </is:creator-set>
+        </is:meta-information>
+        <is:date>
+            <is:created>2010-05-30T09:30:31+09:00</is:created>
+            <is:last-modified>2012-12-28T02:30:39+09:00</is:last-modified>
+        </is:date>
+        <is:numerical-configuration>
+            <is:time-discretization unit-id="11">
+                <is:step>0.01</is:step>
+                <is:step-min/>
+                <is:step-max/>
+            </is:time-discretization>
+            <is:algorithm>
+                <is:integration name="euler"/>
+            </is:algorithm>
+            <is:simulation-time-span unit-id="11">300</is:simulation-time-span>
+        </is:numerical-configuration>
+        <is:description/>
+    </is:header>
+    <is:unit-set>
+        <is:unit unit-id="0">
+            <is:name>dimensionless</is:name>
+        </is:unit>
+        <is:unit unit-id="1">
+            <is:name>metre</is:name>
+        </is:unit>
+        <is:unit unit-id="2">
+            <is:name>kilogram</is:name>
+        </is:unit>
+        <is:unit unit-id="3">
+            <is:name>second</is:name>
+        </is:unit>
+        <is:unit unit-id="4">
+            <is:name>ampere</is:name>
+        </is:unit>
+        <is:unit unit-id="5">
+            <is:name>kelvin</is:name>
+        </is:unit>
+        <is:unit unit-id="6">
+            <is:name>mole</is:name>
+        </is:unit>
+        <is:unit unit-id="7">
+            <is:name>candela</is:name>
+        </is:unit>
+        <is:unit unit-id="8">
+            <is:name>radian</is:name>
+        </is:unit>
+        <is:unit unit-id="9">
+            <is:name>meter</is:name>
+            <is:element unit-id="1"/>
+        </is:unit>
+        <is:unit unit-id="10">
+            <is:name>gram</is:name>
+            <is:element unit-id="2" prefix="milli"/>
+        </is:unit>
+        <is:unit unit-id="11">
+            <is:name>milli_second</is:name>
+            <is:element unit-id="3" prefix="milli"/>
+        </is:unit>
+    </is:unit-set>
+
+    <is:module-set>
+        <is:module module-id="582c0fc2-b2ca-4aeb-b550-3ca43efa5ea4" type="functional-unit">
+            <is:property>
+                <is:name>v</is:name>
+                <is:capsulation state="true">
+                    <is:capsulated-by module-id="458aa0ca-f041-43b5-91bf-582655b4c747"/>
+                </is:capsulation>
+                <is:template state="false"/>
+                <is:keyword-set/>
+                <is:track>
+                    <is:involved date="2010-05-07T09:30:38+09:00" db-id="469"/>
+                </is:track>
+                <is:frame-coordinate/>
+                <is:description/>
+            </is:property>
+
+            <is:port-set>
+                <is:port port-id="1" direction="out" ref-physical-quantity-id="2">
+                    <is:name>v</is:name>
+                    <is:description/>
+                </is:port>
+                <is:port port-id="2" direction="in">
+                    <is:name>w</is:name>
+                    <is:description/>
+                </is:port>
+                <is:port port-id="3" direction="in">
+                    <is:name>Iext</is:name>
+                    <is:description/>
+                </is:port>
+                <is:port port-id="4" direction="in">
+                    <is:name>Idc</is:name>
+                    <is:description/>
+                </is:port>
+            </is:port-set>
+
+            <is:physical-quantity-set>
+                <is:physical-quantity physical-quantity-id="2" type="state">
+                    <is:name>v</is:name>
+                    <is:dimension type="scalar"/>
+                    <is:value-type-set>
+                        <is:value-type precision="double" unit-id="0"/>
+                    </is:value-type-set>
+                    <is:initial-value>
+                        <is:definition type="ae" format="mathml">
+                            <m:math><m:apply><m:eq/><m:ci>v</m:ci><m:cn>-1.14</m:cn></m:apply></m:math>
+                        </is:definition>
+                    </is:initial-value>
+                    <is:implementation>
+                        <is:definition type="ode" sub-type="" format="mathml">
+                            <m:math><m:apply><m:eq/><m:apply><m:diff/><m:bvar><m:ci>time</m:ci></m:bvar><m:ci>v</m:ci></m:apply><m:apply><m:plus/><m:apply><m:times/><m:ci>c</m:ci><m:apply><m:plus/><m:apply><m:minus/><m:ci>v</m:ci><m:apply><m:divide/><m:apply><m:times/><m:ci>v</m:ci><m:ci>v</m:ci><m:ci>v</m:ci></m:apply><m:cn>3</m:cn></m:apply></m:apply><m:apply><m:minus/><m:ci>Idc</m:ci><m:ci>w</m:ci></m:apply></m:apply></m:apply><m:ci>Iext</m:ci></m:apply></m:apply></m:math>
+                        </is:definition>
+                    </is:implementation>
+                    <is:problem-condition-set/>
+                    <is:description>membrane potential (a.u.)</is:description>
+                </is:physical-quantity>
+                <is:physical-quantity physical-quantity-id="3" type="variable-parameter">
+                    <is:name>w</is:name>
+                    <is:dimension type="scalar"/>
+                    <is:value-type-set>
+                        <is:value-type precision="double" unit-id="0"/>
+                    </is:value-type-set>
+                    <is:initial-value/>
+                    <is:implementation>
+                        <is:definition type="assign" sub-type="port" format="reference">
+                            <is:reference port-id="2"/>
+                        </is:definition>
+                    </is:implementation>
+                    <is:problem-condition-set/>
+                    <is:description>refractriness variable (a.u.)</is:description>
+                </is:physical-quantity>
+                <is:physical-quantity physical-quantity-id="4" type="variable-parameter">
+                    <is:name>Iext</is:name>
+                    <is:dimension type="scalar"/>
+                    <is:value-type-set>
+                        <is:value-type precision="double" unit-id="0"/>
+                    </is:value-type-set>
+                    <is:initial-value/>
+                    <is:implementation>
+                        <is:definition type="assign" sub-type="port" format="reference">
+                            <is:reference port-id="3"/>
+                        </is:definition>
+                    </is:implementation>
+                    <is:problem-condition-set/>
+                    <is:description>external current input (specifcally time dependent component)</is:description>
+                </is:physical-quantity>
+                <is:physical-quantity physical-quantity-id="5" type="static-parameter">
+                    <is:name>c</is:name>
+                    <is:dimension type="scalar"/>
+                    <is:value-type-set>
+                        <is:value-type precision="double" unit-id="0"/>
+                    </is:value-type-set>
+                    <is:initial-value/>
+                    <is:implementation>
+                        <is:definition type="ae" sub-type="" format="mathml">
+                            <m:math><m:apply><m:eq/><m:ci>c</m:ci><m:cn>1.75</m:cn></m:apply></m:math>
+                        </is:definition>
+                    </is:implementation>
+                    <is:problem-condition-set/>
+                    <is:description/>
+                </is:physical-quantity>
+                <is:physical-quantity physical-quantity-id="7" type="variable-parameter">
+                    <is:name>Idc</is:name>
+                    <is:dimension type="scalar"/>
+                    <is:value-type-set>
+                        <is:value-type precision="double" unit-id="0"/>
+                    </is:value-type-set>
+                    <is:initial-value/>
+                    <is:implementation>
+                        <is:definition type="assign" sub-type="port" format="reference">
+                            <is:reference port-id="4"/>
+                        </is:definition>
+                    </is:implementation>
+                    <is:problem-condition-set/>
+                    <is:description/>
+                </is:physical-quantity>
+            </is:physical-quantity-set>
+            <is:morphology/>
+        </is:module>
+
+        <is:module module-id="2288c88f-4571-4fd7-b8df-77a4002ca542" type="functional-unit">
+            <is:property>
+                <is:name>w</is:name>
+                <is:capsulation state="true">
+                    <is:capsulated-by module-id="458aa0ca-f041-43b5-91bf-582655b4c747"/>
+                </is:capsulation>
+                <is:template state="false"/>
+                <is:keyword-set/>
+                <is:track>
+                    <is:involved date="2010-05-07T09:30:38+09:00" db-id="469"/>
+                </is:track>
+                <is:frame-coordinate/>
+                <is:description/>
+            </is:property>
+
+            <is:port-set>
+                <is:port port-id="1" direction="out" ref-physical-quantity-id="2">
+                    <is:name>w</is:name>
+                    <is:description/>
+                </is:port>
+                <is:port port-id="2" direction="in">
+                    <is:name>v</is:name>
+                    <is:description/>
+                </is:port>
+                <is:port port-id="3" direction="in">
+                    <is:name>Iext</is:name>
+                    <is:description/>
+                </is:port>
+            </is:port-set>
+
+            <is:physical-quantity-set>
+                <is:physical-quantity physical-quantity-id="2" type="state">
+                    <is:name>w</is:name>
+                    <is:dimension type="scalar"/>
+                    <is:value-type-set>
+                        <is:value-type precision="double" unit-id="0"/>
+                    </is:value-type-set>
+                    <is:initial-value>
+                        <is:definition type="ae" format="mathml">
+                            <m:math><m:apply><m:eq/><m:ci>w</m:ci><m:cn>-0.55</m:cn></m:apply></m:math>
+                        </is:definition>
+                    </is:initial-value>
+                    <is:implementation>
+                        <is:definition type="ode" sub-type="" format="mathml">
+                            <m:math><m:apply><m:eq/><m:apply><m:diff/><m:bvar><m:ci>time</m:ci></m:bvar><m:ci>w</m:ci></m:apply><m:apply><m:plus/><m:apply><m:divide/><m:apply><m:plus/><m:apply><m:minus/><m:ci>v</m:ci><m:apply><m:times/><m:ci>b</m:ci><m:ci>w</m:ci></m:apply></m:apply><m:ci>a</m:ci></m:apply><m:ci>c</m:ci></m:apply><m:ci>Iext</m:ci></m:apply></m:apply></m:math>
+                        </is:definition>
+                    </is:implementation>
+                    <is:problem-condition-set/>
+                    <is:description/>
+                </is:physical-quantity>
+                <is:physical-quantity physical-quantity-id="3" type="variable-parameter">
+                    <is:name>v</is:name>
+                    <is:dimension type="scalar"/>
+                    <is:value-type-set>
+                        <is:value-type precision="double" unit-id="0"/>
+                    </is:value-type-set>
+                    <is:initial-value/>
+                    <is:implementation>
+                        <is:definition type="assign" sub-type="port" format="reference">
+                            <is:reference port-id="2"/>
+                        </is:definition>
+                    </is:implementation>
+                    <is:problem-condition-set/>
+                    <is:description/>
+                </is:physical-quantity>
+                <is:physical-quantity physical-quantity-id="4" type="static-parameter">
+                    <is:name>a</is:name>
+                    <is:dimension type="scalar"/>
+                    <is:value-type-set>
+                        <is:value-type precision="double" unit-id="0"/>
+                    </is:value-type-set>
+                    <is:initial-value/>
+                    <is:implementation>
+                        <is:definition type="ae" sub-type="" format="mathml">
+                            <m:math><m:apply><m:eq/><m:ci>a</m:ci><m:cn>0.7</m:cn></m:apply></m:math>
+                        </is:definition>
+                    </is:implementation>
+                    <is:problem-condition-set/>
+                    <is:description/>
+                </is:physical-quantity>
+                <is:physical-quantity physical-quantity-id="5" type="static-parameter">
+                    <is:name>b</is:name>
+                    <is:dimension type="scalar"/>
+                    <is:value-type-set>
+                        <is:value-type precision="double" unit-id="0"/>
+                    </is:value-type-set>
+                    <is:initial-value/>
+                    <is:implementation>
+                        <is:definition type="ae" sub-type="" format="mathml">
+                            <m:math><m:apply><m:eq/><m:ci>b</m:ci><m:cn>0.8</m:cn></m:apply></m:math>
+                        </is:definition>
+                    </is:implementation>
+                    <is:problem-condition-set/>
+                    <is:description/>
+                </is:physical-quantity>
+                <is:physical-quantity physical-quantity-id="6" type="static-parameter">
+                    <is:name>c</is:name>
+                    <is:dimension type="scalar"/>
+                    <is:value-type-set>
+                        <is:value-type precision="double" unit-id="0"/>
+                    </is:value-type-set>
+                    <is:initial-value/>
+                    <is:implementation>
+                        <is:definition type="ae" sub-type="" format="mathml">
+                            <m:math><m:apply><m:eq/><m:ci>c</m:ci><m:cn>1.75</m:cn></m:apply></m:math>
+                        </is:definition>
+                    </is:implementation>
+                    <is:problem-condition-set/>
+                    <is:description/>
+                </is:physical-quantity>
+                <is:physical-quantity physical-quantity-id="7" type="variable-parameter">
+                    <is:name>Iext</is:name>
+                    <is:dimension type="scalar"/>
+                    <is:value-type-set>
+                        <is:value-type precision="double" unit-id="0"/>
+                    </is:value-type-set>
+                    <is:initial-value/>
+                    <is:implementation>
+                        <is:definition type="assign" sub-type="port" format="reference">
+                            <is:reference port-id="3"/>
+                        </is:definition>
+                    </is:implementation>
+                    <is:problem-condition-set/>
+                    <is:description/>
+                </is:physical-quantity>
+            </is:physical-quantity-set>
+            <is:morphology/>
+        </is:module>
+
+        <is:module module-id="458aa0ca-f041-43b5-91bf-582655b4c747" type="capsule">
+            <is:property>
+                <is:name>BVP</is:name>
+                <is:capsulation state="false"/>
+                <is:template state="false"/>
+                <is:keyword-set/>
+                <is:track>
+                    <is:involved db-id="this" date="2010-05-29T15:00:43+09:00"/>
+                </is:track>
+                <is:frame-coordinate/>
+                <is:description/>
+            </is:property>
+
+            <is:port-set>
+                <is:port port-id="1" direction="out">
+                    <is:name>v</is:name>
+                    <is:description/>
+                </is:port>
+                <is:port port-id="2" direction="in">
+                    <is:name>Iext_v</is:name>
+                    <is:description/>
+                </is:port>
+                <is:port port-id="4" direction="in">
+                    <is:name>Idc</is:name>
+                    <is:description/>
+                </is:port>
+                <is:port port-id="6" direction="in">
+                    <is:name>Iext_w</is:name>
+                    <is:description/>
+                </is:port>
+            </is:port-set>
+            <is:physical-quantity-set/>
+            <is:morphology/>
+        </is:module>
+
+        <is:module module-id="7752df9b-8156-4c68-bf9e-5bd1d09affb8" type="functional-unit">
+            <is:property>
+                <is:name>Electrical_coupling_between_v</is:name>
+                <is:capsulation state="true">
+                    <is:capsulated-by module-id="71fe3eff-a55e-4a3d-a51a-983fc5e9dc4d"/>
+                </is:capsulation>
+                <is:template state="false"/>
+                <is:keyword-set/>
+                <is:track>
+                    <is:involved db-id="this" date="2010-03-22T13:17:05+09:00"/>
+                    <is:involved db-id="this" date="2010-05-29T15:12:18+09:00"/>
+                </is:track>
+                <is:frame-coordinate/>
+                <is:description/>
+            </is:property>
+
+            <is:port-set>
+                <is:port port-id="1" direction="in">
+                    <is:name>Vm_1</is:name>
+                    <is:description/>
+                </is:port>
+                <is:port port-id="2" direction="in">
+                    <is:name>Vm_2</is:name>
+                    <is:description/>
+                </is:port>
+                <is:port port-id="3" direction="out" ref-physical-quantity-id="5">
+                    <is:name>Current_1</is:name>
+                    <is:description/>
+                </is:port>
+                <is:port port-id="4" direction="out" ref-physical-quantity-id="2">
+                    <is:name>Current_2</is:name>
+                    <is:description/>
+                </is:port>
+            </is:port-set>
+
+            <is:physical-quantity-set>
+                <is:physical-quantity physical-quantity-id="2" type="variable-parameter">
+                    <is:name>I2</is:name>
+                    <is:dimension type="scalar"/>
+                    <is:value-type-set>
+                        <is:value-type precision="double" unit-id="0"/>
+                    </is:value-type-set>
+                    <is:initial-value/>
+                    <is:implementation>
+                        <is:definition type="ae" sub-type="" format="mathml">
+                            <m:math><m:apply><m:eq/><m:ci>I2</m:ci><m:apply><m:times/><m:ci>G</m:ci><m:apply><m:minus/><m:ci>V1</m:ci><m:ci>V2</m:ci></m:apply></m:apply></m:apply></m:math>
+                        </is:definition>
+                    </is:implementation>
+                    <is:problem-condition-set/>
+                    <is:description/>
+                </is:physical-quantity>
+                <is:physical-quantity physical-quantity-id="3" type="variable-parameter">
+                    <is:name>V1</is:name>
+                    <is:dimension type="scalar"/>
+                    <is:value-type-set>
+                        <is:value-type precision="double" unit-id="0"/>
+                    </is:value-type-set>
+                    <is:initial-value/>
+                    <is:implementation>
+                        <is:definition type="assign" sub-type="port" format="reference">
+                            <is:reference port-id="1"/>
+                        </is:definition>
+                    </is:implementation>
+                    <is:problem-condition-set/>
+                    <is:description/>
+                </is:physical-quantity>
+                <is:physical-quantity physical-quantity-id="4" type="variable-parameter">
+                    <is:name>V2</is:name>
+                    <is:dimension type="scalar"/>
+                    <is:value-type-set>
+                        <is:value-type precision="double" unit-id="0"/>
+                    </is:value-type-set>
+                    <is:initial-value/>
+                    <is:implementation>
+                        <is:definition type="assign" sub-type="port" format="reference">
+                            <is:reference port-id="2"/>
+                        </is:definition>
+                    </is:implementation>
+                    <is:problem-condition-set/>
+                    <is:description/>
+                </is:physical-quantity>
+                <is:physical-quantity physical-quantity-id="5" type="variable-parameter">
+                    <is:name>I1</is:name>
+                    <is:dimension type="scalar"/>
+                    <is:value-type-set>
+                        <is:value-type precision="double" unit-id="0"/>
+                    </is:value-type-set>
+                    <is:initial-value/>
+                    <is:implementation>
+                        <is:definition type="ae" sub-type="" format="mathml">
+                            <m:math><m:apply><m:eq/><m:ci>I1</m:ci><m:apply><m:times/><m:ci>G</m:ci><m:apply><m:minus/><m:ci>V2</m:ci><m:ci>V1</m:ci></m:apply></m:apply></m:apply></m:math>
+                        </is:definition>
+                    </is:implementation>
+                    <is:problem-condition-set/>
+                    <is:description/>
+                </is:physical-quantity>
+                <is:physical-quantity physical-quantity-id="6" type="static-parameter">
+                    <is:name>G</is:name>
+                    <is:dimension type="scalar"/>
+                    <is:value-type-set>
+                        <is:value-type precision="double" unit-id="0"/>
+                    </is:value-type-set>
+                    <is:initial-value/>
+                    <is:implementation>
+                        <is:definition type="ae" sub-type="" format="mathml">
+                            <m:math><m:apply><m:eq/><m:ci>G</m:ci><m:cn>0.013</m:cn></m:apply></m:math>
+                        </is:definition>
+                    </is:implementation>
+                    <is:problem-condition-set/>
+                    <is:description/>
+                </is:physical-quantity>
+            </is:physical-quantity-set>
+            <is:morphology/>
+        </is:module>
+
+        <is:module module-id="a4ecaf54-1343-44ce-9245-f1a95c69e89f" type="functional-unit">
+            <is:property>
+                <is:name>Contralateral_Projection_from_v_to_w</is:name>
+                <is:capsulation state="true">
+                    <is:capsulated-by module-id="71fe3eff-a55e-4a3d-a51a-983fc5e9dc4d"/>
+                </is:capsulation>
+                <is:template state="false"/>
+                <is:keyword-set/>
+                <is:track>
+                    <is:involved db-id="this" date="2010-03-22T13:17:05+09:00"/>
+                    <is:involved db-id="this" date="2010-05-29T15:12:18+09:00"/>
+                </is:track>
+                <is:frame-coordinate/>
+                <is:description/>
+            </is:property>
+
+            <is:port-set>
+                <is:port port-id="1" direction="in">
+                    <is:name>Vm_1</is:name>
+                    <is:description/>
+                </is:port>
+                <is:port port-id="2" direction="in">
+                    <is:name>Vm_2</is:name>
+                    <is:description/>
+                </is:port>
+                <is:port port-id="3" direction="out" ref-physical-quantity-id="5">
+                    <is:name>Current_1</is:name>
+                    <is:description/>
+                </is:port>
+                <is:port port-id="4" direction="out" ref-physical-quantity-id="2">
+                    <is:name>Current_2</is:name>
+                    <is:description/>
+                </is:port>
+            </is:port-set>
+
+            <is:physical-quantity-set>
+                <is:physical-quantity physical-quantity-id="2" type="variable-parameter">
+                    <is:name>I2</is:name>
+                    <is:dimension type="scalar"/>
+                    <is:value-type-set>
+                        <is:value-type precision="double" unit-id="0"/>
+                    </is:value-type-set>
+                    <is:initial-value/>
+                    <is:implementation>
+                        <is:definition type="ae" sub-type="" format="mathml">
+                            <m:math><m:apply><m:eq/><m:ci>I2</m:ci><m:apply><m:times/><m:ci>G</m:ci><m:ci>V1</m:ci></m:apply></m:apply></m:math>
+                        </is:definition>
+                    </is:implementation>
+                    <is:problem-condition-set/>
+                    <is:description/>
+                </is:physical-quantity>
+                <is:physical-quantity physical-quantity-id="3" type="variable-parameter">
+                    <is:name>V1</is:name>
+                    <is:dimension type="scalar"/>
+                    <is:value-type-set>
+                        <is:value-type precision="double" unit-id="0"/>
+                    </is:value-type-set>
+                    <is:initial-value/>
+                    <is:implementation>
+                        <is:definition type="assign" sub-type="port" format="reference">
+                            <is:reference port-id="1"/>
+                        </is:definition>
+                    </is:implementation>
+                    <is:problem-condition-set/>
+                    <is:description/>
+                </is:physical-quantity>
+                <is:physical-quantity physical-quantity-id="4" type="variable-parameter">
+                    <is:name>V2</is:name>
+                    <is:dimension type="scalar"/>
+                    <is:value-type-set>
+                        <is:value-type precision="double" unit-id="0"/>
+                    </is:value-type-set>
+                    <is:initial-value/>
+                    <is:implementation>
+                        <is:definition type="assign" sub-type="port" format="reference">
+                            <is:reference port-id="2"/>
+                        </is:definition>
+                    </is:implementation>
+                    <is:problem-condition-set/>
+                    <is:description/>
+                </is:physical-quantity>
+                <is:physical-quantity physical-quantity-id="5" type="variable-parameter">
+                    <is:name>I1</is:name>
+                    <is:dimension type="scalar"/>
+                    <is:value-type-set>
+                        <is:value-type precision="double" unit-id="0"/>
+                    </is:value-type-set>
+                    <is:initial-value/>
+                    <is:implementation>
+                        <is:definition type="ae" sub-type="" format="mathml">
+                            <m:math><m:apply><m:eq/><m:ci>I1</m:ci><m:apply><m:times/><m:ci>G</m:ci><m:ci>V2</m:ci></m:apply></m:apply></m:math>
+                        </is:definition>
+                    </is:implementation>
+                    <is:problem-condition-set/>
+                    <is:description/>
+                </is:physical-quantity>
+                <is:physical-quantity physical-quantity-id="6" type="static-parameter">
+                    <is:name>G</is:name>
+                    <is:dimension type="scalar"/>
+                    <is:value-type-set>
+                        <is:value-type precision="double" unit-id="0"/>
+                    </is:value-type-set>
+                    <is:initial-value/>
+                    <is:implementation>
+                        <is:definition type="ae" sub-type="" format="mathml">
+                            <m:math><m:apply><m:eq/><m:ci>G</m:ci><m:cn>0.022</m:cn></m:apply></m:math>
+                        </is:definition>
+                    </is:implementation>
+                    <is:problem-condition-set/>
+                    <is:description/>
+                </is:physical-quantity>
+            </is:physical-quantity-set>
+            <is:morphology/>
+        </is:module>
+
+        <is:module module-id="e089e3b0-4c63-41de-bd31-aee28ba88cad" type="capsule">
+            <is:property>
+                <is:name>BVP</is:name>
+                <is:capsulation state="false"/>
+                <is:template state="false"/>
+                <is:keyword-set/>
+                <is:track>
+                    <is:involved db-id="this" date="2010-05-29T15:00:43+09:00"/>
+                </is:track>
+                <is:frame-coordinate/>
+                <is:description/>
+            </is:property>
+
+            <is:port-set>
+                <is:port port-id="1" direction="out">
+                    <is:name>v</is:name>
+                    <is:description/>
+                </is:port>
+                <is:port port-id="2" direction="in">
+                    <is:name>Iext_v</is:name>
+                    <is:description/>
+                </is:port>
+                <is:port port-id="4" direction="in">
+                    <is:name>Idc</is:name>
+                    <is:description/>
+                </is:port>
+                <is:port port-id="6" direction="in">
+                    <is:name>Iext_w</is:name>
+                    <is:description/>
+                </is:port>
+            </is:port-set>
+            <is:physical-quantity-set/>
+            <is:morphology/>
+        </is:module>
+
+        <is:module module-id="67d1283f-204a-4143-a613-d56e48b84068" type="functional-unit">
+            <is:property>
+                <is:name>v</is:name>
+                <is:capsulation state="true">
+                    <is:capsulated-by module-id="e089e3b0-4c63-41de-bd31-aee28ba88cad"/>
+                </is:capsulation>
+                <is:template state="false"/>
+                <is:keyword-set/>
+                <is:track>
+                    <is:involved date="2010-05-07T09:30:38+09:00" db-id="469"/>
+                </is:track>
+                <is:frame-coordinate/>
+                <is:description/>
+            </is:property>
+
+            <is:port-set>
+                <is:port port-id="1" direction="out" ref-physical-quantity-id="2">
+                    <is:name>v</is:name>
+                    <is:description/>
+                </is:port>
+                <is:port port-id="2" direction="in">
+                    <is:name>w</is:name>
+                    <is:description/>
+                </is:port>
+                <is:port port-id="3" direction="in">
+                    <is:name>Iext</is:name>
+                    <is:description/>
+                </is:port>
+                <is:port port-id="4" direction="in">
+                    <is:name>Idc</is:name>
+                    <is:description/>
+                </is:port>
+            </is:port-set>
+
+            <is:physical-quantity-set>
+                <is:physical-quantity physical-quantity-id="2" type="state">
+                    <is:name>v</is:name>
+                    <is:dimension type="scalar"/>
+                    <is:value-type-set>
+                        <is:value-type precision="double" unit-id="0"/>
+                    </is:value-type-set>
+                    <is:initial-value>
+                        <is:definition type="ae" format="mathml">
+                            <m:math><m:apply><m:eq/><m:ci>v</m:ci><m:cn>-1.14</m:cn></m:apply></m:math>
+                        </is:definition>
+                    </is:initial-value>
+                    <is:implementation>
+                        <is:definition type="ode" sub-type="" format="mathml">
+                            <m:math><m:apply><m:eq/><m:apply><m:diff/><m:bvar><m:ci>time</m:ci></m:bvar><m:ci>v</m:ci></m:apply><m:apply><m:plus/><m:apply><m:times/><m:ci>c</m:ci><m:apply><m:plus/><m:apply><m:minus/><m:ci>v</m:ci><m:apply><m:divide/><m:apply><m:times/><m:ci>v</m:ci><m:ci>v</m:ci><m:ci>v</m:ci></m:apply><m:cn>3</m:cn></m:apply></m:apply><m:apply><m:minus/><m:ci>Idc</m:ci><m:ci>w</m:ci></m:apply></m:apply></m:apply><m:ci>Iext</m:ci></m:apply></m:apply></m:math>
+                        </is:definition>
+                    </is:implementation>
+                    <is:problem-condition-set/>
+                    <is:description>membrane potential (a.u.)</is:description>
+                </is:physical-quantity>
+                <is:physical-quantity physical-quantity-id="3" type="variable-parameter">
+                    <is:name>w</is:name>
+                    <is:dimension type="scalar"/>
+                    <is:value-type-set>
+                        <is:value-type precision="double" unit-id="0"/>
+                    </is:value-type-set>
+                    <is:initial-value/>
+                    <is:implementation>
+                        <is:definition type="assign" sub-type="port" format="reference">
+                            <is:reference port-id="2"/>
+                        </is:definition>
+                    </is:implementation>
+                    <is:problem-condition-set/>
+                    <is:description>refractriness variable (a.u.)</is:description>
+                </is:physical-quantity>
+                <is:physical-quantity physical-quantity-id="4" type="variable-parameter">
+                    <is:name>Iext</is:name>
+                    <is:dimension type="scalar"/>
+                    <is:value-type-set>
+                        <is:value-type precision="double" unit-id="0"/>
+                    </is:value-type-set>
+                    <is:initial-value/>
+                    <is:implementation>
+                        <is:definition type="assign" sub-type="port" format="reference">
+                            <is:reference port-id="3"/>
+                        </is:definition>
+                    </is:implementation>
+                    <is:problem-condition-set/>
+                    <is:description>external current input (specifcally time dependent component)</is:description>
+                </is:physical-quantity>
+                <is:physical-quantity physical-quantity-id="5" type="static-parameter">
+                    <is:name>c</is:name>
+                    <is:dimension type="scalar"/>
+                    <is:value-type-set>
+                        <is:value-type precision="double" unit-id="0"/>
+                    </is:value-type-set>
+                    <is:initial-value/>
+                    <is:implementation>
+                        <is:definition type="ae" sub-type="" format="mathml">
+                            <m:math><m:apply><m:eq/><m:ci>c</m:ci><m:cn>1.75</m:cn></m:apply></m:math>
+                        </is:definition>
+                    </is:implementation>
+                    <is:problem-condition-set/>
+                    <is:description/>
+                </is:physical-quantity>
+                <is:physical-quantity physical-quantity-id="7" type="variable-parameter">
+                    <is:name>Idc</is:name>
+                    <is:dimension type="scalar"/>
+                    <is:value-type-set>
+                        <is:value-type precision="double" unit-id="0"/>
+                    </is:value-type-set>
+                    <is:initial-value/>
+                    <is:implementation>
+                        <is:definition type="assign" sub-type="port" format="reference">
+                            <is:reference port-id="4"/>
+                        </is:definition>
+                    </is:implementation>
+                    <is:problem-condition-set/>
+                    <is:description/>
+                </is:physical-quantity>
+            </is:physical-quantity-set>
+            <is:morphology/>
+        </is:module>
+
+        <is:module module-id="49dc9aa0-2600-42e4-9da7-bce3cba5dde7" type="functional-unit">
+            <is:property>
+                <is:name>w</is:name>
+                <is:capsulation state="true">
+                    <is:capsulated-by module-id="e089e3b0-4c63-41de-bd31-aee28ba88cad"/>
+                </is:capsulation>
+                <is:template state="false"/>
+                <is:keyword-set/>
+                <is:track>
+                    <is:involved date="2010-05-07T09:30:38+09:00" db-id="469"/>
+                </is:track>
+                <is:frame-coordinate/>
+                <is:description/>
+            </is:property>
+
+            <is:port-set>
+                <is:port port-id="1" direction="out" ref-physical-quantity-id="2">
+                    <is:name>w</is:name>
+                    <is:description/>
+                </is:port>
+                <is:port port-id="2" direction="in">
+                    <is:name>v</is:name>
+                    <is:description/>
+                </is:port>
+                <is:port port-id="3" direction="in">
+                    <is:name>Iext</is:name>
+                    <is:description/>
+                </is:port>
+            </is:port-set>
+
+            <is:physical-quantity-set>
+                <is:physical-quantity physical-quantity-id="2" type="state">
+                    <is:name>w</is:name>
+                    <is:dimension type="scalar"/>
+                    <is:value-type-set>
+                        <is:value-type precision="double" unit-id="0"/>
+                    </is:value-type-set>
+                    <is:initial-value>
+                        <is:definition type="ae" format="mathml">
+                            <m:math><m:apply><m:eq/><m:ci>w</m:ci><m:cn>-0.55</m:cn></m:apply></m:math>
+                        </is:definition>
+                    </is:initial-value>
+                    <is:implementation>
+                        <is:definition type="ode" sub-type="" format="mathml">
+                            <m:math><m:apply><m:eq/><m:apply><m:diff/><m:bvar><m:ci>time</m:ci></m:bvar><m:ci>w</m:ci></m:apply><m:apply><m:plus/><m:apply><m:divide/><m:apply><m:plus/><m:apply><m:minus/><m:ci>v</m:ci><m:apply><m:times/><m:ci>b</m:ci><m:ci>w</m:ci></m:apply></m:apply><m:ci>a</m:ci></m:apply><m:ci>c</m:ci></m:apply><m:ci>Iext</m:ci></m:apply></m:apply></m:math>
+                        </is:definition>
+                    </is:implementation>
+                    <is:problem-condition-set/>
+                    <is:description/>
+                </is:physical-quantity>
+                <is:physical-quantity physical-quantity-id="3" type="variable-parameter">
+                    <is:name>v</is:name>
+                    <is:dimension type="scalar"/>
+                    <is:value-type-set>
+                        <is:value-type precision="double" unit-id="0"/>
+                    </is:value-type-set>
+                    <is:initial-value/>
+                    <is:implementation>
+                        <is:definition type="assign" sub-type="port" format="reference">
+                            <is:reference port-id="2"/>
+                        </is:definition>
+                    </is:implementation>
+                    <is:problem-condition-set/>
+                    <is:description/>
+                </is:physical-quantity>
+                <is:physical-quantity physical-quantity-id="4" type="static-parameter">
+                    <is:name>a</is:name>
+                    <is:dimension type="scalar"/>
+                    <is:value-type-set>
+                        <is:value-type precision="double" unit-id="0"/>
+                    </is:value-type-set>
+                    <is:initial-value/>
+                    <is:implementation>
+                        <is:definition type="ae" sub-type="" format="mathml">
+                            <m:math><m:apply><m:eq/><m:ci>a</m:ci><m:cn>0.7</m:cn></m:apply></m:math>
+                        </is:definition>
+                    </is:implementation>
+                    <is:problem-condition-set/>
+                    <is:description/>
+                </is:physical-quantity>
+                <is:physical-quantity physical-quantity-id="5" type="static-parameter">
+                    <is:name>b</is:name>
+                    <is:dimension type="scalar"/>
+                    <is:value-type-set>
+                        <is:value-type precision="double" unit-id="0"/>
+                    </is:value-type-set>
+                    <is:initial-value/>
+                    <is:implementation>
+                        <is:definition type="ae" sub-type="" format="mathml">
+                            <m:math><m:apply><m:eq/><m:ci>b</m:ci><m:cn>0.8</m:cn></m:apply></m:math>
+                        </is:definition>
+                    </is:implementation>
+                    <is:problem-condition-set/>
+                    <is:description/>
+                </is:physical-quantity>
+                <is:physical-quantity physical-quantity-id="6" type="static-parameter">
+                    <is:name>c</is:name>
+                    <is:dimension type="scalar"/>
+                    <is:value-type-set>
+                        <is:value-type precision="double" unit-id="0"/>
+                    </is:value-type-set>
+                    <is:initial-value/>
+                    <is:implementation>
+                        <is:definition type="ae" sub-type="" format="mathml">
+                            <m:math><m:apply><m:eq/><m:ci>c</m:ci><m:cn>1.75</m:cn></m:apply></m:math>
+                        </is:definition>
+                    </is:implementation>
+                    <is:problem-condition-set/>
+                    <is:description/>
+                </is:physical-quantity>
+                <is:physical-quantity physical-quantity-id="7" type="variable-parameter">
+                    <is:name>Iext</is:name>
+                    <is:dimension type="scalar"/>
+                    <is:value-type-set>
+                        <is:value-type precision="double" unit-id="0"/>
+                    </is:value-type-set>
+                    <is:initial-value/>
+                    <is:implementation>
+                        <is:definition type="assign" sub-type="port" format="reference">
+                            <is:reference port-id="3"/>
+                        </is:definition>
+                    </is:implementation>
+                    <is:problem-condition-set/>
+                    <is:description/>
+                </is:physical-quantity>
+            </is:physical-quantity-set>
+            <is:morphology/>
+        </is:module>
+
+        <is:module module-id="71fe3eff-a55e-4a3d-a51a-983fc5e9dc4d" type="capsule">
+            <is:property>
+                <is:name>coupling</is:name>
+                <is:capsulation state="false"/>
+                <is:template state="false"/>
+                <is:keyword-set/>
+                <is:track>
+                    <is:involved db-id="this" date="2010-05-30T05:33:48+09:00"/>
+                </is:track>
+                <is:frame-coordinate/>
+                <is:description/>
+            </is:property>
+
+            <is:port-set>
+                <is:port port-id="1" direction="out">
+                    <is:name>electrical_coupling_1</is:name>
+                    <is:description/>
+                </is:port>
+                <is:port port-id="2" direction="out">
+                    <is:name>electrical_coupling_2</is:name>
+                    <is:description/>
+                </is:port>
+                <is:port port-id="3" direction="in">
+                    <is:name>Vm_1</is:name>
+                    <is:description/>
+                </is:port>
+                <is:port port-id="4" direction="in">
+                    <is:name>Vm_2</is:name>
+                    <is:description/>
+                </is:port>
+                <is:port port-id="5" direction="out">
+                    <is:name>projection_1</is:name>
+                    <is:description/>
+                </is:port>
+                <is:port port-id="6" direction="out">
+                    <is:name>projection_2</is:name>
+                    <is:description/>
+                </is:port>
+            </is:port-set>
+            <is:physical-quantity-set/>
+            <is:morphology/>
+        </is:module>
+
+        <is:module module-id="495eb536-339b-49f6-91aa-66f71bac6391" type="capsule" db-id="449">
+            <is:property>
+                <is:name>current_step_generator_membrane</is:name>
+                <is:capsulation state="false"/>
+                <is:template state="false"/>
+                <is:keyword-set/>
+                <is:track>
+                    <is:involved db-id="this" date="2010-03-20T13:57:06+09:00"/>
+                    <is:involved db-id="449" date="2010-03-04T11:30:52+09:00"/>
+                    <is:involved date="2010-01-28T14:13:34+09:00" db-id="449"/>
+                    <is:involved db-id="this" date="2010-05-30T09:58:48+09:00"/>
+                </is:track>
+                <is:frame-coordinate>
+                    <is:origin format="mathml">
+                        <m:math><m:vector><m:cn>0</m:cn><m:cn>0</m:cn><m:cn>0</m:cn></m:vector></m:math>
+                    </is:origin>
+                    <is:rotation type="matrix" format="mathml">
+                        <m:math><m:matrix><m:matrixrow><m:cn>1</m:cn><m:cn>0</m:cn><m:cn>0</m:cn></m:matrixrow><m:matrixrow><m:cn>0</m:cn><m:cn>1</m:cn><m:cn>0</m:cn></m:matrixrow><m:matrixrow><m:cn>0</m:cn><m:cn>0</m:cn><m:cn>1</m:cn></m:matrixrow></m:matrix></m:math>
+                    </is:rotation>
+                </is:frame-coordinate>
+                <is:description>current step generator module</is:description>
+            </is:property>
+
+            <is:port-set>
+                <is:port port-id="1" direction="out">
+                    <is:name>output_current</is:name>
+                    <is:description>This port outputs a scalar current value in milli-volt.</is:description>
+                </is:port>
+            </is:port-set>
+            <is:physical-quantity-set/>
+            <is:morphology/>
+        </is:module>
+
+        <is:module module-id="029d11ea-ea5e-4a63-8e0e-8d5107d38f26" type="functional-unit">
+            <is:property>
+                <is:name>current_step_generator_membrane</is:name>
+                <is:capsulation state="true">
+                    <is:capsulated-by module-id="495eb536-339b-49f6-91aa-66f71bac6391"/>
+                </is:capsulation>
+                <is:template state="false"/>
+                <is:keyword-set/>
+                <is:track>
+                    <is:involved db-id="this" date="2010-03-20T13:57:06+09:00"/>
+                    <is:involved db-id="449" date="2010-03-04T11:30:52+09:00"/>
+                    <is:involved date="2010-01-28T14:13:34+09:00" db-id="449"/>
+                    <is:involved db-id="this" date="2010-05-30T09:58:48+09:00"/>
+                </is:track>
+                <is:frame-coordinate>
+                    <is:origin format="mathml">
+                        <m:math><m:vector><m:cn>0</m:cn><m:cn>0</m:cn><m:cn>0</m:cn></m:vector></m:math>
+                    </is:origin>
+                    <is:rotation type="matrix" format="mathml">
+                        <m:math><m:matrix><m:matrixrow><m:cn>1</m:cn><m:cn>0</m:cn><m:cn>0</m:cn></m:matrixrow><m:matrixrow><m:cn>0</m:cn><m:cn>1</m:cn><m:cn>0</m:cn></m:matrixrow><m:matrixrow><m:cn>0</m:cn><m:cn>0</m:cn><m:cn>1</m:cn></m:matrixrow></m:matrix></m:math>
+                    </is:rotation>
+                </is:frame-coordinate>
+                <is:description>current step generator module</is:description>
+            </is:property>
+
+            <is:port-set>
+                <is:port port-id="1" direction="out" ref-physical-quantity-id="5">
+                    <is:name>current_in_micro_ampere_per_centi_meter2</is:name>
+                    <is:description>The current value changes from an initial value to another value (parameter: step_current) at a given onset time (parameter: step_onset_time).</is:description>
+                </is:port>
+            </is:port-set>
+
+            <is:physical-quantity-set>
+                <is:physical-quantity physical-quantity-id="2" type="static-parameter">
+                    <is:name>step_ampere</is:name>
+                    <is:dimension type="scalar"/>
+                    <is:value-type-set>
+                        <is:value-type precision="double" unit-id="0"/>
+                    </is:value-type-set>
+                    <is:initial-value/>
+                    <is:implementation>
+                        <is:definition type="ae" sub-type="" format="mathml">
+                            <m:math><m:apply><m:eq/><m:ci>step_ampere</m:ci><m:cn>0.45</m:cn></m:apply></m:math>
+                        </is:definition>
+                    </is:implementation>
+                    <is:problem-condition-set/>
+                    <is:description>The current in micro-ampere per centi-meter2 after the onset of the step.</is:description>
+                </is:physical-quantity>
+                <is:physical-quantity physical-quantity-id="3" type="static-parameter">
+                    <is:name>step_onset_time</is:name>
+                    <is:dimension type="scalar"/>
+                    <is:value-type-set>
+                        <is:value-type precision="double" unit-id="3"/>
+                    </is:value-type-set>
+                    <is:initial-value/>
+                    <is:implementation>
+                        <is:definition type="ae" sub-type="" format="mathml">
+                            <m:math><m:apply><m:eq/><m:ci>step_onset_time</m:ci><m:cn>30</m:cn></m:apply></m:math>
+                        </is:definition>
+                    </is:implementation>
+                    <is:problem-condition-set/>
+                    <is:description>The time instance when the step-change takes place.</is:description>
+                </is:physical-quantity>
+                <is:physical-quantity physical-quantity-id="4" type="static-parameter">
+                    <is:name>initial_ampere</is:name>
+                    <is:dimension type="scalar"/>
+                    <is:value-type-set>
+                        <is:value-type precision="double" unit-id="0"/>
+                    </is:value-type-set>
+                    <is:initial-value/>
+                    <is:implementation>
+                        <is:definition type="ae" sub-type="" format="mathml">
+                            <m:math><m:apply><m:eq/><m:ci>initial_ampere</m:ci><m:cn>0</m:cn></m:apply></m:math>
+                        </is:definition>
+                    </is:implementation>
+                    <is:problem-condition-set/>
+                    <is:description>The current in micro-ampere per centi-meter2 before the onset of the step.</is:description>
+                </is:physical-quantity>
+                <is:physical-quantity physical-quantity-id="5" type="variable-parameter">
+                    <is:name>current_in_micro_ampere_per_centi_meter2</is:name>
+                    <is:dimension type="scalar"/>
+                    <is:value-type-set>
+                        <is:value-type precision="double" unit-id="0"/>
+                    </is:value-type-set>
+                    <is:initial-value/>
+                    <is:implementation>
+                        <is:definition type="conditional" sub-type="" format="">
+                            <is:case-set case-set-id="1">
+                                <is:case substructure-id="1">
+                                    <is:condition format="mathml">
+                                        <m:math><m:apply><m:geq/><m:ci>time</m:ci><m:ci>step_onset_time</m:ci></m:apply></m:math>
+                                    </is:condition>
+                                    <is:definition type="ae" sub-type="" format="mathml">
+                                        <m:math><m:apply><m:eq/><m:ci>current_in_micro_ampere_per_centi_meter2</m:ci><m:ci>step_ampere</m:ci></m:apply></m:math>
+                                    </is:definition>
+                                </is:case>
+                                <is:case substructure-id="2">
+                                    <is:definition type="ae" sub-type="" format="mathml">
+                                        <m:math><m:apply><m:eq/><m:ci>current_in_micro_ampere_per_centi_meter2</m:ci><m:ci>initial_ampere</m:ci></m:apply></m:math>
+                                    </is:definition>
+                                </is:case>
+                            </is:case-set>
+                        </is:definition>
+                    </is:implementation>
+                    <is:problem-condition-set/>
+                    <is:description>The current value changes from an initial value to another value (parameter: step_current) at a given onset time (parameter: step_onset_time).</is:description>
+                </is:physical-quantity>
+            </is:physical-quantity-set>
+            <is:morphology/>
+        </is:module>
+
+        <is:module module-id="c148f2ff-5e0e-4c90-847b-34320b247b78" type="capsule" db-id="449">
+            <is:property>
+                <is:name>current_step_generator_membrane</is:name>
+                <is:capsulation state="false"/>
+                <is:template state="false"/>
+                <is:keyword-set/>
+                <is:track>
+                    <is:involved db-id="this" date="2010-03-20T13:57:06+09:00"/>
+                    <is:involved db-id="449" date="2010-03-04T11:30:52+09:00"/>
+                    <is:involved date="2010-01-28T14:13:34+09:00" db-id="449"/>
+                    <is:involved db-id="this" date="2010-05-30T09:58:48+09:00"/>
+                </is:track>
+                <is:frame-coordinate>
+                    <is:origin format="mathml">
+                        <m:math><m:vector><m:cn>0</m:cn><m:cn>0</m:cn><m:cn>0</m:cn></m:vector></m:math>
+                    </is:origin>
+                    <is:rotation type="matrix" format="mathml">
+                        <m:math><m:matrix><m:matrixrow><m:cn>1</m:cn><m:cn>0</m:cn><m:cn>0</m:cn></m:matrixrow><m:matrixrow><m:cn>0</m:cn><m:cn>1</m:cn><m:cn>0</m:cn></m:matrixrow><m:matrixrow><m:cn>0</m:cn><m:cn>0</m:cn><m:cn>1</m:cn></m:matrixrow></m:matrix></m:math>
+                    </is:rotation>
+                </is:frame-coordinate>
+                <is:description>current step generator module</is:description>
+            </is:property>
+
+            <is:port-set>
+                <is:port port-id="1" direction="out">
+                    <is:name>output_current</is:name>
+                    <is:description>This port outputs a scalar current value in milli-volt.</is:description>
+                </is:port>
+            </is:port-set>
+            <is:physical-quantity-set/>
+            <is:morphology/>
+        </is:module>
+
+        <is:module module-id="b8e4ada6-a22b-49f4-955d-f8c036ebad67" type="functional-unit">
+            <is:property>
+                <is:name>current_step_generator_membrane__3</is:name>
+                <is:capsulation state="true">
+                    <is:capsulated-by module-id="c148f2ff-5e0e-4c90-847b-34320b247b78"/>
+                </is:capsulation>
+                <is:template state="false"/>
+                <is:keyword-set/>
+                <is:track>
+                    <is:involved db-id="this" date="2010-03-20T13:57:06+09:00"/>
+                    <is:involved db-id="449" date="2010-03-04T11:30:52+09:00"/>
+                    <is:involved date="2010-01-28T14:13:34+09:00" db-id="449"/>
+                    <is:involved db-id="this" date="2010-05-30T09:58:48+09:00"/>
+                </is:track>
+                <is:frame-coordinate>
+                    <is:origin format="mathml">
+                        <m:math><m:vector><m:cn>0</m:cn><m:cn>0</m:cn><m:cn>0</m:cn></m:vector></m:math>
+                    </is:origin>
+                    <is:rotation type="matrix" format="mathml">
+                        <m:math><m:matrix><m:matrixrow><m:cn>1</m:cn><m:cn>0</m:cn><m:cn>0</m:cn></m:matrixrow><m:matrixrow><m:cn>0</m:cn><m:cn>1</m:cn><m:cn>0</m:cn></m:matrixrow><m:matrixrow><m:cn>0</m:cn><m:cn>0</m:cn><m:cn>1</m:cn></m:matrixrow></m:matrix></m:math>
+                    </is:rotation>
+                </is:frame-coordinate>
+                <is:description>current step generator module</is:description>
+            </is:property>
+
+            <is:port-set>
+                <is:port port-id="1" direction="out" ref-physical-quantity-id="5">
+                    <is:name>current_in_micro_ampere_per_centi_meter2</is:name>
+                    <is:description>The current value changes from an initial value to another value (parameter: step_current) at a given onset time (parameter: step_onset_time).</is:description>
+                </is:port>
+            </is:port-set>
+
+            <is:physical-quantity-set>
+                <is:physical-quantity physical-quantity-id="2" type="static-parameter">
+                    <is:name>step_ampere</is:name>
+                    <is:dimension type="scalar"/>
+                    <is:value-type-set>
+                        <is:value-type precision="double" unit-id="0"/>
+                    </is:value-type-set>
+                    <is:initial-value/>
+                    <is:implementation>
+                        <is:definition type="ae" sub-type="" format="mathml">
+                            <m:math><m:apply><m:eq/><m:ci>step_ampere</m:ci><m:cn>0.477</m:cn></m:apply></m:math>
+                        </is:definition>
+                    </is:implementation>
+                    <is:problem-condition-set/>
+                    <is:description>The current in micro-ampere per centi-meter2 after the onset of the step.</is:description>
+                </is:physical-quantity>
+                <is:physical-quantity physical-quantity-id="3" type="static-parameter">
+                    <is:name>step_onset_time</is:name>
+                    <is:dimension type="scalar"/>
+                    <is:value-type-set>
+                        <is:value-type precision="double" unit-id="3"/>
+                    </is:value-type-set>
+                    <is:initial-value/>
+                    <is:implementation>
+                        <is:definition type="ae" sub-type="" format="mathml">
+                            <m:math><m:apply><m:eq/><m:ci>step_onset_time</m:ci><m:cn>30</m:cn></m:apply></m:math>
+                        </is:definition>
+                    </is:implementation>
+                    <is:problem-condition-set/>
+                    <is:description>The time instance when the step-change takes place.</is:description>
+                </is:physical-quantity>
+                <is:physical-quantity physical-quantity-id="4" type="static-parameter">
+                    <is:name>initial_ampere</is:name>
+                    <is:dimension type="scalar"/>
+                    <is:value-type-set>
+                        <is:value-type precision="double" unit-id="0"/>
+                    </is:value-type-set>
+                    <is:initial-value/>
+                    <is:implementation>
+                        <is:definition type="ae" sub-type="" format="mathml">
+                            <m:math><m:apply><m:eq/><m:ci>initial_ampere</m:ci><m:cn>0</m:cn></m:apply></m:math>
+                        </is:definition>
+                    </is:implementation>
+                    <is:problem-condition-set/>
+                    <is:description>The current in micro-ampere per centi-meter2 before the onset of the step.</is:description>
+                </is:physical-quantity>
+                <is:physical-quantity physical-quantity-id="5" type="variable-parameter">
+                    <is:name>current_in_micro_ampere_per_centi_meter2</is:name>
+                    <is:dimension type="scalar"/>
+                    <is:value-type-set>
+                        <is:value-type precision="double" unit-id="0"/>
+                    </is:value-type-set>
+                    <is:initial-value/>
+                    <is:implementation>
+                        <is:definition type="conditional" sub-type="" format="">
+                            <is:case-set case-set-id="1">
+                                <is:case substructure-id="1">
+                                    <is:condition format="mathml">
+                                        <m:math><m:apply><m:geq/><m:ci>time</m:ci><m:ci>step_onset_time</m:ci></m:apply></m:math>
+                                    </is:condition>
+                                    <is:definition type="ae" sub-type="" format="mathml">
+                                        <m:math><m:apply><m:eq/><m:ci>current_in_micro_ampere_per_centi_meter2</m:ci><m:ci>step_ampere</m:ci></m:apply></m:math>
+                                    </is:definition>
+                                </is:case>
+                                <is:case substructure-id="2">
+                                    <is:definition type="ae" sub-type="" format="mathml">
+                                        <m:math><m:apply><m:eq/><m:ci>current_in_micro_ampere_per_centi_meter2</m:ci><m:ci>initial_ampere</m:ci></m:apply></m:math>
+                                    </is:definition>
+                                </is:case>
+                            </is:case-set>
+                        </is:definition>
+                    </is:implementation>
+                    <is:problem-condition-set/>
+                    <is:description>The current value changes from an initial value to another value (parameter: step_current) at a given onset time (parameter: step_onset_time).</is:description>
+                </is:physical-quantity>
+            </is:physical-quantity-set>
+            <is:morphology/>
+        </is:module>
+    </is:module-set>
+    <is:template-set/>
+    <is:edge-set>
+        <is:edge edge-id="a2fdde97-190f-409f-a8ba-a7281663a4e9" type="capsular">
+            <is:tail module-id="582c0fc2-b2ca-4aeb-b550-3ca43efa5ea4" port-id="0"/>
+            <is:head module-id="458aa0ca-f041-43b5-91bf-582655b4c747" port-id="0"/>
+            <is:operation/>
+            <is:description/>
+        </is:edge>
+        <is:edge edge-id="9217ea51-f02a-4f38-bedc-9fa27251a25e" type="forwarding">
+            <is:tail module-id="458aa0ca-f041-43b5-91bf-582655b4c747" port-id="2"/>
+            <is:head module-id="582c0fc2-b2ca-4aeb-b550-3ca43efa5ea4" port-id="3"/>
+            <is:operation>input forwarding</is:operation>
+            <is:description>in-ports forwarding</is:description>
+        </is:edge>
+        <is:edge edge-id="28c9ae84-7932-49e2-8358-83155ff062a0" type="capsular">
+            <is:tail module-id="2288c88f-4571-4fd7-b8df-77a4002ca542" port-id="0"/>
+            <is:head module-id="458aa0ca-f041-43b5-91bf-582655b4c747" port-id="0"/>
+            <is:operation/>
+            <is:description/>
+        </is:edge>
+        <is:edge edge-id="ff3ea93c-75d5-45e7-81fb-8ba6f9fbc06c" type="functional">
+            <is:tail module-id="2288c88f-4571-4fd7-b8df-77a4002ca542" port-id="1"/>
+            <is:head module-id="582c0fc2-b2ca-4aeb-b550-3ca43efa5ea4" port-id="2"/>
+            <is:operation/>
+            <is:description/>
+        </is:edge>
+        <is:edge edge-id="30c4bd24-6000-4678-8b33-157958e316f6" type="functional">
+            <is:tail module-id="582c0fc2-b2ca-4aeb-b550-3ca43efa5ea4" port-id="1"/>
+            <is:head module-id="2288c88f-4571-4fd7-b8df-77a4002ca542" port-id="2"/>
+            <is:operation/>
+            <is:description/>
+        </is:edge>
+        <is:edge edge-id="1e3f8e4a-0e24-4963-8bf0-7f3ee5c3be66" type="forwarding">
+            <is:tail module-id="458aa0ca-f041-43b5-91bf-582655b4c747" port-id="4"/>
+            <is:head module-id="582c0fc2-b2ca-4aeb-b550-3ca43efa5ea4" port-id="4"/>
+            <is:operation>input forwarding</is:operation>
+            <is:description/>
+        </is:edge>
+        <is:edge edge-id="b049790d-c42b-4a64-af15-5fa2d9f840cf" type="forwarding">
+            <is:tail module-id="582c0fc2-b2ca-4aeb-b550-3ca43efa5ea4" port-id="1"/>
+            <is:head module-id="458aa0ca-f041-43b5-91bf-582655b4c747" port-id="1"/>
+            <is:operation>output forwarding</is:operation>
+            <is:description/>
+        </is:edge>
+        <is:edge edge-id="1b284410-33e9-4247-87b7-a3f230b3ad98" type="forwarding">
+            <is:tail module-id="458aa0ca-f041-43b5-91bf-582655b4c747" port-id="6"/>
+            <is:head module-id="2288c88f-4571-4fd7-b8df-77a4002ca542" port-id="3"/>
+            <is:operation>input forwarding</is:operation>
+            <is:description/>
+        </is:edge>
+        <is:edge edge-id="adb15cec-dba7-4318-9d0b-23057ea90e19" type="functional">
+            <is:tail module-id="458aa0ca-f041-43b5-91bf-582655b4c747" port-id="1"/>
+            <is:head module-id="71fe3eff-a55e-4a3d-a51a-983fc5e9dc4d" port-id="3"/>
+            <is:operation/>
+            <is:description/>
+        </is:edge>
+        <is:edge edge-id="dc9253bf-e351-47b8-a678-05785e309afc" type="functional">
+            <is:tail module-id="71fe3eff-a55e-4a3d-a51a-983fc5e9dc4d" port-id="1"/>
+            <is:head module-id="458aa0ca-f041-43b5-91bf-582655b4c747" port-id="2"/>
+            <is:operation/>
+            <is:description/>
+        </is:edge>
+        <is:edge edge-id="4affa82a-47b4-46f0-bb19-bdcc218ba734" type="capsular">
+            <is:tail module-id="67d1283f-204a-4143-a613-d56e48b84068" port-id="0"/>
+            <is:head module-id="e089e3b0-4c63-41de-bd31-aee28ba88cad" port-id="0"/>
+            <is:operation/>
+            <is:description/>
+        </is:edge>
+        <is:edge edge-id="35b2dfe8-dacc-4265-8272-4eeb9777ebd9" type="capsular">
+            <is:tail module-id="49dc9aa0-2600-42e4-9da7-bce3cba5dde7" port-id="0"/>
+            <is:head module-id="e089e3b0-4c63-41de-bd31-aee28ba88cad" port-id="0"/>
+            <is:operation/>
+            <is:description/>
+        </is:edge>
+        <is:edge edge-id="7e8fee81-1a30-48b7-9749-c02e800189b0" type="forwarding">
+            <is:tail module-id="e089e3b0-4c63-41de-bd31-aee28ba88cad" port-id="2"/>
+            <is:head module-id="67d1283f-204a-4143-a613-d56e48b84068" port-id="3"/>
+            <is:operation>input forwarding</is:operation>
+            <is:description>in-ports forwarding</is:description>
+        </is:edge>
+        <is:edge edge-id="c9abaced-3566-495f-aafe-8ffc2f4a4bca" type="functional">
+            <is:tail module-id="49dc9aa0-2600-42e4-9da7-bce3cba5dde7" port-id="1"/>
+            <is:head module-id="67d1283f-204a-4143-a613-d56e48b84068" port-id="2"/>
+            <is:operation/>
+            <is:description/>
+        </is:edge>
+        <is:edge edge-id="318c63c3-046c-4bbf-ab26-dce9017cee8e" type="functional">
+            <is:tail module-id="67d1283f-204a-4143-a613-d56e48b84068" port-id="1"/>
+            <is:head module-id="49dc9aa0-2600-42e4-9da7-bce3cba5dde7" port-id="2"/>
+            <is:operation/>
+            <is:description/>
+        </is:edge>
+        <is:edge edge-id="e51e1350-77e4-41cf-bd4d-262a486384d4" type="forwarding">
+            <is:tail module-id="e089e3b0-4c63-41de-bd31-aee28ba88cad" port-id="4"/>
+            <is:head module-id="67d1283f-204a-4143-a613-d56e48b84068" port-id="4"/>
+            <is:operation>input forwarding</is:operation>
+            <is:description/>
+        </is:edge>
+        <is:edge edge-id="88180965-421f-446f-bc17-a5f8ed68fa9c" type="forwarding">
+            <is:tail module-id="67d1283f-204a-4143-a613-d56e48b84068" port-id="1"/>
+            <is:head module-id="e089e3b0-4c63-41de-bd31-aee28ba88cad" port-id="1"/>
+            <is:operation>output forwarding</is:operation>
+            <is:description/>
+        </is:edge>
+        <is:edge edge-id="1fa8c046-bfd5-4425-b0ed-31b680a05fc4" type="forwarding">
+            <is:tail module-id="e089e3b0-4c63-41de-bd31-aee28ba88cad" port-id="6"/>
+            <is:head module-id="49dc9aa0-2600-42e4-9da7-bce3cba5dde7" port-id="3"/>
+            <is:operation>input forwarding</is:operation>
+            <is:description/>
+        </is:edge>
+        <is:edge edge-id="51d26b6d-7b3e-417e-b47b-0252aa544327" type="functional">
+            <is:tail module-id="e089e3b0-4c63-41de-bd31-aee28ba88cad" port-id="1"/>
+            <is:head module-id="71fe3eff-a55e-4a3d-a51a-983fc5e9dc4d" port-id="4"/>
+            <is:operation/>
+            <is:description/>
+        </is:edge>
+        <is:edge edge-id="2d25216c-f4fe-4ecc-aea9-ab8e7d6888da" type="functional">
+            <is:tail module-id="71fe3eff-a55e-4a3d-a51a-983fc5e9dc4d" port-id="2"/>
+            <is:head module-id="e089e3b0-4c63-41de-bd31-aee28ba88cad" port-id="2"/>
+            <is:operation/>
+            <is:description/>
+        </is:edge>
+        <is:edge edge-id="0050cbd8-8c69-48d1-af80-7786c5edda03" type="capsular">
+            <is:tail module-id="7752df9b-8156-4c68-bf9e-5bd1d09affb8" port-id="0"/>
+            <is:head module-id="71fe3eff-a55e-4a3d-a51a-983fc5e9dc4d" port-id="0"/>
+            <is:operation/>
+            <is:description/>
+        </is:edge>
+        <is:edge edge-id="bf23c6d5-7f60-44d3-b497-ecd561712d51" type="forwarding">
+            <is:tail module-id="7752df9b-8156-4c68-bf9e-5bd1d09affb8" port-id="3"/>
+            <is:head module-id="71fe3eff-a55e-4a3d-a51a-983fc5e9dc4d" port-id="1"/>
+            <is:operation>output forwarding</is:operation>
+            <is:description>out-ports forwarding</is:description>
+        </is:edge>
+        <is:edge edge-id="a293946c-75b8-4348-87d9-ab0f6986cfee" type="forwarding">
+            <is:tail module-id="7752df9b-8156-4c68-bf9e-5bd1d09affb8" port-id="4"/>
+            <is:head module-id="71fe3eff-a55e-4a3d-a51a-983fc5e9dc4d" port-id="2"/>
+            <is:operation>output forwarding</is:operation>
+            <is:description>out-ports forwarding</is:description>
+        </is:edge>
+        <is:edge edge-id="bda00fc6-601c-4e8b-a9f0-f6a321d21c5d" type="forwarding">
+            <is:tail module-id="71fe3eff-a55e-4a3d-a51a-983fc5e9dc4d" port-id="3"/>
+            <is:head module-id="7752df9b-8156-4c68-bf9e-5bd1d09affb8" port-id="1"/>
+            <is:operation>input forwarding</is:operation>
+            <is:description>in-ports forwarding</is:description>
+        </is:edge>
+        <is:edge edge-id="b5ff1449-c92e-493d-8565-78dd46bebfe2" type="forwarding">
+            <is:tail module-id="71fe3eff-a55e-4a3d-a51a-983fc5e9dc4d" port-id="4"/>
+            <is:head module-id="7752df9b-8156-4c68-bf9e-5bd1d09affb8" port-id="2"/>
+            <is:operation>input forwarding</is:operation>
+            <is:description>in-ports forwarding</is:description>
+        </is:edge>
+        <is:edge edge-id="8d64ad78-ebf0-4a3d-bafc-b707011f3435" type="capsular">
+            <is:tail module-id="a4ecaf54-1343-44ce-9245-f1a95c69e89f" port-id="0"/>
+            <is:head module-id="71fe3eff-a55e-4a3d-a51a-983fc5e9dc4d" port-id="0"/>
+            <is:operation/>
+            <is:description/>
+        </is:edge>
+        <is:edge edge-id="a67fb221-7045-46fa-9396-7d6629780500" type="forwarding">
+            <is:tail module-id="71fe3eff-a55e-4a3d-a51a-983fc5e9dc4d" port-id="4"/>
+            <is:head module-id="a4ecaf54-1343-44ce-9245-f1a95c69e89f" port-id="2"/>
+            <is:operation>input forwarding</is:operation>
+            <is:description/>
+        </is:edge>
+        <is:edge edge-id="1e3b8d1e-8806-42e9-a883-49ba95d628ae" type="forwarding">
+            <is:tail module-id="71fe3eff-a55e-4a3d-a51a-983fc5e9dc4d" port-id="3"/>
+            <is:head module-id="a4ecaf54-1343-44ce-9245-f1a95c69e89f" port-id="1"/>
+            <is:operation>input forwarding</is:operation>
+            <is:description/>
+        </is:edge>
+        <is:edge edge-id="075f587a-3660-47d1-97d6-5b1cd178baaa" type="forwarding">
+            <is:tail module-id="a4ecaf54-1343-44ce-9245-f1a95c69e89f" port-id="3"/>
+            <is:head module-id="71fe3eff-a55e-4a3d-a51a-983fc5e9dc4d" port-id="5"/>
+            <is:operation>output forwarding</is:operation>
+            <is:description/>
+        </is:edge>
+        <is:edge edge-id="5566981f-977c-4cde-b64d-70c567d8a615" type="forwarding">
+            <is:tail module-id="a4ecaf54-1343-44ce-9245-f1a95c69e89f" port-id="4"/>
+            <is:head module-id="71fe3eff-a55e-4a3d-a51a-983fc5e9dc4d" port-id="6"/>
+            <is:operation>output forwarding</is:operation>
+            <is:description/>
+        </is:edge>
+        <is:edge edge-id="035d5719-e941-4801-8740-37e9cf757f24" type="functional">
+            <is:tail module-id="71fe3eff-a55e-4a3d-a51a-983fc5e9dc4d" port-id="5"/>
+            <is:head module-id="458aa0ca-f041-43b5-91bf-582655b4c747" port-id="6"/>
+            <is:operation/>
+            <is:description/>
+        </is:edge>
+        <is:edge edge-id="d83958ba-e812-461f-a46d-c16699e6fa43" type="functional">
+            <is:tail module-id="71fe3eff-a55e-4a3d-a51a-983fc5e9dc4d" port-id="6"/>
+            <is:head module-id="e089e3b0-4c63-41de-bd31-aee28ba88cad" port-id="6"/>
+            <is:operation/>
+            <is:description/>
+        </is:edge>
+        <is:edge edge-id="bd393691-1c27-4d41-822c-06a89fd737fc" type="capsular">
+            <is:tail module-id="029d11ea-ea5e-4a63-8e0e-8d5107d38f26" port-id="0"/>
+            <is:head module-id="495eb536-339b-49f6-91aa-66f71bac6391" port-id="0"/>
+            <is:operation>include</is:operation>
+            <is:description/>
+        </is:edge>
+        <is:edge edge-id="e59ccd8b-9a5b-4ca1-beef-4c818a1f0745" type="forwarding">
+            <is:tail module-id="029d11ea-ea5e-4a63-8e0e-8d5107d38f26" port-id="1"/>
+            <is:head module-id="495eb536-339b-49f6-91aa-66f71bac6391" port-id="1"/>
+            <is:operation>output</is:operation>
+            <is:description/>
+        </is:edge>
+        <is:edge edge-id="3e959bf3-2218-4d88-97ce-a424f656a315" type="capsular">
+            <is:tail module-id="b8e4ada6-a22b-49f4-955d-f8c036ebad67" port-id="0"/>
+            <is:head module-id="c148f2ff-5e0e-4c90-847b-34320b247b78" port-id="0"/>
+            <is:operation>include</is:operation>
+            <is:description/>
+        </is:edge>
+        <is:edge edge-id="008d5b57-b38a-4036-9a19-9443328b3580" type="forwarding">
+            <is:tail module-id="b8e4ada6-a22b-49f4-955d-f8c036ebad67" port-id="1"/>
+            <is:head module-id="c148f2ff-5e0e-4c90-847b-34320b247b78" port-id="1"/>
+            <is:operation>output</is:operation>
+            <is:description/>
+        </is:edge>
+        <is:edge edge-id="a18514bc-fbc8-4f2f-ab9a-53f75e5ddac9" type="functional">
+            <is:tail module-id="c148f2ff-5e0e-4c90-847b-34320b247b78" port-id="1"/>
+            <is:head module-id="e089e3b0-4c63-41de-bd31-aee28ba88cad" port-id="4"/>
+            <is:operation/>
+            <is:description/>
+        </is:edge>
+        <is:edge edge-id="43026371-5f7e-44b9-ad82-1c8b50cd130c" type="functional">
+            <is:tail module-id="495eb536-339b-49f6-91aa-66f71bac6391" port-id="1"/>
+            <is:head module-id="458aa0ca-f041-43b5-91bf-582655b4c747" port-id="4"/>
+            <is:operation/>
+            <is:description/>
+        </is:edge>
+    </is:edge-set>
+    <is:timeseries-set/>
+</is:insilico-model>

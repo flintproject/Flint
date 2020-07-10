@@ -1,0 +1,613 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<is:insilico-model  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:svg="http://www.w3.org/2000/svg" xmlns:is="http://www.physiome.jp/ns/insilicoml" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:m="http://www.w3.org/1998/Math/MathML" xmlns:pd="http://www.physiodesigner.org/2012/ns/physiodesigner/1.0" version="1.0" xsi:schemalocation="http://www.physiome.jp/ns/phml-1.0 phml.xsd">
+    <is:header>
+        <is:model-name>Single FHN</is:model-name>
+        <is:meta-information>
+            <is:article-set>
+                <is:article article-id="1" type="model-proposal">
+                    <is:journal>
+                        <is:journal-title>Biophysical journal</is:journal-title>
+                        <is:publisher-name/>
+                        <is:volume>1</is:volume>
+                        <is:issue>6</is:issue>
+                        <is:publication-date>
+                            <is:year>1961</is:year>
+                            <is:month>7</is:month>
+                        </is:publication-date>
+                    </is:journal>
+                    <is:pubmed-id>19431309</is:pubmed-id>
+                    <is:article-title>Impulses and Physiological States in Theoretical Models of Nerve Membrane</is:article-title>
+                    <is:vernacular-article-title lang="any"/>
+                    <is:pages>
+                        <is:first-page>445</is:first-page>
+                        <is:last-page>466</is:last-page>
+                    </is:pages>
+                    <is:target-model-set>
+                        <is:target-model db-id="this"/>
+                    </is:target-model-set>
+                    <is:author-set>
+                        <is:author>
+                            <is:first-name>Richard</is:first-name>
+                            <is:last-name>Fitzhugh</is:last-name>
+                        </is:author>
+                    </is:author-set>
+                    <is:description/>
+                </is:article>
+            </is:article-set>
+            <is:creator-set>
+                <is:creator>
+                    <is:target-model-set>
+                        <is:target-model>458</is:target-model>
+                    </is:target-model-set>
+                    <is:person-name>
+                        <is:first-name>Tatuhide</is:first-name>
+                        <is:last-name>OKAMOTO</is:last-name>
+                    </is:person-name>
+                    <is:affiliation-set>
+                        <is:affiliation>
+                            <is:organization>The Center for Advanced Medical Engineering and Informatics. Osaka University</is:organization>
+                            <is:contact>
+                                <is:address>Osaka</is:address>
+                                <is:email/>
+                            </is:contact>
+                        </is:affiliation>
+                    </is:affiliation-set>
+                </is:creator>
+            </is:creator-set>
+        </is:meta-information>
+        <is:date>
+            <is:created>2010-01-28T14:14:28+09:00</is:created>
+            <is:registered>2010-03-10T18:13:11+09:00</is:registered>
+            <is:last-modified>2012-12-28T02:30:39+09:00</is:last-modified>
+            <is:downloaded>2010-03-21T11:42:33+09:00</is:downloaded>
+        </is:date>
+        <is:numerical-configuration>
+            <is:time-discretization unit-id="15">
+                <is:step>0.01</is:step>
+                <is:step-min/>
+                <is:step-max/>
+            </is:time-discretization>
+            <is:algorithm>
+                <is:integration name="euler"/>
+            </is:algorithm>
+            <is:simulation-time-span unit-id="15">300.0</is:simulation-time-span>
+        </is:numerical-configuration>
+        <is:description/>
+        <is:generator>converted by isml02isml1.py</is:generator>
+    </is:header>
+    <is:unit-set>
+        <is:unit unit-id="0">
+            <is:name>dimensionless</is:name>
+        </is:unit>
+        <is:unit unit-id="1">
+            <is:name>metre</is:name>
+        </is:unit>
+        <is:unit unit-id="2">
+            <is:name>kilogram</is:name>
+        </is:unit>
+        <is:unit unit-id="3">
+            <is:name>second</is:name>
+        </is:unit>
+        <is:unit unit-id="4">
+            <is:name>ampere</is:name>
+        </is:unit>
+        <is:unit unit-id="5">
+            <is:name>kelvin</is:name>
+        </is:unit>
+        <is:unit unit-id="6">
+            <is:name>mole</is:name>
+        </is:unit>
+        <is:unit unit-id="7">
+            <is:name>candela</is:name>
+        </is:unit>
+        <is:unit unit-id="8">
+            <is:name>radian</is:name>
+        </is:unit>
+        <is:unit unit-id="9">
+            <is:name>meter</is:name>
+            <is:element unit-id="1"/>
+        </is:unit>
+        <is:unit unit-id="10">
+            <is:name>gram</is:name>
+            <is:element unit-id="2" prefix="milli"/>
+        </is:unit>
+        <is:unit unit-id="12">
+            <is:name>volt</is:name>
+            <is:element unit-id="2"/>
+            <is:element unit-id="1" exponent="2"/>
+            <is:element unit-id="4" exponent="-1"/>
+            <is:element unit-id="3" exponent="-3"/>
+        </is:unit>
+        <is:unit unit-id="13">
+            <is:name>milli_volt</is:name>
+            <is:element unit-id="12" prefix="milli"/>
+        </is:unit>
+        <is:unit unit-id="14">
+            <is:name>centi_meter</is:name>
+            <is:element unit-id="1" prefix="centi"/>
+        </is:unit>
+        <is:unit unit-id="15">
+            <is:name>milli_second</is:name>
+            <is:element unit-id="3" prefix="milli"/>
+        </is:unit>
+        <is:unit unit-id="17">
+            <is:name>micro_ampere_per_centi_meter2</is:name>
+            <is:element unit-id="4" prefix="micro"/>
+            <is:element unit-id="14" exponent="-2"/>
+        </is:unit>
+    </is:unit-set>
+
+    <is:module-set>
+
+        <is:module module-id="48f78359-9695-45b8-a2af-ea21a3648978" type="functional-unit">
+            <is:property>
+                <is:name>FHN_membrane</is:name>
+                <is:capsulation state="true">
+                    <is:capsulated-by module-id="40a218b1-7ce6-44a2-9017-a17c14961886"/>
+                </is:capsulation>
+                <is:template state="false"/>
+                <is:keyword-set/>
+                <is:track>
+                    <is:involved db-id="this" date="2010-03-22T08:20:24+09:00"/>
+                </is:track>
+                <is:frame-coordinate/>
+                <is:description/>
+            </is:property>
+
+            <is:port-set>
+                <is:port port-id="1" direction="in">
+                    <is:name>w</is:name>
+                    <is:description/>
+                </is:port>
+                <is:port port-id="2" direction="out" ref-physical-quantity-id="5">
+                    <is:name>v</is:name>
+                    <is:description/>
+                </is:port>
+                <is:port port-id="3" direction="in">
+                    <is:name>Iext</is:name>
+                    <is:description/>
+                </is:port>
+            </is:port-set>
+
+            <is:physical-quantity-set>
+                <is:physical-quantity physical-quantity-id="2" type="static-parameter">
+                    <is:name>b</is:name>
+                    <is:dimension type="scalar"/>
+                    <is:value-type-set>
+                        <is:value-type precision="double" unit-id="0"/>
+                    </is:value-type-set>
+                    <is:initial-value/>
+                    <is:implementation>
+                        <is:definition type="ae" sub-type="" format="mathml">
+                            <m:math><m:apply><m:eq/><m:ci>b</m:ci><m:cn>1.0</m:cn></m:apply></m:math>
+                        </is:definition>
+                    </is:implementation>
+                    <is:problem-condition-set/>
+                    <is:description/>
+                </is:physical-quantity>
+                <is:physical-quantity physical-quantity-id="3" type="variable-parameter">
+                    <is:name>Iext</is:name>
+                    <is:dimension type="scalar"/>
+                    <is:value-type-set>
+                        <is:value-type precision="double" unit-id="0"/>
+                    </is:value-type-set>
+                    <is:initial-value/>
+                    <is:implementation>
+                        <is:definition type="assign" sub-type="port" format="reference">
+                            <is:reference port-id="3"/>
+                        </is:definition>
+                    </is:implementation>
+                    <is:problem-condition-set/>
+                    <is:description/>
+                </is:physical-quantity>
+                <is:physical-quantity physical-quantity-id="4" type="static-parameter">
+                    <is:name>a</is:name>
+                    <is:dimension type="scalar"/>
+                    <is:value-type-set>
+                        <is:value-type precision="double" unit-id="0"/>
+                    </is:value-type-set>
+                    <is:initial-value/>
+                    <is:implementation>
+                        <is:definition type="ae" sub-type="" format="mathml">
+                            <m:math><m:apply><m:eq/><m:ci>a</m:ci><m:cn>0.139</m:cn></m:apply></m:math>
+                        </is:definition>
+                    </is:implementation>
+                    <is:problem-condition-set/>
+                    <is:description/>
+                </is:physical-quantity>
+                <is:physical-quantity physical-quantity-id="5" type="state">
+                    <is:name>v</is:name>
+                    <is:dimension type="scalar"/>
+                    <is:value-type-set>
+                        <is:value-type precision="double" unit-id="0"/>
+                    </is:value-type-set>
+                    <is:initial-value>
+                        <is:definition type="ae" format="mathml">
+                            <m:math><m:apply><m:eq/><m:ci>v</m:ci><m:cn>0</m:cn></m:apply></m:math>
+                        </is:definition>
+                    </is:initial-value>
+                    <is:implementation>
+                        <is:definition type="ode" sub-type="" format="mathml">
+                            <m:math><m:apply><m:eq/><m:apply><m:diff/><m:bvar><m:ci>time</m:ci></m:bvar><m:ci>v</m:ci></m:apply><m:apply><m:plus/><m:apply><m:minus/><m:apply><m:times/><m:apply><m:minus/><m:ci>v</m:ci></m:apply><m:apply><m:minus/><m:ci>v</m:ci><m:ci>a</m:ci></m:apply><m:apply><m:minus/><m:ci>v</m:ci><m:ci>b</m:ci></m:apply></m:apply><m:ci>w</m:ci></m:apply><m:ci>Iext</m:ci></m:apply></m:apply></m:math>
+                        </is:definition>
+                    </is:implementation>
+                    <is:problem-condition-set/>
+                    <is:description/>
+                </is:physical-quantity>
+                <is:physical-quantity physical-quantity-id="6" type="variable-parameter">
+                    <is:name>w</is:name>
+                    <is:dimension type="scalar"/>
+                    <is:value-type-set>
+                        <is:value-type precision="double" unit-id="0"/>
+                    </is:value-type-set>
+                    <is:initial-value/>
+                    <is:implementation>
+                        <is:definition type="assign" sub-type="port" format="reference">
+                            <is:reference port-id="1"/>
+                        </is:definition>
+                    </is:implementation>
+                    <is:problem-condition-set/>
+                    <is:description/>
+                </is:physical-quantity>
+            </is:physical-quantity-set>
+            <is:morphology/>
+        </is:module>
+
+        <is:module module-id="a4015be9-a455-4353-9c44-c5e7d56e10bb" type="functional-unit">
+            <is:property>
+                <is:name>FHN_refractoriness</is:name>
+                <is:capsulation state="true">
+                    <is:capsulated-by module-id="40a218b1-7ce6-44a2-9017-a17c14961886"/>
+                </is:capsulation>
+                <is:template state="false"/>
+                <is:keyword-set/>
+                <is:track>
+                    <is:involved db-id="this" date="2010-03-22T08:21:23+09:00"/>
+                </is:track>
+                <is:frame-coordinate/>
+                <is:description/>
+            </is:property>
+
+            <is:port-set>
+                <is:port port-id="1" direction="in">
+                    <is:name>v</is:name>
+                    <is:description/>
+                </is:port>
+                <is:port port-id="2" direction="out" ref-physical-quantity-id="3">
+                    <is:name>w</is:name>
+                    <is:description/>
+                </is:port>
+            </is:port-set>
+
+            <is:physical-quantity-set>
+                <is:physical-quantity physical-quantity-id="2" type="static-parameter">
+                    <is:name>c</is:name>
+                    <is:dimension type="scalar"/>
+                    <is:value-type-set>
+                        <is:value-type precision="double" unit-id="0"/>
+                    </is:value-type-set>
+                    <is:initial-value/>
+                    <is:implementation>
+                        <is:definition type="ae" sub-type="" format="mathml">
+                            <m:math><m:apply><m:eq/><m:ci>c</m:ci><m:cn>2.54</m:cn></m:apply></m:math>
+                        </is:definition>
+                    </is:implementation>
+                    <is:problem-condition-set/>
+                    <is:description/>
+                </is:physical-quantity>
+                <is:physical-quantity physical-quantity-id="3" type="state">
+                    <is:name>w</is:name>
+                    <is:dimension type="scalar"/>
+                    <is:value-type-set>
+                        <is:value-type precision="double" unit-id="0"/>
+                    </is:value-type-set>
+                    <is:initial-value>
+                        <is:definition type="ae" format="mathml">
+                            <m:math><m:apply><m:eq/><m:ci>w</m:ci><m:cn>0</m:cn></m:apply></m:math>
+                        </is:definition>
+                    </is:initial-value>
+                    <is:implementation>
+                        <is:definition type="ode" sub-type="" format="mathml">
+                            <m:math><m:apply><m:eq/><m:apply><m:diff/><m:bvar><m:ci>time</m:ci></m:bvar><m:ci>w</m:ci></m:apply><m:apply><m:times/><m:ci>epsilon</m:ci><m:apply><m:minus/><m:ci>v</m:ci><m:apply><m:times/><m:ci>c</m:ci><m:ci>w</m:ci></m:apply></m:apply></m:apply></m:apply></m:math>
+                        </is:definition>
+                    </is:implementation>
+                    <is:problem-condition-set/>
+                    <is:description/>
+                </is:physical-quantity>
+                <is:physical-quantity physical-quantity-id="4" type="static-parameter">
+                    <is:name>epsilon</is:name>
+                    <is:dimension type="scalar"/>
+                    <is:value-type-set>
+                        <is:value-type precision="double" unit-id="0"/>
+                    </is:value-type-set>
+                    <is:initial-value/>
+                    <is:implementation>
+                        <is:definition type="ae" sub-type="" format="mathml">
+                            <m:math><m:apply><m:eq/><m:ci>epsilon</m:ci><m:cn>0.008</m:cn></m:apply></m:math>
+                        </is:definition>
+                    </is:implementation>
+                    <is:problem-condition-set/>
+                    <is:description/>
+                </is:physical-quantity>
+                <is:physical-quantity physical-quantity-id="5" type="variable-parameter">
+                    <is:name>v</is:name>
+                    <is:dimension type="scalar"/>
+                    <is:value-type-set>
+                        <is:value-type precision="double" unit-id="0"/>
+                    </is:value-type-set>
+                    <is:initial-value/>
+                    <is:implementation>
+                        <is:definition type="assign" sub-type="port" format="reference">
+                            <is:reference port-id="1"/>
+                        </is:definition>
+                    </is:implementation>
+                    <is:problem-condition-set/>
+                    <is:description/>
+                </is:physical-quantity>
+            </is:physical-quantity-set>
+            <is:morphology/>
+        </is:module>
+
+        <is:module module-id="40a218b1-7ce6-44a2-9017-a17c14961886" type="capsule">
+            <is:property>
+                <is:name>FHN_model</is:name>
+                <is:capsulation state="false"/>
+                <is:template state="false"/>
+                <is:keyword-set/>
+                <is:track>
+                    <is:involved db-id="this" date="2010-03-22T08:22:46+09:00"/>
+                </is:track>
+                <is:frame-coordinate/>
+                <is:description/>
+            </is:property>
+
+            <is:port-set>
+                <is:port port-id="1" direction="in">
+                    <is:name>Iext</is:name>
+                    <is:description/>
+                </is:port>
+                <is:port port-id="2" direction="out">
+                    <is:name>membrane_potential</is:name>
+                    <is:description/>
+                </is:port>
+            </is:port-set>
+            <is:physical-quantity-set/>
+            <is:morphology/>
+        </is:module>
+
+        <is:module module-id="aecc5c7e-3d3c-4a18-801a-37bab38b79e9" type="capsule">
+            <is:property>
+                <is:name>capsule_of_periodic_pulse_generator</is:name>
+                <is:capsulation state="false"/>
+                <is:template state="false"/>
+                <is:keyword-set/>
+                <is:track>
+                    <is:involved date="2010-05-07T09:30:38+09:00" db-id="473"/>
+                    <is:involved date="2010-05-09T08:34:25+09:00" db-id="473"/>
+                    <is:involved db-id="this" date="2010-05-10T05:58:43+09:00"/>
+                </is:track>
+                <is:frame-coordinate/>
+                <is:description>capsule of periodic pulse generator</is:description>
+            </is:property>
+
+            <is:port-set>
+                <is:port port-id="1" direction="out">
+                    <is:name>periodic_current</is:name>
+                    <is:description/>
+                </is:port>
+            </is:port-set>
+            <is:physical-quantity-set/>
+            <is:morphology/>
+        </is:module>
+
+        <is:module module-id="9fd3e193-bfda-4b1a-b2a8-667bfa34839f" type="functional-unit">
+            <is:property>
+                <is:name>periodic_pulse_generator</is:name>
+                <is:capsulation state="true">
+                    <is:capsulated-by module-id="aecc5c7e-3d3c-4a18-801a-37bab38b79e9"/>
+                </is:capsulation>
+                <is:template state="false"/>
+                <is:keyword-set/>
+                <is:track>
+                    <is:involved date="2010-05-07T09:30:38+09:00" db-id="473"/>
+                    <is:involved date="2010-05-09T08:34:25+09:00" db-id="473"/>
+                    <is:involved db-id="this" date="2010-05-10T05:58:43+09:00"/>
+                </is:track>
+                <is:frame-coordinate/>
+                <is:description/>
+            </is:property>
+
+            <is:port-set>
+                <is:port port-id="1" direction="out" ref-physical-quantity-id="8">
+                    <is:name>periodic_pulse</is:name>
+                    <is:description/>
+                </is:port>
+            </is:port-set>
+
+            <is:physical-quantity-set>
+                <is:physical-quantity physical-quantity-id="2" type="static-parameter">
+                    <is:name>initial_pulse_onset_time</is:name>
+                    <is:dimension type="scalar"/>
+                    <is:value-type-set>
+                        <is:value-type precision="double" unit-id="0"/>
+                    </is:value-type-set>
+                    <is:initial-value/>
+                    <is:implementation>
+                        <is:definition type="ae" sub-type="" format="mathml">
+                            <m:math><m:apply><m:eq/><m:ci>initial_pulse_onset_time</m:ci><m:cn>10</m:cn></m:apply></m:math>
+                        </is:definition>
+                    </is:implementation>
+                    <is:problem-condition-set/>
+                    <is:description>onset time of a sequence of periodic pulses</is:description>
+                </is:physical-quantity>
+                <is:physical-quantity physical-quantity-id="3" type="static-parameter">
+                    <is:name>pulse_width</is:name>
+                    <is:dimension type="scalar"/>
+                    <is:value-type-set>
+                        <is:value-type precision="double" unit-id="0"/>
+                    </is:value-type-set>
+                    <is:initial-value/>
+                    <is:implementation>
+                        <is:definition type="ae" sub-type="" format="mathml">
+                            <m:math><m:apply><m:eq/><m:ci>pulse_width</m:ci><m:cn>0.1</m:cn></m:apply></m:math>
+                        </is:definition>
+                    </is:implementation>
+                    <is:problem-condition-set/>
+                    <is:description>pulse width</is:description>
+                </is:physical-quantity>
+                <is:physical-quantity physical-quantity-id="4" type="static-parameter">
+                    <is:name>pulse_interval</is:name>
+                    <is:dimension type="scalar"/>
+                    <is:value-type-set>
+                        <is:value-type precision="double" unit-id="0"/>
+                    </is:value-type-set>
+                    <is:initial-value/>
+                    <is:implementation>
+                        <is:definition type="ae" sub-type="" format="mathml">
+                            <m:math><m:apply><m:eq/><m:ci>pulse_interval</m:ci><m:cn>149.9</m:cn></m:apply></m:math>
+                        </is:definition>
+                    </is:implementation>
+                    <is:problem-condition-set/>
+                    <is:description>pulse period</is:description>
+                </is:physical-quantity>
+                <is:physical-quantity physical-quantity-id="5" type="static-parameter">
+                    <is:name>pulse_height</is:name>
+                    <is:dimension type="scalar"/>
+                    <is:value-type-set>
+                        <is:value-type precision="double" unit-id="0"/>
+                    </is:value-type-set>
+                    <is:initial-value/>
+                    <is:implementation>
+                        <is:definition type="ae" sub-type="" format="mathml">
+                            <m:math><m:apply><m:eq/><m:ci>pulse_height</m:ci><m:cn>2.0</m:cn></m:apply></m:math>
+                        </is:definition>
+                    </is:implementation>
+                    <is:problem-condition-set/>
+                    <is:description>pulse height</is:description>
+                </is:physical-quantity>
+                <is:physical-quantity physical-quantity-id="6" type="static-parameter">
+                    <is:name>initial_ampere</is:name>
+                    <is:dimension type="scalar"/>
+                    <is:value-type-set>
+                        <is:value-type precision="double" unit-id="0"/>
+                    </is:value-type-set>
+                    <is:initial-value/>
+                    <is:implementation>
+                        <is:definition type="ae" sub-type="" format="mathml">
+                            <m:math><m:apply><m:eq/><m:ci>initial_ampere</m:ci><m:cn>0</m:cn></m:apply></m:math>
+                        </is:definition>
+                    </is:implementation>
+                    <is:problem-condition-set/>
+                    <is:description>base line of the pulse</is:description>
+                </is:physical-quantity>
+                <is:physical-quantity physical-quantity-id="7" type="static-parameter">
+                    <is:name>time_frame</is:name>
+                    <is:dimension type="scalar"/>
+                    <is:value-type-set>
+                        <is:value-type precision="double" unit-id="0"/>
+                    </is:value-type-set>
+                    <is:initial-value/>
+                    <is:implementation>
+                        <is:definition type="ae" sub-type="" format="mathml">
+                            <m:math><m:apply><m:eq/><m:ci>time_frame</m:ci><m:cn>600</m:cn></m:apply></m:math>
+                        </is:definition>
+                    </is:implementation>
+                    <is:problem-condition-set/>
+                    <is:description>time interval during which the pulses are generated</is:description>
+                </is:physical-quantity>
+                <is:physical-quantity physical-quantity-id="8" type="variable-parameter">
+                    <is:name>periodic_pulse</is:name>
+                    <is:dimension type="scalar"/>
+                    <is:value-type-set>
+                        <is:value-type precision="double" unit-id="0"/>
+                    </is:value-type-set>
+                    <is:initial-value/>
+                    <is:implementation>
+                        <is:definition type="conditional" sub-type="" format="">
+                            <is:case-set case-set-id="1">
+                                <is:case substructure-id="1">
+                                    <is:condition format="mathml">
+                                        <m:math><m:apply><m:and/><m:apply><m:and/><m:apply><m:and/><m:apply><m:geq/><m:ci>time</m:ci><m:ci>initial_pulse_onset_time</m:ci></m:apply><m:apply><m:leq/><m:ci>time</m:ci><m:apply><m:plus/><m:ci>initial_pulse_onset_time</m:ci><m:ci>time_frame</m:ci></m:apply></m:apply></m:apply><m:apply><m:geq/><m:ci>time</m:ci><m:apply><m:plus/><m:ci>initial_pulse_onset_time</m:ci><m:apply><m:times/><m:apply><m:floor/><m:apply><m:divide/><m:apply><m:minus/><m:ci>time</m:ci><m:ci>initial_pulse_onset_time</m:ci></m:apply><m:apply><m:plus/><m:ci>pulse_width</m:ci><m:ci>pulse_interval</m:ci></m:apply></m:apply></m:apply><m:apply><m:plus/><m:ci>pulse_width</m:ci><m:ci>pulse_interval</m:ci></m:apply></m:apply></m:apply></m:apply></m:apply><m:apply><m:leq/><m:ci>time</m:ci><m:apply><m:plus/><m:apply><m:plus/><m:ci>initial_pulse_onset_time</m:ci><m:ci>pulse_width</m:ci></m:apply><m:apply><m:times/><m:apply><m:floor/><m:apply><m:divide/><m:apply><m:minus/><m:ci>time</m:ci><m:ci>initial_pulse_onset_time</m:ci></m:apply><m:apply><m:plus/><m:ci>pulse_width</m:ci><m:ci>pulse_interval</m:ci></m:apply></m:apply></m:apply><m:apply><m:plus/><m:ci>pulse_width</m:ci><m:ci>pulse_interval</m:ci></m:apply></m:apply></m:apply></m:apply></m:apply></m:math>
+                                    </is:condition>
+                                    <is:definition type="ae" sub-type="" format="mathml">
+                                        <m:math><m:apply><m:eq/><m:ci>periodic_pulse</m:ci><m:apply><m:plus/><m:ci>initial_ampere</m:ci><m:ci>pulse_height</m:ci></m:apply></m:apply></m:math>
+                                    </is:definition>
+                                </is:case>
+                                <is:case substructure-id="2">
+                                    <is:definition type="ae" sub-type="" format="mathml">
+                                        <m:math><m:apply><m:eq/><m:ci>periodic_pulse</m:ci><m:ci>initial_ampere</m:ci></m:apply></m:math>
+                                    </is:definition>
+                                </is:case>
+                            </is:case-set>
+                        </is:definition>
+                    </is:implementation>
+                    <is:problem-condition-set/>
+                    <is:description>square-shaped periodic pulse signal</is:description>
+                </is:physical-quantity>
+            </is:physical-quantity-set>
+            <is:morphology/>
+        </is:module>
+    </is:module-set>
+    <is:template-set/>
+    <is:instance-set/>
+    <is:controller-set/>
+
+    <is:edge-set>
+        <is:edge edge-id="e9b6bee4-66b0-4076-9d9f-556d2cbdbab0" type="capsular">
+            <is:tail module-id="48f78359-9695-45b8-a2af-ea21a3648978" port-id="0"/>
+            <is:head module-id="40a218b1-7ce6-44a2-9017-a17c14961886" port-id="0"/>
+            <is:operation/>
+            <is:description/>
+        </is:edge>
+        <is:edge edge-id="293f5596-7b8f-4421-816c-865de73c3705" type="capsular">
+            <is:tail module-id="a4015be9-a455-4353-9c44-c5e7d56e10bb" port-id="0"/>
+            <is:head module-id="40a218b1-7ce6-44a2-9017-a17c14961886" port-id="0"/>
+            <is:operation/>
+            <is:description/>
+        </is:edge>
+        <is:edge edge-id="f0b2ae1b-7fd2-4465-80ed-819b1c92ac2e" type="functional">
+            <is:tail module-id="48f78359-9695-45b8-a2af-ea21a3648978" port-id="2"/>
+            <is:head module-id="a4015be9-a455-4353-9c44-c5e7d56e10bb" port-id="1"/>
+            <is:operation/>
+            <is:description/>
+        </is:edge>
+        <is:edge edge-id="c1809306-8bda-438e-a694-bbb0d23f614d" type="functional">
+            <is:tail module-id="a4015be9-a455-4353-9c44-c5e7d56e10bb" port-id="2"/>
+            <is:head module-id="48f78359-9695-45b8-a2af-ea21a3648978" port-id="1"/>
+            <is:operation/>
+            <is:description/>
+        </is:edge>
+        <is:edge edge-id="38234cf8-664e-4777-834c-266401ec03e6" type="forwarding">
+            <is:tail module-id="40a218b1-7ce6-44a2-9017-a17c14961886" port-id="1"/>
+            <is:head module-id="48f78359-9695-45b8-a2af-ea21a3648978" port-id="3"/>
+            <is:operation>input forwarding</is:operation>
+            <is:description/>
+        </is:edge>
+        <is:edge edge-id="e5c9fff1-2e26-4bd1-a8b0-2daf1be27ef5" type="forwarding">
+            <is:tail module-id="48f78359-9695-45b8-a2af-ea21a3648978" port-id="2"/>
+            <is:head module-id="40a218b1-7ce6-44a2-9017-a17c14961886" port-id="2"/>
+            <is:operation>output forwarding</is:operation>
+            <is:description/>
+        </is:edge>
+        <is:edge edge-id="00bfdef5-20de-41dd-af6b-af046a85c5dd" type="capsular">
+            <is:tail module-id="9fd3e193-bfda-4b1a-b2a8-667bfa34839f" port-id="0"/>
+            <is:head module-id="aecc5c7e-3d3c-4a18-801a-37bab38b79e9" port-id="0"/>
+            <is:operation/>
+            <is:description/>
+        </is:edge>
+        <is:edge edge-id="d2d77d83-850d-4385-acf2-c61d87f7f8b2" type="forwarding">
+            <is:tail module-id="9fd3e193-bfda-4b1a-b2a8-667bfa34839f" port-id="1"/>
+            <is:head module-id="aecc5c7e-3d3c-4a18-801a-37bab38b79e9" port-id="1"/>
+            <is:operation>output forwarding</is:operation>
+            <is:description/>
+        </is:edge>
+        <is:edge edge-id="c0c6c64c-66be-4b24-8f46-75c1b17a09ee" type="functional">
+            <is:tail module-id="aecc5c7e-3d3c-4a18-801a-37bab38b79e9" port-id="1"/>
+            <is:head module-id="40a218b1-7ce6-44a2-9017-a17c14961886" port-id="1"/>
+            <is:operation/>
+            <is:description/>
+        </is:edge>
+    </is:edge-set>
+    <is:timeseries-set/>
+</is:insilico-model>
+

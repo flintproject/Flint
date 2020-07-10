@@ -1,7 +1,5 @@
-# See <https://www.gnu.org/software/automake/manual/html_node/Uniform.html>
-# to install objects in a subdirectory of some predefined directory.
-exampledir = $(datadir)/example
-example_DATA = \
+# -*- Mode: makefile-gmake; tab-width: 4; indent-tabs-mode: t -*-
+EXAMPLE_PHML = \
 	Chicago_2003_pancreatic_beta-cell_with_SBML.phml \
 	FSK_2008_Epi_Ventricular_Myocyte_Vesnarinon.phml \
 	HodgkinHuxley_1952_neuron_model.phml \

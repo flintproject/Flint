@@ -1,6 +1,7 @@
 # -*- Mode: makefile-gmake; tab-width: 4; indent-tabs-mode: t -*-
 include config.mk
 include ../deposit.mk
+include ../example.mk
 include ../option.mk
 include ../version.mk
 
@@ -22,9 +23,40 @@ UNNECESSARY_LIBRARIES = libmicrohttpd-% wxWidgets-%
 EXTERNAL_LIBRARIES = $(filter-out $(UNNECESSARY_LIBRARIES),$(ALL_EXTERNAL_LIBRARIES)) libmicrohttpd-$(LIBMICROHTTPD_VERSION)-w32-bin.zip wxWidgets-$(WXWIDGETS_VERSION)-headers.7z wxMSW-$(WXWIDGETS_VERSION)_$(MSVC_VARIANT)_Dev.7z wxMSW-$(WXWIDGETS_VERSION)_$(MSVC_VARIANT)_ReleaseDLL.7z sqlite-amalgamation-$(SQLITE_VSTR).zip sqlite-dll-win64-x64-$(SQLITE_VSTR).zip
 EXTERNAL_LIBRARY_DIRS = $(filter-out $(UNNECESSARY_LIBRARIES),$(ALL_EXTERNAL_LIBRARY_DIRS)) libmicrohttpd-$(LIBMICROHTTPD_VERSION)-w32-bin include lib
 
+flint_example_name = flint/example/$(1)
+
+define flint_example
+$(call flint_example_name,$(1)): ../example/$(1) | flint/example
+	install -p -m 0644 $$< $$@
+endef
+
+define flint_add_example_to_wxs
+xmlstarlet ed -L \
+		-s "//_:Component[@Id='example']" -t elem -n 'File' \
+		--var file '$$prev' \
+		-i '$$file' -t attr -n "Id" -v "$(subst -,_,$(basename $(1)))" \
+		-i '$$file' -t attr -n "Name" -v "$(1)" \
+		-i '$$file' -t attr -n "DiskId" -v "1" \
+		-i '$$file' -t attr -n "Source" -v "example\\$(1)" \
+		$(2)
+
+endef
+
+GENERATED_FILES = \
+	all.proj \
+	$(foreach lib,$(EXTERNAL_LIBRARY_DIRS),tmp/$(lib)) \
+	tmp/release-dll \
+	tmp/sqlite.header \
+	tmp/sqlite.precompiled \
+	flint/flint.ico \
+	flint/flint.wxs \
+	flint/license.rtf \
+	flint/third-party-licenses.txt \
+	$(foreach e,$(EXAMPLE_PHML),flint/example/$(e))
+
 .PHONY: all mostlyclean clean distclean download
 
-all: download all.proj $(foreach lib,$(EXTERNAL_LIBRARY_DIRS),tmp/$(lib)) tmp/release-dll tmp/sqlite.header tmp/sqlite.precompiled flint/flint.ico flint/flint.wxs flint/license.rtf flint/third-party-licenses.txt flint/example/HodgkinHuxley_1952_neuron_model.phml
+all: download $(GENERATED_FILES)
 
 mostlyclean:
 	-rm -rf all.proj tmp/build var/build flint
@@ -131,7 +163,9 @@ flint/flint.ico: flint.ico | flint
 	install -p -m 0644 $< $@
 
 flint/flint.wxs: flint.wxs.in | flint
-	m4 -DVERSION=$(VERSION) $< > $@
+	xmlstarlet ed -i '//_:Product' -t attr -n 'Version' -v $(VERSION) $< > $@.tmp
+	$(foreach e,$(EXAMPLE_PHML),$(call flint_add_example_to_wxs,$(e),$@.tmp))
+	mv $@.tmp $@
 
 flint/license.rtf: ../doc/license.rtf | flint
 	install -p -m 0644 $< $@
@@ -184,8 +218,7 @@ flint/third-party-licenses.txt: tmp/ceres-solver-$(CERES_VERSION) tmp/czmq-$(CZM
 flint/example: | flint
 	install -d $@
 
-flint/example/HodgkinHuxley_1952_neuron_model.phml: ../example/HodgkinHuxley_1952_neuron_model.phml | flint/example
-	install -p -m 0644 $< $@
+$(foreach e,$(EXAMPLE_PHML),$(eval $(call flint_example,$(e))))
 
 all.proj: all.proj.in
 	m4 \

@@ -11,7 +11,7 @@ cache:
 
 install:
   - set PATH=C:\Program Files (x86)\WiX Toolset v3.11\bin;%PATH%
-  - 'C:\cygwin64\setup-x86_64.exe -d -n -N -q -P m4,make,patch,tar,unzip,wget'
+  - 'C:\cygwin64\setup-x86_64.exe -d -n -N -q -P m4,make,patch,tar,unzip,wget,xmlstarlet'
 
 build_script:
   - 'C:\cygwin64\bin\bash -l -c "cd $(cygpath $APPVEYOR_BUILD_FOLDER)/msvc && cp config.mk.x86-64 config.mk && make"'

@@ -85,6 +85,19 @@ rm -rf %{buildroot}
 /opt/flint/lib/libflintxx.so
 /opt/flint/lib/libflintxx.so.0
 /opt/flint/lib/libflintxx.so.0.0.0
+/opt/flint/example/Chicago_2003_pancreatic_beta-cell_with_SBML.phml
+/opt/flint/example/FSK_2008_Epi_Ventricular_Myocyte_Vesnarinon.phml
 /opt/flint/example/HodgkinHuxley_1952_neuron_model.phml
+/opt/flint/example/Izhikevich_2003_neuron_model.phml
+/opt/flint/example/Rybak_2006_with_static_instance_and_multiple_input.phml
+/opt/flint/example/bvp_pulse.phml
+/opt/flint/example/coupled_BVP_model.phml
+/opt/flint/example/coupled_Luo_Rudy_1991_model.phml
+/opt/flint/example/coupled_hh_model.phml
+/opt/flint/example/mackay_glass_1977_287_9_c.phml
+/opt/flint/example/ringed_Beeler_Reuter_1977_model_with_static_instance.phml
+/opt/flint/example/ringed_Luo_Rudy_1991_model_with_instance.phml
+/opt/flint/example/single-FHN_model.phml
+/opt/flint/example/single-Luo_Rudy_1991_model.phml
 
 %changelog

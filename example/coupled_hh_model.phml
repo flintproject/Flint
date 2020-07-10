@@ -1,0 +1,5177 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<is:insilico-model  xmlns:bqmodel="http://biomodels.net/model-qualifiers/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:svg="http://www.w3.org/2000/svg" xmlns:is="http://www.physiome.jp/ns/insilicoml" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:vCard="http://www.w3.org/2001/vcard-rdf/3.0#" xmlns:ts="http://www.physiome.jp/ns/timeseriesml" xmlns:bqbiol="http://biomodels.net/biology-qualifiers/" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:m="http://www.w3.org/1998/Math/MathML" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:pd="http://www.physiodesigner.org/2012/ns/physiodesigner/1.0">
+<is:header>
+<is:model-name>Hodgkin_Huxley_1952_model</is:model-name>
+<is:meta-information>
+<is:article-set>
+<is:article article-id="1"  type="model-proposal">
+<is:journal>
+<is:journal-title>J Physiol</is:journal-title>
+<is:publisher-name/>
+<is:volume>117</is:volume>
+<is:journal-title>4</is:journal-title>
+<is:publication-date>
+<is:year>1952</is:year>
+<is:month/>
+</is:publication-date>
+</is:journal>
+<is:pubmed-id>12991237</is:pubmed-id>
+<is:article-title>A quantitative description of membrane current and its application to conduction and excitation in nerve.</is:article-title>
+<is:pages>
+<is:first-page>500</is:first-page>
+<is:last-page>544</is:last-page>
+</is:pages>
+<is:target-model-set/>
+<is:author>
+<is:first-name/>
+<is:middle-name>L.</is:middle-name>
+<is:last-name>Hodgkin</is:last-name>
+</is:author>
+<is:author>
+<is:first-name/>
+<is:middle-name>F.</is:middle-name>
+<is:last-name>Huxley</is:last-name>
+</is:author>
+</is:article>
+</is:article-set>
+<is:creator-set>
+<is:creator creator-id="0">
+<is:person-name>
+<is:first-name>Tatuhide</is:first-name>
+<is:last-name>OKAMOTO</is:last-name>
+</is:person-name>
+<is:affiliation-set>
+<is:affiliation>
+<is:organization>The Center for Advanced Medical Engineering and Informatics. Osaka University</is:organization>
+<is:contact>
+<is:address>Osaka</is:address>
+<is:email/>
+</is:contact>
+</is:affiliation>
+</is:affiliation-set>
+<is:target-model-set>
+<is:target-model db-id=""/>
+</is:target-model-set>
+</is:creator>
+</is:creator-set>
+</is:meta-information>
+<is:generator>converted by isml02isml1.py</is:generator>
+<is:date>
+<is:registered>2010-03-02T19:36:51+09:00</is:registered>
+<is:created>2010-01-28T12:26:23+09:00</is:created>
+<is:downloaded>2010-03-08T11:12:23+09:00</is:downloaded>
+<is:last-modified>2016-08-22T01:53:47+09:00</is:last-modified>
+</is:date>
+<is:numerical-configuration>
+<is:algorithm>
+<is:random-generator type="" name=""/>
+<is:integration name="4th-rungekutta"/>
+</is:algorithm>
+<is:simulation-time-span unit-id="14">200</is:simulation-time-span>
+<is:time-discretization  unit-id="14">
+<is:step>0.01</is:step>
+</is:time-discretization>
+</is:numerical-configuration>
+</is:header>
+<is:unit-set>
+<is:unit unit-id="20">
+<is:name>milli_mho_per_centi_meter2</is:name>
+<is:element unit-id="19"  prefix="milli"/>
+<is:element unit-id="17"  exponent="-2"/>
+</is:unit>
+<is:unit unit-id="21">
+<is:name>per_milli_second</is:name>
+<is:element unit-id="3"  exponent="-1"  prefix="milli"/>
+</is:unit>
+<is:unit unit-id="22">
+<is:name>micro_ampere_per_centi_meter2</is:name>
+<is:element unit-id="4"  prefix="micro"/>
+<is:element unit-id="17"  exponent="-2"/>
+</is:unit>
+<is:unit unit-id="1">
+<is:name>metre</is:name>
+</is:unit>
+<is:unit unit-id="0">
+<is:name>dimensionless</is:name>
+</is:unit>
+<is:unit unit-id="3">
+<is:name>second</is:name>
+</is:unit>
+<is:unit unit-id="2">
+<is:name>kilogram</is:name>
+</is:unit>
+<is:unit unit-id="5">
+<is:name>kelvin</is:name>
+</is:unit>
+<is:unit unit-id="4">
+<is:name>ampere</is:name>
+</is:unit>
+<is:unit unit-id="7">
+<is:name>candela</is:name>
+</is:unit>
+<is:unit unit-id="6">
+<is:name>mole</is:name>
+</is:unit>
+<is:unit unit-id="9">
+<is:name>meter</is:name>
+<is:element unit-id="1"/>
+</is:unit>
+<is:unit unit-id="8">
+<is:name>radian</is:name>
+</is:unit>
+<is:unit unit-id="11">
+<is:name>farad</is:name>
+<is:element unit-id="3"  exponent="4"/>
+<is:element unit-id="4"  exponent="2"/>
+<is:element unit-id="1"  exponent="-2"/>
+<is:element unit-id="2"  exponent="-1"/>
+</is:unit>
+<is:unit unit-id="10">
+<is:name>gram</is:name>
+<is:element unit-id="2"  prefix="milli"/>
+</is:unit>
+<is:unit unit-id="13">
+<is:name>volt</is:name>
+<is:element unit-id="2"  exponent="1"/>
+<is:element unit-id="1"  exponent="2"/>
+<is:element unit-id="4"  exponent="-1"/>
+<is:element unit-id="3"  exponent="-3"/>
+</is:unit>
+<is:unit unit-id="12">
+<is:name>siemens</is:name>
+<is:element unit-id="4"/>
+<is:element unit-id="13"  exponent="-1"/>
+</is:unit>
+<is:unit unit-id="15">
+<is:name>milli_volt</is:name>
+<is:element unit-id="13"  prefix="milli"/>
+</is:unit>
+<is:unit unit-id="14">
+<is:name>milli_second</is:name>
+<is:element unit-id="3"  prefix="milli"/>
+</is:unit>
+<is:unit unit-id="17">
+<is:name>centi_meter</is:name>
+<is:element unit-id="1"  prefix="centi"/>
+</is:unit>
+<is:unit unit-id="16">
+<is:name>micro_farad</is:name>
+<is:element unit-id="11"  prefix="micro"/>
+</is:unit>
+<is:unit unit-id="19">
+<is:name>mho</is:name>
+<is:element unit-id="12"/>
+</is:unit>
+<is:unit unit-id="18">
+<is:name>micro_farad_per_centi_meter2</is:name>
+<is:element unit-id="16"/>
+<is:element unit-id="17"  exponent="-2"/>
+</is:unit>
+</is:unit-set>
+
+<is:module-set>
+
+<is:module module-id="91f5edcc-ebc8-4c6d-b820-f171c0f6e2bd" type="capsule">
+<is:property>
+<is:name>Hodgkin_Huxley_1952_I_K</is:name>
+<is:capsulation state="true">
+<is:capsulated-by module-id="5f7279c3-19a5-495a-88a5-a246d5ee35e2"/>
+</is:capsulation>
+<is:template state="false"/>
+<is:track>
+<is:involved db-id="433" date="2010-02-05T18:30:03+09:00"/>
+<is:involved db-id="this" date="2011-07-15T01:26:11+09:00"/>
+</is:track>
+<is:frame-coordinate>
+<is:origin  format="mathml">
+<m:math>
+<m:vector>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+</m:vector>
+</m:math>
+</is:origin>
+<is:rotation format="mathml"  type="matrix">
+<m:math>
+<m:matrix>
+<m:matrixrow>
+<m:cn>1</m:cn>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+</m:matrixrow>
+<m:matrixrow>
+<m:cn>0</m:cn>
+<m:cn>1</m:cn>
+<m:cn>0</m:cn>
+</m:matrixrow>
+<m:matrixrow>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+<m:cn>1</m:cn>
+</m:matrixrow>
+</m:matrix>
+</m:math>
+</is:rotation>
+</is:frame-coordinate>
+<is:description>This module represents the potassium current used in the Hodgkin-Huxley model (A. L. Hodgkin and A. F. Huxley, A quantitative description of membrane current and its application to conduction and excitation in nerve, J. Physiol. 1952;117;500-544).</is:description>
+</is:property>
+
+<is:port-set>
+<is:port port-id="1" direction="in">
+<is:name>V</is:name>
+<is:description>This port inputs V (the displacement of the membrane potential form its resting value).</is:description>
+</is:port>
+<is:port port-id="2" direction="out">
+<is:name>I_K</is:name>
+<is:description>This port outputs I_K (potassium current).</is:description>
+</is:port>
+</is:port-set>
+<is:physical-quantity-set/>
+<is:morphology/>
+<is:timeseries-set/>
+</is:module>
+
+<is:module module-id="e864f93b-ad99-472a-8656-5abd83f8cca6" type="capsule">
+<is:property>
+<is:name>Hodgkin_Huxley_1952_I_leak</is:name>
+<is:capsulation state="true">
+<is:capsulated-by module-id="487789ab-92aa-4898-b473-3795abb2f7d5"/>
+</is:capsulation>
+<is:template state="false"/>
+<is:track>
+<is:involved db-id="433" date="2010-02-05T18:30:03+09:00"/>
+<is:involved db-id="this" date="2011-07-15T01:26:11+09:00"/>
+</is:track>
+<is:frame-coordinate>
+<is:origin  format="mathml">
+<m:math>
+<m:vector>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+</m:vector>
+</m:math>
+</is:origin>
+<is:rotation format="mathml"  type="matrix">
+<m:math>
+<m:matrix>
+<m:matrixrow>
+<m:cn>1</m:cn>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+</m:matrixrow>
+<m:matrixrow>
+<m:cn>0</m:cn>
+<m:cn>1</m:cn>
+<m:cn>0</m:cn>
+</m:matrixrow>
+<m:matrixrow>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+<m:cn>1</m:cn>
+</m:matrixrow>
+</m:matrix>
+</m:math>
+</is:rotation>
+</is:frame-coordinate>
+<is:description>This module represents the leakage current used in the Hodgkin-Huxley model (A. L. Hodgkin and A. F. Huxley, A quantitative description of membrane current and its application to conduction and excitation in nerve, J. Physiol. Vol.117, pp.500-544, 1952).</is:description>
+</is:property>
+
+<is:port-set>
+<is:port port-id="1" direction="in">
+<is:name>V</is:name>
+<is:description>This port inputs V (the displacement of the membrane potential form its resting value).</is:description>
+</is:port>
+<is:port port-id="2" direction="out">
+<is:name>I_leak</is:name>
+<is:description>This port outputs I_leak (leakage current).</is:description>
+</is:port>
+</is:port-set>
+<is:physical-quantity-set/>
+<is:morphology/>
+<is:timeseries-set/>
+</is:module>
+
+<is:module module-id="63f394df-a2fb-4f64-be94-418c91d77f93" type="functional-unit">
+<is:property>
+<is:name>Adder</is:name>
+<is:capsulation state="false"/>
+<is:template state="false"/>
+<is:track>
+<is:involved db-id="this" date="2010-03-25T04:01:51+09:00"/>
+<is:involved db-id="this" date="2010-06-01T02:32:58+09:00"/>
+</is:track>
+</is:property>
+
+<is:port-set>
+<is:port port-id="1" direction="in">
+<is:name>Current</is:name>
+</is:port>
+<is:port port-id="3" direction="out" ref-physical-quantity-id="4">
+<is:name>Current_sum</is:name>
+</is:port>
+<is:port port-id="2" direction="in">
+<is:name>Current</is:name>
+</is:port>
+</is:port-set>
+
+<is:physical-quantity-set>
+<is:physical-quantity physical-quantity-id="3" type= "variable-parameter">
+<is:name>Current2</is:name>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="22"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="assign"  sub-type="port"  format="reference">
+<is:reference  port-id="2"/>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="2" type= "variable-parameter">
+<is:name>Current1</is:name>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="22"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="assign"  sub-type="port"  format="reference">
+<is:reference  port-id="1"/>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="4" type= "variable-parameter">
+<is:name>CurrentSum</is:name>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="22"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="ae"  format="mathml">
+<m:math>
+<m:apply>
+<m:eq/>
+<m:ci>CurrentSum</m:ci>
+<m:apply>
+<m:plus/>
+<m:ci>Current1</m:ci>
+<m:ci>Current2</m:ci>
+</m:apply>
+</m:apply>
+</m:math>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+</is:physical-quantity-set>
+<is:morphology/>
+<is:timeseries-set/>
+</is:module>
+
+<is:module module-id="4637a2e9-fa64-494d-a4f1-385c9e92e203" type="capsule">
+<is:property>
+<is:name>Hodgkin_Huxley_1952_g_Na</is:name>
+<is:capsulation state="true">
+<is:capsulated-by module-id="db3bf83c-0b42-4867-b844-9725aee01265"/>
+</is:capsulation>
+<is:template state="false"/>
+<is:track>
+<is:involved db-id="433" date="2010-02-05T18:30:03+09:00"/>
+<is:involved db-id="this" date="2011-07-15T01:26:11+09:00"/>
+</is:track>
+<is:frame-coordinate>
+<is:origin  format="mathml">
+<m:math>
+<m:vector>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+</m:vector>
+</m:math>
+</is:origin>
+<is:rotation format="mathml"  type="matrix">
+<m:math>
+<m:matrix>
+<m:matrixrow>
+<m:cn>1</m:cn>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+</m:matrixrow>
+<m:matrixrow>
+<m:cn>0</m:cn>
+<m:cn>1</m:cn>
+<m:cn>0</m:cn>
+</m:matrixrow>
+<m:matrixrow>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+<m:cn>1</m:cn>
+</m:matrixrow>
+</m:matrix>
+</m:math>
+</is:rotation>
+</is:frame-coordinate>
+<is:description>This module represents the sodium channel conductance model used in the Hodgkin-Huxley model (A. L. Hodgkin and A. F. Huxley, A quantitative description of membrane current and its application to conduction and excitation in nerve, J. Physiol., Vol.117, pp.500-544, 1952).</is:description>
+</is:property>
+
+<is:port-set>
+<is:port port-id="1" direction="in">
+<is:name>V</is:name>
+<is:description>This port inputs V (the displacement of the membrane potential form its resting value).</is:description>
+</is:port>
+<is:port port-id="2" direction="out">
+<is:name>g_Na</is:name>
+<is:description>This port outputs g_Na (the sodium channel conductance).</is:description>
+</is:port>
+</is:port-set>
+<is:physical-quantity-set/>
+<is:morphology/>
+<is:timeseries-set/>
+</is:module>
+
+<is:module module-id="5f7279c3-19a5-495a-88a5-a246d5ee35e2" type="capsule">
+<is:property>
+<is:name>Hodgkin_Huxley_1952_model_1</is:name>
+<is:capsulation state="false"/>
+<is:template state="false"/>
+<is:track>
+<is:involved db-id="433" date="2010-02-05T18:30:03+09:00"/>
+<is:involved db-id="this" date="2011-07-15T01:26:11+09:00"/>
+</is:track>
+<is:frame-coordinate>
+<is:origin  format="mathml">
+<m:math>
+<m:vector>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+</m:vector>
+</m:math>
+</is:origin>
+<is:rotation format="mathml"  type="matrix">
+<m:math>
+<m:matrix>
+<m:matrixrow>
+<m:cn>1</m:cn>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+</m:matrixrow>
+<m:matrixrow>
+<m:cn>0</m:cn>
+<m:cn>1</m:cn>
+<m:cn>0</m:cn>
+</m:matrixrow>
+<m:matrixrow>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+<m:cn>1</m:cn>
+</m:matrixrow>
+</m:matrix>
+</m:math>
+</is:rotation>
+</is:frame-coordinate>
+<is:description>This model represents the Hodgkin-Huxley model (A. L. Hodgkin and A. F. Huxley, A quantitative description of membrane current and its application to conduction and excitation in nerve, J. Physiol. Vol.117, pp.500-544, 1952).</is:description>
+</is:property>
+
+<is:port-set>
+<is:port port-id="1" direction="in">
+<is:name>I_stimulus</is:name>
+<is:description>This port inputs I_stimulus (current stimulus).</is:description>
+</is:port>
+<is:port port-id="2" direction="out">
+<is:name>V</is:name>
+<is:description>This port outputs V (the displacement of the membrane potential form its resting value).</is:description>
+</is:port>
+</is:port-set>
+<is:physical-quantity-set/>
+<is:morphology/>
+<is:timeseries-set/>
+</is:module>
+
+<is:module module-id="82a04b03-1a00-4c47-b0e3-ddc85bd9b94d" type="capsule">
+<is:property>
+<is:name>Hodgkin_Huxley_1952_I_Na</is:name>
+<is:capsulation state="true">
+<is:capsulated-by module-id="487789ab-92aa-4898-b473-3795abb2f7d5"/>
+</is:capsulation>
+<is:template state="false"/>
+<is:track>
+<is:involved db-id="433" date="2010-02-05T18:30:03+09:00"/>
+<is:involved db-id="this" date="2011-07-15T01:26:11+09:00"/>
+</is:track>
+<is:frame-coordinate>
+<is:origin  format="mathml">
+<m:math>
+<m:vector>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+</m:vector>
+</m:math>
+</is:origin>
+<is:rotation format="mathml"  type="matrix">
+<m:math>
+<m:matrix>
+<m:matrixrow>
+<m:cn>1</m:cn>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+</m:matrixrow>
+<m:matrixrow>
+<m:cn>0</m:cn>
+<m:cn>1</m:cn>
+<m:cn>0</m:cn>
+</m:matrixrow>
+<m:matrixrow>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+<m:cn>1</m:cn>
+</m:matrixrow>
+</m:matrix>
+</m:math>
+</is:rotation>
+</is:frame-coordinate>
+<is:description>This module represents the potassium current used in the Hodgkin-Huxley model (A. L. Hodgkin and A. F. Huxley, A quantitative description of membrane current and its application to conduction and excitation in nerve, J. Physiol. Vol.117, pp.500-544, 1952).</is:description>
+</is:property>
+
+<is:port-set>
+<is:port port-id="1" direction="in">
+<is:name>V</is:name>
+<is:description>This port inputs V (the displacement of the membrane potential form its resting value).</is:description>
+</is:port>
+<is:port port-id="2" direction="out">
+<is:name>I_Na</is:name>
+<is:description>This port outputs I_Na (sodium current).</is:description>
+</is:port>
+</is:port-set>
+<is:physical-quantity-set/>
+<is:morphology/>
+<is:timeseries-set/>
+</is:module>
+
+<is:module module-id="e4c78e10-c815-4557-960d-a9584ca9b11c" type="functional-unit">
+<is:property>
+<is:name>I_Na</is:name>
+<is:capsulation state="true">
+<is:capsulated-by module-id="82a04b03-1a00-4c47-b0e3-ddc85bd9b94d"/>
+</is:capsulation>
+<is:template state="false"/>
+<is:track>
+<is:involved db-id="433" date="2010-02-05T18:30:03+09:00"/>
+<is:involved db-id="this" date="2011-07-15T01:26:11+09:00"/>
+</is:track>
+<is:frame-coordinate>
+<is:origin  format="mathml">
+<m:math>
+<m:vector>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+</m:vector>
+</m:math>
+</is:origin>
+<is:rotation format="mathml"  type="matrix">
+<m:math>
+<m:matrix>
+<m:matrixrow>
+<m:cn>1</m:cn>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+</m:matrixrow>
+<m:matrixrow>
+<m:cn>0</m:cn>
+<m:cn>1</m:cn>
+<m:cn>0</m:cn>
+</m:matrixrow>
+<m:matrixrow>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+<m:cn>1</m:cn>
+</m:matrixrow>
+</m:matrix>
+</m:math>
+</is:rotation>
+</is:frame-coordinate>
+<is:description>sodium current</is:description>
+</is:property>
+
+<is:port-set>
+<is:port port-id="1" direction="in">
+<is:name>V</is:name>
+<is:description>This port inputs V (the displacement of the membrane potential form its resting value).</is:description>
+</is:port>
+<is:port port-id="3" direction="out" ref-physical-quantity-id="3">
+<is:name>I_Na</is:name>
+<is:description>sodium current</is:description>
+</is:port>
+<is:port port-id="2" direction="in">
+<is:name>g_Na</is:name>
+<is:description>This port inputs g_Na (sodium conductance).</is:description>
+</is:port>
+</is:port-set>
+
+<is:physical-quantity-set>
+<is:physical-quantity physical-quantity-id="3" type= "variable-parameter">
+<is:name>I_Na</is:name>
+<is:description>sodium current</is:description>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="21"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="ae"  format="mathml">
+<m:math>
+<m:apply>
+<m:eq/>
+<m:ci>I_Na</m:ci>
+<m:apply>
+<m:times/>
+<m:ci>g_Na</m:ci>
+<m:apply>
+<m:minus/>
+<m:ci>V</m:ci>
+<m:ci>V_Na</m:ci>
+</m:apply>
+</m:apply>
+</m:apply>
+</m:math>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="2" type= "static-parameter">
+<is:name>V_Na</is:name>
+<is:description>the equilibrium potential for the sodium ions</is:description>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="14"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="ae"  format="mathml">
+<m:math>
+<m:apply>
+<m:eq/>
+<m:ci>V_Na</m:ci>
+<m:cn>115</m:cn>
+</m:apply>
+</m:math>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="5" type= "variable-parameter">
+<is:name>g_Na</is:name>
+<is:description>This port inputs g_Na (sodium conductance).</is:description>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="19"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="assign"  sub-type="port"  format="reference">
+<is:reference  port-id="2"/>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="4" type= "variable-parameter">
+<is:name>V</is:name>
+<is:description>This port inputs V (the displacement of the membrane potential form its resting value).</is:description>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="14"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="assign"  sub-type="port"  format="reference">
+<is:reference  port-id="1"/>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+</is:physical-quantity-set>
+<is:morphology/>
+<is:timeseries-set/>
+</is:module>
+
+<is:module module-id="d9cb09c1-285b-44e5-a7bf-d8794023d632" type="functional-unit">
+<is:property>
+<is:name>I_leak</is:name>
+<is:capsulation state="true">
+<is:capsulated-by module-id="c78b1a29-b288-4837-b03b-1ce3d730aabc"/>
+</is:capsulation>
+<is:template state="false"/>
+<is:track>
+<is:involved db-id="433" date="2010-02-05T18:30:03+09:00"/>
+<is:involved db-id="this" date="2011-07-15T01:26:11+09:00"/>
+</is:track>
+<is:frame-coordinate>
+<is:origin  format="mathml">
+<m:math>
+<m:vector>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+</m:vector>
+</m:math>
+</is:origin>
+<is:rotation format="mathml"  type="matrix">
+<m:math>
+<m:matrix>
+<m:matrixrow>
+<m:cn>1</m:cn>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+</m:matrixrow>
+<m:matrixrow>
+<m:cn>0</m:cn>
+<m:cn>1</m:cn>
+<m:cn>0</m:cn>
+</m:matrixrow>
+<m:matrixrow>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+<m:cn>1</m:cn>
+</m:matrixrow>
+</m:matrix>
+</m:math>
+</is:rotation>
+</is:frame-coordinate>
+<is:description>leakage current</is:description>
+</is:property>
+
+<is:port-set>
+<is:port port-id="1" direction="in">
+<is:name>V</is:name>
+<is:description>This port inputs V (the displacement of the membrane potential form its resting value).</is:description>
+</is:port>
+<is:port port-id="3" direction="out" ref-physical-quantity-id="3">
+<is:name>I_leak</is:name>
+<is:description>leakage current</is:description>
+</is:port>
+<is:port port-id="2" direction="in">
+<is:name>g_leak</is:name>
+<is:description>This port inputs g_leak (leakage conductance).</is:description>
+</is:port>
+</is:port-set>
+
+<is:physical-quantity-set>
+<is:physical-quantity physical-quantity-id="3" type= "variable-parameter">
+<is:name>I_leak</is:name>
+<is:description>leakage current</is:description>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="21"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="ae"  format="mathml">
+<m:math>
+<m:apply>
+<m:eq/>
+<m:ci>I_leak</m:ci>
+<m:apply>
+<m:times/>
+<m:ci>g_leak</m:ci>
+<m:apply>
+<m:minus/>
+<m:ci>V</m:ci>
+<m:ci>V_leak</m:ci>
+</m:apply>
+</m:apply>
+</m:apply>
+</m:math>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="2" type= "static-parameter">
+<is:name>V_leak</is:name>
+<is:description>the potential at which the leakage current is zero</is:description>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="14"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="ae"  format="mathml">
+<m:math>
+<m:apply>
+<m:eq/>
+<m:ci>V_leak</m:ci>
+<m:cn>10.599</m:cn>
+</m:apply>
+</m:math>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="5" type= "variable-parameter">
+<is:name>g_leak</is:name>
+<is:description>This port inputs g_leak (leakage conductance).</is:description>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="19"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="assign"  sub-type="port"  format="reference">
+<is:reference  port-id="2"/>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="4" type= "variable-parameter">
+<is:name>V</is:name>
+<is:description>This port inputs V (the displacement of the membrane potential form its resting value).</is:description>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="14"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="assign"  sub-type="port"  format="reference">
+<is:reference  port-id="1"/>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+</is:physical-quantity-set>
+<is:morphology/>
+<is:timeseries-set/>
+</is:module>
+
+<is:module module-id="df99ad1b-7f33-439d-8380-38182b393aa6" type="functional-unit">
+<is:property>
+<is:name>current_pulse_generator_membrane</is:name>
+<is:capsulation state="true">
+<is:capsulated-by module-id="2eb8c1fa-58ee-48d1-b8d3-40d627ef2144"/>
+</is:capsulation>
+<is:template state="false"/>
+<is:track>
+<is:involved db-id="this" date="2009-09-08T09:40:41+09:00"/>
+</is:track>
+<is:frame-coordinate>
+<is:origin  format="mathml">
+<m:math>
+<m:vector>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+</m:vector>
+</m:math>
+</is:origin>
+<is:rotation format="mathml"  type="matrix">
+<m:math>
+<m:matrix>
+<m:matrixrow>
+<m:cn>1</m:cn>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+</m:matrixrow>
+<m:matrixrow>
+<m:cn>0</m:cn>
+<m:cn>1</m:cn>
+<m:cn>0</m:cn>
+</m:matrixrow>
+<m:matrixrow>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+<m:cn>1</m:cn>
+</m:matrixrow>
+</m:matrix>
+</m:math>
+</is:rotation>
+</is:frame-coordinate>
+<is:description>current pulse generator module</is:description>
+</is:property>
+
+<is:port-set>
+<is:port port-id="1" direction="out" ref-physical-quantity-id="6">
+<is:name>current_in_micro_ampere_per_centi_meter2</is:name>
+<is:description>The current value changes from an initial value (parameter: initial_ampere)  to another value (parameter: pulse_height) at a given onset time (parameter: pulse_onset_time) and after the pulse_width return to the initial value.</is:description>
+</is:port>
+</is:port-set>
+
+<is:physical-quantity-set>
+<is:physical-quantity physical-quantity-id="3" type= "static-parameter">
+<is:name>stimulus_duration</is:name>
+<is:description>The stimulus duration in milli-second.</is:description>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="14"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="ae"  format="mathml">
+<m:math>
+<m:apply>
+<m:eq/>
+<m:ci>stimulus_duration</m:ci>
+<m:cn>800</m:cn>
+</m:apply>
+</m:math>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="2" type= "static-parameter">
+<is:name>stimulus_onset_time</is:name>
+<is:description>The time  when the stimulus starts</is:description>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="14"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="ae"  format="mathml">
+<m:math>
+<m:apply>
+<m:eq/>
+<m:ci>stimulus_onset_time</m:ci>
+<m:cn>20</m:cn>
+</m:apply>
+</m:math>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="5" type= "static-parameter">
+<is:name>initial_ampere</is:name>
+<is:description>The current in micro-ampere per centi-meter2 before and after the pulse.</is:description>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="22"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="ae"  format="mathml">
+<m:math>
+<m:apply>
+<m:eq/>
+<m:ci>initial_ampere</m:ci>
+<m:cn>0</m:cn>
+</m:apply>
+</m:math>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="4" type= "static-parameter">
+<is:name>amplitude</is:name>
+<is:description>The amplitude of the stimulus</is:description>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="22"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="ae"  format="mathml">
+<m:math>
+<m:apply>
+<m:eq/>
+<m:ci>amplitude</m:ci>
+<m:cn>10</m:cn>
+</m:apply>
+</m:math>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="7" type= "static-parameter">
+<is:name>frequency</is:name>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="0"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="ae"  format="mathml">
+<m:math>
+<m:apply>
+<m:eq/>
+<m:ci>frequency</m:ci>
+<m:cn>4</m:cn>
+</m:apply>
+</m:math>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="6" type= "variable-parameter">
+<is:name>stimulus_current</is:name>
+<is:description>The current value changes from an initial value (parameter: initial_ampere)  to another value (parameter: pulse_height) at a given onset time (parameter: pulse_onset_time) and after the pulse_width return to the initial value.</is:description>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="22"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="conditional">
+<is:case-set case-set-id="1">
+<is:case substructure-id="1">
+<is:condition format="mathml">
+<m:math>
+<m:apply>
+<m:and/>
+<m:apply>
+<m:geq/>
+<m:ci>time</m:ci>
+<m:ci>stimulus_onset_time</m:ci>
+</m:apply>
+<m:apply>
+<m:lt/>
+<m:ci>time</m:ci>
+<m:apply>
+<m:plus/>
+<m:ci>stimulus_onset_time</m:ci>
+<m:ci>stimulus_duration</m:ci>
+</m:apply>
+</m:apply>
+</m:apply>
+</m:math>
+</is:condition>
+<is:definition  type="ae"  format="mathml">
+<m:math>
+<m:apply>
+<m:eq/>
+<m:ci>stimulus_current</m:ci>
+<m:apply>
+<m:plus/>
+<m:apply>
+<m:times/>
+<m:ci>amplitude</m:ci>
+<m:apply>
+<m:sin/>
+<m:apply>
+<m:times/>
+<m:ci>frequency</m:ci>
+<m:ci>time</m:ci>
+<m:cn>0.00628</m:cn>
+</m:apply>
+</m:apply>
+</m:apply>
+<m:ci>initial_ampere</m:ci>
+</m:apply>
+</m:apply>
+</m:math>
+</is:definition>
+</is:case>
+<is:case substructure-id="2">
+<is:definition  type="ae"  format="mathml">
+<m:math>
+<m:apply>
+<m:eq/>
+<m:ci>stimulus_current</m:ci>
+<m:ci>initial_ampere</m:ci>
+</m:apply>
+</m:math>
+</is:definition>
+</is:case>
+</is:case-set>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+</is:physical-quantity-set>
+<is:morphology/>
+<is:timeseries-set/>
+</is:module>
+
+<is:module module-id="755faecb-8fec-432c-a838-135fd3837530" type="functional-unit">
+<is:property>
+<is:name>g_K</is:name>
+<is:capsulation state="true">
+<is:capsulated-by module-id="cdcc1233-364d-4978-80a9-b597f8cede08"/>
+</is:capsulation>
+<is:template state="false"/>
+<is:track>
+<is:involved db-id="433" date="2010-02-05T18:30:03+09:00"/>
+<is:involved db-id="this" date="2011-07-15T01:26:11+09:00"/>
+</is:track>
+<is:frame-coordinate>
+<is:origin  format="mathml">
+<m:math>
+<m:vector>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+</m:vector>
+</m:math>
+</is:origin>
+<is:rotation format="mathml"  type="matrix">
+<m:math>
+<m:matrix>
+<m:matrixrow>
+<m:cn>1</m:cn>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+</m:matrixrow>
+<m:matrixrow>
+<m:cn>0</m:cn>
+<m:cn>1</m:cn>
+<m:cn>0</m:cn>
+</m:matrixrow>
+<m:matrixrow>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+<m:cn>1</m:cn>
+</m:matrixrow>
+</m:matrix>
+</m:math>
+</is:rotation>
+</is:frame-coordinate>
+<is:description>the potassium channel conductance</is:description>
+</is:property>
+
+<is:port-set>
+<is:port port-id="1" direction="in">
+<is:name>n</is:name>
+<is:description>This port inputs n (the proportion of the particles in a certain position).</is:description>
+</is:port>
+<is:port port-id="2" direction="out" ref-physical-quantity-id="3">
+<is:name>g_K</is:name>
+<is:description>the potassium channel conductance</is:description>
+</is:port>
+</is:port-set>
+
+<is:physical-quantity-set>
+<is:physical-quantity physical-quantity-id="3" type= "variable-parameter">
+<is:name>g_K</is:name>
+<is:description>the potassium channel conductance</is:description>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="19"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="ae"  format="mathml">
+<m:math>
+<m:apply>
+<m:eq/>
+<m:ci>g_K</m:ci>
+<m:apply>
+<m:times/>
+<m:ci>g_K_bar</m:ci>
+<m:ci>n</m:ci>
+<m:ci>n</m:ci>
+<m:ci>n</m:ci>
+<m:ci>n</m:ci>
+</m:apply>
+</m:apply>
+</m:math>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="2" type= "static-parameter">
+<is:name>g_K_bar</is:name>
+<is:description>constant, the maximum potassium channel conductance</is:description>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="19"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="ae"  format="mathml">
+<m:math>
+<m:apply>
+<m:eq/>
+<m:ci>g_K_bar</m:ci>
+<m:cn>36</m:cn>
+</m:apply>
+</m:math>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="4" type= "variable-parameter">
+<is:name>n</is:name>
+<is:description>This port inputs n (the proportion of the particles in a certain position).</is:description>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="0"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="assign"  sub-type="port"  format="reference">
+<is:reference  port-id="1"/>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+</is:physical-quantity-set>
+<is:morphology/>
+<is:timeseries-set/>
+</is:module>
+
+<is:module module-id="c78b1a29-b288-4837-b03b-1ce3d730aabc" type="capsule">
+<is:property>
+<is:name>Hodgkin_Huxley_1952_I_leak</is:name>
+<is:capsulation state="true">
+<is:capsulated-by module-id="5f7279c3-19a5-495a-88a5-a246d5ee35e2"/>
+</is:capsulation>
+<is:template state="false"/>
+<is:track>
+<is:involved db-id="433" date="2010-02-05T18:30:03+09:00"/>
+<is:involved db-id="this" date="2011-07-15T01:26:11+09:00"/>
+</is:track>
+<is:frame-coordinate>
+<is:origin  format="mathml">
+<m:math>
+<m:vector>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+</m:vector>
+</m:math>
+</is:origin>
+<is:rotation format="mathml"  type="matrix">
+<m:math>
+<m:matrix>
+<m:matrixrow>
+<m:cn>1</m:cn>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+</m:matrixrow>
+<m:matrixrow>
+<m:cn>0</m:cn>
+<m:cn>1</m:cn>
+<m:cn>0</m:cn>
+</m:matrixrow>
+<m:matrixrow>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+<m:cn>1</m:cn>
+</m:matrixrow>
+</m:matrix>
+</m:math>
+</is:rotation>
+</is:frame-coordinate>
+<is:description>This module represents the leakage current used in the Hodgkin-Huxley model (A. L. Hodgkin and A. F. Huxley, A quantitative description of membrane current and its application to conduction and excitation in nerve, J. Physiol. Vol.117, pp.500-544, 1952).</is:description>
+</is:property>
+
+<is:port-set>
+<is:port port-id="1" direction="in">
+<is:name>V</is:name>
+<is:description>This port inputs V (the displacement of the membrane potential form its resting value).</is:description>
+</is:port>
+<is:port port-id="2" direction="out">
+<is:name>I_leak</is:name>
+<is:description>This port outputs I_leak (leakage current).</is:description>
+</is:port>
+</is:port-set>
+<is:physical-quantity-set/>
+<is:morphology/>
+<is:timeseries-set/>
+</is:module>
+
+<is:module module-id="3f0b67bf-f05d-435a-bd08-7ed73a788db8" type="capsule">
+<is:property>
+<is:name>Hodgkin_Huxley_1952_I_K</is:name>
+<is:capsulation state="true">
+<is:capsulated-by module-id="487789ab-92aa-4898-b473-3795abb2f7d5"/>
+</is:capsulation>
+<is:template state="false"/>
+<is:track>
+<is:involved db-id="433" date="2010-02-05T18:30:03+09:00"/>
+<is:involved db-id="this" date="2011-07-15T01:26:11+09:00"/>
+</is:track>
+<is:frame-coordinate>
+<is:origin  format="mathml">
+<m:math>
+<m:vector>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+</m:vector>
+</m:math>
+</is:origin>
+<is:rotation format="mathml"  type="matrix">
+<m:math>
+<m:matrix>
+<m:matrixrow>
+<m:cn>1</m:cn>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+</m:matrixrow>
+<m:matrixrow>
+<m:cn>0</m:cn>
+<m:cn>1</m:cn>
+<m:cn>0</m:cn>
+</m:matrixrow>
+<m:matrixrow>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+<m:cn>1</m:cn>
+</m:matrixrow>
+</m:matrix>
+</m:math>
+</is:rotation>
+</is:frame-coordinate>
+<is:description>This module represents the potassium current used in the Hodgkin-Huxley model (A. L. Hodgkin and A. F. Huxley, A quantitative description of membrane current and its application to conduction and excitation in nerve, J. Physiol. 1952;117;500-544).</is:description>
+</is:property>
+
+<is:port-set>
+<is:port port-id="1" direction="in">
+<is:name>V</is:name>
+<is:description>This port inputs V (the displacement of the membrane potential form its resting value).</is:description>
+</is:port>
+<is:port port-id="2" direction="out">
+<is:name>I_K</is:name>
+<is:description>This port outputs I_K (potassium current).</is:description>
+</is:port>
+</is:port-set>
+<is:physical-quantity-set/>
+<is:morphology/>
+<is:timeseries-set/>
+</is:module>
+
+<is:module module-id="092a054c-327e-43bc-ab6e-015589e7e767" type="functional-unit">
+<is:property>
+<is:name>I_leak</is:name>
+<is:capsulation state="true">
+<is:capsulated-by module-id="e864f93b-ad99-472a-8656-5abd83f8cca6"/>
+</is:capsulation>
+<is:template state="false"/>
+<is:track>
+<is:involved db-id="433" date="2010-02-05T18:30:03+09:00"/>
+<is:involved db-id="this" date="2011-07-15T01:26:11+09:00"/>
+</is:track>
+<is:frame-coordinate>
+<is:origin  format="mathml">
+<m:math>
+<m:vector>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+</m:vector>
+</m:math>
+</is:origin>
+<is:rotation format="mathml"  type="matrix">
+<m:math>
+<m:matrix>
+<m:matrixrow>
+<m:cn>1</m:cn>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+</m:matrixrow>
+<m:matrixrow>
+<m:cn>0</m:cn>
+<m:cn>1</m:cn>
+<m:cn>0</m:cn>
+</m:matrixrow>
+<m:matrixrow>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+<m:cn>1</m:cn>
+</m:matrixrow>
+</m:matrix>
+</m:math>
+</is:rotation>
+</is:frame-coordinate>
+<is:description>leakage current</is:description>
+</is:property>
+
+<is:port-set>
+<is:port port-id="1" direction="in">
+<is:name>V</is:name>
+<is:description>This port inputs V (the displacement of the membrane potential form its resting value).</is:description>
+</is:port>
+<is:port port-id="3" direction="out" ref-physical-quantity-id="3">
+<is:name>I_leak</is:name>
+<is:description>leakage current</is:description>
+</is:port>
+<is:port port-id="2" direction="in">
+<is:name>g_leak</is:name>
+<is:description>This port inputs g_leak (leakage conductance).</is:description>
+</is:port>
+</is:port-set>
+
+<is:physical-quantity-set>
+<is:physical-quantity physical-quantity-id="3" type= "variable-parameter">
+<is:name>I_leak</is:name>
+<is:description>leakage current</is:description>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="21"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="ae"  format="mathml">
+<m:math>
+<m:apply>
+<m:eq/>
+<m:ci>I_leak</m:ci>
+<m:apply>
+<m:times/>
+<m:ci>g_leak</m:ci>
+<m:apply>
+<m:minus/>
+<m:ci>V</m:ci>
+<m:ci>V_leak</m:ci>
+</m:apply>
+</m:apply>
+</m:apply>
+</m:math>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="2" type= "static-parameter">
+<is:name>V_leak</is:name>
+<is:description>the potential at which the leakage current is zero</is:description>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="14"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="ae"  format="mathml">
+<m:math>
+<m:apply>
+<m:eq/>
+<m:ci>V_leak</m:ci>
+<m:cn>10.599</m:cn>
+</m:apply>
+</m:math>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="5" type= "variable-parameter">
+<is:name>g_leak</is:name>
+<is:description>This port inputs g_leak (leakage conductance).</is:description>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="19"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="assign"  sub-type="port"  format="reference">
+<is:reference  port-id="2"/>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="4" type= "variable-parameter">
+<is:name>V</is:name>
+<is:description>This port inputs V (the displacement of the membrane potential form its resting value).</is:description>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="14"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="assign"  sub-type="port"  format="reference">
+<is:reference  port-id="1"/>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+</is:physical-quantity-set>
+<is:morphology/>
+<is:timeseries-set/>
+</is:module>
+
+<is:module module-id="c36a7556-00be-494a-ae3a-06a1af1910ba" type="functional-unit">
+<is:property>
+<is:name>m_gate</is:name>
+<is:capsulation state="true">
+<is:capsulated-by module-id="7b211684-371e-417c-8847-0519d4c11911"/>
+</is:capsulation>
+<is:template state="false"/>
+<is:track>
+<is:involved db-id="433" date="2010-02-05T18:30:03+09:00"/>
+<is:involved db-id="this" date="2011-07-15T01:26:11+09:00"/>
+</is:track>
+<is:frame-coordinate>
+<is:origin  format="mathml">
+<m:math>
+<m:vector>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+</m:vector>
+</m:math>
+</is:origin>
+<is:rotation format="mathml"  type="matrix">
+<m:math>
+<m:matrix>
+<m:matrixrow>
+<m:cn>1</m:cn>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+</m:matrixrow>
+<m:matrixrow>
+<m:cn>0</m:cn>
+<m:cn>1</m:cn>
+<m:cn>0</m:cn>
+</m:matrixrow>
+<m:matrixrow>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+<m:cn>1</m:cn>
+</m:matrixrow>
+</m:matrix>
+</m:math>
+</is:rotation>
+</is:frame-coordinate>
+<is:description>the proportion of activation m-gate at the open state</is:description>
+</is:property>
+
+<is:port-set>
+<is:port port-id="1" direction="in">
+<is:name>V</is:name>
+<is:description>This port inputs V (the displacement of the membrane potential form its resting value).</is:description>
+</is:port>
+<is:port port-id="2" direction="out" ref-physical-quantity-id="2">
+<is:name>m</is:name>
+<is:description>the proportion of activation m-gate at the open state</is:description>
+</is:port>
+</is:port-set>
+
+<is:physical-quantity-set>
+<is:physical-quantity physical-quantity-id="3" type= "variable-parameter">
+<is:name>alpha_m</is:name>
+<is:description>the transition rate from close to open of the m-gate</is:description>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="20"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="ae"  format="mathml">
+<m:math>
+<m:apply>
+<m:eq/>
+<m:ci>alpha_m</m:ci>
+<m:apply>
+<m:divide/>
+<m:apply>
+<m:times/>
+<m:cn>0.1</m:cn>
+<m:apply>
+<m:plus/>
+<m:apply>
+<m:minus/>
+<m:ci>V</m:ci>
+</m:apply>
+<m:cn>25</m:cn>
+</m:apply>
+</m:apply>
+<m:apply>
+<m:minus/>
+<m:apply>
+<m:exp/>
+<m:apply>
+<m:divide/>
+<m:apply>
+<m:plus/>
+<m:apply>
+<m:minus/>
+<m:ci>V</m:ci>
+</m:apply>
+<m:cn>25</m:cn>
+</m:apply>
+<m:cn>10</m:cn>
+</m:apply>
+</m:apply>
+<m:cn>1</m:cn>
+</m:apply>
+</m:apply>
+</m:apply>
+</m:math>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="2" type= "state">
+<is:name>m</is:name>
+<is:description>the proportion of activation m-gate at the open state</is:description>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="0"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:initial-value>
+<is:definition  type="ae"  format="mathml">
+<m:math>
+<m:apply>
+<m:eq/>
+<m:ci>m</m:ci>
+<m:cn>0.052913</m:cn>
+</m:apply>
+</m:math>
+</is:definition>
+</is:initial-value>
+<is:implementation>
+<is:definition  type="ode"  format="mathml">
+<m:math>
+<m:apply>
+<m:eq/>
+<m:apply>
+<m:diff/>
+<m:bvar>
+<m:ci>time</m:ci>
+</m:bvar>
+<m:ci>m</m:ci>
+</m:apply>
+<m:apply>
+<m:minus/>
+<m:apply>
+<m:times/>
+<m:ci>alpha_m</m:ci>
+<m:apply>
+<m:minus/>
+<m:cn>1</m:cn>
+<m:ci>m</m:ci>
+</m:apply>
+</m:apply>
+<m:apply>
+<m:times/>
+<m:ci>beta_m</m:ci>
+<m:ci>m</m:ci>
+</m:apply>
+</m:apply>
+</m:apply>
+</m:math>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="5" type= "variable-parameter">
+<is:name>V</is:name>
+<is:description>This port inputs V (the displacement of the membrane potential form its resting value).</is:description>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="14"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="assign"  sub-type="port"  format="reference">
+<is:reference  port-id="1"/>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="4" type= "variable-parameter">
+<is:name>beta_m</is:name>
+<is:description>the transition rate from open to close of the m-gate</is:description>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="20"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="ae"  format="mathml">
+<m:math>
+<m:apply>
+<m:eq/>
+<m:ci>beta_m</m:ci>
+<m:apply>
+<m:times/>
+<m:cn>4</m:cn>
+<m:apply>
+<m:exp/>
+<m:apply>
+<m:divide/>
+<m:apply>
+<m:minus/>
+<m:ci>V</m:ci>
+</m:apply>
+<m:cn>18</m:cn>
+</m:apply>
+</m:apply>
+</m:apply>
+</m:apply>
+</m:math>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+</is:physical-quantity-set>
+<is:morphology/>
+<is:timeseries-set/>
+</is:module>
+
+<is:module module-id="c32a8fdc-6195-4670-ae02-176accf29210" type="functional-unit">
+<is:property>
+<is:name>h_gate</is:name>
+<is:capsulation state="true">
+<is:capsulated-by module-id="4637a2e9-fa64-494d-a4f1-385c9e92e203"/>
+</is:capsulation>
+<is:template state="false"/>
+<is:track>
+<is:involved db-id="433" date="2010-02-05T18:30:03+09:00"/>
+<is:involved db-id="this" date="2011-07-15T01:26:11+09:00"/>
+</is:track>
+<is:frame-coordinate>
+<is:origin  format="mathml">
+<m:math>
+<m:vector>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+</m:vector>
+</m:math>
+</is:origin>
+<is:rotation format="mathml"  type="matrix">
+<m:math>
+<m:matrix>
+<m:matrixrow>
+<m:cn>1</m:cn>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+</m:matrixrow>
+<m:matrixrow>
+<m:cn>0</m:cn>
+<m:cn>1</m:cn>
+<m:cn>0</m:cn>
+</m:matrixrow>
+<m:matrixrow>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+<m:cn>1</m:cn>
+</m:matrixrow>
+</m:matrix>
+</m:math>
+</is:rotation>
+</is:frame-coordinate>
+<is:description>the proportion of inactivation h-gate at the open state</is:description>
+</is:property>
+
+<is:port-set>
+<is:port port-id="1" direction="in">
+<is:name>V</is:name>
+<is:description>This port inputs V (the displacement of the membrane potential form its resting value).</is:description>
+</is:port>
+<is:port port-id="2" direction="out" ref-physical-quantity-id="2">
+<is:name>h</is:name>
+<is:description>the proportion of inactivation h-gate at the open state</is:description>
+</is:port>
+</is:port-set>
+
+<is:physical-quantity-set>
+<is:physical-quantity physical-quantity-id="3" type= "variable-parameter">
+<is:name>alpha_h</is:name>
+<is:description>the transition rate from close to open of the h-gate</is:description>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="20"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="ae"  format="mathml">
+<m:math>
+<m:apply>
+<m:eq/>
+<m:ci>alpha_h</m:ci>
+<m:apply>
+<m:times/>
+<m:cn>0.07</m:cn>
+<m:apply>
+<m:exp/>
+<m:apply>
+<m:divide/>
+<m:apply>
+<m:minus/>
+<m:ci>V</m:ci>
+</m:apply>
+<m:cn>20</m:cn>
+</m:apply>
+</m:apply>
+</m:apply>
+</m:apply>
+</m:math>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="2" type= "state">
+<is:name>h</is:name>
+<is:description>the proportion of inactivation h-gate at the open state</is:description>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="0"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:initial-value>
+<is:definition  type="ae"  format="mathml">
+<m:math>
+<m:apply>
+<m:eq/>
+<m:ci>h</m:ci>
+<m:cn>0.595435</m:cn>
+</m:apply>
+</m:math>
+</is:definition>
+</is:initial-value>
+<is:implementation>
+<is:definition  type="ode"  format="mathml">
+<m:math>
+<m:apply>
+<m:eq/>
+<m:apply>
+<m:diff/>
+<m:bvar>
+<m:ci>time</m:ci>
+</m:bvar>
+<m:ci>h</m:ci>
+</m:apply>
+<m:apply>
+<m:minus/>
+<m:apply>
+<m:times/>
+<m:ci>alpha_h</m:ci>
+<m:apply>
+<m:minus/>
+<m:cn>1</m:cn>
+<m:ci>h</m:ci>
+</m:apply>
+</m:apply>
+<m:apply>
+<m:times/>
+<m:ci>beta_h</m:ci>
+<m:ci>h</m:ci>
+</m:apply>
+</m:apply>
+</m:apply>
+</m:math>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="5" type= "variable-parameter">
+<is:name>V</is:name>
+<is:description>This port inputs V (the displacement of the membrane potential form its resting value).</is:description>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="14"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="assign"  sub-type="port"  format="reference">
+<is:reference  port-id="1"/>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="4" type= "variable-parameter">
+<is:name>beta_h</is:name>
+<is:description>the transition rate from open to close of the h-gate</is:description>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="20"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="ae"  format="mathml">
+<m:math>
+<m:apply>
+<m:eq/>
+<m:ci>beta_h</m:ci>
+<m:apply>
+<m:divide/>
+<m:cn>1</m:cn>
+<m:apply>
+<m:plus/>
+<m:apply>
+<m:exp/>
+<m:apply>
+<m:divide/>
+<m:apply>
+<m:plus/>
+<m:apply>
+<m:minus/>
+<m:ci>V</m:ci>
+</m:apply>
+<m:cn>30</m:cn>
+</m:apply>
+<m:cn>10</m:cn>
+</m:apply>
+</m:apply>
+<m:cn>1</m:cn>
+</m:apply>
+</m:apply>
+</m:apply>
+</m:math>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+</is:physical-quantity-set>
+<is:morphology/>
+<is:timeseries-set/>
+</is:module>
+
+<is:module module-id="2eb8c1fa-58ee-48d1-b8d3-40d627ef2144" type="capsule" db-id="164">
+<is:property>
+<is:name>current_pulse_generator_membrane</is:name>
+<is:capsulation state="false"/>
+<is:template state="false"/>
+<is:track>
+<is:involved db-id="this" date="2009-09-08T09:40:41+09:00"/>
+</is:track>
+<is:frame-coordinate>
+<is:origin  format="mathml">
+<m:math>
+<m:vector>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+</m:vector>
+</m:math>
+</is:origin>
+<is:rotation format="mathml"  type="matrix">
+<m:math>
+<m:matrix>
+<m:matrixrow>
+<m:cn>1</m:cn>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+</m:matrixrow>
+<m:matrixrow>
+<m:cn>0</m:cn>
+<m:cn>1</m:cn>
+<m:cn>0</m:cn>
+</m:matrixrow>
+<m:matrixrow>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+<m:cn>1</m:cn>
+</m:matrixrow>
+</m:matrix>
+</m:math>
+</is:rotation>
+</is:frame-coordinate>
+<is:description>current pulse generator module</is:description>
+</is:property>
+
+<is:port-set>
+<is:port port-id="1" direction="out">
+<is:name>output_current</is:name>
+<is:description>This port outputs a scalar current value in milli-volt.</is:description>
+</is:port>
+</is:port-set>
+<is:physical-quantity-set/>
+<is:morphology/>
+<is:timeseries-set/>
+</is:module>
+
+<is:module module-id="ef7d8d57-5ce3-4304-9dc6-08a119588dac" type="functional-unit">
+<is:property>
+<is:name>h_gate</is:name>
+<is:capsulation state="true">
+<is:capsulated-by module-id="7b211684-371e-417c-8847-0519d4c11911"/>
+</is:capsulation>
+<is:template state="false"/>
+<is:track>
+<is:involved db-id="433" date="2010-02-05T18:30:03+09:00"/>
+<is:involved db-id="this" date="2011-07-15T01:26:11+09:00"/>
+</is:track>
+<is:frame-coordinate>
+<is:origin  format="mathml">
+<m:math>
+<m:vector>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+</m:vector>
+</m:math>
+</is:origin>
+<is:rotation format="mathml"  type="matrix">
+<m:math>
+<m:matrix>
+<m:matrixrow>
+<m:cn>1</m:cn>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+</m:matrixrow>
+<m:matrixrow>
+<m:cn>0</m:cn>
+<m:cn>1</m:cn>
+<m:cn>0</m:cn>
+</m:matrixrow>
+<m:matrixrow>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+<m:cn>1</m:cn>
+</m:matrixrow>
+</m:matrix>
+</m:math>
+</is:rotation>
+</is:frame-coordinate>
+<is:description>the proportion of inactivation h-gate at the open state</is:description>
+</is:property>
+
+<is:port-set>
+<is:port port-id="1" direction="in">
+<is:name>V</is:name>
+<is:description>This port inputs V (the displacement of the membrane potential form its resting value).</is:description>
+</is:port>
+<is:port port-id="2" direction="out" ref-physical-quantity-id="2">
+<is:name>h</is:name>
+<is:description>the proportion of inactivation h-gate at the open state</is:description>
+</is:port>
+</is:port-set>
+
+<is:physical-quantity-set>
+<is:physical-quantity physical-quantity-id="3" type= "variable-parameter">
+<is:name>alpha_h</is:name>
+<is:description>the transition rate from close to open of the h-gate</is:description>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="20"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="ae"  format="mathml">
+<m:math>
+<m:apply>
+<m:eq/>
+<m:ci>alpha_h</m:ci>
+<m:apply>
+<m:times/>
+<m:cn>0.07</m:cn>
+<m:apply>
+<m:exp/>
+<m:apply>
+<m:divide/>
+<m:apply>
+<m:minus/>
+<m:ci>V</m:ci>
+</m:apply>
+<m:cn>20</m:cn>
+</m:apply>
+</m:apply>
+</m:apply>
+</m:apply>
+</m:math>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="2" type= "state">
+<is:name>h</is:name>
+<is:description>the proportion of inactivation h-gate at the open state</is:description>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="0"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:initial-value>
+<is:definition  type="ae"  format="mathml">
+<m:math>
+<m:apply>
+<m:eq/>
+<m:ci>h</m:ci>
+<m:cn>0.595435</m:cn>
+</m:apply>
+</m:math>
+</is:definition>
+</is:initial-value>
+<is:implementation>
+<is:definition  type="ode"  format="mathml">
+<m:math>
+<m:apply>
+<m:eq/>
+<m:apply>
+<m:diff/>
+<m:bvar>
+<m:ci>time</m:ci>
+</m:bvar>
+<m:ci>h</m:ci>
+</m:apply>
+<m:apply>
+<m:minus/>
+<m:apply>
+<m:times/>
+<m:ci>alpha_h</m:ci>
+<m:apply>
+<m:minus/>
+<m:cn>1</m:cn>
+<m:ci>h</m:ci>
+</m:apply>
+</m:apply>
+<m:apply>
+<m:times/>
+<m:ci>beta_h</m:ci>
+<m:ci>h</m:ci>
+</m:apply>
+</m:apply>
+</m:apply>
+</m:math>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="5" type= "variable-parameter">
+<is:name>V</is:name>
+<is:description>This port inputs V (the displacement of the membrane potential form its resting value).</is:description>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="14"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="assign"  sub-type="port"  format="reference">
+<is:reference  port-id="1"/>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="4" type= "variable-parameter">
+<is:name>beta_h</is:name>
+<is:description>the transition rate from open to close of the h-gate</is:description>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="20"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="ae"  format="mathml">
+<m:math>
+<m:apply>
+<m:eq/>
+<m:ci>beta_h</m:ci>
+<m:apply>
+<m:divide/>
+<m:cn>1</m:cn>
+<m:apply>
+<m:plus/>
+<m:apply>
+<m:exp/>
+<m:apply>
+<m:divide/>
+<m:apply>
+<m:plus/>
+<m:apply>
+<m:minus/>
+<m:ci>V</m:ci>
+</m:apply>
+<m:cn>30</m:cn>
+</m:apply>
+<m:cn>10</m:cn>
+</m:apply>
+</m:apply>
+<m:cn>1</m:cn>
+</m:apply>
+</m:apply>
+</m:apply>
+</m:math>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+</is:physical-quantity-set>
+<is:morphology/>
+<is:timeseries-set/>
+</is:module>
+
+<is:module module-id="3d39f968-905b-4df5-afe9-985763e11187" type="functional-unit">
+<is:property>
+<is:name>g_leak</is:name>
+<is:capsulation state="true">
+<is:capsulated-by module-id="7742adbc-c284-4784-b441-df54a20c5916"/>
+</is:capsulation>
+<is:template state="false"/>
+<is:track>
+<is:involved db-id="433" date="2010-02-05T18:30:03+09:00"/>
+<is:involved db-id="this" date="2011-07-15T01:26:11+09:00"/>
+</is:track>
+<is:frame-coordinate>
+<is:origin  format="mathml">
+<m:math>
+<m:vector>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+</m:vector>
+</m:math>
+</is:origin>
+<is:rotation format="mathml"  type="matrix">
+<m:math>
+<m:matrix>
+<m:matrixrow>
+<m:cn>1</m:cn>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+</m:matrixrow>
+<m:matrixrow>
+<m:cn>0</m:cn>
+<m:cn>1</m:cn>
+<m:cn>0</m:cn>
+</m:matrixrow>
+<m:matrixrow>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+<m:cn>1</m:cn>
+</m:matrixrow>
+</m:matrix>
+</m:math>
+</is:rotation>
+</is:frame-coordinate>
+<is:description>the leak conductance</is:description>
+</is:property>
+
+<is:port-set>
+<is:port port-id="1" direction="out" ref-physical-quantity-id="3">
+<is:name>g_leak</is:name>
+<is:description>the leakage conductance</is:description>
+</is:port>
+</is:port-set>
+
+<is:physical-quantity-set>
+<is:physical-quantity physical-quantity-id="3" type= "variable-parameter">
+<is:name>g_leak</is:name>
+<is:description>the leakage conductance</is:description>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="19"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="ae"  format="mathml">
+<m:math>
+<m:apply>
+<m:eq/>
+<m:ci>g_leak</m:ci>
+<m:ci>g_leak_bar</m:ci>
+</m:apply>
+</m:math>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="2" type= "static-parameter">
+<is:name>g_leak_bar</is:name>
+<is:description>constant, the leakage conductance</is:description>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="19"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="ae"  format="mathml">
+<m:math>
+<m:apply>
+<m:eq/>
+<m:ci>g_leak_bar</m:ci>
+<m:cn>0.3</m:cn>
+</m:apply>
+</m:math>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+</is:physical-quantity-set>
+<is:morphology/>
+<is:timeseries-set/>
+</is:module>
+
+<is:module module-id="36414695-386d-450f-97d7-5a877876b379" type="functional-unit">
+<is:property>
+<is:name>m_gate</is:name>
+<is:capsulation state="true">
+<is:capsulated-by module-id="4637a2e9-fa64-494d-a4f1-385c9e92e203"/>
+</is:capsulation>
+<is:template state="false"/>
+<is:track>
+<is:involved db-id="433" date="2010-02-05T18:30:03+09:00"/>
+<is:involved db-id="this" date="2011-07-15T01:26:11+09:00"/>
+</is:track>
+<is:frame-coordinate>
+<is:origin  format="mathml">
+<m:math>
+<m:vector>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+</m:vector>
+</m:math>
+</is:origin>
+<is:rotation format="mathml"  type="matrix">
+<m:math>
+<m:matrix>
+<m:matrixrow>
+<m:cn>1</m:cn>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+</m:matrixrow>
+<m:matrixrow>
+<m:cn>0</m:cn>
+<m:cn>1</m:cn>
+<m:cn>0</m:cn>
+</m:matrixrow>
+<m:matrixrow>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+<m:cn>1</m:cn>
+</m:matrixrow>
+</m:matrix>
+</m:math>
+</is:rotation>
+</is:frame-coordinate>
+<is:description>the proportion of activation m-gate at the open state</is:description>
+</is:property>
+
+<is:port-set>
+<is:port port-id="1" direction="in">
+<is:name>V</is:name>
+<is:description>This port inputs V (the displacement of the membrane potential form its resting value).</is:description>
+</is:port>
+<is:port port-id="2" direction="out" ref-physical-quantity-id="2">
+<is:name>m</is:name>
+<is:description>the proportion of activation m-gate at the open state</is:description>
+</is:port>
+</is:port-set>
+
+<is:physical-quantity-set>
+<is:physical-quantity physical-quantity-id="3" type= "variable-parameter">
+<is:name>alpha_m</is:name>
+<is:description>the transition rate from close to open of the m-gate</is:description>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="20"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="ae"  format="mathml">
+<m:math>
+<m:apply>
+<m:eq/>
+<m:ci>alpha_m</m:ci>
+<m:apply>
+<m:divide/>
+<m:apply>
+<m:times/>
+<m:cn>0.1</m:cn>
+<m:apply>
+<m:plus/>
+<m:apply>
+<m:minus/>
+<m:ci>V</m:ci>
+</m:apply>
+<m:cn>25</m:cn>
+</m:apply>
+</m:apply>
+<m:apply>
+<m:minus/>
+<m:apply>
+<m:exp/>
+<m:apply>
+<m:divide/>
+<m:apply>
+<m:plus/>
+<m:apply>
+<m:minus/>
+<m:ci>V</m:ci>
+</m:apply>
+<m:cn>25</m:cn>
+</m:apply>
+<m:cn>10</m:cn>
+</m:apply>
+</m:apply>
+<m:cn>1</m:cn>
+</m:apply>
+</m:apply>
+</m:apply>
+</m:math>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="2" type= "state">
+<is:name>m</is:name>
+<is:description>the proportion of activation m-gate at the open state</is:description>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="0"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:initial-value>
+<is:definition  type="ae"  format="mathml">
+<m:math>
+<m:apply>
+<m:eq/>
+<m:ci>m</m:ci>
+<m:cn>0.052913</m:cn>
+</m:apply>
+</m:math>
+</is:definition>
+</is:initial-value>
+<is:implementation>
+<is:definition  type="ode"  format="mathml">
+<m:math>
+<m:apply>
+<m:eq/>
+<m:apply>
+<m:diff/>
+<m:bvar>
+<m:ci>time</m:ci>
+</m:bvar>
+<m:ci>m</m:ci>
+</m:apply>
+<m:apply>
+<m:minus/>
+<m:apply>
+<m:times/>
+<m:ci>alpha_m</m:ci>
+<m:apply>
+<m:minus/>
+<m:cn>1</m:cn>
+<m:ci>m</m:ci>
+</m:apply>
+</m:apply>
+<m:apply>
+<m:times/>
+<m:ci>beta_m</m:ci>
+<m:ci>m</m:ci>
+</m:apply>
+</m:apply>
+</m:apply>
+</m:math>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="5" type= "variable-parameter">
+<is:name>V</is:name>
+<is:description>This port inputs V (the displacement of the membrane potential form its resting value).</is:description>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="14"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="assign"  sub-type="port"  format="reference">
+<is:reference  port-id="1"/>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="4" type= "variable-parameter">
+<is:name>beta_m</is:name>
+<is:description>the transition rate from open to close of the m-gate</is:description>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="20"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="ae"  format="mathml">
+<m:math>
+<m:apply>
+<m:eq/>
+<m:ci>beta_m</m:ci>
+<m:apply>
+<m:times/>
+<m:cn>4</m:cn>
+<m:apply>
+<m:exp/>
+<m:apply>
+<m:divide/>
+<m:apply>
+<m:minus/>
+<m:ci>V</m:ci>
+</m:apply>
+<m:cn>18</m:cn>
+</m:apply>
+</m:apply>
+</m:apply>
+</m:apply>
+</m:math>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+</is:physical-quantity-set>
+<is:morphology/>
+<is:timeseries-set/>
+</is:module>
+
+<is:module module-id="53f6d30b-8dbc-4375-8577-9af99ca95be4" type="functional-unit">
+<is:property>
+<is:name>g_leak</is:name>
+<is:capsulation state="true">
+<is:capsulated-by module-id="5d9efcc7-5e06-4aae-8e15-ddb4d422fc3e"/>
+</is:capsulation>
+<is:template state="false"/>
+<is:track>
+<is:involved db-id="433" date="2010-02-05T18:30:03+09:00"/>
+<is:involved db-id="this" date="2011-07-15T01:26:11+09:00"/>
+</is:track>
+<is:frame-coordinate>
+<is:origin  format="mathml">
+<m:math>
+<m:vector>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+</m:vector>
+</m:math>
+</is:origin>
+<is:rotation format="mathml"  type="matrix">
+<m:math>
+<m:matrix>
+<m:matrixrow>
+<m:cn>1</m:cn>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+</m:matrixrow>
+<m:matrixrow>
+<m:cn>0</m:cn>
+<m:cn>1</m:cn>
+<m:cn>0</m:cn>
+</m:matrixrow>
+<m:matrixrow>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+<m:cn>1</m:cn>
+</m:matrixrow>
+</m:matrix>
+</m:math>
+</is:rotation>
+</is:frame-coordinate>
+<is:description>the leak conductance</is:description>
+</is:property>
+
+<is:port-set>
+<is:port port-id="1" direction="out" ref-physical-quantity-id="3">
+<is:name>g_leak</is:name>
+<is:description>the leakage conductance</is:description>
+</is:port>
+</is:port-set>
+
+<is:physical-quantity-set>
+<is:physical-quantity physical-quantity-id="3" type= "variable-parameter">
+<is:name>g_leak</is:name>
+<is:description>the leakage conductance</is:description>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="19"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="ae"  format="mathml">
+<m:math>
+<m:apply>
+<m:eq/>
+<m:ci>g_leak</m:ci>
+<m:ci>g_leak_bar</m:ci>
+</m:apply>
+</m:math>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="2" type= "static-parameter">
+<is:name>g_leak_bar</is:name>
+<is:description>constant, the leakage conductance</is:description>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="19"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="ae"  format="mathml">
+<m:math>
+<m:apply>
+<m:eq/>
+<m:ci>g_leak_bar</m:ci>
+<m:cn>0.3</m:cn>
+</m:apply>
+</m:math>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+</is:physical-quantity-set>
+<is:morphology/>
+<is:timeseries-set/>
+</is:module>
+
+<is:module module-id="4ee0fd6a-7f16-454e-91d7-d0f46f794134" type="functional-unit">
+<is:property>
+<is:name>n_gate</is:name>
+<is:capsulation state="true">
+<is:capsulated-by module-id="b9adeb29-b1cd-42d9-98bc-7cc41c80461b"/>
+</is:capsulation>
+<is:template state="false"/>
+<is:track>
+<is:involved db-id="433" date="2010-02-05T18:30:03+09:00"/>
+<is:involved db-id="this" date="2011-07-15T01:26:11+09:00"/>
+</is:track>
+<is:frame-coordinate>
+<is:origin  format="mathml">
+<m:math>
+<m:vector>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+</m:vector>
+</m:math>
+</is:origin>
+<is:rotation format="mathml"  type="matrix">
+<m:math>
+<m:matrix>
+<m:matrixrow>
+<m:cn>1</m:cn>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+</m:matrixrow>
+<m:matrixrow>
+<m:cn>0</m:cn>
+<m:cn>1</m:cn>
+<m:cn>0</m:cn>
+</m:matrixrow>
+<m:matrixrow>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+<m:cn>1</m:cn>
+</m:matrixrow>
+</m:matrix>
+</m:math>
+</is:rotation>
+</is:frame-coordinate>
+<is:description>the proportion of n-gate at the open state</is:description>
+</is:property>
+
+<is:port-set>
+<is:port port-id="1" direction="in">
+<is:name>V</is:name>
+<is:description>This port inputs V (the displacement of the membrane potential form its resting value).</is:description>
+</is:port>
+<is:port port-id="2" direction="out" ref-physical-quantity-id="2">
+<is:name>n</is:name>
+<is:description>This port outputs n (the proportion of n-gate at the open state).</is:description>
+</is:port>
+</is:port-set>
+
+<is:physical-quantity-set>
+<is:physical-quantity physical-quantity-id="3" type= "variable-parameter">
+<is:name>alpha_n</is:name>
+<is:description>the transition rate from close to open of the n-gate</is:description>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="20"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="ae"  format="mathml">
+<m:math>
+<m:apply>
+<m:eq/>
+<m:ci>alpha_n</m:ci>
+<m:apply>
+<m:divide/>
+<m:apply>
+<m:times/>
+<m:cn>0.01</m:cn>
+<m:apply>
+<m:plus/>
+<m:apply>
+<m:minus/>
+<m:ci>V</m:ci>
+</m:apply>
+<m:cn>10</m:cn>
+</m:apply>
+</m:apply>
+<m:apply>
+<m:minus/>
+<m:apply>
+<m:exp/>
+<m:apply>
+<m:divide/>
+<m:apply>
+<m:plus/>
+<m:apply>
+<m:minus/>
+<m:ci>V</m:ci>
+</m:apply>
+<m:cn>10</m:cn>
+</m:apply>
+<m:cn>10</m:cn>
+</m:apply>
+</m:apply>
+<m:cn>1</m:cn>
+</m:apply>
+</m:apply>
+</m:apply>
+</m:math>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="2" type= "state">
+<is:name>n</is:name>
+<is:description>the proportion of n-gate at the open state</is:description>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="0"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:initial-value>
+<is:definition  type="ae"  format="mathml">
+<m:math>
+<m:apply>
+<m:eq/>
+<m:ci>n</m:ci>
+<m:cn>0.317652</m:cn>
+</m:apply>
+</m:math>
+</is:definition>
+</is:initial-value>
+<is:implementation>
+<is:definition  type="ode"  format="mathml">
+<m:math>
+<m:apply>
+<m:eq/>
+<m:apply>
+<m:diff/>
+<m:bvar>
+<m:ci>time</m:ci>
+</m:bvar>
+<m:ci>n</m:ci>
+</m:apply>
+<m:apply>
+<m:minus/>
+<m:apply>
+<m:times/>
+<m:ci>alpha_n</m:ci>
+<m:apply>
+<m:minus/>
+<m:cn>1</m:cn>
+<m:ci>n</m:ci>
+</m:apply>
+</m:apply>
+<m:apply>
+<m:times/>
+<m:ci>beta_n</m:ci>
+<m:ci>n</m:ci>
+</m:apply>
+</m:apply>
+</m:apply>
+</m:math>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="5" type= "variable-parameter">
+<is:name>V</is:name>
+<is:description>This port inputs V (the displacement of the membrane potential form its resting value).</is:description>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="14"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="assign"  sub-type="port"  format="reference">
+<is:reference  port-id="1"/>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="4" type= "variable-parameter">
+<is:name>beta_n</is:name>
+<is:description>the transition rate from open to close of the n-gate</is:description>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="20"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="ae"  format="mathml">
+<m:math>
+<m:apply>
+<m:eq/>
+<m:ci>beta_n</m:ci>
+<m:apply>
+<m:times/>
+<m:cn>0.125</m:cn>
+<m:apply>
+<m:exp/>
+<m:apply>
+<m:divide/>
+<m:apply>
+<m:minus/>
+<m:ci>V</m:ci>
+</m:apply>
+<m:cn>80</m:cn>
+</m:apply>
+</m:apply>
+</m:apply>
+</m:apply>
+</m:math>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+</is:physical-quantity-set>
+<is:morphology/>
+<is:timeseries-set/>
+</is:module>
+
+<is:module module-id="0e1e8e29-1a3e-477c-8de7-f979333284b1" type="functional-unit">
+<is:property>
+<is:name>n_gate</is:name>
+<is:capsulation state="true">
+<is:capsulated-by module-id="cdcc1233-364d-4978-80a9-b597f8cede08"/>
+</is:capsulation>
+<is:template state="false"/>
+<is:track>
+<is:involved db-id="433" date="2010-02-05T18:30:03+09:00"/>
+<is:involved db-id="this" date="2011-07-15T01:26:11+09:00"/>
+</is:track>
+<is:frame-coordinate>
+<is:origin  format="mathml">
+<m:math>
+<m:vector>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+</m:vector>
+</m:math>
+</is:origin>
+<is:rotation format="mathml"  type="matrix">
+<m:math>
+<m:matrix>
+<m:matrixrow>
+<m:cn>1</m:cn>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+</m:matrixrow>
+<m:matrixrow>
+<m:cn>0</m:cn>
+<m:cn>1</m:cn>
+<m:cn>0</m:cn>
+</m:matrixrow>
+<m:matrixrow>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+<m:cn>1</m:cn>
+</m:matrixrow>
+</m:matrix>
+</m:math>
+</is:rotation>
+</is:frame-coordinate>
+<is:description>the proportion of n-gate at the open state</is:description>
+</is:property>
+
+<is:port-set>
+<is:port port-id="1" direction="in">
+<is:name>V</is:name>
+<is:description>This port inputs V (the displacement of the membrane potential form its resting value).</is:description>
+</is:port>
+<is:port port-id="2" direction="out" ref-physical-quantity-id="2">
+<is:name>n</is:name>
+<is:description>This port outputs n (the proportion of n-gate at the open state).</is:description>
+</is:port>
+</is:port-set>
+
+<is:physical-quantity-set>
+<is:physical-quantity physical-quantity-id="3" type= "variable-parameter">
+<is:name>alpha_n</is:name>
+<is:description>the transition rate from close to open of the n-gate</is:description>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="20"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="ae"  format="mathml">
+<m:math>
+<m:apply>
+<m:eq/>
+<m:ci>alpha_n</m:ci>
+<m:apply>
+<m:divide/>
+<m:apply>
+<m:times/>
+<m:cn>0.01</m:cn>
+<m:apply>
+<m:plus/>
+<m:apply>
+<m:minus/>
+<m:ci>V</m:ci>
+</m:apply>
+<m:cn>10</m:cn>
+</m:apply>
+</m:apply>
+<m:apply>
+<m:minus/>
+<m:apply>
+<m:exp/>
+<m:apply>
+<m:divide/>
+<m:apply>
+<m:plus/>
+<m:apply>
+<m:minus/>
+<m:ci>V</m:ci>
+</m:apply>
+<m:cn>10</m:cn>
+</m:apply>
+<m:cn>10</m:cn>
+</m:apply>
+</m:apply>
+<m:cn>1</m:cn>
+</m:apply>
+</m:apply>
+</m:apply>
+</m:math>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="2" type= "state">
+<is:name>n</is:name>
+<is:description>the proportion of n-gate at the open state</is:description>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="0"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:initial-value>
+<is:definition  type="ae"  format="mathml">
+<m:math>
+<m:apply>
+<m:eq/>
+<m:ci>n</m:ci>
+<m:cn>0.317652</m:cn>
+</m:apply>
+</m:math>
+</is:definition>
+</is:initial-value>
+<is:implementation>
+<is:definition  type="ode"  format="mathml">
+<m:math>
+<m:apply>
+<m:eq/>
+<m:apply>
+<m:diff/>
+<m:bvar>
+<m:ci>time</m:ci>
+</m:bvar>
+<m:ci>n</m:ci>
+</m:apply>
+<m:apply>
+<m:minus/>
+<m:apply>
+<m:times/>
+<m:ci>alpha_n</m:ci>
+<m:apply>
+<m:minus/>
+<m:cn>1</m:cn>
+<m:ci>n</m:ci>
+</m:apply>
+</m:apply>
+<m:apply>
+<m:times/>
+<m:ci>beta_n</m:ci>
+<m:ci>n</m:ci>
+</m:apply>
+</m:apply>
+</m:apply>
+</m:math>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="5" type= "variable-parameter">
+<is:name>V</is:name>
+<is:description>This port inputs V (the displacement of the membrane potential form its resting value).</is:description>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="14"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="assign"  sub-type="port"  format="reference">
+<is:reference  port-id="1"/>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="4" type= "variable-parameter">
+<is:name>beta_n</is:name>
+<is:description>the transition rate from open to close of the n-gate</is:description>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="20"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="ae"  format="mathml">
+<m:math>
+<m:apply>
+<m:eq/>
+<m:ci>beta_n</m:ci>
+<m:apply>
+<m:times/>
+<m:cn>0.125</m:cn>
+<m:apply>
+<m:exp/>
+<m:apply>
+<m:divide/>
+<m:apply>
+<m:minus/>
+<m:ci>V</m:ci>
+</m:apply>
+<m:cn>80</m:cn>
+</m:apply>
+</m:apply>
+</m:apply>
+</m:apply>
+</m:math>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+</is:physical-quantity-set>
+<is:morphology/>
+<is:timeseries-set/>
+</is:module>
+
+<is:module module-id="cdcc1233-364d-4978-80a9-b597f8cede08" type="capsule">
+<is:property>
+<is:name>Hodgkin_Huxley_1952_g_K</is:name>
+<is:capsulation state="true">
+<is:capsulated-by module-id="91f5edcc-ebc8-4c6d-b820-f171c0f6e2bd"/>
+</is:capsulation>
+<is:template state="false"/>
+<is:track>
+<is:involved db-id="433" date="2010-02-05T18:30:03+09:00"/>
+<is:involved db-id="this" date="2011-07-15T01:26:11+09:00"/>
+</is:track>
+<is:frame-coordinate>
+<is:origin  format="mathml">
+<m:math>
+<m:vector>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+</m:vector>
+</m:math>
+</is:origin>
+<is:rotation format="mathml"  type="matrix">
+<m:math>
+<m:matrix>
+<m:matrixrow>
+<m:cn>1</m:cn>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+</m:matrixrow>
+<m:matrixrow>
+<m:cn>0</m:cn>
+<m:cn>1</m:cn>
+<m:cn>0</m:cn>
+</m:matrixrow>
+<m:matrixrow>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+<m:cn>1</m:cn>
+</m:matrixrow>
+</m:matrix>
+</m:math>
+</is:rotation>
+</is:frame-coordinate>
+<is:description>This module represents the potassium channel conductance used in the Hodgkin-Huxley model (A. L. Hodgkin and A. F. Huxley, A quantitative description of membrane current and its application to conduction and excitation in nerve, J. Physiol. Vol.117, pp.500-544, 1952).</is:description>
+</is:property>
+
+<is:port-set>
+<is:port port-id="1" direction="in">
+<is:name>V</is:name>
+<is:description>This port inputs V (the displacement of the membrane potential form its resting value).</is:description>
+</is:port>
+<is:port port-id="2" direction="out">
+<is:name>g_K</is:name>
+<is:description>This port outputs g_K (potassium channel conductance).</is:description>
+</is:port>
+</is:port-set>
+<is:physical-quantity-set/>
+<is:morphology/>
+<is:timeseries-set/>
+</is:module>
+
+<is:module module-id="487789ab-92aa-4898-b473-3795abb2f7d5" type="capsule">
+<is:property>
+<is:name>Hodgkin_Huxley_1952_model_1</is:name>
+<is:capsulation state="false"/>
+<is:template state="false"/>
+<is:track>
+<is:involved db-id="433" date="2010-02-05T18:30:03+09:00"/>
+<is:involved db-id="this" date="2011-07-15T01:26:11+09:00"/>
+</is:track>
+<is:frame-coordinate>
+<is:origin  format="mathml">
+<m:math>
+<m:vector>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+</m:vector>
+</m:math>
+</is:origin>
+<is:rotation format="mathml"  type="matrix">
+<m:math>
+<m:matrix>
+<m:matrixrow>
+<m:cn>1</m:cn>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+</m:matrixrow>
+<m:matrixrow>
+<m:cn>0</m:cn>
+<m:cn>1</m:cn>
+<m:cn>0</m:cn>
+</m:matrixrow>
+<m:matrixrow>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+<m:cn>1</m:cn>
+</m:matrixrow>
+</m:matrix>
+</m:math>
+</is:rotation>
+</is:frame-coordinate>
+<is:description>This model represents the Hodgkin-Huxley model (A. L. Hodgkin and A. F. Huxley, A quantitative description of membrane current and its application to conduction and excitation in nerve, J. Physiol. Vol.117, pp.500-544, 1952).</is:description>
+</is:property>
+
+<is:port-set>
+<is:port port-id="1" direction="in">
+<is:name>I_stimulus</is:name>
+<is:description>This port inputs I_stimulus (current stimulus).</is:description>
+</is:port>
+<is:port port-id="2" direction="out">
+<is:name>V</is:name>
+<is:description>This port outputs V (the displacement of the membrane potential form its resting value).</is:description>
+</is:port>
+</is:port-set>
+<is:physical-quantity-set/>
+<is:morphology/>
+<is:timeseries-set/>
+</is:module>
+
+<is:module module-id="7b211684-371e-417c-8847-0519d4c11911" type="capsule">
+<is:property>
+<is:name>Hodgkin_Huxley_1952_g_Na</is:name>
+<is:capsulation state="true">
+<is:capsulated-by module-id="82a04b03-1a00-4c47-b0e3-ddc85bd9b94d"/>
+</is:capsulation>
+<is:template state="false"/>
+<is:track>
+<is:involved db-id="433" date="2010-02-05T18:30:03+09:00"/>
+<is:involved db-id="this" date="2011-07-15T01:26:11+09:00"/>
+</is:track>
+<is:frame-coordinate>
+<is:origin  format="mathml">
+<m:math>
+<m:vector>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+</m:vector>
+</m:math>
+</is:origin>
+<is:rotation format="mathml"  type="matrix">
+<m:math>
+<m:matrix>
+<m:matrixrow>
+<m:cn>1</m:cn>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+</m:matrixrow>
+<m:matrixrow>
+<m:cn>0</m:cn>
+<m:cn>1</m:cn>
+<m:cn>0</m:cn>
+</m:matrixrow>
+<m:matrixrow>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+<m:cn>1</m:cn>
+</m:matrixrow>
+</m:matrix>
+</m:math>
+</is:rotation>
+</is:frame-coordinate>
+<is:description>This module represents the sodium channel conductance model used in the Hodgkin-Huxley model (A. L. Hodgkin and A. F. Huxley, A quantitative description of membrane current and its application to conduction and excitation in nerve, J. Physiol., Vol.117, pp.500-544, 1952).</is:description>
+</is:property>
+
+<is:port-set>
+<is:port port-id="1" direction="in">
+<is:name>V</is:name>
+<is:description>This port inputs V (the displacement of the membrane potential form its resting value).</is:description>
+</is:port>
+<is:port port-id="2" direction="out">
+<is:name>g_Na</is:name>
+<is:description>This port outputs g_Na (the sodium channel conductance).</is:description>
+</is:port>
+</is:port-set>
+<is:physical-quantity-set/>
+<is:morphology/>
+<is:timeseries-set/>
+</is:module>
+
+<is:module module-id="70445cae-3cd1-40e8-84d0-e48347141e51" type="functional-unit">
+<is:property>
+<is:name>Hodgkin_Huxley_1952_model</is:name>
+<is:capsulation state="true">
+<is:capsulated-by module-id="487789ab-92aa-4898-b473-3795abb2f7d5"/>
+</is:capsulation>
+<is:template state="false"/>
+<is:track>
+<is:involved db-id="433" date="2010-02-05T18:30:03+09:00"/>
+<is:involved db-id="this" date="2011-07-15T01:26:11+09:00"/>
+</is:track>
+<is:frame-coordinate>
+<is:origin  format="mathml">
+<m:math>
+<m:vector>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+</m:vector>
+</m:math>
+</is:origin>
+<is:rotation format="mathml"  type="matrix">
+<m:math>
+<m:matrix>
+<m:matrixrow>
+<m:cn>1</m:cn>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+</m:matrixrow>
+<m:matrixrow>
+<m:cn>0</m:cn>
+<m:cn>1</m:cn>
+<m:cn>0</m:cn>
+</m:matrixrow>
+<m:matrixrow>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+<m:cn>1</m:cn>
+</m:matrixrow>
+</m:matrix>
+</m:math>
+</is:rotation>
+</is:frame-coordinate>
+<is:description>This model represents the Hodgkin-Huxley model (A. L. Hodgkin and A. F. Huxley, A quantitative description of membrane current and its application to conduction and excitation in nerve, J. Physiol. Vol.117, pp.500-544, 1952).</is:description>
+</is:property>
+
+<is:port-set>
+<is:port port-id="1" direction="in">
+<is:name>I_stimulus</is:name>
+<is:description>This port inputs I_stimulus (current stimulus).</is:description>
+</is:port>
+<is:port port-id="3" direction="in">
+<is:name>I_Na</is:name>
+<is:description>This port inputs I_Na (sodium current).</is:description>
+</is:port>
+<is:port port-id="2" direction="in">
+<is:name>I_K</is:name>
+<is:description>This port inputs I_K (potassium current).</is:description>
+</is:port>
+<is:port port-id="5" direction="out" ref-physical-quantity-id="2">
+<is:name>V</is:name>
+<is:description>This port outputs V (the displacement of the membrane potential form its resting value).</is:description>
+</is:port>
+<is:port port-id="4" direction="in">
+<is:name>I_leak</is:name>
+<is:description>This port inputs I_leak (leakage current).</is:description>
+</is:port>
+</is:port-set>
+
+<is:physical-quantity-set>
+<is:physical-quantity physical-quantity-id="3" type= "static-parameter">
+<is:name>C_M</is:name>
+<is:description>the membrane capacity per unit area</is:description>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="17"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="ae"  format="mathml">
+<m:math>
+<m:apply>
+<m:eq/>
+<m:ci>C_M</m:ci>
+<m:cn>1.0</m:cn>
+</m:apply>
+</m:math>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="2" type= "state">
+<is:name>V</is:name>
+<is:description>the displacement of the membrane potential form its resting value</is:description>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="14"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:initial-value>
+<is:definition  type="ae"  format="mathml">
+<m:math>
+<m:apply>
+<m:eq/>
+<m:ci>V</m:ci>
+<m:cn>0</m:cn>
+</m:apply>
+</m:math>
+</is:definition>
+</is:initial-value>
+<is:implementation>
+<is:definition  type="ode"  format="mathml">
+<m:math>
+<m:apply>
+<m:eq/>
+<m:apply>
+<m:diff/>
+<m:bvar>
+<m:ci>time</m:ci>
+</m:bvar>
+<m:ci>V</m:ci>
+</m:apply>
+<m:apply>
+<m:divide/>
+<m:apply>
+<m:minus/>
+<m:apply>
+<m:minus/>
+<m:apply>
+<m:minus/>
+<m:ci>I_stimulus</m:ci>
+<m:ci>I_K</m:ci>
+</m:apply>
+<m:ci>I_Na</m:ci>
+</m:apply>
+<m:ci>I_leak</m:ci>
+</m:apply>
+<m:ci>C_M</m:ci>
+</m:apply>
+</m:apply>
+</m:math>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="5" type= "variable-parameter">
+<is:name>I_K</is:name>
+<is:description>This port inputs I_K (potassium current).</is:description>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="21"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="assign"  sub-type="port"  format="reference">
+<is:reference  port-id="2"/>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="4" type= "variable-parameter">
+<is:name>I_stimulus</is:name>
+<is:description>This port inputs I_stimulus (current stimulus).</is:description>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="21"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="assign"  sub-type="port"  format="reference">
+<is:reference  port-id="1"/>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="7" type= "variable-parameter">
+<is:name>I_leak</is:name>
+<is:description>This port inputs I_leak (leakage current).</is:description>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="21"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="assign"  sub-type="port"  format="reference">
+<is:reference  port-id="4"/>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="6" type= "variable-parameter">
+<is:name>I_Na</is:name>
+<is:description>This port inputs I_Na (sodium current).</is:description>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="21"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="assign"  sub-type="port"  format="reference">
+<is:reference  port-id="3"/>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+</is:physical-quantity-set>
+<is:morphology/>
+<is:timeseries-set/>
+</is:module>
+
+<is:module module-id="c487e8ee-622d-490d-a25c-9d42f22e4113" type="functional-unit">
+<is:property>
+<is:name>I_Na</is:name>
+<is:capsulation state="true">
+<is:capsulated-by module-id="db3bf83c-0b42-4867-b844-9725aee01265"/>
+</is:capsulation>
+<is:template state="false"/>
+<is:track>
+<is:involved db-id="433" date="2010-02-05T18:30:03+09:00"/>
+<is:involved db-id="this" date="2011-07-15T01:26:11+09:00"/>
+</is:track>
+<is:frame-coordinate>
+<is:origin  format="mathml">
+<m:math>
+<m:vector>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+</m:vector>
+</m:math>
+</is:origin>
+<is:rotation format="mathml"  type="matrix">
+<m:math>
+<m:matrix>
+<m:matrixrow>
+<m:cn>1</m:cn>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+</m:matrixrow>
+<m:matrixrow>
+<m:cn>0</m:cn>
+<m:cn>1</m:cn>
+<m:cn>0</m:cn>
+</m:matrixrow>
+<m:matrixrow>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+<m:cn>1</m:cn>
+</m:matrixrow>
+</m:matrix>
+</m:math>
+</is:rotation>
+</is:frame-coordinate>
+<is:description>sodium current</is:description>
+</is:property>
+
+<is:port-set>
+<is:port port-id="1" direction="in">
+<is:name>V</is:name>
+<is:description>This port inputs V (the displacement of the membrane potential form its resting value).</is:description>
+</is:port>
+<is:port port-id="3" direction="out" ref-physical-quantity-id="3">
+<is:name>I_Na</is:name>
+<is:description>sodium current</is:description>
+</is:port>
+<is:port port-id="2" direction="in">
+<is:name>g_Na</is:name>
+<is:description>This port inputs g_Na (sodium conductance).</is:description>
+</is:port>
+</is:port-set>
+
+<is:physical-quantity-set>
+<is:physical-quantity physical-quantity-id="3" type= "variable-parameter">
+<is:name>I_Na</is:name>
+<is:description>sodium current</is:description>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="21"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="ae"  format="mathml">
+<m:math>
+<m:apply>
+<m:eq/>
+<m:ci>I_Na</m:ci>
+<m:apply>
+<m:times/>
+<m:ci>g_Na</m:ci>
+<m:apply>
+<m:minus/>
+<m:ci>V</m:ci>
+<m:ci>V_Na</m:ci>
+</m:apply>
+</m:apply>
+</m:apply>
+</m:math>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="2" type= "static-parameter">
+<is:name>V_Na</is:name>
+<is:description>the equilibrium potential for the sodium ions</is:description>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="14"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="ae"  format="mathml">
+<m:math>
+<m:apply>
+<m:eq/>
+<m:ci>V_Na</m:ci>
+<m:cn>115</m:cn>
+</m:apply>
+</m:math>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="5" type= "variable-parameter">
+<is:name>g_Na</is:name>
+<is:description>This port inputs g_Na (sodium conductance).</is:description>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="19"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="assign"  sub-type="port"  format="reference">
+<is:reference  port-id="2"/>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="4" type= "variable-parameter">
+<is:name>V</is:name>
+<is:description>This port inputs V (the displacement of the membrane potential form its resting value).</is:description>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="14"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="assign"  sub-type="port"  format="reference">
+<is:reference  port-id="1"/>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+</is:physical-quantity-set>
+<is:morphology/>
+<is:timeseries-set/>
+</is:module>
+
+<is:module module-id="bbff57f5-5624-49ce-85f3-41d02939f6e0" type="functional-unit">
+<is:property>
+<is:name>g_Na</is:name>
+<is:capsulation state="true">
+<is:capsulated-by module-id="4637a2e9-fa64-494d-a4f1-385c9e92e203"/>
+</is:capsulation>
+<is:template state="false"/>
+<is:track>
+<is:involved db-id="433" date="2010-02-05T18:30:03+09:00"/>
+<is:involved db-id="this" date="2011-07-15T01:26:11+09:00"/>
+</is:track>
+<is:frame-coordinate>
+<is:origin  format="mathml">
+<m:math>
+<m:vector>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+</m:vector>
+</m:math>
+</is:origin>
+<is:rotation format="mathml"  type="matrix">
+<m:math>
+<m:matrix>
+<m:matrixrow>
+<m:cn>1</m:cn>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+</m:matrixrow>
+<m:matrixrow>
+<m:cn>0</m:cn>
+<m:cn>1</m:cn>
+<m:cn>0</m:cn>
+</m:matrixrow>
+<m:matrixrow>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+<m:cn>1</m:cn>
+</m:matrixrow>
+</m:matrix>
+</m:math>
+</is:rotation>
+</is:frame-coordinate>
+<is:description>the sodium channel conductance</is:description>
+</is:property>
+
+<is:port-set>
+<is:port port-id="1" direction="in">
+<is:name>m</is:name>
+<is:description>This port inputs m (the proportion of activation m-gate at the open state).</is:description>
+</is:port>
+<is:port port-id="3" direction="out" ref-physical-quantity-id="3">
+<is:name>g_Na</is:name>
+<is:description>the sodium channel conductance</is:description>
+</is:port>
+<is:port port-id="2" direction="in">
+<is:name>h</is:name>
+<is:description>This port inputs h (the proportion of h-gate at the open state).</is:description>
+</is:port>
+</is:port-set>
+
+<is:physical-quantity-set>
+<is:physical-quantity physical-quantity-id="3" type= "variable-parameter">
+<is:name>g_Na</is:name>
+<is:description>the sodium channel conductance</is:description>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="19"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="ae"  format="mathml">
+<m:math>
+<m:apply>
+<m:eq/>
+<m:ci>g_Na</m:ci>
+<m:apply>
+<m:times/>
+<m:ci>m</m:ci>
+<m:ci>m</m:ci>
+<m:ci>m</m:ci>
+<m:ci>h</m:ci>
+<m:ci>g_Na_bar</m:ci>
+</m:apply>
+</m:apply>
+</m:math>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="2" type= "static-parameter">
+<is:name>g_Na_bar</is:name>
+<is:description>constant, the maximum sodium conductance</is:description>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="19"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="ae"  format="mathml">
+<m:math>
+<m:apply>
+<m:eq/>
+<m:ci>g_Na_bar</m:ci>
+<m:cn>120</m:cn>
+</m:apply>
+</m:math>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="5" type= "variable-parameter">
+<is:name>h</is:name>
+<is:description>This port inputs h (the proportion of h-gate at the open state).</is:description>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="0"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="assign"  sub-type="port"  format="reference">
+<is:reference  port-id="2"/>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="4" type= "variable-parameter">
+<is:name>m</is:name>
+<is:description>This port inputs m (the proportion of activation m-gate at the open state).</is:description>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="0"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="assign"  sub-type="port"  format="reference">
+<is:reference  port-id="1"/>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+</is:physical-quantity-set>
+<is:morphology/>
+<is:timeseries-set/>
+</is:module>
+
+<is:module module-id="ebc94b45-3696-4976-b246-8d8fa7a3f787" type="functional-unit">
+<is:property>
+<is:name>g_K</is:name>
+<is:capsulation state="true">
+<is:capsulated-by module-id="b9adeb29-b1cd-42d9-98bc-7cc41c80461b"/>
+</is:capsulation>
+<is:template state="false"/>
+<is:track>
+<is:involved db-id="433" date="2010-02-05T18:30:03+09:00"/>
+<is:involved db-id="this" date="2011-07-15T01:26:11+09:00"/>
+</is:track>
+<is:frame-coordinate>
+<is:origin  format="mathml">
+<m:math>
+<m:vector>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+</m:vector>
+</m:math>
+</is:origin>
+<is:rotation format="mathml"  type="matrix">
+<m:math>
+<m:matrix>
+<m:matrixrow>
+<m:cn>1</m:cn>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+</m:matrixrow>
+<m:matrixrow>
+<m:cn>0</m:cn>
+<m:cn>1</m:cn>
+<m:cn>0</m:cn>
+</m:matrixrow>
+<m:matrixrow>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+<m:cn>1</m:cn>
+</m:matrixrow>
+</m:matrix>
+</m:math>
+</is:rotation>
+</is:frame-coordinate>
+<is:description>the potassium channel conductance</is:description>
+</is:property>
+
+<is:port-set>
+<is:port port-id="1" direction="in">
+<is:name>n</is:name>
+<is:description>This port inputs n (the proportion of the particles in a certain position).</is:description>
+</is:port>
+<is:port port-id="2" direction="out" ref-physical-quantity-id="3">
+<is:name>g_K</is:name>
+<is:description>the potassium channel conductance</is:description>
+</is:port>
+</is:port-set>
+
+<is:physical-quantity-set>
+<is:physical-quantity physical-quantity-id="3" type= "variable-parameter">
+<is:name>g_K</is:name>
+<is:description>the potassium channel conductance</is:description>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="19"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="ae"  format="mathml">
+<m:math>
+<m:apply>
+<m:eq/>
+<m:ci>g_K</m:ci>
+<m:apply>
+<m:times/>
+<m:ci>g_K_bar</m:ci>
+<m:ci>n</m:ci>
+<m:ci>n</m:ci>
+<m:ci>n</m:ci>
+<m:ci>n</m:ci>
+</m:apply>
+</m:apply>
+</m:math>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="2" type= "static-parameter">
+<is:name>g_K_bar</is:name>
+<is:description>constant, the maximum potassium channel conductance</is:description>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="19"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="ae"  format="mathml">
+<m:math>
+<m:apply>
+<m:eq/>
+<m:ci>g_K_bar</m:ci>
+<m:cn>36</m:cn>
+</m:apply>
+</m:math>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="4" type= "variable-parameter">
+<is:name>n</is:name>
+<is:description>This port inputs n (the proportion of the particles in a certain position).</is:description>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="0"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="assign"  sub-type="port"  format="reference">
+<is:reference  port-id="1"/>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+</is:physical-quantity-set>
+<is:morphology/>
+<is:timeseries-set/>
+</is:module>
+
+<is:module module-id="7d172d96-4582-432d-a114-94ca33680594" type="functional-unit">
+<is:property>
+<is:name>Hodgkin_Huxley_1952_model</is:name>
+<is:capsulation state="true">
+<is:capsulated-by module-id="5f7279c3-19a5-495a-88a5-a246d5ee35e2"/>
+</is:capsulation>
+<is:template state="false"/>
+<is:track>
+<is:involved db-id="433" date="2010-02-05T18:30:03+09:00"/>
+<is:involved db-id="this" date="2011-07-15T01:26:11+09:00"/>
+</is:track>
+<is:frame-coordinate>
+<is:origin  format="mathml">
+<m:math>
+<m:vector>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+</m:vector>
+</m:math>
+</is:origin>
+<is:rotation format="mathml"  type="matrix">
+<m:math>
+<m:matrix>
+<m:matrixrow>
+<m:cn>1</m:cn>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+</m:matrixrow>
+<m:matrixrow>
+<m:cn>0</m:cn>
+<m:cn>1</m:cn>
+<m:cn>0</m:cn>
+</m:matrixrow>
+<m:matrixrow>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+<m:cn>1</m:cn>
+</m:matrixrow>
+</m:matrix>
+</m:math>
+</is:rotation>
+</is:frame-coordinate>
+<is:description>This model represents the Hodgkin-Huxley model (A. L. Hodgkin and A. F. Huxley, A quantitative description of membrane current and its application to conduction and excitation in nerve, J. Physiol. Vol.117, pp.500-544, 1952).</is:description>
+</is:property>
+
+<is:port-set>
+<is:port port-id="1" direction="in">
+<is:name>I_stimulus</is:name>
+<is:description>This port inputs I_stimulus (current stimulus).</is:description>
+</is:port>
+<is:port port-id="3" direction="in">
+<is:name>I_Na</is:name>
+<is:description>This port inputs I_Na (sodium current).</is:description>
+</is:port>
+<is:port port-id="2" direction="in">
+<is:name>I_K</is:name>
+<is:description>This port inputs I_K (potassium current).</is:description>
+</is:port>
+<is:port port-id="5" direction="out" ref-physical-quantity-id="2">
+<is:name>V</is:name>
+<is:description>This port outputs V (the displacement of the membrane potential form its resting value).</is:description>
+</is:port>
+<is:port port-id="4" direction="in">
+<is:name>I_leak</is:name>
+<is:description>This port inputs I_leak (leakage current).</is:description>
+</is:port>
+</is:port-set>
+
+<is:physical-quantity-set>
+<is:physical-quantity physical-quantity-id="3" type= "static-parameter">
+<is:name>C_M</is:name>
+<is:description>the membrane capacity per unit area</is:description>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="17"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="ae"  format="mathml">
+<m:math>
+<m:apply>
+<m:eq/>
+<m:ci>C_M</m:ci>
+<m:cn>1.0</m:cn>
+</m:apply>
+</m:math>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="2" type= "state">
+<is:name>V</is:name>
+<is:description>the displacement of the membrane potential form its resting value</is:description>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="14"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:initial-value>
+<is:definition  type="ae"  format="mathml">
+<m:math>
+<m:apply>
+<m:eq/>
+<m:ci>V</m:ci>
+<m:cn>0</m:cn>
+</m:apply>
+</m:math>
+</is:definition>
+</is:initial-value>
+<is:implementation>
+<is:definition  type="ode"  format="mathml">
+<m:math>
+<m:apply>
+<m:eq/>
+<m:apply>
+<m:diff/>
+<m:bvar>
+<m:ci>time</m:ci>
+</m:bvar>
+<m:ci>V</m:ci>
+</m:apply>
+<m:apply>
+<m:divide/>
+<m:apply>
+<m:minus/>
+<m:apply>
+<m:minus/>
+<m:apply>
+<m:minus/>
+<m:ci>I_stimulus</m:ci>
+<m:ci>I_K</m:ci>
+</m:apply>
+<m:ci>I_Na</m:ci>
+</m:apply>
+<m:ci>I_leak</m:ci>
+</m:apply>
+<m:ci>C_M</m:ci>
+</m:apply>
+</m:apply>
+</m:math>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="5" type= "variable-parameter">
+<is:name>I_K</is:name>
+<is:description>This port inputs I_K (potassium current).</is:description>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="21"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="assign"  sub-type="port"  format="reference">
+<is:reference  port-id="2"/>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="4" type= "variable-parameter">
+<is:name>I_stimulus</is:name>
+<is:description>This port inputs I_stimulus (current stimulus).</is:description>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="21"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="assign"  sub-type="port"  format="reference">
+<is:reference  port-id="1"/>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="7" type= "variable-parameter">
+<is:name>I_leak</is:name>
+<is:description>This port inputs I_leak (leakage current).</is:description>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="21"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="assign"  sub-type="port"  format="reference">
+<is:reference  port-id="4"/>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="6" type= "variable-parameter">
+<is:name>I_Na</is:name>
+<is:description>This port inputs I_Na (sodium current).</is:description>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="21"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="assign"  sub-type="port"  format="reference">
+<is:reference  port-id="3"/>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+</is:physical-quantity-set>
+<is:morphology/>
+<is:timeseries-set/>
+</is:module>
+
+<is:module module-id="db3bf83c-0b42-4867-b844-9725aee01265" type="capsule">
+<is:property>
+<is:name>Hodgkin_Huxley_1952_I_Na</is:name>
+<is:capsulation state="true">
+<is:capsulated-by module-id="5f7279c3-19a5-495a-88a5-a246d5ee35e2"/>
+</is:capsulation>
+<is:template state="false"/>
+<is:track>
+<is:involved db-id="433" date="2010-02-05T18:30:03+09:00"/>
+<is:involved db-id="this" date="2011-07-15T01:26:11+09:00"/>
+</is:track>
+<is:frame-coordinate>
+<is:origin  format="mathml">
+<m:math>
+<m:vector>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+</m:vector>
+</m:math>
+</is:origin>
+<is:rotation format="mathml"  type="matrix">
+<m:math>
+<m:matrix>
+<m:matrixrow>
+<m:cn>1</m:cn>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+</m:matrixrow>
+<m:matrixrow>
+<m:cn>0</m:cn>
+<m:cn>1</m:cn>
+<m:cn>0</m:cn>
+</m:matrixrow>
+<m:matrixrow>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+<m:cn>1</m:cn>
+</m:matrixrow>
+</m:matrix>
+</m:math>
+</is:rotation>
+</is:frame-coordinate>
+<is:description>This module represents the potassium current used in the Hodgkin-Huxley model (A. L. Hodgkin and A. F. Huxley, A quantitative description of membrane current and its application to conduction and excitation in nerve, J. Physiol. Vol.117, pp.500-544, 1952).</is:description>
+</is:property>
+
+<is:port-set>
+<is:port port-id="1" direction="in">
+<is:name>V</is:name>
+<is:description>This port inputs V (the displacement of the membrane potential form its resting value).</is:description>
+</is:port>
+<is:port port-id="2" direction="out">
+<is:name>I_Na</is:name>
+<is:description>This port outputs I_Na (sodium current).</is:description>
+</is:port>
+</is:port-set>
+<is:physical-quantity-set/>
+<is:morphology/>
+<is:timeseries-set/>
+</is:module>
+
+<is:module module-id="d4c9b9c0-cba4-4c10-8039-d4d525a83733" type="functional-unit">
+<is:property>
+<is:name>I_K</is:name>
+<is:capsulation state="true">
+<is:capsulated-by module-id="3f0b67bf-f05d-435a-bd08-7ed73a788db8"/>
+</is:capsulation>
+<is:template state="false"/>
+<is:track>
+<is:involved db-id="433" date="2010-02-05T18:30:03+09:00"/>
+<is:involved db-id="433" date="2010-01-28T12:26:26+09:00"/>
+<is:involved db-id="this" date="2011-07-15T01:26:11+09:00"/>
+</is:track>
+<is:frame-coordinate>
+<is:origin  format="mathml">
+<m:math>
+<m:vector>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+</m:vector>
+</m:math>
+</is:origin>
+<is:rotation format="mathml"  type="matrix">
+<m:math>
+<m:matrix>
+<m:matrixrow>
+<m:cn>1</m:cn>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+</m:matrixrow>
+<m:matrixrow>
+<m:cn>0</m:cn>
+<m:cn>1</m:cn>
+<m:cn>0</m:cn>
+</m:matrixrow>
+<m:matrixrow>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+<m:cn>1</m:cn>
+</m:matrixrow>
+</m:matrix>
+</m:math>
+</is:rotation>
+</is:frame-coordinate>
+<is:description>potassium current</is:description>
+</is:property>
+
+<is:port-set>
+<is:port port-id="1" direction="in">
+<is:name>V</is:name>
+<is:description>This port inputs V (the displacement of the membrane potential form its resting value).</is:description>
+</is:port>
+<is:port port-id="3" direction="out" ref-physical-quantity-id="3">
+<is:name>I_K</is:name>
+<is:description>potassium current</is:description>
+</is:port>
+<is:port port-id="2" direction="in">
+<is:name>g_K</is:name>
+<is:description>This port inputs g_K (potassium conductance).</is:description>
+</is:port>
+</is:port-set>
+
+<is:physical-quantity-set>
+<is:physical-quantity physical-quantity-id="3" type= "variable-parameter">
+<is:name>I_K</is:name>
+<is:description>potassium current</is:description>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="21"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="ae"  format="mathml">
+<m:math>
+<m:apply>
+<m:eq/>
+<m:ci>I_K</m:ci>
+<m:apply>
+<m:times/>
+<m:ci>g_K</m:ci>
+<m:apply>
+<m:minus/>
+<m:ci>V</m:ci>
+<m:ci>V_K</m:ci>
+</m:apply>
+</m:apply>
+</m:apply>
+</m:math>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="2" type= "static-parameter">
+<is:name>V_K</is:name>
+<is:description>the equilibrium potential for the potassium ions</is:description>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="14"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="ae"  format="mathml">
+<m:math>
+<m:apply>
+<m:eq/>
+<m:ci>V_K</m:ci>
+<m:cn>-12</m:cn>
+</m:apply>
+</m:math>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="5" type= "variable-parameter">
+<is:name>g_K</is:name>
+<is:description>This port inputs g_K (potassium conductance).</is:description>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="19"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="assign"  sub-type="port"  format="reference">
+<is:reference  port-id="2"/>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="4" type= "variable-parameter">
+<is:name>V</is:name>
+<is:description>This port inputs V (the displacement of the membrane potential form its resting value).</is:description>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="14"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="assign"  sub-type="port"  format="reference">
+<is:reference  port-id="1"/>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+</is:physical-quantity-set>
+<is:morphology/>
+<is:timeseries-set/>
+</is:module>
+
+<is:module module-id="6b8b00a1-c1d9-4d29-9abd-6103235e6733" type="functional-unit">
+<is:property>
+<is:name>I_K</is:name>
+<is:capsulation state="true">
+<is:capsulated-by module-id="91f5edcc-ebc8-4c6d-b820-f171c0f6e2bd"/>
+</is:capsulation>
+<is:template state="false"/>
+<is:track>
+<is:involved db-id="433" date="2010-02-05T18:30:03+09:00"/>
+<is:involved db-id="433" date="2010-01-28T12:26:26+09:00"/>
+<is:involved db-id="this" date="2011-07-15T01:26:11+09:00"/>
+</is:track>
+<is:frame-coordinate>
+<is:origin  format="mathml">
+<m:math>
+<m:vector>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+</m:vector>
+</m:math>
+</is:origin>
+<is:rotation format="mathml"  type="matrix">
+<m:math>
+<m:matrix>
+<m:matrixrow>
+<m:cn>1</m:cn>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+</m:matrixrow>
+<m:matrixrow>
+<m:cn>0</m:cn>
+<m:cn>1</m:cn>
+<m:cn>0</m:cn>
+</m:matrixrow>
+<m:matrixrow>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+<m:cn>1</m:cn>
+</m:matrixrow>
+</m:matrix>
+</m:math>
+</is:rotation>
+</is:frame-coordinate>
+<is:description>potassium current</is:description>
+</is:property>
+
+<is:port-set>
+<is:port port-id="1" direction="in">
+<is:name>V</is:name>
+<is:description>This port inputs V (the displacement of the membrane potential form its resting value).</is:description>
+</is:port>
+<is:port port-id="3" direction="out" ref-physical-quantity-id="3">
+<is:name>I_K</is:name>
+<is:description>potassium current</is:description>
+</is:port>
+<is:port port-id="2" direction="in">
+<is:name>g_K</is:name>
+<is:description>This port inputs g_K (potassium conductance).</is:description>
+</is:port>
+</is:port-set>
+
+<is:physical-quantity-set>
+<is:physical-quantity physical-quantity-id="3" type= "variable-parameter">
+<is:name>I_K</is:name>
+<is:description>potassium current</is:description>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="21"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="ae"  format="mathml">
+<m:math>
+<m:apply>
+<m:eq/>
+<m:ci>I_K</m:ci>
+<m:apply>
+<m:times/>
+<m:ci>g_K</m:ci>
+<m:apply>
+<m:minus/>
+<m:ci>V</m:ci>
+<m:ci>V_K</m:ci>
+</m:apply>
+</m:apply>
+</m:apply>
+</m:math>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="2" type= "static-parameter">
+<is:name>V_K</is:name>
+<is:description>the equilibrium potential for the potassium ions</is:description>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="14"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="ae"  format="mathml">
+<m:math>
+<m:apply>
+<m:eq/>
+<m:ci>V_K</m:ci>
+<m:cn>-12</m:cn>
+</m:apply>
+</m:math>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="5" type= "variable-parameter">
+<is:name>g_K</is:name>
+<is:description>This port inputs g_K (potassium conductance).</is:description>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="19"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="assign"  sub-type="port"  format="reference">
+<is:reference  port-id="2"/>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="4" type= "variable-parameter">
+<is:name>V</is:name>
+<is:description>This port inputs V (the displacement of the membrane potential form its resting value).</is:description>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="14"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="assign"  sub-type="port"  format="reference">
+<is:reference  port-id="1"/>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+</is:physical-quantity-set>
+<is:morphology/>
+<is:timeseries-set/>
+</is:module>
+
+<is:module module-id="b9adeb29-b1cd-42d9-98bc-7cc41c80461b" type="capsule">
+<is:property>
+<is:name>Hodgkin_Huxley_1952_g_K</is:name>
+<is:capsulation state="true">
+<is:capsulated-by module-id="3f0b67bf-f05d-435a-bd08-7ed73a788db8"/>
+</is:capsulation>
+<is:template state="false"/>
+<is:track>
+<is:involved db-id="433" date="2010-02-05T18:30:03+09:00"/>
+<is:involved db-id="this" date="2011-07-15T01:26:11+09:00"/>
+</is:track>
+<is:frame-coordinate>
+<is:origin  format="mathml">
+<m:math>
+<m:vector>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+</m:vector>
+</m:math>
+</is:origin>
+<is:rotation format="mathml"  type="matrix">
+<m:math>
+<m:matrix>
+<m:matrixrow>
+<m:cn>1</m:cn>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+</m:matrixrow>
+<m:matrixrow>
+<m:cn>0</m:cn>
+<m:cn>1</m:cn>
+<m:cn>0</m:cn>
+</m:matrixrow>
+<m:matrixrow>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+<m:cn>1</m:cn>
+</m:matrixrow>
+</m:matrix>
+</m:math>
+</is:rotation>
+</is:frame-coordinate>
+<is:description>This module represents the potassium channel conductance used in the Hodgkin-Huxley model (A. L. Hodgkin and A. F. Huxley, A quantitative description of membrane current and its application to conduction and excitation in nerve, J. Physiol. Vol.117, pp.500-544, 1952).</is:description>
+</is:property>
+
+<is:port-set>
+<is:port port-id="1" direction="in">
+<is:name>V</is:name>
+<is:description>This port inputs V (the displacement of the membrane potential form its resting value).</is:description>
+</is:port>
+<is:port port-id="2" direction="out">
+<is:name>g_K</is:name>
+<is:description>This port outputs g_K (potassium channel conductance).</is:description>
+</is:port>
+</is:port-set>
+<is:physical-quantity-set/>
+<is:morphology/>
+<is:timeseries-set/>
+</is:module>
+
+<is:module module-id="5d9efcc7-5e06-4aae-8e15-ddb4d422fc3e" type="capsule">
+<is:property>
+<is:name>Hodgkin_Huxley_1952_g_leak</is:name>
+<is:capsulation state="true">
+<is:capsulated-by module-id="e864f93b-ad99-472a-8656-5abd83f8cca6"/>
+</is:capsulation>
+<is:template state="false"/>
+<is:track>
+<is:involved db-id="433" date="2010-02-05T18:30:03+09:00"/>
+<is:involved db-id="this" date="2011-07-15T01:26:11+09:00"/>
+</is:track>
+<is:frame-coordinate>
+<is:origin  format="mathml">
+<m:math>
+<m:vector>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+</m:vector>
+</m:math>
+</is:origin>
+<is:rotation format="mathml"  type="matrix">
+<m:math>
+<m:matrix>
+<m:matrixrow>
+<m:cn>1</m:cn>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+</m:matrixrow>
+<m:matrixrow>
+<m:cn>0</m:cn>
+<m:cn>1</m:cn>
+<m:cn>0</m:cn>
+</m:matrixrow>
+<m:matrixrow>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+<m:cn>1</m:cn>
+</m:matrixrow>
+</m:matrix>
+</m:math>
+</is:rotation>
+</is:frame-coordinate>
+<is:description>This module represents the leakage conductance used in the Hodgkin-Huxley model (A. L. Hodgkin and A. F. Huxley, A quantitative description of membrane current and its application to conduction and excitation in nerve, J. Physiol. Vol.117, pp.500-544, 1952).</is:description>
+</is:property>
+
+<is:port-set>
+<is:port port-id="1" direction="out">
+<is:name>g_leak</is:name>
+<is:description>This port outputs g_leak (leakage conductance).</is:description>
+</is:port>
+</is:port-set>
+<is:physical-quantity-set/>
+<is:morphology/>
+<is:timeseries-set/>
+</is:module>
+
+<is:module module-id="7752df9b-8156-4c68-bf9e-5bd1d09affb8" type="functional-unit">
+<is:property>
+<is:name>Gap_junction</is:name>
+<is:capsulation state="false"/>
+<is:template state="false"/>
+<is:track>
+<is:involved db-id="this" date="2010-03-22T13:17:05+09:00"/>
+<is:involved db-id="this" date="2010-06-01T02:32:58+09:00"/>
+</is:track>
+</is:property>
+
+<is:port-set>
+<is:port port-id="1" direction="in">
+<is:name>Vm_1</is:name>
+</is:port>
+<is:port port-id="3" direction="out" ref-physical-quantity-id="5">
+<is:name>Current_1</is:name>
+</is:port>
+<is:port port-id="2" direction="in">
+<is:name>Vm_2</is:name>
+</is:port>
+<is:port port-id="4" direction="out" ref-physical-quantity-id="2">
+<is:name>Current_2</is:name>
+</is:port>
+</is:port-set>
+
+<is:physical-quantity-set>
+<is:physical-quantity physical-quantity-id="3" type= "variable-parameter">
+<is:name>V1</is:name>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="15"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="assign"  sub-type="port"  format="reference">
+<is:reference  port-id="1"/>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="2" type= "variable-parameter">
+<is:name>I2</is:name>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="22"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="ae"  format="mathml">
+<m:math>
+<m:apply>
+<m:eq/>
+<m:ci>I2</m:ci>
+<m:apply>
+<m:times/>
+<m:ci>G</m:ci>
+<m:apply>
+<m:minus/>
+<m:ci>V1</m:ci>
+<m:ci>V2</m:ci>
+</m:apply>
+</m:apply>
+</m:apply>
+</m:math>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="5" type= "variable-parameter">
+<is:name>I1</is:name>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="22"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="ae"  format="mathml">
+<m:math>
+<m:apply>
+<m:eq/>
+<m:ci>I1</m:ci>
+<m:apply>
+<m:times/>
+<m:ci>G</m:ci>
+<m:apply>
+<m:minus/>
+<m:ci>V2</m:ci>
+<m:ci>V1</m:ci>
+</m:apply>
+</m:apply>
+</m:apply>
+</m:math>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="4" type= "variable-parameter">
+<is:name>V2</is:name>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="15"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="assign"  sub-type="port"  format="reference">
+<is:reference  port-id="2"/>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="6" type= "static-parameter">
+<is:name>G</is:name>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="20"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="ae"  format="mathml">
+<m:math>
+<m:apply>
+<m:eq/>
+<m:ci>G</m:ci>
+<m:cn>0.1</m:cn>
+</m:apply>
+</m:math>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+</is:physical-quantity-set>
+<is:morphology/>
+<is:timeseries-set/>
+</is:module>
+
+<is:module module-id="111fcb49-2c9f-4db0-befd-8fe95747d3a7" type="functional-unit">
+<is:property>
+<is:name>g_Na</is:name>
+<is:capsulation state="true">
+<is:capsulated-by module-id="7b211684-371e-417c-8847-0519d4c11911"/>
+</is:capsulation>
+<is:template state="false"/>
+<is:track>
+<is:involved db-id="433" date="2010-02-05T18:30:03+09:00"/>
+<is:involved db-id="this" date="2011-07-15T01:26:11+09:00"/>
+</is:track>
+<is:frame-coordinate>
+<is:origin  format="mathml">
+<m:math>
+<m:vector>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+</m:vector>
+</m:math>
+</is:origin>
+<is:rotation format="mathml"  type="matrix">
+<m:math>
+<m:matrix>
+<m:matrixrow>
+<m:cn>1</m:cn>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+</m:matrixrow>
+<m:matrixrow>
+<m:cn>0</m:cn>
+<m:cn>1</m:cn>
+<m:cn>0</m:cn>
+</m:matrixrow>
+<m:matrixrow>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+<m:cn>1</m:cn>
+</m:matrixrow>
+</m:matrix>
+</m:math>
+</is:rotation>
+</is:frame-coordinate>
+<is:description>the sodium channel conductance</is:description>
+</is:property>
+
+<is:port-set>
+<is:port port-id="1" direction="in">
+<is:name>m</is:name>
+<is:description>This port inputs m (the proportion of activation m-gate at the open state).</is:description>
+</is:port>
+<is:port port-id="3" direction="out" ref-physical-quantity-id="3">
+<is:name>g_Na</is:name>
+<is:description>the sodium channel conductance</is:description>
+</is:port>
+<is:port port-id="2" direction="in">
+<is:name>h</is:name>
+<is:description>This port inputs h (the proportion of h-gate at the open state).</is:description>
+</is:port>
+</is:port-set>
+
+<is:physical-quantity-set>
+<is:physical-quantity physical-quantity-id="3" type= "variable-parameter">
+<is:name>g_Na</is:name>
+<is:description>the sodium channel conductance</is:description>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="19"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="ae"  format="mathml">
+<m:math>
+<m:apply>
+<m:eq/>
+<m:ci>g_Na</m:ci>
+<m:apply>
+<m:times/>
+<m:ci>m</m:ci>
+<m:ci>m</m:ci>
+<m:ci>m</m:ci>
+<m:ci>h</m:ci>
+<m:ci>g_Na_bar</m:ci>
+</m:apply>
+</m:apply>
+</m:math>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="2" type= "static-parameter">
+<is:name>g_Na_bar</is:name>
+<is:description>constant, the maximum sodium conductance</is:description>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="19"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="ae"  format="mathml">
+<m:math>
+<m:apply>
+<m:eq/>
+<m:ci>g_Na_bar</m:ci>
+<m:cn>120</m:cn>
+</m:apply>
+</m:math>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="5" type= "variable-parameter">
+<is:name>h</is:name>
+<is:description>This port inputs h (the proportion of h-gate at the open state).</is:description>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="0"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="assign"  sub-type="port"  format="reference">
+<is:reference  port-id="2"/>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="4" type= "variable-parameter">
+<is:name>m</is:name>
+<is:description>This port inputs m (the proportion of activation m-gate at the open state).</is:description>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="0"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="assign"  sub-type="port"  format="reference">
+<is:reference  port-id="1"/>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+</is:physical-quantity-set>
+<is:morphology/>
+<is:timeseries-set/>
+</is:module>
+
+<is:module module-id="7742adbc-c284-4784-b441-df54a20c5916" type="capsule">
+<is:property>
+<is:name>Hodgkin_Huxley_1952_g_leak</is:name>
+<is:capsulation state="true">
+<is:capsulated-by module-id="c78b1a29-b288-4837-b03b-1ce3d730aabc"/>
+</is:capsulation>
+<is:template state="false"/>
+<is:track>
+<is:involved db-id="433" date="2010-02-05T18:30:03+09:00"/>
+<is:involved db-id="this" date="2011-07-15T01:26:11+09:00"/>
+</is:track>
+<is:frame-coordinate>
+<is:origin  format="mathml">
+<m:math>
+<m:vector>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+</m:vector>
+</m:math>
+</is:origin>
+<is:rotation format="mathml"  type="matrix">
+<m:math>
+<m:matrix>
+<m:matrixrow>
+<m:cn>1</m:cn>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+</m:matrixrow>
+<m:matrixrow>
+<m:cn>0</m:cn>
+<m:cn>1</m:cn>
+<m:cn>0</m:cn>
+</m:matrixrow>
+<m:matrixrow>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+<m:cn>1</m:cn>
+</m:matrixrow>
+</m:matrix>
+</m:math>
+</is:rotation>
+</is:frame-coordinate>
+<is:description>This module represents the leakage conductance used in the Hodgkin-Huxley model (A. L. Hodgkin and A. F. Huxley, A quantitative description of membrane current and its application to conduction and excitation in nerve, J. Physiol. Vol.117, pp.500-544, 1952).</is:description>
+</is:property>
+
+<is:port-set>
+<is:port port-id="1" direction="out">
+<is:name>g_leak</is:name>
+<is:description>This port outputs g_leak (leakage conductance).</is:description>
+</is:port>
+</is:port-set>
+<is:physical-quantity-set/>
+<is:morphology/>
+<is:timeseries-set/>
+</is:module>
+</is:module-set>
+<is:template-set/>
+<is:instance-set/>
+<is:controller-set/>
+
+<is:edge-set>
+<is:edge edge-id="49871285-51e4-4e73-9d08-01bca04b57ca" type="forwarding">
+<is:tail module-id="e4c78e10-c815-4557-960d-a9584ca9b11c" port-id="3"/>
+<is:head module-id="82a04b03-1a00-4c47-b0e3-ddc85bd9b94d" port-id="2"/>
+<is:operation>output</is:operation>
+</is:edge>
+<is:edge edge-id="a1eb698a-ebc8-491d-9d64-fd7c0ad7f28e" type="forwarding">
+<is:tail module-id="cdcc1233-364d-4978-80a9-b597f8cede08" port-id="1"/>
+<is:head module-id="0e1e8e29-1a3e-477c-8de7-f979333284b1" port-id="1"/>
+<is:operation>input</is:operation>
+</is:edge>
+<is:edge edge-id="4dd5f6a5-b207-4ee3-a95f-6df560c797d8" type="structural">
+<is:tail module-id="ef7d8d57-5ce3-4304-9dc6-08a119588dac" port-id="0"/>
+<is:head module-id="111fcb49-2c9f-4db0-befd-8fe95747d3a7" port-id="0"/>
+<is:operation>include</is:operation>
+</is:edge>
+<is:edge edge-id="0adf4051-83c4-4ac8-a748-b987863a482f" type="forwarding">
+<is:tail module-id="d4c9b9c0-cba4-4c10-8039-d4d525a83733" port-id="3"/>
+<is:head module-id="3f0b67bf-f05d-435a-bd08-7ed73a788db8" port-id="2"/>
+<is:operation>output</is:operation>
+</is:edge>
+<is:edge edge-id="74af226e-1511-415d-904a-402173c5665d" type="capsular">
+<is:tail module-id="111fcb49-2c9f-4db0-befd-8fe95747d3a7" port-id="0"/>
+<is:head module-id="7b211684-371e-417c-8847-0519d4c11911" port-id="0"/>
+<is:operation>include</is:operation>
+</is:edge>
+<is:edge edge-id="b2a9540a-8a1e-46ba-9d58-8b228b615d3e" type="forwarding">
+<is:tail module-id="e864f93b-ad99-472a-8656-5abd83f8cca6" port-id="1"/>
+<is:head module-id="092a054c-327e-43bc-ab6e-015589e7e767" port-id="1"/>
+<is:operation>input</is:operation>
+</is:edge>
+<is:edge edge-id="554b0b5d-8dad-4b46-86d0-d8c844b26b15" type="forwarding">
+<is:tail module-id="6b8b00a1-c1d9-4d29-9abd-6103235e6733" port-id="3"/>
+<is:head module-id="91f5edcc-ebc8-4c6d-b820-f171c0f6e2bd" port-id="2"/>
+<is:operation>output</is:operation>
+</is:edge>
+<is:edge edge-id="da550d6c-8883-46e9-b359-a9f9a5b29159" type="forwarding">
+<is:tail module-id="092a054c-327e-43bc-ab6e-015589e7e767" port-id="3"/>
+<is:head module-id="e864f93b-ad99-472a-8656-5abd83f8cca6" port-id="2"/>
+<is:operation>output</is:operation>
+</is:edge>
+<is:edge edge-id="4cee99ca-7109-44c2-95b1-70dca2650001" type="forwarding">
+<is:tail module-id="91f5edcc-ebc8-4c6d-b820-f171c0f6e2bd" port-id="1"/>
+<is:head module-id="cdcc1233-364d-4978-80a9-b597f8cede08" port-id="1"/>
+<is:operation>input</is:operation>
+</is:edge>
+<is:edge edge-id="00c07212-982e-44e8-8e11-45ee3ea83fa2" type="functional">
+<is:tail module-id="7d172d96-4582-432d-a114-94ca33680594" port-id="5"/>
+<is:head module-id="91f5edcc-ebc8-4c6d-b820-f171c0f6e2bd" port-id="1"/>
+<is:operation>InterfaceLink</is:operation>
+</is:edge>
+<is:edge edge-id="8f9066f0-c263-427f-b864-52dd61c2b837" type="capsular">
+<is:tail module-id="6b8b00a1-c1d9-4d29-9abd-6103235e6733" port-id="0"/>
+<is:head module-id="91f5edcc-ebc8-4c6d-b820-f171c0f6e2bd" port-id="0"/>
+<is:operation>include</is:operation>
+</is:edge>
+<is:edge edge-id="7d1c168f-81d8-4830-bb95-7fb54416e911" type="forwarding">
+<is:tail module-id="111fcb49-2c9f-4db0-befd-8fe95747d3a7" port-id="3"/>
+<is:head module-id="7b211684-371e-417c-8847-0519d4c11911" port-id="2"/>
+<is:operation>output</is:operation>
+</is:edge>
+<is:edge edge-id="380247e4-5dd5-4cf1-badf-104f39ae1793" type="functional">
+<is:tail module-id="70445cae-3cd1-40e8-84d0-e48347141e51" port-id="5"/>
+<is:head module-id="e864f93b-ad99-472a-8656-5abd83f8cca6" port-id="1"/>
+<is:operation>InterfaceLink</is:operation>
+</is:edge>
+<is:edge edge-id="f983c031-d46a-4846-a50a-49adca2703c8" type="functional">
+<is:tail module-id="cdcc1233-364d-4978-80a9-b597f8cede08" port-id="2"/>
+<is:head module-id="6b8b00a1-c1d9-4d29-9abd-6103235e6733" port-id="2"/>
+<is:operation>InterfaceLink</is:operation>
+</is:edge>
+<is:edge edge-id="2cbb5732-8951-4154-b532-447f8a4739a3" type="capsular">
+<is:tail module-id="092a054c-327e-43bc-ab6e-015589e7e767" port-id="0"/>
+<is:head module-id="e864f93b-ad99-472a-8656-5abd83f8cca6" port-id="0"/>
+<is:operation>include</is:operation>
+</is:edge>
+<is:edge edge-id="ac3afb23-18a2-47a5-8d89-e6bce83e6d4e" type="forwarding">
+<is:tail module-id="3f0b67bf-f05d-435a-bd08-7ed73a788db8" port-id="1"/>
+<is:head module-id="b9adeb29-b1cd-42d9-98bc-7cc41c80461b" port-id="1"/>
+<is:operation>input</is:operation>
+</is:edge>
+<is:edge edge-id="1f8586ef-23d0-4064-ae2e-3d1d04d264f5" type="structural">
+<is:tail module-id="36414695-386d-450f-97d7-5a877876b379" port-id="0"/>
+<is:head module-id="bbff57f5-5624-49ce-85f3-41d02939f6e0" port-id="0"/>
+<is:operation>include</is:operation>
+</is:edge>
+<is:edge edge-id="1e8b3740-3cee-495a-aa37-b6b6fa02faf8" type="capsular">
+<is:tail module-id="e4c78e10-c815-4557-960d-a9584ca9b11c" port-id="0"/>
+<is:head module-id="82a04b03-1a00-4c47-b0e3-ddc85bd9b94d" port-id="0"/>
+<is:operation>include</is:operation>
+</is:edge>
+<is:edge edge-id="ff7ad0b9-b2cc-41ad-9f1b-10d77e277fc8" type="structural">
+<is:tail module-id="c36a7556-00be-494a-ae3a-06a1af1910ba" port-id="0"/>
+<is:head module-id="111fcb49-2c9f-4db0-befd-8fe95747d3a7" port-id="0"/>
+<is:operation>include</is:operation>
+</is:edge>
+<is:edge edge-id="8e38ba4a-7c65-48ea-969e-0fdf32a98c12" type="functional">
+<is:tail module-id="5d9efcc7-5e06-4aae-8e15-ddb4d422fc3e" port-id="1"/>
+<is:head module-id="092a054c-327e-43bc-ab6e-015589e7e767" port-id="2"/>
+<is:operation>InterfaceLink</is:operation>
+</is:edge>
+<is:edge edge-id="3d0aa265-2246-40c4-8177-62c92b771587" type="structural">
+<is:tail module-id="b9adeb29-b1cd-42d9-98bc-7cc41c80461b" port-id="0"/>
+<is:head module-id="d4c9b9c0-cba4-4c10-8039-d4d525a83733" port-id="0"/>
+<is:operation>include</is:operation>
+</is:edge>
+<is:edge edge-id="44a691e5-efd7-465a-a958-6d3c49ac4525" type="structural">
+<is:tail module-id="db3bf83c-0b42-4867-b844-9725aee01265" port-id="0"/>
+<is:head module-id="7d172d96-4582-432d-a114-94ca33680594" port-id="0"/>
+<is:operation>include</is:operation>
+</is:edge>
+<is:edge edge-id="1f8a4e02-cd83-45e7-b829-c3d1573ae090" type="forwarding">
+<is:tail module-id="5f7279c3-19a5-495a-88a5-a246d5ee35e2" port-id="1"/>
+<is:head module-id="7d172d96-4582-432d-a114-94ca33680594" port-id="1"/>
+<is:operation>input</is:operation>
+</is:edge>
+<is:edge edge-id="ca08604f-a314-4b75-ae64-a5023b7352d2" type="functional">
+<is:tail module-id="70445cae-3cd1-40e8-84d0-e48347141e51" port-id="5"/>
+<is:head module-id="82a04b03-1a00-4c47-b0e3-ddc85bd9b94d" port-id="1"/>
+<is:operation>InterfaceLink</is:operation>
+</is:edge>
+<is:edge edge-id="730be671-0c93-4e1b-9bc0-8d329a10528a" type="forwarding">
+<is:tail module-id="82a04b03-1a00-4c47-b0e3-ddc85bd9b94d" port-id="1"/>
+<is:head module-id="e4c78e10-c815-4557-960d-a9584ca9b11c" port-id="1"/>
+<is:operation>input</is:operation>
+</is:edge>
+<is:edge edge-id="48a1b6bb-83d6-4c62-9785-2139a41b9daa" type="structural">
+<is:tail module-id="c78b1a29-b288-4837-b03b-1ce3d730aabc" port-id="0"/>
+<is:head module-id="7d172d96-4582-432d-a114-94ca33680594" port-id="0"/>
+<is:operation>include</is:operation>
+</is:edge>
+<is:edge edge-id="02e329ac-1f81-4990-80d6-6764d9855dda" type="capsular">
+<is:tail module-id="755faecb-8fec-432c-a838-135fd3837530" port-id="0"/>
+<is:head module-id="cdcc1233-364d-4978-80a9-b597f8cede08" port-id="0"/>
+<is:operation>include</is:operation>
+</is:edge>
+<is:edge edge-id="a41d8ba6-ea78-4fbd-b533-773519e12725" type="capsular">
+<is:tail module-id="7d172d96-4582-432d-a114-94ca33680594" port-id="0"/>
+<is:head module-id="5f7279c3-19a5-495a-88a5-a246d5ee35e2" port-id="0"/>
+<is:operation>include</is:operation>
+</is:edge>
+<is:edge edge-id="a6fc87a9-71f8-4ad3-8288-4d8f38d796e3" type="forwarding">
+<is:tail module-id="3f0b67bf-f05d-435a-bd08-7ed73a788db8" port-id="1"/>
+<is:head module-id="d4c9b9c0-cba4-4c10-8039-d4d525a83733" port-id="1"/>
+<is:operation>input</is:operation>
+</is:edge>
+<is:edge edge-id="f8e84346-0c62-451f-a02e-72adb45d1fd6" type="structural">
+<is:tail module-id="0e1e8e29-1a3e-477c-8de7-f979333284b1" port-id="0"/>
+<is:head module-id="755faecb-8fec-432c-a838-135fd3837530" port-id="0"/>
+<is:operation>include</is:operation>
+</is:edge>
+<is:edge edge-id="2e779d02-0aa1-414b-8e1b-d584730e6d73" type="functional">
+<is:tail module-id="4637a2e9-fa64-494d-a4f1-385c9e92e203" port-id="2"/>
+<is:head module-id="c487e8ee-622d-490d-a25c-9d42f22e4113" port-id="2"/>
+<is:operation>InterfaceLink</is:operation>
+</is:edge>
+<is:edge edge-id="a49f72b5-b623-4435-a06b-c6a44c1a9ece" type="structural">
+<is:tail module-id="c32a8fdc-6195-4670-ae02-176accf29210" port-id="0"/>
+<is:head module-id="bbff57f5-5624-49ce-85f3-41d02939f6e0" port-id="0"/>
+<is:operation>include</is:operation>
+</is:edge>
+<is:edge edge-id="89449d63-ae0f-45d9-b1a9-aebb629b85c3" type="functional">
+<is:tail module-id="7d172d96-4582-432d-a114-94ca33680594" port-id="5"/>
+<is:head module-id="db3bf83c-0b42-4867-b844-9725aee01265" port-id="1"/>
+<is:operation>InterfaceLink</is:operation>
+</is:edge>
+<is:edge edge-id="bf15120a-d46d-44c0-b754-b3b5905ad9b0" type="structural">
+<is:tail module-id="5d9efcc7-5e06-4aae-8e15-ddb4d422fc3e" port-id="0"/>
+<is:head module-id="092a054c-327e-43bc-ab6e-015589e7e767" port-id="0"/>
+<is:operation>include</is:operation>
+</is:edge>
+<is:edge edge-id="60f7a2b2-c708-4392-9159-195719594b32" type="forwarding">
+<is:tail module-id="82a04b03-1a00-4c47-b0e3-ddc85bd9b94d" port-id="1"/>
+<is:head module-id="7b211684-371e-417c-8847-0519d4c11911" port-id="1"/>
+<is:operation>input</is:operation>
+</is:edge>
+<is:edge edge-id="1e65e1c6-4ea5-42b3-887c-968ccb03da54" type="functional">
+<is:tail module-id="4ee0fd6a-7f16-454e-91d7-d0f46f794134" port-id="2"/>
+<is:head module-id="ebc94b45-3696-4976-b246-8d8fa7a3f787" port-id="1"/>
+<is:operation>InterfaceLink</is:operation>
+</is:edge>
+<is:edge edge-id="4f6d3a3a-7d06-4754-a218-5143449ef1fd" type="capsular">
+<is:tail module-id="bbff57f5-5624-49ce-85f3-41d02939f6e0" port-id="0"/>
+<is:head module-id="4637a2e9-fa64-494d-a4f1-385c9e92e203" port-id="0"/>
+<is:operation>include</is:operation>
+</is:edge>
+<is:edge edge-id="e9f41b4c-2dd6-4fcd-984c-67cf44df69c0" type="functional">
+<is:tail module-id="e864f93b-ad99-472a-8656-5abd83f8cca6" port-id="2"/>
+<is:head module-id="70445cae-3cd1-40e8-84d0-e48347141e51" port-id="4"/>
+<is:operation>InterfaceLink</is:operation>
+</is:edge>
+<is:edge edge-id="353a92f4-6947-4ff8-bf79-4c4c64bbded8" type="functional">
+<is:tail module-id="db3bf83c-0b42-4867-b844-9725aee01265" port-id="2"/>
+<is:head module-id="7d172d96-4582-432d-a114-94ca33680594" port-id="3"/>
+<is:operation>InterfaceLink</is:operation>
+</is:edge>
+<is:edge edge-id="ec0a772f-19a0-4301-88cc-c8677c078c1c" type="forwarding">
+<is:tail module-id="487789ab-92aa-4898-b473-3795abb2f7d5" port-id="1"/>
+<is:head module-id="70445cae-3cd1-40e8-84d0-e48347141e51" port-id="1"/>
+<is:operation>input</is:operation>
+</is:edge>
+<is:edge edge-id="9ddcc731-4e00-4a71-b54d-baf5f7e63fc4" type="functional">
+<is:tail module-id="7752df9b-8156-4c68-bf9e-5bd1d09affb8" port-id="4"/>
+<is:head module-id="5f7279c3-19a5-495a-88a5-a246d5ee35e2" port-id="1"/>
+</is:edge>
+<is:edge edge-id="11d87d49-d758-47e2-9a5e-6849dbffebc8" type="forwarding">
+<is:tail module-id="c78b1a29-b288-4837-b03b-1ce3d730aabc" port-id="1"/>
+<is:head module-id="d9cb09c1-285b-44e5-a7bf-d8794023d632" port-id="1"/>
+<is:operation>input</is:operation>
+</is:edge>
+<is:edge edge-id="0039dc97-a3bc-4a5c-87cd-3dd836ada770" type="forwarding">
+<is:tail module-id="7d172d96-4582-432d-a114-94ca33680594" port-id="5"/>
+<is:head module-id="5f7279c3-19a5-495a-88a5-a246d5ee35e2" port-id="2"/>
+<is:operation>output</is:operation>
+</is:edge>
+<is:edge edge-id="62a5cff9-e23f-4603-ae3d-ecc70989fa0f" type="functional">
+<is:tail module-id="c36a7556-00be-494a-ae3a-06a1af1910ba" port-id="2"/>
+<is:head module-id="111fcb49-2c9f-4db0-befd-8fe95747d3a7" port-id="1"/>
+<is:operation>InterfaceLink</is:operation>
+</is:edge>
+<is:edge edge-id="0f5e9740-32c1-4c1f-9713-b3cbea0b46ec" type="forwarding">
+<is:tail module-id="91f5edcc-ebc8-4c6d-b820-f171c0f6e2bd" port-id="1"/>
+<is:head module-id="6b8b00a1-c1d9-4d29-9abd-6103235e6733" port-id="1"/>
+<is:operation>input</is:operation>
+</is:edge>
+<is:edge edge-id="e6960306-c22c-442c-80db-986eabab74b0" type="forwarding">
+<is:tail module-id="4637a2e9-fa64-494d-a4f1-385c9e92e203" port-id="1"/>
+<is:head module-id="36414695-386d-450f-97d7-5a877876b379" port-id="1"/>
+<is:operation>input</is:operation>
+</is:edge>
+<is:edge edge-id="80380086-ad1a-4b0e-a786-8652a200eec9" type="forwarding">
+<is:tail module-id="df99ad1b-7f33-439d-8380-38182b393aa6" port-id="1"/>
+<is:head module-id="2eb8c1fa-58ee-48d1-b8d3-40d627ef2144" port-id="1"/>
+<is:operation>output</is:operation>
+</is:edge>
+<is:edge edge-id="fb0673e5-0801-4675-916c-4014bc888df8" type="forwarding">
+<is:tail module-id="d9cb09c1-285b-44e5-a7bf-d8794023d632" port-id="3"/>
+<is:head module-id="c78b1a29-b288-4837-b03b-1ce3d730aabc" port-id="2"/>
+<is:operation>output</is:operation>
+</is:edge>
+<is:edge edge-id="79316356-e0d3-4f14-a7b0-9804d832c38a" type="structural">
+<is:tail module-id="82a04b03-1a00-4c47-b0e3-ddc85bd9b94d" port-id="0"/>
+<is:head module-id="70445cae-3cd1-40e8-84d0-e48347141e51" port-id="0"/>
+<is:operation>include</is:operation>
+</is:edge>
+<is:edge edge-id="389ddc00-8032-4f5e-8db3-19f1f5084596" type="functional">
+<is:tail module-id="ef7d8d57-5ce3-4304-9dc6-08a119588dac" port-id="2"/>
+<is:head module-id="111fcb49-2c9f-4db0-befd-8fe95747d3a7" port-id="2"/>
+<is:operation>InterfaceLink</is:operation>
+</is:edge>
+<is:edge edge-id="c88a8a1c-9505-418b-b39d-5afcecf8c876" type="forwarding">
+<is:tail module-id="7b211684-371e-417c-8847-0519d4c11911" port-id="1"/>
+<is:head module-id="ef7d8d57-5ce3-4304-9dc6-08a119588dac" port-id="1"/>
+<is:operation>input</is:operation>
+</is:edge>
+<is:edge edge-id="5be7be90-43f5-42e4-8db8-222fa80a0fd9" type="forwarding">
+<is:tail module-id="755faecb-8fec-432c-a838-135fd3837530" port-id="2"/>
+<is:head module-id="cdcc1233-364d-4978-80a9-b597f8cede08" port-id="2"/>
+<is:operation>output</is:operation>
+</is:edge>
+<is:edge edge-id="34dc8ba7-4ab0-4074-83a7-bacbd835b796" type="capsular">
+<is:tail module-id="df99ad1b-7f33-439d-8380-38182b393aa6" port-id="0"/>
+<is:head module-id="2eb8c1fa-58ee-48d1-b8d3-40d627ef2144" port-id="0"/>
+<is:operation>include</is:operation>
+</is:edge>
+<is:edge edge-id="bdf5198c-902d-40d4-b9fb-b0e453334146" type="capsular">
+<is:tail module-id="d9cb09c1-285b-44e5-a7bf-d8794023d632" port-id="0"/>
+<is:head module-id="c78b1a29-b288-4837-b03b-1ce3d730aabc" port-id="0"/>
+<is:operation>include</is:operation>
+</is:edge>
+<is:edge edge-id="4d1bf8fc-0d8a-4c4f-b04d-dddd03e9e18a" type="functional">
+<is:tail module-id="0e1e8e29-1a3e-477c-8de7-f979333284b1" port-id="2"/>
+<is:head module-id="755faecb-8fec-432c-a838-135fd3837530" port-id="1"/>
+<is:operation>InterfaceLink</is:operation>
+</is:edge>
+<is:edge edge-id="a50ad3f4-2d34-47b5-99f8-761d862a8591" type="structural">
+<is:tail module-id="4637a2e9-fa64-494d-a4f1-385c9e92e203" port-id="0"/>
+<is:head module-id="c487e8ee-622d-490d-a25c-9d42f22e4113" port-id="0"/>
+<is:operation>include</is:operation>
+</is:edge>
+<is:edge edge-id="3be4deb4-ec58-457a-a22a-24c4b918a598" type="functional">
+<is:tail module-id="c78b1a29-b288-4837-b03b-1ce3d730aabc" port-id="2"/>
+<is:head module-id="7d172d96-4582-432d-a114-94ca33680594" port-id="4"/>
+<is:operation>InterfaceLink</is:operation>
+</is:edge>
+<is:edge edge-id="2222606b-b00c-4371-b471-abf3f77e9e58" type="forwarding">
+<is:tail module-id="53f6d30b-8dbc-4375-8577-9af99ca95be4" port-id="1"/>
+<is:head module-id="5d9efcc7-5e06-4aae-8e15-ddb4d422fc3e" port-id="1"/>
+<is:operation>output</is:operation>
+</is:edge>
+<is:edge edge-id="07d6670c-4269-4856-b9b6-ec83bffce8ce" type="forwarding">
+<is:tail module-id="b9adeb29-b1cd-42d9-98bc-7cc41c80461b" port-id="1"/>
+<is:head module-id="4ee0fd6a-7f16-454e-91d7-d0f46f794134" port-id="1"/>
+<is:operation>input</is:operation>
+</is:edge>
+<is:edge edge-id="798236eb-6b16-4e11-9e20-ac2bf140ceef" type="forwarding">
+<is:tail module-id="ebc94b45-3696-4976-b246-8d8fa7a3f787" port-id="2"/>
+<is:head module-id="b9adeb29-b1cd-42d9-98bc-7cc41c80461b" port-id="2"/>
+<is:operation>output</is:operation>
+</is:edge>
+<is:edge edge-id="0bcd519c-069f-4df8-9469-876a717890c9" type="capsular">
+<is:tail module-id="c487e8ee-622d-490d-a25c-9d42f22e4113" port-id="0"/>
+<is:head module-id="db3bf83c-0b42-4867-b844-9725aee01265" port-id="0"/>
+<is:operation>include</is:operation>
+</is:edge>
+<is:edge edge-id="17837401-4b1c-4630-aecc-54593c0ec774" type="functional">
+<is:tail module-id="3f0b67bf-f05d-435a-bd08-7ed73a788db8" port-id="2"/>
+<is:head module-id="70445cae-3cd1-40e8-84d0-e48347141e51" port-id="2"/>
+<is:operation>InterfaceLink</is:operation>
+</is:edge>
+<is:edge edge-id="30c7a175-190f-40e5-92a1-6fa340b704f1" type="functional">
+<is:tail module-id="91f5edcc-ebc8-4c6d-b820-f171c0f6e2bd" port-id="2"/>
+<is:head module-id="7d172d96-4582-432d-a114-94ca33680594" port-id="2"/>
+<is:operation>InterfaceLink</is:operation>
+</is:edge>
+<is:edge edge-id="a431270e-1c09-4572-92ff-52a535a15263" type="forwarding">
+<is:tail module-id="db3bf83c-0b42-4867-b844-9725aee01265" port-id="1"/>
+<is:head module-id="c487e8ee-622d-490d-a25c-9d42f22e4113" port-id="1"/>
+<is:operation>input</is:operation>
+</is:edge>
+<is:edge edge-id="2001dfdf-211e-4e32-b533-29ad2e01132d" type="structural">
+<is:tail module-id="7742adbc-c284-4784-b441-df54a20c5916" port-id="0"/>
+<is:head module-id="d9cb09c1-285b-44e5-a7bf-d8794023d632" port-id="0"/>
+<is:operation>include</is:operation>
+</is:edge>
+<is:edge edge-id="59ecaf07-6a6d-4c4e-9dfe-46dc738d651d" type="functional">
+<is:tail module-id="7742adbc-c284-4784-b441-df54a20c5916" port-id="1"/>
+<is:head module-id="d9cb09c1-285b-44e5-a7bf-d8794023d632" port-id="2"/>
+<is:operation>InterfaceLink</is:operation>
+</is:edge>
+<is:edge edge-id="b33d2b68-f25c-4614-a4b9-633bae98e0de" type="forwarding">
+<is:tail module-id="bbff57f5-5624-49ce-85f3-41d02939f6e0" port-id="3"/>
+<is:head module-id="4637a2e9-fa64-494d-a4f1-385c9e92e203" port-id="2"/>
+<is:operation>output</is:operation>
+</is:edge>
+<is:edge edge-id="f0c0a56c-22d3-408f-b8f2-336cf9420cac" type="functional">
+<is:tail module-id="c32a8fdc-6195-4670-ae02-176accf29210" port-id="2"/>
+<is:head module-id="bbff57f5-5624-49ce-85f3-41d02939f6e0" port-id="2"/>
+<is:operation>InterfaceLink</is:operation>
+</is:edge>
+<is:edge edge-id="d2d52889-e9c0-4f4e-82d8-da9f8d020a53" type="functional">
+<is:tail module-id="2eb8c1fa-58ee-48d1-b8d3-40d627ef2144" port-id="1"/>
+<is:head module-id="63f394df-a2fb-4f64-be94-418c91d77f93" port-id="1"/>
+</is:edge>
+<is:edge edge-id="f3e2c46c-92ae-428c-990a-fb4002b413f8" type="functional">
+<is:tail module-id="7d172d96-4582-432d-a114-94ca33680594" port-id="5"/>
+<is:head module-id="c78b1a29-b288-4837-b03b-1ce3d730aabc" port-id="1"/>
+<is:operation>InterfaceLink</is:operation>
+</is:edge>
+<is:edge edge-id="e51eb879-1997-4380-8e19-adb0f22cadfc" type="structural">
+<is:tail module-id="7b211684-371e-417c-8847-0519d4c11911" port-id="0"/>
+<is:head module-id="e4c78e10-c815-4557-960d-a9584ca9b11c" port-id="0"/>
+<is:operation>include</is:operation>
+</is:edge>
+<is:edge edge-id="b31e89d6-e7b6-4e08-a379-6fb213c4d299" type="structural">
+<is:tail module-id="cdcc1233-364d-4978-80a9-b597f8cede08" port-id="0"/>
+<is:head module-id="6b8b00a1-c1d9-4d29-9abd-6103235e6733" port-id="0"/>
+<is:operation>include</is:operation>
+</is:edge>
+<is:edge edge-id="94012dab-5f59-4c3e-8438-2684db943719" type="capsular">
+<is:tail module-id="70445cae-3cd1-40e8-84d0-e48347141e51" port-id="0"/>
+<is:head module-id="487789ab-92aa-4898-b473-3795abb2f7d5" port-id="0"/>
+<is:operation>include</is:operation>
+</is:edge>
+<is:edge edge-id="e584cacc-f090-4b8a-9280-9d55c415b3b6" type="structural">
+<is:tail module-id="4ee0fd6a-7f16-454e-91d7-d0f46f794134" port-id="0"/>
+<is:head module-id="ebc94b45-3696-4976-b246-8d8fa7a3f787" port-id="0"/>
+<is:operation>include</is:operation>
+</is:edge>
+<is:edge edge-id="23f5e7a4-ba20-42e4-b7d7-8778b8fd57ca" type="forwarding">
+<is:tail module-id="70445cae-3cd1-40e8-84d0-e48347141e51" port-id="5"/>
+<is:head module-id="487789ab-92aa-4898-b473-3795abb2f7d5" port-id="2"/>
+<is:operation>output</is:operation>
+</is:edge>
+<is:edge edge-id="8a28a743-0a53-4c05-89f2-632fe7c1b737" type="forwarding">
+<is:tail module-id="7b211684-371e-417c-8847-0519d4c11911" port-id="1"/>
+<is:head module-id="c36a7556-00be-494a-ae3a-06a1af1910ba" port-id="1"/>
+<is:operation>input</is:operation>
+</is:edge>
+<is:edge edge-id="ba989609-7ed0-437f-8657-cd1a2be046ab" type="capsular">
+<is:tail module-id="3d39f968-905b-4df5-afe9-985763e11187" port-id="0"/>
+<is:head module-id="7742adbc-c284-4784-b441-df54a20c5916" port-id="0"/>
+<is:operation>include</is:operation>
+</is:edge>
+<is:edge edge-id="be8716ee-f1ae-425e-b155-1041ad8e2e85" type="functional">
+<is:tail module-id="487789ab-92aa-4898-b473-3795abb2f7d5" port-id="2"/>
+<is:head module-id="7752df9b-8156-4c68-bf9e-5bd1d09affb8" port-id="1"/>
+</is:edge>
+<is:edge edge-id="91d4e128-9744-4d59-a333-5a6b49450c70" type="functional">
+<is:tail module-id="82a04b03-1a00-4c47-b0e3-ddc85bd9b94d" port-id="2"/>
+<is:head module-id="70445cae-3cd1-40e8-84d0-e48347141e51" port-id="3"/>
+<is:operation>InterfaceLink</is:operation>
+</is:edge>
+<is:edge edge-id="1ec8ebf2-e476-4c43-9d1f-50091400d3ab" type="forwarding">
+<is:tail module-id="4637a2e9-fa64-494d-a4f1-385c9e92e203" port-id="1"/>
+<is:head module-id="c32a8fdc-6195-4670-ae02-176accf29210" port-id="1"/>
+<is:operation>input</is:operation>
+</is:edge>
+<is:edge edge-id="f85bc1a6-d4d6-40c1-a804-25d988a3d09f" type="functional">
+<is:tail module-id="63f394df-a2fb-4f64-be94-418c91d77f93" port-id="3"/>
+<is:head module-id="487789ab-92aa-4898-b473-3795abb2f7d5" port-id="1"/>
+</is:edge>
+<is:edge edge-id="5f4c4de2-fee9-404b-803c-ce545f8eb060" type="capsular">
+<is:tail module-id="d4c9b9c0-cba4-4c10-8039-d4d525a83733" port-id="0"/>
+<is:head module-id="3f0b67bf-f05d-435a-bd08-7ed73a788db8" port-id="0"/>
+<is:operation>include</is:operation>
+</is:edge>
+<is:edge edge-id="cf275fbc-2a55-4b21-b4df-f7e917541976" type="functional">
+<is:tail module-id="5f7279c3-19a5-495a-88a5-a246d5ee35e2" port-id="2"/>
+<is:head module-id="7752df9b-8156-4c68-bf9e-5bd1d09affb8" port-id="2"/>
+</is:edge>
+<is:edge edge-id="099fee99-0a73-4fbe-a0f1-ea56200ec8f7" type="functional">
+<is:tail module-id="70445cae-3cd1-40e8-84d0-e48347141e51" port-id="5"/>
+<is:head module-id="3f0b67bf-f05d-435a-bd08-7ed73a788db8" port-id="1"/>
+<is:operation>InterfaceLink</is:operation>
+</is:edge>
+<is:edge edge-id="78d30456-f612-47ec-8ec3-a5d948c434f9" type="structural">
+<is:tail module-id="3f0b67bf-f05d-435a-bd08-7ed73a788db8" port-id="0"/>
+<is:head module-id="70445cae-3cd1-40e8-84d0-e48347141e51" port-id="0"/>
+<is:operation>include</is:operation>
+</is:edge>
+<is:edge edge-id="894c53ef-b8e8-4c3a-b9b3-ffc02614b88f" type="functional">
+<is:tail module-id="7752df9b-8156-4c68-bf9e-5bd1d09affb8" port-id="3"/>
+<is:head module-id="63f394df-a2fb-4f64-be94-418c91d77f93" port-id="2"/>
+</is:edge>
+<is:edge edge-id="e9042ed1-b248-408f-a177-fe31725b8e76" type="functional">
+<is:tail module-id="b9adeb29-b1cd-42d9-98bc-7cc41c80461b" port-id="2"/>
+<is:head module-id="d4c9b9c0-cba4-4c10-8039-d4d525a83733" port-id="2"/>
+<is:operation>InterfaceLink</is:operation>
+</is:edge>
+<is:edge edge-id="2d44b457-3619-4023-9984-0f7402ffca19" type="capsular">
+<is:tail module-id="ebc94b45-3696-4976-b246-8d8fa7a3f787" port-id="0"/>
+<is:head module-id="b9adeb29-b1cd-42d9-98bc-7cc41c80461b" port-id="0"/>
+<is:operation>include</is:operation>
+</is:edge>
+<is:edge edge-id="302762a6-4cce-4a1b-8b22-893f24ee63f5" type="forwarding">
+<is:tail module-id="c487e8ee-622d-490d-a25c-9d42f22e4113" port-id="3"/>
+<is:head module-id="db3bf83c-0b42-4867-b844-9725aee01265" port-id="2"/>
+<is:operation>output</is:operation>
+</is:edge>
+<is:edge edge-id="983375c4-65c2-45fa-9f3f-d74f554701e5" type="structural">
+<is:tail module-id="91f5edcc-ebc8-4c6d-b820-f171c0f6e2bd" port-id="0"/>
+<is:head module-id="7d172d96-4582-432d-a114-94ca33680594" port-id="0"/>
+<is:operation>include</is:operation>
+</is:edge>
+<is:edge edge-id="6bb16a60-970b-448e-9bbb-a068e3536190" type="functional">
+<is:tail module-id="36414695-386d-450f-97d7-5a877876b379" port-id="2"/>
+<is:head module-id="bbff57f5-5624-49ce-85f3-41d02939f6e0" port-id="1"/>
+<is:operation>InterfaceLink</is:operation>
+</is:edge>
+<is:edge edge-id="b68fd7ea-9715-4d8f-9975-6ecab680424a" type="forwarding">
+<is:tail module-id="3d39f968-905b-4df5-afe9-985763e11187" port-id="1"/>
+<is:head module-id="7742adbc-c284-4784-b441-df54a20c5916" port-id="1"/>
+<is:operation>output</is:operation>
+</is:edge>
+<is:edge edge-id="cefd464c-553b-4fce-b469-dda3218645cb" type="forwarding">
+<is:tail module-id="db3bf83c-0b42-4867-b844-9725aee01265" port-id="1"/>
+<is:head module-id="4637a2e9-fa64-494d-a4f1-385c9e92e203" port-id="1"/>
+<is:operation>input</is:operation>
+</is:edge>
+<is:edge edge-id="f18bbc1b-1eeb-4ad7-9715-8dcd654acbd4" type="structural">
+<is:tail module-id="e864f93b-ad99-472a-8656-5abd83f8cca6" port-id="0"/>
+<is:head module-id="70445cae-3cd1-40e8-84d0-e48347141e51" port-id="0"/>
+<is:operation>include</is:operation>
+</is:edge>
+<is:edge edge-id="9815519c-38fd-428d-a771-670246e9dbbd" type="functional">
+<is:tail module-id="7b211684-371e-417c-8847-0519d4c11911" port-id="2"/>
+<is:head module-id="e4c78e10-c815-4557-960d-a9584ca9b11c" port-id="2"/>
+<is:operation>InterfaceLink</is:operation>
+</is:edge>
+<is:edge edge-id="a9352c15-8bc2-40d8-b4f4-8c3976c2e5c4" type="capsular">
+<is:tail module-id="53f6d30b-8dbc-4375-8577-9af99ca95be4" port-id="0"/>
+<is:head module-id="5d9efcc7-5e06-4aae-8e15-ddb4d422fc3e" port-id="0"/>
+<is:operation>include</is:operation>
+</is:edge>
+</is:edge-set>
+</is:insilico-model>
+

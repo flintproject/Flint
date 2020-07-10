@@ -14,6 +14,7 @@ We have tested our procedure on Windows 10.
   Besides the default installation, the following programs are needed:
   - 7z
   - wget
+  - xmlstarlet
 
 * Visual Studio 2019
   https://www.visualstudio.com/

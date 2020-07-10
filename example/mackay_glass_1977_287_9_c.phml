@@ -1,0 +1,422 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<is:insilico-model  xmlns:bqmodel="http://biomodels.net/model-qualifiers/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:svg="http://www.w3.org/2000/svg" xmlns:is="http://www.physiome.jp/ns/insilicoml" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:vCard="http://www.w3.org/2001/vcard-rdf/3.0#" xmlns:ts="http://www.physiome.jp/ns/timeseriesml" xmlns:bqbiol="http://biomodels.net/biology-qualifiers/" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:m="http://www.w3.org/1998/Math/MathML" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:pd="http://www.physiodesigner.org/2012/ns/physiodesigner/1.0">
+<is:header>
+<is:model-name>mackay_glass_1977_287_9_c</is:model-name>
+<is:meta-information>
+<is:article-set>
+<is:article article-id="1"  type="model-proposal">
+<is:journal>
+<is:journal-title>Science (New York, N.Y.)</is:journal-title>
+<is:publisher-name/>
+<is:volume>197</is:volume>
+<is:journal-title>4300</is:journal-title>
+<is:publication-date>
+<is:year>1977</is:year>
+<is:month>7</is:month>
+</is:publication-date>
+</is:journal>
+<is:pubmed-id>267326</is:pubmed-id>
+<is:article-title>Oscillation and chaos in physiological control systems.</is:article-title>
+<is:target-model-set>
+<is:target-model db-id="this"/>
+</is:target-model-set>
+<is:author>
+<is:first-name>M C</is:first-name>
+<is:middle-name/>
+<is:last-name>Mackey</is:last-name>
+</is:author>
+<is:author>
+<is:first-name>L</is:first-name>
+<is:middle-name/>
+<is:last-name>Glass</is:last-name>
+</is:author>
+</is:article>
+</is:article-set>
+<is:creator-set>
+<is:creator creator-id="0">
+<is:person-name>
+<is:first-name>Takeshi</is:first-name>
+<is:last-name>Abe</is:last-name>
+</is:person-name>
+<is:affiliation-set>
+<is:affiliation>
+<is:organization>The Center for Advanced Medical Engineering and Informatics. Osaka University</is:organization>
+<is:contact>
+<is:address/>
+<is:email/>
+</is:contact>
+</is:affiliation>
+</is:affiliation-set>
+<is:target-model-set>
+<is:target-model db-id="this"/>
+</is:target-model-set>
+</is:creator>
+</is:creator-set>
+</is:meta-information>
+<is:generator>sisml</is:generator>
+<is:date>
+<is:registered>2011-02-28T15:51:27+09:00</is:registered>
+<is:created>2011-02-28T09:40:15+09:00</is:created>
+<is:downloaded>2011-04-28T13:54:07+09:00</is:downloaded>
+<is:last-modified>2016-08-22T03:16:50+09:00</is:last-modified>
+</is:date>
+<is:description>This model includes delayed differential equation. References: M C Mackey, L Glass, Oscillation and chaos in physiological control systems, Science (New York, N.Y.), vol. 197, 1977</is:description>
+<is:numerical-configuration>
+<is:algorithm>
+<is:random-generator type="" name=""/>
+<is:integration name="euler"/>
+</is:algorithm>
+<is:simulation-time-span unit-id="11">600</is:simulation-time-span>
+<is:time-discretization  unit-id="11">
+<is:step>0.01</is:step>
+</is:time-discretization>
+</is:numerical-configuration>
+</is:header>
+<is:unit-set>
+<is:unit unit-id="11">
+<is:name>day</is:name>
+<is:element unit-id="3"  multiplier="86400"/>
+</is:unit>
+<is:unit unit-id="10">
+<is:name>gram</is:name>
+<is:element unit-id="2"  prefix="milli"/>
+</is:unit>
+<is:unit unit-id="1">
+<is:name>metre</is:name>
+</is:unit>
+<is:unit unit-id="0">
+<is:name>dimensionless</is:name>
+</is:unit>
+<is:unit unit-id="3">
+<is:name>second</is:name>
+</is:unit>
+<is:unit unit-id="2">
+<is:name>kilogram</is:name>
+</is:unit>
+<is:unit unit-id="5">
+<is:name>kelvin</is:name>
+</is:unit>
+<is:unit unit-id="4">
+<is:name>ampere</is:name>
+</is:unit>
+<is:unit unit-id="7">
+<is:name>candela</is:name>
+</is:unit>
+<is:unit unit-id="6">
+<is:name>mole</is:name>
+</is:unit>
+<is:unit unit-id="9">
+<is:name>meter</is:name>
+<is:element unit-id="1"/>
+</is:unit>
+<is:unit unit-id="8">
+<is:name>radian</is:name>
+</is:unit>
+</is:unit-set>
+
+<is:module-set>
+
+<is:module module-id="a575effe-ffb4-452f-869d-3ed2080db7f9" type="functional-unit">
+<is:property>
+<is:name>P_per_theta</is:name>
+<is:capsulation state="true">
+<is:capsulated-by module-id="5170a0c2-74f3-4db8-a662-678f592ca009"/>
+</is:capsulation>
+<is:template state="false"/>
+<is:track>
+<is:involved db-id="this" date="2011-02-25T05:40:19+09:00"/>
+</is:track>
+<is:description>P_per_theta</is:description>
+</is:property>
+
+<is:port-set>
+<is:port port-id="1" direction="out" ref-physical-quantity-id="2">
+<is:name>P_per_theta</is:name>
+<is:description>P_per_theta</is:description>
+</is:port>
+<is:port port-id="2" direction="in">
+<is:name>P</is:name>
+<is:description>P_per_theta</is:description>
+</is:port>
+</is:port-set>
+
+<is:physical-quantity-set>
+<is:physical-quantity physical-quantity-id="3" type= "variable-parameter">
+<is:name>P</is:name>
+<is:description>We consider a homogeneous population of mature circulating cells of density P.</is:description>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="0"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="assign"  sub-type="port"  format="reference">
+<is:reference  port-id="2"/>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="2" type= "variable-parameter">
+<is:name>P_per_theta</is:name>
+<is:description>P(t)/theta</is:description>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="0"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="ae"  format="mathml">
+<m:math>
+<m:apply>
+<m:eq/>
+<m:ci>P_per_theta</m:ci>
+<m:apply>
+<m:divide/>
+<m:ci>P</m:ci>
+<m:ci>theta</m:ci>
+</m:apply>
+</m:apply>
+</m:math>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="4" type= "static-parameter">
+<is:name>theta</is:name>
+<is:description>theta</is:description>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="0"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="ae"  format="mathml">
+<m:math>
+<m:apply>
+<m:eq/>
+<m:ci>theta</m:ci>
+<m:cn>1.0</m:cn>
+</m:apply>
+</m:math>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+</is:physical-quantity-set>
+<is:morphology/>
+<is:timeseries-set/>
+</is:module>
+
+<is:module module-id="5170a0c2-74f3-4db8-a662-678f592ca009" type="capsule" db-id="485">
+<is:property>
+<is:name>mackay_glass_1977_287_9_c</is:name>
+<is:capsulation state="false"/>
+<is:template state="false"/>
+<is:track>
+<is:involved db-id="485" date="2011-02-28T06:47:19+09:00"/>
+</is:track>
+</is:property>
+<is:physical-quantity-set/>
+<is:morphology/>
+<is:timeseries-set/>
+</is:module>
+
+<is:module module-id="d9e01fa1-a6a7-49c6-8f88-27b508befa1d" type="functional-unit">
+<is:property>
+<is:name>P</is:name>
+<is:capsulation state="true">
+<is:capsulated-by module-id="5170a0c2-74f3-4db8-a662-678f592ca009"/>
+</is:capsulation>
+<is:template state="false"/>
+<is:track>
+<is:involved db-id="this" date="2011-02-25T05:40:19+09:00"/>
+</is:track>
+<is:description>P</is:description>
+</is:property>
+
+<is:port-set>
+<is:port port-id="1" direction="out" ref-physical-quantity-id="2">
+<is:name>P</is:name>
+<is:description>P</is:description>
+</is:port>
+</is:port-set>
+
+<is:physical-quantity-set>
+<is:physical-quantity physical-quantity-id="3" type= "static-parameter">
+<is:name>beta_0</is:name>
+<is:description>beta_0</is:description>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="0"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="ae"  format="mathml">
+<m:math>
+<m:apply>
+<m:eq/>
+<m:ci>beta_0</m:ci>
+<m:cn>0.2</m:cn>
+</m:apply>
+</m:math>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="2" type= "state">
+<is:name>P</is:name>
+<is:description>We consider a homogeneous population of mature circulating cells of density P.</is:description>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="0"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:max-delay>20</is:max-delay>
+<is:initial-value>
+<is:definition  type="ae"  format="mathml">
+<m:math>
+<m:apply>
+<m:eq/>
+<m:ci>P</m:ci>
+<m:cn>0.1</m:cn>
+</m:apply>
+</m:math>
+</is:definition>
+</is:initial-value>
+<is:implementation>
+<is:definition  type="ode"  format="mathml"  delay="true">
+<m:math>
+<m:apply>
+<m:eq/>
+<m:apply>
+<m:diff/>
+<m:bvar>
+<m:ci>time</m:ci>
+</m:bvar>
+<m:ci>P</m:ci>
+</m:apply>
+<m:apply>
+<m:minus/>
+<m:apply>
+<m:divide/>
+<m:apply>
+<m:times/>
+<m:apply>
+<m:times/>
+<m:ci>beta_0</m:ci>
+<m:apply>
+<m:power/>
+<m:ci>theta</m:ci>
+<m:ci>n</m:ci>
+</m:apply>
+</m:apply>
+<m:apply>
+<m:csymbol>Delay</m:csymbol>
+<m:ci>P</m:ci>
+<m:cn>20</m:cn>
+</m:apply>
+</m:apply>
+<m:apply>
+<m:plus/>
+<m:apply>
+<m:power/>
+<m:ci>theta</m:ci>
+<m:ci>n</m:ci>
+</m:apply>
+<m:apply>
+<m:power/>
+<m:apply>
+<m:csymbol>Delay</m:csymbol>
+<m:ci>P</m:ci>
+<m:cn>20</m:cn>
+</m:apply>
+<m:ci>n</m:ci>
+</m:apply>
+</m:apply>
+</m:apply>
+<m:apply>
+<m:times/>
+<m:ci>gamma</m:ci>
+<m:ci>P</m:ci>
+</m:apply>
+</m:apply>
+</m:apply>
+</m:math>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="5" type= "static-parameter">
+<is:name>theta</is:name>
+<is:description>theta</is:description>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="0"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="ae"  format="mathml">
+<m:math>
+<m:apply>
+<m:eq/>
+<m:ci>theta</m:ci>
+<m:cn>1.0</m:cn>
+</m:apply>
+</m:math>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="4" type= "static-parameter">
+<is:name>n</is:name>
+<is:description>n</is:description>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="0"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="ae"  format="mathml">
+<m:math>
+<m:apply>
+<m:eq/>
+<m:ci>n</m:ci>
+<m:cn>10</m:cn>
+</m:apply>
+</m:math>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="7" type= "static-parameter">
+<is:name>gamma</is:name>
+<is:description>gamma</is:description>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="0"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="ae"  format="mathml">
+<m:math>
+<m:apply>
+<m:eq/>
+<m:ci>gamma</m:ci>
+<m:cn>0.1</m:cn>
+</m:apply>
+</m:math>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+</is:physical-quantity-set>
+<is:morphology/>
+<is:timeseries-set/>
+</is:module>
+</is:module-set>
+<is:template-set/>
+<is:instance-set/>
+<is:controller-set/>
+
+<is:edge-set>
+<is:edge edge-id="9bdf9854-9681-4ad4-9e4e-91ce896cc35d" type="capsular">
+<is:tail module-id="d9e01fa1-a6a7-49c6-8f88-27b508befa1d" port-id="0"/>
+<is:head module-id="5170a0c2-74f3-4db8-a662-678f592ca009" port-id="0"/>
+</is:edge>
+<is:edge edge-id="4cbabc14-0320-4ab5-9ae9-03912bfec796" type="functional">
+<is:tail module-id="d9e01fa1-a6a7-49c6-8f88-27b508befa1d" port-id="1"/>
+<is:head module-id="a575effe-ffb4-452f-869d-3ed2080db7f9" port-id="2"/>
+<is:operation>P</is:operation>
+<is:description>P -&gt; P</is:description>
+</is:edge>
+<is:edge edge-id="98f9d574-12d7-4ac0-adfb-c527572671ae" type="capsular">
+<is:tail module-id="a575effe-ffb4-452f-869d-3ed2080db7f9" port-id="0"/>
+<is:head module-id="5170a0c2-74f3-4db8-a662-678f592ca009" port-id="0"/>
+</is:edge>
+</is:edge-set>
+</is:insilico-model>
+

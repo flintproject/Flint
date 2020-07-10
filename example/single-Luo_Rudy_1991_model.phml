@@ -1,0 +1,6598 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<is:insilico-model  xmlns:bqmodel="http://biomodels.net/model-qualifiers/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:svg="http://www.w3.org/2000/svg" xmlns:is="http://www.physiome.jp/ns/insilicoml" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:vCard="http://www.w3.org/2001/vcard-rdf/3.0#" xmlns:ts="http://www.physiome.jp/ns/timeseriesml" xmlns:bqbiol="http://biomodels.net/biology-qualifiers/" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:m="http://www.w3.org/1998/Math/MathML" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:pd="http://www.physiodesigner.org/2012/ns/physiodesigner/1.0">
+<is:header>
+<is:model-name>Luo_Rudy_1991_model</is:model-name>
+<is:meta-information>
+<is:article-set>
+<is:article article-id="1"  type="model-proposal">
+<is:journal>
+<is:journal-title>Circulation research</is:journal-title>
+<is:publisher-name/>
+<is:volume>68</is:volume>
+<is:journal-title>6</is:journal-title>
+<is:publication-date>
+<is:year>1991</is:year>
+<is:month>7</is:month>
+</is:publication-date>
+</is:journal>
+<is:pubmed-id>1709839</is:pubmed-id>
+<is:article-title>A model of the ventricular cardiac action potential. Depolarization, repolarization, and their interaction.</is:article-title>
+<is:pages>
+<is:first-page>1501</is:first-page>
+<is:last-page>26</is:last-page>
+</is:pages>
+<is:target-model-set>
+<is:target-model db-id="this"/>
+</is:target-model-set>
+<is:author>
+<is:first-name>C</is:first-name>
+<is:middle-name>H.</is:middle-name>
+<is:last-name>Luo</is:last-name>
+</is:author>
+<is:author>
+<is:first-name>Y</is:first-name>
+<is:middle-name/>
+<is:last-name>Rudy</is:last-name>
+</is:author>
+</is:article>
+</is:article-set>
+</is:meta-information>
+<is:generator>In Silico IDE ver 0.2.0.7</is:generator>
+<is:date>
+<is:created>2010-07-22T11:53:42+09:00</is:created>
+<is:last-modified>2016-08-23T02:35:07+09:00</is:last-modified>
+</is:date>
+<is:numerical-configuration>
+<is:algorithm>
+<is:random-generator type="" name=""/>
+<is:integration name="euler"/>
+</is:algorithm>
+<is:simulation-time-span unit-id="53">800</is:simulation-time-span>
+<is:time-discretization  unit-id="53">
+<is:step>0.01</is:step>
+</is:time-discretization>
+</is:numerical-configuration>
+</is:header>
+<is:unit-set>
+<is:unit unit-id="56">
+<is:name>micro_farad</is:name>
+<is:element unit-id="14"  prefix="micro"/>
+</is:unit>
+<is:unit unit-id="54">
+<is:name>milli_volt</is:name>
+<is:element unit-id="32"  prefix="milli"/>
+</is:unit>
+<is:unit unit-id="51">
+<is:name>newton_meter_second_per_radian</is:name>
+<is:element unit-id="24"/>
+<is:element unit-id="9"/>
+<is:element unit-id="3"/>
+<is:element unit-id="8"  exponent="-1"/>
+</is:unit>
+<is:unit unit-id="48">
+<is:name>radian_per_second</is:name>
+<is:element unit-id="8"/>
+<is:element unit-id="3"  exponent="-1"/>
+</is:unit>
+<is:unit unit-id="43">
+<is:name>meter3</is:name>
+<is:element unit-id="9"  exponent="3"/>
+</is:unit>
+<is:unit unit-id="60">
+<is:name>milli_mho_per_centi_meter2</is:name>
+<is:element unit-id="59"  prefix="milli"/>
+<is:element unit-id="57"  exponent="-2"/>
+</is:unit>
+<is:unit unit-id="61">
+<is:name>milli_siemens_per_centi_meter2</is:name>
+<is:element unit-id="28"  prefix="milli"/>
+<is:element unit-id="57"  exponent="-2"/>
+</is:unit>
+<is:unit unit-id="62">
+<is:name>milli_mho</is:name>
+<is:element unit-id="59"  prefix="milli"/>
+</is:unit>
+<is:unit unit-id="63">
+<is:name>Mol</is:name>
+<is:element unit-id="6"/>
+<is:element unit-id="21"  exponent="-1"/>
+</is:unit>
+<is:unit unit-id="64">
+<is:name>milli_Mol</is:name>
+<is:element unit-id="63"  prefix="milli"/>
+</is:unit>
+<is:unit unit-id="53">
+<is:name>milli_second</is:name>
+<is:element unit-id="3"  prefix="milli"/>
+</is:unit>
+<is:unit unit-id="66">
+<is:name>milli_mole_per_litre</is:name>
+<is:element unit-id="6"  prefix="milli"/>
+<is:element unit-id="21"  exponent="-1"/>
+</is:unit>
+<is:unit unit-id="67">
+<is:name>micro_mole_per_litre</is:name>
+<is:element unit-id="6"  prefix="micro"/>
+<is:element unit-id="21"  exponent="-1"/>
+</is:unit>
+<is:unit unit-id="68">
+<is:name>per_milli_second</is:name>
+<is:element unit-id="3"  exponent="-1"  prefix="milli"/>
+</is:unit>
+<is:unit unit-id="69">
+<is:name>per_milli_volt</is:name>
+<is:element unit-id="32"  exponent="-1"  prefix="milli"/>
+</is:unit>
+<is:unit unit-id="52">
+<is:name>per_ampere</is:name>
+<is:element unit-id="4"  exponent="-1"/>
+</is:unit>
+<is:unit unit-id="24">
+<is:name>newton</is:name>
+<is:element unit-id="2"/>
+<is:element unit-id="9"/>
+<is:element unit-id="3"  exponent="-2"/>
+</is:unit>
+<is:unit unit-id="25">
+<is:name>ohm</is:name>
+<is:element unit-id="9"  exponent="2"/>
+<is:element unit-id="2"/>
+<is:element unit-id="3"  exponent="-3"/>
+<is:element unit-id="4"  exponent="-2"/>
+</is:unit>
+<is:unit unit-id="26">
+<is:name>pascal</is:name>
+<is:element unit-id="2"/>
+<is:element unit-id="9"  exponent="-1"/>
+<is:element unit-id="3"  exponent="-2"/>
+</is:unit>
+<is:unit unit-id="20">
+<is:name>liter</is:name>
+<is:element unit-id="9"  exponent="3"/>
+</is:unit>
+<is:unit unit-id="21">
+<is:name>litre</is:name>
+<is:element unit-id="9"  exponent="3"/>
+</is:unit>
+<is:unit unit-id="22">
+<is:name>lumen</is:name>
+<is:element unit-id="7"/>
+</is:unit>
+<is:unit unit-id="23">
+<is:name>lux</is:name>
+<is:element unit-id="9"  exponent="2"/>
+<is:element unit-id="2"/>
+<is:element unit-id="3"  exponent="-3"/>
+</is:unit>
+<is:unit unit-id="46">
+<is:name>newton_second_per_meter</is:name>
+<is:element unit-id="24"/>
+<is:element unit-id="3"/>
+<is:element unit-id="9"  exponent="-1"/>
+</is:unit>
+<is:unit unit-id="47">
+<is:name>per_meter</is:name>
+<is:element unit-id="9"  exponent="-1"/>
+</is:unit>
+<is:unit unit-id="44">
+<is:name>newton_meter</is:name>
+<is:element unit-id="24"/>
+<is:element unit-id="9"/>
+</is:unit>
+<is:unit unit-id="45">
+<is:name>newton_per_meter</is:name>
+<is:element unit-id="24"/>
+<is:element unit-id="9"  exponent="-1"/>
+</is:unit>
+<is:unit unit-id="28">
+<is:name>siemens</is:name>
+<is:element unit-id="9"  exponent="-2"/>
+<is:element unit-id="2"  exponent="-1"/>
+<is:element unit-id="3"  exponent="3"/>
+<is:element unit-id="4"  exponent="2"/>
+</is:unit>
+<is:unit unit-id="29">
+<is:name>sievert</is:name>
+<is:element unit-id="9"  exponent="2"/>
+<is:element unit-id="3"  exponent="-2"/>
+</is:unit>
+<is:unit unit-id="40">
+<is:name>per_ampere2</is:name>
+<is:element unit-id="4"  exponent="-2"/>
+</is:unit>
+<is:unit unit-id="41">
+<is:name>per_second</is:name>
+<is:element unit-id="3"  exponent="-1"/>
+</is:unit>
+<is:unit unit-id="1">
+<is:name>metre</is:name>
+</is:unit>
+<is:unit unit-id="0">
+<is:name>dimensionless</is:name>
+</is:unit>
+<is:unit unit-id="3">
+<is:name>second</is:name>
+</is:unit>
+<is:unit unit-id="2">
+<is:name>kilogram</is:name>
+</is:unit>
+<is:unit unit-id="5">
+<is:name>kelvin</is:name>
+</is:unit>
+<is:unit unit-id="4">
+<is:name>ampere</is:name>
+</is:unit>
+<is:unit unit-id="7">
+<is:name>candela</is:name>
+</is:unit>
+<is:unit unit-id="6">
+<is:name>mole</is:name>
+</is:unit>
+<is:unit unit-id="9">
+<is:name>meter</is:name>
+<is:element unit-id="1"/>
+</is:unit>
+<is:unit unit-id="8">
+<is:name>radian</is:name>
+</is:unit>
+<is:unit unit-id="39">
+<is:name>per_second2</is:name>
+<is:element unit-id="3"  exponent="-2"/>
+</is:unit>
+<is:unit unit-id="65">
+<is:name>mole_per_litre</is:name>
+<is:element unit-id="6"/>
+<is:element unit-id="21"  exponent="-1"/>
+</is:unit>
+<is:unit unit-id="76">
+<is:name>micro_ampere_per_centi_meter2</is:name>
+<is:element unit-id="4"  prefix="micro"/>
+<is:element unit-id="57"  exponent="-2"/>
+</is:unit>
+<is:unit unit-id="75">
+<is:name>milli_ampere_per_centi_meter2</is:name>
+<is:element unit-id="4"  prefix="milli"/>
+<is:element unit-id="57"  exponent="-2"/>
+</is:unit>
+<is:unit unit-id="38">
+<is:name>meter2</is:name>
+<is:element unit-id="9"  exponent="2"/>
+</is:unit>
+<is:unit unit-id="73">
+<is:name>milli_ampere</is:name>
+<is:element unit-id="4"  prefix="milli"/>
+</is:unit>
+<is:unit unit-id="72">
+<is:name>faraday_constant</is:name>
+<is:element unit-id="4"/>
+<is:element unit-id="3"/>
+<is:element unit-id="6"  exponent="-1"/>
+</is:unit>
+<is:unit unit-id="71">
+<is:name>gas_constant</is:name>
+<is:element unit-id="9"  exponent="2"/>
+<is:element unit-id="2"/>
+<is:element unit-id="3"  exponent="-2"/>
+<is:element unit-id="5"  exponent="-1"/>
+<is:element unit-id="6"  exponent="-1"/>
+</is:unit>
+<is:unit unit-id="70">
+<is:name>per_milli_volt_milli_sec</is:name>
+<is:element unit-id="32"  exponent="-1"  prefix="milli"/>
+<is:element unit-id="3"  exponent="-1"  prefix="milli"/>
+</is:unit>
+<is:unit unit-id="59">
+<is:name>mho</is:name>
+<is:element unit-id="28"/>
+</is:unit>
+<is:unit unit-id="58">
+<is:name>micro_farad_per_centi_meter2</is:name>
+<is:element unit-id="56"/>
+<is:element unit-id="57"  exponent="-2"/>
+</is:unit>
+<is:unit unit-id="11">
+<is:name>becquerel</is:name>
+<is:element unit-id="3"  exponent="-1"/>
+</is:unit>
+<is:unit unit-id="10">
+<is:name>gram</is:name>
+<is:element unit-id="2"  prefix="milli"/>
+</is:unit>
+<is:unit unit-id="13">
+<is:name>coulomb</is:name>
+<is:element unit-id="4"/>
+<is:element unit-id="3"/>
+</is:unit>
+<is:unit unit-id="12">
+<is:name>celsius</is:name>
+<is:element unit-id="5"/>
+</is:unit>
+<is:unit unit-id="15">
+<is:name>gray</is:name>
+<is:element unit-id="9"  exponent="2"/>
+</is:unit>
+<is:unit unit-id="14">
+<is:name>farad</is:name>
+<is:element unit-id="3"  exponent="-4"/>
+<is:element unit-id="4"  exponent="2"/>
+<is:element unit-id="9"  exponent="-2"/>
+<is:element unit-id="2"  exponent="-1"/>
+</is:unit>
+<is:unit unit-id="17">
+<is:name>hertz</is:name>
+<is:element unit-id="3"  exponent="-1"/>
+</is:unit>
+<is:unit unit-id="16">
+<is:name>henry</is:name>
+<is:element unit-id="9"  exponent="2"/>
+<is:element unit-id="3"  exponent="-2"/>
+<is:element unit-id="2"/>
+<is:element unit-id="4"  exponent="-2"/>
+</is:unit>
+<is:unit unit-id="19">
+<is:name>katal</is:name>
+<is:element unit-id="6"/>
+<is:element unit-id="3"  exponent="-1"/>
+</is:unit>
+<is:unit unit-id="18">
+<is:name>joule</is:name>
+<is:element unit-id="2"/>
+<is:element unit-id="9"  exponent="2"/>
+<is:element unit-id="3"  exponent="-2"/>
+</is:unit>
+<is:unit unit-id="31">
+<is:name>tesla</is:name>
+<is:element unit-id="2"/>
+<is:element unit-id="4"  exponent="-1"/>
+<is:element unit-id="3"  exponent="-2"/>
+</is:unit>
+<is:unit unit-id="49">
+<is:name>radian_per_second2</is:name>
+<is:element unit-id="8"/>
+<is:element unit-id="3"  exponent="-2"/>
+</is:unit>
+<is:unit unit-id="37">
+<is:name>meter_per_second2</is:name>
+<is:element unit-id="9"/>
+<is:element unit-id="3"  exponent="-2"/>
+</is:unit>
+<is:unit unit-id="36">
+<is:name>meter_per_second</is:name>
+<is:element unit-id="9"/>
+<is:element unit-id="3"  exponent="-1"/>
+</is:unit>
+<is:unit unit-id="35">
+<is:name>kilogram_meter2</is:name>
+<is:element unit-id="2"/>
+<is:element unit-id="9"  exponent="-2"/>
+</is:unit>
+<is:unit unit-id="34">
+<is:name>weber</is:name>
+<is:element unit-id="2"/>
+<is:element unit-id="9"  exponent="2"/>
+<is:element unit-id="3"  exponent="-2"/>
+<is:element unit-id="4"  exponent="-1"/>
+</is:unit>
+<is:unit unit-id="33">
+<is:name>watt</is:name>
+<is:element unit-id="2"/>
+<is:element unit-id="9"  exponent="2"/>
+<is:element unit-id="3"  exponent="-3"/>
+</is:unit>
+<is:unit unit-id="55">
+<is:name>radian_per_millisecond</is:name>
+<is:element unit-id="8"/>
+<is:element unit-id="3"  exponent="-1"  prefix="milli"/>
+</is:unit>
+<is:unit unit-id="74">
+<is:name>micro_ampere</is:name>
+<is:element unit-id="4"  prefix="micro"/>
+</is:unit>
+<is:unit unit-id="32">
+<is:name>volt</is:name>
+<is:element unit-id="2"/>
+<is:element unit-id="9"  exponent="2"/>
+<is:element unit-id="4"  exponent="-1"/>
+<is:element unit-id="3"  exponent="-3"/>
+</is:unit>
+<is:unit unit-id="57">
+<is:name>centi_meter</is:name>
+<is:element unit-id="9"  prefix="centi"/>
+</is:unit>
+<is:unit unit-id="50">
+<is:name>newton_meter_per_radian</is:name>
+<is:element unit-id="24"/>
+<is:element unit-id="9"/>
+<is:element unit-id="8"  exponent="-1"/>
+</is:unit>
+</is:unit-set>
+
+<is:module-set>
+
+<is:module module-id="876f496d-256b-4182-99a4-b94dae73c77e" type="functional-unit">
+<is:property>
+<is:name>f_gate</is:name>
+<is:capsulation state="true">
+<is:capsulated-by module-id="846d568d-13ca-4cdc-96df-019816831402"/>
+</is:capsulation>
+<is:template state="false"/>
+<is:track>
+<is:involved db-id="this" date="2010-07-22T11:53:47+09:00"/>
+</is:track>
+<is:frame-coordinate>
+<is:origin  format="mathml">
+<m:math>
+<m:vector>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+</m:vector>
+</m:math>
+</is:origin>
+<is:rotation format="mathml"  type="matrix">
+<m:math>
+<m:matrix>
+<m:matrixrow>
+<m:cn>1</m:cn>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+</m:matrixrow>
+<m:matrixrow>
+<m:cn>0</m:cn>
+<m:cn>1</m:cn>
+<m:cn>0</m:cn>
+</m:matrixrow>
+<m:matrixrow>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+<m:cn>1</m:cn>
+</m:matrixrow>
+</m:matrix>
+</m:math>
+</is:rotation>
+</is:frame-coordinate>
+<is:description>the proportion of inactivation gate of I_si</is:description>
+</is:property>
+
+<is:port-set>
+<is:port port-id="1" direction="in">
+<is:name>V</is:name>
+<is:description>This port inputs V (the rate of change of membrane potential).</is:description>
+</is:port>
+<is:port port-id="2" direction="out" ref-physical-quantity-id="2">
+<is:name>f</is:name>
+<is:description>This port outputs f (the proportion of inactivation gate of I_si).</is:description>
+</is:port>
+</is:port-set>
+
+<is:physical-quantity-set>
+<is:physical-quantity physical-quantity-id="3" type= "variable-parameter">
+<is:name>alpha_f</is:name>
+<is:description>opening rate constants of f-gate</is:description>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="68"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="ae"  format="mathml">
+<m:math>
+<m:apply>
+<m:eq/>
+<m:ci>alpha_f</m:ci>
+<m:apply>
+<m:divide/>
+<m:apply>
+<m:times/>
+<m:cn>0.012</m:cn>
+<m:apply>
+<m:exp/>
+<m:apply>
+<m:times/>
+<m:cn>-0.008</m:cn>
+<m:apply>
+<m:plus/>
+<m:ci>V</m:ci>
+<m:cn>28</m:cn>
+</m:apply>
+</m:apply>
+</m:apply>
+</m:apply>
+<m:apply>
+<m:plus/>
+<m:cn>1</m:cn>
+<m:apply>
+<m:exp/>
+<m:apply>
+<m:times/>
+<m:cn>0.15</m:cn>
+<m:apply>
+<m:plus/>
+<m:ci>V</m:ci>
+<m:cn>28</m:cn>
+</m:apply>
+</m:apply>
+</m:apply>
+</m:apply>
+</m:apply>
+</m:apply>
+</m:math>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="2" type= "state">
+<is:name>f</is:name>
+<is:description>the proportion of inactivation gate of I_si</is:description>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="0"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:initial-value>
+<is:definition  type="ae"  format="mathml">
+<m:math>
+<m:apply>
+<m:eq/>
+<m:ci>f</m:ci>
+<m:cn>0.999981</m:cn>
+</m:apply>
+</m:math>
+</is:definition>
+</is:initial-value>
+<is:implementation>
+<is:definition  type="ode"  format="mathml">
+<m:math>
+<m:apply>
+<m:eq/>
+<m:apply>
+<m:diff/>
+<m:bvar>
+<m:ci>time</m:ci>
+</m:bvar>
+<m:ci>f</m:ci>
+</m:apply>
+<m:apply>
+<m:minus/>
+<m:apply>
+<m:times/>
+<m:ci>alpha_f</m:ci>
+<m:apply>
+<m:minus/>
+<m:cn>1</m:cn>
+<m:ci>f</m:ci>
+</m:apply>
+</m:apply>
+<m:apply>
+<m:times/>
+<m:ci>beta_f</m:ci>
+<m:ci>f</m:ci>
+</m:apply>
+</m:apply>
+</m:apply>
+</m:math>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="5" type= "variable-parameter">
+<is:name>V</is:name>
+<is:description>This port inputs V (the rate of change of membrane potential).</is:description>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="54"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="assign"  sub-type="port"  format="reference">
+<is:reference  port-id="1"/>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="4" type= "variable-parameter">
+<is:name>beta_f</is:name>
+<is:description>closing rate constants of f-gate</is:description>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="68"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="ae"  format="mathml">
+<m:math>
+<m:apply>
+<m:eq/>
+<m:ci>beta_f</m:ci>
+<m:apply>
+<m:divide/>
+<m:apply>
+<m:times/>
+<m:cn>0.0065</m:cn>
+<m:apply>
+<m:exp/>
+<m:apply>
+<m:times/>
+<m:cn>-0.02</m:cn>
+<m:apply>
+<m:plus/>
+<m:ci>V</m:ci>
+<m:cn>30</m:cn>
+</m:apply>
+</m:apply>
+</m:apply>
+</m:apply>
+<m:apply>
+<m:plus/>
+<m:cn>1</m:cn>
+<m:apply>
+<m:exp/>
+<m:apply>
+<m:times/>
+<m:cn>-0.2</m:cn>
+<m:apply>
+<m:plus/>
+<m:ci>V</m:ci>
+<m:cn>30</m:cn>
+</m:apply>
+</m:apply>
+</m:apply>
+</m:apply>
+</m:apply>
+</m:apply>
+</m:math>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+</is:physical-quantity-set>
+<is:morphology/>
+<is:timeseries-set/>
+</is:module>
+
+<is:module module-id="32b92c57-1d8f-4ada-ba96-04c6c52033ea" type="functional-unit">
+<is:property>
+<is:name>Na_i</is:name>
+<is:capsulation state="true">
+<is:capsulated-by module-id="53defeae-ef21-4894-8d88-b7e50bb7eba1"/>
+</is:capsulation>
+<is:template state="false"/>
+<is:track>
+<is:involved db-id="this" date="2010-07-22T11:53:47+09:00"/>
+</is:track>
+<is:frame-coordinate>
+<is:origin  format="mathml">
+<m:math>
+<m:vector>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+</m:vector>
+</m:math>
+</is:origin>
+<is:rotation format="mathml"  type="matrix">
+<m:math>
+<m:matrix>
+<m:matrixrow>
+<m:cn>1</m:cn>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+</m:matrixrow>
+<m:matrixrow>
+<m:cn>0</m:cn>
+<m:cn>1</m:cn>
+<m:cn>0</m:cn>
+</m:matrixrow>
+<m:matrixrow>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+<m:cn>1</m:cn>
+</m:matrixrow>
+</m:matrix>
+</m:math>
+</is:rotation>
+</is:frame-coordinate>
+<is:description>intracellular concentrations of Na</is:description>
+</is:property>
+
+<is:port-set>
+<is:port port-id="1" direction="out" ref-physical-quantity-id="2">
+<is:name>Na_i</is:name>
+<is:description>intracellular concentrations of Na</is:description>
+</is:port>
+</is:port-set>
+
+<is:physical-quantity-set>
+<is:physical-quantity physical-quantity-id="2" type= "static-parameter">
+<is:name>Na_i</is:name>
+<is:description>intracellular concentrations of Na</is:description>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="64"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="ae"  format="mathml">
+<m:math>
+<m:apply>
+<m:eq/>
+<m:ci>Na_i</m:ci>
+<m:cn>18</m:cn>
+</m:apply>
+</m:math>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+</is:physical-quantity-set>
+<is:morphology/>
+<is:timeseries-set/>
+</is:module>
+
+<is:module module-id="43913ab3-f772-4115-9157-e0c589e201b3" type="functional-unit">
+<is:property>
+<is:name>E_Kp</is:name>
+<is:capsulation state="true">
+<is:capsulated-by module-id="4f8c5aa5-bf73-482e-986a-57b796b1c026"/>
+</is:capsulation>
+<is:template state="false"/>
+<is:track>
+<is:involved db-id="this" date="2010-07-22T11:53:47+09:00"/>
+</is:track>
+<is:frame-coordinate>
+<is:origin  format="mathml">
+<m:math>
+<m:vector>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+</m:vector>
+</m:math>
+</is:origin>
+<is:rotation format="mathml"  type="matrix">
+<m:math>
+<m:matrix>
+<m:matrixrow>
+<m:cn>1</m:cn>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+</m:matrixrow>
+<m:matrixrow>
+<m:cn>0</m:cn>
+<m:cn>1</m:cn>
+<m:cn>0</m:cn>
+</m:matrixrow>
+<m:matrixrow>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+<m:cn>1</m:cn>
+</m:matrixrow>
+</m:matrix>
+</m:math>
+</is:rotation>
+</is:frame-coordinate>
+<is:description>the reversal potential of Kp</is:description>
+</is:property>
+
+<is:port-set>
+<is:port port-id="1" direction="in">
+<is:name>K_o</is:name>
+<is:description>This port inputs K_o (extracellular concentrations of K).</is:description>
+</is:port>
+<is:port port-id="3" direction="out" ref-physical-quantity-id="5">
+<is:name>E_Kp</is:name>
+<is:description>the reversal potential of Kp</is:description>
+</is:port>
+<is:port port-id="2" direction="in">
+<is:name>K_i</is:name>
+<is:description>This port inputs K_i (intracellular concentrations of K).</is:description>
+</is:port>
+</is:port-set>
+
+<is:physical-quantity-set>
+<is:physical-quantity physical-quantity-id="3" type= "static-parameter">
+<is:name>T</is:name>
+<is:description>the temperature</is:description>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="5"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="ae"  format="mathml">
+<m:math>
+<m:apply>
+<m:eq/>
+<m:ci>T</m:ci>
+<m:cn>310</m:cn>
+</m:apply>
+</m:math>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="2" type= "static-parameter">
+<is:name>R</is:name>
+<is:description>the gas constant</is:description>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="71"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="ae"  format="mathml">
+<m:math>
+<m:apply>
+<m:eq/>
+<m:ci>R</m:ci>
+<m:cn>8.3145</m:cn>
+</m:apply>
+</m:math>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="5" type= "variable-parameter">
+<is:name>E_Kp</is:name>
+<is:description>the reversal potential of Kp</is:description>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="54"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="ae"  format="mathml">
+<m:math>
+<m:apply>
+<m:eq/>
+<m:ci>E_Kp</m:ci>
+<m:apply>
+<m:times/>
+<m:apply>
+<m:times/>
+<m:apply>
+<m:divide/>
+<m:apply>
+<m:times/>
+<m:ci>R</m:ci>
+<m:ci>T</m:ci>
+</m:apply>
+<m:ci>F</m:ci>
+</m:apply>
+<m:apply>
+<m:ln/>
+<m:apply>
+<m:divide/>
+<m:ci>K_o</m:ci>
+<m:ci>K_i</m:ci>
+</m:apply>
+</m:apply>
+</m:apply>
+<m:cn>1000</m:cn>
+</m:apply>
+</m:apply>
+</m:math>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="4" type= "static-parameter">
+<is:name>F</is:name>
+<is:description>the Faraday constant</is:description>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="72"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="ae"  format="mathml">
+<m:math>
+<m:apply>
+<m:eq/>
+<m:ci>F</m:ci>
+<m:apply>
+<m:times/>
+<m:cn>9.6485</m:cn>
+<m:apply>
+<m:power/>
+<m:cn>10</m:cn>
+<m:cn>4</m:cn>
+</m:apply>
+</m:apply>
+</m:apply>
+</m:math>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="7" type= "variable-parameter">
+<is:name>K_i</is:name>
+<is:description>This port inputs K_i (intracellular concentrations of K).</is:description>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="64"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="assign"  sub-type="port"  format="reference">
+<is:reference  port-id="2"/>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="6" type= "variable-parameter">
+<is:name>K_o</is:name>
+<is:description>This port inputs K_o (extracellular concentrations of K).</is:description>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="64"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="assign"  sub-type="port"  format="reference">
+<is:reference  port-id="1"/>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+</is:physical-quantity-set>
+<is:morphology/>
+<is:timeseries-set/>
+</is:module>
+
+<is:module module-id="46fedd5d-608f-4dbc-a6b3-be13383f9315" type="capsule" db-id="182">
+<is:property>
+<is:name>Luo_Rudy_1991_I_Na</is:name>
+<is:capsulation state="true">
+<is:capsulated-by module-id="53defeae-ef21-4894-8d88-b7e50bb7eba1"/>
+</is:capsulation>
+<is:template state="false"/>
+<is:track>
+<is:involved db-id="this" date="2010-07-22T11:53:47+09:00"/>
+</is:track>
+<is:frame-coordinate>
+<is:origin  format="mathml">
+<m:math>
+<m:vector>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+</m:vector>
+</m:math>
+</is:origin>
+<is:rotation format="mathml"  type="matrix">
+<m:math>
+<m:matrix>
+<m:matrixrow>
+<m:cn>1</m:cn>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+</m:matrixrow>
+<m:matrixrow>
+<m:cn>0</m:cn>
+<m:cn>1</m:cn>
+<m:cn>0</m:cn>
+</m:matrixrow>
+<m:matrixrow>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+<m:cn>1</m:cn>
+</m:matrixrow>
+</m:matrix>
+</m:math>
+</is:rotation>
+</is:frame-coordinate>
+<is:description>This model represents the fast sodium current module used in the Luo-Rudy model (Ching-hsing Luo and Yoram Rudy, A model of the ventricular cardiac action potential. Depolarization, repolarization, and their interaction, Circ. Res. Vol.68, pp.1501-1526, 1991).</is:description>
+</is:property>
+
+<is:port-set>
+<is:port port-id="1" direction="in">
+<is:name>V</is:name>
+<is:description>This port inputs V (the rate of change of membrane potential).</is:description>
+</is:port>
+<is:port port-id="3" direction="in">
+<is:name>Na_i</is:name>
+<is:description>This port inputs Na_i (intracellular concentrations of Na).</is:description>
+</is:port>
+<is:port port-id="2" direction="in">
+<is:name>Na_o</is:name>
+<is:description>This port inputs Na_o (extracellular concentrations of Na).</is:description>
+</is:port>
+<is:port port-id="4" direction="out">
+<is:name>I_Na</is:name>
+<is:description>This port outputs I_Na (the fast sodium current).</is:description>
+</is:port>
+</is:port-set>
+<is:physical-quantity-set/>
+<is:morphology/>
+<is:timeseries-set/>
+</is:module>
+
+<is:module module-id="c46bda98-1533-477a-a841-a6c7938e0fd7" type="functional-unit">
+<is:property>
+<is:name>I_Na</is:name>
+<is:capsulation state="true">
+<is:capsulated-by module-id="46fedd5d-608f-4dbc-a6b3-be13383f9315"/>
+</is:capsulation>
+<is:template state="false"/>
+<is:track>
+<is:involved db-id="this" date="2010-07-22T11:53:47+09:00"/>
+</is:track>
+<is:frame-coordinate>
+<is:origin  format="mathml">
+<m:math>
+<m:vector>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+</m:vector>
+</m:math>
+</is:origin>
+<is:rotation format="mathml"  type="matrix">
+<m:math>
+<m:matrix>
+<m:matrixrow>
+<m:cn>1</m:cn>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+</m:matrixrow>
+<m:matrixrow>
+<m:cn>0</m:cn>
+<m:cn>1</m:cn>
+<m:cn>0</m:cn>
+</m:matrixrow>
+<m:matrixrow>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+<m:cn>1</m:cn>
+</m:matrixrow>
+</m:matrix>
+</m:math>
+</is:rotation>
+</is:frame-coordinate>
+<is:description>the fast sodium current</is:description>
+</is:property>
+
+<is:port-set>
+<is:port port-id="1" direction="in">
+<is:name>V</is:name>
+<is:description>This port inputs V (the rate of change of membrane potential).</is:description>
+</is:port>
+<is:port port-id="3" direction="in">
+<is:name>h</is:name>
+<is:description>This port inputs h (the proportion of first inactivation gate of I_Na).</is:description>
+</is:port>
+<is:port port-id="2" direction="in">
+<is:name>m</is:name>
+<is:description>This port inputs m (the proportion of activation gate of I_Na).</is:description>
+</is:port>
+<is:port port-id="5" direction="in">
+<is:name>E_Na</is:name>
+<is:description>This port inputs E_Na (the reversal potential of Na).</is:description>
+</is:port>
+<is:port port-id="4" direction="in">
+<is:name>j</is:name>
+<is:description>This port inputs j (the proportion of slow inactivation gate of I_Na).</is:description>
+</is:port>
+<is:port port-id="6" direction="out" ref-physical-quantity-id="3">
+<is:name>I_Na</is:name>
+<is:description>the fast sodium current</is:description>
+</is:port>
+</is:port-set>
+
+<is:physical-quantity-set>
+<is:physical-quantity physical-quantity-id="3" type= "variable-parameter">
+<is:name>I_Na</is:name>
+<is:description>the fast sodium current</is:description>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="76"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="ae"  format="mathml">
+<m:math>
+<m:apply>
+<m:eq/>
+<m:ci>I_Na</m:ci>
+<m:apply>
+<m:times/>
+<m:ci>G_Na_bar</m:ci>
+<m:ci>m</m:ci>
+<m:ci>m</m:ci>
+<m:ci>m</m:ci>
+<m:ci>h</m:ci>
+<m:ci>j</m:ci>
+<m:apply>
+<m:minus/>
+<m:ci>V</m:ci>
+<m:ci>E_Na</m:ci>
+</m:apply>
+</m:apply>
+</m:apply>
+</m:math>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="2" type= "static-parameter">
+<is:name>G_Na_bar</is:name>
+<is:description>the maximum conductance of the Na channel</is:description>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="61"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="ae"  format="mathml">
+<m:math>
+<m:apply>
+<m:eq/>
+<m:ci>G_Na_bar</m:ci>
+<m:cn>23</m:cn>
+</m:apply>
+</m:math>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="5" type= "variable-parameter">
+<is:name>m</is:name>
+<is:description>This port inputs m (the proportion of activation gate of I_Na).</is:description>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="0"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="assign"  sub-type="port"  format="reference">
+<is:reference  port-id="2"/>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="4" type= "variable-parameter">
+<is:name>V</is:name>
+<is:description>This port inputs V (the rate of change of membrane potential).</is:description>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="54"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="assign"  sub-type="port"  format="reference">
+<is:reference  port-id="1"/>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="7" type= "variable-parameter">
+<is:name>j</is:name>
+<is:description>This port inputs j (the proportion of slow inactivation gate of I_Na).</is:description>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="0"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="assign"  sub-type="port"  format="reference">
+<is:reference  port-id="4"/>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="6" type= "variable-parameter">
+<is:name>h</is:name>
+<is:description>This port inputs h (the proportion of first inactivation gate of I_Na).</is:description>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="0"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="assign"  sub-type="port"  format="reference">
+<is:reference  port-id="3"/>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="8" type= "variable-parameter">
+<is:name>E_Na</is:name>
+<is:description>This port inputs E_Na (the reversal potential of Na).</is:description>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="54"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="assign"  sub-type="port"  format="reference">
+<is:reference  port-id="5"/>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+</is:physical-quantity-set>
+<is:morphology/>
+<is:timeseries-set/>
+</is:module>
+
+<is:module module-id="b9cc9b99-1282-4d65-953a-01424929f586" type="functional-unit">
+<is:property>
+<is:name>G_K_bar</is:name>
+<is:capsulation state="true">
+<is:capsulated-by module-id="9f16585a-6ec5-4417-befe-766054891738"/>
+</is:capsulation>
+<is:template state="false"/>
+<is:track>
+<is:involved db-id="this" date="2010-07-22T11:53:47+09:00"/>
+</is:track>
+<is:frame-coordinate>
+<is:origin  format="mathml">
+<m:math>
+<m:vector>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+</m:vector>
+</m:math>
+</is:origin>
+<is:rotation format="mathml"  type="matrix">
+<m:math>
+<m:matrix>
+<m:matrixrow>
+<m:cn>1</m:cn>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+</m:matrixrow>
+<m:matrixrow>
+<m:cn>0</m:cn>
+<m:cn>1</m:cn>
+<m:cn>0</m:cn>
+</m:matrixrow>
+<m:matrixrow>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+<m:cn>1</m:cn>
+</m:matrixrow>
+</m:matrix>
+</m:math>
+</is:rotation>
+</is:frame-coordinate>
+<is:description>the maximum conductance of the K channel</is:description>
+</is:property>
+
+<is:port-set>
+<is:port port-id="1" direction="in">
+<is:name>K_o</is:name>
+<is:description>This port inputs K_o (extracellular concentrations of K).</is:description>
+</is:port>
+<is:port port-id="2" direction="out" ref-physical-quantity-id="2">
+<is:name>G_K_bar</is:name>
+<is:description>the maximum conductance of the K channel</is:description>
+</is:port>
+</is:port-set>
+
+<is:physical-quantity-set>
+<is:physical-quantity physical-quantity-id="3" type= "variable-parameter">
+<is:name>K_o</is:name>
+<is:description>This port inputs K_o (extracellular concentrations of K).</is:description>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="64"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="assign"  sub-type="port"  format="reference">
+<is:reference  port-id="1"/>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="2" type= "variable-parameter">
+<is:name>G_K_bar</is:name>
+<is:description>the maximum conductance of the K channel</is:description>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="61"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="ae"  format="mathml">
+<m:math>
+<m:apply>
+<m:eq/>
+<m:ci>G_K_bar</m:ci>
+<m:apply>
+<m:times/>
+<m:cn>0.282</m:cn>
+<m:apply>
+<m:root/>
+<m:apply>
+<m:divide/>
+<m:ci>K_o</m:ci>
+<m:cn>5.4</m:cn>
+</m:apply>
+</m:apply>
+</m:apply>
+</m:apply>
+</m:math>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+</is:physical-quantity-set>
+<is:morphology/>
+<is:timeseries-set/>
+</is:module>
+
+<is:module module-id="66092477-3c60-4db0-8302-6c79ad671711" type="functional-unit">
+<is:property>
+<is:name>m_gate</is:name>
+<is:capsulation state="true">
+<is:capsulated-by module-id="46fedd5d-608f-4dbc-a6b3-be13383f9315"/>
+</is:capsulation>
+<is:template state="false"/>
+<is:track>
+<is:involved db-id="this" date="2010-07-22T11:53:47+09:00"/>
+</is:track>
+<is:frame-coordinate>
+<is:origin  format="mathml">
+<m:math>
+<m:vector>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+</m:vector>
+</m:math>
+</is:origin>
+<is:rotation format="mathml"  type="matrix">
+<m:math>
+<m:matrix>
+<m:matrixrow>
+<m:cn>1</m:cn>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+</m:matrixrow>
+<m:matrixrow>
+<m:cn>0</m:cn>
+<m:cn>1</m:cn>
+<m:cn>0</m:cn>
+</m:matrixrow>
+<m:matrixrow>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+<m:cn>1</m:cn>
+</m:matrixrow>
+</m:matrix>
+</m:math>
+</is:rotation>
+</is:frame-coordinate>
+<is:description>the proportion of activation gate of I_Na</is:description>
+</is:property>
+
+<is:port-set>
+<is:port port-id="1" direction="in">
+<is:name>V</is:name>
+<is:description>This port inputs V (the rate of change of membrane potential).</is:description>
+</is:port>
+<is:port port-id="2" direction="out" ref-physical-quantity-id="2">
+<is:name>m</is:name>
+<is:description>the proportion of activation gate of I_Na</is:description>
+</is:port>
+</is:port-set>
+
+<is:physical-quantity-set>
+<is:physical-quantity physical-quantity-id="3" type= "variable-parameter">
+<is:name>alpha_m</is:name>
+<is:description>opening rate constants of m-gate</is:description>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="68"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="ae"  format="mathml">
+<m:math>
+<m:apply>
+<m:eq/>
+<m:ci>alpha_m</m:ci>
+<m:apply>
+<m:divide/>
+<m:apply>
+<m:times/>
+<m:cn>0.32</m:cn>
+<m:apply>
+<m:plus/>
+<m:ci>V</m:ci>
+<m:cn>47.13</m:cn>
+</m:apply>
+</m:apply>
+<m:apply>
+<m:minus/>
+<m:cn>1</m:cn>
+<m:apply>
+<m:exp/>
+<m:apply>
+<m:times/>
+<m:cn>-0.1</m:cn>
+<m:apply>
+<m:plus/>
+<m:ci>V</m:ci>
+<m:cn>47.13</m:cn>
+</m:apply>
+</m:apply>
+</m:apply>
+</m:apply>
+</m:apply>
+</m:apply>
+</m:math>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="2" type= "state">
+<is:name>m</is:name>
+<is:description>the proportion of activation gate of I_Na</is:description>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="0"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:initial-value>
+<is:definition  type="ae"  format="mathml">
+<m:math>
+<m:apply>
+<m:eq/>
+<m:ci>m</m:ci>
+<m:cn>0.010982</m:cn>
+</m:apply>
+</m:math>
+</is:definition>
+</is:initial-value>
+<is:implementation>
+<is:definition  type="ode"  format="mathml">
+<m:math>
+<m:apply>
+<m:eq/>
+<m:apply>
+<m:diff/>
+<m:bvar>
+<m:ci>time</m:ci>
+</m:bvar>
+<m:ci>m</m:ci>
+</m:apply>
+<m:apply>
+<m:minus/>
+<m:apply>
+<m:times/>
+<m:ci>alpha_m</m:ci>
+<m:apply>
+<m:minus/>
+<m:cn>1</m:cn>
+<m:ci>m</m:ci>
+</m:apply>
+</m:apply>
+<m:apply>
+<m:times/>
+<m:ci>beta_m</m:ci>
+<m:ci>m</m:ci>
+</m:apply>
+</m:apply>
+</m:apply>
+</m:math>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="5" type= "variable-parameter">
+<is:name>V</is:name>
+<is:description>This port inputs V (the rate of change of membrane potential).</is:description>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="54"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="assign"  sub-type="port"  format="reference">
+<is:reference  port-id="1"/>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="4" type= "variable-parameter">
+<is:name>beta_m</is:name>
+<is:description>closing rate constants of m-gate</is:description>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="68"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="ae"  format="mathml">
+<m:math>
+<m:apply>
+<m:eq/>
+<m:ci>beta_m</m:ci>
+<m:apply>
+<m:times/>
+<m:cn>0.08</m:cn>
+<m:apply>
+<m:exp/>
+<m:apply>
+<m:divide/>
+<m:apply>
+<m:minus/>
+<m:ci>V</m:ci>
+</m:apply>
+<m:cn>11</m:cn>
+</m:apply>
+</m:apply>
+</m:apply>
+</m:apply>
+</m:math>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+</is:physical-quantity-set>
+<is:morphology/>
+<is:timeseries-set/>
+</is:module>
+
+<is:module module-id="03a27680-7903-4752-a5cd-f66ee4364e70" type="functional-unit">
+<is:property>
+<is:name>X_i_gate</is:name>
+<is:capsulation state="true">
+<is:capsulated-by module-id="9f16585a-6ec5-4417-befe-766054891738"/>
+</is:capsulation>
+<is:template state="false"/>
+<is:track>
+<is:involved db-id="this" date="2010-07-22T11:53:47+09:00"/>
+</is:track>
+<is:frame-coordinate>
+<is:origin  format="mathml">
+<m:math>
+<m:vector>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+</m:vector>
+</m:math>
+</is:origin>
+<is:rotation format="mathml"  type="matrix">
+<m:math>
+<m:matrix>
+<m:matrixrow>
+<m:cn>1</m:cn>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+</m:matrixrow>
+<m:matrixrow>
+<m:cn>0</m:cn>
+<m:cn>1</m:cn>
+<m:cn>0</m:cn>
+</m:matrixrow>
+<m:matrixrow>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+<m:cn>1</m:cn>
+</m:matrixrow>
+</m:matrix>
+</m:math>
+</is:rotation>
+</is:frame-coordinate>
+<is:description>the proportion of inactivation gate of I_K</is:description>
+</is:property>
+
+<is:port-set>
+<is:port port-id="1" direction="in">
+<is:name>V</is:name>
+<is:description>This port inputs V (the rate of change of membrane potential).</is:description>
+</is:port>
+<is:port port-id="2" direction="out" ref-physical-quantity-id="2">
+<is:name>X_i</is:name>
+<is:description>This port outputs X_i (the proportion of inactivation gate of I_K).</is:description>
+</is:port>
+</is:port-set>
+
+<is:physical-quantity-set>
+<is:physical-quantity physical-quantity-id="3" type= "variable-parameter">
+<is:name>V</is:name>
+<is:description>This port inputs V (the rate of change of membrane potential).</is:description>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="54"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="assign"  sub-type="port"  format="reference">
+<is:reference  port-id="1"/>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="2" type= "variable-parameter">
+<is:name>X_i</is:name>
+<is:description>the proportion of inactivation gate of I_K</is:description>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="0"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="conditional">
+<is:case-set case-set-id="1">
+<is:case substructure-id="1">
+<is:condition format="mathml">
+<m:math>
+<m:apply>
+<m:gt/>
+<m:ci>V</m:ci>
+<m:cn>-100</m:cn>
+</m:apply>
+</m:math>
+</is:condition>
+<is:definition  type="ae"  format="mathml">
+<m:math>
+<m:apply>
+<m:eq/>
+<m:ci>X_i</m:ci>
+<m:apply>
+<m:divide/>
+<m:apply>
+<m:times/>
+<m:cn>2.837</m:cn>
+<m:apply>
+<m:minus/>
+<m:apply>
+<m:exp/>
+<m:apply>
+<m:times/>
+<m:cn>0.04</m:cn>
+<m:apply>
+<m:plus/>
+<m:ci>V</m:ci>
+<m:cn>77</m:cn>
+</m:apply>
+</m:apply>
+</m:apply>
+<m:cn>1</m:cn>
+</m:apply>
+</m:apply>
+<m:apply>
+<m:times/>
+<m:apply>
+<m:plus/>
+<m:ci>V</m:ci>
+<m:cn>77</m:cn>
+</m:apply>
+<m:apply>
+<m:exp/>
+<m:apply>
+<m:times/>
+<m:cn>0.04</m:cn>
+<m:apply>
+<m:plus/>
+<m:ci>V</m:ci>
+<m:cn>35</m:cn>
+</m:apply>
+</m:apply>
+</m:apply>
+</m:apply>
+</m:apply>
+</m:apply>
+</m:math>
+</is:definition>
+</is:case>
+<is:case substructure-id="2">
+<is:definition  type="ae"  format="mathml">
+<m:math>
+<m:apply>
+<m:eq/>
+<m:ci>X_i</m:ci>
+<m:cn>1</m:cn>
+</m:apply>
+</m:math>
+</is:definition>
+</is:case>
+</is:case-set>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+</is:physical-quantity-set>
+<is:morphology/>
+<is:timeseries-set/>
+</is:module>
+
+<is:module module-id="c736eedf-d957-4c89-8b24-40e4754d9c26" type="functional-unit">
+<is:property>
+<is:name>h_gate</is:name>
+<is:capsulation state="true">
+<is:capsulated-by module-id="46fedd5d-608f-4dbc-a6b3-be13383f9315"/>
+</is:capsulation>
+<is:template state="false"/>
+<is:track>
+<is:involved db-id="this" date="2010-07-22T11:53:47+09:00"/>
+</is:track>
+<is:frame-coordinate>
+<is:origin  format="mathml">
+<m:math>
+<m:vector>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+</m:vector>
+</m:math>
+</is:origin>
+<is:rotation format="mathml"  type="matrix">
+<m:math>
+<m:matrix>
+<m:matrixrow>
+<m:cn>1</m:cn>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+</m:matrixrow>
+<m:matrixrow>
+<m:cn>0</m:cn>
+<m:cn>1</m:cn>
+<m:cn>0</m:cn>
+</m:matrixrow>
+<m:matrixrow>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+<m:cn>1</m:cn>
+</m:matrixrow>
+</m:matrix>
+</m:math>
+</is:rotation>
+</is:frame-coordinate>
+<is:description>the proportion of first inactivation gate of I_Na</is:description>
+</is:property>
+
+<is:port-set>
+<is:port port-id="1" direction="in">
+<is:name>V</is:name>
+<is:description>This port inputs V (the rate of change of membrane potential).</is:description>
+</is:port>
+<is:port port-id="2" direction="out" ref-physical-quantity-id="2">
+<is:name>h</is:name>
+<is:description>This port outputs h (the proportion of first inactivation gate of I_Na).</is:description>
+</is:port>
+</is:port-set>
+
+<is:physical-quantity-set>
+<is:physical-quantity physical-quantity-id="3" type= "variable-parameter">
+<is:name>alpha_h</is:name>
+<is:description>opening rate constants of h-gate</is:description>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="68"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="conditional">
+<is:case-set case-set-id="1">
+<is:case substructure-id="1">
+<is:condition format="mathml">
+<m:math>
+<m:apply>
+<m:geq/>
+<m:ci>V</m:ci>
+<m:cn>-40</m:cn>
+</m:apply>
+</m:math>
+</is:condition>
+<is:definition  type="ae"  format="mathml">
+<m:math>
+<m:apply>
+<m:eq/>
+<m:ci>alpha_h</m:ci>
+<m:cn>0</m:cn>
+</m:apply>
+</m:math>
+</is:definition>
+</is:case>
+<is:case substructure-id="2">
+<is:definition  type="ae"  format="mathml">
+<m:math>
+<m:apply>
+<m:eq/>
+<m:ci>alpha_h</m:ci>
+<m:apply>
+<m:times/>
+<m:cn>0.135</m:cn>
+<m:apply>
+<m:exp/>
+<m:apply>
+<m:divide/>
+<m:apply>
+<m:plus/>
+<m:cn>80</m:cn>
+<m:ci>V</m:ci>
+</m:apply>
+<m:cn>-6.8</m:cn>
+</m:apply>
+</m:apply>
+</m:apply>
+</m:apply>
+</m:math>
+</is:definition>
+</is:case>
+</is:case-set>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="2" type= "state">
+<is:name>h</is:name>
+<is:description>the proportion of first inactivation gate of I_Na</is:description>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="0"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:initial-value>
+<is:definition  type="ae"  format="mathml">
+<m:math>
+<m:apply>
+<m:eq/>
+<m:ci>h</m:ci>
+<m:cn>0.987721</m:cn>
+</m:apply>
+</m:math>
+</is:definition>
+</is:initial-value>
+<is:implementation>
+<is:definition  type="ode"  format="mathml">
+<m:math>
+<m:apply>
+<m:eq/>
+<m:apply>
+<m:diff/>
+<m:bvar>
+<m:ci>time</m:ci>
+</m:bvar>
+<m:ci>h</m:ci>
+</m:apply>
+<m:apply>
+<m:minus/>
+<m:apply>
+<m:times/>
+<m:ci>alpha_h</m:ci>
+<m:apply>
+<m:minus/>
+<m:cn>1</m:cn>
+<m:ci>h</m:ci>
+</m:apply>
+</m:apply>
+<m:apply>
+<m:times/>
+<m:ci>beta_h</m:ci>
+<m:ci>h</m:ci>
+</m:apply>
+</m:apply>
+</m:apply>
+</m:math>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="5" type= "variable-parameter">
+<is:name>V</is:name>
+<is:description>This port inputs V (the rate of change of membrane potential).</is:description>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="54"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="assign"  sub-type="port"  format="reference">
+<is:reference  port-id="1"/>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="4" type= "variable-parameter">
+<is:name>beta_h</is:name>
+<is:description>closing rate constants of h-gate</is:description>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="68"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="conditional">
+<is:case-set case-set-id="1">
+<is:case substructure-id="1">
+<is:condition format="mathml">
+<m:math>
+<m:apply>
+<m:geq/>
+<m:ci>V</m:ci>
+<m:cn>-40</m:cn>
+</m:apply>
+</m:math>
+</is:condition>
+<is:definition  type="ae"  format="mathml">
+<m:math>
+<m:apply>
+<m:eq/>
+<m:ci>beta_h</m:ci>
+<m:apply>
+<m:divide/>
+<m:cn>1</m:cn>
+<m:apply>
+<m:times/>
+<m:cn>0.13</m:cn>
+<m:apply>
+<m:plus/>
+<m:cn>1</m:cn>
+<m:apply>
+<m:exp/>
+<m:apply>
+<m:divide/>
+<m:apply>
+<m:plus/>
+<m:ci>V</m:ci>
+<m:cn>10.66</m:cn>
+</m:apply>
+<m:cn>-11.1</m:cn>
+</m:apply>
+</m:apply>
+</m:apply>
+</m:apply>
+</m:apply>
+</m:apply>
+</m:math>
+</is:definition>
+</is:case>
+<is:case substructure-id="2">
+<is:definition  type="ae"  format="mathml">
+<m:math>
+<m:apply>
+<m:eq/>
+<m:ci>beta_h</m:ci>
+<m:apply>
+<m:plus/>
+<m:apply>
+<m:times/>
+<m:cn>3.56</m:cn>
+<m:apply>
+<m:exp/>
+<m:apply>
+<m:times/>
+<m:cn>0.079</m:cn>
+<m:ci>V</m:ci>
+</m:apply>
+</m:apply>
+</m:apply>
+<m:apply>
+<m:times/>
+<m:cn>3.1</m:cn>
+<m:cn>100000</m:cn>
+<m:apply>
+<m:exp/>
+<m:apply>
+<m:times/>
+<m:cn>0.35</m:cn>
+<m:ci>V</m:ci>
+</m:apply>
+</m:apply>
+</m:apply>
+</m:apply>
+</m:apply>
+</m:math>
+</is:definition>
+</is:case>
+</is:case-set>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+</is:physical-quantity-set>
+<is:morphology/>
+<is:timeseries-set/>
+</is:module>
+
+<is:module module-id="0eb99464-0a7a-494c-9626-393fbfb3339b" type="functional-unit">
+<is:property>
+<is:name>G_K1_bar</is:name>
+<is:capsulation state="true">
+<is:capsulated-by module-id="4f31fd9b-e7e2-43f2-83d4-c3e7c5f7a395"/>
+</is:capsulation>
+<is:template state="false"/>
+<is:track>
+<is:involved db-id="this" date="2010-07-22T11:53:47+09:00"/>
+</is:track>
+<is:frame-coordinate>
+<is:origin  format="mathml">
+<m:math>
+<m:vector>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+</m:vector>
+</m:math>
+</is:origin>
+<is:rotation format="mathml"  type="matrix">
+<m:math>
+<m:matrix>
+<m:matrixrow>
+<m:cn>1</m:cn>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+</m:matrixrow>
+<m:matrixrow>
+<m:cn>0</m:cn>
+<m:cn>1</m:cn>
+<m:cn>0</m:cn>
+</m:matrixrow>
+<m:matrixrow>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+<m:cn>1</m:cn>
+</m:matrixrow>
+</m:matrix>
+</m:math>
+</is:rotation>
+</is:frame-coordinate>
+<is:description>the maximum conductance of the K1 channel</is:description>
+</is:property>
+
+<is:port-set>
+<is:port port-id="1" direction="in">
+<is:name>K_o</is:name>
+<is:description>This port inputs K_o (extracellular concentrations of K).</is:description>
+</is:port>
+<is:port port-id="2" direction="out" ref-physical-quantity-id="2">
+<is:name>G_K1_bar</is:name>
+<is:description>the maximum conductance of the K1 channel</is:description>
+</is:port>
+</is:port-set>
+
+<is:physical-quantity-set>
+<is:physical-quantity physical-quantity-id="3" type= "variable-parameter">
+<is:name>K_o</is:name>
+<is:description>This port inputs K_o (extracellular concentrations of K).</is:description>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="64"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="assign"  sub-type="port"  format="reference">
+<is:reference  port-id="1"/>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="2" type= "variable-parameter">
+<is:name>G_K1_bar</is:name>
+<is:description>the maximum conductance of the K1 channel</is:description>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="61"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="ae"  format="mathml">
+<m:math>
+<m:apply>
+<m:eq/>
+<m:ci>G_K1_bar</m:ci>
+<m:apply>
+<m:times/>
+<m:cn>0.6047</m:cn>
+<m:apply>
+<m:root/>
+<m:apply>
+<m:divide/>
+<m:ci>K_o</m:ci>
+<m:cn>5.4</m:cn>
+</m:apply>
+</m:apply>
+</m:apply>
+</m:apply>
+</m:math>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+</is:physical-quantity-set>
+<is:morphology/>
+<is:timeseries-set/>
+</is:module>
+
+<is:module module-id="824c3330-b634-40cc-a68a-261565f48f8a" type="functional-unit">
+<is:property>
+<is:name>E_K</is:name>
+<is:capsulation state="true">
+<is:capsulated-by module-id="9f16585a-6ec5-4417-befe-766054891738"/>
+</is:capsulation>
+<is:template state="false"/>
+<is:track>
+<is:involved db-id="this" date="2010-07-22T11:53:47+09:00"/>
+</is:track>
+<is:frame-coordinate>
+<is:origin  format="mathml">
+<m:math>
+<m:vector>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+</m:vector>
+</m:math>
+</is:origin>
+<is:rotation format="mathml"  type="matrix">
+<m:math>
+<m:matrix>
+<m:matrixrow>
+<m:cn>1</m:cn>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+</m:matrixrow>
+<m:matrixrow>
+<m:cn>0</m:cn>
+<m:cn>1</m:cn>
+<m:cn>0</m:cn>
+</m:matrixrow>
+<m:matrixrow>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+<m:cn>1</m:cn>
+</m:matrixrow>
+</m:matrix>
+</m:math>
+</is:rotation>
+</is:frame-coordinate>
+<is:description>the reversal potential of K</is:description>
+</is:property>
+
+<is:port-set>
+<is:port port-id="1" direction="in">
+<is:name>K_o</is:name>
+<is:description>This port inputs K_o (extracellular concentrations of K).</is:description>
+</is:port>
+<is:port port-id="3" direction="in">
+<is:name>Na_o</is:name>
+<is:description>This port inputs Na_o (extracellular concentrations of Na).</is:description>
+</is:port>
+<is:port port-id="2" direction="in">
+<is:name>K_i</is:name>
+<is:description>This port inputs K_i (intracellular concentrations of K).</is:description>
+</is:port>
+<is:port port-id="5" direction="out" ref-physical-quantity-id="6">
+<is:name>E_K</is:name>
+<is:description>the reversal potential of K</is:description>
+</is:port>
+<is:port port-id="4" direction="in">
+<is:name>Na_i</is:name>
+<is:description>This port inputs Na_i (intracellular concentrations of Na).</is:description>
+</is:port>
+</is:port-set>
+
+<is:physical-quantity-set>
+<is:physical-quantity physical-quantity-id="10" type= "variable-parameter">
+<is:name>Na_i</is:name>
+<is:description>This port inputs Na_i (intracellular concentrations of Na).</is:description>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="64"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="assign"  sub-type="port"  format="reference">
+<is:reference  port-id="4"/>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="3" type= "static-parameter">
+<is:name>T</is:name>
+<is:description>the temperature</is:description>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="5"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="ae"  format="mathml">
+<m:math>
+<m:apply>
+<m:eq/>
+<m:ci>T</m:ci>
+<m:cn>310</m:cn>
+</m:apply>
+</m:math>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="2" type= "static-parameter">
+<is:name>R</is:name>
+<is:description>the gas constant</is:description>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="71"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="ae"  format="mathml">
+<m:math>
+<m:apply>
+<m:eq/>
+<m:ci>R</m:ci>
+<m:cn>8.3145</m:cn>
+</m:apply>
+</m:math>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="5" type= "static-parameter">
+<is:name>PR_NaK</is:name>
+<is:description>Na/K permeability ratio</is:description>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="0"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="ae"  format="mathml">
+<m:math>
+<m:apply>
+<m:eq/>
+<m:ci>PR_NaK</m:ci>
+<m:cn>0.01833</m:cn>
+</m:apply>
+</m:math>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="4" type= "static-parameter">
+<is:name>F</is:name>
+<is:description>the Faraday constant</is:description>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="72"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="ae"  format="mathml">
+<m:math>
+<m:apply>
+<m:eq/>
+<m:ci>F</m:ci>
+<m:apply>
+<m:times/>
+<m:cn>9.6485</m:cn>
+<m:apply>
+<m:power/>
+<m:cn>10</m:cn>
+<m:cn>4</m:cn>
+</m:apply>
+</m:apply>
+</m:apply>
+</m:math>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="7" type= "variable-parameter">
+<is:name>K_o</is:name>
+<is:description>This port inputs K_o (extracellular concentrations of K).</is:description>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="64"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="assign"  sub-type="port"  format="reference">
+<is:reference  port-id="1"/>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="6" type= "variable-parameter">
+<is:name>E_K</is:name>
+<is:description>the reversal potential of K</is:description>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="54"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="ae"  format="mathml">
+<m:math>
+<m:apply>
+<m:eq/>
+<m:ci>E_K</m:ci>
+<m:apply>
+<m:times/>
+<m:apply>
+<m:times/>
+<m:apply>
+<m:divide/>
+<m:apply>
+<m:times/>
+<m:ci>R</m:ci>
+<m:ci>T</m:ci>
+</m:apply>
+<m:ci>F</m:ci>
+</m:apply>
+<m:apply>
+<m:ln/>
+<m:apply>
+<m:divide/>
+<m:apply>
+<m:plus/>
+<m:ci>K_o</m:ci>
+<m:apply>
+<m:times/>
+<m:ci>PR_NaK</m:ci>
+<m:ci>Na_o</m:ci>
+</m:apply>
+</m:apply>
+<m:apply>
+<m:plus/>
+<m:ci>K_i</m:ci>
+<m:apply>
+<m:times/>
+<m:ci>PR_NaK</m:ci>
+<m:ci>Na_i</m:ci>
+</m:apply>
+</m:apply>
+</m:apply>
+</m:apply>
+</m:apply>
+<m:cn>1000</m:cn>
+</m:apply>
+</m:apply>
+</m:math>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="9" type= "variable-parameter">
+<is:name>Na_o</is:name>
+<is:description>This port inputs Na_o (extracellular concentrations of Na).</is:description>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="64"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="assign"  sub-type="port"  format="reference">
+<is:reference  port-id="3"/>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="8" type= "variable-parameter">
+<is:name>K_i</is:name>
+<is:description>This port inputs K_i (intracellular concentrations of K).</is:description>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="64"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="assign"  sub-type="port"  format="reference">
+<is:reference  port-id="2"/>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+</is:physical-quantity-set>
+<is:morphology/>
+<is:timeseries-set/>
+</is:module>
+
+<is:module module-id="74ca54e5-6464-433e-b9b3-04e6271f135b" type="functional-unit">
+<is:property>
+<is:name>j_gate</is:name>
+<is:capsulation state="true">
+<is:capsulated-by module-id="46fedd5d-608f-4dbc-a6b3-be13383f9315"/>
+</is:capsulation>
+<is:template state="false"/>
+<is:track>
+<is:involved db-id="this" date="2010-07-22T11:53:47+09:00"/>
+</is:track>
+<is:frame-coordinate>
+<is:origin  format="mathml">
+<m:math>
+<m:vector>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+</m:vector>
+</m:math>
+</is:origin>
+<is:rotation format="mathml"  type="matrix">
+<m:math>
+<m:matrix>
+<m:matrixrow>
+<m:cn>1</m:cn>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+</m:matrixrow>
+<m:matrixrow>
+<m:cn>0</m:cn>
+<m:cn>1</m:cn>
+<m:cn>0</m:cn>
+</m:matrixrow>
+<m:matrixrow>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+<m:cn>1</m:cn>
+</m:matrixrow>
+</m:matrix>
+</m:math>
+</is:rotation>
+</is:frame-coordinate>
+<is:description>the proportion of slow inactivation gate of I_Na</is:description>
+</is:property>
+
+<is:port-set>
+<is:port port-id="1" direction="in">
+<is:name>V</is:name>
+<is:description>This port inputs V (the rate of change of membrane potential).</is:description>
+</is:port>
+<is:port port-id="2" direction="out" ref-physical-quantity-id="2">
+<is:name>j</is:name>
+<is:description>This port outputs j (the proportion of slow inactivation gate of I_Na).</is:description>
+</is:port>
+</is:port-set>
+
+<is:physical-quantity-set>
+<is:physical-quantity physical-quantity-id="3" type= "variable-parameter">
+<is:name>alpha_j</is:name>
+<is:description>opening rate constants of j-gate</is:description>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="68"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="conditional">
+<is:case-set case-set-id="1">
+<is:case substructure-id="1">
+<is:condition format="mathml">
+<m:math>
+<m:apply>
+<m:geq/>
+<m:ci>V</m:ci>
+<m:cn>-40</m:cn>
+</m:apply>
+</m:math>
+</is:condition>
+<is:definition  type="ae"  format="mathml">
+<m:math>
+<m:apply>
+<m:eq/>
+<m:ci>alpha_j</m:ci>
+<m:cn>0</m:cn>
+</m:apply>
+</m:math>
+</is:definition>
+</is:case>
+<is:case substructure-id="2">
+<is:definition  type="ae"  format="mathml">
+<m:math>
+<m:apply>
+<m:eq/>
+<m:ci>alpha_j</m:ci>
+<m:apply>
+<m:divide/>
+<m:apply>
+<m:times/>
+<m:apply>
+<m:minus/>
+<m:apply>
+<m:times/>
+<m:cn>-1.2714</m:cn>
+<m:cn>100000</m:cn>
+<m:apply>
+<m:exp/>
+<m:apply>
+<m:times/>
+<m:cn>0.2444</m:cn>
+<m:ci>V</m:ci>
+</m:apply>
+</m:apply>
+</m:apply>
+<m:apply>
+<m:times/>
+<m:cn>3.474</m:cn>
+<m:cn>0.00001</m:cn>
+<m:apply>
+<m:exp/>
+<m:apply>
+<m:times/>
+<m:cn>-0.04391</m:cn>
+<m:ci>V</m:ci>
+</m:apply>
+</m:apply>
+</m:apply>
+</m:apply>
+<m:apply>
+<m:plus/>
+<m:ci>V</m:ci>
+<m:cn>37.78</m:cn>
+</m:apply>
+</m:apply>
+<m:apply>
+<m:plus/>
+<m:cn>1</m:cn>
+<m:apply>
+<m:exp/>
+<m:apply>
+<m:times/>
+<m:cn>0.311</m:cn>
+<m:apply>
+<m:plus/>
+<m:ci>V</m:ci>
+<m:cn>79.23</m:cn>
+</m:apply>
+</m:apply>
+</m:apply>
+</m:apply>
+</m:apply>
+</m:apply>
+</m:math>
+</is:definition>
+</is:case>
+</is:case-set>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="2" type= "state">
+<is:name>j</is:name>
+<is:description>the proportion of slow inactivation gate of I_Na</is:description>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="0"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:initial-value>
+<is:definition  type="ae"  format="mathml">
+<m:math>
+<m:apply>
+<m:eq/>
+<m:ci>j</m:ci>
+<m:cn>0.974838</m:cn>
+</m:apply>
+</m:math>
+</is:definition>
+</is:initial-value>
+<is:implementation>
+<is:definition  type="ode"  format="mathml">
+<m:math>
+<m:apply>
+<m:eq/>
+<m:apply>
+<m:diff/>
+<m:bvar>
+<m:ci>time</m:ci>
+</m:bvar>
+<m:ci>j</m:ci>
+</m:apply>
+<m:apply>
+<m:minus/>
+<m:apply>
+<m:times/>
+<m:ci>alpha_j</m:ci>
+<m:apply>
+<m:minus/>
+<m:cn>1</m:cn>
+<m:ci>j</m:ci>
+</m:apply>
+</m:apply>
+<m:apply>
+<m:times/>
+<m:ci>beta_j</m:ci>
+<m:ci>j</m:ci>
+</m:apply>
+</m:apply>
+</m:apply>
+</m:math>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="5" type= "variable-parameter">
+<is:name>V</is:name>
+<is:description>This port inputs V (the rate of change of membrane potential).</is:description>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="54"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="assign"  sub-type="port"  format="reference">
+<is:reference  port-id="1"/>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="4" type= "variable-parameter">
+<is:name>beta_j</is:name>
+<is:description>closing rate constants of j- gate</is:description>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="68"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="conditional">
+<is:case-set case-set-id="1">
+<is:case substructure-id="1">
+<is:condition format="mathml">
+<m:math>
+<m:apply>
+<m:geq/>
+<m:ci>V</m:ci>
+<m:cn>-40</m:cn>
+</m:apply>
+</m:math>
+</is:condition>
+<is:definition  type="ae"  format="mathml">
+<m:math>
+<m:apply>
+<m:eq/>
+<m:ci>beta_j</m:ci>
+<m:apply>
+<m:divide/>
+<m:apply>
+<m:times/>
+<m:cn>0.3</m:cn>
+<m:apply>
+<m:exp/>
+<m:apply>
+<m:times/>
+<m:cn>-2.535</m:cn>
+<m:cn>0.0000001</m:cn>
+<m:ci>V</m:ci>
+</m:apply>
+</m:apply>
+</m:apply>
+<m:apply>
+<m:plus/>
+<m:cn>1</m:cn>
+<m:apply>
+<m:exp/>
+<m:apply>
+<m:times/>
+<m:cn>-0.1</m:cn>
+<m:apply>
+<m:plus/>
+<m:ci>V</m:ci>
+<m:cn>32</m:cn>
+</m:apply>
+</m:apply>
+</m:apply>
+</m:apply>
+</m:apply>
+</m:apply>
+</m:math>
+</is:definition>
+</is:case>
+<is:case substructure-id="2">
+<is:definition  type="ae"  format="mathml">
+<m:math>
+<m:apply>
+<m:eq/>
+<m:ci>beta_j</m:ci>
+<m:apply>
+<m:divide/>
+<m:apply>
+<m:times/>
+<m:cn>0.1212</m:cn>
+<m:apply>
+<m:exp/>
+<m:apply>
+<m:times/>
+<m:cn>-0.01052</m:cn>
+<m:ci>V</m:ci>
+</m:apply>
+</m:apply>
+</m:apply>
+<m:apply>
+<m:plus/>
+<m:cn>1</m:cn>
+<m:apply>
+<m:exp/>
+<m:apply>
+<m:times/>
+<m:cn>-0.1378</m:cn>
+<m:apply>
+<m:plus/>
+<m:ci>V</m:ci>
+<m:cn>40.14</m:cn>
+</m:apply>
+</m:apply>
+</m:apply>
+</m:apply>
+</m:apply>
+</m:apply>
+</m:math>
+</is:definition>
+</is:case>
+</is:case-set>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+</is:physical-quantity-set>
+<is:morphology/>
+<is:timeseries-set/>
+</is:module>
+
+<is:module module-id="9f16585a-6ec5-4417-befe-766054891738" type="capsule" db-id="180">
+<is:property>
+<is:name>Luo_Rudy_1991_I_K</is:name>
+<is:capsulation state="true">
+<is:capsulated-by module-id="53defeae-ef21-4894-8d88-b7e50bb7eba1"/>
+</is:capsulation>
+<is:template state="false"/>
+<is:track>
+<is:involved db-id="this" date="2010-07-22T11:53:47+09:00"/>
+</is:track>
+<is:frame-coordinate>
+<is:origin  format="mathml">
+<m:math>
+<m:vector>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+</m:vector>
+</m:math>
+</is:origin>
+<is:rotation format="mathml"  type="matrix">
+<m:math>
+<m:matrix>
+<m:matrixrow>
+<m:cn>1</m:cn>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+</m:matrixrow>
+<m:matrixrow>
+<m:cn>0</m:cn>
+<m:cn>1</m:cn>
+<m:cn>0</m:cn>
+</m:matrixrow>
+<m:matrixrow>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+<m:cn>1</m:cn>
+</m:matrixrow>
+</m:matrix>
+</m:math>
+</is:rotation>
+</is:frame-coordinate>
+<is:description>This model represents the time-dependent potassium current module used in the Luo-Rudy model (Ching-hsing Luo and Yoram Rudy, A model of the ventricular cardiac action potential. Depolarization, repolarization, and their interaction, Circ. Res. Vol.68, pp.1501-1526, 1991).</is:description>
+</is:property>
+
+<is:port-set>
+<is:port port-id="1" direction="in">
+<is:name>V</is:name>
+<is:description>This port inputs V (the rate of change of membrane potential).</is:description>
+</is:port>
+<is:port port-id="3" direction="in">
+<is:name>K_i</is:name>
+<is:description>This port inputs K_i (intracellular concentrations of K).</is:description>
+</is:port>
+<is:port port-id="2" direction="in">
+<is:name>K_o</is:name>
+<is:description>This port inputs K_o (extracellular concentrations of K).</is:description>
+</is:port>
+<is:port port-id="5" direction="in">
+<is:name>Na_i</is:name>
+<is:description>This port inputs Na_i (intracellular concentrations of Na).</is:description>
+</is:port>
+<is:port port-id="4" direction="in">
+<is:name>Na_o</is:name>
+<is:description>This port inputs Na_o (extracellular concentrations of Na).</is:description>
+</is:port>
+<is:port port-id="6" direction="out">
+<is:name>I_K</is:name>
+<is:description>This port outputs I_K (the time-dependent potassium current).</is:description>
+</is:port>
+</is:port-set>
+<is:physical-quantity-set/>
+<is:morphology/>
+<is:timeseries-set/>
+</is:module>
+
+<is:module module-id="e004a18c-a4f0-4237-8a0f-da615411a30f" type="functional-unit">
+<is:property>
+<is:name>Kp</is:name>
+<is:capsulation state="true">
+<is:capsulated-by module-id="4f8c5aa5-bf73-482e-986a-57b796b1c026"/>
+</is:capsulation>
+<is:template state="false"/>
+<is:track>
+<is:involved db-id="this" date="2010-07-22T11:53:47+09:00"/>
+</is:track>
+<is:frame-coordinate>
+<is:origin  format="mathml">
+<m:math>
+<m:vector>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+</m:vector>
+</m:math>
+</is:origin>
+<is:rotation format="mathml"  type="matrix">
+<m:math>
+<m:matrix>
+<m:matrixrow>
+<m:cn>1</m:cn>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+</m:matrixrow>
+<m:matrixrow>
+<m:cn>0</m:cn>
+<m:cn>1</m:cn>
+<m:cn>0</m:cn>
+</m:matrixrow>
+<m:matrixrow>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+<m:cn>1</m:cn>
+</m:matrixrow>
+</m:matrix>
+</m:math>
+</is:rotation>
+</is:frame-coordinate>
+<is:description>the proportion of activation gate of I_Kp</is:description>
+</is:property>
+
+<is:port-set>
+<is:port port-id="1" direction="in">
+<is:name>V</is:name>
+<is:description>This port inputs V (the rate of change of membrane potential).</is:description>
+</is:port>
+<is:port port-id="2" direction="out" ref-physical-quantity-id="2">
+<is:name>Kp</is:name>
+<is:description>This port outputs Kp (the proportion of activation gate of I_Kp).</is:description>
+</is:port>
+</is:port-set>
+
+<is:physical-quantity-set>
+<is:physical-quantity physical-quantity-id="3" type= "variable-parameter">
+<is:name>V</is:name>
+<is:description>This port inputs V (the rate of change of membrane potential).</is:description>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="54"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="assign"  sub-type="port"  format="reference">
+<is:reference  port-id="1"/>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="2" type= "variable-parameter">
+<is:name>Kp</is:name>
+<is:description>This port outputs Kp (the proportion of activation gate of I_Kp).</is:description>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="0"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="ae"  format="mathml">
+<m:math>
+<m:apply>
+<m:eq/>
+<m:ci>Kp</m:ci>
+<m:apply>
+<m:divide/>
+<m:cn>1</m:cn>
+<m:apply>
+<m:plus/>
+<m:cn>1</m:cn>
+<m:apply>
+<m:exp/>
+<m:apply>
+<m:divide/>
+<m:apply>
+<m:minus/>
+<m:cn>7.488</m:cn>
+<m:ci>V</m:ci>
+</m:apply>
+<m:cn>5.988</m:cn>
+</m:apply>
+</m:apply>
+</m:apply>
+</m:apply>
+</m:apply>
+</m:math>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+</is:physical-quantity-set>
+<is:morphology/>
+<is:timeseries-set/>
+</is:module>
+
+<is:module module-id="ba670aea-9422-443a-868c-c9fcc050b02d" type="functional-unit">
+<is:property>
+<is:name>I_Kp</is:name>
+<is:capsulation state="true">
+<is:capsulated-by module-id="4f8c5aa5-bf73-482e-986a-57b796b1c026"/>
+</is:capsulation>
+<is:template state="false"/>
+<is:track>
+<is:involved db-id="this" date="2010-07-22T11:53:47+09:00"/>
+</is:track>
+<is:frame-coordinate>
+<is:origin  format="mathml">
+<m:math>
+<m:vector>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+</m:vector>
+</m:math>
+</is:origin>
+<is:rotation format="mathml"  type="matrix">
+<m:math>
+<m:matrix>
+<m:matrixrow>
+<m:cn>1</m:cn>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+</m:matrixrow>
+<m:matrixrow>
+<m:cn>0</m:cn>
+<m:cn>1</m:cn>
+<m:cn>0</m:cn>
+</m:matrixrow>
+<m:matrixrow>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+<m:cn>1</m:cn>
+</m:matrixrow>
+</m:matrix>
+</m:math>
+</is:rotation>
+</is:frame-coordinate>
+<is:description>the plateau K current</is:description>
+</is:property>
+
+<is:port-set>
+<is:port port-id="1" direction="in">
+<is:name>V</is:name>
+<is:description>This port inputs V (the rate of change of membrane potential).</is:description>
+</is:port>
+<is:port port-id="3" direction="in">
+<is:name>E_Kp</is:name>
+<is:description>This port inputs E_Kp (the reversal potential of Kp).</is:description>
+</is:port>
+<is:port port-id="2" direction="in">
+<is:name>Kp</is:name>
+<is:description>This port inputs Kp (the proportion of activation gate of I_Kp).</is:description>
+</is:port>
+<is:port port-id="4" direction="out" ref-physical-quantity-id="3">
+<is:name>I_Kp</is:name>
+<is:description>the plateau K current</is:description>
+</is:port>
+</is:port-set>
+
+<is:physical-quantity-set>
+<is:physical-quantity physical-quantity-id="3" type= "variable-parameter">
+<is:name>I_Kp</is:name>
+<is:description>the plateau K current</is:description>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="76"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="ae"  format="mathml">
+<m:math>
+<m:apply>
+<m:eq/>
+<m:ci>I_Kp</m:ci>
+<m:apply>
+<m:times/>
+<m:ci>G_Kp_bar</m:ci>
+<m:ci>Kp</m:ci>
+<m:apply>
+<m:minus/>
+<m:ci>V</m:ci>
+<m:ci>E_Kp</m:ci>
+</m:apply>
+</m:apply>
+</m:apply>
+</m:math>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="2" type= "static-parameter">
+<is:name>G_Kp_bar</is:name>
+<is:description>the maximum conductance of the Kp channel</is:description>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="61"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="ae"  format="mathml">
+<m:math>
+<m:apply>
+<m:eq/>
+<m:ci>G_Kp_bar</m:ci>
+<m:cn>0.0183</m:cn>
+</m:apply>
+</m:math>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="5" type= "variable-parameter">
+<is:name>Kp</is:name>
+<is:description>This port inputs Kp (the proportion of activation gate of I_Kp).</is:description>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="0"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="assign"  sub-type="port"  format="reference">
+<is:reference  port-id="2"/>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="4" type= "variable-parameter">
+<is:name>V</is:name>
+<is:description>This port inputs V (the rate of change of membrane potential).</is:description>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="54"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="assign"  sub-type="port"  format="reference">
+<is:reference  port-id="1"/>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="6" type= "variable-parameter">
+<is:name>E_Kp</is:name>
+<is:description>This port inputs E_Kp (the reversal potential of Kp).</is:description>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="54"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="assign"  sub-type="port"  format="reference">
+<is:reference  port-id="3"/>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+</is:physical-quantity-set>
+<is:morphology/>
+<is:timeseries-set/>
+</is:module>
+
+<is:module module-id="4f8c5aa5-bf73-482e-986a-57b796b1c026" type="capsule" db-id="181">
+<is:property>
+<is:name>Luo_Rudy_1991_I_Kp</is:name>
+<is:capsulation state="true">
+<is:capsulated-by module-id="53defeae-ef21-4894-8d88-b7e50bb7eba1"/>
+</is:capsulation>
+<is:template state="false"/>
+<is:track>
+<is:involved db-id="this" date="2010-07-22T11:53:47+09:00"/>
+</is:track>
+<is:frame-coordinate>
+<is:origin  format="mathml">
+<m:math>
+<m:vector>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+</m:vector>
+</m:math>
+</is:origin>
+<is:rotation format="mathml"  type="matrix">
+<m:math>
+<m:matrix>
+<m:matrixrow>
+<m:cn>1</m:cn>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+</m:matrixrow>
+<m:matrixrow>
+<m:cn>0</m:cn>
+<m:cn>1</m:cn>
+<m:cn>0</m:cn>
+</m:matrixrow>
+<m:matrixrow>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+<m:cn>1</m:cn>
+</m:matrixrow>
+</m:matrix>
+</m:math>
+</is:rotation>
+</is:frame-coordinate>
+<is:description>This model represents the plateau potassium current module used in the Luo-Rudy model (Ching-hsing Luo and Yoram Rudy, A model of the ventricular cardiac action potential. Depolarization, repolarization, and their interaction, Circ. Res. Vol.68, pp.1501-1526, 1991).</is:description>
+</is:property>
+
+<is:port-set>
+<is:port port-id="1" direction="in">
+<is:name>V</is:name>
+<is:description>This port inputs V (the rate of change of membrane potential).</is:description>
+</is:port>
+<is:port port-id="3" direction="in">
+<is:name>K_i</is:name>
+<is:description>This port inputs K_i (intracellular concentrations of K).</is:description>
+</is:port>
+<is:port port-id="2" direction="in">
+<is:name>K_o</is:name>
+<is:description>This port inputs K_o (extracellular concentrations of K).</is:description>
+</is:port>
+<is:port port-id="4" direction="out">
+<is:name>I_Kp</is:name>
+<is:description>This port outputs I_Kp (the plateau potassium current).</is:description>
+</is:port>
+</is:port-set>
+<is:physical-quantity-set/>
+<is:morphology/>
+<is:timeseries-set/>
+</is:module>
+
+<is:module module-id="846d568d-13ca-4cdc-96df-019816831402" type="capsule" db-id="183">
+<is:property>
+<is:name>Luo_Rudy_1991_I_si</is:name>
+<is:capsulation state="true">
+<is:capsulated-by module-id="53defeae-ef21-4894-8d88-b7e50bb7eba1"/>
+</is:capsulation>
+<is:template state="false"/>
+<is:track>
+<is:involved db-id="this" date="2010-07-22T11:53:47+09:00"/>
+</is:track>
+<is:frame-coordinate>
+<is:origin  format="mathml">
+<m:math>
+<m:vector>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+</m:vector>
+</m:math>
+</is:origin>
+<is:rotation format="mathml"  type="matrix">
+<m:math>
+<m:matrix>
+<m:matrixrow>
+<m:cn>1</m:cn>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+</m:matrixrow>
+<m:matrixrow>
+<m:cn>0</m:cn>
+<m:cn>1</m:cn>
+<m:cn>0</m:cn>
+</m:matrixrow>
+<m:matrixrow>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+<m:cn>1</m:cn>
+</m:matrixrow>
+</m:matrix>
+</m:math>
+</is:rotation>
+</is:frame-coordinate>
+<is:description>This model represents the slow inward current module used in the Luo-Rudy model (Ching-hsing Luo and Yoram Rudy, A model of the ventricular cardiac action potential. Depolarization, repolarization, and their interaction, Circ. Res. Vol.68, pp.1501-1526, 1991).</is:description>
+</is:property>
+
+<is:port-set>
+<is:port port-id="1" direction="in">
+<is:name>V</is:name>
+<is:description>This port inputs V (the rate of change of membrane potential).</is:description>
+</is:port>
+<is:port port-id="3" direction="out">
+<is:name>I_si</is:name>
+<is:description>This port outputs I_si (the slow inward current).</is:description>
+</is:port>
+<is:port port-id="2" direction="in">
+<is:name>Ca_i</is:name>
+<is:description>This port inputs Ca_i (intracellular concentrations of Ca).</is:description>
+</is:port>
+</is:port-set>
+<is:physical-quantity-set/>
+<is:morphology/>
+<is:timeseries-set/>
+</is:module>
+
+<is:module module-id="6d4759f3-4ee3-4656-bbb9-e8a0ad030da6" type="capsule" db-id="178">
+<is:property>
+<is:name>Luo_Rudy_1991_I_b</is:name>
+<is:capsulation state="true">
+<is:capsulated-by module-id="53defeae-ef21-4894-8d88-b7e50bb7eba1"/>
+</is:capsulation>
+<is:template state="false"/>
+<is:track>
+<is:involved db-id="this" date="2010-07-22T11:53:47+09:00"/>
+</is:track>
+<is:frame-coordinate>
+<is:origin  format="mathml">
+<m:math>
+<m:vector>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+</m:vector>
+</m:math>
+</is:origin>
+<is:rotation format="mathml"  type="matrix">
+<m:math>
+<m:matrix>
+<m:matrixrow>
+<m:cn>1</m:cn>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+</m:matrixrow>
+<m:matrixrow>
+<m:cn>0</m:cn>
+<m:cn>1</m:cn>
+<m:cn>0</m:cn>
+</m:matrixrow>
+<m:matrixrow>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+<m:cn>1</m:cn>
+</m:matrixrow>
+</m:matrix>
+</m:math>
+</is:rotation>
+</is:frame-coordinate>
+<is:description>This model represents the time-independent background current module used in the Luo-Rudy model (Ching-hsing Luo and Yoram Rudy, A model of the ventricular cardiac action potential. Depolarization, repolarization, and their interaction, Circ. Res. Vol.68, pp.1501-1526, 1991).</is:description>
+</is:property>
+
+<is:port-set>
+<is:port port-id="1" direction="in">
+<is:name>V</is:name>
+<is:description>This port inputs V (the rate of change of membrane potential).</is:description>
+</is:port>
+<is:port port-id="2" direction="out">
+<is:name>I_b</is:name>
+<is:description>This port outputs I_b (the time-independent background current).</is:description>
+</is:port>
+</is:port-set>
+<is:physical-quantity-set/>
+<is:morphology/>
+<is:timeseries-set/>
+</is:module>
+
+<is:module module-id="7460807f-a216-4864-a317-3aa747fae073" type="functional-unit">
+<is:property>
+<is:name>Luo_Rudy_1991_model</is:name>
+<is:capsulation state="true">
+<is:capsulated-by module-id="53defeae-ef21-4894-8d88-b7e50bb7eba1"/>
+</is:capsulation>
+<is:template state="false"/>
+<is:track>
+<is:involved db-id="this" date="2010-07-22T11:53:47+09:00"/>
+</is:track>
+<is:frame-coordinate>
+<is:origin  format="mathml">
+<m:math>
+<m:vector>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+</m:vector>
+</m:math>
+</is:origin>
+<is:rotation format="mathml"  type="matrix">
+<m:math>
+<m:matrix>
+<m:matrixrow>
+<m:cn>1</m:cn>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+</m:matrixrow>
+<m:matrixrow>
+<m:cn>0</m:cn>
+<m:cn>1</m:cn>
+<m:cn>0</m:cn>
+</m:matrixrow>
+<m:matrixrow>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+<m:cn>1</m:cn>
+</m:matrixrow>
+</m:matrix>
+</m:math>
+</is:rotation>
+</is:frame-coordinate>
+<is:description>This model represents the Luo-Rudy model (Ching-hsing Luo and Yoram Rudy, A model of the ventricular cardiac action potential. Depolarization, repolarization, and their interaction, Circ. Res. Vol.68, pp.1501-1526, 1991).</is:description>
+</is:property>
+
+<is:port-set>
+<is:port port-id="1" direction="in">
+<is:name>I_stimulus</is:name>
+<is:description>This port inputs I_stimulus (stimulus current). Note that, according to the original paper, depolarization sitmulus I_stimulus must be negative.</is:description>
+</is:port>
+<is:port port-id="3" direction="in">
+<is:name>I_si</is:name>
+<is:description>This port inputs I_si (the slow inward current).</is:description>
+</is:port>
+<is:port port-id="2" direction="in">
+<is:name>I_Na</is:name>
+<is:description>This port inputs I_Na (the fast sodium current).</is:description>
+</is:port>
+<is:port port-id="5" direction="in">
+<is:name>I_K1</is:name>
+<is:description>This port inputs I_K1 (the time-independent potassium current).</is:description>
+</is:port>
+<is:port port-id="4" direction="in">
+<is:name>I_K</is:name>
+<is:description>This port inputs I_K (the time-dependent potassium current).</is:description>
+</is:port>
+<is:port port-id="7" direction="in">
+<is:name>I_b</is:name>
+<is:description>This port inputs I_b (the time-independent background current).</is:description>
+</is:port>
+<is:port port-id="6" direction="in">
+<is:name>I_Kp</is:name>
+<is:description>This port inputs I_Kp (the plateau potassium current).</is:description>
+</is:port>
+<is:port port-id="8" direction="out" ref-physical-quantity-id="2">
+<is:name>V</is:name>
+<is:description>the rate of change of membrane potential</is:description>
+</is:port>
+</is:port-set>
+
+<is:physical-quantity-set>
+<is:physical-quantity physical-quantity-id="10" type= "variable-parameter">
+<is:name>I_b</is:name>
+<is:description>This port inputs I_b (the time-independent background current).</is:description>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="76"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="assign"  sub-type="port"  format="reference">
+<is:reference  port-id="7"/>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="3" type= "static-parameter">
+<is:name>C</is:name>
+<is:description>the membrane capacitance</is:description>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="58"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="ae"  format="mathml">
+<m:math>
+<m:apply>
+<m:eq/>
+<m:ci>C</m:ci>
+<m:cn>1</m:cn>
+</m:apply>
+</m:math>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="2" type= "state">
+<is:name>V</is:name>
+<is:description>the rate of change of membrane potential</is:description>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="54"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:initial-value>
+<is:definition  type="ae"  format="mathml">
+<m:math>
+<m:apply>
+<m:eq/>
+<m:ci>V</m:ci>
+<m:cn>-84.4326</m:cn>
+</m:apply>
+</m:math>
+</is:definition>
+</is:initial-value>
+<is:implementation>
+<is:definition  type="ode"  format="mathml">
+<m:math>
+<m:apply>
+<m:eq/>
+<m:apply>
+<m:diff/>
+<m:bvar>
+<m:ci>time</m:ci>
+</m:bvar>
+<m:ci>V</m:ci>
+</m:apply>
+<m:apply>
+<m:divide/>
+<m:apply>
+<m:minus/>
+<m:apply>
+<m:plus/>
+<m:ci>I_stimulus</m:ci>
+<m:ci>I_Na</m:ci>
+<m:ci>I_si</m:ci>
+<m:ci>I_K</m:ci>
+<m:ci>I_K1</m:ci>
+<m:ci>I_Kp</m:ci>
+<m:ci>I_b</m:ci>
+</m:apply>
+</m:apply>
+<m:ci>C</m:ci>
+</m:apply>
+</m:apply>
+</m:math>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="5" type= "variable-parameter">
+<is:name>I_Na</is:name>
+<is:description>This port inputs I_Na (the fast sodium current).</is:description>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="76"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="assign"  sub-type="port"  format="reference">
+<is:reference  port-id="2"/>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="4" type= "variable-parameter">
+<is:name>I_stimulus</is:name>
+<is:description>This port inputs I_stimulus (stimulus current). Note that, according to the original paper, depolarization sitmulus I_stimulus must be negative.</is:description>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="76"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="assign"  sub-type="port"  format="reference">
+<is:reference  port-id="1"/>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="7" type= "variable-parameter">
+<is:name>I_K</is:name>
+<is:description>This port inputs I_K (the time-dependent potassium current).</is:description>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="76"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="assign"  sub-type="port"  format="reference">
+<is:reference  port-id="4"/>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="6" type= "variable-parameter">
+<is:name>I_si</is:name>
+<is:description>This port inputs I_si (the slow inward current).</is:description>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="76"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="assign"  sub-type="port"  format="reference">
+<is:reference  port-id="3"/>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="9" type= "variable-parameter">
+<is:name>I_Kp</is:name>
+<is:description>This port inputs I_Kp (the plateau potassium current).</is:description>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="76"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="assign"  sub-type="port"  format="reference">
+<is:reference  port-id="6"/>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="8" type= "variable-parameter">
+<is:name>I_K1</is:name>
+<is:description>This port inputs I_K1 (the time-independent potassium current).</is:description>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="76"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="assign"  sub-type="port"  format="reference">
+<is:reference  port-id="5"/>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+</is:physical-quantity-set>
+<is:morphology/>
+<is:timeseries-set/>
+</is:module>
+
+<is:module module-id="9a2f10a8-875a-4833-9626-763e87f7ff53" type="functional-unit">
+<is:property>
+<is:name>Ca_i</is:name>
+<is:capsulation state="true">
+<is:capsulated-by module-id="53defeae-ef21-4894-8d88-b7e50bb7eba1"/>
+</is:capsulation>
+<is:template state="false"/>
+<is:track>
+<is:involved db-id="this" date="2010-07-22T11:53:47+09:00"/>
+</is:track>
+<is:frame-coordinate>
+<is:origin  format="mathml">
+<m:math>
+<m:vector>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+</m:vector>
+</m:math>
+</is:origin>
+<is:rotation format="mathml"  type="matrix">
+<m:math>
+<m:matrix>
+<m:matrixrow>
+<m:cn>1</m:cn>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+</m:matrixrow>
+<m:matrixrow>
+<m:cn>0</m:cn>
+<m:cn>1</m:cn>
+<m:cn>0</m:cn>
+</m:matrixrow>
+<m:matrixrow>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+<m:cn>1</m:cn>
+</m:matrixrow>
+</m:matrix>
+</m:math>
+</is:rotation>
+</is:frame-coordinate>
+<is:description>intracellular concentrations of Ca</is:description>
+</is:property>
+
+<is:port-set>
+<is:port port-id="1" direction="in">
+<is:name>I_si</is:name>
+<is:description>This port inputs I_si (the slow inward current).</is:description>
+</is:port>
+<is:port port-id="2" direction="out" ref-physical-quantity-id="2">
+<is:name>Ca_i</is:name>
+<is:description>intracellular concentrations of Ca</is:description>
+</is:port>
+</is:port-set>
+
+<is:physical-quantity-set>
+<is:physical-quantity physical-quantity-id="3" type= "variable-parameter">
+<is:name>I_si</is:name>
+<is:description>This port inputs I_si (the slow inward current).</is:description>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="76"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="assign"  sub-type="port"  format="reference">
+<is:reference  port-id="1"/>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="2" type= "state">
+<is:name>Ca_i</is:name>
+<is:description>intracellular concentrations of Ca</is:description>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="64"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:initial-value>
+<is:definition  type="ae"  format="mathml">
+<m:math>
+<m:apply>
+<m:eq/>
+<m:ci>Ca_i</m:ci>
+<m:apply>
+<m:times/>
+<m:cn>2</m:cn>
+<m:apply>
+<m:power/>
+<m:cn>10</m:cn>
+<m:cn>-4</m:cn>
+</m:apply>
+</m:apply>
+</m:apply>
+</m:math>
+</is:definition>
+</is:initial-value>
+<is:implementation>
+<is:definition  type="ode"  format="mathml">
+<m:math>
+<m:apply>
+<m:eq/>
+<m:apply>
+<m:diff/>
+<m:bvar>
+<m:ci>time</m:ci>
+</m:bvar>
+<m:ci>Ca_i</m:ci>
+</m:apply>
+<m:apply>
+<m:plus/>
+<m:apply>
+<m:times/>
+<m:cn>-0.0001</m:cn>
+<m:ci>I_si</m:ci>
+</m:apply>
+<m:apply>
+<m:times/>
+<m:cn>0.07</m:cn>
+<m:apply>
+<m:minus/>
+<m:cn>0.0001</m:cn>
+<m:ci>Ca_i</m:ci>
+</m:apply>
+</m:apply>
+</m:apply>
+</m:apply>
+</m:math>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+</is:physical-quantity-set>
+<is:morphology/>
+<is:timeseries-set/>
+</is:module>
+
+<is:module module-id="2537d75f-f594-43ca-ada7-e08ac29ffa4e" type="functional-unit">
+<is:property>
+<is:name>d_gate</is:name>
+<is:capsulation state="true">
+<is:capsulated-by module-id="846d568d-13ca-4cdc-96df-019816831402"/>
+</is:capsulation>
+<is:template state="false"/>
+<is:track>
+<is:involved db-id="this" date="2010-07-22T11:53:47+09:00"/>
+</is:track>
+<is:frame-coordinate>
+<is:origin  format="mathml">
+<m:math>
+<m:vector>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+</m:vector>
+</m:math>
+</is:origin>
+<is:rotation format="mathml"  type="matrix">
+<m:math>
+<m:matrix>
+<m:matrixrow>
+<m:cn>1</m:cn>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+</m:matrixrow>
+<m:matrixrow>
+<m:cn>0</m:cn>
+<m:cn>1</m:cn>
+<m:cn>0</m:cn>
+</m:matrixrow>
+<m:matrixrow>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+<m:cn>1</m:cn>
+</m:matrixrow>
+</m:matrix>
+</m:math>
+</is:rotation>
+</is:frame-coordinate>
+<is:description>the proportion of activation gate of I_si</is:description>
+</is:property>
+
+<is:port-set>
+<is:port port-id="1" direction="in">
+<is:name>V</is:name>
+<is:description>This port inputs V (the rate of change of membrane potential).</is:description>
+</is:port>
+<is:port port-id="2" direction="out" ref-physical-quantity-id="2">
+<is:name>d</is:name>
+<is:description>This port outputs d (the proportion of activation gate of I_si).</is:description>
+</is:port>
+</is:port-set>
+
+<is:physical-quantity-set>
+<is:physical-quantity physical-quantity-id="3" type= "variable-parameter">
+<is:name>alpha_d</is:name>
+<is:description>opening rate constants of d-gate</is:description>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="68"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="ae"  format="mathml">
+<m:math>
+<m:apply>
+<m:eq/>
+<m:ci>alpha_d</m:ci>
+<m:apply>
+<m:divide/>
+<m:apply>
+<m:times/>
+<m:cn>0.095</m:cn>
+<m:apply>
+<m:exp/>
+<m:apply>
+<m:times/>
+<m:cn>-0.01</m:cn>
+<m:apply>
+<m:minus/>
+<m:ci>V</m:ci>
+<m:cn>5</m:cn>
+</m:apply>
+</m:apply>
+</m:apply>
+</m:apply>
+<m:apply>
+<m:plus/>
+<m:cn>1</m:cn>
+<m:apply>
+<m:exp/>
+<m:apply>
+<m:times/>
+<m:cn>-0.072</m:cn>
+<m:apply>
+<m:minus/>
+<m:ci>V</m:ci>
+<m:cn>5</m:cn>
+</m:apply>
+</m:apply>
+</m:apply>
+</m:apply>
+</m:apply>
+</m:apply>
+</m:math>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="2" type= "state">
+<is:name>d</is:name>
+<is:description>the proportion of activation gate of I_si</is:description>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="0"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:initial-value>
+<is:definition  type="ae"  format="mathml">
+<m:math>
+<m:apply>
+<m:eq/>
+<m:ci>d</m:ci>
+<m:cn>0.00297072</m:cn>
+</m:apply>
+</m:math>
+</is:definition>
+</is:initial-value>
+<is:implementation>
+<is:definition  type="ode"  format="mathml">
+<m:math>
+<m:apply>
+<m:eq/>
+<m:apply>
+<m:diff/>
+<m:bvar>
+<m:ci>time</m:ci>
+</m:bvar>
+<m:ci>d</m:ci>
+</m:apply>
+<m:apply>
+<m:minus/>
+<m:apply>
+<m:times/>
+<m:ci>alpha_d</m:ci>
+<m:apply>
+<m:minus/>
+<m:cn>1</m:cn>
+<m:ci>d</m:ci>
+</m:apply>
+</m:apply>
+<m:apply>
+<m:times/>
+<m:ci>beta_d</m:ci>
+<m:ci>d</m:ci>
+</m:apply>
+</m:apply>
+</m:apply>
+</m:math>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="5" type= "variable-parameter">
+<is:name>V</is:name>
+<is:description>This port inputs V (the rate of change of membrane potential).</is:description>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="54"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="assign"  sub-type="port"  format="reference">
+<is:reference  port-id="1"/>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="4" type= "variable-parameter">
+<is:name>beta_d</is:name>
+<is:description>closing rate constants of d-gate</is:description>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="68"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="ae"  format="mathml">
+<m:math>
+<m:apply>
+<m:eq/>
+<m:ci>beta_d</m:ci>
+<m:apply>
+<m:divide/>
+<m:apply>
+<m:times/>
+<m:cn>0.07</m:cn>
+<m:apply>
+<m:exp/>
+<m:apply>
+<m:times/>
+<m:cn>-0.017</m:cn>
+<m:apply>
+<m:plus/>
+<m:ci>V</m:ci>
+<m:cn>44</m:cn>
+</m:apply>
+</m:apply>
+</m:apply>
+</m:apply>
+<m:apply>
+<m:plus/>
+<m:cn>1</m:cn>
+<m:apply>
+<m:exp/>
+<m:apply>
+<m:times/>
+<m:cn>0.05</m:cn>
+<m:apply>
+<m:plus/>
+<m:ci>V</m:ci>
+<m:cn>44</m:cn>
+</m:apply>
+</m:apply>
+</m:apply>
+</m:apply>
+</m:apply>
+</m:apply>
+</m:math>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+</is:physical-quantity-set>
+<is:morphology/>
+<is:timeseries-set/>
+</is:module>
+
+<is:module module-id="aebac2fa-61ec-4dad-958b-7279737228e1" type="functional-unit">
+<is:property>
+<is:name>Na_o</is:name>
+<is:capsulation state="true">
+<is:capsulated-by module-id="53defeae-ef21-4894-8d88-b7e50bb7eba1"/>
+</is:capsulation>
+<is:template state="false"/>
+<is:track>
+<is:involved db-id="this" date="2010-07-22T11:53:47+09:00"/>
+</is:track>
+<is:frame-coordinate>
+<is:origin  format="mathml">
+<m:math>
+<m:vector>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+</m:vector>
+</m:math>
+</is:origin>
+<is:rotation format="mathml"  type="matrix">
+<m:math>
+<m:matrix>
+<m:matrixrow>
+<m:cn>1</m:cn>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+</m:matrixrow>
+<m:matrixrow>
+<m:cn>0</m:cn>
+<m:cn>1</m:cn>
+<m:cn>0</m:cn>
+</m:matrixrow>
+<m:matrixrow>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+<m:cn>1</m:cn>
+</m:matrixrow>
+</m:matrix>
+</m:math>
+</is:rotation>
+</is:frame-coordinate>
+<is:description>extracellular concentrations of Na</is:description>
+</is:property>
+
+<is:port-set>
+<is:port port-id="1" direction="out" ref-physical-quantity-id="2">
+<is:name>Na_o</is:name>
+<is:description>extracellular concentrations of Na</is:description>
+</is:port>
+</is:port-set>
+
+<is:physical-quantity-set>
+<is:physical-quantity physical-quantity-id="2" type= "static-parameter">
+<is:name>Na_o</is:name>
+<is:description>extracellular concentrations of Na</is:description>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="64"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="ae"  format="mathml">
+<m:math>
+<m:apply>
+<m:eq/>
+<m:ci>Na_o</m:ci>
+<m:cn>140</m:cn>
+</m:apply>
+</m:math>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+</is:physical-quantity-set>
+<is:morphology/>
+<is:timeseries-set/>
+</is:module>
+
+<is:module module-id="dcbfbc88-87eb-4c8f-8d05-be3e10df2235" type="functional-unit">
+<is:property>
+<is:name>K_i</is:name>
+<is:capsulation state="true">
+<is:capsulated-by module-id="53defeae-ef21-4894-8d88-b7e50bb7eba1"/>
+</is:capsulation>
+<is:template state="false"/>
+<is:track>
+<is:involved db-id="this" date="2010-07-22T11:53:47+09:00"/>
+</is:track>
+<is:frame-coordinate>
+<is:origin  format="mathml">
+<m:math>
+<m:vector>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+</m:vector>
+</m:math>
+</is:origin>
+<is:rotation format="mathml"  type="matrix">
+<m:math>
+<m:matrix>
+<m:matrixrow>
+<m:cn>1</m:cn>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+</m:matrixrow>
+<m:matrixrow>
+<m:cn>0</m:cn>
+<m:cn>1</m:cn>
+<m:cn>0</m:cn>
+</m:matrixrow>
+<m:matrixrow>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+<m:cn>1</m:cn>
+</m:matrixrow>
+</m:matrix>
+</m:math>
+</is:rotation>
+</is:frame-coordinate>
+<is:description>intracellular concentrations of K</is:description>
+</is:property>
+
+<is:port-set>
+<is:port port-id="1" direction="out" ref-physical-quantity-id="2">
+<is:name>K_i</is:name>
+<is:description>extracellular concentrations of K</is:description>
+</is:port>
+</is:port-set>
+
+<is:physical-quantity-set>
+<is:physical-quantity physical-quantity-id="2" type= "static-parameter">
+<is:name>K_i</is:name>
+<is:description>extracellular concentrations of K</is:description>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="64"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="ae"  format="mathml">
+<m:math>
+<m:apply>
+<m:eq/>
+<m:ci>K_i</m:ci>
+<m:cn>145</m:cn>
+</m:apply>
+</m:math>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+</is:physical-quantity-set>
+<is:morphology/>
+<is:timeseries-set/>
+</is:module>
+
+<is:module module-id="54d6bdd3-9129-4129-a650-d9b60e1188df" type="functional-unit">
+<is:property>
+<is:name>current_pulse_generator_membrane</is:name>
+<is:capsulation state="true">
+<is:capsulated-by module-id="6c1d556c-6242-4f20-affd-edab5ecc6e3c"/>
+</is:capsulation>
+<is:template state="false"/>
+<is:track>
+<is:involved db-id="this" date="2010-07-23T06:41:10+09:00"/>
+<is:involved db-id="this" date="2010-07-23T06:48:32+09:00"/>
+</is:track>
+<is:frame-coordinate>
+<is:origin  format="mathml">
+<m:math>
+<m:vector>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+</m:vector>
+</m:math>
+</is:origin>
+<is:rotation format="mathml"  type="matrix">
+<m:math>
+<m:matrix>
+<m:matrixrow>
+<m:cn>1</m:cn>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+</m:matrixrow>
+<m:matrixrow>
+<m:cn>0</m:cn>
+<m:cn>1</m:cn>
+<m:cn>0</m:cn>
+</m:matrixrow>
+<m:matrixrow>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+<m:cn>1</m:cn>
+</m:matrixrow>
+</m:matrix>
+</m:math>
+</is:rotation>
+</is:frame-coordinate>
+<is:description>current pulse generator module</is:description>
+</is:property>
+
+<is:port-set>
+<is:port port-id="1" direction="out" ref-physical-quantity-id="6">
+<is:name>current_in_micro_ampere_per_centi_meter2</is:name>
+<is:description>The current value changes from an initial value (parameter: initial_ampere)  to another value (parameter: pulse_height) at a given onset time (parameter: pulse_onset_time) and after the pulse_width return to the initial value.</is:description>
+</is:port>
+</is:port-set>
+
+<is:physical-quantity-set>
+<is:physical-quantity physical-quantity-id="3" type= "static-parameter">
+<is:name>pulse_width</is:name>
+<is:description>The pulse width in milli-second.</is:description>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="53"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="ae"  format="mathml">
+<m:math>
+<m:apply>
+<m:eq/>
+<m:ci>pulse_width</m:ci>
+<m:cn>5</m:cn>
+</m:apply>
+</m:math>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="2" type= "static-parameter">
+<is:name>pulse_onset_time</is:name>
+<is:description>The time instance when the pulse takes place.</is:description>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="53"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="ae"  format="mathml">
+<m:math>
+<m:apply>
+<m:eq/>
+<m:ci>pulse_onset_time</m:ci>
+<m:cn>20</m:cn>
+</m:apply>
+</m:math>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="5" type= "static-parameter">
+<is:name>initial_ampere</is:name>
+<is:description>The current in micro-ampere per centi-meter2 before and after the pulse.</is:description>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="76"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="ae"  format="mathml">
+<m:math>
+<m:apply>
+<m:eq/>
+<m:ci>initial_ampere</m:ci>
+<m:cn>0</m:cn>
+</m:apply>
+</m:math>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="4" type= "static-parameter">
+<is:name>pulse_height</is:name>
+<is:description>The height of the pulse.</is:description>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="76"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="ae"  format="mathml">
+<m:math>
+<m:apply>
+<m:eq/>
+<m:ci>pulse_height</m:ci>
+<m:cn>-10</m:cn>
+</m:apply>
+</m:math>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="6" type= "variable-parameter">
+<is:name>current_in_micro_ampere_per_centi_meter2</is:name>
+<is:description>The current value changes from an initial value (parameter: initial_ampere)  to another value (parameter: pulse_height) at a given onset time (parameter: pulse_onset_time) and after the pulse_width return to the initial value.</is:description>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="76"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="conditional">
+<is:case-set case-set-id="1">
+<is:case substructure-id="1">
+<is:condition format="mathml">
+<m:math>
+<m:apply>
+<m:and/>
+<m:apply>
+<m:geq/>
+<m:ci>time</m:ci>
+<m:ci>pulse_onset_time</m:ci>
+</m:apply>
+<m:apply>
+<m:lt/>
+<m:ci>time</m:ci>
+<m:apply>
+<m:plus/>
+<m:ci>pulse_onset_time</m:ci>
+<m:ci>pulse_width</m:ci>
+</m:apply>
+</m:apply>
+</m:apply>
+</m:math>
+</is:condition>
+<is:definition  type="ae"  format="mathml">
+<m:math>
+<m:apply>
+<m:eq/>
+<m:ci>current_in_micro_ampere_per_centi_meter2</m:ci>
+<m:apply>
+<m:plus/>
+<m:ci>pulse_height</m:ci>
+<m:ci>initial_ampere</m:ci>
+</m:apply>
+</m:apply>
+</m:math>
+</is:definition>
+</is:case>
+<is:case substructure-id="2">
+<is:definition  type="ae"  format="mathml">
+<m:math>
+<m:apply>
+<m:eq/>
+<m:ci>current_in_micro_ampere_per_centi_meter2</m:ci>
+<m:ci>initial_ampere</m:ci>
+</m:apply>
+</m:math>
+</is:definition>
+</is:case>
+</is:case-set>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+</is:physical-quantity-set>
+<is:morphology/>
+<is:timeseries-set/>
+</is:module>
+
+<is:module module-id="f8c94cc7-7fa7-404a-85f2-f49a90d1e5f8" type="functional-unit">
+<is:property>
+<is:name>E_si</is:name>
+<is:capsulation state="true">
+<is:capsulated-by module-id="846d568d-13ca-4cdc-96df-019816831402"/>
+</is:capsulation>
+<is:template state="false"/>
+<is:track>
+<is:involved db-id="this" date="2010-07-22T11:53:47+09:00"/>
+</is:track>
+<is:frame-coordinate>
+<is:origin  format="mathml">
+<m:math>
+<m:vector>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+</m:vector>
+</m:math>
+</is:origin>
+<is:rotation format="mathml"  type="matrix">
+<m:math>
+<m:matrix>
+<m:matrixrow>
+<m:cn>1</m:cn>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+</m:matrixrow>
+<m:matrixrow>
+<m:cn>0</m:cn>
+<m:cn>1</m:cn>
+<m:cn>0</m:cn>
+</m:matrixrow>
+<m:matrixrow>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+<m:cn>1</m:cn>
+</m:matrixrow>
+</m:matrix>
+</m:math>
+</is:rotation>
+</is:frame-coordinate>
+<is:description>the reversal potential of slow inward ions</is:description>
+</is:property>
+
+<is:port-set>
+<is:port port-id="1" direction="in">
+<is:name>Ca_i</is:name>
+<is:description>This port inputs Ca_i (intracellular concentrations of Ca).</is:description>
+</is:port>
+<is:port port-id="2" direction="out" ref-physical-quantity-id="2">
+<is:name>E_si</is:name>
+<is:description>the reversal potential of slow inward ions</is:description>
+</is:port>
+</is:port-set>
+
+<is:physical-quantity-set>
+<is:physical-quantity physical-quantity-id="3" type= "variable-parameter">
+<is:name>Ca_i</is:name>
+<is:description>This port inputs Ca_i (intracellular concentrations of Ca).</is:description>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="64"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="assign"  sub-type="port"  format="reference">
+<is:reference  port-id="1"/>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="2" type= "variable-parameter">
+<is:name>E_si</is:name>
+<is:description>the reversal potential of slow inward ions</is:description>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="54"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="ae"  format="mathml">
+<m:math>
+<m:apply>
+<m:eq/>
+<m:ci>E_si</m:ci>
+<m:apply>
+<m:minus/>
+<m:cn>7.7</m:cn>
+<m:apply>
+<m:times/>
+<m:cn>13.0287</m:cn>
+<m:apply>
+<m:ln/>
+<m:ci>Ca_i</m:ci>
+</m:apply>
+</m:apply>
+</m:apply>
+</m:apply>
+</m:math>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+</is:physical-quantity-set>
+<is:morphology/>
+<is:timeseries-set/>
+</is:module>
+
+<is:module module-id="6c1d556c-6242-4f20-affd-edab5ecc6e3c" type="capsule" db-id="164">
+<is:property>
+<is:name>current_pulse_generator_membrane</is:name>
+<is:capsulation state="false"/>
+<is:template state="false"/>
+<is:track>
+<is:involved db-id="this" date="2010-07-23T06:41:10+09:00"/>
+<is:involved db-id="this" date="2010-07-23T06:48:32+09:00"/>
+</is:track>
+<is:frame-coordinate>
+<is:origin  format="mathml">
+<m:math>
+<m:vector>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+</m:vector>
+</m:math>
+</is:origin>
+<is:rotation format="mathml"  type="matrix">
+<m:math>
+<m:matrix>
+<m:matrixrow>
+<m:cn>1</m:cn>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+</m:matrixrow>
+<m:matrixrow>
+<m:cn>0</m:cn>
+<m:cn>1</m:cn>
+<m:cn>0</m:cn>
+</m:matrixrow>
+<m:matrixrow>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+<m:cn>1</m:cn>
+</m:matrixrow>
+</m:matrix>
+</m:math>
+</is:rotation>
+</is:frame-coordinate>
+<is:description>current pulse generator module</is:description>
+</is:property>
+
+<is:port-set>
+<is:port port-id="1" direction="out">
+<is:name>output_current</is:name>
+<is:description>This port outputs a scalar current value in milli-volt.</is:description>
+</is:port>
+</is:port-set>
+<is:physical-quantity-set/>
+<is:morphology/>
+<is:timeseries-set/>
+</is:module>
+
+<is:module module-id="53defeae-ef21-4894-8d88-b7e50bb7eba1" type="capsule" db-id="189">
+<is:property>
+<is:name>Luo_Rudy_1991_model</is:name>
+<is:capsulation state="false"/>
+<is:template state="false"/>
+<is:track>
+<is:involved db-id="this" date="2010-07-22T11:53:47+09:00"/>
+</is:track>
+<is:frame-coordinate>
+<is:origin  format="mathml">
+<m:math>
+<m:vector>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+</m:vector>
+</m:math>
+</is:origin>
+<is:rotation format="mathml"  type="matrix">
+<m:math>
+<m:matrix>
+<m:matrixrow>
+<m:cn>1</m:cn>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+</m:matrixrow>
+<m:matrixrow>
+<m:cn>0</m:cn>
+<m:cn>1</m:cn>
+<m:cn>0</m:cn>
+</m:matrixrow>
+<m:matrixrow>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+<m:cn>1</m:cn>
+</m:matrixrow>
+</m:matrix>
+</m:math>
+</is:rotation>
+</is:frame-coordinate>
+<is:description>This model represents the Luo-Rudy model (Ching-hsing Luo and Yoram Rudy, A model of the ventricular cardiac action potential. Depolarization, repolarization, and their interaction, Circ. Res. Vol.68, pp.1501-1526, 1991).</is:description>
+</is:property>
+
+<is:port-set>
+<is:port port-id="1" direction="in">
+<is:name>I_stimulus</is:name>
+<is:description>This port inputs I_stimulus (stimulus current). Depolarization current I_stimulus must be negative.</is:description>
+</is:port>
+<is:port port-id="2" direction="out">
+<is:name>V</is:name>
+<is:description>This port outputs V (the rate of change of membrane potential).</is:description>
+</is:port>
+</is:port-set>
+<is:physical-quantity-set/>
+<is:morphology/>
+<is:timeseries-set/>
+</is:module>
+
+<is:module module-id="e28be623-7f35-48db-8978-7d4e908efd11" type="functional-unit">
+<is:property>
+<is:name>I_si</is:name>
+<is:capsulation state="true">
+<is:capsulated-by module-id="846d568d-13ca-4cdc-96df-019816831402"/>
+</is:capsulation>
+<is:template state="false"/>
+<is:track>
+<is:involved db-id="this" date="2010-07-22T11:53:47+09:00"/>
+</is:track>
+<is:frame-coordinate>
+<is:origin  format="mathml">
+<m:math>
+<m:vector>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+</m:vector>
+</m:math>
+</is:origin>
+<is:rotation format="mathml"  type="matrix">
+<m:math>
+<m:matrix>
+<m:matrixrow>
+<m:cn>1</m:cn>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+</m:matrixrow>
+<m:matrixrow>
+<m:cn>0</m:cn>
+<m:cn>1</m:cn>
+<m:cn>0</m:cn>
+</m:matrixrow>
+<m:matrixrow>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+<m:cn>1</m:cn>
+</m:matrixrow>
+</m:matrix>
+</m:math>
+</is:rotation>
+</is:frame-coordinate>
+<is:description>the slow inward current</is:description>
+</is:property>
+
+<is:port-set>
+<is:port port-id="1" direction="in">
+<is:name>V</is:name>
+<is:description>This port inputs V (the rate of change of membrane potential).</is:description>
+</is:port>
+<is:port port-id="3" direction="in">
+<is:name>d</is:name>
+<is:description>This port inputs d (the proportion of activation gate of I_si).</is:description>
+</is:port>
+<is:port port-id="2" direction="in">
+<is:name>E_si</is:name>
+<is:description>This port inputs E_si (the reversal potential of slow inward ions).</is:description>
+</is:port>
+<is:port port-id="5" direction="out" ref-physical-quantity-id="3">
+<is:name>I_si</is:name>
+<is:description>the slow inward current</is:description>
+</is:port>
+<is:port port-id="4" direction="in">
+<is:name>f</is:name>
+<is:description>This port inputs f (the proportion of inactivation gate of I_si).</is:description>
+</is:port>
+</is:port-set>
+
+<is:physical-quantity-set>
+<is:physical-quantity physical-quantity-id="3" type= "variable-parameter">
+<is:name>I_si</is:name>
+<is:description>the slow inward current</is:description>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="76"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="ae"  format="mathml">
+<m:math>
+<m:apply>
+<m:eq/>
+<m:ci>I_si</m:ci>
+<m:apply>
+<m:times/>
+<m:ci>G_si_bar</m:ci>
+<m:ci>d</m:ci>
+<m:ci>f</m:ci>
+<m:apply>
+<m:minus/>
+<m:ci>V</m:ci>
+<m:ci>E_si</m:ci>
+</m:apply>
+</m:apply>
+</m:apply>
+</m:math>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="2" type= "static-parameter">
+<is:name>G_si_bar</is:name>
+<is:description>the maximum conductance of slow inward ions channel</is:description>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="61"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="ae"  format="mathml">
+<m:math>
+<m:apply>
+<m:eq/>
+<m:ci>G_si_bar</m:ci>
+<m:cn>0.09</m:cn>
+</m:apply>
+</m:math>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="5" type= "variable-parameter">
+<is:name>E_si</is:name>
+<is:description>This port inputs E_si (the reversal potential of slow inward ions).</is:description>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="54"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="assign"  sub-type="port"  format="reference">
+<is:reference  port-id="2"/>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="4" type= "variable-parameter">
+<is:name>V</is:name>
+<is:description>This port inputs V (the rate of change of membrane potential).</is:description>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="54"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="assign"  sub-type="port"  format="reference">
+<is:reference  port-id="1"/>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="7" type= "variable-parameter">
+<is:name>f</is:name>
+<is:description>This port inputs f (the proportion of inactivation gate of I_si).</is:description>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="0"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="assign"  sub-type="port"  format="reference">
+<is:reference  port-id="4"/>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="6" type= "variable-parameter">
+<is:name>d</is:name>
+<is:description>This port inputs d (the proportion of activation gate of I_si).</is:description>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="0"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="assign"  sub-type="port"  format="reference">
+<is:reference  port-id="3"/>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+</is:physical-quantity-set>
+<is:morphology/>
+<is:timeseries-set/>
+</is:module>
+
+<is:module module-id="b124fbc9-d5e4-4bbd-8414-9fd527ddf13f" type="functional-unit">
+<is:property>
+<is:name>I_b</is:name>
+<is:capsulation state="true">
+<is:capsulated-by module-id="6d4759f3-4ee3-4656-bbb9-e8a0ad030da6"/>
+</is:capsulation>
+<is:template state="false"/>
+<is:track>
+<is:involved db-id="this" date="2010-07-22T11:53:47+09:00"/>
+</is:track>
+<is:frame-coordinate>
+<is:origin  format="mathml">
+<m:math>
+<m:vector>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+</m:vector>
+</m:math>
+</is:origin>
+<is:rotation format="mathml"  type="matrix">
+<m:math>
+<m:matrix>
+<m:matrixrow>
+<m:cn>1</m:cn>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+</m:matrixrow>
+<m:matrixrow>
+<m:cn>0</m:cn>
+<m:cn>1</m:cn>
+<m:cn>0</m:cn>
+</m:matrixrow>
+<m:matrixrow>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+<m:cn>1</m:cn>
+</m:matrixrow>
+</m:matrix>
+</m:math>
+</is:rotation>
+</is:frame-coordinate>
+<is:description>the time-independent background current</is:description>
+</is:property>
+
+<is:port-set>
+<is:port port-id="1" direction="in">
+<is:name>V</is:name>
+<is:description>This port inputs V (the rate of change of membrane potential).</is:description>
+</is:port>
+<is:port port-id="2" direction="out" ref-physical-quantity-id="4">
+<is:name>I_b</is:name>
+<is:description>the time-independent background current</is:description>
+</is:port>
+</is:port-set>
+
+<is:physical-quantity-set>
+<is:physical-quantity physical-quantity-id="3" type= "static-parameter">
+<is:name>E_b</is:name>
+<is:description>the reversal potential of the background current</is:description>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="54"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="ae"  format="mathml">
+<m:math>
+<m:apply>
+<m:eq/>
+<m:ci>E_b</m:ci>
+<m:cn>-59.87</m:cn>
+</m:apply>
+</m:math>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="2" type= "static-parameter">
+<is:name>G_b_bar</is:name>
+<is:description>the maximum conductance of the background current</is:description>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="61"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="ae"  format="mathml">
+<m:math>
+<m:apply>
+<m:eq/>
+<m:ci>G_b_bar</m:ci>
+<m:cn>0.03921</m:cn>
+</m:apply>
+</m:math>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="5" type= "variable-parameter">
+<is:name>V</is:name>
+<is:description>This port inputs V (the rate of change of membrane potential).</is:description>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="54"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="assign"  sub-type="port"  format="reference">
+<is:reference  port-id="1"/>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="4" type= "variable-parameter">
+<is:name>I_b</is:name>
+<is:description>the time-independent background current</is:description>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="76"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="ae"  format="mathml">
+<m:math>
+<m:apply>
+<m:eq/>
+<m:ci>I_b</m:ci>
+<m:apply>
+<m:times/>
+<m:ci>G_b_bar</m:ci>
+<m:apply>
+<m:minus/>
+<m:ci>V</m:ci>
+<m:ci>E_b</m:ci>
+</m:apply>
+</m:apply>
+</m:apply>
+</m:math>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+</is:physical-quantity-set>
+<is:morphology/>
+<is:timeseries-set/>
+</is:module>
+
+<is:module module-id="3d091278-983f-498d-9057-44302b3ca80c" type="functional-unit">
+<is:property>
+<is:name>I_K</is:name>
+<is:capsulation state="true">
+<is:capsulated-by module-id="9f16585a-6ec5-4417-befe-766054891738"/>
+</is:capsulation>
+<is:template state="false"/>
+<is:track>
+<is:involved db-id="this" date="2010-07-22T11:53:47+09:00"/>
+</is:track>
+<is:frame-coordinate>
+<is:origin  format="mathml">
+<m:math>
+<m:vector>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+</m:vector>
+</m:math>
+</is:origin>
+<is:rotation format="mathml"  type="matrix">
+<m:math>
+<m:matrix>
+<m:matrixrow>
+<m:cn>1</m:cn>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+</m:matrixrow>
+<m:matrixrow>
+<m:cn>0</m:cn>
+<m:cn>1</m:cn>
+<m:cn>0</m:cn>
+</m:matrixrow>
+<m:matrixrow>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+<m:cn>1</m:cn>
+</m:matrixrow>
+</m:matrix>
+</m:math>
+</is:rotation>
+</is:frame-coordinate>
+<is:description>the time-dependent potassium current</is:description>
+</is:property>
+
+<is:port-set>
+<is:port port-id="1" direction="in">
+<is:name>V</is:name>
+<is:description>This port inputs V (the rate of change of membrane potential).</is:description>
+</is:port>
+<is:port port-id="3" direction="in">
+<is:name>X</is:name>
+<is:description>This port inputs X (the proportion of activation gate of I_K).</is:description>
+</is:port>
+<is:port port-id="2" direction="in">
+<is:name>G_K_bar</is:name>
+<is:description>This port inputs G_K_bar (the maximum conductance of the K channel).</is:description>
+</is:port>
+<is:port port-id="5" direction="in">
+<is:name>E_K</is:name>
+<is:description>This port inputs E_K (the reversal potential of K).</is:description>
+</is:port>
+<is:port port-id="4" direction="in">
+<is:name>X_i</is:name>
+<is:description>This port inputs X_i (the proportion of inactivation gate of I_K).</is:description>
+</is:port>
+<is:port port-id="6" direction="out" ref-physical-quantity-id="2">
+<is:name>I_K</is:name>
+<is:description>the time-dependent potassium current</is:description>
+</is:port>
+</is:port-set>
+
+<is:physical-quantity-set>
+<is:physical-quantity physical-quantity-id="3" type= "variable-parameter">
+<is:name>V</is:name>
+<is:description>This port inputs V (the rate of change of membrane potential).</is:description>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="54"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="assign"  sub-type="port"  format="reference">
+<is:reference  port-id="1"/>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="2" type= "variable-parameter">
+<is:name>I_K</is:name>
+<is:description>the time-dependent potassium current</is:description>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="76"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="ae"  format="mathml">
+<m:math>
+<m:apply>
+<m:eq/>
+<m:ci>I_K</m:ci>
+<m:apply>
+<m:times/>
+<m:ci>G_K_bar</m:ci>
+<m:ci>X</m:ci>
+<m:ci>X_i</m:ci>
+<m:apply>
+<m:minus/>
+<m:ci>V</m:ci>
+<m:ci>E_K</m:ci>
+</m:apply>
+</m:apply>
+</m:apply>
+</m:math>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="5" type= "variable-parameter">
+<is:name>X</is:name>
+<is:description>This port inputs X (the proportion of activation gate of I_K).</is:description>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="0"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="assign"  sub-type="port"  format="reference">
+<is:reference  port-id="3"/>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="4" type= "variable-parameter">
+<is:name>G_K_bar</is:name>
+<is:description>This port inputs G_K_bar (the maximum conductance of the K channel).</is:description>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="61"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="assign"  sub-type="port"  format="reference">
+<is:reference  port-id="2"/>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="7" type= "variable-parameter">
+<is:name>E_K</is:name>
+<is:description>This port inputs E_K (the reversal potential of K).</is:description>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="54"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="assign"  sub-type="port"  format="reference">
+<is:reference  port-id="5"/>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="6" type= "variable-parameter">
+<is:name>X_i</is:name>
+<is:description>This port inputs X_i (the proportion of inactivation gate of I_K).</is:description>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="0"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="assign"  sub-type="port"  format="reference">
+<is:reference  port-id="4"/>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+</is:physical-quantity-set>
+<is:morphology/>
+<is:timeseries-set/>
+</is:module>
+
+<is:module module-id="6e36bf1a-14d9-4057-86dc-7c517c18919f" type="functional-unit">
+<is:property>
+<is:name>K_o</is:name>
+<is:capsulation state="true">
+<is:capsulated-by module-id="53defeae-ef21-4894-8d88-b7e50bb7eba1"/>
+</is:capsulation>
+<is:template state="false"/>
+<is:track>
+<is:involved db-id="this" date="2010-07-22T11:53:47+09:00"/>
+</is:track>
+<is:frame-coordinate>
+<is:origin  format="mathml">
+<m:math>
+<m:vector>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+</m:vector>
+</m:math>
+</is:origin>
+<is:rotation format="mathml"  type="matrix">
+<m:math>
+<m:matrix>
+<m:matrixrow>
+<m:cn>1</m:cn>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+</m:matrixrow>
+<m:matrixrow>
+<m:cn>0</m:cn>
+<m:cn>1</m:cn>
+<m:cn>0</m:cn>
+</m:matrixrow>
+<m:matrixrow>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+<m:cn>1</m:cn>
+</m:matrixrow>
+</m:matrix>
+</m:math>
+</is:rotation>
+</is:frame-coordinate>
+<is:description>extracellular concentrations of K</is:description>
+</is:property>
+
+<is:port-set>
+<is:port port-id="1" direction="out" ref-physical-quantity-id="2">
+<is:name>K_o</is:name>
+<is:description>extracellular concentrations of K</is:description>
+</is:port>
+</is:port-set>
+
+<is:physical-quantity-set>
+<is:physical-quantity physical-quantity-id="2" type= "static-parameter">
+<is:name>K_o</is:name>
+<is:description>extracellular concentrations of K</is:description>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="64"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="ae"  format="mathml">
+<m:math>
+<m:apply>
+<m:eq/>
+<m:ci>K_o</m:ci>
+<m:cn>5.4</m:cn>
+</m:apply>
+</m:math>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+</is:physical-quantity-set>
+<is:morphology/>
+<is:timeseries-set/>
+</is:module>
+
+<is:module module-id="f624c27e-a5a7-4122-8123-a6e1b6822b80" type="functional-unit">
+<is:property>
+<is:name>K1_gate</is:name>
+<is:capsulation state="true">
+<is:capsulated-by module-id="4f31fd9b-e7e2-43f2-83d4-c3e7c5f7a395"/>
+</is:capsulation>
+<is:template state="false"/>
+<is:track>
+<is:involved db-id="this" date="2010-07-22T11:53:47+09:00"/>
+</is:track>
+<is:frame-coordinate>
+<is:origin  format="mathml">
+<m:math>
+<m:vector>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+</m:vector>
+</m:math>
+</is:origin>
+<is:rotation format="mathml"  type="matrix">
+<m:math>
+<m:matrix>
+<m:matrixrow>
+<m:cn>1</m:cn>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+</m:matrixrow>
+<m:matrixrow>
+<m:cn>0</m:cn>
+<m:cn>1</m:cn>
+<m:cn>0</m:cn>
+</m:matrixrow>
+<m:matrixrow>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+<m:cn>1</m:cn>
+</m:matrixrow>
+</m:matrix>
+</m:math>
+</is:rotation>
+</is:frame-coordinate>
+<is:description>the proportion of inactivation gate of I_K1</is:description>
+</is:property>
+
+<is:port-set>
+<is:port port-id="1" direction="in">
+<is:name>V</is:name>
+<is:description>This port inputs V (the rate of change of membrane potential).</is:description>
+</is:port>
+<is:port port-id="3" direction="out" ref-physical-quantity-id="4">
+<is:name>K1_infinity</is:name>
+<is:description>This port outputs K1_infinity (steady-state value of K1-gate).</is:description>
+</is:port>
+<is:port port-id="2" direction="in">
+<is:name>E_K1</is:name>
+<is:description>This port inputs E_K1 (the reversal potential of K1).</is:description>
+</is:port>
+</is:port-set>
+
+<is:physical-quantity-set>
+<is:physical-quantity physical-quantity-id="3" type= "variable-parameter">
+<is:name>beta_K1</is:name>
+<is:description>closing rate constants of K1-gate</is:description>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="68"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="ae"  format="mathml">
+<m:math>
+<m:apply>
+<m:eq/>
+<m:ci>beta_K1</m:ci>
+<m:apply>
+<m:divide/>
+<m:apply>
+<m:plus/>
+<m:apply>
+<m:times/>
+<m:cn>0.49124</m:cn>
+<m:apply>
+<m:exp/>
+<m:apply>
+<m:times/>
+<m:cn>0.08032</m:cn>
+<m:apply>
+<m:plus/>
+<m:apply>
+<m:minus/>
+<m:ci>V</m:ci>
+<m:ci>E_K1</m:ci>
+</m:apply>
+<m:cn>5.476</m:cn>
+</m:apply>
+</m:apply>
+</m:apply>
+</m:apply>
+<m:apply>
+<m:exp/>
+<m:apply>
+<m:times/>
+<m:cn>0.06175</m:cn>
+<m:apply>
+<m:minus/>
+<m:apply>
+<m:minus/>
+<m:ci>V</m:ci>
+<m:ci>E_K1</m:ci>
+</m:apply>
+<m:cn>594.31</m:cn>
+</m:apply>
+</m:apply>
+</m:apply>
+</m:apply>
+<m:apply>
+<m:plus/>
+<m:cn>1</m:cn>
+<m:apply>
+<m:exp/>
+<m:apply>
+<m:times/>
+<m:cn>-0.5143</m:cn>
+<m:apply>
+<m:plus/>
+<m:apply>
+<m:minus/>
+<m:ci>V</m:ci>
+<m:ci>E_K1</m:ci>
+</m:apply>
+<m:cn>4.753</m:cn>
+</m:apply>
+</m:apply>
+</m:apply>
+</m:apply>
+</m:apply>
+</m:apply>
+</m:math>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="2" type= "variable-parameter">
+<is:name>alpha_K1</is:name>
+<is:description>opening rate constants of K1-gate</is:description>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="68"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="ae"  format="mathml">
+<m:math>
+<m:apply>
+<m:eq/>
+<m:ci>alpha_K1</m:ci>
+<m:apply>
+<m:divide/>
+<m:cn>1.02</m:cn>
+<m:apply>
+<m:plus/>
+<m:cn>1</m:cn>
+<m:apply>
+<m:exp/>
+<m:apply>
+<m:times/>
+<m:cn>0.2385</m:cn>
+<m:apply>
+<m:minus/>
+<m:apply>
+<m:minus/>
+<m:ci>V</m:ci>
+<m:ci>E_K1</m:ci>
+</m:apply>
+<m:cn>59.215</m:cn>
+</m:apply>
+</m:apply>
+</m:apply>
+</m:apply>
+</m:apply>
+</m:apply>
+</m:math>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="5" type= "variable-parameter">
+<is:name>V</is:name>
+<is:description>This port inputs V (the rate of change of membrane potential).</is:description>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="54"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="assign"  sub-type="port"  format="reference">
+<is:reference  port-id="1"/>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="4" type= "variable-parameter">
+<is:name>K1_infinity</is:name>
+<is:description>steady-state value of K1-gate</is:description>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="0"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="ae"  format="mathml">
+<m:math>
+<m:apply>
+<m:eq/>
+<m:ci>K1_infinity</m:ci>
+<m:apply>
+<m:divide/>
+<m:ci>alpha_K1</m:ci>
+<m:apply>
+<m:plus/>
+<m:ci>alpha_K1</m:ci>
+<m:ci>beta_K1</m:ci>
+</m:apply>
+</m:apply>
+</m:apply>
+</m:math>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="6" type= "variable-parameter">
+<is:name>E_K1</is:name>
+<is:description>This port inputs E_K1 (the reversal potential of K1).</is:description>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="54"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="assign"  sub-type="port"  format="reference">
+<is:reference  port-id="2"/>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+</is:physical-quantity-set>
+<is:morphology/>
+<is:timeseries-set/>
+</is:module>
+
+<is:module module-id="33ed9653-9952-4911-a759-2060eeef7a91" type="functional-unit">
+<is:property>
+<is:name>E_K1</is:name>
+<is:capsulation state="true">
+<is:capsulated-by module-id="4f31fd9b-e7e2-43f2-83d4-c3e7c5f7a395"/>
+</is:capsulation>
+<is:template state="false"/>
+<is:track>
+<is:involved db-id="this" date="2010-07-22T11:53:47+09:00"/>
+</is:track>
+<is:frame-coordinate>
+<is:origin  format="mathml">
+<m:math>
+<m:vector>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+</m:vector>
+</m:math>
+</is:origin>
+<is:rotation format="mathml"  type="matrix">
+<m:math>
+<m:matrix>
+<m:matrixrow>
+<m:cn>1</m:cn>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+</m:matrixrow>
+<m:matrixrow>
+<m:cn>0</m:cn>
+<m:cn>1</m:cn>
+<m:cn>0</m:cn>
+</m:matrixrow>
+<m:matrixrow>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+<m:cn>1</m:cn>
+</m:matrixrow>
+</m:matrix>
+</m:math>
+</is:rotation>
+</is:frame-coordinate>
+<is:description>the reversal potential of K1</is:description>
+</is:property>
+
+<is:port-set>
+<is:port port-id="1" direction="in">
+<is:name>K_o</is:name>
+<is:description>This port inputs K_o (extracellular concentrations of K).</is:description>
+</is:port>
+<is:port port-id="3" direction="out" ref-physical-quantity-id="5">
+<is:name>E_K1</is:name>
+<is:description>the reversal potential of K1</is:description>
+</is:port>
+<is:port port-id="2" direction="in">
+<is:name>K_i</is:name>
+<is:description>This port inputs K_i (intracellular concentrations of K).</is:description>
+</is:port>
+</is:port-set>
+
+<is:physical-quantity-set>
+<is:physical-quantity physical-quantity-id="3" type= "static-parameter">
+<is:name>T</is:name>
+<is:description>the temperature</is:description>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="5"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="ae"  format="mathml">
+<m:math>
+<m:apply>
+<m:eq/>
+<m:ci>T</m:ci>
+<m:cn>310</m:cn>
+</m:apply>
+</m:math>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="2" type= "static-parameter">
+<is:name>R</is:name>
+<is:description>the gas constant</is:description>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="71"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="ae"  format="mathml">
+<m:math>
+<m:apply>
+<m:eq/>
+<m:ci>R</m:ci>
+<m:cn>8.3145</m:cn>
+</m:apply>
+</m:math>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="5" type= "variable-parameter">
+<is:name>E_K1</is:name>
+<is:description>the reversal potential of K1</is:description>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="54"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="ae"  format="mathml">
+<m:math>
+<m:apply>
+<m:eq/>
+<m:ci>E_K1</m:ci>
+<m:apply>
+<m:times/>
+<m:apply>
+<m:times/>
+<m:apply>
+<m:divide/>
+<m:apply>
+<m:times/>
+<m:ci>R</m:ci>
+<m:ci>T</m:ci>
+</m:apply>
+<m:ci>F</m:ci>
+</m:apply>
+<m:apply>
+<m:ln/>
+<m:apply>
+<m:divide/>
+<m:ci>K_o</m:ci>
+<m:ci>K_i</m:ci>
+</m:apply>
+</m:apply>
+</m:apply>
+<m:cn>1000</m:cn>
+</m:apply>
+</m:apply>
+</m:math>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="4" type= "static-parameter">
+<is:name>F</is:name>
+<is:description>the Faraday constant</is:description>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="72"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="ae"  format="mathml">
+<m:math>
+<m:apply>
+<m:eq/>
+<m:ci>F</m:ci>
+<m:apply>
+<m:times/>
+<m:cn>9.6485</m:cn>
+<m:apply>
+<m:power/>
+<m:cn>10</m:cn>
+<m:cn>4</m:cn>
+</m:apply>
+</m:apply>
+</m:apply>
+</m:math>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="7" type= "variable-parameter">
+<is:name>K_i</is:name>
+<is:description>This port inputs K_i (intracellular concentrations of K).</is:description>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="64"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="assign"  sub-type="port"  format="reference">
+<is:reference  port-id="2"/>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="6" type= "variable-parameter">
+<is:name>K_o</is:name>
+<is:description>This port inputs K_o (extracellular concentrations of K).</is:description>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="64"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="assign"  sub-type="port"  format="reference">
+<is:reference  port-id="1"/>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+</is:physical-quantity-set>
+<is:morphology/>
+<is:timeseries-set/>
+</is:module>
+
+<is:module module-id="7735dfc1-fc1c-497d-bb81-c7c437995695" type="functional-unit">
+<is:property>
+<is:name>E_Na</is:name>
+<is:capsulation state="true">
+<is:capsulated-by module-id="46fedd5d-608f-4dbc-a6b3-be13383f9315"/>
+</is:capsulation>
+<is:template state="false"/>
+<is:track>
+<is:involved db-id="this" date="2010-07-22T11:53:47+09:00"/>
+</is:track>
+<is:frame-coordinate>
+<is:origin  format="mathml">
+<m:math>
+<m:vector>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+</m:vector>
+</m:math>
+</is:origin>
+<is:rotation format="mathml"  type="matrix">
+<m:math>
+<m:matrix>
+<m:matrixrow>
+<m:cn>1</m:cn>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+</m:matrixrow>
+<m:matrixrow>
+<m:cn>0</m:cn>
+<m:cn>1</m:cn>
+<m:cn>0</m:cn>
+</m:matrixrow>
+<m:matrixrow>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+<m:cn>1</m:cn>
+</m:matrixrow>
+</m:matrix>
+</m:math>
+</is:rotation>
+</is:frame-coordinate>
+<is:description>the reversal potential of slow inward ions</is:description>
+</is:property>
+
+<is:port-set>
+<is:port port-id="1" direction="in">
+<is:name>Na_o</is:name>
+<is:description>This port inputs Na_o (extracellular concentrations of Na).</is:description>
+</is:port>
+<is:port port-id="3" direction="out" ref-physical-quantity-id="5">
+<is:name>E_Na</is:name>
+<is:description>the reversal potential of Na</is:description>
+</is:port>
+<is:port port-id="2" direction="in">
+<is:name>Na_i</is:name>
+<is:description>This port inputs Na_i (intracellular concentrations of Na).</is:description>
+</is:port>
+</is:port-set>
+
+<is:physical-quantity-set>
+<is:physical-quantity physical-quantity-id="3" type= "static-parameter">
+<is:name>T</is:name>
+<is:description>the temperature</is:description>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="5"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="ae"  format="mathml">
+<m:math>
+<m:apply>
+<m:eq/>
+<m:ci>T</m:ci>
+<m:cn>310</m:cn>
+</m:apply>
+</m:math>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="2" type= "static-parameter">
+<is:name>R</is:name>
+<is:description>the gas constant</is:description>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="71"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="ae"  format="mathml">
+<m:math>
+<m:apply>
+<m:eq/>
+<m:ci>R</m:ci>
+<m:cn>8.3145</m:cn>
+</m:apply>
+</m:math>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="5" type= "variable-parameter">
+<is:name>E_Na</is:name>
+<is:description>the reversal potential of Na</is:description>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="54"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="ae"  format="mathml">
+<m:math>
+<m:apply>
+<m:eq/>
+<m:ci>E_Na</m:ci>
+<m:apply>
+<m:times/>
+<m:apply>
+<m:times/>
+<m:apply>
+<m:divide/>
+<m:apply>
+<m:times/>
+<m:ci>R</m:ci>
+<m:ci>T</m:ci>
+</m:apply>
+<m:ci>F</m:ci>
+</m:apply>
+<m:apply>
+<m:ln/>
+<m:apply>
+<m:divide/>
+<m:ci>Na_o</m:ci>
+<m:ci>Na_i</m:ci>
+</m:apply>
+</m:apply>
+</m:apply>
+<m:cn>1000</m:cn>
+</m:apply>
+</m:apply>
+</m:math>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="4" type= "static-parameter">
+<is:name>F</is:name>
+<is:description>the Faraday constant</is:description>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="72"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="ae"  format="mathml">
+<m:math>
+<m:apply>
+<m:eq/>
+<m:ci>F</m:ci>
+<m:apply>
+<m:times/>
+<m:cn>9.6485</m:cn>
+<m:apply>
+<m:power/>
+<m:cn>10</m:cn>
+<m:cn>4</m:cn>
+</m:apply>
+</m:apply>
+</m:apply>
+</m:math>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="7" type= "variable-parameter">
+<is:name>Na_i</is:name>
+<is:description>This port inputs Na_i (intracellular concentrations of Na).</is:description>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="64"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="assign"  sub-type="port"  format="reference">
+<is:reference  port-id="2"/>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="6" type= "variable-parameter">
+<is:name>Na_o</is:name>
+<is:description>This port inputs Na_o (extracellular concentrations of Na).</is:description>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="64"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="assign"  sub-type="port"  format="reference">
+<is:reference  port-id="1"/>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+</is:physical-quantity-set>
+<is:morphology/>
+<is:timeseries-set/>
+</is:module>
+
+<is:module module-id="57ed6165-a93b-4f8c-8042-209e423239ec" type="functional-unit">
+<is:property>
+<is:name>X_gate</is:name>
+<is:capsulation state="true">
+<is:capsulated-by module-id="9f16585a-6ec5-4417-befe-766054891738"/>
+</is:capsulation>
+<is:template state="false"/>
+<is:track>
+<is:involved db-id="this" date="2010-07-22T11:53:47+09:00"/>
+</is:track>
+<is:frame-coordinate>
+<is:origin  format="mathml">
+<m:math>
+<m:vector>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+</m:vector>
+</m:math>
+</is:origin>
+<is:rotation format="mathml"  type="matrix">
+<m:math>
+<m:matrix>
+<m:matrixrow>
+<m:cn>1</m:cn>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+</m:matrixrow>
+<m:matrixrow>
+<m:cn>0</m:cn>
+<m:cn>1</m:cn>
+<m:cn>0</m:cn>
+</m:matrixrow>
+<m:matrixrow>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+<m:cn>1</m:cn>
+</m:matrixrow>
+</m:matrix>
+</m:math>
+</is:rotation>
+</is:frame-coordinate>
+<is:description>the proportion of activation gate of I_K</is:description>
+</is:property>
+
+<is:port-set>
+<is:port port-id="1" direction="in">
+<is:name>V</is:name>
+<is:description>This port inputs V (the rate of change of membrane potential).</is:description>
+</is:port>
+<is:port port-id="2" direction="out" ref-physical-quantity-id="2">
+<is:name>X</is:name>
+<is:description>This port outputs X (the proportion of activation gate of I_K).</is:description>
+</is:port>
+</is:port-set>
+
+<is:physical-quantity-set>
+<is:physical-quantity physical-quantity-id="3" type= "variable-parameter">
+<is:name>alpha_X</is:name>
+<is:description>opening rate constants of X-gate</is:description>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="68"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="ae"  format="mathml">
+<m:math>
+<m:apply>
+<m:eq/>
+<m:ci>alpha_X</m:ci>
+<m:apply>
+<m:divide/>
+<m:apply>
+<m:times/>
+<m:cn>0.0005</m:cn>
+<m:apply>
+<m:exp/>
+<m:apply>
+<m:times/>
+<m:cn>0.083</m:cn>
+<m:apply>
+<m:plus/>
+<m:ci>V</m:ci>
+<m:cn>50</m:cn>
+</m:apply>
+</m:apply>
+</m:apply>
+</m:apply>
+<m:apply>
+<m:plus/>
+<m:cn>1</m:cn>
+<m:apply>
+<m:exp/>
+<m:apply>
+<m:times/>
+<m:cn>0.057</m:cn>
+<m:apply>
+<m:plus/>
+<m:ci>V</m:ci>
+<m:cn>50</m:cn>
+</m:apply>
+</m:apply>
+</m:apply>
+</m:apply>
+</m:apply>
+</m:apply>
+</m:math>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="2" type= "state">
+<is:name>X</is:name>
+<is:description>the proportion of activation gate of I_K</is:description>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="0"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:initial-value>
+<is:definition  type="ae"  format="mathml">
+<m:math>
+<m:apply>
+<m:eq/>
+<m:ci>X</m:ci>
+<m:cn>0.00562868</m:cn>
+</m:apply>
+</m:math>
+</is:definition>
+</is:initial-value>
+<is:implementation>
+<is:definition  type="ode"  format="mathml">
+<m:math>
+<m:apply>
+<m:eq/>
+<m:apply>
+<m:diff/>
+<m:bvar>
+<m:ci>time</m:ci>
+</m:bvar>
+<m:ci>X</m:ci>
+</m:apply>
+<m:apply>
+<m:minus/>
+<m:apply>
+<m:times/>
+<m:ci>alpha_X</m:ci>
+<m:apply>
+<m:minus/>
+<m:cn>1</m:cn>
+<m:ci>X</m:ci>
+</m:apply>
+</m:apply>
+<m:apply>
+<m:times/>
+<m:ci>beta_X</m:ci>
+<m:ci>X</m:ci>
+</m:apply>
+</m:apply>
+</m:apply>
+</m:math>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="5" type= "variable-parameter">
+<is:name>V</is:name>
+<is:description>This port inputs V (the rate of change of membrane potential).</is:description>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="54"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="assign"  sub-type="port"  format="reference">
+<is:reference  port-id="1"/>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="4" type= "variable-parameter">
+<is:name>beta_X</is:name>
+<is:description>closing rate constants of X-gate</is:description>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="68"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="ae"  format="mathml">
+<m:math>
+<m:apply>
+<m:eq/>
+<m:ci>beta_X</m:ci>
+<m:apply>
+<m:divide/>
+<m:apply>
+<m:times/>
+<m:cn>0.0013</m:cn>
+<m:apply>
+<m:exp/>
+<m:apply>
+<m:times/>
+<m:cn>-0.06</m:cn>
+<m:apply>
+<m:plus/>
+<m:ci>V</m:ci>
+<m:cn>20</m:cn>
+</m:apply>
+</m:apply>
+</m:apply>
+</m:apply>
+<m:apply>
+<m:plus/>
+<m:cn>1</m:cn>
+<m:apply>
+<m:exp/>
+<m:apply>
+<m:times/>
+<m:cn>-0.04</m:cn>
+<m:apply>
+<m:plus/>
+<m:ci>V</m:ci>
+<m:cn>20</m:cn>
+</m:apply>
+</m:apply>
+</m:apply>
+</m:apply>
+</m:apply>
+</m:apply>
+</m:math>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+</is:physical-quantity-set>
+<is:morphology/>
+<is:timeseries-set/>
+</is:module>
+
+<is:module module-id="4f31fd9b-e7e2-43f2-83d4-c3e7c5f7a395" type="capsule" db-id="179">
+<is:property>
+<is:name>Luo_Rudy_1991_I_K1</is:name>
+<is:capsulation state="true">
+<is:capsulated-by module-id="53defeae-ef21-4894-8d88-b7e50bb7eba1"/>
+</is:capsulation>
+<is:template state="false"/>
+<is:track>
+<is:involved db-id="this" date="2010-07-22T11:53:47+09:00"/>
+</is:track>
+<is:frame-coordinate>
+<is:origin  format="mathml">
+<m:math>
+<m:vector>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+</m:vector>
+</m:math>
+</is:origin>
+<is:rotation format="mathml"  type="matrix">
+<m:math>
+<m:matrix>
+<m:matrixrow>
+<m:cn>1</m:cn>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+</m:matrixrow>
+<m:matrixrow>
+<m:cn>0</m:cn>
+<m:cn>1</m:cn>
+<m:cn>0</m:cn>
+</m:matrixrow>
+<m:matrixrow>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+<m:cn>1</m:cn>
+</m:matrixrow>
+</m:matrix>
+</m:math>
+</is:rotation>
+</is:frame-coordinate>
+<is:description>This model represents the time-independent potassium current module used in the Luo-Rudy model (Ching-hsing Luo and Yoram Rudy, A model of the ventricular cardiac action potential. Depolarization, repolarization, and their interaction, Circ. Res. Vol.68, pp.1501-1526, 1991).</is:description>
+</is:property>
+
+<is:port-set>
+<is:port port-id="1" direction="in">
+<is:name>V</is:name>
+<is:description>This port inputs V (the rate of change of membrane potential).</is:description>
+</is:port>
+<is:port port-id="3" direction="in">
+<is:name>K_i</is:name>
+<is:description>This port inputs K_i (intracellular concentrations of K).</is:description>
+</is:port>
+<is:port port-id="2" direction="in">
+<is:name>K_o</is:name>
+<is:description>This port inputs K_o (extracellular concentrations of K).</is:description>
+</is:port>
+<is:port port-id="4" direction="out">
+<is:name>I_K1</is:name>
+<is:description>This port outputs I_K1 (the time-independent potassium current).</is:description>
+</is:port>
+</is:port-set>
+<is:physical-quantity-set/>
+<is:morphology/>
+<is:timeseries-set/>
+</is:module>
+
+<is:module module-id="53b4b7e8-813e-4889-b2e2-9fc7949a242f" type="functional-unit">
+<is:property>
+<is:name>I_K1</is:name>
+<is:capsulation state="true">
+<is:capsulated-by module-id="4f31fd9b-e7e2-43f2-83d4-c3e7c5f7a395"/>
+</is:capsulation>
+<is:template state="false"/>
+<is:track>
+<is:involved db-id="this" date="2010-07-22T11:53:47+09:00"/>
+</is:track>
+<is:frame-coordinate>
+<is:origin  format="mathml">
+<m:math>
+<m:vector>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+</m:vector>
+</m:math>
+</is:origin>
+<is:rotation format="mathml"  type="matrix">
+<m:math>
+<m:matrix>
+<m:matrixrow>
+<m:cn>1</m:cn>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+</m:matrixrow>
+<m:matrixrow>
+<m:cn>0</m:cn>
+<m:cn>1</m:cn>
+<m:cn>0</m:cn>
+</m:matrixrow>
+<m:matrixrow>
+<m:cn>0</m:cn>
+<m:cn>0</m:cn>
+<m:cn>1</m:cn>
+</m:matrixrow>
+</m:matrix>
+</m:math>
+</is:rotation>
+</is:frame-coordinate>
+<is:description>the time-independent potassium current</is:description>
+</is:property>
+
+<is:port-set>
+<is:port port-id="1" direction="in">
+<is:name>V</is:name>
+<is:description>This port inputs V (the rate of change of membrane potential).</is:description>
+</is:port>
+<is:port port-id="3" direction="in">
+<is:name>G_K1_bar</is:name>
+<is:description>This port inputs G_K1_bar (the maximum conductance of the K1 channel).</is:description>
+</is:port>
+<is:port port-id="2" direction="in">
+<is:name>K1_infinity</is:name>
+<is:description>This port inputs K1_infinity (steady-state value of K1-gate).</is:description>
+</is:port>
+<is:port port-id="5" direction="out" ref-physical-quantity-id="2">
+<is:name>I_K1</is:name>
+<is:description>the time-independent potassium current</is:description>
+</is:port>
+<is:port port-id="4" direction="in">
+<is:name>E_K1</is:name>
+<is:description>This port inputs E_K1 (the reversal potential of K1).</is:description>
+</is:port>
+</is:port-set>
+
+<is:physical-quantity-set>
+<is:physical-quantity physical-quantity-id="3" type= "variable-parameter">
+<is:name>V</is:name>
+<is:description>This port inputs V (the rate of change of membrane potential).</is:description>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="54"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="assign"  sub-type="port"  format="reference">
+<is:reference  port-id="1"/>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="2" type= "variable-parameter">
+<is:name>I_K1</is:name>
+<is:description>the time-independent potassium current</is:description>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="76"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="ae"  format="mathml">
+<m:math>
+<m:apply>
+<m:eq/>
+<m:ci>I_K1</m:ci>
+<m:apply>
+<m:times/>
+<m:ci>G_K1_bar</m:ci>
+<m:ci>K1_infinity</m:ci>
+<m:apply>
+<m:minus/>
+<m:ci>V</m:ci>
+<m:ci>E_K1</m:ci>
+</m:apply>
+</m:apply>
+</m:apply>
+</m:math>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="5" type= "variable-parameter">
+<is:name>G_K1_bar</is:name>
+<is:description>This port inputs G_K1_bar (the maximum conductance of the K1 channel).</is:description>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="61"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="assign"  sub-type="port"  format="reference">
+<is:reference  port-id="3"/>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="4" type= "variable-parameter">
+<is:name>K1_infinity</is:name>
+<is:description>This port inputs K1_infinity (steady-state value of K1-gate).</is:description>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="0"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="assign"  sub-type="port"  format="reference">
+<is:reference  port-id="2"/>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+<is:physical-quantity physical-quantity-id="6" type= "variable-parameter">
+<is:name>E_K1</is:name>
+<is:description>This port inputs E_K1 (the reversal potential of K1).</is:description>
+<is:value-type-set>
+<is:value-type precision="double"  unit-id="54"/>
+</is:value-type-set>
+<is:dimension type="scalar"/>
+<is:implementation>
+<is:definition  type="assign"  sub-type="port"  format="reference">
+<is:reference  port-id="4"/>
+</is:definition>
+</is:implementation>
+</is:physical-quantity>
+</is:physical-quantity-set>
+<is:morphology/>
+<is:timeseries-set/>
+</is:module>
+</is:module-set>
+<is:template-set/>
+<is:instance-set/>
+<is:controller-set/>
+
+<is:edge-set>
+<is:edge edge-id="778858ee-eb7d-428c-b02a-f3e519dc8777" type="forwarding">
+<is:tail module-id="4f31fd9b-e7e2-43f2-83d4-c3e7c5f7a395" port-id="1"/>
+<is:head module-id="53b4b7e8-813e-4889-b2e2-9fc7949a242f" port-id="1"/>
+<is:operation>input</is:operation>
+</is:edge>
+<is:edge edge-id="7e153372-a4ac-4705-a15b-4eec5eb12937" type="functional">
+<is:tail module-id="66092477-3c60-4db0-8302-6c79ad671711" port-id="2"/>
+<is:head module-id="c46bda98-1533-477a-a841-a6c7938e0fd7" port-id="2"/>
+<is:operation>InterfaceLink</is:operation>
+</is:edge>
+<is:edge edge-id="64b151b9-3171-4456-9fd3-2dae176146ce" type="functional">
+<is:tail module-id="6d4759f3-4ee3-4656-bbb9-e8a0ad030da6" port-id="2"/>
+<is:head module-id="7460807f-a216-4864-a317-3aa747fae073" port-id="7"/>
+<is:operation>InterfaceLink</is:operation>
+</is:edge>
+<is:edge edge-id="3322a90d-9435-4e94-90c7-adb87ab2f450" type="structural">
+<is:tail module-id="74ca54e5-6464-433e-b9b3-04e6271f135b" port-id="0"/>
+<is:head module-id="c46bda98-1533-477a-a841-a6c7938e0fd7" port-id="0"/>
+<is:operation>include</is:operation>
+</is:edge>
+<is:edge edge-id="3a8e6929-3e38-45b5-b006-0c74bb6e7319" type="functional">
+<is:tail module-id="e004a18c-a4f0-4237-8a0f-da615411a30f" port-id="2"/>
+<is:head module-id="ba670aea-9422-443a-868c-c9fcc050b02d" port-id="2"/>
+<is:operation>InterfaceLink</is:operation>
+</is:edge>
+<is:edge edge-id="9462741b-631e-415e-818f-37fc750ef05d" type="forwarding">
+<is:tail module-id="53defeae-ef21-4894-8d88-b7e50bb7eba1" port-id="1"/>
+<is:head module-id="7460807f-a216-4864-a317-3aa747fae073" port-id="1"/>
+<is:operation>input</is:operation>
+</is:edge>
+<is:edge edge-id="dccce610-db6b-40af-a1ed-f4b09f157ac2" type="functional">
+<is:tail module-id="9a2f10a8-875a-4833-9626-763e87f7ff53" port-id="2"/>
+<is:head module-id="846d568d-13ca-4cdc-96df-019816831402" port-id="2"/>
+<is:operation>InterfaceLink</is:operation>
+</is:edge>
+<is:edge edge-id="3da1db5f-24dc-4828-a31e-f198d0559f92" type="functional">
+<is:tail module-id="aebac2fa-61ec-4dad-958b-7279737228e1" port-id="1"/>
+<is:head module-id="9f16585a-6ec5-4417-befe-766054891738" port-id="4"/>
+<is:operation>InterfaceLink</is:operation>
+</is:edge>
+<is:edge edge-id="278b5f8c-bb6c-425a-b90c-c612479c515c" type="forwarding">
+<is:tail module-id="46fedd5d-608f-4dbc-a6b3-be13383f9315" port-id="1"/>
+<is:head module-id="c46bda98-1533-477a-a841-a6c7938e0fd7" port-id="1"/>
+<is:operation>input</is:operation>
+</is:edge>
+<is:edge edge-id="975d23ee-ec38-4fff-8981-06c54efbbea2" type="forwarding">
+<is:tail module-id="53b4b7e8-813e-4889-b2e2-9fc7949a242f" port-id="5"/>
+<is:head module-id="4f31fd9b-e7e2-43f2-83d4-c3e7c5f7a395" port-id="4"/>
+<is:operation>output</is:operation>
+</is:edge>
+<is:edge edge-id="468f8f5d-48d7-44ff-b934-2fb055dcd370" type="functional">
+<is:tail module-id="6e36bf1a-14d9-4057-86dc-7c517c18919f" port-id="1"/>
+<is:head module-id="4f31fd9b-e7e2-43f2-83d4-c3e7c5f7a395" port-id="2"/>
+<is:operation>InterfaceLink</is:operation>
+</is:edge>
+<is:edge edge-id="e7dc6e31-3ec6-455a-9316-9622c519d9d8" type="capsular">
+<is:tail module-id="e28be623-7f35-48db-8978-7d4e908efd11" port-id="0"/>
+<is:head module-id="846d568d-13ca-4cdc-96df-019816831402" port-id="0"/>
+<is:operation>include</is:operation>
+</is:edge>
+<is:edge edge-id="2066c04f-4d6b-4cb6-b3f2-16c1e06f0961" type="structural">
+<is:tail module-id="2537d75f-f594-43ca-ada7-e08ac29ffa4e" port-id="0"/>
+<is:head module-id="e28be623-7f35-48db-8978-7d4e908efd11" port-id="0"/>
+<is:operation>include</is:operation>
+</is:edge>
+<is:edge edge-id="2c1689ba-e83a-4941-a1ed-5979f7236059" type="functional">
+<is:tail module-id="32b92c57-1d8f-4ada-ba96-04c6c52033ea" port-id="1"/>
+<is:head module-id="46fedd5d-608f-4dbc-a6b3-be13383f9315" port-id="3"/>
+<is:operation>InterfaceLink</is:operation>
+</is:edge>
+<is:edge edge-id="a673315f-333c-4b76-ac9a-3bbccb87c020" type="structural">
+<is:tail module-id="c736eedf-d957-4c89-8b24-40e4754d9c26" port-id="0"/>
+<is:head module-id="c46bda98-1533-477a-a841-a6c7938e0fd7" port-id="0"/>
+<is:operation>include</is:operation>
+</is:edge>
+<is:edge edge-id="2facfeb5-e6b6-4b81-b819-b6d9d5543cb9" type="structural">
+<is:tail module-id="33ed9653-9952-4911-a759-2060eeef7a91" port-id="0"/>
+<is:head module-id="53b4b7e8-813e-4889-b2e2-9fc7949a242f" port-id="0"/>
+<is:operation>include</is:operation>
+</is:edge>
+<is:edge edge-id="54fce988-58b7-416f-bbd2-a0eee6f703c5" type="functional">
+<is:tail module-id="f8c94cc7-7fa7-404a-85f2-f49a90d1e5f8" port-id="2"/>
+<is:head module-id="e28be623-7f35-48db-8978-7d4e908efd11" port-id="2"/>
+<is:operation>InterfaceLink</is:operation>
+</is:edge>
+<is:edge edge-id="961c6809-3687-43f4-92b6-8490c7fd6d8a" type="capsular">
+<is:tail module-id="7460807f-a216-4864-a317-3aa747fae073" port-id="0"/>
+<is:head module-id="53defeae-ef21-4894-8d88-b7e50bb7eba1" port-id="0"/>
+<is:operation>include</is:operation>
+</is:edge>
+<is:edge edge-id="3fb55e5f-2ae0-4230-8681-75d59917bcb4" type="structural">
+<is:tail module-id="46fedd5d-608f-4dbc-a6b3-be13383f9315" port-id="0"/>
+<is:head module-id="7460807f-a216-4864-a317-3aa747fae073" port-id="0"/>
+<is:operation>include</is:operation>
+</is:edge>
+<is:edge edge-id="a58f1422-cffc-45be-8604-fcc8e5583bb7" type="forwarding">
+<is:tail module-id="6d4759f3-4ee3-4656-bbb9-e8a0ad030da6" port-id="1"/>
+<is:head module-id="b124fbc9-d5e4-4bbd-8414-9fd527ddf13f" port-id="1"/>
+<is:operation>input</is:operation>
+</is:edge>
+<is:edge edge-id="43705540-9600-4214-84ad-fe049f40ed2d" type="forwarding">
+<is:tail module-id="4f8c5aa5-bf73-482e-986a-57b796b1c026" port-id="2"/>
+<is:head module-id="43913ab3-f772-4115-9157-e0c589e201b3" port-id="1"/>
+<is:operation>input</is:operation>
+</is:edge>
+<is:edge edge-id="d97cf80b-9f90-4978-8811-d5babfd5fc74" type="functional">
+<is:tail module-id="32b92c57-1d8f-4ada-ba96-04c6c52033ea" port-id="1"/>
+<is:head module-id="9f16585a-6ec5-4417-befe-766054891738" port-id="5"/>
+<is:operation>InterfaceLink</is:operation>
+</is:edge>
+<is:edge edge-id="58655bf3-eda3-4023-85d4-d2814d8ce47f" type="structural">
+<is:tail module-id="aebac2fa-61ec-4dad-958b-7279737228e1" port-id="0"/>
+<is:head module-id="7460807f-a216-4864-a317-3aa747fae073" port-id="0"/>
+<is:operation>include</is:operation>
+</is:edge>
+<is:edge edge-id="06ba4e21-c745-45ae-8e23-e9b50880a9df" type="forwarding">
+<is:tail module-id="4f8c5aa5-bf73-482e-986a-57b796b1c026" port-id="1"/>
+<is:head module-id="e004a18c-a4f0-4237-8a0f-da615411a30f" port-id="1"/>
+<is:operation>input</is:operation>
+</is:edge>
+<is:edge edge-id="adf0f295-cac0-4d0c-b29b-23ac7b1f8fbd" type="forwarding">
+<is:tail module-id="9f16585a-6ec5-4417-befe-766054891738" port-id="5"/>
+<is:head module-id="824c3330-b634-40cc-a68a-261565f48f8a" port-id="4"/>
+<is:operation>input</is:operation>
+</is:edge>
+<is:edge edge-id="96c0ccb4-c475-4ab1-ab8c-79b22420f740" type="structural">
+<is:tail module-id="32b92c57-1d8f-4ada-ba96-04c6c52033ea" port-id="0"/>
+<is:head module-id="7460807f-a216-4864-a317-3aa747fae073" port-id="0"/>
+<is:operation>include</is:operation>
+</is:edge>
+<is:edge edge-id="68c5af45-e393-4fea-839e-69dad5022573" type="forwarding">
+<is:tail module-id="9f16585a-6ec5-4417-befe-766054891738" port-id="1"/>
+<is:head module-id="3d091278-983f-498d-9057-44302b3ca80c" port-id="1"/>
+<is:operation>input</is:operation>
+</is:edge>
+<is:edge edge-id="c0a346fe-381f-443f-8544-57ce82330058" type="structural">
+<is:tail module-id="6d4759f3-4ee3-4656-bbb9-e8a0ad030da6" port-id="0"/>
+<is:head module-id="7460807f-a216-4864-a317-3aa747fae073" port-id="0"/>
+<is:operation>include</is:operation>
+</is:edge>
+<is:edge edge-id="0a01634b-aa0b-49f0-8910-763b88dd6b0f" type="structural">
+<is:tail module-id="6e36bf1a-14d9-4057-86dc-7c517c18919f" port-id="0"/>
+<is:head module-id="7460807f-a216-4864-a317-3aa747fae073" port-id="0"/>
+<is:operation>include</is:operation>
+</is:edge>
+<is:edge edge-id="0a0bd1a6-8051-4d48-95cf-d6a9bb5d592a" type="forwarding">
+<is:tail module-id="846d568d-13ca-4cdc-96df-019816831402" port-id="1"/>
+<is:head module-id="876f496d-256b-4182-99a4-b94dae73c77e" port-id="1"/>
+<is:operation>input</is:operation>
+</is:edge>
+<is:edge edge-id="1a79e3df-2fd4-4d15-945a-9d8abf3221f3" type="forwarding">
+<is:tail module-id="9f16585a-6ec5-4417-befe-766054891738" port-id="2"/>
+<is:head module-id="b9cc9b99-1282-4d65-953a-01424929f586" port-id="1"/>
+<is:operation>input</is:operation>
+</is:edge>
+<is:edge edge-id="38dc019d-9e14-481b-b3b1-346289543a7a" type="forwarding">
+<is:tail module-id="9f16585a-6ec5-4417-befe-766054891738" port-id="1"/>
+<is:head module-id="03a27680-7903-4752-a5cd-f66ee4364e70" port-id="1"/>
+<is:operation>input</is:operation>
+</is:edge>
+<is:edge edge-id="77e0940f-8d21-48b8-8fdf-0baf7da2cd89" type="forwarding">
+<is:tail module-id="c46bda98-1533-477a-a841-a6c7938e0fd7" port-id="6"/>
+<is:head module-id="46fedd5d-608f-4dbc-a6b3-be13383f9315" port-id="4"/>
+<is:operation>output</is:operation>
+</is:edge>
+<is:edge edge-id="4779cfc7-c39d-4b42-bec3-baa1629df8ac" type="functional">
+<is:tail module-id="7460807f-a216-4864-a317-3aa747fae073" port-id="8"/>
+<is:head module-id="6d4759f3-4ee3-4656-bbb9-e8a0ad030da6" port-id="1"/>
+<is:operation>InterfaceLink</is:operation>
+</is:edge>
+<is:edge edge-id="8e302ac8-f4a3-4dbe-9505-c4d01bbf8f29" type="structural">
+<is:tail module-id="4f31fd9b-e7e2-43f2-83d4-c3e7c5f7a395" port-id="0"/>
+<is:head module-id="7460807f-a216-4864-a317-3aa747fae073" port-id="0"/>
+<is:operation>include</is:operation>
+</is:edge>
+<is:edge edge-id="58cc595e-ffd8-4d98-9907-cc07d30e57a3" type="forwarding">
+<is:tail module-id="46fedd5d-608f-4dbc-a6b3-be13383f9315" port-id="2"/>
+<is:head module-id="7735dfc1-fc1c-497d-bb81-c7c437995695" port-id="1"/>
+<is:operation>input</is:operation>
+</is:edge>
+<is:edge edge-id="a699f59d-8cd4-42eb-9278-2d2d8712d527" type="structural">
+<is:tail module-id="b9cc9b99-1282-4d65-953a-01424929f586" port-id="0"/>
+<is:head module-id="3d091278-983f-498d-9057-44302b3ca80c" port-id="0"/>
+<is:operation>include</is:operation>
+</is:edge>
+<is:edge edge-id="586e33f6-d312-4cc3-9bd7-09d7b91985a6" type="functional">
+<is:tail module-id="4f8c5aa5-bf73-482e-986a-57b796b1c026" port-id="4"/>
+<is:head module-id="7460807f-a216-4864-a317-3aa747fae073" port-id="6"/>
+<is:operation>InterfaceLink</is:operation>
+</is:edge>
+<is:edge edge-id="db76f411-1cc2-4e75-939f-5f2766e6148e" type="forwarding">
+<is:tail module-id="4f31fd9b-e7e2-43f2-83d4-c3e7c5f7a395" port-id="2"/>
+<is:head module-id="33ed9653-9952-4911-a759-2060eeef7a91" port-id="1"/>
+<is:operation>input</is:operation>
+</is:edge>
+<is:edge edge-id="40b54e56-5d15-42de-8dc7-50f526ea8f7f" type="structural">
+<is:tail module-id="dcbfbc88-87eb-4c8f-8d05-be3e10df2235" port-id="0"/>
+<is:head module-id="7460807f-a216-4864-a317-3aa747fae073" port-id="0"/>
+<is:operation>include</is:operation>
+</is:edge>
+<is:edge edge-id="fb3aa477-4c65-43f0-a68a-3dad74d2aad8" type="forwarding">
+<is:tail module-id="9f16585a-6ec5-4417-befe-766054891738" port-id="2"/>
+<is:head module-id="824c3330-b634-40cc-a68a-261565f48f8a" port-id="1"/>
+<is:operation>input</is:operation>
+</is:edge>
+<is:edge edge-id="abe836a3-23e0-41b3-b859-5a11f0b2a423" type="functional">
+<is:tail module-id="7460807f-a216-4864-a317-3aa747fae073" port-id="8"/>
+<is:head module-id="4f31fd9b-e7e2-43f2-83d4-c3e7c5f7a395" port-id="1"/>
+<is:operation>InterfaceLink</is:operation>
+</is:edge>
+<is:edge edge-id="176a563e-4641-4b83-9ee4-d8ac5d915a20" type="functional">
+<is:tail module-id="876f496d-256b-4182-99a4-b94dae73c77e" port-id="2"/>
+<is:head module-id="e28be623-7f35-48db-8978-7d4e908efd11" port-id="4"/>
+<is:operation>InterfaceLink</is:operation>
+</is:edge>
+<is:edge edge-id="1833c7fd-8d5d-4405-870a-bc571b6baf74" type="functional">
+<is:tail module-id="6e36bf1a-14d9-4057-86dc-7c517c18919f" port-id="1"/>
+<is:head module-id="9f16585a-6ec5-4417-befe-766054891738" port-id="2"/>
+<is:operation>InterfaceLink</is:operation>
+</is:edge>
+<is:edge edge-id="2dc2b6d5-849f-42d9-a9ee-1730cb2f0da3" type="forwarding">
+<is:tail module-id="54d6bdd3-9129-4129-a650-d9b60e1188df" port-id="1"/>
+<is:head module-id="6c1d556c-6242-4f20-affd-edab5ecc6e3c" port-id="1"/>
+<is:operation>output</is:operation>
+</is:edge>
+<is:edge edge-id="467ed2c6-50d0-45a8-a659-5b849aff65cc" type="functional">
+<is:tail module-id="7460807f-a216-4864-a317-3aa747fae073" port-id="8"/>
+<is:head module-id="4f8c5aa5-bf73-482e-986a-57b796b1c026" port-id="1"/>
+<is:operation>InterfaceLink</is:operation>
+</is:edge>
+<is:edge edge-id="9cf0c1f6-ee96-4dde-8fb4-e3914ae3c999" type="structural">
+<is:tail module-id="9a2f10a8-875a-4833-9626-763e87f7ff53" port-id="0"/>
+<is:head module-id="7460807f-a216-4864-a317-3aa747fae073" port-id="0"/>
+<is:operation>include</is:operation>
+</is:edge>
+<is:edge edge-id="4b4c3187-ab54-4035-a973-388e66abe4c5" type="functional">
+<is:tail module-id="846d568d-13ca-4cdc-96df-019816831402" port-id="3"/>
+<is:head module-id="7460807f-a216-4864-a317-3aa747fae073" port-id="3"/>
+<is:operation>InterfaceLink</is:operation>
+</is:edge>
+<is:edge edge-id="9fb72a18-9002-484e-a0b0-9125f10c4a8a" type="functional">
+<is:tail module-id="7460807f-a216-4864-a317-3aa747fae073" port-id="8"/>
+<is:head module-id="846d568d-13ca-4cdc-96df-019816831402" port-id="1"/>
+<is:operation>InterfaceLink</is:operation>
+</is:edge>
+<is:edge edge-id="94dd4c00-e02e-473b-996d-9bbc21d96a1c" type="forwarding">
+<is:tail module-id="e28be623-7f35-48db-8978-7d4e908efd11" port-id="5"/>
+<is:head module-id="846d568d-13ca-4cdc-96df-019816831402" port-id="3"/>
+<is:operation>output</is:operation>
+</is:edge>
+<is:edge edge-id="52cd4e49-6db2-4aec-a3ae-593ebcbdf9cf" type="functional">
+<is:tail module-id="57ed6165-a93b-4f8c-8042-209e423239ec" port-id="2"/>
+<is:head module-id="3d091278-983f-498d-9057-44302b3ca80c" port-id="3"/>
+<is:operation>InterfaceLink</is:operation>
+</is:edge>
+<is:edge edge-id="e5c79953-05a5-46e9-b755-13db1078f6ab" type="forwarding">
+<is:tail module-id="846d568d-13ca-4cdc-96df-019816831402" port-id="1"/>
+<is:head module-id="2537d75f-f594-43ca-ada7-e08ac29ffa4e" port-id="1"/>
+<is:operation>input</is:operation>
+</is:edge>
+<is:edge edge-id="3fcdc26c-eed4-4b6a-ace0-225798dcb44e" type="functional">
+<is:tail module-id="6e36bf1a-14d9-4057-86dc-7c517c18919f" port-id="1"/>
+<is:head module-id="4f8c5aa5-bf73-482e-986a-57b796b1c026" port-id="2"/>
+<is:operation>InterfaceLink</is:operation>
+</is:edge>
+<is:edge edge-id="a9285a72-07df-483f-8fc9-c771ec19bcce" type="functional">
+<is:tail module-id="2537d75f-f594-43ca-ada7-e08ac29ffa4e" port-id="2"/>
+<is:head module-id="e28be623-7f35-48db-8978-7d4e908efd11" port-id="3"/>
+<is:operation>InterfaceLink</is:operation>
+</is:edge>
+<is:edge edge-id="e69d8193-453b-4587-9a93-1ecb2a60da23" type="functional">
+<is:tail module-id="6c1d556c-6242-4f20-affd-edab5ecc6e3c" port-id="1"/>
+<is:head module-id="53defeae-ef21-4894-8d88-b7e50bb7eba1" port-id="1"/>
+</is:edge>
+<is:edge edge-id="ede68bb2-c969-459d-96b9-e8d6c25a9fc1" type="functional">
+<is:tail module-id="7735dfc1-fc1c-497d-bb81-c7c437995695" port-id="3"/>
+<is:head module-id="c46bda98-1533-477a-a841-a6c7938e0fd7" port-id="5"/>
+<is:operation>InterfaceLink</is:operation>
+</is:edge>
+<is:edge edge-id="81961530-2067-4f59-926b-91b2f1d27a75" type="forwarding">
+<is:tail module-id="ba670aea-9422-443a-868c-c9fcc050b02d" port-id="4"/>
+<is:head module-id="4f8c5aa5-bf73-482e-986a-57b796b1c026" port-id="4"/>
+<is:operation>output</is:operation>
+</is:edge>
+<is:edge edge-id="ed065f1f-e27d-4450-8ac6-3cd1bdb4ab43" type="forwarding">
+<is:tail module-id="46fedd5d-608f-4dbc-a6b3-be13383f9315" port-id="1"/>
+<is:head module-id="74ca54e5-6464-433e-b9b3-04e6271f135b" port-id="1"/>
+<is:operation>input</is:operation>
+</is:edge>
+<is:edge edge-id="711880ad-020d-4577-a2d7-7f829b8f06df" type="functional">
+<is:tail module-id="7460807f-a216-4864-a317-3aa747fae073" port-id="8"/>
+<is:head module-id="46fedd5d-608f-4dbc-a6b3-be13383f9315" port-id="1"/>
+<is:operation>InterfaceLink</is:operation>
+</is:edge>
+<is:edge edge-id="06999181-543c-41f1-8326-0d1acb4a742f" type="functional">
+<is:tail module-id="9f16585a-6ec5-4417-befe-766054891738" port-id="6"/>
+<is:head module-id="7460807f-a216-4864-a317-3aa747fae073" port-id="4"/>
+<is:operation>InterfaceLink</is:operation>
+</is:edge>
+<is:edge edge-id="97d63561-baac-4946-b6bd-628195970f98" type="functional">
+<is:tail module-id="dcbfbc88-87eb-4c8f-8d05-be3e10df2235" port-id="1"/>
+<is:head module-id="4f8c5aa5-bf73-482e-986a-57b796b1c026" port-id="3"/>
+<is:operation>InterfaceLink</is:operation>
+</is:edge>
+<is:edge edge-id="de269ebb-19c8-47e5-9d47-034760aebac0" type="capsular">
+<is:tail module-id="53b4b7e8-813e-4889-b2e2-9fc7949a242f" port-id="0"/>
+<is:head module-id="4f31fd9b-e7e2-43f2-83d4-c3e7c5f7a395" port-id="0"/>
+<is:operation>include</is:operation>
+</is:edge>
+<is:edge edge-id="9f46595c-9aa6-47cc-b470-7fc34a6fba6b" type="functional">
+<is:tail module-id="aebac2fa-61ec-4dad-958b-7279737228e1" port-id="1"/>
+<is:head module-id="46fedd5d-608f-4dbc-a6b3-be13383f9315" port-id="2"/>
+<is:operation>InterfaceLink</is:operation>
+</is:edge>
+<is:edge edge-id="6f3deb50-eba0-43c7-b8b8-eb7f4782ab0c" type="functional">
+<is:tail module-id="74ca54e5-6464-433e-b9b3-04e6271f135b" port-id="2"/>
+<is:head module-id="c46bda98-1533-477a-a841-a6c7938e0fd7" port-id="4"/>
+<is:operation>InterfaceLink</is:operation>
+</is:edge>
+<is:edge edge-id="2862f855-ea7e-40e6-8155-a2e546fa0023" type="functional">
+<is:tail module-id="03a27680-7903-4752-a5cd-f66ee4364e70" port-id="2"/>
+<is:head module-id="3d091278-983f-498d-9057-44302b3ca80c" port-id="4"/>
+<is:operation>InterfaceLink</is:operation>
+</is:edge>
+<is:edge edge-id="3b896d4e-2a81-4772-8017-8af40fbe845c" type="forwarding">
+<is:tail module-id="4f31fd9b-e7e2-43f2-83d4-c3e7c5f7a395" port-id="2"/>
+<is:head module-id="0eb99464-0a7a-494c-9626-393fbfb3339b" port-id="1"/>
+<is:operation>input</is:operation>
+</is:edge>
+<is:edge edge-id="a321bc4e-5ec4-4392-a0c9-125029e785e4" type="forwarding">
+<is:tail module-id="46fedd5d-608f-4dbc-a6b3-be13383f9315" port-id="1"/>
+<is:head module-id="66092477-3c60-4db0-8302-6c79ad671711" port-id="1"/>
+<is:operation>input</is:operation>
+</is:edge>
+<is:edge edge-id="b8b6a523-9bc0-4304-a649-1621cfb3b43b" type="structural">
+<is:tail module-id="9f16585a-6ec5-4417-befe-766054891738" port-id="0"/>
+<is:head module-id="7460807f-a216-4864-a317-3aa747fae073" port-id="0"/>
+<is:operation>include</is:operation>
+</is:edge>
+<is:edge edge-id="b4c48c46-4706-4cd8-85c8-4e8c721e8b67" type="structural">
+<is:tail module-id="f624c27e-a5a7-4122-8123-a6e1b6822b80" port-id="0"/>
+<is:head module-id="53b4b7e8-813e-4889-b2e2-9fc7949a242f" port-id="0"/>
+<is:operation>include</is:operation>
+</is:edge>
+<is:edge edge-id="af45881d-aef7-4a73-9973-8bef71124f0c" type="forwarding">
+<is:tail module-id="3d091278-983f-498d-9057-44302b3ca80c" port-id="6"/>
+<is:head module-id="9f16585a-6ec5-4417-befe-766054891738" port-id="6"/>
+<is:operation>output</is:operation>
+</is:edge>
+<is:edge edge-id="81744f17-c6bc-472a-86de-08521238dd3f" type="capsular">
+<is:tail module-id="54d6bdd3-9129-4129-a650-d9b60e1188df" port-id="0"/>
+<is:head module-id="6c1d556c-6242-4f20-affd-edab5ecc6e3c" port-id="0"/>
+<is:operation>include</is:operation>
+</is:edge>
+<is:edge edge-id="46cfc6bc-65cd-4f7a-ad4f-483a0470e32c" type="functional">
+<is:tail module-id="f624c27e-a5a7-4122-8123-a6e1b6822b80" port-id="3"/>
+<is:head module-id="53b4b7e8-813e-4889-b2e2-9fc7949a242f" port-id="2"/>
+<is:operation>InterfaceLink</is:operation>
+</is:edge>
+<is:edge edge-id="35882052-d401-4c1a-956f-02ebb4839051" type="functional">
+<is:tail module-id="33ed9653-9952-4911-a759-2060eeef7a91" port-id="3"/>
+<is:head module-id="f624c27e-a5a7-4122-8123-a6e1b6822b80" port-id="2"/>
+<is:operation>InterfaceLink</is:operation>
+</is:edge>
+<is:edge edge-id="76847ad2-dd20-4c61-a8a9-71ac647920e9" type="capsular">
+<is:tail module-id="3d091278-983f-498d-9057-44302b3ca80c" port-id="0"/>
+<is:head module-id="9f16585a-6ec5-4417-befe-766054891738" port-id="0"/>
+<is:operation>include</is:operation>
+</is:edge>
+<is:edge edge-id="d48bae0b-3203-43e9-b8e6-b5b20c39d654" type="forwarding">
+<is:tail module-id="9f16585a-6ec5-4417-befe-766054891738" port-id="4"/>
+<is:head module-id="824c3330-b634-40cc-a68a-261565f48f8a" port-id="3"/>
+<is:operation>input</is:operation>
+</is:edge>
+<is:edge edge-id="24910ed0-4cf1-48fd-8b8d-c21cef4d8af2" type="structural">
+<is:tail module-id="7735dfc1-fc1c-497d-bb81-c7c437995695" port-id="0"/>
+<is:head module-id="c46bda98-1533-477a-a841-a6c7938e0fd7" port-id="0"/>
+<is:operation>include</is:operation>
+</is:edge>
+<is:edge edge-id="16de129d-732e-44af-8b58-248acb97ed96" type="functional">
+<is:tail module-id="43913ab3-f772-4115-9157-e0c589e201b3" port-id="3"/>
+<is:head module-id="ba670aea-9422-443a-868c-c9fcc050b02d" port-id="3"/>
+<is:operation>InterfaceLink</is:operation>
+</is:edge>
+<is:edge edge-id="e29a89f4-3d97-4134-a628-b65457882a55" type="structural">
+<is:tail module-id="43913ab3-f772-4115-9157-e0c589e201b3" port-id="0"/>
+<is:head module-id="ba670aea-9422-443a-868c-c9fcc050b02d" port-id="0"/>
+<is:operation>include</is:operation>
+</is:edge>
+<is:edge edge-id="70a415b2-1109-4e9e-8aac-b26c86bdfd01" type="forwarding">
+<is:tail module-id="4f8c5aa5-bf73-482e-986a-57b796b1c026" port-id="1"/>
+<is:head module-id="ba670aea-9422-443a-868c-c9fcc050b02d" port-id="1"/>
+<is:operation>input</is:operation>
+</is:edge>
+<is:edge edge-id="9ab14669-d09e-4d44-9096-ecfdeafffcc6" type="functional">
+<is:tail module-id="33ed9653-9952-4911-a759-2060eeef7a91" port-id="3"/>
+<is:head module-id="53b4b7e8-813e-4889-b2e2-9fc7949a242f" port-id="4"/>
+<is:operation>InterfaceLink</is:operation>
+</is:edge>
+<is:edge edge-id="82e663f4-dc2a-4323-b945-0ad16bfc4959" type="structural">
+<is:tail module-id="f8c94cc7-7fa7-404a-85f2-f49a90d1e5f8" port-id="0"/>
+<is:head module-id="e28be623-7f35-48db-8978-7d4e908efd11" port-id="0"/>
+<is:operation>include</is:operation>
+</is:edge>
+<is:edge edge-id="805eefb7-3cb1-4e69-a967-388584849053" type="structural">
+<is:tail module-id="846d568d-13ca-4cdc-96df-019816831402" port-id="0"/>
+<is:head module-id="7460807f-a216-4864-a317-3aa747fae073" port-id="0"/>
+<is:operation>include</is:operation>
+</is:edge>
+<is:edge edge-id="f6eed377-9a7a-4c21-a74f-6e701e271904" type="functional">
+<is:tail module-id="7460807f-a216-4864-a317-3aa747fae073" port-id="8"/>
+<is:head module-id="9f16585a-6ec5-4417-befe-766054891738" port-id="1"/>
+<is:operation>InterfaceLink</is:operation>
+</is:edge>
+<is:edge edge-id="6e0236ca-728b-400d-8eda-583fc0fe2e56" type="functional">
+<is:tail module-id="c736eedf-d957-4c89-8b24-40e4754d9c26" port-id="2"/>
+<is:head module-id="c46bda98-1533-477a-a841-a6c7938e0fd7" port-id="3"/>
+<is:operation>InterfaceLink</is:operation>
+</is:edge>
+<is:edge edge-id="face65ad-bf57-4699-8573-95aaddb62a56" type="forwarding">
+<is:tail module-id="846d568d-13ca-4cdc-96df-019816831402" port-id="2"/>
+<is:head module-id="f8c94cc7-7fa7-404a-85f2-f49a90d1e5f8" port-id="1"/>
+<is:operation>input</is:operation>
+</is:edge>
+<is:edge edge-id="adb36ecd-9767-42f2-95dd-55840160d71e" type="structural">
+<is:tail module-id="57ed6165-a93b-4f8c-8042-209e423239ec" port-id="0"/>
+<is:head module-id="3d091278-983f-498d-9057-44302b3ca80c" port-id="0"/>
+<is:operation>include</is:operation>
+</is:edge>
+<is:edge edge-id="8f60f480-5714-4219-808c-fd5dec23dfa9" type="structural">
+<is:tail module-id="876f496d-256b-4182-99a4-b94dae73c77e" port-id="0"/>
+<is:head module-id="e28be623-7f35-48db-8978-7d4e908efd11" port-id="0"/>
+<is:operation>include</is:operation>
+</is:edge>
+<is:edge edge-id="1d1acf39-7d24-41b1-b378-bd90eb973083" type="structural">
+<is:tail module-id="4f8c5aa5-bf73-482e-986a-57b796b1c026" port-id="0"/>
+<is:head module-id="7460807f-a216-4864-a317-3aa747fae073" port-id="0"/>
+<is:operation>include</is:operation>
+</is:edge>
+<is:edge edge-id="9a836a7d-2407-43c8-88e6-04a618eab2d9" type="forwarding">
+<is:tail module-id="46fedd5d-608f-4dbc-a6b3-be13383f9315" port-id="3"/>
+<is:head module-id="7735dfc1-fc1c-497d-bb81-c7c437995695" port-id="2"/>
+<is:operation>input</is:operation>
+</is:edge>
+<is:edge edge-id="e9fefeeb-b2e6-4762-8f3d-d3b5fe15fd0c" type="functional">
+<is:tail module-id="dcbfbc88-87eb-4c8f-8d05-be3e10df2235" port-id="1"/>
+<is:head module-id="4f31fd9b-e7e2-43f2-83d4-c3e7c5f7a395" port-id="3"/>
+<is:operation>InterfaceLink</is:operation>
+</is:edge>
+<is:edge edge-id="7c3896ce-ea68-4c06-a0af-9ba54d639818" type="functional">
+<is:tail module-id="46fedd5d-608f-4dbc-a6b3-be13383f9315" port-id="4"/>
+<is:head module-id="7460807f-a216-4864-a317-3aa747fae073" port-id="2"/>
+<is:operation>InterfaceLink</is:operation>
+</is:edge>
+<is:edge edge-id="b8015b0a-5a01-48fa-9019-12051fc34ae3" type="forwarding">
+<is:tail module-id="7460807f-a216-4864-a317-3aa747fae073" port-id="8"/>
+<is:head module-id="53defeae-ef21-4894-8d88-b7e50bb7eba1" port-id="2"/>
+<is:operation>output</is:operation>
+</is:edge>
+<is:edge edge-id="f3871335-351b-46fd-b580-f4643283a8e9" type="capsular">
+<is:tail module-id="c46bda98-1533-477a-a841-a6c7938e0fd7" port-id="0"/>
+<is:head module-id="46fedd5d-608f-4dbc-a6b3-be13383f9315" port-id="0"/>
+<is:operation>include</is:operation>
+</is:edge>
+<is:edge edge-id="7e796573-8e8c-4fdb-b47a-53e3fead97f2" type="functional">
+<is:tail module-id="846d568d-13ca-4cdc-96df-019816831402" port-id="3"/>
+<is:head module-id="9a2f10a8-875a-4833-9626-763e87f7ff53" port-id="1"/>
+<is:operation>InterfaceLink</is:operation>
+</is:edge>
+<is:edge edge-id="94d9156a-5425-4ffd-adef-5b1b2f5a4308" type="forwarding">
+<is:tail module-id="9f16585a-6ec5-4417-befe-766054891738" port-id="3"/>
+<is:head module-id="824c3330-b634-40cc-a68a-261565f48f8a" port-id="2"/>
+<is:operation>input</is:operation>
+</is:edge>
+<is:edge edge-id="b33dec05-67f9-4309-a989-a249d7a89044" type="forwarding">
+<is:tail module-id="4f31fd9b-e7e2-43f2-83d4-c3e7c5f7a395" port-id="1"/>
+<is:head module-id="f624c27e-a5a7-4122-8123-a6e1b6822b80" port-id="1"/>
+<is:operation>input</is:operation>
+</is:edge>
+<is:edge edge-id="814d4d19-190f-4490-ac1c-20c0eeb0fb8c" type="structural">
+<is:tail module-id="824c3330-b634-40cc-a68a-261565f48f8a" port-id="0"/>
+<is:head module-id="3d091278-983f-498d-9057-44302b3ca80c" port-id="0"/>
+<is:operation>include</is:operation>
+</is:edge>
+<is:edge edge-id="3ef971fa-117f-4560-bf0c-d9db5f6472ac" type="functional">
+<is:tail module-id="0eb99464-0a7a-494c-9626-393fbfb3339b" port-id="2"/>
+<is:head module-id="53b4b7e8-813e-4889-b2e2-9fc7949a242f" port-id="3"/>
+<is:operation>InterfaceLink</is:operation>
+</is:edge>
+<is:edge edge-id="61a3fad3-5f8a-44fa-90f1-7dbfbb2115be" type="structural">
+<is:tail module-id="66092477-3c60-4db0-8302-6c79ad671711" port-id="0"/>
+<is:head module-id="c46bda98-1533-477a-a841-a6c7938e0fd7" port-id="0"/>
+<is:operation>include</is:operation>
+</is:edge>
+<is:edge edge-id="a6350b35-b6ec-4510-bace-70a32bf79fbe" type="capsular">
+<is:tail module-id="b124fbc9-d5e4-4bbd-8414-9fd527ddf13f" port-id="0"/>
+<is:head module-id="6d4759f3-4ee3-4656-bbb9-e8a0ad030da6" port-id="0"/>
+<is:operation>include</is:operation>
+</is:edge>
+<is:edge edge-id="51400e8d-32cd-41e8-8c26-a2228a4849ba" type="forwarding">
+<is:tail module-id="46fedd5d-608f-4dbc-a6b3-be13383f9315" port-id="1"/>
+<is:head module-id="c736eedf-d957-4c89-8b24-40e4754d9c26" port-id="1"/>
+<is:operation>input</is:operation>
+</is:edge>
+<is:edge edge-id="45deab60-c84d-4250-aeef-89ee2d1c8473" type="structural">
+<is:tail module-id="03a27680-7903-4752-a5cd-f66ee4364e70" port-id="0"/>
+<is:head module-id="3d091278-983f-498d-9057-44302b3ca80c" port-id="0"/>
+<is:operation>include</is:operation>
+</is:edge>
+<is:edge edge-id="b5f164b8-bfe3-4991-886a-48a7a4fb0c19" type="forwarding">
+<is:tail module-id="4f31fd9b-e7e2-43f2-83d4-c3e7c5f7a395" port-id="3"/>
+<is:head module-id="33ed9653-9952-4911-a759-2060eeef7a91" port-id="2"/>
+<is:operation>input</is:operation>
+</is:edge>
+<is:edge edge-id="9bea5a41-9301-4501-911d-a12a10c3d44e" type="structural">
+<is:tail module-id="e004a18c-a4f0-4237-8a0f-da615411a30f" port-id="0"/>
+<is:head module-id="ba670aea-9422-443a-868c-c9fcc050b02d" port-id="0"/>
+<is:operation>include</is:operation>
+</is:edge>
+<is:edge edge-id="c9a5e1ab-41c4-4d8d-a5d9-dd85d2ddb7aa" type="functional">
+<is:tail module-id="b9cc9b99-1282-4d65-953a-01424929f586" port-id="2"/>
+<is:head module-id="3d091278-983f-498d-9057-44302b3ca80c" port-id="2"/>
+<is:operation>InterfaceLink</is:operation>
+</is:edge>
+<is:edge edge-id="b799599d-a975-4925-8a0f-d46f636bddc6" type="forwarding">
+<is:tail module-id="9f16585a-6ec5-4417-befe-766054891738" port-id="1"/>
+<is:head module-id="57ed6165-a93b-4f8c-8042-209e423239ec" port-id="1"/>
+<is:operation>input</is:operation>
+</is:edge>
+<is:edge edge-id="75154ddd-b690-45e0-8782-e1fd416f4537" type="capsular">
+<is:tail module-id="ba670aea-9422-443a-868c-c9fcc050b02d" port-id="0"/>
+<is:head module-id="4f8c5aa5-bf73-482e-986a-57b796b1c026" port-id="0"/>
+<is:operation>include</is:operation>
+</is:edge>
+<is:edge edge-id="3b1a03ae-55d7-4cec-b4c1-902adef6ddcf" type="functional">
+<is:tail module-id="dcbfbc88-87eb-4c8f-8d05-be3e10df2235" port-id="1"/>
+<is:head module-id="9f16585a-6ec5-4417-befe-766054891738" port-id="3"/>
+<is:operation>InterfaceLink</is:operation>
+</is:edge>
+<is:edge edge-id="91ff68ac-c4f5-40cb-bb55-9f9e77cf7ab4" type="functional">
+<is:tail module-id="4f31fd9b-e7e2-43f2-83d4-c3e7c5f7a395" port-id="4"/>
+<is:head module-id="7460807f-a216-4864-a317-3aa747fae073" port-id="5"/>
+<is:operation>InterfaceLink</is:operation>
+</is:edge>
+<is:edge edge-id="3823cd79-a284-44f7-ad4a-e354cad19333" type="structural">
+<is:tail module-id="0eb99464-0a7a-494c-9626-393fbfb3339b" port-id="0"/>
+<is:head module-id="53b4b7e8-813e-4889-b2e2-9fc7949a242f" port-id="0"/>
+<is:operation>include</is:operation>
+</is:edge>
+<is:edge edge-id="bb692e5f-3800-47d1-ba5d-53a25c3927b7" type="forwarding">
+<is:tail module-id="b124fbc9-d5e4-4bbd-8414-9fd527ddf13f" port-id="2"/>
+<is:head module-id="6d4759f3-4ee3-4656-bbb9-e8a0ad030da6" port-id="2"/>
+<is:operation>output</is:operation>
+</is:edge>
+<is:edge edge-id="ce081729-35bb-4240-82df-322dc520bf4b" type="functional">
+<is:tail module-id="824c3330-b634-40cc-a68a-261565f48f8a" port-id="5"/>
+<is:head module-id="3d091278-983f-498d-9057-44302b3ca80c" port-id="5"/>
+<is:operation>InterfaceLink</is:operation>
+</is:edge>
+<is:edge edge-id="1df502e2-1c7e-4223-9312-cc907d12502e" type="forwarding">
+<is:tail module-id="4f8c5aa5-bf73-482e-986a-57b796b1c026" port-id="3"/>
+<is:head module-id="43913ab3-f772-4115-9157-e0c589e201b3" port-id="2"/>
+<is:operation>input</is:operation>
+</is:edge>
+<is:edge edge-id="a2297da2-e8bf-4839-b98d-c8069ab80139" type="forwarding">
+<is:tail module-id="846d568d-13ca-4cdc-96df-019816831402" port-id="1"/>
+<is:head module-id="e28be623-7f35-48db-8978-7d4e908efd11" port-id="1"/>
+<is:operation>input</is:operation>
+</is:edge>
+</is:edge-set>
+</is:insilico-model>
+
