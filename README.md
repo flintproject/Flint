@@ -7,7 +7,8 @@ CellML, PHML, and/or SBML.
 * It can numerically solve ordinary or stochastic differential equations derived
   from models.
 * It runs on Windows, macOS, Linux, etc.
-* It provides graphical user interface on top of command-line interface.
+* It provides fully-featured graphical user interface with simplified
+  command-line interface.
 
 Download
 --------

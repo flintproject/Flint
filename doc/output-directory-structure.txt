@@ -1,7 +1,7 @@
 This document describes the directory structure in which Flint organizes
 output.
 
-Given a pair of a PHSP and an SED-ML files by user, Flint runs bunch of
+Given a pair of a PHSP and an SED-ML files by user, Flint runs a batch of
 simulations according to all combinations of values assigned to parameters.
 First of all Flint generates a unique non-negative integer for each <task>
 in the SED-ML, called task-id. Then Flint makes a dedicated directory for
