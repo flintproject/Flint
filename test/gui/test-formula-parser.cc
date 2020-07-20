@@ -59,7 +59,7 @@ BOOST_AUTO_TEST_CASE(Real) {
 	Parser p("-1.259", es);
 	tree.reset(p());
 	BOOST_REQUIRE(tree);
-	BOOST_CHECK(tree->op == Tree::Op::kCn);
+	BOOST_CHECK(tree->op == Tree::Op::kCnNegative);
 }
 
 BOOST_AUTO_TEST_CASE(Formula) {
@@ -83,6 +83,36 @@ BOOST_AUTO_TEST_CASE(Formula) {
 	BOOST_CHECK(tree->children.at(1)->children.at(0)->children.at(1)->children.at(1)->children.at(0)->op == Tree::Op::kMin);
 	BOOST_CHECK(tree->children.at(1)->children.at(0)->children.at(1)->children.at(1)->children.at(1)->op == Tree::Op::kCi);
 	BOOST_CHECK_EQUAL(tree->children.at(1)->children.at(0)->children.at(1)->children.at(1)->children.at(0)->children.size(), 3u);
+}
+
+BOOST_AUTO_TEST_CASE(Issue17_1) {
+	Parser p("x+1", es);
+	tree.reset(p());
+	BOOST_REQUIRE(tree);
+	BOOST_CHECK(tree->op == Tree::Op::kPlus);
+	BOOST_CHECK_EQUAL(tree->children.size(), 2u);
+	BOOST_CHECK(tree->children.at(0)->op == Tree::Op::kCi);
+	BOOST_CHECK(tree->children.at(1)->op == Tree::Op::kCn);
+}
+
+BOOST_AUTO_TEST_CASE(Issue17_2) {
+	Parser p("x-1", es);
+	tree.reset(p());
+	BOOST_REQUIRE(tree);
+	BOOST_CHECK(tree->op == Tree::Op::kMinus);
+	BOOST_CHECK_EQUAL(tree->children.size(), 2u);
+	BOOST_CHECK(tree->children.at(0)->op == Tree::Op::kCi);
+	BOOST_CHECK(tree->children.at(1)->op == Tree::Op::kCn);
+}
+
+BOOST_AUTO_TEST_CASE(Issue17_3) {
+	Parser p("x-(-1)", es);
+	tree.reset(p());
+	BOOST_REQUIRE(tree);
+	BOOST_CHECK(tree->op == Tree::Op::kMinus);
+	BOOST_CHECK_EQUAL(tree->children.size(), 2u);
+	BOOST_CHECK(tree->children.at(0)->op == Tree::Op::kCi);
+	BOOST_CHECK(tree->children.at(1)->op == Tree::Op::kCnNegative);
 }
 
 BOOST_AUTO_TEST_SUITE_END()

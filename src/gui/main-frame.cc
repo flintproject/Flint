@@ -637,7 +637,8 @@ void MainFrame::OnRun(wxCommandEvent &)
 		.DestroyOnClose(true);
 	manager_.AddPane(window, info);
 	manager_.Update();
-	window->Start(wxGetApp().GetConcurrency());
+	if (!window->Start(wxGetApp().GetConcurrency()))
+		return; // Something wrong happens, but stay availabe
 
 	arg_.paused = false;
 	MakePauseAvailable();

@@ -28,14 +28,12 @@ private:
 
 	void ReportUnexpectedCharacter(char c);
 
-	const char *input_;
 	const char *point_;
 	std::ostream &es_;
 };
 
 LexerImpl::LexerImpl(const char *input, std::ostream &es)
-	: input_(input)
-	, point_(input)
+	: point_(input)
 	, es_(es)
 {
 	assert(input);
@@ -103,8 +101,6 @@ int LexerImpl::Read(Token *token)
 		token->size = 1;
 		return 1;
 	case '+':
-		if (point_[1] == '.' || IsDigit(point_[1]))
-			return ReadNumber(token);
 		token->type = Token::Type::kPlus;
 		token->lexeme = point_++;
 		token->size = 1;
@@ -115,8 +111,6 @@ int LexerImpl::Read(Token *token)
 		token->size = 1;
 		return 1;
 	case '-':
-		if (point_[1] == '.' || IsDigit(point_[1]))
-			return ReadNumber(token);
 		token->type = Token::Type::kMinus;
 		token->lexeme = point_++;
 		token->size = 1;

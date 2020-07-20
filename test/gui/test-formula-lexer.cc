@@ -59,21 +59,17 @@ BOOST_AUTO_TEST_CASE(Integer) {
 	BOOST_CHECK_EQUAL(t0(&token), 1);
 	CHECK_TOKEN(Token::Type::kNumber, 1);
 
-	Lexer t1("+0", es);
-	BOOST_CHECK_EQUAL(t1(&token), 1);
-	CHECK_TOKEN(Token::Type::kNumber, 2);
-
 	Lexer t2("-0", es);
 	BOOST_CHECK_EQUAL(t2(&token), 1);
-	CHECK_TOKEN(Token::Type::kNumber, 2);
-
-	Lexer t3("+24", es);
-	BOOST_CHECK_EQUAL(t3(&token), 1);
-	CHECK_TOKEN(Token::Type::kNumber, 3);
+	CHECK_TOKEN(Token::Type::kMinus, 1);
+	BOOST_CHECK_EQUAL(t2(&token), 1);
+	CHECK_TOKEN(Token::Type::kNumber, 1);
 
 	Lexer t4("-1230", es);
 	BOOST_CHECK_EQUAL(t4(&token), 1);
-	CHECK_TOKEN(Token::Type::kNumber, 5);
+	CHECK_TOKEN(Token::Type::kMinus, 1);
+	BOOST_CHECK_EQUAL(t4(&token), 1);
+	CHECK_TOKEN(Token::Type::kNumber, 4);
 }
 
 BOOST_AUTO_TEST_CASE(Real) {
@@ -81,13 +77,11 @@ BOOST_AUTO_TEST_CASE(Real) {
 	BOOST_CHECK_EQUAL(t0(&token), 1);
 	CHECK_TOKEN(Token::Type::kNumber, 2);
 
-	Lexer t1("+0.0", es);
-	BOOST_CHECK_EQUAL(t1(&token), 1);
-	CHECK_TOKEN(Token::Type::kNumber, 4);
-
 	Lexer t2("-.0", es);
 	BOOST_CHECK_EQUAL(t2(&token), 1);
-	CHECK_TOKEN(Token::Type::kNumber, 3);
+	CHECK_TOKEN(Token::Type::kMinus, 1);
+	BOOST_CHECK_EQUAL(t2(&token), 1);
+	CHECK_TOKEN(Token::Type::kNumber, 2);
 
 	Lexer t3("1.259", es);
 	BOOST_CHECK_EQUAL(t3(&token), 1);
@@ -95,7 +89,9 @@ BOOST_AUTO_TEST_CASE(Real) {
 
 	Lexer t4("-1.044e10", es);
 	BOOST_CHECK_EQUAL(t4(&token), 1);
-	CHECK_TOKEN(Token::Type::kNumber, 9);
+	CHECK_TOKEN(Token::Type::kMinus, 1);
+	BOOST_CHECK_EQUAL(t4(&token), 1);
+	CHECK_TOKEN(Token::Type::kNumber, 8);
 
 	Lexer t5("1.044E-7", es);
 	BOOST_CHECK_EQUAL(t5(&token), 1);
@@ -130,6 +126,45 @@ BOOST_AUTO_TEST_CASE(Compound) {
 	CHECK_TOKEN(Token::Type::kSlash, 1);
 	BOOST_CHECK_EQUAL(t(&token), 1);
 	CHECK_TOKEN(Token::Type::kIdentifier, 4);
+	BOOST_CHECK_EQUAL(t(&token), 0);
+}
+
+BOOST_AUTO_TEST_CASE(Issue17_1) {
+	Lexer t("x+1", es);
+	BOOST_CHECK_EQUAL(t(&token), 1);
+	CHECK_TOKEN(Token::Type::kIdentifier, 1);
+	BOOST_CHECK_EQUAL(t(&token), 1);
+	CHECK_TOKEN(Token::Type::kPlus, 1);
+	BOOST_CHECK_EQUAL(t(&token), 1);
+	CHECK_TOKEN(Token::Type::kNumber, 1);
+	BOOST_CHECK_EQUAL(t(&token), 0);
+}
+
+BOOST_AUTO_TEST_CASE(Issue17_2) {
+	Lexer t("x-1", es);
+	BOOST_CHECK_EQUAL(t(&token), 1);
+	CHECK_TOKEN(Token::Type::kIdentifier, 1);
+	BOOST_CHECK_EQUAL(t(&token), 1);
+	CHECK_TOKEN(Token::Type::kMinus, 1);
+	BOOST_CHECK_EQUAL(t(&token), 1);
+	CHECK_TOKEN(Token::Type::kNumber, 1);
+	BOOST_CHECK_EQUAL(t(&token), 0);
+}
+
+BOOST_AUTO_TEST_CASE(Issue17_3) {
+	Lexer t("x-(-1)", es);
+	BOOST_CHECK_EQUAL(t(&token), 1);
+	CHECK_TOKEN(Token::Type::kIdentifier, 1);
+	BOOST_CHECK_EQUAL(t(&token), 1);
+	CHECK_TOKEN(Token::Type::kMinus, 1);
+	BOOST_CHECK_EQUAL(t(&token), 1);
+	CHECK_TOKEN(Token::Type::kParenOpen, 1);
+	BOOST_CHECK_EQUAL(t(&token), 1);
+	CHECK_TOKEN(Token::Type::kMinus, 1);
+	BOOST_CHECK_EQUAL(t(&token), 1);
+	CHECK_TOKEN(Token::Type::kNumber, 1);
+	BOOST_CHECK_EQUAL(t(&token), 1);
+	CHECK_TOKEN(Token::Type::kParenClose, 1);
 	BOOST_CHECK_EQUAL(t(&token), 0);
 }
 

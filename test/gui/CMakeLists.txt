@@ -1,6 +1,7 @@
 set(test_files
   test-formula-lexer
   test-formula-parser
+  test-formula-translate
   )
 
 foreach(test_file ${test_files})

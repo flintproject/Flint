@@ -17,6 +17,7 @@ const char *GetOpName(Tree::Op op)
 		// terminal
 		"ci",
 		"cn",
+		"cn",
 		// operator
 		"abs",
 		"arccos",
@@ -106,6 +107,12 @@ void Tree::Write(const char *prefix, std::ostream &os) const
 	case Op::kCi:
 	case Op::kCn:
 		StartTag(prefix, GetOpName(op), os);
+		os.write(token.lexeme, token.size);
+		EndTag(prefix, GetOpName(op), os);
+		break;
+	case Op::kCnNegative:
+		StartTag(prefix, GetOpName(op), os);
+		os.put('-');
 		os.write(token.lexeme, token.size);
 		EndTag(prefix, GetOpName(op), os);
 		break;

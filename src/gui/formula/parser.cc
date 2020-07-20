@@ -90,21 +90,25 @@ Tree *ParserImpl::ParseFormula(TerminatorPredicate tpred,
 		tokens_.pop_front();
 		// ignore the leading '+'
 		return ParseProduct(tpred, term);
-	} else if (tt == Token::Type::kMinus) {
-		auto token = tokens_.front();
+	}
+	bool minus = false;
+	if (tt == Token::Type::kMinus) {
+		minus = true;
 		tokens_.pop_front();
-		std::unique_ptr<Tree> product(ParseProduct(tpred, term));
-		if (!product)
-			return nullptr;
-		std::unique_ptr<Tree> tree(new Tree);
-		tree->op = Tree::Op::kMinus;
-		tree->token = token;
-		tree->children.emplace_back(product.release());
-		return tree.release();
 	}
 	std::unique_ptr<Tree> product(ParseProduct(tpred));
 	if (!product)
 		return nullptr;
+	if (minus) {
+		if (product->op == Tree::Op::kCn) {
+			product->op = Tree::Op::kCnNegative;
+		} else {
+			std::unique_ptr<Tree> tree(new Tree);
+			tree->op = Tree::Op::kMinus;
+			tree->children.emplace_back(product.release());
+			product.swap(tree);
+		}
+	}
 	return ParseRestOfFormula(tpred, term, product.release());
 }
 
@@ -269,8 +273,20 @@ Tree *ParserImpl::ParseFactor()
 		es_ << "found invalid +" << std::endl;
 		return nullptr;
 	case Token::Type::kMinus:
-		es_ << "found invalid -" << std::endl;
-		return nullptr;
+		tokens_.pop_front();
+		if (tokens_.empty()) {
+			es_ << "found invalid -" << std::endl;
+			return nullptr;
+		}
+		tt = tokens_.front().type;
+		if (tt != Token::Type::kNumber) {
+			es_ << "found invalid -" << std::endl;
+			return nullptr;
+		}
+		tree->op = Tree::Op::kCnNegative;
+		tree->token = tokens_.front();
+		tokens_.pop_front();
+		return tree.release();
 	case Token::Type::kSlash:
 		es_ << "found invalid /" << std::endl;
 		return nullptr;

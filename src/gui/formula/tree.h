@@ -18,6 +18,7 @@ struct Tree {
 		// terminal
 		kCi,
 		kCn,
+		kCnNegative,
 		// operator
 		kAbs,
 		kArccos,

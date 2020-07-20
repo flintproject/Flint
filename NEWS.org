@@ -8,6 +8,8 @@
    - Linux distributions such as Debian 10, Ubuntu 18.04, and RHEL/CentOS 7 & 8.
 ** Improvements
    - Example model files are included in source and binary distribution.
+** Bug fixes
+   - #17 Fixed error at parsing "x+1" in the Expression of Parameters tab.
 
 * Flint 2.3 (2020-03-18)
 
