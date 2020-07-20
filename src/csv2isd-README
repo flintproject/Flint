@@ -10,5 +10,9 @@ csv2isd --help
 
 = Description
 
+This program reads a CSV file of filename `input`, and converts and writes
+it into an ISD file of filename `output`.
+The first line of input must be the header naming the columns.
+
 --help, -h
     show help.

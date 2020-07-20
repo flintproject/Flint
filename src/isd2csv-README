@@ -10,6 +10,10 @@ isd2csv --help
 
 = Description
 
+This program reads an ISD file of filename `path`, and converts and writes
+it in the CSV format to the standard output.
+It reads the standard input if `path` is omitted.
+
 --output, -o
     write to file at `output` instead of stdout.
 

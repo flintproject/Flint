@@ -9,6 +9,7 @@
 
 \usepackage{amsmath}
 \usepackage[type={CC},modifier={by-sa},version={4.0}]{doclicense}
+\usepackage{enumitem}
 \usepackage{hyperref}
 \hypersetup{
   colorlinks,
@@ -565,6 +566,77 @@ The procedure is as follows:
 \end{enumerate}
 The names of files saved in the target directory are of form ``(ID).isd.''
 
+\section{Fitting parameters via the least-squares method}
+Flint allows users to fit the value of parameters to a desirable course of
+simulation time evolution, as an extension of batch simulation in which
+the residual sum of squares (RSS) is calculated as well. The least-squares
+method tells which value tuple of parameters is the closest to the given
+target evolution.
+
+Current implementation supports parameter fitting \emph{only for PHML models}.
+
+The concrete procedure of the parameter fitting is as follows.
+\begin{enumerate}
+\item Give the reference time course as an ISD file.
+\item Run a simulation batch with a parameter set.
+\item Resulting in the RSS associated with each value tuple of parameters.
+\end{enumerate}
+The following subsections explains the above steps one by one.
+
+\subsection{Give a reference simulation time course  as an ISD file}
+To calculate the RSS against a simulation, Flint needs the reference time course
+as an ISD file, which must have at least two columns.
+The first column must be ``time''. The second column must be one of the output
+variables, and so are the rest, if any.
+The column name of a variable, except ``time'', in the ISD file must be prefixed
+with an appropriate UUID.
+Table~\ref{tab:columnnameformat} summarizes the column name's format for each
+modeling language.
+Each row of the ISD file represents the value of the variable at a specified
+simulation time.
+
+\begin{table}
+\centering
+\caption{Column name format in the reference ISD file} \label{tab:columnnameformat}
+\begin{tabular}{l|c|c}
+  Model file format & column name format & example \\
+  \hline
+  PHML & (Module id){\tt :}(Physical-quantity name) & {\tt b173a002-ff1e-11e6-83b6-2bde74c64e0b:x}\\
+\end{tabular}
+\end{table}
+
+Program \filename{csv2isd} helps to obtain an ISD file from the data in CSV.
+Read section~\ref{sec:csv2isd} for details about the program.
+
+\FigureOfImage{parameter-fitting-objective}{The ``Objective'' tab.}
+
+Please check ``Enable parameter fitting by the method of least-squares'' in the
+``Objective'' tab, and select the ISD file in the below form (See
+Fig.~\ref{fig:parameter-fitting-objective}).
+
+\subsection{Run a simulation batch with a parameter set}
+The way to specify a parameter set in fitting parameters is the same as running
+a simulation batch. Please go to ``Parameters'' tab, and click the ``Edit parameter
+set'' button to launch a dialog to edit parameters and their value-sets.
+
+Push the ``Run'' button once you have done with the parameter set. Then a batch
+of simulations will start. Note that some of simulations will finish before
+reaching the end of simulation time as it turns out that they cannot be the ones
+having the minimum RSS among the batch.
+
+\subsection{RSS in Detail}
+You will find the resulting RSS for each simulation in the same way for a normal
+simulation batch. Click the ``Detail'' of the job. Then a table will pop up.
+Each row of the table displays the RSS of a simulation as well as the
+corresponding value tuple of the parameters.
+
+\FigureOfImage{parameter-fitting-plot}{The line graph of a simulation with its
+  reference values.}
+
+If you proceed to show the plot of the target variable i.e. included in the ISD
+file, the reference values also are shown as a point of mark {\tt x} (see
+Fig.~\ref{fig:parameter-fitting-plot}).
+
 \section{Exporting C source code from model}
 Not only running online simulation, but also Flint can export simulation code
 as a C99 source file from a loaded model. So far it works only for pure ODE models.
@@ -711,6 +783,53 @@ The following suboptions are available:
   specify output sampling rate i.e. 1 output per {\tt n} step.
 \item[-s {\tt file}] \hfill \\
   specify output variables with {\tt file}.
+\end{description}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\chapter{Additional utility programs}
+There are additional utility programs distributed with Flint.
+They are used in a command line.
+This chapter describes how to use them.
+
+\section{isd2csv: Convert ISD to CSV format}
+
+\subsection{Synopsis}
+\begin{verbatim}
+isd2csv [-o output] [-P] [-U] [-M n] [--progress port] [path]
+isd2csv --help
+\end{verbatim}
+
+\subsection{Description}
+This program reads an ISD file of filename {\tt path}, and converts and writes
+it in the CSV format to the standard output.
+It reads the standard input if {\tt path} is omitted.
+
+\begin{description}
+\item[{\tt --output, -o}] write to file at {\tt output} instead of stdout.
+\item[{\tt --ignore-prefixes, -P}] ignore variable prefixes.
+\item[{\tt --ignore-units, -U}] ignore units.
+\item[{\tt --maximum-precision, -M}] request the maximum number of decimal
+digits to print double-precision floating-point numbers.
+\item[{\tt --progress}] send progress in percentage to given UDP port.
+\item[{\tt --help, -h}] show help.
+\end{description}
+
+\section{csv2isd: Convert CSV to ISD format}\label{sec:csv2isd}
+
+\subsection{Synopsis}
+\begin{verbatim}
+csv2isd input output
+csv2isd --help
+\end{verbatim}
+
+\subsection{Description}
+This program reads a CSV file of filename {\tt input}, and converts and writes
+it into an ISD file of filename {\tt output}.
+The first line of input must be the header naming the columns.
+
+\begin{description}
+\item[{\tt --help, -h}] show help.
 \end{description}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
