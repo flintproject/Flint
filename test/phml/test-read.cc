@@ -231,6 +231,26 @@ private:
 
 BOOST_FIXTURE_TEST_SUITE(test_read, F)
 
+BOOST_AUTO_TEST_CASE(Chicago_2003_pancreatic_beta_cell_with_SBML)
+{
+	ReadAndCheck(FLINT_EXAMPLE("Chicago_2003_pancreatic_beta-cell_with_SBML.phml"));
+}
+
+BOOST_AUTO_TEST_CASE(FSK_2008_Epi_Ventricular_Myocyte_Vesnarinon)
+{
+	ReadAndCheck(FLINT_EXAMPLE("FSK_2008_Epi_Ventricular_Myocyte_Vesnarinon.phml"));
+}
+
+BOOST_AUTO_TEST_CASE(duffing)
+{
+	ReadAndCheck(FLINT_EXAMPLE("duffing.phml"));
+}
+
+BOOST_AUTO_TEST_CASE(lorenz)
+{
+	ReadAndCheck(FLINT_EXAMPLE("lorenz.phml"));
+}
+
 BOOST_AUTO_TEST_CASE(damped_system)
 {
 	ReadAndCheck(TEST_MODELS("damped-system.phml"));
@@ -239,11 +259,6 @@ BOOST_AUTO_TEST_CASE(damped_system)
 		"77495f8880884fcbbf2991df656981be x (eq %x (vector 0.1 0 0 0))"
 	};
 	CheckIvs(ivs);
-}
-
-BOOST_AUTO_TEST_CASE(duffing)
-{
-	ReadAndCheck(TEST_MODELS("duffing.phml"));
 }
 
 BOOST_AUTO_TEST_CASE(fem1ode)

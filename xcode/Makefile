@@ -117,7 +117,7 @@ COMPONENT_PKG_FILES = \
 	$(foreach d,$(DYLIBS) $(FLINT_DYLIBS),$(call flint_frameworks_dylib_name,$(d))) \
 	$(foreach d,$(SUNDIALS_DYLIBS),$(call flint_frameworks_sundials_dylib_name,$(d))) \
 	$(foreach p,$(PROGRAMS),$(call flint_macos_program_name,$(p))) \
-	$(foreach e,$(EXAMPLE_PHML),$(call flint_example_name,$(e))) \
+	$(foreach e,$(EXAMPLE_PHML) $(EXAMPLE_ISD),$(call flint_example_name,$(e))) \
 	$(APP)/Contents/Resources/third-party-licenses.txt \
 	$(APP)/Contents/Resources/flint.icns \
 	$(APP)/Contents/Info.plist \
@@ -342,7 +342,7 @@ $(APP)/Contents/Resources/third-party-licenses.txt: tmp/ceres-solver-$(CERES_VER
 $(APP)/Contents/Resources/example: | $(APP)/Contents/Resources
 	install -d $@
 
-$(foreach e,$(EXAMPLE_PHML),$(eval $(call flint_example,$(e))))
+$(foreach e,$(EXAMPLE_PHML) $(EXAMPLE_ISD),$(eval $(call flint_example,$(e))))
 
 flint-component.pkg: component.plist $(COMPONENT_PKG_FILES)
 	pkgbuild --quiet --identifier jp.physiome.flint --component-plist $< --root root $@

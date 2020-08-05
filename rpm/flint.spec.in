@@ -94,6 +94,9 @@ rm -rf %{buildroot}
 /opt/flint/example/coupled_BVP_model.phml
 /opt/flint/example/coupled_Luo_Rudy_1991_model.phml
 /opt/flint/example/coupled_hh_model.phml
+/opt/flint/example/duffing.isd
+/opt/flint/example/duffing.phml
+/opt/flint/example/lorenz.phml
 /opt/flint/example/mackay_glass_1977_287_9_c.phml
 /opt/flint/example/ringed_Beeler_Reuter_1977_model_with_static_instance.phml
 /opt/flint/example/ringed_Luo_Rudy_1991_model_with_instance.phml

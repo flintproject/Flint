@@ -52,7 +52,7 @@ GENERATED_FILES = \
 	flint/flint.wxs \
 	flint/license.rtf \
 	flint/third-party-licenses.txt \
-	$(foreach e,$(EXAMPLE_PHML),flint/example/$(e))
+	$(foreach e,$(EXAMPLE_PHML) $(EXAMPLE_ISD),flint/example/$(e))
 
 .PHONY: all mostlyclean clean distclean download
 
@@ -164,7 +164,7 @@ flint/flint.ico: flint.ico | flint
 
 flint/flint.wxs: flint.wxs.in | flint
 	xmlstarlet ed -i '//_:Product' -t attr -n 'Version' -v $(VERSION) $< > $@.tmp
-	$(foreach e,$(EXAMPLE_PHML),$(call flint_add_example_to_wxs,$(e),$@.tmp))
+	$(foreach e,$(EXAMPLE_PHML) $(EXAMPLE_ISD),$(call flint_add_example_to_wxs,$(e),$@.tmp))
 	mv $@.tmp $@
 
 flint/license.rtf: ../doc/license.rtf | flint
@@ -218,7 +218,7 @@ flint/third-party-licenses.txt: tmp/ceres-solver-$(CERES_VERSION) tmp/czmq-$(CZM
 flint/example: | flint
 	install -d $@
 
-$(foreach e,$(EXAMPLE_PHML),$(eval $(call flint_example,$(e))))
+$(foreach e,$(EXAMPLE_PHML) $(EXAMPLE_ISD),$(eval $(call flint_example,$(e))))
 
 all.proj: all.proj.in
 	m4 \

@@ -26,6 +26,10 @@ bool init_unit_test(); // to avoid uninteresting -Wmissing-declarations
 
 using namespace flint;
 
+#define FLINT_EXAMPLE_0(dirname, basename) (#dirname "/" basename)
+#define FLINT_EXAMPLE_1(dirname, basename) FLINT_EXAMPLE_0(dirname, basename)
+#define FLINT_EXAMPLE(basename) FLINT_EXAMPLE_1(FLINT_EXAMPLE_DIR, basename)
+
 #define TEST_MODELS_0(dirname, basename) (#dirname "/" basename)
 #define TEST_MODELS_1(dirname, basename) TEST_MODELS_0(dirname, basename)
 #define TEST_MODELS(basename) TEST_MODELS_1(TEST_MODELS_DIR, basename)
