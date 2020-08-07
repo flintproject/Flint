@@ -34,7 +34,7 @@ define flint_add_example_to_wxs
 xmlstarlet ed -L \
 		-s "//_:Component[@Id='example']" -t elem -n 'File' \
 		--var file '$$prev' \
-		-i '$$file' -t attr -n "Id" -v "$(subst -,_,$(basename $(1)))" \
+		-i '$$file' -t attr -n "Id" -v "$(subst -,_,$(subst .,_,$(notdir $(1))))" \
 		-i '$$file' -t attr -n "Name" -v "$(1)" \
 		-i '$$file' -t attr -n "DiskId" -v "1" \
 		-i '$$file' -t attr -n "Source" -v "example\\$(1)" \
