@@ -12,10 +12,8 @@
     <Directory Id='TARGETDIR' Name='SourceDir'>
 
       <?if $(sys.BUILDARCH) = x64 ?>
-      <?define MsvcVariant = "vc14x_x64" ?>
       <?define ProgramFilesFolderId = "ProgramFiles64Folder" ?>
       <?elseif $(sys.BUILDARCH) = x86 ?>
-      <?define MsvcVariant = "vc14x" ?>
       <?define ProgramFilesFolderId = "ProgramFilesFolder" ?>
       <?endif ?>
 
@@ -85,13 +83,7 @@
             <File Id='libboost_system' Name='boost_system-vc142-mt-$(sys.BUILDARCH)-1_72.dll' DiskId='1' Source='boost_system-vc142-mt-$(sys.BUILDARCH)-1_72.dll' />
           </Component>
           <Component Id='wxmsw' Guid='80ff1e98-c791-11e6-9786-dfa231e0a1a7'>
-            <File Id='wxbase313u' Name='wxbase313u_$(var.MsvcVariant).dll' DiskId='1' Source='wxbase313u_$(var.MsvcVariant).dll' />
-            <File Id='wxbase313u_net' Name='wxbase313u_net_$(var.MsvcVariant).dll' DiskId='1' Source='wxbase313u_net_$(var.MsvcVariant).dll' />
-            <File Id='wxbase313u_xml' Name='wxbase313u_xml_$(var.MsvcVariant).dll' DiskId='1' Source='wxbase313u_xml_$(var.MsvcVariant).dll' />
-            <File Id='wxmsw313u_adv' Name='wxmsw313u_adv_$(var.MsvcVariant).dll' DiskId='1' Source='wxmsw313u_adv_$(var.MsvcVariant).dll' />
-            <File Id='wxmsw313u_aui' Name='wxmsw313u_aui_$(var.MsvcVariant).dll' DiskId='1' Source='wxmsw313u_aui_$(var.MsvcVariant).dll' />
-            <File Id='wxmsw313u_core' Name='wxmsw313u_core_$(var.MsvcVariant).dll' DiskId='1' Source='wxmsw313u_core_$(var.MsvcVariant).dll' />
-            <File Id='wxmsw313u_propgrid' Name='wxmsw313u_propgrid_$(var.MsvcVariant).dll' DiskId='1' Source='wxmsw313u_propgrid_$(var.MsvcVariant).dll' />
+            <!-- This element works as a place holder for entries of wxWidgets' DLLs -->
           </Component>
           <Component Id='ceres' Guid='f54f071a-45d4-11e7-b347-bb7df618a1d5'>
             <File Id='libceres' Name='ceres.dll' DiskId='1' Source='ceres.dll' />

@@ -22,6 +22,7 @@
     <SOSLIB_VERSION>__SOSLIB_VERSION</SOSLIB_VERSION>
     <SQLITE_VSTR>__SQLITE_VSTR</SQLITE_VSTR>
     <SUNDIALS_VERSION>__SUNDIALS_VERSION</SUNDIALS_VERSION>
+    <WXWIDGETS_CODE>__WXWIDGETS_CODE</WXWIDGETS_CODE>
     <ZEROMQ_VERSION>__ZEROMQ_VERSION</ZEROMQ_VERSION>
 
   </PropertyGroup>
@@ -250,11 +251,11 @@
       <DLLFiles Include='opt\lib\boost_program_options-*.dll'/>
       <DLLFiles Include='opt\lib\boost_system-*.dll'/>
       <DLLFiles Include='opt\lib\boost_unit_test_framework-*.dll'/>
-      <wxMSWReleaseDLLFiles Include='release-dll\**\wxbase313u_*.dll'/>
-      <wxMSWReleaseDLLFiles Include='release-dll\**\wxmsw313u_adv_*.dll'/>
-      <wxMSWReleaseDLLFiles Include='release-dll\**\wxmsw313u_aui_*.dll'/>
-      <wxMSWReleaseDLLFiles Include='release-dll\**\wxmsw313u_core_*.dll'/>
-      <wxMSWReleaseDLLFiles Include='release-dll\**\wxmsw313u_propgrid_*.dll'/>
+      <wxMSWReleaseDLLFiles Include='release-dll\**\wxbase$(WXWIDGETS_CODE)u_*.dll'/>
+      <wxMSWReleaseDLLFiles Include='release-dll\**\wxmsw$(WXWIDGETS_CODE)u_adv_*.dll'/>
+      <wxMSWReleaseDLLFiles Include='release-dll\**\wxmsw$(WXWIDGETS_CODE)u_aui_*.dll'/>
+      <wxMSWReleaseDLLFiles Include='release-dll\**\wxmsw$(WXWIDGETS_CODE)u_core_*.dll'/>
+      <wxMSWReleaseDLLFiles Include='release-dll\**\wxmsw$(WXWIDGETS_CODE)u_propgrid_*.dll'/>
       <ExeFiles Include='csv2isd.exe;flint.exe;flint-cli.exe;flint-exec.exe;flint-lodbg.exe;flint-run.exe;flint-tr.exe;isd2csv.exe;isdbswap.exe;isdcut.exe;isddiff.exe;isdhead.exe;isdls.exe;isdmerge.exe;isdrand.exe;isdsort.exe;isdstrip.exe;isdwc.exe'/>
     </ItemGroup>
     <MakeDir Directories='flint'/>
