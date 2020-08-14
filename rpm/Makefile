@@ -168,7 +168,7 @@ Flint-$(VERSION)-$(DIST).$(ARCH):
 Flint-$(VERSION)-$(DIST).$(ARCH)/README.org: data/README.org | Flint-$(VERSION)-$(DIST).$(ARCH)
 	install -p -m 0644 $< $@
 
-Flint-$(VERSION)-$(DIST).$(ARCH).zip: $(DIST_FILES) Flint-$(VERSION)-$(DIST).$(ARCH)/README
+Flint-$(VERSION)-$(DIST).$(ARCH).zip: $(DIST_FILES) Flint-$(VERSION)-$(DIST).$(ARCH)/README.org
 	zip -FS -r $@ Flint-$(VERSION)-$(DIST).$(ARCH)
 
 $(foreach d,$(DEPS),$(eval $(call flint_archive,$(d))))
