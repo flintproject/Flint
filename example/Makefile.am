@@ -8,6 +8,9 @@ example_DATA = \
 	Izhikevich_2003_neuron_model.phml \
 	Rybak_2006_with_static_instance_and_multiple_input.phml \
 	bvp_pulse.phml \
+	duffing.isd \
+	duffint.phml \
+	lorenz.phml \
 	coupled_BVP_model.phml \
 	coupled_Luo_Rudy_1991_model.phml \
 	coupled_hh_model.phml \
