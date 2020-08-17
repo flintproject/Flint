@@ -6,6 +6,9 @@ Flint is a simulator for biological and physiological models written in
 Originally developed as part of an in silico platform of
 [Physiome](https://en.wikipedia.org/wiki/Physiome), now it aims to provide an
 open, language-agnostic resource for reproducible simulation studies.
+While existing simultion tools, e.g. [COPASI](http://copasi.org/) and
+[OpenCOR](https://opencor.ws/), are great for simulation for models in a
+specific language, you may find Flint useful if searching a unified solution.
 
 Flint has the following features:
 
