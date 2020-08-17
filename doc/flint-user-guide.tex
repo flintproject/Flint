@@ -64,6 +64,38 @@ users would like to know when using \Flint.
 
 \chapter{Introduction}
 
+Understanding dynamics of living organisms often requires a mathematical model
+that describes the hypotheses to be tested. It is widely recognized that the
+class of ordinary differential equations (ODE) is suitable for describing the
+time course of variables in a deterministic system, stemming from a simple
+assumption about the rate of their change.
+One of such examples is the chemical reaction accelerated by an enzyme
+following the Michaelis-Menten kinetics; another is the action potential of
+cardiac cells driven by modulation of ion channels. By a virtue of
+differential equations, these celullar models can be integrated into the one of
+tissue or organ level. In fact, the way to integrate a computational model of
+the physiological functions of the whole individual has been explored since the
+end of the last century, under the name physiome \cite{leem_perspectives_2016}.
+
+It is, however, technically challenging for practitioners in the field of
+biology or physiology to express their hypotheses on biological organisms in a
+precise system of ODEs. In order to make it easier to edit a model in problem
+that implicitly specify the ODEs, several domain-specific languages have
+been proposed and standardized, including CellML \cite{CellML}, the
+Physiological Hierarchy Markup Language (PHML) reported by
+\cite{PHML}, and the Systems Biology Markup Language (SBML) reported
+by \cite{SBML}. Although the design principle of each modeling
+language varies, computational analysis of any model in these languages
+comprises the shared set of procedures based on the theory of differential
+equations and dynamical systems.
+
+Flint is a simulator software for models written in the above languages, and
+aims to provide an open, language-agnostic resource for reproducible simulation
+studies. The simulator allows users to transform a given model into a system of
+ODEs and solve it in a numerical manner. It also supports stochastic
+differential equations (SDE), a non-deterministic extension of ODEs, which makes
+it possible to involve random elements, e.g. noises, in the dynamics.
+
 \section{Brief summary about \Flint}
 \Flint~is new implementation of Flint 1.x, \Tagline.
 Flint can run simulations of multi-level physiological models written in PHML.
@@ -74,9 +106,9 @@ Likewise, Flint can handle CellML and SBML as well as SBML-PHML hybrid models.
 \subsection{Markup languages}
 \Flint\ supports the following standard languages of models:
 \begin{itemize}
-\item PHML \cite{PHML} (including its precursor ISML \cite{ISML})
-\item SBML \cite{SBML}
-\item CellML \cite{CellML} (supported as an experimental feature)
+\item PHML (including its precursor ISML \cite{ISML})
+\item SBML
+\item CellML
 \end{itemize}
 
 \subsection{Available numerical algorithms for ordinary differential equations}
@@ -89,7 +121,7 @@ Likewise, Flint can handle CellML and SBML as well as SBML-PHML hybrid models.
 \end{itemize}
 
 \subsection{Available numerical algorithms for stochastic differential equations}
-\Flint\ also experimentally supports the following algorithms to solve SDEs
+\Flint\ also supports the following algorithms to solve SDEs
 numerically:
 \begin{itemize}
 \item Euler-Maruyama method \cite{Allen2007}

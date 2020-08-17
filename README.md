@@ -2,13 +2,19 @@ Flint
 =====
 
 Flint is a simulator for biological and physiological models written in
-CellML, PHML, and/or SBML.
+[CellML](https://www.cellml.org/), PHML, and/or [SBML](https://www.sbml.org/).
+Originally developed as part of an in silico platform of
+[Physiome](https://en.wikipedia.org/wiki/Physiome), now it aims to provide an
+open, language-agnostic resource for reproducible simulation studies.
+
+Flint has the following features:
 
 * It can numerically solve ordinary or stochastic differential equations derived
   from models.
 * It runs on Windows, macOS, Linux, etc.
 * It provides fully-featured graphical user interface with simplified
   command-line interface.
+* It is open source under the MIT license.
 
 Download
 --------
