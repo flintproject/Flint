@@ -17,17 +17,17 @@ authors:
 affiliations:
  - name: Graduate School of Medicine, Yamaguchi University
    index: 1
-date: 3 Jul 2020
+date: 17 Aug 2020
 bibliography: paper.bib
 ---
 
 # Introduction
 
-Understanding dynamics of living organisms often requires a rigorous
-mathematical model that describes the hypotheses to be tested. It is
-widely recognized that the class of ordinary differential equations (ODE) is
-suitable for describing the time course of variables in a deterministic system,
-stemming from a simple assumption about the rate of their change.
+Understanding dynamics of living organisms often requires a mathematical model
+that describes the hypotheses to be tested. It is widely recognized that the
+class of ordinary differential equations (ODE) is suitable for describing the
+time course of variables in a deterministic system, stemming from a simple
+assumption about the rate of their change.
 One of such examples is the chemical reaction accelerated by an enzyme
 following the Michaelis-Menten kinetics; another is the action potential of
 cardiac cells driven by modulation of ion channels. By a virtue of
@@ -58,15 +58,15 @@ The development of `Flint` has been tied in with the physiome.jp project
 [@nomura_toward_2010], which aims to establish a computational platform for
 multiscale in silico studies on physiome. As part of the platform, `Flint`
 complements the features of an authoring software PhysioDesigner for PHML
-[@asai_multilevel_2012], while they are deliberately separated programs. Driven
+[@asai_multilevel_2012], while they are deliberately separate programs. Driven
 by demands from the project's collaborators, we have enhanced `Flint` to support
 different modeling standards. For example, in order to leverage a published SBML
 model of subcellular signaling to build tissue or higher-level physiological
 ones, there is a technical proposal embedding it in PHML
 [@asai_versatile_2014]. Simulating such models is a reason for adopting `Flint`
 even when other state-of-the-art tools are publicly available, e.g. COPASI
-[@hoops_copasicomplex_2006], focusing on its own format. It is `Flint`'s main
-contribution to provide an open, language-agnostic resource for reproducible
+[@hoops_copasicomplex_2006] that focuses on its own format. `Flint`'s main
+contribution is to provide an open, language-agnostic resource for reproducible
 simulation studies.
 
 # Implementation
@@ -83,20 +83,20 @@ of displaying the output to gnuplot [@gnuplot_2017].
 
 ## Numerical algorithms to solve a system of differential equations
 
-`Flint` compiles a model written in a supported XML language into bytecode of
-simulation, and then evaluates it with particular initial values. Our current
-implementation provides three algorithms for solving initial-value problems for
-ODEs numerically: the forward Euler method, the Runge-Kutta 4th-order method,
-and the additive Runge-Kutta scheme implemented in the SUNDIALS library
-[@hindmarsh2005sundials]. The Euler-Maruyama method is the one for solving SDEs
-[@higham_algorithmic_2001].
+`Flint` compiles a model written in a supported XML language into internal
+bytecode for simulation, and then evaluates it with particular initial values.
+Our current implementation provides three algorithms for solving initial-value
+problems for ODEs numerically: the forward Euler method, the Runge-Kutta
+4th-order method, and the adaptive-step additive Runge-Kutta scheme implemented
+in the SUNDIALS library [@hindmarsh2005sundials]. The Euler-Maruyama method is
+used for solving SDEs [@higham_algorithmic_2001].
 
 ## Multithreading for parallel simulation
 
 Solving an initial-value problem numerically is only the preliminary step to
 analyze the dynamics of the model. Further investigation often asks for the
 different values of initial values or parameters. For instance, hypotheses on
-biological switches has been stated in terms of bifurcation, and demonstrated by
+biological switches has been stated in terms of bifurcations, and demonstrated by
 a series of simulations changing the values of parameters, in both deterministic
 [@fussmann_crossing_2000] and stochastic [@samoilov_stochastic_2005] paradigms.
 `Flint` employs multithreading to increase the number of simulations running in
@@ -123,10 +123,13 @@ running jobs for the grid search:
 Unlike existing heuristics for solving non-linear least-squares, the above
 algorithm can find one of global minima, provided that the input grid contains
 it. It is also easy to benefit from parallel computing to reduce processing
-time. Users can define the range of each parameter as well as the way to
-enumerate grid points, e.g. by a pseudo random number generator. The feature
-will help researchers gain insight about a subset of parameter values of
-biological/physiological interest at an early stage of modeling.
+time. The necessary resource to be shared in parallel execution is only $m$ in
+Fig. 1, namely a double floating-point number with its mutex, which means
+the overhead is marginal. Users can define the range of each parameter as well
+as the way to enumerate grid points, e.g. by a pseudo random number
+generator. The feature will help researchers gain insight about a subset of
+parameter values of biological/physiological interest at an early stage of
+modeling.
 
 # Acknowledgements
 
