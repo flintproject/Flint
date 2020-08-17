@@ -5,7 +5,15 @@
 We design Flint to be portable.  This document gives some hints for porting
 Flint to a not-yet-unsupported OS or platform.
 
-* Prerequisite
+* Prerequisites
+
+** Run-time prerequisites
+
+- Gnuplot 5.0 or higher must be installed as Flint calls it for drawing line
+  graphs of simulation output.
+  http://www.gnuplot.info/
+
+** Compile-time prerequisites
 
 You need autotools for building Flint.
 pkg-config is helpful but not required.
