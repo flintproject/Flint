@@ -31,13 +31,11 @@ private:
 	int ReadExponent(const char *p, Token *token);
 	int ReadDenominatorOfRational(const char *p, Token *token);
 
-	const char *input_;
 	const char *point_;
 };
 
 Impl::Impl(const char *input)
-	: input_(input)
-	, point_(input)
+	: point_(input)
 {
 }
 

@@ -27,8 +27,7 @@ namespace {
 class Formulator {
 public:
 	explicit Formulator(sqlite3 *db)
-		: db_(db)
-		, driver_(db, "INSERT INTO channels VALUES (?, ?)")
+		: driver_(db, "INSERT INTO channels VALUES (?, ?)")
 		, tsipcforms_("tsipcforms", db)
 		, i_(0)
 	{}
@@ -60,7 +59,6 @@ public:
 	}
 
 private:
-	sqlite3 *db_;
 	db::StatementDriver driver_;
 	db::EqInserter tsipcforms_;
 	int i_;

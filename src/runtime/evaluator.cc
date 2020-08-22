@@ -83,9 +83,8 @@ public:
 	Executor(const Executor &) = delete;
 	Executor &operator=(const Executor &) = delete;
 
-	explicit Executor(size_t layer_size)
-	: layer_size_(layer_size),
-	  data_(nullptr),
+	Executor()
+	: data_(nullptr),
 	  ir_(nullptr),
 	  tmp_(nullptr),
 	  target_(nullptr),
@@ -172,7 +171,6 @@ public:
 	}
 
 private:
-	size_t layer_size_;
 	double *data_;
 	intptr_t *ir_;
 	double *tmp_;
@@ -211,7 +209,7 @@ bool Evaluator::Evaluate(sqlite3 *db,
 						 const TimeseriesVector *tv,
 						 std::vector<double> *data)
 {
-	std::unique_ptr<Executor> executor(new Executor(layer_size_));
+	std::unique_ptr<Executor> executor(new Executor);
 	std::unique_ptr<Processor> processor(new Processor(&layout_, layer_size_, bytecode, tv));
 
 	// arrange data space

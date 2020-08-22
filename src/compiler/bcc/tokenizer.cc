@@ -42,13 +42,11 @@ private:
 	int ReadLabel(Token *token);
 	int ReadFunction(Token *token);
 
-	const char *input_;
 	const char *point_;
 };
 
 TokenizerImpl::TokenizerImpl(const char *input)
-	: input_(input)
-	, point_(input)
+	: point_(input)
 {
 	assert(input);
 }
