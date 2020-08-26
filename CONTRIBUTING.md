@@ -10,14 +10,14 @@ Goals
 
 We value the following features of software in terms of making Flint a practical
 tool.
-* Correctness.
-  Incorrect simulation serves no purpose.
+* Accuracy.
+  Inaccurate simulation serves no purpose.
 * Simplicity.
   A comprehensible interface, rather than comprehensive, is what users really need.
 * Open source and open standard.
   Closed or proprietary part of simulation causes irreproducibility.
 * Portability.
-  A simulator should run on computers owned by young students, who later become researchers.
+  A simulator should run on computers owned by students, who later become researchers.
 * Sustainability.
   No one want to use a simulator that will be unmaintained once its grant finishes.
 
@@ -35,9 +35,9 @@ Practice
 --------
 
 The following general rules apply for our collaborative development.
-* Send a patch on <https://github.com/flintproject/Flint/pulls>.
+* Open a pull request on <https://github.com/flintproject/Flint/pulls>.
 * Run tests before submitting a pull request.
-* Augment tests with any functional change.
+* Augment tests so that any functional changes made are also tested.
 * Follow the master branch of the git repository, on which next release is based.
 * The release cycle is intended to be six months.
 * Optionally, subscribe the official mailing list <flint-discuss@googlegroups.com>.
