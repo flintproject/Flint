@@ -40,4 +40,8 @@ The following general rules apply for our collaborative development.
 * Augment tests so that any functional changes made are also tested.
 * Follow the master branch of the git repository, on which next release is based.
 * The release cycle is intended to be six months.
-* Optionally, subscribe the official mailing list <flint-discuss@googlegroups.com>.
+* Optionally, subscribe the official mailing list at
+  <https://groups.google.com/g/flint-discuss>.
+  Read <https://support.google.com/groups/answer/1067205> about how to join it.
+  You can browse its forum without any Google account:
+  <https://groups.google.com/forum/#!forum/flint-discuss>.

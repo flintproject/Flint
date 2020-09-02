@@ -37,8 +37,8 @@ Please feel free to submit an issue on
 for bugs or feature requests that you come up with when using Flint.
 For any question or suggestion about Flint, send an email to
 [the author](mailto:tabe@fixedpoint.jp "Takeshi Abe")
-or to [the official mailing list](mailto:flint-discuss@googlegroups.com) if you
-prefer open, transparent communication.
+or to [the official mailing list](https://groups.google.com/g/flint-discuss) if
+you prefer open, transparent communication.
 
 Hacking
 -------
