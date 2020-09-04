@@ -23,15 +23,16 @@ bibliography: paper.bib
 
 # Introduction
 
-Understanding dynamics of living organisms often requires a mathematical model
+Understanding the dynamics of living organisms often requires a mathematical model
 that describes the hypotheses to be tested. It is widely recognized that the
 class of ordinary differential equations (ODE) is suitable for describing the
 time course of variables in a deterministic system, stemming from a simple
 assumption about the rate of their change.
-One of such examples is the chemical reaction accelerated by an enzyme
-following the Michaelis-Menten kinetics; another is the action potential of
+One such example is the chemical reaction accelerated by an enzyme
+following Michaelis-Menten kinetics; another is the action potential of
 cardiac cells driven by modulation of ion channels. By a virtue of
-differential equations, these celullar models can be integrated into the one of
+differential equations, these celullar models can be integrated into
+models at the
 tissue or organ level. In fact, ways to integrate a computational model of
 the physiological functions of the whole individual have been explored since the
 end of the last century, under the name physiome [@leem_perspectives_2016].
