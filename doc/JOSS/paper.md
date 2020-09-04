@@ -32,31 +32,31 @@ One of such examples is the chemical reaction accelerated by an enzyme
 following the Michaelis-Menten kinetics; another is the action potential of
 cardiac cells driven by modulation of ion channels. By a virtue of
 differential equations, these celullar models can be integrated into the one of
-tissue or organ level. In fact, the way to integrate a computational model of
-the physiological functions of the whole individual has been explored since the
+tissue or organ level. In fact, ways to integrate a computational model of
+the physiological functions of the whole individual have been explored since the
 end of the last century, under the name physiome [@leem_perspectives_2016].
 
 It is, however, technically challenging for practitioners in the field of
 biology or physiology to express their hypotheses on biological organisms in a
-precise system of ODEs. In order to make it easier to edit a model in problem
+precise system of ODEs. In order to make it easier to edit a model in a problem
 that implicitly specify the ODEs, several domain-specific languages have
 been proposed and standardized, including CellML [@lloyd_cellml_2004], the
-Physiological Hierarchy Markup Language (PHML) reported by
-[@asai_databases_2015], and the Systems Biology Markup Language (SBML) reported
-by [@hucka_systems_2003]. Although the design principle of each modeling
-language varies, computational analysis of any model in these languages
-comprises the shared set of procedures based on the theory of differential
+Physiological Hierarchy Markup Language (PHML) devised by Asai and colleagues
+[@asai_databases_2015], and the Systems Biology Markup Language (SBML) devised
+by Hucka and colleagues [@hucka_systems_2003]. Although the design principles of each modeling
+language vary, computational analysis of any model in these languages
+comprises a shared set of procedures based on the theory of differential
 equations and dynamical systems.
 
 In this work we introduce `Flint`, a simulator software for models written in
 the above languages. The simulator allows users to transform a given model into
 a system of ODEs and solve it in a numerical manner. It also supports stochastic
 differential equations (SDE), a non-deterministic extension of ODEs, which makes
-it possible to involve random elements, e.g. noises, in the dynamics.
+it possible to involve random elements, e.g. noise, in the dynamics.
 
 The development of `Flint` has been tied in with the physiome.jp project
 [@nomura_toward_2010], which aims to establish a computational platform for
-multiscale in silico studies on physiome. As part of the platform, `Flint`
+multiscale _in silico_ studies on the physiome. As part of the platform, `Flint`
 complements the features of an authoring software PhysioDesigner for PHML
 [@asai_multilevel_2012], while they are deliberately separate programs. Driven
 by demands from the project's collaborators, we have enhanced `Flint` to support
@@ -78,7 +78,7 @@ as Microsoft Windows, Apple's macOS, and Linux with GTK. For the simplest usage,
 its graphical user interface runs a simulation of a given model with only two
 steps; open the model file, and select the Run button. Running simulations at the
 command line is also supported, although only a limited number of the functions
-are available in the command line interface. The simulator delegate the task
+are available in the command line interface. The simulator delegates the task
 of displaying the output to gnuplot [@gnuplot_2017].
 
 ## Numerical algorithms to solve a system of differential equations
