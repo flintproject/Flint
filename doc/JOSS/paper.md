@@ -40,7 +40,7 @@ end of the last century, under the name physiome [@leem_perspectives_2016].
 It is, however, technically challenging for practitioners in the field of
 biology or physiology to express their hypotheses on biological organisms in a
 precise system of ODEs. In order to make it easier to edit a model in a problem
-that implicitly specify the ODEs, several domain-specific languages have
+that implicitly specifies the ODEs, several domain-specific languages have
 been proposed and standardized, including CellML [@lloyd_cellml_2004], the
 Physiological Hierarchy Markup Language (PHML) devised by Asai and colleagues
 [@asai_databases_2015], and the Systems Biology Markup Language (SBML) devised
