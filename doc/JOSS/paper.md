@@ -30,7 +30,7 @@ time course of variables in a deterministic system, stemming from a simple
 assumption about the rate of their change.
 One such example is the chemical reaction accelerated by an enzyme
 following Michaelis-Menten kinetics; another is the action potential of
-cardiac cells driven by modulation of ion channels. By a virtue of
+cardiac cells driven by modulation of ion channels. By virtue of
 differential equations, these celullar models can be integrated into
 models at the
 tissue or organ level. In fact, ways to integrate a computational model of
@@ -40,7 +40,7 @@ end of the last century, under the name physiome [@leem_perspectives_2016].
 It is, however, technically challenging for practitioners in the field of
 biology or physiology to express their hypotheses on biological organisms in a
 precise system of ODEs. In order to make it easier to edit a model in a problem
-that implicitly specify the ODEs, several domain-specific languages have
+that implicitly specifies the ODEs, several domain-specific languages have
 been proposed and standardized, including CellML [@lloyd_cellml_2004], the
 Physiological Hierarchy Markup Language (PHML) devised by Asai and colleagues
 [@asai_databases_2015], and the Systems Biology Markup Language (SBML) devised
@@ -78,7 +78,7 @@ simulation studies.
 as Microsoft Windows, Apple's macOS, and Linux with GTK. For the simplest usage,
 its graphical user interface runs a simulation of a given model with only two
 steps; open the model file, and select the Run button. Running simulations at the
-command line is also supported, although only a limited number of the functions
+command line is also supported, although only a limited number of functions
 are available in the command line interface. The simulator delegates the task
 of displaying the output to gnuplot [@gnuplot_2017].
 
@@ -94,21 +94,21 @@ used for solving SDEs [@higham_algorithmic_2001].
 
 ## Multithreading for parallel simulation
 
-Solving an initial-value problem numerically is only the preliminary step to
-analyze the dynamics of the model. Further investigation often asks for the
+Solving an initial-value problem numerically is only the preliminary step towards
+a full analysis of the dynamics of the model. Further investigation often asks for
 different values of initial values or parameters. For instance, hypotheses on
-biological switches has been stated in terms of bifurcations, and demonstrated by
-a series of simulations changing the values of parameters, in both deterministic
+biological switches have been stated in terms of dynamical bifurcations, and demonstrated by
+a series of simulations over changing values of parameters, in both deterministic
 [@fussmann_crossing_2000] and stochastic [@samoilov_stochastic_2005] paradigms.
 `Flint` employs multithreading to increase the number of simulations running in
 parallel. The parallelization is automatically performed when the user assigns
 multiple values to some parameter of a model for simulation, and honors the
-number of available CPU cores, which can be adjusted in the preference.
+number of available CPU cores, which can be adjusted in the preferences.
 
 ## Grid search algorithm for parameter fitting
 
 The larger the number of variables and parameters in a given model are, the more
-resource-consuming its simulation becomes. It is also the case for estimating
+resource-consuming its simulation becomes. This is also the case when estimating
 plausible values of parameters consistent with the prior knowledge on the
 behavior of the underlying system. Taking residual sum of squares (RSS) as a
 measure of the goodness of fit, estimation of parameter values for ODEs turns
@@ -122,13 +122,13 @@ running jobs for the grid search:
 ![An algorithm for grid search to fit parameter values.\label{fig:algorithm}](algorithm.png)
 
 Unlike existing heuristics for solving non-linear least-squares, the above
-algorithm can find one of global minima, provided that the input grid contains
+algorithm can find a global minimum, provided that the input grid contains
 it. It is also easy to benefit from parallel computing to reduce processing
-time. The necessary resource to be shared in parallel execution is only $m$ in
+time. The only shared resource among parallel processes is $m$ in
 Fig. 1, namely a double floating-point number with its mutex, which means
 the overhead is marginal. Users can define the range of each parameter as well
-as the way to enumerate grid points, e.g. by a pseudo random number
-generator. The feature will help researchers gain insight about a subset of
+as the way to enumerate grid points, e.g. by a pseudorandom number
+generator. This feature will help researchers gain insight about a subset of
 parameter values of biological/physiological interest at an early stage of
 modeling.
 
