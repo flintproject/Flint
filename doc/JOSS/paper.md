@@ -44,7 +44,7 @@ that implicitly specifies the ODEs, several domain-specific languages have
 been proposed and standardized, including CellML [@lloyd_cellml_2004], the
 Physiological Hierarchy Markup Language (PHML) devised by Asai and colleagues
 [@asai_databases_2015], and the Systems Biology Markup Language (SBML) devised
-by Hucka and colleagues [@hucka_systems_2003]. Although the design principles of each modeling
+by @hucka_systems_2003. Although the design principles of each modeling
 language vary, computational analysis of any model in these languages
 comprises a shared set of procedures based on the theory of differential
 equations and dynamical systems.
@@ -59,14 +59,14 @@ The development of `Flint` has been tied in with the physiome.jp project
 [@nomura_toward_2010], which aims to establish a computational platform for
 multiscale _in silico_ studies on the physiome. As part of the platform, `Flint`
 complements the features of an authoring software PhysioDesigner for PHML
-[@asai_multilevel_2012], while they are deliberately separate programs. Driven
+[@asai_multilevel_2012], though they are deliberately separate programs. Driven
 by demands from the project's collaborators, we have enhanced `Flint` to support
 different modeling standards. For example, in order to leverage a published SBML
 model of subcellular signaling to build tissue or higher-level physiological
 ones, there is a technical proposal embedding it in PHML
 [@asai_versatile_2014]. Simulating such models is a reason for adopting `Flint`
-even when other state-of-the-art tools are publicly available, e.g. COPASI
-[@hoops_copasicomplex_2006] that focuses on its own format. `Flint`'s main
+even when other state-of-the-art tools are publicly available, e.g., COPASI
+[@hoops_copasicomplex_2006], which focuses on its own format. `Flint`'s main
 contribution is to provide an open, language-agnostic resource for reproducible
 simulation studies.
 
@@ -75,9 +75,9 @@ simulation studies.
 ## User interface
 
 `Flint` is a standalone program that runs on consumer desktop environments such
-as Microsoft Windows, Apple's macOS, and Linux with GTK. For the simplest usage,
+as Microsoft Windows, Apple macOS, and Linux with GTK. For the simplest usage,
 its graphical user interface runs a simulation of a given model with only two
-steps; open the model file, and select the Run button. Running simulations at the
+steps: open the model file, and select the Run button. Running simulations at the
 command line is also supported, although only a limited number of functions
 are available in the command line interface. The simulator delegates the task
 of displaying the output to gnuplot [@gnuplot_2017].
@@ -94,22 +94,22 @@ used for solving SDEs [@higham_algorithmic_2001].
 
 ## Multithreading for parallel simulation
 
-Solving an initial-value problem numerically is only the preliminary step towards
+Solving an initial-value problem numerically is only the first step towards
 a full analysis of the dynamics of the model. Further investigation often asks for
 different values of initial values or parameters. For instance, hypotheses on
 biological switches have been stated in terms of dynamical bifurcations, and demonstrated by
 a series of simulations over changing values of parameters, in both deterministic
 [@fussmann_crossing_2000] and stochastic [@samoilov_stochastic_2005] paradigms.
-`Flint` employs multithreading to increase the number of simulations running in
-parallel. The parallelization is automatically performed when the user assigns
+`Flint` employs multithreading to increase the number of simulations that run in
+parallel. Parallelization is automatically performed when the user assigns
 multiple values to some parameter of a model for simulation, and honors the
 number of available CPU cores, which can be adjusted in the preferences.
 
 ## Grid search algorithm for parameter fitting
 
-The larger the number of variables and parameters in a given model are, the more
+The larger the number of variables and parameters in a given model, the more
 resource-consuming its simulation becomes. This is also the case when estimating
-plausible values of parameters consistent with the prior knowledge on the
+plausible values of parameters consistent with prior knowledge on the
 behavior of the underlying system. Taking residual sum of squares (RSS) as a
 measure of the goodness of fit, estimation of parameter values for ODEs turns
 into a non-linear least-squares problem [@IMM2004-03215]. `Flint` deals with the
@@ -127,7 +127,7 @@ it. It is also easy to benefit from parallel computing to reduce processing
 time. The only shared resource among parallel processes is $m$ in
 Fig. 1, namely a double floating-point number with its mutex, which means
 the overhead is marginal. Users can define the range of each parameter as well
-as the way to enumerate grid points, e.g. by a pseudorandom number
+as the way to enumerate grid points, e.g., by a pseudorandom number
 generator. This feature will help researchers gain insight about a subset of
 parameter values of biological/physiological interest at an early stage of
 modeling.
