@@ -1,6 +1,9 @@
 Flint
 =====
 
+[![Build Status](https://travis-ci.org/flintproject/Flint.svg?branch=master)](https://travis-ci.org/flintproject/Flint)
+[![DOI](http://joss.theoj.org/papers/10.21105/joss.02331/status.svg)](https://doi.org/10.21105/joss.02331)
+
 Flint is a simulator for biological and physiological models written in
 [CellML](https://www.cellml.org/), PHML, and/or [SBML](https://www.sbml.org/).
 Originally developed as part of an in silico platform of
