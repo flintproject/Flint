@@ -1,0 +1,2037 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Flint 2.4: The User Guide</title>
+<meta name="generator" content="Org mode" />
+<meta name="author" content="Takeshi Abe" />
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px #eee;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: auto;
+    padding-top: 1.2em;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    background-color: white;
+    top: -10px;
+    right: 10px;
+    padding: 3px;
+    border: 1px solid black;
+  }
+  pre.src:hover:before { display: inline;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .equation-container {
+    display: table;
+    text-align: center;
+    width: 100%;
+  }
+  .equation {
+    vertical-align: middle;
+  }
+  .equation-label {
+    display: table-cell;
+    text-align: right;
+    vertical-align: middle;
+  }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { width: 90%; }
+  /*]]>*/-->
+</style>
+<script type="text/javascript">
+// @license magnet:?xt=urn:btih:e95b018ef3580986a04669f1b5879592219e2a7a&dn=public-domain.txt Public Domain
+<!--/*--><![CDATA[/*><!--*/
+     function CodeHighlightOn(elem, id)
+     {
+       var target = document.getElementById(id);
+       if(null != target) {
+         elem.classList.add("code-highlighted");
+         target.classList.add("code-highlighted");
+       }
+     }
+     function CodeHighlightOff(elem, id)
+     {
+       var target = document.getElementById(id);
+       if(null != target) {
+         elem.classList.remove("code-highlighted");
+         target.classList.remove("code-highlighted");
+       }
+     }
+    /*]]>*///-->
+// @license-end
+</script>
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        displayAlign: "center",
+        displayIndent: "0em",
+
+        "HTML-CSS": { scale: 100,
+                        linebreaks: { automatic: "false" },
+                        webFont: "TeX"
+                       },
+        SVG: {scale: 100,
+              linebreaks: { automatic: "false" },
+              font: "TeX"},
+        NativeMML: {scale: 100},
+        TeX: { equationNumbers: {autoNumber: "AMS"},
+               MultLineWidth: "85%",
+               TagSide: "right",
+               TagIndent: ".8em"
+             }
+});
+</script>
+<script type="text/javascript"
+        src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS_HTML"></script>
+</head>
+<body>
+<div id="content">
+<h1 class="title">Flint 2.4: The User Guide</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org385497d">1. Introduction</a>
+<ul>
+<li><a href="#org5859be8">1.1. Brief summary about Flint 2.4</a>
+<ul>
+<li><a href="#org2da25ec">1.1.1. Markup languages</a></li>
+<li><a href="#org9e9079c">1.1.2. Available numerical algorithms for ordinary differential equations</a></li>
+<li><a href="#orga643d3e">1.1.3. Available numerical algorithms for stochastic differential equations</a></li>
+</ul>
+</li>
+<li><a href="#org3c53cba">1.2. Notation</a></li>
+</ul>
+</li>
+<li><a href="#orgeb72f39">2. Getting started</a>
+<ul>
+<li><a href="#orgdbd8a6e">2.1. Supported platforms</a></li>
+<li><a href="#org78bfc6c">2.2. Download and install Flint 2.4</a>
+<ul>
+<li><a href="#orga71391d">2.2.1. On Windows</a></li>
+<li><a href="#org0ab1e20">2.2.2. On macOS</a></li>
+<li><a href="#org6d842a4">2.2.3. On CentOS/RHEL</a></li>
+<li><a href="#org551e8ce">2.2.4. On other supported OSes</a></li>
+</ul>
+</li>
+<li><a href="#org7709b35">2.3. Try your first simulation with Flint 2.4</a></li>
+</ul>
+</li>
+<li><a href="#orge0f2ecd">3. Graphical User Interface</a>
+<ul>
+<li><a href="#orgdf4d421">3.1. Launching Flint</a></li>
+<li><a href="#org09d041a">3.2. Quitting Flint</a></li>
+<li><a href="#orgdf9953c">3.3. Loading models</a></li>
+<li><a href="#org9e2ffc7">3.4. Configuring simulation tasks</a>
+<ul>
+<li><a href="#orga544492">3.4.1. Integration method</a></li>
+<li><a href="#orgf1102f0">3.4.2. Simulation Length</a></li>
+<li><a href="#org685e880">3.4.3. Simulation Time Step</a></li>
+<li><a href="#org7011e32">3.4.4. Starting from</a></li>
+<li><a href="#orgfe19006">3.4.5. Data Sampling</a></li>
+<li><a href="#org3d1522f">3.4.6. Select output variables</a></li>
+<li><a href="#orgb01ee12">3.4.7. Parameterize constant values</a>
+<ul>
+<li><a href="#org8aa4dfa">3.4.7.1. Available operators to build a formula</a></li>
+<li><a href="#org7ecc97d">3.4.7.2. Edit the parameter set</a></li>
+<li><a href="#orgda832c2">3.4.7.3. Define constants by parameters</a></li>
+<li><a href="#org581368c">3.4.7.4. Control how to combine parameters</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#org672e7a6">3.5. Starting simulation</a></li>
+<li><a href="#org148e8df">3.6. Controlling simulation jobs</a>
+<ul>
+<li><a href="#orgb45f4cc">3.6.1. Cancel jobs</a></li>
+<li><a href="#org3141439">3.6.2. Pause and resume jobs</a></li>
+</ul>
+</li>
+<li><a href="#orgc1052ba">3.7. Visualizing simulation results</a>
+<ul>
+<li><a href="#orgfec1a79">3.7.1. Choose abscissa and ordinates</a>
+<ul>
+<li><a href="#orge6ab7ff">3.7.1.1. Trouble shooting</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#orgbbf4c71">3.8. Saving output data</a>
+<ul>
+<li><a href="#orgc2fad44">3.8.1. Exporting data as CSV</a></li>
+<li><a href="#org90127c4">3.8.2. Exporting data as ISD</a></li>
+</ul>
+</li>
+<li><a href="#org8422671">3.9. Fitting parameters via the least-squares method</a>
+<ul>
+<li><a href="#org7292ac4">3.9.1. Give a reference simulation time course  as an ISD file</a></li>
+<li><a href="#orgfc6473e">3.9.2. Run a simulation batch with a parameter set</a></li>
+<li><a href="#orgde9f710">3.9.3. RSS in Detail</a></li>
+</ul>
+</li>
+<li><a href="#org9bc24b3">3.10. Exporting C source code from model</a>
+<ul>
+<li><a href="#org72ae611">3.10.1. From menu</a></li>
+<li><a href="#org325a728">3.10.2. How to build a program from exported code</a></li>
+</ul>
+</li>
+<li><a href="#org1a96ec4">3.11. Preference</a>
+<ul>
+<li><a href="#org7c8a1bf">3.11.1. Concurrency hint</a></li>
+<li><a href="#org8473c48">3.11.2. Plotter</a></li>
+</ul>
+</li>
+<li><a href="#orgb46b4ee">3.12. Shortcut keys</a>
+<ul>
+<li><a href="#org545260f">3.12.1. Keys for main menu</a></li>
+<li><a href="#org1ee1891">3.12.2. Additional keys</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#org5a5637d">4. Command Line Interface</a>
+<ul>
+<li><a href="#org42b77d9">4.1. Launching Flint</a>
+<ul>
+<li><a href="#orgffe8dd1">4.1.1. Invocation with no arguments</a></li>
+<li><a href="#org66defad">4.1.2. Invocation with filenames</a></li>
+</ul>
+</li>
+<li><a href="#org437072e">4.2. Showing help</a>
+<ul>
+<li><a href="#org8819efd">4.2.1. Synopsis</a></li>
+</ul>
+</li>
+<li><a href="#org666dff4">4.3. Running a simulation: the headless mode</a>
+<ul>
+<li><a href="#orgb260367">4.3.1. Synopsis</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#org951032e">5. Additional utility programs</a>
+<ul>
+<li><a href="#org6fd9a76">5.1. <code>isd2csv</code>: Convert ISD to CSV format</a>
+<ul>
+<li><a href="#org4735b44">5.1.1. Synopsis</a></li>
+<li><a href="#org4f65772">5.1.2. Description</a></li>
+</ul>
+</li>
+<li><a href="#org8ee7c4c">5.2. <code>csv2isd</code>: Convert CSV to ISD format</a>
+<ul>
+<li><a href="#org89c5f19">5.2.1. Synopsis</a></li>
+<li><a href="#orga17b7a9">5.2.2. Description</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#org90c6b46">6. Frequently Asked Questions (FAQ)</a>
+<ul>
+<li><a href="#orgde8c1c8">6.1. How to uninstall Flint</a></li>
+<li><a href="#org95d6a76">6.2. How to ask questions about Flint</a></li>
+<li><a href="#orga149174">6.3. How to file a bug report or a feature request</a></li>
+<li><a href="#org8c0cd3f">6.4. What are programs named <code>flint-cli</code>, <code>flint-exec</code>, etc.?</a></li>
+</ul>
+</li>
+<li><a href="#orga373e87">7. References</a></li>
+</ul>
+</div>
+</div>
+<div class="abstract" id="orgc75adb3">
+<p>
+This document describes how to use Flint 2.4, a simulator for biological and physiological models.
+Readers also find some platform-specific notes and trouble-shooting techniques that
+users would like to know when using Flint.
+</p>
+
+</div>
+
+<div id="outline-container-org385497d" class="outline-2">
+<h2 id="org385497d"><span class="section-number-2">1</span> Introduction</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+Understanding the dynamics of living organisms often requires a mathematical model
+that describes the hypotheses to be tested. It is widely recognized that the
+class of ordinary differential equations (ODE) is suitable for describing the
+time course of variables in a deterministic system, stemming from a simple
+assumption about the rate of their change.
+One such example is the chemical reaction accelerated by an enzyme
+following Michaelis-Menten kinetics; another is the action potential of
+cardiac cells driven by modulation of ion channels. By virtue of
+differential equations, these celullar models can be integrated into models at the
+tissue or organ level. In fact, ways to integrate a computational model of
+the physiological functions of the whole individual have been explored since the
+end of the last century, under the name physiome [<a href="#org1632766">1</a>].
+</p>
+
+<p>
+It is, however, technically challenging for practitioners in the field of
+biology or physiology to express their hypotheses on biological organisms in a
+precise system of ODEs. In order to make it easier to edit a model in problem
+that implicitly specifies the ODEs, several domain-specific languages have
+been proposed and standardized, including CellML [<a href="#orgd0e4a8e">2</a>], the
+Physiological Hierarchy Markup Language (PHML) devised by Asai and colleagues
+[<a href="#org2df6c18">3</a>], and the Systems Biology Markup Language (SBML) devised
+by [<a href="#orgb22f1c3">4</a>]. Although the design principles of each modeling
+language vary, computational analysis of any model in these languages
+comprises a shared set of procedures based on the theory of differential
+equations and dynamical systems.
+</p>
+
+<p>
+Flint is a simulator software for models written in the above languages, and
+aims to provide an open, language-agnostic resource for reproducible simulation
+studies. The simulator allows users to transform a given model into a system of
+ODEs and solve it in a numerical manner. It also supports stochastic
+differential equations (SDE), a non-deterministic extension of ODEs, which makes
+it possible to involve random elements, e.g. noise, in the dynamics.
+</p>
+</div>
+
+<div id="outline-container-org5859be8" class="outline-3">
+<h3 id="org5859be8"><span class="section-number-3">1.1</span> Brief summary about Flint 2.4</h3>
+<div class="outline-text-3" id="text-1-1">
+<p>
+Flint 2.4 is new implementation of Flint 1.x, a simulator for biological and physiological models.
+Flint can run simulations of multi-level physiological models written in PHML.
+It means that Flint parses given models, performs numerical analysis for their
+simulation, and renders simulation outcome into a line graph via <a href="http://www.gnuplot.info/">gnuplot</a>.
+Likewise, Flint can handle CellML and SBML as well as SBML-PHML hybrid models.
+</p>
+</div>
+
+<div id="outline-container-org2da25ec" class="outline-4">
+<h4 id="org2da25ec"><span class="section-number-4">1.1.1</span> Markup languages</h4>
+<div class="outline-text-4" id="text-1-1-1">
+<p>
+Flint 2.4 supports the following standard languages of models:
+</p>
+
+<ul class="org-ul">
+<li>PHML (including its precursor ISML [<a href="#org8967e74">5</a>])</li>
+<li>SBML</li>
+<li>CellML</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org9e9079c" class="outline-4">
+<h4 id="org9e9079c"><span class="section-number-4">1.1.2</span> Available numerical algorithms for ordinary differential equations</h4>
+<div class="outline-text-4" id="text-1-1-2">
+<p>
+Flint 2.4 supports the following algorithms to solve ODEs numerically:
+</p>
+
+<ul class="org-ul">
+<li>Euler method</li>
+<li>Runge-Kutta 4th-order method</li>
+<li>Adaptive stepsize Runge-Kutta method, based on the ARKode solver of
+SUNDIALS [<a href="#org6eaa5dc">6</a>]</li>
+</ul>
+</div>
+</div>
+
+
+<div id="outline-container-orga643d3e" class="outline-4">
+<h4 id="orga643d3e"><span class="section-number-4">1.1.3</span> Available numerical algorithms for stochastic differential equations</h4>
+<div class="outline-text-4" id="text-1-1-3">
+<p>
+Flint 2.4 also supports the following algorithms to solve SDEs
+numerically:
+</p>
+
+<ul class="org-ul">
+<li>Euler-Maruyama method [<a href="#orgb96c9e6">7</a>]</li>
+</ul>
+</div>
+</div>
+</div>
+
+
+<div id="outline-container-org3c53cba" class="outline-3">
+<h3 id="org3c53cba"><span class="section-number-3">1.2</span> Notation</h3>
+<div class="outline-text-3" id="text-1-2">
+<p>
+In this document, command lines in a shell or the command prompt on Windows are
+formatted as in the following example:
+</p>
+<div class="org-src-container">
+<pre class="src src-sh"><span style="color: #483d8b;">echo</span> this is a command line.
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+
+<div id="outline-container-orgeb72f39" class="outline-2">
+<h2 id="orgeb72f39"><span class="section-number-2">2</span> Getting started</h2>
+<div class="outline-text-2" id="text-2">
+<p>
+This chapter explains how to obtain and install Flint, and describes how to run
+a simulation.
+</p>
+</div>
+
+<div id="outline-container-orgdbd8a6e" class="outline-3">
+<h3 id="orgdbd8a6e"><span class="section-number-3">2.1</span> Supported platforms</h3>
+<div class="outline-text-3" id="text-2-1">
+<p>
+Flint 2.4 runs on several supported platforms, including:
+</p>
+
+<ul class="org-ul">
+<li>Windows 7 or later;</li>
+<li>macOS: OS X El Captian (10.11) or later;</li>
+<li>Linux distributions such as Debian 10, Ubuntu 18.04, and RHEL/CentOS 7 or 8.</li>
+</ul>
+</div>
+</div>
+
+
+<div id="outline-container-org78bfc6c" class="outline-3">
+<h3 id="org78bfc6c"><span class="section-number-3">2.2</span> Download and install Flint 2.4</h3>
+<div class="outline-text-3" id="text-2-2">
+<p>
+Flint project distributes Flint 2.4&rsquo;s x86-64 binary installers for Windows,
+macOS, and CentOS/RHEL 7 or 8.
+</p>
+</div>
+
+<div id="outline-container-orga71391d" class="outline-4">
+<h4 id="orga71391d"><span class="section-number-4">2.2.1</span> On Windows</h4>
+<div class="outline-text-4" id="text-2-2-1">
+<p>
+Please download the installer package <code>Flint-2.4.0-windows.x86_64.msi</code> at
+<a href="https://sourceforge.net/projects/flintproject/files/Flint/">https://sourceforge.net/projects/flintproject/files/Flint/</a>.
+Double-clicking the .msi package will start the installation process.
+If installed successfully, Flint&rsquo;s executable program will be found at
+<code>C:\Program Files\Flint\flint.exe</code>.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org0ab1e20" class="outline-4">
+<h4 id="org0ab1e20"><span class="section-number-4">2.2.2</span> On macOS</h4>
+<div class="outline-text-4" id="text-2-2-2">
+<p>
+Please download the installer package <code>Flint-2.4.0-mac.dmg</code> at
+<a href="https://sourceforge.net/projects/flintproject/files/Flint/">https://sourceforge.net/projects/flintproject/files/Flint/</a>.
+The .dmg archive for macOS contains Flint 2.4&rsquo;s .pkg file; extracting and
+double-clicking it to start an application bundle called
+<code>Flint.app</code>.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org6d842a4" class="outline-4">
+<h4 id="org6d842a4"><span class="section-number-4">2.2.3</span> On CentOS/RHEL</h4>
+<div class="outline-text-4" id="text-2-2-3">
+<p>
+Please download <code>Flint-2.4.0-el7.x86_64.zip</code> or <code>Flint-2.4.0-el8.x86_64.zip</code>
+at <a href="https://sourceforge.net/projects/flintproject/files/Flint/">https://sourceforge.net/projects/flintproject/files/Flint/</a>, depending
+on the major version of your OS.
+Unzipping the archive, run the following command on a bash-like shell to install
+RPM packages in it:
+</p>
+<div class="org-src-container">
+<pre class="src src-sh">unzip Flint-*-el*.x86_64.zip
+<span style="color: #483d8b;">cd</span> Flint-*-el*.x86_64
+sudo rpm -Uvh --replacepkgs flint-*.rpm
+</pre>
+</div>
+<p>
+Once installed, Flint&rsquo;s executable will be found at
+<code>/opt/flint/bin/flint</code>.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org551e8ce" class="outline-4">
+<h4 id="org551e8ce"><span class="section-number-4">2.2.4</span> On other supported OSes</h4>
+<div class="outline-text-4" id="text-2-2-4">
+<p>
+In principle Flint 2.4 runs on any Linux distribution coming up with GTK 2 or 3.
+You can build Flint from its source tarball, available at
+<a href="https://github.com/flintproject/Flint/archive/Flint-2.4.0.tar.gz">https://github.com/flintproject/Flint/archive/Flint-2.4.0.tar.gz</a>,
+by following the instructions in <code>INSTALL.org</code> found in the archive.
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org7709b35" class="outline-3">
+<h3 id="org7709b35"><span class="section-number-3">2.3</span> Try your first simulation with Flint 2.4</h3>
+<div class="outline-text-3" id="text-2-3">
+<p>
+This section describes a simple procedure with Flint 2.4 to run a simulation of an
+example PHML model, which replicates the system of ordinary differential
+equations about membrane potentials in nerve introduced by
+[<a href="#org61c04dd">8</a>].
+If you have installed Flint 2.4 via one of its binary installer packages, the
+model file can be found at
+</p>
+<pre class="example" id="orgb82123f">
+C:\Program Files\Flint\example\HodgkinHuxley_1952_neuron_model.phml
+</pre>
+<p>
+on Windows,
+</p>
+<pre class="example" id="orgb042f77">
+Flint.app/Contents/Resources/example/HodgkinHuxley_1952_neuron_model.phml
+</pre>
+<p>
+on macOS, or
+</p>
+<pre class="example" id="org56c0134">
+/opt/flint/example/HodgkinHuxley_1952_neuron_model.phml
+</pre>
+<p>
+on CentOS/RHEL.
+Otherwise you can also download it from
+<a href="https://github.com/flintproject/Flint/tree/Flint-2.4.0/example/HodgkinHuxley_1952_neuron_model.phml">https://github.com/flintproject/Flint/tree/Flint-2.4.0/example/HodgkinHuxley_1952_neuron_model.phml</a>.
+</p>
+
+<dl class="org-dl">
+<dt>Launch Flint</dt><dd></dd>
+</dl>
+<p>
+To launch Flint, double-click
+<code>C:\Program Files\Flint\flint.exe</code> on Windows,
+<code>Flint.app</code> on macOS, or <code>/opt/flint/bin/flint</code> on CentOS/RHEL.
+It shows a window like Fig.&nbsp;<a href="#org351a041">1</a>.
+</p>
+
+<div id="org351a041" class="figure">
+<p><img src="image/initial.png" alt="initial.png" width="600px" />
+</p>
+<p><span class="figure-number">Figure 1: </span>The initial window of Flint.</p>
+</div>
+
+<dl class="org-dl">
+<dt>Open a model</dt><dd></dd>
+</dl>
+<p>
+In the &ldquo;File&rdquo; menu, select &ldquo;Open&rdquo; to choose a model file. Then you will see
+a file dialog like Fig.&nbsp;<a href="#orgab9ac5a">2</a>.
+</p>
+
+
+<div id="orgab9ac5a" class="figure">
+<p><img src="image/open-model.png" alt="open-model.png" width="600px" />
+</p>
+<p><span class="figure-number">Figure 2: </span>The file dialog to open a model.</p>
+</div>
+
+<p>
+Select <code>HodgkinHuxley_1952_neuron_model.phml</code> in the file dialog and click &ldquo;Open&rdquo; button.
+Then the model window will appear as in Fig.&nbsp;<a href="#orgdcefe90">3</a>.
+On macOS, opening a form by <code>Command + Shift + g</code>, one can
+specify an absolute path in the application bundle <code>Flint.app</code>.
+</p>
+
+
+<div id="orgdcefe90" class="figure">
+<p><img src="image/hh.png" alt="hh.png" width="600px" />
+</p>
+<p><span class="figure-number">Figure 3: </span>The model window.</p>
+</div>
+
+<dl class="org-dl">
+<dt>Choose duration and time step</dt><dd></dd>
+</dl>
+<p>
+Specify the duration of simulation in &ldquo;Simulation Length&rdquo; and the time step
+length of the simulation in &ldquo;Simulation Time Step&rdquo; optionally.
+</p>
+
+<dl class="org-dl">
+<dt>Run a simulation</dt><dd></dd>
+</dl>
+<p>
+Click the &ldquo;Run&rdquo; button to start a simulation.
+</p>
+
+<p>
+Once simulation started running, the progress bar will appear in the control
+panel in the right side like Fig.&nbsp;<a href="#orge6edd78">4</a>, and both the cross mark
+(as &ldquo;Cancel&rdquo;) and &ldquo;Detail&rdquo; buttons will be enabled.
+</p>
+
+
+<div id="orge6edd78" class="figure">
+<p><img src="image/hh-progress.png" alt="hh-progress.png" width="600px" />
+</p>
+<p><span class="figure-number">Figure 4: </span>The progress bar for the model.</p>
+</div>
+
+<p>
+Wait until the status bar tells that the simulation completed (see
+Fig.&nbsp;<a href="#orgd7ab94b">5</a>).
+</p>
+
+
+<div id="orgd7ab94b" class="figure">
+<p><img src="image/hh-completed.png" alt="hh-completed.png" width="600px" />
+</p>
+<p><span class="figure-number">Figure 5: </span>The status bar indicates the simulation completed.</p>
+</div>
+
+<dl class="org-dl">
+<dt>See detail of the simulation</dt><dd></dd>
+</dl>
+<p>
+Click the &ldquo;Detail&rdquo; button to get the simulation result.
+Then a detail window will appear as in Fig.&nbsp;<a href="#org8b0e5ad">6</a>.
+</p>
+
+
+<div id="org8b0e5ad" class="figure">
+<p><img src="image/hh-detail.png" alt="hh-detail.png" width="600px" />
+</p>
+<p><span class="figure-number">Figure 6: </span>The detail window.</p>
+</div>
+
+<dl class="org-dl">
+<dt>Select ordinates</dt><dd></dd>
+</dl>
+<p>
+Click the &ldquo;View&rdquo; button on the detail window, then a plot window to render
+line graphs about the simulation result, like Fig.&nbsp;<a href="#org168aac8">7</a>.
+</p>
+
+
+<div id="org168aac8" class="figure">
+<p><img src="image/hh-plot.png" alt="hh-plot.png" width="600px" />
+</p>
+<p><span class="figure-number">Figure 7: </span>The plot window.</p>
+</div>
+
+<p>
+Check the Y1 column of &ldquo;<code>V</code>&rdquo; in the variable list, which calls gnuplot.
+Soon the corresponding line graph will appear on a separate window,
+like Fig.&nbsp;<a href="#org27479cb">8</a>.
+</p>
+
+
+<div id="org27479cb" class="figure">
+<p><img src="image/hh-plot-v.png" alt="hh-plot-v.png" width="600px" />
+</p>
+<p><span class="figure-number">Figure 8: </span>The plot window with &ldquo;<code>V</code>&rdquo; on Y1.</p>
+</div>
+
+<p>
+Moreover you can also check the Y2 column of another variable &ldquo;<code>I_Na</code>&rdquo; in the
+list to arrange two line graphs in the same canvas, as in
+Fig.&nbsp;<a href="#org4764eff">9</a>.
+</p>
+
+
+<div id="org4764eff" class="figure">
+<p><img src="image/hh-plot-v-ina.png" alt="hh-plot-v-ina.png" width="600px" />
+</p>
+<p><span class="figure-number">Figure 9: </span>The plot window with &ldquo;<code>V</code>&rdquo; on Y1 and &ldquo;<code>I_Na</code>&rdquo; on Y2.</p>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orge0f2ecd" class="outline-2">
+<h2 id="orge0f2ecd"><span class="section-number-2">3</span> Graphical User Interface</h2>
+<div class="outline-text-2" id="text-3">
+<p>
+Flint 2.4 comes with a graphical user interface out of the box. This chapter
+explains features of the GUI and how to use them.
+</p>
+</div>
+
+<div id="outline-container-orgdf4d421" class="outline-3">
+<h3 id="orgdf4d421"><span class="section-number-3">3.1</span> Launching Flint</h3>
+<div class="outline-text-3" id="text-3-1">
+<p>
+On Windows, double-clicking <code>flint.exe</code> in the start menu starts Flint.
+On macOS, double-clicking <code>Flint.app</code> works similarly.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org09d041a" class="outline-3">
+<h3 id="org09d041a"><span class="section-number-3">3.2</span> Quitting Flint</h3>
+<div class="outline-text-3" id="text-3-2">
+<p>
+To quit Flint, use the menu &ldquo;File&rdquo;&rarr;&ldquo;Exit&rdquo;.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgdf9953c" class="outline-3">
+<h3 id="orgdf9953c"><span class="section-number-3">3.3</span> Loading models</h3>
+<div class="outline-text-3" id="text-3-3">
+<p>
+Flint must load models before running simulations for them.
+Users tell Flint which model should be loaded by opening the model file.
+Loading a model can fail due to some reasons; for example, it may fail if
+the model file contains an error or unsupported elements.
+An error dialog will display a diagnosis message when loading a model fails.
+Once loading a model successfully, the model window shows up and stays
+in the main window until closed, like Fig.&nbsp;<a href="#org7ef5e62">10</a>.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org9e2ffc7" class="outline-3">
+<h3 id="org9e2ffc7"><span class="section-number-3">3.4</span> Configuring simulation tasks</h3>
+<div class="outline-text-3" id="text-3-4">
+
+<div id="org7ef5e62" class="figure">
+<p><img src="image/lr.png" alt="lr.png" width="600px" />
+</p>
+<p><span class="figure-number">Figure 10: </span>The model window.</p>
+</div>
+
+<p>
+Before starting simulations for a loaded model, users may want to configure them
+in terms of numerical integration, simulation time, output data, and parameters.
+</p>
+</div>
+
+<div id="outline-container-orga544492" class="outline-4">
+<h4 id="orga544492"><span class="section-number-4">3.4.1</span> Integration method</h4>
+<div class="outline-text-4" id="text-3-4-1">
+<p>
+Users have to choose a solver method for ordinary differential equations or
+stochastic differential equations at the &ldquo;Integration method&rdquo; combobox.
+An error will occur at simulation time when choosing any method except
+the Euler-Maruyama method for a model including SDEs.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgf1102f0" class="outline-4">
+<h4 id="orgf1102f0"><span class="section-number-4">3.4.2</span> Simulation Length</h4>
+<div class="outline-text-4" id="text-3-4-2">
+<p>
+Users must specify the total length of simulation time at the &ldquo;Simulation Length&rdquo;
+field; the given number is interpreted in terms of the selected time unit.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org685e880" class="outline-4">
+<h4 id="org685e880"><span class="section-number-4">3.4.3</span> Simulation Time Step</h4>
+<div class="outline-text-4" id="text-3-4-3">
+<p>
+Similarly to &ldquo;Simulation Length&rdquo;, users can specify the time step at the
+&ldquo;Simulation Time Step&rdquo; field.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org7011e32" class="outline-4">
+<h4 id="org7011e32"><span class="section-number-4">3.4.4</span> Starting from</h4>
+<div class="outline-text-4" id="text-3-4-4">
+<p>
+Users can specify when (in the sense of simulation time) output starts from
+at this field. By default, simulation process produces output from time 0.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgfe19006" class="outline-4">
+<h4 id="orgfe19006"><span class="section-number-4">3.4.5</span> Data Sampling</h4>
+<div class="outline-text-4" id="text-3-4-5">
+<p>
+This setting is for determining how often the result data are written in.
+Note that the sampling rate does not affect the calculation for simulation.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org3d1522f" class="outline-4">
+<h4 id="org3d1522f"><span class="section-number-4">3.4.6</span> Select output variables</h4>
+<div class="outline-text-4" id="text-3-4-6">
+<p>
+Before starting simulations for a loaded model, users may want to choose a
+limited number of variables for output among available variables.
+Filtering output variables will reduce the burden of writing output, and thus
+may improve the simulation performance.
+The &ldquo;Output Variables&rdquo; panel (Fig.&nbsp;<a href="#org97dbaf4">11</a>) allows
+user to select output variables by matching one of their properties with a given
+string. The possible target properties depend on the format of the model file,
+and are summarized in Table&nbsp;<a href="#org5609f85">1</a>. With the &ldquo;Filter Column&rdquo;
+combo box one can choose the target. The &ldquo;Filter Pattern&rdquo; combo box chooses
+the way to interpret the given string: as a regular expression (default), or
+just as a fixed string.
+</p>
+
+
+<div id="org97dbaf4" class="figure">
+<p><img src="image/lr-output-variables.png" alt="lr-output-variables.png" width="600px" />
+</p>
+<p><span class="figure-number">Figure 11: </span>The &ldquo;Output Variables&rdquo; panel.</p>
+</div>
+
+<table id="org5609f85" border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+<caption class="t-above"><span class="table-number">Table 1:</span> Output variable&rsquo;s properties to be matched</caption>
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">Model file format</th>
+<th scope="col" class="org-left">properties</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">PHML</td>
+<td class="org-left">Physical-quantity name; Module name</td>
+</tr>
+
+<tr>
+<td class="org-left">SBML</td>
+<td class="org-left">Species or reaction name</td>
+</tr>
+
+<tr>
+<td class="org-left">CellML</td>
+<td class="org-left">Variable name; Component name</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+<div id="outline-container-orgb01ee12" class="outline-4">
+<h4 id="orgb01ee12"><span class="section-number-4">3.4.7</span> Parameterize constant values</h4>
+<div class="outline-text-4" id="text-3-4-7">
+<p>
+By default, Flint runs a single simulation job for each loaded model.
+It is also possible to start a simulation batch for each model with
+different values of parameters.
+A batch of simulations can result in multiple different trajectories of
+variables in the same model. Hereafter, we simply call each result from
+an element in the batch a trajectory.
+</p>
+
+<p>
+In order to explain the feature to parameterize constants found in a model,
+let&rsquo;s define some technical terms as follows.
+In Flint&rsquo;s terminology, named numeric constants in the model are called
+shortly &ldquo;constants&rdquo;.
+For example, some of CellML&rsquo;s <code>variable=s have attribute
+=initial_value</code>, which is assigned to a constant number.
+In PHML there is an element called <code>static-parameter</code> specifying a constant,
+as well as <code>initial-value</code>.
+SBML&rsquo;s <code>parameter</code> element has attribute <code>value</code> assigned to a number.
+All of them are constants in Flint&rsquo;s context, and they are potential targets for
+changing their values by some parameters.
+However, make sure that a constant in the above sense is <b>not</b> a parameter
+itself in Flint.
+Rather, a constant can be parameterized by zero or more parameters.
+</p>
+
+<p>
+In Flint&rsquo;s terminology, a parameter is a named object assigned to a specific
+number for each trajectory.
+Let \(\mathcal{P}\) be the set of parameters.
+To configure a batch, every parameter is bound to its own set of possible
+values, called value-set.
+Let \(\mathcal{V}(p)\) be the value-set of parameter \(p\) in \(\mathcal{P})\).
+The whole set of possible tuples of multiple parameters is defined as the
+Cartesian product of multiple value-sets, i.e., \(\prod_{p \in \mathcal{P}}
+\mathcal{V}(p)\).
+(It is also possible to custom how to construct the whole set of value tuples
+for an advanced setting. Please read <a href="#org6004b24">3.4.7.4</a>.)
+From now on, a pair \((\mathcal{P}, \mathcal{V})\) is called the parameter set as
+it determines the parameterization of a batch completely.
+</p>
+
+<p>
+Given the parameter set of a batch, Flint will run as many simulations for the
+given model as the cardinality of the Cartesian product, i.e.,
+\(\lvert \prod_{p \in \mathcal{P}} \mathcal{V}(p) \rvert\), by changing the
+assigned values from a tuple to another.
+In other words, each trajectory corresponds to a value tuple of the parameters.
+</p>
+
+<p>
+Users can see and modify numeric values of constants in a loaded model,
+such as the initial values of ordinary differential equations and values of
+=static-parameter=s of PHML, at the &ldquo;Parameters&rdquo; panel.
+The table at the &ldquo;Parameters&rdquo; consists of each row corresponding to a constant
+element in the model; the &ldquo;Expression&rdquo; field of the row accepts an algebraic
+formula defining the parameterized value of the constant.
+The following&nbsp;<a href="#org2508d90">3.4.7.1</a> summarizes available operators in
+the formula, which semantics conforms to <a href="https://www.w3.org/TR/MathML3/">MathML 3</a> in principle,
+except infix operators such as <code>+</code>, <code>*</code>, etc.
+For example, given parameters <code>p</code> and <code>q</code>, you can build a formula
+like &ldquo;<code>2.5 * max(p, 1) - cos(q)</code>&rdquo;.
+</p>
+</div>
+
+<div id="outline-container-org8aa4dfa" class="outline-5">
+<h5 id="org8aa4dfa"><span class="section-number-5">3.4.7.1</span> <a id="org2508d90"></a>Available operators to build a formula</h5>
+<div class="outline-text-5" id="text-3-4-7-1">
+<ul class="org-ul">
+<li><code>+</code> (infix): addition</li>
+<li><code>-</code> (infix): subtraction</li>
+<li><code>*</code> (infix): multiplication</li>
+<li><code>/</code> (infix): division</li>
+<li><code>%</code> (infix): remainder</li>
+<li><code>abs</code>,
+<code>arccos</code>,
+<code>arccosh</code>,
+<code>arccot</code>,
+<code>arccoth</code>,
+<code>arccsc</code>,
+<code>arccsch</code>,
+<code>arcsec</code>,
+<code>arcsech</code>,
+<code>arcsin</code>,
+<code>arcsinh</code>,
+<code>arctan</code>,
+<code>arctanh</code>,
+<code>ceiling</code>,
+<code>cos</code>,
+<code>cosh</code>,
+<code>cot</code>,
+<code>coth</code>,
+<code>csc</code>,
+<code>csch</code>,
+<code>exp</code>,
+<code>floor</code>,
+<code>ln</code>,
+<code>log</code>,
+<code>max</code>,
+<code>min</code>,
+<code>power</code>,
+<code>root</code>,
+<code>sec</code>,
+<code>sech</code>,
+<code>sin</code>,
+<code>sinh</code>,
+<code>tan</code>,
+<code>tanh</code>: mathematical functions</li>
+</ul>
+
+
+<div id="orgf87c701" class="figure">
+<p><img src="image/lr-edit-parameter-set-a.png" alt="lr-edit-parameter-set-a.png" width="600px" />
+</p>
+<p><span class="figure-number">Figure 12: </span>edit a parameter called <code>p0</code></p>
+</div>
+
+<div id="orgeadc7b3" class="figure">
+<p><img src="image/lr-edit-parameter-set-b.png" alt="lr-edit-parameter-set-b.png" width="600px" />
+</p>
+<p><span class="figure-number">Figure 13: </span>choosing value-set type</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org7ecc97d" class="outline-5">
+<h5 id="org7ecc97d"><span class="section-number-5">3.4.7.2</span> Edit the parameter set</h5>
+<div class="outline-text-5" id="text-3-4-7-2">
+<p>
+In order to define or modify the parameter set, push button &ldquo;Edit parameter
+set&rdquo; at first. Then a window will pop up. It allows users to see existing
+parameters, add a new parameter (via the &ldquo;<code>+</code>&rdquo; button), delete existing
+one (via the &ldquo;<code>-</code>&rdquo; button), and modify them (see
+Fig.&nbsp;<a href="#orgf87c701">12</a>).
+</p>
+
+<p>
+The name of a parameter is arbitrary, but must start with an alphabet or
+underscore (<code>_</code>), followed by a sequence of alphabets, underscores, and/or
+digits (<code>0</code>, <code>1</code>, &#x2026;, <code>9</code>).
+</p>
+
+<p>
+There are four types of value-sets: enum, interval, Gaussian, and uniform
+(see Fig.&nbsp;<a href="#orgeadc7b3">13</a>).
+For a value-set of type enum, each of possible values must be specified.
+On the other hand, only the lower and upper (both inclusive) of a range
+of values with a step are required to define a value-set of type interval.
+Note that possible values of an enum should be separated by a comma or a space.
+The latter two types of value-sets are for generating pseudo-random values
+according to specified probability distribution in simulation time.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgda832c2" class="outline-5">
+<h5 id="orgda832c2"><span class="section-number-5">3.4.7.3</span> Define constants by parameters</h5>
+<div class="outline-text-5" id="text-3-4-7-3">
+<p>
+Once users have defined a parameter, it is available in the &ldquo;Expression&rdquo; field
+of any row in the &ldquo;Parameters&rdquo; table (see Fig.&nbsp;<a href="#org496205e">14</a>).
+</p>
+
+
+<div id="org496205e" class="figure">
+<p><img src="image/lr-parameter-set.png" alt="lr-parameter-set.png" width="600px" />
+</p>
+<p><span class="figure-number">Figure 14: </span>Parameterize a constant with parameter &ldquo;p0&rdquo;.</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org581368c" class="outline-5">
+<h5 id="org581368c"><span class="section-number-5">3.4.7.4</span> <a id="org6004b24"></a>Control how to combine parameters</h5>
+<div class="outline-text-5" id="text-3-4-7-4">
+<p>
+It will be often found that the whole set of possible tuples of the parameters
+becomes too big even for the case of a small number of the parameters, i.e., that
+\(\lvert \mathcal{P} \rvert\) is small. For example, if you use five parameters
+and each of them has a value-set of size 100, then the number of simulations
+in the batch is \(100^5\), which is more than \(2^{33}\), so the run will never finish
+within a realistic time frame.
+</p>
+
+<p>
+To mitigate the explosion of the number of the combinations, there is a way
+to skip some combinations; choose &ldquo;zip&rdquo; when creating an item by the
+&ldquo;<code>+</code>&rdquo; button in the &ldquo;Edit parameter set&rdquo; dialog
+(see Fig.&nbsp;<a href="#orgf4e43bf">15</a>).
+Then, the value tuples of the parameters in the &ldquo;zip&rdquo; sub-tree are constructed
+as like the <a href="https://docs.python.org/3/library/functions.html#zip"><code>zip()</code></a> function of the Python standard library applies to their value-sets.
+To be precise, let \(\{p_1, p_2, ..., p_m\}\) be the parameters in the sub-tree,
+and \(n_i := \lvert \mathcal{V}(p_i) \rvert\).
+The set of their value tuples is
+\[
+\left\{(v_{1 k}, v_{2 k}, ..., v_{m k}) \mid k = 1, 2, ..., n_i \right\},
+\]
+where the values in \(\mathcal{V}(p_i)\) are ordered and enumerated as
+\(\{v_{i 1}, v_{i 2}, ..., v_{i n_i} \}\).
+If \(n_i\) varies, then the smallest \(n_i\) is taken and the rest of values is
+ignored.
+</p>
+
+<p>
+For instance, suppose three parameters <code>p</code>, <code>q</code>, and <code>r</code> belong
+to a &ldquo;zip&rdquo; sub-tree. Let
+</p>
+\begin{align}
+\mathcal{V}(p) &= \{0.1, 0.2, 0.3, 0.4, 0.5\};\nonumber\\
+\mathcal{V}(q) &= \{3, 1, 4, 1, 5, 9\};\nonumber\\
+\mathcal{V}(r) &= \{2, 3, 5, 7, 11, 13, 17\},\nonumber
+\end{align}
+<p>
+where the elements of each value-set are ordered as shown.
+Then the set of their value tuple is \(\{(0.1, 3, 2), (0.2, 1, 3), (0.3, 4, 5),
+(0.4, 1, 7), (0.5, 5, 11)\}\), which has only five elements.
+</p>
+
+<p>
+The &ldquo;zip&rdquo;-ped parameters can be combined with other parameters as by default,
+i.e., by taking the Cartesian product; choose &ldquo;product&rdquo; when creating an
+the &ldquo;<code>+</code>&rdquo; button in the &ldquo;Edit parameter set&rdquo; dialog
+(see Fig.&nbsp;<a href="#orgf4e43bf">15</a>).
+Then, the items in the &ldquo;product&rdquo; sub-tree are combined by the Cartesian
+product.
+</p>
+
+
+<div id="orgf4e43bf" class="figure">
+<p><img src="image/lr-edit-parameter-set-productzip.png" alt="lr-edit-parameter-set-productzip.png" width="600px" />
+</p>
+<p><span class="figure-number">Figure 15: </span>&ldquo;zip&rdquo; and &ldquo;product&rdquo; in the &ldquo;Edit parameter set&rdquo; window.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org672e7a6" class="outline-3">
+<h3 id="org672e7a6"><span class="section-number-3">3.5</span> Starting simulation</h3>
+<div class="outline-text-3" id="text-3-5">
+<p>
+To start simulation, use the menu &ldquo;Control&rdquo;&rarr;&ldquo;Run&rdquo; or button
+&ldquo;Run&rdquo; on the control panel. It kicks simulation jobs for all loaded models.
+Users can monitor the progress in total on the control panel, as well as the
+one for a single job on the detail windows like Fig.&nbsp;<a href="#org4aeb23a">16</a>.
+Note that a context menu allows users to cancel simulation assigned to a
+specific parameter value in a task.
+</p>
+
+
+<div id="org4aeb23a" class="figure">
+<p><img src="image/lr-detail.png" alt="lr-detail.png" width="600px" />
+</p>
+<p><span class="figure-number">Figure 16: </span>The detail window during simulation.</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org148e8df" class="outline-3">
+<h3 id="org148e8df"><span class="section-number-3">3.6</span> Controlling simulation jobs</h3>
+<div class="outline-text-3" id="text-3-6">
+<p>
+After starting simulation jobs, users can control them instead of just waiting
+for them finishing.
+</p>
+</div>
+
+<div id="outline-container-orgb45f4cc" class="outline-4">
+<h4 id="orgb45f4cc"><span class="section-number-4">3.6.1</span> Cancel jobs</h4>
+<div class="outline-text-4" id="text-3-6-1">
+<p>
+There is another way to cancel running jobs; pushing the cross mark on the
+control panel (see Fig.&nbsp;<a href="#orge6520ed">17</a>), which cancels a job i.e. all
+of its tasks together.
+</p>
+
+
+<div id="orge6520ed" class="figure">
+<p><img src="image/lr-progress.png" alt="lr-progress.png" width="600px" />
+</p>
+<p><span class="figure-number">Figure 17: </span>The progress bar / cross mark / &ldquo;Detail&rdquo; button on the control panel.</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org3141439" class="outline-4">
+<h4 id="org3141439"><span class="section-number-4">3.6.2</span> Pause and resume jobs</h4>
+<div class="outline-text-4" id="text-3-6-2">
+<p>
+As in Fig.&nbsp;<a href="#orgc5ddad9">18</a>, users can pause jobs at any time during simulation
+by using the menu &ldquo;Control&rdquo;&rarr;&ldquo;Pause&rdquo;. Resuming paused jobs can
+be done with the menu &ldquo;Control&rdquo;&rarr;&ldquo;Resume&rdquo;.
+Note that this operation affects all of alive jobs simultaneously.
+</p>
+
+
+<div id="orgc5ddad9" class="figure">
+<p><img src="image/control.png" alt="control.png" width="600px" />
+</p>
+<p><span class="figure-number">Figure 18: </span>The Control Menu.</p>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgc1052ba" class="outline-3">
+<h3 id="orgc1052ba"><span class="section-number-3">3.7</span> Visualizing simulation results</h3>
+<div class="outline-text-3" id="text-3-7">
+<p>
+Flint has a feature to show a line graph for the result of a simulation on the
+fly, not only after its job finished, but also int the middle of ongoing
+simulation.
+</p>
+
+<p>
+From the detail window, users can display the plot window by clicking button
+&ldquo;View&rdquo; for each simulation job.
+</p>
+</div>
+
+<div id="outline-container-orgfec1a79" class="outline-4">
+<h4 id="orgfec1a79"><span class="section-number-4">3.7.1</span> Choose abscissa and ordinates</h4>
+<div class="outline-text-4" id="text-3-7-1">
+<p>
+In order to draw a line graph, users have to specify the abscissa and ordinates
+by checking an X column as well as either Y1 or Y2 column.
+Immediately after choosing abscissa and ordinates, Flint calls gnuplot in the
+background to draw a line graph.
+Thus users have to install gnuplot in advance, and to specify the location of
+the gnuplot executable (see section&nbsp;<a href="#org0a51ffb">3.11</a>).
+</p>
+</div>
+
+<div id="outline-container-orge6ab7ff" class="outline-5">
+<h5 id="orge6ab7ff"><span class="section-number-5">3.7.1.1</span> Trouble shooting</h5>
+<div class="outline-text-5" id="text-3-7-1-1">
+<ul class="org-ul">
+<li>Choosing abscissa and ordinates results in no response, make sure if the
+gnuplot initialization file is valid and correct.
+It is called <code>.gnuplot</code> on Unix and macOS, and <code>GNUPLOT.INI</code> on
+other systems.</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+
+
+<div id="outline-container-orgbbf4c71" class="outline-3">
+<h3 id="orgbbf4c71"><span class="section-number-3">3.8</span> Saving output data</h3>
+<div class="outline-text-3" id="text-3-8">
+<p>
+Users may save the resulting simulation data for later investigation.
+</p>
+
+
+<div id="org6929da8" class="figure">
+<p><img src="image/lr-export.png" alt="lr-export.png" width="600px" />
+</p>
+<p><span class="figure-number">Figure 19: </span>The dialog to save data.</p>
+</div>
+</div>
+
+<div id="outline-container-orgc2fad44" class="outline-4">
+<h4 id="orgc2fad44"><span class="section-number-4">3.8.1</span> Exporting data as CSV</h4>
+<div class="outline-text-4" id="text-3-8-1">
+<p>
+Flint can export the result data into a CSV file.
+The header column contains the variable names as well as their unit name if any.
+</p>
+
+<p>
+The procedure is as follows:
+</p>
+
+<ol class="org-ol">
+<li>Open the &ldquo;Detail&rdquo; window</li>
+<li>Select as many tasks as you would like to save.</li>
+<li>Push button &ldquo;Export&rdquo;</li>
+<li>Choose a target directory in the file dialog (see Fig.&nbsp;<a href="#org6929da8">19</a>)</li>
+</ol>
+
+<p>
+The names of files saved in the target directory are of form &ldquo;(ID).csv.&rdquo;
+</p>
+</div>
+</div>
+
+<div id="outline-container-org90127c4" class="outline-4">
+<h4 id="org90127c4"><span class="section-number-4">3.8.2</span> Exporting data as ISD</h4>
+<div class="outline-text-4" id="text-3-8-2">
+<p>
+Flint can also export the result data into a ISD file.
+The ISD file format is a binary file format for preserving multi-variate data.
+</p>
+
+<p>
+The procedure is as follows:
+</p>
+
+<ol class="org-ol">
+<li>Open the &ldquo;Detail&rdquo; window</li>
+<li>Select as many tasks as you would like to save.</li>
+<li>Push button &ldquo;Export&rdquo;</li>
+<li>Choose a target directory in the file dialog (see Fig.&nbsp;<a href="#org6929da8">19</a>)</li>
+</ol>
+
+<p>
+The names of files saved in the target directory are of form &ldquo;(ID).isd.&rdquo;
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org8422671" class="outline-3">
+<h3 id="org8422671"><span class="section-number-3">3.9</span> Fitting parameters via the least-squares method</h3>
+<div class="outline-text-3" id="text-3-9">
+<p>
+Flint allows users to fit the value of parameters to a desirable course of
+simulation time evolution, as an extension of batch simulation in which
+the residual sum of squares (RSS) is calculated as well. The least-squares
+method tells which value tuple of parameters is the closest to the given
+target evolution.
+</p>
+
+<p>
+Current implementation supports parameter fitting <b>only for PHML models</b>.
+</p>
+
+<p>
+The concrete procedure of the parameter fitting is as follows.
+</p>
+
+<ol class="org-ol">
+<li>Give the reference time course as an ISD file.</li>
+<li>Run a simulation batch with a parameter set.</li>
+<li>Resulting in the RSS associated with each value tuple of parameters.</li>
+</ol>
+
+<p>
+The following subsections explains the above steps one by one.
+</p>
+</div>
+
+<div id="outline-container-org7292ac4" class="outline-4">
+<h4 id="org7292ac4"><span class="section-number-4">3.9.1</span> Give a reference simulation time course  as an ISD file</h4>
+<div class="outline-text-4" id="text-3-9-1">
+<p>
+To calculate the RSS against a simulation, Flint needs the reference time course
+as an ISD file, which must have at least two columns.
+The first column must be &ldquo;time&rdquo;. The second column must be one of the output
+variables, and so are the rest, if any.
+The column name of a variable, except &ldquo;time&rdquo;, in the ISD file must be prefixed
+with an appropriate UUID.
+Table&nbsp;<a href="#orgc4db166">2</a> summarizes the column name&rsquo;s format for each
+modeling language.
+Each row of the ISD file represents the value of the variable at a specified
+simulation time.
+</p>
+
+<table id="orgc4db166" border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+<caption class="t-above"><span class="table-number">Table 2:</span> Column name format in the reference ISD file</caption>
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">Model file format</th>
+<th scope="col" class="org-left">column name format</th>
+<th scope="col" class="org-left">example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">PHML</td>
+<td class="org-left">(Module id):(Physical-quantity name)</td>
+<td class="org-left"><code>b173a002-ff1e-11e6-83b6-2bde74c64e0b:x</code></td>
+</tr>
+</tbody>
+</table>
+
+<p>
+Program <code>csv2isd</code> helps to obtain an ISD file from the data in CSV.
+Read section&nbsp;<a href="#org708fd61">5.2</a> for details about the program.
+</p>
+
+
+<div id="orgb41b2c1" class="figure">
+<p><img src="image/parameter-fitting-objective.png" alt="parameter-fitting-objective.png" width="600px" />
+</p>
+<p><span class="figure-number">Figure 20: </span>The &ldquo;Objective&rdquo; tab.</p>
+</div>
+
+<p>
+Please check &ldquo;Enable parameter fitting by the method of least-squares&rdquo; in the
+&ldquo;Objective&rdquo; tab, and select the ISD file in the below form (See
+Fig.&nbsp;<a href="#orgb41b2c1">20</a>).
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgfc6473e" class="outline-4">
+<h4 id="orgfc6473e"><span class="section-number-4">3.9.2</span> Run a simulation batch with a parameter set</h4>
+<div class="outline-text-4" id="text-3-9-2">
+<p>
+The way to specify a parameter set in fitting parameters is the same as running
+a simulation batch. Please go to &ldquo;Parameters&rdquo; tab, and click the &ldquo;Edit parameter
+set&rdquo; button to launch a dialog to edit parameters and their value-sets.
+</p>
+
+<p>
+Push the &ldquo;Run&rdquo; button once you have done with the parameter set. Then a batch
+of simulations will start. Note that some of simulations will finish before
+reaching the end of simulation time as it turns out that they cannot be the ones
+having the minimum RSS among the batch.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgde9f710" class="outline-4">
+<h4 id="orgde9f710"><span class="section-number-4">3.9.3</span> RSS in Detail</h4>
+<div class="outline-text-4" id="text-3-9-3">
+<p>
+You will find the resulting RSS for each simulation in the same way for a normal
+simulation batch. Click the &ldquo;Detail&rdquo; of the job. Then a table will pop up.
+Each row of the table displays the RSS of a simulation as well as the
+corresponding value tuple of the parameters.
+</p>
+
+
+<div id="org5ad4edb" class="figure">
+<p><img src="image/parameter-fitting-plot.png" alt="parameter-fitting-plot.png" width="600px" />
+</p>
+<p><span class="figure-number">Figure 21: </span>The line graph of a simulation with its reference values.</p>
+</div>
+
+<p>
+If you proceed to show the plot of the target variable i.e. included in the ISD
+file, the reference values also are shown as a point of mark <code>x</code> (see
+Fig.&nbsp;<a href="#org5ad4edb">21</a>).
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org9bc24b3" class="outline-3">
+<h3 id="org9bc24b3"><span class="section-number-3">3.10</span> Exporting C source code from model</h3>
+<div class="outline-text-3" id="text-3-10">
+<p>
+Not only running online simulation, but also Flint can export simulation code
+as a C99 source file from a loaded model. So far it works only for pure ODE models.
+</p>
+</div>
+
+<div id="outline-container-org72ae611" class="outline-4">
+<h4 id="org72ae611"><span class="section-number-4">3.10.1</span> From menu</h4>
+<div class="outline-text-4" id="text-3-10-1">
+<p>
+To export C code from a model,
+</p>
+
+<ol class="org-ol">
+<li>Load a model</li>
+<li>Select the menu &ldquo;File&rdquo;&rarr;&ldquo;Export to C&rdquo; (see Fig.&nbsp;<a href="#orgff5eee9">22</a>)</li>
+<li>Choose a target filename via the file dialog that follows.</li>
+</ol>
+
+
+<div id="orgff5eee9" class="figure">
+<p><img src="image/export-to-c.png" alt="export-to-c.png" width="600px" />
+</p>
+<p><span class="figure-number">Figure 22: </span>The menu &ldquo;File&rdquo;&rarr;&ldquo;Export to C&rdquo;.</p>
+</div>
+
+<p>
+Then a dialog will appear to tell whether it is done successfully or not.
+</p>
+
+<p>
+Please note that the numerical method used in the exported code is the one
+specified in the original model, e.g., Euler or Runge-Kutta 4th-order method;
+the ARKode solver of SUNDIALS has not been supported yet.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org325a728" class="outline-4">
+<h4 id="org325a728"><span class="section-number-4">3.10.2</span> How to build a program from exported code</h4>
+<div class="outline-text-4" id="text-3-10-2">
+<p>
+Once a C source file exported, what to do next is building the program by a C compiler
+conforming C99 standard.
+</p>
+
+<p>
+If, for example, gcc is available, then invoking the following code
+</p>
+<div class="org-src-container">
+<pre class="src src-sh">gcc -O3 -std=c99 -o simulate exported.c
+</pre>
+</div>
+<p>
+will produce an executable named <code>simulate</code> from the C source file <code>exported.c</code>.
+</p>
+
+<p>
+Finally,
+</p>
+<div class="org-src-container">
+<pre class="src src-sh">./simulate output.isd
+</pre>
+</div>
+<p>
+will run a simulation, writing the whole output into <code>output.isd</code>.
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org1a96ec4" class="outline-3">
+<h3 id="org1a96ec4"><span class="section-number-3">3.11</span> <a id="org0a51ffb"></a>Preference</h3>
+<div class="outline-text-3" id="text-3-11">
+<p>
+Users can customize Flint&rsquo;s behavior via preference, which UI looks like
+Fig.&nbsp;<a href="#orgc440013">23</a>.
+</p>
+</div>
+
+<div id="outline-container-org7c8a1bf" class="outline-4">
+<h4 id="org7c8a1bf"><span class="section-number-4">3.11.1</span> Concurrency hint</h4>
+<div class="outline-text-4" id="text-3-11-1">
+<p>
+The concurrency hint helps Flint run multithread simulation with an optimized number
+of concurrent threads. By default Flint automatically detects the number of cores and
+preset it for the hint.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org8473c48" class="outline-4">
+<h4 id="org8473c48"><span class="section-number-4">3.11.2</span> Plotter</h4>
+<div class="outline-text-4" id="text-3-11-2">
+<p>
+Flint must find the gnuplot executable when rendering line graphs.
+Giving a proper path to the gnuplot program through this option is mandatory on
+Windows and macOS. On the other hand, Flint try <code>/usr/bin/gnuplot</code>, if
+omitted, on Linux.
+Select the path of <code>gnuplot</code> (or <code>gnuplot.exe</code> on Windows), e.g.,
+<code>/usr/bin/gnuplot</code>. If macOS users have, say,
+<code>/Applications/gnuplot.app</code> as an application bundle of gnuplot,
+its value should be <code>/Applications/gnuplot.app/bin/gnuplot</code>.
+</p>
+
+
+<div id="orgc440013" class="figure">
+<p><img src="image/preference-plotter.png" alt="preference-plotter.png" width="600px" />
+</p>
+<p><span class="figure-number">Figure 23: </span>The &ldquo;Plotter&rdquo; panel on the preference dialog.</p>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgb46b4ee" class="outline-3">
+<h3 id="orgb46b4ee"><span class="section-number-3">3.12</span> Shortcut keys</h3>
+<div class="outline-text-3" id="text-3-12">
+<p>
+There are useful shortcut keys as follows:
+</p>
+</div>
+
+<div id="outline-container-org545260f" class="outline-4">
+<h4 id="org545260f"><span class="section-number-4">3.12.1</span> Keys for main menu</h4>
+<div class="outline-text-4" id="text-3-12-1">
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">Command</th>
+<th scope="col" class="org-left">Shortcut keys on macOS</th>
+<th scope="col" class="org-left">Shortcut keys on Linux or Windows</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">File &rarr; Open</td>
+<td class="org-left"><code>Command+O</code></td>
+<td class="org-left"><code>Ctrl+O</code></td>
+</tr>
+
+<tr>
+<td class="org-left">File &rarr; Exit</td>
+<td class="org-left"><code>Command+Q</code></td>
+<td class="org-left"><code>Ctrl+Q</code></td>
+</tr>
+
+<tr>
+<td class="org-left">File &rarr; Save configuration</td>
+<td class="org-left"><code>Command+S</code></td>
+<td class="org-left"><code>Ctrl+S</code></td>
+</tr>
+
+<tr>
+<td class="org-left">File &rarr; Save configuration as&#x2026;</td>
+<td class="org-left"><code>Command+Shift+S</code></td>
+<td class="org-left"><code>Ctrl+Shift+S</code></td>
+</tr>
+
+<tr>
+<td class="org-left">Edit &rarr; Copy</td>
+<td class="org-left"><code>Command+C</code></td>
+<td class="org-left"><code>Ctrl+C</code></td>
+</tr>
+
+<tr>
+<td class="org-left">File &rarr; Cut</td>
+<td class="org-left"><code>Command+X</code></td>
+<td class="org-left"><code>Ctrl+X</code></td>
+</tr>
+
+<tr>
+<td class="org-left">Edit &rarr; Preference</td>
+<td class="org-left"><code>Command+,</code></td>
+<td class="org-left"><code>Ctrl+,</code></td>
+</tr>
+
+<tr>
+<td class="org-left">Control &rarr; Run</td>
+<td class="org-left"><code>Option+R</code></td>
+<td class="org-left"><code>Alt+R</code></td>
+</tr>
+
+<tr>
+<td class="org-left">Control &rarr; Pause</td>
+<td class="org-left"><code>Option+P</code></td>
+<td class="org-left"><code>Alt+P</code></td>
+</tr>
+
+<tr>
+<td class="org-left">Control &rarr; Resume</td>
+<td class="org-left"><code>Option+S</code></td>
+<td class="org-left"><code>Alt+S</code></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+<div id="outline-container-org1ee1891" class="outline-4">
+<h4 id="org1ee1891"><span class="section-number-4">3.12.2</span> Additional keys</h4>
+<div class="outline-text-4" id="text-3-12-2">
+<p>
+Both <code>Esc</code> and <code>Ctrl+W</code> (or <code>Command+W</code> on Mac) can close an active
+subwindow in which there is no dedicated button to close it.
+</p>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org5a5637d" class="outline-2">
+<h2 id="org5a5637d"><span class="section-number-2">4</span> Command Line Interface</h2>
+<div class="outline-text-2" id="text-4">
+<p>
+Flint 2.4 allows users to run a simulation in a command shell.
+Unlike the GUI, the command line interface covers only a limited set of
+the features. It is nevertheless useful, especially for building software pipeline.
+</p>
+</div>
+
+<div id="outline-container-org42b77d9" class="outline-3">
+<h3 id="org42b77d9"><span class="section-number-3">4.1</span> Launching Flint</h3>
+<div class="outline-text-3" id="text-4-1">
+</div>
+<div id="outline-container-orgffe8dd1" class="outline-4">
+<h4 id="orgffe8dd1"><span class="section-number-4">4.1.1</span> Invocation with no arguments</h4>
+<div class="outline-text-4" id="text-4-1-1">
+<p>
+It is possible to launch Flint with the command <code>open(1)</code> of macOS as follows:
+</p>
+<div class="org-src-container">
+<pre class="src src-sh">open Flint.app
+</pre>
+</div>
+<p>
+Note that it does nothing but launches the graphical user interface of Flint.
+In a <code>cmd</code> session on Windows,
+</p>
+<div class="org-src-container">
+<pre class="src src-sh">flint.exe
+</pre>
+</div>
+<p>
+has a similar effect.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org66defad" class="outline-4">
+<h4 id="org66defad"><span class="section-number-4">4.1.2</span> Invocation with filenames</h4>
+<div class="outline-text-4" id="text-4-1-2">
+<p>
+If filenames of models are given in the command line on Windows:
+</p>
+<div class="org-src-container">
+<pre class="src src-sh">flint.exe model1 model2 ...
+</pre>
+</div>
+<p>
+or, on macOS:
+</p>
+<div class="org-src-container">
+<pre class="src src-sh">open Flint.app model1 model2 ...
+</pre>
+</div>
+<p>
+then Flint tries to open them immediately after launching the GUI.
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org437072e" class="outline-3">
+<h3 id="org437072e"><span class="section-number-3">4.2</span> Showing help</h3>
+<div class="outline-text-3" id="text-4-2">
+<p>
+Specifying <code>-help</code> in the command line shows the help message.
+</p>
+</div>
+
+<div id="outline-container-org8819efd" class="outline-4">
+<h4 id="org8819efd"><span class="section-number-4">4.2.1</span> Synopsis</h4>
+<div class="outline-text-4" id="text-4-2-1">
+<p>
+On Windows:
+</p>
+<div class="org-src-container">
+<pre class="src src-sh">flint.exe -help
+</pre>
+</div>
+<p>
+On macOS:
+</p>
+<div class="org-src-container">
+<pre class="src src-sh">./Flint.app/Contents/MacOS/flint -help
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org666dff4" class="outline-3">
+<h3 id="org666dff4"><span class="section-number-3">4.3</span> Running a simulation: the headless mode</h3>
+<div class="outline-text-3" id="text-4-3">
+<p>
+Specifying <code>-headless</code> in the command line enable the headless mode, which
+runs a simulation of given model with the default configuration.
+</p>
+</div>
+
+<div id="outline-container-orgb260367" class="outline-4">
+<h4 id="orgb260367"><span class="section-number-4">4.3.1</span> Synopsis</h4>
+<div class="outline-text-4" id="text-4-3-1">
+<p>
+On Windows:
+</p>
+<div class="org-src-container">
+<pre class="src src-sh">flint.exe -headless input output [-e file] [-g n] [-s file]
+</pre>
+</div>
+<p>
+On macOS:
+</p>
+<div class="org-src-container">
+<pre class="src src-sh">./Flint.app/Contents/MacOS/flint -headless input output [-e file] [-g n] [-s file]
+</pre>
+</div>
+<p>
+Load a model at <code>input</code>, simulation it with the default configuration,
+and leave the result at <code>output</code>.
+The following suboptions are available:
+</p>
+
+<dl class="org-dl">
+<dt><code>-e file</code></dt><dd>save error messages during simulation as <code>file</code>.</dd>
+<dt><code>-g n</code></dt><dd>specify output sampling rate i.e. 1 output per <code>n</code> step.</dd>
+<dt><code>-s file</code></dt><dd>specify output variables with <code>file</code>.</dd>
+</dl>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org951032e" class="outline-2">
+<h2 id="org951032e"><span class="section-number-2">5</span> Additional utility programs</h2>
+<div class="outline-text-2" id="text-5">
+<p>
+There are additional utility programs distributed with Flint.
+They are used in a command line.
+This chapter describes how to use them.
+</p>
+</div>
+
+<div id="outline-container-org6fd9a76" class="outline-3">
+<h3 id="org6fd9a76"><span class="section-number-3">5.1</span> <code>isd2csv</code>: Convert ISD to CSV format</h3>
+<div class="outline-text-3" id="text-5-1">
+</div>
+<div id="outline-container-org4735b44" class="outline-4">
+<h4 id="org4735b44"><span class="section-number-4">5.1.1</span> Synopsis</h4>
+<div class="outline-text-4" id="text-5-1-1">
+<div class="org-src-container">
+<pre class="src src-sh">isd2csv [-o output] [-P] [-U] [-M n] [--progress port] [path]
+isd2csv --help
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org4f65772" class="outline-4">
+<h4 id="org4f65772"><span class="section-number-4">5.1.2</span> Description</h4>
+<div class="outline-text-4" id="text-5-1-2">
+<p>
+This program reads an ISD file of filename <code>path</code>, and converts and writes
+it in the CSV format to the standard output.
+It reads the standard input if <code>path</code> is omitted.
+</p>
+
+<dl class="org-dl">
+<dt><code>--output, -o</code></dt><dd>write to file at <code>output</code> instead of stdout.</dd>
+<dt><code>--ignore-prefixes, -P</code></dt><dd>ignore variable prefixes.</dd>
+<dt><code>--ignore-units, -U</code></dt><dd>ignore units.</dd>
+<dt><code>--maximum-precision, -M</code></dt><dd>request the maximum number of decimal</dd>
+</dl>
+<p>
+digits to print double-precision floating-point numbers.
+</p>
+<dl class="org-dl">
+<dt><code>--progress</code></dt><dd>send progress in percentage to given UDP port.</dd>
+<dt><code>--help, -h</code></dt><dd>show help.</dd>
+</dl>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org8ee7c4c" class="outline-3">
+<h3 id="org8ee7c4c"><span class="section-number-3">5.2</span> <a id="org708fd61"></a> <code>csv2isd</code>: Convert CSV to ISD format</h3>
+<div class="outline-text-3" id="text-5-2">
+</div>
+<div id="outline-container-org89c5f19" class="outline-4">
+<h4 id="org89c5f19"><span class="section-number-4">5.2.1</span> Synopsis</h4>
+<div class="outline-text-4" id="text-5-2-1">
+<div class="org-src-container">
+<pre class="src src-sh">csv2isd input output
+csv2isd --help
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orga17b7a9" class="outline-4">
+<h4 id="orga17b7a9"><span class="section-number-4">5.2.2</span> Description</h4>
+<div class="outline-text-4" id="text-5-2-2">
+<p>
+This program reads a CSV file of filename <code>input</code>, and converts and writes
+it into an ISD file of filename <code>output</code>.
+The first line of input must be the header naming the columns.
+</p>
+
+<dl class="org-dl">
+<dt><code>--help, -h</code></dt><dd>show help.</dd>
+</dl>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org90c6b46" class="outline-2">
+<h2 id="org90c6b46"><span class="section-number-2">6</span> Frequently Asked Questions (FAQ)</h2>
+<div class="outline-text-2" id="text-6">
+<p>
+Please read this chapter first when in doubt.
+</p>
+</div>
+
+<div id="outline-container-orgde8c1c8" class="outline-3">
+<h3 id="orgde8c1c8"><span class="section-number-3">6.1</span> How to uninstall Flint</h3>
+<div class="outline-text-3" id="text-6-1">
+<p>
+On windows, you can uninstall Flint through the system menu &ldquo;Settings&rdquo;&rarr;&ldquo;Apps &amp; features&rdquo;.
+On macOS, all you have to do for uninstallation is to remove <code>Flint.app</code>.
+If you have installed Flint&rsquo;s RPM packages on CentOS/RHEL, the following command
+uninstalls them:
+</p>
+<div class="org-src-container">
+<pre class="src src-sh">sudo rpm -e flint flint-boost flint-clibsedml flint-czmq flint-libsbml <span style="color: #8b2252;">\</span>
+    flint-protobuf flint-soslib flint-sundials flint-wxwidgets flint-zeromq
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org95d6a76" class="outline-3">
+<h3 id="org95d6a76"><span class="section-number-3">6.2</span> How to ask questions about Flint</h3>
+<div class="outline-text-3" id="text-6-2">
+<p>
+Please send <a href="mailto:tabe@fixedpoint.jp">the author</a> an email if you happen to have any questions about Flint.
+<a href="https://groups.google.com/g/flint-discuss">Flint project&rsquo;s mailing list</a> is available too.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orga149174" class="outline-3">
+<h3 id="orga149174"><span class="section-number-3">6.3</span> How to file a bug report or a feature request</h3>
+<div class="outline-text-3" id="text-6-3">
+<p>
+Please visit Flint&rsquo;s GitHub Issues page at
+<a href="https://github.com/flintproject/Flint/issues">https://github.com/flintproject/Flint/issues</a>,
+and find whether your issue has been reported or not.
+Feel free to file it if there is no similar issue.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org8c0cd3f" class="outline-3">
+<h3 id="org8c0cd3f"><span class="section-number-3">6.4</span> What are programs named <code>flint-cli</code>, <code>flint-exec</code>, etc.?</h3>
+<div class="outline-text-3" id="text-6-4">
+<p>
+Besides the main <code>flint</code> program, there are some auxiliary executables in
+Flint. Some of them are utility programs for internal use or experimental
+purpose. Others remains only for backward compatibility with Flint 1.x. In
+either case their interface is subject to change. You can find brief description about
+them in <code>src/*-README</code> of Flint&rsquo;s source tree.
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orga373e87" class="outline-2">
+<h2 id="orga373e87"><span class="section-number-2">7</span> References</h2>
+<div class="outline-text-2" id="text-7">
+<ol class="org-ol">
+<li><a id="org1632766"></a> Leem, C.H., 2016. Perspectives of physiome research. Integrative Medicine Research 5, 37–40. <a href="https://doi.org/10.1016/j.imr.2015.12.004">https://doi.org/10.1016/j.imr.2015.12.004</a></li>
+<li><a id="orgd0e4a8e"></a> Lloyd, C.M., Halstead, M.D.B., Nielsen, P.F., 2004. CellML: its future, present and past. Progress in Biophysics and Molecular Biology, Modelling Cellular and Tissue Function 85, 433–450. <a href="https://doi.org/10.1016/j.pbiomolbio.2004.01.004">https://doi.org/10.1016/j.pbiomolbio.2004.01.004</a></li>
+<li><a id="org2df6c18"></a> Asai, Y., Abe, T., Li, L., Oka, H., Nomura, T., Kitano, H., 2015. Databases for multilevel biophysiology research available at Physiome.jp. Frontiers in Physiology, Frontiers in Physiology 6. <a href="https://doi.org/10.3389/fphys.2015.00251">https://doi.org/10.3389/fphys.2015.00251</a></li>
+<li><a id="orgb22f1c3"></a> Hucka, M., Finney, A., Sauro, H.M., Bolouri, H., Doyle, J.C., Kitano, H., Arkin, A.P., Bornstein, B.J., Bray, D., Cornish-Bowden, A., Cuellar, A.A., Dronov, S., Gilles, E.D., Ginkel, M., Gor, V., Goryanin, I.I., Hedley, W.J., Hodgman, T.C., Hofmeyr, J.-H., Hunter, P.J., Juty, N.S., Kasberger, J.L., Kremling, A., Kummer, U., Le Novère, N., Loew, L.M., Lucio, D., Mendes, P., Minch, E., Mjolsness, E.D., Nakayama, Y., Nelson, M.R., Nielsen, P.F., Sakurada, T., Schaff, J.C., Shapiro, B.E., Shimizu, T.S., Spence, H.D., Stelling, J., Takahashi, K., Tomita, M., Wagner, J., Wang, J., 2003. The systems biology markup language (SBML): a medium for representation and exchange of biochemical network models. Bioinformatics 19, 524–531. <a href="https://doi.org/10.1093/bioinformatics/btg015">https://doi.org/10.1093/bioinformatics/btg015</a></li>
+<li><a id="org8967e74"></a> Asai, Y., Suzuki, Y., Kido, Y., Oka, H., Heien, E., Nakanishi, M., Urai, T., Hagihara, K., Kurachi, Y., Nomura, T., 2008. Specifications of insilicoML 1.0: A Multilevel Biophysical Model Description Language. J. Physiol. Sci 58, 447–458. <a href="https://doi.org/10.2170/physiolsci.RP013308">https://doi.org/10.2170/physiolsci.RP013308</a></li>
+<li><a id="org6eaa5dc"></a> Hindmarsh, A.C., Brown, P.N., Grant, K.E., Lee, S.L., Serban, R., Shumaker, D.E., Woodward, C.S., 2005. SUNDIALS: Suite of nonlinear and differential/algebraic equation solvers. ACM Trans. Math. Softw. 31, 363–396. <a href="https://doi.org/10.1145/1089014.1089020">https://doi.org/10.1145/1089014.1089020</a></li>
+<li><a id="orgb96c9e6"></a> Higham, D.J., 2001. An Algorithmic Introduction to Numerical Simulation of Stochastic Differential Equations. SIAM Review 43, 525–546. <a href="https://doi.org/10.1137/S0036144500378302">https://doi.org/10.1137/S0036144500378302</a></li>
+<li><a id="org61c04dd"></a> Hodgkin, A.L., Huxley, A.F., 1952. A quantitative description of membrane current and its application to conduction and excitation in nerve. The Journal of Physiology 117, 500–544. <a href="https://doi.org/10.1113/jphysiol.1952.sp004764">https://doi.org/10.1113/jphysiol.1952.sp004764</a></li>
+</ol>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p class="date">Date: 2020-09-22</p>
+<p class="author">Author: Takeshi Abe</p>
+<p class="validation"><a href="https://validator.w3.org/check?uri=referer">Validate</a></p>
+</div>
+</body>
+</html>
