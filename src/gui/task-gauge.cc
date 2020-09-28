@@ -15,7 +15,7 @@ namespace flint {
 namespace gui {
 
 TaskGauge::TaskGauge(wxWindow *parent, wxFileName filename)
-	: wxGauge(parent, wxID_ANY, 100, wxDefaultPosition, wxSize(120, 20))
+	: wxGauge(parent, wxID_ANY, 100, wxDefaultPosition, wxSize(120, 10))
 	, filename_(filename)
 {
 	Bind(wxEVT_THREAD, &TaskGauge::OnThreadUpdate, this);
