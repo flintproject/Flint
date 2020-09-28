@@ -8,10 +8,13 @@
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wcast-qual"
 #include <wx/filename.h>
+#include <wx/log.h>
 #pragma GCC diagnostic pop
 
 #include "exec.h"
+#include "flint/error.h"
 #include "gui/filename.h"
+#include "gui/log-dialog.h"
 #include "gui/main-frame.h"
 #include "gui/phsp.h"
 #include "gui/sedml.h"
@@ -27,6 +30,8 @@ namespace gui {
 SimWindow::SimWindow(MainFrame *parent, Simulation *sim)
 	: wxWindow(parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, 0, wxString::Format("Simulation %d", sim->id))
 	, sim_(sim)
+	, log_dialog_(new LogDialog(this, wxString::Format("Job %d's log", sim->id)))
+	, log_button_(new wxButton(this, wxID_ANY, "Log"))
 {
 	auto vbox = new wxBoxSizer(wxVERTICAL);
 	int i = 0;
@@ -36,8 +41,11 @@ SimWindow::SimWindow(MainFrame *parent, Simulation *sim)
 		vbox->Add(window, 0, wxEXPAND /* horizontally stretchable */);
 		windows_.push_back(window);
 	}
+	vbox->Add(log_button_, wxSizerFlags(0).Center());
 	SetSizerAndFit(vbox);
+	log_button_->Hide();
 
+	log_button_->Bind(wxEVT_BUTTON, &SimWindow::OnLog, this);
 	Bind(wxEVT_THREAD, &SimWindow::OnThreadUpdate, this);
 }
 
@@ -88,10 +96,17 @@ void SimWindow::OnThreadUpdate(wxThreadEvent &)
 {
 	auto *main_frame = wxDynamicCast(GetParent(), MainFrame);
 
+	auto log_file = sim_->GetLogFileName();
+	if (log_file.FileExists() && log_file.GetSize() > 0) {
+		log_dialog_->text_ctrl()->LoadFile(GetFnStrFromWxFileName(log_file));
+		log_button_->Show();
+	}
 	if (result_)
 		main_frame->SetStatusText(wxString::Format("Job %d finished successfully", sim_->id));
-	else
-		wxLogError("simulation failed: %s", ec_.Get());
+	else {
+		main_frame->SetStatusText(wxString::Format("Job %d failed", sim_->id));
+		log_dialog_->Show();
+	}
 
 	main_frame->ResetControl();
 }
@@ -102,10 +117,20 @@ wxThread::ExitCode SimWindow::Entry()
 	sim_dir.Mkdir(wxS_DIR_DEFAULT, wxPATH_MKDIR_FULL); // make sure that it exists
 
 	auto *main_frame = wxDynamicCast(GetParent(), MainFrame);
-	result_ = exec::Exec(option_, GetPathFromWxFileName(sim_dir), &main_frame->arg());
+	{
+		auto log_path = GetPathFromWxFileName(sim_->GetLogFileName());
+		boost::filesystem::ofstream ofs(log_path, std::ios::binary);
+		StderrRedirect redirect(&ofs);
+		result_ = exec::Exec(option_, GetPathFromWxFileName(sim_->GetDirectoryName()), &main_frame->arg());
+	}
 
 	wxQueueEvent(this, new wxThreadEvent);
 	return static_cast<wxThread::ExitCode>(0);
+}
+
+void SimWindow::OnLog(wxCommandEvent &)
+{
+	log_dialog_->Show();
 }
 
 }

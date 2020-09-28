@@ -3,7 +3,7 @@
 #+MACRO: Tagline a simulator for biological and physiological models
 #+TITLE: Flint {{{FlintVersion}}}: The User Guide
 #+AUTHOR: Takeshi Abe
-#+DATE: 2020-09-22
+#+DATE: 2020-09-28
 #+OPTIONS: toc:t H:4 num:t ':t timestamp:nil
 #+LATEX_CLASS: flint-user-guide
 #+LATEX_HEADER: \setcounter{secnumdepth}{3}
@@ -583,6 +583,18 @@ Note that this operation affects all of alive jobs simultaneously.
 #+attr_latex: :width 0.8\textwidth
 #+attr_html: :width 600px
 [[file:image/control.png]]
+
+** Viewing simulation log
+Flint reports log messages when, e.g., simulation fails.
+They can be useful for inspecting a cause of the trouble.
+A log dialog pops up when some logs are available at the end of simulation as in Fig.\nbsp[[fig:log]].
+You can also open the dialog by clicking the "Log" button located at the simulation window of each job.
+
+#+name: fig:log
+#+caption: The log dialog of a simulation job.
+#+attr_latex: :width 0.8\textwidth
+#+attr_html: :width 600px
+[[file:image/log.png]]
 
 ** Visualizing simulation results
 Flint has a feature to show a line graph for the result of a simulation on the

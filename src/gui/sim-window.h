@@ -9,11 +9,11 @@
 #pragma GCC diagnostic pop
 
 #include "cli.pb.h"
-#include "flint/error.h"
 
 namespace flint {
 namespace gui {
 
+class LogDialog;
 class MainFrame;
 struct Simulation;
 class TaskWindow;
@@ -32,11 +32,14 @@ protected:
 	virtual wxThread::ExitCode Entry() override;
 
 private:
+	void OnLog(wxCommandEvent &event);
+
 	Simulation *sim_;
+	LogDialog *log_dialog_;
+	wxButton *log_button_;
 	cli::ExecOption option_;
 	std::vector<TaskWindow *> windows_;
 	bool result_;
-	StderrCapture ec_;
 };
 
 }

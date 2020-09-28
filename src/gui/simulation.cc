@@ -22,5 +22,12 @@ wxFileName Simulation::GetDirectoryName() const
 	return filename;
 }
 
+wxFileName Simulation::GetLogFileName() const
+{
+	auto filename = GetDirectoryName();
+	filename.SetFullName("log.txt");
+	return filename;
+}
+
 }
 }

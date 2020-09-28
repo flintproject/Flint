@@ -29,6 +29,20 @@ private:
 	std::streambuf *orig_;
 };
 
+class StderrRedirect {
+public:
+	explicit StderrRedirect(std::ostream *os)
+		: orig_(std::cerr.rdbuf(os->rdbuf()))
+	{}
+
+	~StderrRedirect() {
+		std::cerr.rdbuf(orig_);
+	}
+
+private:
+	std::streambuf *orig_;
+};
+
 }
 
 #endif

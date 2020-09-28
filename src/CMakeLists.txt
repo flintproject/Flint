@@ -268,12 +268,13 @@ add_executable(flint WIN32
     gui/gnuplot.cc
     gui/httpd.cc
     gui/job.cc
+    gui/log-dialog.cc
     gui/main-frame.cc
     gui/param-tree.cc
     gui/phsp-editor-dialog.cc
     gui/phsp.cc
-    gui/preference.cc
     gui/pref-page-general.cc
+    gui/preference.cc
     gui/script-frame.cc
     gui/sedml.cc
     gui/sim-window.cc
