@@ -1,4 +1,4 @@
-* Flint 2.4 (2020-09-XX)
+* Flint 2.4 (2020-09-29)
 
 ** Supported platforms
    - Windows 7 or later.
