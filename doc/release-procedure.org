@@ -14,7 +14,7 @@
 * Bump up version string in:
   .appveyor.yml
   configure.ac
-  doc/flint-user-guide.tex
+  doc/flint-user-guide.org
   src/gui/main-frame.cc
   version.mk
   xcode/Info.plist

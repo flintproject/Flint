@@ -1,5 +1,5 @@
 # -*- mode: org; fill-column: 80; -*-
-#+MACRO: FlintVersion 2.4
+#+MACRO: FlintVersion 2.5
 #+MACRO: Tagline a simulator for biological and physiological models
 #+TITLE: Flint {{{FlintVersion}}}: The User Guide
 #+AUTHOR: Takeshi Abe
@@ -122,21 +122,21 @@ Flint project distributes Flint {{{FlintVersion}}}'s x86-64 binary installers fo
 macOS, and CentOS/RHEL 7 or 8.
 
 *** On Windows
-Please download the installer package =Flint-2.4.0-windows.x86_64.msi= at
+Please download the installer package =Flint-2.5.0-windows.x86_64.msi= at
 [[https://sourceforge.net/projects/flintproject/files/Flint/]].
 Double-clicking the .msi package will start the installation process.
 If installed successfully, Flint's executable program will be found at
 =C:\Program Files\Flint\flint.exe=.
 
 *** On macOS
-Please download the installer package =Flint-2.4.0-mac.dmg= at
+Please download the installer package =Flint-2.5.0-mac.dmg= at
 [[https://sourceforge.net/projects/flintproject/files/Flint/]].
 The .dmg archive for macOS contains Flint {{{FlintVersion}}}'s .pkg file; extracting and
 double-clicking it to start an application bundle called
 =Flint.app=.
 
 *** On CentOS/RHEL
-Please download =Flint-2.4.0-el7.x86_64.zip= or =Flint-2.4.0-el8.x86_64.zip=
+Please download =Flint-2.5.0-el7.x86_64.zip= or =Flint-2.5.0-el8.x86_64.zip=
 at [[https://sourceforge.net/projects/flintproject/files/Flint/]], depending
 on the major version of your OS.
 Unzipping the archive, run the following command on a bash-like shell to install
@@ -152,7 +152,7 @@ Once installed, Flint's executable will be found at
 *** On other supported OSes
 In principle Flint {{{FlintVersion}}} runs on any Linux distribution coming up with GTK 2 or 3.
 You can build Flint from its source tarball, available at
-[[https://github.com/flintproject/Flint/archive/Flint-2.4.0.tar.gz]],
+[[https://github.com/flintproject/Flint/archive/Flint-2.5.0.tar.gz]],
 by following the instructions in =INSTALL.org= found in the archive.
 
 ** Try your first simulation with Flint {{{FlintVersion}}}
@@ -175,7 +175,7 @@ on macOS, or
 #+end_example
 on CentOS/RHEL.
 Otherwise you can also download it from
-[[https://github.com/flintproject/Flint/tree/Flint-2.4.0/example/HodgkinHuxley_1952_neuron_model.phml]].
+[[https://github.com/flintproject/Flint/tree/Flint-2.5.0/example/HodgkinHuxley_1952_neuron_model.phml]].
 
 - Launch Flint ::
 To launch Flint, double-click

@@ -15,10 +15,10 @@
 \usepackage{listings}
 \author{Takeshi Abe}
 \date{2020-09-28}
-\title{Flint 2.4: The User Guide}
+\title{Flint 2.5: The User Guide}
 \hypersetup{
  pdfauthor={Takeshi Abe},
- pdftitle={Flint 2.4: The User Guide},
+ pdftitle={Flint 2.5: The User Guide},
  pdfkeywords={},
  pdfsubject={},
  pdfcreator={Emacs 28.0.50 (Org mode 9.4)}, 
@@ -33,13 +33,13 @@
 \doclicenseThis
 
 \begin{abstract}
-This document describes how to use Flint 2.4, a simulator for biological and physiological models.
+This document describes how to use Flint 2.5, a simulator for biological and physiological models.
 Readers also find some platform-specific notes and trouble-shooting techniques that
 users would like to know when using Flint.
 \end{abstract}
 
 \chapter{Introduction}
-\label{sec:org43376c5}
+\label{sec:orgfd543b7}
 
 Understanding the dynamics of living organisms often requires a mathematical model
 that describes the hypotheses to be tested. It is widely recognized that the
@@ -52,16 +52,16 @@ cardiac cells driven by modulation of ion channels. By virtue of
 differential equations, these celullar models can be integrated into models at the
 tissue or organ level. In fact, ways to integrate a computational model of
 the physiological functions of the whole individual have been explored since the
-end of the last century, under the name physiome [\ref{orgc174cc7}].
+end of the last century, under the name physiome [\ref{orgd85b6f0}].
 
 It is, however, technically challenging for practitioners in the field of
 biology or physiology to express their hypotheses on biological organisms in a
 precise system of ODEs. In order to make it easier to edit a model in problem
 that implicitly specifies the ODEs, several domain-specific languages have
-been proposed and standardized, including CellML [\ref{orgf84e7f6}], the
+been proposed and standardized, including CellML [\ref{org959765b}], the
 Physiological Hierarchy Markup Language (PHML) devised by Asai and colleagues
-[\ref{org18aa28a}], and the Systems Biology Markup Language (SBML) devised
-by [\ref{org43e6e3b}]. Although the design principles of each modeling
+[\ref{orgcb48ad3}], and the Systems Biology Markup Language (SBML) devised
+by [\ref{orgae38ec3}]. Although the design principles of each modeling
 language vary, computational analysis of any model in these languages
 comprises a shared set of procedures based on the theory of differential
 equations and dynamical systems.
@@ -73,48 +73,48 @@ ODEs and solve it in a numerical manner. It also supports stochastic
 differential equations (SDE), a non-deterministic extension of ODEs, which makes
 it possible to involve random elements, e.g. noise, in the dynamics.
 
-\section{Brief summary about Flint 2.4}
-\label{sec:orgb0ff17f}
-Flint 2.4 is new implementation of Flint 1.x, a simulator for biological and physiological models.
+\section{Brief summary about Flint 2.5}
+\label{sec:orgf075898}
+Flint 2.5 is new implementation of Flint 1.x, a simulator for biological and physiological models.
 Flint can run simulations of multi-level physiological models written in PHML.
 It means that Flint parses given models, performs numerical analysis for their
 simulation, and renders simulation outcome into a line graph via \href{http://www.gnuplot.info/}{gnuplot}.
 Likewise, Flint can handle CellML and SBML as well as SBML-PHML hybrid models.
 
 \subsection{Markup languages}
-\label{sec:orgd579d1c}
-Flint 2.4 supports the following standard languages of models:
+\label{sec:org571cb75}
+Flint 2.5 supports the following standard languages of models:
 
 \begin{itemize}
-\item PHML (including its precursor ISML [\ref{orgba0a56e}])
+\item PHML (including its precursor ISML [\ref{org5a22982}])
 \item SBML
 \item CellML
 \end{itemize}
 
 \subsection{Available numerical algorithms for ordinary differential equations}
-\label{sec:org570b817}
-Flint 2.4 supports the following algorithms to solve ODEs numerically:
+\label{sec:org19a5ee0}
+Flint 2.5 supports the following algorithms to solve ODEs numerically:
 
 \begin{itemize}
 \item Euler method
 \item Runge-Kutta 4th-order method
 \item Adaptive stepsize Runge-Kutta method, based on the ARKode solver of
-SUNDIALS [\ref{orgc826483}]
+SUNDIALS [\ref{org0dc383e}]
 \end{itemize}
 
 
 \subsection{Available numerical algorithms for stochastic differential equations}
-\label{sec:org09d818e}
-Flint 2.4 also supports the following algorithms to solve SDEs
+\label{sec:org3d74916}
+Flint 2.5 also supports the following algorithms to solve SDEs
 numerically:
 
 \begin{itemize}
-\item Euler-Maruyama method [\ref{orgddca7ad}]
+\item Euler-Maruyama method [\ref{orgda52cce}]
 \end{itemize}
 
 
 \section{Notation}
-\label{sec:org744a0a0}
+\label{sec:orgc01fd30}
 In this document, command lines in a shell or the command prompt on Windows are
 formatted as in the following example:
 \begin{verbatim}
@@ -123,14 +123,14 @@ echo this is a command line.
 
 
 \chapter{Getting started}
-\label{sec:orgfd3ead1}
+\label{sec:org001db73}
 
 This chapter explains how to obtain and install Flint, and describes how to run
 a simulation.
 
 \section{Supported platforms}
-\label{sec:org4995625}
-Flint 2.4 runs on several supported platforms, including:
+\label{sec:org9e92f50}
+Flint 2.5 runs on several supported platforms, including:
 
 \begin{itemize}
 \item Windows 7 or later;
@@ -139,30 +139,30 @@ Flint 2.4 runs on several supported platforms, including:
 \end{itemize}
 
 
-\section{Download and install Flint 2.4}
-\label{sec:org8e8297a}
-Flint project distributes Flint 2.4's x86-64 binary installers for Windows,
+\section{Download and install Flint 2.5}
+\label{sec:org4e98aab}
+Flint project distributes Flint 2.5's x86-64 binary installers for Windows,
 macOS, and CentOS/RHEL 7 or 8.
 
 \subsection{On Windows}
-\label{sec:orgd573968}
-Please download the installer package \texttt{Flint-2.4.0-windows.x86\_64.msi} at
+\label{sec:orgc216b76}
+Please download the installer package \texttt{Flint-2.5.0-windows.x86\_64.msi} at
 \url{https://sourceforge.net/projects/flintproject/files/Flint/}.
 Double-clicking the .msi package will start the installation process.
 If installed successfully, Flint's executable program will be found at
 \texttt{C:\textbackslash{}Program Files\textbackslash{}Flint\textbackslash{}flint.exe}.
 
 \subsection{On macOS}
-\label{sec:org234d3a7}
-Please download the installer package \texttt{Flint-2.4.0-mac.dmg} at
+\label{sec:orgd132e3d}
+Please download the installer package \texttt{Flint-2.5.0-mac.dmg} at
 \url{https://sourceforge.net/projects/flintproject/files/Flint/}.
-The .dmg archive for macOS contains Flint 2.4's .pkg file; extracting and
+The .dmg archive for macOS contains Flint 2.5's .pkg file; extracting and
 double-clicking it to start an application bundle called
 \texttt{Flint.app}.
 
 \subsection{On CentOS/RHEL}
-\label{sec:orgcca8e8a}
-Please download \texttt{Flint-2.4.0-el7.x86\_64.zip} or \texttt{Flint-2.4.0-el8.x86\_64.zip}
+\label{sec:org4b91a60}
+Please download \texttt{Flint-2.5.0-el7.x86\_64.zip} or \texttt{Flint-2.5.0-el8.x86\_64.zip}
 at \url{https://sourceforge.net/projects/flintproject/files/Flint/}, depending
 on the major version of your OS.
 Unzipping the archive, run the following command on a bash-like shell to install
@@ -176,19 +176,19 @@ Once installed, Flint's executable will be found at
 \texttt{/opt/flint/bin/flint}.
 
 \subsection{On other supported OSes}
-\label{sec:org4ebc770}
-In principle Flint 2.4 runs on any Linux distribution coming up with GTK 2 or 3.
+\label{sec:org9f4e458}
+In principle Flint 2.5 runs on any Linux distribution coming up with GTK 2 or 3.
 You can build Flint from its source tarball, available at
-\url{https://github.com/flintproject/Flint/archive/Flint-2.4.0.tar.gz},
+\url{https://github.com/flintproject/Flint/archive/Flint-2.5.0.tar.gz},
 by following the instructions in \texttt{INSTALL.org} found in the archive.
 
-\section{Try your first simulation with Flint 2.4}
-\label{sec:org4fe4ff2}
-This section describes a simple procedure with Flint 2.4 to run a simulation of an
+\section{Try your first simulation with Flint 2.5}
+\label{sec:org5edb8d2}
+This section describes a simple procedure with Flint 2.5 to run a simulation of an
 example PHML model, which replicates the system of ordinary differential
 equations about membrane potentials in nerve introduced by
-[\ref{orgad39c98}].
-If you have installed Flint 2.4 via one of its binary installer packages, the
+[\ref{orgc865066}].
+If you have installed Flint 2.5 via one of its binary installer packages, the
 model file can be found at
 \begin{verbatim}
 C:\Program Files\Flint\example\HodgkinHuxley_1952_neuron_model.phml
@@ -203,7 +203,7 @@ on macOS, or
 \end{verbatim}
 on CentOS/RHEL.
 Otherwise you can also download it from
-\url{https://github.com/flintproject/Flint/tree/Flint-2.4.0/example/HodgkinHuxley\_1952\_neuron\_model.phml}.
+\url{https://github.com/flintproject/Flint/tree/Flint-2.5.0/example/HodgkinHuxley\_1952\_neuron\_model.phml}.
 
 \begin{description}
 \item[{Launch Flint}] 
@@ -211,34 +211,34 @@ Otherwise you can also download it from
 To launch Flint, double-click
 \texttt{C:\textbackslash{}Program Files\textbackslash{}Flint\textbackslash{}flint.exe} on Windows,
 \texttt{Flint.app} on macOS, or \texttt{/opt/flint/bin/flint} on CentOS/RHEL.
-It shows a window like Fig.~\ref{fig:org0c1457a}.
+It shows a window like Fig.~\ref{fig:org87ed634}.
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=0.8\textwidth]{image/initial.png}
-\caption{\label{fig:org0c1457a}The initial window of Flint.}
+\caption{\label{fig:org87ed634}The initial window of Flint.}
 \end{figure}
 
 \begin{description}
 \item[{Open a model}] 
 \end{description}
 In the ``File'' menu, select ``Open'' to choose a model file. Then you will see
-a file dialog like Fig.~\ref{fig:org1138b55}.
+a file dialog like Fig.~\ref{fig:org4e1ab7c}.
 
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=0.8\textwidth]{image/open-model.png}
-\caption{\label{fig:org1138b55}The file dialog to open a model.}
+\caption{\label{fig:org4e1ab7c}The file dialog to open a model.}
 \end{figure}
 
 Select \texttt{HodgkinHuxley\_1952\_neuron\_model.phml} in the file dialog and click ``Open'' button.
-Then the model window will appear as in Fig.~\ref{fig:org6401198}.
+Then the model window will appear as in Fig.~\ref{fig:orge9a0f7f}.
 On macOS, opening a form by \texttt{Command + Shift + g}, one can
 specify an absolute path in the application bundle \texttt{Flint.app}.
 
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=0.8\textwidth]{image/hh.png}
-\caption{\label{fig:org6401198}The model window.}
+\caption{\label{fig:orge9a0f7f}The model window.}
 \end{figure}
 
 \begin{description}
@@ -253,141 +253,141 @@ length of the simulation in ``Simulation Time Step'' optionally.
 Click the ``Run'' button to start a simulation.
 
 Once simulation started running, the progress bar will appear in the control
-panel in the right side like Fig.~\ref{fig:orge9644d2}, and both the cross mark
+panel in the right side like Fig.~\ref{fig:orgd18e7ce}, and both the cross mark
 (as ``Cancel'') and ``Detail'' buttons will be enabled.
 
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=0.8\textwidth]{image/hh-progress.png}
-\caption{\label{fig:orge9644d2}The progress bar for the model.}
+\caption{\label{fig:orgd18e7ce}The progress bar for the model.}
 \end{figure}
 
 Wait until the status bar tells that the simulation completed (see
-Fig.~\ref{fig:orgecbe80d}).
+Fig.~\ref{fig:org00fefb1}).
 
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=0.8\textwidth]{image/hh-completed.png}
-\caption{\label{fig:orgecbe80d}The status bar indicates the simulation completed.}
+\caption{\label{fig:org00fefb1}The status bar indicates the simulation completed.}
 \end{figure}
 
 \begin{description}
 \item[{See detail of the simulation}] 
 \end{description}
 Click the ``Detail'' button to get the simulation result.
-Then a detail window will appear as in Fig.~\ref{fig:orga0d291c}.
+Then a detail window will appear as in Fig.~\ref{fig:orga47d082}.
 
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=0.8\textwidth]{image/hh-detail.png}
-\caption{\label{fig:orga0d291c}The detail window.}
+\caption{\label{fig:orga47d082}The detail window.}
 \end{figure}
 
 \begin{description}
 \item[{Select ordinates}] 
 \end{description}
 Click the ``View'' button on the detail window, then a plot window to render
-line graphs about the simulation result, like Fig.~\ref{fig:org01ea360}.
+line graphs about the simulation result, like Fig.~\ref{fig:org414f02f}.
 
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=0.8\textwidth]{image/hh-plot.png}
-\caption{\label{fig:org01ea360}The plot window.}
+\caption{\label{fig:org414f02f}The plot window.}
 \end{figure}
 
 Check the Y1 column of ``\texttt{V}'' in the variable list, which calls gnuplot.
 Soon the corresponding line graph will appear on a separate window,
-like Fig.~\ref{fig:org5d53474}.
+like Fig.~\ref{fig:org94faaaa}.
 
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=0.8\textwidth]{image/hh-plot-v.png}
-\caption{\label{fig:org5d53474}The plot window with ``\texttt{V}'' on Y1.}
+\caption{\label{fig:org94faaaa}The plot window with ``\texttt{V}'' on Y1.}
 \end{figure}
 
 Moreover you can also check the Y2 column of another variable ``\texttt{I\_Na}'' in the
 list to arrange two line graphs in the same canvas, as in
-Fig.~\ref{fig:orge2c8ffc}.
+Fig.~\ref{fig:org6d6ae66}.
 
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=0.8\textwidth]{image/hh-plot-v-ina.png}
-\caption{\label{fig:orge2c8ffc}The plot window with ``\texttt{V}'' on Y1 and ``\texttt{I\_Na}'' on Y2.}
+\caption{\label{fig:org6d6ae66}The plot window with ``\texttt{V}'' on Y1 and ``\texttt{I\_Na}'' on Y2.}
 \end{figure}
 
 \chapter{Graphical User Interface}
-\label{sec:org3d11536}
-Flint 2.4 comes with a graphical user interface out of the box. This chapter
+\label{sec:orgafee960}
+Flint 2.5 comes with a graphical user interface out of the box. This chapter
 explains features of the GUI and how to use them.
 
 \section{Launching Flint}
-\label{sec:org5f833cc}
+\label{sec:org8116e7f}
 On Windows, double-clicking \texttt{flint.exe} in the start menu starts Flint.
 On macOS, double-clicking \texttt{Flint.app} works similarly.
 
 \section{Quitting Flint}
-\label{sec:orgf430f4a}
+\label{sec:orgabe4ea3}
 To quit Flint, use the menu ``File''\(\to\)``Exit''.
 
 \section{Loading models}
-\label{sec:org01423b6}
+\label{sec:org11bf5ad}
 Flint must load models before running simulations for them.
 Users tell Flint which model should be loaded by opening the model file.
 Loading a model can fail due to some reasons; for example, it may fail if
 the model file contains an error or unsupported elements.
 An error dialog will display a diagnosis message when loading a model fails.
 Once loading a model successfully, the model window shows up and stays
-in the main window until closed, like Fig.~\ref{fig:org7d9154f}.
+in the main window until closed, like Fig.~\ref{fig:orgb0aef67}.
 
 \section{Configuring simulation tasks}
-\label{sec:org2c234f3}
+\label{sec:org716c728}
 
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=0.8\textwidth]{image/lr.png}
-\caption{\label{fig:org7d9154f}The model window.}
+\caption{\label{fig:orgb0aef67}The model window.}
 \end{figure}
 
 Before starting simulations for a loaded model, users may want to configure them
 in terms of numerical integration, simulation time, output data, and parameters.
 
 \subsection{Integration method}
-\label{sec:org593fdc9}
+\label{sec:org6dd10de}
 Users have to choose a solver method for ordinary differential equations or
 stochastic differential equations at the ``Integration method'' combobox.
 An error will occur at simulation time when choosing any method except
 the Euler-Maruyama method for a model including SDEs.
 
 \subsection{Simulation Length}
-\label{sec:org43e869f}
+\label{sec:org9031980}
 Users must specify the total length of simulation time at the ``Simulation Length''
 field; the given number is interpreted in terms of the selected time unit.
 
 \subsection{Simulation Time Step}
-\label{sec:org714cdc3}
+\label{sec:org0a45b9a}
 Similarly to ``Simulation Length'', users can specify the time step at the
 ``Simulation Time Step'' field.
 
 \subsection{Starting from}
-\label{sec:org40799de}
+\label{sec:orge2ab719}
 Users can specify when (in the sense of simulation time) output starts from
 at this field. By default, simulation process produces output from time 0.
 
 \subsection{Data Sampling}
-\label{sec:orgd0b1a7d}
+\label{sec:org7500ba8}
 This setting is for determining how often the result data are written in.
 Note that the sampling rate does not affect the calculation for simulation.
 
 \subsection{Select output variables}
-\label{sec:org2414825}
+\label{sec:orgbd854b5}
 Before starting simulations for a loaded model, users may want to choose a
 limited number of variables for output among available variables.
 Filtering output variables will reduce the burden of writing output, and thus
 may improve the simulation performance.
-The ``Output Variables'' panel (Fig.~\ref{fig:orgd8c4225}) allows
+The ``Output Variables'' panel (Fig.~\ref{fig:orgb2edd15}) allows
 user to select output variables by matching one of their properties with a given
 string. The possible target properties depend on the format of the model file,
-and are summarized in Table~\ref{tab:org4ffb8bb}. With the ``Filter Column''
+and are summarized in Table~\ref{tab:org579ff41}. With the ``Filter Column''
 combo box one can choose the target. The ``Filter Pattern'' combo box chooses
 the way to interpret the given string: as a regular expression (default), or
 just as a fixed string.
@@ -395,11 +395,11 @@ just as a fixed string.
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=0.8\textwidth]{image/lr-output-variables.png}
-\caption{\label{fig:orgd8c4225}The ``Output Variables'' panel.}
+\caption{\label{fig:orgb2edd15}The ``Output Variables'' panel.}
 \end{figure}
 
 \begin{table}[htbp]
-\caption{\label{tab:org4ffb8bb}Output variable's properties to be matched}
+\caption{\label{tab:org579ff41}Output variable's properties to be matched}
 \centering
 \begin{tabular}{ll}
 Model file format & properties\\
@@ -411,7 +411,7 @@ CellML & Variable name; Component name\\
 \end{table}
 
 \subsection{Parameterize constant values}
-\label{sec:org3d50f87}
+\label{sec:orgc555937}
 By default, Flint runs a single simulation job for each loaded model.
 It is also possible to start a simulation batch for each model with
 different values of parameters.
@@ -444,7 +444,7 @@ The whole set of possible tuples of multiple parameters is defined as the
 Cartesian product of multiple value-sets, i.e., \(\prod_{p \in \mathcal{P}}
 \mathcal{V}(p)\).
 (It is also possible to custom how to construct the whole set of value tuples
-for an advanced setting. Please read \ref{org2ea7fa0}.)
+for an advanced setting. Please read \ref{org92856ff}.)
 From now on, a pair \((\mathcal{P}, \mathcal{V})\) is called the parameter set as
 it determines the parameterization of a batch completely.
 
@@ -460,14 +460,14 @@ such as the initial values of ordinary differential equations and values of
 The table at the ``Parameters'' consists of each row corresponding to a constant
 element in the model; the ``Expression'' field of the row accepts an algebraic
 formula defining the parameterized value of the constant.
-The following~\ref{org5c66dc2} summarizes available operators in
+The following~\ref{orgdb2855c} summarizes available operators in
 the formula, which semantics conforms to \href{https://www.w3.org/TR/MathML3/}{MathML 3} in principle,
 except infix operators such as \texttt{+}, \texttt{*}, etc.
 For example, given parameters \texttt{p} and \texttt{q}, you can build a formula
 like ``\texttt{2.5 * max(p, 1) - cos(q)}''.
 
-\subsubsection{\label{org5c66dc2}Available operators to build a formula}
-\label{sec:org8a68ae6}
+\subsubsection{\label{orgdb2855c}Available operators to build a formula}
+\label{sec:org338128c}
 
 
 \begin{itemize}
@@ -515,28 +515,28 @@ like ``\texttt{2.5 * max(p, 1) - cos(q)}''.
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=0.4\textwidth]{image/lr-edit-parameter-set-a.png}
-\caption{\label{fig:orgf7d2934}edit a parameter called \texttt{p0}}
+\caption{\label{fig:org20e330d}edit a parameter called \texttt{p0}}
 \end{figure}
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=0.4\textwidth]{image/lr-edit-parameter-set-b.png}
-\caption{\label{fig:org4a20a29}choosing value-set type}
+\caption{\label{fig:org6d01767}choosing value-set type}
 \end{figure}
 
 \subsubsection{Edit the parameter set}
-\label{sec:org2445e0f}
+\label{sec:orgd0c450a}
 In order to define or modify the parameter set, push button ``Edit parameter
 set'' at first. Then a window will pop up. It allows users to see existing
 parameters, add a new parameter (via the ``\texttt{+}'' button), delete existing
 one (via the ``\texttt{-}'' button), and modify them (see
-Fig.~\ref{fig:orgf7d2934}).
+Fig.~\ref{fig:org20e330d}).
 
 The name of a parameter is arbitrary, but must start with an alphabet or
 underscore (\texttt{\_}), followed by a sequence of alphabets, underscores, and/or
 digits (\texttt{0}, \texttt{1}, \ldots{}, \texttt{9}).
 
 There are four types of value-sets: enum, interval, Gaussian, and uniform
-(see Fig.~\ref{fig:org4a20a29}).
+(see Fig.~\ref{fig:org6d01767}).
 For a value-set of type enum, each of possible values must be specified.
 On the other hand, only the lower and upper (both inclusive) of a range
 of values with a step are required to define a value-set of type interval.
@@ -545,18 +545,18 @@ The latter two types of value-sets are for generating pseudo-random values
 according to specified probability distribution in simulation time.
 
 \subsubsection{Define constants by parameters}
-\label{sec:orgd3800ee}
+\label{sec:org5a7eb73}
 Once users have defined a parameter, it is available in the ``Expression'' field
-of any row in the ``Parameters'' table (see Fig.~\ref{fig:orge987fbd}).
+of any row in the ``Parameters'' table (see Fig.~\ref{fig:org76e31c8}).
 
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=0.8\textwidth]{image/lr-parameter-set.png}
-\caption{\label{fig:orge987fbd}Parameterize a constant with parameter ``p0''.}
+\caption{\label{fig:org76e31c8}Parameterize a constant with parameter ``p0''.}
 \end{figure}
 
-\subsubsection{\label{org2ea7fa0}Control how to combine parameters}
-\label{sec:org2b934d1}
+\subsubsection{\label{org92856ff}Control how to combine parameters}
+\label{sec:org0356b8b}
 It will be often found that the whole set of possible tuples of the parameters
 becomes too big even for the case of a small number of the parameters, i.e., that
 \(\lvert \mathcal{P} \rvert\) is small. For example, if you use five parameters
@@ -567,7 +567,7 @@ within a realistic time frame.
 To mitigate the explosion of the number of the combinations, there is a way
 to skip some combinations; choose ``zip'' when creating an item by the
 ``\texttt{+}'' button in the ``Edit parameter set'' dialog
-(see Fig.~\ref{fig:org2647259}).
+(see Fig.~\ref{fig:orgdb4d64f}).
 Then, the value tuples of the parameters in the ``zip'' sub-tree are constructed
 as like the \href{https://docs.python.org/3/library/functions.html\#zip}{\texttt{zip()}} function of the Python standard library applies to their value-sets.
 To be precise, let \(\{p_1, p_2, ..., p_m\}\) be the parameters in the sub-tree,
@@ -595,51 +595,51 @@ Then the set of their value tuple is \(\{(0.1, 3, 2), (0.2, 1, 3), (0.3, 4, 5),
 The ``zip''-ped parameters can be combined with other parameters as by default,
 i.e., by taking the Cartesian product; choose ``product'' when creating an
 the ``\texttt{+}'' button in the ``Edit parameter set'' dialog
-(see Fig.~\ref{fig:org2647259}).
+(see Fig.~\ref{fig:orgdb4d64f}).
 Then, the items in the ``product'' sub-tree are combined by the Cartesian
 product.
 
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=0.8\textwidth]{image/lr-edit-parameter-set-productzip.png}
-\caption{\label{fig:org2647259}``zip'' and ``product'' in the ``Edit parameter set'' window.}
+\caption{\label{fig:orgdb4d64f}``zip'' and ``product'' in the ``Edit parameter set'' window.}
 \end{figure}
 
 \section{Starting simulation}
-\label{sec:org6ba0f16}
+\label{sec:org4128ab8}
 To start simulation, use the menu ``Control''\(\to\)``Run'' or button
 ``Run'' on the control panel. It kicks simulation jobs for all loaded models.
 Users can monitor the progress in total on the control panel, as well as the
-one for a single job on the detail windows like Fig.~\ref{fig:org439dad8}.
+one for a single job on the detail windows like Fig.~\ref{fig:org40fb1de}.
 Note that a context menu allows users to cancel simulation assigned to a
 specific parameter value in a task.
 
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=0.8\textwidth]{image/lr-detail.png}
-\caption{\label{fig:org439dad8}The detail window during simulation.}
+\caption{\label{fig:org40fb1de}The detail window during simulation.}
 \end{figure}
 
 \section{Controlling simulation jobs}
-\label{sec:orgf52912d}
+\label{sec:orgb48195e}
 After starting simulation jobs, users can control them instead of just waiting
 for them finishing.
 
 \subsection{Cancel jobs}
-\label{sec:org36b9fd8}
+\label{sec:org19b48a1}
 There is another way to cancel running jobs; pushing the cross mark on the
-control panel (see Fig.~\ref{fig:org43d52f5}), which cancels a job i.e. all
+control panel (see Fig.~\ref{fig:org74bdd2b}), which cancels a job i.e. all
 of its tasks together.
 
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=0.8\textwidth]{image/lr-progress.png}
-\caption{\label{fig:org43d52f5}The progress bar / cross mark / ``Detail'' button on the control panel.}
+\caption{\label{fig:org74bdd2b}The progress bar / cross mark / ``Detail'' button on the control panel.}
 \end{figure}
 
 \subsection{Pause and resume jobs}
-\label{sec:orgc9353c1}
-As in Fig.~\ref{fig:org8747660}, users can pause jobs at any time during simulation
+\label{sec:org0fcfae7}
+As in Fig.~\ref{fig:org074d009}, users can pause jobs at any time during simulation
 by using the menu ``Control''\(\to\)``Pause''. Resuming paused jobs can
 be done with the menu ``Control''\(\to\)``Resume''.
 Note that this operation affects all of alive jobs simultaneously.
@@ -647,24 +647,24 @@ Note that this operation affects all of alive jobs simultaneously.
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=0.8\textwidth]{image/control.png}
-\caption{\label{fig:org8747660}The Control Menu.}
+\caption{\label{fig:org074d009}The Control Menu.}
 \end{figure}
 
 \section{Viewing simulation log}
-\label{sec:orgb0ecdda}
+\label{sec:org7f76600}
 Flint reports log messages when, e.g., simulation fails.
 They can be useful for inspecting a cause of the trouble.
-A log dialog pops up when some logs are available at the end of simulation as in Fig.~\ref{fig:org18e1a9d}.
+A log dialog pops up when some logs are available at the end of simulation as in Fig.~\ref{fig:org400e048}.
 You can also open the dialog by clicking the ``Log'' button located at the simulation window of each job.
 
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=0.8\textwidth]{image/log.png}
-\caption{\label{fig:org18e1a9d}The log dialog of a simulation job.}
+\caption{\label{fig:org400e048}The log dialog of a simulation job.}
 \end{figure}
 
 \section{Visualizing simulation results}
-\label{sec:org7581a55}
+\label{sec:org41ae381}
 Flint has a feature to show a line graph for the result of a simulation on the
 fly, not only after its job finished, but also int the middle of ongoing
 simulation.
@@ -673,16 +673,16 @@ From the detail window, users can display the plot window by clicking button
 ``View'' for each simulation job.
 
 \subsection{Choose abscissa and ordinates}
-\label{sec:orge97cbcc}
+\label{sec:org1f653ce}
 In order to draw a line graph, users have to specify the abscissa and ordinates
 by checking an X column as well as either Y1 or Y2 column.
 Immediately after choosing abscissa and ordinates, Flint calls gnuplot in the
 background to draw a line graph.
 Thus users have to install gnuplot in advance, and to specify the location of
-the gnuplot executable (see section~\ref{org5deb0aa}).
+the gnuplot executable (see section~\ref{orga27533c}).
 
 \subsubsection{Trouble shooting}
-\label{sec:orge2efd37}
+\label{sec:org503b6d0}
 
 \begin{itemize}
 \item Choosing abscissa and ordinates results in no response, make sure if the
@@ -693,17 +693,17 @@ other systems.
 
 
 \section{Saving output data}
-\label{sec:org5afdb45}
+\label{sec:org357528f}
 Users may save the resulting simulation data for later investigation.
 
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=0.8\textwidth]{image/lr-export.png}
-\caption{\label{fig:orgda2ca46}The dialog to save data.}
+\caption{\label{fig:orgc551bb3}The dialog to save data.}
 \end{figure}
 
 \subsection{Exporting data as CSV}
-\label{sec:orge5d0714}
+\label{sec:orgd3791af}
 Flint can export the result data into a CSV file.
 The header column contains the variable names as well as their unit name if any.
 
@@ -713,13 +713,13 @@ The procedure is as follows:
 \item Open the ``Detail'' window
 \item Select as many tasks as you would like to save.
 \item Push button ``Export''
-\item Choose a target directory in the file dialog (see Fig.~\ref{fig:orgda2ca46})
+\item Choose a target directory in the file dialog (see Fig.~\ref{fig:orgc551bb3})
 \end{enumerate}
 
 The names of files saved in the target directory are of form ``(ID).csv.''
 
 \subsection{Exporting data as ISD}
-\label{sec:org3eb1917}
+\label{sec:org57f9542}
 Flint can also export the result data into a ISD file.
 The ISD file format is a binary file format for preserving multi-variate data.
 
@@ -729,13 +729,13 @@ The procedure is as follows:
 \item Open the ``Detail'' window
 \item Select as many tasks as you would like to save.
 \item Push button ``Export''
-\item Choose a target directory in the file dialog (see Fig.~\ref{fig:orgda2ca46})
+\item Choose a target directory in the file dialog (see Fig.~\ref{fig:orgc551bb3})
 \end{enumerate}
 
 The names of files saved in the target directory are of form ``(ID).isd.''
 
 \section{Fitting parameters via the least-squares method}
-\label{sec:org113b8ee}
+\label{sec:orge86ef34}
 Flint allows users to fit the value of parameters to a desirable course of
 simulation time evolution, as an extension of batch simulation in which
 the residual sum of squares (RSS) is calculated as well. The least-squares
@@ -755,20 +755,20 @@ The concrete procedure of the parameter fitting is as follows.
 The following subsections explains the above steps one by one.
 
 \subsection{Give a reference simulation time course  as an ISD file}
-\label{sec:orgc2f02d4}
+\label{sec:orgc92f8f9}
 To calculate the RSS against a simulation, Flint needs the reference time course
 as an ISD file, which must have at least two columns.
 The first column must be ``time''. The second column must be one of the output
 variables, and so are the rest, if any.
 The column name of a variable, except ``time'', in the ISD file must be prefixed
 with an appropriate UUID.
-Table~\ref{tab:orgd1cf01e} summarizes the column name's format for each
+Table~\ref{tab:orga1586d0} summarizes the column name's format for each
 modeling language.
 Each row of the ISD file represents the value of the variable at a specified
 simulation time.
 
 \begin{table}[htbp]
-\caption{\label{tab:orgd1cf01e}Column name format in the reference ISD file}
+\caption{\label{tab:orga1586d0}Column name format in the reference ISD file}
 \centering
 \begin{tabular}{lll}
 Model file format & column name format & example\\
@@ -778,20 +778,20 @@ PHML & (Module id):(Physical-quantity name) & \texttt{b173a002-ff1e-11e6-83b6-2b
 \end{table}
 
 Program \texttt{csv2isd} helps to obtain an ISD file from the data in CSV.
-Read section~\ref{org4c62313} for details about the program.
+Read section~\ref{org372d440} for details about the program.
 
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=0.8\textwidth]{image/parameter-fitting-objective.png}
-\caption{\label{fig:orge46129a}The ``Objective'' tab.}
+\caption{\label{fig:org0e99ab8}The ``Objective'' tab.}
 \end{figure}
 
 Please check ``Enable parameter fitting by the method of least-squares'' in the
 ``Objective'' tab, and select the ISD file in the below form (See
-Fig.~\ref{fig:orge46129a}).
+Fig.~\ref{fig:org0e99ab8}).
 
 \subsection{Run a simulation batch with a parameter set}
-\label{sec:org0590de5}
+\label{sec:org1bb3f65}
 The way to specify a parameter set in fitting parameters is the same as running
 a simulation batch. Please go to ``Parameters'' tab, and click the ``Edit parameter
 set'' button to launch a dialog to edit parameters and their value-sets.
@@ -802,7 +802,7 @@ reaching the end of simulation time as it turns out that they cannot be the ones
 having the minimum RSS among the batch.
 
 \subsection{RSS in Detail}
-\label{sec:org623a9a5}
+\label{sec:org0ef98f1}
 You will find the resulting RSS for each simulation in the same way for a normal
 simulation batch. Click the ``Detail'' of the job. Then a table will pop up.
 Each row of the table displays the RSS of a simulation as well as the
@@ -811,32 +811,32 @@ corresponding value tuple of the parameters.
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=0.8\textwidth]{image/parameter-fitting-plot.png}
-\caption{\label{fig:orga82bf3c}The line graph of a simulation with its reference values.}
+\caption{\label{fig:orgfe277ae}The line graph of a simulation with its reference values.}
 \end{figure}
 
 If you proceed to show the plot of the target variable i.e. included in the ISD
 file, the reference values also are shown as a point of mark \texttt{x} (see
-Fig.~\ref{fig:orga82bf3c}).
+Fig.~\ref{fig:orgfe277ae}).
 
 \section{Exporting C source code from model}
-\label{sec:orgd49ba4f}
+\label{sec:orgbe6b7d7}
 Not only running online simulation, but also Flint can export simulation code
 as a C99 source file from a loaded model. So far it works only for pure ODE models.
 
 \subsection{From menu}
-\label{sec:org63448ab}
+\label{sec:org086dafd}
 To export C code from a model,
 
 \begin{enumerate}
 \item Load a model
-\item Select the menu ``File''\(\to\)``Export to C'' (see Fig.~\ref{fig:org23b1a36})
+\item Select the menu ``File''\(\to\)``Export to C'' (see Fig.~\ref{fig:org853a3d6})
 \item Choose a target filename via the file dialog that follows.
 \end{enumerate}
 
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=0.8\textwidth]{image/export-to-c.png}
-\caption{\label{fig:org23b1a36}The menu ``File''\(\to\)``Export to C''.}
+\caption{\label{fig:org853a3d6}The menu ``File''\(\to\)``Export to C''.}
 \end{figure}
 
 Then a dialog will appear to tell whether it is done successfully or not.
@@ -846,7 +846,7 @@ specified in the original model, e.g., Euler or Runge-Kutta 4th-order method;
 the ARKode solver of SUNDIALS has not been supported yet.
 
 \subsection{How to build a program from exported code}
-\label{sec:org6f8409e}
+\label{sec:org32ba401}
 Once a C source file exported, what to do next is building the program by a C compiler
 conforming C99 standard.
 
@@ -862,19 +862,19 @@ Finally,
 \end{verbatim}
 will run a simulation, writing the whole output into \texttt{output.isd}.
 
-\section{\label{org5deb0aa}Preference}
-\label{sec:orgb3929b9}
+\section{\label{orga27533c}Preference}
+\label{sec:org19aebc7}
 Users can customize Flint's behavior via preference, which UI looks like
-Fig.~\ref{fig:orgb53f385}.
+Fig.~\ref{fig:org5664bc9}.
 
 \subsection{Concurrency hint}
-\label{sec:org77ae382}
+\label{sec:orgcbf54c7}
 The concurrency hint helps Flint run multithread simulation with an optimized number
 of concurrent threads. By default Flint automatically detects the number of cores and
 preset it for the hint.
 
 \subsection{Plotter}
-\label{sec:org5cdeff9}
+\label{sec:org4c58946}
 Flint must find the gnuplot executable when rendering line graphs.
 Giving a proper path to the gnuplot program through this option is mandatory on
 Windows and macOS. On the other hand, Flint try \texttt{/usr/bin/gnuplot}, if
@@ -887,15 +887,15 @@ its value should be \texttt{/Applications/gnuplot.app/bin/gnuplot}.
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=0.8\textwidth]{image/preference-plotter.png}
-\caption{\label{fig:orgb53f385}The ``Plotter'' panel on the preference dialog.}
+\caption{\label{fig:org5664bc9}The ``Plotter'' panel on the preference dialog.}
 \end{figure}
 
 \section{Shortcut keys}
-\label{sec:orgad3c7e4}
+\label{sec:orgd586352}
 There are useful shortcut keys as follows:
 
 \subsection{Keys for main menu}
-\label{sec:orge982ca8}
+\label{sec:orgf85e5f2}
 \begin{center}
 \begin{tabular}{l||l|l}
 Command & Shortcut keys on macOS & Shortcut keys on Linux or Windows\\
@@ -914,21 +914,21 @@ Control \(\to\) Resume & \texttt{Option+S} & \texttt{Alt+S}\\
 \end{center}
 
 \subsection{Additional keys}
-\label{sec:org49c5a65}
+\label{sec:org258f983}
 Both \texttt{Esc} and \texttt{Ctrl+W} (or \texttt{Command+W} on Mac) can close an active
 subwindow in which there is no dedicated button to close it.
 
 \chapter{Command Line Interface}
-\label{sec:org2c5a7a8}
-Flint 2.4 allows users to run a simulation in a command shell.
+\label{sec:orgc6462c9}
+Flint 2.5 allows users to run a simulation in a command shell.
 Unlike the GUI, the command line interface covers only a limited set of
 the features. It is nevertheless useful, especially for building software pipeline.
 
 \section{Launching Flint}
-\label{sec:org1c86123}
+\label{sec:org8217fcc}
 
 \subsection{Invocation with no arguments}
-\label{sec:orgd9567b8}
+\label{sec:org1d512ed}
 It is possible to launch Flint with the command \texttt{open(1)} of macOS as follows:
 \begin{verbatim}
 open Flint.app
@@ -941,7 +941,7 @@ flint.exe
 has a similar effect.
 
 \subsection{Invocation with filenames}
-\label{sec:org8d5a150}
+\label{sec:orga1fd641}
 If filenames of models are given in the command line on Windows:
 \begin{verbatim}
 flint.exe model1 model2 ...
@@ -953,11 +953,11 @@ open Flint.app model1 model2 ...
 then Flint tries to open them immediately after launching the GUI.
 
 \section{Showing help}
-\label{sec:orgb8cddae}
+\label{sec:org2263126}
 Specifying \texttt{-help} in the command line shows the help message.
 
 \subsection{Synopsis}
-\label{sec:org42e2e74}
+\label{sec:orga2d1dde}
 On Windows:
 \begin{verbatim}
 flint.exe -help
@@ -968,12 +968,12 @@ On macOS:
 \end{verbatim}
 
 \section{Running a simulation: the headless mode}
-\label{sec:orgac2a878}
+\label{sec:orgb01e308}
 Specifying \texttt{-headless} in the command line enable the headless mode, which
 runs a simulation of given model with the default configuration.
 
 \subsection{Synopsis}
-\label{sec:org26b3109}
+\label{sec:orga7e9c69}
 On Windows:
 \begin{verbatim}
 flint.exe -headless input output [-e file] [-g n] [-s file]
@@ -993,23 +993,23 @@ The following suboptions are available:
 \end{description}
 
 \chapter{Additional utility programs}
-\label{sec:orge2db04b}
+\label{sec:org32600fa}
 There are additional utility programs distributed with Flint.
 They are used in a command line.
 This chapter describes how to use them.
 
 \section{\texttt{isd2csv}: Convert ISD to CSV format}
-\label{sec:org80b1de8}
+\label{sec:org6595c34}
 
 \subsection{Synopsis}
-\label{sec:org24307f6}
+\label{sec:orgfa6a16b}
 \begin{verbatim}
 isd2csv [-o output] [-P] [-U] [-M n] [--progress port] [path]
 isd2csv --help
 \end{verbatim}
 
 \subsection{Description}
-\label{sec:org84cc271}
+\label{sec:orgc11c45c}
 This program reads an ISD file of filename \texttt{path}, and converts and writes
 it in the CSV format to the standard output.
 It reads the standard input if \texttt{path} is omitted.
@@ -1026,18 +1026,18 @@ digits to print double-precision floating-point numbers.
 \item[{\texttt{-{}-help, -h}}] show help.
 \end{description}
 
-\section{\label{org4c62313} \texttt{csv2isd}: Convert CSV to ISD format}
-\label{sec:org571dd23}
+\section{\label{org372d440} \texttt{csv2isd}: Convert CSV to ISD format}
+\label{sec:org96482c8}
 
 \subsection{Synopsis}
-\label{sec:org3c13d54}
+\label{sec:org808ece9}
 \begin{verbatim}
 csv2isd input output
 csv2isd --help
 \end{verbatim}
 
 \subsection{Description}
-\label{sec:org3d47576}
+\label{sec:orga5cc51b}
 This program reads a CSV file of filename \texttt{input}, and converts and writes
 it into an ISD file of filename \texttt{output}.
 The first line of input must be the header naming the columns.
@@ -1047,11 +1047,11 @@ The first line of input must be the header naming the columns.
 \end{description}
 
 \chapter{Frequently Asked Questions (FAQ)}
-\label{sec:org47abe9e}
+\label{sec:orgd12b381}
 Please read this chapter first when in doubt.
 
 \section{How to uninstall Flint}
-\label{sec:org592a7ab}
+\label{sec:org0126c11}
 On windows, you can uninstall Flint through the system menu ``Settings''\(\to\)``Apps \& features''.
 On macOS, all you have to do for uninstallation is to remove \texttt{Flint.app}.
 If you have installed Flint's RPM packages on CentOS/RHEL, the following command
@@ -1062,19 +1062,19 @@ sudo rpm -e flint flint-boost flint-clibsedml flint-czmq flint-libsbml \
 \end{verbatim}
 
 \section{How to ask questions about Flint}
-\label{sec:org3570a2e}
+\label{sec:org3a387a5}
 Please send \href{mailto:tabe@fixedpoint.jp}{the author} an email if you happen to have any questions about Flint.
 \href{https://groups.google.com/g/flint-discuss}{Flint project's mailing list} is available too.
 
 \section{How to file a bug report or a feature request}
-\label{sec:org32340ec}
+\label{sec:org2dabd27}
 Please visit Flint's GitHub Issues page at
 \url{https://github.com/flintproject/Flint/issues},
 and find whether your issue has been reported or not.
 Feel free to file it if there is no similar issue.
 
 \section{What are programs named \texttt{flint-cli}, \texttt{flint-exec}, etc.?}
-\label{sec:org559c76f}
+\label{sec:org1ab2248}
 Besides the main \texttt{flint} program, there are some auxiliary executables in
 Flint. Some of them are utility programs for internal use or experimental
 purpose. Others remains only for backward compatibility with Flint 1.x. In
@@ -1082,16 +1082,16 @@ either case their interface is subject to change. You can find brief description
 them in \texttt{src/*-README} of Flint's source tree.
 
 \chapter{References}
-\label{sec:orgb4b7c9b}
+\label{sec:orgf165ee5}
 
 \begin{enumerate}
-\item \label{orgc174cc7} Leem, C.H., 2016. Perspectives of physiome research. Integrative Medicine Research 5, 37–40. \url{https://doi.org/10.1016/j.imr.2015.12.004}
-\item \label{orgf84e7f6} Lloyd, C.M., Halstead, M.D.B., Nielsen, P.F., 2004. CellML: its future, present and past. Progress in Biophysics and Molecular Biology, Modelling Cellular and Tissue Function 85, 433–450. \url{https://doi.org/10.1016/j.pbiomolbio.2004.01.004}
-\item \label{org18aa28a} Asai, Y., Abe, T., Li, L., Oka, H., Nomura, T., Kitano, H., 2015. Databases for multilevel biophysiology research available at Physiome.jp. Frontiers in Physiology, Frontiers in Physiology 6. \url{https://doi.org/10.3389/fphys.2015.00251}
-\item \label{org43e6e3b} Hucka, M., Finney, A., Sauro, H.M., Bolouri, H., Doyle, J.C., Kitano, H., Arkin, A.P., Bornstein, B.J., Bray, D., Cornish-Bowden, A., Cuellar, A.A., Dronov, S., Gilles, E.D., Ginkel, M., Gor, V., Goryanin, I.I., Hedley, W.J., Hodgman, T.C., Hofmeyr, J.-H., Hunter, P.J., Juty, N.S., Kasberger, J.L., Kremling, A., Kummer, U., Le Novère, N., Loew, L.M., Lucio, D., Mendes, P., Minch, E., Mjolsness, E.D., Nakayama, Y., Nelson, M.R., Nielsen, P.F., Sakurada, T., Schaff, J.C., Shapiro, B.E., Shimizu, T.S., Spence, H.D., Stelling, J., Takahashi, K., Tomita, M., Wagner, J., Wang, J., 2003. The systems biology markup language (SBML): a medium for representation and exchange of biochemical network models. Bioinformatics 19, 524–531. \url{https://doi.org/10.1093/bioinformatics/btg015}
-\item \label{orgba0a56e} Asai, Y., Suzuki, Y., Kido, Y., Oka, H., Heien, E., Nakanishi, M., Urai, T., Hagihara, K., Kurachi, Y., Nomura, T., 2008. Specifications of insilicoML 1.0: A Multilevel Biophysical Model Description Language. J. Physiol. Sci 58, 447–458. \url{https://doi.org/10.2170/physiolsci.RP013308}
-\item \label{orgc826483} Hindmarsh, A.C., Brown, P.N., Grant, K.E., Lee, S.L., Serban, R., Shumaker, D.E., Woodward, C.S., 2005. SUNDIALS: Suite of nonlinear and differential/algebraic equation solvers. ACM Trans. Math. Softw. 31, 363–396. \url{https://doi.org/10.1145/1089014.1089020}
-\item \label{orgddca7ad} Higham, D.J., 2001. An Algorithmic Introduction to Numerical Simulation of Stochastic Differential Equations. SIAM Review 43, 525–546. \url{https://doi.org/10.1137/S0036144500378302}
-\item \label{orgad39c98} Hodgkin, A.L., Huxley, A.F., 1952. A quantitative description of membrane current and its application to conduction and excitation in nerve. The Journal of Physiology 117, 500–544. \url{https://doi.org/10.1113/jphysiol.1952.sp004764}
+\item \label{orgd85b6f0} Leem, C.H., 2016. Perspectives of physiome research. Integrative Medicine Research 5, 37–40. \url{https://doi.org/10.1016/j.imr.2015.12.004}
+\item \label{org959765b} Lloyd, C.M., Halstead, M.D.B., Nielsen, P.F., 2004. CellML: its future, present and past. Progress in Biophysics and Molecular Biology, Modelling Cellular and Tissue Function 85, 433–450. \url{https://doi.org/10.1016/j.pbiomolbio.2004.01.004}
+\item \label{orgcb48ad3} Asai, Y., Abe, T., Li, L., Oka, H., Nomura, T., Kitano, H., 2015. Databases for multilevel biophysiology research available at Physiome.jp. Frontiers in Physiology, Frontiers in Physiology 6. \url{https://doi.org/10.3389/fphys.2015.00251}
+\item \label{orgae38ec3} Hucka, M., Finney, A., Sauro, H.M., Bolouri, H., Doyle, J.C., Kitano, H., Arkin, A.P., Bornstein, B.J., Bray, D., Cornish-Bowden, A., Cuellar, A.A., Dronov, S., Gilles, E.D., Ginkel, M., Gor, V., Goryanin, I.I., Hedley, W.J., Hodgman, T.C., Hofmeyr, J.-H., Hunter, P.J., Juty, N.S., Kasberger, J.L., Kremling, A., Kummer, U., Le Novère, N., Loew, L.M., Lucio, D., Mendes, P., Minch, E., Mjolsness, E.D., Nakayama, Y., Nelson, M.R., Nielsen, P.F., Sakurada, T., Schaff, J.C., Shapiro, B.E., Shimizu, T.S., Spence, H.D., Stelling, J., Takahashi, K., Tomita, M., Wagner, J., Wang, J., 2003. The systems biology markup language (SBML): a medium for representation and exchange of biochemical network models. Bioinformatics 19, 524–531. \url{https://doi.org/10.1093/bioinformatics/btg015}
+\item \label{org5a22982} Asai, Y., Suzuki, Y., Kido, Y., Oka, H., Heien, E., Nakanishi, M., Urai, T., Hagihara, K., Kurachi, Y., Nomura, T., 2008. Specifications of insilicoML 1.0: A Multilevel Biophysical Model Description Language. J. Physiol. Sci 58, 447–458. \url{https://doi.org/10.2170/physiolsci.RP013308}
+\item \label{org0dc383e} Hindmarsh, A.C., Brown, P.N., Grant, K.E., Lee, S.L., Serban, R., Shumaker, D.E., Woodward, C.S., 2005. SUNDIALS: Suite of nonlinear and differential/algebraic equation solvers. ACM Trans. Math. Softw. 31, 363–396. \url{https://doi.org/10.1145/1089014.1089020}
+\item \label{orgda52cce} Higham, D.J., 2001. An Algorithmic Introduction to Numerical Simulation of Stochastic Differential Equations. SIAM Review 43, 525–546. \url{https://doi.org/10.1137/S0036144500378302}
+\item \label{orgc865066} Hodgkin, A.L., Huxley, A.F., 1952. A quantitative description of membrane current and its application to conduction and excitation in nerve. The Journal of Physiology 117, 500–544. \url{https://doi.org/10.1113/jphysiol.1952.sp004764}
 \end{enumerate}
 \end{document}
