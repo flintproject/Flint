@@ -112,8 +112,8 @@ a simulation.
 ** Supported platforms
 Flint {{{FlintVersion}}} runs on several supported platforms, including:
 
-- Windows 7 or later;
-- macOS: OS X El Captian (10.11) or later;
+- Windows 10;
+- macOS Sierra (10.12) or later;
 - Linux distributions such as Debian 10, Ubuntu 18.04, and RHEL/CentOS 7 or 8.
 
 
