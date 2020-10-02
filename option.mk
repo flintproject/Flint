@@ -132,4 +132,6 @@ WXWIDGETS_CONFIGURE_OPTIONS = \
 ZEROMQ_CONFIGURE_OPTIONS = \
 	--enable-silent-rules \
 	--disable-static \
+	--disable-Werror \
+	--disable-drafts \
 	--without-docs
