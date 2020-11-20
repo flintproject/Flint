@@ -1,7 +1,7 @@
 Flint
 =====
 
-[![Build Status](https://travis-ci.org/flintproject/Flint.svg?branch=master)](https://travis-ci.org/flintproject/Flint)
+[![CI](https://github.com/flintproject/Flint/workflows/CI/badge.svg)](https://github.com/flintproject/Flint/actions?query=workflow%3ACI)
 [![DOI](http://joss.theoj.org/papers/10.21105/joss.02331/status.svg)](https://doi.org/10.21105/joss.02331)
 
 Flint is a simulator for biological and physiological models written in
