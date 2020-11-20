@@ -11,6 +11,10 @@ jobs:
         working-directory: posix
     steps:
       - uses: actions/checkout@v2
+      - uses: actions/cache@v2
+        with:
+          path: src
+          key: ${{runner.os}}-src
       - run: sudo apt install libgtk-3-dev libsqlite3-dev libxml2-dev unzip uuid-dev zlib1g-dev
       - run: make -s download
       - run: make -s external
@@ -27,8 +31,12 @@ jobs:
       LIBTOOLIZE: glibtoolize
     steps:
       - uses: actions/checkout@v2
-      - run: brew install pkg-config
-      - run: cp config.mk.travis config.mk
+      - uses: actions/cache@v2
+        with:
+          path: src
+          key: ${{runner.os}}-src
+      - run: brew install autoconf automake libtool pkg-config
+      - run: cp config.mk.github config.mk
       - run: make -s download
       - run: make -s external
       - run: make -s all
