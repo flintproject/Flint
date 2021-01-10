@@ -2,7 +2,7 @@ This directory contains header libraries developed by third parties.
 
 Eigen/
 
-from Eigen 3.3.7.
+from Eigen 3.3.9.
 
 Please note that your Ceres Solver may have to be rebuilt as it depends on this
 bundled Eigen.
