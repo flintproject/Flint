@@ -12,6 +12,7 @@ BOOST_UNUSED_COMPONENTS = \
 	graph \
 	graph_parallel \
 	iostreams \
+	json \
 	locale \
 	log \
 	mpi \
