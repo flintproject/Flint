@@ -11,7 +11,7 @@ SQLITE_VSTR = 3330000
 $(eval $(call external_library_source,https://sqlite.org/$(SQLITE_YEAR),sqlite-amalgamation-$(SQLITE_VSTR).zip,b34f4c0c0eefad9a7e515c030c18702e477f4ef7d8ade6142bdab8011b487ac6))
 $(eval $(call external_library_source,https://sqlite.org/$(SQLITE_YEAR),sqlite-dll-win64-x64-$(SQLITE_VSTR).zip,eb9901dc93b0537266e57f631717f0889b05c5a8f76a6a7565bd1af2d7001316))
 
-$(eval $(call external_library_source,https://ftp.gnu.org/gnu/libmicrohttpd,libmicrohttpd-$(LIBMICROHTTPD_VERSION)-w32-bin.zip,80fe1395a239df71c65df149ee8804f155dc5c2ebd736f28e56bcd289ffafadd))
+$(eval $(call external_library_source,https://ftp.gnu.org/gnu/libmicrohttpd,libmicrohttpd-$(LIBMICROHTTPD_VERSION)-w32-bin.zip,f665042914f2d72076a08a68a7056b890428d16d71db6daf0e1e9909c0f29ab2))
 
 $(eval $(call external_library_source,https://github.com/wxWidgets/wxWidgets/releases/download/v$(WXWIDGETS_VERSION),wxWidgets-$(WXWIDGETS_VERSION)-headers.7z,9fa6087f24a4282cd883748d79f9b60b7ab54aced7af5aa616af810d09bd8f39))
 $(eval $(call external_library_source,https://github.com/wxWidgets/wxWidgets/releases/download/v$(WXWIDGETS_VERSION),wxMSW-$(WXWIDGETS_VERSION)_vc14x_Dev.7z,812c7e603799debe8d3bb486598d8585c953ade01bba14573d32485fd82a6651))
