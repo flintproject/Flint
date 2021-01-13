@@ -35,10 +35,15 @@ namespace gui {
 
 namespace {
 
-int Respond(MHD_Connection *connection, int status)
+#if MHD_VERSION >= 0x00097002
+enum MHD_Result
+#else
+int
+#endif
+Respond(MHD_Connection *connection, int status)
 {
 	MHD_Response *response = MHD_create_response_from_buffer(0, nullptr, MHD_RESPMEM_PERSISTENT);
-	int r = MHD_queue_response(connection, status, response);
+	auto r = MHD_queue_response(connection, status, response);
 	MHD_destroy_response(response);
 	return r;
 }
