@@ -56,7 +56,12 @@ void Run(std::unique_ptr<cli::RunOption> &&option)
 	run::Run(*o, GetPathFromWxFileName(fileName));
 }
 
-int AccessHandler(void *cls,
+#if MHD_VERSION >= 0x00097002
+enum MHD_Result
+#else
+int
+#endif
+AccessHandler(void *cls,
 				  MHD_Connection *connection,
 				  const char *url,
 				  const char *method,
