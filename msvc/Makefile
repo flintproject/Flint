@@ -5,7 +5,7 @@ include ../example.mk
 include ../option.mk
 include ../version.mk
 
-SQLITE_YEAR = 2020
+SQLITE_YEAR = 2021
 SQLITE_VSTR = 3340100
 
 $(eval $(call external_library_source,https://sqlite.org/$(SQLITE_YEAR),sqlite-amalgamation-$(SQLITE_VSTR).zip,e0b1c0345fe4338b936e17da8e1bd88366cd210e576834546977f040c12a8f68))
