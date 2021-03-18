@@ -2,7 +2,7 @@
 BOOST_VERSION = 1.75.0
 CERES_VERSION = 1.14.0
 CLIBSEDML_VERSION = 0.1.2
-CZMQ_VERSION = 4.2.0
+CZMQ_VERSION = 4.2.1
 LIBMICROHTTPD_VERSION = 0.9.72
 LIBSBML_VERSION = 5.17.0
 LIBXML2_VERSION = 2.9.10
@@ -19,7 +19,7 @@ PROTOBUF_CURRENT_MAJOR = 25
 PROTOBUF_CURRENT_TINY = 0
 ZEROMQ_CURRENT = 5
 
-CZMQ_VERSION_INFO = $(CZMQ_CURRENT).2.0
+CZMQ_VERSION_INFO = $(CZMQ_CURRENT).2.1
 ZEROMQ_VERSION_INFO = $(ZEROMQ_CURRENT).2.4
 
 BOOST_UNDERSCORE = boost_$(subst .,_,$(BOOST_VERSION))
@@ -104,7 +104,7 @@ endif
 $(eval $(call external_library_source,https://dl.bintray.com/boostorg/release/$(BOOST_VERSION)/source,$(BOOST_UNDERSCORE).tar.bz2,953db31e016db7bb207f11432bef7df100516eeb746843fa0486a222e3fd49cb))
 $(eval $(call external_library_source,http://ceres-solver.org/,ceres-solver-$(CERES_VERSION).tar.gz,4744005fc3b902fed886ea418df70690caa8e2ff6b5a90f3dd88a3d291ef8e8e))
 $(eval $(call external_library_source3,https://github.com/flintproject/clibsedml/archive/v$(CLIBSEDML_VERSION).tar.gz,clibsedml-$(CLIBSEDML_VERSION).tar.gz,cf25d0aad379e14c26a74166b5d652e2072fc87183caf6f34c16b5122ffa469f))
-$(eval $(call external_library_source,https://github.com/zeromq/czmq/releases/download/v$(CZMQ_VERSION),czmq-$(CZMQ_VERSION).tar.gz,cfab29c2b3cc8a845749758a51e1dd5f5160c1ef57e2a41ea96e4c2dcc8feceb))
+$(eval $(call external_library_source,https://github.com/zeromq/czmq/releases/download/v$(CZMQ_VERSION),czmq-$(CZMQ_VERSION).tar.gz,5d720a204c2a58645d6f7643af15d563a712dad98c9d32c1ed913377daa6ac39))
 $(eval $(call external_library_source,https://ftp.gnu.org/gnu/libmicrohttpd,libmicrohttpd-$(LIBMICROHTTPD_VERSION).tar.gz,0ae825f8e0d7f41201fd44a0df1cf454c1cb0bc50fe9d59c26552260264c2ff8))
 $(eval $(call external_library_source,http://downloads.sourceforge.net/project/sbml/libsbml/$(LIBSBML_VERSION)/stable,libSBML-$(LIBSBML_VERSION)-core-src.zip,76d6c1e9bbe966204db602d9595b6536fc96ff6af7404d2ca1df3225a0a721b4))
 $(eval $(call external_library_source,ftp://xmlsoft.org/libxml2,libxml2-$(LIBXML2_VERSION).tar.gz,aafee193ffb8fe0c82d4afef6ef91972cbaf5feea100edc2f262750611b4be1f))
