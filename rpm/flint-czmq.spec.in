@@ -8,9 +8,9 @@ Source0: %{name}-%{version}.tar.gz
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
 BuildRequires: gcc
 BuildRequires: make
-BuildRequires: flint-zeromq >= 4.3.3
+BuildRequires: flint-zeromq >= 4.3.4
 BuildRequires: libuuid-devel
-Requires: flint-zeromq >= 4.3.3
+Requires: flint-zeromq >= 4.3.4
 
 %description
 This is a CZMQ package for Flint.

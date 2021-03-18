@@ -5,7 +5,7 @@
  find_library (
      LIBZMQ_LIBRARIES
 -    NAMES zmq
-+    NAMES libzmq-v142-mt-4_3_3
++    NAMES libzmq-v142-mt-4_3_4
      HINTS ${PC_LIBZMQ_LIBRARY_HINTS}
  )
  
