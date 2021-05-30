@@ -101,7 +101,7 @@ endef
 
 endif
 
-$(eval $(call external_library_source,https://dl.bintray.com/boostorg/release/$(BOOST_VERSION)/source,$(BOOST_UNDERSCORE).tar.bz2,953db31e016db7bb207f11432bef7df100516eeb746843fa0486a222e3fd49cb))
+$(eval $(call external_library_source,https://boostorg.jfrog.io/artifactory/main/release/$(BOOST_VERSION)/source,$(BOOST_UNDERSCORE).tar.bz2,953db31e016db7bb207f11432bef7df100516eeb746843fa0486a222e3fd49cb))
 $(eval $(call external_library_source,http://ceres-solver.org/,ceres-solver-$(CERES_VERSION).tar.gz,4744005fc3b902fed886ea418df70690caa8e2ff6b5a90f3dd88a3d291ef8e8e))
 $(eval $(call external_library_source3,https://github.com/flintproject/clibsedml/archive/v$(CLIBSEDML_VERSION).tar.gz,clibsedml-$(CLIBSEDML_VERSION).tar.gz,cf25d0aad379e14c26a74166b5d652e2072fc87183caf6f34c16b5122ffa469f))
 $(eval $(call external_library_source,https://github.com/zeromq/czmq/releases/download/v$(CZMQ_VERSION),czmq-$(CZMQ_VERSION).tar.gz,5d720a204c2a58645d6f7643af15d563a712dad98c9d32c1ed913377daa6ac39))
