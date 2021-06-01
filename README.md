@@ -28,7 +28,7 @@ Download
 Binary installers of Flint's official releases for Windows, macOS, CentOS/RHEL 7
 and CentOS/RHEL 8 are freely available at
 
-https://flintproject.github.io/
+https://flintsimulator.org/
 
 as well as documentation including its user manual and tutorials.
 
