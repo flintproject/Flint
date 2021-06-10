@@ -16,7 +16,7 @@ jobs:
       - run: make -s external
       - run: make -s all
       - run: make check
-  posix-build-on-ubuntu-18.04:
+  posix-build-on-ubuntu-18_04:
     runs-on: ubuntu-18.04
     defaults:
       run:
