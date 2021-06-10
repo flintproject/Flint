@@ -3,7 +3,7 @@ name: CI
 on: [push]
 
 jobs:
-  posix-build-on-ubuntu:
+  posix-build-on-ubuntu-latest:
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -16,7 +16,41 @@ jobs:
       - run: make -s external
       - run: make -s all
       - run: make check
-  xcode-build-on-macos:
+  posix-build-on-ubuntu-18.04:
+    runs-on: ubuntu-18.04
+    defaults:
+      run:
+        shell: bash
+        working-directory: posix
+    steps:
+      - uses: actions/checkout@v2
+      - run: sudo apt-get install libgtk-3-dev libsqlite3-dev libxml2-dev unzip uuid-dev zlib1g-dev
+      - run: make -s download
+      - run: make -s external
+      - run: make -s all
+      - run: make check
+  xcode-build-on-macos-11:
+    runs-on: macos-11
+    defaults:
+      run:
+        shell: bash
+        working-directory: xcode
+    env:
+      LIBTOOL: glibtool
+      LIBTOOLIZE: glibtoolize
+    steps:
+      - uses: actions/checkout@v2
+      - run: brew install autoconf automake libtool pkg-config
+      - run: cp config.mk.github config.mk
+      - run: make -s download
+      - run: make -s external
+      - run: make -s all
+      - run: make check
+      - uses: actions/upload-artifact@v2
+        with:
+          name: macos-11-installer-image
+          path: xcode/Flint-*.dmg
+  xcode-build-on-macos-latest:
     runs-on: macos-latest
     defaults:
       run:
@@ -35,5 +69,5 @@ jobs:
       - run: make check
       - uses: actions/upload-artifact@v2
         with:
-          name: macos-installer-image
+          name: macos-latest-installer-image
           path: xcode/Flint-*.dmg
