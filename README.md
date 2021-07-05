@@ -46,7 +46,7 @@ you prefer open, transparent communication.
 Hacking
 -------
 
-Please see INSTALL.org to build and install Flint from source.
+Please see [INSTALL.org](INSTALL.org) to build and install Flint from source.
 Pull requests are always [welcome](https://github.com/flintproject/Flint/pulls).
 Reading [CONTRIBUTING.md](CONTRIBUTING.md) helps if you are interested in
 contributing to Flint.
