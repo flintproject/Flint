@@ -20,7 +20,7 @@ if(CMAKE_VERSION VERSION_LESS 3.16)
 endif(CMAKE_VERSION VERSION_LESS 3.16)
 
 # Newer Boost cannot be detected by default
-set(Boost_ADDITIONAL_VERSIONS 1.75.0 1.75)
+set(Boost_ADDITIONAL_VERSIONS 1.76.0 1.76)
 
 find_package(SQLite3 REQUIRED)
 
@@ -29,7 +29,7 @@ include_directories("${LIBXML2_INCLUDE_DIR}")
 
 add_definitions(-DBOOST_ALL_DYN_LINK)
 set(Boost_NO_BOOST_CMAKE ON)
-find_package(Boost 1.75 REQUIRED COMPONENTS
+find_package(Boost 1.76 REQUIRED COMPONENTS
              filesystem
              program_options
              random
