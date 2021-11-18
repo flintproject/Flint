@@ -37,7 +37,7 @@ AS_IF([test "x$with_protoc" = "x"],[AC_SUBST([PROTOC_EXECUTABLE],[protoc])],
       [AC_MSG_ERROR([could not find protoc, please specify its right location by --with-protoc])])
 
 # Checks for libraries.
-BOOST_REQUIRE([1.76.0])
+BOOST_REQUIRE([1.77.0])
 BOOST_ASIO
 BOOST_FILESYSTEM
 BOOST_HASH
