@@ -105,7 +105,7 @@ endef
 
 define flint_install
 $(call flint_installed,$(1)): $(RPMBUILD_DIR)/RPMS/$(ARCH)/$(call flint_packagename,$(1)) | tmp
-	sudo rpm -Uvh --force $$<
+	rpm -Uvh --force $$< || sudo rpm -Uvh --force $$<
 	touch $$@
 endef
 
@@ -157,8 +157,7 @@ distclean: clean
 	-rm -f Flint-$(VERSION)-$(DIST).$(ARCH).zip
 
 maintainer-clean: distclean
-	-sudo rpm -e flint
-	-sudo rpm -e $(DEPNAMES)
+	-rpm -e flint $(DEPNAMES) || sudo rpm -e flint $(DEPNAMES)
 
 download: $(foreach lib,$(BOOST_UNDERSCORE).tar.bz2 clibsedml-$(CLIBSEDML_VERSION).tar.gz czmq-$(CZMQ_VERSION).tar.gz libSBML-$(LIBSBML_VERSION)-core-src.zip protobuf-cpp-$(PROTOBUF_VERSION).tar.gz SBML_odeSolver-$(SOSLIB_VERSION).tar.gz sundials-$(SUNDIALS_VERSION).tar.gz wxWidgets-$(WXWIDGETS_VERSION).tar.bz2 zeromq-$(ZEROMQ_VERSION).tar.gz,src/$(lib))
 
