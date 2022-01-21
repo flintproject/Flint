@@ -31,7 +31,8 @@ Find instructions to install and use it in
 
 Then, install necessary tools for building and installing Flint with:
 #+begin_src shell
-$ sudo yum install libtool cmake wget gtk3-devel sqlite-devel libuuid-devel \
+$ sudo yum install libtool cmake wget gtk3-devel \
+    sqlite-devel libmicrohttpd-devel libuuid-devel \
     libxml2-devel patch zlib-devel gnuplot
 #+end_src
 
