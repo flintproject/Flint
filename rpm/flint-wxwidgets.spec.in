@@ -6,7 +6,6 @@ License: wxWindows Library Licence
 URL: https://www.wxwidgets.org/
 Source0: %{name}-%{version}.tar.gz
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
-BuildRequires: gcc-c++
 BuildRequires: GTK_PACKAGE_NAME-devel
 BuildRequires: make
 BuildRequires: zlib-devel

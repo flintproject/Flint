@@ -6,7 +6,6 @@ License: LGPLv3 plus a static linking exception
 URL: http://zeromq.org/
 Source0: %{name}-%{version}.tar.gz
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
-BuildRequires: gcc-c++
 BuildRequires: make
 
 %description

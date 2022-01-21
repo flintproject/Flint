@@ -6,7 +6,6 @@ License: BSD-3-clause
 URL: https://github.com/flintproject/clibsedml
 Source0: %{name}-%{version}.tar.gz
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
-BuildRequires: gcc
 BuildRequires: make
 BuildRequires: libxml2-devel >= 2.7
 Requires: libxml2 >= 2.7

@@ -6,7 +6,6 @@ License: LGPL-2.1
 URL: http://sbml.org/
 Source0: %{name}-%{version}.tar.gz
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
-BuildRequires: gcc-c++
 BuildRequires: make
 BuildRequires: libxml2-devel >= 2.7
 Requires: libxml2 >= 2.7
