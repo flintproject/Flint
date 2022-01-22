@@ -1,11 +1,12 @@
-* Flint 2.5 (2021-03-XX)
+* Flint 2.5 (2022-XX-XX)
 
 ** Supported platforms
-   - Windows 10.
+   - Windows 10 or 11.
    - macOS Sierra (10.12) or later.
      This version may still run on OS X El Capitan (10.11), but it is no longer
      supported.
-   - Linux distributions such as Debian 10, Ubuntu 18.04, and RHEL/CentOS 7 & 8.
+   - Linux distributions such as CentOS 7, Debian 11, and Ubuntu 18.04/20.04.
+     This version may still run on RHEL 8, but it is no longer supported.
 
 * Flint 2.4 (2020-09-29)
 
