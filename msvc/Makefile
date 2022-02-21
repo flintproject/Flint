@@ -5,11 +5,11 @@ include ../example.mk
 include ../option.mk
 include ../version.mk
 
-SQLITE_YEAR = 2021
-SQLITE_VSTR = 3360000
+SQLITE_YEAR = 2022
+SQLITE_VSTR = 3370200
 
-$(eval $(call external_library_source,https://sqlite.org/$(SQLITE_YEAR),sqlite-amalgamation-$(SQLITE_VSTR).zip,999826fe4c871f18919fdb8ed7ec9dd8217180854dd1fe21eea96aed36186729))
-$(eval $(call external_library_source,https://sqlite.org/$(SQLITE_YEAR),sqlite-dll-win64-x64-$(SQLITE_VSTR).zip,eb983c766560facb33ee9d0bd314b6ba2a63938394d77f3750a89c81a5337d37))
+$(eval $(call external_library_source,https://sqlite.org/$(SQLITE_YEAR),sqlite-amalgamation-$(SQLITE_VSTR).zip,cb25df0fb90b77be6660f6ace641bbea88f3d0441110d394ce418f35f7561bb0))
+$(eval $(call external_library_source,https://sqlite.org/$(SQLITE_YEAR),sqlite-dll-win64-x64-$(SQLITE_VSTR).zip,456bef46dde6e18e66ca6183a210248286b03196a688de57f3345d7df14c808c))
 
 $(eval $(call external_library_source,https://ftp.gnu.org/gnu/libmicrohttpd,libmicrohttpd-$(LIBMICROHTTPD_VERSION)-w32-bin.zip,f930d8ee2f65eb6811d6ed18b9bf45d5702681fd9071b5801e4b67ea5d22a6aa))
 
