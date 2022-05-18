@@ -22,7 +22,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 m4_define([_BOOST_SERIAL], [m4_translit([
-# serial 36
+# serial 37
 ], [#
 ], [])])
 
@@ -1615,6 +1615,7 @@ if test x$boost_cv_inc_path != xno; then
   # I'm not sure about my test for `il' (be careful: Intel's ICC pre-defines
   # the same defines as GCC's).
   for i in \
+    "defined __clang__ && __clang_major__ == 13 && __clang_minor__ == 0 @ clang130" \
     "defined __clang__ && __clang_major__ == 12 && __clang_minor__ == 0 @ clang120" \
     "defined __clang__ && __clang_major__ == 11 && __clang_minor__ == 1 @ clang111" \
     "defined __clang__ && __clang_major__ == 11 && __clang_minor__ == 0 @ clang110" \
@@ -1628,6 +1629,8 @@ if test x$boost_cv_inc_path != xno; then
     "defined __clang__ && __clang_major__ == 3 && __clang_minor__ == 9 @ clang39" \
     "defined __clang__ && __clang_major__ == 3 && __clang_minor__ == 8 @ clang38" \
     "defined __clang__ && __clang_major__ == 3 && __clang_minor__ == 7 @ clang37" \
+    _BOOST_mingw_test(11, 2) \
+    _BOOST_gcc_test(11, 2) \
     _BOOST_mingw_test(11, 1) \
     _BOOST_gcc_test(11, 1) \
     _BOOST_mingw_test(10, 3) \
