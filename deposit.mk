@@ -9,7 +9,7 @@ LIBXML2_VERSION = 2.9.13
 PROTOBUF_VERSION = 3.18.0
 SOSLIB_VERSION = 1.9.0
 SUNDIALS_VERSION = 2.7.0
-WXWIDGETS_VERSION = 3.1.4
+WXWIDGETS_VERSION = 3.1.6
 ZEROMQ_VERSION = 4.3.4
 
 CERES_CURRENT = 1
@@ -113,5 +113,5 @@ $(eval $(call external_library_source,https://download.gnome.org/sources/libxml2
 $(eval $(call external_library_source,https://github.com/google/protobuf/releases/download/v$(PROTOBUF_VERSION),protobuf-cpp-$(PROTOBUF_VERSION).tar.gz,7308590dbb95e77066b99c5674eed855c8257e70658d2af586f4a81ff0eea2b1))
 $(eval $(call external_library_source3,https://github.com/raim/SBML_odeSolver/archive/$(SOSLIB_VERSION).tar.gz,SBML_odeSolver-$(SOSLIB_VERSION).tar.gz,059c2f51f52e1ac29d3873a2d3fcc71947e1a196f29816067041c976cb5cc651))
 $(eval $(call external_library_source,https://github.com/LLNL/sundials/releases/download/v$(SUNDIALS_VERSION),sundials-$(SUNDIALS_VERSION).tar.gz,d39fcac7175d701398e4eb209f7e92a5b30a78358d4a0c0fcc23db23c11ba104))
-$(eval $(call external_library_source,https://github.com/wxWidgets/wxWidgets/releases/download/v$(WXWIDGETS_VERSION),wxWidgets-$(WXWIDGETS_VERSION).tar.bz2,3ca3a19a14b407d0cdda507a7930c2e84ae1c8e74f946e0144d2fa7d881f1a94))
+$(eval $(call external_library_source,https://github.com/wxWidgets/wxWidgets/releases/download/v$(WXWIDGETS_VERSION),wxWidgets-$(WXWIDGETS_VERSION).tar.bz2,4980e86c6494adcd527a41fc0a4e436777ba41d1893717d7b7176c59c2061c25))
 $(eval $(call external_library_source,https://github.com/zeromq/libzmq/releases/download/v$(ZEROMQ_VERSION),zeromq-$(ZEROMQ_VERSION).tar.gz,c593001a89f5a85dd2ddf564805deb860e02471171b3f204944857336295c3e5))
