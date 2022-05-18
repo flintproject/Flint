@@ -47,7 +47,6 @@ This is a wxWidgets package for Flint.
 	--disable-richtext \
 	--disable-sound \
 	--disable-svg \
-	--disable-webkit \
 	--disable-webview \
 	--disable-xrc \
 	--disable-gtktest \

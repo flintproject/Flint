@@ -116,7 +116,6 @@ WXWIDGETS_CONFIGURE_OPTIONS = \
 	--disable-richtext \
 	--disable-sound \
 	--disable-svg \
-	--disable-webkit \
 	--disable-webview \
 	--disable-xrc \
 	--disable-gtktest \
