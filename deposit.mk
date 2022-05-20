@@ -6,7 +6,7 @@ CZMQ_VERSION = 4.2.1
 LIBMICROHTTPD_VERSION = 0.9.75
 LIBSBML_VERSION = 5.17.0
 LIBXML2_VERSION = 2.9.13
-PROTOBUF_VERSION = 3.18.0
+PROTOBUF_VERSION = 3.20.1
 SOSLIB_VERSION = 1.9.0
 SUNDIALS_VERSION = 2.7.0
 WXWIDGETS_VERSION = 3.1.6
@@ -15,8 +15,8 @@ ZEROMQ_VERSION = 4.3.4
 CERES_CURRENT = 1
 CZMQ_CURRENT = 4
 LIBMICROHTTPD_CURRENT = 12
-PROTOBUF_CURRENT_MAJOR = 29
-PROTOBUF_CURRENT_TINY = 0
+PROTOBUF_CURRENT_MAJOR = 31
+PROTOBUF_CURRENT_TINY = 1
 ZEROMQ_CURRENT = 5
 
 CZMQ_VERSION_INFO = $(CZMQ_CURRENT).2.1
@@ -110,7 +110,7 @@ $(eval $(call external_library_source,https://github.com/zeromq/czmq/releases/do
 $(eval $(call external_library_source,https://ftp.gnu.org/gnu/libmicrohttpd,libmicrohttpd-$(LIBMICROHTTPD_VERSION).tar.gz,9278907a6f571b391aab9644fd646a5108ed97311ec66f6359cebbedb0a4e3bb))
 $(eval $(call external_library_source,http://downloads.sourceforge.net/project/sbml/libsbml/$(LIBSBML_VERSION)/stable,libSBML-$(LIBSBML_VERSION)-core-src.zip,76d6c1e9bbe966204db602d9595b6536fc96ff6af7404d2ca1df3225a0a721b4))
 $(eval $(call external_library_source,https://download.gnome.org/sources/libxml2/$(LIBXML2_MAJOR_MINOR_VERSION),libxml2-$(LIBXML2_VERSION).tar.xz,276130602d12fe484ecc03447ee5e759d0465558fbc9d6bd144e3745306ebf0e))
-$(eval $(call external_library_source,https://github.com/google/protobuf/releases/download/v$(PROTOBUF_VERSION),protobuf-cpp-$(PROTOBUF_VERSION).tar.gz,7308590dbb95e77066b99c5674eed855c8257e70658d2af586f4a81ff0eea2b1))
+$(eval $(call external_library_source,https://github.com/google/protobuf/releases/download/v$(PROTOBUF_VERSION),protobuf-cpp-$(PROTOBUF_VERSION).tar.gz,dddd73664306d7d895a95e1cf18925b31b52785e468727e4635b45edae5166f9))
 $(eval $(call external_library_source3,https://github.com/raim/SBML_odeSolver/archive/$(SOSLIB_VERSION).tar.gz,SBML_odeSolver-$(SOSLIB_VERSION).tar.gz,059c2f51f52e1ac29d3873a2d3fcc71947e1a196f29816067041c976cb5cc651))
 $(eval $(call external_library_source,https://github.com/LLNL/sundials/releases/download/v$(SUNDIALS_VERSION),sundials-$(SUNDIALS_VERSION).tar.gz,d39fcac7175d701398e4eb209f7e92a5b30a78358d4a0c0fcc23db23c11ba104))
 $(eval $(call external_library_source,https://github.com/wxWidgets/wxWidgets/releases/download/v$(WXWIDGETS_VERSION),wxWidgets-$(WXWIDGETS_VERSION).tar.bz2,4980e86c6494adcd527a41fc0a4e436777ba41d1893717d7b7176c59c2061c25))
