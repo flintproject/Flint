@@ -127,6 +127,7 @@ WXWIDGETS_CONFIGURE_OPTIONS = \
 	--without-libjpeg \
 	--without-libtiff \
 	--without-opengl \
+	--without-regex \
 	--without-sdl
 
 ZEROMQ_CONFIGURE_OPTIONS = \

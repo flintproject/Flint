@@ -58,6 +58,7 @@ This is a wxWidgets package for Flint.
 	--without-libjpeg \
 	--without-libtiff \
 	--without-opengl \
+	--without-regex \
 	--without-sdl
 make
 
