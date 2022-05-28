@@ -1,6 +1,5 @@
 # -*- Mode: makefile-gmake; tab-width: 4; indent-tabs-mode: t -*-
 BOOST_VERSION = 1.77.0
-CERES_VERSION = 1.14.0
 CLIBSEDML_VERSION = 0.1.2
 CZMQ_VERSION = 4.2.1
 LIBMICROHTTPD_VERSION = 0.9.75
@@ -12,7 +11,6 @@ SUNDIALS_VERSION = 2.7.0
 WXWIDGETS_VERSION = 3.1.6
 ZEROMQ_VERSION = 4.3.4
 
-CERES_CURRENT = 1
 CZMQ_CURRENT = 4
 LIBMICROHTTPD_CURRENT = 12
 PROTOBUF_CURRENT_MAJOR = 31
@@ -28,7 +26,6 @@ LIBXML2_MAJOR_MINOR_VERSION = $(basename $(LIBXML2_VERSION))
 
 ALL_EXTERNAL_LIBRARIES = \
 	$(BOOST_UNDERSCORE).tar.bz2 \
-	ceres-solver-$(CERES_VERSION).tar.gz \
 	clibsedml-$(CLIBSEDML_VERSION).tar.gz \
 	czmq-$(CZMQ_VERSION).tar.gz \
 	libmicrohttpd-$(LIBMICROHTTPD_VERSION).tar.gz \
@@ -42,7 +39,6 @@ ALL_EXTERNAL_LIBRARIES = \
 
 ALL_EXTERNAL_LIBRARY_DIRS = \
 	$(BOOST_UNDERSCORE) \
-	ceres-solver-$(CERES_VERSION) \
 	clibsedml-$(CLIBSEDML_VERSION) \
 	czmq-$(CZMQ_VERSION) \
 	libmicrohttpd-$(LIBMICROHTTPD_VERSION) \
@@ -104,7 +100,6 @@ endef
 endif
 
 $(eval $(call external_library_source,https://boostorg.jfrog.io/artifactory/main/release/$(BOOST_VERSION)/source,$(BOOST_UNDERSCORE).tar.bz2,fc9f85fc030e233142908241af7a846e60630aa7388de9a5fafb1f3a26840854))
-$(eval $(call external_library_source,http://ceres-solver.org/,ceres-solver-$(CERES_VERSION).tar.gz,4744005fc3b902fed886ea418df70690caa8e2ff6b5a90f3dd88a3d291ef8e8e))
 $(eval $(call external_library_source3,https://github.com/flintproject/clibsedml/archive/v$(CLIBSEDML_VERSION).tar.gz,clibsedml-$(CLIBSEDML_VERSION).tar.gz,cf25d0aad379e14c26a74166b5d652e2072fc87183caf6f34c16b5122ffa469f))
 $(eval $(call external_library_source,https://github.com/zeromq/czmq/releases/download/v$(CZMQ_VERSION),czmq-$(CZMQ_VERSION).tar.gz,5d720a204c2a58645d6f7643af15d563a712dad98c9d32c1ed913377daa6ac39))
 $(eval $(call external_library_source,https://ftp.gnu.org/gnu/libmicrohttpd,libmicrohttpd-$(LIBMICROHTTPD_VERSION).tar.gz,9278907a6f571b391aab9644fd646a5108ed97311ec66f6359cebbedb0a4e3bb))

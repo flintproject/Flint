@@ -85,9 +85,6 @@
           <Component Id='wxmsw' Guid='80ff1e98-c791-11e6-9786-dfa231e0a1a7'>
             <!-- This element works as a place holder for entries of wxWidgets' DLLs -->
           </Component>
-          <Component Id='ceres' Guid='f54f071a-45d4-11e7-b347-bb7df618a1d5'>
-            <File Id='libceres' Name='ceres.dll' DiskId='1' Source='ceres.dll' />
-          </Component>
           <Component Id='clibsedml' Guid='72d89bf4-8921-11e1-8be9-8ffa90143fcb'>
             <File Id='libsedml' Name='sedml.dll' DiskId='1' Source='sedml.dll' />
           </Component>
@@ -172,7 +169,6 @@
       <ComponentRef Id='boost.program_options' />
       <ComponentRef Id='boost.system' />
       <ComponentRef Id='wxmsw' />
-      <ComponentRef Id='ceres' />
       <ComponentRef Id='clibsedml' />
       <ComponentRef Id='czmq' />
       <ComponentRef Id='libmicrohttpd' />

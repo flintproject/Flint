@@ -4,9 +4,6 @@ Eigen/
 
 from Eigen 3.4.0.
 
-Please note that your Ceres Solver may have to be rebuilt as it depends on this
-bundled Eigen.
-
 Quoting Eigen's COPYING.README:
 ---
 Eigen is primarily MPL2 licensed. See COPYING.MPL2 and these links:

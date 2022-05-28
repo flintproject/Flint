@@ -8,7 +8,6 @@ EXTERNAL_LIBRARIES = $(filter-out $(UNNECESSARY_LIBRARIES),$(ALL_EXTERNAL_LIBRAR
 EXTERNAL_LIBRARY_DIRS = $(filter-out $(UNNECESSARY_LIBRARIES),$(ALL_EXTERNAL_LIBRARY_DIRS))
 EXTERNAL_INSTALLED = \
 	tmp/$(BOOST_UNDERSCORE).installed \
-	tmp/ceres-solver-$(CERES_VERSION).installed \
 	tmp/clibsedml-$(CLIBSEDML_VERSION).installed \
 	tmp/czmq-$(CZMQ_VERSION).installed \
 	tmp/libmicrohttpd-$(LIBMICROHTTPD_VERSION).installed \
@@ -53,11 +52,6 @@ tmp: | var
 tmp/$(BOOST_UNDERSCORE): src/$(BOOST_UNDERSCORE).tar.bz2 | tmp
 	-rm -rf var/$(BOOST_UNDERSCORE)
 	tar -C var -jxf $<
-	touch $@
-
-tmp/ceres-solver-$(CERES_VERSION): src/ceres-solver-$(CERES_VERSION).tar.gz | tmp
-	-rm -rf src/ceres-solver-$(CERES_VERSION)
-	tar -C src -zxf $<
 	touch $@
 
 tmp/clibsedml-$(CLIBSEDML_VERSION): src/clibsedml-$(CLIBSEDML_VERSION).tar.gz | tmp
@@ -109,15 +103,6 @@ tmp/zeromq-$(ZEROMQ_VERSION): src/zeromq-$(ZEROMQ_VERSION).tar.gz | tmp
 
 tmp/$(BOOST_UNDERSCORE).installed: tmp/$(BOOST_UNDERSCORE)
 	(cd var/$(BOOST_UNDERSCORE) && ./bootstrap.sh --prefix=$(PREFIX)/$(BOOST_UNDERSCORE) --without-icu && ./b2 --no-cmake-config $(B2_WITHOUT_OPTIONS) --layout=tagged-1.66 link=shared install)
-	touch $@
-
-tmp/ceres-solver-$(CERES_VERSION).installed: tmp/ceres-solver-$(CERES_VERSION)
-	-rm -rf var/ceres-solver-$(CERES_VERSION)
-	install -d var/ceres-solver-$(CERES_VERSION)
-	(cd var/ceres-solver-$(CERES_VERSION) && cmake -DCMAKE_INSTALL_PREFIX=$(PREFIX)/ceres-solver-$(CERES_VERSION) -DEIGEN_INCLUDE_DIR=$(abspath ../include) $(CERES_CMAKE_OPTIONS) ../../src/ceres-solver-$(CERES_VERSION))
-	$(MAKE) -C var/ceres-solver-$(CERES_VERSION) all
-	-rm -rf $(PREFIX)/ceres-solver-$(CERES_VERSION)
-	$(MAKE) -C var/ceres-solver-$(CERES_VERSION) install
 	touch $@
 
 tmp/clibsedml-$(CLIBSEDML_VERSION).installed: tmp/clibsedml-$(CLIBSEDML_VERSION)
@@ -188,7 +173,7 @@ tmp/zeromq-$(ZEROMQ_VERSION).installed: tmp/zeromq-$(ZEROMQ_VERSION)
 tmp/sequential-version.installed: $(EXTERNAL_INSTALLED)
 	(cd .. && autoreconf -i -f)
 	install -d var/sequential-version
-	(cd var/sequential-version && env LDFLAGS='-Wl,-rpath -Wl,$(PREFIX)/libsbml-$(LIBSBML_VERSION)/lib -Wl,-rpath -Wl,$(PREFIX)/sundials-$(SUNDIALS_VERSION)/lib -Wl,-rpath -Wl,$(PREFIX)/wxWidgets-$(WXWIDGETS_VERSION)/lib -Wl,-rpath -Wl,$(PREFIX)/protobuf-$(PROTOBUF_VERSION)/lib' PKG_CONFIG_PATH=$(PKG_CONFIG_PATH) ../../../configure --prefix=$(PREFIX)/sequential-version --with-boost=$(PREFIX)/$(BOOST_UNDERSCORE) --with-ceres-solver=$(PREFIX)/ceres-solver-$(CERES_VERSION) --with-protoc=$(PREFIX)/protobuf-$(PROTOBUF_VERSION)/bin/protoc --with-sundials=$(PREFIX)/sundials-$(SUNDIALS_VERSION) --with-wxWidgets=$(PREFIX)/wxWidgets-$(WXWIDGETS_VERSION) --enable-silent-rules)
+	(cd var/sequential-version && env LDFLAGS='-Wl,-rpath -Wl,$(PREFIX)/libsbml-$(LIBSBML_VERSION)/lib -Wl,-rpath -Wl,$(PREFIX)/sundials-$(SUNDIALS_VERSION)/lib -Wl,-rpath -Wl,$(PREFIX)/wxWidgets-$(WXWIDGETS_VERSION)/lib -Wl,-rpath -Wl,$(PREFIX)/protobuf-$(PROTOBUF_VERSION)/lib' PKG_CONFIG_PATH=$(PKG_CONFIG_PATH) ../../../configure --prefix=$(PREFIX)/sequential-version --with-boost=$(PREFIX)/$(BOOST_UNDERSCORE) --with-protoc=$(PREFIX)/protobuf-$(PROTOBUF_VERSION)/bin/protoc --with-sundials=$(PREFIX)/sundials-$(SUNDIALS_VERSION) --with-wxWidgets=$(PREFIX)/wxWidgets-$(WXWIDGETS_VERSION) --enable-silent-rules)
 	$(MAKE) -C var/sequential-version all
 	-rm -rf $(PREFIX)/sequential-version
 	$(MAKE) -C var/sequential-version install

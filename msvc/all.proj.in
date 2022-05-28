@@ -12,7 +12,6 @@
 
     <BOOST_UNDERSCORE>__BOOST_UNDERSCORE</BOOST_UNDERSCORE>
     <B2_WITHOUT_OPTIONS>__B2_WITHOUT_OPTIONS</B2_WITHOUT_OPTIONS>
-    <CERES_VERSION>__CERES_VERSION</CERES_VERSION>
     <CLIBSEDML_VERSION>__CLIBSEDML_VERSION</CLIBSEDML_VERSION>
     <CZMQ_VERSION>__CZMQ_VERSION</CZMQ_VERSION>
     <LIBMICROHTTPD_VERSION>__LIBMICROHTTPD_VERSION</LIBMICROHTTPD_VERSION>
@@ -72,15 +71,6 @@
     <Exec Command='bootstrap' WorkingDirectory='$(VARDIR)\$(BOOST_UNDERSCORE)'/>
     <Exec Command='.\b2 -d0 --prefix="$(PREFIX)" --no-cmake-config $(B2_WITHOUT_OPTIONS) $(BoostAddressModelOption) toolset=msvc-14.2 variant=release threading=multi link=shared runtime-link=shared install' WorkingDirectory='$(VARDIR)\$(BOOST_UNDERSCORE)'/>
     <Touch AlwaysCreate='true' Files='tmp\$(BOOST_UNDERSCORE).installed'/>
-  </Target>
-
-  <Target Name='ceres-solver'
-          Inputs='tmp\ceres-solver-$(CERES_VERSION)'
-          Outputs='tmp\ceres-solver-$(CERES_VERSION).installed'>
-    <MakeDir Directories='$(VARDIR)\ceres-solver-$(CERES_VERSION)\build.d'/>
-    <Exec Command='cmake $(CMakeGeneratorOption) -DCMAKE_INSTALL_PREFIX="$(PREFIX)" -DEIGEN_INCLUDE_DIR="$(EIGEN_INCLUDE_DIR)" -DMINIGLOG=ON -DBUILD_SHARED_LIBS=ON ..' WorkingDirectory='$(VARDIR)\ceres-solver-$(CERES_VERSION)\build.d'/>
-    <Exec Command='cmake --build "$(VARDIR)\ceres-solver-$(CERES_VERSION)\build.d" --target install --config Release --clean-first'/>
-    <Touch AlwaysCreate='true' Files='tmp\ceres-solver-$(CERES_VERSION).installed'/>
   </Target>
 
   <Target Name='clibsedml'
@@ -225,8 +215,8 @@
   </Target>
 
   <Target Name='build'
-          DependsOnTargets='boost;ceres-solver;clibsedml;sundials;SBML_odeSolver;czmq;libmicrohttpd;wxWidgets;SQLite;bc-pb;cli-pb;ipc-pb;lo-pb;phml-pb;unit-pb'
-          Inputs='tmp\$(BOOST_UNDERSCORE).installed;tmp\ceres-solver-$(CERES_VERSION).installed;tmp\clibsedml-$(CLIBSEDML_VERSION).installed;tmp\sundials-$(SUNDIALS_VERSION).installed;tmp\SBML_odeSolver-$(SOSLIB_VERSION).installed;tmp\czmq-$(CZMQ_VERSION).installed;tmp\libmicrohttpd-$(LIBMICROHTTPD_VERSION).installed;tmp\wxWidgets.installed;tmp\SQLite.installed;..\src\bc.pb.cc;..\src\cli.pb.cc;..\src\ipc.pb.cc;..\src\lo.pb.cc;..\src\phml.pb.cc;..\src\unit.pb.cc'
+          DependsOnTargets='boost;clibsedml;sundials;SBML_odeSolver;czmq;libmicrohttpd;wxWidgets;SQLite;bc-pb;cli-pb;ipc-pb;lo-pb;phml-pb;unit-pb'
+          Inputs='tmp\$(BOOST_UNDERSCORE).installed;tmp\clibsedml-$(CLIBSEDML_VERSION).installed;tmp\sundials-$(SUNDIALS_VERSION).installed;tmp\SBML_odeSolver-$(SOSLIB_VERSION).installed;tmp\czmq-$(CZMQ_VERSION).installed;tmp\libmicrohttpd-$(LIBMICROHTTPD_VERSION).installed;tmp\wxWidgets.installed;tmp\SQLite.installed;..\src\bc.pb.cc;..\src\cli.pb.cc;..\src\ipc.pb.cc;..\src\lo.pb.cc;..\src\phml.pb.cc;..\src\unit.pb.cc'
           Outputs='tmp\build'>
     <MakeDir Directories='$(VARDIR)\build'/>
     <Exec Command='cmake $(CMakeGeneratorOption) -DCMAKE_INSTALL_PREFIX="$(PREFIX)" -DwxWidgets_LIB_DIR="$(PREFIX)\lib\$(MsvcVariant)_dll" ..\..\..' WorkingDirectory='$(VARDIR)\build'/>
@@ -239,7 +229,6 @@
           Inputs='tmp\build'
           Outputs='tmp\flint'>
     <ItemGroup>
-      <DLLFiles Include='opt\bin\ceres.dll'/>
       <DLLFiles Include='opt\bin\libczmq.dll'/>
       <DLLFiles Include='opt\bin\libprotobuf.dll'/>
       <DLLFiles Include='opt\bin\libsbml.dll'/>

@@ -21,7 +21,6 @@ BOOST_DYLIBS := \
     system
 DYLIBS := \
     libODES.0 \
-    libceres.$(CERES_CURRENT) \
     libczmq.$(CZMQ_CURRENT) \
     libmicrohttpd.$(LIBMICROHTTPD_CURRENT) \
     libsbml.$(LIBSBML_VERSION) \
@@ -142,7 +141,7 @@ distclean: clean
 
 download: $(foreach lib,$(EXTERNAL_LIBRARIES),src/$(lib))
 
-external: $(foreach lib,$(BOOST_UNDERSCORE) ceres-solver-$(CERES_VERSION) clibsedml-$(CLIBSEDML_VERSION) czmq-$(CZMQ_VERSION) libmicrohttpd-$(LIBMICROHTTPD_VERSION) libsbml-$(LIBSBML_VERSION) protobuf-$(PROTOBUF_VERSION) SBML_odeSolver-$(SOSLIB_VERSION) sundials-$(SUNDIALS_VERSION) wxWidgets-$(WXWIDGETS_VERSION) zeromq-$(ZEROMQ_VERSION),tmp/$(lib).installed)
+external: $(foreach lib,$(BOOST_UNDERSCORE) clibsedml-$(CLIBSEDML_VERSION) czmq-$(CZMQ_VERSION) libmicrohttpd-$(LIBMICROHTTPD_VERSION) libsbml-$(LIBSBML_VERSION) protobuf-$(PROTOBUF_VERSION) SBML_odeSolver-$(SOSLIB_VERSION) sundials-$(SUNDIALS_VERSION) wxWidgets-$(WXWIDGETS_VERSION) zeromq-$(ZEROMQ_VERSION),tmp/$(lib).installed)
 
 var:
 	install -d $@
@@ -153,11 +152,6 @@ tmp: | var
 tmp/$(BOOST_UNDERSCORE): src/$(BOOST_UNDERSCORE).tar.bz2 | tmp
 	-rm -rf var/$(BOOST_UNDERSCORE)
 	tar -C var -jxf $<
-	touch $@
-
-tmp/ceres-solver-$(CERES_VERSION): src/ceres-solver-$(CERES_VERSION).tar.gz | tmp
-	-rm -rf var/ceres-solver-$(CERES_VERSION)
-	tar -C var -zxf $<
 	touch $@
 
 tmp/clibsedml-$(CLIBSEDML_VERSION): src/clibsedml-$(CLIBSEDML_VERSION).tar.gz | tmp
@@ -210,11 +204,6 @@ tmp/$(BOOST_UNDERSCORE).installed: tmp/$(BOOST_UNDERSCORE)
 	(cd var/$(BOOST_UNDERSCORE) && export MACOSX_DEPLOYMENT_TARGET=10.11 && ./bootstrap.sh --with-toolset=clang --without-icu && ./b2 -d0 --prefix=$(PREFIX) --no-cmake-config $(B2_WITHOUT_OPTIONS) --layout=tagged-1.66 toolset=clang cflags='-arch x86_64 -mmacosx-version-min=10.11 -O2 -g' cxxflags='-std=c++17 -stdlib=libc++ -arch x86_64 -mmacosx-version-min=10.11 -O2 -g' linkflags='-stdlib=libc++ -arch x86_64 -mmacosx-version-min=10.11 -headerpad_max_install_names' link=shared variant=release threading=multi install)
 	touch $@
 
-tmp/ceres-solver-$(CERES_VERSION).installed: tmp/ceres-solver-$(CERES_VERSION)
-	install -d var/ceres-solver-$(CERES_VERSION)/build.dir
-	(cd var/ceres-solver-$(CERES_VERSION)/build.dir && export MACOSX_DEPLOYMENT_TARGET=10.11 && CC='clang' CXX='clang++' CFLAGS='-arch x86_64 -mmacosx-version-min=10.11 -O2 -g' CXXFLAGS='-std=c++17 -stdlib=libc++ -arch x86_64 -mmacosx-version-min=10.11 -O2 -g' LDFLAGS='-stdlib=libc++ -arch x86_64 -mmacosx-version-min=10.11 -headerpad_max_install_names' cmake -DCMAKE_INSTALL_PREFIX=$(PREFIX) -DEIGEN_INCLUDE_DIR=$(abspath ../include) $(CERES_CMAKE_OPTIONS) .. && $(MAKE) all install)
-	touch $@
-
 tmp/clibsedml-$(CLIBSEDML_VERSION).installed: tmp/clibsedml-$(CLIBSEDML_VERSION)
 	(cd var/clibsedml-$(CLIBSEDML_VERSION) && autoreconf -i -f && export MACOSX_DEPLOYMENT_TARGET=10.11 && ./configure --prefix=$(PREFIX) --with-xml-exec-prefix=/usr $(CLIBSEDML_CONFIGURE_OPTIONS) CC='clang' CFLAGS='-Wall -W -arch x86_64 -mmacosx-version-min=10.11 -O2 -g' LDFLAGS='-arch x86_64 -mmacosx-version-min=10.11 -headerpad_max_install_names' && $(MAKE) all install)
 	touch $@
@@ -265,7 +254,7 @@ build.xml: build.xml.in
 
 build/Makefile: ../configure
 	install -d $(dir $@)
-	(cd $(dir $@) && ../../configure --prefix=$(CURDIR)/opt --with-boost=$(PREFIX) --with-ceres-solver=$(PREFIX) --with-protoc=$(PREFIX)/bin/protoc --with-xml-exec-prefix=/usr --with-protoc=$(PREFIX)/bin/protoc --with-sundials=$(PREFIX) --with-wxWidgets=$(PREFIX) --enable-release --enable-silent-rules CC='clang' CXX='clang++' CFLAGS='-arch x86_64 -mmacosx-version-min=10.11 -O2 -g' CXXFLAGS='-std=c++17 -stdlib=libc++ -arch x86_64 -mmacosx-version-min=10.11 -O2 -g' LDFLAGS='-stdlib=libc++ -arch x86_64 -mmacosx-version-min=10.11 -headerpad_max_install_names' PKG_CONFIG=$(PKG_CONFIG) PKG_CONFIG_PATH=$(PKG_CONFIG_PATH) PKG_CONFIG_LIBDIR=$(PKG_CONFIG_LIBDIR) CLIBSEDML_CFLAGS='-I$(PREFIX)/include' CLIBSEDML_LIBS='-L$(PREFIX)/lib -lsedml' LIBSBML_CFLAGS='-I$(PREFIX)/include' LIBSBML_LIBS='-L$(PREFIX)/lib -lsbml' SOSLIB_CFLAGS='-I$(PREFIX)/include' SOSLIB_LIBS='-L$(PREFIX)/lib -lODES')
+	(cd $(dir $@) && ../../configure --prefix=$(CURDIR)/opt --with-boost=$(PREFIX) --with-protoc=$(PREFIX)/bin/protoc --with-xml-exec-prefix=/usr --with-protoc=$(PREFIX)/bin/protoc --with-sundials=$(PREFIX) --with-wxWidgets=$(PREFIX) --enable-release --enable-silent-rules CC='clang' CXX='clang++' CFLAGS='-arch x86_64 -mmacosx-version-min=10.11 -O2 -g' CXXFLAGS='-std=c++17 -stdlib=libc++ -arch x86_64 -mmacosx-version-min=10.11 -O2 -g' LDFLAGS='-stdlib=libc++ -arch x86_64 -mmacosx-version-min=10.11 -headerpad_max_install_names' PKG_CONFIG=$(PKG_CONFIG) PKG_CONFIG_PATH=$(PKG_CONFIG_PATH) PKG_CONFIG_LIBDIR=$(PKG_CONFIG_LIBDIR) CLIBSEDML_CFLAGS='-I$(PREFIX)/include' CLIBSEDML_LIBS='-L$(PREFIX)/lib -lsedml' LIBSBML_CFLAGS='-I$(PREFIX)/include' LIBSBML_LIBS='-L$(PREFIX)/lib -lsbml' SOSLIB_CFLAGS='-I$(PREFIX)/include' SOSLIB_LIBS='-L$(PREFIX)/lib -lODES')
 
 $(foreach p,$(PROGRAMS),opt/bin/$(p)) $(foreach d,$(FLINT_DYLIBS),opt/lib/$(d).dylib): build/Makefile
 	$(MAKE) -C build all install-exec
@@ -298,15 +287,11 @@ $(APP)/Contents/Resources/flint.icns: ../flint.icns | $(APP)/Contents/Resources
 
 $(foreach p,$(PROGRAMS),$(eval $(call flint_macos_program,$(p))))
 
-$(APP)/Contents/Resources/third-party-licenses.txt: tmp/ceres-solver-$(CERES_VERSION) tmp/libsbml-$(LIBSBML_VERSION) tmp/protobuf-$(PROTOBUF_VERSION) tmp/SBML_odeSolver-$(SOSLIB_VERSION) tmp/sundials-$(SUNDIALS_VERSION)
+$(APP)/Contents/Resources/third-party-licenses.txt: tmp/libsbml-$(LIBSBML_VERSION) tmp/protobuf-$(PROTOBUF_VERSION) tmp/SBML_odeSolver-$(SOSLIB_VERSION) tmp/sundials-$(SUNDIALS_VERSION)
 	install -d $(dir $@)
 	echo ';;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;' > $@
 	echo ';; Licenses of third-party libraries' >> $@
 	echo ';;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;' >> $@
-	echo >> $@
-	echo ';; Ceres Solver $(CERES_VERSION)' >> $@
-	echo >> $@
-	cat var/ceres-solver-$(CERES_VERSION)/LICENSE >> $@
 	echo >> $@
 	echo ';; CZMQ $(CZMQ_VERSION)' >> $@
 	echo >> $@

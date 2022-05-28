@@ -102,12 +102,6 @@ tmp/$(BOOST_UNDERSCORE): src/$(BOOST_UNDERSCORE).tar.bz2 | tmp
 	tar -C var -jxf $<
 	touch $@
 
-tmp/ceres-solver-$(CERES_VERSION): src/ceres-solver-$(CERES_VERSION).tar.gz ceres-solver-$(CERES_VERSION).patch | tmp
-	-rm -rf var/ceres-solver-$(CERES_VERSION)
-	tar -C var -zxf $<
-	patch var/ceres-solver-$(CERES_VERSION)/examples/CMakeLists.txt ceres-solver-$(CERES_VERSION).patch
-	touch $@
-
 tmp/clibsedml-$(CLIBSEDML_VERSION): src/clibsedml-$(CLIBSEDML_VERSION).tar.gz clibsedml-$(CLIBSEDML_VERSION).patch | tmp
 	-rm -rf var/clibsedml-$(CLIBSEDML_VERSION)
 	tar -C var -zxf $<
@@ -192,14 +186,10 @@ flint/flint.wxs: flint.wxs.in | flint
 flint/license.rtf: ../doc/license.rtf | flint
 	install -p -m 0644 $< $@
 
-flint/third-party-licenses.txt: tmp/ceres-solver-$(CERES_VERSION) tmp/czmq-$(CZMQ_VERSION) tmp/libsbml-$(LIBSBML_VERSION) tmp/libxml2-$(LIBXML2_VERSION) tmp/protobuf-$(PROTOBUF_VERSION) tmp/SBML_odeSolver-$(SOSLIB_VERSION) tmp/sundials-$(SUNDIALS_VERSION) tmp/zeromq-$(ZEROMQ_VERSION) | flint
+flint/third-party-licenses.txt: tmp/czmq-$(CZMQ_VERSION) tmp/libsbml-$(LIBSBML_VERSION) tmp/libxml2-$(LIBXML2_VERSION) tmp/protobuf-$(PROTOBUF_VERSION) tmp/SBML_odeSolver-$(SOSLIB_VERSION) tmp/sundials-$(SUNDIALS_VERSION) tmp/zeromq-$(ZEROMQ_VERSION) | flint
 	echo ';;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;' > $@
 	echo ';; Licenses of third-party libraries' >> $@
 	echo ';;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;' >> $@
-	echo >> $@
-	echo ';; Ceres Solver $(CERES_VERSION)' >> $@
-	echo >> $@
-	cat var/ceres-solver-$(CERES_VERSION)/LICENSE >> $@
 	echo >> $@
 	echo ';; CZMQ $(CZMQ_VERSION)' >> $@
 	echo >> $@
@@ -247,7 +237,6 @@ all.proj: all.proj.in
 		-D__TARGET_ARCH="$(TARGET_ARCH)" \
 		-D__BOOST_UNDERSCORE="$(BOOST_UNDERSCORE)" \
 		-D__B2_WITHOUT_OPTIONS="$(B2_WITHOUT_OPTIONS)" \
-		-D__CERES_VERSION="$(CERES_VERSION)" \
 		-D__CLIBSEDML_VERSION="$(CLIBSEDML_VERSION)" \
 		-D__CZMQ_VERSION="$(CZMQ_VERSION)" \
 		-D__LIBMICROHTTPD_VERSION="$(LIBMICROHTTPD_VERSION)" \

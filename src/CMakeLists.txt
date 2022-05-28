@@ -178,7 +178,6 @@ target_link_libraries(libflintxx
     ${SUNDIALS_IDAS}
     ${SUNDIALS_KINSOL}
     ${SUNDIALS_NVECSERIAL}
-    ${CERES_LIBRARIES}
     ${CLIBSEDML}
     ${LIBXML2_LIBRARIES}
     )

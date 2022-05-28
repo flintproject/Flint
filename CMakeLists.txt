@@ -46,9 +46,6 @@ find_package(wxWidgets REQUIRED COMPONENTS
              core base adv html xml aui propgrid)
 include(${wxWidgets_USE_FILE})
 
-find_package(Ceres REQUIRED)
-include_directories("${CERES_INCLUDE_DIRS}")
-
 find_library(LIBZMQ
              NAMES libzmq libzmq-v142-mt-4_3_4
              )

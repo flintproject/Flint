@@ -9,7 +9,6 @@ RELEASE = 1
 
 DEPS := \
     boost \
-    ceres \
     clibsedml \
     czmq \
     libsbml \
@@ -20,7 +19,6 @@ DEPS := \
     zeromq
 
 boost_VERSION = $(BOOST_VERSION)
-ceres_VERSION = $(CERES_VERSION)
 clibsedml_VERSION = $(CLIBSEDML_VERSION)
 czmq_VERSION = $(CZMQ_VERSION)
 libsbml_VERSION = $(LIBSBML_VERSION)
@@ -31,7 +29,6 @@ wxwidgets_VERSION = $(WXWIDGETS_VERSION)
 zeromq_VERSION = $(ZEROMQ_VERSION)
 
 boost_RELEASE = 1
-ceres_RELEASE = 1
 clibsedml_RELEASE = 1
 czmq_RELEASE = 1
 libsbml_RELEASE = 1
@@ -42,7 +39,6 @@ wxwidgets_RELEASE = 1
 zeromq_RELEASE = 1
 
 boost_DEPENDS =
-ceres_DEPENDS =
 clibsedml_DEPENDS =
 czmq_DEPENDS = zeromq
 libsbml_DEPENDS = 
@@ -198,10 +194,6 @@ $(foreach p,$(FLINT_PACKAGE),$(RPMBUILD_DIR)/RPMS/$(ARCH)/$(p)): flint.spec var/
 $(eval $(call flint_expand_tar_bz2,$(BOOST_UNDERSCORE),$(BOOST_UNDERSCORE)))
 
 $(eval $(call flint_setup_dir,boost,$(BOOST_UNDERSCORE)))
-
-$(eval $(call flint_expand_tar_gz,ceres-solver-$(CERES_VERSION),ceres-solver-$(CERES_VERSION)))
-
-$(eval $(call flint_setup_dir,ceres,ceres-solver-$(CERES_VERSION)))
 
 $(eval $(call flint_expand_tar_gz,clibsedml-$(CLIBSEDML_VERSION),clibsedml-$(CLIBSEDML_VERSION)))
 

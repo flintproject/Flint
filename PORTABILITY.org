@@ -21,8 +21,6 @@ pkg-config is helpful but not required.
 In order to build Flint, the following libraries are required:
 - Boost 1.77.0
   https://www.boost.org/
-- Ceres Solver 1.14
-  http://ceres-solver.org/
 - CZMQ 4.2.1
   http://czmq.zeromq.org/
 - Protocol buffers 3.11.0 or later
