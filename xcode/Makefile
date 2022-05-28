@@ -15,6 +15,7 @@ PKG_CONFIG_PATH = $(PREFIX)/lib/pkgconfig
 PKG_CONFIG_LIBDIR = /usr/lib/pkgconfig
 
 BOOST_DYLIBS := \
+    atomic \
     filesystem \
     program_options \
     system
