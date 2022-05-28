@@ -70,7 +70,7 @@ define flint_frameworks_boost_dylib
 $(call flint_frameworks_boost_dylib_name,$(1)): tmp/$(BOOST_UNDERSCORE).installed tmp/bundled
 	install -p -m 0644 $(PREFIX)/lib/libboost_$(1)-mt.dylib $$@
 	install_name_tool -id @executable_path/../Frameworks/libboost_$(1)-mt.dylib $$@
-	install_name_tool -change @rpath/libboost_system-mt.dylib @executable_path/../Frameworks/libboost_system-mt.dylib $$@
+	install_name_tool -change @rpath/libboost_atomic-mt.dylib @executable_path/../Frameworks/libboost_atomic-mt.dylib $$@
 endef
 
 define flint_frameworks_dylib
