@@ -14,6 +14,7 @@
 #include <future>
 #include <mutex>
 #include <numeric>
+#include <thread>
 #include <vector>
 
 #define BOOST_FILESYSTEM_NO_DEPRECATED
