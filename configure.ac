@@ -88,7 +88,7 @@ WXWIDGETS_CXXFLAGS=
 WXWIDGETS_LIBS=
 if test -d "$with_wxWidgets"; then
     WXWIDGETS_CXXFLAGS="`$with_wxWidgets/bin/wx-config --cxxflags`"
-    WXWIDGETS_LIBS="`$with_wxWidgets/bin/wx-config --libs`"
+    WXWIDGETS_LIBS="`$with_wxWidgets/bin/wx-config --libs all`"
 elif test ! -z "$with_wxWidgets"; then
     AC_MSG_ERROR([$with_wxWidgets is not a directory, please specify valid location of wxWidgets])
 fi
