@@ -190,7 +190,7 @@ bool Read(const char *sedml_file, sqlite3 *db)
 		goto bail;
 
 	for (int i=0;i<sedml->num_tasks;i++) {
-		const struct sedml_task *task = sedml->tasks[i];
+		const struct sedml_task *task = reinterpret_cast<struct sedml_task *>(sedml->tasks[i]);
 		if (!task || !task->modelReference || !task->simulationReference) {
 			fprintf(stderr, "invalid task in SED-ML\n");
 			goto bail;
