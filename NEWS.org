@@ -5,7 +5,7 @@
    - macOS Sierra (10.12) or later.
      This version may still run on OS X El Capitan (10.11), but it is no longer
      supported.
-   - Linux distributions such as CentOS 7, Debian 11, and Ubuntu 18.04/20.04.
+   - Linux distributions such as CentOS 7, Debian 11/12, and Ubuntu 20.04/22.04.
      This version may still run on RHEL 8, but it is no longer supported.
 
 * Flint 2.4 (2020-09-29)
