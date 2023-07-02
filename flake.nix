@@ -39,6 +39,7 @@
 
         nativeBuildInputs = [
           autoreconfHook
+          gnum4
           pkg-config
           protobuf
           wxGTK32
