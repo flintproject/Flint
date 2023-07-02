@@ -96,18 +96,18 @@ $ sudo apt install g++ autoconf automake libtool cmake make libgtk-3-dev \
 
 ** Building Flint
 
-Running ~make~ at directory =posix= in a shell will automatically download and
-install dependency libraries, and then build/install Flint's binary programs in
-=posix/opt/sequential-version/bin= by default.
+Running ~make~ at directory =source/posix= in a shell will automatically
+download and install dependency libraries, and then build/install Flint's binary
+programs in =source/posix/opt/sequential-version/bin= by default.
 #+begin_src shell
-$ make -C posix
-$ ./posix/opt/sequential-version/bin/flint # to run the Flint program
+$ make -C source/posix
+$ ./source/posix/opt/sequential-version/bin/flint # to run the Flint program
 #+end_src
 
 If you rebuild Flint in the above way again, then first delete previous
 artifacts:
 #+begin_src shell
-$ make -C posix clean
+$ make -C source/posix clean
 #+end_src
 
 ** Testing Flint
@@ -116,10 +116,10 @@ Once building Flint, it is recommended to run automated tests to see if the
 program works as expected.  Launch the following command:
 
 #+begin_src shell
-$ make -C posix check
+$ make -C source/posix check
 #+end_src
 
 ** About custom installation
 
 Additional documentation, for e.g. customizing the installation location, can be
-found in =posix/README=.
+found in =source/posix/README=.

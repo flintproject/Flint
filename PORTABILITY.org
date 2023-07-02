@@ -47,8 +47,9 @@ In order to build Flint, the following libraries are required:
 
 * How to build and install programs
 
-In short, type in your shell at the top of this source directory:
+In short, type in your shell in the =source= directory:
 #+begin_src shell
+$ cd source
 $ autoreconf -i -f
 $ ./configure
 $ make all
@@ -58,6 +59,7 @@ That's all if succeeded.
 
 We recommend an out-of-tree way, e.g.:
 #+begin_src shell
+$ cd source
 $ autoreconf -i -f
 $ mkdir build
 $ cd build

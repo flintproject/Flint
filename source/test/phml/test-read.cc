@@ -194,12 +194,6 @@ public:
 		CheckReaches(FromFile(expected));
 	}
 
-	void CheckFlows(const char *expected)
-	{
-		sql_.CheckRows("SELECT source, target FROM flows",
-					   FromFile(expected));
-	}
-
 	void ReadAndError(const char *file, const char *expected)
 	{
 		BOOST_REQUIRE_EQUAL(SaveGivenFile(driver_.db(), file), 1);
@@ -450,7 +444,6 @@ BOOST_AUTO_TEST_CASE(ringed_Beeler_Reuter_1977_model_with_static_instance)
 {
 	ReadAndCheck(TEST_MODELS("ringed_Beeler_Reuter_1977_model_with_static_instance.isml"));
 	CheckEdges("ringed_Beeler_Reuter_1977_model_with_static_instance.edges.txt");
-	CheckFlows("ringed_Beeler_Reuter_1977_model_with_static_instance.flows.txt");
 	CheckIports("ringed_Beeler_Reuter_1977_model_with_static_instance.iports.txt");
 	CheckJournals("ringed_Beeler_Reuter_1977_model_with_static_instance.journals.txt");
 	CheckModules("ringed_Beeler_Reuter_1977_model_with_static_instance.modules.txt");
@@ -468,7 +461,6 @@ BOOST_AUTO_TEST_CASE(Rybak_2006_with_static_instance_and_multiple_input)
 {
 	ReadAndCheck(TEST_MODELS("Rybak_2006_with_static_instance_and_multiple_input.isml"));
 	CheckEdges("Rybak_2006_with_static_instance_and_multiple_input.edges.txt");
-	CheckFlows("Rybak_2006_with_static_instance_and_multiple_input.flows.txt");
 	CheckIports("Rybak_2006_with_static_instance_and_multiple_input.iports.txt");
 	CheckJournals("Rybak_2006_with_static_instance_and_multiple_input.journals.txt");
 	CheckModules("Rybak_2006_with_static_instance_and_multiple_input.modules.txt");

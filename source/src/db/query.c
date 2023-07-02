@@ -174,7 +174,7 @@ int CreateLayout(sqlite3 *db)
 					  " LEFT JOIN scopes AS c ON p.space_id = c.space_id"
 					  " LEFT JOIN variables AS v ON p.space_id = v.space_id"
 					  " WHERE c.uuid IS NOT NULL AND v.name IS NOT NULL"
-					  " ORDER BY p.space_id, c.rowid, v.rowid");
+					  " ORDER BY p.space_id, c.uuid, v.id");
 }
 
 int CreateSprinkles(sqlite3 *db)

@@ -1,0 +1,266 @@
+{
+  "nodes": {
+    "clibsedml": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ],
+        "sed-ml": "sed-ml"
+      },
+      "locked": {
+        "lastModified": 1688053996,
+        "narHash": "sha256-umbyy70uaaw5CHBkogk08aaYiv55GY4OAajkPxKosxU=",
+        "owner": "flintproject",
+        "repo": "clibsedml",
+        "rev": "7f01bb301e3ae04f3b5eaa98cea3f61b7b93014c",
+        "type": "github"
+      },
+      "original": {
+        "owner": "flintproject",
+        "repo": "clibsedml",
+        "type": "github"
+      }
+    },
+    "flint-libsbml": {
+      "inputs": {
+        "libsbml": "libsbml",
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1688045930,
+        "narHash": "sha256-BiW0a+xxgjZzrBOwC8It0iLpI1gAv15+YToCbwvs6XI=",
+        "owner": "flintproject",
+        "repo": "flint-libsbml",
+        "rev": "30766407c7d6f692d94f77a6e1cdd7a4a7d02f84",
+        "type": "github"
+      },
+      "original": {
+        "owner": "flintproject",
+        "repo": "flint-libsbml",
+        "rev": "30766407c7d6f692d94f77a6e1cdd7a4a7d02f84",
+        "type": "github"
+      }
+    },
+    "flint-libsbml_2": {
+      "inputs": {
+        "libsbml": "libsbml_2",
+        "nixpkgs": [
+          "flint-soslib",
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1688045930,
+        "narHash": "sha256-BiW0a+xxgjZzrBOwC8It0iLpI1gAv15+YToCbwvs6XI=",
+        "owner": "flintproject",
+        "repo": "flint-libsbml",
+        "rev": "30766407c7d6f692d94f77a6e1cdd7a4a7d02f84",
+        "type": "github"
+      },
+      "original": {
+        "owner": "flintproject",
+        "repo": "flint-libsbml",
+        "rev": "30766407c7d6f692d94f77a6e1cdd7a4a7d02f84",
+        "type": "github"
+      }
+    },
+    "flint-soslib": {
+      "inputs": {
+        "flint-libsbml": "flint-libsbml_2",
+        "flint-sundials": "flint-sundials",
+        "nixpkgs": [
+          "nixpkgs"
+        ],
+        "soslib": "soslib"
+      },
+      "locked": {
+        "lastModified": 1688049074,
+        "narHash": "sha256-mwZqRqlfUOoO9HgR3jXvDZvKe8V6s1wH5pZWycyrkfs=",
+        "owner": "flintproject",
+        "repo": "flint-soslib",
+        "rev": "966fba046e8cfe523f3671bb2dbe4dd7297d5131",
+        "type": "github"
+      },
+      "original": {
+        "owner": "flintproject",
+        "repo": "flint-soslib",
+        "rev": "966fba046e8cfe523f3671bb2dbe4dd7297d5131",
+        "type": "github"
+      }
+    },
+    "flint-sundials": {
+      "inputs": {
+        "nixpkgs": [
+          "flint-soslib",
+          "nixpkgs"
+        ],
+        "sundials": "sundials"
+      },
+      "locked": {
+        "lastModified": 1687788190,
+        "narHash": "sha256-HOjz4HzwBPcZGzfR3kF+9AEhcowTm/d1WzYvc1FzNfI=",
+        "owner": "flintproject",
+        "repo": "flint-sundials",
+        "rev": "0a02cd960ebe14a0bae4e08da7da2bcae61bfa98",
+        "type": "github"
+      },
+      "original": {
+        "owner": "flintproject",
+        "repo": "flint-sundials",
+        "type": "github"
+      }
+    },
+    "flint-sundials_2": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ],
+        "sundials": "sundials_2"
+      },
+      "locked": {
+        "lastModified": 1688048283,
+        "narHash": "sha256-XPosBWGQdVtRQ102BOLARMBxShDuLBp6hXkk052hdT8=",
+        "owner": "flintproject",
+        "repo": "flint-sundials",
+        "rev": "d731df04f3cca23a0eb7b95dd3546d3360d2f26a",
+        "type": "github"
+      },
+      "original": {
+        "owner": "flintproject",
+        "repo": "flint-sundials",
+        "rev": "d731df04f3cca23a0eb7b95dd3546d3360d2f26a",
+        "type": "github"
+      }
+    },
+    "libsbml": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1248798728,
+        "narHash": "sha256-iQ/2eAszAkpdfA4C645bc6JF0tLFSZSQnD/GSruPe1w=",
+        "owner": "sbmlteam",
+        "repo": "libsbml",
+        "rev": "186f62fc34f5836cff0ed162aa5e8b880f22fcb1",
+        "type": "github"
+      },
+      "original": {
+        "owner": "sbmlteam",
+        "repo": "libsbml",
+        "rev": "186f62fc34f5836cff0ed162aa5e8b880f22fcb1",
+        "type": "github"
+      }
+    },
+    "libsbml_2": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1248798728,
+        "narHash": "sha256-iQ/2eAszAkpdfA4C645bc6JF0tLFSZSQnD/GSruPe1w=",
+        "owner": "sbmlteam",
+        "repo": "libsbml",
+        "rev": "186f62fc34f5836cff0ed162aa5e8b880f22fcb1",
+        "type": "github"
+      },
+      "original": {
+        "owner": "sbmlteam",
+        "repo": "libsbml",
+        "rev": "186f62fc34f5836cff0ed162aa5e8b880f22fcb1",
+        "type": "github"
+      }
+    },
+    "nixpkgs": {
+      "locked": {
+        "lastModified": 1687829761,
+        "narHash": "sha256-QRe1Y8SS3M4GeC58F/6ajz6V0ZLUVWX3ZAMgov2N3/g=",
+        "owner": "NixOS",
+        "repo": "nixpkgs",
+        "rev": "9790f3242da2152d5aa1976e3e4b8b414f4dd206",
+        "type": "github"
+      },
+      "original": {
+        "owner": "NixOS",
+        "ref": "nixos-23.05",
+        "repo": "nixpkgs",
+        "type": "github"
+      }
+    },
+    "root": {
+      "inputs": {
+        "clibsedml": "clibsedml",
+        "flint-libsbml": "flint-libsbml",
+        "flint-soslib": "flint-soslib",
+        "flint-sundials": "flint-sundials_2",
+        "nixpkgs": "nixpkgs"
+      }
+    },
+    "sed-ml": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1507544196,
+        "narHash": "sha256-mM82cAu0Hk+XdrRxF8Xh5Ae8gJ2u7C8dd5z1Yo0bZco=",
+        "owner": "SED-ML",
+        "repo": "sed-ml",
+        "rev": "44511c318bcf93c43256ac201905ace1f7675e4c",
+        "type": "github"
+      },
+      "original": {
+        "owner": "SED-ML",
+        "repo": "sed-ml",
+        "rev": "44511c318bcf93c43256ac201905ace1f7675e4c",
+        "type": "github"
+      }
+    },
+    "soslib": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1521129593,
+        "narHash": "sha256-nobnmHn5Igd+sAZAodPepVmLp4nXMMTi7C52aGa051Y=",
+        "owner": "raim",
+        "repo": "SBML_odeSolver",
+        "rev": "0a1aa2becadceb95b2d61a9fdafa9c3cc620748f",
+        "type": "github"
+      },
+      "original": {
+        "owner": "raim",
+        "repo": "SBML_odeSolver",
+        "type": "github"
+      }
+    },
+    "sundials": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1474997249,
+        "narHash": "sha256-IWGe7mt7S11aimsK8bJ2oavkfY31wMjJuK47rKt9YpE=",
+        "owner": "LLNL",
+        "repo": "sundials",
+        "rev": "7ed895fd102226dbc52225e6b2c6e26ef1cafa0e",
+        "type": "github"
+      },
+      "original": {
+        "owner": "LLNL",
+        "ref": "v2.7.0",
+        "repo": "sundials",
+        "type": "github"
+      }
+    },
+    "sundials_2": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1474997249,
+        "narHash": "sha256-IWGe7mt7S11aimsK8bJ2oavkfY31wMjJuK47rKt9YpE=",
+        "owner": "LLNL",
+        "repo": "sundials",
+        "rev": "7ed895fd102226dbc52225e6b2c6e26ef1cafa0e",
+        "type": "github"
+      },
+      "original": {
+        "owner": "LLNL",
+        "ref": "v2.7.0",
+        "repo": "sundials",
+        "type": "github"
+      }
+    }
+  },
+  "root": "root",
+  "version": 7
+}

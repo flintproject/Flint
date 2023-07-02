@@ -7,17 +7,17 @@ image: Visual Studio 2019
 platform: x64
 
 cache:
-  - msvc\src -> .appveyor.yml, deposit.mk, msvc\Makefile
+  - source\msvc\src -> .appveyor.yml, deposit.mk, source\msvc\Makefile
 
 install:
   - set PATH=C:\Program Files (x86)\WiX Toolset v3.11\bin;%PATH%
   - 'C:\cygwin64\setup-x86_64.exe -d -n -N -q -P m4,make,patch,tar,unzip,wget,xmlstarlet'
 
 build_script:
-  - 'C:\cygwin64\bin\bash -l -c "cd $(cygpath $APPVEYOR_BUILD_FOLDER)/msvc && cp config.mk.x86-64 config.mk && make"'
+  - 'C:\cygwin64\bin\bash -l -c "cd $(cygpath $APPVEYOR_BUILD_FOLDER)/source/msvc && cp config.mk.x86-64 config.mk && make"'
   - call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Auxiliary\Build\vcvarsall.bat" x64
-  - cd %APPVEYOR_BUILD_FOLDER%\msvc && msbuild all.proj
+  - cd %APPVEYOR_BUILD_FOLDER%\source\msvc && msbuild all.proj
 
 artifacts:
-  - path: msvc\flint\flint.msi
+  - path: source\msvc\flint\flint.msi
     name: flint.msi
