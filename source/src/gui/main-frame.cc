@@ -72,7 +72,7 @@ bool ModelFileDropTarget::OnDropFiles(wxCoord, wxCoord, const wxArrayString &fil
 }
 
 enum {
-	kIdSaveConfigAs,
+	kIdSaveConfigAs =  wxID_HIGHEST + 1,
 	kIdExportToC,
 	kIdRun,
 	kIdPause,
