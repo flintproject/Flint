@@ -1,73 +1,35 @@
 name: CI
 
-on: [push]
+on: [push, pull_request]
 
 jobs:
-  posix-build-on-ubuntu-22_04:
-    runs-on: ubuntu-22.04
-    defaults:
-      run:
-        shell: bash
-        working-directory: source/posix
+  build-on-ubuntu-latest:
+    runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - run: sudo apt-get install libgtk-3-dev libsqlite3-dev libxml2-dev unzip uuid-dev zlib1g-dev
-      - run: make -s download
-      - run: make -s external
-      - run: make -s all
-      - run: make check
-  posix-build-on-ubuntu-20_04:
-    runs-on: ubuntu-20.04
-    defaults:
-      run:
-        shell: bash
-        working-directory: source/posix
-    steps:
-      - uses: actions/checkout@v2
-      - run: sudo apt-get install libgtk-3-dev libsqlite3-dev libxml2-dev unzip uuid-dev zlib1g-dev
-      - run: make -s download
-      - run: make -s external
-      - run: make -s all
-      - run: make check
-  xcode-build-on-macos-12:
-    runs-on: macos-12
-    defaults:
-      run:
-        shell: bash
-        working-directory: source/xcode
-    env:
-      LIBTOOL: glibtool
-      LIBTOOLIZE: glibtoolize
-    steps:
-      - uses: actions/checkout@v2
-      - run: brew install autoconf automake libtool pkg-config
-      - run: cp config.mk.github config.mk
-      - run: make -s download
-      - run: make -s external
-      - run: make -s all
-      - run: make check
-      - uses: actions/upload-artifact@v2
+      - uses: actions/checkout@v3
+      - uses: cachix/install-nix-action@v22
         with:
-          name: macos-12-installer-image
-          path: source/xcode/Flint-*.dmg
-  xcode-build-on-macos-11:
-    runs-on: macos-11
-    defaults:
-      run:
-        shell: bash
-        working-directory: source/xcode
-    env:
-      LIBTOOL: glibtool
-      LIBTOOLIZE: glibtoolize
-    steps:
-      - uses: actions/checkout@v2
-      - run: brew install autoconf automake libtool pkg-config
-      - run: cp config.mk.github config.mk
-      - run: make -s download
-      - run: make -s external
-      - run: make -s all
-      - run: make check
-      - uses: actions/upload-artifact@v2
+          nix_path: nixpkgs=channel:nixos-unstable
+      - name: Build
+        run: nix build
+      - name: Read a symlink
+        run: echo "UPLOAD_PATH=$(readlink -f result)" >> $GITHUB_ENV
+      - uses: actions/upload-artifact@v3
         with:
-          name: macos-11-installer-image
-          path: source/xcode/Flint-*.dmg
+          name: result
+          path: ${{ env.UPLOAD_PATH }}
+  build-on-macos-latest:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: cachix/install-nix-action@v22
+        with:
+          nix_path: nixpkgs=channel:nixos-unstable
+      - name: Build
+        run: nix build
+      - name: Read a symlink
+        run: echo "UPLOAD_PATH=$(readlink -f result)" >> $GITHUB_ENV
+      - uses: actions/upload-artifact@v3
+        with:
+          name: result
+          path: ${{ env.UPLOAD_PATH }}
