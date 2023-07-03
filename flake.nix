@@ -9,7 +9,7 @@
   };
 
   inputs.flint-libsbml = {
-    url = github:flintproject/flint-libsbml/30766407c7d6f692d94f77a6e1cdd7a4a7d02f84;
+    url = github:flintproject/flint-libsbml/f4a93d6a98d4709e57679942d738ef6c5b91b25d;
     inputs.nixpkgs.follows = "nixpkgs";
   };
 
@@ -19,7 +19,7 @@
   };
 
   inputs.flint-soslib = {
-    url = github:flintproject/flint-soslib/966fba046e8cfe523f3671bb2dbe4dd7297d5131;
+    url = github:flintproject/flint-soslib/8eaf848cc3f15fb4bcf82851cce50d3e714e9822;
     inputs.nixpkgs.follows = "nixpkgs";
   };
 
