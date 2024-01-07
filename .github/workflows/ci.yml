@@ -11,7 +11,7 @@ jobs:
         with:
           nix_path: nixpkgs=channel:nixos-unstable
       - name: Build
-        run: nix build
+        run: nix build -L
       - name: Read a symlink
         run: echo "UPLOAD_PATH=$(readlink -f result)" >> $GITHUB_ENV
       - uses: actions/upload-artifact@v3
@@ -26,7 +26,7 @@ jobs:
         with:
           nix_path: nixpkgs=channel:nixos-unstable
       - name: Build
-        run: nix build
+        run: nix build -L
       - name: Read a symlink
         run: echo "UPLOAD_PATH=$(readlink -f result)" >> $GITHUB_ENV
       - uses: actions/upload-artifact@v3
