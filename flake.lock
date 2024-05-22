@@ -96,11 +96,11 @@
         "sundials": "sundials"
       },
       "locked": {
-        "lastModified": 1687788190,
-        "narHash": "sha256-HOjz4HzwBPcZGzfR3kF+9AEhcowTm/d1WzYvc1FzNfI=",
+        "lastModified": 1704639080,
+        "narHash": "sha256-U1nrHmTszm6OHIsUdlKcDt/erhakm+05q6sTn/QV0mM=",
         "owner": "flintproject",
         "repo": "flint-sundials",
-        "rev": "0a02cd960ebe14a0bae4e08da7da2bcae61bfa98",
+        "rev": "16740a8af95e2344c73e9793b024c153263baa16",
         "type": "github"
       },
       "original": {
@@ -166,11 +166,11 @@
     },
     "nixpkgs": {
       "locked": {
-        "lastModified": 1704420045,
-        "narHash": "sha256-C36QmoJd5tdQ5R9MC1jM7fBkZW9zBUqbUCsgwS6j4QU=",
+        "lastModified": 1716218643,
+        "narHash": "sha256-i/E7gzQybvcGAYDRGDl39WL6yVk30Je/NXypBz6/nmM=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "c1be43e8e837b8dbee2b3665a007e761680f0c3d",
+        "rev": "a8695cbd09a7ecf3376bd62c798b9864d20f86ee",
         "type": "github"
       },
       "original": {
