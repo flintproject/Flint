@@ -1,11 +1,9 @@
-.PHONY: all clean check
+.PHONY: all check
 
-all: input.isd output0.isd output1.isd
+all: input.isd
 
-check: roundtrip.cmp
-
-clean:
-	-rm -f roundtrip.cmp output1.isd output0.isd input.isd
+check: input.isd output1.isd
+	cmp $^
 
 input.isd:
 	isdrand $@
@@ -15,6 +13,3 @@ output0.isd: input.isd
 
 output1.isd: output0.isd
 	isdbswap $< $@
-
-roundtrip.cmp: input.isd output1.isd
-	cmp $^ > $@

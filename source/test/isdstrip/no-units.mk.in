@@ -1,12 +1,9 @@
-.PHONY: all clean check
+.PHONY: all check
 
 all: no-units-input.isd
 
 check: DATADIR/no-units-expected.csv no-units-stripped.csv
 	diff -u $^
-
-clean:
-	-rm -f no-units-stripped.csv no-units-stripped.isd no-units-input.isd
 
 no-units-stripped.csv: no-units-stripped.isd
 	isd2csv -o $@ $<

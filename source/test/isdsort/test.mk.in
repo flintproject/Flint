@@ -1,4 +1,4 @@
-.PHONY: all clean check check0 check2 check9
+.PHONY: all check check0 check2 check9
 
 all: TEST.isd
 
@@ -12,9 +12,6 @@ check9: DATADIR/9/TEST.csv 9.out.TEST/TEST.csv
 	diff -u $^
 
 check: check0 check2 check9
-
-clean:
-	-rm -rf 0.out.TEST 2.out.TEST 9.out.TEST TEST.isd
 
 TEST.isd: DATADIR/TEST.csv
 	csv2isd $< $@

@@ -1,4 +1,4 @@
-.PHONY: all clean check
+.PHONY: all check
 
 all: abstol0.isd abstol1.isd
 
@@ -9,9 +9,6 @@ check: abstol0.isd abstol1.isd
 	! isddiff -T -a 0.125 -N $^
 	isddiff -T -a 0.25 $^
 	isddiff -T -a 0.25 -N $^
-
-clean:
-	-rm -f abstol0.isd abstol1.isd
 
 abstol0.isd: DATADIR/abstol0.csv
 	csv2isd $< $@

@@ -1,13 +1,10 @@
-.PHONY: all clean check
+.PHONY: all check
 
 all: nan0.isd nan1.isd
 
 check: nan0.isd nan1.isd
 	! isddiff -T $^
 	isddiff -T -N $^
-
-clean:
-	-rm -f nan0.isd nan1.isd
 
 nan0.isd: DATADIR/nan0.csv
 	csv2isd $< $@

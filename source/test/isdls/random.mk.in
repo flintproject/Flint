@@ -1,11 +1,8 @@
-.PHONY: all clean check
+.PHONY: all check
 
 all: random.isd
 
 check: random.txt
-
-clean:
-	-rm -f random.txt random.isd
 
 random.isd:
 	isdrand $@

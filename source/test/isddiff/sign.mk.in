@@ -1,13 +1,10 @@
-.PHONY: all clean check
+.PHONY: all check
 
 all: sign0.isd sign1.isd
 
 check: sign0.isd sign1.isd
 	! isddiff -T $^
 	! isddiff -T -N $^
-
-clean:
-	-rm -f sign0.isd sign1.isd
 
 sign0.isd: DATADIR/sign0.csv
 	csv2isd $< $@

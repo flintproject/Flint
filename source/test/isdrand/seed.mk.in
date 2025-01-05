@@ -1,14 +1,9 @@
-.PHONY: all clean check
+.PHONY: all check
 
 all: output0.isd output1.isd
 
-check: output.cmp
-
-clean:
-	-rm -f output.cmp output0.isd output1.isd
+check: output0.isd output1.isd
+	cmp $^ SKIP SKIP
 
 output0.isd output1.isd:
 	isdrand $@ 42
-
-output.cmp: output0.isd output1.isd
-	cmp $^ SKIP SKIP > $@

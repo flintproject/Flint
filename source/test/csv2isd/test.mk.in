@@ -1,11 +1,8 @@
-.PHONY: all clean check
+.PHONY: all check
 
 all: OUTPUT.csv
 
 check: OUTPUT.diff
-
-clean:
-	-rm -f OUTPUT.diff OUTPUT.csv OUTPUT
 
 OUTPUT: INPUT
 	csv2isd $< $@

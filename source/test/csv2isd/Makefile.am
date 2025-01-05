@@ -16,7 +16,7 @@ XFAIL_TESTS = \
 .mk.sh:
 	echo '#!/bin/sh' > $@
 	echo 'export PATH="@abs_top_builddir@/src:$$PATH"' >> $@
-	echo '$(MAKE) -f $< -s clean all check' >> $@
+	echo '$(MAKE) -f $< -s all check' >> $@
 	chmod +x $@
 
 $(TESTS:.sh=.mk): @top_srcdir@/test/csv2isd/test.mk.in
