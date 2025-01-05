@@ -1,7 +1,7 @@
 {
   description = "A flake for building Flint";
 
-  inputs.nixpkgs.url = github:NixOS/nixpkgs/nixos-23.11;
+  inputs.nixpkgs.url = github:NixOS/nixpkgs/nixos-24.11;
 
   inputs.clibsedml = {
     url = github:flintproject/clibsedml;
@@ -9,7 +9,7 @@
   };
 
   inputs.flint-libsbml = {
-    url = github:flintproject/flint-libsbml;
+    url = github:flintproject/flint-libsbml/5f01e223b0c1be9e06d007718aec6ae1b9dab436;
     inputs.nixpkgs.follows = "nixpkgs";
   };
 
@@ -19,7 +19,7 @@
   };
 
   inputs.flint-soslib = {
-    url = github:flintproject/flint-soslib;
+    url = github:flintproject/flint-soslib/aba1d97fda2cfa336fca260c47b13ed2c77d17b8;
     inputs.nixpkgs.follows = "nixpkgs";
   };
 
