@@ -2,6 +2,7 @@
 #ifndef FLINT_RUNTIME_TIMESERIES_H_
 #define FLINT_RUNTIME_TIMESERIES_H_
 
+#include <cstdint>
 #include <memory>
 #include <set>
 #include <vector>
