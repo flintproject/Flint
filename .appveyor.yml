@@ -10,7 +10,7 @@ cache:
   - source\msvc\src -> .appveyor.yml, deposit.mk, source\msvc\Makefile
 
 install:
-  - set PATH=C:\Program Files (x86)\WiX Toolset v3.11\bin;%PATH%
+  - set PATH=C:\Program Files (x86)\WiX Toolset v3.14\bin;%PATH%
   - 'C:\cygwin64\setup-x86_64.exe -d -n -N -q -P m4,make,patch,tar,unzip,wget,xmlstarlet'
 
 build_script:
