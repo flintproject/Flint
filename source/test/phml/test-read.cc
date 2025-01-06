@@ -336,8 +336,8 @@ BOOST_AUTO_TEST_CASE(hepatocyte_external)
 {
 	ReadAndCheck(TEST_MODELS("hepatocyte_external.isml"));
 	std::vector<std::string> bridges{
-		"4d96c8ded10a48e2a0e0be9d74e58e78 4 get parameter k1",
-		"4d96c8ded10a48e2a0e0be9d74e58e78 5 set species s1"
+		"37a676f5519740fcae9f5d5fdb921fba 4 get parameter k1",
+		"37a676f5519740fcae9f5d5fdb921fba 5 set species s1"
 	};
 	CheckBridges(bridges);
 }
