@@ -224,7 +224,7 @@
       <is:morphology/>
     </is:module>
 
-    <is:module module-id="4d96c8de-d10a-48e2-a0e0-be9d74e58e78" type="functional-unit">
+    <is:module module-id="37a676f5-5197-40fc-ae9f-5d5fdb921fba" type="functional-unit">
       <is:property>
         <is:name>CDF_Hep_IS</is:name>
         <is:capsulation state="false"/>
@@ -370,14 +370,14 @@
       <is:description/>
     </is:edge>
     <is:edge edge-id="69ae299d-3fc7-4834-9b23-2d177e410a89" type="structural">
-      <is:tail module-id="4d96c8de-d10a-48e2-a0e0-be9d74e58e78" port-id="0"/>
+      <is:tail module-id="37a676f5-5197-40fc-ae9f-5d5fdb921fba" port-id="0"/>
       <is:head module-id="774fa0b9-de4e-44a9-8f85-349f85d4ee1c" port-id="0"/>
       <is:operation>constituent</is:operation>
       <is:description/>
     </is:edge>
     <is:edge edge-id="d58778c1-3874-4608-a378-9911606323a3" type="functional">
       <is:tail module-id="50228b3c-0ccb-4b61-872c-b0b5fff54ed5" port-id="1"/>
-      <is:head module-id="4d96c8de-d10a-48e2-a0e0-be9d74e58e78" port-id="1"/>
+      <is:head module-id="37a676f5-5197-40fc-ae9f-5d5fdb921fba" port-id="1"/>
       <is:operation/>
       <is:description/>
     </is:edge>
