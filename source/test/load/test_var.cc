@@ -95,12 +95,15 @@ BOOST_AUTO_TEST_CASE(Rybak_2006_with_static_instance_and_multiple_input) {
 
 BOOST_AUTO_TEST_CASE(hepatocyte_external) {
 	Phml(TEST_MODELS("hepatocyte_external.isml"));
+	boost::filesystem::remove("4d96c8de-d10a-48e2-a0e0-be9d74e58e78.db");
 	// GenerateAndCompare("hepatocyte_external.isml.var",
 	// 				   "hepatocyte_external.isml.txt");
 }
 
 BOOST_AUTO_TEST_CASE(hepatocyte_internal) {
 	Phml(TEST_MODELS("hepatocyte_internal.isml"));
+	boost::filesystem::remove("4d96c8de-d10a-48e2-a0e0-be9d74e58e78.db");
+	boost::filesystem::remove("4d96c8de-d10a-48e2-a0e0-be9d74e58e78.xml");
 	// GenerateAndCompare("hepatocyte_internal.isml.var",
 	// 				   "hepatocyte_internal.isml.txt");
 }
