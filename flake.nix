@@ -20,6 +20,8 @@
 
   inputs.flint-soslib = {
     url = github:flintproject/flint-soslib/aba1d97fda2cfa336fca260c47b13ed2c77d17b8;
+    inputs.flint-sundials.follows = "flint-sundials";
+    inputs.flint-libsbml.follows = "flint-libsbml";
     inputs.nixpkgs.follows = "nixpkgs";
   };
 
