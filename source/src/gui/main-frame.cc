@@ -375,7 +375,7 @@ void MainFrame::OnAbout(wxCommandEvent &)
 	aboutInfo.SetDescription("A simulator for biological and physiological models");
 	aboutInfo.SetCopyright("(C) 2015-2022 Takeshi Abe\n"
 						   "(C) 2015-2017 Okinawa Institute of Science and Technology Graduate University");
-	aboutInfo.SetWebSite("https://flintsimulator.org/");
+	aboutInfo.SetWebSite("https://flintproject.github.io/");
 	wxAboutBox(aboutInfo);
 }
 
