@@ -43,14 +43,14 @@
           autoreconfHook
           gnum4
           pkg-config
-          boost177
+          boost178
           protobuf
           wxGTK32
         ];
 
         buildInputs = [
           protobuf
-          boost177
+          boost178
           libmicrohttpd
           libxml2
           sqlite
@@ -65,7 +65,7 @@
         src = ./source;
 
         configureFlags = [
-          "--with-boost=${boost177.dev}"
+          "--with-boost=${boost178.dev}"
           "--with-wxWidgets=${wxGTK32}"
         ];
 
@@ -86,7 +86,7 @@
           libtool
           pkg-config
           protobuf
-          boost177
+          boost178
           wxGTK32
           libmicrohttpd
           libxml2
