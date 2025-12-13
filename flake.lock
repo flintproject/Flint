@@ -18,6 +18,7 @@
       "original": {
         "owner": "flintproject",
         "repo": "clibsedml",
+        "rev": "7f01bb301e3ae04f3b5eaa98cea3f61b7b93014c",
         "type": "github"
       }
     },
@@ -29,17 +30,17 @@
         ]
       },
       "locked": {
-        "lastModified": 1736085470,
-        "narHash": "sha256-vXVMWliiIAULH1XI6liP5D2f42ShRsvHv5J+6xwGRis=",
+        "lastModified": 1765618382,
+        "narHash": "sha256-DOGc09c0UXi1uGMgtwmuqAZeIM2UkTH31YwATpvcBzQ=",
         "owner": "flintproject",
         "repo": "flint-libsbml",
-        "rev": "5f01e223b0c1be9e06d007718aec6ae1b9dab436",
+        "rev": "ade6791ce0fb9895c2b87521aa009785e6e7ad4d",
         "type": "github"
       },
       "original": {
         "owner": "flintproject",
         "repo": "flint-libsbml",
-        "rev": "5f01e223b0c1be9e06d007718aec6ae1b9dab436",
+        "rev": "ade6791ce0fb9895c2b87521aa009785e6e7ad4d",
         "type": "github"
       }
     },
@@ -57,17 +58,17 @@
         "soslib": "soslib"
       },
       "locked": {
-        "lastModified": 1736086527,
-        "narHash": "sha256-DZNEFHaruv+ptNI9unMYhkMYY2Zql0ypztDS22+R51s=",
+        "lastModified": 1765619362,
+        "narHash": "sha256-o0S3plUiUSwJA59YTUM/NZBOCZfOCwPHe9TXBTt/EhY=",
         "owner": "flintproject",
         "repo": "flint-soslib",
-        "rev": "aba1d97fda2cfa336fca260c47b13ed2c77d17b8",
+        "rev": "fb658bc93730cafa1a72b20e0d05ab2bbff47889",
         "type": "github"
       },
       "original": {
         "owner": "flintproject",
         "repo": "flint-soslib",
-        "rev": "aba1d97fda2cfa336fca260c47b13ed2c77d17b8",
+        "rev": "fb658bc93730cafa1a72b20e0d05ab2bbff47889",
         "type": "github"
       }
     },
@@ -79,16 +80,17 @@
         "sundials": "sundials"
       },
       "locked": {
-        "lastModified": 1704639080,
-        "narHash": "sha256-U1nrHmTszm6OHIsUdlKcDt/erhakm+05q6sTn/QV0mM=",
+        "lastModified": 1765617906,
+        "narHash": "sha256-koHKEbAyLwMN/T8CzIaTyIvRVdLERfnb+zMMUALrwrE=",
         "owner": "flintproject",
         "repo": "flint-sundials",
-        "rev": "16740a8af95e2344c73e9793b024c153263baa16",
+        "rev": "1a3763b61977134605d626d8468c0433c1c15e8a",
         "type": "github"
       },
       "original": {
         "owner": "flintproject",
         "repo": "flint-sundials",
+        "rev": "1a3763b61977134605d626d8468c0433c1c15e8a",
         "type": "github"
       }
     },
@@ -111,16 +113,16 @@
     },
     "nixpkgs": {
       "locked": {
-        "lastModified": 1735922141,
-        "narHash": "sha256-vk0xwGZSlvZ/596yxOtsk4gxsIx2VemzdjiU8zhjgWw=",
+        "lastModified": 1765311797,
+        "narHash": "sha256-mSD5Ob7a+T2RNjvPvOA1dkJHGVrNVl8ZOrAwBjKBDQo=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "d29ab98cd4a70a387b8ceea3e930b3340d41ac5a",
+        "rev": "09eb77e94fa25202af8f3e81ddc7353d9970ac1b",
         "type": "github"
       },
       "original": {
         "owner": "NixOS",
-        "ref": "nixos-24.11",
+        "ref": "nixos-25.11",
         "repo": "nixpkgs",
         "type": "github"
       }

@@ -1,25 +1,25 @@
 {
   description = "A flake for building Flint";
 
-  inputs.nixpkgs.url = github:NixOS/nixpkgs/nixos-24.11;
+  inputs.nixpkgs.url = github:NixOS/nixpkgs/nixos-25.11;
 
   inputs.clibsedml = {
-    url = github:flintproject/clibsedml;
+    url = github:flintproject/clibsedml/7f01bb301e3ae04f3b5eaa98cea3f61b7b93014c;
     inputs.nixpkgs.follows = "nixpkgs";
   };
 
   inputs.flint-libsbml = {
-    url = github:flintproject/flint-libsbml/5f01e223b0c1be9e06d007718aec6ae1b9dab436;
+    url = github:flintproject/flint-libsbml/ade6791ce0fb9895c2b87521aa009785e6e7ad4d;
     inputs.nixpkgs.follows = "nixpkgs";
   };
 
   inputs.flint-sundials = {
-    url = github:flintproject/flint-sundials;
+    url = github:flintproject/flint-sundials/1a3763b61977134605d626d8468c0433c1c15e8a;
     inputs.nixpkgs.follows = "nixpkgs";
   };
 
   inputs.flint-soslib = {
-    url = github:flintproject/flint-soslib/aba1d97fda2cfa336fca260c47b13ed2c77d17b8;
+    url = github:flintproject/flint-soslib/fb658bc93730cafa1a72b20e0d05ab2bbff47889;
     inputs.flint-sundials.follows = "flint-sundials";
     inputs.flint-libsbml.follows = "flint-libsbml";
     inputs.nixpkgs.follows = "nixpkgs";
@@ -43,6 +43,7 @@
           autoreconfHook
           gnum4
           pkg-config
+          boost177
           protobuf
           wxGTK32
         ];
@@ -59,13 +60,12 @@
           flint-sundials.packages.${system}.default
           flint-soslib.packages.${system}.default
           clibsedml.packages.${system}.default
-        ] ++ (lib.optionals stdenv.isDarwin (with darwin.apple_sdk.frameworks; [
-          Cocoa
-        ]));
+        ];
 
         src = ./source;
 
         configureFlags = [
+          "--with-boost=${boost177.dev}"
           "--with-wxWidgets=${wxGTK32}"
         ];
 
@@ -97,9 +97,7 @@
           flint-sundials.packages.${system}.default
           flint-soslib.packages.${system}.default
           clibsedml.packages.${system}.default
-        ] ++ (lib.optionals stdenv.isDarwin (with darwin.apple_sdk.frameworks; [
-          Cocoa
-        ]));
+        ];
 
         shellHook = ''
           export wxGTK32=${wxGTK32}
