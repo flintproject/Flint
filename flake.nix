@@ -45,7 +45,7 @@
           pkg-config
           boost178
           protobuf
-          wxGTK32
+          wxwidgets_3_2
         ];
 
         buildInputs = [
@@ -55,7 +55,7 @@
           libxml2
           sqlite
           zeromq czmq
-          wxGTK32
+          wxwidgets_3_2
           flint-libsbml.packages.${system}.default
           flint-sundials.packages.${system}.default
           flint-soslib.packages.${system}.default
@@ -66,7 +66,7 @@
 
         configureFlags = [
           "--with-boost=${boost178.dev}"
-          "--with-wxWidgets=${wxGTK32}"
+          "--with-wxWidgets=${wxwidgets_3_2}"
         ];
 
         doCheck = true;
@@ -87,21 +87,17 @@
           pkg-config
           protobuf
           boost178
-          wxGTK32
+          wxwidgets_3_2
           libmicrohttpd
           libxml2
           sqlite
           zeromq czmq
-          wxGTK32
+          wxwidgets_3_2
           flint-libsbml.packages.${system}.default
           flint-sundials.packages.${system}.default
           flint-soslib.packages.${system}.default
           clibsedml.packages.${system}.default
         ];
-
-        shellHook = ''
-          export wxGTK32=${wxGTK32}
-        '';
 
       };
 
