@@ -1,7 +1,7 @@
 {
   description = "A flake for building Flint";
 
-  inputs.nixpkgs.url = github:NixOS/nixpkgs/nixos-25.11;
+  inputs.nixpkgs.url = github:NixOS/nixpkgs/nixos-26.05;
 
   inputs.clibsedml = {
     url = github:flintproject/clibsedml/7f01bb301e3ae04f3b5eaa98cea3f61b7b93014c;
