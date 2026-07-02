@@ -8,17 +8,16 @@
         "sed-ml": "sed-ml"
       },
       "locked": {
-        "lastModified": 1688053996,
-        "narHash": "sha256-umbyy70uaaw5CHBkogk08aaYiv55GY4OAajkPxKosxU=",
+        "lastModified": 1783000145,
+        "narHash": "sha256-fPleHzQ4bvF9zX+QRKs/9pVo54ItwADcIou+tLhAOvc=",
         "owner": "flintproject",
         "repo": "clibsedml",
-        "rev": "7f01bb301e3ae04f3b5eaa98cea3f61b7b93014c",
+        "rev": "b4d9eec5885aeee7ccc3d65ee53eae96f941e201",
         "type": "github"
       },
       "original": {
         "owner": "flintproject",
         "repo": "clibsedml",
-        "rev": "7f01bb301e3ae04f3b5eaa98cea3f61b7b93014c",
         "type": "github"
       }
     },
@@ -30,17 +29,16 @@
         ]
       },
       "locked": {
-        "lastModified": 1765618382,
-        "narHash": "sha256-DOGc09c0UXi1uGMgtwmuqAZeIM2UkTH31YwATpvcBzQ=",
+        "lastModified": 1783000522,
+        "narHash": "sha256-sQY2WHsrkC710Ih5g7DxhA84TkhBzYhRa46g9AuOhhA=",
         "owner": "flintproject",
         "repo": "flint-libsbml",
-        "rev": "ade6791ce0fb9895c2b87521aa009785e6e7ad4d",
+        "rev": "9428aedd35c07bcb8a95885cb211ebe6206d0b37",
         "type": "github"
       },
       "original": {
         "owner": "flintproject",
         "repo": "flint-libsbml",
-        "rev": "ade6791ce0fb9895c2b87521aa009785e6e7ad4d",
         "type": "github"
       }
     },
@@ -58,17 +56,16 @@
         "soslib": "soslib"
       },
       "locked": {
-        "lastModified": 1765619362,
-        "narHash": "sha256-o0S3plUiUSwJA59YTUM/NZBOCZfOCwPHe9TXBTt/EhY=",
+        "lastModified": 1783002035,
+        "narHash": "sha256-7X2scBI8T2m7ZWszh4kfWi8GwuHLvZpMYeE9nKfLrWo=",
         "owner": "flintproject",
         "repo": "flint-soslib",
-        "rev": "fb658bc93730cafa1a72b20e0d05ab2bbff47889",
+        "rev": "c66c0c1cd6ea9104dc4bbd1aba482292f1a77b40",
         "type": "github"
       },
       "original": {
         "owner": "flintproject",
         "repo": "flint-soslib",
-        "rev": "fb658bc93730cafa1a72b20e0d05ab2bbff47889",
         "type": "github"
       }
     },
@@ -80,17 +77,16 @@
         "sundials": "sundials"
       },
       "locked": {
-        "lastModified": 1765617906,
-        "narHash": "sha256-koHKEbAyLwMN/T8CzIaTyIvRVdLERfnb+zMMUALrwrE=",
+        "lastModified": 1783000636,
+        "narHash": "sha256-XYzEOk3kaumlvi9Xbqt78n9788jBOueHqt8K2Fo2vYQ=",
         "owner": "flintproject",
         "repo": "flint-sundials",
-        "rev": "1a3763b61977134605d626d8468c0433c1c15e8a",
+        "rev": "f3cec3eb60b43da332f67d89e3140e5499f6d36d",
         "type": "github"
       },
       "original": {
         "owner": "flintproject",
         "repo": "flint-sundials",
-        "rev": "1a3763b61977134605d626d8468c0433c1c15e8a",
         "type": "github"
       }
     },
