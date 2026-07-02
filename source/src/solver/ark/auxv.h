@@ -2,6 +2,7 @@
 #ifndef FLINT_SOLVER_ARK_AUXV_H_
 #define FLINT_SOLVER_ARK_AUXV_H_
 
+#include <cstdint>
 #include <memory>
 #include <utility>
 #include <vector>
