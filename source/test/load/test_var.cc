@@ -17,7 +17,7 @@
 #define BOOST_TEST_MODULE test_var
 #include "test.h"
 
-struct F : public test::MemoryFixture {
+struct F : public test::MemoryFixture, public test::TemporaryWorkingDirectory {
 
 	void Cellml(const char *file) {
 		SaveGivenFile(driver_.db(), file);
@@ -39,8 +39,7 @@ struct F : public test::MemoryFixture {
 	{
 		BOOST_REQUIRE(load::Var(driver_.db(), output));
 
-		boost::filesystem::path fp(__FILE__);
-		boost::filesystem::path ep = fp.parent_path();
+		boost::filesystem::path ep(FLINT_TEST("load"));
 		ep /= "var";
 		ep /= input;
 
@@ -94,18 +93,19 @@ BOOST_AUTO_TEST_CASE(Rybak_2006_with_static_instance_and_multiple_input) {
 }
 
 BOOST_AUTO_TEST_CASE(hepatocyte_external) {
+	PushWorkingDirectory("hepatocyte_external");
 	Phml(TEST_MODELS("hepatocyte_external.isml"));
-	boost::filesystem::remove("37a676f5-5197-40fc-ae9f-5d5fdb921fba.db");
 	// GenerateAndCompare("hepatocyte_external.isml.var",
 	// 				   "hepatocyte_external.isml.txt");
+	PopWorkingDirectory();
 }
 
 BOOST_AUTO_TEST_CASE(hepatocyte_internal) {
+	PushWorkingDirectory("hepatocyte_internal");
 	Phml(TEST_MODELS("hepatocyte_internal.isml"));
-	boost::filesystem::remove("4d96c8de-d10a-48e2-a0e0-be9d74e58e78.db");
-	boost::filesystem::remove("4d96c8de-d10a-48e2-a0e0-be9d74e58e78.xml");
 	// GenerateAndCompare("hepatocyte_internal.isml.var",
 	// 				   "hepatocyte_internal.isml.txt");
+	PopWorkingDirectory();
 }
 
 BOOST_AUTO_TEST_CASE(ringed_Beeler_Reuter_1977_model_with_static_instance) {

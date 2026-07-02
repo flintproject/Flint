@@ -5,6 +5,7 @@ include_directories("../src")
 include_directories(".")
 
 add_definitions(-DFLINT_EXAMPLE_DIR=${PROJECT_SOURCE_DIR}/example)
+add_definitions(-DFLINT_TEST_DIR=${PROJECT_SOURCE_DIR}/test)
 add_definitions(-DTEST_MODELS_DIR=${PROJECT_SOURCE_DIR}/test/models)
 
 add_subdirectory(base)

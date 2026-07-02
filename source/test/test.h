@@ -19,6 +19,8 @@
 #define BOOST_TEST_DYN_LINK
 bool init_unit_test(); // to avoid uninteresting -Wmissing-declarations
 #include <boost/test/unit_test.hpp>
+#include <boost/uuid/uuid_generators.hpp>
+#include <boost/uuid/uuid_io.hpp>
 
 #include "db/driver.h"
 #include "db/read-only-driver.h"
@@ -29,6 +31,10 @@ using namespace flint;
 #define FLINT_EXAMPLE_0(dirname, basename) (#dirname "/" basename)
 #define FLINT_EXAMPLE_1(dirname, basename) FLINT_EXAMPLE_0(dirname, basename)
 #define FLINT_EXAMPLE(basename) FLINT_EXAMPLE_1(FLINT_EXAMPLE_DIR, basename)
+
+#define FLINT_TEST_0(dirname, basename) (#dirname "/" basename)
+#define FLINT_TEST_1(dirname, basename) FLINT_TEST_0(dirname, basename)
+#define FLINT_TEST(basename) FLINT_TEST_1(FLINT_TEST_DIR, basename)
 
 #define TEST_MODELS_0(dirname, basename) (#dirname "/" basename)
 #define TEST_MODELS_1(dirname, basename) TEST_MODELS_0(dirname, basename)
@@ -138,10 +144,15 @@ struct TemporaryWorkingDirectory {
 	}
 
 	void PushWorkingDirectory(const char *name) {
+		// Generate unique directory name using UUID
+		auto uuid = boost::uuids::random_generator()();
+		std::ostringstream oss;
+		oss << name << "_" << uuid;
+		auto unique_name = oss.str();
+
 		boost::filesystem::path p(original_path_);
-		p /= name;
-		if (boost::filesystem::exists(p))
-			boost::filesystem::remove_all(p);
+		p /= unique_name;
+		BOOST_CHECK(!boost::filesystem::exists(p));
 		BOOST_CHECK(boost::filesystem::create_directory(p));
 		boost::filesystem::current_path(p);
 		current_path_ = p;
