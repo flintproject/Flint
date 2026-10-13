@@ -30,14 +30,7 @@ WXWIDGETS_DLL = \
 	wxmsw$(WXWIDGETS_CODE)u_propgrid_$(MSVC_VARIANT).dll
 
 define flint_add_wxWidgets_DLL_to_wxs
-xmlstarlet ed -L \
-		-s "//_:Component[@Id='wxmsw']" -t elem -n 'File' \
-		--var file '$$prev' \
-		-i '$$file' -t attr -n "Id" -v "$(subst -,_,$(subst .,_,$(notdir $(1))))" \
-		-i '$$file' -t attr -n "Name" -v "$(1)" \
-		-i '$$file' -t attr -n "DiskId" -v "1" \
-		-i '$$file' -t attr -n "Source" -v "$(1)" \
-		$(2)
+sed -i "/<Component Id='wxmsw'/a <File Id='$(subst -,_,$(subst .,_,$(notdir $(1))))' Name='$(1)' DiskId='1' Source='$(1)' />" $(2)
 
 endef
 
@@ -53,14 +46,7 @@ $(call flint_example_name,$(1)): ../example/$(1) | flint/example
 endef
 
 define flint_add_example_to_wxs
-xmlstarlet ed -L \
-		-s "//_:Component[@Id='example']" -t elem -n 'File' \
-		--var file '$$prev' \
-		-i '$$file' -t attr -n "Id" -v "$(subst -,_,$(subst .,_,$(notdir $(1))))" \
-		-i '$$file' -t attr -n "Name" -v "$(1)" \
-		-i '$$file' -t attr -n "DiskId" -v "1" \
-		-i '$$file' -t attr -n "Source" -v "example\\$(1)" \
-		$(2)
+sed -i "/<Component Id='example'/a <File Id='$(subst -,_,$(subst .,_,$(notdir $(1))))' Name='$(1)' DiskId='1' Source='example\\\\$(1)' />" $(2)
 
 endef
 
@@ -113,9 +99,10 @@ tmp/czmq-$(CZMQ_VERSION): src/czmq-$(CZMQ_VERSION).tar.gz | tmp
 	tar -C var -zxf $<
 	touch $@
 
-tmp/libsbml-$(LIBSBML_VERSION): src/libSBML-$(LIBSBML_VERSION)-core-src.zip | tmp
+tmp/libsbml-$(LIBSBML_VERSION): src/libSBML-$(LIBSBML_VERSION)-core-src.zip libsbml-$(LIBSBML_VERSION).patch | tmp
 	-rm -rf var/libsbml-$(LIBSBML_VERSION)
 	(cd var && unzip -qq ../$<)
+	patch -d var/libsbml-$(LIBSBML_VERSION) -p1 < libsbml-$(LIBSBML_VERSION).patch
 	touch $@
 
 tmp/libxml2-$(LIBXML2_VERSION): src/libxml2-$(LIBXML2_VERSION).tar.xz | tmp
@@ -178,7 +165,7 @@ flint/flint.ico: flint.ico | flint
 	install -p -m 0644 $< $@
 
 flint/flint.wxs: flint.wxs.in | flint
-	xmlstarlet ed -i '//_:Product' -t attr -n 'Version' -v $(VERSION) $< > $@.tmp
+	sed "s|<Product |<Product Version='$(VERSION)' |" $< > $@.tmp
 	$(foreach d,$(WXWIDGETS_DLL),$(call flint_add_wxWidgets_DLL_to_wxs,$(d),$@.tmp))
 	$(foreach e,$(EXAMPLE_PHML) $(EXAMPLE_ISD),$(call flint_add_example_to_wxs,$(e),$@.tmp))
 	mv $@.tmp $@

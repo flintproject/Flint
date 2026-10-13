@@ -20,7 +20,7 @@ if(CMAKE_VERSION VERSION_LESS 3.16)
 endif(CMAKE_VERSION VERSION_LESS 3.16)
 
 # Newer Boost cannot be detected by default
-set(Boost_ADDITIONAL_VERSIONS 1.77.0 1.77)
+set(Boost_ADDITIONAL_VERSIONS 1.78.0 1.78)
 
 find_package(SQLite3 REQUIRED)
 
@@ -47,7 +47,7 @@ find_package(wxWidgets REQUIRED COMPONENTS
 include(${wxWidgets_USE_FILE})
 
 find_library(LIBZMQ
-             NAMES libzmq libzmq-v142-mt-4_3_4
+              NAMES libzmq libzmq-v143-mt-4_3_4
              )
 if(NOT LIBZMQ)
     message(FATAL_ERROR "failed to find libzmq")

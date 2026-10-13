@@ -30,14 +30,14 @@
     <When Condition="'$(TargetArch)'=='x64'">
       <PropertyGroup>
         <BoostAddressModelOption>address-model=64</BoostAddressModelOption>
-        <CMakeGeneratorOption>-G "Visual Studio 16 2019" -A x64</CMakeGeneratorOption>
+        <CMakeGeneratorOption>-G "Visual Studio 17 2022" -A x64</CMakeGeneratorOption>
         <MsvcVariant>vc14x_x64</MsvcVariant>
       </PropertyGroup>
     </When>
     <When Condition="'$(TargetArch)'=='x86'">
       <PropertyGroup>
         <BoostAddressModelOption>address-model=32</BoostAddressModelOption>
-        <CMakeGeneratorOption>-G "Visual Studio 16 2019" -A Win32</CMakeGeneratorOption>
+        <CMakeGeneratorOption>-G "Visual Studio 17 2022" -A Win32</CMakeGeneratorOption>
         <MsvcVariant>vc14x</MsvcVariant>
       </PropertyGroup>
     </When>
@@ -69,7 +69,7 @@
           Inputs='tmp\$(BOOST_UNDERSCORE)'
           Outputs='tmp\$(BOOST_UNDERSCORE).installed'>
     <Exec Command='bootstrap' WorkingDirectory='$(VARDIR)\$(BOOST_UNDERSCORE)'/>
-    <Exec Command='.\b2 -d0 --prefix="$(PREFIX)" --no-cmake-config $(B2_WITHOUT_OPTIONS) $(BoostAddressModelOption) toolset=msvc-14.2 variant=release threading=multi link=shared runtime-link=shared install' WorkingDirectory='$(VARDIR)\$(BOOST_UNDERSCORE)'/>
+    <Exec Command='.\b2 -d0 --prefix="$(PREFIX)" --no-cmake-config $(B2_WITHOUT_OPTIONS) $(BoostAddressModelOption) toolset=msvc-14.3 variant=release threading=multi link=shared runtime-link=shared install' WorkingDirectory='$(VARDIR)\$(BOOST_UNDERSCORE)'/>
     <Touch AlwaysCreate='true' Files='tmp\$(BOOST_UNDERSCORE).installed'/>
   </Target>
 
@@ -98,7 +98,7 @@
           Inputs='tmp\libsbml-$(LIBSBML_VERSION);tmp\libxml2-$(LIBXML2_VERSION).installed'
           Outputs='tmp\libsbml-$(LIBSBML_VERSION).installed'>
     <MakeDir Directories='$(VARDIR)\libsbml-$(LIBSBML_VERSION)\build'/>
-    <Exec Command='cmake $(CMakeGeneratorOption) -DCMAKE_INSTALL_PREFIX="$(PREFIX)" -DLIBXML_INCLUDE_DIR="$(PREFIX)\include\libxml2" -DWITH_SWIG=OFF -DBUILD_SHARED_LIBS=ON ..' WorkingDirectory='$(VARDIR)\libsbml-$(LIBSBML_VERSION)\build'/>
+    <Exec Command='cmake $(CMakeGeneratorOption) -DCMAKE_INSTALL_PREFIX="$(PREFIX)" -DLIBXML_INCLUDE_DIR="$(PREFIX)\include\libxml2" -DWITH_SWIG=OFF -DBUILD_SHARED_LIBS=ON -DCMAKE_CXX_STANDARD=14 ..' WorkingDirectory='$(VARDIR)\libsbml-$(LIBSBML_VERSION)\build'/>
     <Exec Command='cmake --build "$(VARDIR)\libsbml-$(LIBSBML_VERSION)\build" --target install --config Release --clean-first'/>
     <Touch AlwaysCreate='true' Files='tmp\libsbml-$(LIBSBML_VERSION).installed'/>
   </Target>
@@ -219,7 +219,7 @@
           Inputs='tmp\$(BOOST_UNDERSCORE).installed;tmp\clibsedml-$(CLIBSEDML_VERSION).installed;tmp\sundials-$(SUNDIALS_VERSION).installed;tmp\SBML_odeSolver-$(SOSLIB_VERSION).installed;tmp\czmq-$(CZMQ_VERSION).installed;tmp\libmicrohttpd-$(LIBMICROHTTPD_VERSION).installed;tmp\wxWidgets.installed;tmp\SQLite.installed;..\src\bc.pb.cc;..\src\cli.pb.cc;..\src\ipc.pb.cc;..\src\lo.pb.cc;..\src\phml.pb.cc;..\src\unit.pb.cc'
           Outputs='tmp\build'>
     <MakeDir Directories='$(VARDIR)\build'/>
-    <Exec Command='cmake $(CMakeGeneratorOption) -DCMAKE_INSTALL_PREFIX="$(PREFIX)" -DwxWidgets_LIB_DIR="$(PREFIX)\lib\$(MsvcVariant)_dll" ..\..\..' WorkingDirectory='$(VARDIR)\build'/>
+    <Exec Command='cmake $(CMakeGeneratorOption) -DCMAKE_INSTALL_PREFIX="$(PREFIX)" -DCMAKE_PREFIX_PATH="$(PREFIX)" -DwxWidgets_LIB_DIR="$(PREFIX)\lib\$(MsvcVariant)_dll" ..\..\..' WorkingDirectory='$(VARDIR)\build'/>
     <Exec Command='cmake --build "$(VARDIR)\build" --target install --config Release'/>
     <Touch AlwaysCreate='true' Files='tmp\build'/>
   </Target>

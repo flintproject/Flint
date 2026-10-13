@@ -1,5 +1,5 @@
 # -*- Mode: makefile-gmake; tab-width: 4; indent-tabs-mode: t -*-
-BOOST_VERSION = 1.77.0
+BOOST_VERSION = 1.78.0
 CLIBSEDML_VERSION = 0.1.2
 CZMQ_VERSION = 4.2.1
 LIBMICROHTTPD_VERSION = 0.9.75
@@ -99,7 +99,7 @@ endef
 
 endif
 
-$(eval $(call external_library_source,https://archives.boost.io/release/$(BOOST_VERSION)/source,$(BOOST_UNDERSCORE).tar.bz2,fc9f85fc030e233142908241af7a846e60630aa7388de9a5fafb1f3a26840854))
+$(eval $(call external_library_source,https://archives.boost.io/release/$(BOOST_VERSION)/source,$(BOOST_UNDERSCORE).tar.bz2,8681f175d4bdb26c52222665793eef08490d7758529330f98d3b29dd0735bccc))
 $(eval $(call external_library_source3,https://github.com/flintproject/clibsedml/archive/v$(CLIBSEDML_VERSION).tar.gz,clibsedml-$(CLIBSEDML_VERSION).tar.gz,cf25d0aad379e14c26a74166b5d652e2072fc87183caf6f34c16b5122ffa469f))
 $(eval $(call external_library_source,https://github.com/zeromq/czmq/releases/download/v$(CZMQ_VERSION),czmq-$(CZMQ_VERSION).tar.gz,5d720a204c2a58645d6f7643af15d563a712dad98c9d32c1ed913377daa6ac39))
 $(eval $(call external_library_source,https://ftp.gnu.org/gnu/libmicrohttpd,libmicrohttpd-$(LIBMICROHTTPD_VERSION).tar.gz,9278907a6f571b391aab9644fd646a5108ed97311ec66f6359cebbedb0a4e3bb))
