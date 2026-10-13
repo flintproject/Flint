@@ -118,8 +118,8 @@ Flint {{{FlintVersion}}} runs on several supported platforms, including:
 
 
 ** Download and install Flint {{{FlintVersion}}}
-Flint project distributes Flint {{{FlintVersion}}}'s x86-64 binary installers for Windows,
-macOS, and CentOS/RHEL 7 or 8.
+Flint project distributes Flint {{{FlintVersion}}}'s x86-64 binary installers for Windows
+and macOS.
 
 *** On Windows
 Please download the installer package =Flint-2.5.0-windows.x86_64.msi= at
@@ -134,20 +134,6 @@ Please download the installer package =Flint-2.5.0-mac.dmg= at
 The .dmg archive for macOS contains Flint {{{FlintVersion}}}'s .pkg file; extracting and
 double-clicking it to start an application bundle called
 =Flint.app=.
-
-*** On CentOS/RHEL
-Please download =Flint-2.5.0-el7.x86_64.zip= or =Flint-2.5.0-el8.x86_64.zip=
-at [[https://sourceforge.net/projects/flintproject/files/Flint/]], depending
-on the major version of your OS.
-Unzipping the archive, run the following command on a bash-like shell to install
-RPM packages in it:
-#+begin_src sh
-unzip Flint-*-el*.x86_64.zip
-cd Flint-*-el*.x86_64
-sudo rpm -Uvh --replacepkgs flint-*.rpm
-#+end_src
-Once installed, Flint's executable will be found at
-=/opt/flint/bin/flint=.
 
 *** On other supported OSes
 In principle Flint {{{FlintVersion}}} runs on any Linux distribution coming up with GTK 2 or 3.
@@ -169,18 +155,14 @@ on Windows,
 #+begin_example
 Flint.app/Contents/Resources/example/HodgkinHuxley_1952_neuron_model.phml
 #+end_example
-on macOS, or
-#+begin_example
-/opt/flint/example/HodgkinHuxley_1952_neuron_model.phml
-#+end_example
-on CentOS/RHEL.
+on macOS.
 Otherwise you can also download it from
 [[https://github.com/flintproject/Flint/tree/Flint-2.5.0/example/HodgkinHuxley_1952_neuron_model.phml]].
 
 - Launch Flint ::
 To launch Flint, double-click
-=C:\Program Files\Flint\flint.exe= on Windows,
-=Flint.app= on macOS, or =/opt/flint/bin/flint= on CentOS/RHEL.
+=C:\Program Files\Flint\flint.exe= on Windows
+or =Flint.app= on macOS.
 It shows a window like Fig.\nbsp[[fig:initial]].
 #+name: fig:initial
 #+caption: The initial window of Flint.
@@ -926,12 +908,6 @@ Please read this chapter first when in doubt.
 ** How to uninstall Flint
 On windows, you can uninstall Flint through the system menu "Settings"\to"Apps & features".
 On macOS, all you have to do for uninstallation is to remove =Flint.app=.
-If you have installed Flint's RPM packages on CentOS/RHEL, the following command
-uninstalls them:
-#+begin_src sh
-sudo rpm -e flint flint-boost flint-clibsedml flint-czmq flint-libsbml \
-    flint-protobuf flint-soslib flint-sundials flint-wxwidgets flint-zeromq
-#+end_src
 
 ** How to ask questions about Flint
 Please send [[mailto:tabe@fixedpoint.jp][the author]] an email if you happen to have any questions about Flint.

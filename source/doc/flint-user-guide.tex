@@ -141,8 +141,8 @@ Flint 2.5 runs on several supported platforms, including:
 
 \section{Download and install Flint 2.5}
 \label{sec:org66eb5ad}
-Flint project distributes Flint 2.5's x86-64 binary installers for Windows,
-macOS, and CentOS/RHEL 7 or 8.
+Flint project distributes Flint 2.5's x86-64 binary installers for Windows
+and macOS.
 
 \subsection{On Windows}
 \label{sec:org09cdc57}
@@ -159,21 +159,6 @@ Please download the installer package \texttt{Flint-2.5.0-mac.dmg} at
 The .dmg archive for macOS contains Flint 2.5's .pkg file; extracting and
 double-clicking it to start an application bundle called
 \texttt{Flint.app}.
-
-\subsection{On CentOS/RHEL}
-\label{sec:orgfb49896}
-Please download \texttt{Flint-2.5.0-el7.x86\_64.zip} or \texttt{Flint-2.5.0-el8.x86\_64.zip}
-at \url{https://sourceforge.net/projects/flintproject/files/Flint/}, depending
-on the major version of your OS.
-Unzipping the archive, run the following command on a bash-like shell to install
-RPM packages in it:
-\begin{verbatim}
-unzip Flint-*-el*.x86_64.zip
-cd Flint-*-el*.x86_64
-sudo rpm -Uvh --replacepkgs flint-*.rpm
-\end{verbatim}
-Once installed, Flint's executable will be found at
-\texttt{/opt/flint/bin/flint}.
 
 \subsection{On other supported OSes}
 \label{sec:org4af7ede}
@@ -197,11 +182,7 @@ on Windows,
 \begin{verbatim}
 Flint.app/Contents/Resources/example/HodgkinHuxley_1952_neuron_model.phml
 \end{verbatim}
-on macOS, or
-\begin{verbatim}
-/opt/flint/example/HodgkinHuxley_1952_neuron_model.phml
-\end{verbatim}
-on CentOS/RHEL.
+on macOS.
 Otherwise you can also download it from
 \url{https://github.com/flintproject/Flint/tree/Flint-2.5.0/example/HodgkinHuxley\_1952\_neuron\_model.phml}.
 
@@ -209,8 +190,8 @@ Otherwise you can also download it from
 \item[{Launch Flint}] 
 \end{description}
 To launch Flint, double-click
-\texttt{C:\textbackslash{}Program Files\textbackslash{}Flint\textbackslash{}flint.exe} on Windows,
-\texttt{Flint.app} on macOS, or \texttt{/opt/flint/bin/flint} on CentOS/RHEL.
+\texttt{C:\textbackslash{}Program Files\textbackslash{}Flint\textbackslash{}flint.exe} on Windows
+or \texttt{Flint.app} on macOS.
 It shows a window like Fig.~\ref{fig:org78718b0}.
 \begin{figure}[htbp]
 \centering
@@ -1054,12 +1035,6 @@ Please read this chapter first when in doubt.
 \label{sec:orga087255}
 On windows, you can uninstall Flint through the system menu ``Settings''\(\to\)``Apps \& features''.
 On macOS, all you have to do for uninstallation is to remove \texttt{Flint.app}.
-If you have installed Flint's RPM packages on CentOS/RHEL, the following command
-uninstalls them:
-\begin{verbatim}
-sudo rpm -e flint flint-boost flint-clibsedml flint-czmq flint-libsbml \
-    flint-protobuf flint-soslib flint-sundials flint-wxwidgets flint-zeromq
-\end{verbatim}
 
 \section{How to ask questions about Flint}
 \label{sec:orga401e08}

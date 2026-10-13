@@ -263,8 +263,7 @@
 <ul>
 <li><a href="#org918976a">2.2.1. On Windows</a></li>
 <li><a href="#org596f92e">2.2.2. On macOS</a></li>
-<li><a href="#org27dc88d">2.2.3. On CentOS/RHEL</a></li>
-<li><a href="#orgffab153">2.2.4. On other supported OSes</a></li>
+<li><a href="#orgffab153">2.2.3. On other supported OSes</a></li>
 </ul>
 </li>
 <li><a href="#orge1f1436">2.3. Try your first simulation with Flint 2.5</a></li>
@@ -547,8 +546,8 @@ Flint 2.5 runs on several supported platforms, including:
 <h3 id="org7327e24"><span class="section-number-3">2.2</span> Download and install Flint 2.5</h3>
 <div class="outline-text-3" id="text-2-2">
 <p>
-Flint project distributes Flint 2.5&rsquo;s x86-64 binary installers for Windows,
-macOS, and CentOS/RHEL 7 or 8.
+Flint project distributes Flint 2.5&rsquo;s x86-64 binary installers for Windows
+and macOS.
 </p>
 </div>
 
@@ -578,32 +577,9 @@ double-clicking it to start an application bundle called
 </div>
 </div>
 
-<div id="outline-container-org27dc88d" class="outline-4">
-<h4 id="org27dc88d"><span class="section-number-4">2.2.3</span> On CentOS/RHEL</h4>
-<div class="outline-text-4" id="text-2-2-3">
-<p>
-Please download <code>Flint-2.5.0-el7.x86_64.zip</code> or <code>Flint-2.5.0-el8.x86_64.zip</code>
-at <a href="https://sourceforge.net/projects/flintproject/files/Flint/">https://sourceforge.net/projects/flintproject/files/Flint/</a>, depending
-on the major version of your OS.
-Unzipping the archive, run the following command on a bash-like shell to install
-RPM packages in it:
-</p>
-<div class="org-src-container">
-<pre class="src src-sh">unzip Flint-*-el*.x86_64.zip
-<span style="color: #483d8b;">cd</span> Flint-*-el*.x86_64
-sudo rpm -Uvh --replacepkgs flint-*.rpm
-</pre>
-</div>
-<p>
-Once installed, Flint&rsquo;s executable will be found at
-<code>/opt/flint/bin/flint</code>.
-</p>
-</div>
-</div>
-
 <div id="outline-container-orgffab153" class="outline-4">
-<h4 id="orgffab153"><span class="section-number-4">2.2.4</span> On other supported OSes</h4>
-<div class="outline-text-4" id="text-2-2-4">
+<h4 id="orgffab153"><span class="section-number-4">2.2.3</span> On other supported OSes</h4>
+<div class="outline-text-4" id="text-2-2-3">
 <p>
 In principle Flint 2.5 runs on any Linux distribution coming up with GTK 2 or 3.
 You can build Flint from its source tarball, available at
@@ -635,13 +611,7 @@ on Windows,
 Flint.app/Contents/Resources/example/HodgkinHuxley_1952_neuron_model.phml
 </pre>
 <p>
-on macOS, or
-</p>
-<pre class="example" id="orgdd38994">
-/opt/flint/example/HodgkinHuxley_1952_neuron_model.phml
-</pre>
-<p>
-on CentOS/RHEL.
+on macOS.
 Otherwise you can also download it from
 <a href="https://github.com/flintproject/Flint/tree/Flint-2.5.0/example/HodgkinHuxley_1952_neuron_model.phml">https://github.com/flintproject/Flint/tree/Flint-2.5.0/example/HodgkinHuxley_1952_neuron_model.phml</a>.
 </p>
@@ -651,8 +621,8 @@ Otherwise you can also download it from
 </dl>
 <p>
 To launch Flint, double-click
-<code>C:\Program Files\Flint\flint.exe</code> on Windows,
-<code>Flint.app</code> on macOS, or <code>/opt/flint/bin/flint</code> on CentOS/RHEL.
+<code>C:\Program Files\Flint\flint.exe</code> on Windows
+or <code>Flint.app</code> on macOS.
 It shows a window like Fig.&nbsp;<a href="#orgc7de0ec">1</a>.
 </p>
 
@@ -1985,14 +1955,7 @@ Please read this chapter first when in doubt.
 <p>
 On windows, you can uninstall Flint through the system menu &ldquo;Settings&rdquo;&rarr;&ldquo;Apps &amp; features&rdquo;.
 On macOS, all you have to do for uninstallation is to remove <code>Flint.app</code>.
-If you have installed Flint&rsquo;s RPM packages on CentOS/RHEL, the following command
-uninstalls them:
 </p>
-<div class="org-src-container">
-<pre class="src src-sh">sudo rpm -e flint flint-boost flint-clibsedml flint-czmq flint-libsbml <span style="color: #8b2252;">\</span>
-    flint-protobuf flint-soslib flint-sundials flint-wxwidgets flint-zeromq
-</pre>
-</div>
 </div>
 </div>
 
