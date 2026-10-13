@@ -1,0 +1,10 @@
+--- a/src/sbml/SBO.cpp
++++ b/src/sbml/SBO.cpp
+@@ -33,6 +33,7 @@
+ #include <iomanip>
+ #include <sstream>
+ #include <iterator>
++#include <functional>
+ 
+ #include <sbml/xml/XMLAttributes.h>
+ #include <sbml/xml/XMLOutputStream.h>

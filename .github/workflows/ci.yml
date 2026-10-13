@@ -33,3 +33,33 @@ jobs:
         with:
           name: result-on-macos-latest
           path: ${{ env.UPLOAD_PATH }}
+  build-on-windows-2022:
+    runs-on: windows-2022
+    steps:
+      - uses: actions/checkout@v7
+      - name: Cache downloaded dependencies
+        uses: actions/cache@v4
+        with:
+          path: source/msvc/src
+          key: windows-msvc-${{ hashFiles('source/msvc/Makefile', 'source/version.mk', 'source/deposit.mk') }}
+          restore-keys: windows-msvc-
+      - name: Install MSYS2 packages
+        shell: cmd
+        run: C:\msys64\usr\bin\bash.exe -lc "pacman -Sy --noconfirm --needed base-devel coreutils wget tar gzip bzip2 xz unzip patch m4 sed p7zip"
+      - name: Configure (download dependencies, generate all.proj)
+        shell: cmd
+        run: C:\msys64\usr\bin\bash.exe -lc "cd ${GITHUB_WORKSPACE//\\//}/source/msvc && cp config.mk.x86-64 config.mk && make"
+      - name: Build (MSVC + WiX)
+        shell: cmd
+        run: |
+          set "VSWHERE=C:\Program Files (x86)\Microsoft Visual Studio\Installer\vswhere.exe"
+          for /f "usebackq tokens=*" %%i in (`"%VSWHERE%" -latest -products * -requires Microsoft.VisualStudio.Component.VC.Tools.x86.x64 -property installationPath`) do set "VSPATH=%%i"
+          call "%VSPATH%\VC\Auxiliary\Build\vcvarsall.bat" x64
+          set "PATH=C:\Program Files (x86)\WiX Toolset v3.14\bin;%PATH%"
+          cd /d "%GITHUB_WORKSPACE%\source\msvc"
+          msbuild all.proj /m /fl
+      - name: Upload installer
+        uses: actions/upload-artifact@v7
+        with:
+          name: flint.msi
+          path: source/msvc/flint/flint.msi
