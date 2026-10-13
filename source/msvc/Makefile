@@ -13,13 +13,13 @@ $(eval $(call external_library_source,https://sqlite.org/$(SQLITE_YEAR),sqlite-d
 
 $(eval $(call external_library_source,https://ftp.gnu.org/gnu/libmicrohttpd,libmicrohttpd-$(LIBMICROHTTPD_VERSION)-w32-bin.zip,0f9bd6c17b1c3653d34fa5bbb799b8a8f633c17a6165fb92a1dcc65bff39f046))
 
-$(eval $(call external_library_source,https://github.com/wxWidgets/wxWidgets/releases/download/v$(WXWIDGETS_VERSION),wxWidgets-$(WXWIDGETS_VERSION)-headers.7z,40af582876d510f58124612ebfafd7826df986bca08e69f2f172b90f81e96762))
-$(eval $(call external_library_source,https://github.com/wxWidgets/wxWidgets/releases/download/v$(WXWIDGETS_VERSION),wxMSW-$(WXWIDGETS_VERSION)_vc14x_Dev.7z,ca98ad6d290378b4ad96a0af7e2af4edb95449e8b75622d399f7e607c5429f11))
-$(eval $(call external_library_source,https://github.com/wxWidgets/wxWidgets/releases/download/v$(WXWIDGETS_VERSION),wxMSW-$(WXWIDGETS_VERSION)_vc14x_x64_Dev.7z,5c8cfe8f3b90f2d854691237a243d8fa95fdc9644e305f3caca375ead6c6a115))
-$(eval $(call external_library_source,https://github.com/wxWidgets/wxWidgets/releases/download/v$(WXWIDGETS_VERSION),wxMSW-$(WXWIDGETS_VERSION)_vc14x_ReleaseDLL.7z,ed15a362cefcbae9393cbfa1d9ff440d3b3e3aa541e7605f4f1892c4c75ce156))
-$(eval $(call external_library_source,https://github.com/wxWidgets/wxWidgets/releases/download/v$(WXWIDGETS_VERSION),wxMSW-$(WXWIDGETS_VERSION)_vc14x_x64_ReleaseDLL.7z,7dc804f2df2ae45bcce710e2e51736843199dddf455f97106e9a23beb0d81d28))
+$(eval $(call external_library_source,https://github.com/wxWidgets/wxWidgets/releases/download/v$(WXWIDGETS_VERSION),wxWidgets-$(WXWIDGETS_VERSION)-headers.7z,a6fc9aa41e90ca6abd679cd6cb7c42c0f14f8013e47ebff09f15ba3765d181be))
+$(eval $(call external_library_source,https://github.com/wxWidgets/wxWidgets/releases/download/v$(WXWIDGETS_VERSION),wxMSW-$(WXWIDGETS_VERSION)_vc14x_Dev.7z,77232244d8a3462df4e58641a1696e4b594c52d376028c244e1e0bc03242b4fd))
+$(eval $(call external_library_source,https://github.com/wxWidgets/wxWidgets/releases/download/v$(WXWIDGETS_VERSION),wxMSW-$(WXWIDGETS_VERSION)_vc14x_x64_Dev.7z,be4f535a576cfeac8f4a4394483d2931afefdbaaab9f9b12ce6d0aa986af01d0))
+$(eval $(call external_library_source,https://github.com/wxWidgets/wxWidgets/releases/download/v$(WXWIDGETS_VERSION),wxMSW-$(WXWIDGETS_VERSION)_vc14x_ReleaseDLL.7z,bbac036e219caf6497c54a339333ef8bdc29c4632c54a1910c43cf19f46c3762))
+$(eval $(call external_library_source,https://github.com/wxWidgets/wxWidgets/releases/download/v$(WXWIDGETS_VERSION),wxMSW-$(WXWIDGETS_VERSION)_vc14x_x64_ReleaseDLL.7z,f4e362a149896950e1526890dad2452e4fb923b50454a28a40716042aff94696))
 
-WXWIDGETS_CODE = $(subst .,,$(WXWIDGETS_VERSION))
+WXWIDGETS_CODE = $(word 1,$(subst ., ,$(WXWIDGETS_VERSION)))$(word 2,$(subst ., ,$(WXWIDGETS_VERSION)))
 WXWIDGETS_DLL = \
 	wxbase$(WXWIDGETS_CODE)u_$(MSVC_VARIANT).dll \
 	wxbase$(WXWIDGETS_CODE)u_net_$(MSVC_VARIANT).dll \
