@@ -38,7 +38,7 @@ jobs:
     steps:
       - uses: actions/checkout@v7
       - name: Cache downloaded dependencies
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: source/msvc/src
           key: windows-msvc-${{ hashFiles('source/msvc/Makefile', 'source/version.mk', 'source/deposit.mk') }}
