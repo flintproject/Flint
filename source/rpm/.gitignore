@@ -1,7 +1,0 @@
-Flint-*
-config.mk
-*.spec
-rpm/
-src/
-tmp/
-var/
