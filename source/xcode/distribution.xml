@@ -2,10 +2,10 @@
 <installer-gui-script minSpecVersion="2">
   <title>Flint</title>
   <license file="license.rtf"></license>
-  <options customize="never" require-scripts="false" hostArchitectures="x86_64"/>
+  <options customize="never" require-scripts="false" hostArchitectures="arm64"/>
   <volume-check>
     <allowed-os-versions>
-      <os-version min="10.11"/>
+      <os-version min="11.0"/>
     </allowed-os-versions>
   </volume-check>
   <choices-outline>
