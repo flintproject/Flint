@@ -15,12 +15,6 @@ EXTERNAL_LIBRARY_DIRS = $(filter-out $(UNNECESSARY_LIBRARIES),$(ALL_EXTERNAL_LIB
 BOOST_VERSION = 1.86.0
 $(eval $(call external_library_source,https://archives.boost.io/release/$(BOOST_VERSION)/source,$(BOOST_UNDERSCORE).tar.bz2,1bed88e40401b2cb7a1f76d4bab499e352fa4d0c5f31c0dbae64e24d34d7513b))
 
-# Build a newer ZeroMQ on macOS: 4.3.4 fails with the modern libc++ (its custom
-# secure_allocator violates a C++17 allocator static_assert). Kept local to
-# this packaging build so the other platforms remain on 4.3.4.
-ZEROMQ_VERSION = 4.3.5
-$(eval $(call external_library_source,https://github.com/zeromq/libzmq/releases/download/v$(ZEROMQ_VERSION),zeromq-$(ZEROMQ_VERSION).tar.gz,6653ef5910f17954861fe72332e68b03ca6e4d9c7160eb3a8de5a5a913bfab43))
-
 # Build libsbml with a static library too (override the --disable-static from
 # option.mk). Its build system assembles the shared library from a wildcard of
 # the non-PIC object files in the sibling directories (e.g. util/*.o, xml/*.o);

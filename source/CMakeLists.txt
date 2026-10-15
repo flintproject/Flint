@@ -50,7 +50,7 @@ find_package(wxWidgets REQUIRED COMPONENTS
 include(${wxWidgets_USE_FILE})
 
 find_library(LIBZMQ
-              NAMES libzmq libzmq-v143-mt-4_3_4
+              NAMES libzmq libzmq-v143-mt-4_3_5
              )
 if(NOT LIBZMQ)
     message(FATAL_ERROR "failed to find libzmq")
