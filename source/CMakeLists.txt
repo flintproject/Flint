@@ -32,7 +32,7 @@ include_directories("${LIBXML2_INCLUDE_DIR}")
 
 add_definitions(-DBOOST_ALL_DYN_LINK)
 set(Boost_NO_BOOST_CMAKE ON)
-find_package(Boost 1.77 REQUIRED COMPONENTS
+find_package(Boost 1.78 REQUIRED COMPONENTS
              filesystem
              program_options
              random
