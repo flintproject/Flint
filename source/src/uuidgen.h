@@ -2,6 +2,8 @@
 #ifndef FLINT_UUIDGEN_H_
 #define FLINT_UUIDGEN_H_
 
+#include <random>
+
 #define BOOST_FILESYSTEM_NO_DEPRECATED
 #include <boost/filesystem.hpp>
 #include <boost/uuid/uuid_generators.hpp>
@@ -18,8 +20,8 @@ public:
 	boost::uuids::uuid operator()();
 
 private:
-	boost::mt19937 ran_;
-	boost::uuids::basic_random_generator<boost::mt19937> gen_;
+	std::mt19937 ran_;
+	boost::uuids::basic_random_generator<std::mt19937> gen_;
 };
 
 }

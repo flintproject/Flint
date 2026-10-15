@@ -1,0 +1,78 @@
+--- a/Makefile.am	2022-05-24 13:59:54
++++ b/Makefile.am	2023-06-23 01:09:40
+@@ -35,7 +35,7 @@
+ ##   SUBDIRS = src odeSolver bindings
+ ##else
+ 
+-   SUBDIRS = src odeSolver examples tutorial
++   SUBDIRS = src
+ if UNITTEST
+ SUBDIRS += unittest
+ endif
+
+diff --git a/src/cvodeSolver.c b/src/cvodeSolver.c
+index 1e835fb..f06f467 100644
+--- a/src/cvodeSolver.c
++++ b/src/cvodeSolver.c
+@@ -63,7 +63,7 @@
+ 
+ static int fQ(realtype t, N_Vector y, N_Vector qdot, void *fQ_data);
+ static int f(realtype t, N_Vector y, N_Vector ydot, void *f_data);
+-static int JacODE(int N, realtype t,
++static int JacODE(long int N, realtype t,
+ 		  N_Vector y, N_Vector fy, DlsMat J, void *jac_data,
+ 		  N_Vector vtemp1, N_Vector vtemp2, N_Vector vtemp3);
+ static void
+@@ -1044,7 +1044,7 @@ static int f(realtype t, N_Vector y, N_Vector ydot, void *f_data)
+    back to CVODE's internal vector DENSE_ELEM(J,i,j).
+ */
+ 
+-static int JacODE(int N, realtype t,
++static int JacODE(long int N, realtype t,
+ 				  N_Vector y, N_Vector fy, DlsMat J, void *jac_data,
+ 		  N_Vector vtemp1, N_Vector vtemp2, N_Vector vtemp3)
+ {
+diff --git a/src/daeSolver.c b/src/daeSolver.c
+index ca51485..2290211 100644
+--- a/src/daeSolver.c
++++ b/src/daeSolver.c
+@@ -73,7 +73,7 @@
+ static int fRes(realtype tres, N_Vector yy, N_Vector yp,
+ 		N_Vector resval, void *rdata);
+ 
+-static int JacRes(int Neq, realtype tt, realtype cj, N_Vector yy,
++static int JacRes(long int Neq, realtype tt, realtype cj, N_Vector yy,
+           N_Vector yp, N_Vector resvec, DlsMat JJ, void *jdata,
+ 		  N_Vector tempv1, N_Vector tempv2, N_Vector tempv3);
+ 
+@@ -409,7 +409,7 @@ fRes(realtype t, N_Vector y, N_Vector dy, N_Vector r, void *f_data)
+ */
+ 
+ static int
+-JacRes(int N, realtype t, realtype cj, N_Vector y, N_Vector dy,
++JacRes(long int N, realtype t, realtype cj, N_Vector y, N_Vector dy,
+        N_Vector resvec, DlsMat J, void *jac_data,
+        N_Vector tempv1, N_Vector tempv2, N_Vector tempv3)
+ {
+diff --git a/src/sensSolver.c b/src/sensSolver.c
+index 099271b..d24d7c1 100644
+--- a/src/sensSolver.c
++++ b/src/sensSolver.c
+@@ -82,7 +82,7 @@ static int fA(realtype t, N_Vector y, N_Vector yA, N_Vector yAdot,
+ 	      void *fA_data);
+ 
+ 
+-static int JacA(int NB, realtype t, N_Vector y, N_Vector yA,
++static int JacA(long int NB, realtype t, N_Vector y, N_Vector yA,
+         N_Vector fyA, DlsMat JA, void *jac_dataA,
+ 		N_Vector tmp1A, N_Vector tmp2A, N_Vector tmp3A);
+ 
+@@ -1447,7 +1447,7 @@ static int fA(realtype t, N_Vector y, N_Vector yA, N_Vector yAdot,
+    back to CVODE's internal vector DENSE_ELEM(J,i,j).
+ */
+ 
+-static int JacA(int NB, realtype t,	N_Vector y, N_Vector yB,
++static int JacA(long int NB, realtype t,	N_Vector y, N_Vector yB,
+         N_Vector fyB, DlsMat JB, void *jac_dataB,
+ 		N_Vector tmp1B, N_Vector tmp2B, N_Vector tmp3B)
+ {
