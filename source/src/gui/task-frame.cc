@@ -12,6 +12,8 @@
 
 #define BOOST_FILESYSTEM_NO_DEPRECATED
 #include <boost/filesystem.hpp>
+#include <fstream>
+#include "flint/stdpath.h"
 #define BOOST_DATE_TIME_NO_LIB
 #include <boost/interprocess/file_mapping.hpp>
 
@@ -177,12 +179,12 @@ void TaskFrame::Export(const Job &job)
 		return;
 	auto target_path = saveFileDialog.GetPath();
 	if (r == 0) { // CSV
-		boost::filesystem::ifstream ifs(GetPathFromWxFileName(source_file), std::ios::in|std::ios::binary);
+		std::ifstream ifs(ToStdPath(GetPathFromWxFileName(source_file)), std::ios::in|std::ios::binary);
 		if (!ifs.is_open()) {
 			ShowErrorOnExporting(wxString::Format("failed to open %s", source_file.GetFullPath()));
 			return;
 		}
-		boost::filesystem::ofstream ofs(GetPathFromWxString(target_path), std::ios::out|std::ios::binary);
+		std::ofstream ofs(ToStdPath(GetPathFromWxString(target_path)), std::ios::out|std::ios::binary);
 		if (!ofs.is_open()) {
 			ifs.close();
 			ShowErrorOnExporting(wxString::Format("failed to open %s", target_path));

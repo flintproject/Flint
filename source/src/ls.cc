@@ -16,6 +16,9 @@
 #include <memory>
 #include <string>
 
+#include <fstream>
+#include "flint/stdpath.h"
+#include <boost/filesystem.hpp>
 #include <boost/uuid/nil_generator.hpp>
 #include <boost/uuid/uuid.hpp>
 
@@ -63,7 +66,7 @@ std::unique_ptr<Configuration> CreateConfiguration(const char *dps_path, const L
 	boost::filesystem::path path = GetPathFromUtf8(dps_path);
 	std::map<int, key::Data> m_dps;
 	{
-		boost::filesystem::ifstream ifs(path, std::ios::in|std::ios::binary);
+		std::ifstream ifs(ToStdPath(path), std::ios::in|std::ios::binary);
 		if (!ifs)
 			return config;
 		isdf::Reader reader;

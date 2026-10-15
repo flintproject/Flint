@@ -11,8 +11,11 @@
 #include <iostream>
 #include <memory>
 
+#include <fstream>
+#include "flint/stdpath.h"
+
 #define BOOST_FILESYSTEM_NO_DEPRECATED
-#include <boost/filesystem/fstream.hpp>
+#include <boost/filesystem.hpp>
 
 #include "db/statement-driver.h"
 #include "db/utility.h"
@@ -148,7 +151,7 @@ bool Nc(sqlite3 *db, const boost::filesystem::path &output, int *seed)
 			return false;
 	}
 	{
-		boost::filesystem::ofstream ofs(output, std::ios::binary);
+		std::ofstream ofs(ToStdPath(output), std::ios::binary);
 		if (!ofs) {
 			std::cerr << "failed to open " << output << std::endl;
 			return false;

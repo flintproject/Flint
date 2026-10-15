@@ -18,7 +18,11 @@
 #include <vector>
 
 #define BOOST_FILESYSTEM_NO_DEPRECATED
-#include <boost/filesystem/fstream.hpp>
+#include <fstream>
+#include "flint/stdpath.h"
+
+#define BOOST_FILESYSTEM_NO_DEPRECATED
+#include <boost/filesystem.hpp>
 #define BOOST_DATE_TIME_NO_LIB
 #include <boost/interprocess/file_mapping.hpp>
 #include <boost/interprocess/mapped_region.hpp>
@@ -109,7 +113,7 @@ const cas::DimensionAnalyzer *TaskRunner::GetDimensionAnalyzer() const
 bool TaskRunner::CreateSpec(int id, sqlite3 *db)
 {
 	auto spec_file = dir_ / "spec.txt";
-	boost::filesystem::ofstream ofs(spec_file, std::ios::out|std::ios::binary);
+	std::ofstream ofs(ToStdPath(spec_file), std::ios::out|std::ios::binary);
 	if (!ofs) {
 		std::cerr << "failed to open " << spec_file << std::endl;
 		return false;

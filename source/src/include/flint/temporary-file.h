@@ -4,6 +4,8 @@
 
 #define BOOST_FILESYSTEM_NO_DEPRECATED
 #include <boost/filesystem.hpp>
+#include <fstream>
+#include "flint/stdpath.h"
 
 namespace flint {
 
@@ -11,7 +13,7 @@ class TemporaryFile {
 public:
 	TemporaryFile()
 		: path_(boost::filesystem::temp_directory_path() / boost::filesystem::unique_path("flint-%%%%-%%%%-%%%%-%%%%"))
-		, ofs_(path_, std::ios::out|std::ios::binary)
+		, ofs_(ToStdPath(path_), std::ios::out|std::ios::binary)
 		, own_(true)
 	{}
 
@@ -25,7 +27,7 @@ public:
 	}
 
 	const boost::filesystem::path &path() const {return path_;}
-	boost::filesystem::ofstream &ofs() {return ofs_;}
+	std::ofstream &ofs() {return ofs_;}
 
 	void Close() {
 		ofs_.close();
@@ -51,7 +53,7 @@ public:
 
 private:
 	boost::filesystem::path path_;
-	boost::filesystem::ofstream ofs_;
+	std::ofstream ofs_;
 	bool own_;
 };
 

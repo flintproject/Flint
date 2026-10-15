@@ -13,6 +13,8 @@
 
 #define BOOST_FILESYSTEM_NO_DEPRECATED
 #include <boost/filesystem.hpp>
+#include <fstream>
+#include "flint/stdpath.h"
 
 #include "cas.h"
 #include "cas/dimension.h"
@@ -110,7 +112,7 @@ bool Run(const cli::RunOption &option, const boost::filesystem::path &dir)
 		}
 	} else {
 		// create the list of all variables
-		boost::filesystem::ofstream ofs(dir / "spec.txt", std::ios::out|std::ios::binary);
+		std::ofstream ofs(ToStdPath(dir / "spec.txt"), std::ios::out|std::ios::binary);
 		if (!ofs) {
 			std::cerr << "failed to open "
 					  << dir

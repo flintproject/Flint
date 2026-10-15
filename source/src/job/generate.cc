@@ -9,8 +9,11 @@
 #include <sstream>
 #include <string>
 
+#include <fstream>
+#include "flint/stdpath.h"
+
 #define BOOST_FILESYSTEM_NO_DEPRECATED
-#include <boost/filesystem/fstream.hpp>
+#include <boost/filesystem.hpp>
 #include <boost/uuid/uuid.hpp>
 
 #include "db/driver.h"
@@ -179,7 +182,7 @@ bool Generate(sqlite3 *input, const boost::filesystem::path &dir, int *job_id)
 			return false;
 		if (!CreateTable(output, "parameter_eqs", "(uuid BLOB, math TEXT)"))
 			return false;
-		boost::filesystem::ofstream ofs(filename, std::ios::out|std::ios::binary);
+		std::ofstream ofs(ToStdPath(filename), std::ios::out|std::ios::binary);
 		if (!ofs) {
 			std::cerr << "failed to open " << filename << std::endl;;
 			return false;

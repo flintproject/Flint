@@ -14,8 +14,11 @@
 #include <memory>
 #include <string>
 
+#include <fstream>
+#include "flint/stdpath.h"
+
 #define BOOST_FILESYSTEM_NO_DEPRECATED
-#include <boost/filesystem/fstream.hpp>
+#include <boost/filesystem.hpp>
 
 #include "ipc.pb.h"
 #include "unit.pb.h"
@@ -161,7 +164,7 @@ bool UnitOfTime(sqlite3 *db, const boost::filesystem::path &output)
 			return false;
 	}
 
-	boost::filesystem::ofstream ofs(output, std::ios::binary);
+	std::ofstream ofs(ToStdPath(output), std::ios::binary);
 	if (!ofs) {
 		std::cerr << "failed to open " << output << std::endl;
 		return false;

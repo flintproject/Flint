@@ -10,8 +10,11 @@
 #include <cstdlib>
 #include <cstring>
 
+#include <fstream>
+#include "flint/stdpath.h"
+
 #define BOOST_FILESYSTEM_NO_DEPRECATED
-#include <boost/filesystem/fstream.hpp>
+#include <boost/filesystem.hpp>
 
 #include "bc/binary.h"
 #include "bc/index.h"
@@ -71,7 +74,7 @@ Result Job(int id,
 			 << ": " << ec << std::endl;
 		return Result::kFailed;
 	}
-	boost::filesystem::ofstream ofs(output_file, std::ios::out|std::ios::binary|std::ios::app);
+	std::ofstream ofs(ToStdPath(output_file), std::ios::out|std::ios::binary|std::ios::app);
 	if (!ofs) {
 		std::cerr << "failed to open " << output_file << std::endl;
 		return Result::kFailed;

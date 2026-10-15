@@ -12,8 +12,11 @@
 #include <memory>
 #include <unordered_map>
 
+#include <fstream>
+#include "flint/stdpath.h"
+
 #define BOOST_FILESYSTEM_NO_DEPRECATED
-#include <boost/filesystem/fstream.hpp>
+#include <boost/filesystem.hpp>
 #include <boost/rational.hpp>
 
 #include "db/statement-driver.h"
@@ -32,7 +35,7 @@ public:
 	UnitOfTimeLoader &operator=(const UnitOfTimeLoader &) = delete;
 
 	explicit UnitOfTimeLoader(const boost::filesystem::path &file)
-		: ifs_(file, std::ios::in|std::ios::binary)
+		: ifs_(ToStdPath(file), std::ios::in|std::ios::binary)
 	{}
 
 	~UnitOfTimeLoader() {
@@ -57,7 +60,7 @@ public:
 	}
 
 private:
-	boost::filesystem::ifstream ifs_;
+	std::ifstream ifs_;
 };
 
 typedef std::unordered_map<int, std::unique_ptr<ipc::TimeUnit> > TimeUnitMap;
@@ -84,7 +87,7 @@ public:
 	NumericalConfigurationLoader &operator=(const NumericalConfigurationLoader &) = delete;
 
 	explicit NumericalConfigurationLoader(const boost::filesystem::path &file)
-		: ifs_(file, std::ios::in|std::ios::binary)
+		: ifs_(ToStdPath(file), std::ios::in|std::ios::binary)
 	{}
 
 	~NumericalConfigurationLoader() {
@@ -100,7 +103,7 @@ public:
 	}
 
 private:
-	boost::filesystem::ifstream ifs_;
+	std::ifstream ifs_;
 };
 
 class LengthAndStepWriter : db::StatementDriver {

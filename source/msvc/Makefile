@@ -99,10 +99,10 @@ tmp/czmq-$(CZMQ_VERSION): src/czmq-$(CZMQ_VERSION).tar.gz | tmp
 	tar -C var -zxf $<
 	touch $@
 
-tmp/libsbml-$(LIBSBML_VERSION): src/libSBML-$(LIBSBML_VERSION)-core-src.zip libsbml-$(LIBSBML_VERSION).patch | tmp
+tmp/libsbml-$(LIBSBML_VERSION): src/libSBML-$(LIBSBML_VERSION)-core-src.zip libsbml-$(LIBSBML_VERSION).patch libsbml-$(LIBSBML_VERSION)-unary_function.patch | tmp
 	-rm -rf var/libsbml-$(LIBSBML_VERSION)
 	(cd var && unzip -qq ../$<)
-	patch -d var/libsbml-$(LIBSBML_VERSION) -p1 < libsbml-$(LIBSBML_VERSION).patch
+	patch -d var/libsbml-$(LIBSBML_VERSION) -p1 < libsbml-$(LIBSBML_VERSION).patch && patch -d var/libsbml-$(LIBSBML_VERSION) -p1 < libsbml-$(LIBSBML_VERSION)-unary_function.patch
 	touch $@
 
 tmp/libxml2-$(LIBXML2_VERSION): src/libxml2-$(LIBXML2_VERSION).tar.xz | tmp

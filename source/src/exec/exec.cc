@@ -17,7 +17,7 @@
 #include <vector>
 
 #define BOOST_FILESYSTEM_NO_DEPRECATED
-#include <boost/filesystem/fstream.hpp>
+#include <boost/filesystem.hpp>
 
 #include "db/driver.h"
 #include "db/read-only-driver.h"

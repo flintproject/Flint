@@ -11,6 +11,7 @@
 #include <cstdlib>
 #include <cstring>
 #include <fstream>
+#include "flint/stdpath.h"
 #include <iostream>
 #include <memory>
 #include <string>
@@ -19,7 +20,8 @@
 #include <vector>
 
 #define BOOST_FILESYSTEM_NO_DEPRECATED
-#include <boost/filesystem/fstream.hpp>
+#define BOOST_FILESYSTEM_NO_DEPRECATED
+#include <boost/filesystem.hpp>
 #include <boost/functional/hash.hpp>
 #include <boost/uuid/uuid_io.hpp>
 
@@ -197,7 +199,7 @@ bool Create(sqlite3 *db,
 	std::unique_ptr<lo::Header> header(new lo::Header);
 	header->set_size(size);
 
-	boost::filesystem::ofstream ofs(output_file, std::ios::out|std::ios::binary);
+	std::ofstream ofs(ToStdPath(output_file), std::ios::out|std::ios::binary);
 	if (!ofs.is_open()) {
 		std::cerr << "could not open output file: " << output_file << std::endl;
 		return false;

@@ -12,7 +12,8 @@
 
 #define BOOST_FILESYSTEM_NO_DEPRECATED
 #include <boost/filesystem.hpp>
-#include <boost/filesystem/fstream.hpp>
+#include <fstream>
+#include "flint/stdpath.h"
 #define BOOST_DATE_TIME_NO_LIB
 #include <boost/interprocess/file_mapping.hpp>
 #include <boost/interprocess/mapped_region.hpp>
@@ -168,8 +169,8 @@ bool ExportIsdFromCsv(const boost::filesystem::path &input_path,
 	header.num_bytes_descs = num_bytes_descs;
 	header.num_bytes_units = num_bytes_units;
 
-	std::string output_file = output_path.string();
-	boost::filesystem::ofstream ofs(output_file, std::ios::binary);
+	std::filesystem::path output_file = ToStdPath(output_path);
+	std::ofstream ofs(output_file, std::ios::binary);
 	if (!ofs) {
 		std::cerr << "failed to open " << output_file << std::endl;
 		return false;

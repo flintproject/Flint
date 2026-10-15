@@ -13,6 +13,8 @@
 
 #define BOOST_FILESYSTEM_NO_DEPRECATED
 #include <boost/filesystem.hpp>
+#include <fstream>
+#include "flint/stdpath.h"
 #include <boost/process/io.hpp>
 #ifdef _WIN32
 #include <boost/process/windows.hpp>
@@ -307,7 +309,7 @@ bool ViewFrame::LoadVariables()
 	auto task_frame = wxDynamicCast(GetParent(), TaskFrame);
 	auto filename = task_frame->task().GetDirectoryName();
 	filename.SetFullName("isdh");
-	boost::filesystem::ifstream ifs(GetPathFromWxFileName(filename), std::ios::in|std::ios::binary);
+	std::ifstream ifs(ToStdPath(GetPathFromWxFileName(filename)), std::ios::in|std::ios::binary);
 	if (!ifs.is_open()) {
 		wxLogError("failed to open %s", filename.GetFullPath());
 		return false;
@@ -326,7 +328,7 @@ bool ViewFrame::LoadVariables()
 
 	if (task_frame->task().HasObjective()) {
 		wxString dps_path = task_frame->task().GetDpsPath();
-		ifs.open(GetPathFromWxString(dps_path), std::ios::in|std::ios::binary);
+		ifs.open(ToStdPath(GetPathFromWxString(dps_path)), std::ios::in|std::ios::binary);
 		if (!ifs.is_open()) {
 			wxLogError("failed to open %s", dps_path);
 			return false;
