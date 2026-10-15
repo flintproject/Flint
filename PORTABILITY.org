@@ -42,7 +42,7 @@ In order to build Flint, the following libraries are required:
   https://github.com/flintproject/clibsedml
 - wxWidgets 3.2.12
   https://www.wxwidgets.org/
-- ZeroMQ 4.3.4
+- ZeroMQ 4.3.5
   https://zeromq.org/
 
 * How to build and install programs

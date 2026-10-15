@@ -212,7 +212,7 @@ flint/third-party-licenses.txt: tmp/czmq-$(CZMQ_VERSION) tmp/libsbml-$(LIBSBML_V
 	echo >> $@
 	echo ';; ZeroMQ $(ZEROMQ_VERSION)' >> $@
 	echo >> $@
-	cat var/zeromq-$(ZEROMQ_VERSION)/COPYING.LESSER >> $@
+	cat var/zeromq-$(ZEROMQ_VERSION)/LICENSE >> $@
 
 flint/example: | flint
 	install -d $@
