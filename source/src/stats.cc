@@ -8,8 +8,11 @@
 #include <cstdio>
 #include <iostream>
 
+#include <fstream>
+#include "flint/stdpath.h"
+
 #define BOOST_FILESYSTEM_NO_DEPRECATED
-#include <boost/filesystem/fstream.hpp>
+#include <boost/filesystem.hpp>
 
 namespace flint {
 namespace stats {
@@ -25,7 +28,7 @@ bool Record(const std::chrono::time_point<std::chrono::steady_clock> &rt_start,
 	if (dir.empty())
 		return true; // do nothing if dir is empty
 	auto filename = dir / "stats.txt";
-	boost::filesystem::ofstream ofs(filename, std::ios::out|std::ios::binary);
+	std::ofstream ofs(ToStdPath(filename), std::ios::out|std::ios::binary);
 	if (!ofs) {
 		std::cerr << "failed to open " << filename << std::endl;
 		return false;

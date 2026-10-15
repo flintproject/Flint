@@ -19,7 +19,7 @@
 
 #define BOOST_FILESYSTEM_NO_DEPRECATED
 #include <boost/filesystem.hpp>
-#include <boost/filesystem/fstream.hpp>
+#include "flint/stdpath.h"
 #include <boost/functional/hash.hpp>
 #include <boost/uuid/uuid.hpp>
 #include <boost/uuid/uuid_io.hpp>
@@ -167,7 +167,7 @@ public:
 
 	explicit IsdfLoader(const boost::filesystem::path &path)
 		: path_(path)
-		, ifs_(path, std::ios::in|std::ios::binary)
+		, ifs_(ToStdPath(path), std::ios::in|std::ios::binary)
 	{}
 
 	~IsdfLoader() {
@@ -190,7 +190,7 @@ public:
 
 private:
 	boost::filesystem::path path_;
-	boost::filesystem::ifstream ifs_;
+	std::ifstream ifs_;
 };
 
 typedef std::unordered_map<boost::filesystem::path, std::unique_ptr<ColumnMap>,

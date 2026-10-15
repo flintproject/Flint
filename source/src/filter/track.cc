@@ -9,12 +9,14 @@
 #include <cstdlib>
 #include <cstring>
 #include <fstream>
+#include "flint/stdpath.h"
 #include <iostream>
 #include <memory>
 #include <string>
 
 #define BOOST_FILESYSTEM_NO_DEPRECATED
-#include <boost/filesystem/fstream.hpp>
+#define BOOST_FILESYSTEM_NO_DEPRECATED
+#include <boost/filesystem.hpp>
 #include <boost/uuid/uuid_io.hpp>
 
 #include "lo.pb.h"
@@ -71,7 +73,7 @@ bool Track(const boost::filesystem::path &filter_file,
 		std::unique_ptr<FilterLoader> loader(new FilterLoader(filter_file));
 		if (!loader->Load(filter.get())) return false;
 	}
-	boost::filesystem::ofstream ofs(output_file, std::ios::binary);
+	std::ofstream ofs(ToStdPath(output_file), std::ios::binary);
 	if (!ofs) {
 		std::cerr << "failed to open " << output_file << std::endl;
 		return false;

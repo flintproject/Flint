@@ -15,6 +15,8 @@
 
 #define BOOST_FILESYSTEM_NO_DEPRECATED
 #include <boost/filesystem.hpp>
+#include <fstream>
+#include "flint/stdpath.h"
 #include <boost/io/ios_state.hpp>
 
 #include "bc/index.h"
@@ -50,7 +52,7 @@ bool PrintFileAsByteArray(const boost::filesystem::path &path, const char *name,
 	const size_t kBufferSize = 8192;
 
 	size_t size = static_cast<size_t>(boost::filesystem::file_size(path));
-	boost::filesystem::ifstream ifs(path, std::ios::in|std::ios::binary);
+	std::ifstream ifs(ToStdPath(path), std::ios::in|std::ios::binary);
 	if (!ifs) {
 		std::cerr << "failed to open " << path << std::endl;
 		return false;
@@ -136,7 +138,7 @@ bool Translate(const cli::RunOption &option, const boost::filesystem::path &dir)
 		}
 	} else {
 		// create the list of all variables
-		boost::filesystem::ofstream ofs(dir / "spec.txt", std::ios::out|std::ios::binary);
+		std::ofstream ofs(ToStdPath(dir / "spec.txt"), std::ios::out|std::ios::binary);
 		if (!ofs) {
 			std::cerr << "failed to open "
 					  << dir

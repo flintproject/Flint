@@ -13,6 +13,8 @@
 
 #include "exec.h"
 #include "flint/error.h"
+#include <fstream>
+#include "flint/stdpath.h"
 #include "gui/filename.h"
 #include "gui/log-dialog.h"
 #include "gui/main-frame.h"
@@ -119,7 +121,7 @@ wxThread::ExitCode SimWindow::Entry()
 	auto *main_frame = wxDynamicCast(GetParent(), MainFrame);
 	{
 		auto log_path = GetPathFromWxFileName(sim_->GetLogFileName());
-		boost::filesystem::ofstream ofs(log_path, std::ios::binary);
+		std::ofstream ofs(ToStdPath(log_path), std::ios::binary);
 		StderrRedirect redirect(&ofs);
 		result_ = exec::Exec(option_, GetPathFromWxFileName(sim_->GetDirectoryName()), &main_frame->arg());
 	}

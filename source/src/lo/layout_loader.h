@@ -7,7 +7,8 @@
 
 #define BOOST_FILESYSTEM_NO_DEPRECATED
 #include <boost/filesystem.hpp>
-#include <boost/filesystem/fstream.hpp>
+#include <fstream>
+#include "flint/stdpath.h"
 
 #include "bc/pack.h"
 
@@ -19,7 +20,7 @@ public:
 	LayoutLoader &operator=(const LayoutLoader &) = delete;
 
 	explicit LayoutLoader(const boost::filesystem::path &file)
-		: ifs_(file, std::ios::in|std::ios::binary)
+		: ifs_(ToStdPath(file), std::ios::in|std::ios::binary)
 	{}
 
 	~LayoutLoader() {
@@ -68,7 +69,7 @@ public:
 	}
 
 private:
-	boost::filesystem::ifstream ifs_;
+	std::ifstream ifs_;
 };
 
 }

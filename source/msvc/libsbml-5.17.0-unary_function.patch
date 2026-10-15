@@ -1,0 +1,399 @@
+diff -r -u libsbml-5.17.0/src/sbml/CompartmentType.cpp libsbml-5.17.0.new/src/sbml/CompartmentType.cpp
+--- libsbml-5.17.0/src/sbml/CompartmentType.cpp
++++ libsbml-5.17.0.new/src/sbml/CompartmentType.cpp
+@@ -754,7 +754,7 @@
+ /**
+  * Used by ListOf::get() to lookup an SBase based by its id.
+  */
+-struct IdEqCT : public unary_function<SBase*, bool>
++struct IdEqCT
+ {
+   const string& mId;
+ 
+diff -r -u libsbml-5.17.0/src/sbml/EventAssignment.cpp libsbml-5.17.0.new/src/sbml/EventAssignment.cpp
+--- libsbml-5.17.0/src/sbml/EventAssignment.cpp
++++ libsbml-5.17.0.new/src/sbml/EventAssignment.cpp
+@@ -1152,7 +1152,7 @@
+ /**
+  * Used by ListOf::get() to lookup an SBase based by its id.
+  */
+-struct IdEqEA : public unary_function<SBase*, bool>
++struct IdEqEA
+ {
+   const string& mId;
+ 
+diff -r -u libsbml-5.17.0/src/sbml/Event.cpp libsbml-5.17.0.new/src/sbml/Event.cpp
+--- libsbml-5.17.0/src/sbml/Event.cpp
++++ libsbml-5.17.0.new/src/sbml/Event.cpp
+@@ -2248,7 +2248,7 @@
+ /**
+  * Used by ListOf::get() to lookup an SBase based by its id.
+  */
+-struct IdEqE : public unary_function<SBase*, bool>
++struct IdEqE
+ {
+   const string& mId;
+ 
+diff -r -u libsbml-5.17.0/src/sbml/FunctionDefinition.cpp libsbml-5.17.0.new/src/sbml/FunctionDefinition.cpp
+--- libsbml-5.17.0/src/sbml/FunctionDefinition.cpp
++++ libsbml-5.17.0.new/src/sbml/FunctionDefinition.cpp
+@@ -1238,7 +1238,7 @@
+ /**
+  * Used by ListOf::get() to lookup an SBase based by its id.
+  */
+-struct IdEqFD : public unary_function<SBase*, bool>
++struct IdEqFD
+ {
+   const string& mId;
+ 
+diff -r -u libsbml-5.17.0/src/sbml/InitialAssignment.cpp libsbml-5.17.0.new/src/sbml/InitialAssignment.cpp
+--- libsbml-5.17.0/src/sbml/InitialAssignment.cpp
++++ libsbml-5.17.0.new/src/sbml/InitialAssignment.cpp
+@@ -1133,7 +1133,7 @@
+ /**
+  * Used by ListOf::get() to lookup an SBase based by its id.
+  */
+-struct IdEqIA : public unary_function<SBase*, bool>
++struct IdEqIA
+ {
+   const string& mId;
+ 
+diff -r -u libsbml-5.17.0/src/sbml/ListOf.cpp libsbml-5.17.0.new/src/sbml/ListOf.cpp
+--- libsbml-5.17.0/src/sbml/ListOf.cpp
++++ libsbml-5.17.0.new/src/sbml/ListOf.cpp
+@@ -74,7 +74,7 @@
+ /**
+  * Used by the Destructor to delete each item in mItems.
+  */
+-struct Delete : public unary_function<SBase*, void>
++struct Delete
+ {
+   void operator() (SBase* sb) { delete sb; }
+ };
+@@ -92,7 +92,7 @@
+ /**
+  * Used by the Copy Constructor to clone each item in mItems.
+  */
+-struct Clone : public unary_function<SBase*, SBase*>
++struct Clone
+ {
+   SBase* operator() (SBase* sb) { return sb->clone(); }
+ };
+@@ -320,7 +320,7 @@
+ /**
+  * Used by ListOf::get() to lookup an SBase based by its id.
+  */
+-//struct IdEq : public unary_function<SBase*, bool>
++//struct IdEq
+ //{
+ //  const string& id;
+ //
+@@ -470,7 +470,7 @@
+ /**
+  * Used by ListOf::setSBMLDocument().
+  */
+-struct SetSBMLDocument : public unary_function<SBase*, void>
++struct SetSBMLDocument
+ {
+   SBMLDocument* mD;
+ 
+@@ -482,7 +482,7 @@
+ /**
+  * Used by ListOf::setParentSBMLObject().
+  */
+-struct SetParentSBMLObject : public unary_function<SBase*, void>
++struct SetParentSBMLObject
+ {
+   SBase* mSb;
+ 
+@@ -552,7 +552,7 @@
+ /**
+  * Used by ListOf::writeElements().
+  */
+-struct Write : public unary_function<SBase*, void>
++struct Write
+ {
+   XMLOutputStream& stream;
+ 
+diff -r -u libsbml-5.17.0/src/sbml/ListOf.h libsbml-5.17.0.new/src/sbml/ListOf.h
+--- libsbml-5.17.0/src/sbml/ListOf.h
++++ libsbml-5.17.0.new/src/sbml/ListOf.h
+@@ -104,7 +104,7 @@
+  */
+ #ifndef SWIG
+ template<class CNAME>
+-struct IdEq : public std::unary_function<SBase*, bool>
++struct IdEq
+ {
+   const std::string& mId;
+ 
+diff -r -u libsbml-5.17.0/src/sbml/LocalParameter.cpp libsbml-5.17.0.new/src/sbml/LocalParameter.cpp
+--- libsbml-5.17.0/src/sbml/LocalParameter.cpp
++++ libsbml-5.17.0.new/src/sbml/LocalParameter.cpp
+@@ -689,7 +689,7 @@
+ /**
+  * Used by ListOf::get() to lookup an SBase based by its id.
+  */
+-struct IdEqP : public unary_function<SBase*, bool>
++struct IdEqP
+ {
+   const string& mId;
+ 
+diff -r -u libsbml-5.17.0/src/sbml/math/ASTBase.cpp libsbml-5.17.0.new/src/sbml/math/ASTBase.cpp
+--- libsbml-5.17.0/src/sbml/math/ASTBase.cpp
++++ libsbml-5.17.0.new/src/sbml/math/ASTBase.cpp
+@@ -55,7 +55,7 @@
+ /*
+  * Used by the Destructor to delete each item in mPlugins.
+  */
+-struct DeleteASTPluginEntity : public unary_function<ASTBasePlugin*, void>
++struct DeleteASTPluginEntity
+ {
+   void operator() (ASTBasePlugin* ast) { delete ast;}
+ };
+@@ -64,7 +64,7 @@
+ /*
+  * Used by the Copy Constructor to clone each item in mPlugins.
+  */
+-struct CloneASTPluginEntity : public unary_function<ASTBasePlugin*, ASTBasePlugin*>
++struct CloneASTPluginEntity
+ {
+   ASTBasePlugin* operator() (ASTBasePlugin* ast) { 
+     if (!ast) return 0;
+@@ -75,7 +75,7 @@
+ /*
+  * Used by the Copy Constructor to clone each item in mPlugins.
+  */
+-struct CloneASTPluginEntityNoParent : public unary_function<ASTBasePlugin*, ASTBasePlugin*>
++struct CloneASTPluginEntityNoParent
+ {
+   ASTBasePlugin* operator() (ASTBasePlugin* ast) { 
+     if (!ast) return 0;
+diff -r -u libsbml-5.17.0/src/sbml/math-legacy/ASTNode.cpp libsbml-5.17.0.new/src/sbml/math-legacy/ASTNode.cpp
+--- libsbml-5.17.0/src/sbml/math-legacy/ASTNode.cpp
++++ libsbml-5.17.0.new/src/sbml/math-legacy/ASTNode.cpp
+@@ -344,7 +344,7 @@
+ /*
+ * Used by the Copy Constructor to clone each item in mPlugins.
+ */
+-struct CloneASTPluginEntity : public unary_function<ASTBasePlugin*, ASTBasePlugin*>
++struct CloneASTPluginEntity
+ {
+   ASTBasePlugin* operator() (ASTBasePlugin* ast) {
+     if (!ast) return 0;
+@@ -3254,7 +3254,7 @@
+ 
+ /** @endcond */
+ 
+-struct DeleteASTPluginEntity : public unary_function<ASTBasePlugin*, void>
++struct DeleteASTPluginEntity
+ {
+   void operator() (ASTBasePlugin* ast) { delete ast; }
+ };
+diff -r -u libsbml-5.17.0/src/sbml/packages/layout/validator/LayoutValidator.cpp libsbml-5.17.0.new/src/sbml/packages/layout/validator/LayoutValidator.cpp
+--- libsbml-5.17.0/src/sbml/packages/layout/validator/LayoutValidator.cpp
++++ libsbml-5.17.0.new/src/sbml/packages/layout/validator/LayoutValidator.cpp
+@@ -63,7 +63,7 @@
+  * Applies a Constraint<T> to an SBML object of type T.
+  */
+ template <typename T>
+-struct Apply : public unary_function<TConstraint<T>*, void>
++struct Apply
+ {
+   Apply (const Model& m, const T& o) : model(m), object(o) { }
+ 
+diff -r -u libsbml-5.17.0/src/sbml/packages/layout/validator/test/TestValidator.cpp libsbml-5.17.0.new/src/sbml/packages/layout/validator/test/TestValidator.cpp
+--- libsbml-5.17.0/src/sbml/packages/layout/validator/test/TestValidator.cpp
++++ libsbml-5.17.0.new/src/sbml/packages/layout/validator/test/TestValidator.cpp
+@@ -70,7 +70,7 @@
+  * Function Object: Return true if the given SBMLError has the given
+  * id, false otherwise.
+  */
+-struct HasId : public unary_function<SBMLError, bool>
++struct HasId
+ {
+   unsigned int id;
+ 
+@@ -82,7 +82,7 @@
+ /**
+  * Function Object: Takes a SBMLError and returns its integer id.
+  */
+-struct ToId : public unary_function<SBMLError, unsigned int>
++struct ToId
+ {
+   unsigned int operator() (const SBMLError& msg) { return msg.getErrorId(); }
+ };
+diff -r -u libsbml-5.17.0/src/sbml/Parameter.cpp libsbml-5.17.0.new/src/sbml/Parameter.cpp
+--- libsbml-5.17.0/src/sbml/Parameter.cpp
++++ libsbml-5.17.0.new/src/sbml/Parameter.cpp
+@@ -1869,7 +1869,7 @@
+ /**
+  * Used by ListOf::get() to lookup an SBase based by its id.
+  */
+-struct IdEqP : public unary_function<SBase*, bool>
++struct IdEqP
+ {
+   const string& mId;
+ 
+diff -r -u libsbml-5.17.0/src/sbml/Rule.cpp libsbml-5.17.0.new/src/sbml/Rule.cpp
+--- libsbml-5.17.0/src/sbml/Rule.cpp
++++ libsbml-5.17.0.new/src/sbml/Rule.cpp
+@@ -1664,7 +1664,7 @@
+ /**
+  * Used by ListOf::get() to lookup an SBase based by its id.
+  */
+-struct IdEqRule : public unary_function<SBase*, bool>
++struct IdEqRule
+ {
+   const string& mId;
+ 
+diff -r -u libsbml-5.17.0/src/sbml/SBase.cpp libsbml-5.17.0.new/src/sbml/SBase.cpp
+--- libsbml-5.17.0/src/sbml/SBase.cpp
++++ libsbml-5.17.0.new/src/sbml/SBase.cpp
+@@ -71,7 +71,7 @@
+ /*
+  * Used by the Destructor to delete each item in mPlugins.
+  */
+-struct DeletePluginEntity : public unary_function<SBasePlugin*, void>
++struct DeletePluginEntity
+ {
+   void operator() (SBasePlugin* sb) { delete sb; }
+ };
+@@ -80,7 +80,7 @@
+ /*
+  * Used by the Copy Constructor to clone each item in mPlugins.
+  */
+-struct ClonePluginEntity : public unary_function<SBasePlugin*, SBasePlugin*>
++struct ClonePluginEntity
+ {
+   SBasePlugin* operator() (SBasePlugin* sb) {
+     if (!sb) return NULL;
+diff -r -u libsbml-5.17.0/src/sbml/SBMLErrorLog.cpp libsbml-5.17.0.new/src/sbml/SBMLErrorLog.cpp
+--- libsbml-5.17.0/src/sbml/SBMLErrorLog.cpp
++++ libsbml-5.17.0.new/src/sbml/SBMLErrorLog.cpp
+@@ -81,7 +81,7 @@
+ /*
+  * Used by the Destructor to delete each item in mErrors.
+  */
+-struct Delete : public unary_function<XMLError*, void>
++struct Delete
+ {
+   void operator() (XMLError* error) { delete error; }
+ };
+diff -r -u libsbml-5.17.0/src/sbml/SBO.cpp libsbml-5.17.0.new/src/sbml/SBO.cpp
+--- libsbml-5.17.0/src/sbml/SBO.cpp
++++ libsbml-5.17.0.new/src/sbml/SBO.cpp
+@@ -183,7 +183,7 @@
+   * functions for checking the SBO term is from correct part of SBO
+   * Unary Functor returns the parent portion of a ParentMap pair.
+   */
+-struct GetSecond : public unary_function<const pair<const int, int>, int>
++struct GetSecond
+ {
+   int operator() (const pair<const int, int>& pair) { return pair.second; }
+ };
+diff -r -u libsbml-5.17.0/src/sbml/Species.cpp libsbml-5.17.0.new/src/sbml/Species.cpp
+--- libsbml-5.17.0/src/sbml/Species.cpp
++++ libsbml-5.17.0.new/src/sbml/Species.cpp
+@@ -2538,7 +2538,7 @@
+ /**
+  * Used by ListOf::get() to lookup an SBase based by its id.
+  */
+-struct IdEqS : public unary_function<SBase*, bool>
++struct IdEqS
+ {
+   const string& mId;
+ 
+diff -r -u libsbml-5.17.0/src/sbml/SpeciesReference.cpp libsbml-5.17.0.new/src/sbml/SpeciesReference.cpp
+--- libsbml-5.17.0/src/sbml/SpeciesReference.cpp
++++ libsbml-5.17.0.new/src/sbml/SpeciesReference.cpp
+@@ -1711,7 +1711,7 @@
+ /**
+  * Used by ListOfSpeciesReferences::get() to lookup an SBase based by its id.
+  */
+-struct IdEqSSR : public unary_function<SBase*, bool>
++struct IdEqSSR
+ {
+   const string& mId;
+ 
+diff -r -u libsbml-5.17.0/src/sbml/SpeciesType.cpp libsbml-5.17.0.new/src/sbml/SpeciesType.cpp
+--- libsbml-5.17.0/src/sbml/SpeciesType.cpp
++++ libsbml-5.17.0.new/src/sbml/SpeciesType.cpp
+@@ -750,7 +750,7 @@
+ /**
+  * Used by ListOf::get() to lookup an SBase based by its id.
+  */
+-struct IdEqST : public unary_function<SBase*, bool>
++struct IdEqST
+ {
+   const string& mId;
+ 
+diff -r -u libsbml-5.17.0/src/sbml/UnitDefinition.cpp libsbml-5.17.0.new/src/sbml/UnitDefinition.cpp
+--- libsbml-5.17.0/src/sbml/UnitDefinition.cpp
++++ libsbml-5.17.0.new/src/sbml/UnitDefinition.cpp
+@@ -2284,7 +2284,7 @@
+ /**
+  * Used by ListOf::get() to lookup an SBase based by its id.
+  */
+-struct IdEqUD : public unary_function<SBase*, bool>
++struct IdEqUD
+ {
+   const string& mId;
+ 
+diff -r -u libsbml-5.17.0/src/sbml/validator/constraints/CompartmentOutsideCycles.cpp libsbml-5.17.0.new/src/sbml/validator/constraints/CompartmentOutsideCycles.cpp
+--- libsbml-5.17.0/src/sbml/validator/constraints/CompartmentOutsideCycles.cpp
++++ libsbml-5.17.0.new/src/sbml/validator/constraints/CompartmentOutsideCycles.cpp
+@@ -114,7 +114,7 @@
+  * Function Object: Returns true if Compartment c is contained in the given
+  * IdList cycle.
+  */
+-struct CycleContains : public unary_function<IdList, bool>
++struct CycleContains
+ {
+   CycleContains (const Compartment* c) : id(c->getId()) { }
+ 
+diff -r -u libsbml-5.17.0/src/sbml/validator/test/TestValidator.cpp libsbml-5.17.0.new/src/sbml/validator/test/TestValidator.cpp
+--- libsbml-5.17.0/src/sbml/validator/test/TestValidator.cpp
++++ libsbml-5.17.0.new/src/sbml/validator/test/TestValidator.cpp
+@@ -70,7 +70,7 @@
+  * Function Object: Return true if the given SBMLError has the given
+  * id, false otherwise.
+  */
+-struct HasId : public unary_function<SBMLError, bool>
++struct HasId
+ {
+   unsigned int id;
+ 
+@@ -82,7 +82,7 @@
+ /**
+  * Function Object: Takes a SBMLError and returns its integer id.
+  */
+-struct ToId : public unary_function<SBMLError, unsigned int>
++struct ToId
+ {
+   unsigned int operator() (const SBMLError& msg) { return msg.getErrorId(); }
+ };
+diff -r -u libsbml-5.17.0/src/sbml/validator/Validator.cpp libsbml-5.17.0.new/src/sbml/validator/Validator.cpp
+--- libsbml-5.17.0/src/sbml/validator/Validator.cpp
++++ libsbml-5.17.0.new/src/sbml/validator/Validator.cpp
+@@ -73,7 +73,7 @@
+  * Applies a Constraint<T> to an SBML object of type T.
+  */
+ template <typename T>
+-struct Apply : public unary_function<TConstraint<T>*, void>
++struct Apply
+ {
+   Apply (const Model& m, const T& o) : model(m), object(o) { }
+ 
+diff -r -u libsbml-5.17.0/src/sbml/xml/XMLErrorLog.cpp libsbml-5.17.0.new/src/sbml/xml/XMLErrorLog.cpp
+--- libsbml-5.17.0/src/sbml/xml/XMLErrorLog.cpp
++++ libsbml-5.17.0.new/src/sbml/xml/XMLErrorLog.cpp
+@@ -91,7 +91,7 @@
+ /**
+  * Used by the Destructor to delete each item in mErrors.
+  */
+-struct Delete : public unary_function<XMLError*, void>
++struct Delete
+ {
+   void operator() (XMLError* error) { delete error; }
+ };

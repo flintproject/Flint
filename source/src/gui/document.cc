@@ -11,7 +11,11 @@
 #include <cstdlib>
 #include <iostream>
 
-#include <boost/filesystem/fstream.hpp>
+#include <fstream>
+#include "flint/stdpath.h"
+
+#define BOOST_FILESYSTEM_NO_DEPRECATED
+#include <boost/filesystem.hpp>
 
 #include "bc/index.h"
 #include "bc/pack.h"
@@ -96,7 +100,7 @@ void Document::UpdateMtime()
 
 bool Document::LoadFileFormat()
 {
-	boost::filesystem::ifstream ifs(dir_ / "file.txt", std::ios::in);
+	std::ifstream ifs(ToStdPath(dir_ / "file.txt"), std::ios::in);
 	if (!ifs) {
 		wxLogError("failed to open file.txt");
 		return false;
@@ -128,7 +132,7 @@ bool Document::LoadFileFormat()
 
 bool Document::LoadNc()
 {
-	boost::filesystem::ifstream ifs(dir_ / "nc", std::ios::in|std::ios::binary);
+	std::ifstream ifs(ToStdPath(dir_ / "nc"), std::ios::in|std::ios::binary);
 	if (!ifs) {
 		wxLogError("failed to open nc");
 		return false;
@@ -172,7 +176,7 @@ bool Document::LoadNc()
 
 bool Document::LoadParam()
 {
-	boost::filesystem::ifstream ifs(dir_ / "param", std::ios::in|std::ios::binary);
+	std::ifstream ifs(ToStdPath(dir_ / "param"), std::ios::in|std::ios::binary);
 	if (!ifs) {
 		wxLogError("failed to open param");
 		return false;
@@ -194,7 +198,7 @@ bool Document::LoadParam()
 
 bool Document::LoadVar()
 {
-	boost::filesystem::ifstream ifs(dir_ / "var", std::ios::in|std::ios::binary);
+	std::ifstream ifs(ToStdPath(dir_ / "var"), std::ios::in|std::ios::binary);
 	if (!ifs) {
 		wxLogError("failed to open var");
 		return false;

@@ -6,13 +6,15 @@
 #include <cstdio>
 #include <cstring>
 #include <fstream>
+#include "flint/stdpath.h"
 #include <memory>
 #include <set>
 #include <vector>
 
 #define BOOST_FILESYSTEM_NO_DEPRECATED
-#include <boost/filesystem/fstream.hpp>
 #define BOOST_DATE_TIME_NO_LIB
+#define BOOST_FILESYSTEM_NO_DEPRECATED
+#include <boost/filesystem.hpp>
 #include <boost/interprocess/file_mapping.hpp>
 
 #include "isdf/reader.h"
@@ -43,7 +45,7 @@ bool TimeseriesData::Load()
 		std::cerr << "failed to map file: " << path_ << std::endl;
 		return false;
 	}
-	boost::filesystem::ifstream ifs(path_, std::ios::in|std::ios::binary);
+	std::ifstream ifs(ToStdPath(path_), std::ios::in|std::ios::binary);
 	if (!ifs.is_open()) {
 		std::cerr << "failed to open timeseries data: "
 				  << path_

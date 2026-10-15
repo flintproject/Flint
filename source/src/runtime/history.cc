@@ -6,8 +6,11 @@
 #include <cstdio>
 #include <iostream>
 
+#include <fstream>
+#include "flint/stdpath.h"
+
 #define BOOST_FILESYSTEM_NO_DEPRECATED
-#include <boost/filesystem/fstream.hpp>
+#include <boost/filesystem.hpp>
 #define BOOST_DATE_TIME_NO_LIB
 #include <boost/interprocess/file_mapping.hpp>
 #include <boost/interprocess/mapped_region.hpp>
@@ -125,7 +128,7 @@ bool HistoryDumper::Dump(size_t size, const History *history)
 {
 	assert(history);
 
-	boost::filesystem::ofstream ofs(file_, std::ios::out|std::ios::binary);
+	std::ofstream ofs(ToStdPath(file_), std::ios::out|std::ios::binary);
 	if (!ofs) {
 		std::cerr << "failed to open " << file_ << std::endl;
 		return false;
@@ -149,7 +152,7 @@ bool HistoryLoader::Load(size_t size, History *history)
 	assert(history);
 
 	// check whether the file is empty or not
-	boost::filesystem::ifstream ifs(file_, std::ios::in|std::ios::binary);
+	std::ifstream ifs(ToStdPath(file_), std::ios::in|std::ios::binary);
 	if (!ifs) {
 		std::cerr << "failed to open " << file_ << std::endl;
 		return false;

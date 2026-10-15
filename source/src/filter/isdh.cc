@@ -13,8 +13,11 @@
 #include <string>
 #include <vector>
 
+#include <fstream>
+#include "flint/stdpath.h"
+
 #define BOOST_FILESYSTEM_NO_DEPRECATED
-#include <boost/filesystem/fstream.hpp>
+#include <boost/filesystem.hpp>
 #include <boost/uuid/uuid_io.hpp>
 
 #include "lo.pb.h"
@@ -101,7 +104,7 @@ bool Isdh(const boost::filesystem::path &filter_file,
 		std::unique_ptr<FilterLoader> loader(new FilterLoader(filter_file));
 		if (!loader->Load(filter.get())) return false;
 	}
-	boost::filesystem::ofstream ofs(output_file, std::ios::out|std::ios::binary);
+	std::ofstream ofs(ToStdPath(output_file), std::ios::out|std::ios::binary);
 	if (!ofs.is_open()) {
 		std::cerr << "could not open output file: " << output_file << std::endl;
 		return false;

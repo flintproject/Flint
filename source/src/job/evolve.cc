@@ -17,8 +17,11 @@
 #include <random>
 #include <string>
 
+#include <fstream>
+#include "flint/stdpath.h"
+
 #define BOOST_FILESYSTEM_NO_DEPRECATED
-#include <boost/filesystem/fstream.hpp>
+#include <boost/filesystem.hpp>
 
 #include "bc.pb.h"
 
@@ -230,7 +233,7 @@ private:
 
 bool SaveData(const boost::filesystem::path &output_data_file, size_t layer_size, double *data)
 {
-	boost::filesystem::ofstream ofs(output_data_file, std::ios::out|std::ios::binary);
+	std::ofstream ofs(ToStdPath(output_data_file), std::ios::out|std::ios::binary);
 	if (!ofs) {
 		std::cerr << "could not open " << output_data_file << std::endl;
 		return false;

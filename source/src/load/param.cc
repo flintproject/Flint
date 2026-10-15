@@ -13,8 +13,11 @@
 #include <memory>
 #include <vector>
 
+#include <fstream>
+#include "flint/stdpath.h"
+
 #define BOOST_FILESYSTEM_NO_DEPRECATED
-#include <boost/filesystem/fstream.hpp>
+#include <boost/filesystem.hpp>
 #include <boost/uuid/uuid.hpp>
 
 #include "lo.pb.h"
@@ -106,7 +109,7 @@ bool Param(sqlite3 *db, const boost::filesystem::path &output)
 	lo::Header header;
 	header.set_size(state.pos);
 
-	boost::filesystem::ofstream ofs(output, std::ios::out|std::ios::binary);
+	std::ofstream ofs(ToStdPath(output), std::ios::out|std::ios::binary);
 	if (!ofs) {
 		std::cerr << "failed to open " << output << std::endl;
 		return false;

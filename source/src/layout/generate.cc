@@ -10,6 +10,7 @@
 #include <cstdlib>
 #include <cstring>
 #include <fstream>
+#include "flint/stdpath.h"
 #include <iostream>
 #include <map>
 #include <memory>
@@ -18,7 +19,8 @@
 #include <vector>
 
 #define BOOST_FILESYSTEM_NO_DEPRECATED
-#include <boost/filesystem/fstream.hpp>
+#define BOOST_FILESYSTEM_NO_DEPRECATED
+#include <boost/filesystem.hpp>
 #include <boost/functional/hash.hpp>
 #include <boost/uuid/uuid.hpp>
 
@@ -157,7 +159,7 @@ bool Generate(sqlite3 *db, const boost::filesystem::path &filename)
 		if (!loader.Load(&tm)) return false;
 	}
 
-	boost::filesystem::ofstream ofs(filename, std::ios::out|std::ios::binary);
+	std::ofstream ofs(ToStdPath(filename), std::ios::out|std::ios::binary);
 	if (!ofs.is_open()) {
 		std::cerr << "could not open output file: " << filename << std::endl;
 		return false;

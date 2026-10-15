@@ -10,6 +10,7 @@
 #include <iostream>
 #include <iomanip>
 #include <fstream>
+#include "flint/stdpath.h"
 #include <memory>
 #include <string>
 #include <sstream>
@@ -19,6 +20,8 @@
 #include <windows.h>
 #endif
 
+#define BOOST_FILESYSTEM_NO_DEPRECATED
+#include <boost/filesystem.hpp>
 #include <boost/program_options.hpp>
 
 #include "flint/temporary-file.h"
@@ -46,7 +49,7 @@ bool ReadDescriptions(std::uint32_t num_bytes_descs, std::istream *is, char *res
 
 bool CountColumns(const boost::filesystem::path &input, std::uint32_t *num_columns)
 {
-	boost::filesystem::ifstream ifs(input, std::ios::in|std::ios::binary);
+	std::ifstream ifs(ToStdPath(input), std::ios::in|std::ios::binary);
 	if (!ifs.is_open()) {
 		std::cerr << "could not open input file: " << input << std::endl;
 		return false;
@@ -64,7 +67,7 @@ bool CountColumns(const boost::filesystem::path &input, std::uint32_t *num_colum
 
 int CallIsd2csv(const isd2csv::Option &option, const boost::filesystem::path &input, std::ostream *os)
 {
-	boost::filesystem::ifstream ifs(input, std::ios::in|std::ios::binary);
+	std::ifstream ifs(ToStdPath(input), std::ios::in|std::ios::binary);
 	if (!ifs) {
 		std::cerr << "failed to open input file: " << input << std::endl;
 		return EXIT_FAILURE;

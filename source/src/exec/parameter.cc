@@ -10,8 +10,11 @@
 #include <cstring>
 #include <iostream>
 
+#include <fstream>
+#include "flint/stdpath.h"
+
 #define BOOST_FILESYSTEM_NO_DEPRECATED
-#include <boost/filesystem/fstream.hpp>
+#include <boost/filesystem.hpp>
 
 namespace flint {
 namespace exec {
@@ -20,7 +23,7 @@ namespace {
 
 int WriteParameter(void *data, int argc, char **argv, char **names)
 {
-	boost::filesystem::ofstream *ofs = static_cast<boost::filesystem::ofstream *>(data);
+	std::ofstream *ofs = static_cast<std::ofstream *>(data);
 	assert(ofs != nullptr);
 	(void)names;
 	assert(argc == 2);
@@ -35,7 +38,7 @@ int WriteParameter(void *data, int argc, char **argv, char **names)
 bool SaveParameters(const boost::filesystem::path &dir, sqlite3 *db)
 {
 	auto path = dir / "parameters.txt.tmp";
-	boost::filesystem::ofstream ofs(path, std::ios::out|std::ios::binary);
+	std::ofstream ofs(ToStdPath(path), std::ios::out|std::ios::binary);
 	if (!ofs.is_open()) {
 		std::cerr << "failed to open " << path << std::endl;
 		return false;

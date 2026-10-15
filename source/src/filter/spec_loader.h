@@ -9,7 +9,7 @@
 
 #define BOOST_FILESYSTEM_NO_DEPRECATED
 #include <boost/filesystem.hpp>
-#include <boost/filesystem/fstream.hpp>
+#include "flint/stdpath.h"
 #include <boost/uuid/string_generator.hpp>
 
 namespace flint {
@@ -20,7 +20,7 @@ public:
 	SpecLoader &operator=(const SpecLoader &) = delete;
 
 	explicit SpecLoader(const boost::filesystem::path &file)
-		: ifs_(file, std::ios::in)
+		: ifs_(ToStdPath(file), std::ios::in)
 	{}
 
 	~SpecLoader() {
@@ -53,7 +53,7 @@ public:
 	}
 
 private:
-	boost::filesystem::ifstream ifs_;
+	std::ifstream ifs_;
 };
 
 }
