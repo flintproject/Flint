@@ -7,6 +7,9 @@
      supported.
    - Linux distributions such as CentOS 7, Debian 11/12, and Ubuntu 20.04/22.04.
      This version may still run on RHEL 8, but it is no longer supported.
+** Bug fixes
+   - #1 Fixed blurry text on the Windows version by making the application
+     DPI-aware.
 
 * Flint 2.4 (2020-09-29)
 

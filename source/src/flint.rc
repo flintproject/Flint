@@ -1,0 +1,11 @@
+/* -*- Mode: C; tab-width: 4; indent-tabs-mode: t; c-basic-offset: 4 -*- vim:set ts=4 sw=4 sts=4 noet: */
+
+// Include the manifest provided by wxWidgets so that the application opts
+// into the full, per-monitor DPI awareness supported by Windows 10 version
+// 1703 or later; older versions of Windows fall back to system DPI awareness.
+// The manifest also declares the dependency on Common Controls version 6,
+// which is required for themed controls.
+#define wxUSE_RC_MANIFEST 1
+#define wxUSE_DPI_AWARE_MANIFEST 2
+
+#include "wx/msw/wx.rc"
