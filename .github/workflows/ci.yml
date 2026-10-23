@@ -84,6 +84,11 @@ jobs:
           set "PATH=C:\Program Files (x86)\WiX Toolset v3.14\bin;%PATH%"
           cd /d "%GITHUB_WORKSPACE%\source\msvc"
           msbuild all.proj /m /fl
+      - name: Verify the resources of flint.exe
+        shell: pwsh
+        run: |
+          python -m pip install --disable-pip-version-check --quiet pefile
+          python .github/scripts/verify_pe_resources.py source/msvc/flint/flint.exe
       - name: Upload installer
         uses: actions/upload-artifact@v7
         with:
