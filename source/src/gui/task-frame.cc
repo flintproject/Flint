@@ -21,6 +21,7 @@
 #include "flint/error.h"
 #include "gui/export-all-dialog.h"
 #include "gui/filename.h"
+#include "gui/icon.h"
 #include "gui/job.h"
 #include "gui/simulation.h"
 #include "gui/task.h"
@@ -51,6 +52,7 @@ TaskFrame::TaskFrame(wxWindow *parent, const Task &task)
 	, view_frame_(new ViewFrame(this, *data_view_))
 	, timer_(this)
 {
+	SetFlintIcon(this);
 }
 
 void TaskFrame::Start()

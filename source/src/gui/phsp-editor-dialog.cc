@@ -11,6 +11,7 @@
 #include <unordered_map>
 #include <unordered_set>
 
+#include "gui/icon.h"
 #include "gui/param-tree.h"
 
 namespace flint {
@@ -395,6 +396,8 @@ PhspEditorDialog::PhspEditorDialog(wxWindow *parent, ParamTree &param_tree)
 	, gaussian_ctrl_(new ParamGaussianCtrl(book_))
 	, uniform_ctrl_(new ParamUniformCtrl(book_))
 {
+	SetFlintIcon(this);
+
 	tree_view_->AssociateModel(model_);
 	model_->DecRef(); // avoid memory leak, see wxDataViewModel's documentation
 

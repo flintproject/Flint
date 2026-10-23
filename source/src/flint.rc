@@ -9,3 +9,6 @@
 #define wxUSE_DPI_AWARE_MANIFEST 2
 
 #include "wx/msw/wx.rc"
+
+// The icon of the application; it is loaded by flint::gui::SetFlintIcon().
+flint ICON "flint.ico"

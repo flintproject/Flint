@@ -3,6 +3,7 @@
 #include "config.h"
 #endif
 
+#include "gui/icon.h"
 #include "gui/log-dialog.h"
 
 namespace flint {
@@ -12,6 +13,8 @@ LogDialog::LogDialog(wxWindow *parent, const wxString &title)
 	: wxDialog(parent, wxID_ANY, title, wxDefaultPosition, wxDefaultSize, wxCAPTION|wxCLOSE_BOX|wxMINIMIZE_BOX|wxMAXIMIZE_BOX|wxSYSTEM_MENU)
 	, text_ctrl_(new wxTextCtrl(this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize(400, 300), wxTE_MULTILINE|wxTE_READONLY))
 {
+	SetFlintIcon(this);
+
 	auto vbox = new wxBoxSizer(wxVERTICAL);
 	vbox->Add(text_ctrl_, wxSizerFlags(1).Expand());
 	auto button = new wxButton(this, wxID_ANY, "Close");

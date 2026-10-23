@@ -28,6 +28,7 @@
 #include "gui/app.h"
 #include "gui/document.h"
 #include "gui/filename.h"
+#include "gui/icon.h"
 #include "gui/phsp.h"
 #include "gui/sedml.h"
 #include "gui/sim-window.h"
@@ -89,6 +90,8 @@ MainFrame::MainFrame(wxArrayString &input_files)
 	, next_simulation_id_(1)
 	, last_dir_(wxFileName::GetHomeDir())
 {
+	SetFlintIcon(this);
+
 	// menus
 	auto menuFile = new wxMenu;
 	menuFile->Append(wxID_OPEN, "Open\tCTRL+O");

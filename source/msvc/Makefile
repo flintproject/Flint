@@ -161,7 +161,7 @@ tmp/sqlite.precompiled: src/sqlite-dll-win64-x64-$(SQLITE_VSTR).zip | tmp
 	unzip -d var -qq $<
 	touch $@
 
-flint/flint.ico: flint.ico | flint
+flint/flint.ico: ../src/flint.ico | flint
 	install -p -m 0644 $< $@
 
 flint/flint.wxs: flint.wxs.in | flint

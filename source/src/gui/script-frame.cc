@@ -11,6 +11,7 @@
 #include <wx/wfstream.h>
 #pragma GCC diagnostic pop
 
+#include "gui/icon.h"
 #include "gui/view-frame.h"
 
 namespace flint {
@@ -22,6 +23,8 @@ ScriptFrame::ScriptFrame(ViewFrame *parent)
 								  wxTE_MULTILINE|wxTE_READONLY))
 	, save_(new wxButton(this, wxID_ANY, "Save"))
 {
+	SetFlintIcon(this);
+
 	script_text_->SetMinSize(wxSize(600, 150));
 
 	auto box = new wxBoxSizer(wxVERTICAL);

@@ -23,6 +23,7 @@
 #include "gui/app.h"
 #include "gui/filename.h"
 #include "gui/gnuplot.h"
+#include "gui/icon.h"
 #include "gui/job.h"
 #include "gui/script-frame.h"
 #include "gui/task-frame.h"
@@ -60,6 +61,8 @@ ViewFrame::ViewFrame(TaskFrame *parent, wxDataViewListCtrl &job_list)
 	, num_variables_(0)
 	, skip_(0)
 {
+	SetFlintIcon(this);
+
 	data_view_->AppendToggleColumn("X", wxDATAVIEW_CELL_ACTIVATABLE, 30, wxALIGN_CENTER, wxDATAVIEW_COL_SORTABLE);
 	data_view_->AppendToggleColumn("Y1", wxDATAVIEW_CELL_ACTIVATABLE, 30, wxALIGN_CENTER, wxDATAVIEW_COL_SORTABLE);
 	data_view_->AppendToggleColumn("Y2", wxDATAVIEW_CELL_ACTIVATABLE, 30, wxALIGN_CENTER, wxDATAVIEW_COL_SORTABLE);
